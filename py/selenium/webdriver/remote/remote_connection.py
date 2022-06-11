@@ -131,7 +131,7 @@ class RemoteConnection:
     def _identify_http_proxy_auth(self):
         url = self._proxy_url
         url = url[url.find(":") + 3:]
-        return True if "@" in url and len(url[:url.find('@')]) > 0 else False
+        return "@" in url and len(url[:url.find('@')]) > 0
 
     def _seperate_http_proxy_auth(self):
         url = self._proxy_url
@@ -161,12 +161,7 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr, keep_alive=False, resolve_ip=None, ignore_proxy=False):
-        if resolve_ip:
-            import warnings
-            warnings.warn(
-                "'resolve_ip' option removed; ip addresses are now always resolved by urllib3.",
-                DeprecationWarning)
+    def __init__(self, remote_server_addr, keep_alive=False, ignore_proxy=False):
         self.keep_alive = keep_alive
         self._url = remote_server_addr
 

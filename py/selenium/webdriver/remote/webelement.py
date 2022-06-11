@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import os
+import typing
 from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 import pkgutil
@@ -26,12 +27,11 @@ from abc import ABCMeta
 from io import BytesIO
 from typing import Union
 
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import WebDriverException, JavascriptException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
 from .command import Command
 from .shadowroot import ShadowRoot
-
 
 # TODO: When moving to supporting python 3.9 as the minimum version we can
 # use built in importlib_resources.files.
@@ -91,11 +91,20 @@ class WebElement(BaseWebElement):
 
     def submit(self):
         """Submits a form."""
-        form = self.find_element(By.XPATH, "./ancestor-or-self::form")
-        self._parent.execute_script(
-            "var e = arguments[0].ownerDocument.createEvent('Event');"
-            "e.initEvent('submit', true, true);"
-            "if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }", form)
+        script = "var form = arguments[0];\n" \
+                 "while (form.nodeName != \"FORM\" && form.parentNode) {\n" \
+                 "  form = form.parentNode;\n" \
+                 "}\n" \
+                 "if (!form) { throw Error('Unable to find containing form element'); }\n" \
+                 "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
+                 "var e = form.ownerDocument.createEvent('Event');\n" \
+                 "e.initEvent('submit', true, true);\n" \
+                 "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
+
+        try:
+            self._parent.execute_script(script, self)
+        except JavascriptException:
+            raise WebDriverException("To submit an element, it must be nested inside a form element")
 
     def clear(self) -> None:
         """Clears the text if it's a text entry element."""
@@ -178,370 +187,6 @@ class WebElement(BaseWebElement):
         """Returns whether the element is enabled."""
         return self._execute(Command.IS_ELEMENT_ENABLED)['value']
 
-    def find_element_by_id(self, id_):
-        """Finds element within this element's children by ID.
-
-        :Args:
-         - id\\_ - ID of child element to locate.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                foo_element = element.find_element_by_id('foo')
-        """
-        warnings.warn("find_element_by_id is deprecated. Please use find_element(by=By.ID, value=id_) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_element(by=By.ID, value=id_)
-
-    def find_elements_by_id(self, id_):
-        """Finds a list of elements within this element's children by ID.
-        Will return a list of webelements if found, or an empty list if not.
-
-        :Args:
-         - id\\_ - Id of child element to find.
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = element.find_elements_by_id('foo')
-        """
-        warnings.warn("find_elements_by_id is deprecated. Please use find_elements(by=By.ID, value=id_) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_elements(by=By.ID, value=id_)
-
-    def find_element_by_name(self, name):
-        """Finds element within this element's children by name.
-
-        :Args:
-         - name - name property of the element to find.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = element.find_element_by_name('foo')
-        """
-        warnings.warn("find_element_by_name is deprecated. Please use find_element(by=By.NAME, value=name) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_element(by=By.NAME, value=name)
-
-    def find_elements_by_name(self, name):
-        """Finds a list of elements within this element's children by name.
-
-        :Args:
-         - name - name property to search for.
-
-        :Returns:
-         - list of webelement - a list with elements if any was found.  an
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = element.find_elements_by_name('foo')
-        """
-        warnings.warn("find_elements_by_name is deprecated. Please use find_elements(by=By.NAME, value=name) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_elements(by=By.NAME, value=name)
-
-    def find_element_by_link_text(self, link_text):
-        """Finds element within this element's children by visible link text.
-
-        :Args:
-         - link_text - Link text string to search for.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = element.find_element_by_link_text('Sign In')
-        """
-        warnings.warn("find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_element(by=By.LINK_TEXT, value=link_text)
-
-    def find_elements_by_link_text(self, link_text):
-        """Finds a list of elements within this element's children by visible link text.
-
-        :Args:
-         - link_text - Link text string to search for.
-
-        :Returns:
-         - list of webelement - a list with elements if any was found.  an
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = element.find_elements_by_link_text('Sign In')
-        """
-        warnings.warn("find_elements_by_link_text is deprecated. Please use find_elements(by=By.LINK_TEXT, value=text) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_elements(by=By.LINK_TEXT, value=link_text)
-
-    def find_element_by_partial_link_text(self, link_text):
-        """Finds element within this element's children by partially visible link text.
-
-        :Args:
-         - link_text: The text of the element to partially match on.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = element.find_element_by_partial_link_text('Sign')
-        """
-        warnings.warn("find_element_by_partial_link_text is deprecated. Please use find_element(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_elements_by_partial_link_text(self, link_text):
-        """Finds a list of elements within this element's children by link text.
-
-        :Args:
-         - link_text: The text of the element to partial match on.
-
-        :Returns:
-         - list of webelement - a list with elements if any was found.  an
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = element.find_elements_by_partial_link_text('Sign')
-        """
-        warnings.warn("find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_element_by_tag_name(self, name):
-        """Finds element within this element's children by tag name.
-
-        :Args:
-         - name - name of html tag (eg: h1, a, span)
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = element.find_element_by_tag_name('h1')
-        """
-        warnings.warn("find_element_by_tag_name is deprecated. Please use find_element(by=By.TAG_NAME, value=name) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_element(by=By.TAG_NAME, value=name)
-
-    def find_elements_by_tag_name(self, name):
-        """Finds a list of elements within this element's children by tag name.
-
-        :Args:
-         - name - name of html tag (eg: h1, a, span)
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = element.find_elements_by_tag_name('h1')
-        """
-        warnings.warn("find_elements_by_tag_name is deprecated. Please use find_elements(by=By.TAG_NAME, value=name) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_elements(by=By.TAG_NAME, value=name)
-
-    def find_element_by_xpath(self, xpath):
-        """Finds element by xpath.
-
-        :Args:
-         - xpath - xpath of element to locate.  "//input[@class='myelement']"
-
-        Note: The base path will be relative to this element's location.
-
-        This will select the first link under this element.
-
-        ::
-
-            myelement.find_element_by_xpath(".//a")
-
-        However, this will select the first link on the page.
-
-        ::
-
-            myelement.find_element_by_xpath("//a")
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = element.find_element_by_xpath('//div/td[1]')
-        """
-        warnings.warn("find_element_by_xpath is deprecated. Please use find_element(by=By.XPATH, value=xpath) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_element(by=By.XPATH, value=xpath)
-
-    def find_elements_by_xpath(self, xpath):
-        """Finds elements within the element by xpath.
-
-        :Args:
-         - xpath - xpath locator string.
-
-        Note: The base path will be relative to this element's location.
-
-        This will select all links under this element.
-
-        ::
-
-            myelement.find_elements_by_xpath(".//a")
-
-        However, this will select all links in the page itself.
-
-        ::
-
-            myelement.find_elements_by_xpath("//a")
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = element.find_elements_by_xpath("//div[contains(@class, 'foo')]")
-
-        """
-        warnings.warn("find_elements_by_xpath is deprecated. Please use find_elements(by=By.XPATH, value=xpath) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_elements(by=By.XPATH, value=xpath)
-
-    def find_element_by_class_name(self, name):
-        """Finds element within this element's children by class name.
-
-        :Args:
-         - name: The class name of the element to find.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = element.find_element_by_class_name('foo')
-        """
-        warnings.warn("find_element_by_class_name is deprecated. Please use find_element(by=By.CLASS_NAME, value=name) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_element(by=By.CLASS_NAME, value=name)
-
-    def find_elements_by_class_name(self, name):
-        """Finds a list of elements within this element's children by class name.
-
-        :Args:
-         - name: The class name of the elements to find.
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = element.find_elements_by_class_name('foo')
-        """
-        warnings.warn("find_elements_by_class_name is deprecated. Please use find_elements(by=By.CLASS_NAME, value=name) instead", DeprecationWarning)
-        return self.find_elements(by=By.CLASS_NAME, value=name)
-
-    def find_element_by_css_selector(self, css_selector):
-        """Finds element within this element's children by CSS selector.
-
-        :Args:
-         - css_selector - CSS selector string, ex: 'a.nav#home'
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = element.find_element_by_css_selector('#foo')
-        """
-        warnings.warn("find_element_by_css_selector is deprecated. Please use find_element(by=By.CSS_SELECTOR, value=css_selector) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
-
-    def find_elements_by_css_selector(self, css_selector):
-        """Finds a list of elements within this element's children by CSS selector.
-
-        :Args:
-         - css_selector - CSS selector string, ex: 'a.nav#home'
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = element.find_elements_by_css_selector('.foo')
-        """
-        warnings.warn("find_elements_by_css_selector is deprecated. Please use find_elements(by=By.CSS_SELECTOR, value=css_selector) instead",
-                      DeprecationWarning,
-                      stacklevel=2)
-        return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
-
     def send_keys(self, *value) -> None:
         """Simulates typing into the element.
 
@@ -593,7 +238,8 @@ class WebElement(BaseWebElement):
               - NoSuchShadowRoot - if no shadow root was attached to element
         """
         browser_main_version = int(self._parent.caps["browserVersion"].split(".")[0])
-        assert self._parent.caps["browserName"].lower() not in ["firefox", "safari"], "This only currently works in Chromium based browsers"
+        assert self._parent.caps["browserName"].lower() not in ["firefox",
+                                                                "safari"], "This only currently works in Chromium based browsers"
         assert not browser_main_version <= 95, f"Please use Chromium based browsers with version 96 or later. Version used {self._parent.caps['browserVersion']}"
         return self._execute(Command.GET_SHADOW_ROOT)['value']
 
@@ -751,7 +397,7 @@ class WebElement(BaseWebElement):
         params['id'] = self._id
         return self._parent.execute(command, params)
 
-    def find_element(self, by=By.ID, value=None):
+    def find_element(self, by=By.ID, value=None) -> WebElement:
         """
         Find an element given a By strategy and locator.
 
@@ -775,7 +421,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
 
-    def find_elements(self, by=By.ID, value=None):
+    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
         """
         Find elements given a By strategy and locator.
 
@@ -820,4 +466,4 @@ class WebElement(BaseWebElement):
             elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in e.__str__():
                 return filename
             else:
-                raise e
+                raise

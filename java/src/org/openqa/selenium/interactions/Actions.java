@@ -17,15 +17,10 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
-import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
-
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
-import org.openqa.selenium.interactions.internal.MouseAction.Button;
 import org.openqa.selenium.internal.Require;
 
 import java.time.Duration;
@@ -37,7 +32,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
-import java.util.logging.Logger;
+
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
 /**
  * The user-facing API for emulating complex user gestures. Use this class rather than using the
@@ -50,31 +47,17 @@ import java.util.logging.Logger;
  */
 public class Actions {
 
-  private static final Logger LOG = Logger.getLogger(Actions.class.getName());
   private final WebDriver driver;
 
   // W3C
   private final Map<InputSource, Sequence> sequences = new HashMap<>();
+
   private PointerInput activePointer;
   private KeyInput activeKeyboard;
   private WheelInput activeWheel;
 
-  // JSON-wire protocol
-  private final Keyboard jsonKeyboard;
-  private final Mouse jsonMouse;
-  protected CompositeAction action = new CompositeAction();
-
   public Actions(WebDriver driver) {
     this.driver = Require.nonNull("Driver", driver);
-
-    if (driver instanceof HasInputDevices) {
-      HasInputDevices deviceOwner = (HasInputDevices) driver;
-      this.jsonKeyboard = deviceOwner.getKeyboard();
-      this.jsonMouse = deviceOwner.getMouse();
-    } else {
-      this.jsonKeyboard = null;
-      this.jsonMouse = null;
-    }
   }
 
   /**
@@ -88,9 +71,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions keyDown(CharSequence key) {
-    if (isBuildingActions()) {
-      action.addAction(new KeyDownAction(jsonKeyboard, jsonMouse, asKeys(key)));
-    }
     return addKeyAction(key, codePoint -> tick(getActiveKeyboard().createKeyDown(codePoint)));
   }
 
@@ -105,9 +85,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions keyDown(WebElement target, CharSequence key) {
-    if (isBuildingActions()) {
-      action.addAction(new KeyDownAction(jsonKeyboard, jsonMouse, (Locatable) target, asKeys(key)));
-    }
     return focusInTicks(target)
         .addKeyAction(key, codepoint -> tick(getActiveKeyboard().createKeyDown(codepoint)));
   }
@@ -120,10 +97,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions keyUp(CharSequence key) {
-    if (isBuildingActions()) {
-      action.addAction(new KeyUpAction(jsonKeyboard, jsonMouse, asKeys(key)));
-    }
-
     return addKeyAction(key, codePoint -> tick(getActiveKeyboard().createKeyUp(codePoint)));
   }
 
@@ -137,10 +110,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions keyUp(WebElement target, CharSequence key) {
-    if (isBuildingActions()) {
-      action.addAction(new KeyUpAction(jsonKeyboard, jsonMouse, (Locatable) target, asKeys(key)));
-    }
-
     return focusInTicks(target)
         .addKeyAction(key, codePoint -> tick(getActiveKeyboard().createKeyUp(codePoint)));
   }
@@ -162,10 +131,6 @@ public class Actions {
    * @throws IllegalArgumentException if keys is null
    */
   public Actions sendKeys(CharSequence... keys) {
-    if (isBuildingActions()) {
-      action.addAction(new SendKeysAction(jsonKeyboard, jsonMouse, null, keys));
-    }
-
     return sendKeysInTicks(keys);
   }
 
@@ -184,20 +149,7 @@ public class Actions {
    * @throws IllegalArgumentException if keys is null
    */
   public Actions sendKeys(WebElement target, CharSequence... keys) {
-    if (isBuildingActions()) {
-      action.addAction(new SendKeysAction(jsonKeyboard, jsonMouse, (Locatable) target, keys));
-    }
-
     return focusInTicks(target).sendKeysInTicks(keys);
-  }
-
-  private Keys asKeys(CharSequence key) {
-    if (!(key instanceof Keys)) {
-      throw new IllegalArgumentException(
-          "keyDown argument must be an instanceof Keys: " + key);
-    }
-
-    return (Keys) key;
   }
 
   private Actions sendKeysInTicks(CharSequence... keys) {
@@ -233,9 +185,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions clickAndHold(WebElement target) {
-    if (isBuildingActions()) {
-      action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) target));
-    }
     return moveInTicks(target, 0, 0)
         .tick(getActivePointer().createPointerDown(LEFT.asArg()));
   }
@@ -245,10 +194,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions clickAndHold() {
-    if (isBuildingActions()) {
-      action.addAction(new ClickAndHoldAction(jsonMouse, null));
-    }
-
     return tick(getActivePointer().createPointerDown(LEFT.asArg()));
   }
 
@@ -264,27 +209,46 @@ public class Actions {
    * @return A self reference.
    */
   public Actions release(WebElement target) {
-    if (isBuildingActions()) {
-      action.addAction(new ButtonReleaseAction(jsonMouse, (Locatable) target));
-    }
-
     return moveInTicks(target, 0, 0).tick(getActivePointer().createPointerUp(LEFT.asArg()));
   }
 
   /**
-   * Scrolls by the provided amount from a designated origination point.
-   * The scroll origin is either the center of an element or the upper left of the viewport plus offsets.
-   * If the origin is an element, and the element is not in the viewport, the bottom of the element will first
-   *   be scrolled to the bottom of the viewport.
+   * If the element is outside the viewport, scrolls the bottom of the element to the bottom of the viewport.
    *
-   * @param x The horizontal offset from the origin from which to start the scroll.
-   * @param y The vertical offset from the origin from which to start the scroll.
-   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
-   * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
-   * @param scrollOrigin Where scroll originates, either the viewport or the center of an element.
+   * @param element Which element to scroll into the viewport.
    * @return A self reference.
    */
-  public Actions scroll( int x, int y, int deltaX, int deltaY, WheelInput.ScrollOrigin scrollOrigin) {
+  public Actions scrollToElement(WebElement element) {
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(element);
+    return tick(getActiveWheel().createScroll(0, 0, 0, 0, Duration.ofMillis(250), scrollOrigin));
+  }
+
+  /**
+   * Scrolls by provided amounts with the origin in the top left corner of the viewport.
+   *
+   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
+   * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
+   * @return A self reference.
+   */
+  public Actions scrollByAmount(int deltaX, int deltaY) {
+    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport();
+    return tick(getActiveWheel().createScroll(0, 0, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
+  }
+
+  /**
+   * Scrolls by provided amount based on a provided origin.
+   * The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
+   * If the origin is an element, and the element is not in the viewport, the bottom of the element will first
+   *   be scrolled to the bottom of the viewport.
+   * @param scrollOrigin Where scroll originates (viewport or element center) plus provided offsets.
+   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
+   * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
+   * @return A self reference.
+   * @throws MoveTargetOutOfBoundsException If the origin with offset is outside the viewport.
+   */
+  public Actions scrollFromOrigin(WheelInput.ScrollOrigin scrollOrigin, int deltaX, int deltaY) {
+    int x = scrollOrigin.getxOffset();
+    int y = scrollOrigin.getyOffset();
     return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
   }
 
@@ -294,11 +258,7 @@ public class Actions {
    * @return A self reference.
    */
   public Actions release() {
-    if (isBuildingActions()) {
-      action.addAction(new ButtonReleaseAction(jsonMouse, null));
-    }
-
-    return tick(getActivePointer().createPointerUp(Button.LEFT.asArg()));
+    return tick(getActivePointer().createPointerUp(LEFT.asArg()));
   }
 
   /**
@@ -309,10 +269,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions click(WebElement target) {
-    if (isBuildingActions()) {
-      action.addAction(new ClickAction(jsonMouse, (Locatable) target));
-    }
-
     return moveInTicks(target, 0, 0).clickInTicks(LEFT);
   }
 
@@ -323,10 +279,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions click() {
-    if (isBuildingActions()) {
-      action.addAction(new ClickAction(jsonMouse, null));
-    }
-
     return clickInTicks(LEFT);
   }
 
@@ -348,10 +300,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions doubleClick(WebElement target) {
-    if (isBuildingActions()) {
-      action.addAction(new DoubleClickAction(jsonMouse, (Locatable) target));
-    }
-
     return moveInTicks(target, 0, 0)
         .clickInTicks(LEFT)
         .clickInTicks(LEFT);
@@ -362,10 +310,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions doubleClick() {
-    if (isBuildingActions()) {
-      action.addAction(new DoubleClickAction(jsonMouse, null));
-    }
-
     return clickInTicks(LEFT).clickInTicks(LEFT);
   }
 
@@ -376,10 +320,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions moveToElement(WebElement target) {
-    if (isBuildingActions()) {
-      action.addAction(new MoveMouseAction(jsonMouse, (Locatable) target));
-    }
-
     return moveInTicks(target, 0, 0);
   }
 
@@ -393,13 +333,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions moveToElement(WebElement target, int xOffset, int yOffset) {
-    if (isBuildingActions()) {
-      action.addAction(new MoveToOffsetAction(jsonMouse, (Locatable) target, xOffset, yOffset));
-    }
-
-    // Of course, this is the offset from the centre of the element. We have no idea what the width
-    // and height are once we execute this method.
-    LOG.info("When using the W3C Action commands, offsets are from the element's in-view center point");
     return moveInTicks(target, xOffset, yOffset);
   }
 
@@ -422,10 +355,6 @@ public class Actions {
    * boundaries.
    */
   public Actions moveByOffset(int xOffset, int yOffset) {
-    if (isBuildingActions()) {
-      action.addAction(new MoveToOffsetAction(jsonMouse, null, xOffset, yOffset));
-    }
-
     return tick(
         getActivePointer().createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
   }
@@ -438,9 +367,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions contextClick(WebElement target) {
-    if (isBuildingActions()) {
-      action.addAction(new ContextClickAction(jsonMouse, (Locatable) target));
-    }
     return moveInTicks(target, 0, 0).clickInTicks(RIGHT);
   }
 
@@ -449,10 +375,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions contextClick() {
-    if (isBuildingActions()) {
-      action.addAction(new ContextClickAction(jsonMouse, null));
-    }
-
     return clickInTicks(RIGHT);
   }
 
@@ -465,12 +387,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions dragAndDrop(WebElement source, WebElement target) {
-    if (isBuildingActions()) {
-      action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) source));
-      action.addAction(new MoveMouseAction(jsonMouse, (Locatable) target));
-      action.addAction(new ButtonReleaseAction(jsonMouse, (Locatable) target));
-    }
-
     return moveInTicks(source, 0, 0)
         .tick(getActivePointer().createPointerDown(LEFT.asArg()))
         .moveInTicks(target, 0, 0)
@@ -487,12 +403,6 @@ public class Actions {
    * @return A self reference.
    */
   public Actions dragAndDropBy(WebElement source, int xOffset, int yOffset) {
-    if (isBuildingActions()) {
-      action.addAction(new ClickAndHoldAction(jsonMouse, (Locatable) source));
-      action.addAction(new MoveToOffsetAction(jsonMouse, null, xOffset, yOffset));
-      action.addAction(new ButtonReleaseAction(jsonMouse, null));
-    }
-
     return moveInTicks(source, 0, 0)
         .tick(getActivePointer().createPointerDown(LEFT.asArg()))
         .tick(getActivePointer().createPointerMove(Duration.ofMillis(250), Origin.pointer(), xOffset, yOffset))
@@ -506,19 +416,11 @@ public class Actions {
    * @return A self reference.
    */
   public Actions pause(long pause) {
-    if (isBuildingActions()) {
-      action.addAction(new PauseAction(pause));
-    }
-
     return tick(new Pause(getActivePointer(), Duration.ofMillis(pause)));
   }
 
   public Actions pause(Duration duration) {
     Require.nonNegative("Duration of pause", duration);
-    if (isBuildingActions()) {
-      action.addAction(new PauseAction(duration.toMillis()));
-    }
-
     return tick(new Pause(getActivePointer(), duration));
   }
 
@@ -545,23 +447,6 @@ public class Actions {
     unseen.removeAll(seenSources);
     for (InputSource source : unseen) {
       getSequence(source).addAction(new Pause(source, Duration.ZERO));
-    }
-
-    return this;
-  }
-
-  public Actions tick(Action action) {
-    if (!(action instanceof IsInteraction)) {
-      throw new IllegalStateException("Expected action to implement IsInteraction");
-    }
-
-    for (Interaction interaction :
-      ((IsInteraction) action).asInteractions(getActivePointer(), getActiveKeyboard())) {
-      tick(interaction);
-    }
-
-    if (isBuildingActions()) {
-      this.action.addAction(action);
     }
 
     return this;
@@ -639,8 +524,7 @@ public class Actions {
    * @return the composite action
    */
   public Action build() {
-    Action toReturn = new BuiltAction(driver, new LinkedHashMap<>(sequences), action);
-    action = new CompositeAction();
+    Action toReturn = new BuiltAction(driver, new LinkedHashMap<>(sequences));
     sequences.clear();
     return toReturn;
   }
@@ -669,35 +553,18 @@ public class Actions {
     return sequence;
   }
 
-  private boolean isBuildingActions() {
-    return jsonMouse != null || jsonKeyboard != null;
-  }
-
   private static class BuiltAction implements Action {
     private final WebDriver driver;
     private final Map<InputSource, Sequence> sequences;
-    private final Action fallBack;
 
-    private BuiltAction(WebDriver driver, Map<InputSource, Sequence> sequences, Action fallBack) {
+    private BuiltAction(WebDriver driver, Map<InputSource, Sequence> sequences) {
       this.driver = driver;
       this.sequences = sequences;
-      this.fallBack = fallBack;
     }
 
     @Override
     public void perform() {
-      if (driver == null) {
-        // One of the deprecated constructors was used. Fall back to the old way for now.
-        fallBack.perform();
-        return;
-      }
-
-      try {
-        ((Interactive) driver).perform(sequences.values());
-      } catch (ClassCastException | UnsupportedCommandException e) {
-        // Fall back to the old way of doing things. Old Skool #ftw
-        fallBack.perform();
-      }
+      ((Interactive) driver).perform(sequences.values());
     }
   }
 }

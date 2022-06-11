@@ -16,8 +16,10 @@
 # under the License.
 
 """The WebDriver implementation."""
-
+import contextlib
 import copy
+import types
+import typing
 from importlib import import_module
 
 import pkgutil
@@ -28,7 +30,7 @@ from typing import Dict, List, Optional, Union
 import warnings
 
 from abc import ABCMeta
-from base64 import b64decode
+from base64 import b64decode, urlsafe_b64encode
 from contextlib import asynccontextmanager, contextmanager
 
 from .bidi_connection import BidiConnection
@@ -281,7 +283,10 @@ class WebDriver(BaseWebDriver):
     def __enter__(self):
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self,
+                 exc_type: typing.Optional[typing.Type[BaseException]],
+                 exc: typing.Optional[BaseException],
+                 traceback: typing.Optional[types.TracebackType]):
         self.quit()
 
     @contextmanager
@@ -314,7 +319,7 @@ class WebDriver(BaseWebDriver):
                 self.file_detector = last_detector
 
     @property
-    def mobile(self):
+    def mobile(self) -> Mobile:
         return self._mobile
 
     @property
@@ -450,413 +455,17 @@ class WebDriver(BaseWebDriver):
 
                 title = driver.title
         """
-        resp = self.execute(Command.GET_TITLE)
-        return resp['value'] if resp['value'] else ""
-
-    def find_element_by_id(self, id_) -> WebElement:
-        """Finds an element by id.
-
-        :Args:
-         - id\\_ - The id of the element to be found.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = driver.find_element_by_id('foo')
-        """
-        warnings.warn(
-            "find_element_by_* commands are deprecated. Please use find_element() instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_element(by=By.ID, value=id_)
-
-    def find_elements_by_id(self, id_) -> List[WebElement]:
-        """
-        Finds multiple elements by id.
-
-        :Args:
-         - id\\_ - The id of the elements to be found.
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = driver.find_elements_by_id('foo')
-        """
-        warnings.warn(
-            "find_elements_by_id is deprecated. Please use find_elements(by=By.ID, value=id_) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_elements(by=By.ID, value=id_)
-
-    def find_element_by_xpath(self, xpath) -> WebElement:
-        """
-        Finds an element by xpath.
-
-        :Args:
-         - xpath - The xpath locator of the element to find.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = driver.find_element_by_xpath('//div/td[1]')
-        """
-        warnings.warn(
-            "find_element_by_xpath is deprecated. Please use find_element(by=By.XPATH, value=xpath) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_element(by=By.XPATH, value=xpath)
-
-    def find_elements_by_xpath(self, xpath) -> List[WebElement]:
-        """
-        Finds multiple elements by xpath.
-
-        :Args:
-         - xpath - The xpath locator of the elements to be found.
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = driver.find_elements_by_xpath("//div[contains(@class, 'foo')]")
-        """
-        warnings.warn(
-            "find_elements_by_xpath is deprecated. Please use find_elements(by=By.XPATH, value=xpath) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_elements(by=By.XPATH, value=xpath)
-
-    def find_element_by_link_text(self, link_text) -> WebElement:
-        """
-        Finds an element by link text.
-
-        :Args:
-         - link_text: The text of the element to be found.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = driver.find_element_by_link_text('Sign In')
-        """
-        warnings.warn(
-            "find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_element(by=By.LINK_TEXT, value=link_text)
-
-    def find_elements_by_link_text(self, text) -> List[WebElement]:
-        """
-        Finds elements by link text.
-
-        :Args:
-         - link_text: The text of the elements to be found.
-
-        :Returns:
-         - list of webelement - a list with elements if any was found.  an
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = driver.find_elements_by_link_text('Sign In')
-        """
-        warnings.warn(
-            "find_elements_by_link_text is deprecated. Please use find_elements(by=By.LINK_TEXT, value=text) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_elements(by=By.LINK_TEXT, value=text)
-
-    def find_element_by_partial_link_text(self, link_text) -> WebElement:
-        """
-        Finds an element by a partial match of its link text.
-
-        :Args:
-         - link_text: The text of the element to partially match on.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = driver.find_element_by_partial_link_text('Sign')
-        """
-        warnings.warn(
-            "find_element_by_partial_link_text is deprecated. Please use find_element(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_elements_by_partial_link_text(self, link_text) -> List[WebElement]:
-        """
-        Finds elements by a partial match of their link text.
-
-        :Args:
-         - link_text: The text of the element to partial match on.
-
-        :Returns:
-         - list of webelement - a list with elements if any was found.  an
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = driver.find_elements_by_partial_link_text('Sign')
-        """
-        warnings.warn(
-            "find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_element_by_name(self, name) -> WebElement:
-        """
-        Finds an element by name.
-
-        :Args:
-         - name: The name of the element to find.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = driver.find_element_by_name('foo')
-        """
-        warnings.warn(
-            "find_element_by_name is deprecated. Please use find_element(by=By.NAME, value=name) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_element(by=By.NAME, value=name)
-
-    def find_elements_by_name(self, name) -> List[WebElement]:
-        """
-        Finds elements by name.
-
-        :Args:
-         - name: The name of the elements to find.
-
-        :Returns:
-         - list of webelement - a list with elements if any was found.  an
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = driver.find_elements_by_name('foo')
-        """
-        warnings.warn(
-            "find_elements_by_name is deprecated. Please use find_elements(by=By.NAME, value=name)=By.NAME, value=name) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_elements(by=By.NAME, value=name)
-
-    def find_element_by_tag_name(self, name) -> WebElement:
-        """
-        Finds an element by tag name.
-
-        :Args:
-         - name - name of html tag (eg: h1, a, span)
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = driver.find_element_by_tag_name('h1')
-        """
-        warnings.warn(
-            "find_element_by_tag_name is deprecated. Please use find_element(by=By.TAG_NAME, value=name) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_element(by=By.TAG_NAME, value=name)
-
-    def find_elements_by_tag_name(self, name) -> List[WebElement]:
-        """
-        Finds elements by tag name.
-
-        :Args:
-         - name - name of html tag (eg: h1, a, span)
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = driver.find_elements_by_tag_name('h1')
-        """
-        warnings.warn(
-            "find_elements_by_tag_name is deprecated. Please use find_elements(by=By.TAG_NAME, value=name) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_elements(by=By.TAG_NAME, value=name)
-
-    def find_element_by_class_name(self, name) -> WebElement:
-        """
-        Finds an element by class name.
-
-        :Args:
-         - name: The class name of the element to find.
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = driver.find_element_by_class_name('foo')
-        """
-        warnings.warn(
-            "find_element_by_class_name is deprecated. Please use find_element(by=By.CLASS_NAME, value=name) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_element(by=By.CLASS_NAME, value=name)
-
-    def find_elements_by_class_name(self, name) -> List[WebElement]:
-        """
-        Finds elements by class name.
-
-        :Args:
-         - name: The class name of the elements to find.
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = driver.find_elements_by_class_name('foo')
-        """
-        warnings.warn(
-            "find_elements_by_class_name is deprecated. Please use find_elements(by=By.CLASS_NAME, value=name) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_elements(by=By.CLASS_NAME, value=name)
-
-    def find_element_by_css_selector(self, css_selector) -> WebElement:
-        """
-        Finds an element by css selector.
-
-        :Args:
-         - css_selector - CSS selector string, ex: 'a.nav#home'
-
-        :Returns:
-         - WebElement - the element if it was found
-
-        :Raises:
-         - NoSuchElementException - if the element wasn't found
-
-        :Usage:
-            ::
-
-                element = driver.find_element_by_css_selector('#foo')
-        """
-        warnings.warn(
-            "find_element_by_css_selector is deprecated. Please use find_element(by=By.CSS_SELECTOR, value=css_selector) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
-
-    def find_elements_by_css_selector(self, css_selector) -> List[WebElement]:
-        """
-        Finds elements by css selector.
-
-        :Args:
-         - css_selector - CSS selector string, ex: 'a.nav#home'
-
-        :Returns:
-         - list of WebElement - a list with elements if any was found.  An
-           empty list if not
-
-        :Usage:
-            ::
-
-                elements = driver.find_elements_by_css_selector('.foo')
-        """
-        warnings.warn(
-            "find_elements_by_css_selector is deprecated. Please use find_elements(by=By.CSS_SELECTOR, value=css_selector) instead",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
+        return self.execute(Command.GET_TITLE).get("value", "")
 
     def pin_script(self, script, script_key=None) -> ScriptKey:
-        """
-
-        """
-        if not script_key:
-            _script_key = ScriptKey()
-        else:
-            _script_key = ScriptKey(script_key)
+        _script_key = ScriptKey(script_key)
         self.pinned_scripts[_script_key.id] = script
         return _script_key
 
     def unpin(self, script_key) -> None:
-        """
-
-        """
         self.pinned_scripts.pop(script_key.id)
 
     def get_pinned_scripts(self) -> List[str]:
-        """
-
-        """
         return list(self.pinned_scripts.keys())
 
     def execute_script(self, script, *args):
@@ -985,9 +594,8 @@ class WebDriver(BaseWebDriver):
         """
         Maximizes the current window that webdriver is using
         """
-        params = None
         command = Command.W3C_MAXIMIZE_WINDOW
-        self.execute(command, params)
+        self.execute(command, None)
 
     def fullscreen_window(self) -> None:
         """
@@ -1078,7 +686,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_ALL_COOKIES)['value']
 
-    def get_cookie(self, name) -> dict:
+    def get_cookie(self, name) -> typing.Optional[typing.Dict]:
         """
         Get a single cookie by name. Returns the cookie if found, None if not.
 
@@ -1087,10 +695,8 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_cookie('my_cookie')
         """
-        try:
-            return self.execute(Command.GET_COOKIE, {'name': name})['value']
-        except NoSuchCookieException:
-            return None
+        with contextlib.suppress(NoSuchCookieException):
+            return self.execute(Command.GET_COOKIE, {"name": name})['value']
 
     def delete_cookie(self, name) -> None:
         """
@@ -1369,7 +975,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.SCREENSHOT)['value']
 
-    def set_window_size(self, width, height, windowHandle='current') -> dict:
+    def set_window_size(self, width, height, windowHandle: str = 'current') -> None:
         """
         Sets the width and height of the current window. (window.resizeTo)
 
@@ -1386,7 +992,7 @@ class WebDriver(BaseWebDriver):
             warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
         self.set_window_rect(width=int(width), height=int(height))
 
-    def get_window_size(self, windowHandle='current') -> dict:
+    def get_window_size(self, windowHandle: str = 'current') -> dict:
         """
         Gets the width and height of the current window.
 
@@ -1405,7 +1011,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ('width', 'height')}
 
-    def set_window_position(self, x, y, windowHandle='current') -> dict:
+    def set_window_position(self, x, y, windowHandle: str = 'current') -> dict:
         """
         Sets the x,y position of the current window. (window.moveTo)
 
@@ -1473,7 +1079,7 @@ class WebDriver(BaseWebDriver):
                                                       "height": height})['value']
 
     @property
-    def file_detector(self):
+    def file_detector(self) -> FileDetector:
         return self._file_detector
 
     @file_detector.setter
@@ -1612,21 +1218,21 @@ class WebDriver(BaseWebDriver):
         return version, websocket_url
 
     # Virtual Authenticator Methods
-    def add_virtual_authenticator(self, options: VirtualAuthenticatorOptions):
+    def add_virtual_authenticator(self, options: VirtualAuthenticatorOptions) -> None:
         """
         Adds a virtual authenticator with the given options.
         """
         self._authenticator_id = self.execute(Command.ADD_VIRTUAL_AUTHENTICATOR, options.to_dict())['value']
 
     @property
-    def virtual_authenticator_id(self):
+    def virtual_authenticator_id(self) -> str:
         """
         Returns the id of the virtual authenticator.
         """
         return self._authenticator_id
 
     @required_virtual_authenticator
-    def remove_virtual_authenticator(self):
+    def remove_virtual_authenticator(self) -> None:
         """
         Removes a previously added virtual authenticator. The authenticator is no
         longer valid after removal, so no methods may be called.
@@ -1635,7 +1241,7 @@ class WebDriver(BaseWebDriver):
         self._authenticator_id = None
 
     @required_virtual_authenticator
-    def add_credential(self, credential: Credential):
+    def add_credential(self, credential: Credential) -> None:
         """
         Injects a credential into the authenticator.
         """
@@ -1645,33 +1251,36 @@ class WebDriver(BaseWebDriver):
         )
 
     @required_virtual_authenticator
-    def get_credentials(self):
+    def get_credentials(self) -> List[Credential]:
         """
         Returns the list of credentials owned by the authenticator.
         """
         credential_data = self.execute(Command.GET_CREDENTIALS, {'authenticatorId': self._authenticator_id})
-        print("Get_Credential from authenticator", credential_data)
-        return credential_data['value']
+        return [Credential.from_dict(credential) for credential in credential_data['value']]
 
     @required_virtual_authenticator
-    def remove_credential(self, credential_id: str):
+    def remove_credential(self, credential_id: Union[str, bytearray]) -> None:
         """
         Removes a credential from the authenticator.
         """
+        # Check if the credential is bytearray converted to b64 string
+        if type(credential_id) is bytearray:
+            credential_id = urlsafe_b64encode(credential_id).decode()
+
         self.execute(
             Command.REMOVE_CREDENTIAL,
             {'credentialId': credential_id, 'authenticatorId': self._authenticator_id}
         )
 
     @required_virtual_authenticator
-    def remove_all_credentials(self):
+    def remove_all_credentials(self) -> None:
         """
         Removes all credentials from the authenticator.
         """
         self.execute(Command.REMOVE_ALL_CREDENTIALS, {'authenticatorId': self._authenticator_id})
 
     @required_virtual_authenticator
-    def set_user_verified(self, verified: bool):
+    def set_user_verified(self, verified: bool) -> None:
         """
         Sets whether the authenticator will simulate success or fail on user verification.
         verified: True if the authenticator will pass user verification, False otherwise.

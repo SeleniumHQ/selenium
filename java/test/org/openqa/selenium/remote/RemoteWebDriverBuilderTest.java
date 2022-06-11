@@ -370,7 +370,7 @@ public class RemoteWebDriverBuilderTest {
           "capabilities", new ImmutableCapabilities("firefox", "caps")))));
 
     Augmenter augmenter = new Augmenter().addDriverAugmentation("firefox",
-                                                                AugmenterTest.HasMagicNumbers.class,
+                                                                HasMagicNumbers.class,
                                                                 (c, exe) -> () -> 1);
     WebDriver driver = RemoteWebDriver.builder()
       .oneOf(new FirefoxOptions())
@@ -379,9 +379,9 @@ public class RemoteWebDriverBuilderTest {
       .connectingWith(config -> req -> response)
       .build();
 
-    int number = ((AugmenterTest.HasMagicNumbers)driver).getMagicNumber();
+    int number = ((HasMagicNumbers)driver).getMagicNumber();
 
-    assertThat(driver).isInstanceOf(AugmenterTest.HasMagicNumbers.class);
+    assertThat(driver).isInstanceOf(HasMagicNumbers.class);
     assertThat(number).isEqualTo(1);
   }
 
@@ -404,7 +404,7 @@ public class RemoteWebDriverBuilderTest {
           "capabilities", new ImmutableCapabilities("firefox", "caps")))));
 
     Augmenter augmenter = new Augmenter().addDriverAugmentation("firefox",
-                                                                AugmenterTest.HasMagicNumbers.class,
+                                                                HasMagicNumbers.class,
                                                                 (c, exe) -> () -> 1);
     WebDriver driver = RemoteWebDriver.builder()
       .oneOf(new FirefoxOptions())
@@ -413,9 +413,9 @@ public class RemoteWebDriverBuilderTest {
       .connectingWith(config -> req -> response)
       .build();
 
-    int number = ((AugmenterTest.HasMagicNumbers) driver).getMagicNumber();
+    int number = ((HasMagicNumbers) driver).getMagicNumber();
 
-    assertThat(driver).isInstanceOf(AugmenterTest.HasMagicNumbers.class);
+    assertThat(driver).isInstanceOf(HasMagicNumbers.class);
     assertThat(number).isEqualTo(1);
   }
 

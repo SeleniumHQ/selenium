@@ -77,7 +77,7 @@ Metrics/MethodLength:
 
 Metrics/ModuleLength:
   CountComments: false
-  Max: 101
+  Max: 110
   Exclude:
     - 'lib/selenium/webdriver/common/platform.rb'
     - 'spec/**/*'

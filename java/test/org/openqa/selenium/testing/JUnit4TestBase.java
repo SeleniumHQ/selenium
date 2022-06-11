@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.testing;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -28,6 +29,9 @@ import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 import static org.assertj.core.api.Assumptions.assumeThat;
 
@@ -43,6 +47,7 @@ public abstract class JUnit4TestBase {
   protected WebDriver driver;
   protected Wait<WebDriver> wait;
   protected Wait<WebDriver> shortWait;
+  protected WebDriver localDriver;
 
   @BeforeClass
   public static void shouldTestBeRunAtAll() {
@@ -61,6 +66,13 @@ public abstract class JUnit4TestBase {
     shortWait = seleniumTestRule::shortWaitUntil;
   }
 
+  @After
+  public void quitLocalDriver() {
+    if (localDriver != null) {
+      localDriver.quit();
+    }
+  }
+
   public void createNewDriver(Capabilities capabilities) {
     driver = seleniumTestRule.createNewDriver(capabilities);
     wait = seleniumTestRule::waitUntil;
@@ -69,5 +81,9 @@ public abstract class JUnit4TestBase {
 
   public void removeDriver() {
     seleniumTestRule.removeDriver();
+  }
+
+  protected WebDriverWait wait(WebDriver driver) {
+    return new WebDriverWait(driver, Duration.ofSeconds(10));
   }
 }

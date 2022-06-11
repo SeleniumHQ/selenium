@@ -53,7 +53,7 @@ class SwitchTo:
                 alert = driver.switch_to.alert
         """
         alert = Alert(self._driver)
-        alert.text
+        _ = alert.text
         return alert
 
     def default_content(self) -> None:
@@ -141,7 +141,7 @@ class SwitchTo:
         try:
             # Try using it as a handle first.
             send_handle(window_name)
-        except NoSuchWindowException as e:
+        except NoSuchWindowException:
             # Check every window to try to find the given window name.
             original_handle = self._driver.current_window_handle
             handles = self._driver.window_handles
@@ -151,4 +151,4 @@ class SwitchTo:
                 if window_name == current_name:
                     return
             send_handle(original_handle)
-            raise e
+            raise

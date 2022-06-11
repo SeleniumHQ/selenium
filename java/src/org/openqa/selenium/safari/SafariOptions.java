@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.safari;
 
-import static org.openqa.selenium.remote.Browser.SAFARI;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -27,6 +24,10 @@ import org.openqa.selenium.remote.AbstractDriverOptions;
 
 import java.util.Collections;
 import java.util.Set;
+
+import static org.openqa.selenium.remote.Browser.SAFARI;
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 /**
  * Class to manage options specific to {@link SafariDriver}.
@@ -46,8 +47,6 @@ import java.util.Set;
  * </code></pre>
  */
 public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
-
-  static final String SAFARI_TECH_PREVIEW = "Safari Technology Preview";
 
   public SafariOptions() {
     setUseTechnologyPreview(false);
@@ -121,7 +120,7 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
   }
 
   public boolean getUseTechnologyPreview() {
-    return SAFARI_TECH_PREVIEW.equals(getBrowserName());
+    return SAFARI_TECH_PREVIEW.browserName().equals(getBrowserName());
   }
 
   /**
@@ -133,7 +132,9 @@ public class SafariOptions extends AbstractDriverOptions<SafariOptions> {
    */
   public SafariOptions setUseTechnologyPreview(boolean useTechnologyPreview) {
     // Use an object here, rather than a boolean to avoid a stack overflow
-    super.setCapability(BROWSER_NAME, useTechnologyPreview ? SAFARI_TECH_PREVIEW : "safari");
+    super.setCapability(BROWSER_NAME,
+                        useTechnologyPreview ?
+                        SAFARI_TECH_PREVIEW.browserName() : SAFARI.browserName());
     return this;
   }
 

@@ -17,16 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
-import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
@@ -39,6 +29,16 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.testing.UnitTests;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
+import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
 
 @Category(UnitTests.class)
 public class RemoteWebElementTest {
@@ -298,7 +298,7 @@ public class RemoteWebElementTest {
     assertThat(fixture.element.getLocation()).isEqualTo(new Point(10, 20));
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_LOCATION,
+      new CommandPayload(DriverCommand.GET_ELEMENT_RECT,
                          ImmutableMap.of("id", fixture.element.getId())));
   }
 
@@ -311,7 +311,7 @@ public class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test

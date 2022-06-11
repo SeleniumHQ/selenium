@@ -290,9 +290,8 @@ Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 module.exports = {
   Driver: Driver,
   Options,
-  ServiceBuilder ,
+  ServiceBuilder,
   getDefaultService,
   setDefaultService,
-  locateSynchronously
+  locateSynchronously,
 }
-

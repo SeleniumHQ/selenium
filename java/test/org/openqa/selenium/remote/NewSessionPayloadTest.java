@@ -17,19 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.EMPTY_MAP;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
@@ -45,6 +32,19 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 @Category(UnitTests.class)
 public class NewSessionPayloadTest {
@@ -165,12 +165,11 @@ public class NewSessionPayloadTest {
   @Test
   public void shouldCorrectlyExtractPlatformNameFromOssCapabilities() {
     List<Capabilities> capabilities = create(singletonMap(
-        "desiredCapabilities", singletonMap(
-            "platform", "linux")));
+      "desiredCapabilities", singletonMap(
+        "platformName", "linux")));
 
     assertEquals(Platform.LINUX, capabilities.get(0).getPlatformName());
-    assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platform"));
-    assertNull(capabilities.get(0).getCapability("platformName"));
+    assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platformName"));
   }
 
   @Test
@@ -181,8 +180,6 @@ public class NewSessionPayloadTest {
                 "platformName", "linux"))));
 
     assertEquals(Platform.LINUX, capabilities.get(0).getPlatformName());
-    assertNull(capabilities.get(0).getCapability("platform"));
-    assertEquals("linux", capabilities.get(0).getCapability("platformName"));
   }
 
   @Test

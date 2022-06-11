@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PersistentCapabilities implements Capabilities {
+
   private final ImmutableCapabilities caps;
   private final ImmutableCapabilities overrides;
   private final int hashCode;
