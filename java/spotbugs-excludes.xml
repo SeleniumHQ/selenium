@@ -1,16 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="https://github.com/spotbugs/filter/3.0.0"
-  xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://github.com/spotbugs/filter/3.0.0"
+    xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
 
   <Match>
-    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC,EI_EXPOSE_REP,EI_EXPOSE_REP2,EI_EXPOSE_BUF2"/>
   </Match>
 
   <Match>
-    <Class name="com.thoughtworks.selenium.InternalSelenseTestBase"/>
-    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+    <Bug pattern="URF_UNREAD_FIELD,URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD,SS_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Bug pattern="UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS"/>
+  </Match>
+
+  <Match>
+    <Bug code="RCN,MS,DCN,UwF"/>
+  </Match>
+
+  <Match>
+    <Class name="~.*\.*Test"/>
+  </Match>
+
+  <Match>
+    <Package name="^com.thoughtworks.selenium\S*"/>
   </Match>
 
   <Match>
@@ -29,7 +44,7 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.docker.v1_40.PullImage"/>
+    <Class name="org.openqa.selenium.docker.v1_41.PullImage"/>
     <Bug pattern="DE_MIGHT_IGNORE"/>
   </Match>
 
@@ -71,11 +86,6 @@
   <Match>
     <Class name="org.openqa.selenium.grid.commands.StandaloneFlags"/>
     <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
-  </Match>
-
-  <Match>
-    <Class name="~org.openqa.selenium.grid.data..*SessionResponse"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
   </Match>
 
   <Match>
@@ -140,16 +150,6 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.remote.http.BinaryMessage"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="~org.openqa.selenium.remote.internal.HttpClientTestBase.*"/>
-    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.safari.SafariDriverService"/>
     <Bug pattern="DMI_HARDCODED_ABSOLUTE_FILENAME"/>
   </Match>
@@ -157,6 +157,16 @@
   <Match>
     <Class name="org.openqa.selenium.testing.Pages"/>
     <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.remote.WebDriverFixture"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.openqa.selenium.remote.internal.HttpClientTestBase"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
   </Match>
 
   <Match>
