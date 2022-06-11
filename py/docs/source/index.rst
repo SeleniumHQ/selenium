@@ -144,3 +144,14 @@ View source code online:
 +-----------+------------------------------------------------------+
 | official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
 +-----------+------------------------------------------------------+
+
+Contributing
+=============
+
+ - Create a branch for your work
+ - Ensure `tox` is installed (using a `virtualenv` is recommended)
+ - `python3.7 -m venv .venv && . .venv/bin/activate && pip install tox`
+ - After making changes, before committing execute `tox -e linting`
+ - If tox exits `0`, commit and push otherwise fix the newly introduced breakages.
+ - `flake8` requires manual fixes
+ - `black` will often rewrite the breakages automatically, however the files are unstaged and should be added again.

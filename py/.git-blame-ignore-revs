@@ -1,0 +1,4 @@
+# Important: When adding to this file, the full 40 character commit hash is required.
+# Used to avoid polluting the git blame information for sweeping reformatting commits
+# git blame important.py --ignore-revs-file .git-blame-ignore-revs
+# For automatic inclusion: git config blame.ignoreRevsFile .git-blame-ignore-revs

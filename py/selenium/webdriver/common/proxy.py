@@ -38,7 +38,6 @@ class ProxyType:
        'ff_value' is value of Firefox profile preference,
        'string' is id of proxy type.
     """
-
     DIRECT = ProxyTypeFactory.make(0, 'DIRECT')  # Direct connection, no proxy (default on Windows).
     MANUAL = ProxyTypeFactory.make(1, 'MANUAL')  # Manual proxy settings (e.g., for httpProxy).
     PAC = ProxyTypeFactory.make(2, 'PAC')  # Proxy autoconfiguration from URL.
