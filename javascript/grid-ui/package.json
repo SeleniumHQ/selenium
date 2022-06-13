@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@apollo/client": "^3.6.6",
-    "@emotion/react": "^11.9.0",
-    "@emotion/styled": "^11.8.1",
+    "@apollo/client": "^3.6.7",
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
     "@mui/icons-material": "^5.8.3",
     "@mui/material": "^5.8.3",
     "@novnc/novnc": "^1.2.0",
