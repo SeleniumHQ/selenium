@@ -258,20 +258,8 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   protected void startSession(Capabilities capabilities) {
-    // Throwing warnings for non-W3C WebDriver compliant capabilities
-    List<String> invalid = capabilities.asMap().keySet()
-      .stream()
-      .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
-      .filter(key -> !IE_CAPABILITY_NAMES.contains(key))
-      .collect(Collectors.toList());
-
-    if (!invalid.isEmpty()) {
-      logger.log(Level.WARNING,
-                 () -> String.format("Support for Legacy Capabilities is deprecated; " +
-                                     "You are sending the following invalid capabilities: %s; " +
-                                     "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
-                                     invalid));
-    }
+    checkNonW3CCapabilities(capabilities);
+    checkChromeW3CFalse(capabilities);
 
     Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
@@ -710,6 +698,45 @@ public class RemoteWebDriver implements WebDriver,
         logger.log(level, text);
         break;
     }
+  }
+
+  private void checkNonW3CCapabilities(Capabilities capabilities) {
+    // Throwing warnings for non-W3C WebDriver compliant capabilities
+    List<String> invalid = capabilities.asMap().keySet()
+      .stream()
+      .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
+      .filter(key -> !IE_CAPABILITY_NAMES.contains(key))
+      .collect(Collectors.toList());
+
+    if (!invalid.isEmpty()) {
+      logger.log(Level.WARNING,
+                 () -> String.format("Support for Legacy Capabilities is deprecated; " +
+                                     "You are sending the following invalid capabilities: %s; " +
+                                     "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+                                     invalid));
+    }
+  }
+
+  private void checkChromeW3CFalse(Capabilities capabilities) {
+    // Throwing warnings when the user sets `w3c: false` inside `goog:chromeOptions`
+    if ("chrome".equalsIgnoreCase(capabilities.getBrowserName()) &&
+        capabilities.asMap().containsKey("goog:chromeOptions")) {
+      Object capability = capabilities.getCapability("goog:chromeOptions");
+      boolean w3c = true;
+      if ((capability instanceof Map)) {
+        Object rawW3C = ((Map<?, ?>) capability).get("w3c");
+        w3c = Boolean.parseBoolean(String.valueOf(rawW3C));
+      }
+      if (!w3c) {
+        logger.log(
+          Level.WARNING,
+          "Setting 'w3c: true' inside 'goog:chromeOptions' will not be accepted from " +
+          "Selenium 4.4; " +
+          "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/"
+        );
+      }
+    }
+
   }
 
   public FileDetector getFileDetector() {
