@@ -69,7 +69,6 @@ class ActionChains:
          - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in PointerInput
         """
         self._driver = driver
-        self._actions = []
         self.w3c_actions = ActionBuilder(driver, duration=duration)
 
     def perform(self):
@@ -85,7 +84,6 @@ class ActionChains:
         self.w3c_actions.clear_actions()
         for device in self.w3c_actions.devices:
             device.clear_actions()
-        self._actions = []
 
     def click(self, on_element=None):
         """

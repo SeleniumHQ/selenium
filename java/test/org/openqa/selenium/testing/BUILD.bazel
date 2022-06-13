@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_library", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_library", "java_test_suite")
 
 java_library(
     name = "testing",
@@ -65,7 +65,7 @@ java_library(
         artifact("org.eclipse.mylyn.github:org.eclipse.egit.github.core"),
         artifact("org.assertj:assertj-core"),
         artifact("org.seleniumhq.selenium:htmlunit-driver"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )
 
 java_test_suite(
@@ -83,5 +83,5 @@ java_test_suite(
         "//java/test/org/openqa/selenium/testing/drivers:browser",
         artifact("junit:junit"),
         artifact("org.mockito:mockito-core"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )

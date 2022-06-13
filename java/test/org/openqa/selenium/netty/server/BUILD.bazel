@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_test_suite")
 
 SMALL_TEST_SRCS = [
     "RequestConverterTest.java",
@@ -15,7 +15,7 @@ java_test_suite(
         artifact("io.netty:netty-transport"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )
 
 java_test_suite(
@@ -35,5 +35,5 @@ java_test_suite(
         artifact("com.google.guava:guava"),
         artifact("junit:junit"),
         artifact("org.assertj:assertj-core"),
-    ],
+    ] + JUNIT5_VINTAGE_DEPS,
 )

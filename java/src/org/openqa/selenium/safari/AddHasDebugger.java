@@ -57,7 +57,7 @@ public class AddHasDebugger implements AugmenterProvider<HasDebugger>, Additiona
     return new HasDebugger() {
       @Override
       public void attachDebugger() {
-        executeMethod.execute(ATTACH_DEBUGGER, ImmutableMap.of(ATTACH_DEBUGGER, null));
+        executeMethod.execute(ATTACH_DEBUGGER, null);
       }
     };
   }

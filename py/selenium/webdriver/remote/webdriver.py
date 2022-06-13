@@ -16,8 +16,10 @@
 # under the License.
 
 """The WebDriver implementation."""
-
+import contextlib
 import copy
+import types
+import typing
 from importlib import import_module
 
 import pkgutil
@@ -281,7 +283,10 @@ class WebDriver(BaseWebDriver):
     def __enter__(self):
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self,
+                 exc_type: typing.Optional[typing.Type[BaseException]],
+                 exc: typing.Optional[BaseException],
+                 traceback: typing.Optional[types.TracebackType]):
         self.quit()
 
     @contextmanager
@@ -314,7 +319,7 @@ class WebDriver(BaseWebDriver):
                 self.file_detector = last_detector
 
     @property
-    def mobile(self):
+    def mobile(self) -> Mobile:
         return self._mobile
 
     @property
@@ -450,30 +455,17 @@ class WebDriver(BaseWebDriver):
 
                 title = driver.title
         """
-        resp = self.execute(Command.GET_TITLE)
-        return resp['value'] if resp['value'] else ""
+        return self.execute(Command.GET_TITLE).get("value", "")
 
     def pin_script(self, script, script_key=None) -> ScriptKey:
-        """
-
-        """
-        if not script_key:
-            _script_key = ScriptKey()
-        else:
-            _script_key = ScriptKey(script_key)
+        _script_key = ScriptKey(script_key)
         self.pinned_scripts[_script_key.id] = script
         return _script_key
 
     def unpin(self, script_key) -> None:
-        """
-
-        """
         self.pinned_scripts.pop(script_key.id)
 
     def get_pinned_scripts(self) -> List[str]:
-        """
-
-        """
         return list(self.pinned_scripts.keys())
 
     def execute_script(self, script, *args):
@@ -602,9 +594,8 @@ class WebDriver(BaseWebDriver):
         """
         Maximizes the current window that webdriver is using
         """
-        params = None
         command = Command.W3C_MAXIMIZE_WINDOW
-        self.execute(command, params)
+        self.execute(command, None)
 
     def fullscreen_window(self) -> None:
         """
@@ -695,7 +686,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_ALL_COOKIES)['value']
 
-    def get_cookie(self, name) -> dict:
+    def get_cookie(self, name) -> typing.Optional[typing.Dict]:
         """
         Get a single cookie by name. Returns the cookie if found, None if not.
 
@@ -704,10 +695,8 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_cookie('my_cookie')
         """
-        try:
-            return self.execute(Command.GET_COOKIE, {'name': name})['value']
-        except NoSuchCookieException:
-            return None
+        with contextlib.suppress(NoSuchCookieException):
+            return self.execute(Command.GET_COOKIE, {"name": name})['value']
 
     def delete_cookie(self, name) -> None:
         """
@@ -986,7 +975,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.SCREENSHOT)['value']
 
-    def set_window_size(self, width, height, windowHandle='current') -> dict:
+    def set_window_size(self, width, height, windowHandle: str = 'current') -> None:
         """
         Sets the width and height of the current window. (window.resizeTo)
 
@@ -1003,7 +992,7 @@ class WebDriver(BaseWebDriver):
             warnings.warn("Only 'current' window is supported for W3C compatible browsers.")
         self.set_window_rect(width=int(width), height=int(height))
 
-    def get_window_size(self, windowHandle='current') -> dict:
+    def get_window_size(self, windowHandle: str = 'current') -> dict:
         """
         Gets the width and height of the current window.
 
@@ -1022,7 +1011,7 @@ class WebDriver(BaseWebDriver):
 
         return {k: size[k] for k in ('width', 'height')}
 
-    def set_window_position(self, x, y, windowHandle='current') -> dict:
+    def set_window_position(self, x, y, windowHandle: str = 'current') -> dict:
         """
         Sets the x,y position of the current window. (window.moveTo)
 
@@ -1090,7 +1079,7 @@ class WebDriver(BaseWebDriver):
                                                       "height": height})['value']
 
     @property
-    def file_detector(self):
+    def file_detector(self) -> FileDetector:
         return self._file_detector
 
     @file_detector.setter

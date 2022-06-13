@@ -19,6 +19,7 @@ package org.openqa.selenium.ie;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -41,19 +42,21 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HO
 public class InternetExplorerDriverTest extends JUnit4TestBase {
 
   @Test
+  @NoDriverBeforeTest
   public void builderGeneratesDefaultIEOptions() {
-    WebDriver driver = InternetExplorerDriver.builder().build();
-    driver.quit();
+    localDriver = InternetExplorerDriver.builder().build();
+    Capabilities capabilities = ((InternetExplorerDriver) localDriver).getCapabilities();
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
+    assertThat(capabilities.getCapability("browserName")).isEqualTo("internet explorer");
   }
 
   @Test
+  @NoDriverBeforeTest
   public void builderOverridesDefaultIEOptions() {
     InternetExplorerOptions options = new InternetExplorerOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
-    WebDriver driver = InternetExplorerDriver.builder().oneOf(options).build();
-    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
-
-    driver.quit();
+    localDriver = InternetExplorerDriver.builder().oneOf(options).build();
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
   }
 
   @Test
@@ -70,8 +73,8 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   public void canRestartTheIeDriverInATightLoop() {
     for (int i = 0; i < 5; i++) {
-      WebDriver driver = newIeDriver();
-      driver.quit();
+      WebDriver driverInLoop = newIeDriver();
+      driverInLoop.quit();
     }
   }
 

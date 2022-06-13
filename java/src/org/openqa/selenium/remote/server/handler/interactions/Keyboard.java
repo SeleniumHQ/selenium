@@ -15,7 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.interactions;
+package org.openqa.selenium.remote.server.handler.interactions;
+
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.KeyInput;
 
 /**
  * Interface representing basic, low-level keyboard operations.  It offers a set of low-level "do as
