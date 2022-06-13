@@ -725,7 +725,7 @@ public class RemoteWebDriver implements WebDriver,
       boolean w3c = true;
       if ((capability instanceof Map)) {
         Object rawW3C = ((Map<?, ?>) capability).get("w3c");
-        w3c = Boolean.parseBoolean(String.valueOf(rawW3C));
+        w3c = rawW3C == null || Boolean.parseBoolean(String.valueOf(rawW3C));
       }
       if (!w3c) {
         logger.log(
