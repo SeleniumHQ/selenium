@@ -18,6 +18,7 @@
 package org.openqa.selenium.ie;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.service.DriverService;
@@ -168,7 +169,7 @@ public class InternetExplorerDriverService extends DriverService {
     @Override
     protected File findDefaultExecutable() {
       return findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
-                            "https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
+                            "https://www.selenium.dev/documentation/ie_driver_server/",
                             "https://www.selenium.dev/downloads/");
     }
 
