@@ -1368,12 +1368,11 @@ class WebDriver {
       if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
         if (requestPausedParams.request.url == httpResponse.urlToIntercept) {
-          connection.execute('Fetch.continueRequest', {
+          connection.execute('Fetch.fulfillRequest', {
             requestId: requestPausedParams['requestId'],
-            url: httpResponse.urlToIntercept,
-            method: httpResponse.method,
-            headers: httpResponse.headers,
-            postData: httpResponse.body,
+            responseCode: 200,
+            responseHeaders: httpResponse.headers,
+            body: httpResponse.body,
           })
           callback()
         } else {
