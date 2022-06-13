@@ -6,7 +6,6 @@
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.0",
-    "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.0",
     "@types/node": "^14.14.7",
     "enzyme": "^3.11.0",
