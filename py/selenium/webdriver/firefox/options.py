@@ -36,7 +36,7 @@ class Options(ArgOptions):
     KEY = "moz:firefoxOptions"
 
     def __init__(self):
-        super(Options, self).__init__()
+        super().__init__()
         self._binary: FirefoxBinary = None
         self._preferences: dict = {}
         self._profile = None

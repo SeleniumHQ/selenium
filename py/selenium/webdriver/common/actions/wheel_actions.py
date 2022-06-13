@@ -23,7 +23,7 @@ class WheelActions(Interaction):
     def __init__(self, source: WheelInput = None):
         if not source:
             source = WheelInput("wheel")
-        super(WheelActions, self).__init__(source)
+        super().__init__(source)
 
     def pause(self, duration=0):
         self.source.create_pause(duration)
