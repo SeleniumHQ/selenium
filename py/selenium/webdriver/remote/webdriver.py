@@ -1171,7 +1171,6 @@ class WebDriver(BaseWebDriver):
         assert sys.version_info >= (3, 7)
         global cdp
         import_cdp()
-        ws_url = None
         if self.caps.get("se:cdp"):
             ws_url = self.caps.get("se:cdp")
             version = self.caps.get("se:cdpVersion").split(".")[0]
@@ -1181,9 +1180,7 @@ class WebDriver(BaseWebDriver):
         if not ws_url:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
-        cdp.import_devtools(version)
-
-        devtools = import_module("selenium.webdriver.common.devtools.v{}".format(version))
+        devtools = cdp.import_devtools(version)
         async with cdp.open_cdp(ws_url) as conn:
             targets = await conn.execute(devtools.target.get_targets())
             target_id = targets[0].target_id
