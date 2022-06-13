@@ -185,7 +185,7 @@ namespace OpenQA.Selenium
                 parameters.Add("args", new object[] { this.ToElementReference().ToDictionary() });
                 commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
 
-                return (bool)commandResponse.Value;
+                return bool.TryParse(commandResponse?.Value?.ToString(), out bool result) ? result : false;
             }
         }
 
