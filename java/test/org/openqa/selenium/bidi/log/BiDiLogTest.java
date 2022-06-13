@@ -17,19 +17,13 @@
 
 package org.openqa.selenium.bidi.log;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.environment.webserver.Page;
-import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
@@ -38,18 +32,18 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 public class BiDiLogTest {
 
+  String page;
   private AppServer server;
   private FirefoxDriver driver;
-  String page;
 
   @Before
   public void setUp() {
     FirefoxOptions options = new FirefoxOptions();
-
-    FirefoxBinary binary = new FirefoxBinary(FirefoxBinary.Channel.BETA);
-    options.setBinary(binary);
     options.setCapability("webSocketUrl", true);
 
     driver = new FirefoxDriver(options);
