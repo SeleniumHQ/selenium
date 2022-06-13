@@ -317,7 +317,7 @@ def _get_events(driver):
     # test_keys_wdspec.html), so this converts them back into unicode literals.
     for e in events:
         # example: turn "U+d83d" (6 chars) into u"\ud83d" (1 char)
-        if "key" in e and e["key"].startswith(u"U+"):
+        if "key" in e and e["key"].startswith("U+"):
             key = e["key"]
             hex_suffix = key[key.index("+") + 1:]
             e["key"] = chr(int(hex_suffix, 16))

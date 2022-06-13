@@ -127,10 +127,10 @@ def test_should_fire_find_event(driver, log, pages):
     class EventListener(AbstractEventListener):
 
         def before_find(self, by, value, driver):
-            log.write(("before_find by %s %s" % (by, value)).encode())
+            log.write((f"before_find by {by} {value}").encode())
 
         def after_find(self, by, value, driver):
-            log.write(("after_find by %s %s" % (by, value)).encode())
+            log.write((f"after_find by {by} {value}").encode())
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
     ef_driver.get(pages.url("simpleTest.html"))

@@ -228,10 +228,10 @@ class ErrorHandler:
                         line = self._value_or_default(frame, 'lineNumber', '')
                         file = self._value_or_default(frame, 'fileName', '<anonymous>')
                         if line:
-                            file = "%s:%s" % (file, line)
+                            file = f"{file}:{line}"
                         meth = self._value_or_default(frame, 'methodName', '<anonymous>')
                         if 'className' in frame:
-                            meth = "%s.%s" % (frame['className'], meth)
+                            meth = "{}.{}".format(frame['className'], meth)
                         msg = "    at %s (%s)"
                         msg = msg % (meth, file)
                         stacktrace.append(msg)
