@@ -169,7 +169,7 @@ class CdpConnectionClosed(WsConnectionClosed):
 
     def __repr__(self):
         ''' Return representation. '''
-        return '{}<{}>'.format(self.__class__.__name__, self.reason)
+        return f'{self.__class__.__name__}<{self.reason}>'
 
 
 class InternalError(Exception):
