@@ -31,10 +31,9 @@ def test_does_not_raise_exception_on_success(handler):
     assert handler.check_response({}) is None
 
 
-@pytest.mark.parametrize('code', ErrorCode.NO_SUCH_ELEMENT)
-def test_raises_exception_for_no_such_element(handler, code):
+def test_raises_exception_for_no_such_element(handler):
     with pytest.raises(exceptions.NoSuchElementException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.NO_SUCH_ELEMENT, 'value': 'foo'})
 
 
 @pytest.mark.parametrize('code', ErrorCode.NO_SUCH_FRAME)
@@ -145,7 +144,6 @@ def test_raises_exception_for_ime_not_available(handler, code):
         handler.check_response({'status': code, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.IME_ENGINE_ACTIVATION_FAILED)
 def test_raises_exception_for_ime_activation_failed(handler, code):
     with pytest.raises(exceptions.ImeActivationFailedException):
         handler.check_response({'status': code, 'value': 'foo'})
@@ -241,13 +239,12 @@ def test_raises_exception_for_method_not_allowed(handler, code):
         handler.check_response({'status': code, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('key', ['stackTrace', 'stacktrace'])
-def test_relays_exception_stacktrace(handler, key):
+def test_relays_exception_stacktrace(handler):
     import json
     stacktrace = {'lineNumber': 100, 'fileName': 'egg', 'methodName': 'ham', 'className': 'Spam'}
-    value = {key: [stacktrace],
+    value = {'stacktrace': [stacktrace],
              'message': 'very bad',
-             'error': ErrorCode.UNKNOWN_METHOD[0]}
+             'error': ErrorCode.UNKNOWN_METHOD}
     response = {'status': 400, 'value': json.dumps({'value': value})}
     with pytest.raises(exceptions.UnknownMethodException) as e:
         handler.check_response(response)
