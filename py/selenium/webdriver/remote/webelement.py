@@ -420,7 +420,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by, "value": value})['value']
 
-    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
+    def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
         """
         Find elements given a By strategy and locator.
 
