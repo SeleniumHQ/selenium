@@ -649,6 +649,16 @@ namespace OpenQA.Selenium
         [Obsolete("Command not defined by W3C WebDriver Specification. Use JavaScript execution to manage HTML5 storage and cache features.")]
         public static readonly string GetSessionStorageSize = "getSessionStorageSize";
 
+        // Virtual Authenticator API
+        // http://w3c.github.io/webauthn#sctn-automation
+        public static readonly string AddVirtualAuthenticator = "addVirtualAuthenticator";
+        public static readonly string RemoveVirtualAuthenticator = "removeVirtualAuthenticator";
+        public static readonly string AddCredential = "addCredential";
+        public static readonly string GetCredentials = "getCredentials";
+        public static readonly string RemoveCredential = "removeCredential";
+        public static readonly string RemoveAllCredentials = "removeAllCredentials";
+        public static readonly string SetUserVerified = "setUserVerified";
+
         public static readonly IList<string> KnownCommands = new List<string>()
         {
             Status,
@@ -714,7 +724,14 @@ namespace OpenQA.Selenium
             IsElementDisplayed,
             UploadFile,
             GetLog,
-            GetAvailableLogTypes
+            GetAvailableLogTypes,
+            AddVirtualAuthenticator,
+            RemoveVirtualAuthenticator,
+            AddCredential,
+            GetCredentials,
+            RemoveCredential,
+            RemoveAllCredentials,
+            SetUserVerified
         }.AsReadOnly();
     }
 }
