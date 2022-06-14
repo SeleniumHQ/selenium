@@ -88,7 +88,7 @@ def driver(request):
         pytest.skip("Webkit tests can only run on Linux")
 
     # conditionally mark tests as expected to fail based on driver
-    marker = request.node.get_closest_marker('xfail_{0}'.format(driver_class.lower()))
+    marker = request.node.get_closest_marker(f'xfail_{driver_class.lower()}')
 
     if marker is not None:
         if "run" in marker.kwargs:
@@ -149,7 +149,7 @@ def get_options(driver_class, config):
 
     if browser_path or browser_args:
         if not options:
-            options = getattr(webdriver, '{}Options'.format(driver_class))()
+            options = getattr(webdriver, f'{driver_class}Options')()
         if driver_class == 'WebKitGTK':
             options.overlay_scrollbars_enabled = False
         if browser_path is not None:
@@ -213,12 +213,12 @@ def server(request):
             try:
                 urlopen(url)
                 return 1
-            except IOError:
+            except OSError:
                 time.sleep(0.2)
         return 0
 
     _socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    url = 'http://{}:{}/status'.format(_host, _port)
+    url = f'http://{_host}:{_port}/status'
     try:
         _socket.connect((_host, _port))
         print('The remote driver server is already running or something else'
@@ -226,8 +226,8 @@ def server(request):
     except Exception:
         print('Starting the Selenium server')
         process = subprocess.Popen(['java', '-jar', _path, 'standalone', '--port', '4444'])
-        print('Selenium server running as process: {}'.format(process.pid))
-        assert wait_for_server(url, 10), 'Timed out waiting for Selenium server at {}'.format(url)
+        print(f'Selenium server running as process: {process.pid}')
+        assert wait_for_server(url, 10), f'Timed out waiting for Selenium server at {url}'
         print('Selenium server is ready')
         yield process
         process.terminate()
