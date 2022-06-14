@@ -112,7 +112,7 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 f"""<!doctype html>
                 {contents}
                 <script>window.top.window.onUploadDone();</script>
-                """.encode('utf-8')
+                """.encode()
             )
         except Exception as e:
             self.send_error(500, f"Error found: {e}")
