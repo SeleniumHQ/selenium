@@ -17,7 +17,6 @@
 from __future__ import annotations
 
 import os
-import typing
 from base64 import b64decode, encodebytes
 from hashlib import md5 as md5_hash
 import pkgutil
