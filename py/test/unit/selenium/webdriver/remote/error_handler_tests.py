@@ -36,207 +36,174 @@ def test_raises_exception_for_no_such_element(handler):
         handler.check_response({'status': ErrorCode.NO_SUCH_ELEMENT, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.NO_SUCH_FRAME)
-def test_raises_exception_for_no_such_frame(handler, code):
+def test_raises_exception_for_no_such_frame(handler):
     with pytest.raises(exceptions.NoSuchFrameException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.NO_SUCH_FRAME, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.UNKNOWN_COMMAND)
-def test_raises_exception_for_unknown_command(handler, code):
+def test_raises_exception_for_unknown_command(handler):
     with pytest.raises(exceptions.WebDriverException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.UNKNOWN_COMMAND, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.STALE_ELEMENT_REFERENCE)
-def test_raises_exception_for_stale_element_reference(handler, code):
+def test_raises_exception_for_stale_element_reference(handler):
     with pytest.raises(exceptions.StaleElementReferenceException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.STALE_ELEMENT_REFERENCE, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.ELEMENT_NOT_VISIBLE)
-def test_raises_exception_for_element_not_visible(handler, code):
+def test_raises_exception_for_element_not_visible(handler):
     with pytest.raises(exceptions.ElementNotVisibleException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.ELEMENT_NOT_VISIBLE, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INVALID_ELEMENT_STATE)
-def test_raises_exception_for_invalid_element_state(handler, code):
+def test_raises_exception_for_invalid_element_state(handler):
     with pytest.raises(exceptions.InvalidElementStateException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INVALID_ELEMENT_STATE, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.UNKNOWN_ERROR)
-def test_raises_exception_for_unknown_error(handler, code):
+def test_raises_exception_for_unknown_error(handler):
     with pytest.raises(exceptions.WebDriverException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.UNKNOWN_ERROR, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.ELEMENT_IS_NOT_SELECTABLE)
-def test_raises_exception_for_element_not_selectable(handler, code):
+def test_raises_exception_for_element_not_selectable(handler):
     with pytest.raises(exceptions.ElementNotSelectableException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.ELEMENT_IS_NOT_SELECTABLE, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.JAVASCRIPT_ERROR)
-def test_raises_exception_for_javascript_error(handler, code):
+def test_raises_exception_for_javascript_error(handler):
     with pytest.raises(exceptions.JavascriptException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.JAVASCRIPT_ERROR, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.XPATH_LOOKUP_ERROR)
-def test_raises_exception_for_xpath_lookup_error(handler, code):
+def test_raises_exception_for_xpath_lookup_error(handler):
     with pytest.raises(exceptions.WebDriverException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.XPATH_LOOKUP_ERROR, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.TIMEOUT)
-def test_raises_exception_for_timeout(handler, code):
+def test_raises_exception_for_timeout(handler):
     with pytest.raises(exceptions.TimeoutException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.TIMEOUT, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.NO_SUCH_WINDOW)
-def test_raises_exception_for_no_such_window(handler, code):
+def test_raises_exception_for_no_such_window(handler):
     with pytest.raises(exceptions.NoSuchWindowException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.NO_SUCH_WINDOW, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INVALID_COOKIE_DOMAIN)
-def test_raises_exception_for_invalid_cookie_domain(handler, code):
+def test_raises_exception_for_invalid_cookie_domain(handler):
     with pytest.raises(exceptions.InvalidCookieDomainException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INVALID_COOKIE_DOMAIN, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.UNABLE_TO_SET_COOKIE)
-def test_raises_exception_for_unable_to_set_cookie(handler, code):
+def test_raises_exception_for_unable_to_set_cookie(handler):
     with pytest.raises(exceptions.UnableToSetCookieException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.UNABLE_TO_SET_COOKIE, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.UNEXPECTED_ALERT_OPEN)
-def test_raises_exception_for_unexpected_alert_open(handler, code):
+def test_raises_exception_for_unexpected_alert_open(handler):
     with pytest.raises(exceptions.UnexpectedAlertPresentException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.UNEXPECTED_ALERT_OPEN, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.NO_ALERT_OPEN)
-def test_raises_exception_for_no_alert_open(handler, code):
+def test_raises_exception_for_no_alert_open(handler):
     with pytest.raises(exceptions.NoAlertPresentException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.NO_ALERT_OPEN, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.SCRIPT_TIMEOUT)
-def test_raises_exception_for_script_timeout(handler, code):
+def test_raises_exception_for_script_timeout(handler):
     with pytest.raises(exceptions.TimeoutException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.SCRIPT_TIMEOUT, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INVALID_ELEMENT_COORDINATES)
-def test_raises_exception_for_invalid_element_coordinates(handler, code):
+def test_raises_exception_for_invalid_element_coordinates(handler):
     with pytest.raises(exceptions.WebDriverException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INVALID_ELEMENT_COORDINATES, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.IME_NOT_AVAILABLE)
-def test_raises_exception_for_ime_not_available(handler, code):
+def test_raises_exception_for_ime_not_available(handler):
     with pytest.raises(exceptions.ImeNotAvailableException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.IME_NOT_AVAILABLE, 'value': 'foo'})
 
 
-def test_raises_exception_for_ime_activation_failed(handler, code):
+def test_raises_exception_for_ime_activation_failed(handler):
     with pytest.raises(exceptions.ImeActivationFailedException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.IME_ENGINE_ACTIVATION_FAILED, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INVALID_SELECTOR)
-def test_raises_exception_for_invalid_selector(handler, code):
+def test_raises_exception_for_invalid_selector(handler):
     with pytest.raises(exceptions.InvalidSelectorException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INVALID_SELECTOR, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.SESSION_NOT_CREATED)
-def test_raises_exception_for_session_not_created(handler, code):
+def test_raises_exception_for_session_not_created(handler):
     with pytest.raises(exceptions.SessionNotCreatedException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.SESSION_NOT_CREATED, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS)
-def test_raises_exception_for_move_target_out_of_bounds(handler, code):
+def test_raises_exception_for_move_target_out_of_bounds(handler):
     with pytest.raises(exceptions.MoveTargetOutOfBoundsException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.MOVE_TARGET_OUT_OF_BOUNDS, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INVALID_XPATH_SELECTOR)
-def test_raises_exception_for_invalid_xpath_selector(handler, code):
+def test_raises_exception_for_invalid_xpath_selector(handler):
     with pytest.raises(exceptions.InvalidSelectorException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INVALID_XPATH_SELECTOR, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER)
-def test_raises_exception_for_invalid_xpath_selector_return_typer(handler, code):
+def test_raises_exception_for_invalid_xpath_selector_return_typer(handler):
     with pytest.raises(exceptions.InvalidSelectorException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.ELEMENT_NOT_INTERACTABLE)
-def test_raises_exception_for_element_not_interactable(handler, code):
+def test_raises_exception_for_element_not_interactable(handler):
     with pytest.raises(exceptions.ElementNotInteractableException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.ELEMENT_NOT_INTERACTABLE, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INSECURE_CERTIFICATE)
-def test_raises_exception_for_insecure_certificate(handler, code):
+def test_raises_exception_for_insecure_certificate(handler):
     with pytest.raises(exceptions.InsecureCertificateException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INSECURE_CERTIFICATE, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INVALID_ARGUMENT)
-def test_raises_exception_for_invalid_argument(handler, code):
+def test_raises_exception_for_invalid_argument(handler):
     with pytest.raises(exceptions.InvalidArgumentException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INVALID_ARGUMENT, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INVALID_COORDINATES)
-def test_raises_exception_for_invalid_coordinates(handler, code):
+def test_raises_exception_for_invalid_coordinates(handler):
     with pytest.raises(exceptions.InvalidCoordinatesException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INVALID_COORDINATES, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.INVALID_SESSION_ID)
-def test_raises_exception_for_invalid_session_id(handler, code):
+def test_raises_exception_for_invalid_session_id(handler):
     with pytest.raises(exceptions.InvalidSessionIdException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.INVALID_SESSION_ID, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.NO_SUCH_COOKIE)
-def test_raises_exception_for_no_such_cookie(handler, code):
+def test_raises_exception_for_no_such_cookie(handler):
     with pytest.raises(exceptions.NoSuchCookieException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.NO_SUCH_COOKIE, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.UNABLE_TO_CAPTURE_SCREEN)
-def test_raises_exception_for_unable_to_capture_screen_exception(handler, code):
+def test_raises_exception_for_unable_to_capture_screen_exception(handler):
     with pytest.raises(exceptions.ScreenshotException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.UNABLE_TO_CAPTURE_SCREEN, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.ELEMENT_CLICK_INTERCEPTED)
-def test_raises_exception_for_element_click_intercepted(handler, code):
+def test_raises_exception_for_element_click_intercepted(handler):
     with pytest.raises(exceptions.ElementClickInterceptedException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.ELEMENT_CLICK_INTERCEPTED, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.UNKNOWN_METHOD)
-def test_raises_exception_for_unknown_method(handler, code):
+def test_raises_exception_for_unknown_method(handler):
     with pytest.raises(exceptions.UnknownMethodException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.UNKNOWN_METHOD, 'value': 'foo'})
 
 
-@pytest.mark.parametrize('code', ErrorCode.METHOD_NOT_ALLOWED)
-def test_raises_exception_for_method_not_allowed(handler, code):
+def test_raises_exception_for_method_not_allowed(handler):
     with pytest.raises(exceptions.WebDriverException):
-        handler.check_response({'status': code, 'value': 'foo'})
+        handler.check_response({'status': ErrorCode.METHOD_NOT_ALLOWED, 'value': 'foo'})
 
 
 def test_relays_exception_stacktrace(handler):

@@ -51,12 +51,12 @@ _KT = TypeVar("_KT")
 _VT = TypeVar("_VT")
 
 
+# Todo: In future rename this; it's no longer relevant
 class ErrorCode:
     """
     Error codes defined in the WebDriver wire protocol.
     """
     # Keep in sync with org.openqa.selenium.remote.ErrorCodes and errorcodes.h
-    SUCCESS: int = 0
     NO_SUCH_ELEMENT: str = 'no such element'
     NO_SUCH_FRAME: str = 'no such frame'
     NO_SUCH_SHADOW_ROOT: str = "no such shadow root"
@@ -152,9 +152,9 @@ class ErrorHandler:
             exception_class = ElementNotVisibleException
         elif status == ErrorCode.INVALID_ELEMENT_STATE:
             exception_class = InvalidElementStateException
-        elif status == ErrorCode.INVALID_SELECTOR \
-          or status == ErrorCode.INVALID_XPATH_SELECTOR \
-          or status == ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER:
+        elif status in (ErrorCode.INVALID_SELECTOR,
+                        ErrorCode.INVALID_XPATH_SELECTOR,
+                        ErrorCode.INVALID_XPATH_SELECTOR_RETURN_TYPER):
             exception_class = InvalidSelectorException
         elif status == ErrorCode.ELEMENT_IS_NOT_SELECTABLE:
             exception_class = ElementNotSelectableException
