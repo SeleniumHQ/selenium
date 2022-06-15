@@ -174,8 +174,7 @@ class WebDriver(RemoteWebDriver):
         executor = FirefoxRemoteConnection(
             remote_server_addr=self.service.service_url,
             ignore_proxy=options._ignore_local_proxy)
-        RemoteWebDriver.__init__(
-            self,
+        super().__init__(
             command_executor=executor,
             options=options,
             keep_alive=True)
@@ -185,7 +184,7 @@ class WebDriver(RemoteWebDriver):
     def quit(self) -> None:
         """Quits the driver and close every associated window."""
         try:
-            RemoteWebDriver.quit(self)
+            super().quit()
         except Exception:
             # We don't care about the message because something probably has gone wrong
             pass
