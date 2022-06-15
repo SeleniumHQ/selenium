@@ -51,7 +51,7 @@ class ExtensionConnection(RemoteConnection):
 
         self.binary.launch_browser(self.profile, timeout=timeout)
         _URL = "http://%s:%d/hub" % (HOST, PORT)
-        super().__init__(URL, keep_alive=True)
+        super().__init__(_URL, keep_alive=True)
 
     def quit(self, sessionId=None):
         self.execute(Command.QUIT, {'sessionId': sessionId})

@@ -19,7 +19,6 @@ from typing import List
 
 from selenium.webdriver.common import service
 
-
 DEFAULT_EXECUTABLE_PATH = 'IEDriverServer.exe'
 
 
@@ -51,7 +50,7 @@ class Service(service.Service):
             self.service_args.append("--log-file=%s" % log_file)
 
         super().__init__(executable_path, port=port,
-                                 start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver")
+                         start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver")
 
     def command_line_args(self) -> List[str]:
         return ["--port=%d" % self.port] + self.service_args
