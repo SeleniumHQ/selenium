@@ -20,7 +20,7 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 class ChromiumRemoteConnection(RemoteConnection):
     def __init__(self, remote_server_addr, vendor_prefix, browser_name, keep_alive=True, ignore_proxy=False):
-        RemoteConnection.__init__(self, remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
+        super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
         self.browser_name = browser_name
         self._commands["launchApp"] = ('POST', '/session/$sessionId/chromium/launch_app')
         self._commands["setPermissions"] = ('POST', '/session/$sessionId/permissions')
