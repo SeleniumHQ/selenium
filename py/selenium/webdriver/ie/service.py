@@ -50,7 +50,7 @@ class Service(service.Service):
         if log_file:
             self.service_args.append("--log-file=%s" % log_file)
 
-        service.Service.__init__(self, executable_path, port=port,
+        super().__init__(executable_path, port=port,
                                  start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver")
 
     def command_line_args(self) -> List[str]:
