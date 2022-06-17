@@ -52,7 +52,7 @@ class ChromiumOptions(ArgOptions):
         self._binary_location = value
 
     @property
-    def debugger_address(self: str) -> str:
+    def debugger_address(self) -> str:
         """
         :Returns: The address of the remote devtools instance
         """
