@@ -42,6 +42,7 @@ def selenium_java_deps():
             "io.netty:netty-transport-native-epoll:%s" % netty_version,
             "io.netty:netty-transport-native-epoll:jar:linux-x86_64:%s" % netty_version,
             "io.netty:netty-transport-native-kqueue:%s" % netty_version,
+            "io.netty:netty-transport-native-kqueue:jar:osx-aarch_64:%s" % netty_version,
             "io.netty:netty-transport-native-kqueue:jar:osx-x86_64:%s" % netty_version,
             # End - Needed to support unix domain sockets
             "io.netty:netty-transport-native-unix-common:%s" % netty_version,

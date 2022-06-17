@@ -202,6 +202,57 @@ public class FirefoxOptionsTest {
   }
 
   @Test
+  public void shouldGetStringPreferencesFromGetProfile() {
+    String key = "browser.startup.homepage";
+    String value = "about:robots";
+
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference(key, value);
+
+    FirefoxOptions options = new FirefoxOptions();
+    options.setProfile(profile);
+
+    assertThat(profile.getStringPreference(key, "-")).isEqualTo(value);
+
+    FirefoxProfile extractedProfile = options.getProfile();
+    assertThat(extractedProfile.getStringPreference(key, "-")).isEqualTo(value);
+  }
+
+  @Test
+  public void shouldGetIntegerPreferencesFromGetProfile() {
+    String key = "key";
+    int value = 5;
+
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference(key, value);
+
+    FirefoxOptions options = new FirefoxOptions();
+    options.setProfile(profile);
+
+    assertThat(profile.getIntegerPreference(key, 0)).isEqualTo(value);
+
+    FirefoxProfile extractedProfile = options.getProfile();
+    assertThat(extractedProfile.getIntegerPreference(key, 0)).isEqualTo(value);
+  }
+
+  @Test
+  public void shouldGetBooleanPreferencesFromGetProfile() {
+    String key = "key";
+    boolean value = true;
+
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference(key, value);
+
+    FirefoxOptions options = new FirefoxOptions();
+    options.setProfile(profile);
+
+    assertThat(profile.getBooleanPreference(key, false)).isEqualTo(value);
+
+    FirefoxProfile extractedProfile = options.getProfile();
+    assertThat(extractedProfile.getBooleanPreference(key, false)).isEqualTo(value);
+  }
+
+  @Test
   public void callingToStringWhenTheBinaryDoesNotExistShouldNotCauseAnException() {
     FirefoxOptions options =
       new FirefoxOptions().setBinary("there's nothing better in life than cake or peas.");
