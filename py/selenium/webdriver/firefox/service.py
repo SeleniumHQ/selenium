@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List, Tuple, Union
+from typing import List, Sequence, Union
 
 from selenium.webdriver.common import (service, utils)
 
@@ -28,7 +28,7 @@ class Service(service.Service):
 
     def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
                  port: int = 0, service_args: List[str] = None,
-                 log_path: Union[str, Tuple[str, str]] = "geckodriver.log", env: dict = None):
+                 log_path: Union[str, Sequence[str, str]] = "geckodriver.log", env: dict = None):
         """Creates a new instance of the GeckoDriver remote service proxy.
 
         GeckoDriver provides a HTTP interface speaking the W3C WebDriver
@@ -47,8 +47,11 @@ class Service(service.Service):
             in the services' environment.
         """
 
-        log_path, log_path_mode = (log_path[0], log_path[1]) if isinstance(log_path,Tuple) else (log_path, "a+")
-        log_file = open(log_path, log_path_mode, encoding='utf-8') if log_path else None
+        log_file = None
+        if log_path is not None:
+            open_args = (log_path, "a+", encoding='utf-8') if isinstance(log_path, str) else log_path
+            log_file = open(*open_args)
+
 
         super().__init__(executable_path, port=port, log_file=log_file, env=env)
         self.service_args = service_args or []
