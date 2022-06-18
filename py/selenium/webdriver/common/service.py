@@ -116,11 +116,10 @@ class Service:
         return utils.is_connectable(self.port)
 
     def send_remote_shutdown_command(self):
-        from urllib import request as url_request
-        URLError = url_request.URLError
-
+        from urllib import request
+        from urllib.error import URLError
         try:
-            url_request.urlopen("%s/shutdown" % self.service_url)
+            request.urlopen("%s/shutdown" % self.service_url)
         except URLError:
             return
 
