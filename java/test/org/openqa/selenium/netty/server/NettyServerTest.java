@@ -17,18 +17,8 @@
 
 package org.openqa.selenium.netty.server;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 import com.google.common.collect.ImmutableMap;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -41,6 +31,15 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class NettyServerTest {
 
@@ -97,8 +96,8 @@ public class NettyServerTest {
     request.setHeader("Accept", "*/*");
     HttpResponse response = client.execute(request);
 
-    assertNull("Access-Control-Allow-Origin should be null",
-               response.getHeader("Access-Control-Allow-Origin"));
+    assertNull(response.getHeader("Access-Control-Allow-Origin"),
+      "Access-Control-Allow-Origin should be null");
   }
 
   @Test
@@ -106,7 +105,7 @@ public class NettyServerTest {
     Config cfg = new CompoundConfig(
       new MapConfig(ImmutableMap.of("server", ImmutableMap.of("allow-cors", "true"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
-    assertTrue("Allow CORS should be enabled", options.getAllowCORS());
+    assertTrue(options.getAllowCORS(), "Allow CORS should be enabled");
 
     Server<?> server = new NettyServer(
       options,
@@ -120,10 +119,8 @@ public class NettyServerTest {
     request.setHeader("Accept", "*/*");
     HttpResponse response = client.execute(request);
 
-    assertEquals(
-      "Access-Control-Allow-Origin should be equal to origin in request header",
-      "*",
-      response.getHeader("Access-Control-Allow-Origin"));
+    assertEquals("*", response.getHeader("Access-Control-Allow-Origin"),
+      "Access-Control-Allow-Origin should be equal to origin in request header");
   }
 
   @Test
@@ -132,7 +129,7 @@ public class NettyServerTest {
       new MapConfig(ImmutableMap.of("server", ImmutableMap.of(
         "bind-host", "false", "host", "anyRandomHost"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
-    assertFalse("Bind to host should be disabled", options.getBindHost());
+    assertFalse(options.getBindHost(), "Bind to host should be disabled");
 
     Server<?> server = new NettyServer(
       options,
@@ -145,7 +142,7 @@ public class NettyServerTest {
   private void outputHeaders(HttpResponse res) {
     res.getHeaderNames()
       .forEach(name ->
-                 res.getHeaders(name)
-                   .forEach(value -> System.out.printf("%s -> %s\n", name, value)));
+        res.getHeaders(name)
+          .forEach(value -> System.out.printf("%s -> %s\n", name, value)));
   }
 }

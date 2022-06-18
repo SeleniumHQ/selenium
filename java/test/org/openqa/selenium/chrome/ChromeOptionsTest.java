@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.chrome;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.time.Duration;
@@ -43,7 +42,7 @@ import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class ChromeOptionsTest {
 
   @Test

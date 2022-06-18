@@ -17,8 +17,24 @@
 
 package org.openqa.selenium.interactions;
 
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WaitingConditions;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -33,26 +49,10 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WaitingConditions;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.util.List;
-
 /**
  * Tests combined input actions.
  */
-public class CombinedInputActionsTest extends JUnit4TestBase {
+public class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
@@ -64,9 +64,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     Actions actions = new Actions(driver);
     Action selectThreeOptions = actions.click(options.get(1))
-        .click(options.get(2))
-        .click(options.get(3))
-        .build();
+      .click(options.get(2))
+      .click(options.get(3))
+      .build();
 
     selectThreeOptions.perform();
 
@@ -75,7 +75,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     WebElement resultElement = driver.findElement(By.id("result"));
     assertThat(resultElement.getText())
-        .describedAs("Should have picked the third option only").isEqualTo("cheddar");
+      .describedAs("Should have picked the third option only").isEqualTo("cheddar");
   }
 
   @Test
@@ -88,10 +88,10 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     Actions actions = new Actions(driver);
     Action selectThreeOptions = actions.click(options.get(1))
-        .keyDown(Keys.SHIFT)
-        .click(options.get(3))
-        .keyUp(Keys.SHIFT)
-        .build();
+      .keyDown(Keys.SHIFT)
+      .click(options.get(3))
+      .keyUp(Keys.SHIFT)
+      .build();
 
     selectThreeOptions.perform();
 
@@ -100,8 +100,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     WebElement resultElement = driver.findElement(By.id("result"));
     assertThat(resultElement.getText())
-        .describedAs("Should have picked the last three options")
-        .isEqualTo("roquefort parmigiano cheddar");
+      .describedAs("Should have picked the last three options")
+      .isEqualTo("roquefort parmigiano cheddar");
   }
 
   @Test
@@ -137,18 +137,18 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnMultiSelectionList() {
-    assumeFalse("FIXME: macs don't have CONTROL key",
-                getEffectivePlatform(driver).is(Platform.MAC));
+    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC),
+      "FIXME: macs don't have CONTROL key");
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
 
     Actions actions = new Actions(driver);
     Action selectThreeOptions = actions.click(options.get(1))
-        .keyDown(Keys.CONTROL)
-        .click(options.get(3))
-        .keyUp(Keys.CONTROL)
-        .build();
+      .keyDown(Keys.CONTROL)
+      .click(options.get(3))
+      .keyUp(Keys.CONTROL)
+      .build();
 
     selectThreeOptions.perform();
 
@@ -157,8 +157,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     WebElement resultElement = driver.findElement(By.id("result"));
     assertThat(resultElement.getText())
-        .describedAs("Should have picked the first and the third options")
-        .isEqualTo("roquefort cheddar");
+      .describedAs("Should have picked the first and the third options")
+      .isEqualTo("roquefort cheddar");
   }
 
   @Test
@@ -176,11 +176,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     Actions actions = new Actions(driver);
     Action selectThreeItems = actions.keyDown(key)
-        .click(listItems.get(1))
-        .click(listItems.get(3))
-        .click(listItems.get(5))
-        .keyUp(key)
-        .build();
+      .click(listItems.get(1))
+      .click(listItems.get(3))
+      .click(listItems.get(5))
+      .keyUp(key)
+      .build();
 
     selectThreeItems.perform();
 
@@ -229,8 +229,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     WebElement link = driver.findElement(By.id("normal"));
 
     new Actions(driver)
-        .click(link)
-        .perform();
+      .click(link)
+      .perform();
 
     wait.until(titleIs("XHTML Test Page"));
   }
@@ -246,9 +246,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     WebElement link = driver.findElement(By.id("link"));
 
     new Actions(driver)
-        .moveToElement(link)
-        .click()
-        .perform();
+      .moveToElement(link)
+      .click()
+      .perform();
 
     wait.until(titleIs("Submitted Successfully!"));
   }
@@ -267,9 +267,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     WebElement link = driver.findElement(By.id("normal"));
 
     new Actions(driver)
-        .moveToElement(link, 1, 1)
-        .click()
-        .perform();
+      .moveToElement(link, 1, 1)
+      .click()
+      .perform();
 
     wait.until(titleIs("XHTML Test Page"));
   }
@@ -284,9 +284,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     Point location = element.getLocation();
 
     new Actions(driver)
-        .moveToElement(element, 20 - size.getWidth() / 2, 10 - size.getHeight() / 2)
-        .click()
-        .perform();
+      .moveToElement(element, 20 - size.getWidth() / 2, 10 - size.getHeight() / 2)
+      .click()
+      .perform();
 
     wait.until(presenceOfElementLocated(By.id("pageX")));
 
@@ -307,7 +307,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     // Everything within 5 pixels range is OK
     final int ALLOWED_DEVIATION = 5;
     return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION &&
-           Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
+      Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
   }
 
   /**
@@ -322,9 +322,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     WebElement linkId = driver.findElement(By.id("linkId"));
     new Actions(driver)
-        .moveToElement(linkId, 1, 1)
-        .click()
-        .perform();
+      .moveToElement(linkId, 1, 1)
+      .click()
+      .perform();
 
     wait.until(titleIs("We Arrive Here"));
   }
@@ -333,28 +333,26 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(CHROME)
   public void testChordControlCutAndPaste() {
-    assumeFalse("FIXME: macs don't have CONTROL key",
-                getEffectivePlatform(driver).is(Platform.MAC));
-    assumeFalse("Windows: native events library  does not support storing modifiers state yet",
-                isNativeEventsEnabled(driver) &&
-                getEffectivePlatform(driver).is(Platform.WINDOWS) &&
-                isInternetExplorer(driver));
+    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
+    assumeFalse(isNativeEventsEnabled(driver) &&
+      getEffectivePlatform(driver).is(Platform.WINDOWS) &&
+      isInternetExplorer(driver), "Windows: native events library  does not support storing modifiers state yet");
 
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     new Actions(driver)
-        .sendKeys(element, "abc def")
-        .perform();
+      .sendKeys(element, "abc def")
+      .perform();
 
     wait.until(elementValueToEqual(element, "abc def"));
 
     //TODO: Figure out why calling sendKey(Key.CONTROL + "a") and then
     //sendKeys("x") does not work on Linux.
     new Actions(driver)
-        .sendKeys(Keys.CONTROL + "a" + "x")
-        .perform();
+      .sendKeys(Keys.CONTROL + "a" + "x")
+      .perform();
 
     // Release keys before next step.
     new Actions(driver).sendKeys(Keys.NULL).perform();
@@ -362,9 +360,9 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(elementValueToEqual(element, ""));
 
     new Actions(driver)
-        .sendKeys(Keys.CONTROL + "v")
-        .sendKeys("v")
-        .perform();
+      .sendKeys(Keys.CONTROL + "v")
+      .sendKeys("v")
+      .perform();
 
     new Actions(driver).sendKeys(Keys.NULL).perform();
 
@@ -381,15 +379,15 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     int nWindows = driver.getWindowHandles().size();
     new Actions(driver)
-        .moveToElement(link)
-        .keyDown(Keys.SHIFT)
-        .click()
-        .keyUp(Keys.SHIFT)
-        .perform();
+      .moveToElement(link)
+      .keyDown(Keys.SHIFT)
+      .click()
+      .keyUp(Keys.SHIFT)
+      .perform();
 
     wait.until(windowHandleCountToBe(nWindows + 1));
     assertThat(driver.getTitle())
-        .describedAs("Should not have navigated away").isEqualTo(originalTitle);
+      .describedAs("Should not have navigated away").isEqualTo(originalTitle);
   }
 
   @Test

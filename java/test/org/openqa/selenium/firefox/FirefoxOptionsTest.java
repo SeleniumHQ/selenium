@@ -39,8 +39,8 @@ import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import com.google.common.collect.ImmutableMap;
 
 import org.assertj.core.api.InstanceOfAssertFactories;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -49,7 +49,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +61,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class FirefoxOptionsTest {
 
   @Test

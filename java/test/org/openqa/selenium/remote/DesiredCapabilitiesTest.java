@@ -19,14 +19,13 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,7 +33,7 @@ import java.util.logging.Level;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class DesiredCapabilitiesTest {
 
   @Test

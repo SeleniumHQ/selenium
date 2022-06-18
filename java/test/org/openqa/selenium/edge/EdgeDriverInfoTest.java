@@ -18,12 +18,11 @@
 package org.openqa.selenium.edge;
 
 import org.assertj.core.api.Condition;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Collections;
 
@@ -31,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class EdgeDriverInfoTest {
 
   @Test

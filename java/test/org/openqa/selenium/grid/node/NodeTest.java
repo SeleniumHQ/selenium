@@ -30,8 +30,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -104,7 +104,7 @@ public class NodeTest {
     return new EitherAssert<>(either);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws URISyntaxException {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();

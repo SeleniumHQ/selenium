@@ -18,8 +18,8 @@
 package org.openqa.selenium.firefox;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -46,7 +46,7 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
@@ -64,9 +64,9 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeNotNull;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -77,13 +77,13 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
-public class FirefoxDriverTest extends JUnit4TestBase {
+public class FirefoxDriverTest extends JupiterTestBase {
 
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
   private static final String EXT_PATH_DIR = "common/extensions/webextensions-selenium-example";
   private static char[] CHARS =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
-          .toCharArray();
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
+      .toCharArray();
   private static Random RANDOM = new Random();
 
   private static String randomString() {
@@ -139,7 +139,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   public void canStartDriverWithSpecifiedBinary() {
     FirefoxBinary binary = spy(new FirefoxBinary());
     FirefoxOptions options = new FirefoxOptions()
-        .setBinary(binary);
+      .setBinary(binary);
 
     localDriver = new WebDriverBuilder().get(options);
 
@@ -161,8 +161,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   public void canSetPreferencesInFirefoxOptions() {
     FirefoxOptions options = new FirefoxOptions()
-        .addPreference("browser.startup.page", 1)
-        .addPreference("browser.startup.homepage", pages.xhtmlTestPage);
+      .addPreference("browser.startup.page", 1)
+      .addPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
     localDriver = new WebDriverBuilder().get(options);
     wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
@@ -210,8 +210,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
     FirefoxOptions options = new FirefoxOptions()
-        .setProfile(profile)
-        .addPreference("browser.startup.homepage", pages.javascriptPage);
+      .setProfile(profile)
+      .addPreference("browser.startup.homepage", pages.javascriptPage);
 
     localDriver = new WebDriverBuilder().get(options);
     wait(localDriver).until($ -> "Testing Javascript".equals(localDriver.getTitle()));
@@ -231,7 +231,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
       field.setAccessible(true);
       CommandExecutor spoof = mock(CommandExecutor.class);
       doThrow(new IOException("The remote server died"))
-          .when(spoof).execute(ArgumentMatchers.any());
+        .when(spoof).execute(ArgumentMatchers.any());
 
       field.set(driver2, spoof);
 
@@ -320,19 +320,20 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   public void shouldBeAbleToStartANamedProfile() {
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
-    assumeNotNull(profile);
+    assumeTrue(profile != null);
 
     localDriver = new WebDriverBuilder().get(new FirefoxOptions().setProfile(profile));
   }
 
-  @Test(timeout = 60000)
+  @Test
+  @Timeout(60)
   @Ignore(FIREFOX)
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
     FirefoxBinary binary = new FirefoxBinary();
     GeckoDriverService service = new GeckoDriverService.Builder()
-        .usingFirefoxBinary(binary)
-        .withEnvironment(ImmutableMap.of("NSPR_LOG_MODULES", "all:5"))
-        .build();
+      .usingFirefoxBinary(binary)
+      .withEnvironment(ImmutableMap.of("NSPR_LOG_MODULES", "all:5"))
+      .build();
 
     // We will have an infinite hang if this driver does not start properly.
     new FirefoxDriver(service).quit();
@@ -387,7 +388,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
 
   @Test
   public void shouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads()
-      throws InterruptedException {
+    throws InterruptedException {
     class FirefoxRunner implements Runnable {
       private final String url;
       private volatile WebDriver myDriver;
@@ -496,7 +497,8 @@ public class FirefoxDriverTest extends JUnit4TestBase {
   @Test
   public void canStartFirefoxDriverWithSubclassOfFirefoxProfile() {
     new WebDriverBuilder().get(new FirefoxOptions().setProfile(new CustomFirefoxProfile())).quit();
-    new WebDriverBuilder().get(new FirefoxOptions().setProfile(new FirefoxProfile() {})).quit();
+    new WebDriverBuilder().get(new FirefoxOptions().setProfile(new FirefoxProfile() {
+    })).quit();
   }
 
   /**
@@ -507,7 +509,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector("div.content"));
     assertThat(((JavascriptExecutor) driver).executeScript("return typeof Sizzle == 'undefined';"))
-        .isEqualTo(true);
+      .isEqualTo(true);
   }
 
   /**
@@ -519,7 +521,7 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     ((JavascriptExecutor) driver).executeScript("window.Sizzle = 'original sizzle value';");
     driver.findElement(By.cssSelector("div.content"));
     assertThat(((JavascriptExecutor) driver).executeScript("return window.Sizzle + '';"))
-        .isEqualTo("original sizzle value");
+      .isEqualTo("original sizzle value");
   }
 
   @Test
@@ -532,13 +534,13 @@ public class FirefoxDriverTest extends JUnit4TestBase {
     localDriver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
     localDriver.findElement(By.id("under")).click();
     assertThat(localDriver.findElement(By.id("log")).getText())
-        .isEqualTo("Log:\n"
-                 + "mousedown in over (handled by over)\n"
-                 + "mousedown in over (handled by body)\n"
-                 + "mouseup in over (handled by over)\n"
-                 + "mouseup in over (handled by body)\n"
-                 + "click in over (handled by over)\n"
-                 + "click in over (handled by body)");
+      .isEqualTo("Log:\n"
+        + "mousedown in over (handled by over)\n"
+        + "mousedown in over (handled by body)\n"
+        + "mouseup in over (handled by over)\n"
+        + "mouseup in over (handled by body)\n"
+        + "click in over (handled by over)\n"
+        + "click in over (handled by body)");
   }
 
   @Test

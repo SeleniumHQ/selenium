@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
 
 SMALL_TEST_SRCS = [
     "RequestConverterTest.java",
@@ -13,9 +13,9 @@ java_test_suite(
         "//java/src/org/openqa/selenium/netty/server",
         artifact("io.netty:netty-codec-http"),
         artifact("io.netty:netty-transport"),
-        artifact("junit:junit"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
-    ] + JUNIT5_VINTAGE_DEPS,
+    ] + JUNIT5_DEPS,
 )
 
 java_test_suite(
@@ -33,7 +33,7 @@ java_test_suite(
         "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/testing:test-base",
         artifact("com.google.guava:guava"),
-        artifact("junit:junit"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
-    ] + JUNIT5_VINTAGE_DEPS,
+    ] + JUNIT5_DEPS,
 )

@@ -18,9 +18,9 @@
 package org.openqa.selenium.grid.gridui;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -46,7 +46,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.grid.gridui.Urls.whereIs;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -62,7 +62,7 @@ public class OverallGridTest {
   private WebDriver remoteWebDriver;
   private Wait<WebDriver> wait;
 
-  @Before
+  @BeforeEach
   public void setup() {
     server = createStandalone();
 
@@ -71,7 +71,7 @@ public class OverallGridTest {
     wait = new WebDriverWait(driver, Duration.ofSeconds(10));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     safelyCall(() -> driver.quit());
     safelyCall(() -> remoteWebDriver.quit());

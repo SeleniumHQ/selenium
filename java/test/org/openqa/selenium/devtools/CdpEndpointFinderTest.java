@@ -17,19 +17,18 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.net.URI;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class CdpEndpointFinderTest {
 
   @Test

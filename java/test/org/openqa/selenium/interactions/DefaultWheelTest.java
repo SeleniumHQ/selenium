@@ -17,20 +17,22 @@
 
 package org.openqa.selenium.interactions;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 /**
  * Tests operations that involve scroll wheel.
  */
-public class DefaultWheelTest extends JUnit4TestBase {
+public class DefaultWheelTest extends JupiterTestBase {
 
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
@@ -75,13 +77,15 @@ public class DefaultWheelTest extends JUnit4TestBase {
     assertTrue(inViewport(checkbox));
   }
 
-  @Test(expected = MoveTargetOutOfBoundsException.class)
+  @Test
   public void throwErrorWhenElementOriginIsOutOfViewport() {
-    driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
-    WebElement footer = driver.findElement(By.tagName("footer"));
-    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer, 0, 50);
+    assertThrows(MoveTargetOutOfBoundsException.class, () -> {
+      driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
+      WebElement footer = driver.findElement(By.tagName("footer"));
+      WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer, 0, 50);
 
-    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
+      getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
+    });
   }
 
   @Test
@@ -108,12 +112,14 @@ public class DefaultWheelTest extends JUnit4TestBase {
     assertTrue(inViewport(checkbox));
   }
 
-  @Test(expected = MoveTargetOutOfBoundsException.class)
+  @Test
   public void throwErrorWhenOriginOffsetIsOutOfViewport() {
-    driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
-    WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(-10, -10);
+    assertThrows(MoveTargetOutOfBoundsException.class, () -> {
+      driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
+      WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(-10, -10);
 
-    getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
+      getBuilder(driver).scrollFromOrigin(scrollOrigin, 0, 200).perform();
+    });
   }
 
   private boolean inViewport(WebElement element) {

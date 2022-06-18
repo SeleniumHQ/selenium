@@ -18,16 +18,16 @@
 package org.openqa.selenium.html5;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.Set;
 
-public class LocalStorageTest extends JUnit4TestBase {
-  @Before
+public class LocalStorageTest extends JupiterTestBase {
+  @BeforeEach
   public void checkHasWebStorage() {
     assumeTrue(driver instanceof WebStorage);
     driver.get(pages.html5Page);

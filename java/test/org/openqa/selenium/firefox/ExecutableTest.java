@@ -17,29 +17,28 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.Assume;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 
-@Category(UnitTests.class)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+@Tag("UnitTests")
 public class ExecutableTest {
 
   private String binaryPath;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     try {
       binaryPath = new FirefoxBinary().getPath();
     } catch (WebDriverException ex) {
       ex.printStackTrace();
-      Assume.assumeTrue(false);
+      assumeTrue(false);
     }
   }
 

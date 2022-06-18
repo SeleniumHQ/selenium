@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.firefox;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -33,9 +33,9 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class RemoteFirefoxDriverTest extends JUnit4TestBase {
+public class RemoteFirefoxDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverAfterTest

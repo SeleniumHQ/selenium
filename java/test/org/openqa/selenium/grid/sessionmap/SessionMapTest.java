@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
@@ -44,7 +44,7 @@ import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * We test the session map by ensuring that the HTTP protocol is properly adhered to. If this is
@@ -59,7 +59,7 @@ public class SessionMapTest {
   private SessionMap remote;
   private EventBus bus;
 
-  @Before
+  @BeforeEach
   public void setUp() throws URISyntaxException {
     id = new SessionId(UUID.randomUUID());
     expected = new Session(

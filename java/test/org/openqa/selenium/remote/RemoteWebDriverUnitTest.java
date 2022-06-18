@@ -35,8 +35,8 @@ import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -50,7 +50,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
-import org.openqa.selenium.testing.UnitTests;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 
@@ -64,7 +63,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class RemoteWebDriverUnitTest {
 
   private static final String ELEMENT_KEY = "element-6066-11e4-a52e-4f735466cecf";

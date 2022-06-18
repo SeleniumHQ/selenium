@@ -17,13 +17,12 @@
 
 package com.thoughtworks.selenium;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import com.thoughtworks.selenium.Wait.WaitTimedOutException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class WaitTest {
 
@@ -31,7 +30,7 @@ public class WaitTest {
   private long now;
   private int tries = 0;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     now = System.currentTimeMillis();
   }
@@ -46,7 +45,7 @@ public class WaitTest {
         return System.currentTimeMillis() > finished;
       }
     }.wait("clock stopped");
-    assertTrue("didn't try enough times: " + tries, tries > 1);
+    assertTrue(tries > 1, "didn't try enough times: " + tries);
   }
 
   @Test
@@ -59,7 +58,7 @@ public class WaitTest {
         return System.currentTimeMillis() > finished;
       }
     };
-    assertTrue("didn't try enough times: " + tries, tries > 1);
+    assertTrue(tries > 1, "didn't try enough times: " + tries);
   }
 
   @Test
@@ -76,8 +75,8 @@ public class WaitTest {
       fail("expected timeout");
     } catch (WaitTimedOutException e) {
       long waited = System.currentTimeMillis() - now;
-      assertTrue("didn't wait long enough:" + waited, waited >= 500);
-      assertTrue("didn't try enough times: " + tries, tries > 7);
+      assertTrue(waited >= 500, "didn't wait long enough:" + waited);
+      assertTrue(tries > 7, "didn't try enough times: " + tries);
     }
   }
 

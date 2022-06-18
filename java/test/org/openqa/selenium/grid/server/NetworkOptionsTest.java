@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.server;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.jre.server.JreServer;

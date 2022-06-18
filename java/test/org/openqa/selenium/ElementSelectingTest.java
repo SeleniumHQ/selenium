@@ -19,11 +19,11 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-public class ElementSelectingTest extends JUnit4TestBase {
+public class ElementSelectingTest extends JupiterTestBase {
   private static final boolean UNSELECTED = false;
   private static final boolean SELECTED = true;
 

@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.MapConfig;
 
 import java.util.Map;

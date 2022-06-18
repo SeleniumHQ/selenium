@@ -19,13 +19,12 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.OutputType.BASE64;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.io.File;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class OutputTypeTest {
   private static final String TEST_BASE64 = "ABADABAD";
   private static final byte[] TEST_BYTES = new byte[] {0, 16, 3, 0, 16, 3};
