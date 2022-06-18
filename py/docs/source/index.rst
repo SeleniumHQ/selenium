@@ -154,4 +154,5 @@ Contributing
  - After making changes, before committing execute `tox -e linting`
  - If tox exits `0`, commit and push otherwise fix the newly introduced breakages.
  - `flake8` requires manual fixes
- - `black` will often rewrite the breakages automatically, however the files are unstaged and should be added again.
+ - `black` will often rewrite the breakages automatically, however the files are unstaged and should staged again.
+ - `isort` will often rewrite the breakages automatically, however the files are unstaged and should staged again.
