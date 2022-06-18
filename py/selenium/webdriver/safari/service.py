@@ -16,11 +16,10 @@
 # under the License.
 
 import os
+import typing
+
 from selenium.webdriver.common import service, utils
 from subprocess import PIPE
-
-
-DEFAULT_EXECUTABLE_PATH = "/usr/bin/safaridriver"
 
 
 class Service(service.Service):
@@ -28,8 +27,13 @@ class Service(service.Service):
     Object that manages the starting and stopping of the SafariDriver
     """
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
-                 port=0, quiet=False, service_args=None):
+    def __init__(
+        self,
+        executable_path: str = "/usr/bin/safaridriver",
+        port: int = 0,
+        quiet: bool = False,
+        service_args: typing.Optional[typing.Sequence[str]] = None,
+    ):
         """
         Creates a new instance of the Service
 
@@ -37,7 +41,7 @@ class Service(service.Service):
          - executable_path : Path to the SafariDriver
          - port : Port the service is running on
          - quiet : Suppress driver stdout and stderr
-         - service_args : List of args to pass to the safaridriver service """
+         - service_args : List of args to pass to the safaridriver service"""
 
         if not os.path.exists(executable_path):
             if "Safari Technology Preview" in executable_path:
@@ -46,15 +50,13 @@ class Service(service.Service):
                 message = "SafariDriver was not found; are you running Safari 10 or later? You can download Safari at https://developer.apple.com/safari/download/."
             raise Exception(message)
 
-        if port == 0:
-            port = utils.free_port()
-
+        port = port or utils.free_port()
         self.service_args = service_args or []
 
         self.quiet = quiet
         log = PIPE
         if quiet:
-            log = open(os.devnull, 'w')
+            log = open(os.devnull, "w")
         super().__init__(executable_path, port, log)
 
     def command_line_args(self):

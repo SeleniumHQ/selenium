@@ -16,7 +16,6 @@
 # under the License.
 
 import os
-
 import pytest
 
 
@@ -45,13 +44,13 @@ class TestTechnologyPreview:
         assert driver.capabilities['browserName'] == 'safari'
 
 
-def test_launch_safari_with_legacy_flag(mocker, driver_class):
+def test_launch_safari_with_legacy_flag(mocker, driver_class, safari_service_cls):
     import subprocess
     mocker.patch('subprocess.Popen')
     try:
-        driver_class(service_args=['--legacy'])
+        driver_class(service=safari_service_cls(service_args=['--legacy']))
     except Exception:
-        pass
+        raise
     args, kwargs = subprocess.Popen.call_args
     assert '--legacy' in args[0]
 

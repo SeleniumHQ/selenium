@@ -69,8 +69,16 @@ def pytest_ignore_collect(path, config):
 driver_instance = None
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture
+def safari_service_cls():
+    """Fixture to get the Safari Service (class) not instance of"""
+    from selenium.webdriver.safari.service import Service
+    return Service
+
+
+@pytest.fixture
 def driver(request):
+    """Dynamically dispatched driver instance based on the `--driver` option provided at runtime."""
     kwargs = {}
 
     try:
