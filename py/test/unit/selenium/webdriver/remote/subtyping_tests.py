@@ -44,7 +44,7 @@ def test_webdriver_not_subclassed():
 
     class MyWebDriver:
         def __init__(self, *args, **kwargs):
-            super(MyWebDriver, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
 
     # Test that non registered class instance is not instance of Remote WebDriver
     my_driver = MyWebDriver()
