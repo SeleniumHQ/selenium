@@ -22,9 +22,9 @@ import com.google.common.net.HostAndPort;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.littleshoot.proxy.HttpFilters;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSourceAdapter;
@@ -40,7 +40,7 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.Safely;
@@ -58,19 +58,19 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class ProxySettingTest extends JUnit4TestBase {
+public class ProxySettingTest extends JupiterTestBase {
 
   private final List<TearDownFixture> tearDowns = new ArrayList<>();
 
   private ProxyServer proxyServer;
 
-  @Before
+  @BeforeEach
   public void newProxyInstance() {
     proxyServer = new ProxyServer();
     tearDowns.add(proxyServer::destroy);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     tearDowns.forEach(Safely::safelyCall);
   }

@@ -17,13 +17,13 @@
 
 package com.thoughtworks.selenium.condition;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(value = Suite.class)
-@Suite.SuiteClasses({
+@SelectClasses({
     ConditionTest.class,
     JUnit4AndTestNgConditionRunnerTest.class
 })
+@Suite
 public class ConditionTestSuite {
 }

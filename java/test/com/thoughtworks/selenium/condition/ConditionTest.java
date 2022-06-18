@@ -17,14 +17,13 @@
 
 package com.thoughtworks.selenium.condition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test for Condition class.
@@ -32,7 +31,7 @@ import org.junit.Test;
 public class ConditionTest {
 
   private static final ConditionRunner conditionRunner =
-      new JUnitConditionRunner(null, 1, 100);
+    new JUnitConditionRunner(null, 1, 100);
 
   @Test
   public void testAppendsInfoToFailureMessage() {
@@ -41,7 +40,7 @@ public class ConditionTest {
       fail("the condition should have failed");
     } catch (AssertionError expected) {
       assertEquals("Condition \"Sky should be blue\" failed to become true within 100 msec; " +
-          "this condition should always fail; [sky is in fact pink]", expected.getMessage());
+        "this condition should always fail; [sky is in fact pink]", expected.getMessage());
     }
   }
 
@@ -87,8 +86,8 @@ public class ConditionTest {
       long l = System.currentTimeMillis() - start;
       assertTrue(l >= 1000);
       assertEquals(
-          "Condition \"NOT of (Condition \"Sky should be blue\")\" failed to become true within 1000 msec; [yes it is really is blue]",
-          expected.getMessage());
+        "Condition \"NOT of (Condition \"Sky should be blue\")\" failed to become true within 1000 msec; [yes it is really is blue]",
+        expected.getMessage());
     }
   }
 
@@ -131,7 +130,6 @@ public class ConditionTest {
   /**
    * Why? Well because for some technologies/setups, any Selenium operation may result in a 'body
    * not loaded' for the first few loops See http://jira.openqa.org/browse/SRC-302
-   *
    */
   @Test
   public void testCanLateNotifyOfSeleniumExceptionAfterTimeout() {
@@ -147,8 +145,8 @@ public class ConditionTest {
       fail("the condition should have failed");
     } catch (AssertionError expected) {
       assertEquals(
-          "SeleniumException while waiting for 'Condition \"null\"' (otherwise timed out); cause: Yeehaa!",
-          expected.getMessage());
+        "SeleniumException while waiting for 'Condition \"null\"' (otherwise timed out); cause: Yeehaa!",
+        expected.getMessage());
       long l = System.currentTimeMillis() - start;
       assertTrue(l >= 500); // timed out after 500 milliseconds
     }
@@ -169,7 +167,7 @@ public class ConditionTest {
       fail("should have thrown a exception");
     } catch (AssertionError expected) {
       assertEquals("Exception while waiting for 'Condition \"foo\"'; cause: ooops",
-          expected.getMessage());
+        expected.getMessage());
     }
   }
 
@@ -178,7 +176,7 @@ public class ConditionTest {
     Condition condition = new Condition() {
       @Override
       public boolean isTrue(ConditionRunner.Context runner) {
-        assertTrue("OMG", false);
+        assertTrue(false, "OMG");
         return false;
       }
     };
@@ -186,8 +184,7 @@ public class ConditionTest {
       conditionRunner.waitFor(condition);
       fail("should have thrown an assertion failed error");
     } catch (AssertionError expected) {
-      assertEquals("OMG", expected.getMessage());
-      assertEquals(AssertionError.class, expected.getClass());
+      assertTrue(expected.getMessage().contains("OMG"));
     }
   }
 
@@ -205,7 +202,7 @@ public class ConditionTest {
       fail("should have thrown a runtime exception");
     } catch (AssertionError expected) {
       assertEquals("Exception while waiting for 'Condition \"foo bar baz\"'",
-          expected.getMessage());
+        expected.getMessage());
     }
   }
 

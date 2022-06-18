@@ -20,9 +20,9 @@ package org.openqa.selenium.grid.web;
 import com.google.common.io.ByteStreams;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -42,7 +42,7 @@ import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
 
@@ -52,12 +52,12 @@ public class ReverseProxyHandlerTest {
   private Tracer tracer = DefaultTestTracer.createTracer();
   private HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
-  @Before
+  @BeforeEach
   public void startServer() throws IOException {
     server = new Server();
   }
 
-  @After
+  @AfterEach
   public void stopServer() {
     server.stop();
   }

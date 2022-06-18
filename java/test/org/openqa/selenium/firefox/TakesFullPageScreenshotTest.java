@@ -17,20 +17,14 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-
 import com.google.common.collect.Sets;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TestName;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
@@ -39,7 +33,9 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.imageio.ImageIO;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 /**
  * Test screenshot feature.
@@ -65,21 +61,18 @@ import javax.imageio.ImageIO;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
-public class TakesFullPageScreenshotTest extends JUnit4TestBase {
-
-  @Rule
-  public final TestName testName = new TestName();
+public class TakesFullPageScreenshotTest extends JupiterTestBase {
 
   private FirefoxDriver screenshooter;
   private File tempFile = null;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     assumeTrue(driver instanceof FirefoxDriver);
     screenshooter = (FirefoxDriver) driver;
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (tempFile != null) {
       tempFile.delete();
@@ -269,9 +262,9 @@ public class TakesFullPageScreenshotTest extends JUnit4TestBase {
    * @param im image
    */
   @SuppressWarnings("unused")
-  private void saveImageToTmpFile(BufferedImage im) {
+  private void saveImageToTmpFile(String methodName, BufferedImage im) {
 
-    File outputfile = new File( testName.getMethodName() + "_image.png");
+    File outputfile = new File( methodName + "_image.png");
     try {
       ImageIO.write(im, "png", outputfile);
     } catch (IOException e) {

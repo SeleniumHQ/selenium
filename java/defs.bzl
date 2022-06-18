@@ -13,11 +13,10 @@ load("//java/private:suite.bzl", _java_selenium_test_suite = "java_selenium_test
 load(
     "@contrib_rules_jvm//java:defs.bzl",
     _JUNIT5_DEPS = "JUNIT5_DEPS",
-    _JUNIT5_VINTAGE_DEPS = "JUNIT5_VINTAGE_DEPS",
     _java_test_suite = "java_test_suite",
 )
 
-def java_test_suite(name, runner = "junit4", **kwargs):
+def java_test_suite(name, runner = "junit5", **kwargs):
     _java_test_suite(name = name, runner = runner, **kwargs)
 
 artifact = _artifact
@@ -33,4 +32,3 @@ javadoc = _javadoc
 merge_jars = _merge_jars
 selenium_test = _selenium_test
 JUNIT5_DEPS = _JUNIT5_DEPS
-JUNIT5_VINTAGE_DEPS = _JUNIT5_VINTAGE_DEPS

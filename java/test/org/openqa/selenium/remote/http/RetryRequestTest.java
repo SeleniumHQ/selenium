@@ -19,8 +19,8 @@ package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.netty.NettyClient;
@@ -42,7 +42,7 @@ public class RetryRequestTest {
   private HttpClient client;
   private static final String REQUEST_PATH = "http://%s:%s/hello";
 
-  @Before
+  @BeforeEach
   public void setUp() throws MalformedURLException {
     ClientConfig config = ClientConfig.defaultConfig()
       .baseUrl(URI.create("http://localhost:2345").toURL())

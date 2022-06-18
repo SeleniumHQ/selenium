@@ -21,7 +21,7 @@ import com.google.common.io.Files;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WrapsDriver;
 
 import java.io.File;

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.interactions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -29,7 +29,7 @@ import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -52,7 +52,7 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 /**
  * Tests operations that involve mouse and keyboard.
  */
-public class DefaultMouseTest extends JUnit4TestBase {
+public class DefaultMouseTest extends JupiterTestBase {
 
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);

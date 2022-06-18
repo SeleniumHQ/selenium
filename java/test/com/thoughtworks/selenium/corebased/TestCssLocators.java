@@ -20,7 +20,7 @@ package com.thoughtworks.selenium.corebased;
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.Selenium;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestCssLocators extends InternalSelenseTestBase {
   @Test

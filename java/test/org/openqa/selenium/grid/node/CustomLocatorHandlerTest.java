@@ -18,8 +18,8 @@
 package org.openqa.selenium.grid.node;
 
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.openqa.selenium.By;
@@ -76,7 +76,7 @@ public class CustomLocatorHandlerTest {
   private LocalNode.Builder nodeBuilder;
   private URI nodeUri;
 
-  @Before
+  @BeforeEach
   public void partiallyBuildNode() {
     Tracer tracer = DefaultTestTracer.createTracer();
     nodeUri = URI.create("http://localhost:1234");

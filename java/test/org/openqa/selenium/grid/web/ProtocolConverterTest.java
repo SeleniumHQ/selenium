@@ -21,7 +21,7 @@ package org.openqa.selenium.grid.web;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
@@ -46,9 +46,9 @@ import java.util.Map;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -72,10 +72,10 @@ public class ProtocolConverterTest {
     SessionId sessionId = new SessionId("1234567");
 
     HttpHandler handler = new ProtocolConverter(
-        tracer,
-        HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
-        W3C,
-        OSS) {
+      tracer,
+      HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
+      W3C,
+      OSS) {
       @Override
       protected HttpResponse makeRequest(HttpRequest request) {
         HttpResponse response = new HttpResponse();
@@ -95,9 +95,9 @@ public class ProtocolConverterTest {
     };
 
     Command command = new Command(
-        sessionId,
-        DriverCommand.GET,
-        ImmutableMap.of("url", "http://example.com/cheese"));
+      sessionId,
+      DriverCommand.GET,
+      ImmutableMap.of("url", "http://example.com/cheese"));
 
     HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
 
@@ -107,9 +107,9 @@ public class ProtocolConverterTest {
     assertEquals(HttpURLConnection.HTTP_OK, resp.getStatus());
 
     Map<String, Object> parsed = json.toType(string(resp), MAP_TYPE);
-    assertNull(parsed.toString(), parsed.get("sessionId"));
-    assertTrue(parsed.toString(), parsed.containsKey("value"));
-    assertNull(parsed.toString(), parsed.get("value"));
+    assertNull(parsed.get("sessionId"), parsed.toString());
+    assertTrue(parsed.containsKey("value"), parsed.toString());
+    assertNull(parsed.get("value"), parsed.toString());
   }
 
   @Test
@@ -119,19 +119,19 @@ public class ProtocolConverterTest {
     // Downstream is JSON, upstream is W3C. This way we can force "isDisplayed" to become JS
     // execution.
     HttpHandler handler = new ProtocolConverter(
-        tracer,
-        HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
-        OSS,
-        W3C) {
+      tracer,
+      HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
+      OSS,
+      W3C) {
       @Override
       protected HttpResponse makeRequest(HttpRequest request) {
         assertEquals(String.format("/session/%s/execute/sync", sessionId), request.getUri());
         Map<String, Object> params = json.toType(string(request), MAP_TYPE);
 
         assertEquals(
-            ImmutableList.of(
-                ImmutableMap.of(W3C.getEncodedElementKey(), "4567890")),
-            params.get("args"));
+          ImmutableList.of(
+            ImmutableMap.of(W3C.getEncodedElementKey(), "4567890")),
+          params.get("args"));
 
         HttpResponse response = new HttpResponse();
 
@@ -139,9 +139,9 @@ public class ProtocolConverterTest {
         response.setHeader("Cache-Control", "none");
 
         Map<String, Object> obj = ImmutableMap.of(
-            "sessionId", sessionId.toString(),
-            "status", 0,
-            "value", true);
+          "sessionId", sessionId.toString(),
+          "status", 0,
+          "value", true);
         String payload = json.toJson(obj);
         response.setContent(utf8String(payload));
 
@@ -150,9 +150,9 @@ public class ProtocolConverterTest {
     };
 
     Command command = new Command(
-        sessionId,
-        DriverCommand.IS_ELEMENT_DISPLAYED,
-        ImmutableMap.of("id", "4567890"));
+      sessionId,
+      DriverCommand.IS_ELEMENT_DISPLAYED,
+      ImmutableMap.of("id", "4567890"));
 
     HttpRequest w3cRequest = new JsonHttpCommandCodec().encode(command);
 
@@ -173,10 +173,10 @@ public class ProtocolConverterTest {
     SessionId sessionId = new SessionId("1234567");
 
     HttpHandler handler = new ProtocolConverter(
-        tracer,
-        HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
-        W3C,
-        OSS) {
+      tracer,
+      HttpClient.Factory.createDefault().createClient(new URL("http://example.com/wd/hub")),
+      W3C,
+      OSS) {
       @Override
       protected HttpResponse makeRequest(HttpRequest request) {
         HttpResponse response = new HttpResponse();
@@ -184,11 +184,11 @@ public class ProtocolConverterTest {
         response.setHeader("Content-Type", MediaType.JSON_UTF_8.toString());
         response.setHeader("Cache-Control", "none");
 
-       String payload = new Json().toJson(
-           ImmutableMap.of(
-               "sessionId", sessionId.toString(),
-               "status", UNHANDLED_ERROR,
-               "value", new WebDriverException("I love cheese and peas")));
+        String payload = new Json().toJson(
+          ImmutableMap.of(
+            "sessionId", sessionId.toString(),
+            "status", UNHANDLED_ERROR,
+            "value", new WebDriverException("I love cheese and peas")));
         response.setContent(utf8String(payload));
         response.setStatus(HTTP_INTERNAL_ERROR);
 
@@ -197,9 +197,9 @@ public class ProtocolConverterTest {
     };
 
     Command command = new Command(
-        sessionId,
-        DriverCommand.GET,
-        ImmutableMap.of("url", "http://example.com/cheese"));
+      sessionId,
+      DriverCommand.GET,
+      ImmutableMap.of("url", "http://example.com/cheese"));
 
     HttpRequest w3cRequest = new W3CHttpCommandCodec().encode(command);
 
@@ -212,7 +212,7 @@ public class ProtocolConverterTest {
     assertNull(parsed.get("sessionId"));
     assertTrue(parsed.containsKey("value"));
     @SuppressWarnings("unchecked") Map<String, Object> value =
-        (Map<String, Object>) parsed.get("value");
+      (Map<String, Object>) parsed.get("value");
     System.out.println("value = " + value.keySet());
     assertEquals("unknown error", value.get("error"));
     assertTrue(((String) value.get("message")).startsWith("I love cheese and peas"));

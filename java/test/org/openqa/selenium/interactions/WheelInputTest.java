@@ -20,20 +20,19 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.PropertySetting;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class WheelInputTest {
 
   @Test

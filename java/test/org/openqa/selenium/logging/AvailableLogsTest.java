@@ -18,20 +18,20 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Set;
@@ -40,11 +40,11 @@ import java.util.Set;
 @Ignore(IE)
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
-public class AvailableLogsTest extends JUnit4TestBase {
+public class AvailableLogsTest extends JupiterTestBase {
 
   private WebDriver localDriver;
 
-  @After
+  @AfterEach
   public void quitDriver() {
     if (localDriver != null) {
       localDriver.quit();

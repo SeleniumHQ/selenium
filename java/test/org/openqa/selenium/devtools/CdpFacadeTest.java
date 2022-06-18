@@ -18,9 +18,9 @@
 package org.openqa.selenium.devtools;
 
 import com.google.common.net.MediaType;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.UsernameAndPassword;
@@ -42,7 +42,7 @@ public class CdpFacadeTest extends DevToolsTestBase {
 
   private static NettyAppServer server;
 
-  @BeforeClass
+  @BeforeAll
   public static void startServer() {
     server = new NettyAppServer(
       new BasicAuthenticationFilter("test", "test")
@@ -53,7 +53,7 @@ public class CdpFacadeTest extends DevToolsTestBase {
     server.start();
   }
 
-  @AfterClass
+  @AfterAll
   public static void stopServer() {
     safelyCall(() -> server.stop());
   }

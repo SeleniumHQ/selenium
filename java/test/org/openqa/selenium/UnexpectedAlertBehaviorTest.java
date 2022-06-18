@@ -26,17 +26,17 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 import java.time.Duration;
 
 @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
+public class UnexpectedAlertBehaviorTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")

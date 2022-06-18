@@ -17,26 +17,26 @@
 
 package com.thoughtworks.selenium;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("Mock browser is not supported")
+@Disabled("Mock browser is not supported")
 public class MockBrowserTest {
   Selenium sel;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     sel = new DefaultSelenium("localhost", 4444, "*mock", "http://x");
     sel.start();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     sel.stop();
   }
@@ -45,11 +45,11 @@ public class MockBrowserTest {
   public void testMock() {
     sel.open("/");
     sel.click("foo");
-    assertEquals("Incorrect title", sel.getTitle(), "x");
-    assertTrue("alert wasn't present", sel.isAlertPresent());
-    assertArrayEquals("getAllButtons should return one empty string", sel.getAllButtons(), (new String[] {""}));
-    assertArrayEquals("getAllLinks was incorrect", sel.getAllLinks(), (new String[] {"1"}));
-    assertArrayEquals("getAllFields was incorrect", sel.getAllFields(), (new String[] {"1", "2", "3"}));
+    assertEquals(sel.getTitle(), "x", "Incorrect title");
+    assertTrue(sel.isAlertPresent(), "alert wasn't present");
+    assertArrayEquals(sel.getAllButtons(), (new String[] {""}), "getAllButtons should return one empty string");
+    assertArrayEquals(sel.getAllLinks(), (new String[] {"1"}), "getAllLinks was incorrect");
+    assertArrayEquals(sel.getAllFields(), (new String[] {"1", "2", "3"}), "getAllFields was incorrect");
 
   }
 

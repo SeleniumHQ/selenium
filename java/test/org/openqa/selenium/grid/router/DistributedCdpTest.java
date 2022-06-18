@@ -22,8 +22,8 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -51,7 +51,7 @@ import java.util.Objects;
 
 public class DistributedCdpTest {
 
-  @BeforeClass
+  @BeforeAll
   public static void ensureBrowserIsCdpEnabled() {
     Browser browser = Objects.requireNonNull(Browser.detect());
 

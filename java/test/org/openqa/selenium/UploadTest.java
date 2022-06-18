@@ -19,7 +19,7 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
@@ -27,11 +27,11 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
@@ -51,14 +51,14 @@ import java.util.stream.Collectors;
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-public class UploadTest extends JUnit4TestBase {
+public class UploadTest extends JupiterTestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
   private static final String FILE_HTML = "<div>" + LOREM_IPSUM_TEXT + "</div>";
 
   private File testFile;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     testFile = createTmpFile(FILE_HTML);
   }
@@ -67,10 +67,9 @@ public class UploadTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(value = SAFARI, reason = "Returns wrong text of the frame body")
   public void testFileUploading() {
-    assumeFalse(
-        "This test as written assumes a file on local disk is accessible to the browser. "
-        + "That is not true for browsers on mobile platforms.",
-        TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID),
+      "This test as written assumes a file on local disk is accessible to the browser. "
+        + "That is not true for browsers on mobile platforms.");
     driver.get(pages.uploadPage);
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).click();
@@ -91,14 +90,13 @@ public class UploadTest extends JUnit4TestBase {
   public void testMultipleFileUploading() {
     List<String> multiContent = Arrays.asList(LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT, LOREM_IPSUM_TEXT);
     String fileNames = multiContent.stream()
-        .map(text -> "<div>" + text + "</div>")
-        .map(this::createTmpFile)
-        .map(File::getAbsolutePath)
-        .collect(Collectors.joining("\n"));
-    assumeFalse(
-        "This test as written assumes a file on local disk is accessible to the browser. "
-        + "That is not true for browsers on mobile platforms.",
-        TestUtilities.getEffectivePlatform(driver).is(ANDROID));
+      .map(text -> "<div>" + text + "</div>")
+      .map(this::createTmpFile)
+      .map(File::getAbsolutePath)
+      .collect(Collectors.joining("\n"));
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID),
+      "This test as written assumes a file on local disk is accessible to the browser. "
+        + "That is not true for browsers on mobile platforms.");
     driver.get(pages.uploadPage);
     driver.findElement(By.id("upload")).sendKeys(fileNames);
     driver.findElement(By.id("go")).click();
@@ -178,7 +176,7 @@ public class UploadTest extends JUnit4TestBase {
     System.out.println(input.isDisplayed());
 
     assertThatExceptionOfType(ElementNotInteractableException.class).isThrownBy(
-        () -> input.sendKeys(testFile.getAbsolutePath()));
+      () -> input.sendKeys(testFile.getAbsolutePath()));
   }
 
   private File createTmpFile(String content) {

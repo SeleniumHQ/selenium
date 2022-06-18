@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -35,7 +35,6 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +61,7 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 import com.google.common.collect.ImmutableMap;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class RemoteWebDriverBuilderTest {
 
   private static final SessionId SESSION_ID = new SessionId(UUID.randomUUID());

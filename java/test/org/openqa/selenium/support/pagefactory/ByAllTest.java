@@ -26,24 +26,23 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class ByAllTest {
 
   private WebDriver driver;
 
-  @Before
+  @BeforeEach
   public void initDriver() {
     driver = mock(WebDriver.class);
   }
