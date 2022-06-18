@@ -20,10 +20,10 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -79,7 +79,7 @@ public class NewSessionCreationTest {
   private Secret registrationSecret;
   private Server<?> server;
 
-  @Before
+  @BeforeEach
   public void setup() {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
@@ -87,7 +87,7 @@ public class NewSessionCreationTest {
     registrationSecret = new Secret("hereford hop");
   }
 
-  @After
+  @AfterEach
   public void stopServer() {
     server.stop();
   }
@@ -238,7 +238,8 @@ public class NewSessionCreationTest {
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
-  @Test(timeout = 10000L)
+  @Test
+  @Timeout(10)
   public void shouldRejectRequestForUnsupportedCaps() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     int nodePort = PortProber.findFreePort();

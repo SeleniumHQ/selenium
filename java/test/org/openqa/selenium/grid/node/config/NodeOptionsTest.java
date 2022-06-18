@@ -20,7 +20,7 @@ package org.openqa.selenium.grid.node.config;
 import com.google.common.collect.ImmutableMap;
 
 import org.assertj.core.api.Condition;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -54,9 +54,9 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @SuppressWarnings("DuplicatedCode")
 public class NodeOptionsTest {
@@ -64,9 +64,8 @@ public class NodeOptionsTest {
   @SuppressWarnings("ReturnValueIgnored")
   @Test
   public void canConfigureNodeWithDriverDetection() {
-    assumeFalse("We don't have driver servers in PATH when we run unit tests",
-                Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")));
-    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
+    assumeFalse(Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")), "We don't have driver servers in PATH when we run unit tests");
+    assumeTrue(new ChromeDriverInfo().isAvailable(), "ChromeDriver needs to be available");
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
@@ -89,8 +88,8 @@ public class NodeOptionsTest {
   @Test
   public void shouldDetectCorrectDriversOnWindows() {
     assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
-    assumeFalse("We don't have driver servers in PATH when we run unit tests",
-                Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")));
+    assumeFalse(Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")),
+      "We don't have driver servers in PATH when we run unit tests");
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
@@ -117,8 +116,8 @@ public class NodeOptionsTest {
   @Test
   public void shouldDetectCorrectDriversOnMac() {
     assumeTrue(Platform.getCurrent().is(Platform.MAC));
-    assumeFalse("We don't have driver servers in PATH when we run unit tests",
-                Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")));
+    assumeFalse(Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")),
+      "We don't have driver servers in PATH when we run unit tests");
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
@@ -163,8 +162,8 @@ public class NodeOptionsTest {
 
     assertThat(reported)
       .filteredOn(capabilities ->
-                    capabilities.getCapability("se:vncEnabled") != null &&
-                    capabilities.getCapability("se:noVncPort") != null)
+        capabilities.getCapability("se:vncEnabled") != null &&
+          capabilities.getCapability("se:noVncPort") != null)
       .hasSize(reported.size());
   }
 
@@ -183,8 +182,8 @@ public class NodeOptionsTest {
 
     assertThat(reported)
       .filteredOn(capabilities ->
-                    capabilities.getCapability("se:vncEnabled") == null &&
-                    capabilities.getCapability("se:noVncPort") == null)
+        capabilities.getCapability("se:vncEnabled") == null &&
+          capabilities.getCapability("se:noVncPort") == null)
       .hasSize(reported.size());
   }
 
@@ -204,10 +203,10 @@ public class NodeOptionsTest {
   public void shouldThrowConfigExceptionIfDetectDriversIsFalseAndSpecificDriverIsAdded() {
     Config config = new MapConfig(
       singletonMap("node",
-                   ImmutableMap.of(
-                     "detect-drivers", "false",
-                     "driver-implementation", "[chrome]"
-                   )));
+        ImmutableMap.of(
+          "detect-drivers", "false",
+          "driver-implementation", "[chrome]"
+        )));
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
@@ -380,7 +379,7 @@ public class NodeOptionsTest {
       "display-name = \"Firefox Nightly\"",
       "max-sessions = 2",
       "cheese = \"sabana\"",
-      };
+    };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     List<Capabilities> reported = new ArrayList<>();
@@ -390,7 +389,7 @@ public class NodeOptionsTest {
         return Collections.singleton(HelperFactory.create(config, caps));
       });
       fail("Should have not executed 'getSessionFactories' successfully because driver config " +
-           "needs the stereotype field");
+        "needs the stereotype field");
     } catch (ConfigException e) {
       // Fall through
     }
@@ -409,7 +408,7 @@ public class NodeOptionsTest {
       "[[node.driver-configuration]]",
       "display-name = \"Firefox Nightly\"",
       "stereotype = '{\"browserName\": \"firefox\"}'",
-      };
+    };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     List<Capabilities> reported = new ArrayList<>();
@@ -425,13 +424,13 @@ public class NodeOptionsTest {
 
   @Test
   public void shouldNotOverrideMaxSessionsByDefault() {
-    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
+    assumeTrue(new ChromeDriverInfo().isAvailable(), "ChromeDriver needs to be available");
     int maxRecommendedSessions = Runtime.getRuntime().availableProcessors();
     int overriddenMaxSessions = maxRecommendedSessions + 10;
     Config config = new MapConfig(
       singletonMap("node",
-                   ImmutableMap
-                     .of("max-sessions", overriddenMaxSessions)));
+        ImmutableMap
+          .of("max-sessions", overriddenMaxSessions)));
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
@@ -449,14 +448,14 @@ public class NodeOptionsTest {
 
   @Test
   public void canOverrideMaxSessionsWithFlag() {
-    assumeTrue("ChromeDriver needs to be available", new ChromeDriverInfo().isAvailable());
+    assumeTrue(new ChromeDriverInfo().isAvailable(), "ChromeDriver needs to be available");
     int maxRecommendedSessions = Runtime.getRuntime().availableProcessors();
     int overriddenMaxSessions = maxRecommendedSessions + 10;
     Config config = new MapConfig(
       singletonMap("node",
-                   ImmutableMap
-                     .of("max-sessions", overriddenMaxSessions,
-                         "override-max-sessions", true)));
+        ImmutableMap
+          .of("max-sessions", overriddenMaxSessions,
+            "override-max-sessions", true)));
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
@@ -477,7 +476,7 @@ public class NodeOptionsTest {
     String[] rawConfig = new String[]{
       "[node]",
       "hub = \"cheese.com\"",
-      };
+    };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     NodeOptions nodeOptions = new NodeOptions(config);
@@ -490,7 +489,7 @@ public class NodeOptionsTest {
     String[] rawConfig = new String[]{
       "[node]",
       "hub = \"http://0.0.0.0:4444\"",
-      };
+    };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
     String nonLoopbackAddress = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
     String nonLoopbackAddressUrl = String.format("http://%s:4444", nonLoopbackAddress);

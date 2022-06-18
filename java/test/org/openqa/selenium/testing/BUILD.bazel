@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_library", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_test_suite")
 
 java_library(
     name = "testing",
@@ -25,7 +25,6 @@ java_library(
         "NotYetImplemented.java",
         "NotYetImplementedList.java",
         "SwitchToTopAfterTest.java",
-        "UnitTests.java",
     ],
     visibility = ["//java/test:__subpackages__"],
     exports = [
@@ -40,11 +39,10 @@ java_library(
     srcs = [
         "CaptureLoggingRule.java",
         "IgnoreComparator.java",
-        "JUnit4TestBase.java",
+        "JupiterTestBase.java",
         "Pages.java",
         "Safely.java",
-        "SeleniumTestRule.java",
-        "SeleniumTestRunner.java",
+        "SeleniumExtension.java",
         "StaticResources.java",
         "TearDownFixture.java",
         "TestIgnorance.java",
@@ -61,11 +59,12 @@ java_library(
         "//java/test/org/openqa/selenium/testing/drivers",
         "//java/test/org/openqa/selenium/testing/drivers:browser",
         artifact("com.google.guava:guava"),
-        artifact("junit:junit"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.platform:junit-platform-commons"),
         artifact("org.eclipse.mylyn.github:org.eclipse.egit.github.core"),
         artifact("org.assertj:assertj-core"),
         artifact("org.seleniumhq.selenium:htmlunit-driver"),
-    ] + JUNIT5_VINTAGE_DEPS,
+    ] + JUNIT5_DEPS,
 )
 
 java_test_suite(
@@ -81,7 +80,7 @@ java_test_suite(
         "//java/test/org/openqa/selenium/testing:annotations",
         "//java/test/org/openqa/selenium/testing/drivers",
         "//java/test/org/openqa/selenium/testing/drivers:browser",
-        artifact("junit:junit"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.mockito:mockito-core"),
-    ] + JUNIT5_VINTAGE_DEPS,
+    ] + JUNIT5_DEPS,
 )

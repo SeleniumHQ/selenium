@@ -124,7 +124,7 @@ def inline_doc(description):
         return ''
 
     description = escape_backticks(description)
-    lines = ['#: {}'.format(l) for l in description.split('\n')]
+    lines = [f'#: {l}' for l in description.split('\n')]
     return '\n'.join(lines)
 
 
@@ -162,7 +162,7 @@ def ref_to_python(ref):
     '''
     if '.' in ref:
         domain, subtype = ref.split('.')
-        ref = '{}.{}'.format(snake_case(domain), subtype)
+        ref = f'{snake_case(domain)}.{subtype}'
     return f"{ref}"
 
 
@@ -228,7 +228,7 @@ class CdpProperty:
         if self.items:
             if self.items.ref:
                 py_ref = ref_to_python(self.items.ref)
-                ann = "typing.List[{}]".format(py_ref)
+                ann = f"typing.List[{py_ref}]"
             else:
                 ann = 'typing.List[{}]'.format(
                     CdpPrimitiveType.get_annotation(self.items.type))
@@ -500,7 +500,7 @@ class CdpParameter(CdpProperty):
                 py_type = f'typing.List[{nested_type}]'
         else:
             if self.ref:
-                py_type = "{}".format(ref_to_python(self.ref))
+                py_type = f"{ref_to_python(self.ref)}"
             else:
                 py_type = CdpPrimitiveType.get_annotation(
                     typing.cast(str, self.type))
@@ -939,7 +939,7 @@ def parse(json_path, output_path):
     :returns: a list of CDP domain objects
     '''
     global current_version
-    with open(json_path, "r") as json_file:
+    with open(json_path) as json_file:
         schema = json.load(json_file)
     version = schema['version']
     assert (version['major'], version['minor']) == ('1', '3')
@@ -960,7 +960,7 @@ def generate_init(init_path, domains):
     with open(init_path, "w") as init_file:
         init_file.write(INIT_HEADER)
         for domain in domains:
-            init_file.write('from . import {}\n'.format(domain.module))
+            init_file.write(f'from . import {domain.module}\n')
         init_file.write('from . import util\n\n')
 
 

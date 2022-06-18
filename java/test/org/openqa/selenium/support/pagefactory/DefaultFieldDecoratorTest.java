@@ -17,21 +17,25 @@
 
 package org.openqa.selenium.support.pagefactory;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.testing.UnitTests;
+import org.openqa.selenium.support.PageFactory;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class DefaultFieldDecoratorTest {
 
   // Unused fields are used by tests. Do not remove!

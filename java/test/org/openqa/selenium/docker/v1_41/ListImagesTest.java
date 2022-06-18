@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.docker.v1_41;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.ImageId;
 import org.openqa.selenium.docker.internal.Reference;

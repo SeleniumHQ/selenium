@@ -19,8 +19,8 @@ package org.openqa.selenium.grid.graphql;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -99,7 +99,7 @@ public class GraphqlHandlerTest {
   public GraphqlHandlerTest() throws URISyntaxException {
   }
 
-  @Before
+  @BeforeEach
   public void setupGrid() {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();

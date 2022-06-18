@@ -26,7 +26,7 @@ class BaseOptions(metaclass=ABCMeta):
     """
 
     def __init__(self):
-        super(BaseOptions, self).__init__()
+        super().__init__()
         self._caps = self.default_capabilities
         self.set_capability("pageLoadStrategy", "normal")
         self.mobile_options = None
@@ -226,7 +226,7 @@ class BaseOptions(metaclass=ABCMeta):
 class ArgOptions(BaseOptions):
 
     def __init__(self):
-        super(ArgOptions, self).__init__()
+        super().__init__()
         self._arguments = []
         self._ignore_local_proxy = False
 

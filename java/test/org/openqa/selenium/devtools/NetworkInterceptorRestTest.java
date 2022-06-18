@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
@@ -44,14 +44,14 @@ public class NetworkInterceptorRestTest {
   private WebDriver driver;
   private NetworkInterceptor interceptor;
 
-  @BeforeClass
+  @BeforeAll
   public static void shouldTestBeRunAtAll() {
     // Until Firefox can initialise the Fetch domain, we need this check
     assumeThat(Browser.detect()).isNotEqualTo(Browser.FIREFOX);
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     driver = new WebDriverBuilder().get();
 
@@ -68,7 +68,7 @@ public class NetworkInterceptorRestTest {
     appServer.start();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     safelyCall(
       () -> interceptor.close(),

@@ -26,14 +26,14 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.profiler.EventType;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.List;
@@ -44,11 +44,11 @@ import java.util.stream.StreamSupport;
 @Ignore(IE)
 @Ignore(SAFARI)
 @Ignore(FIREFOX)
-public class PerformanceLoggingTest extends JUnit4TestBase {
+public class PerformanceLoggingTest extends JupiterTestBase {
 
   private WebDriver loggingDriver;
 
-  @After
+  @AfterEach
   public void quitDriver() {
     if (loggingDriver != null) {
       loggingDriver.quit();

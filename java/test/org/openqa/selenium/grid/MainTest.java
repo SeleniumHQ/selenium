@@ -19,8 +19,8 @@ package org.openqa.selenium.grid;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -32,7 +32,7 @@ public class MainTest {
   ByteArrayOutputStream out;
   ByteArrayOutputStream err;
 
-  @Before
+  @BeforeEach
   public void init() {
     out = new ByteArrayOutputStream();
     err = new ByteArrayOutputStream();

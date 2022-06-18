@@ -19,12 +19,10 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -57,63 +55,58 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-@RunWith(Parameterized.class)
 public class EndToEndTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private final Json json = new Json();
 
-  @Parameterized.Parameters(name = "End to End {0}")
-  public static Collection<Supplier<Deployment>> buildGrids() {
+  public static Stream<Arguments> data() {
     StringBuilder rawCaps = new StringBuilder();
     try (JsonOutput out = new Json().newOutput(rawCaps)) {
       out.setPrettyPrint(false).write(CAPS);
     }
 
     Config additionalConfig =
-        new TomlConfig(
-            new StringReader(
-                "[node]\n" +
-                    "detect-drivers = false\n" +
-                    "driver-factories = [\n" +
-                    String.format("\"%s\",", TestSessionFactoryFactory.class.getName()) + "\n" +
-                    String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
-                    "]\n" +
-                    "[sessionqueue]\n" +
-                    "session-request-timeout = 5"));
+      new TomlConfig(
+        new StringReader(
+          "[node]\n" +
+            "detect-drivers = false\n" +
+            "driver-factories = [\n" +
+            String.format("\"%s\",", TestSessionFactoryFactory.class.getName()) + "\n" +
+            String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
+            "]\n" +
+            "[sessionqueue]\n" +
+            "session-request-timeout = 5"));
 
-    return ImmutableSet.of(
-      () -> DeploymentTypes.DISTRIBUTED.start(CAPS, additionalConfig),
-      () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig),
-      () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig));
+    Supplier<Deployment> s1 = () -> DeploymentTypes.DISTRIBUTED.start(CAPS, additionalConfig);
+    Supplier<Deployment> s2 = () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig);
+    Supplier<Deployment> s3 = () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig);
+
+    return ImmutableSet.of(s1, s2, s3).stream().map(Arguments::of);
   }
-
-  @Parameter
-  public Supplier<Deployment> values;
 
   private Server<?> server;
   private TearDownFixture fixtures;
 
   private HttpClient client;
 
-  @Before
-  public void setFields() {
+  public void setFields(Supplier<Deployment> values) {
     Deployment data = values.get();
     this.server = data.getServer();
     this.fixtures = data;
@@ -121,7 +114,7 @@ public class EndToEndTest {
     this.client = clientFactory.createClient(server.getUrl());
   }
 
-  @After
+  @AfterEach
   public void stopServers() {
     Safely.safelyCall(() -> client.close());
     Safely.safelyCall(() -> fixtures.tearDown());
@@ -130,17 +123,17 @@ public class EndToEndTest {
   private static void waitUntilReady(Server<?> server, Duration duration) {
     try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
       new FluentWait<>(client)
-          .withTimeout(duration)
-          .pollingEvery(Duration.ofSeconds(1))
-          .until(
-              c -> {
-                HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-                System.out.println(Contents.string(response));
-                Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return Boolean.TRUE.equals(
-                    status != null && Boolean.parseBoolean(status.get("ready").toString()));
-              });
-      }
+        .withTimeout(duration)
+        .pollingEvery(Duration.ofSeconds(1))
+        .until(
+          c -> {
+            HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+            System.out.println(Contents.string(response));
+            Map<String, Object> status = Values.get(response, MAP_TYPE);
+            return Boolean.TRUE.equals(
+              status != null && Boolean.parseBoolean(status.get("ready").toString()));
+          });
+    }
   }
 
   // Hahahaha. Java naming.
@@ -151,7 +144,7 @@ public class EndToEndTest {
       int port = serverOptions.getPort();
       URI serverUri;
       try {
-         serverUri = new URI("http", null, hostname, port, null, null, null);
+        serverUri = new URI("http", null, hostname, port, null, null, null);
       } catch (URISyntaxException e) {
         throw new RuntimeException(e);
       }
@@ -172,8 +165,11 @@ public class EndToEndTest {
     }
   }
 
-  @Test
-  public void success() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void success(Supplier<Deployment> values) {
+    setFields(values);
+
     // The node added only has a single node. Make sure we can start and stop sessions.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
@@ -185,8 +181,11 @@ public class EndToEndTest {
     waitUntilReady(server, Duration.ofSeconds(20));
   }
 
-  @Test
-  public void exerciseDriver() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void exerciseDriver(Supplier<Deployment> values) {
+    setFields(values);
+
     // The node added only has a single node. Make sure we can start and stop sessions.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
     WebDriver driver = new RemoteWebDriver(server.getUrl(), caps);
@@ -213,13 +212,16 @@ public class EndToEndTest {
     driver.quit();
   }
 
-  @Test
-  public void shouldAllowPassthroughForW3CMode() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void shouldAllowPassthroughForW3CMode(Supplier<Deployment> values) {
+    setFields(values);
+
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-        ImmutableMap.of(
-            "capabilities", ImmutableMap.of(
-                "alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
+      ImmutableMap.of(
+        "capabilities", ImmutableMap.of(
+          "alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
 
     HttpResponse response = client.execute(request);
 
@@ -228,7 +230,7 @@ public class EndToEndTest {
     Map<String, Object> topLevel = json.toType(string(response), MAP_TYPE);
 
     // There should not be a numeric status field
-    assertFalse(string(request), topLevel.containsKey("status"));
+    assertFalse(topLevel.containsKey("status"), string(request));
 
     // And the value should have all the good stuff in it: the session id and the capabilities
     Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
@@ -238,8 +240,11 @@ public class EndToEndTest {
     assertEquals("cheese", caps.get("browserName"));
   }
 
-  @Test
-  public void shouldRejectSessionRequestIfCapsNotSupported() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void shouldRejectSessionRequestIfCapsNotSupported(Supplier<Deployment> values) {
+    setFields(values);
+
     try {
       Capabilities unsupportedCaps = new ImmutableCapabilities("browserName", "brie");
       WebDriver disposable = new RemoteWebDriver(server.getUrl(), unsupportedCaps);
@@ -250,13 +255,16 @@ public class EndToEndTest {
     }
   }
 
-  @Test
-  public void shouldAllowPassthroughForJWPMode() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void shouldAllowPassthroughForJWPMode(Supplier<Deployment> values) {
+    setFields(values);
+
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-        ImmutableMap.of(
-            "desiredCapabilities", ImmutableMap.of(
-                "browserName", "cheese"))));
+      ImmutableMap.of(
+        "desiredCapabilities", ImmutableMap.of(
+          "browserName", "cheese"))));
 
     HttpResponse response = client.execute(request);
 
@@ -265,27 +273,26 @@ public class EndToEndTest {
     Map<String, Object> topLevel = json.toType(string(response), MAP_TYPE);
 
     // There should be a numeric status field
-    assertEquals(topLevel.toString(), 0L, topLevel.get("status"));
+    assertEquals(0L, topLevel.get("status"), topLevel.toString());
     // The session id
-    assertTrue(string(request), topLevel.containsKey("sessionId"));
+    assertTrue(topLevel.containsKey("sessionId"), string(request));
 
     // And the value should be the capabilities.
     Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
-    assertEquals(string(request), "cheese", value.get("browserName"));
+    assertEquals("cheese", value.get("browserName"), string(request));
   }
 
-  @Test
-  public void shouldDoProtocolTranslationFromW3CLocalEndToJWPRemoteEnd() {
-
+  @ParameterizedTest
+  @MethodSource("data")
+  public void shouldDoProtocolTranslationFromW3CLocalEndToJWPRemoteEnd(Supplier<Deployment> values) {
+    setFields(values);
   }
 
-  @Test
-  public void shouldDoProtocolTranslationFromJWPLocalEndToW3CRemoteEnd() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void responseShouldHaveContentTypeAndCacheControlHeaders(Supplier<Deployment> values) {
+    setFields(values);
 
-  }
-
-  @Test
-  public void responseShouldHaveContentTypeAndCacheControlHeaders() {
     try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
 
       HttpResponse response = client.execute(new HttpRequest(GET, "/status"));

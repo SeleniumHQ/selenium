@@ -17,21 +17,18 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(JUnit4.class)
 public class VariableDeclarationTest {
 
   private static final String REPLACEMENT = "selenium.browserbot = {};";
 
   private VariableDeclaration declaration;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     declaration = new VariableDeclaration(
         "selenium.browserbot", REPLACEMENT);

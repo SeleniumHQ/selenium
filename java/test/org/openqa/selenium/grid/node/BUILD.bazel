@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "artifact", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "artifact", "java_test_suite")
 
 java_test_suite(
     name = "small-tests",
@@ -26,8 +26,8 @@ java_test_suite(
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
-        artifact("junit:junit"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
-    ] + JUNIT5_VINTAGE_DEPS,
+    ] + JUNIT5_DEPS,
 )

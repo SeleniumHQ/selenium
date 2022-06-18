@@ -90,8 +90,7 @@ class WebDriver(RemoteWebDriver):
         executor = SafariRemoteConnection(remote_server_addr=self.service.service_url,
                                           keep_alive=keep_alive)
 
-        RemoteWebDriver.__init__(
-            self,
+        super().__init__(
             command_executor=executor,
             options=options,
             desired_capabilities=desired_capabilities)
@@ -104,7 +103,7 @@ class WebDriver(RemoteWebDriver):
         that is started when starting the SafariDriver
         """
         try:
-            RemoteWebDriver.quit(self)
+            super().quit()
         except http_client.BadStatusLine:
             pass
         finally:
