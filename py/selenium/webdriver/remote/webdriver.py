@@ -16,12 +16,12 @@
 # under the License.
 
 """The WebDriver implementation."""
+from __future__ import annotations
 import contextlib
 import copy
 import types
 import typing
 from importlib import import_module
-
 import pkgutil
 
 import sys
@@ -280,7 +280,7 @@ class WebDriver(BaseWebDriver):
         return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(
             type(self), self.session_id)
 
-    def __enter__(self):
+    def __enter__(self) -> WebDriver:
         return self
 
     def __exit__(self,
