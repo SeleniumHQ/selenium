@@ -16,9 +16,7 @@
 # under the License.
 
 import pytest
-
 from selenium.webdriver.common.by import By
-
 
 newLine = "\n"
 

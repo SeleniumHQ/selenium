@@ -19,11 +19,9 @@ from urllib import parse
 
 import pytest
 import urllib3
+from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 from selenium import __version__
-from selenium.webdriver.remote.remote_connection import (
-    RemoteConnection,
-)
 
 
 def test_get_remote_connection_headers_defaults():

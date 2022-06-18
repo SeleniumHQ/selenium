@@ -16,7 +16,6 @@
 # under the License.
 
 import pytest
-
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy, ProxyType
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary

@@ -17,7 +17,6 @@
 
 
 import pytest
-
 from selenium.webdriver.common.timeouts import Timeouts
 
 

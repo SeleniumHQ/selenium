@@ -16,8 +16,9 @@
 # under the License.
 
 import pytest
-from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+from selenium import webdriver
 
 
 @pytest.fixture

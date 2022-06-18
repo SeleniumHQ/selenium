@@ -16,9 +16,8 @@
 # under the License.
 
 import pytest
-
-from selenium.webdriver.common.by import By
 from selenium.common.exceptions import InvalidSelectorException, NoSuchElementException
+from selenium.webdriver.common.by import By
 
 # By.id positive
 

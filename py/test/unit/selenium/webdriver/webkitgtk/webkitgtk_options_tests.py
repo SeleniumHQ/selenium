@@ -16,7 +16,6 @@
 # under the License.
 
 import pytest
-
 from selenium.webdriver.webkitgtk.options import Options
 
 

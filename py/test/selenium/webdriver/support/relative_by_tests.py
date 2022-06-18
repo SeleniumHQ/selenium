@@ -14,10 +14,10 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import pytest
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.relative_locator import with_tag_name, locate_with
-import pytest
+from selenium.webdriver.support.relative_locator import locate_with, with_tag_name
 
 
 def test_should_be_able_to_find_first_one(driver, pages):

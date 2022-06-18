@@ -16,9 +16,9 @@
 # under the License.
 
 import pytest
+from selenium.webdriver.remote.errorhandler import ErrorCode, ErrorHandler
 
 from selenium.common import exceptions
-from selenium.webdriver.remote.errorhandler import ErrorCode, ErrorHandler
 
 
 @pytest.fixture

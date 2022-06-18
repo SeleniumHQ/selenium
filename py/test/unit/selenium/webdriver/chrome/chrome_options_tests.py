@@ -18,7 +18,6 @@ import platform
 from os import path
 
 import pytest
-
 from selenium.webdriver.chrome.options import Options
 
 

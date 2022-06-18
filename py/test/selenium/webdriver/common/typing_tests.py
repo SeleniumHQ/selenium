@@ -15,10 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-
-import pytest
 
 
 def test_should_fire_key_press_events(driver, pages):

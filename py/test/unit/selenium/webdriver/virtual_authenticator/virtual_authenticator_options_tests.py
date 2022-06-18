@@ -16,11 +16,7 @@
 # under the License.
 
 import pytest
-
-
-from selenium.webdriver.common.virtual_authenticator import (
-    VirtualAuthenticatorOptions,
-)
+from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions
 
 
 @pytest.fixture

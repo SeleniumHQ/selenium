@@ -20,11 +20,10 @@ from copy import deepcopy
 from importlib import import_module
 
 import pytest
-
 from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.remote import webdriver
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.remote import webdriver
 
 
 def test_converts_oss_capabilities_to_w3c(mocker):

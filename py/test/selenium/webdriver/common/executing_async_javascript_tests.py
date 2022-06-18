@@ -16,10 +16,8 @@
 # under the License.
 
 import pytest
-
+from selenium.common.exceptions import TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.remote.webelement import WebElement
 
 

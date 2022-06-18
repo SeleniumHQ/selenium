@@ -17,6 +17,7 @@
 
 import pytest
 import urllib3
+
 from selenium import webdriver
 
 
