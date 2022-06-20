@@ -23,7 +23,6 @@ import pytest
 def test_launch_and_close_browser(driver):
     assert 'browserName' in driver.capabilities
 
-
 def test_we_can_launch_multiple_firefox_instances(capabilities):
     driver1 = Firefox(capabilities=capabilities)
     driver2 = Firefox(capabilities=capabilities)
@@ -32,9 +31,22 @@ def test_we_can_launch_multiple_firefox_instances(capabilities):
     driver2.quit()
     driver3.quit()
 
-
-@pytest.mark.parametrize('log_path', [None, "", ("geckodriver.log", "w")])
+@pytest.mark.parametrize('log_path', [None, "different_file.log", ("my_custom_pipe", "w"), ["windows.log", "a+", "-1", "cp1253"]])
 def test_launch_firefox_with_service_log_path(log_path):
     service = Service(log_path=log_path)
     driver = Firefox(capabilities=capabilities, service=service)
-    driver.quit()
+    if log_path is None:
+        assert driver.service.log_file is None
+    elif isinstance(log_path, str) :
+        assert driver.service.log_file.name == log_path
+        assert driver.service.log_file.mode == "a+"
+    else:
+        assert driver.service.log_file.name == log_path[0]
+        assert driver.service.log_file.mode == log_path[1]
+
+
+def test_launch_firefox_with_service_default_log_path():
+    service = Service()
+    driver = Firefox(capabilities=capabilities, service=service)
+    assert driver.service.log_file.mode == "a+"
+    assert driver.service.log_file.name == "geckodriver.log"
