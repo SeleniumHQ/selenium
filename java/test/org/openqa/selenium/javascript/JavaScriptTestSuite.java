@@ -72,7 +72,7 @@ public class JavaScriptTestSuite {
     if (testEnvironment != null) {
       testEnvironment.stop();
     }
-    if (driverSupplier instanceof Closeable) {
+    if (driverSupplier != null) {
       ((Closeable) driverSupplier).close();
     }
   }
