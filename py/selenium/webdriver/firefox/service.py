@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List, Sequence, Union
+from typing import Any, List, Sequence, Union
 
 from selenium.webdriver.common import (service, utils)
 
@@ -28,7 +28,7 @@ class Service(service.Service):
 
     def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
                  port: int = 0, service_args: List[str] = None,
-                 log_path: Union[str, Sequence[str, str]] = "geckodriver.log", env: dict = None):
+                 log_path: Union[str, Sequence[Any], None] = "geckodriver.log", env: dict = None):
         """Creates a new instance of the GeckoDriver remote service proxy.
 
         GeckoDriver provides a HTTP interface speaking the W3C WebDriver
@@ -41,8 +41,9 @@ class Service(service.Service):
         :param service_args: Optional list of arguments to pass to the
             GeckoDriver binary.
         :param log_path: Optional path for the GeckoDriver to log to.
-            Can also be called with (path_name, mode).
+            Can also be called with a sequence of parameters which will be passed to open unmodified.
             Defaults to _geckodriver.log_ in the current working directory and _a+_ respectively.
+            Pass _None_ to disable logging
         :param env: Optional dictionary of output variables to expose
             in the services' environment.
         """
