@@ -20,8 +20,8 @@ package org.openqa.selenium.grid.distributor;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -76,7 +76,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static com.google.common.collect.Iterables.getOnlyElement;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
@@ -95,7 +95,7 @@ public class AddingNodesTest {
   private LocalSessionMap sessions;
   private NewSessionQueue queue;
 
-  @Before
+  @BeforeEach
   public void setUpDistributor() throws MalformedURLException {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();

@@ -20,11 +20,11 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-public class ErrorsTest extends JUnit4TestBase {
+public class ErrorsTest extends JupiterTestBase {
 
   /**
    * This will trivially pass on browsers that do not support the onerror handler (e.g. Internet

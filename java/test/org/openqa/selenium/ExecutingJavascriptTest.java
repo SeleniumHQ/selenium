@@ -17,29 +17,14 @@
 
 package org.openqa.selenium;
 
-import static com.google.common.base.Throwables.getRootCause;
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.By.id;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -55,9 +40,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-public class ExecutingJavascriptTest extends JUnit4TestBase {
+import static com.google.common.base.Throwables.getRootCause;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.openqa.selenium.By.id;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-  @Before
+public class ExecutingJavascriptTest extends JupiterTestBase {
+
+  @BeforeEach
   public void setUp() {
     assumeTrue(driver instanceof JavascriptExecutor);
   }
@@ -111,7 +111,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
 
     Object result = ((JavascriptExecutor) driver).executeScript(
-        "return ['zero', 'one', 'two'];");
+      "return ['zero', 'one', 'two'];");
 
     assertThat(result).isInstanceOf(List.class);
     assertThat((List<?>) result).isEqualTo(ImmutableList.of("zero", "one", "two"));
@@ -160,15 +160,15 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
 
     Map<String, Object> expectedResult = ImmutableMap.of(
-        "foo", "bar",
-        "baz", Arrays.asList("a", "b", "c"),
-        "person", ImmutableMap.of(
-            "first", "John",
-            "last", "Doe")
+      "foo", "bar",
+      "baz", Arrays.asList("a", "b", "c"),
+      "person", ImmutableMap.of(
+        "first", "John",
+        "last", "Doe")
     );
 
     Object result = executeScript(
-        "return {foo:'bar', baz: ['a', 'b', 'c'], " +
+      "return {foo:'bar', baz: ['a', 'b', 'c'], " +
         "person: {first: 'John',last: 'Doe'}};");
     assertThat(result).isInstanceOf(Map.class);
 
@@ -244,8 +244,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> executeScript("return squiggle();"))
-        .satisfies(t -> assertThat(t.getMessage()).doesNotStartWith("null "));
+      .isThrownBy(() -> executeScript("return squiggle();"))
+      .satisfies(t -> assertThat(t.getMessage()).doesNotStartWith("null "));
   }
 
   @Test
@@ -259,18 +259,18 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     driver.get(pages.xhtmlTestPage);
 
     String js = "function functionB() { throw Error('errormessage'); };"
-                + "function functionA() { functionB(); };"
-                + "functionA();";
+      + "function functionA() { functionB(); };"
+      + "functionA();";
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> executeScript(js))
-        .withMessageContaining("errormessage")
-        .satisfies(t -> {
-          Throwable rootCause = getRootCause(t);
-          assertThat(rootCause).hasMessageContaining("errormessage");
-          assertThat(Arrays.asList(rootCause.getStackTrace()))
-              .extracting(StackTraceElement::getMethodName)
-              .contains("functionB");
-        });
+      .isThrownBy(() -> executeScript(js))
+      .withMessageContaining("errormessage")
+      .satisfies(t -> {
+        Throwable rootCause = getRootCause(t);
+        assertThat(rootCause).hasMessageContaining("errormessage");
+        assertThat(Arrays.asList(rootCause.getStackTrace()))
+          .extracting(StackTraceElement::getMethodName)
+          .contains("functionB");
+      });
   }
 
   @Test
@@ -286,7 +286,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   public void testShouldBeAbleToPassAStringAnAsArgument() {
     driver.get(pages.javascriptPage);
     String value =
-        (String) executeScript("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish");
+      (String) executeScript("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish");
 
     assertThat(value).isEqualTo("fish");
   }
@@ -310,9 +310,9 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     driver.get(pages.javascriptPage);
     WebElement button = driver.findElement(By.id("plainButton"));
     String value =
-        (String) executeScript(
-            "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];",
-            button);
+      (String) executeScript(
+        "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];",
+        button);
 
     assertThat(value).isEqualTo("plainButton");
   }
@@ -356,7 +356,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> executeScript("return arguments[0];", driver));
+      .isThrownBy(() -> executeScript("return arguments[0];", driver));
   }
 
   @Test
@@ -384,7 +384,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     driver.get(pages.formPage);
 
     List<WebElement> items = (List<WebElement>) executeScript(
-        "return document.getElementsByName('snack');");
+      "return document.getElementsByName('snack');");
 
     assertThat(items).isNotEmpty();
   }
@@ -410,8 +410,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     Path jqueryFile = InProject.locate("common/src/web/js/jquery-3.5.1.min.js");
     String jquery = new String(Files.readAllBytes(jqueryFile), US_ASCII);
     assertThat(jquery.length())
-        .describedAs("The javascript code should be at least 50 KB.")
-        .isGreaterThan(50000);
+      .describedAs("The javascript code should be at least 50 KB.")
+      .isGreaterThan(50000);
     // This should not throw an exception ...
     executeScript(jquery);
   }
@@ -430,7 +430,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @Test
   @NotYetImplemented(value = HTMLUNIT,
-      reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
+    reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
   @Ignore(SAFARI)
   public void testShouldBeAbleToExecuteScriptOnNoPage() {
     String text = (String) executeScript("return 'test';");
@@ -456,7 +456,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     Object[] args = new Object[]{forms};
 
     String name = (String) ((JavascriptExecutor) driver).executeScript(
-        "return arguments[0][0].tagName", args);
+      "return arguments[0][0].tagName", args);
 
     assertThat(name).isEqualToIgnoringCase("form");
   }
@@ -483,10 +483,10 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     driver.get(pages.simpleTestPage);
 
     Map<String, Object> args = ImmutableMap.of(
-        "key", Arrays.asList("a", new Object[]{"zero", 1, true, 42.4242, false, el}, "c"));
+      "key", Arrays.asList("a", new Object[]{"zero", 1, true, 42.4242, false, el}, "c"));
 
     assertThatExceptionOfType(StaleElementReferenceException.class)
-        .isThrownBy(() -> executeScript("return undefined;", args));
+      .isThrownBy(() -> executeScript("return undefined;", args));
   }
 
   @Test
@@ -503,7 +503,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     }
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   @NotYetImplemented(CHROME)
   @NotYetImplemented(EDGE)
   @Ignore(IE)
@@ -518,7 +519,8 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertThat(((WebElement) value).getText()).contains("A single line of text");
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   @Ignore(value = IE, reason = "returns WebElement")
   @Ignore(HTMLUNIT)
   public void shouldHandleObjectThatThatHaveToJSONMethod() {
@@ -529,13 +531,14 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     assertThat(value).isInstanceOf(Map.class);
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   @Ignore(HTMLUNIT)
   public void shouldHandleRecursiveStructures() {
     driver.get(pages.simpleTestPage);
 
     assertThatExceptionOfType(JavascriptException.class).isThrownBy(() -> executeScript(
-        "var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1"));
+      "var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1"));
   }
 
   @Test
@@ -545,11 +548,11 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
     WebElement expected = driver.findElement(id("oneline"));
 
     Object args = ImmutableMap.of(
-        "top", ImmutableMap.of(
-            "key", singletonList(ImmutableMap.of(
-                "subkey", expected))));
+      "top", ImmutableMap.of(
+        "key", singletonList(ImmutableMap.of(
+          "subkey", expected))));
     WebElement seen = (WebElement) executeScript(
-        "return arguments[0].top.key[0].subkey", args);
+      "return arguments[0].top.key[0].subkey", args);
 
     assertThat(seen).isEqualTo(expected);
   }

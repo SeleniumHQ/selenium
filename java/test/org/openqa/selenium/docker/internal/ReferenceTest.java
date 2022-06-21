@@ -17,30 +17,18 @@
 
 package org.openqa.selenium.docker.internal;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(Parameterized.class)
 public class ReferenceTest {
 
-  private final String input;
-  private final Reference expected;
-  private final String familiarName;
-
-  public ReferenceTest(String input, Reference expected, String familiarName) {
-    this.input = input;
-    this.expected = expected;
-    this.familiarName = familiarName;
-  }
-
-  @Parameterized.Parameters
-  public static Collection<Object[]> data() {
+  public static Stream<Arguments> data() {
     String sha256 = "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     return Arrays.asList(new Object[][]{
       // input -> expected result
@@ -69,17 +57,19 @@ public class ReferenceTest {
        new Reference("localhost:5000", "gouda/brie/cheddar/img", null, sha256),
        String.format("localhost:5000/gouda/brie/cheddar/img@%s", sha256)},
       }
-    );
+    ).stream().map(Arguments::of);
   }
 
-  @Test
-  public void shouldEvaluateValidInputsAsReferences() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void shouldEvaluateValidInputsAsReferences(String input, Reference expected, String familiarName) {
     Reference seen = Reference.parse(input);
     assertThat(seen).describedAs("%s -> %s", input, expected).isEqualTo(expected);
   }
 
-  @Test
-  public void shouldEvaluateReferencesFamiliarName() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void shouldEvaluateReferencesFamiliarName(String input, Reference expected, String familiarName) {
     Reference seen = Reference.parse(input);
     assertThat(seen.getFamiliarName()).describedAs("%s -> %s", input, familiarName)
       .isEqualTo(familiarName);

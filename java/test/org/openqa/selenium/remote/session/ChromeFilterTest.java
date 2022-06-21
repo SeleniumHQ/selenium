@@ -19,15 +19,14 @@ package org.openqa.selenium.remote.session;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeOptions;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class ChromeFilterTest {
 
   @Test

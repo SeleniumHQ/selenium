@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.print;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.openqa.selenium.print.PageSize;
-import org.openqa.selenium.testing.UnitTests;
 
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class PageSizeTest {
 
   // Defaults assertion

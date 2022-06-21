@@ -17,13 +17,12 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class PersistentCapabilitiesTest {
 
   @Test

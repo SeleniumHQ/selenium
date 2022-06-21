@@ -17,16 +17,12 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.Zip;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,7 +38,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Category(UnitTests.class)
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Tag("UnitTests")
 public class FirefoxProfileTest {
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
   private static final String EXT_RESOURCE_PATH =
@@ -50,7 +48,7 @@ public class FirefoxProfileTest {
 
   private FirefoxProfile profile;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     profile = new FirefoxProfile();
   }
@@ -166,10 +164,10 @@ public class FirefoxProfileTest {
   public void convertingToJsonShouldNotPolluteTempDir() throws IOException {
     File sysTemp = new File(System.getProperty("java.io.tmpdir"));
     Set<String> before = Arrays.stream(sysTemp.list())
-        .filter(f -> f.endsWith("webdriver-profile")).collect(Collectors.toSet());
+      .filter(f -> f.endsWith("webdriver-profile")).collect(Collectors.toSet());
     assertThat(profile.toJson()).isNotNull();
     Set<String> after = Arrays.stream(sysTemp.list())
-        .filter(f -> f.endsWith("webdriver-profile")).collect(Collectors.toSet());
+      .filter(f -> f.endsWith("webdriver-profile")).collect(Collectors.toSet());
     assertThat(after).isEqualTo(before);
   }
 
@@ -214,7 +212,7 @@ public class FirefoxProfileTest {
     profile.setPreference("browser.startup.homepage", "http://www.example.com");
     Preferences parsedPrefs = parseUserPrefs(profile);
     assertThat(parsedPrefs.getPreference("browser.startup.homepage"))
-        .isEqualTo("http://www.example.com");
+      .isEqualTo("http://www.example.com");
   }
 
   @Test
@@ -226,7 +224,7 @@ public class FirefoxProfileTest {
     Preferences parsedPrefs = parseUserPrefs(rebuilt);
 
     assertThat(parsedPrefs.getPreference("browser.startup.homepage"))
-        .isEqualTo("http://www.example.com");
+      .isEqualTo("http://www.example.com");
   }
 
   @Test

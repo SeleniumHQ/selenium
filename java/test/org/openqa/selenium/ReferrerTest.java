@@ -18,12 +18,11 @@
 package org.openqa.selenium;
 
 import com.google.common.net.HostAndPort;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.Contents;
@@ -31,8 +30,7 @@ import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.SeleniumTestRule;
-import org.openqa.selenium.testing.SeleniumTestRunner;
+import org.openqa.selenium.testing.SeleniumExtension;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -80,11 +78,10 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
  * <p>Note: depending on the condition under test, the various pages may or may
  * not be served by the same server.
  */
-@RunWith(SeleniumTestRunner.class)
 public class ReferrerTest {
 
-  @Rule
-  public SeleniumTestRule seleniumTestRule = new SeleniumTestRule();
+  @RegisterExtension
+  static SeleniumExtension seleniumExtension = new SeleniumExtension();
 
   private static final String PAGE_1 = "/page1.html";
   private static final String PAGE_2 = "/page2.html";
@@ -96,21 +93,21 @@ public class ReferrerTest {
   private TestServer server2;
   private ProxyServer proxyServer;
 
-  @BeforeClass
+  @BeforeAll
   public static void readContents() throws IOException {
     page1 = new String(Files.readAllBytes(locate("common/src/web/proxy" + PAGE_1)));
     page2 = new String(Files.readAllBytes(locate("common/src/web/proxy" + PAGE_2)));
     page3 = new String(Files.readAllBytes(locate("common/src/web/proxy/page3.html")));
   }
 
-  @Before
+  @BeforeEach
   public void startServers() {
     server1 = new TestServer();
     server2 = new TestServer();
     proxyServer = new ProxyServer();
   }
 
-  @After
+  @AfterEach
   public void stopServers() {
     safelyCall(() -> proxyServer.stop());
     safelyCall(() -> server1.stop());
@@ -123,7 +120,7 @@ public class ReferrerTest {
 
     Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
-    return seleniumTestRule.createNewDriver(caps);
+    return seleniumExtension.createNewDriver(caps);
   }
 
   /**
@@ -135,7 +132,7 @@ public class ReferrerTest {
     String page1Url = server1.whereIs(PAGE_1 + "?next=" + encode(server1.whereIs(PAGE_2)));
     String page2Url = server1.whereIs(PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3)));
 
-    performNavigation(seleniumTestRule.getDriver(), page1Url);
+    performNavigation(seleniumExtension.getDriver(), page1Url);
 
     assertThat(server1.getRequests()).containsExactly(
       new ExpectedRequest(PAGE_1, null),

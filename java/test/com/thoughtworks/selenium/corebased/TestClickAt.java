@@ -18,18 +18,19 @@
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
-
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.CapabilityType;
 
-@Ignore()
+@Disabled()
 public class TestClickAt extends InternalSelenseTestBase {
-  @Test(timeout = 60000)
+  @Test
+  @Timeout(60)
   public void testClickAt() throws Exception {
     selenium.open("test_click_page1.html");
     verifyEquals(selenium.getText("link"), "Click here for next page");

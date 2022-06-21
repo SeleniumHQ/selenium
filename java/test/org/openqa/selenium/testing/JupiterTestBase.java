@@ -17,11 +17,10 @@
 
 package org.openqa.selenium.testing;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
@@ -35,11 +34,10 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-@RunWith(SeleniumTestRunner.class)
-public abstract class JUnit4TestBase {
+public abstract class JupiterTestBase {
 
-  @Rule
-  public SeleniumTestRule seleniumTestRule = new SeleniumTestRule();
+  @RegisterExtension
+  static SeleniumExtension seleniumExtension = new SeleniumExtension();
 
   protected TestEnvironment environment;
   protected AppServer appServer;
@@ -49,24 +47,24 @@ public abstract class JUnit4TestBase {
   protected Wait<WebDriver> shortWait;
   protected WebDriver localDriver;
 
-  @BeforeClass
+  @BeforeAll
   public static void shouldTestBeRunAtAll() {
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
 
-  @Before
+  @BeforeEach
   public void prepareEnvironment() {
     environment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     appServer = environment.getAppServer();
 
     pages = new Pages(appServer);
 
-    driver = seleniumTestRule.getDriver();
-    wait = seleniumTestRule::waitUntil;
-    shortWait = seleniumTestRule::shortWaitUntil;
+    driver = seleniumExtension.getDriver();
+    wait = seleniumExtension::waitUntil;
+    shortWait = seleniumExtension::shortWaitUntil;
   }
 
-  @After
+  @AfterEach
   public void quitLocalDriver() {
     if (localDriver != null) {
       localDriver.quit();
@@ -74,13 +72,13 @@ public abstract class JUnit4TestBase {
   }
 
   public void createNewDriver(Capabilities capabilities) {
-    driver = seleniumTestRule.createNewDriver(capabilities);
-    wait = seleniumTestRule::waitUntil;
-    shortWait = seleniumTestRule::shortWaitUntil;
+    driver = seleniumExtension.createNewDriver(capabilities);
+    wait = seleniumExtension::waitUntil;
+    shortWait = seleniumExtension::shortWaitUntil;
   }
 
   public void removeDriver() {
-    seleniumTestRule.removeDriver();
+    seleniumExtension.removeDriver();
   }
 
   protected WebDriverWait wait(WebDriver driver) {

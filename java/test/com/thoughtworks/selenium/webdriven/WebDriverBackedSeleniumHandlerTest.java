@@ -20,9 +20,9 @@ package com.thoughtworks.selenium.webdriven;
 
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
@@ -38,7 +38,7 @@ import org.openqa.selenium.testing.Pages;
 
 import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class WebDriverBackedSeleniumHandlerTest {
@@ -48,7 +48,7 @@ public class WebDriverBackedSeleniumHandlerTest {
   private AppServer appServer;
   private Pages pages;
 
-  @Before
+  @BeforeEach
   public void setUpServer() {
     Tracer tracer = DefaultTestTracer.createTracer();
 
@@ -65,7 +65,7 @@ public class WebDriverBackedSeleniumHandlerTest {
     port = server.getUrl().getPort();
   }
 
-  @Before
+  @BeforeEach
   public void prepTheEnvironment() {
     TestEnvironment environment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     appServer = environment.getAppServer();
@@ -73,7 +73,7 @@ public class WebDriverBackedSeleniumHandlerTest {
     pages = new Pages(appServer);
   }
 
-  @After
+  @AfterEach
   public void stopServer() {
     safelyCall(() -> server.stop(), () -> appServer.stop());
   }

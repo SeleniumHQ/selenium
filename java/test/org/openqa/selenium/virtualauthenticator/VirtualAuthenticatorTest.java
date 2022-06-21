@@ -17,27 +17,27 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Fail.fail;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions.Protocol;
 
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
-public class VirtualAuthenticatorTest extends JUnit4TestBase {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.assertj.core.api.Fail.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class VirtualAuthenticatorTest extends JupiterTestBase {
 
   /**
    * A pkcs#8 encoded encrypted RSA private key as a base64url string.
@@ -68,7 +68,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
   private JavascriptExecutor jsAwareDriver;
   private VirtualAuthenticator authenticator;
 
-  @Before
+  @BeforeEach
   public void setup() {
     assumeThat(driver).isInstanceOf(HasVirtualAuthenticator.class);
     jsAwareDriver = (JavascriptExecutor) driver;
@@ -141,7 +141,7 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
       + "}]).then(arguments[arguments.length - 1]);", credentialId);
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (authenticator != null) {
       ((HasVirtualAuthenticator) driver).removeVirtualAuthenticator(authenticator);
@@ -232,27 +232,29 @@ public class VirtualAuthenticatorTest extends JUnit4TestBase {
     assertThat(response).extracting("attestation.userHandle").asList().containsExactly(1L);
   }
 
-  @Test(expected = InvalidArgumentException.class)
+  @Test
   public void testAddResidentCredentialNotSupportedWhenAuthenticatorUsesU2FProtocol() {
-    // Add a resident credential using the testing API.
-    createRKEnabledU2FAuthenticator();
+    assertThrows(InvalidArgumentException.class, () -> {
+      // Add a resident credential using the testing API.
+      createRKEnabledU2FAuthenticator();
 
-    /**
-     * A pkcs#8 encoded unencrypted EC256 private key as a base64url string.
-     */
-    String base64EncodedPK =
-      "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
-      + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
-      + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
+      /**
+       * A pkcs#8 encoded unencrypted EC256 private key as a base64url string.
+       */
+      String base64EncodedPK =
+        "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
+          + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
+          + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
 
-    PKCS8EncodedKeySpec privateKey =
-      new PKCS8EncodedKeySpec(Base64.getUrlDecoder().decode(base64EncodedPK));
+      PKCS8EncodedKeySpec privateKey =
+        new PKCS8EncodedKeySpec(Base64.getUrlDecoder().decode(base64EncodedPK));
 
-    byte[] credentialId = {1, 2, 3, 4};
-    byte[] userHandle = {1};
-    Credential credential = Credential.createResidentCredential(
-      credentialId, "localhost", privateKey, userHandle, /*signCount=*/0);
-    authenticator.addCredential(credential);
+      byte[] credentialId = {1, 2, 3, 4};
+      byte[] userHandle = {1};
+      Credential credential = Credential.createResidentCredential(
+        credentialId, "localhost", privateKey, userHandle, /*signCount=*/0);
+      authenticator.addCredential(credential);
+    });
   }
 
   @Test

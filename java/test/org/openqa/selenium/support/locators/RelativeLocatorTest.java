@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.support.locators;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.Page;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +33,7 @@ import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.support.locators.RelativeLocator.with;
 
 
-public class RelativeLocatorTest extends JUnit4TestBase {
+public class RelativeLocatorTest extends JupiterTestBase {
 
   @Test
   public void shouldBeAbleToFindElementsAboveAnotherWithTagName() {

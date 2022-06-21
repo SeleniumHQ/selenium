@@ -17,19 +17,19 @@
 
 package com.thoughtworks.selenium;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CSVTest {
 
   Method CSV;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Method[] methods = HttpCommandProcessor.class.getDeclaredMethods();
     for (int i = 0; i < methods.length; i++) {
@@ -107,7 +107,7 @@ public class CSVTest {
   }
 
   public void compareStringArrays(String[] expected, String[] actual) {
-    assertEquals("Wrong number of elements", expected.length, actual.length);
+    assertEquals(expected.length, actual.length, "Wrong number of elements");
     for (int i = 0; i < expected.length; i++) {
       assertEquals(expected[i], actual[i]);
     }

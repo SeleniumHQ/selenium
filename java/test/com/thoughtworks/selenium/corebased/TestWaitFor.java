@@ -19,8 +19,8 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
@@ -92,7 +92,7 @@ public class TestWaitFor extends InternalSelenseTestBase {
     }
   }
 
-  @After
+  @AfterEach
   public void resetTimeout() {
     selenium.setTimeout("30000");
   }

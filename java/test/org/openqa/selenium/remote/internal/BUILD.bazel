@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_library", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_test_suite")
 
 java_library(
     name = "test-lib",
@@ -19,7 +19,7 @@ java_library(
         "//java/test/org/openqa/selenium/environment",
         "//java/test/org/openqa/selenium/testing:test-base",
         artifact("com.google.guava:guava"),
-        artifact("junit:junit"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
         artifact("io.netty:netty-buffer"),
         artifact("io.netty:netty-codec-http"),
@@ -32,7 +32,7 @@ java_library(
         artifact("io.netty:netty-transport-native-kqueue"),
         artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
         artifact("io.netty:netty-transport-native-unix-common"),
-    ] + JUNIT5_VINTAGE_DEPS,
+    ] + JUNIT5_DEPS,
 )
 
 java_test_suite(
@@ -50,6 +50,6 @@ java_test_suite(
         "//java/test/org/openqa/selenium:helpers",
         artifact("org.assertj:assertj-core"),
         artifact("com.google.guava:guava"),
-        artifact("junit:junit"),
-    ] + JUNIT5_VINTAGE_DEPS,
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+    ] + JUNIT5_DEPS,
 )

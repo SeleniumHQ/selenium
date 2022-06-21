@@ -130,7 +130,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
     from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 
-    candidates = [RemoteConnection] + [ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
+    candidates = [RemoteConnection, ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
     handler = next(
         (c for c in candidates if c.browser_name == capabilities.get('browserName')),
         RemoteConnection

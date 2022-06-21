@@ -19,7 +19,7 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestHtmlSource extends InternalSelenseTestBase {
   @Test
