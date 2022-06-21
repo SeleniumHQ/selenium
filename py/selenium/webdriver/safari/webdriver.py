@@ -44,7 +44,8 @@ class WebDriver(RemoteWebDriver):
          - service - (Optional) Service instance for controlling the safari driver sub process launching.
         """
         self.service = service or Service()
-        self.service.start()
+        if not self.service.reuse_service:
+            self.service.start()
         safari_connection = SafariRemoteConnection(
             remote_server_addr=self.service.service_url, keep_alive=keep_alive
         )
@@ -53,7 +54,6 @@ class WebDriver(RemoteWebDriver):
             command_executor=safari_connection,
             options=options,
         )
-
         self._is_remote: bool = False
 
     def quit(self) -> None:
@@ -66,7 +66,8 @@ class WebDriver(RemoteWebDriver):
         except http_client.BadStatusLine:
             pass
         finally:
-            self.service.stop()
+            if not self.service.reuse_service:
+                self.service.stop()
 
     # safaridriver extension commands. The canonical command support matrix is here:
     # https://developer.apple.com/library/content/documentation/NetworkingInternetWeb/Conceptual/WebDriverEndpointDoc/Commands/Commands.html

@@ -32,7 +32,9 @@ class Service(service.Service):
         executable_path: str = "/usr/bin/safaridriver",
         port: int = 0,
         quiet: bool = False,
+        reuse_service: bool = False,
         service_args: typing.Optional[typing.MutableSequence[str]] = None,
+        start_error_message: str = ""
     ):
         """
         Creates a new instance of the Service
@@ -42,7 +44,7 @@ class Service(service.Service):
          - port : Port the service is running on
          - quiet : Suppress driver stdout and stderr
          - service_args : Sequence of args to pass to the safaridriver service"""
-
+        self.reuse_service = reuse_service
         if not os.path.exists(executable_path):
             if "Safari Technology Preview" in executable_path:
                 message = "Safari Technology Preview does not seem to be installed. You can download it at https://developer.apple.com/safari/download/."
@@ -57,7 +59,7 @@ class Service(service.Service):
         log = PIPE
         if quiet:
             log = open(os.devnull, "w")
-        super().__init__(executable_path, port, log)
+        super().__init__(executable_path, port, log, start_error_message=start_error_message)
 
     def command_line_args(self):
         return ["-p", "%s" % self.port] + self.service_args
