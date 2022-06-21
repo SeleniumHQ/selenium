@@ -62,6 +62,16 @@ class Service(service.Service):
             log = open(os.devnull, "w")
         super().__init__(executable_path, port, log, start_error_message=start_error_message)
 
+    def start(self):
+        """ If reuse_service has not been set launch a new subprocess."""
+        if not self.reuse_service:
+            super().start()
+
+    def stop(self):
+        """ If reuse_service has not been set, stop the currently running process"""
+        if not self.reuse_service:
+            super().stop()
+
     def command_line_args(self):
         return ["-p", "%s" % self.port] + self.service_args
 
