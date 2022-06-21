@@ -29,9 +29,41 @@ public interface CustomLocator {
 
   /**
    * @return The locator name, which is the value of the {@code using}
-   *   property of the JSON payload.
+   * property of the JSON payload.
    */
   String getLocatorName();
 
   By createBy(Object usingParameter);
+
+  /**
+   * @return If the locator is meant to translate to another one.
+   * For example, when ID is translated to CSS.
+   */
+  boolean isTranslator();
+  
+  class Configuration {
+
+    private final boolean translationEnabled;
+    private final boolean forwardNonW3CLocators;
+    private final boolean customLocatorsEnabled;
+
+    public Configuration(boolean translationEnabled, boolean forwardNonW3CLocators,
+                         boolean customLocatorsEnabled) {
+      this.translationEnabled = translationEnabled;
+      this.forwardNonW3CLocators = forwardNonW3CLocators;
+      this.customLocatorsEnabled = customLocatorsEnabled;
+    }
+
+    public boolean isTranslationEnabled() {
+      return translationEnabled;
+    }
+
+    public boolean isForwardNonW3CLocators() {
+      return forwardNonW3CLocators;
+    }
+
+    public boolean isCustomLocatorsEnabled() {
+      return customLocatorsEnabled;
+    }
+  }
 }

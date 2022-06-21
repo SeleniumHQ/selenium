@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.node;
 
 
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
@@ -35,11 +37,11 @@ import org.openqa.selenium.grid.node.local.LocalNode;
 import org.openqa.selenium.grid.node.locators.ById;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -68,8 +70,6 @@ import static org.mockito.Mockito.when;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-
 public class CustomLocatorHandlerTest {
 
   private final Secret registrationSecret = new Secret("cheese");
@@ -92,7 +92,7 @@ public class CustomLocatorHandlerTest {
   public void shouldRequireInputToHaveAUsingParameter() {
     Node node = nodeBuilder.build();
 
-    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
+    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet(), false);
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element")
@@ -106,7 +106,7 @@ public class CustomLocatorHandlerTest {
   public void shouldRequireInputToHaveAValueParameter() {
     Node node = nodeBuilder.build();
 
-    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
+    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet(), false);
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element")
@@ -120,7 +120,7 @@ public class CustomLocatorHandlerTest {
   public void shouldRejectRequestWithAnUnknownLocatorMechanism() {
     Node node = nodeBuilder.build();
 
-    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
+    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet(), false);
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element")
@@ -158,7 +158,12 @@ public class CustomLocatorHandlerTest {
             }
           };
         }
-      }));
+
+        @Override
+        public boolean isTranslator() {
+          return false;
+        }
+      }), false);
 
     HttpResponse res = handler.with(new ErrorFilter()).execute(
       new HttpRequest(POST, "/session/1234/element")
@@ -194,7 +199,12 @@ public class CustomLocatorHandlerTest {
         public By createBy(Object usingParameter) {
           return By.id("brie");
         }
-      }));
+
+        @Override
+        public boolean isTranslator() {
+          return true;
+        }
+      }), false);
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/elements")
@@ -233,7 +243,12 @@ public class CustomLocatorHandlerTest {
         public By createBy(Object usingParameter) {
           return By.id("brie");
         }
-      }));
+
+        @Override
+        public boolean isTranslator() {
+          return true;
+        }
+      }), false);
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element/234345/elements")
@@ -255,7 +270,7 @@ public class CustomLocatorHandlerTest {
       new TestSessionFactory((id, c) -> new Session(id, nodeUri, caps, c, Instant.now())))
       .build();
 
-    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
+    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet(), false);
 
     HttpResponse res = handler.with(new ErrorFilter()).execute(
       new HttpRequest(POST, "/session/1234/element")
@@ -281,7 +296,7 @@ public class CustomLocatorHandlerTest {
     HttpHandler handler = new CustomLocatorHandler(
       node,
       registrationSecret,
-      singleton(new ById()));
+      singleton(new ById()), false);
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/elements")

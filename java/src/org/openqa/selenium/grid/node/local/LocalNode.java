@@ -64,6 +64,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.locators.CustomLocator;
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
@@ -140,8 +141,10 @@ public class LocalNode extends Node {
     Duration sessionTimeout,
     Duration heartbeatPeriod,
     List<SessionSlot> factories,
-    Secret registrationSecret) {
-    super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
+    Secret registrationSecret,
+    CustomLocator.Configuration customLocatorsConfiguration) {
+    super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret,
+          customLocatorsConfiguration);
 
     this.bus = Require.nonNull("Event bus", bus);
 
@@ -662,6 +665,8 @@ public class LocalNode extends Node {
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
+    private CustomLocator.Configuration customLocatorsConfiguration =
+      NodeOptions.DEFAULT_CUSTOM_LOCATORS_CONFIGURATION;
 
     private Builder(
       Tracer tracer,
@@ -701,6 +706,11 @@ public class LocalNode extends Node {
       return this;
     }
 
+    public Builder customLocatorsConfiguration(CustomLocator.Configuration configuration) {
+      this.customLocatorsConfiguration = configuration;
+      return this;
+    }
+
     public Builder sessionTimeout(Duration timeout) {
       sessionTimeout = timeout;
       return this;
@@ -725,7 +735,8 @@ public class LocalNode extends Node {
         sessionTimeout,
         heartbeatPeriod,
         factories.build(),
-        registrationSecret);
+        registrationSecret,
+        customLocatorsConfiguration);
     }
 
     public Advanced advanced() {

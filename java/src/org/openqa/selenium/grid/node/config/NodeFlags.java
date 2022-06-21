@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_CUSTOM_LOCATORS_CONFIGURATION;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_ENABLE_CDP;
@@ -203,6 +204,32 @@ public class NodeFlags implements HasRoles {
                   + "not allow websockets. True by default")
   @ConfigValue(section = NODE_SECTION, name = "enable-cdp", example = "true")
   public Boolean enableCdp = DEFAULT_ENABLE_CDP;
+
+  @Parameter(
+    names = {"--custom-locators-enabled"},
+    arity = 1,
+    description = "Enable custom locators to find elements.")
+  @ConfigValue(section = NODE_SECTION, name = "custom-locators-enabled", example = "true")
+  public Boolean customLocatorsEnabled =
+    DEFAULT_CUSTOM_LOCATORS_CONFIGURATION.isCustomLocatorsEnabled();
+
+  @Parameter(
+    names = {"--locator-translation-enabled"},
+    arity = 1,
+    description = "Enable translation for pre-W3C locators such as 'id' and 'name'. This will "
+                  + "use a custom locator and translate them to CSS.")
+  @ConfigValue(section = NODE_SECTION, name = "locator-translation-enabled", example = "true")
+  public Boolean locatorTranslationEnabled =
+    DEFAULT_CUSTOM_LOCATORS_CONFIGURATION.isTranslationEnabled();
+
+  @Parameter(
+    names = {"--forward-nonstandard-locators"},
+    arity = 1,
+    description = "Skip validation for W3C locators and forward them to the remote end. Useful "
+                  + "for Nodes relaying to cloud services or Appium servers.")
+  @ConfigValue(section = NODE_SECTION, name = "forward-nonstandard-locators", example = "false")
+  public Boolean forwardNonW3CLocators =
+    DEFAULT_CUSTOM_LOCATORS_CONFIGURATION.isForwardNonW3CLocators();
 
   @Parameter(
     names = {"--node-implementation"},

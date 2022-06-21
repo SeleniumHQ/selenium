@@ -18,9 +18,11 @@
 package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeId;
@@ -41,7 +43,6 @@ import org.openqa.selenium.remote.locators.CustomLocator;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
-import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -119,6 +120,11 @@ public abstract class Node implements HasReadyState, Routable {
   protected boolean draining;
 
   protected Node(Tracer tracer, NodeId id, URI uri, Secret registrationSecret) {
+    this(tracer, id, uri, registrationSecret, new CustomLocator.Configuration(false, false, false));
+  }
+
+  protected Node(Tracer tracer, NodeId id, URI uri, Secret registrationSecret,
+                 CustomLocator.Configuration customLocatorConfig) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.id = Require.nonNull("Node id", id);
     this.uri = Require.nonNull("URI", uri);
@@ -127,12 +133,16 @@ public abstract class Node implements HasReadyState, Routable {
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
     Set<CustomLocator> customLocators = StreamSupport.stream(
-      ServiceLoader.load(CustomLocator.class).spliterator(),
-      false)
+        ServiceLoader.load(CustomLocator.class).spliterator(),
+        false)
+      .filter(locator -> locator.isTranslator() == customLocatorConfig.isTranslationEnabled())
       .collect(Collectors.toSet());
 
-    if (!customLocators.isEmpty()) {
-      String names = customLocators.stream().map(CustomLocator::getLocatorName).collect(Collectors.joining(", "));
+    if (!customLocators.isEmpty() && customLocatorConfig.isCustomLocatorsEnabled()) {
+      String names = customLocators
+        .stream()
+        .map(CustomLocator::getLocatorName)
+        .collect(Collectors.joining(", "));
       LOG.info("Binding additional locator mechanisms: " + names);
     }
 
@@ -140,10 +150,12 @@ public abstract class Node implements HasReadyState, Routable {
     routes = combine(
       // "getSessionId" is aggressive about finding session ids, so this needs to be the last
       // route that is checked.
-      matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
+      matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner)
+        .orElse(false))
         .to(() -> new ForwardWebDriverCommand(this))
         .with(spanDecorator("node.forward_command")),
-      new CustomLocatorHandler(this, registrationSecret, customLocators),
+      new CustomLocatorHandler(this, registrationSecret, customLocators,
+                               customLocatorConfig.isForwardNonW3CLocators()),
       post("/session/{sessionId}/file")
         .to(params -> new UploadFile(this, sessionIdFrom(params)))
         .with(spanDecorator("node.upload_file")),

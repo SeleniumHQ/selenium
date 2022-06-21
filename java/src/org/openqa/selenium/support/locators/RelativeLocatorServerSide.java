@@ -19,6 +19,7 @@ package org.openqa.selenium.support.locators;
 
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.JavascriptExecutor;
@@ -36,6 +37,7 @@ import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_EL
 
 @AutoService(CustomLocator.class)
 public class RelativeLocatorServerSide implements CustomLocator {
+
   @Override
   public String getLocatorName() {
     return "relative";
@@ -47,7 +49,13 @@ public class RelativeLocatorServerSide implements CustomLocator {
     return new RemoteRelative(usingParameter);
   }
 
+  @Override
+  public boolean isTranslator() {
+    return true;
+  }
+
   private static class RemoteRelative extends By {
+
     private final Object using;
 
     private RemoteRelative(Object usingParameter) {

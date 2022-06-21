@@ -40,6 +40,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.locators.CustomLocator;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -71,6 +72,8 @@ public class NodeOptions {
   public static final int DEFAULT_SESSION_TIMEOUT = 300;
   public static final int DEFAULT_DRAIN_AFTER_SESSION_COUNT = 0;
   public static final boolean DEFAULT_ENABLE_CDP = true;
+  public static final CustomLocator.Configuration DEFAULT_CUSTOM_LOCATORS_CONFIGURATION =
+    new CustomLocator.Configuration(true, false, true);
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
@@ -236,6 +239,17 @@ public class NodeOptions {
 
   public boolean isCdpEnabled() {
     return config.getBool(NODE_SECTION, "enable-cdp").orElse(DEFAULT_ENABLE_CDP);
+  }
+
+  public CustomLocator.Configuration getCustomLocatorConfiguration() {
+    Boolean customLocatorsEnabled = config.getBool(NODE_SECTION, "custom-locators-enabled")
+      .orElse(DEFAULT_CUSTOM_LOCATORS_CONFIGURATION.isCustomLocatorsEnabled());
+    Boolean locatorTranslationEnabled = config.getBool(NODE_SECTION, "locator-translation-enabled")
+      .orElse(DEFAULT_CUSTOM_LOCATORS_CONFIGURATION.isTranslationEnabled());
+    Boolean forwardNonW3CLocators = config.getBool(NODE_SECTION, "forward-nonstandard-locators")
+      .orElse(DEFAULT_CUSTOM_LOCATORS_CONFIGURATION.isForwardNonW3CLocators());
+    return new CustomLocator.Configuration(locatorTranslationEnabled, forwardNonW3CLocators,
+                                           customLocatorsEnabled);
   }
 
   public int getDrainAfterSessionCount() {

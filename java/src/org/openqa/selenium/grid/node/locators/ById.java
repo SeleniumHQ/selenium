@@ -30,6 +30,7 @@ import org.openqa.selenium.remote.locators.CustomLocator;
 
 @AutoService(CustomLocator.class)
 public class ById implements CustomLocator {
+
   @Override
   public String getLocatorName() {
     return "id";
@@ -39,5 +40,10 @@ public class ById implements CustomLocator {
   public By createBy(Object usingParameter) {
     Require.argument("Locator value", usingParameter).instanceOf(String.class);
     return By.id((String) usingParameter);
+  }
+
+  @Override
+  public boolean isTranslator() {
+    return true;
   }
 }

@@ -70,6 +70,7 @@ public class LocalNodeFactory {
       .sessionTimeout(sessionTimeout)
       .drainAfterSessionCount(nodeOptions.getDrainAfterSessionCount())
       .enableCdp(nodeOptions.isCdpEnabled())
+      .customLocatorsConfiguration(nodeOptions.getCustomLocatorConfiguration())
       .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
