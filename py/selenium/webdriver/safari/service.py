@@ -43,6 +43,7 @@ class Service(service.Service):
          - executable_path : Path to the SafariDriver
          - port : Port the service is running on
          - quiet : Suppress driver stdout and stderr
+         - reuse_service : Do not run the service in a subprocess, instead connect to a running one on the given port
          - service_args : Sequence of args to pass to the safaridriver service"""
         self.reuse_service = reuse_service
         if not os.path.exists(executable_path):
