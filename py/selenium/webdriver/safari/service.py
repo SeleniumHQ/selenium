@@ -32,7 +32,7 @@ class Service(service.Service):
         executable_path: str = "/usr/bin/safaridriver",
         port: int = 0,
         quiet: bool = False,
-        service_args: typing.Optional[typing.Sequence[str]] = None,
+        service_args: typing.Optional[typing.MutableSequence[str]] = None,
     ):
         """
         Creates a new instance of the Service
@@ -41,7 +41,7 @@ class Service(service.Service):
          - executable_path : Path to the SafariDriver
          - port : Port the service is running on
          - quiet : Suppress driver stdout and stderr
-         - service_args : List of args to pass to the safaridriver service"""
+         - service_args : Sequence of args to pass to the safaridriver service"""
 
         if not os.path.exists(executable_path):
             if "Safari Technology Preview" in executable_path:

@@ -39,14 +39,11 @@ class WebDriver(RemoteWebDriver):
     ):
         """
         :Args:
-         - keep_alive - (Optional) boolean to allow the underlying connection to persist.
-         - options : (Optional) Options instance for controlling the session configuration.
-         - service - (Optional) Service instance to control starting safaridriver in a subprocess.
+         - keep_alive - Boolean to allow the underlying connection to persist.
+         - options : (Optional) Options instance for controlling the safari browser session.
+         - service - (Optional) Service instance for controlling the safari driver sub process launching.
         """
         self.service = service or Service()
-        # Todo: Where does reuse_service fit in?
-        # Todo: Do we still need to offer `keep-alive` as an optional flag or just always True now?
-        # Todo: Better text for docstrings.
         self.service.start()
         safari_connection = SafariRemoteConnection(
             remote_server_addr=self.service.service_url, keep_alive=keep_alive
