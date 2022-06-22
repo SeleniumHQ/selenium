@@ -2,8 +2,8 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.77.Final"
-    opentelemetry_version = "1.14.0"
+    netty_version = "4.1.78.Final"
+    opentelemetry_version = "1.15.0"
     junit_jupiter_version = "5.8.2"
     junit_platform_version = "1.8.2"
 
@@ -25,8 +25,8 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service:1.0.1",
             "com.google.auto.service:auto-service-annotations:1.0.1",
             "com.graphql-java:graphql-java:18.1",
-            "com.graphql-java:java-dataloader:3.1.2",
-            "io.grpc:grpc-context:1.46.0",
+            "com.graphql-java:java-dataloader:3.1.4",
+            "io.grpc:grpc-context:1.47.0",
             "io.lettuce:lettuce-core:6.1.8.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
@@ -80,21 +80,21 @@ def selenium_java_deps():
             "org.junit.platform:junit-platform-suite-api:%s" % junit_platform_version,
             "net.bytebuddy:byte-buddy:1.12.10",
             "dev.failsafe:failsafe:3.2.4",
-            "net.sourceforge.htmlunit:htmlunit-core-js:2.61.1",
+            "net.sourceforge.htmlunit:htmlunit-core-js:2.62.0",
             "org.apache.commons:commons-exec:1.3",
-            "org.assertj:assertj-core:3.22.0",
+            "org.assertj:assertj-core:3.23.1",
             "org.asynchttpclient:async-http-client:2.12.3",
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
             "org.hsqldb:hsqldb:2.6.1",
-            "org.mockito:mockito-core:4.5.1",
+            "org.mockito:mockito-core:4.6.1",
             "org.slf4j:slf4j-api:1.7.36",
             "org.slf4j:slf4j-jdk14:1.7.36",
             "org.testng:testng:7.6.0",
             "org.zeromq:jeromq:0.5.2",
             "xyz.rogfam:littleproxy:2.0.9",
-            "org.seleniumhq.selenium:htmlunit-driver:3.61.0",
-            "org.redisson:redisson:3.17.2",
+            "org.seleniumhq.selenium:htmlunit-driver:3.62.0",
+            "org.redisson:redisson:3.17.4",
             "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         ],
         excluded_artifacts = [
