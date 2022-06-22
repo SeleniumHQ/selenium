@@ -84,7 +84,8 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
             test_class = test_class,
             size = size,
             jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags,
-            tags = BROWSERS[browser]["tags"] + tags,
+            # Only allow linting on the default test
+            tags = BROWSERS[browser]["tags"] + tags + ([] if test == name else ["no-lint"]),
             data = BROWSERS[browser]["data"] + data,
             **stripped_args
         )
