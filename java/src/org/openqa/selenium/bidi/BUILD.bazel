@@ -11,8 +11,10 @@ java_library(
         "//java/src/org/openqa/selenium/bidi:__subpackages__",
         "//java/src/org/openqa/selenium/firefox:__subpackages__",
         "//java/test/org/openqa/selenium/bidi:__subpackages__",
+        "//java/test/org/openqa/selenium/grid:__subpackages__",
     ],
     deps = [
+        "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
