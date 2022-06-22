@@ -81,6 +81,8 @@ java_test_suite(
     ],
     deps = [
         ":support",
+        "//java/src/org/openqa/selenium/bidi",
+        "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/grid",
         "//java/src/org/openqa/selenium/grid/config",
         "//java/src/org/openqa/selenium/json",
@@ -89,6 +91,7 @@ java_test_suite(
         "//java/test/org/openqa/selenium/grid/testing",
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
         artifact("org.junit.jupiter:junit-jupiter-api"),
