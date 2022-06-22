@@ -105,15 +105,14 @@ module Selenium
 
         it 'calls create_pointer_move with offsets' do
           allow(mouse).to receive(:create_pointer_move).and_call_original
-          allow(element).to receive(:size).and_return(width: dimension, height: dimension)
 
           right_by = 5
           down_by = 8
 
           builder.move_to(element, right_by, down_by)
           expect(mouse).to have_received(:create_pointer_move).with(duration: duration,
-                                                                    x: right_by - (dimension / 2),
-                                                                    y: down_by - (dimension / 2),
+                                                                    x: right_by,
+                                                                    y: down_by,
                                                                     origin: element)
         end
 
