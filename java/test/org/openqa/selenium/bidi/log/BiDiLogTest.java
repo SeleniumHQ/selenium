@@ -61,23 +61,24 @@ public class BiDiLogTest {
 
     CompletableFuture<LogEntry> future = new CompletableFuture<>();
 
-    BiDi biDi = driver.getBiDi();
+    try (BiDi biDi = driver.getBiDi()) {
 
-    biDi.addListener(Log.entryAdded(), future::complete);
+      biDi.addListener(Log.entryAdded(), future::complete);
 
-    driver.findElement(By.id("consoleLog")).click();
-    LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+      driver.findElement(By.id("consoleLog")).click();
+      LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
-    assertThat(logEntry.getConsoleLogEntry().isPresent()).isTrue();
+      assertThat(logEntry.getConsoleLogEntry().isPresent()).isTrue();
 
-    ConsoleLogEntry consoleLogEntry = logEntry.getConsoleLogEntry().get();
-    assertThat(consoleLogEntry.getText()).isEqualTo("Hello, world!");
-    assertThat(consoleLogEntry.getRealm()).isNull();
-    assertThat(consoleLogEntry.getArgs().size()).isEqualTo(1);
-    assertThat(consoleLogEntry.getType()).isEqualTo("console");
-    assertThat(consoleLogEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.INFO);
-    assertThat(consoleLogEntry.getMethod()).isEqualTo("log");
-    assertThat(consoleLogEntry.getStackTrace()).isNull();
+      ConsoleLogEntry consoleLogEntry = logEntry.getConsoleLogEntry().get();
+      assertThat(consoleLogEntry.getText()).isEqualTo("Hello, world!");
+      assertThat(consoleLogEntry.getRealm()).isNull();
+      assertThat(consoleLogEntry.getArgs().size()).isEqualTo(1);
+      assertThat(consoleLogEntry.getType()).isEqualTo("console");
+      assertThat(consoleLogEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.INFO);
+      assertThat(consoleLogEntry.getMethod()).isEqualTo("log");
+      assertThat(consoleLogEntry.getStackTrace()).isNull();
+    }
   }
 
   @Test
@@ -89,19 +90,19 @@ public class BiDiLogTest {
 
     CompletableFuture<LogEntry> future = new CompletableFuture<>();
 
-    BiDi biDi = driver.getBiDi();
+    try (BiDi biDi = driver.getBiDi()) {
+      biDi.addListener(Log.entryAdded(), future::complete);
 
-    biDi.addListener(Log.entryAdded(), future::complete);
+      driver.findElement(By.id("jsException")).click();
+      LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
-    driver.findElement(By.id("jsException")).click();
-    LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+      assertThat(logEntry.getJavascriptLogEntry().isPresent()).isTrue();
 
-    assertThat(logEntry.getJavascriptLogEntry().isPresent()).isTrue();
-
-    GenericLogEntry javascriptLogEntry = logEntry.getJavascriptLogEntry().get();
-    assertThat(javascriptLogEntry.getText()).isEqualTo("Error: Not working");
-    assertThat(javascriptLogEntry.getType()).isEqualTo("javascript");
-    assertThat(javascriptLogEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
+      GenericLogEntry javascriptLogEntry = logEntry.getJavascriptLogEntry().get();
+      assertThat(javascriptLogEntry.getText()).isEqualTo("Error: Not working");
+      assertThat(javascriptLogEntry.getType()).isEqualTo("javascript");
+      assertThat(javascriptLogEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
+    }
   }
 
   @Test
@@ -113,17 +114,18 @@ public class BiDiLogTest {
 
     CompletableFuture<LogEntry> future = new CompletableFuture<>();
 
-    BiDi biDi = driver.getBiDi();
+    try (BiDi biDi = driver.getBiDi()) {
 
-    biDi.addListener(Log.entryAdded(), future::complete);
+      biDi.addListener(Log.entryAdded(), future::complete);
 
-    driver.findElement(By.id("logWithStacktrace")).click();
-    LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+      driver.findElement(By.id("logWithStacktrace")).click();
+      LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
-    assertThat(logEntry.getJavascriptLogEntry().isPresent()).isTrue();
-    StackTrace stackTrace = logEntry.getJavascriptLogEntry().get().getStackTrace();
-    assertThat(stackTrace).isNotNull();
-    assertThat(stackTrace.getCallFrames().size()).isEqualTo(4);
+      assertThat(logEntry.getJavascriptLogEntry().isPresent()).isTrue();
+      StackTrace stackTrace = logEntry.getJavascriptLogEntry().get().getStackTrace();
+      assertThat(stackTrace).isNotNull();
+      assertThat(stackTrace.getCallFrames().size()).isEqualTo(4);
+    }
   }
 
   @After
