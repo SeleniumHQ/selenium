@@ -24,9 +24,9 @@ import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.json.Json;
 
 import java.io.IOException;
@@ -40,12 +40,12 @@ public class CompiledAtomsNotLeakingTest {
 
   private ScriptableObject global;
 
-  @BeforeClass
+  @BeforeAll
   public static void loadFragment() throws IOException {
     fragment = JavaScriptLoader.loadResource(RESOURCE_PATH);
   }
 
-  @Before
+  @BeforeEach
   public void prepareGlobalObject() {
     ContextFactory.getGlobal().call(context -> {
       global = context.initStandardObjects();

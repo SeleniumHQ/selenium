@@ -18,9 +18,9 @@
 package org.openqa.selenium;
 
 import com.google.common.collect.ImmutableSet;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.Set;
 
@@ -28,11 +28,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-public class ScriptPinningTest extends JUnit4TestBase {
+public class ScriptPinningTest extends JupiterTestBase {
 
   private JavascriptExecutor executor;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     assumeThat(driver).isInstanceOf(JavascriptExecutor.class);
 

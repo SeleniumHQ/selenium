@@ -18,15 +18,15 @@
 package org.openqa.selenium.environment.webserver;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -48,12 +48,12 @@ public abstract class AppServerTestBase {
   private AppServer server;
   private static WebDriver driver;
 
-  @BeforeClass
+  @BeforeAll
   public static void startDriver() {
     driver = new WebDriverBuilder().get();
   }
 
-  @Before
+  @BeforeEach
   public void startServer() {
     server = createAppServer();
     server.start();
@@ -61,12 +61,12 @@ public abstract class AppServerTestBase {
 
   protected abstract AppServer createAppServer();
 
-  @After
+  @AfterEach
   public void stopServer() {
     server.stop();
   }
 
-  @AfterClass
+  @AfterAll
   public static void quitDriver() {
     driver.quit();
   }

@@ -25,7 +25,6 @@ from .ie.options import Options as IeOptions  # noqa
 from .edge.webdriver import WebDriver as Edge  # noqa
 from .edge.webdriver import WebDriver as ChromiumEdge  # noqa
 from .edge.options import Options as EdgeOptions  # noqa
-from .opera.webdriver import WebDriver as Opera  # noqa
 from .safari.webdriver import WebDriver as Safari  # noqa
 from .webkitgtk.webdriver import WebDriver as WebKitGTK  # noqa
 from .webkitgtk.options import Options as WebKitGTKOptions  # noqa

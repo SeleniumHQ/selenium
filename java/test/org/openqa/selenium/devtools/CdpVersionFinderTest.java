@@ -18,11 +18,10 @@
 package org.openqa.selenium.devtools;
 
 import com.google.common.collect.ImmutableList;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 import java.util.Optional;
@@ -30,13 +29,13 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class CdpVersionFinderTest {
 
   private Map<String, Object> chrome85;
   private Map<String, Object> edge84;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Json json = new Json();
     chrome85 = json.toType(

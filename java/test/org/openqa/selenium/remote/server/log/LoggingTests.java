@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.remote.server.log;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-    PerSessionLogHandlerUnitTest.class,
-    LoggingManagerUnitTest.class,
-    ShortTermMemoryHandlerUnitTest.class
+@SelectClasses({PerSessionLogHandlerUnitTest.class,
+  LoggingManagerUnitTest.class,
+  ShortTermMemoryHandlerUnitTest.class
 })
-public class LoggingTests {}
+@Suite
+public class LoggingTests {
+}

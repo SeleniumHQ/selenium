@@ -1,5 +1,5 @@
 load("@rules_jvm_external//:defs.bzl", "artifact")
-load("//java:defs.bzl", "JUNIT5_VINTAGE_DEPS", "java_selenium_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite")
 
 java_selenium_test_suite(
     name = "LargeTests",
@@ -26,7 +26,9 @@ java_selenium_test_suite(
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/test/org/openqa/selenium/testing",
         artifact("io.opentelemetry:opentelemetry-api"),
-        artifact("junit:junit"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.platform:junit-platform-suite-api"),
+        artifact("org.junit.platform:junit-platform-suite-engine"),
         artifact("org.mockito:mockito-core"),
-    ] + JUNIT5_VINTAGE_DEPS,
+    ] + JUNIT5_DEPS,
 )

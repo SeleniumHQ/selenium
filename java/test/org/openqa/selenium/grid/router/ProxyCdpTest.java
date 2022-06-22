@@ -19,9 +19,9 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
@@ -62,7 +62,7 @@ public class ProxyCdpTest {
   private Server<?> proxyServer;
   private SessionMap sessions;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus events = new GuavaEventBus();
@@ -76,7 +76,7 @@ public class ProxyCdpTest {
     proxyServer = new NettyServer(new BaseServerOptions(emptyConfig), nullHandler, proxy).start();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     proxyServer.stop();
   }

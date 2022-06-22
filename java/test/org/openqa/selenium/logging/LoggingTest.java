@@ -26,7 +26,7 @@ import static java.util.logging.Level.WARNING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.logging.LogLevelMapping.toLevel;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 import java.util.logging.Level;

@@ -19,10 +19,10 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("WebDriverBackedSelenium uses webdriver for xpath evaluation")
+@Disabled("WebDriverBackedSelenium uses webdriver for xpath evaluation")
 public class TestUseXpathLibrary extends InternalSelenseTestBase {
   @Test
   public void testUseXpathLibrary() {

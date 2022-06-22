@@ -20,21 +20,20 @@ package org.openqa.selenium.firefox;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.io.Reader;
 import java.io.StringReader;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class PreferencesTest {
 
   private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";
   private StringReader defaults;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     defaults = new StringReader(emptyDefaults);
   }

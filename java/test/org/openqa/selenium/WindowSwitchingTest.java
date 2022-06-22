@@ -19,7 +19,7 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
@@ -33,12 +33,12 @@ import static org.openqa.selenium.testing.drivers.Browser.LEGACY_OPERA;
 import static org.openqa.selenium.testing.drivers.Browser.OPERA;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -47,16 +47,16 @@ import org.openqa.selenium.testing.drivers.Browser;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class WindowSwitchingTest extends JUnit4TestBase {
+public class WindowSwitchingTest extends JupiterTestBase {
 
   private String mainWindow;
 
-  @Before
+  @BeforeEach
   public void storeMainWindowHandle() {
     mainWindow = driver.getWindowHandle();
   }
 
-  @After
+  @AfterEach
   public void closeAllWindowsExceptForTheMainOne() {
     try {
       driver.getWindowHandles().stream().filter(handle -> ! mainWindow.equals(handle))

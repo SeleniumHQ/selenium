@@ -52,8 +52,7 @@ class WebDriver(RemoteWebDriver):
         self.service = Service(executable_path, port=port, log_path=service_log_path)
         self.service.start()
 
-        RemoteWebDriver.__init__(
-            self,
+        super().__init__(
             command_executor=self.service.service_url,
             desired_capabilities=desired_capabilities)
         self._is_remote = False
@@ -64,7 +63,7 @@ class WebDriver(RemoteWebDriver):
         that is started when starting the WPEWebKitDriver
         """
         try:
-            RemoteWebDriver.quit(self)
+            super().quit()
         except http_client.BadStatusLine:
             pass
         finally:

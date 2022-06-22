@@ -37,6 +37,7 @@ import importlib
 import itertools
 import json
 import logging
+import pathlib
 import typing
 
 
@@ -49,10 +50,27 @@ version = None
 
 
 def import_devtools(ver):
+    """
+    Attempt to load the current latest available devtools into the module
+    cache for use later.
+    """
     global devtools
     global version
     version = ver
-    devtools = importlib.import_module("selenium.webdriver.common.devtools.v{}".format(version))
+    base = "selenium.webdriver.common.devtools.v"
+    try:
+        devtools = importlib.import_module(f"{base}{ver}")
+        return devtools
+    except ModuleNotFoundError:
+        # Attempt to parse and load the 'most recent' devtools module. This is likely
+        # because cdp has been updated but selenium python has not been released yet.
+        devtools_path = pathlib.Path(__file__).parents[1].joinpath("devtools")
+        versions = tuple(f.name for f in devtools_path.iterdir() if f.is_dir())
+        latest = max(int(x[1:]) for x in versions)
+        selenium_logger = logging.getLogger(__name__)
+        selenium_logger.debug(f"Falling back to loading `devtools`: v{latest}")
+        devtools = importlib.import_module(f"{base}{latest}")
+        return devtools
 
 
 _connection_context: contextvars.ContextVar = contextvars.ContextVar('connection_context')
@@ -151,7 +169,7 @@ class CdpConnectionClosed(WsConnectionClosed):
 
     def __repr__(self):
         ''' Return representation. '''
-        return '{}<{}>'.format(self.__class__.__name__, self.reason)
+        return f'{self.__class__.__name__}<{self.reason}>'
 
 
 class InternalError(Exception):

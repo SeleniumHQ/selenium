@@ -25,15 +25,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.ui.TickingClock;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.lang.reflect.Field;
 import java.time.Clock;
@@ -41,7 +40,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class AjaxElementLocatorTest {
 
   private TickingClock clock = new TickingClock();

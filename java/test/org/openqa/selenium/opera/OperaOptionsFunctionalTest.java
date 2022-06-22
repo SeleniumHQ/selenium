@@ -19,17 +19,17 @@ package org.openqa.selenium.opera;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.After;
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 /**
  * Functional tests for {@link OperaOptions}.
  */
-public class OperaOptionsFunctionalTest extends JUnit4TestBase {
+public class OperaOptionsFunctionalTest extends JupiterTestBase {
   private OperaDriver driver = null;
 
-  @After
+  @AfterEach
   public void tearDown() {
     if (driver != null) {
       driver.quit();

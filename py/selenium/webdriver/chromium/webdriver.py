@@ -89,8 +89,7 @@ class ChromiumDriver(RemoteWebDriver):
         self.service.start()
 
         try:
-            RemoteWebDriver.__init__(
-                self,
+            super().__init__(
                 command_executor=ChromiumRemoteConnection(
                     remote_server_addr=self.service.service_url,
                     browser_name=browser_name, vendor_prefix=vendor_prefix,
@@ -189,7 +188,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('getIssueMessage')['value']
 
-    def set_sink_to_use(self, sink_name: str) -> str:
+    def set_sink_to_use(self, sink_name: str) -> dict:
         """
         Sets a specific sink, using its name, as a Cast session receiver target.
 
@@ -198,7 +197,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('setSinkToUse', {'sinkName': sink_name})
 
-    def start_desktop_mirroring(self, sink_name: str) -> str:
+    def start_desktop_mirroring(self, sink_name: str) -> dict:
         """
         Starts a desktop mirroring session on a specific receiver target.
 
@@ -207,7 +206,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('startDesktopMirroring', {'sinkName': sink_name})
 
-    def start_tab_mirroring(self, sink_name: str) -> str:
+    def start_tab_mirroring(self, sink_name: str) -> dict:
         """
         Starts a tab mirroring session on a specific receiver target.
 
@@ -216,7 +215,7 @@ class ChromiumDriver(RemoteWebDriver):
         """
         return self.execute('startTabMirroring', {'sinkName': sink_name})
 
-    def stop_casting(self, sink_name: str) -> str:
+    def stop_casting(self, sink_name: str) -> dict:
         """
         Stops the existing Cast session on a specific receiver target.
 
@@ -231,7 +230,7 @@ class ChromiumDriver(RemoteWebDriver):
         that is started when starting the ChromiumDriver
         """
         try:
-            RemoteWebDriver.quit(self)
+            super().quit()
         except Exception:
             # We don't care about the message because something probably has gone wrong
             pass

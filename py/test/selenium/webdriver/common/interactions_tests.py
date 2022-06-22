@@ -236,11 +236,11 @@ def test_can_reset_interactions(driver):
     actions = ActionChains(driver)
     actions.click()
     actions.key_down('A')
-    assert all((len(device.actions) > 0 for device in actions.w3c_actions.devices if device.type != interaction.WHEEL))
+    assert all(len(device.actions) > 0 for device in actions.w3c_actions.devices if device.type != interaction.WHEEL)
 
     actions.reset_actions()
 
-    assert all((len(device.actions) == 0 for device in actions.w3c_actions.devices))
+    assert all(len(device.actions) == 0 for device in actions.w3c_actions.devices)
 
 
 def test_can_pause(driver, pages):
@@ -358,7 +358,7 @@ def _get_events(driver):
     # test_keys_wdspec.html), so this converts them back into unicode literals.
     for e in events:
         # example: turn "U+d83d" (6 chars) into u"\ud83d" (1 char)
-        if "key" in e and e["key"].startswith(u"U+"):
+        if "key" in e and e["key"].startswith("U+"):
             key = e["key"]
             hex_suffix = key[key.index("+") + 1:]
             e["key"] = chr(int(hex_suffix, 16))

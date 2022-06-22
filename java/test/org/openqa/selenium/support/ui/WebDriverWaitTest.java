@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.support.ui;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.By;
@@ -37,7 +37,6 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -49,13 +48,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class WebDriverWaitTest {
 
   @Mock private WebDriver mockDriver;
   @Mock private WebElement mockElement;
 
-  @Before
+  @BeforeEach
   public void createMocks() {
     MockitoAnnotations.initMocks(this);
   }

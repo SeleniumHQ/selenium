@@ -22,8 +22,8 @@ import com.google.common.io.Files;
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.SeleniumException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
   private File testFile;
 
   @Override
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     testFile = createTmpFile(FILE_HTML);
   }

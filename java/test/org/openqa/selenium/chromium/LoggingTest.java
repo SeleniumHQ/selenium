@@ -17,15 +17,15 @@
 
 package org.openqa.selenium.chromium;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.devtools.events.DomMutationEvent;
 import org.openqa.selenium.logging.HasLogEvents;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,9 +36,9 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.devtools.events.CdpEventTypes.consoleEvent;
 import static org.openqa.selenium.devtools.events.CdpEventTypes.domMutation;
 
-public class LoggingTest extends JUnit4TestBase {
+public class LoggingTest extends JupiterTestBase {
 
-  @Before
+  @BeforeEach
   public void checkAssumptions() {
     assumeThat(driver).isInstanceOf(HasLogEvents.class);
   }

@@ -18,17 +18,17 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-public class ContextSwitchingTest extends JUnit4TestBase {
+public class ContextSwitchingTest extends JupiterTestBase {
 
-  @Before
+  @BeforeEach
   public void assumeBrowserIsContextAware() {
-    assumeTrue("Driver is not ContextAware", driver.switchTo() instanceof ContextAware);
+    assumeTrue(driver.switchTo() instanceof ContextAware, "Driver is not ContextAware");
   }
 
   @Test

@@ -18,21 +18,21 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.print.PageSize;
 import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-public class PrintPageTest extends JUnit4TestBase {
+public class PrintPageTest extends JupiterTestBase {
   private static final String MAGIC_STRING = "JVBER";
   private PrintsPage printer;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     assumeTrue(driver instanceof PrintsPage);
     printer = (PrintsPage) driver;

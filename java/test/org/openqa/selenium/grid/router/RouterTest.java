@@ -19,9 +19,8 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -66,11 +65,11 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -111,7 +110,7 @@ public class RouterTest {
       });
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
@@ -168,7 +167,7 @@ public class RouterTest {
     waitUntilNotReady(router, Duration.ofSeconds(5));
 
     Map<String, Object> status = getStatus(router);
-    assertFalse(status.toString(), (Boolean) status.get("ready"));
+    assertFalse((Boolean) status.get("ready"), status.toString());
   }
 
   @Test
@@ -249,7 +248,7 @@ public class RouterTest {
     waitUntilReady(router, Duration.ofSeconds(5));
 
     Map<String, Object> status = getStatus(router);
-    assertTrue(status.toString(), (Boolean) status.get("ready"));
+    assertTrue((Boolean) status.get("ready"), status.toString());
 
     SessionRequest sessionRequest = new SessionRequest(
       new RequestId(UUID.randomUUID()),

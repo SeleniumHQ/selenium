@@ -130,7 +130,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
     from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 
-    candidates = [RemoteConnection] + [ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
+    candidates = [RemoteConnection, ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
     handler = next(
         (c for c in candidates if c.browser_name == capabilities.get('browserName')),
         RemoteConnection
@@ -872,7 +872,7 @@ class WebDriver(BaseWebDriver):
         if isinstance(by, RelativeBy):
             _pkg = '.'.join(__name__.split('.')[:-1])
             raw_function = pkgutil.get_data(_pkg, 'findElements.js').decode('utf8')
-            find_element_js = "return ({}).apply(null, arguments);".format(raw_function)
+            find_element_js = f"return ({raw_function}).apply(null, arguments);"
             return self.execute_script(find_element_js, by.to_dict())
 
         if by == By.ID:
@@ -929,7 +929,7 @@ class WebDriver(BaseWebDriver):
         try:
             with open(filename, 'wb') as f:
                 f.write(png)
-        except IOError:
+        except OSError:
             return False
         finally:
             del png
@@ -1171,7 +1171,6 @@ class WebDriver(BaseWebDriver):
         assert sys.version_info >= (3, 7)
         global cdp
         import_cdp()
-        ws_url = None
         if self.caps.get("se:cdp"):
             ws_url = self.caps.get("se:cdp")
             version = self.caps.get("se:cdpVersion").split(".")[0]
@@ -1181,9 +1180,7 @@ class WebDriver(BaseWebDriver):
         if not ws_url:
             raise WebDriverException("Unable to find url to connect to from capabilities")
 
-        cdp.import_devtools(version)
-
-        devtools = import_module("selenium.webdriver.common.devtools.v{}".format(version))
+        devtools = cdp.import_devtools(version)
         async with cdp.open_cdp(ws_url) as conn:
             targets = await conn.execute(devtools.target.get_targets())
             target_id = targets[0].target_id
