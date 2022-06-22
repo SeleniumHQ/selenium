@@ -35,10 +35,10 @@ import org.openqa.selenium.testing.drivers.Browser;
 import java.io.StringReader;
 import java.util.Collections;
 
-public class RemoteWebDriverBiDiTest {
+class RemoteWebDriverBiDiTest {
 
   @Test
-  public void ensureBiDiSessionCreation() {
+  void ensureBiDiSessionCreation() {
     Browser browser = Browser.FIREFOX;
 
     Deployment deployment = DeploymentTypes.STANDALONE.start(
