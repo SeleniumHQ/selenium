@@ -5,6 +5,7 @@ load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
 LARGE_TESTS = [
     "DistributedCdpTest.java",
     "NewSessionCreationTest.java",
+    "RemoteWebDriverBiDiTest.java",
     "StressTest.java",
 ]
 
