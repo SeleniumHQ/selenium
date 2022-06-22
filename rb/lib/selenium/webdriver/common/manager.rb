@@ -104,11 +104,6 @@ module Selenium
         @timeouts ||= Timeouts.new(@bridge)
       end
 
-      def logs
-        WebDriver.logger.deprecate('Manager#logs', 'Chrome::Driver#logs')
-        @logs ||= Logs.new(@bridge)
-      end
-
       def window
         @window ||= Window.new(@bridge)
       end
