@@ -29,7 +29,6 @@ module Selenium
       class Driver < WebDriver::Driver
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
-        include DriverExtensions::HasRemoteStatus
 
         def initialize(bridge: nil, listener: nil, **opts)
           desired_capabilities = opts[:desired_capabilities]
