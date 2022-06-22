@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.bidi.log;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -41,7 +41,7 @@ public class BiDiLogTest {
   private AppServer server;
   private FirefoxDriver driver;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     FirefoxOptions options = new FirefoxOptions();
     options.setCapability("webSocketUrl", true);
@@ -128,7 +128,7 @@ public class BiDiLogTest {
     }
   }
 
-  @After
+  @AfterEach
   public void quitDriver() {
     if (driver != null) {
       driver.quit();
