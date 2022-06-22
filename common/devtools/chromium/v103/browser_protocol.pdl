@@ -776,9 +776,7 @@ experimental domain Audits
       PrefixedRequestAnimationFrame
       PrefixedStorageInfo
       PrefixedVideoDisplayingFullscreen
-      PrefixedVideoEnterFullscreen
       PrefixedVideoEnterFullScreen
-      PrefixedVideoExitFullscreen
       PrefixedVideoExitFullScreen
       PrefixedVideoSupportsFullscreen
       RangeExpand
