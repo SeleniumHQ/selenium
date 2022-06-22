@@ -308,7 +308,7 @@ module Selenium
       attr_reader :bridge
 
       def create_bridge(**opts)
-        opts[:url] ||= service_url(opts)
+        opts[:url] ||= service_url(opts.delete(:service))
         caps = opts.delete(:capabilities)
         # NOTE: This is deprecated
         cap_array = caps.is_a?(Hash) ? [caps] : Array(caps)
@@ -359,19 +359,9 @@ module Selenium
         }.inject(:merge) || Remote::Capabilities.send(browser || :new)
       end
 
-      def service_url(opts)
-        service_config = opts.delete(:service)
-        %i[driver_opts driver_path port].each do |key|
-          next unless opts.key? key
-
-          WebDriver.logger.deprecate(":#{key}", ':service with an instance of Selenium::WebDriver::Service',
-                                     id: "service_#{key}".to_sym)
-        end
-        service_config ||= Service.send(browser,
-                                        args: opts.delete(:driver_opts),
-                                        path: opts.delete(:driver_path),
-                                        port: opts.delete(:port))
-        @service = service_config.launch
+      def service_url(service)
+        service ||= Service.send(browser)
+        @service = service.launch
         @service.uri
       end
 
