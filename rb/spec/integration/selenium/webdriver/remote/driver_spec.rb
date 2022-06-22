@@ -28,8 +28,7 @@ module Selenium
         end
 
         it 'should expose remote status' do
-          expect(driver).to be_kind_of(DriverExtensions::HasRemoteStatus)
-          expect(driver.remote_status).to be_kind_of(Hash)
+          expect(driver.status).to be_kind_of(Hash)
         end
 
         it 'uses a default file detector' do
