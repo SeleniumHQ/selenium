@@ -70,22 +70,6 @@ module Selenium
           expect(service.executable_path).to eq path
         end
 
-        it 'accepts Safari#driver_path= but throws deprecation notice' do
-          path = '/path/to/driver'
-
-          expect {
-            Selenium::WebDriver::Safari.driver_path = path
-          }.to have_deprecated(:driver_path)
-
-          expect {
-            expect(Selenium::WebDriver::Safari.driver_path).to eq path
-          }.to have_deprecated(:driver_path)
-
-          service = Service.safari
-
-          expect(service.executable_path).to eq path
-        end
-
         it 'does not create args by default' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
