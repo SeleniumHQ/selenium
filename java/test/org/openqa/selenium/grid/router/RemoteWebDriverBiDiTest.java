@@ -19,8 +19,6 @@ package org.openqa.selenium.grid.router;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.BiDi;
@@ -32,7 +30,6 @@ import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.testing.Safely;
 import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.StringReader;
