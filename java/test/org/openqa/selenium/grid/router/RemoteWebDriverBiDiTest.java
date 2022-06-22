@@ -54,12 +54,11 @@ class RemoteWebDriverBiDiTest {
     WebDriver driver = new RemoteWebDriver(deployment.getServer().getUrl(), options);
     driver = new Augmenter().augment(driver);
 
-    BiDi biDi = ((HasBiDi) driver).getBiDi();
-
-    BiDiSessionStatus status =
-      biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
-    assertThat(status).isNotNull();
-    assertThat(status.getMessage()).isEqualTo("Session already started");
-
+    try (BiDi biDi = ((HasBiDi) driver).getBiDi()) {
+      BiDiSessionStatus status =
+        biDi.send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
+      assertThat(status).isNotNull();
+      assertThat(status.getMessage()).isEqualTo("Session already started");
+    }
   }
 }
