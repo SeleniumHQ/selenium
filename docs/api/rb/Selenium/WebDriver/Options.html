@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Options
   
-    &mdash; Documentation by YARD 0.9.27
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
@@ -420,7 +420,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(options: nil, **opts)  &#x21d2; Options </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(**opts)  &#x21d2; Options </a>
     
 
     
@@ -452,7 +452,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(options: nil, **opts)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Options (class)">Options</a></span></tt> 
+    #<strong>initialize</strong>(**opts)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Options (class)">Options</a></span></tt> 
   
 
   
@@ -480,29 +480,15 @@
 71
 72
 73
-74
-75
-76
-77
-78
-79
-80
-81</pre>
+74</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 69</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>options:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_set_capabilities'>set_capabilities</span>
 
-  <span class='ivar'>@options</span> <span class='op'>=</span> <span class='kw'>if</span> <span class='id identifier rubyid_options'>options</span>
-               <span class='const'><span class='object_link'><a href="../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='period'>.</span><span class='id identifier rubyid_logger'><span class='object_link'><a href="../WebDriver.html#logger-class_method" title="Selenium::WebDriver.logger (method)">logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_deprecate'><span class='object_link'><a href="Logger.html#deprecate-instance_method" title="Selenium::WebDriver::Logger#deprecate (method)">deprecate</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>:options as keyword for initializing </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-                                          <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>custom values directly in #new constructor</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span>
-                                          <span class='label'>id:</span> <span class='symbol'>:options_options</span><span class='rparen'>)</span>
-               <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
-             <span class='kw'>else</span>
-               <span class='id identifier rubyid_opts'>opts</span>
-             <span class='kw'>end</span>
+  <span class='ivar'>@options</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='symbol'>:browser_name</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>BROWSER</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -846,14 +832,14 @@
       <pre class="lines">
 
 
-99
-100
-101
-102
-103</pre>
+92
+93
+94
+95
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span>
@@ -942,13 +928,13 @@
       <pre class="lines">
 
 
-94
-95
-96
-97</pre>
+87
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 87</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_option'>add_option</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='ivar'>@options</span><span class='lbracket'>[</span><span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_values'>values</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span> <span class='kw'>if</span> <span class='id identifier rubyid_value'>value</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_name'>name</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
@@ -987,23 +973,23 @@
       <pre class="lines">
 
 
+104
+105
+106
+107
+108
+109
+110
 111
 112
 113
 114
 115
 116
-117
-118
-119
-120
-121
-122
-123
-124</pre>
+117</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 111</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/options.rb', line 104</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_as_json'>as_json</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='ivar'>@options</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
@@ -1029,9 +1015,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri May 27 09:40:40 2022 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.27 (ruby-3.1.1).
+  Generated on Fri Jun 24 00:25:12 2022 by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.28 (ruby-3.1.2).
 </div>
 
     </div>

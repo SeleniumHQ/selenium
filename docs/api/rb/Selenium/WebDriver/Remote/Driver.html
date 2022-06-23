@@ -6,7 +6,7 @@
 <title>
   Class: Selenium::WebDriver::Remote::Driver
   
-    &mdash; Documentation by YARD 0.9.27
+    &mdash; Documentation by YARD 0.9.28
   
 </title>
 
@@ -91,7 +91,7 @@
   
   <dl>
       <dt>Includes:</dt>
-      <dd><span class='object_link'><a href="../DriverExtensions/HasRemoteStatus.html" title="Selenium::WebDriver::DriverExtensions::HasRemoteStatus (module)">DriverExtensions::HasRemoteStatus</a></span>, <span class='object_link'><a href="../DriverExtensions/HasSessionId.html" title="Selenium::WebDriver::DriverExtensions::HasSessionId (module)">DriverExtensions::HasSessionId</a></span>, <span class='object_link'><a href="../DriverExtensions/UploadsFiles.html" title="Selenium::WebDriver::DriverExtensions::UploadsFiles (module)">DriverExtensions::UploadsFiles</a></span></dd>
+      <dd><span class='object_link'><a href="../DriverExtensions/HasSessionId.html" title="Selenium::WebDriver::DriverExtensions::HasSessionId (module)">DriverExtensions::HasSessionId</a></span>, <span class='object_link'><a href="../DriverExtensions/UploadsFiles.html" title="Selenium::WebDriver::DriverExtensions::UploadsFiles (module)">DriverExtensions::UploadsFiles</a></span></dd>
   </dl>
   
   
@@ -180,17 +180,6 @@
   
   
   
-  <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasRemoteStatus.html" title="Selenium::WebDriver::DriverExtensions::HasRemoteStatus (module)">DriverExtensions::HasRemoteStatus</a></span></h3>
-  <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasRemoteStatus.html#remote_status-instance_method" title="Selenium::WebDriver::DriverExtensions::HasRemoteStatus#remote_status (method)">#remote_status</a></span></p>
-
-  
-  
-  
-  
-  
-  
-  
-  
   <h3 class="inherited">Methods included from <span class='object_link'><a href="../DriverExtensions/HasSessionId.html" title="Selenium::WebDriver::DriverExtensions::HasSessionId (module)">DriverExtensions::HasSessionId</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../DriverExtensions/HasSessionId.html#session_id-instance_method" title="Selenium::WebDriver::DriverExtensions::HasSessionId#session_id (method)">#session_id</a></span></p>
 
@@ -270,6 +259,7 @@
       <pre class="lines">
 
 
+33
 34
 35
 36
@@ -281,11 +271,10 @@
 42
 43
 44
-45
-46</pre>
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/driver.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/driver.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>bridge:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>listener:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_desired_capabilities'>desired_capabilities</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='lbracket'>[</span><span class='symbol'>:desired_capabilities</span><span class='rbracket'>]</span>
@@ -311,9 +300,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri May 27 09:40:39 2022 by
-  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.27 (ruby-3.1.1).
+  Generated on Fri Jun 24 00:25:11 2022 by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.28 (ruby-3.1.2).
 </div>
 
     </div>
