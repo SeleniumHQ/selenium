@@ -19,12 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class TestTable extends InternalSelenseTestBase {
   /* See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2255 */
-  @Test @Ignore
+  @Test
+  @Disabled
   public void getValueFromTableTwiceInARowShouldWork() {
     selenium.open("test_table.html");
 

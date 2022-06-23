@@ -61,7 +61,6 @@ setup_args = {
                  'selenium.webdriver.firefox',
                  'selenium.webdriver.ie',
                  'selenium.webdriver.edge',
-                 'selenium.webdriver.opera',
                  'selenium.webdriver.remote',
                  'selenium.webdriver.support', ],
     'include_package_data': True,

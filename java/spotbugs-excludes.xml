@@ -170,7 +170,7 @@
   </Match>
 
   <Match>
-    <Class name="org.openqa.selenium.testing.JUnit4TestBase"/>
+    <Class name="org.openqa.selenium.testing.JupiterTestBase"/>
     <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
   </Match>
 

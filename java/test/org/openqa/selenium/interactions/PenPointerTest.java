@@ -18,7 +18,7 @@
 package org.openqa.selenium.interactions;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -32,7 +32,7 @@ import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -62,7 +62,7 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 /**
  * Tests operations that involve pen input device.
  */
-public class PenPointerTest extends JUnit4TestBase {
+public class PenPointerTest extends JupiterTestBase {
   private final PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
 
   private Actions setDefaultPen(WebDriver driver) {

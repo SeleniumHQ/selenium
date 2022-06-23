@@ -18,6 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.service.DriverService;
@@ -148,11 +149,11 @@ public class ChromeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
       ChromeDriverService, ChromeDriverService.Builder> {
 
+    private final boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
     private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
-    private boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
     private ChromeDriverLogLevel logLevel = null;
 
     @Override
@@ -187,6 +188,7 @@ public class ChromeDriverService extends DriverService {
      * @param verbose True for verbose output, false otherwise.
      * @return A self reference.
      */
+    @SuppressWarnings("UnusedReturnValue")
     public Builder withVerbose(boolean verbose) {
       this.verbose = verbose;
       return this;
@@ -230,8 +232,8 @@ public class ChromeDriverService extends DriverService {
     protected File findDefaultExecutable() {
       return findExecutable(
         "chromedriver", CHROME_DRIVER_EXE_PROPERTY,
-        "https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver",
-        "https://chromedriver.storage.googleapis.com/index.html");
+        "https://chromedriver.chromium.org/",
+        "https://chromedriver.chromium.org/downloads");
     }
 
     @Override

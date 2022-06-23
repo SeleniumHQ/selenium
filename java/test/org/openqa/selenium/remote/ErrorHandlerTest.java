@@ -18,9 +18,9 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.ImeActivationFailedException;
 import org.openqa.selenium.ImeNotAvailableException;
 import org.openqa.selenium.InvalidCookieDomainException;
@@ -42,7 +42,6 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,11 +50,11 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class ErrorHandlerTest {
   private ErrorHandler handler;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     handler = new ErrorHandler();
     handler.setIncludeServerErrors(true);

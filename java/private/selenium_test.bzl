@@ -1,3 +1,4 @@
+load("@contrib_rules_jvm//java:defs.bzl", "java_junit5_test")
 load(
     "//common:browsers.bzl",
     "COMMON_TAGS",
@@ -11,7 +12,6 @@ load(
     "edge_jvm_flags",
     "firefox_jvm_flags",
 )
-load("//java/private:library.bzl", "add_lint_tests")
 
 DEFAULT_BROWSER = "firefox"
 
@@ -79,18 +79,19 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
 
         test = name if browser == default_browser else "%s-%s" % (name, browser)
 
-        native.java_test(
+        java_junit5_test(
             name = test,
             test_class = test_class,
             size = size,
             jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags,
-            tags = BROWSERS[browser]["tags"] + tags,
+            # Only allow linting on the default test
+            tags = BROWSERS[browser]["tags"] + tags + ([] if test == name else ["no-lint"]),
             data = BROWSERS[browser]["data"] + data,
             **stripped_args
         )
 
         if "selenium-remote" in tags:
-            native.java_test(
+            java_junit5_test(
                 name = "%s-remote" % test,
                 test_class = test_class,
                 size = size,
@@ -107,4 +108,3 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
 
     # Handy way to run everything
     native.test_suite(name = "%s-all-browsers" % name, tests = [":%s-%s" % (name, default_browser)], tags = tags + ["manual"])
-    add_lint_tests(name, **kwargs)

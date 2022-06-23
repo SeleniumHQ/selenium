@@ -17,13 +17,13 @@
 
 package com.thoughtworks.selenium;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
@@ -35,13 +35,13 @@ public class StartTest {
   private static TestEnvironment env;
   private static String root;
 
-  @BeforeClass
+  @BeforeAll
   public static void startSelenium() {
     env = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
     root = env.getAppServer().whereIs("/");
   }
 
-  @AfterClass
+  @AfterAll
   public static void killSeleniumServer() {
     env.stop();
   }

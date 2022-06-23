@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.testing;
 
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
@@ -37,87 +33,57 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.internal.Debug.isDebugging;
 
-public class CaptureLoggingRule implements TestRule {
-  @Override
-  public Statement apply(Statement statement, Description description) {
-    return new CaptureLoggingStatement(statement);
+public class CaptureLoggingRule {
+
+  List<Handler> handlers;
+
+  public CaptureLoggingRule() {
+    if (isDebugging()) {
+      return;
+    }
+
+    Logger logger = LogManager.getLogManager().getLogger("");
+
+    // Capture the original log handlers
+    handlers = Arrays.stream(logger.getHandlers())
+      .filter(handler -> handler instanceof ConsoleHandler)
+      .collect(toList());
+
+    // Remove them from the logger
+    handlers.forEach(logger::removeHandler);
+
+    // Replace them with log handlers that record messages
+    logger.addHandler(new RecordingHandler());
   }
 
-  private static class CaptureLoggingStatement extends Statement {
-
-    private final Statement statement;
-
-    public CaptureLoggingStatement(Statement statement) {
-      this.statement = statement;
+  public void writeCapturedLogs() {
+    if (isDebugging()) {
+      return;
     }
 
-    @Override
-    public void evaluate() throws Throwable {
-      List<Handler> handlers = beginLogCapture();
+    Logger logger = LogManager.getLogManager().getLogger("");
+    Arrays.stream(logger.getHandlers())
+      .filter(handler -> handler instanceof RecordingHandler)
+      .map(handler -> (RecordingHandler) handler)
+      .forEach(RecordingHandler::write);
+  }
 
-      try {
-        statement.evaluate();
-      } catch (Throwable throwable) {
-        writeCapturedLogs();
-        throw throwable;
-      } finally {
-        endLogCapture(handlers);
-      }
-
+  public void endLogCapture() {
+    if (isDebugging()) {
+      return;
     }
 
-    private List<Handler> beginLogCapture() {
-      if (isDebugging()) {
-        return emptyList();
-      }
+    // Find our recording handler
+    Logger logger = LogManager.getLogManager().getLogger("");
+    List<RecordingHandler> recordingHandlers = Arrays.stream(logger.getHandlers())
+      .filter(handler -> handler instanceof RecordingHandler)
+      .map(handler -> (RecordingHandler) handler)
+      .collect(toList());
 
-      Logger logger = LogManager.getLogManager().getLogger("");
-
-      // Capture the original log handlers
-      List<Handler> originalHandlers = Arrays.stream(logger.getHandlers())
-        .filter(handler -> handler instanceof ConsoleHandler)
-        .collect(toList());
-
-      // Remove them from the logger
-      originalHandlers.forEach(logger::removeHandler);
-
-      // Replace them with log handlers that record messages
-      logger.addHandler(new RecordingHandler());
-
-      return originalHandlers;
-    }
-
-    private void writeCapturedLogs() {
-      if (isDebugging()) {
-        return;
-      }
-
-      Logger logger = LogManager.getLogManager().getLogger("");
-      Arrays.stream(logger.getHandlers())
-        .filter(handler -> handler instanceof RecordingHandler)
-        .map(handler -> (RecordingHandler) handler)
-        .forEach(RecordingHandler::write);
-    }
-
-    private void endLogCapture(List<Handler> handlers) {
-      if (isDebugging()) {
-        return;
-      }
-
-      // Find our recording handler
-      Logger logger = LogManager.getLogManager().getLogger("");
-      List<RecordingHandler> recordingHandlers = Arrays.stream(logger.getHandlers())
-        .filter(handler -> handler instanceof RecordingHandler)
-        .map(handler -> (RecordingHandler) handler)
-        .collect(toList());
-
-      recordingHandlers.forEach(logger::removeHandler);
-      handlers.forEach(logger::addHandler);
-    }
+    recordingHandlers.forEach(logger::removeHandler);
   }
 
   private static class RecordingHandler extends Handler {

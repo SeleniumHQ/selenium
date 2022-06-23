@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.build.BazelBuild;
 

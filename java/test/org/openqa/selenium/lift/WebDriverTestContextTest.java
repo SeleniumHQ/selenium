@@ -17,20 +17,9 @@
 
 package org.openqa.selenium.lift;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
-
 import org.hamcrest.Description;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
@@ -39,6 +28,16 @@ import org.openqa.selenium.support.ui.TickingClock;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
 
 /**
  * Unit test for {@link WebDriverTestContext}.
@@ -57,7 +56,7 @@ public class WebDriverTestContextTest {
   private static final int CLOCK_INCREMENT = 300;
   final int TIMEOUT = CLOCK_INCREMENT * 3;
 
-  @Before
+  @BeforeEach
   public void createMocks() {
     webdriver = mock(WebDriver.class);
     context = new WebDriverTestContext(webdriver);
@@ -97,7 +96,7 @@ public class WebDriverTestContextTest {
       fail("should have failed as only one element found");
     } catch (AssertionError error) {
       // expected
-      assertThat(error.getMessage(), containsString("a value greater than <1>"));
+      assertThat(error.getMessage()).contains("a value greater than <1>");
     }
 
     // In producing the error message.
@@ -129,7 +128,7 @@ public class WebDriverTestContextTest {
       fail("should have failed as more than one element found");
     } catch (AssertionError error) {
       // expected
-      assertThat(error.getMessage(), containsString("did not know what to click on"));
+      assertThat(error.getMessage()).contains("did not know what to click on");
     }
   }
 
@@ -166,8 +165,8 @@ public class WebDriverTestContextTest {
       fail("should have failed as element not displayed before timeout");
     } catch (AssertionError error) {
       // expected
-      assertThat(error.getMessage(),
-          containsString(String.format("Element was not rendered within %dms", TIMEOUT)));
+      assertThat(error.getMessage()).
+          contains(String.format("Element was not rendered within %dms", TIMEOUT));
     }
 
     verify(finder, atLeastOnce()).findFrom(webdriver);

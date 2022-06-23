@@ -17,29 +17,24 @@
 
 package org.openqa.selenium.grid.node.docker;
 
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
-
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import org.openqa.selenium.docker.Device;
 import org.openqa.selenium.grid.config.Config;
 
-@RunWith(Parameterized.class)
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class DockerOptionsTest {
 
-  private final Config config;
-
-  private final List<Device> devicesExpected;
-
-  @Parameterized.Parameters
-  public static Collection<Object[]> data() {
+  public static Stream<Arguments> data() {
     return asList(new Object[][]{
       {
         configuredDeviceMapping(asList("/dev/kvm:/dev/kvm")),
@@ -61,16 +56,12 @@ public class DockerOptionsTest {
         configuredDeviceMapping(asList(" /dev/kvm:/dev/kvm ")),
         asList(device("/dev/kvm", "/dev/kvm"))
       }
-    });
+    }).stream().map(Arguments::of);
   }
 
-  public DockerOptionsTest(Config config, List<Device> devicesExpected) {
-    this.config = config;
-    this.devicesExpected = devicesExpected;
-  }
-
-  @Test
-  public void shouldReturnOnlyExpectedDeviceMappings() {
+  @ParameterizedTest
+  @MethodSource("data")
+  public void shouldReturnOnlyExpectedDeviceMappings(Config config, List<Device> devicesExpected) {
     List<Device> returnedDevices = new DockerOptions(config).getDevicesMapping();
     assertThat(devicesExpected.equals(returnedDevices))
       .describedAs("Expected %s but was %s", devicesExpected, returnedDevices).isTrue();
@@ -81,7 +72,7 @@ public class DockerOptionsTest {
   }
 
   private static Device device(String pathOnHost, String pathInContainer,
-    String cgroupPermissions) {
+                               String cgroupPermissions) {
     return Device.device(pathOnHost, pathInContainer, cgroupPermissions);
   }
 

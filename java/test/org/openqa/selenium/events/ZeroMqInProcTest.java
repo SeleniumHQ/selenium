@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.events;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.security.Secret;
 import org.zeromq.ZContext;
@@ -35,10 +36,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ZeroMqInProcTest {
   private EventBus bus;
 
-  @Before
+  @BeforeEach
   public void getBus() {
     Secret secret = new Secret("cheese");
-    bus =  ZeroMqEventBus.create(
+    bus = ZeroMqEventBus.create(
       new ZContext(),
       "inproc://bus-pub",
       "inproc://bus-sub",
@@ -46,12 +47,13 @@ public class ZeroMqInProcTest {
       secret);
   }
 
-  @After
+  @AfterEach
   public void closeBus() {
     bus.close();
   }
 
-  @Test(timeout = 4000)
+  @Test
+  @Timeout(4)
   public void shouldBeAbleToPublishToAKnownTopic() throws InterruptedException {
     EventName cheese = new EventName("cheese");
     Event event = new Event(cheese, null);
@@ -64,7 +66,8 @@ public class ZeroMqInProcTest {
     assertThat(latch.getCount()).isEqualTo(0);
   }
 
-  @Test(timeout = 4000)
+  @Test
+  @Timeout(4)
   public void shouldNotReceiveEventsNotMeantForTheTopic() {
     AtomicInteger count = new AtomicInteger(0);
     bus.addListener(new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));

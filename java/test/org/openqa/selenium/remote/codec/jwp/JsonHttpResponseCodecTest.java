@@ -32,8 +32,8 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
@@ -42,9 +42,8 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.testing.UnitTests;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class JsonHttpResponseCodecTest {
 
   private final JsonHttpResponseCodec codec = new JsonHttpResponseCodec();

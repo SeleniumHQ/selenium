@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.remote;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -31,7 +31,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +46,7 @@ import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class ShadowDomTest {
 
   private final SessionId id = new SessionId(UUID.randomUUID());
@@ -56,7 +55,7 @@ public class ShadowDomTest {
   private RemoteWebDriver driver;
   private RemoteWebElement element;
 
-  @Before
+  @BeforeEach
   public void createDriver() {
     Function<Command, HttpRequest> toHttpReq = Dialect.W3C.getCommandCodec()::encode;
     Function<HttpResponse, Response> toHttpRes = Dialect.W3C.getResponseCodec()::decode;

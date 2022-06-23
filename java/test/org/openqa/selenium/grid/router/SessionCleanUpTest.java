@@ -20,9 +20,9 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -107,7 +107,7 @@ public class SessionCleanUpTest {
   private Secret registrationSecret;
   private Server<?> server;
 
-  @Before
+  @BeforeEach
   public void setup() {
     tracer = DefaultTestTracer.createTracer();
     registrationSecret = new Secret("hereford hop");
@@ -122,7 +122,7 @@ public class SessionCleanUpTest {
     clientFactory = HttpClient.Factory.createDefault();
   }
 
-  @After
+  @AfterEach
   public void stopServer() {
     if (server != null) {
       server.stop();

@@ -22,14 +22,14 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
-public class ElementDomPropertyTest extends JUnit4TestBase {
+public class ElementDomPropertyTest extends JupiterTestBase {
 
   @Test
   public void testShouldReturnNullWhenGettingTheValueOfAPropertyThatDoesNotExist() {

@@ -17,28 +17,24 @@
 
 package org.openqa.selenium.bidi;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.openqa.selenium.firefox.FirefoxBinary;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.util.Collections;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 public class BiDiSessionTest {
 
   private FirefoxDriver driver;
 
-  @Ignore
+  @Disabled
   @Test
   public void shouldBeAbleToCreateABiDiSession() {
     FirefoxOptions options = new FirefoxOptions();
-
-    FirefoxBinary binary = new FirefoxBinary(FirefoxBinary.Channel.BETA);
-    options.setBinary(binary);
     // Enable BiDi
     options.setCapability("webSocketUrl", true);
 
@@ -51,7 +47,7 @@ public class BiDiSessionTest {
     assertThat(status.getMessage()).isEqualTo("Session already started");
   }
 
-  @After
+  @AfterEach
   public void quitDriver() {
     if (driver != null) {
       driver.quit();

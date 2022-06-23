@@ -23,20 +23,6 @@ module Selenium
       autoload :Driver, 'selenium/webdriver/ie/driver'
       autoload :Options, 'selenium/webdriver/ie/options'
       autoload :Service, 'selenium/webdriver/ie/service'
-
-      def self.driver_path=(path)
-        WebDriver.logger.deprecate 'Selenium::WebDriver::IE#driver_path=',
-                                   'Selenium::WebDriver::IE::Service#driver_path=',
-                                   id: :driver_path
-        Selenium::WebDriver::IE::Service.driver_path = path
-      end
-
-      def self.driver_path
-        WebDriver.logger.deprecate 'Selenium::WebDriver::IE#driver_path',
-                                   'Selenium::WebDriver::IE::Service#driver_path',
-                                   id: :driver_path
-        Selenium::WebDriver::IE::Service.driver_path
-      end
     end # IE
   end # WebDriver
 end # Selenium

@@ -107,15 +107,14 @@ class WebDriver(RemoteWebDriver):
 
         self.iedriver.start()
 
-        RemoteWebDriver.__init__(
-            self,
+        super().__init__(
             command_executor=self.iedriver.service_url,
             options=options,
             keep_alive=keep_alive)
         self._is_remote = False
 
     def quit(self) -> None:
-        RemoteWebDriver.quit(self)
+        super().quit()
         self.iedriver.stop()
 
     def create_options(self) -> Options:

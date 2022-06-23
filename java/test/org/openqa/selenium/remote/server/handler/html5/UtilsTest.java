@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.remote.server.handler.html5;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -27,9 +27,7 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
@@ -48,7 +46,6 @@ import org.openqa.selenium.remote.ExecuteMethod;
 /**
  * Tests for the {@link Utils} class.
  */
-@RunWith(JUnit4.class)
 public class UtilsTest {
 
   @Test

@@ -122,7 +122,7 @@ class EventFiringWebDriver:
         if isinstance(args, EventFiringWebElement):
             return args.wrapped_element
         elif isinstance(args, tuple):
-            return tuple([self._unwrap_element_args(item) for item in args])
+            return tuple(self._unwrap_element_args(item) for item in args)
         elif isinstance(args, list):
             return [self._unwrap_element_args(item) for item in args]
         else:

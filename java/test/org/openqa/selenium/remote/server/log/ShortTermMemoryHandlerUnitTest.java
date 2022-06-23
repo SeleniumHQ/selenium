@@ -17,21 +17,18 @@
 
 package org.openqa.selenium.remote.server.log;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
  * {@link org.openqa.selenium.remote.server.log.ShortTermMemoryHandler} unit test class.
  */
-@RunWith(JUnit4.class)
 public class ShortTermMemoryHandlerUnitTest {
 
   @Test

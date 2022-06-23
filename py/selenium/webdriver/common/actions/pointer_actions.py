@@ -35,7 +35,7 @@ class PointerActions(Interaction):
             source = PointerInput(interaction.POINTER_MOUSE, "mouse")
         self.source = source
         self._duration = duration
-        super(PointerActions, self).__init__(source)
+        super().__init__(source)
 
     def pointer_down(self, button=MouseButton.LEFT, width=None, height=None, pressure=None,
                      tangential_pressure=None, tilt_x=None, tilt_y=None, twist=None,

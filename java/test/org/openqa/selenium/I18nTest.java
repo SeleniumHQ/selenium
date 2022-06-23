@@ -18,24 +18,24 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
 
-public class I18nTest extends JUnit4TestBase {
+public class I18nTest extends JupiterTestBase {
 
   /**
    * The Hebrew word shalom (peace) encoded in order Shin (sh) Lamed (L) Vav (O) final-Mem (M).
@@ -89,9 +89,8 @@ public class I18nTest extends JUnit4TestBase {
   @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
   @Ignore(value = EDGE, reason = "EdgeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
-    assumeFalse("IE: versions less thank 10 have issue 5069",
-                TestUtilities.isInternetExplorer(driver) &&
-                TestUtilities.getIEVersion(driver) < 10);
+    assumeFalse(TestUtilities.isInternetExplorer(driver) &&
+      TestUtilities.getIEVersion(driver) < 10, "IE: versions less thank 10 have issue 5069");
     driver.get(pages.chinesePage);
 
     String input = "";
@@ -110,8 +109,8 @@ public class I18nTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
-        .getAppServer()
-        .whereIs("encoding");
+      .getAppServer()
+      .whereIs("encoding");
     driver.get(url);
 
     String text = driver.findElement(By.tagName("body")).getText();
@@ -126,8 +125,7 @@ public class I18nTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
-    assumeTrue("IME is supported on Linux only.",
-               TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX));
+    assumeTrue(TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX), "IME is supported on Linux only.");
 
     driver.get(pages.formPage);
 
@@ -166,8 +164,8 @@ public class I18nTest extends JUnit4TestBase {
     // IME is not present. Don't fail because of that. But it should have the Romaji value
     // instead.
     assertThat(elementValue)
-        .describedAs("The elemnt's value should either remain in Romaji or be converted properly.")
-        .isEqualTo(tokyo);
+      .describedAs("The elemnt's value should either remain in Romaji or be converted properly.")
+      .isEqualTo(tokyo);
   }
 
   @Test
@@ -175,8 +173,7 @@ public class I18nTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(EDGE)
   public void testShouldBeAbleToInputJapanese() {
-    assumeTrue("IME is supported on Linux only.",
-               TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX));
+    assumeTrue(TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX), "IME is supported on Linux only.");
 
     driver.get(pages.formPage);
 
@@ -195,8 +192,8 @@ public class I18nTest extends JUnit4TestBase {
     // IME is not present. Don't fail because of that. But it should have the Romaji value
     // instead.
     assertThat(elementValue)
-        .describedAs("The element's value should either remain in Romaji or be converted properly.")
-        .isIn(tokyo, "\uE040" + "toukyou ", "toukyou ");
+      .describedAs("The element's value should either remain in Romaji or be converted properly.")
+      .isIn(tokyo, "\uE040" + "toukyou ", "toukyou ");
   }
 
 }

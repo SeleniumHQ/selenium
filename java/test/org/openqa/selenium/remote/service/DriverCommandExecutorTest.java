@@ -28,21 +28,20 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URL;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class DriverCommandExecutorTest {
 
   private static final String DRIVER_SERVER_URL = "http://a.base.url:3000";

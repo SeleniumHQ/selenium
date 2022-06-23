@@ -16,10 +16,6 @@
 // under the License.
 package org.openqa.selenium.edge;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static org.openqa.selenium.remote.Browser.EDGE;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -33,6 +29,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static org.openqa.selenium.remote.Browser.EDGE;
 
 /**
  * Manages the life and death of the EdgeDriver (MicrosoftWebDriver or MSEdgeDriver).
@@ -112,10 +112,10 @@ public class EdgeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     EdgeDriverService, EdgeDriverService.Builder> {
 
+    private final boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
-    private boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
 
     @Override
     public int score(Capabilities capabilities) {

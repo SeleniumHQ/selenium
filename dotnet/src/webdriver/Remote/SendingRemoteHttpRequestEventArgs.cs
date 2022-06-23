@@ -46,15 +46,6 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
-        /// Gets the <see cref="HttpWebRequest"/> object representing the HTTP request being sent.
-        /// </summary>
-        [Obsolete("Bindings no longer use HttpWebRequest. This property will return null, and will be removed in a future release.")]
-        public HttpWebRequest Request
-        {
-            get { return null; }
-        }
-
-        /// <summary>
         /// Gets the HTTP method for the HTTP request.
         /// </summary>
         public string Method

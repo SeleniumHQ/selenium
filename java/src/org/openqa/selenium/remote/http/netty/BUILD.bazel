@@ -23,6 +23,7 @@ java_library(
         artifact("io.netty:netty-transport-native-epoll"),
         artifact("io.netty:netty-transport-native-epoll-linux-x86_64"),
         artifact("io.netty:netty-transport-native-kqueue"),
+        artifact("io.netty:netty-transport-native-kqueue-osx-aarch_64"),
         artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
         artifact("io.netty:netty-transport-native-unix-common"),
         artifact("io.netty:netty-common"),
