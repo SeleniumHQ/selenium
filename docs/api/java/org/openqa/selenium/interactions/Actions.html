@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10,"i35":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10,"i28":10,"i29":10,"i30":10,"i31":10,"i32":10,"i33":10,"i34":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -93,13 +93,13 @@ loadScripts(document, 'script');</script>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
@@ -134,10 +134,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
-<dl>
-<dt>Direct Known Subclasses:</dt>
-<dd><code><a href="touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></dd>
-</dl>
 <hr>
 <pre>public class <span class="typeNameLabel">Actions</span>
 extends java.lang.Object</pre>
@@ -154,29 +150,6 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
-<!-- =========== FIELD SUMMARY =========== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="field.summary">
-<!--   -->
-</a>
-<h3>Field Summary</h3>
-<table class="memberSummary">
-<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Field</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>protected <a href="CompositeAction.html" title="class in org.openqa.selenium.interactions">CompositeAction</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#action">action</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</table>
-</li>
-</ul>
-</section>
 <!-- ======== CONSTRUCTOR SUMMARY ======== -->
 <section role="region">
 <ul class="blockList">
@@ -458,11 +431,6 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i34" class="altColor">
 <td class="colFirst"><code><a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#tick(org.openqa.selenium.interactions.Action)">tick</a></span>&#8203;(<a href="Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;action)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i35" class="rowColor">
-<td class="colFirst"><code><a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#tick(org.openqa.selenium.interactions.Interaction...)">tick</a></span>&#8203;(<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>...&nbsp;actions)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -483,25 +451,6 @@ extends java.lang.Object</pre>
 <div class="details">
 <ul class="blockList">
 <li class="blockList">
-<!-- ============ FIELD DETAIL =========== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="field.detail">
-<!--   -->
-</a>
-<h3>Field Detail</h3>
-<a id="action">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>action</h4>
-<pre>protected&nbsp;<a href="CompositeAction.html" title="class in org.openqa.selenium.interactions">CompositeAction</a> action</pre>
-</li>
-</ul>
-</li>
-</ul>
-</section>
 <!-- ========= CONSTRUCTOR DETAIL ======== -->
 <section role="region">
 <ul class="blockList">
@@ -1018,15 +967,6 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;tick&#8203;(<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>...&nbsp;actions)</pre>
 </li>
 </ul>
-<a id="tick(org.openqa.selenium.interactions.Action)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>tick</h4>
-<pre class="methodSignature">public&nbsp;<a href="Actions.html" title="class in org.openqa.selenium.interactions">Actions</a>&nbsp;tick&#8203;(<a href="Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;action)</pre>
-</li>
-</ul>
 <a id="setActiveKeyboard(java.lang.String)">
 <!--   -->
 </a>
@@ -1168,13 +1108,13 @@ extends java.lang.Object</pre>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
 <li>Nested&nbsp;|&nbsp;</li>
-<li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
-<li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
 <li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>

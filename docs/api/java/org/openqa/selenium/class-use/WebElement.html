@@ -122,14 +122,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.interactions.internal">org.openqa.selenium.interactions.internal</a></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
-<th class="colFirst" scope="row"><a href="#org.openqa.selenium.interactions.touch">org.openqa.selenium.interactions.touch</a></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="#org.openqa.selenium.remote">org.openqa.selenium.remote</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -445,87 +437,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  <i>Actions.click(element).sendKeys(keysToSend).</i>
  This method is different from <a href="../WebElement.html#sendKeys(java.lang.CharSequence...)"><code>sendKeys(CharSequence...)</code></a> - see
  <a href="../interactions/Actions.html#sendKeys(java.lang.CharSequence...)"><code>Actions.sendKeys(CharSequence...)</code></a> for details how.</div>
-</td>
-</tr>
-</tbody>
-</table>
-</section>
-</li>
-<li class="blockList">
-<section role="region"><a id="org.openqa.selenium.interactions.internal">
-<!--   -->
-</a>
-<h3>Uses of <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a> in <a href="../interactions/internal/package-summary.html">org.openqa.selenium.interactions.internal</a></h3>
-<table class="useSummary">
-<caption><span>Methods in <a href="../interactions/internal/package-summary.html">org.openqa.selenium.interactions.internal</a> that return types with arguments of type <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<td class="colFirst"><code>protected java.util.Optional&lt;<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">BaseAction.</span><code><span class="memberNameLink"><a href="../interactions/internal/BaseAction.html#getTargetElement()">getTargetElement</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
-&nbsp;</td>
-</tr>
-</tbody>
-</table>
-</section>
-</li>
-<li class="blockList">
-<section role="region"><a id="org.openqa.selenium.interactions.touch">
-<!--   -->
-</a>
-<h3>Uses of <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a> in <a href="../interactions/touch/package-summary.html">org.openqa.selenium.interactions.touch</a></h3>
-<table class="useSummary">
-<caption><span>Methods in <a href="../interactions/touch/package-summary.html">org.openqa.selenium.interactions.touch</a> with parameters of type <a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></span><span class="tabEnd">&nbsp;</span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tbody>
-<tr class="altColor">
-<td class="colFirst"><code><a href="../interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">TouchActions.</span><code><span class="memberNameLink"><a href="../interactions/touch/TouchActions.html#doubleTap(org.openqa.selenium.WebElement)">doubleTap</a></span>&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code></th>
-<td class="colLast">
-<div class="block">Allows the execution of double tap on the screen, analogous to double click using a Mouse.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code><a href="../interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">TouchActions.</span><code><span class="memberNameLink"><a href="../interactions/touch/TouchActions.html#flick(org.openqa.selenium.WebElement,int,int,int)">flick</a></span>&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement,
-     int&nbsp;xOffset,
-     int&nbsp;yOffset,
-     int&nbsp;speed)</code></th>
-<td class="colLast">
-<div class="block">Allows the execution of flick gestures starting in a location's element.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code><a href="../interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">TouchActions.</span><code><span class="memberNameLink"><a href="../interactions/touch/TouchActions.html#longPress(org.openqa.selenium.WebElement)">longPress</a></span>&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code></th>
-<td class="colLast">
-<div class="block">Allows the execution of long press gestures.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code><a href="../interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">TouchActions.</span><code><span class="memberNameLink"><a href="../interactions/touch/TouchActions.html#scroll(org.openqa.selenium.WebElement,int,int)">scroll</a></span>&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement,
-      int&nbsp;xOffset,
-      int&nbsp;yOffset)</code></th>
-<td class="colLast">
-<div class="block">Creates a scroll gesture that starts on a particular screen location.</div>
-</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code><a href="../interactions/touch/TouchActions.html" title="class in org.openqa.selenium.interactions.touch">TouchActions</a></code></td>
-<th class="colSecond" scope="row"><span class="typeNameLabel">TouchActions.</span><code><span class="memberNameLink"><a href="../interactions/touch/TouchActions.html#singleTap(org.openqa.selenium.WebElement)">singleTap</a></span>&#8203;(<a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;onElement)</code></th>
-<td class="colLast">
-<div class="block">Allows the execution of single tap on the screen, analogous to click using a Mouse.</div>
 </td>
 </tr>
 </tbody>

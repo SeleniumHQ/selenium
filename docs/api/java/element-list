@@ -1,5 +1,6 @@
 org.openqa.selenium
 org.openqa.selenium.bidi
+org.openqa.selenium.bidi.log
 org.openqa.selenium.chrome
 org.openqa.selenium.chromium
 org.openqa.selenium.cli
@@ -64,8 +65,6 @@ org.openqa.selenium.grid.web
 org.openqa.selenium.html5
 org.openqa.selenium.ie
 org.openqa.selenium.interactions
-org.openqa.selenium.interactions.internal
-org.openqa.selenium.interactions.touch
 org.openqa.selenium.internal
 org.openqa.selenium.io
 org.openqa.selenium.json
@@ -97,7 +96,6 @@ org.openqa.selenium.status
 org.openqa.selenium.support
 org.openqa.selenium.support.decorators
 org.openqa.selenium.support.events
-org.openqa.selenium.support.events.internal
 org.openqa.selenium.support.locators
 org.openqa.selenium.support.pagefactory
 org.openqa.selenium.support.pagefactory.internal

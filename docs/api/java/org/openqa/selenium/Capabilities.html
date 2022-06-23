@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":18,"i2":18,"i3":6,"i4":18,"i5":50,"i6":18,"i7":50,"i8":18,"i9":18};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"],32:["t6","Deprecated Methods"]};
+var data = {"i0":6,"i1":18,"i2":18,"i3":6,"i4":18,"i5":18,"i6":18,"i7":18};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -152,7 +152,7 @@ extends java.io.Serializable</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t5" class="tableTab"><span><a href="javascript:show(16);">Default Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t5" class="tableTab"><span><a href="javascript:show(16);">Default Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -185,33 +185,15 @@ extends java.io.Serializable</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>default <a href="Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPlatform()">getPlatform</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#getPlatformName()"><code>getPlatformName()</code></a></div>
-</div>
-</td>
-</tr>
-<tr id="i6" class="altColor">
-<td class="colFirst"><code>default <a href="Platform.html" title="enum in org.openqa.selenium">Platform</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPlatformName()">getPlatformName</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
-<td class="colFirst"><code>default java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getVersion()">getVersion</a></span>()</code></th>
-<td class="colLast">
-<div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#getBrowserVersion()"><code>getBrowserVersion()</code></a></div>
-</div>
-</td>
-</tr>
-<tr id="i8" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>default boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#is(java.lang.String)">is</a></span>&#8203;(java.lang.String&nbsp;capabilityName)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>default <a href="Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#merge(org.openqa.selenium.Capabilities)">merge</a></span>&#8203;(<a href="Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;other)</code></th>
 <td class="colLast">
@@ -245,19 +227,6 @@ extends java.io.Serializable</pre>
 <pre class="methodSignature">default&nbsp;java.lang.String&nbsp;getBrowserName()</pre>
 </li>
 </ul>
-<a id="getPlatform()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getPlatform</h4>
-<pre class="methodSignature">@Deprecated
-default&nbsp;<a href="Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;getPlatform()</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#getPlatformName()"><code>getPlatformName()</code></a></div>
-</div>
-</li>
-</ul>
 <a id="getPlatformName()">
 <!--   -->
 </a>
@@ -265,19 +234,6 @@ default&nbsp;<a href="Platform.html" title="enum in org.openqa.selenium">Platfor
 <li class="blockList">
 <h4>getPlatformName</h4>
 <pre class="methodSignature">default&nbsp;<a href="Platform.html" title="enum in org.openqa.selenium">Platform</a>&nbsp;getPlatformName()</pre>
-</li>
-</ul>
-<a id="getVersion()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getVersion</h4>
-<pre class="methodSignature">@Deprecated
-default&nbsp;java.lang.String&nbsp;getVersion()</pre>
-<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">Use <a href="#getBrowserVersion()"><code>getBrowserVersion()</code></a></div>
-</div>
 </li>
 </ul>
 <a id="getBrowserVersion()">

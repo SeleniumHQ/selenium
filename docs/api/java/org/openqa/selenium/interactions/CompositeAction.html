@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -136,12 +136,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Implemented Interfaces:</dt>
-<dd><code><a href="Action.html" title="interface in org.openqa.selenium.interactions">Action</a></code>, <code><a href="IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></code></dd>
+<dd><code><a href="Action.html" title="interface in org.openqa.selenium.interactions">Action</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">CompositeAction</span>
 extends java.lang.Object
-implements <a href="Action.html" title="interface in org.openqa.selenium.interactions">Action</a>, <a href="IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></pre>
+implements <a href="Action.html" title="interface in org.openqa.selenium.interactions">Action</a></pre>
 <div class="block">An action for aggregating actions and triggering all of them at the same time.</div>
 </li>
 </ul>
@@ -190,12 +190,6 @@ implements <a href="Action.html" title="interface in org.openqa.selenium.interac
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>java.util.List&lt;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#asInteractions(org.openqa.selenium.interactions.PointerInput,org.openqa.selenium.interactions.KeyInput)">asInteractions</a></span>&#8203;(<a href="PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
-              <a href="KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a>&nbsp;keyboard)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#perform()">perform</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -259,24 +253,10 @@ implements <a href="Action.html" title="interface in org.openqa.selenium.interac
 <a id="addAction(org.openqa.selenium.interactions.Action)">
 <!--   -->
 </a>
-<ul class="blockList">
+<ul class="blockListLast">
 <li class="blockList">
 <h4>addAction</h4>
 <pre class="methodSignature">public&nbsp;<a href="CompositeAction.html" title="class in org.openqa.selenium.interactions">CompositeAction</a>&nbsp;addAction&#8203;(<a href="Action.html" title="interface in org.openqa.selenium.interactions">Action</a>&nbsp;action)</pre>
-</li>
-</ul>
-<a id="asInteractions(org.openqa.selenium.interactions.PointerInput,org.openqa.selenium.interactions.KeyInput)">
-<!--   -->
-</a>
-<ul class="blockListLast">
-<li class="blockList">
-<h4>asInteractions</h4>
-<pre class="methodSignature">public&nbsp;java.util.List&lt;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&gt;&nbsp;asInteractions&#8203;(<a href="PointerInput.html" title="class in org.openqa.selenium.interactions">PointerInput</a>&nbsp;mouse,
-                                                  <a href="KeyInput.html" title="class in org.openqa.selenium.interactions">KeyInput</a>&nbsp;keyboard)</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="IsInteraction.html#asInteractions(org.openqa.selenium.interactions.PointerInput,org.openqa.selenium.interactions.KeyInput)">asInteractions</a></code>&nbsp;in interface&nbsp;<code><a href="IsInteraction.html" title="interface in org.openqa.selenium.interactions">IsInteraction</a></code></dd>
-</dl>
 </li>
 </ul>
 </li>

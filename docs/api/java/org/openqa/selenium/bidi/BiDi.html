@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -190,26 +190,31 @@ implements java.io.Closeable</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearListeners()">clearListeners</a></span>()</code></th>
+<td class="colFirst"><code>&lt;X&gt;&nbsp;void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearListener(org.openqa.selenium.bidi.Event)">clearListener</a></span>&#8203;(<a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close()">close</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#clearListeners()">clearListeners</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#disconnectSession()">disconnectSession</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#close()">close</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#disconnectSession()">disconnectSession</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="BiDiSessionStatus.html" title="class in org.openqa.selenium.bidi">BiDiSessionStatus</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBidiSessionStatus()">getBidiSessionStatus</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#send(org.openqa.selenium.bidi.Command)">send</a></span>&#8203;(<a href="Command.html" title="class in org.openqa.selenium.bidi">Command</a>&lt;X&gt;&nbsp;command)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -298,6 +303,15 @@ implements java.io.Closeable</pre>
 <h4>addListener</h4>
 <pre class="methodSignature">public&nbsp;&lt;X&gt;&nbsp;void&nbsp;addListener&#8203;(<a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event,
                             java.util.function.Consumer&lt;X&gt;&nbsp;handler)</pre>
+</li>
+</ul>
+<a id="clearListener(org.openqa.selenium.bidi.Event)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>clearListener</h4>
+<pre class="methodSignature">public&nbsp;&lt;X&gt;&nbsp;void&nbsp;clearListener&#8203;(<a href="Event.html" title="class in org.openqa.selenium.bidi">Event</a>&lt;X&gt;&nbsp;event)</pre>
 </li>
 </ul>
 <a id="clearListeners()">
