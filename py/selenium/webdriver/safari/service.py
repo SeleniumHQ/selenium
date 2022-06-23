@@ -17,6 +17,7 @@
 
 import os
 import typing
+import warnings
 
 from selenium.webdriver.common import service, utils
 from subprocess import PIPE
@@ -32,9 +33,11 @@ class Service(service.Service):
         executable_path: str = "/usr/bin/safaridriver",
         port: int = 0,
         quiet: bool = False,
+        log_path: typing.Optional[str] = None,
         reuse_service: bool = False,
         service_args: typing.Optional[typing.MutableSequence[str]] = None,
-        start_error_message: str = ""
+        env: typing.Optional[typing.Mapping[str, str]] = None,
+        start_error_message: str = "",
     ):
         """
         Creates a new instance of the Service
@@ -42,38 +45,59 @@ class Service(service.Service):
         :Args:
          - executable_path : Path to the SafariDriver
          - port : Port the service is running on
-         - quiet : Suppress driver stdout and stderr
+         - quiet : (Deprecated) Suppress driver stdout and stderr
+         - log_path : A log file path to write service output too
          - reuse_service : Do not run the service in a subprocess, instead connect to a running one on the given port
-         - service_args : Sequence of args to pass to the safaridriver service"""
+         - service_args : Sequence of args to pass to the safaridriver service when starting the process
+         - env : Mapping of additional environment data for the call to subprocess.Popen
+         - start_error_message : Custom error message to include when the service fails to start
+        """
         self.reuse_service = reuse_service
-        if not os.path.exists(executable_path):
-            if "Safari Technology Preview" in executable_path:
-                message = "Safari Technology Preview does not seem to be installed. You can download it at https://developer.apple.com/safari/download/."
-            else:
-                message = "SafariDriver was not found; are you running Safari 10 or later? You can download Safari at https://developer.apple.com/safari/download/."
-            raise Exception(message)
-
+        self._validate_executable(executable_path)
         port = port or utils.free_port()
         self.service_args = service_args or []
 
-        self.quiet = quiet
-        log = PIPE
         if quiet:
-            log = open(os.devnull, "w")
-        super().__init__(executable_path, port, log, start_error_message=start_error_message)
+            warnings.warn(
+                "quiet= has been deprecated, please use log_path instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            log_path = log_path or os.devnull
+
+        log = open(log_path, "w") if log_path is not None else PIPE
+
+        super().__init__(
+            executable=executable_path,
+            port=port,
+            log_file=log,
+            env=env,
+            start_error_message=start_error_message,
+        )
+
+    @staticmethod
+    def _validate_executable(path: str) -> None:
+        """Validate the executable path or raise an exception"""
+        download_url = "https://developer.apple.com/safari/download/"
+        if not os.path.exists(path):
+            if "Safari Technology Preview" in path:
+                message = f"Safari Technology Preview is not installed. Download it at {download_url}"
+            else:
+                message = f"SafariDriver not found.  For Safari 10+ you can download Safari from {download_url}"
+            raise Exception(message)
 
     def start(self):
-        """ If reuse_service has not been set launch a new subprocess."""
+        """If reuse_service has not been set launch a new subprocess."""
         if not self.reuse_service:
             super().start()
 
     def stop(self):
-        """ If reuse_service has not been set, stop the currently running process"""
+        """If reuse_service has not been set, stop the currently running process"""
         if not self.reuse_service:
             super().stop()
 
-    def command_line_args(self):
-        return ["-p", "%s" % self.port] + self.service_args
+    def command_line_args(self) -> typing.List[str]:
+        return ["-p", str(self.port)] + self.service_args
 
     @property
     def service_url(self):
