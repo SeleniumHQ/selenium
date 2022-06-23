@@ -1,3 +1,21 @@
+4.3.0 (2022-06-23)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.103.0 (supports CDP v85, v101, v102, v103)
+
+Ruby:
+  * Allow specifying which button is clicked in pointer action class methods
+  * Remove deprecated `Persistent` http class
+  * Remove deprecated HasRemoteStatus module
+  * Remove deprecated `Manager#new_window` and `Manager#logs`
+  * `ActionBuilder#move_to` no longer attempts to move to top left corner of element
+  * Remove deprecated support for sending Service parameters directly to Driver constructor
+  * Remove deprecated setters and getters for driver path on Browser modules
+  * Remove deprecated support for passing in options argument to Options class
+  * Allow `:options` parameter to take `Options` instance argument like other languages
+  * Remove deprecated support for `:desired_capabilities` & `:options` with `Hash` argument
+
 4.2.1 (2022-05-31)
 =========================
 
