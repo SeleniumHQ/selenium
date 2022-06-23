@@ -23,26 +23,6 @@ using System.Drawing;
 namespace OpenQA.Selenium.Interactions
 {
     /// <summary>
-    /// Provides values that indicate from where element offsets for MoveToElement
-    /// are calculated.
-    /// Note: TopLeft only does the expected thing when the element is completely
-    /// inside the viewport.
-    /// </summary>
-    [Obsolete("Starting in Selenium 4.3 only Center behavior will be supported")]
-    public enum MoveToElementOffsetOrigin
-    {
-        /// <summary>
-        /// Offsets are calculated from the top-left corner of the element.
-        /// </summary>
-        TopLeft,
-
-        /// <summary>
-        /// Offsets are calculated from the center of the element.
-        /// </summary>
-        Center
-    }
-
-    /// <summary>
     /// Provides a mechanism for building advanced interactions with the browser.
     /// </summary>
     public class Actions : IAction
@@ -305,9 +285,7 @@ namespace OpenQA.Selenium.Interactions
                 throw new ArgumentException("MoveToElement cannot move to a null element with no offset.", nameof(toElement));
             }
 
-            ILocatable target = GetLocatableFromElement(toElement);
-            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, 0, 0, DefaultMouseMoveDuration));
-            return this;
+            return this.MoveToElement(toElement, 0, 0);
         }
 
         /// <summary>
@@ -320,35 +298,7 @@ namespace OpenQA.Selenium.Interactions
         /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
         public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY)
         {
-            return this.MoveToElement(toElement, offsetX, offsetY, MoveToElementOffsetOrigin.TopLeft);
-        }
-
-        /// <summary>
-        /// Moves the mouse to the specified offset of the top-left corner of the specified element.
-        /// </summary>
-        /// <param name="toElement">The element to which to move the mouse.</param>
-        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
-        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
-        /// <param name="offsetOrigin">The <see cref="MoveToElementOffsetOrigin"/> value from which to calculate the offset.</param>
-        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
-        [Obsolete("Starting in Selenium 4.3 only MoveToElementOffsetOrigin.Center will be supported")]
-        public Actions MoveToElement(IWebElement toElement, int offsetX, int offsetY, MoveToElementOffsetOrigin offsetOrigin)
-        {
-            ILocatable target = GetLocatableFromElement(toElement);
-
-            if (offsetOrigin == MoveToElementOffsetOrigin.TopLeft)
-            {
-                Size elementSize = toElement.Size;
-
-                int modifiedOffsetX = offsetX - (elementSize.Width / 2);
-                int modifiedOffsetY = offsetY - (elementSize.Height / 2);
-
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, modifiedOffsetX, modifiedOffsetY, DefaultMouseMoveDuration));
-            }
-            else
-            {
-                this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, offsetX, offsetY, DefaultMouseMoveDuration));
-            }
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(toElement, offsetX, offsetY, DefaultMouseMoveDuration));
             return this;
         }
 
