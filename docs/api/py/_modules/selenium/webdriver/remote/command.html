@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.command &#8212; Selenium 4.2 documentation</title>
+    <title>selenium.webdriver.remote.command &#8212; Selenium 4.3 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -70,97 +70,97 @@
 
     <span class="c1"># Keep in sync with org.openqa.selenium.remote.DriverCommand</span>
 
-    <span class="n">NEW_SESSION</span> <span class="o">=</span> <span class="s2">&quot;newSession&quot;</span>
-    <span class="n">DELETE_SESSION</span> <span class="o">=</span> <span class="s2">&quot;deleteSession&quot;</span>
-    <span class="n">NEW_WINDOW</span> <span class="o">=</span> <span class="s2">&quot;newWindow&quot;</span>
-    <span class="n">CLOSE</span> <span class="o">=</span> <span class="s2">&quot;close&quot;</span>
-    <span class="n">QUIT</span> <span class="o">=</span> <span class="s2">&quot;quit&quot;</span>
-    <span class="n">GET</span> <span class="o">=</span> <span class="s2">&quot;get&quot;</span>
-    <span class="n">GO_BACK</span> <span class="o">=</span> <span class="s2">&quot;goBack&quot;</span>
-    <span class="n">GO_FORWARD</span> <span class="o">=</span> <span class="s2">&quot;goForward&quot;</span>
-    <span class="n">REFRESH</span> <span class="o">=</span> <span class="s2">&quot;refresh&quot;</span>
-    <span class="n">ADD_COOKIE</span> <span class="o">=</span> <span class="s2">&quot;addCookie&quot;</span>
-    <span class="n">GET_COOKIE</span> <span class="o">=</span> <span class="s2">&quot;getCookie&quot;</span>
-    <span class="n">GET_ALL_COOKIES</span> <span class="o">=</span> <span class="s2">&quot;getCookies&quot;</span>
-    <span class="n">DELETE_COOKIE</span> <span class="o">=</span> <span class="s2">&quot;deleteCookie&quot;</span>
-    <span class="n">DELETE_ALL_COOKIES</span> <span class="o">=</span> <span class="s2">&quot;deleteAllCookies&quot;</span>
-    <span class="n">FIND_ELEMENT</span> <span class="o">=</span> <span class="s2">&quot;findElement&quot;</span>
-    <span class="n">FIND_ELEMENTS</span> <span class="o">=</span> <span class="s2">&quot;findElements&quot;</span>
-    <span class="n">FIND_CHILD_ELEMENT</span> <span class="o">=</span> <span class="s2">&quot;findChildElement&quot;</span>
-    <span class="n">FIND_CHILD_ELEMENTS</span> <span class="o">=</span> <span class="s2">&quot;findChildElements&quot;</span>
-    <span class="n">CLEAR_ELEMENT</span> <span class="o">=</span> <span class="s2">&quot;clearElement&quot;</span>
-    <span class="n">CLICK_ELEMENT</span> <span class="o">=</span> <span class="s2">&quot;clickElement&quot;</span>
-    <span class="n">SEND_KEYS_TO_ELEMENT</span> <span class="o">=</span> <span class="s2">&quot;sendKeysToElement&quot;</span>
-    <span class="n">UPLOAD_FILE</span> <span class="o">=</span> <span class="s2">&quot;uploadFile&quot;</span>
-    <span class="n">W3C_GET_CURRENT_WINDOW_HANDLE</span> <span class="o">=</span> <span class="s2">&quot;w3cGetCurrentWindowHandle&quot;</span>
-    <span class="n">W3C_GET_WINDOW_HANDLES</span> <span class="o">=</span> <span class="s2">&quot;w3cGetWindowHandles&quot;</span>
-    <span class="n">SET_WINDOW_RECT</span> <span class="o">=</span> <span class="s2">&quot;setWindowRect&quot;</span>
-    <span class="n">GET_WINDOW_RECT</span> <span class="o">=</span> <span class="s2">&quot;getWindowRect&quot;</span>
-    <span class="n">SWITCH_TO_WINDOW</span> <span class="o">=</span> <span class="s2">&quot;switchToWindow&quot;</span>
-    <span class="n">SWITCH_TO_FRAME</span> <span class="o">=</span> <span class="s2">&quot;switchToFrame&quot;</span>
-    <span class="n">SWITCH_TO_PARENT_FRAME</span> <span class="o">=</span> <span class="s2">&quot;switchToParentFrame&quot;</span>
-    <span class="n">W3C_GET_ACTIVE_ELEMENT</span> <span class="o">=</span> <span class="s2">&quot;w3cGetActiveElement&quot;</span>
-    <span class="n">GET_CURRENT_URL</span> <span class="o">=</span> <span class="s2">&quot;getCurrentUrl&quot;</span>
-    <span class="n">GET_PAGE_SOURCE</span> <span class="o">=</span> <span class="s2">&quot;getPageSource&quot;</span>
-    <span class="n">GET_TITLE</span> <span class="o">=</span> <span class="s2">&quot;getTitle&quot;</span>
-    <span class="n">W3C_EXECUTE_SCRIPT</span> <span class="o">=</span> <span class="s2">&quot;w3cExecuteScript&quot;</span>
-    <span class="n">W3C_EXECUTE_SCRIPT_ASYNC</span> <span class="o">=</span> <span class="s2">&quot;w3cExecuteScriptAsync&quot;</span>
-    <span class="n">GET_ELEMENT_TEXT</span> <span class="o">=</span> <span class="s2">&quot;getElementText&quot;</span>
-    <span class="n">GET_ELEMENT_TAG_NAME</span> <span class="o">=</span> <span class="s2">&quot;getElementTagName&quot;</span>
-    <span class="n">IS_ELEMENT_SELECTED</span> <span class="o">=</span> <span class="s2">&quot;isElementSelected&quot;</span>
-    <span class="n">IS_ELEMENT_ENABLED</span> <span class="o">=</span> <span class="s2">&quot;isElementEnabled&quot;</span>
-    <span class="n">GET_ELEMENT_RECT</span> <span class="o">=</span> <span class="s2">&quot;getElementRect&quot;</span>
-    <span class="n">GET_ELEMENT_ATTRIBUTE</span> <span class="o">=</span> <span class="s2">&quot;getElementAttribute&quot;</span>
-    <span class="n">GET_ELEMENT_PROPERTY</span> <span class="o">=</span> <span class="s2">&quot;getElementProperty&quot;</span>
-    <span class="n">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</span> <span class="o">=</span> <span class="s2">&quot;getElementValueOfCssProperty&quot;</span>
-    <span class="n">GET_ELEMENT_ARIA_ROLE</span> <span class="o">=</span> <span class="s2">&quot;getElementAriaRole&quot;</span>
-    <span class="n">GET_ELEMENT_ARIA_LABEL</span> <span class="o">=</span> <span class="s2">&quot;getElementAriaLabel&quot;</span>
-    <span class="n">SCREENSHOT</span> <span class="o">=</span> <span class="s2">&quot;screenshot&quot;</span>
-    <span class="n">ELEMENT_SCREENSHOT</span> <span class="o">=</span> <span class="s2">&quot;elementScreenshot&quot;</span>
-    <span class="n">EXECUTE_ASYNC_SCRIPT</span> <span class="o">=</span> <span class="s2">&quot;executeAsyncScript&quot;</span>
-    <span class="n">SET_TIMEOUTS</span> <span class="o">=</span> <span class="s2">&quot;setTimeouts&quot;</span>
-    <span class="n">GET_TIMEOUTS</span> <span class="o">=</span> <span class="s2">&quot;getTimeouts&quot;</span>
-    <span class="n">W3C_MAXIMIZE_WINDOW</span> <span class="o">=</span> <span class="s2">&quot;w3cMaximizeWindow&quot;</span>
-    <span class="n">GET_LOG</span> <span class="o">=</span> <span class="s2">&quot;getLog&quot;</span>
-    <span class="n">GET_AVAILABLE_LOG_TYPES</span> <span class="o">=</span> <span class="s2">&quot;getAvailableLogTypes&quot;</span>
-    <span class="n">FULLSCREEN_WINDOW</span> <span class="o">=</span> <span class="s2">&quot;fullscreenWindow&quot;</span>
-    <span class="n">MINIMIZE_WINDOW</span> <span class="o">=</span> <span class="s2">&quot;minimizeWindow&quot;</span>
-    <span class="n">PRINT_PAGE</span> <span class="o">=</span> <span class="s1">&#39;printPage&#39;</span>
+    <span class="n">NEW_SESSION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;newSession&quot;</span>
+    <span class="n">DELETE_SESSION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;deleteSession&quot;</span>
+    <span class="n">NEW_WINDOW</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;newWindow&quot;</span>
+    <span class="n">CLOSE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;close&quot;</span>
+    <span class="n">QUIT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;quit&quot;</span>
+    <span class="n">GET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;get&quot;</span>
+    <span class="n">GO_BACK</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;goBack&quot;</span>
+    <span class="n">GO_FORWARD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;goForward&quot;</span>
+    <span class="n">REFRESH</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;refresh&quot;</span>
+    <span class="n">ADD_COOKIE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;addCookie&quot;</span>
+    <span class="n">GET_COOKIE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getCookie&quot;</span>
+    <span class="n">GET_ALL_COOKIES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getCookies&quot;</span>
+    <span class="n">DELETE_COOKIE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;deleteCookie&quot;</span>
+    <span class="n">DELETE_ALL_COOKIES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;deleteAllCookies&quot;</span>
+    <span class="n">FIND_ELEMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;findElement&quot;</span>
+    <span class="n">FIND_ELEMENTS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;findElements&quot;</span>
+    <span class="n">FIND_CHILD_ELEMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;findChildElement&quot;</span>
+    <span class="n">FIND_CHILD_ELEMENTS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;findChildElements&quot;</span>
+    <span class="n">CLEAR_ELEMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;clearElement&quot;</span>
+    <span class="n">CLICK_ELEMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;clickElement&quot;</span>
+    <span class="n">SEND_KEYS_TO_ELEMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;sendKeysToElement&quot;</span>
+    <span class="n">UPLOAD_FILE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;uploadFile&quot;</span>
+    <span class="n">W3C_GET_CURRENT_WINDOW_HANDLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cGetCurrentWindowHandle&quot;</span>
+    <span class="n">W3C_GET_WINDOW_HANDLES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cGetWindowHandles&quot;</span>
+    <span class="n">SET_WINDOW_RECT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;setWindowRect&quot;</span>
+    <span class="n">GET_WINDOW_RECT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getWindowRect&quot;</span>
+    <span class="n">SWITCH_TO_WINDOW</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;switchToWindow&quot;</span>
+    <span class="n">SWITCH_TO_FRAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;switchToFrame&quot;</span>
+    <span class="n">SWITCH_TO_PARENT_FRAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;switchToParentFrame&quot;</span>
+    <span class="n">W3C_GET_ACTIVE_ELEMENT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cGetActiveElement&quot;</span>
+    <span class="n">GET_CURRENT_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getCurrentUrl&quot;</span>
+    <span class="n">GET_PAGE_SOURCE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getPageSource&quot;</span>
+    <span class="n">GET_TITLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getTitle&quot;</span>
+    <span class="n">W3C_EXECUTE_SCRIPT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cExecuteScript&quot;</span>
+    <span class="n">W3C_EXECUTE_SCRIPT_ASYNC</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cExecuteScriptAsync&quot;</span>
+    <span class="n">GET_ELEMENT_TEXT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getElementText&quot;</span>
+    <span class="n">GET_ELEMENT_TAG_NAME</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getElementTagName&quot;</span>
+    <span class="n">IS_ELEMENT_SELECTED</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;isElementSelected&quot;</span>
+    <span class="n">IS_ELEMENT_ENABLED</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;isElementEnabled&quot;</span>
+    <span class="n">GET_ELEMENT_RECT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getElementRect&quot;</span>
+    <span class="n">GET_ELEMENT_ATTRIBUTE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getElementAttribute&quot;</span>
+    <span class="n">GET_ELEMENT_PROPERTY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getElementProperty&quot;</span>
+    <span class="n">GET_ELEMENT_VALUE_OF_CSS_PROPERTY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getElementValueOfCssProperty&quot;</span>
+    <span class="n">GET_ELEMENT_ARIA_ROLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getElementAriaRole&quot;</span>
+    <span class="n">GET_ELEMENT_ARIA_LABEL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getElementAriaLabel&quot;</span>
+    <span class="n">SCREENSHOT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;screenshot&quot;</span>
+    <span class="n">ELEMENT_SCREENSHOT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;elementScreenshot&quot;</span>
+    <span class="n">EXECUTE_ASYNC_SCRIPT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;executeAsyncScript&quot;</span>
+    <span class="n">SET_TIMEOUTS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;setTimeouts&quot;</span>
+    <span class="n">GET_TIMEOUTS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getTimeouts&quot;</span>
+    <span class="n">W3C_MAXIMIZE_WINDOW</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cMaximizeWindow&quot;</span>
+    <span class="n">GET_LOG</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getLog&quot;</span>
+    <span class="n">GET_AVAILABLE_LOG_TYPES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getAvailableLogTypes&quot;</span>
+    <span class="n">FULLSCREEN_WINDOW</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;fullscreenWindow&quot;</span>
+    <span class="n">MINIMIZE_WINDOW</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;minimizeWindow&quot;</span>
+    <span class="n">PRINT_PAGE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;printPage&quot;</span>
 
     <span class="c1"># Alerts</span>
-    <span class="n">W3C_DISMISS_ALERT</span> <span class="o">=</span> <span class="s2">&quot;w3cDismissAlert&quot;</span>
-    <span class="n">W3C_ACCEPT_ALERT</span> <span class="o">=</span> <span class="s2">&quot;w3cAcceptAlert&quot;</span>
-    <span class="n">W3C_SET_ALERT_VALUE</span> <span class="o">=</span> <span class="s2">&quot;w3cSetAlertValue&quot;</span>
-    <span class="n">W3C_GET_ALERT_TEXT</span> <span class="o">=</span> <span class="s2">&quot;w3cGetAlertText&quot;</span>
+    <span class="n">W3C_DISMISS_ALERT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cDismissAlert&quot;</span>
+    <span class="n">W3C_ACCEPT_ALERT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cAcceptAlert&quot;</span>
+    <span class="n">W3C_SET_ALERT_VALUE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cSetAlertValue&quot;</span>
+    <span class="n">W3C_GET_ALERT_TEXT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w3cGetAlertText&quot;</span>
 
     <span class="c1"># Advanced user interactions</span>
-    <span class="n">W3C_ACTIONS</span> <span class="o">=</span> <span class="s2">&quot;actions&quot;</span>
-    <span class="n">W3C_CLEAR_ACTIONS</span> <span class="o">=</span> <span class="s2">&quot;clearActionState&quot;</span>
+    <span class="n">W3C_ACTIONS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;actions&quot;</span>
+    <span class="n">W3C_CLEAR_ACTIONS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;clearActionState&quot;</span>
 
     <span class="c1"># Screen Orientation</span>
-    <span class="n">SET_SCREEN_ORIENTATION</span> <span class="o">=</span> <span class="s2">&quot;setScreenOrientation&quot;</span>
-    <span class="n">GET_SCREEN_ORIENTATION</span> <span class="o">=</span> <span class="s2">&quot;getScreenOrientation&quot;</span>
+    <span class="n">SET_SCREEN_ORIENTATION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;setScreenOrientation&quot;</span>
+    <span class="n">GET_SCREEN_ORIENTATION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getScreenOrientation&quot;</span>
 
     <span class="c1"># Mobile</span>
-    <span class="n">GET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s2">&quot;getNetworkConnection&quot;</span>
-    <span class="n">SET_NETWORK_CONNECTION</span> <span class="o">=</span> <span class="s2">&quot;setNetworkConnection&quot;</span>
-    <span class="n">CURRENT_CONTEXT_HANDLE</span> <span class="o">=</span> <span class="s2">&quot;getCurrentContextHandle&quot;</span>
-    <span class="n">CONTEXT_HANDLES</span> <span class="o">=</span> <span class="s2">&quot;getContextHandles&quot;</span>
-    <span class="n">SWITCH_TO_CONTEXT</span> <span class="o">=</span> <span class="s2">&quot;switchToContext&quot;</span>
+    <span class="n">GET_NETWORK_CONNECTION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getNetworkConnection&quot;</span>
+    <span class="n">SET_NETWORK_CONNECTION</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;setNetworkConnection&quot;</span>
+    <span class="n">CURRENT_CONTEXT_HANDLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getCurrentContextHandle&quot;</span>
+    <span class="n">CONTEXT_HANDLES</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getContextHandles&quot;</span>
+    <span class="n">SWITCH_TO_CONTEXT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;switchToContext&quot;</span>
 
     <span class="c1"># Web Components</span>
-    <span class="n">GET_SHADOW_ROOT</span> <span class="o">=</span> <span class="s2">&quot;getShadowRoot&quot;</span>
-    <span class="n">FIND_ELEMENT_FROM_SHADOW_ROOT</span> <span class="o">=</span> <span class="s2">&quot;findElementFromShadowRoot&quot;</span>
-    <span class="n">FIND_ELEMENTS_FROM_SHADOW_ROOT</span> <span class="o">=</span> <span class="s2">&quot;findElementsFromShadowRoot&quot;</span>
+    <span class="n">GET_SHADOW_ROOT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getShadowRoot&quot;</span>
+    <span class="n">FIND_ELEMENT_FROM_SHADOW_ROOT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;findElementFromShadowRoot&quot;</span>
+    <span class="n">FIND_ELEMENTS_FROM_SHADOW_ROOT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;findElementsFromShadowRoot&quot;</span>
 
     <span class="c1"># Virtual Authenticator</span>
-    <span class="n">ADD_VIRTUAL_AUTHENTICATOR</span> <span class="o">=</span> <span class="s2">&quot;addVirtualAuthenticator&quot;</span>
-    <span class="n">REMOVE_VIRTUAL_AUTHENTICATOR</span> <span class="o">=</span> <span class="s2">&quot;removeVirtualAuthenticator&quot;</span>
-    <span class="n">ADD_CREDENTIAL</span> <span class="o">=</span> <span class="s2">&quot;addCredential&quot;</span>
-    <span class="n">GET_CREDENTIALS</span> <span class="o">=</span> <span class="s2">&quot;getCredentials&quot;</span>
-    <span class="n">REMOVE_CREDENTIAL</span> <span class="o">=</span> <span class="s2">&quot;removeCredential&quot;</span>
-    <span class="n">REMOVE_ALL_CREDENTIALS</span> <span class="o">=</span> <span class="s2">&quot;removeAllCredentials&quot;</span>
-    <span class="n">SET_USER_VERIFIED</span> <span class="o">=</span> <span class="s2">&quot;setUserVerified&quot;</span></div>
+    <span class="n">ADD_VIRTUAL_AUTHENTICATOR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;addVirtualAuthenticator&quot;</span>
+    <span class="n">REMOVE_VIRTUAL_AUTHENTICATOR</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;removeVirtualAuthenticator&quot;</span>
+    <span class="n">ADD_CREDENTIAL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;addCredential&quot;</span>
+    <span class="n">GET_CREDENTIALS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;getCredentials&quot;</span>
+    <span class="n">REMOVE_CREDENTIAL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;removeCredential&quot;</span>
+    <span class="n">REMOVE_ALL_CREDENTIALS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;removeAllCredentials&quot;</span>
+    <span class="n">SET_USER_VERIFIED</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;setUserVerified&quot;</span></div>
 </pre></div>
 
           </div>
@@ -193,7 +193,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

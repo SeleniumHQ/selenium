@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.chromium.options &#8212; Selenium 4.2 documentation</title>
+    <title>selenium.webdriver.chromium.options &#8212; Selenium 4.3 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -58,7 +58,7 @@
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">BinaryIO</span>
 
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.options</span> <span class="kn">import</span> <span class="n">ArgOptions</span>
@@ -68,7 +68,7 @@
     <span class="n">KEY</span> <span class="o">=</span> <span class="s2">&quot;goog:chromeOptions&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">ChromiumOptions</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_extension_files</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span> <span class="o">=</span> <span class="p">[]</span>
@@ -92,7 +92,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">debugger_address</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">debugger_address</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: The address of the remote devtools instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -114,15 +114,17 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: A list of encoded extensions that will be loaded</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">encoded_extensions</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extension_files</span><span class="p">:</span>
-            <span class="n">file_</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">_decode</span><span class="p">(</span><span class="n">file_data</span><span class="p">:</span> <span class="n">BinaryIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="c1"># Should not use base64.encodestring() which inserts newlines every</span>
             <span class="c1"># 76 characters (per RFC 1521).  Chromedriver has to remove those</span>
             <span class="c1"># unnecessary newlines before decoding, causing performance hit.</span>
-            <span class="n">encoded_extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">file_</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">file_data</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
 
-            <span class="n">file_</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">encoded_extensions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">extension</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extension_files</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">extension</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">encoded_extensions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_decode</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+
         <span class="k">return</span> <span class="n">encoded_extensions</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span>
 
 <div class="viewcode-block" id="ChromiumOptions.add_extension"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.add_extension">[docs]</a>    <span class="k">def</span> <span class="nf">add_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -138,7 +140,7 @@
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">extension_to_add</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_extension_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">extension_to_add</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Path to the extension doesn&#39;t exist&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s2">&quot;Path to the extension doesn&#39;t exist&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument can not be null&quot;</span><span class="p">)</span></div>
 
@@ -249,7 +251,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.chromium.webdriver &#8212; Selenium 4.2 documentation</title>
+    <title>selenium.webdriver.chromium.webdriver &#8212; Selenium 4.3 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -129,8 +129,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
                 <span class="n">command_executor</span><span class="o">=</span><span class="n">ChromiumRemoteConnection</span><span class="p">(</span>
                     <span class="n">remote_server_addr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">service_url</span><span class="p">,</span>
                     <span class="n">browser_name</span><span class="o">=</span><span class="n">browser_name</span><span class="p">,</span> <span class="n">vendor_prefix</span><span class="o">=</span><span class="n">vendor_prefix</span><span class="p">,</span>
@@ -229,7 +228,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;getIssueMessage&#39;</span><span class="p">)[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ChromiumDriver.set_sink_to_use"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_sink_to_use">[docs]</a>    <span class="k">def</span> <span class="nf">set_sink_to_use</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="ChromiumDriver.set_sink_to_use"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_sink_to_use">[docs]</a>    <span class="k">def</span> <span class="nf">set_sink_to_use</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets a specific sink, using its name, as a Cast session receiver target.</span>
 
@@ -238,7 +237,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;setSinkToUse&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;sinkName&#39;</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="ChromiumDriver.start_desktop_mirroring"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_desktop_mirroring">[docs]</a>    <span class="k">def</span> <span class="nf">start_desktop_mirroring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="ChromiumDriver.start_desktop_mirroring"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_desktop_mirroring">[docs]</a>    <span class="k">def</span> <span class="nf">start_desktop_mirroring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts a desktop mirroring session on a specific receiver target.</span>
 
@@ -247,7 +246,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;startDesktopMirroring&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;sinkName&#39;</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="ChromiumDriver.start_tab_mirroring"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_tab_mirroring">[docs]</a>    <span class="k">def</span> <span class="nf">start_tab_mirroring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="ChromiumDriver.start_tab_mirroring"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_tab_mirroring">[docs]</a>    <span class="k">def</span> <span class="nf">start_tab_mirroring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts a tab mirroring session on a specific receiver target.</span>
 
@@ -256,7 +255,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;startTabMirroring&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;sinkName&#39;</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
-<div class="viewcode-block" id="ChromiumDriver.stop_casting"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.stop_casting">[docs]</a>    <span class="k">def</span> <span class="nf">stop_casting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="ChromiumDriver.stop_casting"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.stop_casting">[docs]</a>    <span class="k">def</span> <span class="nf">stop_casting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stops the existing Cast session on a specific receiver target.</span>
 
@@ -271,7 +270,7 @@
 <span class="sd">        that is started when starting the ChromiumDriver</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">RemoteWebDriver</span><span class="o">.</span><span class="n">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="c1"># We don&#39;t care about the message because something probably has gone wrong</span>
             <span class="k">pass</span>
@@ -315,7 +314,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

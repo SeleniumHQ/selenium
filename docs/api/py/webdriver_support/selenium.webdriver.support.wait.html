@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.support.wait &#8212; Selenium 4.2 documentation</title>
+    <title>selenium.webdriver.support.wait &#8212; Selenium 4.3 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.3 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -45,14 +45,14 @@
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.wait.WebDriverWait" title="selenium.webdriver.support.wait.WebDriverWait"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriverWait</span></code></a>(driver,&nbsp;timeout[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#selenium.webdriver.support.wait.WebDriverWait" title="selenium.webdriver.support.wait.WebDriverWait"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebDriverWait</span></code></a>(driver,&nbsp;timeout,&nbsp;…)</td>
 <td>Constructor, takes a WebDriver instance and timeout in seconds.</td>
 </tr>
 </tbody>
 </table>
 <dl class="class">
 <dt id="selenium.webdriver.support.wait.WebDriverWait">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.support.wait.</code><code class="descname">WebDriverWait</code><span class="sig-paren">(</span><em>driver</em>, <em>timeout</em>, <em>poll_frequency=0.5</em>, <em>ignored_exceptions=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.support.wait.</code><code class="descname">WebDriverWait</code><span class="sig-paren">(</span><em>driver</em>, <em>timeout: float</em>, <em>poll_frequency: float = 0.5</em>, <em>ignored_exceptions: Optional[Iterable[Type[Exception]]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor, takes a WebDriver instance and timeout in seconds.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -82,7 +82,7 @@ By default, it contains NoSuchElementException only.</li>
 </div>
 <dl class="method">
 <dt id="selenium.webdriver.support.wait.WebDriverWait.until">
-<code class="descname">until</code><span class="sig-paren">(</span><em>method</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait.until"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait.until" title="Permalink to this definition">¶</a></dt>
+<code class="descname">until</code><span class="sig-paren">(</span><em>method</em>, <em>message: str = ''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait.until"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait.until" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls the method provided with the driver as an argument until the         return value does not evaluate to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -106,7 +106,7 @@ By default, it contains NoSuchElementException only.</li>
 
 <dl class="method">
 <dt id="selenium.webdriver.support.wait.WebDriverWait.until_not">
-<code class="descname">until_not</code><span class="sig-paren">(</span><em>method</em>, <em>message=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait.until_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait.until_not" title="Permalink to this definition">¶</a></dt>
+<code class="descname">until_not</code><span class="sig-paren">(</span><em>method</em>, <em>message: str = ''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/wait.html#WebDriverWait.until_not"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.wait.WebDriverWait.until_not" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calls the method provided with the driver as an argument until the         return value evaluates to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -171,7 +171,7 @@ By default, it contains NoSuchElementException only.</li>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.3 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

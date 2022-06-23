@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.support.wait &#8212; Selenium 4.2 documentation</title>
+    <title>selenium.webdriver.support.wait &#8212; Selenium 4.3 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -56,15 +56,18 @@
 <span class="c1"># under the License.</span>
 
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+
+<span class="kn">from</span> <span class="nn">selenium.types</span> <span class="kn">import</span> <span class="n">WaitExcTypes</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">NoSuchElementException</span>
 <span class="kn">from</span> <span class="nn">selenium.common.exceptions</span> <span class="kn">import</span> <span class="n">TimeoutException</span>
 
-<span class="n">POLL_FREQUENCY</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># How long to sleep in between calls to the method</span>
-<span class="n">IGNORED_EXCEPTIONS</span> <span class="o">=</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,)</span>  <span class="c1"># exceptions ignored during calls to the method</span>
+<span class="n">POLL_FREQUENCY</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># How long to sleep in between calls to the method</span>
+<span class="n">IGNORED_EXCEPTIONS</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Tuple</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Type</span><span class="p">[</span><span class="ne">Exception</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">NoSuchElementException</span><span class="p">,)</span>  <span class="c1"># default to be ignored.</span>
 
 
 <div class="viewcode-block" id="WebDriverWait"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait">[docs]</a><span class="k">class</span> <span class="nc">WebDriverWait</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="o">=</span><span class="n">POLL_FREQUENCY</span><span class="p">,</span> <span class="n">ignored_exceptions</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">poll_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">POLL_FREQUENCY</span><span class="p">,</span> <span class="n">ignored_exceptions</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">WaitExcTypes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor, takes a WebDriver instance and timeout in seconds.</span>
 
 <span class="sd">           :Args:</span>
@@ -100,7 +103,7 @@
         <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">{0.__module__}</span><span class="s1">.</span><span class="si">{0.__name__}</span><span class="s1"> (session=&quot;</span><span class="si">{1}</span><span class="s1">&quot;)&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
 
-<div class="viewcode-block" id="WebDriverWait.until"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until">[docs]</a>    <span class="k">def</span> <span class="nf">until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="WebDriverWait.until"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until">[docs]</a>    <span class="k">def</span> <span class="nf">until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>
 <span class="sd">        return value does not evaluate to ``False``.</span>
 
@@ -126,7 +129,7 @@
                 <span class="k">break</span>
         <span class="k">raise</span> <span class="n">TimeoutException</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WebDriverWait.until_not"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until_not">[docs]</a>    <span class="k">def</span> <span class="nf">until_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="WebDriverWait.until_not"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until_not">[docs]</a>    <span class="k">def</span> <span class="nf">until_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>
 <span class="sd">        return value evaluates to ``False``.</span>
 
@@ -180,7 +183,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

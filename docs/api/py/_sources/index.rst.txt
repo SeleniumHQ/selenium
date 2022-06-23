@@ -35,7 +35,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.2.0.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.3.0.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -132,7 +132,7 @@ Download the server separately, from: https://www.selenium.dev/downloads/
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-4.0.0.jar
+    java -jar selenium-server-4.3.0.jar
 
 Then run your Python client scripts.
 
