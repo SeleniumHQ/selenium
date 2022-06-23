@@ -1563,30 +1563,7 @@ namespace OpenQA.Selenium.Support.Events
             /// <summary>
             /// Gets the value of a JavaScript property of this element.
             /// </summary>
-            /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
-            /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
-            /// value is not set or the property does not exist.</returns>
-            [Obsolete("Use the GetDomProperty method instead.")]
-            public string GetProperty(string propertyName)
-            {
-                string elementProperty = string.Empty;
-                try
-                {
-                    elementProperty = this.underlyingElement.GetProperty(propertyName);
-                }
-                catch (Exception ex)
-                {
-                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
-                    throw;
-                }
-
-                return elementProperty;
-            }
-
-            /// <summary>
-            /// Gets the value of a JavaScript property of this element.
-            /// </summary>
-            /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+            /// <param name="propertyName">The name of the JavaScript property to get the value of.</param>
             /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
             /// value is not set or the property does not exist.</returns>
             public string GetDomProperty(string propertyName)

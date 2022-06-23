@@ -123,32 +123,7 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
 
           driver.new
-          expect(Service).to have_received(:new).with(hash_excluding(url: anything))
-        end
-
-        it 'accepts :port but throws deprecation notice' do
-          driver_port = 1234
-
-          allow(Service).to receive(:new).with(path: nil,
-                                               port: driver_port,
-                                               args: nil).and_return(service)
-
-          expect {
-            driver.new(port: driver_port)
-          }.to have_deprecated(:service_port)
-        end
-
-        it 'accepts :driver_opts but throws deprecation notice' do
-          driver_opts = {foo: 'bar',
-                         bar: ['--foo', '--bar']}
-
-          allow(Service).to receive(:new).with(path: nil,
-                                               port: nil,
-                                               args: driver_opts).and_return(service)
-
-          expect {
-            driver.new(driver_opts: driver_opts)
-          }.to have_deprecated(:service_driver_opts)
+          expect(Service).to have_received(:new).with(no_args)
         end
 
         it 'accepts :service without creating a new instance' do

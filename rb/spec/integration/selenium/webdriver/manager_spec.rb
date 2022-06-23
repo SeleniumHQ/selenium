@@ -263,14 +263,6 @@ module Selenium
           expect(driver.manage.all_cookies).to be_empty
         end
       end
-
-      describe 'new_window' do
-        after { ensure_single_window }
-
-        it "returns an exception if an invalid type is provided" do
-          expect { driver.manage.new_window }.to have_deprecated(:new_window)
-        end
-      end
     end # Options
   end # WebDriver
 end # Selenium
