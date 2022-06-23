@@ -56,24 +56,7 @@ class PointerActions(Interaction):
         if not isinstance(element, WebElement):
             raise AttributeError("move_to requires a WebElement")
 
-        if x or y:
-            warnings.warn(
-                "move_to_element_with_offset() currently tries to use the top left corner "
-                "of the element as the origin; in Selenium 4.3 it will use the in-view "
-                "center point of the element as the origin.",
-                DeprecationWarning,
-                stacklevel=2
-            )
-            el_rect = element.rect
-            left_offset = el_rect['width'] / 2
-            top_offset = el_rect['height'] / 2
-            left = -left_offset + (x or 0)
-            top = -top_offset + (y or 0)
-        else:
-            left = 0
-            top = 0
-
-        self.source.create_pointer_move(origin=element, duration=self._duration, x=int(left), y=int(top),
+        self.source.create_pointer_move(origin=element, duration=self._duration, x=int(x), y=int(y),
                                         width=width, height=height, pressure=pressure,
                                         tangential_pressure=tangential_pressure,
                                         tilt_x=tilt_x, tilt_y=tilt_y, twist=twist,
