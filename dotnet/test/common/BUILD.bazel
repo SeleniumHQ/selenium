@@ -32,7 +32,6 @@ config_setting(
         "CustomTestAttributes/*.cs",
         "DevTools/*.cs",
         "Environment/*.cs",
-        "HTML5/*.cs",
         "Interactions/*.cs",
     ]),
     out = "WebDriver.Common.Tests.dll",
