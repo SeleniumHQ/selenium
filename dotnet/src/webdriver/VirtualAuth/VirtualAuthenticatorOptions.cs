@@ -59,7 +59,6 @@ namespace OpenQA.Selenium.VirtualAuth
             {
                 this.protocol = protocol;
                 return this;
-
             }
             else
             {
@@ -82,7 +81,6 @@ namespace OpenQA.Selenium.VirtualAuth
             {
                 this.transport = transport;
                 return this;
-
             }
             else
             {

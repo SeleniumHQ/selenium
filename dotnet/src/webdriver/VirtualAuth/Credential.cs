@@ -77,50 +77,31 @@ namespace OpenQA.Selenium.VirtualAuth
 
         public byte[] Id
         {
-            get
-            {
-                return (byte[])id.Clone();
-            }
+            get { return (byte[])id.Clone(); }
         }
 
         public bool IsResidentCredential
         {
-            get
-            {
-                return this.isResidentCredential;
-            }
+            get { return this.isResidentCredential; }
         }
         public string RpId
         {
-            get
-            {
-                return this.rpId;
-
-            }
+            get { return this.rpId; }
         }
 
         public string PrivateKey
         {
-            get
-            {
-                return this.privateKey;
-            }
+            get { return this.privateKey; }
         }
 
         public byte[] UserHandle
         {
-            get
-            {
-                return userHandle == null ? null : (byte[])userHandle.Clone();
-            }
+            get { return userHandle == null ? null : (byte[])userHandle.Clone(); }
         }
 
         public int SignCount
         {
-            get
-            {
-                return this.signCount;
-            }
+            get { return this.signCount; }
         }
 
         public static Credential FromDictionary(Dictionary<string, object> dictionary)
