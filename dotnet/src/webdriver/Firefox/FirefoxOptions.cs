@@ -93,16 +93,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use the legacy driver implementation.
-        /// </summary>
-        [Obsolete(".NET bindings no longer support the legacy driver implementation. Setting this property no longer has any effect. .NET users should always be using geckodriver.")]
-        public bool UseLegacyImplementation
-        {
-            get { return false; }
-            set { }
-        }
-
-        /// <summary>
         /// Gets or sets the <see cref="FirefoxProfile"/> object to be used with this instance.
         /// </summary>
         public FirefoxProfile Profile
