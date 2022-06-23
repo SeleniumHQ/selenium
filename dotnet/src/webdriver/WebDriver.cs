@@ -21,7 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using OpenQA.Selenium.Html5;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
 
@@ -42,12 +41,6 @@ namespace OpenQA.Selenium
         private SessionId sessionId;
         private List<string> registeredCommands = new List<string>();
 
-        // These member variables exist to support obsolete protocol end points.
-        // They should be removed at the earliest available opportunity.
-        private IWebStorage storage;
-        private IApplicationCache appCache;
-        private ILocationContext locationContext;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriver"/> class.
         /// </summary>
@@ -67,36 +60,6 @@ namespace OpenQA.Selenium
                 // retrieving the logs via the extension end points.
                 this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
                 this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
-            }
-
-            // These below code exists solely to support obsolete protocol end points.
-            // They should be removed at the earliest available opportunity.
-            if (this.Capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
-            {
-                object appCacheCapability = this.Capabilities.GetCapability(CapabilityType.SupportsApplicationCache);
-                if (appCacheCapability is bool && (bool)appCacheCapability)
-                {
-                    this.appCache = new ApplicationCache(this);
-                }
-            }
-
-            if (this.Capabilities.HasCapability(CapabilityType.SupportsLocationContext))
-            {
-                object locationContextCapability = this.Capabilities.GetCapability(CapabilityType.SupportsLocationContext);
-                if (locationContextCapability is bool && (bool)locationContextCapability)
-                {
-                    this.locationContext = new LocationContext(this);
-                }
-            }
-
-            if (this.Capabilities.HasCapability(CapabilityType.SupportsWebStorage))
-            {
-                object webContextCapability = this.Capabilities.GetCapability(CapabilityType.SupportsWebStorage);
-                if (webContextCapability is bool && (bool)webContextCapability)
-                {
-                    this.storage = new WebStorage(this);
-                }
-
             }
         }
 
@@ -238,84 +201,6 @@ namespace OpenQA.Selenium
                 }
 
                 this.fileDetector = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether web storage is supported for this driver.
-        /// </summary>
-        [Obsolete("Use JavaScript instead for managing localStorage and sessionStorage. This property will be removed in a future release.")]
-        public bool HasWebStorage
-        {
-            get { return this.storage != null; }
-        }
-
-        /// <summary>
-        /// Gets an <see cref="IWebStorage"/> object for managing web storage.
-        /// </summary>
-        [Obsolete("Use JavaScript instead for managing localStorage and sessionStorage. This property will be removed in a future release.")]
-        public IWebStorage WebStorage
-        {
-            get
-            {
-                if (this.storage == null)
-                {
-                    throw new InvalidOperationException("Driver does not support manipulating HTML5 web storage. Use the HasWebStorage property to test for the driver capability");
-                }
-
-                return this.storage;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether manipulating the application cache is supported for this driver.
-        /// </summary>
-        [Obsolete("Use JavaScript instead for managing applicationCache. This property will be removed in a future release.")]
-        public bool HasApplicationCache
-        {
-            get { return this.appCache != null; }
-        }
-
-        /// <summary>
-        /// Gets an <see cref="IApplicationCache"/> object for managing application cache.
-        /// </summary>
-        [Obsolete("Use JavaScript instead for managing applicationCache. This property will be removed in a future release.")]
-        public IApplicationCache ApplicationCache
-        {
-            get
-            {
-                if (this.appCache == null)
-                {
-                    throw new InvalidOperationException("Driver does not support manipulating the HTML5 application cache. Use the HasApplicationCache property to test for the driver capability");
-                }
-
-                return this.appCache;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether manipulating geolocation is supported for this driver.
-        /// </summary>
-        [Obsolete("Getting and setting geolocation information is not supported by the W3C WebDriver Specification. This property will be removed in a future release.")]
-        public bool HasLocationContext
-        {
-            get { return this.locationContext != null; }
-        }
-
-        /// <summary>
-        /// Gets an <see cref="ILocationContext"/> object for managing browser location.
-        /// </summary>
-        [Obsolete("Getting and setting geolocation information is not supported by the W3C WebDriver Specification. This property will be removed in a future release.")]
-        public ILocationContext LocationContext
-        {
-            get
-            {
-                if (this.locationContext == null)
-                {
-                    throw new InvalidOperationException("Driver does not support setting HTML5 geolocation information. Use the HasLocationContext property to test for the driver capability");
-                }
-
-                return this.locationContext;
             }
         }
 

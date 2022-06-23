@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Html5;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
