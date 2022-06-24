@@ -20,6 +20,8 @@ import socket
 import string
 
 import os
+import typing
+
 import certifi
 import urllib3
 import platform
@@ -161,7 +163,7 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr, keep_alive=False, ignore_proxy=False):
+    def __init__(self, remote_server_addr, keep_alive=False, ignore_proxy: typing.Optional[bool] = False):
         self.keep_alive = keep_alive
         self._url = remote_server_addr
 

@@ -50,7 +50,7 @@ public class PerSessionLogHandlerUnitTest {
   }
 
   @Test
-  @Ignore("it fails!")
+  @Disabled("it fails!")
   public void testLoggedSessions() {
     PerSessionLogHandler handler = createPerSessionLogHandler();
     SessionId sessionId = new SessionId("session-1");
@@ -61,7 +61,7 @@ public class PerSessionLogHandlerUnitTest {
   }
 
   @Test
-  @Ignore("it fails!")
+  @Disabled("it fails!")
   public void testGetSessionLogsWithLogCaptureDisabled() {
     PerSessionLogHandler handler = createPerSessionLogHandler();
     SessionId sessionId = new SessionId("session-1");

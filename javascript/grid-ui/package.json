@@ -4,21 +4,21 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@apollo/client": "^3.6.7",
+    "@apollo/client": "^3.6.8",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
-    "@mui/icons-material": "^5.8.3",
-    "@mui/material": "^5.8.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.8.5",
     "@novnc/novnc": "^1.2.0",
-    "@types/react": "^18.0.12",
+    "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@types/react-modal": "^3.12.0",
     "@types/react-router-dom": "^5.3.3",
     "graphql": "^16.5.0",
     "graphql.macro": "^1.4.2",
     "pretty-ms": "^7.0.1",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-modal": "^3.15.1",
     "react-router-dom": "^6.3.0",
     "source-map-explorer": "^2.5.2"
@@ -49,10 +49,10 @@
     "@babel/preset-react": "^7.17.12",
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^14.2.0",
+    "@testing-library/user-event": "^14.2.1",
     "react-scripts": "5.0.1",
     "ts-standard": "^11.0.0",
-    "typescript": "^4.7.3"
+    "typescript": "^4.7.4"
   },
   "jest": {
     "testMatch": [

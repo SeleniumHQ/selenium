@@ -1,3 +1,11 @@
+## v4.3.0
+
+* Fix: using fulfillRequest when intercepting (#10764)
+* Add support CDP 103 and remove CDP 100
+* Remove unused param in input.js & minor code cleanup
+* Fixes lint issues and updates npm packages
+* feat: Added virtual authenticator (#10663)
+
 ## v4.2.0
 
 * Delete old android-driver

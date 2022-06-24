@@ -152,8 +152,7 @@ namespace OpenQA.Selenium
 
         private class ProxyOptions : DriverOptions
         {
-            [Obsolete]
-            public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
+            public override void AddAdditionalOption(string capabilityName, object capabilityValue)
             {
             }
 

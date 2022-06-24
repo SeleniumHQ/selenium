@@ -12,7 +12,7 @@ java_selenium_test_suite(
         "selenium-remote",
     ],
     deps = [
-        "//java/src/org/openqa/selenium/bidi/log",
+        "//java/src/org/openqa/selenium/bidi",
         "//java/src/org/openqa/selenium/firefox",
         "//java/src/org/openqa/selenium/grid/security",
         "//java/src/org/openqa/selenium/json",

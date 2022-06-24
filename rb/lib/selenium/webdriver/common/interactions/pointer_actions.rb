@@ -98,22 +98,9 @@ module Selenium
 
       def move_to(element, right_by = nil, down_by = nil, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
-        if right_by || down_by
-          WebDriver.logger.warn("moving to an element with offset currently tries to use
-the top left corner of the element as the origin; in Selenium 4.3 it will use the in-view
-center point of the element as the origin.")
-          size = element.size
-          left_offset = (size[:width] / 2).to_i
-          top_offset = (size[:height] / 2).to_i
-          left = -left_offset + (right_by || 0)
-          top = -top_offset + (down_by || 0)
-        else
-          left = 0
-          top = 0
-        end
         pointer.create_pointer_move(duration: duration,
-                                    x: left,
-                                    y: top,
+                                    x: right_by || 0,
+                                    y: down_by || 0,
                                     origin: element,
                                     **opts)
         tick(pointer)

@@ -47,95 +47,15 @@ module Selenium
           expect { Driver.new }.not_to raise_exception
         end
 
-        context 'with :desired capabilities' do
-          it 'accepts value as a Symbol' do
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge"}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: :edge) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts Capabilities.edge' do
-            capabilities = Remote::Capabilities.edge(invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts constructed Capabilities with Snake Case as Symbols' do
-            capabilities = Remote::Capabilities.new(browser_name: 'MicrosoftEdge', invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts constructed Capabilities with Camel Case as Symbols' do
-            capabilities = Remote::Capabilities.new(browserName: 'MicrosoftEdge', invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts constructed Capabilities with Camel Case as Strings' do
-            capabilities = Remote::Capabilities.new('browserName' => 'MicrosoftEdge', 'invalid' => 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts Hash with Camel Case keys as Symbols' do
-            capabilities = {browserName: 'MicrosoftEdge', invalid: 'foobar'}
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts Hash with Camel Case keys as Strings' do
-            capabilities = {"browserName" => 'MicrosoftEdge', "invalid" => 'foobar'}
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-        end
-
         it 'accepts provided Options as sole parameter' do
           opts = {invalid: 'foobar', args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", 'ms:edgeOptions': opts}}})
 
-          expect {
-            expect { Driver.new(options: Options.new(**opts)) }.to have_deprecated(:browser_options)
-          }.not_to raise_exception
-        end
-
-        it 'accepts combination of Options and Capabilities' do
-          caps = Remote::Capabilities.edge(invalid: 'foobar')
-          browser_opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge",
-                                                             invalid: "foobar",
-                                                             'ms:edgeOptions': browser_opts}}})
-
-          expect {
-            expect {
-              Driver.new(options: Options.new(**browser_opts), desired_capabilities: caps)
-            }.to have_deprecated(%i[browser_options desired_capabilities])
-          }.not_to raise_exception
+          expect { Driver.new(options: Options.new(**opts)) }.not_to raise_exception
         end
 
         it 'raises an ArgumentError if parameter is not recognized' do
-          msg = 'Unable to create a driver with parameters: {:invalid=>"foo"}'
+          msg = 'unknown keyword: :invalid'
           expect { Driver.new(invalid: 'foo') }.to raise_error(ArgumentError, msg)
         end
 
@@ -171,24 +91,6 @@ module Selenium
             expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
-          end
-
-          it 'accepts Hash with Camel Case keys as Symbols but is deprecated' do
-            capabilities = {browserName: 'MicrosoftEdge', invalid: 'foobar'}
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
-            }.not_to raise_exception
-          end
-
-          it 'accepts Hash with Camel Case keys as Strings but is deprecated' do
-            capabilities = {"browserName" => 'MicrosoftEdge', "invalid" => 'foobar'}
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
-            }.not_to raise_exception
           end
 
           context 'when value is an Array' do

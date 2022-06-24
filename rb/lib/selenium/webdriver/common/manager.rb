@@ -104,33 +104,6 @@ module Selenium
         @timeouts ||= Timeouts.new(@bridge)
       end
 
-      def logs
-        WebDriver.logger.deprecate('Manager#logs', 'Chrome::Driver#logs')
-        @logs ||= Logs.new(@bridge)
-      end
-
-      #
-      # @param type [Symbol] Supports two values: :tab and :window.
-      # @return [String] The value of the window handle
-      #
-      def new_window(type = :tab)
-        WebDriver.logger.deprecate('Manager#new_window', 'TargetLocator#new_window', id: :new_window) do
-          'e.g., `driver.switch_to.new_window(:tab)`'
-        end
-        case type
-        when :tab, :window
-          result = @bridge.new_window(type)
-          unless result.key?('handle')
-            raise UnknownError, "the driver did not return a handle. " \
-                                "The returned result: #{result.inspect}"
-          end
-          result['handle']
-        else
-          raise ArgumentError, "invalid argument for type. Got: '#{type.inspect}'. " \
-                               "Try :tab or :window"
-        end
-      end
-
       def window
         @window ||= Window.new(@bridge)
       end
