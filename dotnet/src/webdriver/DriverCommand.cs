@@ -482,54 +482,6 @@ namespace OpenQA.Selenium
         public static readonly string SendKeysToActiveElement = "sendKeysToActiveElement";
 
         /// <summary>
-        /// Represents the TouchSingleTap command.
-        /// </summary>
-        [Obsolete("Command not defined by W3C WebDriver Specification. Use the actions command to define user interactions.")]
-        public static readonly string TouchSingleTap = "touchSingleTap";
-
-        /// <summary>
-        /// Represents the TouchPress command.
-        /// </summary>
-        [Obsolete("Command not defined by W3C WebDriver Specification. Use the actions command to define user interactions.")]
-        public static readonly string TouchPress = "touchDown";
-
-        /// <summary>
-        /// Represents the TouchRelease command.
-        /// </summary>
-        [Obsolete("Command not defined by W3C WebDriver Specification. Use the actions command to define user interactions.")]
-        public static readonly string TouchRelease = "touchUp";
-
-        /// <summary>
-        /// Represents the TouchMove command.
-        /// </summary>
-        [Obsolete("Command not defined by W3C WebDriver Specification. Use the actions command to define user interactions.")]
-        public static readonly string TouchMove = "touchMove";
-
-        /// <summary>
-        /// Represents the TouchScroll command.
-        /// </summary>
-        [Obsolete("Command not defined by W3C WebDriver Specification. Use the actions command to define user interactions.")]
-        public static readonly string TouchScroll = "touchScroll";
-
-        /// <summary>
-        /// Represents the TouchDoubleTap command.
-        /// </summary>
-        [Obsolete("Command not defined by W3C WebDriver Specification. Use the actions command to define user interactions.")]
-        public static readonly string TouchDoubleTap = "touchDoubleTap";
-
-        /// <summary>
-        /// Represents the TouchLongPress command.
-        /// </summary>
-        [Obsolete("Command not defined by W3C WebDriver Specification. Use the actions command to define user interactions.")]
-        public static readonly string TouchLongPress = "touchLongPress";
-
-        /// <summary>
-        /// Represents the TouchFlick command.
-        /// </summary>
-        [Obsolete("Command not defined by W3C WebDriver Specification. Use the actions command to define user interactions.")]
-        public static readonly string TouchFlick = "touchFlick";
-
-        /// <summary>
         /// Represents the Authenticate command
         /// </summary>
         [Obsolete("Command not defined by W3C WebDriver Specification.")]
