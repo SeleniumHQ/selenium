@@ -52,7 +52,7 @@ public class DecoratedVirtualAuthenticatorTest {
       originalDriver = mock(
         WebDriver.class, withSettings().extraInterfaces(HasVirtualAuthenticator.class));
       when(((HasVirtualAuthenticator) originalDriver).addVirtualAuthenticator(any())).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = ((HasVirtualAuthenticator) decoratedDriver)
         .addVirtualAuthenticator(new VirtualAuthenticatorOptions());
     }

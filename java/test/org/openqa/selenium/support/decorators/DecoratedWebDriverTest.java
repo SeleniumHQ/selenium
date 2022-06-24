@@ -61,7 +61,7 @@ public class DecoratedWebDriverTest {
         .extraInterfaces(JavascriptExecutor.class, TakesScreenshot.class,
                          Interactive.class, HasVirtualAuthenticator.class));
       originalAuth = mock(VirtualAuthenticator.class);
-      decorated = new WebDriverDecorator().decorate(original);
+      decorated = new WebDriverDecorator<>().decorate(original);
       when(((HasVirtualAuthenticator) original).addVirtualAuthenticator(any())).thenReturn(originalAuth);
     }
   }
@@ -84,9 +84,9 @@ public class DecoratedWebDriverTest {
     WebDriver original1 = mock(WebDriver.class);
     WebDriver original2 = mock(WebDriver.class);
 
-    WebDriver decorated1 = new WebDriverDecorator().decorate(original1);
-    WebDriver decorated2 = new WebDriverDecorator().decorate(original1);
-    WebDriver decorated3 = new WebDriverDecorator().decorate(original2);
+    WebDriver decorated1 = new WebDriverDecorator<>().decorate(original1);
+    WebDriver decorated2 = new WebDriverDecorator<>().decorate(original1);
+    WebDriver decorated3 = new WebDriverDecorator<>().decorate(original2);
     assertThat(decorated1).isEqualTo(decorated2);
     assertThat(decorated1).isNotEqualTo(decorated3);
 
@@ -99,7 +99,7 @@ public class DecoratedWebDriverTest {
   @Test
   public void testHashCode() {
     WebDriver original = mock(WebDriver.class);
-    WebDriver decorated = new WebDriverDecorator().decorate(original);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(original);
     assertThat(decorated.hashCode()).isEqualTo(original.hashCode());
   }
 

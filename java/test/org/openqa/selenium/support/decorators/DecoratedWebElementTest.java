@@ -55,7 +55,7 @@ public class DecoratedWebElementTest {
       original = mock(WebElement.class);
       originalDriver = mock(WebDriver.class);
       when(originalDriver.findElement(any())).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.findElement(By.id("test"));
     }
   }

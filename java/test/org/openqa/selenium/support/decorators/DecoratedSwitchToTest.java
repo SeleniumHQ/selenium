@@ -47,7 +47,7 @@ public class DecoratedSwitchToTest {
       original = mock(WebDriver.TargetLocator.class);
       originalDriver = mock(WebDriver.class);
       when(originalDriver.switchTo()).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.switchTo();
     }
   }
