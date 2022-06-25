@@ -84,21 +84,22 @@ public class DevTools implements Closeable {
     connection.clearListeners();
   }
 
-  public void createSessionIfThereIsNotOne() {
+  public void createSessionIfThereIsNotOne(String windowHandle) {
     if (cdpSession == null) {
-      createSession();
+      createSession(windowHandle);
     }
   }
 
-  public void createSession() {
+  public void createSession(String windowHandle) {
     // Figure out the targets.
     List<TargetInfo> infos = connection.sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
 
     // Grab the first "page" type, and glom on to that.
-    // TODO: Find out which one might be the current one
+    // Find out which one might be the current one (using given window handle like "CDwindow-24426957AC62D8BC83E58C184C38AF2D")
     TargetID targetId = infos.stream()
       .filter(info -> "page".equals(info.getType()))
       .map(TargetInfo::getTargetId)
+      .filter(id -> windowHandle.contains(id.toString()))
       .findAny()
       .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
 
