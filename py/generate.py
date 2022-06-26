@@ -1022,6 +1022,13 @@ def main(browser_protocol_path, js_protocol_path, output_path):
                 if event.name == 'screencastVisibilityChanged':
                     # Patch 2
                     event.description = event.description.replace('`', '')
+        elif domain.domain == 'Debugger':
+            for event in domain.events:
+                for parameter in event.parameters:
+                    if parameter.name in ("scriptLanguage", "debugSymbols"):
+                        # Patch 3 required for debugging referencing itself internally.
+                        if parameter.ref.startswith("debugging."):
+                            parameter.ref = parameter.ref.split(".")[-1]
 
     for domain in domains:
         logger.info('Generating module: %s → %s.py', domain.domain,
