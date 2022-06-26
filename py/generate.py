@@ -1027,7 +1027,7 @@ def main(browser_protocol_path, js_protocol_path, output_path):
                 for parameter in event.parameters:
                     if parameter.name in ("scriptLanguage", "debugSymbols"):
                         # Patch 3 required for debugging referencing itself internally.
-                        if parameter.ref.startswith("debugging."):
+                        if parameter.ref.startswith("Debugger."):
                             parameter.ref = parameter.ref.split(".")[-1]
 
     for domain in domains:
