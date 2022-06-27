@@ -1,0 +1,27 @@
+<html>
+
+<body>
+
+    <h1>Long entry added events</h1>
+
+    <button id="consoleLog" onclick="helloWorld()">Click me for console logs</button>
+
+    <button id="jsException" onclick="createError()">Click me for jsException logs</button>
+
+    <button id="logWithStacktrace" onclick="bar()">Click me to get an error with stacktrace</button>
+
+    <script>
+        function helloWorld() {
+            console.log('Hello, world!')
+        }
+
+        function createError() { throw new Error('Not working') }
+
+        function foo() { throw new Error('Not working'); }
+
+        function bar() { foo(); }
+    </script>
+
+</body>
+
+</html>
