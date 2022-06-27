@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Index of Available Pages</title>
+</head>
+<body>
+<script>
+    (async () => {
+        const response = await fetch('https://api.github.com/repos/SeleniumHQ/selenium/git/trees/gh-pages?recursive=true');
+        const data = await response.json();
+        const list = data.tree
+        let htmlString = '<ul>';
+
+        for (let item of list) {
+            const name = item.path;
+            if (name.substring(0, 1) !== 'w') { continue; }
+            if (name.substring(name.length-4, name.length) !== 'html') { continue; }
+            const val = name.substring(4, name.length);
+            htmlString += `<li><a href="${val}">${val}</a></li>`;
+        }
+
+        htmlString += '</ul>';
+        document.getElementsByTagName('body')[0].innerHTML = htmlString;
+    })()
+</script>
+</body>
+</html>
