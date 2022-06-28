@@ -237,8 +237,6 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
   @Override
   public void setCapability(String key, Object value) {
-    super.setCapability(key, value);
-
     if (IE_SWITCHES.equals(key)) {
       if (value instanceof List) {
         value = ((List<?>) value).stream().map(Object::toString).collect(Collectors.joining(" "));
@@ -247,6 +245,9 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
     if (CAPABILITY_NAMES.contains(key)) {
       ieOptions.put(key, value);
+    } else if (!IE_OPTIONS.equals(key)) {
+      // Regular, top level value
+      super.setCapability(key, value);
     }
 
     if (IE_OPTIONS.equals(key)) {
@@ -257,17 +258,17 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
       } else if (value instanceof Capabilities) {
         streamFrom = ((Capabilities) value).asMap();
       } else {
-        throw new IllegalArgumentException("Value must not be null for " + key);
+        throw new IllegalArgumentException(
+          "Value for " + key + " must be of type Map or Capabilities");
       }
-
       streamFrom.entrySet().stream()
-        .filter(e -> CAPABILITY_NAMES.contains(e.getKey()))
-        .filter(e -> e.getValue() != null)
-        .forEach(e -> {
-          if (IE_SWITCHES.equals(e.getKey())) {
-            setCapability(e.getKey(), Arrays.asList((e.getValue().toString()).split(" ")));
+        .filter(entry -> CAPABILITY_NAMES.contains(entry.getKey()))
+        .filter(entry -> entry.getValue() != null)
+        .forEach(entry -> {
+          if (IE_SWITCHES.equals(entry.getKey())) {
+            setCapability(entry.getKey(), Arrays.asList((entry.getValue().toString()).split(" ")));
           } else {
-            setCapability(e.getKey(), e.getValue());
+            setCapability(entry.getKey(), entry.getValue());
           }
         });
     }
