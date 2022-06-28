@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.devtools;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.idealized.Domains;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.devtools.idealized.target.model.TargetID;
@@ -84,12 +85,26 @@ public class DevTools implements Closeable {
     connection.clearListeners();
   }
 
+  public void createSessionIfThereIsNotOne() {
+    createSessionIfThereIsNotOne(null);
+  }
+
   public void createSessionIfThereIsNotOne(String windowHandle) {
     if (cdpSession == null) {
       createSession(windowHandle);
     }
   }
 
+  public void createSession() {
+    createSession(null);
+  }
+
+  /**
+   * Create CDP session on given window/tab (aka target).
+   * If windowHandle is null, then _some_ target will be selected. It might be a problem only if you have multiple windows/tabs opened.
+   *
+   * @param windowHandle result of {@link WebDriver#getWindowHandle()}, optional.
+   */
   public void createSession(String windowHandle) {
     // Figure out the targets.
     List<TargetInfo> infos = connection.sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
@@ -99,7 +114,7 @@ public class DevTools implements Closeable {
     TargetID targetId = infos.stream()
       .filter(info -> "page".equals(info.getType()))
       .map(TargetInfo::getTargetId)
-      .filter(id -> windowHandle.contains(id.toString()))
+      .filter(id -> windowHandle == null || windowHandle.contains(id.toString()))
       .findAny()
       .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
 
