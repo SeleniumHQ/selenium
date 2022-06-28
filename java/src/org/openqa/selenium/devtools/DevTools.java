@@ -109,17 +109,7 @@ public class DevTools implements Closeable {
    * @param windowHandle result of {@link WebDriver#getWindowHandle()}, optional.
    */
   public void createSession(String windowHandle) {
-    // Figure out the targets.
-    List<TargetInfo> infos = connection.sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
-
-    // Grab the first "page" type, and glom on to that.
-    // Find out which one might be the current one (using given window handle like "CDwindow-24426957AC62D8BC83E58C184C38AF2D")
-    TargetID targetId = infos.stream()
-      .filter(info -> "page".equals(info.getType()))
-      .map(TargetInfo::getTargetId)
-      .filter(id -> windowHandle == null || windowHandle.contains(id.toString()))
-      .findAny()
-      .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
+    TargetID targetId = findTarget(windowHandle);
 
     // Start the session.
     cdpSession = connection
@@ -141,14 +131,28 @@ public class DevTools implements Closeable {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Thread has been interrupted", e);
     } catch (ExecutionException e) {
-      Throwable cause = e;
-      if (e.getCause() != null) {
-        cause = e.getCause();
-      }
-      throw new DevToolsException(cause);
+      throw new DevToolsException(unwrapCause(e));
     } catch (TimeoutException e) {
       throw new org.openqa.selenium.TimeoutException(e);
     }
+  }
+
+  private TargetID findTarget(String windowHandle) {
+    // Figure out the targets.
+    List<TargetInfo> infos = connection.sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
+
+    // Grab the first "page" type, and glom on to that.
+    // Find out which one might be the current one (using given window handle like "CDwindow-24426957AC62D8BC83E58C184C38AF2D")
+    return infos.stream()
+      .filter(info -> "page".equals(info.getType()))
+      .map(TargetInfo::getTargetId)
+      .filter(id -> windowHandle == null || windowHandle.contains(id.toString()))
+      .findAny()
+      .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
+  }
+
+  private Throwable unwrapCause(ExecutionException e) {
+    return e.getCause() != null ? e.getCause() : e;
   }
 
   public SessionID getCdpSession() {
