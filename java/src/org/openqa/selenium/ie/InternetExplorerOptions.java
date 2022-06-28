@@ -103,12 +103,8 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   @Override
   public InternetExplorerOptions merge(Capabilities extraCapabilities) {
     InternetExplorerOptions newInstance = new InternetExplorerOptions();
-    this.asMap().entrySet().stream()
-      .filter(entry -> !entry.getKey().equals(IE_OPTIONS))
-      .forEach(entry -> newInstance.setCapability(entry.getKey(), entry.getValue()));
-    extraCapabilities.asMap().entrySet().stream()
-      .filter(entry -> !entry.getKey().equals(IE_OPTIONS))
-      .forEach(entry -> newInstance.setCapability(entry.getKey(), entry.getValue()));
+    this.asMap().forEach(newInstance::setCapability);
+    extraCapabilities.asMap().forEach(newInstance::setCapability);
     return newInstance;
   }
 
@@ -245,7 +241,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
 
     if (CAPABILITY_NAMES.contains(key)) {
       ieOptions.put(key, value);
-    } else if (!IE_OPTIONS.equals(key)) {
+    } else {
       // Regular, top level value
       super.setCapability(key, value);
     }
