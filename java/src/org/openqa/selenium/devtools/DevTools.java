@@ -33,10 +33,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class DevTools implements Closeable {
+  private static final Logger log = Logger.getLogger(DevTools.class.getName());
 
   private final Domains protocol;
   private final Duration timeout = Duration.ofSeconds(10);
@@ -130,7 +133,7 @@ public class DevTools implements Closeable {
         // Clear the existing logs
         connection.send(cdpSession, getDomains().log().clear())
           .exceptionally(t -> {
-            t.printStackTrace();
+            log.log(Level.SEVERE, t.getMessage(), t);
             return null;
           })
       ).get(timeout.toMillis(), MILLISECONDS);
