@@ -59,7 +59,7 @@ public class CdpEventTypes {
         Require.precondition(webDriver instanceof HasDevTools, "Loggable must implement HasDevTools");
 
         DevTools tools = ((HasDevTools) webDriver).getDevTools();
-        tools.createSessionIfThereIsNotOne();
+        tools.createSessionIfThereIsNotOne(webDriver.getWindowHandle());
 
         tools.getDomains().events().addConsoleListener(handler);
       }
@@ -91,7 +91,7 @@ public class CdpEventTypes {
         Require.precondition(driver instanceof HasDevTools, "Loggable must implement HasDevTools");
 
         DevTools tools = ((HasDevTools) driver).getDevTools();
-        tools.createSessionIfThereIsNotOne();
+        tools.createSessionIfThereIsNotOne(driver.getWindowHandle());
 
         tools.getDomains().javascript().pin("__webdriver_attribute", script);
 

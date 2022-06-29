@@ -79,7 +79,7 @@ public class DistributedCdpTest {
     driver = new Augmenter().augment(driver);
 
     try (DevTools devTools = ((HasDevTools) driver).getDevTools()) {
-      devTools.createSessionIfThereIsNotOne();
+      devTools.createSessionIfThereIsNotOne(driver.getWindowHandle());
       Network<?, ?> network = devTools.getDomains().network();
       network.setUserAgent("Cheese-Browser 4000");
 
