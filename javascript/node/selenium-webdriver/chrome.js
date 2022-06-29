@@ -274,10 +274,7 @@ function setDefaultService(service) {
  * @return {!remote.DriverService} The default ChromeDriver service.
  */
 function getDefaultService() {
-  if (!defaultService) {
-    defaultService = new ServiceBuilder().build()
-  }
-  return defaultService
+  return new ServiceBuilder().build()
 }
 
 Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions'

@@ -665,11 +665,9 @@ class Driver extends webdriver.WebDriver {
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor
       configureExecutor(executor, this.VENDOR_COMMAND_PREFIX)
-    } else if (opt_serviceExecutor instanceof remote.DriverService) {
-      executor = createExecutor(opt_serviceExecutor.start())
-      onQuit = () => opt_serviceExecutor.kill()
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
+      onQuit = () => service.kill()
       executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX)
     }
 
