@@ -266,7 +266,8 @@ public class DockerSessionFactory implements SessionFactory {
         mergedCapabilities,
         downstream,
         result.getDialect(),
-        Instant.now()));
+        Instant.now(),
+        assetsPath));
     }
   }
 
