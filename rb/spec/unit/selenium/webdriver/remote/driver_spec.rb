@@ -42,114 +42,26 @@ module Selenium
           expect { Driver.new }.not_to raise_exception
         end
 
-        context 'with :desired capabilities' do
-          it 'accepts value as a Symbol' do
-            expect_request
-
-            expect {
-              expect { Driver.new(desired_capabilities: :chrome) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts a generated Capabilities instance' do
-            capabilities = Remote::Capabilities.chrome
-            expect_request
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts constructed Capabilities with Snake Case as Symbols' do
-            capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts constructed Capabilities with Camel Case as Symbols' do
-            capabilities = Remote::Capabilities.new(browserName: 'chrome', invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts constructed Capabilities with Camel Case as Strings' do
-            capabilities = Remote::Capabilities.new('browserName' => 'chrome', 'invalid' => 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts Hash with Camel Case keys as Symbols' do
-            capabilities = {browserName: 'chrome', invalid: 'foobar'}
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-
-          it 'accepts Hash with Camel Case keys as Strings' do
-            capabilities = {"browserName" => 'chrome', "invalid" => 'foobar'}
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(desired_capabilities: capabilities) }.to have_deprecated(:desired_capabilities)
-            }.not_to raise_exception
-          end
-        end
-
         it 'uses provided URL' do
-          server = "http://example.com:4646/wd/hub"
+          server = "https://example.com:4646/wd/hub"
           expect_request(endpoint: "#{server}/session")
 
-          expect {
-            expect {
-              Driver.new(desired_capabilities: :chrome, url: server)
-            }.to have_deprecated(:desired_capabilities)
-          }.not_to raise_exception
+          expect { Driver.new(capabilities: :chrome, url: server) }.not_to raise_exception
         end
 
         it 'uses provided HTTP Client' do
           client = Remote::Http::Default.new
           expect_request
 
-          expect {
-            driver = Driver.new(desired_capabilities: :chrome, http_client: client)
-            expect(driver.send(:bridge).http).to eq client
-          }.to have_deprecated(:desired_capabilities)
+          driver = Driver.new(capabilities: :chrome, http_client: client)
+          expect(driver.send(:bridge).http).to eq client
         end
 
         it 'accepts Options as sole parameter' do
           opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': opts}}})
 
-          expect {
-            expect { Driver.new(options: Chrome::Options.new(**opts)) }.to have_deprecated(:browser_options)
-          }.not_to raise_exception
-        end
-
-        it 'accepts combination of Options and Capabilities' do
-          opts = {args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", 'goog:chromeOptions': opts}}})
-
-          expect {
-            expect {
-              Driver.new(desired_capabilities: :chrome, options: Chrome::Options.new(**opts))
-            }.to have_deprecated(%i[browser_options desired_capabilities])
-          }.not_to raise_exception
-        end
-
-        it 'raises an ArgumentError if parameter is not recognized' do
-          msg = 'Unable to create a driver with parameters: {:invalid=>"foo"}'
-          expect { Driver.new(invalid: 'foo') }.to raise_error(ArgumentError, msg)
+          expect { Driver.new(options: Chrome::Options.new(**opts)) }.not_to raise_exception
         end
 
         context 'with :capabilities' do
@@ -184,24 +96,6 @@ module Selenium
             expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
 
             expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
-          end
-
-          it 'accepts Hash with Camel Case keys as Symbols but is deprecated' do
-            capabilities = {browserName: 'chrome', invalid: 'foobar'}
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
-            }.not_to raise_exception
-          end
-
-          it 'accepts Hash with Camel Case keys as Strings but is deprecated' do
-            capabilities = {"browserName" => 'chrome', "invalid" => 'foobar'}
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
-
-            expect {
-              expect { Driver.new(capabilities: capabilities) }.to have_deprecated(:capabilities_hash)
-            }.not_to raise_exception
           end
 
           context 'when value is an Array' do

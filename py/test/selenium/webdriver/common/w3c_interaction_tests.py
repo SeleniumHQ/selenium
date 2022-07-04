@@ -188,9 +188,9 @@ def test_pen_pointer_properties(driver, pages):
     center = _get_inview_center(pointerArea.rect, _get_viewport_rect(driver))
     actions.pointer_action.move_to(pointerArea) \
         .pointer_down(pressure=0.36, tilt_x=-72, tilt_y=9, twist=86) \
-        .move_to(pointerArea, x=10, y=40) \
+        .move_to(pointerArea, x=5, y=10) \
         .pointer_up() \
-        .move_to(pointerArea, x=10, y=50)
+        .move_to(pointerArea, x=5, y=10)
     actions.perform()
     events = _get_events(driver)
     assert events[3]["type"] == "pointerdown"
@@ -225,11 +225,11 @@ def test_touch_pointer_properties(driver, pages):
     center = _get_inview_center(pointerArea.rect, _get_viewport_rect(driver))
     touch_input = PointerInput(interaction.POINTER_TOUCH, "touch")
     touch_chain = ActionBuilder(driver, mouse=touch_input)
-    touch_chain.pointer_action.move_to(pointerArea, x=50, y=25) \
+    touch_chain.pointer_action.move_to(pointerArea) \
         .pointer_down(width=23, height=31, pressure=0.78, tilt_x=21, tilt_y=-8, twist=355) \
-        .move_to(pointerArea, x=60, y=35, width=39, height=35, pressure=0.91, tilt_x=-19, tilt_y=62, twist=345) \
+        .move_to(pointerArea, x=10, y=10, width=39, height=35, pressure=0.91, tilt_x=-19, tilt_y=62, twist=345) \
         .pointer_up() \
-        .move_to(pointerArea, x=80, y=50)
+        .move_to(pointerArea, x=15, y=15)
     touch_chain.perform()
     events = _get_events(driver)
     assert len(events) == 7

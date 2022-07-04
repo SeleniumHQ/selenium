@@ -1,3 +1,13 @@
+v4.3.0
+======
+* Added CDP support for v103, and remove v100
+* Removed Element `GetProperty()` method
+* Removed execute Chrome command methods
+* Removed AddAdditionalCapability() methods from Browser Options classes
+* Removed IFindsBy locator interfaces
+* Removed HTML5 commands, interfaces and classes since not w3c supported
+* Removed support for moving to top left of element due to inconsistencies
+
 v4.2.0
 ======
 * Implement setting pointer event properties

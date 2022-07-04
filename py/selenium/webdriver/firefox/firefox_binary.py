@@ -150,7 +150,11 @@ class FirefoxBinary:
         """Return the command to start firefox."""
         start_cmd = ""
         if self.platform == "darwin":  # small darwin due to lower() in self.platform
-            start_cmd = "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
+            ffname = "firefox"
+            start_cmd = self.which(ffname)
+            # use hardcoded path if nothing else was found by which()
+            if not start_cmd:
+                start_cmd = "/Applications/Firefox.app/Contents/MacOS/firefox-bin"
             # fallback to homebrew installation for mac users
             if not os.path.exists(start_cmd):
                 start_cmd = os.path.expanduser("~") + start_cmd

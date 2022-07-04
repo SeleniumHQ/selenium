@@ -194,9 +194,10 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement element = driver.FindElement(By.Id("eventish"));
             Point location = element.Location;
+            Size size = element.Size;
 
             new Actions(driver)
-                .MoveToElement(element, 20, 10)
+                .MoveToElement(element, 20 - size.Width / 2, 10 - size.Height / 2)
                 .Click()
                 .Perform();
 

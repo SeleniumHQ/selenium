@@ -74,7 +74,7 @@ public class NodeOptions {
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
-  static final String DEFAULT_VNC_ENV_VAR = "START_XVFB";
+  static final String DEFAULT_VNC_ENV_VAR = "SE_START_XVFB";
   static final int DEFAULT_NO_VNC_PORT = 7900;
   static final int DEFAULT_REGISTER_CYCLE = 10;
   static final int DEFAULT_REGISTER_PERIOD = 120;
