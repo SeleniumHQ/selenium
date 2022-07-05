@@ -95,6 +95,7 @@
     <Compile Remove="Internal\IFindsByPartialLinkText.cs" />
     <Compile Remove="Internal\IFindsByTagName.cs" />
     <Compile Remove="Internal\IFindsByXPath.cs" />
+    <Compile Remove="Interactions\TouchActions.cs" />
   </ItemGroup>
 
   <ItemGroup>

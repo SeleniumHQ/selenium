@@ -43,12 +43,5 @@ namespace OpenQA.Selenium
         /// </summary>
         /// <param name="keysToSend">The keystrokes to send.</param>
         void SendKeys(string keysToSend);
-
-        /// <summary>
-        /// Sets the user name and password in an alert prompting for credentials.
-        /// </summary>
-        /// <param name="userName">The user name to set.</param>
-        /// <param name="password">The password to set.</param>
-        void SetAuthenticationCredentials(string userName, string password);
     }
 }

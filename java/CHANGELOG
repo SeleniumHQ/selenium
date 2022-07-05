@@ -1,3 +1,19 @@
+v4.3.0
+======
+
+* Supported CDP versions: 85, 101, 102, 103
+* Remove deprecated methods that use capabilities in WebDrivers (#10427)
+* Removal of deprecated Actions commands
+  Deprecated in (1/7/2017) for selenium-3.1.0 and (10/29/2018) for selenium-3.141.0
+* Removing deprecated getPlatform and getVersion
+* Removing a few non-W3C ways of matching browsers
+* Add support for BiDi log event (#10696)
+* Warning when user sets `w3c: true` in `goog:chromeOptions`
+* Adding native ARM support for sockets
+* Add Firefox profile preferences when retrieving from a file
+* Add BiDi augmenter support (#10789)
+* [cdp] Add support CDP 103 and remove CDP 100
+
 v4.2.2
 ======
 

@@ -99,7 +99,8 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
                     "-Dselenium.browser.remote=true",
                     "-Dselenium.browser.remote.path=$(location @selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
                 ],
-                tags = BROWSERS[browser]["tags"] + tags + ["remote"],
+                # No need to lint remote tests as the code for non-remote is the same and they get linted
+                tags = BROWSERS[browser]["tags"] + tags + ["remote", "no-lint"],
                 data = BROWSERS[browser]["data"] + data + [
                     "@selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
                 ],
