@@ -17,7 +17,6 @@
 
 import json
 import pkgutil
-import sys
 
 from contextlib import asynccontextmanager
 from importlib import import_module
@@ -43,7 +42,6 @@ class Log():
     """
 
     def __init__(self, driver, bidi_session) -> None:
-        assert sys.version_info >= (3, 7)
         self.driver = driver
         self.session = bidi_session.session
         self.cdp = bidi_session.cdp
@@ -69,8 +67,6 @@ class Log():
                 assert event["old_value"] == "display:none;"
 
         """
-
-        assert sys.version_info >= (3, 7)
 
         page = self.cdp.get_session_context('page.enable')
         await page.execute(self.devtools.page.enable())
