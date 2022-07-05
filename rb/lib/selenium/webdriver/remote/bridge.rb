@@ -26,7 +26,7 @@ module Selenium
         PORT = 4444
 
         attr_accessor :http, :file_detector
-        attr_reader :capabilities
+        attr_reader :capabilities, :authenticator_id
 
         #
         # Initializes the bridge with the given server URL
@@ -42,6 +42,7 @@ module Selenium
           @http = http_client || Http::Default.new
           @http.server_url = uri
           @file_detector = nil
+          @authenticator_id = nil
         end
 
         #
@@ -568,6 +569,55 @@ module Selenium
           id = execute :get_element_shadow_root, id: element
           ShadowRoot.new self, shadow_root_id_from(id)
         end
+
+        #
+        # virtual-authenticator
+        #
+        def virtual_authenticator_id
+          @authenticator_id
+        end
+
+        def add_virtual_authenticator(options)
+          options_to_dict = options.to_dict
+          @authenticator_id = execute :add_virtual_authenticator, {}, options.to_dict
+        end
+
+        def remove_virtual_authenticator
+          execute :remove_virtual_authenticator, {}, {authenticatorId: @authenticator_id}
+          @authenticator_id = nil
+        end
+
+        def add_credential(credential)
+          credential = credential.to_dict
+          credential[:authenticatorId] = @authenticator_id
+          execute :add_credential, {}, credential
+        end
+
+        def get_credentials
+          credential_data = execute :get_credentials, {}, {authenticatorId: @authenticator_id}
+          credential_list = []
+
+          credential_data.each { |cred|
+            credential_list.push(Credential.new.from_dict(cred))
+          }
+          credential_list
+        end
+
+        def remove_credential(credential_id)
+          if credential_id.class == Array
+            credential_id = Base64.urlsafe_encode64(credential_id.to_s)
+          end
+          execute :remove_credential, {credentialId: credential_id, authenticatorId: @authenticator_id}
+        end
+
+        def remove_all_credentials
+          execute :remove_all_credentials, { authenticatorId: @authenticator_id }
+        end
+
+        def set_user_verified(verified)
+          execute :set_user_verified, {authenticatorId: @authenticator_id, isUserVerified: verified}
+        end
+
 
         private
 
