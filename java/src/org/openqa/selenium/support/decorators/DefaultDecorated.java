@@ -23,9 +23,9 @@ import java.lang.reflect.Method;
 public class DefaultDecorated<T> implements Decorated<T> {
 
   private final T original;
-  private final WebDriverDecorator decorator;
+  private final WebDriverDecorator<?> decorator;
 
-  public DefaultDecorated(final T original, final WebDriverDecorator decorator) {
+  public DefaultDecorated(final T original, final WebDriverDecorator<?> decorator) {
     this.original = original;
     this.decorator = decorator;
   }
@@ -34,7 +34,7 @@ public class DefaultDecorated<T> implements Decorated<T> {
     return original;
   }
 
-  public final WebDriverDecorator getDecorator() {
+  public final WebDriverDecorator<?> getDecorator() {
     return decorator;
   }
 

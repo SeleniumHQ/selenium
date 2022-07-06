@@ -440,7 +440,7 @@ class AugmenterTest {
     }
   }
 
-  private static class ModifyTitleWebDriverDecorator extends WebDriverDecorator {
+  private static class ModifyTitleWebDriverDecorator extends WebDriverDecorator<WebDriver> {
 
     @Override
     public Object call(Decorated<?> target, Method method, Object[] args) throws Throwable {

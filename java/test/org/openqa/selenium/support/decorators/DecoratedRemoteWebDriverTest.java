@@ -48,12 +48,11 @@ class DecoratedRemoteWebDriverTest {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     when(originalDriver.getSessionId()).thenReturn(sessionId);
 
-    WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+    RemoteWebDriver decoratedDriver = new WebDriverDecorator<>(RemoteWebDriver.class).decorate(originalDriver);
 
-    RemoteWebDriver
-      underlying =
-      (RemoteWebDriver) ((WrapsDriver) decoratedDriver).getWrappedDriver();
+    assertThat(decoratedDriver.getSessionId()).isEqualTo(sessionId);
 
+    RemoteWebDriver underlying = (RemoteWebDriver) ((WrapsDriver) decoratedDriver).getWrappedDriver();
     assertThat(underlying.getSessionId()).isEqualTo(sessionId);
   }
 
@@ -61,7 +60,7 @@ class DecoratedRemoteWebDriverTest {
   void cannotConvertDecoratedToRemoteWebDriver() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
 
-    WebDriver decorated = new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(originalDriver);
 
     assertThat(decorated).isNotInstanceOf(RemoteWebDriver.class);
   }
@@ -70,7 +69,7 @@ class DecoratedRemoteWebDriverTest {
   void decoratedDriversShouldImplementWrapsDriver() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
 
-    WebDriver decorated = new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(originalDriver);
 
     assertThat(decorated).isInstanceOf(WrapsDriver.class);
   }
@@ -85,7 +84,7 @@ class DecoratedRemoteWebDriverTest {
 
     when(originalDriver.findElement(any())).thenReturn(originalElement);
 
-    WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
     WebElement element = decoratedDriver.findElement(By.id("test"));
 
     assertThat(element).isInstanceOf(WrapsElement.class);
@@ -101,7 +100,7 @@ class DecoratedRemoteWebDriverTest {
 
     when(originalDriver.findElement(any())).thenReturn(originalElement);
 
-    WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
 
     WebElement element = decoratedDriver.findElement(By.id("test"));
 

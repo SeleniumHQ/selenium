@@ -49,7 +49,7 @@ class DecoratedAlertTest {
       originalDriver = mock(WebDriver.class);
       when(originalSwitch.alert()).thenReturn(original);
       when(originalDriver.switchTo()).thenReturn(originalSwitch);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.switchTo().alert();
     }
   }

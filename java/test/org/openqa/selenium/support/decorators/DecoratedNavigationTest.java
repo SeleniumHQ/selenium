@@ -45,7 +45,7 @@ class DecoratedNavigationTest {
       original = mock(WebDriver.Navigation.class);
       originalDriver = mock(WebDriver.class);
       when(originalDriver.navigate()).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.navigate();
     }
   }

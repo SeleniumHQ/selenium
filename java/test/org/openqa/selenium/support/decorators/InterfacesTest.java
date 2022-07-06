@@ -36,7 +36,7 @@ class InterfacesTest {
     WebDriver driver = mock(WebDriver.class);
     assertThat(driver).isNotInstanceOf(SomeOtherInterface.class);
 
-    WebDriver decorated = new WebDriverDecorator().decorate(driver);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(driver);
     assertThat(decorated).isNotInstanceOf(SomeOtherInterface.class);
   }
 
@@ -45,7 +45,7 @@ class InterfacesTest {
     WebDriver driver = mock(ExtendedDriver.class);
     assertThat(driver).isInstanceOf(SomeOtherInterface.class);
 
-    WebDriver decorated = new WebDriverDecorator().decorate(driver);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(driver);
     assertThat(decorated).isInstanceOf(SomeOtherInterface.class);
   }
 }

@@ -34,7 +34,7 @@ import java.lang.reflect.Method;
 @Tag("UnitTests")
 class IntegrationTest {
 
-  static class CountCalls extends WebDriverDecorator {
+  static class CountCalls extends WebDriverDecorator<WebDriver> {
 
     int counterBefore = 0;
     int counterAfter = 0;
