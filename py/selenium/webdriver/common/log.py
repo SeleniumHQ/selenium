@@ -52,10 +52,11 @@ class Log():
     @asynccontextmanager
     async def mutation_events(self) -> dict:
         """
-        Listens for mutation events and emits them as it finds them
+        Listen for mutation events and emit them as they are found.
 
         :Usage:
              ::
+
                async with driver.log.mutation_events() as event:
                     pages.load("dynamic.html")
                     driver.find_element(By.ID, "reveal").click()
@@ -65,7 +66,6 @@ class Log():
                 assert event["attribute_name"] == "style"
                 assert event["current_value"] == ""
                 assert event["old_value"] == "display:none;"
-
         """
 
         page = self.cdp.get_session_context('page.enable')
@@ -93,7 +93,7 @@ class Log():
     @asynccontextmanager
     async def add_js_error_listener(self):
         """
-        Listens for JS errors and when the contextmanager exits check if there were JS Errors
+        Listen for JS errors and when the contextmanager exits check if there were JS Errors.
 
         :Usage:
              ::
@@ -116,20 +116,19 @@ class Log():
 
     @asynccontextmanager
     async def add_listener(self, event_type) -> dict:
-        '''
-        Listens for certain events that are passed in.
+        """
+        Listen for certain events that are passed in.
 
         :Args:
          - event_type: The type of event that we want to look at.
 
-         :Usage:
+        :Usage:
              ::
 
                 async with driver.log.add_listener(Console.log) as messages:
                     driver.execute_script("console.log('I like cheese')")
                 assert messages["message"] == "I love cheese"
-
-        '''
+        """
 
         from selenium.webdriver.common.bidi.console import Console
         session = self.cdp.get_session_context('page.enable')
