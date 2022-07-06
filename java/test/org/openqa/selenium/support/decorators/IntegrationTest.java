@@ -32,7 +32,7 @@ import org.openqa.selenium.WebElement;
 import java.lang.reflect.Method;
 
 @Tag("UnitTests")
-public class IntegrationTest {
+class IntegrationTest {
 
   static class CountCalls extends WebDriverDecorator {
 
@@ -58,7 +58,7 @@ public class IntegrationTest {
   }
 
   @Test
-  public void canDecorateWebDriverMethods() {
+  void canDecorateWebDriverMethods() {
     CountCalls decorator = new CountCalls();
     WebDriver originalDriver = mock(WebDriver.class);
     WebDriver decoratedDriver = decorator.decorate(originalDriver);
@@ -69,7 +69,7 @@ public class IntegrationTest {
   }
 
   @Test
-  public void canDecorateWebElementMethods() {
+  void canDecorateWebElementMethods() {
     CountCalls decorator = new CountCalls();
     WebDriver originalDriver = mock(WebDriver.class);
     WebElement element = mock(WebElement.class);
