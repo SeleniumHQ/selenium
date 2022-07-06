@@ -48,7 +48,7 @@ class DecoratedTimeoutsTest {
       originalDriver = mock(WebDriver.class);
       when(originalOptions.timeouts()).thenReturn(original);
       when(originalDriver.manage()).thenReturn(originalOptions);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.manage().timeouts();
     }
   }

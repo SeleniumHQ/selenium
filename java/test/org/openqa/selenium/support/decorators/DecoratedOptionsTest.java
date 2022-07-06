@@ -50,7 +50,7 @@ class DecoratedOptionsTest {
       original = mock(WebDriver.Options.class);
       originalDriver = mock(WebDriver.class);
       when(originalDriver.manage()).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.manage();
     }
   }
