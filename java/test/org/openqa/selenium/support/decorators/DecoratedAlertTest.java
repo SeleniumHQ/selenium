@@ -33,9 +33,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Tag("UnitTests")
-public class DecoratedAlertTest {
+class DecoratedAlertTest {
 
   private static class Fixture {
+
     WebDriver originalDriver;
     WebDriver decoratedDriver;
     WebDriver.TargetLocator originalSwitch;
@@ -69,22 +70,22 @@ public class DecoratedAlertTest {
   }
 
   @Test
-  public void sendKeys() {
+  void sendKeys() {
     verifyFunction($ -> $.sendKeys("test"));
   }
 
   @Test
-  public void accept() {
+  void accept() {
     verifyFunction(Alert::accept);
   }
 
   @Test
-  public void dismiss() {
+  void dismiss() {
     verifyFunction(Alert::dismiss);
   }
 
   @Test
-  public void getText() {
+  void getText() {
     verifyFunction(Alert::getText, "test");
   }
 }

@@ -37,9 +37,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Tag("UnitTests")
-public class DecoratedOptionsTest {
+class DecoratedOptionsTest {
 
   private static class Fixture {
+
     WebDriver originalDriver;
     WebDriver decoratedDriver;
     WebDriver.Options original;
@@ -69,7 +70,8 @@ public class DecoratedOptionsTest {
     verifyNoMoreInteractions(fixture.original);
   }
 
-  private <R> void verifyDecoratingFunction(Function<WebDriver.Options, R> f, R result, Consumer<R> p) {
+  private <R> void verifyDecoratingFunction(Function<WebDriver.Options, R> f, R result,
+                                            Consumer<R> p) {
     Fixture fixture = new Fixture();
     when(f.apply(fixture.original)).thenReturn(result);
 
@@ -84,57 +86,58 @@ public class DecoratedOptionsTest {
   }
 
   @Test
-  public void addCookie() {
+  void addCookie() {
     verifyFunction($ -> $.addCookie(new Cookie("name", "value")));
   }
 
   @Test
-  public void deleteCookieNamed() {
+  void deleteCookieNamed() {
     verifyFunction($ -> $.deleteCookieNamed("test"));
   }
 
   @Test
-  public void deleteCookie() {
+  void deleteCookie() {
     verifyFunction($ -> $.deleteCookie(new Cookie("name", "value")));
   }
 
   @Test
-  public void deleteAllCookies() {
+  void deleteAllCookies() {
     verifyFunction(WebDriver.Options::deleteAllCookies);
   }
 
   @Test
-  public void getCookies() {
+  void getCookies() {
     Set<Cookie> cookies = new HashSet<>();
     cookies.add(new Cookie("name", "value"));
     verifyFunction(WebDriver.Options::getCookies, cookies);
   }
 
   @Test
-  public void getCookieNamed() {
+  void getCookieNamed() {
     verifyFunction($ -> $.getCookieNamed("test"), new Cookie("name", "value"));
   }
 
   @Test
-  public void timeouts() {
+  void timeouts() {
     WebDriver.Timeouts timeouts = mock(WebDriver.Timeouts.class);
-    verifyDecoratingFunction(WebDriver.Options::timeouts, timeouts, t -> t.implicitlyWait(Duration.ofSeconds(10)));
+    verifyDecoratingFunction(WebDriver.Options::timeouts, timeouts,
+                             t -> t.implicitlyWait(Duration.ofSeconds(10)));
   }
 
   @Test
-  public void imeNotDecorated() {
+  void imeNotDecorated() {
     final WebDriver.ImeHandler ime = mock(WebDriver.ImeHandler.class);
     verifyFunction(WebDriver.Options::ime, ime);
   }
 
   @Test
-  public void window() {
+  void window() {
     final WebDriver.Window window = mock(WebDriver.Window.class);
     verifyDecoratingFunction(WebDriver.Options::window, window, WebDriver.Window::maximize);
   }
 
   @Test
-  public void logsNotDecorated() {
+  void logsNotDecorated() {
     final Logs logs = mock(Logs.class);
     verifyFunction(WebDriver.Options::logs, logs);
   }
