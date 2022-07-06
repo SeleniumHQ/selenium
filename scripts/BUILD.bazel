@@ -1,4 +1,4 @@
-load("@dev_requirements//:requirements.bzl", "requirement")
+load("@py_dev_requirements//:requirements.bzl", "requirement")
 
 py_binary(
     name = "pinned_browsers",

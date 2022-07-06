@@ -40,10 +40,10 @@ import static org.mockito.Mockito.when;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 @Tag("UnitTests")
-public class DecoratedRemoteWebDriverTest {
+class DecoratedRemoteWebDriverTest {
 
   @Test
-  public void shouldImplementWrapsDriverToProvideAccessToUnderlyingDriver() {
+  void shouldImplementWrapsDriverToProvideAccessToUnderlyingDriver() {
     SessionId sessionId = new SessionId(UUID.randomUUID());
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     when(originalDriver.getSessionId()).thenReturn(sessionId);
@@ -57,7 +57,7 @@ public class DecoratedRemoteWebDriverTest {
   }
 
   @Test
-  public void cannotConvertDecoratedToRemoteWebDriver() {
+  void cannotConvertDecoratedToRemoteWebDriver() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
 
     WebDriver decorated = new WebDriverDecorator<>().decorate(originalDriver);
@@ -66,7 +66,7 @@ public class DecoratedRemoteWebDriverTest {
   }
 
   @Test
-  public void decoratedDriversShouldImplementWrapsDriver() {
+  void decoratedDriversShouldImplementWrapsDriver() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
 
     WebDriver decorated = new WebDriverDecorator<>().decorate(originalDriver);
@@ -75,7 +75,7 @@ public class DecoratedRemoteWebDriverTest {
   }
 
   @Test
-  public void decoratedElementsShouldImplementWrapsElement() {
+  void decoratedElementsShouldImplementWrapsElement() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     RemoteWebElement originalElement = new RemoteWebElement();
     String elementId = UUID.randomUUID().toString();
@@ -91,7 +91,7 @@ public class DecoratedRemoteWebDriverTest {
   }
 
   @Test
-  public void canConvertDecoratedRemoteWebElementToJson() {
+  void canConvertDecoratedRemoteWebElementToJson() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     RemoteWebElement originalElement = new RemoteWebElement();
     String elementId = UUID.randomUUID().toString();

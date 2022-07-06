@@ -23,10 +23,12 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.VirtualAuth;
+using Microsoft.IdentityModel.Tokens;
 
 namespace OpenQA.Selenium
 {
-    public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor
+    public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -39,6 +41,7 @@ namespace OpenQA.Selenium
         private NetworkManager network;
         private WebElementFactory elementFactory;
         private SessionId sessionId;
+        private String authenticatorId;
         private List<string> registeredCommands = new List<string>();
 
         /// <summary>
@@ -966,6 +969,113 @@ namespace OpenQA.Selenium
             }
 
             return returnValue;
+        }
+
+        /// <summary>
+        /// Creates a Virtual Authenticator.
+        /// </summary>
+        /// <param name="options"> VirtualAuthenticator Options (https://w3c.github.io/webauthn/#sctn-automation-virtual-authenticators)</param>
+        /// <returns> Authenticator id as string </returns>
+        public string AddVirtualAuthenticator(VirtualAuthenticatorOptions options)
+        {
+            Response commandResponse = this.Execute(DriverCommand.AddVirtualAuthenticator, options.ToDictionary());
+            string id = commandResponse.Value.ToString();
+            this.authenticatorId = id;
+            return this.authenticatorId;
+        }
+
+        /// <summary>
+        /// Removes the Virtual Authenticator
+        /// </summary>
+        /// <param name="authenticatorId"> Id as string that uniquely identifies a Virtual Authenticator</param>
+        public void RemoveVirtualAuthenticator(string authenticatorId)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+            this.Execute(DriverCommand.RemoveVirtualAuthenticator, parameters);
+            this.authenticatorId = null;
+        }
+
+        public string AuthenticatorId { get; }
+
+        /// <summary>
+        /// Add a credential to the Virtual Authenticator/
+        /// </summary>
+        /// <param name="credential"> The credential to be stored in the Virtual Authenticator</param>
+        public void AddCredential(Credential credential)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>(credential.ToDictionary());
+            parameters.Add("authenticatorId", this.authenticatorId);
+
+            this.Execute(driverCommandToExecute: DriverCommand.AddCredential, parameters);
+        }
+
+        /// <summary>
+        /// Retrieves all the credentials stored in the Virtual Authenticator
+        /// </summary>
+        /// <returns> List of credentials </returns>
+        public List<Credential> GetCredentials()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+
+            object[] commandResponse = (object[])this.Execute(driverCommandToExecute: DriverCommand.GetCredentials, parameters).Value;
+
+            List<Credential> credentials = new List<Credential>();
+
+            foreach (object dictionary in commandResponse)
+            {
+                Credential credential = Credential.FromDictionary((Dictionary<string, object>)dictionary);
+                credentials.Add(credential);
+            }
+
+            return credentials;
+        }
+
+        /// <summary>
+        /// Removes the credential identified by the credentialId from the Virtual Authenticator.
+        /// </summary>
+        /// <param name="credentialId"> The id as byte array that uniquely identifies a credential </param>
+        public void RemoveCredential(byte[] credentialId)
+        {
+            RemoveCredential(Base64UrlEncoder.Encode(credentialId));
+        }
+
+        /// <summary>
+        /// Removes the credential identified by the credentialId from the Virtual Authenticator.
+        /// </summary>
+        /// <param name="credentialId"> The id as string that uniquely identifies a credential </param>
+        public void RemoveCredential(string credentialId)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+            parameters.Add("credentialId", credentialId);
+
+            this.Execute(driverCommandToExecute: DriverCommand.RemoveCredential, parameters);
+        }
+
+        /// <summary>
+        /// Removes all the credentials stored in the Virtual Authenticator.
+        /// </summary>
+        public void RemoveAllCredentials()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+
+            this.Execute(driverCommandToExecute: DriverCommand.RemoveAllCredentials, parameters);
+        }
+
+        /// <summary>
+        ///  Sets the isUserVerified property for the Virtual Authenticator.
+        /// </summary>
+        /// <param name="verified">The boolean value representing value to be set </param>
+        public void SetUserVerified(bool verified)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+            parameters.Add("isUserVerified", verified);
+
+            this.Execute(driverCommandToExecute: DriverCommand.SetUserVerified, parameters);
         }
     }
 }

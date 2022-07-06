@@ -32,9 +32,10 @@ import java.net.URL;
 import java.util.function.Consumer;
 
 @Tag("UnitTests")
-public class DecoratedNavigationTest {
+class DecoratedNavigationTest {
 
   private static class Fixture {
+
     WebDriver originalDriver;
     WebDriver decoratedDriver;
     WebDriver.Navigation original;
@@ -57,28 +58,28 @@ public class DecoratedNavigationTest {
   }
 
   @Test
-  public void toAddressAsString() {
+  void toAddressAsString() {
     verifyFunction($ -> $.to("test"));
   }
 
   @Test
-  public void toAddressAsUrl() throws MalformedURLException {
+  void toAddressAsUrl() throws MalformedURLException {
     final URL url = new URL("http://www.selenium2.ru/");
     verifyFunction($ -> $.to(url));
   }
 
   @Test
-  public void back() {
+  void back() {
     verifyFunction(WebDriver.Navigation::back);
   }
 
   @Test
-  public void forward() {
+  void forward() {
     verifyFunction(WebDriver.Navigation::forward);
   }
 
   @Test
-  public void refresh() {
+  void refresh() {
     verifyFunction(WebDriver.Navigation::refresh);
   }
 }

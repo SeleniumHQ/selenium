@@ -120,6 +120,13 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.Screenshot, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/screenshot"));
             this.TryAddCommand(DriverCommand.ElementScreenshot, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/screenshot"));
             this.TryAddCommand(DriverCommand.Print, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/print"));
+            this.TryAddCommand(DriverCommand.AddVirtualAuthenticator, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/webauthn/authenticator"));
+            this.TryAddCommand(DriverCommand.RemoveVirtualAuthenticator, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/webauthn/authenticator/{authenticatorId}"));
+            this.TryAddCommand(DriverCommand.AddCredential, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/webauthn/authenticator/{authenticatorId}/credential"));
+            this.TryAddCommand(DriverCommand.GetCredentials, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/webauthn/authenticator/{authenticatorId}/credentials"));
+            this.TryAddCommand(DriverCommand.RemoveCredential, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/webauthn/authenticator/{authenticatorId}/credentials/{credentialId}"));
+            this.TryAddCommand(DriverCommand.RemoveAllCredentials, new HttpCommandInfo(HttpCommandInfo.DeleteCommand, "/session/{sessionId}/webauthn/authenticator/{authenticatorId}/credentials"));
+            this.TryAddCommand(DriverCommand.SetUserVerified, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/webauthn/authenticator/{authenticatorId}/uv"));
 
             // Commands below here are not included in the W3C specification,
             // but are required for full fidelity of execution with Selenium's
