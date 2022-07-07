@@ -281,15 +281,8 @@ namespace OpenQA.Selenium.Remote
 
                 using (HttpResponseMessage responseMessage = await this.client.SendAsync(requestMessage))
                 {
-                    var body = await responseMessage.Content.ReadAsStringAsync();
-
-                    if (!responseMessage.IsSuccessStatusCode)
-                    {
-                        throw new HttpRequestException($"Response status code doesn't indicate success: {responseMessage.StatusCode}", new HttpRequestException($"Response body:{Environment.NewLine}{body}"));
-                    }
-
                     HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
-                    httpResponseInfo.Body = body;
+                    httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync();
                     httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType.ToString();
                     httpResponseInfo.StatusCode = responseMessage.StatusCode;
 
@@ -310,7 +303,7 @@ namespace OpenQA.Selenium.Remote
                 }
                 else
                 {
-                    response.Status = WebDriverResult.UnhandledError;
+                    throw new WebDriverException($"Cannot handle non-json response from remote with content:{Environment.NewLine}{body}");
                 }
             }
             else
