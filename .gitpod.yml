@@ -1,0 +1,2 @@
+image:
+  file: ./scripts/dev-image/.gitpod.Dockerfile

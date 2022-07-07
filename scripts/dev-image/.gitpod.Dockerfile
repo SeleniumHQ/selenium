@@ -1,6 +1,7 @@
 # Used to create a development image for working on Selenium
 
-FROM ubuntu/focal@sha256:1e48201ccc2ab83afc435394b3bf70af0fa0055215c1e26a5da9b50a1ae367c9
+# You can find the new timestamped tags here: https://hub.docker.com/r/gitpod/workspace-base/tags
+FROM gitpod/workspace-base:2022-06-20-19-54-55
 
 RUN apt-get update -qqy && apt-get install -y wget curl gnupg2
 
@@ -32,9 +33,8 @@ RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/baz
     chmod 755 /usr/bin/bazelisk && \
     ln -sf /usr/bin/bazelisk /usr/bin/bazel
 
-RUN useradd -ms /bin/bash dev
-USER dev
-WORKDIR /home/dev
-RUN git clone --depth 1 https://github.com/SeleniumHQ/selenium.git /home/dev/selenium
-RUN echo "build --//common:pin_browsers" >>/home/dev/selenium/.bazelrc.local
-RUN echo "build --//common:headless" >>/home/dev/selenium/.bazelrc.local
+USER gitpod
+
+#RUN git clone --depth 1 https://github.com/SeleniumHQ/selenium.git /home/dev/selenium
+#RUN echo "build --//common:pin_browsers" >>/home/dev/selenium/.bazelrc.local
+#RUN echo "build --//common:headless" >>/home/dev/selenium/.bazelrc.local
