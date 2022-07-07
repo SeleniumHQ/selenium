@@ -1,2 +1,12 @@
 image:
   file: ./scripts/dev-image/.gitpod.Dockerfile
+
+tasks:
+  - name: Compile Java and build Grid
+    init: >
+      bazel build grid &&
+      gp sync-done java
+
+  - name: Echo Grid version
+    init: gp sync-await java
+    command: java -jar bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar standalone --version
