@@ -3,6 +3,8 @@
 # You can find the new timestamped tags here: https://hub.docker.com/r/gitpod/workspace-base/tags
 FROM gitpod/workspace-base:2022-06-20-19-54-55
 
+USER root
+
 RUN apt-get update -qqy && apt-get install -y wget curl gnupg2
 
 # So we can install browsers later
