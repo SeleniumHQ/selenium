@@ -22,7 +22,7 @@ namespace OpenQA.Selenium.Remote
         [Test]
         public void ShouldBeAbleToGetStatus()
         {
-            Status status = RemoteWebDriver.GetStatus(new Uri("http://localhost:4444"));
+            Status status = RemoteWebDriver.GetStatus(new Uri("http://localhost:6000"));
             Assert.IsTrue(status.Ready);
             Assert.AreEqual("Selenium Grid ready.", status.Message);
         }

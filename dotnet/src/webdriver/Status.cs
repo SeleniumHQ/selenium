@@ -18,7 +18,7 @@
 
 using System;
 
-namespace OpenQA.Selenium.Remote
+namespace OpenQA.Selenium
 {
     public class Status
     {

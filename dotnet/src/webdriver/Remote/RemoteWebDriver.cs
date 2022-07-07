@@ -19,13 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
 {
@@ -128,38 +122,6 @@ namespace OpenQA.Selenium.Remote
         public RemoteWebDriver(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
             : base(commandExecutor, desiredCapabilities)
         {
-        }
-        public static Status GetStatus(Uri remoteAddress)
-        {
-            String response = new TaskFactory(CancellationToken.None,
-                    TaskCreationOptions.None,
-                    TaskContinuationOptions.None,
-                    TaskScheduler.Default)
-                .StartNew(() => GetStatusResponse(remoteAddress))
-                .Unwrap()
-                .GetAwaiter()
-                .GetResult();
-
-            Dictionary<string, object> deserializedResponse =
-            JsonConvert.DeserializeObject<Dictionary<string, object>>(response, new ResponseValueJsonConverter());
-
-            Dictionary<string, object> value = (Dictionary<string, object>)deserializedResponse["value"];
-
-            bool ready = (bool)value["ready"];
-            String message = (string)value["message"];
-
-            return new Status(ready, message);
-        }
-
-        private static async Task<String> GetStatusResponse(Uri remoteAddress)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, remoteAddress + "status");
-                HttpResponseMessage responseMessage = await client.SendAsync(request);
-                String responseString = await responseMessage.Content.ReadAsStringAsync();
-                return responseString;
-            }
         }
 
         /// <summary>
