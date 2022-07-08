@@ -14,7 +14,7 @@ RUN mkdir -p /home/gitpod/selenium
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Things needed by bazel
+# Things needed by bazel and to run tests
 
 #RUN apt-get update -qqy && \
 #    apt-get -qy install build-essential \
@@ -28,7 +28,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update -qqy && \
     apt-get -qy install python-is-python3 \
-                        dotnet-sdk-5.0 && \
+                        dotnet-sdk-5.0 \
+                        xvfb && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Browsers
@@ -59,7 +60,8 @@ RUN GK_VERSION="0.31.0" \
   && mv /home/gitpod/selenium/geckodriver /home/gitpod/selenium/geckodriver-$GK_VERSION \
   && chmod 755 /home/gitpod/selenium/geckodriver-$GK_VERSION \
   && ln -fs /home/gitpod/selenium/geckodriver-$GK_VERSION /usr/bin/geckodriver
-  
+
+
 # Bazel
 
 RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/bazelisk-linux-amd64 -o /usr/bin/bazelisk && \
@@ -68,6 +70,5 @@ RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/baz
 
 USER gitpod
 
-#RUN git clone --depth 1 https://github.com/SeleniumHQ/selenium.git /home/dev/selenium
-#RUN echo "build --//common:pin_browsers" >>/home/dev/selenium/.bazelrc.local
-#RUN echo "build --//common:headless" >>/home/dev/selenium/.bazelrc.local
+# To run browser tests
+ENV DISPLAY :99.0
