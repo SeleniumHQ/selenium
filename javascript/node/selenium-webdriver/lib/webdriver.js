@@ -573,6 +573,8 @@ class IWebDriver {
    */
   findElement(locator) {} // eslint-disable-line
 
+  findElementAndClick(locator) {} // eslint-disable-line
+
   /**
    * Search for multiple elements on the page. Refer to the documentation on
    * {@link #findElement(by)} for information on element locator strategies.
@@ -979,6 +981,12 @@ class WebDriver {
   /** @override */
   getTitle() {
     return this.execute(new command.Command(command.Name.GET_TITLE))
+  }
+
+  /** @override */
+  findElementAndClick(locator) {
+    const element = this.findElement(locator);
+    return element.click();
   }
 
   /** @override */
