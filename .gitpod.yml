@@ -1,11 +1,13 @@
 image:
   file: ./scripts/dev-image/.gitpod.Dockerfile
 
-#tasks:
-#  - name: Compile Java and build Grid
-#    init: >
-#      bazel build grid &&
-#      gp sync-done java
+tasks:
+  - name: Set cache path and warm it up
+    before: >
+      echo "build --repository_cache=/workspace/selenium/.cache/bazel-repo" >> /workspace/selenium/.bazelrc.local
+      echo "test --repository_cache=/workspace/selenium/.cache/bazel-repo" >> /workspace/selenium/.bazelrc.local
+    init: >
+      bazel build grid
 #
 #  - name: Echo Grid version
 #    init: gp sync-await java
