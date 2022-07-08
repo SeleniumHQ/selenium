@@ -2,13 +2,13 @@ image:
   file: ./scripts/dev-image/.gitpod.Dockerfile
 
 tasks:
-  - name: Set cache path and warm it up
-    init: >
-      bazel build grid
 #  - name: Set cache path and warm it up
-#    before: |
-#      echo "build --repository_cache=/workspace/selenium/.cache/bazel-repo" >> /workspace/selenium/.bazelrc.local
-#      echo "test --repository_cache=/workspace/selenium/.cache/bazel-repo" >> /workspace/selenium/.bazelrc.local
+  #    init: >
+  #      bazel build grid
+  - name: Set cache path and warm it up
+    before: |
+      echo "build --repository_cache=/workspace/.cache/bazel-repo" >> /workspace/selenium/.bazelrc.local
+      echo "test --repository_cache=/workspace/.cache/bazel-repo" >> /workspace/selenium/.bazelrc.local
 #    init: >
 #      bazel build grid
 #
