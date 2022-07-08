@@ -1,5 +1,5 @@
-image: gitpod/workspace-full:2022-06-20-19-54-55
-#  file: ./scripts/dev-image/.gitpod.Dockerfile
+image:
+  file: ./scripts/dev-image/.gitpod.Dockerfile
 
 #tasks:
 #  - name: Compile Java and build Grid
