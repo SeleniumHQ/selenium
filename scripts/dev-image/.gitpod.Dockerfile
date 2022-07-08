@@ -50,6 +50,16 @@ RUN CHROME_MAJOR_VERSION=$(google-chrome --version | sed -E "s/.* ([0-9]+)(\.[0-
   && chmod 755 /home/gitpod/selenium/chromedriver-$CHROME_DRIVER_VERSION \
   && sudo ln -fs /home/gitpod/selenium/chromedriver-$CHROME_DRIVER_VERSION /usr/bin/chromedriver
 
+RUN GK_VERSION="0.31.0" \
+  && echo "Using GeckoDriver version: "$GK_VERSION \
+  && wget --no-verbose -O /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v$GK_VERSION/geckodriver-v$GK_VERSION-linux64.tar.gz \
+  && rm -rf /home/gitpod/selenium/geckodriver \
+  && tar -C /home/gitpod/selenium -zxf /tmp/geckodriver.tar.gz \
+  && rm /tmp/geckodriver.tar.gz \
+  && mv /home/gitpod/selenium/geckodriver /home/gitpod/selenium/geckodriver-$GK_VERSION \
+  && chmod 755 /home/gitpod/selenium/geckodriver-$GK_VERSION \
+  && ln -fs /home/gitpod/selenium/geckodriver-$GK_VERSION /usr/bin/geckodriver
+  
 # Bazel
 
 RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/bazelisk-linux-amd64 -o /usr/bin/bazelisk && \
