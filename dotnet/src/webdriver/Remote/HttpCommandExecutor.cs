@@ -201,7 +201,7 @@ namespace OpenQA.Selenium.Remote
 
             Response toReturn = this.CreateResponse(responseInfo);
 
-            if (!new HttpResponseMessage(responseInfo.StatusCode).IsSuccessStatusCode && toReturn.Status == WebDriverResult.Success)
+            if (toReturn.Status == WebDriverResult.Success && (int)responseInfo.StatusCode < 200 && (int)responseInfo.StatusCode > 299)
             {
                 toReturn.Status = WebDriverResult.UnhandledError;
             }
