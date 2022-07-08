@@ -36,6 +36,21 @@ RUN apt-get update -qqy && \
     apt-get -qy install google-chrome-stable firefox && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
+# Browser Drivers
+
+RUN CHROME_MAJOR_VERSION=$(google-chrome --version | sed -E "s/.* ([0-9]+)(\.[0-9]+){3}.*/\1/") \
+  && CHROME_DRIVER_VERSION=$(wget --no-verbose -O - "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION}"); \
+  && echo "Using chromedriver version: "$CHROME_DRIVER_VERSION \
+  && wget --no-verbose -O /tmp/chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
+  && rm -rf /home/gitpod/selenium/chromedriver \
+  && unzip /tmp/chromedriver_linux64.zip -d /home/gitpod/selenium/chromedriver \
+  && rm /tmp/chromedriver_linux64.zip \
+  && mv /home/gitpod/selenium/chromedriver /home/gitpod/selenium/chromedriver-$CHROME_DRIVER_VERSION \
+  && chmod 755 /home/gitpod/selenium/chromedriver-$CHROME_DRIVER_VERSION \
+  && sudo ln -fs /home/gitpod/selenium/chromedriver-$CHROME_DRIVER_VERSION /usr/bin/chromedriver
+
+# Bazel
+
 RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/bazelisk-linux-amd64 -o /usr/bin/bazelisk && \
     chmod 755 /usr/bin/bazelisk && \
     ln -sf /usr/bin/bazelisk /usr/bin/bazel
