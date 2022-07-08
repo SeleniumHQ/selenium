@@ -200,6 +200,12 @@ namespace OpenQA.Selenium.Remote
             }
 
             Response toReturn = this.CreateResponse(responseInfo);
+
+            if (!new HttpResponseMessage(responseInfo.StatusCode).IsSuccessStatusCode && toReturn.Status == WebDriverResult.Success)
+            {
+                toReturn.Status = WebDriverResult.UnhandledError;
+            }
+
             return toReturn;
         }
 
@@ -295,16 +301,9 @@ namespace OpenQA.Selenium.Remote
         {
             Response response = new Response();
             string body = responseInfo.Body;
-            if (responseInfo.ContentType != null)
+            if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
             {
-                if (responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
-                {
-                    response = Response.FromJson(body);
-                }
-                else
-                {
-                    throw new WebDriverException($"Cannot handle non-json response from remote with content:{Environment.NewLine}{body}");
-                }
+                response = Response.FromJson(body);
             }
             else
             {
