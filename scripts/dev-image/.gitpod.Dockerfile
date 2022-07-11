@@ -11,7 +11,7 @@ USER root
 RUN wget https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
 RUN mkdir -p /home/gitpod/selenium /var/run/supervisor /var/log/supervisor && \
-  chmod -R 777 /home/gitpod/selenium /var/run/supervisor /var/log/supervisor
+  chmod -R 777 /var/run/supervisor /var/log/supervisor
 
 ENV DEBIAN_FRONTEND=noninteractive
 
