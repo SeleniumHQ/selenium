@@ -305,8 +305,8 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
       // sleep 0.5s then get current window handles
       clock_t end = clock() + (DEFAULT_BROWSER_REATTACH_TIMEOUT_IN_MILLISECONDS / 1000 * CLOCKS_PER_SEC);
       std::vector<HWND> diff;
-      int loopCount = 0;
-      bool isProcessWM = false;
+      int loop_count = 0;
+      bool is_processing_wm = false;
       ::Sleep(1000);
       while (diff.size() == 0 && clock() < end) {
         std::vector<HWND> edge_window_handles;
@@ -334,16 +334,16 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
 
         if (diff.size() == 0) {
           MSG msg;
-          if (loopCount >= 1 && !isProcessWM &&::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_REMOVE)) {
+          if (loop_count >= 1 && !is_processing_wm &&::PeekMessage(&msg, NULL, WM_USER, WM_USER, PM_REMOVE)) {
               ::TranslateMessage(&msg);
               ::DispatchMessage(&msg);
-              isProcessWM = true;
+              is_processing_wm = true;
               LOG(TRACE) << "process WM_USER";
               ::Sleep(500);
           }
           ::Sleep(500);
         }
-        loopCount++;
+        loop_count++;
       }
 
       if (diff.size() == 0) {
@@ -367,8 +367,8 @@ LRESULT IECommandExecutor::OnAfterNewWindow(UINT uMsg,
             info.hwndBrowser = new_window_window;
             info.pBrowser = NULL;
             std::string error_message = "";
-            bool attachFlag = this->factory_->AttachToBrowser(&info, &error_message);
-            if (attachFlag) {
+            bool attach_flag = this->factory_->AttachToBrowser(&info, &error_message);
+            if (attach_flag) {
               BrowserHandle new_window_wrapper(new Browser(info.pBrowser,
                 NULL,
                 this->m_hWnd,
