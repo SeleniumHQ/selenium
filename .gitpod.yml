@@ -1,5 +1,5 @@
 image:
-  file: ./scripts/dev-image/.gitpod.Dockerfile
+  file: ./scripts/gitpod/.gitpod.Dockerfile
 
 tasks:
   - name: Supervisor (VNC and noVNC)
