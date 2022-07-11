@@ -34,14 +34,12 @@ RUN apt-get update -qqy && \
 ENV NOVNC_TAG="1.3.0" \
     WEBSOCKIFY_TAG="0.10.0"
 
-RUN  wget -nv -O /tmp/noVNC.zip \
-       "https://github.com/novnc/noVNC/archive/refs/tags/v${NOVNC_TAG}.zip" \
+RUN wget -nv -O /tmp/noVNC.zip "https://github.com/novnc/noVNC/archive/refs/tags/v${NOVNC_TAG}.zip" \
   && unzip -x /tmp/noVNC.zip -d /tmp \
-  && mv /tmp/noVNC-${NOVNC_SHA} /home/gitpod/selenium/noVNC \
+  && mv /tmp/noVNC-${NOVNC_TAG} /home/gitpod/selenium/noVNC \
   && cp /home/gitpod/selenium/noVNC/vnc.html /home/gitpod/selenium/noVNC/index.html \
   && rm /tmp/noVNC.zip \
-  && wget -nv -O /tmp/websockify.zip \
-      "https://github.com/novnc/websockify/archive/refs/tags/v${WEBSOCKIFY_TAG}.zip" \
+  && wget -nv -O /tmp/websockify.zip "https://github.com/novnc/websockify/archive/refs/tags/v${WEBSOCKIFY_TAG}.zip" \
   && unzip -x /tmp/websockify.zip -d /tmp \
   && rm /tmp/websockify.zip \
   && mv /tmp/websockify-${WEBSOCKIFY_TAG} /home/gitpod/selenium/noVNC/utils/websockify \
