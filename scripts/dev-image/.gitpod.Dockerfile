@@ -71,16 +71,16 @@ RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/baz
     chmod 755 /usr/bin/bazelisk && \
     ln -sf /usr/bin/bazelisk /usr/bin/bazel
 
+USER gitpod
+
 # Supervisor
 #======================================
 # Add Supervisor configuration file
 #======================================
 COPY supervisord.conf /etc
 
-USER gitpod
-
 #==============================
-# Scripts to run XVFB
+# Scripts to run XVFB and VNC
 #==============================
 COPY start-xvfb.sh \
       start-vnc.sh \
