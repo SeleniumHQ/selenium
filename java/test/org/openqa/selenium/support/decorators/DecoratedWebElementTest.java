@@ -43,9 +43,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Tag("UnitTests")
-public class DecoratedWebElementTest {
+class DecoratedWebElementTest {
 
   private static class Fixture {
+
     WebDriver originalDriver;
     WebDriver decoratedDriver;
     WebElement original;
@@ -55,13 +56,13 @@ public class DecoratedWebElementTest {
       original = mock(WebElement.class);
       originalDriver = mock(WebDriver.class);
       when(originalDriver.findElement(any())).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.findElement(By.id("test"));
     }
   }
 
   @Test
-  public void canConvertDecoratedToString() {
+  void canConvertDecoratedToString() {
     Fixture fixture = new Fixture();
     when(fixture.original.toString()).thenReturn("element");
     assertThat(fixture.decorated.toString()).isEqualTo("Decorated {element}");
@@ -97,62 +98,62 @@ public class DecoratedWebElementTest {
   }
 
   @Test
-  public void click() {
+  void click() {
     verifyFunction(WebElement::click);
   }
 
   @Test
-  public void submit() {
+  void submit() {
     verifyFunction(WebElement::submit);
   }
 
   @Test
-  public void sendKeys() {
+  void sendKeys() {
     verifyFunction($ -> $.sendKeys("test"));
   }
 
   @Test
-  public void clear() {
+  void clear() {
     verifyFunction(WebElement::clear);
   }
 
   @Test
-  public void getTagName() {
+  void getTagName() {
     verifyFunction(WebElement::getTagName, "div");
   }
 
   @Test
-  public void getDomProperty() {
+  void getDomProperty() {
     verifyFunction($ -> $.getDomProperty("color"), "red");
   }
 
   @Test
-  public void getDomAttribute() {
+  void getDomAttribute() {
     verifyFunction($ -> $.getDomAttribute("color"), "red");
   }
 
   @Test
-  public void getAttribute() {
+  void getAttribute() {
     verifyFunction($ -> $.getAttribute("color"), "red");
   }
 
   @Test
-  public void isSelected() {
+  void isSelected() {
     verifyFunction(WebElement::isSelected, true);
   }
 
   @Test
-  public void isEnabled() {
+  void isEnabled() {
     verifyFunction(WebElement::isEnabled, true);
   }
 
   @Test
-  public void getText() {
+  void getText() {
     verifyFunction(WebElement::getText, "test");
   }
 
   @Test
-  public void findElements() {
+  void findElements() {
     Fixture fixture = new Fixture();
     WebElement originalElement1 = mock(WebElement.class);
     WebElement originalElement2 = mock(WebElement.class);
@@ -161,7 +162,9 @@ public class DecoratedWebElementTest {
     list.add(originalElement2);
     when(fixture.original.findElements(By.id("test"))).thenReturn(list);
 
-    List<WebElement> decoratedElementList = fixture.decoratedDriver.findElement(By.id("list")).findElements(By.id("test"));
+    List<WebElement>
+      decoratedElementList =
+      fixture.decoratedDriver.findElement(By.id("list")).findElements(By.id("test"));
     assertThat(originalElement1).isNotSameAs(decoratedElementList.get(0));
     assertThat(originalElement2).isNotSameAs(decoratedElementList.get(1));
     verify(fixture.original, times(1)).findElements(By.id("test"));
@@ -176,13 +179,13 @@ public class DecoratedWebElementTest {
   }
 
   @Test
-  public void findElement() {
+  void findElement() {
     final WebElement found = mock(WebElement.class);
     verifyDecoratingFunction($ -> $.findElement(By.id("test")), found, WebElement::click);
   }
 
   @Test
-  public void findElementNotFound() {
+  void findElementNotFound() {
     Fixture fixture = new Fixture();
     when(fixture.original.findElement(any())).thenThrow(NoSuchElementException.class);
 
@@ -192,32 +195,32 @@ public class DecoratedWebElementTest {
   }
 
   @Test
-  public void isDisplayed() {
+  void isDisplayed() {
     verifyFunction(WebElement::isDisplayed, true);
   }
 
   @Test
-  public void getLocation() {
+  void getLocation() {
     verifyFunction(WebElement::getLocation, new Point(10, 20));
   }
 
   @Test
-  public void getSize() {
+  void getSize() {
     verifyFunction(WebElement::getSize, new Dimension(30, 40));
   }
 
   @Test
-  public void getRect() {
+  void getRect() {
     verifyFunction(WebElement::getRect, new Rectangle(new Point(10, 20), new Dimension(30, 44)));
   }
 
   @Test
-  public void getCssValue() {
+  void getCssValue() {
     verifyFunction($ -> $.getCssValue("color"), "red");
   }
 
   @Test
-  public void getScreenshotAs() {
+  void getScreenshotAs() {
     verifyFunction($ -> $.getScreenshotAs(OutputType.BASE64), "");
   }
 }

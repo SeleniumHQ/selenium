@@ -857,9 +857,9 @@ class Actions {
   /**
    * Inserts an action for moving the mouse `x` and `y` pixels relative to the
    * specified `origin`. The `origin` may be defined as the mouse's
-   * {@linkplain ./input.Origin.POINTER current position}, the
+   * {@linkplain ./input.Origin.POINTER current position}, the top-left corner of the
    * {@linkplain ./input.Origin.VIEWPORT viewport}, or the center of a specific
-   * {@linkplain ./webdriver.WebElement WebElement}.
+   * {@linkplain ./webdriver.WebElement WebElement}. Default is top left corner of the view-port if origin is not specified
    *
    * You may adjust how long the remote end should take, in milliseconds, to
    * perform the move using the `duration` parameter (defaults to 100 ms).

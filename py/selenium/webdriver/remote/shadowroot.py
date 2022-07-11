@@ -25,22 +25,22 @@ class ShadowRoot:
 
     # TODO: We should look and see  how we can create a search context like Java/.NET
 
-    def __init__(self, session, id_):
+    def __init__(self, session, id_) -> None:
         self.session = session
         self._id = id_
 
-    def __eq__(self, other_shadowroot):
+    def __eq__(self, other_shadowroot) -> bool:
         return self._id == other_shadowroot._id
 
     def __hash__(self) -> int:
         return int(md5_hash(self._id.encode("utf-8")).hexdigest(), 16)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
             type(self), self.session.session_id, self._id
         )
 
-    def find_element(self, by: By = By.ID, value: str = None):
+    def find_element(self, by: str = By.ID, value: str = None):
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
@@ -55,7 +55,7 @@ class ShadowRoot:
             Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value}
         )["value"]
 
-    def find_elements(self, by: By = By.ID, value: str = None):
+    def find_elements(self, by: str = By.ID, value: str = None):
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value

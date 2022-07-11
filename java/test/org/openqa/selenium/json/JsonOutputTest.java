@@ -23,8 +23,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -355,6 +356,7 @@ public class JsonOutputTest {
     assertThat(json).isEqualTo("gnu/linux");
   }
 
+  @SuppressWarnings("DoNotCall")
   private void verifyStackTraceInJson(String json, StackTraceElement[] stackTrace) {
     int posOfLastStackTraceElement = 0;
     for (StackTraceElement e : stackTrace) {
@@ -363,10 +365,10 @@ public class JsonOutputTest {
         assertThat(json).contains("\"fileName\": \"" + e.getFileName() + "\"");
       }
       assertThat(json)
-          .contains("\"lineNumber\": " + e.getLineNumber() + "",
-                    "\"class\": \"" + e.getClass().getName() + "\"",
-                    "\"className\": \"" + e.getClassName() + "\"",
-                    "\"methodName\": \"" + e.getMethodName() + "\"");
+        .contains("\"lineNumber\": " + e.getLineNumber() + "",
+                  "\"class\": \"" + e.getClass().getName() + "\"",
+                  "\"className\": \"" + e.getClassName() + "\"",
+                  "\"methodName\": \"" + e.getMethodName() + "\"");
 
       int posOfCurrStackTraceElement = json.indexOf(e.getMethodName());
       assertThat(posOfCurrStackTraceElement).isGreaterThan(posOfLastStackTraceElement);
@@ -723,6 +725,31 @@ public class JsonOutputTest {
     }
   }
 
+  public enum State {
+
+    GOOD,
+    BAD,
+    INDIFFERENT
+  }
+
+  public enum WithMethods {
+
+    CHEESE() {
+      @Override
+      public void eat(String foodStuff) {
+        // Does nothing
+      }
+    },
+    EGGS() {
+      @Override
+      public void eat(String foodStuff) {
+        // Does nothing too
+      }
+    };
+
+    public abstract void eat(String foodStuff);
+  }
+
   @SuppressWarnings("unused")
   private static class SimpleBean {
 
@@ -763,31 +790,6 @@ public class JsonOutputTest {
     public List<?> getList() {
       return null;
     }
-  }
-
-  public enum State {
-
-    GOOD,
-    BAD,
-    INDIFFERENT
-  }
-
-  public enum WithMethods {
-
-    CHEESE() {
-      @Override
-      public void eat(String foodStuff) {
-        // Does nothing
-      }
-    },
-    EGGS() {
-      @Override
-      public void eat(String foodStuff) {
-        // Does nothing too
-      }
-    };
-
-    public abstract void eat(String foodStuff);
   }
 
   public class JsonAware {

@@ -73,6 +73,8 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
     stripped_args.pop("jvm_flags", None)
     stripped_args.pop("tags", None)
 
+    all_tests = []
+
     for browser in browsers:
         if not browser in BROWSERS:
             fail("Unrecognized browser: " + browser)
@@ -84,10 +86,17 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
             test_class = test_class,
             size = size,
             jvm_flags = BROWSERS[browser]["jvm_flags"] + jvm_flags,
-            tags = BROWSERS[browser]["tags"] + tags,
+            # Only allow linting on the default test
+            tags = BROWSERS[browser]["tags"] + tags + ([] if test == name else ["no-lint"]),
             data = BROWSERS[browser]["data"] + data,
             **stripped_args
         )
+        if browser == default_browser:
+            native.alias(
+                name = "%s-%s" % (name, browser),
+                actual = test,
+            )
+        all_tests.append(":%s" % test)
 
         if "selenium-remote" in tags:
             java_junit5_test(
@@ -98,12 +107,14 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
                     "-Dselenium.browser.remote=true",
                     "-Dselenium.browser.remote.path=$(location @selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
                 ],
-                tags = BROWSERS[browser]["tags"] + tags + ["remote"],
+                # No need to lint remote tests as the code for non-remote is the same and they get linted
+                tags = BROWSERS[browser]["tags"] + tags + ["remote", "no-lint"],
                 data = BROWSERS[browser]["data"] + data + [
                     "@selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
                 ],
                 **stripped_args
             )
+            all_tests.append(":%s-remote" % test)
 
     # Handy way to run everything
-    native.test_suite(name = "%s-all-browsers" % name, tests = [":%s-%s" % (name, default_browser)], tags = tags + ["manual"])
+    native.test_suite(name = "%s-all-browsers" % name, tests = all_tests, tags = tags + ["manual"])

@@ -42,6 +42,7 @@ public class BiDi implements Closeable {
   public void close() {
     clearListeners();
     disconnectSession();
+    connection.close();
   }
 
   public void disconnectSession() {
@@ -64,8 +65,16 @@ public class BiDi implements Closeable {
     connection.addListener(event, handler);
   }
 
+  public <X> void clearListener(Event<X> event) {
+    Require.nonNull("Event to listen for", event);
+
+    send(new Command<>("session.unsubscribe",
+                       ImmutableMap.of("events", Collections.singletonList(event.getMethod()))));
+
+    connection.clearListener(event);
+  }
+
   public void clearListeners() {
-    send(new Command<>("session.unsubscribe", Collections.emptyMap()));
     connection.clearListeners();
   }
 

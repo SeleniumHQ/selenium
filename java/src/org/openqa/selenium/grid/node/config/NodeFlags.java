@@ -180,7 +180,7 @@ public class NodeFlags implements HasRoles {
     names = "--vnc-env-var",
     description = "Environment variable to check in order to determine if a vnc stream is " +
                   "available or not.")
-  @ConfigValue(section = NODE_SECTION, name = "vnc-env-var", example = "START_XVFB")
+  @ConfigValue(section = NODE_SECTION, name = "vnc-env-var", example = "SE_START_XVFB")
   public String vncEnvVar = DEFAULT_VNC_ENV_VAR;
 
   @Parameter(
