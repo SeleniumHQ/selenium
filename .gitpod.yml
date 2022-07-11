@@ -12,7 +12,5 @@ tasks:
       echo "build --disk_cache=/workspace/.cache/bazel-disk" >> /workspace/selenium/.bazelrc.local
       echo "test --disk_cache=/workspace/.cache/bazel-disk" >> /workspace/selenium/.bazelrc.local
       bazel build grid
-#
-#  - name: Echo Grid version
-#    init: gp sync-await java
-#    command: java -jar bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar standalone --version
+  - name: Supervisor (VNC and noVNC)
+    command: /usr/bin/supervisord --configuration /etc/supervisord.conf &

@@ -29,6 +29,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -qqy && \
     apt-get -qy install python-is-python3 \
                         dotnet-sdk-5.0 \
+                        supervisor \
+                        x11vnc \
+                        fluxbox \
                         xvfb && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
@@ -68,7 +71,25 @@ RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/baz
     chmod 755 /usr/bin/bazelisk && \
     ln -sf /usr/bin/bazelisk /usr/bin/bazel
 
+# Supervisor
+#======================================
+# Add Supervisor configuration file
+#======================================
+COPY supervisord.conf /etc
+
 USER gitpod
+
+#==============================
+# Scripts to run XVFB
+#==============================
+COPY start-xvfb.sh \
+      start-vnc.sh \
+      /home/gitpod/selenium/
 
 # To run browser tests
 ENV DISPLAY :99.0
+ENV SCREEN_WIDTH 1360
+ENV SCREEN_HEIGHT 1020
+ENV SCREEN_DEPTH 24
+ENV SCREEN_DPI 96
+ENV VNC_PORT 5900
