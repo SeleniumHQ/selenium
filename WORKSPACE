@@ -61,9 +61,9 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "cdf6b84084aad8f10bf20b46b77cb48d83c319ebe6458a18e9d2cebf57807cdd",
-    strip_prefix = "rules_python-0.8.1",
-    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.8.1.tar.gz",
+    sha256 = "56dc7569e5dd149e576941bdb67a57e19cd2a7a63cc352b62ac047732008d7e1",
+    strip_prefix = "rules_python-0.10.0",
+    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.10.0.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "python_register_toolchains")
@@ -132,9 +132,9 @@ rules_jvm_external_setup()
 
 http_archive(
     name = "contrib_rules_jvm",
-    sha256 = "c561a011b3005ccb3d6903bf60d655e2539189e3ed9b3595ecffd64e2061a338",
-    strip_prefix = "rules_jvm-35d89231aed8527b49dd2caba966e9cb097b4da6",
-    url = "https://github.com/bazel-contrib/rules_jvm/archive/35d89231aed8527b49dd2caba966e9cb097b4da6.zip",
+    sha256 = "a939cd04da2deee16131898d91d8e23559dcd1a30a5128beac30a2b01b33c94f",
+    strip_prefix = "rules_jvm-0.4.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/archive/v0.4.0.tar.gz",
 )
 
 load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
@@ -168,8 +168,8 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "0fad45a9bda7dc1990c47b002fd64f55041ea751fafc00cd34efb96107675778",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.5.0/rules_nodejs-5.5.0.tar.gz"],
+    sha256 = "ee3280a7f58aa5c1caa45cb9e08cbb8f4d74300848c508374daf37314d5390d6",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.5.1/rules_nodejs-5.5.1.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")

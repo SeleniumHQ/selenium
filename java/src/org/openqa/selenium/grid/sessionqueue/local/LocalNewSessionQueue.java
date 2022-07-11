@@ -110,13 +110,11 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     this.queue = new ConcurrentLinkedDeque<>();
     this.contexts = new ConcurrentHashMap<>();
 
-    // if retryPeriod is 0, we will schedule timeout checks every 15 seconds
-    // there is no need to run this more often
-    long period = retryPeriod.isZero() ? 15000 : retryPeriod.toMillis();
     service.scheduleAtFixedRate(
       GuardedRunnable.guard(this::timeoutSessions),
       retryPeriod.toMillis(),
-      period, MILLISECONDS);
+      retryPeriod.toMillis(),
+      MILLISECONDS);
 
     new JMXHelper().register(this);
   }

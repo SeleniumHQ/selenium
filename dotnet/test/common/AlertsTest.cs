@@ -462,64 +462,6 @@ namespace OpenQA.Selenium
             Assert.AreEqual("Testing Alerts", driver.Title);
         }
 
-        // Disabling test for all browsers. Authentication API is not supported by any driver yet.
-        // [Test]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Edge)]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.Safari)]
-        public void ShouldBeAbleToHandleAuthenticationDialog()
-        {
-            driver.Url = authenticationPage;
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-            alert.SetAuthenticationCredentials("test", "test");
-            alert.Accept();
-            Assert.That(driver.FindElement(By.TagName("h1")).Text, Does.Contain("authorized"));
-        }
-
-        // Disabling test for all browsers. Authentication API is not supported by any driver yet.
-        // [Test]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Edge)]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.IE)]
-        [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.Safari)]
-        public void ShouldBeAbleToDismissAuthenticationDialog()
-        {
-            driver.Url = authenticationPage;
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-            alert.Dismiss();
-        }
-
-        // Disabling test for all browsers. Authentication API is not supported by any driver yet.
-        // [Test]
-        [IgnoreBrowser(Browser.Chrome)]
-        [IgnoreBrowser(Browser.Edge)]
-        [IgnoreBrowser(Browser.Firefox)]
-        [IgnoreBrowser(Browser.Remote)]
-        [IgnoreBrowser(Browser.Safari)]
-        public void ShouldThrowAuthenticatingOnStandardAlert()
-        {
-            driver.Url = alertsPage;
-            driver.FindElement(By.Id("alert")).Click();
-            IAlert alert = WaitFor<IAlert>(AlertToBePresent, "No alert found");
-            try
-            {
-                alert.SetAuthenticationCredentials("test", "test");
-                Assert.Fail("Should not be able to Authenticate");
-            }
-            catch (UnhandledAlertException)
-            {
-                // this is an expected exception
-            }
-
-            // but the next call should be good.
-            alert.Dismiss();
-        }
-
         private IAlert AlertToBePresent()
         {
             return driver.SwitchTo().Alert();

@@ -40,41 +40,42 @@ import static org.mockito.Mockito.when;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 @Tag("UnitTests")
-public class DecoratedRemoteWebDriverTest {
+class DecoratedRemoteWebDriverTest {
 
   @Test
-  public void shouldImplementWrapsDriverToProvideAccessToUnderlyingDriver() {
+  void shouldImplementWrapsDriverToProvideAccessToUnderlyingDriver() {
     SessionId sessionId = new SessionId(UUID.randomUUID());
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     when(originalDriver.getSessionId()).thenReturn(sessionId);
 
-    WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+    RemoteWebDriver decoratedDriver = new WebDriverDecorator<>(RemoteWebDriver.class).decorate(originalDriver);
+
+    assertThat(decoratedDriver.getSessionId()).isEqualTo(sessionId);
 
     RemoteWebDriver underlying = (RemoteWebDriver) ((WrapsDriver) decoratedDriver).getWrappedDriver();
-
     assertThat(underlying.getSessionId()).isEqualTo(sessionId);
   }
 
   @Test
-  public void cannotConvertDecoratedToRemoteWebDriver() {
+  void cannotConvertDecoratedToRemoteWebDriver() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
 
-    WebDriver decorated = new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(originalDriver);
 
     assertThat(decorated).isNotInstanceOf(RemoteWebDriver.class);
   }
 
   @Test
-  public void decoratedDriversShouldImplementWrapsDriver() {
+  void decoratedDriversShouldImplementWrapsDriver() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
 
-    WebDriver decorated = new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(originalDriver);
 
     assertThat(decorated).isInstanceOf(WrapsDriver.class);
   }
 
   @Test
-  public void decoratedElementsShouldImplementWrapsElement() {
+  void decoratedElementsShouldImplementWrapsElement() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     RemoteWebElement originalElement = new RemoteWebElement();
     String elementId = UUID.randomUUID().toString();
@@ -83,14 +84,14 @@ public class DecoratedRemoteWebDriverTest {
 
     when(originalDriver.findElement(any())).thenReturn(originalElement);
 
-    WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
     WebElement element = decoratedDriver.findElement(By.id("test"));
 
     assertThat(element).isInstanceOf(WrapsElement.class);
   }
 
   @Test
-  public void canConvertDecoratedRemoteWebElementToJson() {
+  void canConvertDecoratedRemoteWebElementToJson() {
     RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
     RemoteWebElement originalElement = new RemoteWebElement();
     String elementId = UUID.randomUUID().toString();
@@ -99,7 +100,7 @@ public class DecoratedRemoteWebDriverTest {
 
     when(originalDriver.findElement(any())).thenReturn(originalElement);
 
-    WebDriver decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+    WebDriver decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
 
     WebElement element = decoratedDriver.findElement(By.id("test"));
 

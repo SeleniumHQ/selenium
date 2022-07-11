@@ -192,7 +192,7 @@ jobs:
       - name: Run browser tests in ${{ matrix.browser }}
         uses: ./.github/actions/bazel-test
         with:
-          query: attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'lint|rc|remote', tests(//java/...))
+          query: attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'rc|remote', tests(//java/...))
           attempts: 3
         env:
           DISPLAY: :99

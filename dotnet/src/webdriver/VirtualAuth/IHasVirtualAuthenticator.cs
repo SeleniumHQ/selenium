@@ -1,4 +1,4 @@
-﻿// <copyright file="IAlert.cs" company="WebDriver Committers">
+// <copyright file="DesiredCapabilities.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -15,33 +15,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // </copyright>
+using System.Collections.Generic;
 
-namespace OpenQA.Selenium
+namespace OpenQA.Selenium.VirtualAuth
 {
-    /// <summary>
-    /// Defines the interface through which the user can manipulate JavaScript alerts.
-    /// </summary>
-    public interface IAlert
+    public interface IHasVirtualAuthenticator
     {
-        /// <summary>
-        /// Gets the text of the alert.
-        /// </summary>
-        string Text { get; }
+        string AddVirtualAuthenticator(VirtualAuthenticatorOptions options);
 
-        /// <summary>
-        /// Dismisses the alert.
-        /// </summary>
-        void Dismiss();
+        void RemoveVirtualAuthenticator(string id);
 
-        /// <summary>
-        /// Accepts the alert.
-        /// </summary>
-        void Accept();
+        void AddCredential(Credential credential);
 
-        /// <summary>
-        /// Sends keys to the alert.
-        /// </summary>
-        /// <param name="keysToSend">The keystrokes to send.</param>
-        void SendKeys(string keysToSend);
+        List<Credential> GetCredentials();
+
+        void RemoveCredential(byte[] credentialId);
+
+        void RemoveCredential(string credentialId);
+
+        void RemoveAllCredentials();
+
+        void SetUserVerified(bool verified);
     }
+
 }

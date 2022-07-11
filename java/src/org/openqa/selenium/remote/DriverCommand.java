@@ -32,7 +32,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonMap;
 
@@ -177,7 +176,7 @@ public interface DriverCommand {
     return new CommandPayload(
       NEW_SESSION,
       ImmutableMap.of(
-        "capabilities", CapabilitiesUtils.makeW3CSafe(capabilities).collect(Collectors.toSet()),
+        "capabilities", capabilities,
         "desiredCapabilities", capabilities));
   }
 
@@ -191,7 +190,7 @@ public interface DriverCommand {
       NEW_SESSION,
       ImmutableMap.of(
         "capabilities",
-        capabilities.stream().flatMap(CapabilitiesUtils::makeW3CSafe).collect(Collectors.toSet()),
+        capabilities,
         "desiredCapabilities", capabilities.iterator().next()));
   }
 
