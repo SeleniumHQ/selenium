@@ -16,16 +16,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Things needed by bazel and to run tests
 
-#RUN apt-get update -qqy && \
-#    apt-get -qy install build-essential \
-#                        git-all \
-#                        ca-certificates \
-#                        openjdk-11-jdk \
-#                        python3.9 python3-pip python-is-python3 \
-#                        ruby-full \
-#                        dotnet-sdk-5.0 && \
-#    rm -rf /var/lib/apt/lists/* /var/cache/apt/*
-
 RUN apt-get update -qqy && \
     apt-get -qy install python-is-python3 \
                         dotnet-sdk-5.0 \
@@ -80,7 +70,7 @@ USER gitpod
 COPY scripts/dev-image/supervisord.conf /etc
 
 #==============================
-# Scripts to run XVFB and VNC
+# Scripts to run XVFB, VNC, and noVNC
 #==============================
 COPY scripts/dev-image/start-xvfb.sh \
       scripts/dev-image/start-vnc.sh \
@@ -89,6 +79,7 @@ COPY scripts/dev-image/start-xvfb.sh \
 
 # To run browser tests
 ENV DISPLAY :99.0
+ENV DISPLAY_NUM 99
 ENV SCREEN_WIDTH 1360
 ENV SCREEN_HEIGHT 1020
 ENV SCREEN_DEPTH 24
