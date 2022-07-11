@@ -179,22 +179,33 @@ import java.util.stream.Collectors;
  * </code></pre>
  */
 @Beta
-public class WebDriverDecorator {
+public class WebDriverDecorator<T extends WebDriver> {
 
-  private Decorated<WebDriver> decorated;
+  private final Class<T> targetWebDriverClass;
 
-  public final WebDriver decorate(WebDriver original) {
+  private Decorated<T> decorated;
+
+  @SuppressWarnings("unchecked")
+  public WebDriverDecorator() {
+    this((Class<T>) WebDriver.class);
+  }
+
+  public WebDriverDecorator(Class<T> targetClass) {
+    this.targetWebDriverClass = targetClass;
+  }
+
+  public final T decorate(T original) {
     Require.nonNull("WebDriver", original);
 
     decorated = createDecorated(original);
-    return createProxy(decorated, WebDriver.class);
+    return createProxy(decorated, targetWebDriverClass);
   }
 
-  public Decorated<WebDriver> getDecoratedDriver() {
+  public Decorated<T> getDecoratedDriver() {
     return decorated;
   }
 
-  public Decorated<WebDriver> createDecorated(WebDriver driver) {
+  public Decorated<T> createDecorated(T driver) {
     return new DefaultDecorated<>(driver, this);
   }
 
@@ -248,7 +259,7 @@ public class WebDriverDecorator {
 
   private Object decorateResult(Object toDecorate) {
     if (toDecorate instanceof WebDriver) {
-      return createProxy(getDecoratedDriver(), WebDriver.class);
+      return createProxy(getDecoratedDriver(), targetWebDriverClass);
     }
     if (toDecorate instanceof WebElement) {
       return createProxy(createDecorated((WebElement) toDecorate), WebElement.class);
@@ -316,7 +327,7 @@ public class WebDriverDecorator {
     Class<?>[] allInterfacesArray = allInterfaces.toArray(new Class<?>[0]);
 
     Class<? extends Z> proxy = new ByteBuddy()
-      .subclass(Object.class)
+      .subclass(clazz.isInterface() ? Object.class : clazz)
       .implement(allInterfacesArray)
       .method(ElementMatchers.any())
       .intercept(InvocationHandlerAdapter.of(handler))

@@ -104,7 +104,9 @@ public class DevTools implements Closeable {
 
   /**
    * Create CDP session on given window/tab (aka target).
-   * If windowHandle is null, then _some_ target will be selected. It might be a problem only if you have multiple windows/tabs opened.
+   * If windowHandle is null, then the first "page" type will be selected.
+   * Pass the windowHandle if you have multiple windows/tabs opened to connect to
+   * the expected window/tab.
    *
    * @param windowHandle result of {@link WebDriver#getWindowHandle()}, optional.
    */
@@ -139,10 +141,12 @@ public class DevTools implements Closeable {
 
   private TargetID findTarget(String windowHandle) {
     // Figure out the targets.
-    List<TargetInfo> infos = connection.sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
+    List<TargetInfo> infos = connection
+      .sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
 
     // Grab the first "page" type, and glom on to that.
-    // Find out which one might be the current one (using given window handle like "CDwindow-24426957AC62D8BC83E58C184C38AF2D")
+    // Find out which one might be the current one
+    // (using given window handle like "CDwindow-24426957AC62D8BC83E58C184C38AF2D")
     return infos.stream()
       .filter(info -> "page".equals(info.getType()))
       .map(TargetInfo::getTargetId)

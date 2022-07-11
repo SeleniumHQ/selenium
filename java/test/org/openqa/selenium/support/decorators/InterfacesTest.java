@@ -25,27 +25,27 @@ import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.WebDriver;
 
 @Tag("UnitTests")
-public class InterfacesTest {
+class InterfacesTest {
 
   protected interface SomeOtherInterface {}
 
   protected interface ExtendedDriver extends WebDriver, SomeOtherInterface {}
 
   @Test
-  public void shouldNotAddInterfacesNotAvailableInTheOriginalDriver() {
+  void shouldNotAddInterfacesNotAvailableInTheOriginalDriver() {
     WebDriver driver = mock(WebDriver.class);
     assertThat(driver).isNotInstanceOf(SomeOtherInterface.class);
 
-    WebDriver decorated = new WebDriverDecorator().decorate(driver);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(driver);
     assertThat(decorated).isNotInstanceOf(SomeOtherInterface.class);
   }
 
   @Test
-  public void shouldRespectInterfacesAvailableInTheOriginalDriver() {
+  void shouldRespectInterfacesAvailableInTheOriginalDriver() {
     WebDriver driver = mock(ExtendedDriver.class);
     assertThat(driver).isInstanceOf(SomeOtherInterface.class);
 
-    WebDriver decorated = new WebDriverDecorator().decorate(driver);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(driver);
     assertThat(decorated).isInstanceOf(SomeOtherInterface.class);
   }
 }

@@ -24,7 +24,6 @@ from importlib import import_module
 
 import pkgutil
 
-import sys
 from typing import Dict, List, Optional, Union
 
 import warnings
@@ -1168,7 +1167,6 @@ class WebDriver(BaseWebDriver):
 
     @asynccontextmanager
     async def bidi_connection(self):
-        assert sys.version_info >= (3, 7)
         global cdp
         import_cdp()
         if self.caps.get("se:cdp"):
