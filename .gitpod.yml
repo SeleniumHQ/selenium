@@ -13,4 +13,4 @@ tasks:
       echo "test --disk_cache=/workspace/.cache/bazel-disk" >> /workspace/selenium/.bazelrc.local
       bazel build grid
   - name: Supervisor (VNC and noVNC)
-    command: /usr/bin/supervisord --configuration /etc/supervisord.conf &
+    command: /usr/bin/supervisord --configuration /etc/supervisord.conf --silent
