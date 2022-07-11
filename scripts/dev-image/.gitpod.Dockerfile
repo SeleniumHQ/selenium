@@ -77,14 +77,14 @@ USER gitpod
 #======================================
 # Add Supervisor configuration file
 #======================================
-COPY supervisord.conf /etc
+COPY scripts/dev-image/supervisord.conf /etc
 
 #==============================
 # Scripts to run XVFB and VNC
 #==============================
-COPY start-xvfb.sh \
-      start-vnc.sh \
-      start-novnc.sh \
+COPY scripts/dev-image/start-xvfb.sh \
+      scripts/dev-image/start-vnc.sh \
+      scripts/dev-image/start-novnc.sh \
       /home/gitpod/selenium/
 
 # To run browser tests
