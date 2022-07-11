@@ -84,6 +84,7 @@ COPY supervisord.conf /etc
 #==============================
 COPY start-xvfb.sh \
       start-vnc.sh \
+      start-novnc.sh \
       /home/gitpod/selenium/
 
 # To run browser tests
@@ -93,3 +94,4 @@ ENV SCREEN_HEIGHT 1020
 ENV SCREEN_DEPTH 24
 ENV SCREEN_DPI 96
 ENV VNC_PORT 5900
+ENV NO_VNC_PORT 7900
