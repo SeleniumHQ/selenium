@@ -23,19 +23,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Consumer;
 
-@Category(UnitTests.class)
-public class DecoratedNavigationTest {
+@Tag("UnitTests")
+class DecoratedNavigationTest {
 
   private static class Fixture {
+
     WebDriver originalDriver;
     WebDriver decoratedDriver;
     WebDriver.Navigation original;
@@ -45,7 +45,7 @@ public class DecoratedNavigationTest {
       original = mock(WebDriver.Navigation.class);
       originalDriver = mock(WebDriver.class);
       when(originalDriver.navigate()).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.navigate();
     }
   }
@@ -58,28 +58,28 @@ public class DecoratedNavigationTest {
   }
 
   @Test
-  public void toAddressAsString() {
+  void toAddressAsString() {
     verifyFunction($ -> $.to("test"));
   }
 
   @Test
-  public void toAddressAsUrl() throws MalformedURLException {
+  void toAddressAsUrl() throws MalformedURLException {
     final URL url = new URL("http://www.selenium2.ru/");
     verifyFunction($ -> $.to(url));
   }
 
   @Test
-  public void back() {
+  void back() {
     verifyFunction(WebDriver.Navigation::back);
   }
 
   @Test
-  public void forward() {
+  void forward() {
     verifyFunction(WebDriver.Navigation::forward);
   }
 
   @Test
-  public void refresh() {
+  void refresh() {
     verifyFunction(WebDriver.Navigation::refresh);
   }
 }

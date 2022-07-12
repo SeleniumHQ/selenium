@@ -26,8 +26,7 @@ const zip = require('../../io/zip')
 const { InvalidArgumentError } = require('../../lib/error')
 const { locate } = require('../../lib/test/resources')
 
-const XPI_PATH = locate(
-  'common/extensions/webextensions-selenium-example.xpi')
+const XPI_PATH = locate('common/extensions/webextensions-selenium-example.xpi')
 
 describe('io/zip', function () {
   describe('unzip', function () {

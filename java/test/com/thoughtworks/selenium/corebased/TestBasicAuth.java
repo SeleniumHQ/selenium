@@ -19,15 +19,15 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-@Ignore("Browsers don't allow basic auth through URL params any more")
+@Disabled("Browsers don't allow basic auth through URL params any more")
 public class TestBasicAuth extends InternalSelenseTestBase {
   @Test
   public void testBasicAuth() throws Exception {

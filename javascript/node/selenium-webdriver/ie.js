@@ -402,9 +402,9 @@ function createServiceFromCapabilities(capabilities) {
   if (!exe || !fs.existsSync(exe)) {
     throw Error(
       `${IEDRIVER_EXE} could not be found on the current PATH. Please ` +
-      `download the latest version of ${IEDRIVER_EXE} from ` +
-      'https://www.selenium.dev/downloads/ and ' +
-      'ensure it can be found on your system PATH.'
+        `download the latest version of ${IEDRIVER_EXE} from ` +
+        'https://www.selenium.dev/downloads/ and ' +
+        'ensure it can be found on your system PATH.'
     )
   }
 

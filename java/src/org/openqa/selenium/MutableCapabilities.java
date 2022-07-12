@@ -31,13 +31,9 @@ public class MutableCapabilities implements Capabilities {
 
   static {
     HashSet<String> keys = new HashSet<>();
-    keys.add("chromeOptions");
-    keys.add("edgeOptions");
     keys.add("goog:chromeOptions");
     keys.add("moz:firefoxOptions");
-    keys.add("operaOptions");
     keys.add("se:ieOptions");
-    keys.add("safari.options");
     OPTION_KEYS = Collections.unmodifiableSet(keys);
   }
 
@@ -87,8 +83,6 @@ public class MutableCapabilities implements Capabilities {
 
   public void setCapability(String key, Object value) {
     Require.nonNull("Capability name", key);
-
-    W3CCapabilityKeysValidator.validateCapability(key);
 
     // We have to special-case some keys and values because of the popular idiom of calling
     // something like "capabilities.setCapability(SafariOptions.CAPABILITY, new SafariOptions());"

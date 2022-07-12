@@ -27,14 +27,14 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
-public class ElementDomAttributeTest extends JUnit4TestBase {
+public class ElementDomAttributeTest extends JupiterTestBase {
 
   @Test
   public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {

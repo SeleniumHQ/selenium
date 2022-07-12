@@ -30,18 +30,18 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
-public class AlertsTest extends JUnit4TestBase {
+public class AlertsTest extends JupiterTestBase {
 
   private static ExpectedCondition<Boolean> textInElementLocated(
     final By locator, final String text) {
@@ -52,7 +52,7 @@ public class AlertsTest extends JUnit4TestBase {
     return driver -> driver.switchTo().window(name);
   }
 
-  @After
+  @AfterEach
   public void closeAlertIfPresent() {
     try {
       driver.switchTo().alert().dismiss();

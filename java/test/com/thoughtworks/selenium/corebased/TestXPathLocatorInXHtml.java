@@ -19,10 +19,10 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class TestXPathLocatorInXHtml extends InternalSelenseTestBase {
   @Test
   public void testXPathLocatorInXHtml() {

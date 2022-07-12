@@ -21,13 +21,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using OpenQA.Selenium.Html5;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Internal;
+using OpenQA.Selenium.VirtualAuth;
+using Microsoft.IdentityModel.Tokens;
 
 namespace OpenQA.Selenium
 {
-    public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor
+    public class WebDriver : IWebDriver, ISearchContext, IJavaScriptExecutor, IFindsElement, ITakesScreenshot, ISupportsPrint, IActionExecutor, IAllowsFileDetection, IHasCapabilities, IHasCommandExecutor, IHasSessionId, ICustomDriverCommandExecutor, IHasVirtualAuthenticator
     {
         /// <summary>
         /// The default command timeout for HTTP requests in a RemoteWebDriver instance.
@@ -40,13 +41,8 @@ namespace OpenQA.Selenium
         private NetworkManager network;
         private WebElementFactory elementFactory;
         private SessionId sessionId;
+        private String authenticatorId;
         private List<string> registeredCommands = new List<string>();
-
-        // These member variables exist to support obsolete protocol end points.
-        // They should be removed at the earliest available opportunity.
-        private IWebStorage storage;
-        private IApplicationCache appCache;
-        private ILocationContext locationContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WebDriver"/> class.
@@ -67,36 +63,6 @@ namespace OpenQA.Selenium
                 // retrieving the logs via the extension end points.
                 this.RegisterDriverCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/se/log/types"), true);
                 this.RegisterDriverCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"), true);
-            }
-
-            // These below code exists solely to support obsolete protocol end points.
-            // They should be removed at the earliest available opportunity.
-            if (this.Capabilities.HasCapability(CapabilityType.SupportsApplicationCache))
-            {
-                object appCacheCapability = this.Capabilities.GetCapability(CapabilityType.SupportsApplicationCache);
-                if (appCacheCapability is bool && (bool)appCacheCapability)
-                {
-                    this.appCache = new ApplicationCache(this);
-                }
-            }
-
-            if (this.Capabilities.HasCapability(CapabilityType.SupportsLocationContext))
-            {
-                object locationContextCapability = this.Capabilities.GetCapability(CapabilityType.SupportsLocationContext);
-                if (locationContextCapability is bool && (bool)locationContextCapability)
-                {
-                    this.locationContext = new LocationContext(this);
-                }
-            }
-
-            if (this.Capabilities.HasCapability(CapabilityType.SupportsWebStorage))
-            {
-                object webContextCapability = this.Capabilities.GetCapability(CapabilityType.SupportsWebStorage);
-                if (webContextCapability is bool && (bool)webContextCapability)
-                {
-                    this.storage = new WebStorage(this);
-                }
-
             }
         }
 
@@ -238,84 +204,6 @@ namespace OpenQA.Selenium
                 }
 
                 this.fileDetector = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether web storage is supported for this driver.
-        /// </summary>
-        [Obsolete("Use JavaScript instead for managing localStorage and sessionStorage. This property will be removed in a future release.")]
-        public bool HasWebStorage
-        {
-            get { return this.storage != null; }
-        }
-
-        /// <summary>
-        /// Gets an <see cref="IWebStorage"/> object for managing web storage.
-        /// </summary>
-        [Obsolete("Use JavaScript instead for managing localStorage and sessionStorage. This property will be removed in a future release.")]
-        public IWebStorage WebStorage
-        {
-            get
-            {
-                if (this.storage == null)
-                {
-                    throw new InvalidOperationException("Driver does not support manipulating HTML5 web storage. Use the HasWebStorage property to test for the driver capability");
-                }
-
-                return this.storage;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether manipulating the application cache is supported for this driver.
-        /// </summary>
-        [Obsolete("Use JavaScript instead for managing applicationCache. This property will be removed in a future release.")]
-        public bool HasApplicationCache
-        {
-            get { return this.appCache != null; }
-        }
-
-        /// <summary>
-        /// Gets an <see cref="IApplicationCache"/> object for managing application cache.
-        /// </summary>
-        [Obsolete("Use JavaScript instead for managing applicationCache. This property will be removed in a future release.")]
-        public IApplicationCache ApplicationCache
-        {
-            get
-            {
-                if (this.appCache == null)
-                {
-                    throw new InvalidOperationException("Driver does not support manipulating the HTML5 application cache. Use the HasApplicationCache property to test for the driver capability");
-                }
-
-                return this.appCache;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether manipulating geolocation is supported for this driver.
-        /// </summary>
-        [Obsolete("Getting and setting geolocation information is not supported by the W3C WebDriver Specification. This property will be removed in a future release.")]
-        public bool HasLocationContext
-        {
-            get { return this.locationContext != null; }
-        }
-
-        /// <summary>
-        /// Gets an <see cref="ILocationContext"/> object for managing browser location.
-        /// </summary>
-        [Obsolete("Getting and setting geolocation information is not supported by the W3C WebDriver Specification. This property will be removed in a future release.")]
-        public ILocationContext LocationContext
-        {
-            get
-            {
-                if (this.locationContext == null)
-                {
-                    throw new InvalidOperationException("Driver does not support setting HTML5 geolocation information. Use the HasLocationContext property to test for the driver capability");
-                }
-
-                return this.locationContext;
             }
         }
 
@@ -1081,6 +969,113 @@ namespace OpenQA.Selenium
             }
 
             return returnValue;
+        }
+
+        /// <summary>
+        /// Creates a Virtual Authenticator.
+        /// </summary>
+        /// <param name="options"> VirtualAuthenticator Options (https://w3c.github.io/webauthn/#sctn-automation-virtual-authenticators)</param>
+        /// <returns> Authenticator id as string </returns>
+        public string AddVirtualAuthenticator(VirtualAuthenticatorOptions options)
+        {
+            Response commandResponse = this.Execute(DriverCommand.AddVirtualAuthenticator, options.ToDictionary());
+            string id = commandResponse.Value.ToString();
+            this.authenticatorId = id;
+            return this.authenticatorId;
+        }
+
+        /// <summary>
+        /// Removes the Virtual Authenticator
+        /// </summary>
+        /// <param name="authenticatorId"> Id as string that uniquely identifies a Virtual Authenticator</param>
+        public void RemoveVirtualAuthenticator(string authenticatorId)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+            this.Execute(DriverCommand.RemoveVirtualAuthenticator, parameters);
+            this.authenticatorId = null;
+        }
+
+        public string AuthenticatorId { get; }
+
+        /// <summary>
+        /// Add a credential to the Virtual Authenticator/
+        /// </summary>
+        /// <param name="credential"> The credential to be stored in the Virtual Authenticator</param>
+        public void AddCredential(Credential credential)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>(credential.ToDictionary());
+            parameters.Add("authenticatorId", this.authenticatorId);
+
+            this.Execute(driverCommandToExecute: DriverCommand.AddCredential, parameters);
+        }
+
+        /// <summary>
+        /// Retrieves all the credentials stored in the Virtual Authenticator
+        /// </summary>
+        /// <returns> List of credentials </returns>
+        public List<Credential> GetCredentials()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+
+            object[] commandResponse = (object[])this.Execute(driverCommandToExecute: DriverCommand.GetCredentials, parameters).Value;
+
+            List<Credential> credentials = new List<Credential>();
+
+            foreach (object dictionary in commandResponse)
+            {
+                Credential credential = Credential.FromDictionary((Dictionary<string, object>)dictionary);
+                credentials.Add(credential);
+            }
+
+            return credentials;
+        }
+
+        /// <summary>
+        /// Removes the credential identified by the credentialId from the Virtual Authenticator.
+        /// </summary>
+        /// <param name="credentialId"> The id as byte array that uniquely identifies a credential </param>
+        public void RemoveCredential(byte[] credentialId)
+        {
+            RemoveCredential(Base64UrlEncoder.Encode(credentialId));
+        }
+
+        /// <summary>
+        /// Removes the credential identified by the credentialId from the Virtual Authenticator.
+        /// </summary>
+        /// <param name="credentialId"> The id as string that uniquely identifies a credential </param>
+        public void RemoveCredential(string credentialId)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+            parameters.Add("credentialId", credentialId);
+
+            this.Execute(driverCommandToExecute: DriverCommand.RemoveCredential, parameters);
+        }
+
+        /// <summary>
+        /// Removes all the credentials stored in the Virtual Authenticator.
+        /// </summary>
+        public void RemoveAllCredentials()
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+
+            this.Execute(driverCommandToExecute: DriverCommand.RemoveAllCredentials, parameters);
+        }
+
+        /// <summary>
+        ///  Sets the isUserVerified property for the Virtual Authenticator.
+        /// </summary>
+        /// <param name="verified">The boolean value representing value to be set </param>
+        public void SetUserVerified(bool verified)
+        {
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+            parameters.Add("authenticatorId", this.authenticatorId);
+            parameters.Add("isUserVerified", verified);
+
+            this.Execute(driverCommandToExecute: DriverCommand.SetUserVerified, parameters);
         }
     }
 }

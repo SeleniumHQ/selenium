@@ -27,18 +27,17 @@ import static org.openqa.selenium.Proxy.ProxyType.SYSTEM;
 import static org.openqa.selenium.Proxy.ProxyType.UNSPECIFIED;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class ProxyTest {
 
   @Test
@@ -396,7 +395,7 @@ public class ProxyTest {
   }
 
   @Test
-  @Ignore
+  @Disabled
   public void serializesAndDeserializesWithoutError() {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://www.example.com/config.pac");

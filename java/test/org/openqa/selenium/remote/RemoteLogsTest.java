@@ -25,9 +25,9 @@ import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.WebDriverException;
@@ -35,7 +35,6 @@ import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,7 +42,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class RemoteLogsTest {
   @Mock
   private ExecuteMethod executeMethod;
@@ -53,7 +52,7 @@ public class RemoteLogsTest {
 
   private RemoteLogs remoteLogs;
 
-  @Before
+  @BeforeEach
   public void createMocksAndRemoteLogs() {
     MockitoAnnotations.initMocks(this);
     remoteLogs = new RemoteLogs(executeMethod, localLogs);

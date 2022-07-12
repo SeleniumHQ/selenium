@@ -131,14 +131,14 @@ def test_delete_cookie(cookie, driver):
 
 
 def test_should_get_cookie_by_name(driver):
-    key = 'key_{}'.format(int(random.random() * 10000000))
+    key = f'key_{int(random.random() * 10000000)}'
     driver.execute_script("document.cookie = arguments[0] + '=set';", key)
     cookie = driver.get_cookie(key)
     assert 'set' == cookie['value']
 
 
 def test_should_return_none_when_cookie_does_not_exist(driver):
-    key = 'key_{}'.format(int(random.random() * 10000000))
+    key = f'key_{int(random.random() * 10000000)}'
     cookie = driver.get_cookie(key)
     assert cookie is None
 
@@ -148,7 +148,7 @@ def test_get_all_cookies(cookie, driver, pages, webserver):
     count = len(cookies)
 
     for i in range(2):
-        cookie['name'] = 'key_{}'.format(int(random.random() * 10000000))
+        cookie['name'] = f'key_{int(random.random() * 10000000)}'
         driver.add_cookie(cookie)
 
     pages.load('simpleTest.html')

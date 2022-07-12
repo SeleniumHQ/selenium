@@ -18,7 +18,7 @@
 import base64
 import os
 import warnings
-from typing import List, Union
+from typing import List, Union, BinaryIO
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -28,7 +28,7 @@ class ChromiumOptions(ArgOptions):
     KEY = "goog:chromeOptions"
 
     def __init__(self) -> None:
-        super(ChromiumOptions, self).__init__()
+        super().__init__()
         self._binary_location = ''
         self._extension_files = []
         self._extensions = []
@@ -52,7 +52,7 @@ class ChromiumOptions(ArgOptions):
         self._binary_location = value
 
     @property
-    def debugger_address(self: str) -> str:
+    def debugger_address(self) -> str:
         """
         :Returns: The address of the remote devtools instance
         """
@@ -74,15 +74,17 @@ class ChromiumOptions(ArgOptions):
         """
         :Returns: A list of encoded extensions that will be loaded
         """
-        encoded_extensions = []
-        for ext in self._extension_files:
-            file_ = open(ext, 'rb')
+        def _decode(file_data: BinaryIO) -> str:
             # Should not use base64.encodestring() which inserts newlines every
             # 76 characters (per RFC 1521).  Chromedriver has to remove those
             # unnecessary newlines before decoding, causing performance hit.
-            encoded_extensions.append(base64.b64encode(file_.read()).decode('UTF-8'))
+            return base64.b64encode(file_data.read()).decode("utf-8")
 
-            file_.close()
+        encoded_extensions = []
+        for extension in self._extension_files:
+            with open(extension, "rb") as f:
+                encoded_extensions.append(_decode(f))
+
         return encoded_extensions + self._extensions
 
     def add_extension(self, extension: str) -> None:
@@ -98,7 +100,7 @@ class ChromiumOptions(ArgOptions):
             if os.path.exists(extension_to_add):
                 self._extension_files.append(extension_to_add)
             else:
-                raise IOError("Path to the extension doesn't exist")
+                raise OSError("Path to the extension doesn't exist")
         else:
             raise ValueError("argument can not be null")
 

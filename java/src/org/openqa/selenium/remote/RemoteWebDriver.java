@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -46,12 +47,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Interactive;
-import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -62,6 +62,9 @@ import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -94,14 +97,13 @@ import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
   JavascriptExecutor,
-  HasInputDevices,
   HasCapabilities,
   HasVirtualAuthenticator,
   Interactive,
@@ -121,8 +123,6 @@ public class RemoteWebDriver implements WebDriver,
 
   private JsonToWebElementConverter converter;
 
-  private RemoteKeyboard keyboard;
-  private RemoteMouse mouse;
   private Logs remoteLogs;
   private LocalLogs localLogs;
 
@@ -206,8 +206,6 @@ public class RemoteWebDriver implements WebDriver,
 
     converter = new JsonToWebElementConverter(this);
     executeMethod = new RemoteExecuteMethod(this);
-    keyboard = new RemoteKeyboard(executeMethod);
-    mouse = new RemoteMouse(executeMethod);
 
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
 
@@ -244,6 +242,9 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   protected void startSession(Capabilities capabilities) {
+    checkNonW3CCapabilities(capabilities);
+    checkChromeW3CFalse(capabilities);
+
     Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
     if (response == null) {
@@ -256,20 +257,18 @@ public class RemoteWebDriver implements WebDriver,
     if (responseValue == null) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response without payload: " +
-        response.toString());
+        response);
     }
 
     if (!(responseValue instanceof Map)) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response with a non well formed payload: " +
-        response.toString());
+        response);
     }
 
     @SuppressWarnings("unchecked") Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
     MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
-    String platformString = (String) rawCapabilities.getOrDefault(
-      PLATFORM,
-      rawCapabilities.get(PLATFORM_NAME));
+    String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
     Platform platform;
     try {
       if (platformString == null || "".equals(platformString)) {
@@ -282,19 +281,7 @@ public class RemoteWebDriver implements WebDriver,
       // system property. Try to recover and parse this.
       platform = Platform.extractFromSysProperty(platformString);
     }
-    returnedCapabilities.setCapability(PLATFORM, platform);
     returnedCapabilities.setCapability(PLATFORM_NAME, platform);
-
-    if (rawCapabilities.containsKey(SUPPORTS_JAVASCRIPT)) {
-      Object raw = rawCapabilities.get(SUPPORTS_JAVASCRIPT);
-      if (raw instanceof String) {
-        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, Boolean.parseBoolean((String) raw));
-      } else if (raw instanceof Boolean) {
-        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, ((Boolean) raw).booleanValue());
-      }
-    } else {
-      returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, true);
-    }
 
     this.capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
@@ -322,6 +309,20 @@ public class RemoteWebDriver implements WebDriver,
       return new ImmutableCapabilities();
     }
     return capabilities;
+  }
+
+  public static Status status(URL remoteAddress) {
+    HttpResponse response = new HttpResponse();
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(remoteAddress)) {
+      HttpRequest request = new HttpRequest(HttpMethod.GET, "/status");
+      response = client.execute(request);
+      Map<String, Object> responseMap = new Json().toType(string(response), Map.class);
+      Map<String, Object> value = (Map<String, Object>) responseMap.get("value");
+
+      return new Status((boolean) value.get("ready"), (String) value.get("message"));
+    } catch (JsonException e) {
+      throw new WebDriverException("Unable to parse remote response: " + string(response), e);
+    }
   }
 
   @Override
@@ -640,16 +641,6 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   @Override
-  public Keyboard getKeyboard() {
-    return keyboard;
-  }
-
-  @Override
-  public Mouse getMouse() {
-    return mouse;
-  }
-
-  @Override
   public VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options) {
     String authenticatorId = (String)
         execute(DriverCommand.ADD_VIRTUAL_AUTHENTICATOR, options.toMap()).getValue();
@@ -707,6 +698,44 @@ public class RemoteWebDriver implements WebDriver,
     }
   }
 
+  private void checkNonW3CCapabilities(Capabilities capabilities) {
+    // Throwing warnings for non-W3C WebDriver compliant capabilities
+    List<String> invalid = capabilities.asMap().keySet()
+      .stream()
+      .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
+      .collect(Collectors.toList());
+
+    if (!invalid.isEmpty()) {
+      logger.log(Level.WARNING,
+                 () -> String.format("Support for Legacy Capabilities is deprecated; " +
+                                     "You are sending the following invalid capabilities: %s; " +
+                                     "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+                                     invalid));
+    }
+  }
+
+  private void checkChromeW3CFalse(Capabilities capabilities) {
+    // Throwing warnings when the user sets `w3c: false` inside `goog:chromeOptions`
+    if ("chrome".equalsIgnoreCase(capabilities.getBrowserName()) &&
+        capabilities.asMap().containsKey("goog:chromeOptions")) {
+      Object capability = capabilities.getCapability("goog:chromeOptions");
+      boolean w3c = true;
+      if ((capability instanceof Map)) {
+        Object rawW3C = ((Map<?, ?>) capability).get("w3c");
+        w3c = rawW3C == null || Boolean.parseBoolean(String.valueOf(rawW3C));
+      }
+      if (!w3c) {
+        logger.log(
+          Level.WARNING,
+          "Setting 'w3c: true' inside 'goog:chromeOptions' will not be accepted from " +
+          "Selenium 4.4; " +
+          "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/"
+        );
+      }
+    }
+
+  }
+
   public FileDetector getFileDetector() {
     return fileDetector;
   }
@@ -734,20 +763,16 @@ public class RemoteWebDriver implements WebDriver,
       return super.toString();
     }
 
-    // w3c name first
-    Object platform = caps.getCapability(PLATFORM_NAME);
-    if (!(platform instanceof String)) {
-      platform = caps.getCapability(PLATFORM);
-    }
-    if (platform == null) {
-      platform = "unknown";
+    Object platformName = caps.getCapability(PLATFORM_NAME);
+    if (platformName == null) {
+      platformName = "unknown";
     }
 
     return String.format(
       "%s: %s on %s (%s)",
       getClass().getSimpleName(),
       caps.getBrowserName(),
-      platform,
+      platformName,
       getSessionId());
   }
 

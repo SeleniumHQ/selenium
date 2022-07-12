@@ -24,12 +24,10 @@ import com.thoughtworks.selenium.corebased.TestBasicAuth;
 import com.thoughtworks.selenium.corebased.TestBrowserVersion;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestClick;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+@SelectClasses({
     TestAddLocationStrategy.class,
     TestAddSelection.class,
     TestAlerts.class,
@@ -113,6 +111,7 @@ import org.junit.runners.Suite;
 //    TestXPathLocators.class,
 //    RealDealIntegrationTest.class
 })
+@Suite
 public class SeleniumRcTestSuite extends BaseSuite {
   // empty
 }

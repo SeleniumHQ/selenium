@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.environment.webserver.Page;

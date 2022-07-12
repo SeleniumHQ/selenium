@@ -19,9 +19,8 @@ package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -40,7 +39,7 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class FormEncodedDataTest {
 
   @Test

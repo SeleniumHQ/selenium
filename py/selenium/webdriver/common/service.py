@@ -79,12 +79,12 @@ class Service:
         except OSError as err:
             if err.errno == errno.ENOENT:
                 raise WebDriverException(
-                    "'%s' executable needs to be in PATH. %s" % (
+                    "'{}' executable needs to be in PATH. {}".format(
                         os.path.basename(self.path), self.start_error_message)
                 )
             elif err.errno == errno.EACCES:
                 raise WebDriverException(
-                    "'%s' executable may have wrong permissions. %s" % (
+                    "'{}' executable may have wrong permissions. {}".format(
                         os.path.basename(self.path), self.start_error_message)
                 )
             else:
@@ -116,11 +116,10 @@ class Service:
         return utils.is_connectable(self.port)
 
     def send_remote_shutdown_command(self):
-        from urllib import request as url_request
-        URLError = url_request.URLError
-
+        from urllib import request
+        from urllib.error import URLError
         try:
-            url_request.urlopen("%s/shutdown" % self.service_url)
+            request.urlopen("%s/shutdown" % self.service_url)
         except URLError:
             return
 

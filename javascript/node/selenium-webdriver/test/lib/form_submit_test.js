@@ -22,23 +22,26 @@ const test = require('../../lib/test')
 const until = require('../../lib/until')
 const Pages = test.Pages
 
-test.suite(function (env) {
-  let driver
+test.suite(
+  function (env) {
+    let driver
 
-  before(async function () {
-    driver = await env.builder().build()
-  })
+    before(async function () {
+      driver = await env.builder().build()
+    })
 
-  after(async function () {
-    return await driver.quit()
-  })
+    after(async function () {
+      return await driver.quit()
+    })
 
-  it('should be able to submit form in W3c mode', async function () {
-    await driver.get(Pages.formPage);
-    const form = await driver.findElement({id: 'submitButton'})
-    await form.submit();
-    await driver.wait(until.titleIs('We Arrive Here'), 2500)
-    const success = driver.findElement({id: 'greeting'})
-    assert.deepStrictEqual(await success.getText(), 'Success!');
-  })
-},  { browsers: ['chrome', 'firefox'] })
+    it('should be able to submit form in W3c mode', async function () {
+      await driver.get(Pages.formPage)
+      const form = await driver.findElement({ id: 'submitButton' })
+      await form.submit()
+      await driver.wait(until.titleIs('We Arrive Here'), 2500)
+      const success = driver.findElement({ id: 'greeting' })
+      assert.deepStrictEqual(await success.getText(), 'Success!')
+    })
+  },
+  { browsers: ['chrome', 'firefox'] }
+)

@@ -346,16 +346,42 @@ class Pointer extends Device {
 
   /**
    * @param {!Button=} button The button to press.
+   * @param width
+   * @param height
+   * @param pressure
+   * @param tangentialPressure
+   * @param tiltX
+   * @param tiltY
+   * @param twist
+   * @param altitudeAngle
+   * @param azimuthAngle
    * @return {!Action} An action to press the specified button with this device.
    * @package
    */
-  press(button = Button.LEFT, width = 0, height = 0, pressure = 0,
-    tangentialPressure = 0, tiltX = 0, tiltY = 0, twist = 0,
-    altitudeAngle = 0, azimuthAngle = 0) {
+  press(
+    button = Button.LEFT,
+    width = 0,
+    height = 0,
+    pressure = 0,
+    tangentialPressure = 0,
+    tiltX = 0,
+    tiltY = 0,
+    twist = 0,
+    altitudeAngle = 0,
+    azimuthAngle = 0
+  ) {
     return {
-      type: Action.Type.POINTER_DOWN, button, width, height,
-      pressure, tangentialPressure, tiltX, tiltY, twist,
-      altitudeAngle, azimuthAngle
+      type: Action.Type.POINTER_DOWN,
+      button,
+      width,
+      height,
+      pressure,
+      tangentialPressure,
+      tiltX,
+      tiltY,
+      twist,
+      altitudeAngle,
+      azimuthAngle,
     }
   }
 
@@ -385,15 +411,36 @@ class Pointer extends Device {
    * @return {!Action} The new action.
    * @package
    */
-  move({ x = 0, y = 0, duration = 100, origin = Origin.VIEWPORT,
-    width = 0, height = 0, pressure = 0,
-    tangentialPressure = 0, tiltX = 0, tiltY = 0, twist = 0,
-    altitudeAngle = 0, azimuthAngle = 0
+  move({
+    x = 0,
+    y = 0,
+    duration = 100,
+    origin = Origin.VIEWPORT,
+    width = 0,
+    height = 0,
+    pressure = 0,
+    tangentialPressure = 0,
+    tiltX = 0,
+    tiltY = 0,
+    twist = 0,
+    altitudeAngle = 0,
+    azimuthAngle = 0,
   }) {
     return {
-      type: Action.Type.POINTER_MOVE, origin, duration, x, y,
-      width, height, pressure, tangentialPressure, tiltX, tiltY, twist,
-      altitudeAngle, azimuthAngle
+      type: Action.Type.POINTER_MOVE,
+      origin,
+      duration,
+      x,
+      y,
+      width,
+      height,
+      pressure,
+      tangentialPressure,
+      tiltX,
+      tiltY,
+      twist,
+      altitudeAngle,
+      azimuthAngle,
     }
   }
 }
@@ -410,10 +457,9 @@ Pointer.Type = {
 
 class Wheel extends Device {
   /**
-   * @param {string} id the device ID.
-   * @param {Pointer.Type} type the pointer type.
+   * @param {string} id the device ID..
    */
-  constructor(id, type) {
+  constructor(id) {
     super(Device.Type.WHEEL, id)
   }
 
@@ -423,15 +469,19 @@ class Wheel extends Device {
    * @param {number} y starting y coordinate
    * @param {number} deltaX Delta X to scroll to target
    * @param {number} deltaY Delta Y to scroll to target
+   * @param {WebElement} origin element origin
    * @param {number} duration duration ratio be the ratio of time delta and duration
    * @returns {!Action} An action to scroll with this device.
    */
   scroll(x, y, deltaX, deltaY, origin, duration) {
     return {
       type: Action.Type.SCROLL,
-      duration: duration, x: x, y: y,
-      deltaX: deltaX, deltaY: deltaY,
-      origin: origin
+      duration: duration,
+      x: x,
+      y: y,
+      deltaX: deltaX,
+      deltaY: deltaY,
+      origin: origin,
     }
   }
 }
@@ -795,18 +845,21 @@ class Actions {
    * @param {number} deltax delta x to scroll to target
    * @param {number} deltay delta y to scroll to target
    * @param {number} duration duration ratio be the ratio of time delta and duration
-   * @returns {!Action} An action to scroll with this device.
+   * @returns {!Actions} An action to scroll with this device.
    */
   scroll(x, y, targetDeltaX, targetDeltaY, origin, duration) {
-    return this.insert(this.wheel_, this.wheel_.scroll(x, y, targetDeltaX, targetDeltaY, origin, duration))
+    return this.insert(
+      this.wheel_,
+      this.wheel_.scroll(x, y, targetDeltaX, targetDeltaY, origin, duration)
+    )
   }
 
   /**
    * Inserts an action for moving the mouse `x` and `y` pixels relative to the
    * specified `origin`. The `origin` may be defined as the mouse's
-   * {@linkplain ./input.Origin.POINTER current position}, the
+   * {@linkplain ./input.Origin.POINTER current position}, the top-left corner of the
    * {@linkplain ./input.Origin.VIEWPORT viewport}, or the center of a specific
-   * {@linkplain ./webdriver.WebElement WebElement}.
+   * {@linkplain ./webdriver.WebElement WebElement}. Default is top left corner of the view-port if origin is not specified
    *
    * You may adjust how long the remote end should take, in milliseconds, to
    * perform the move using the `duration` parameter (defaults to 100 ms).

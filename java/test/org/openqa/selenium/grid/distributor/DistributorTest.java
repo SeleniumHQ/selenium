@@ -19,11 +19,9 @@ package org.openqa.selenium.grid.distributor;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -95,7 +93,8 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
@@ -119,7 +118,7 @@ public class DistributorTest {
     return new EitherAssert<>(either);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws URISyntaxException {
     nodeUri = new URI("http://example:5678");
     routableUri = createUri();
@@ -143,7 +142,7 @@ public class DistributorTest {
     new FluentWait<>(bus).withTimeout(Duration.ofSeconds(5)).until(HasReadyState::isReady);
   }
 
-  @After
+  @AfterEach
   public void cleanUp() {
     bus.close();
   }
@@ -190,7 +189,7 @@ public class DistributorTest {
     try {
       eventFiredAndListenedTo = latch.await(30, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
-      Assert.fail("Thread Interrupted");
+      fail("Thread Interrupted");
     }
 
     assertThat(eventFiredAndListenedTo).isTrue();

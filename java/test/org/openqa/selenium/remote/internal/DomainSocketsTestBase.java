@@ -19,9 +19,9 @@ package org.openqa.selenium.remote.internal;
 
 import com.google.common.net.MediaType;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -82,7 +82,7 @@ public abstract class DomainSocketsTestBase {
 
   protected abstract HttpClient.Factory createFactory();
 
-  @Before
+  @BeforeEach
   public void setupUnixDomainSocketServer() throws IOException, URISyntaxException {
     Class<? extends ServerDomainSocketChannel> channelType = null;
 
@@ -135,7 +135,7 @@ public abstract class DomainSocketsTestBase {
     this.socket = new URI("unix", null, null, 0, temp.toString(), null, null);
   }
 
-  @After
+  @AfterEach
   public void shutdown() {
     Safely.safelyCall(() -> group.shutdownGracefully());
     Safely.safelyCall(() -> future.channel().closeFuture().sync());

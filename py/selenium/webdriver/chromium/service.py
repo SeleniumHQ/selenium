@@ -42,7 +42,7 @@ class ChromiumService(service.Service):
         if not start_error_message:
             raise AttributeError("start_error_message should not be empty")
 
-        service.Service.__init__(self, executable_path, port=port, env=env, start_error_message=start_error_message)
+        super().__init__(executable_path, port=port, env=env, start_error_message=start_error_message)
 
     def command_line_args(self) -> List[str]:
         return ["--port=%d" % self.port] + self.service_args

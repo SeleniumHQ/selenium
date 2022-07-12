@@ -18,6 +18,7 @@
 package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -50,7 +51,7 @@ public class SafariDriverInfo implements WebDriverInfo {
     }
 
     return capabilities.asMap().keySet().parallelStream()
-      .map(key -> key.startsWith("safari.") || key.startsWith("safari:"))
+      .map(key -> key.startsWith("safari:"))
       .reduce(Boolean::logicalOr)
       .orElse(false);
   }

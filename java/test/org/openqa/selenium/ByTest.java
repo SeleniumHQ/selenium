@@ -17,10 +17,9 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ import static org.openqa.selenium.By.ByTagName;
 import static org.openqa.selenium.By.ByXPath;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class ByTest {
 
   @Test

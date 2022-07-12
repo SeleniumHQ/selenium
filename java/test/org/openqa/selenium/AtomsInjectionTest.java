@@ -19,10 +19,10 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-public class AtomsInjectionTest extends JUnit4TestBase {
+public class AtomsInjectionTest extends JupiterTestBase {
 
   @Test
   public void testInjectingAtomShouldNotTrampleOnUnderscoreGlobal() {

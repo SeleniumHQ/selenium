@@ -27,7 +27,7 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "4.2.0",
+    'version': "4.3.0",
     'license': 'Apache 2.0',
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
@@ -61,7 +61,6 @@ setup_args = {
                  'selenium.webdriver.firefox',
                  'selenium.webdriver.ie',
                  'selenium.webdriver.edge',
-                 'selenium.webdriver.opera',
                  'selenium.webdriver.remote',
                  'selenium.webdriver.support', ],
     'include_package_data': True,

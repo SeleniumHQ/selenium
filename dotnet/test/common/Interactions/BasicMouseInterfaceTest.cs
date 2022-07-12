@@ -298,7 +298,9 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = mouseTrackerPage;
 
             IWebElement trackerDiv = driver.FindElement(By.Id("mousetracker"));
-            new Actions(driver).MoveToElement(trackerDiv, 95, 195).Build().Perform();
+            Size size = trackerDiv.Size;
+
+            new Actions(driver).MoveToElement(trackerDiv, 95 - size.Width / 2, 195 - size.Height / 2).Build().Perform();
 
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
@@ -311,7 +313,9 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = mouseTrackerPage;
 
             IWebElement trackerDiv = driver.FindElement(By.Id("mousetracker"));
-            new Actions(driver).MoveToElement(trackerDiv, 0, 0).Perform();
+            Size size = trackerDiv.Size;
+
+            new Actions(driver).MoveToElement(trackerDiv, size.Width / 2, size.Height / 2).Perform();
 
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
@@ -343,13 +347,17 @@ namespace OpenQA.Selenium.Interactions
             int shiftX = redboxPosition.X - greenboxPosition.X;
             int shiftY = redboxPosition.Y - greenboxPosition.Y;
 
-            new Actions(driver).MoveToElement(greenbox, 2, 2).Perform();
+            Size greenBoxSize = greenbox.Size;
+            int xOffset = 2 - greenBoxSize.Width / 2;
+            int yOffset = 2 - greenBoxSize.Height / 2;
+
+            new Actions(driver).MoveToElement(greenbox, xOffset, yOffset).Perform();
             WaitFor(ElementColorToBe(redbox, Color.Green), "element color was not green");
 
-            new Actions(driver).MoveToElement(greenbox, 2, 2).MoveByOffset(shiftX, shiftY).Perform();
+            new Actions(driver).MoveToElement(greenbox, xOffset, yOffset).MoveByOffset(shiftX, shiftY).Perform();
             WaitFor(ElementColorToBe(redbox, Color.Red), "element color was not red");
 
-            new Actions(driver).MoveToElement(greenbox, 2, 2).MoveByOffset(shiftX, shiftY).MoveByOffset(-shiftX, -shiftY).Perform();
+            new Actions(driver).MoveToElement(greenbox, xOffset, yOffset).MoveByOffset(shiftX, shiftY).MoveByOffset(-shiftX, -shiftY).Perform();
             WaitFor(ElementColorToBe(redbox, Color.Green), "element color was not red");
         }
 
@@ -360,15 +368,16 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement greenbox = driver.FindElement(By.Id("greenbox"));
             IWebElement redbox = driver.FindElement(By.Id("redbox"));
-            Size size = redbox.Size;
+            Size greenSize = greenbox.Size;
+            Size redSize = redbox.Size;
 
-            new Actions(driver).MoveToElement(greenbox, 1, 1).Perform();
+            new Actions(driver).MoveToElement(greenbox, 1 - greenSize.Width / 2, 1 - greenSize.Height / 2).Perform();
             Assert.That(redbox.GetCssValue("background-color"), Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
 
             new Actions(driver).MoveToElement(redbox).Perform();
             Assert.That(redbox.GetCssValue("background-color"), Is.EqualTo("rgba(255, 0, 0, 1)").Or.EqualTo("rgb(255, 0, 0)"));
 
-            new Actions(driver).MoveToElement(redbox, size.Width + 2, size.Height + 2).Perform();
+            new Actions(driver).MoveToElement(redbox, redSize.Width / 2 + 2, redSize.Height / 2 + 2).Perform();
             Assert.That(redbox.GetCssValue("background-color"), Is.EqualTo("rgba(0, 128, 0, 1)").Or.EqualTo("rgb(0, 128, 0)"));
         }
 

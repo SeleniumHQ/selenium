@@ -19,10 +19,10 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("Not implemented")
+@Disabled("Not implemented")
 public class TestUIElementLocators extends InternalSelenseTestBase {
   @Test
   public void testUIElementLocators() {

@@ -22,23 +22,22 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.auto.service.AutoService;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class HttpClientFactoryTest {
 
   private String oldProperty;
 
-  @Before
+  @BeforeEach
   public void storeSystemProperty() {
     oldProperty = System.getProperty("webdriver.http.factory");
   }
 
-  @After
+  @AfterEach
   public void restoreSystemProperty() {
     if (oldProperty != null) {
       System.setProperty("webdriver.http.factory", oldProperty);

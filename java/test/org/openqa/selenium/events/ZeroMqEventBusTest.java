@@ -18,7 +18,7 @@
 package org.openqa.selenium.events;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.security.Secret;
 import org.zeromq.ZContext;

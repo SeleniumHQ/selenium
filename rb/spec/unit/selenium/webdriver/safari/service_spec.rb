@@ -70,22 +70,6 @@ module Selenium
           expect(service.executable_path).to eq path
         end
 
-        it 'accepts Safari#driver_path= but throws deprecation notice' do
-          path = '/path/to/driver'
-
-          expect {
-            Selenium::WebDriver::Safari.driver_path = path
-          }.to have_deprecated(:driver_path)
-
-          expect {
-            expect(Selenium::WebDriver::Safari.driver_path).to eq path
-          }.to have_deprecated(:driver_path)
-
-          service = Service.safari
-
-          expect(service.executable_path).to eq path
-        end
-
         it 'does not create args by default' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
@@ -126,44 +110,7 @@ module Selenium
           allow(Service).to receive(:new).and_return(service)
 
           driver.new
-          expect(Service).to have_received(:new).with(hash_excluding(url: anything))
-        end
-
-        it 'accepts :driver_path but throws deprecation notice' do
-          driver_path = '/path/to/driver'
-
-          allow(Service).to receive(:new).with(path: driver_path,
-                                               port: nil,
-                                               args: nil).and_return(service)
-
-          expect {
-            driver.new(driver_path: driver_path)
-          }.to have_deprecated(:service_driver_path)
-        end
-
-        it 'accepts :port but throws deprecation notice' do
-          driver_port = 1234
-
-          allow(Service).to receive(:new).with(path: nil,
-                                               port: driver_port,
-                                               args: nil).and_return(service)
-
-          expect {
-            driver.new(port: driver_port)
-          }.to have_deprecated(:service_port)
-        end
-
-        it 'accepts :driver_opts but throws deprecation notice' do
-          driver_opts = {foo: 'bar',
-                         bar: ['--foo', '--bar']}
-
-          allow(Service).to receive(:new).with(path: nil,
-                                               port: nil,
-                                               args: driver_opts).and_return(service)
-
-          expect {
-            driver.new(driver_opts: driver_opts)
-          }.to have_deprecated(:service_driver_opts)
+          expect(Service).to have_received(:new).with(no_args)
         end
 
         it 'accepts :service without creating a new instance' do

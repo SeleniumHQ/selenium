@@ -28,7 +28,7 @@ module Selenium
       #
 
       def default_move_duration
-        @default_move_duration ||= @duration / 1000 # convert ms to seconds
+        @default_move_duration ||= @duration / 1000.0 # convert ms to seconds
       end
 
       #
@@ -98,22 +98,9 @@ module Selenium
 
       def move_to(element, right_by = nil, down_by = nil, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
-        if right_by || down_by
-          WebDriver.logger.warn("moving to an element with offset currently tries to use
-the top left corner of the element as the origin; in Selenium 4.3 it will use the in-view
-center point of the element as the origin.")
-          size = element.size
-          left_offset = (size[:width] / 2).to_i
-          top_offset = (size[:height] / 2).to_i
-          left = -left_offset + (right_by || 0)
-          top = -top_offset + (down_by || 0)
-        else
-          left = 0
-          top = 0
-        end
         pointer.create_pointer_move(duration: duration,
-                                    x: left,
-                                    y: top,
+                                    x: right_by || 0,
+                                    y: down_by || 0,
                                     origin: element,
                                     **opts)
         tick(pointer)
@@ -192,9 +179,9 @@ center point of the element as the origin.")
       # @return [ActionBuilder] A self reference.
       #
 
-      def click_and_hold(element = nil, device: nil)
+      def click_and_hold(element = nil, button: nil, device: nil)
         move_to(element, device: device) if element
-        pointer_down(:left, device: device)
+        pointer_down(button || :left, device: device)
         self
       end
 
@@ -211,8 +198,8 @@ center point of the element as the origin.")
       # @return [ActionBuilder] A self reference.
       #
 
-      def release(device: nil)
-        pointer_up(:left, device: device)
+      def release(button: nil, device: nil)
+        pointer_up(button || :left, device: device)
         self
       end
 
@@ -238,10 +225,10 @@ center point of the element as the origin.")
       # @return [ActionBuilder] A self reference.
       #
 
-      def click(element = nil, device: nil)
+      def click(element = nil, button: nil, device: nil)
         move_to(element, device: device) if element
-        pointer_down(:left, device: device)
-        pointer_up(:left, device: device)
+        pointer_down(button || :left, device: device)
+        pointer_up(button || :left, device: device)
         self
       end
 
@@ -296,10 +283,7 @@ center point of the element as the origin.")
       #
 
       def context_click(element = nil, device: nil)
-        move_to(element, device: device) if element
-        pointer_down(:right, device: device)
-        pointer_up(:right, device: device)
-        self
+        click(element, button: :right, device: device)
       end
 
       #

@@ -48,8 +48,7 @@ class Service(service.Service):
         """
         log_file = open(log_path, "a+") if log_path else None
 
-        service.Service.__init__(
-            self, executable_path, port=port, log_file=log_file, env=env)
+        super().__init__(executable_path, port=port, log_file=log_file, env=env)
         self.service_args = service_args or []
 
         # Set a port for CDP

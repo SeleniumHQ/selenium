@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node.docker;
 
-import java.util.List;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -74,6 +73,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -266,7 +266,8 @@ public class DockerSessionFactory implements SessionFactory {
         mergedCapabilities,
         downstream,
         result.getDialect(),
-        Instant.now()));
+        Instant.now(),
+        assetsPath));
     }
   }
 
@@ -305,11 +306,16 @@ public class DockerSessionFactory implements SessionFactory {
       ofNullable(getScreenResolution(sessionRequestCapabilities));
     Map<String, String> envVars = new HashMap<>();
     if (screenResolution.isPresent()) {
-      envVars.put("SCREEN_WIDTH", String.valueOf(screenResolution.get().getWidth()));
-      envVars.put("SCREEN_HEIGHT", String.valueOf(screenResolution.get().getHeight()));
+      envVars.put("SE_SCREEN_WIDTH", String.valueOf(screenResolution.get().getWidth()));
+      envVars.put("SE_SCREEN_HEIGHT", String.valueOf(screenResolution.get().getHeight()));
     }
     Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionRequestCapabilities));
     timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
+    // Passing env vars set to the child container
+    Map<String, String> seEnvVars = System.getenv();
+    seEnvVars.entrySet()
+      .stream().filter(entry -> entry.getKey().startsWith("SE_"))
+      .forEach(entry -> envVars.put(entry.getKey(), entry.getValue()));
     return envVars;
   }
 
@@ -356,8 +362,10 @@ public class DockerSessionFactory implements SessionFactory {
     envVars.put("DISPLAY_CONTAINER_NAME", containerIp);
     Optional<Dimension> screenResolution =
       ofNullable(getScreenResolution(sessionRequestCapabilities));
-    screenResolution.ifPresent(dimension -> envVars
-      .put("VIDEO_SIZE", String.format("%sx%s", dimension.getWidth(), dimension.getHeight())));
+    screenResolution.ifPresent(dimension -> {
+      envVars.put("SE_SCREEN_WIDTH", String.valueOf(dimension.getWidth()));
+      envVars.put("SE_SCREEN_HEIGHT", String.valueOf(dimension.getHeight()));
+    });
     return envVars;
   }
 

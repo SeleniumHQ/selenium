@@ -121,16 +121,6 @@ Webdriver.ie
    selenium.webdriver.ie.options
    selenium.webdriver.ie.webdriver
 
-Webdriver.opera
----------------
-
-.. currentmodule:: selenium.webdriver.opera
-.. autosummary::
-   :toctree: webdriver_opera
-
-   selenium.webdriver.opera.webdriver
-   selenium.webdriver.opera.options
-
 Webdriver.remote
 ----------------
 

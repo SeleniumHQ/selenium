@@ -122,7 +122,7 @@ namespace OpenQA.Selenium
         [Test]
         public void ShouldBeAbleToMaximizeTheCurrentWindow()
         {
-            Size targetSize = new Size(640, 275);
+            Size targetSize = new Size(640, 400);
 
             ChangeSizeTo(targetSize);
 
@@ -137,7 +137,7 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToMaximizeTheWindowFromFrame()
         {
             driver.Url = framesetPage;
-            ChangeSizeTo(new Size(640, 275));
+            ChangeSizeTo(new Size(640, 400));
 
             driver.SwitchTo().Frame("fourth");
             try
@@ -154,7 +154,7 @@ namespace OpenQA.Selenium
         public void ShouldBeAbleToMaximizeTheWindowFromIframe()
         {
             driver.Url = iframePage;
-            ChangeSizeTo(new Size(640, 275));
+            ChangeSizeTo(new Size(640, 400));
 
             driver.SwitchTo().Frame("iframe1-name");
             try
@@ -177,7 +177,7 @@ namespace OpenQA.Selenium
             IWindow window = driver.Manage().Window;
             Size origSize = window.Size;
 
-            Size targetSize = new Size(640, 275);
+            Size targetSize = new Size(640, 400);
 
             ChangeSizeTo(targetSize);
 
@@ -194,7 +194,7 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, "Edge window size does not report zero when minimized.")]
         public void ShouldBeAbleToMinimizeTheCurrentWindow()
         {
-            Size targetSize = new Size(640, 275);
+            Size targetSize = new Size(640, 400);
 
             ChangeSizeTo(targetSize);
 

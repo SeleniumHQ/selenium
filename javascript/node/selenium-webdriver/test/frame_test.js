@@ -53,7 +53,7 @@ test.suite(function (env) {
 
   it('can switch to a frame by id', async function () {
     await driver.get(test.Pages.iframePage)
-    await driver.switchTo().frame("iframe1")
+    await driver.switchTo().frame('iframe1')
     assert.strictEqual(
       await driver.executeScript('return document.title'),
       'We Leave From Here'

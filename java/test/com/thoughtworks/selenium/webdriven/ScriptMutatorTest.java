@@ -17,15 +17,15 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.thoughtworks.selenium.Selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 
-public class ScriptMutatorTest extends JUnit4TestBase {
+public class ScriptMutatorTest extends JupiterTestBase {
 
   @Test
   public void testShouldBeAbleToUseTheBrowserbot() {

@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.safari;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -28,18 +28,18 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.Pages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class CrossDomainTest extends JUnit4TestBase {
+public class CrossDomainTest extends JupiterTestBase {
 
   private static AppServer otherServer;
   private static Pages otherPages;
 
-  @BeforeClass
+  @BeforeAll
   public static void startSecondServer() {
     otherServer = new NettyAppServer();
     otherServer.start();
@@ -47,7 +47,7 @@ public class CrossDomainTest extends JUnit4TestBase {
     otherPages = new Pages(otherServer);
   }
 
-  @AfterClass
+  @AfterAll
   public static void stopSecondServer() {
     otherServer.stop();
   }
