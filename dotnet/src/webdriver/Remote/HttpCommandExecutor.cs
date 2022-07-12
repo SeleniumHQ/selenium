@@ -18,9 +18,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -200,12 +199,6 @@ namespace OpenQA.Selenium.Remote
             }
 
             Response toReturn = this.CreateResponse(responseInfo);
-
-            if (toReturn.Status == WebDriverResult.Success && !((int)responseInfo.StatusCode >= 200 && (int)responseInfo.StatusCode <= 299))
-            {
-                toReturn.Status = WebDriverResult.UnhandledError;
-            }
-
             return toReturn;
         }
 
@@ -304,6 +297,11 @@ namespace OpenQA.Selenium.Remote
             if (responseInfo.ContentType != null && responseInfo.ContentType.StartsWith(JsonMimeType, StringComparison.OrdinalIgnoreCase))
             {
                 response = Response.FromJson(body);
+            }
+            else if (responseInfo.StatusCode.ToString().First() != '2')
+            {
+                response.Status = WebDriverResult.UnhandledError;
+                response.Value = body;
             }
             else
             {
