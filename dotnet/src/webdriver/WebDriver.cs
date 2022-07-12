@@ -573,7 +573,7 @@ namespace OpenQA.Selenium
 
             if (commandResponse.Status != WebDriverResult.Success)
             {
-                UnpackAndThrowOnError(commandResponse);
+                UnpackAndThrowOnError(commandResponse, driverCommandToExecute);
             }
 
             return commandResponse;
@@ -684,7 +684,7 @@ namespace OpenQA.Selenium
             this.executor.Dispose();
         }
 
-        private static void UnpackAndThrowOnError(Response errorResponse)
+        private static void UnpackAndThrowOnError(Response errorResponse, string commandToExecute)
         {
             // Check the status code of the error, and only handle if not success.
             if (errorResponse.Status != WebDriverResult.Success)
@@ -793,7 +793,7 @@ namespace OpenQA.Selenium
                 }
                 else
                 {
-                    throw new WebDriverException("Unexpected error. " + errorResponse.Value.ToString());
+                    throw new WebDriverException("The " + commandToExecute + " command returned an unexpected error. " + errorResponse.Value.ToString());
                 }
             }
         }
