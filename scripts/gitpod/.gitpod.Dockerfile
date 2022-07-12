@@ -8,8 +8,10 @@ USER root
 #RUN apt-get update -qqy && apt-get install -y wget curl gnupg2
 
 # So we can install browsers and browser drivers later
-RUN wget https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
+RUN wget https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb \
+    && dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+    echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
 RUN mkdir -p /home/gitpod/selenium /var/run/supervisor /var/log/supervisor && \
   chmod -R 777 /var/run/supervisor /var/log/supervisor
 
@@ -56,8 +58,6 @@ RUN GK_VERSION="0.31.0" \
   && ln -fs /home/gitpod/selenium/geckodriver-$GK_VERSION /usr/bin/geckodriver
 
 # noVNC exposes VNC through a web page
-# Download https://github.com/novnc/noVNC/releases/tag/v1.3.0
-# Download https://github.com/novnc/websockify/archive/refs/tags/v0.10.0.zip
 ENV NOVNC_TAG="1.3.0" \
     WEBSOCKIFY_TAG="0.10.0"
 
