@@ -28,7 +28,7 @@ RUN apt-get update -qqy && \
     apt-get -qy install google-chrome-stable firefox && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
-RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.10.1/bazelisk-linux-amd64 -o /usr/bin/bazelisk && \
+RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.12.0/bazelisk-linux-amd64 -o /usr/bin/bazelisk && \
     chmod 755 /usr/bin/bazelisk && \
     ln -sf /usr/bin/bazelisk /usr/bin/bazel
 
