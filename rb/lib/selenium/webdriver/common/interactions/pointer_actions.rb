@@ -68,9 +68,8 @@ module Selenium
       end
 
       #
-      # Moves the pointer to the middle of the given element.
-      # its location is calculated using getBoundingClientRect.
-      # Then the pointer is moved to optional offset coordinates from the element.
+      # Moves the pointer to the in-view center point of the given element.
+      # Then the pointer is moved to optional offset coordinates.
       #
       # The element is not scrolled into view.
       # MoveTargetOutOfBoundsError will be raised if element with offset is outside the viewport
@@ -88,10 +87,10 @@ module Selenium
       #   driver.action.move_to(el, 100, 100).perform
       #
       # @param [Selenium::WebDriver::Element] element to move to.
-      # @param [Integer] right_by Optional offset from the top-left corner. A negative value means
-      #   coordinates to the left of the element.
-      # @param [Integer] down_by Optional offset from the top-left corner. A negative value means
-      #   coordinates above the element.
+      # @param [Integer] right_by Optional offset from the in-view center of the
+      #   element. A negative value means coordinates to the left of the center.
+      # @param [Integer] down_by Optional offset from the in-view center of the
+      #   element. A negative value means coordinates to the top of the center.
       # @param [Symbol || String] device optional name of the PointerInput device to move.
       # @return [ActionBuilder] A self reference.
       #
