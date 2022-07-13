@@ -562,7 +562,7 @@ namespace OpenQA.Selenium
             {
                 commandResponse = this.executor.Execute(commandToExecute);
             }
-            catch (System.Net.WebException e)
+            catch (System.Net.Http.HttpRequestException e)
             {
                 commandResponse = new Response
                 {

@@ -190,26 +190,6 @@ namespace OpenQA.Selenium.Remote
             }
             catch (HttpRequestException ex)
             {
-                WebException innerWebException = ex.InnerException as WebException;
-                if (innerWebException != null)
-                {
-                    if (innerWebException.Status == WebExceptionStatus.Timeout)
-                    {
-                        string timeoutMessage = "The HTTP request to the remote WebDriver server for URL {0} timed out after {1} seconds.";
-                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, timeoutMessage, requestInfo.FullUri.AbsoluteUri, this.serverResponseTimeout.TotalSeconds), ex);
-                    }
-                    else if (innerWebException.Status == WebExceptionStatus.ConnectFailure)
-                    {
-                        string connectFailureMessage = "Could not connect to the remote WebDriver server for URL {0}.";
-                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, connectFailureMessage, requestInfo.FullUri.AbsoluteUri, this.serverResponseTimeout.TotalSeconds), ex);
-                    }
-                    else if (innerWebException.Response == null)
-                    {
-                        string nullResponseMessage = "A exception with a null response was thrown sending an HTTP request to the remote WebDriver server for URL {0}. The status of the exception was {1}, and the message was: {2}";
-                        throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, nullResponseMessage, requestInfo.FullUri.AbsoluteUri, innerWebException.Status, innerWebException.Message), innerWebException);
-                    }
-                }
-
                 string unknownErrorMessage = "An unknown exception was encountered sending an HTTP request to the remote WebDriver server for URL {0}. The exception message was: {1}";
                 throw new WebDriverException(string.Format(CultureInfo.InvariantCulture, unknownErrorMessage, requestInfo.FullUri.AbsoluteUri, ex.Message), ex);
             }
@@ -220,6 +200,12 @@ namespace OpenQA.Selenium.Remote
             }
 
             Response toReturn = this.CreateResponse(responseInfo);
+
+            if (toReturn.Status == WebDriverResult.Success && !((int)responseInfo.StatusCode >= 200 && (int)responseInfo.StatusCode <= 299))
+            {
+                toReturn.Status = WebDriverResult.UnhandledError;
+            }
+
             return toReturn;
         }
 
