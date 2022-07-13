@@ -28,7 +28,6 @@ module Selenium
       def initialize(url:)
         @callback_threads = ThreadGroup.new
 
-        @messages = []
         @session_id = nil
         @url = url
 
@@ -55,10 +54,17 @@ module Selenium
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
         socket.write(out_frame.to_s)
 
-        wait.until { @messages.find { |m| m['id'] == id } }
+        wait.until { messages.delete(id) }
       end
 
       private
+
+      # We should be thread-safe to use the hash without synchronization
+      # because its keys are WebSocket message identifiers and they should be
+      # unique within a devtools session.
+      def messages
+        @messages ||= {}
+      end
 
       def process_handshake
         socket.print(ws.to_s)
@@ -97,8 +103,8 @@ module Selenium
         return {} if message.empty?
 
         message = JSON.parse(message)
-        @messages << message
         WebDriver.logger.debug "WebSocket <- #{message}"
+        messages[message["id"]] = message
 
         message
       end
