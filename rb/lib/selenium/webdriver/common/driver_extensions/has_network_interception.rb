@@ -61,75 +61,10 @@ module Selenium
         #
 
         def intercept(&block)
-          devtools.network.set_cache_disabled(cache_disabled: true)
-          devtools.fetch.on(:request_paused) do |params|
-            id = params['requestId']
-            if params.key?('responseStatusCode') || params.key?('responseErrorReason')
-              intercept_response(id, params, &pending_response_requests.delete(id))
-            else
-              intercept_request(id, params, &block)
-            end
-          end
-          devtools.fetch.enable(patterns: [{requestStage: 'Request'}, {requestStage: 'Response'}])
+          @interceptor ||= DevTools::NetworkInterceptor.new(devtools)
+          @interceptor.intercept(&block)
         end
 
-        private
-
-        def pending_response_requests
-          @pending_response_requests ||= {}
-        end
-
-        def intercept_request(id, params, &block)
-          original = DevTools::Request.from(id, params)
-          mutable = DevTools::Request.from(id, params)
-
-          block.call(mutable) do |&continue| # rubocop:disable Performance/RedundantBlockCall
-            pending_response_requests[id] = continue
-
-            if original == mutable
-              devtools.fetch.continue_request(request_id: id)
-            else
-              devtools.fetch.continue_request(
-                request_id: id,
-                url: mutable.url,
-                method: mutable.method,
-                post_data: mutable.post_data,
-                headers: mutable.headers.map do |k, v|
-                  {name: k, value: v}
-                end
-              )
-            end
-          end
-        end
-
-        def intercept_response(id, params)
-          return devtools.fetch.continue_request(request_id: id) unless block_given?
-
-          body = fetch_response_body(id)
-          original = DevTools::Response.from(id, body, params)
-          mutable = DevTools::Response.from(id, body, params)
-          yield mutable
-
-          if original == mutable
-            devtools.fetch.continue_request(request_id: id)
-          else
-            devtools.fetch.fulfill_request(
-              request_id: id,
-              body: (Base64.strict_encode64(mutable.body) if mutable.body),
-              response_code: mutable.code,
-              response_headers: mutable.headers.map do |k, v|
-                {name: k, value: v}
-              end
-            )
-          end
-        end
-
-        def fetch_response_body(id)
-          devtools.fetch.get_response_body(request_id: id).dig('result', 'body')
-        rescue Error::WebDriverError
-          # CDP fails to get body on certain responses (301) and raises:
-          # Can only get response body on requests captured after headers received.
-        end
       end # HasNetworkInterception
     end # DriverExtensions
   end # WebDriver
