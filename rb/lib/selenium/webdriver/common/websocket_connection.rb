@@ -25,6 +25,8 @@ module Selenium
       RESPONSE_WAIT_TIMEOUT = 30
       RESPONSE_WAIT_INTERVAL = 0.1
 
+      MAX_LOG_MESSAGE_SIZE = 9999
+
       def initialize(url:)
         @callback_threads = ThreadGroup.new
 
@@ -48,9 +50,8 @@ module Selenium
       def send_cmd(**payload)
         id = next_id
         data = payload.merge(id: id)
+        WebDriver.logger.debug "WebSocket -> #{data}"[...MAX_LOG_MESSAGE_SIZE]
         data = JSON.generate(data)
-        WebDriver.logger.debug "WebSocket -> #{data}"
-
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
         socket.write(out_frame.to_s)
 
@@ -103,8 +104,8 @@ module Selenium
         return {} if message.empty?
 
         message = JSON.parse(message)
-        WebDriver.logger.debug "WebSocket <- #{message}"
         messages[message["id"]] = message
+        WebDriver.logger.debug "WebSocket <- #{message}"[...MAX_LOG_MESSAGE_SIZE]
 
         message
       end
