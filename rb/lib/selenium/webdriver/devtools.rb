@@ -23,6 +23,7 @@ module Selenium
       autoload :ConsoleEvent, 'selenium/webdriver/devtools/console_event'
       autoload :ExceptionEvent, 'selenium/webdriver/devtools/exception_event'
       autoload :MutationEvent, 'selenium/webdriver/devtools/mutation_event'
+      autoload :NetworkInterceptor, 'selenium/webdriver/devtools/network_interceptor'
       autoload :PinnedScript, 'selenium/webdriver/devtools/pinned_script'
       autoload :Request, 'selenium/webdriver/devtools/request'
       autoload :Response, 'selenium/webdriver/devtools/response'
