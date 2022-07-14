@@ -27,7 +27,7 @@ def handler():
 
 
 def test_does_not_raise_exception_on_success(handler):
-    assert handler.check_response({'status': ErrorCode.SUCCESS}) is None
+    assert handler.check_response({'status': 0}) is None
     assert handler.check_response({}) is None
 
 

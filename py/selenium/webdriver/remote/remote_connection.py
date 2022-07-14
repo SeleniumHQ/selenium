@@ -392,7 +392,7 @@ class RemoteConnection:
                     data = utils.load_json(data.strip())
                 except ValueError:
                     if 199 < statuscode < 300:
-                        status = ErrorCode.SUCCESS
+                        status = 0
                     else:
                         status = ErrorCode.UNKNOWN_ERROR
                     return {'status': status, 'value': data.strip()}
