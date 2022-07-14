@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Dict, Mapping, Type, TypeVar
+from typing import Any, Dict, Type
 
 from selenium.common.exceptions import (ElementClickInterceptedException,
                                         ElementNotInteractableException,
@@ -46,10 +46,6 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         UnexpectedAlertPresentException,
                                         UnknownMethodException,
                                         WebDriverException)
-
-
-_KT = TypeVar("_KT")
-_VT = TypeVar("_VT")
 
 
 class ErrorCode:
