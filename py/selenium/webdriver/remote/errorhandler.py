@@ -225,11 +225,11 @@ class ErrorHandler:
                 stacktrace = []
                 try:
                     for frame in st_value:
-                        line = self._value_or_default(frame, 'lineNumber', '')
-                        file = self._value_or_default(frame, 'fileName', '<anonymous>')
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "<anonymous>")
                         if line:
                             file = f"{file}:{line}"
-                        meth = self._value_or_default(frame, 'methodName', '<anonymous>')
+                        meth = frame.get('methodName', '<anonymous>')
                         if 'className' in frame:
                             meth = "{}.{}".format(frame['className'], meth)
                         msg = "    at %s (%s)"
@@ -245,6 +245,3 @@ class ErrorHandler:
                 alert_text = value['alert'].get('text')
             raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here
         raise exception_class(message, screen, stacktrace)
-
-    def _value_or_default(self, obj: Mapping[_KT, _VT], key: _KT, default: _VT) -> _VT:
-        return obj[key] if key in obj else default
