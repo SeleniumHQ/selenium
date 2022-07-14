@@ -115,6 +115,8 @@ class ErrorHandler:
             return
         value = None
         message = response.get("message", "")
+        screen: str = response.get("screen", "")
+        stacktrace = None
         if isinstance(status, int):
             value_json = response.get('value', None)
             if value_json and isinstance(value_json, str):
@@ -207,11 +209,9 @@ class ErrorHandler:
         if message == "" and 'message' in value:
             message = value['message']
 
-        screen = None  # type: ignore[assignment]
         if 'screen' in value:
             screen = value['screen']
 
-        stacktrace = None
         st_value = value.get('stacktrace')
         if st_value:
             if isinstance(st_value, str):
