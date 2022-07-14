@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class TestRefresh extends InternalSelenseTestBase {
-  @Ignore("The click on slowRefresh doesn't make the rc implementation wait")
+  @Disabled("The click on slowRefresh doesn't make the rc implementation wait")
   @Test
   public void testRefresh() {
     selenium.open("test_page.slow.html");

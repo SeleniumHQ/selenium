@@ -19,11 +19,11 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.Color;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-public class CssValueTest extends JUnit4TestBase {
+public class CssValueTest extends JupiterTestBase {
 
   @Test
   public void testShouldPickUpStyleOfAnElement() {

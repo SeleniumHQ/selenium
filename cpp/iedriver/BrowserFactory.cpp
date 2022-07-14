@@ -404,6 +404,7 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
   executable_and_url.append(L" --no-service-autorun");
   executable_and_url.append(L" --disable-sync");
   executable_and_url.append(L" --disable-features=msImplicitSignin");
+  executable_and_url.append(L" --disable-popup-blocking");
 
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);

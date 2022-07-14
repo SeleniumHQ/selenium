@@ -23,27 +23,27 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.time.Duration;
 import java.util.List;
 
-public class ImplicitWaitTest extends JUnit4TestBase {
+public class ImplicitWaitTest extends JupiterTestBase {
 
-  @Before
+  @BeforeEach
   public void setUp() {
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
   }

@@ -17,28 +17,29 @@
 
 package org.openqa.selenium.firefox;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 import java.nio.file.Path;
 
 import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
-public class MarionetteTest extends JUnit4TestBase {
+public class MarionetteTest extends JupiterTestBase {
 
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
 
@@ -160,9 +161,9 @@ public class MarionetteTest extends JUnit4TestBase {
     Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.PROFILE, profile);
 
     localDriver = new FirefoxDriver(
-        new FirefoxOptions()
-            .setProfile(profile)
-            .merge(caps));
+      new FirefoxOptions()
+        .setProfile(profile)
+        .merge(caps));
     wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
@@ -180,10 +181,10 @@ public class MarionetteTest extends JUnit4TestBase {
     Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
     localDriver = new FirefoxDriver(
-        new FirefoxOptions()
-          .setBinary(binary)
-          .setProfile(profile)
-          .merge(caps));
+      new FirefoxOptions()
+        .setBinary(binary)
+        .setProfile(profile)
+        .merge(caps));
     wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
 
     verifyItIsMarionette(localDriver);
@@ -199,8 +200,8 @@ public class MarionetteTest extends JUnit4TestBase {
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
 
     FirefoxOptions options = new FirefoxOptions()
-        .setProfile(profile)
-        .addPreference("browser.startup.homepage", pages.javascriptPage);
+      .setProfile(profile)
+      .addPreference("browser.startup.homepage", pages.javascriptPage);
 
     localDriver = new FirefoxDriver(options);
     wait(localDriver).until($ -> "Testing Javascript".equals(localDriver.getTitle()));
@@ -212,7 +213,7 @@ public class MarionetteTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   public void canSetPageLoadStrategyViaOptions() {
     localDriver = new FirefoxDriver(
-        new FirefoxOptions().setPageLoadStrategy(PageLoadStrategy.NONE));
+      new FirefoxOptions().setPageLoadStrategy(PageLoadStrategy.NONE));
 
     verifyItIsMarionette(localDriver);
     assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
@@ -250,6 +251,6 @@ public class MarionetteTest extends JUnit4TestBase {
   private void verifyItIsMarionette(WebDriver driver) {
     FirefoxDriver firefoxDriver = (FirefoxDriver) driver;
     assertThat(ofNullable(firefoxDriver.getCapabilities().getCapability("moz:processID"))
-                   .orElse(firefoxDriver.getCapabilities().getCapability("processId"))).isNotNull();
+      .orElse(firefoxDriver.getCapabilities().getCapability("processId"))).isNotNull();
   }
 }

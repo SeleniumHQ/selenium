@@ -17,16 +17,12 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import static org.junit.Assert.fail;
-
 import com.thoughtworks.selenium.SeleniumException;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 
-@RunWith(JUnit4.class)
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class TimerTest {
 
   @Test

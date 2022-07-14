@@ -460,8 +460,7 @@ namespace OpenQA.Selenium
 
         private class PageLoadStrategyOptions : DriverOptions
         {
-            [Obsolete]
-            public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
+            public override void AddAdditionalOption(string capabilityName, object capabilityValue)
             {
             }
 

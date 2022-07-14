@@ -19,18 +19,18 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class TestTypeRichText extends InternalSelenseTestBase {
-  @After
+  @AfterEach
   public void resetFrame() {
     selenium.selectFrame("relative=top");
   }
 
   @Test
-  @Ignore("Investigate why this fails")
+  @Disabled("Investigate why this fails")
   public void testTypeRichText() {
     String isIe = selenium.getEval("browserVersion.isIE");
     if (Boolean.valueOf(isIe)) {

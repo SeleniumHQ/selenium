@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.remote;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -31,7 +31,7 @@ import static org.openqa.selenium.OutputType.BASE64;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
 @Ignore(HTMLUNIT)
-public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
+public class RemoteWebDriverScreenshotTest extends JupiterTestBase {
 
   @Test
   @Ignore

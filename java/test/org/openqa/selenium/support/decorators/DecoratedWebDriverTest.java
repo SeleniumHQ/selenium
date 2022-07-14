@@ -27,8 +27,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -37,7 +37,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Interactive;
-import org.openqa.selenium.testing.UnitTests;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
@@ -49,10 +48,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Category(UnitTests.class)
-public class DecoratedWebDriverTest {
+@Tag("UnitTests")
+class DecoratedWebDriverTest {
 
   private static class Fixture {
+
     WebDriver original;
     VirtualAuthenticator originalAuth;
     WebDriver decorated;
@@ -63,31 +63,32 @@ public class DecoratedWebDriverTest {
                          Interactive.class, HasVirtualAuthenticator.class));
       originalAuth = mock(VirtualAuthenticator.class);
       decorated = new WebDriverDecorator().decorate(original);
-      when(((HasVirtualAuthenticator) original).addVirtualAuthenticator(any())).thenReturn(originalAuth);
+      when(((HasVirtualAuthenticator) original).addVirtualAuthenticator(any()))
+        .thenReturn(originalAuth);
     }
   }
 
   @Test
-  public void shouldDecorate() {
+  void shouldDecorate() {
     Fixture fixture = new Fixture();
     assertThat(fixture.decorated).isNotSameAs(fixture.original);
   }
 
   @Test
-  public void canConvertDecoratedToString() {
+  void canConvertDecoratedToString() {
     Fixture fixture = new Fixture();
     when(fixture.original.toString()).thenReturn("driver");
     assertThat(fixture.decorated.toString()).isEqualTo("Decorated {driver}");
   }
 
   @Test
-  public void canCompareDecorated() {
+  void canCompareDecorated() {
     WebDriver original1 = mock(WebDriver.class);
     WebDriver original2 = mock(WebDriver.class);
 
-    WebDriver decorated1 = new WebDriverDecorator().decorate(original1);
-    WebDriver decorated2 = new WebDriverDecorator().decorate(original1);
-    WebDriver decorated3 = new WebDriverDecorator().decorate(original2);
+    WebDriver decorated1 = new WebDriverDecorator<>().decorate(original1);
+    WebDriver decorated2 = new WebDriverDecorator<>().decorate(original1);
+    WebDriver decorated3 = new WebDriverDecorator<>().decorate(original2);
     assertThat(decorated1).isEqualTo(decorated2);
     assertThat(decorated1).isNotEqualTo(decorated3);
 
@@ -98,9 +99,9 @@ public class DecoratedWebDriverTest {
   }
 
   @Test
-  public void testHashCode() {
+  void testHashCode() {
     WebDriver original = mock(WebDriver.class);
-    WebDriver decorated = new WebDriverDecorator().decorate(original);
+    WebDriver decorated = new WebDriverDecorator<>().decorate(original);
     assertThat(decorated.hashCode()).isEqualTo(original.hashCode());
   }
 
@@ -134,33 +135,33 @@ public class DecoratedWebDriverTest {
   }
 
   @Test
-  public void get() {
+  void get() {
     verifyFunction(d -> d.get("http://selenium.dev/"));
   }
 
   @Test
-  public void getCurrentUrl() {
+  void getCurrentUrl() {
     verifyFunction(WebDriver::getCurrentUrl, "http://selenium2.ru/");
   }
 
   @Test
-  public void getTitle() {
+  void getTitle() {
     verifyFunction(WebDriver::getTitle, "test");
   }
 
   @Test
-  public void getPageSource() {
+  void getPageSource() {
     verifyFunction(WebDriver::getPageSource, "test");
   }
 
   @Test
-  public void findElement() {
+  void findElement() {
     final WebElement found = mock(WebElement.class);
     verifyDecoratingFunction($ -> $.findElement(By.id("test")), found, WebElement::click);
   }
 
   @Test
-  public void findElementNotFound() {
+  void findElementNotFound() {
     Fixture fixture = new Fixture();
     when(fixture.original.findElement(any())).thenThrow(NoSuchElementException.class);
 
@@ -169,7 +170,7 @@ public class DecoratedWebDriverTest {
   }
 
   @Test
-  public void findElements() {
+  void findElements() {
     Fixture fixture = new Fixture();
     WebElement originalElement1 = mock(WebElement.class);
     WebElement originalElement2 = mock(WebElement.class);
@@ -193,90 +194,92 @@ public class DecoratedWebDriverTest {
   }
 
   @Test
-  public void close() {
+  void close() {
     verifyFunction(WebDriver::close);
   }
 
   @Test
-  public void quit() {
+  void quit() {
     verifyFunction(WebDriver::quit);
   }
 
   @Test
-  public void getWindowHandle() {
+  void getWindowHandle() {
     verifyFunction(WebDriver::getWindowHandle, "test");
   }
 
   @Test
-  public void getWindowHandles() {
+  void getWindowHandles() {
     Set<String> handles = new HashSet<>();
     handles.add("test");
     verifyFunction(WebDriver::getWindowHandles, handles);
   }
 
   @Test
-  public void switchTo() {
+  void switchTo() {
     final WebDriver.TargetLocator target = mock(WebDriver.TargetLocator.class);
     verifyDecoratingFunction(WebDriver::switchTo, target, WebDriver.TargetLocator::defaultContent);
   }
 
   @Test
-  public void navigate() {
+  void navigate() {
     final WebDriver.Navigation navigation = mock(WebDriver.Navigation.class);
     verifyDecoratingFunction(WebDriver::navigate, navigation, WebDriver.Navigation::refresh);
   }
 
   @Test
-  public void manage() {
+  void manage() {
     final WebDriver.Options options = mock(WebDriver.Options.class);
     verifyDecoratingFunction(WebDriver::manage, options, WebDriver.Options::deleteAllCookies);
   }
 
   @Test
-  public void executeScriptThatReturnsAPrimitive() {
+  void executeScriptThatReturnsAPrimitive() {
     verifyFunction($ -> ((JavascriptExecutor) $).executeScript("..."), 1);
   }
 
   @Test
-  public void executeScriptThatReturnsAnElement() {
+  void executeScriptThatReturnsAnElement() {
     WebElement element = mock(WebElement.class);
-    verifyDecoratingFunction($ -> (WebElement) ((JavascriptExecutor) $).executeScript("..."), element, WebElement::click);
+    verifyDecoratingFunction($ -> (WebElement) ((JavascriptExecutor) $).executeScript("..."),
+                             element, WebElement::click);
   }
 
   @Test
-  public void executeAsyncScriptThatReturnsAPrimitive() {
+  void executeAsyncScriptThatReturnsAPrimitive() {
     verifyFunction($ -> ((JavascriptExecutor) $).executeAsyncScript("..."), 1);
   }
 
   @Test
-  public void executeAsyncScriptThatReturnsAnElement() {
+  void executeAsyncScriptThatReturnsAnElement() {
     WebElement element = mock(WebElement.class);
-    verifyDecoratingFunction($ -> (WebElement) ((JavascriptExecutor) $).executeAsyncScript("..."), element, WebElement::click);
+    verifyDecoratingFunction($ -> (WebElement) ((JavascriptExecutor) $).executeAsyncScript("..."),
+                             element, WebElement::click);
   }
 
   @Test
-  public void getScreenshotAs() {
+  void getScreenshotAs() {
     verifyFunction($ -> ((TakesScreenshot) $).getScreenshotAs(OutputType.BASE64), "");
   }
 
   @Test
-  public void perform() {
+  void perform() {
     verifyFunction($ -> ((Interactive) $).perform(new ArrayList<>()));
   }
 
   @Test
-  public void resetInputState() {
+  void resetInputState() {
     verifyFunction($ -> ((Interactive) $).resetInputState());
   }
 
   @Test
-  public void addVirtualAuthenticator() {
+  void addVirtualAuthenticator() {
     VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
     verifyFunction($ -> ((HasVirtualAuthenticator) $).addVirtualAuthenticator(options));
   }
 
   @Test
-  public void removeVirtualAuthenticator() {
+  void removeVirtualAuthenticator() {
     VirtualAuthenticator auth = mock(VirtualAuthenticator.class);
     verifyFunction($ -> ((HasVirtualAuthenticator) $).removeVirtualAuthenticator(auth));
   }

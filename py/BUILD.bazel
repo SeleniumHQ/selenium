@@ -15,13 +15,13 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.2.0"
+SE_VERSION = "4.3.0"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v100",
     "v101",
     "v102",
+    "v103",
 ]
 
 TEST_DEPS = [

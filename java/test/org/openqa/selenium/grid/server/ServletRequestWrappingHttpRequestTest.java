@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.UrlInfo;
 

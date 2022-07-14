@@ -15,7 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Dict, Type, TypeVar
+
+from typing import Any, Dict, Type
+
 
 from selenium.common.exceptions import (ElementClickInterceptedException,
                                         ElementNotInteractableException,
@@ -46,12 +48,8 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         UnexpectedAlertPresentException,
                                         UnknownMethodException,
                                         WebDriverException)
-
-_KT = TypeVar("_KT")
-_VT = TypeVar("_VT")
-
-
-# Todo: In future rename this; it's no longer relevant
+                                        
+                                        
 class ErrorCode:
     """
     Error codes defined in the WebDriver wire protocol.
@@ -222,8 +220,8 @@ class ErrorHandler:
                 stacktrace = []
                 try:
                     for frame in st_value:
-                        line = frame.get('lineNumber', '')
-                        file = frame.get('fileName', '<anonymous>')
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "<anonymous>")
                         if line:
                             file = f"{file}:{line}"
                         meth = frame.get('methodName', '<anonymous>')

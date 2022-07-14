@@ -42,20 +42,6 @@ module Selenium
       # until WebDriver Bidi is available.
       DEVTOOLS_VERSION = 85
 
-      def self.driver_path=(path)
-        WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path=',
-                                   'Selenium::WebDriver::Firefox::Service#driver_path=',
-                                   id: :driver_path
-        Selenium::WebDriver::Firefox::Service.driver_path = path
-      end
-
-      def self.driver_path
-        WebDriver.logger.deprecate 'Selenium::WebDriver::Firefox#driver_path',
-                                   'Selenium::WebDriver::Firefox::Service#driver_path',
-                                   id: :driver_path
-        Selenium::WebDriver::Firefox::Service.driver_path
-      end
-
       def self.path=(path)
         Platform.assert_executable path
         @path = path

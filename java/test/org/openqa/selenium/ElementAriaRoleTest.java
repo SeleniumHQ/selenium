@@ -19,13 +19,13 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
-public class ElementAriaRoleTest extends JUnit4TestBase {
+public class ElementAriaRoleTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(Browser.FIREFOX)

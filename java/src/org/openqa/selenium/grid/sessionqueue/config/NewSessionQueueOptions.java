@@ -35,7 +35,7 @@ public class NewSessionQueueOptions {
 
   static final String SESSION_QUEUE_SECTION = "sessionqueue";
   static final int DEFAULT_REQUEST_TIMEOUT = 300;
-  static final int DEFAULT_RETRY_INTERVAL = 0;
+  static final int DEFAULT_RETRY_INTERVAL = 15;
 
   private final Config config;
 

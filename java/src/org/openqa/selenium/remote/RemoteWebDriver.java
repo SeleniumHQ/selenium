@@ -50,6 +50,8 @@ import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -60,6 +62,9 @@ import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -72,7 +77,6 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -95,6 +99,7 @@ import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+import static org.openqa.selenium.remote.http.Contents.string;
 
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
@@ -104,27 +109,6 @@ public class RemoteWebDriver implements WebDriver,
   Interactive,
   PrintsPage,
   TakesScreenshot {
-
-  // TODO: Remove in 4.4 when all IE caps go inside se:ieOptions
-  private static final List<String> IE_CAPABILITY_NAMES = Arrays.asList(
-    "browserAttachTimeout",
-    "elementScrollBehavior",
-    "enablePersistentHover",
-    "ie.enableFullPageScreenshot",
-    "ie.forceCreateProcessApi",
-    "ie.forceShellWindowsApi",
-    "ie.ensureCleanSession",
-    "ie.browserCommandLineSwitches",
-    "ie.usePerProcessProxy",
-    "ignoreZoomSetting",
-    "initialBrowserUrl",
-    "ignoreProtectedModeSettings",
-    "requireWindowFocus",
-    "ie.fileUploadDialogTimeout",
-    "nativeEvents",
-    "ie.useLegacyFileUploadDialogHandling",
-    "ie.edgechromium",
-    "ie.edgepath");
 
   // TODO: This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -325,6 +309,20 @@ public class RemoteWebDriver implements WebDriver,
       return new ImmutableCapabilities();
     }
     return capabilities;
+  }
+
+  public static Status status(URL remoteAddress) {
+    HttpResponse response = new HttpResponse();
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(remoteAddress)) {
+      HttpRequest request = new HttpRequest(HttpMethod.GET, "/status");
+      response = client.execute(request);
+      Map<String, Object> responseMap = new Json().toType(string(response), Map.class);
+      Map<String, Object> value = (Map<String, Object>) responseMap.get("value");
+
+      return new Status((boolean) value.get("ready"), (String) value.get("message"));
+    } catch (JsonException e) {
+      throw new WebDriverException("Unable to parse remote response: " + string(response), e);
+    }
   }
 
   @Override
@@ -705,7 +703,6 @@ public class RemoteWebDriver implements WebDriver,
     List<String> invalid = capabilities.asMap().keySet()
       .stream()
       .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
-      .filter(key -> !IE_CAPABILITY_NAMES.contains(key))
       .collect(Collectors.toList());
 
     if (!invalid.isEmpty()) {

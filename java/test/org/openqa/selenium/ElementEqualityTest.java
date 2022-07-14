@@ -20,15 +20,15 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.List;
 
-public class ElementEqualityTest extends JUnit4TestBase {
+public class ElementEqualityTest extends JupiterTestBase {
 
   @Test
   public void testSameElementLookedUpDifferentWaysShouldBeEqual() {

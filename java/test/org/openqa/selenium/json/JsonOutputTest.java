@@ -23,8 +23,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -42,7 +43,6 @@ import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.awt.*;
 import java.io.IOException;
@@ -77,7 +77,7 @@ import static org.openqa.selenium.logging.LogType.CLIENT;
 import static org.openqa.selenium.logging.LogType.DRIVER;
 import static org.openqa.selenium.logging.LogType.SERVER;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class JsonOutputTest {
 
   @Test
@@ -356,6 +356,7 @@ public class JsonOutputTest {
     assertThat(json).isEqualTo("gnu/linux");
   }
 
+  @SuppressWarnings("DoNotCall")
   private void verifyStackTraceInJson(String json, StackTraceElement[] stackTrace) {
     int posOfLastStackTraceElement = 0;
     for (StackTraceElement e : stackTrace) {
@@ -364,10 +365,10 @@ public class JsonOutputTest {
         assertThat(json).contains("\"fileName\": \"" + e.getFileName() + "\"");
       }
       assertThat(json)
-          .contains("\"lineNumber\": " + e.getLineNumber() + "",
-                    "\"class\": \"" + e.getClass().getName() + "\"",
-                    "\"className\": \"" + e.getClassName() + "\"",
-                    "\"methodName\": \"" + e.getMethodName() + "\"");
+        .contains("\"lineNumber\": " + e.getLineNumber() + "",
+                  "\"class\": \"" + e.getClass().getName() + "\"",
+                  "\"className\": \"" + e.getClassName() + "\"",
+                  "\"methodName\": \"" + e.getMethodName() + "\"");
 
       int posOfCurrStackTraceElement = json.indexOf(e.getMethodName());
       assertThat(posOfCurrStackTraceElement).isGreaterThan(posOfLastStackTraceElement);
@@ -724,6 +725,31 @@ public class JsonOutputTest {
     }
   }
 
+  public enum State {
+
+    GOOD,
+    BAD,
+    INDIFFERENT
+  }
+
+  public enum WithMethods {
+
+    CHEESE() {
+      @Override
+      public void eat(String foodStuff) {
+        // Does nothing
+      }
+    },
+    EGGS() {
+      @Override
+      public void eat(String foodStuff) {
+        // Does nothing too
+      }
+    };
+
+    public abstract void eat(String foodStuff);
+  }
+
   @SuppressWarnings("unused")
   private static class SimpleBean {
 
@@ -764,31 +790,6 @@ public class JsonOutputTest {
     public List<?> getList() {
       return null;
     }
-  }
-
-  public enum State {
-
-    GOOD,
-    BAD,
-    INDIFFERENT
-  }
-
-  public enum WithMethods {
-
-    CHEESE() {
-      @Override
-      public void eat(String foodStuff) {
-        // Does nothing
-      }
-    },
-    EGGS() {
-      @Override
-      public void eat(String foodStuff) {
-        // Does nothing too
-      }
-    };
-
-    public abstract void eat(String foodStuff);
   }
 
   public class JsonAware {

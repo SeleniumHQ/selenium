@@ -22,8 +22,8 @@ import static org.mockito.Mockito.verify;
 
 import com.thoughtworks.selenium.webdriven.ElementFinder;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,7 +32,7 @@ public class TypeKeysTest {
   private ElementFinder elementFinder;
   private WebElement element;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     element = mock(WebElement.class);
 

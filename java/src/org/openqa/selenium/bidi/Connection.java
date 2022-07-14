@@ -39,6 +39,8 @@ import org.openqa.selenium.remote.http.WebSocket;
 import java.io.Closeable;
 import java.io.StringReader;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,6 +55,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class Connection implements Closeable {
 
@@ -166,10 +169,28 @@ public class Connection implements Closeable {
     }
   }
 
+  public <X> void clearListener(Event<X> event) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      eventCallbacks.removeAll(event);
+    } finally {
+      lock.unlock();
+    }
+  }
+
   public void clearListeners() {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
+      List<String> events = eventCallbacks.keySet()
+        .stream()
+        .map(Event::getMethod)
+        .collect(Collectors.toList());
+
+      send(new Command<>("session.unsubscribe",
+                         ImmutableMap.of("events", events)));
+
       eventCallbacks.clear();
     } finally {
       lock.unlock();

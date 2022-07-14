@@ -90,7 +90,6 @@ const EDGEDRIVER_CHROMIUM_EXE =
   process.platform === 'win32' ? 'msedgedriver.exe' : 'msedgedriver'
 
 /** @type {remote.DriverService} */
-let defaultService = null
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -158,39 +157,19 @@ class Driver extends chromium.Driver {
   }
 
   /**
+   * returns new instance of edge driver service
+   * @returns {remote.DriverService}
+   */
+  static getDefaultService() {
+    return new ServiceBuilder().build()
+  }
+
+  /**
    * This function is a no-op as file detectors are not supported by this
    * implementation.
    * @override
    */
   setFileDetector() {}
-}
-
-/**
- * Sets the default service to use for new Edge instances.
- * @param {!remote.DriverService} service The service to use.
- * @throws {Error} If the default service is currently running.
- */
-function setDefaultService(service) {
-  if (defaultService && defaultService.isRunning()) {
-    throw Error(
-      'The previously configured EdgeDriver service is still running. ' +
-        'You must shut it down before you may adjust its configuration.'
-    )
-  }
-  defaultService = service
-}
-
-/**
- * Returns the default Microsoft Edge driver service. If such a service has
- * not been configured, one will be constructed using the default configuration
- * for a MicrosoftWebDriver executable found on the system PATH.
- * @return {!remote.DriverService} The default Microsoft Edge driver service.
- */
-function getDefaultService() {
-  if (!defaultService) {
-    defaultService = new ServiceBuilder().build()
-  }
-  return defaultService
 }
 
 /**
@@ -206,7 +185,6 @@ function locateSynchronously() {
 Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE
 Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions'
 Driver.prototype.VENDOR_CAPABILITY_PREFIX = 'ms'
-Driver.getDefaultService = getDefaultService
 
 // PUBLIC API
 
@@ -214,7 +192,5 @@ module.exports = {
   Driver,
   Options,
   ServiceBuilder,
-  getDefaultService,
-  setDefaultService,
   locateSynchronously,
 }

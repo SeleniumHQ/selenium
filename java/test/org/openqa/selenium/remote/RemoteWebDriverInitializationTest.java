@@ -19,8 +19,8 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -30,7 +30,6 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -55,7 +54,7 @@ import static org.openqa.selenium.remote.WebDriverFixture.nullResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class RemoteWebDriverInitializationTest {
   private boolean quitCalled = false;
 

@@ -68,9 +68,8 @@ module Selenium
       end
 
       #
-      # Moves the pointer to the middle of the given element.
-      # its location is calculated using getBoundingClientRect.
-      # Then the pointer is moved to optional offset coordinates from the element.
+      # Moves the pointer to the in-view center point of the given element.
+      # Then the pointer is moved to optional offset coordinates.
       #
       # The element is not scrolled into view.
       # MoveTargetOutOfBoundsError will be raised if element with offset is outside the viewport
@@ -88,32 +87,19 @@ module Selenium
       #   driver.action.move_to(el, 100, 100).perform
       #
       # @param [Selenium::WebDriver::Element] element to move to.
-      # @param [Integer] right_by Optional offset from the top-left corner. A negative value means
-      #   coordinates to the left of the element.
-      # @param [Integer] down_by Optional offset from the top-left corner. A negative value means
-      #   coordinates above the element.
+      # @param [Integer] right_by Optional offset from the in-view center of the
+      #   element. A negative value means coordinates to the left of the center.
+      # @param [Integer] down_by Optional offset from the in-view center of the
+      #   element. A negative value means coordinates to the top of the center.
       # @param [Symbol || String] device optional name of the PointerInput device to move.
       # @return [ActionBuilder] A self reference.
       #
 
       def move_to(element, right_by = nil, down_by = nil, device: nil, duration: default_move_duration, **opts)
         pointer = pointer_input(device)
-        if right_by || down_by
-          WebDriver.logger.warn("moving to an element with offset currently tries to use
-the top left corner of the element as the origin; in Selenium 4.3 it will use the in-view
-center point of the element as the origin.")
-          size = element.size
-          left_offset = (size[:width] / 2).to_i
-          top_offset = (size[:height] / 2).to_i
-          left = -left_offset + (right_by || 0)
-          top = -top_offset + (down_by || 0)
-        else
-          left = 0
-          top = 0
-        end
         pointer.create_pointer_move(duration: duration,
-                                    x: left,
-                                    y: top,
+                                    x: right_by || 0,
+                                    y: down_by || 0,
                                     origin: element,
                                     **opts)
         tick(pointer)

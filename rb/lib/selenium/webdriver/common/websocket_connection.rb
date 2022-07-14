@@ -25,10 +25,11 @@ module Selenium
       RESPONSE_WAIT_TIMEOUT = 30
       RESPONSE_WAIT_INTERVAL = 0.1
 
+      MAX_LOG_MESSAGE_SIZE = 9999
+
       def initialize(url:)
         @callback_threads = ThreadGroup.new
 
-        @messages = []
         @session_id = nil
         @url = url
 
@@ -49,16 +50,22 @@ module Selenium
       def send_cmd(**payload)
         id = next_id
         data = payload.merge(id: id)
+        WebDriver.logger.debug "WebSocket -> #{data}"[...MAX_LOG_MESSAGE_SIZE]
         data = JSON.generate(data)
-        WebDriver.logger.debug "WebSocket -> #{data}"
-
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
         socket.write(out_frame.to_s)
 
-        wait.until { @messages.find { |m| m['id'] == id } }
+        wait.until { messages.delete(id) }
       end
 
       private
+
+      # We should be thread-safe to use the hash without synchronization
+      # because its keys are WebSocket message identifiers and they should be
+      # unique within a devtools session.
+      def messages
+        @messages ||= {}
+      end
 
       def process_handshake
         socket.print(ws.to_s)
@@ -97,8 +104,8 @@ module Selenium
         return {} if message.empty?
 
         message = JSON.parse(message)
-        @messages << message
-        WebDriver.logger.debug "WebSocket <- #{message}"
+        messages[message["id"]] = message
+        WebDriver.logger.debug "WebSocket <- #{message}"[...MAX_LOG_MESSAGE_SIZE]
 
         message
       end

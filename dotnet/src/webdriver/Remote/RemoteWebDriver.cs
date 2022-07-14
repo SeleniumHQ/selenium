@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.DevTools;
-using OpenQA.Selenium.Html5;
 using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium.Remote
@@ -58,7 +57,7 @@ namespace OpenQA.Selenium.Remote
     /// }
     /// </code>
     /// </example>
-    public class RemoteWebDriver : WebDriver, IDevTools, IFindsById, IFindsByClassName, IFindsByLinkText, IFindsByName, IFindsByTagName, IFindsByXPath, IFindsByPartialLinkText, IFindsByCssSelector
+    public class RemoteWebDriver : WebDriver, IDevTools
     {
         public readonly string RemoteDevToolsEndPointCapabilityName = "se:cdp";
         public readonly string RemoteDevToolsVersionCapabilityName = "se:cdpVersion";

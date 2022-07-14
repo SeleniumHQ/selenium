@@ -24,7 +24,6 @@ from importlib import import_module
 
 import pkgutil
 
-import sys
 from typing import Dict, List, Optional, Union
 
 import warnings
@@ -130,7 +129,7 @@ def get_remote_connection(capabilities, command_executor, keep_alive, ignore_loc
     from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
 
-    candidates = [RemoteConnection] + [ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
+    candidates = [RemoteConnection, ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
     handler = next(
         (c for c in candidates if c.browser_name == capabilities.get('browserName')),
         RemoteConnection
@@ -1168,7 +1167,6 @@ class WebDriver(BaseWebDriver):
 
     @asynccontextmanager
     async def bidi_connection(self):
-        assert sys.version_info >= (3, 7)
         global cdp
         import_cdp()
         if self.caps.get("se:cdp"):

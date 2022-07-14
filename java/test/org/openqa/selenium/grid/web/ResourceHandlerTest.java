@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.grid.web;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -40,13 +39,12 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class ResourceHandlerTest {
 
-  @Rule
-  public TemporaryFolder temp = new TemporaryFolder();
+  @TempDir
+  File folder;
   private Path base;
 
-  @Before
+  @BeforeEach
   public void getPath() throws IOException {
-    File folder = temp.newFolder();
     this.base = folder.toPath();
   }
 
