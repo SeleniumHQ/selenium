@@ -46,6 +46,7 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
+        "VirtualAuth/*.cs",
     ]) + [
         ":assembly-info",
     ] + devtools_version_targets(),
@@ -90,6 +91,7 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
+        "VirtualAuth/*.cs",
     ]) + [
         ":assembly-info",
     ] + devtools_version_targets(),
@@ -125,6 +127,7 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
+        "VirtualAuth/*.cs",
     ]) + [
         ":assembly-info",
     ] + devtools_version_targets(),
@@ -170,6 +173,7 @@ generated_assembly_info(
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
+        "VirtualAuth/*.cs",
     ]) + [
         ":assembly-info",
     ] + devtools_version_targets(),
