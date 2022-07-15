@@ -65,6 +65,7 @@ generated_assembly_info(
     deps = [
         "@json.net//:Newtonsoft.Json",
         "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -111,6 +112,7 @@ generated_assembly_info(
     deps = [
         "@json.net//:Newtonsoft.Json",
         "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
@@ -149,6 +151,8 @@ generated_assembly_info(
     deps = [
         "@json.net//:Newtonsoft.Json",
         "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -196,6 +200,7 @@ generated_assembly_info(
     deps = [
         "@json.net//:Newtonsoft.Json",
         "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
@@ -207,6 +212,7 @@ generated_assembly_info(
     deps = [
         "@json.net//:Newtonsoft.Json",
         "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
@@ -219,6 +225,7 @@ generated_assembly_info(
     deps = [
         "@json.net//:Newtonsoft.Json",
         "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
