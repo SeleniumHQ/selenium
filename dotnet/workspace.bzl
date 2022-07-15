@@ -18,6 +18,18 @@ def selenium_register_dotnet():
     )
 
     import_nuget_package(
+        name = "identitymodel.logging",
+        file = "third_party/dotnet/nuget/packages/microsoft.identitymodel.logging.6.19.0.nupkg",
+        sha256 = "0f0c738bf4ce27c5b4f6a441ce067a888b3e3b2a6783517b5d8caa46eec4516a",
+    )
+
+    import_nuget_package(
+        name = "identitymodel.abstractions",
+        file = "third_party/dotnet/nuget/packages/microsoft.identitymodel.abstractions.6.19.0.nupkg",
+        sha256 = "eaa7f4995eb68edf7b6d1586a3a35027f6f9252ab82cb1478cec347a42895ee0",
+    )
+
+    import_nuget_package(
         name = "json.net",
         file = "third_party/dotnet/nuget/packages/newtonsoft.json.12.0.3.nupkg",
         sha256 = "3d21caf909f9db2b5d13249d6728c2506c55e72e2123fbe2af65a056c0a0bf9d",
