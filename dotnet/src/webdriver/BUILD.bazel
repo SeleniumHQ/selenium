@@ -64,6 +64,7 @@ generated_assembly_info(
     visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -109,6 +110,7 @@ generated_assembly_info(
     visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
@@ -146,6 +148,7 @@ generated_assembly_info(
     visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -192,6 +195,7 @@ generated_assembly_info(
     visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
@@ -202,6 +206,7 @@ generated_assembly_info(
     visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
@@ -213,6 +218,7 @@ generated_assembly_info(
     visibility = ["//visibility:public"],
     deps = [
         "@json.net//:Newtonsoft.Json",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
