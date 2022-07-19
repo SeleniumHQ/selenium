@@ -581,6 +581,13 @@ public class RemoteWebDriver implements WebDriver,
       if (command.getName().equals(DriverCommand.NEW_SESSION)) {
         if (e instanceof SessionNotCreatedException) {
           toThrow = (WebDriverException) e;
+        } else if (e instanceof OutOfMemoryError) {
+          toThrow = new WebDriverException(
+              "Error communicating with the remote browser. System is out of memory.", e);
+        } else if (e instanceof NoClassDefFoundError) {
+          toThrow = new WebDriverException(
+              "Error communicating with the remote browser. Unable to load the class from memory to complete this opration.",
+              e);
         } else {
           toThrow = new SessionNotCreatedException(
             "Possible causes are invalid address of the remote server or browser start-up failure.", e);
