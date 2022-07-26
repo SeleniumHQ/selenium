@@ -848,7 +848,7 @@ class WebDriver(BaseWebDriver):
             value = '[id="%s"]' % value
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
-            value = ".%s" % value
+            value = '[class="%s"]' % value
         elif by == By.NAME:
             by = By.CSS_SELECTOR
             value = '[name="%s"]' % value
