@@ -50,7 +50,7 @@ module Selenium
 
       it 'can testRkEnabledCredential' do
         @_id, @rp_id, @user_handle, @private_key, @sign_count = data.values
-        @credential = Credential.new.create_resident_credential(@_id, @rp_id, @user_handle, @private_key, @sign_count)
+        @credential = Credential.create_resident_credential(@_id, @rp_id, @user_handle, @private_key, @sign_count)
 
         expect(@credential.id).to eq([1, 2, 3, 4])
         expect(@credential.is_resident_credential).to eq(true)
@@ -62,7 +62,7 @@ module Selenium
 
       it 'can testRkDisabledCredential' do
         @_id, @rp_id, @user_handle, @private_key, @sign_count = data.values
-        @credential = Credential.new.create_non_resident_credential(@_id, @rp_id, @private_key, @sign_count)
+        @credential = Credential.create_non_resident_credential(@_id, @rp_id, @private_key, @sign_count)
 
         expect(@credential.id).to eq([1, 2, 3, 4])
         expect(@credential.is_resident_credential).to eq(false)
@@ -71,9 +71,9 @@ module Selenium
 
       it 'can test_to_dict' do
         @_id, @rp_id, @user_handle, @private_key, @sign_count = data.values
-        @credential = Credential.new.create_resident_credential(@_id, @rp_id, @user_handle, @private_key, @sign_count)
+        @credential = Credential.create_resident_credential(@_id, @rp_id, @user_handle, @private_key, @sign_count)
 
-        @credential_dict = @credential.to_dict
+        @credential_dict = @credential.as_json
 
         expect(@credential_dict[:credentialId]).to eq(Base64.urlsafe_encode64([1,2,3,4].to_s))
         expect(@credential_dict[:isResidentCredential]).to eq(true )
@@ -95,7 +95,7 @@ module Selenium
           "signCount" => 0
         }
 
-        @credential = Credential.new.from_dict(@credential_data)
+        @credential = Credential.from_json(@credential_data)
 
         expect(@credential.id).to eq([1,2,3,4])
         expect(@credential.is_resident_credential).to eq(true)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Licensed to the Software Freedom Conservancy (SFC) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -20,84 +22,67 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe VirtualAuthenticatorOptions do
-      @options
-      before(:each) do
-        @options = VirtualAuthenticatorOptions.new
+      let(:options) do
+        VirtualAuthenticatorOptions.new
       end
 
-      it 'can test_set_transport' do
-        @options.set_transport(VirtualAuthenticatorOptions.transports['USB'])
-        expect(@options.get_transport).to eq(VirtualAuthenticatorOptions.transports['USB'])
+      it 'can test_transport' do
+        options.transport = VirtualAuthenticatorOptions::TRANSPORT[:usb]
+        expect(options.transport).to eq(VirtualAuthenticatorOptions::TRANSPORT[:usb])
+
+        options.transport = VirtualAuthenticatorOptions::TRANSPORT[:nfc]
+        expect(options.transport).to eq(VirtualAuthenticatorOptions::TRANSPORT[:nfc])
       end
 
-      it 'can test_get_transport' do
-        @options.transport = VirtualAuthenticatorOptions.transports['NFC']
-        expect(@options.get_transport).to eq(VirtualAuthenticatorOptions.transports['NFC'])
+      it 'can test_protocol' do
+        options.protocol = VirtualAuthenticatorOptions::PROTOCOL[:u2f]
+        expect(options.protocol).to eq(VirtualAuthenticatorOptions::PROTOCOL[:u2f])
+
+        options.protocol = VirtualAuthenticatorOptions::PROTOCOL[:ctap2]
+        expect(options.protocol).to eq(VirtualAuthenticatorOptions::PROTOCOL[:ctap2])
       end
 
+      it 'can test_has_resident_key' do
+        options.has_resident_key = true
+        expect(options.has_resident_key).to eq(true)
 
-      it 'can test_set_protocol' do
-        @options.set_protocol(VirtualAuthenticatorOptions.protocols['U2F'])
-        expect(@options.get_protocol).to eq(VirtualAuthenticatorOptions.protocols['U2F'])
+        options.has_resident_key = false
+        expect(options.has_resident_key).to eq(false)
       end
 
-      it 'can test_get_protocol' do
-        @options.protocol = VirtualAuthenticatorOptions.protocols['CTAP2']
-        expect(@options.get_protocol).to eq(VirtualAuthenticatorOptions.protocols['CTAP2'])
+      it 'can test_has_user_verification' do
+        options.has_user_verification = true
+        expect(options.has_user_verification).to eq(true)
+
+        options.has_user_verification = false
+        expect(options.has_user_verification).to eq(false)
       end
 
-      it 'can test_set_has_resident_key' do
-        @options.set_has_resident_key(true)
-        expect(@options.get_has_resident_key).to eq(true)
+      it 'can test_is_user_consenting' do
+        options.is_user_consenting = true
+        expect(options.is_user_consenting).to eq(true)
+
+        options.is_user_consenting = false
+        expect(options.is_user_consenting).to eq(false)
       end
 
-      it 'can test_get_has_resident_key' do
-        @options.has_resident_key = false
-        expect(@options.get_has_resident_key).to eq(false)
-      end
+      it 'can test_is_user_verified' do
+        options.is_user_verified = true
+        expect(options.is_user_verified).to eq(true)
 
-      it 'can test_set_has_user_verification' do
-        @options.set_has_user_verification(true)
-        expect(@options.get_has_user_verification).to eq(true)
-      end
-
-      it 'can test_get_has_user_verification' do
-        @options.has_user_verification = false
-        expect(@options.get_has_user_verification).to eq(false)
-      end
-
-      it 'can test_set_is_user_consenting' do
-        @options.set_is_user_consenting(true)
-        expect(@options.get_is_user_consenting).to eq(true)
-      end
-
-      it 'can test_get_is_user_consenting' do
-        @options.is_user_consenting = false
-        expect(@options.get_is_user_consenting).to eq(false)
-      end
-
-      it 'can test_set_is_user_verified' do
-        @options.set_is_user_verified(true)
-        expect(@options.get_is_user_verified).to eq(true)
-      end
-
-      it 'can test_get_is_user_verified' do
-        @options.is_user_verified = false
-        expect(@options.get_is_user_verified).to eq(false)
+        options.is_user_verified = false
+        expect(options.is_user_verified).to eq(false)
       end
 
       it 'can test_to_dict_with_defaults' do
-        default_options = @options.to_dict
-        expect(default_options[:transport]).to eq(VirtualAuthenticatorOptions.transports['USB'])
-        expect(default_options[:protocol]).to eq(VirtualAuthenticatorOptions.protocols['CTAP2'])
+        default_options = options.as_json
+        expect(default_options[:transport]).to eq(VirtualAuthenticatorOptions::TRANSPORT[:usb])
+        expect(default_options[:protocol]).to eq(VirtualAuthenticatorOptions::PROTOCOL[:ctap2])
         expect(default_options[:hasResidentKey]).to eq(false)
         expect(default_options[:hasUserVerification]).to eq(false)
         expect(default_options[:isUserConsenting]).to eq(true)
         expect(default_options[:isUserVerified]).to eq(false)
       end
-
-    end
-  end
-end
-
-
+    end # VirtualAuthenticatorOptions
+  end # WebDriver
+end # Selenium
