@@ -37,11 +37,13 @@ module Selenium
       attr_reader :id, :is_resident_credential, :rp_id, :user_handle, :private_key, :sign_count
 
       def self.create_resident_credential(id, rp_id, user_handle, private_key, sign_count)
-        Credential.new(id: id, is_resident_credential: true, rp_id: rp_id, user_handle: user_handle, private_key: private_key, sign_count: sign_count)
+        Credential.new(id: id, is_resident_credential: true, rp_id: rp_id, user_handle: user_handle,
+                       private_key: private_key, sign_count: sign_count)
       end
 
       def self.create_non_resident_credential(id, rp_id, private_key, sign_count)
-        Credential.new(id: id, is_resident_credential: false, rp_id: rp_id, user_handle: nil, private_key: private_key, sign_count: sign_count)
+        Credential.new(id: id, is_resident_credential: false, rp_id: rp_id, user_handle: nil,
+                       private_key: private_key, sign_count: sign_count)
       end
 
       #
