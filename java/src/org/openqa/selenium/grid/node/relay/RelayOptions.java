@@ -128,9 +128,9 @@ public class RelayOptions {
     HttpClient client = clientFactory
       .createClient(ClientConfig.defaultConfig().baseUri(getServiceUri()));
 
-    if (!isServiceUp(client)) {
-      throw new ConfigException("Unable to reach the service at " + getServiceUri());
-    }
+    // if (!isServiceUp(client)) {
+    //   throw new ConfigException("Unable to reach the service at " + getServiceUri());
+    // }
 
     List<String> allConfigs = config.getAll(RELAY_SECTION, "configs")
       .orElseThrow(() -> new ConfigException("Unable to find configs for " + getServiceUri()));
