@@ -114,9 +114,12 @@ public class SeleniumSpanExporter implements SdkTracerProviderConfigurer {
   private Level getLogLevel(SpanData span) {
     Level level = Level.FINE;
 
-    Optional<String> kind = Optional.ofNullable(span
-      .getAttributes()
-      .get(AttributeKey.stringKey(org.openqa.selenium.remote.tracing.AttributeKey.SPAN_KIND.getKey())));
+    Optional<String> kind =
+      Optional.ofNullable(span
+                            .getAttributes()
+                            .get(AttributeKey.stringKey(
+                              org.openqa.selenium.remote.tracing.AttributeKey.SPAN_KIND
+                                .getKey())));
 
     if (span.getStatus().getStatusCode() == StatusCode.ERROR) {
       level = Level.WARNING;
@@ -124,7 +127,7 @@ public class SeleniumSpanExporter implements SdkTracerProviderConfigurer {
       if (httpLogs && kind.isPresent()) {
         String kindValue = kind.get();
         if (Span.Kind.SERVER.name().equalsIgnoreCase(kindValue) ||
-          Span.Kind.CLIENT.name().equalsIgnoreCase(kindValue)) {
+            Span.Kind.CLIENT.name().equalsIgnoreCase(kindValue)) {
           level = Level.INFO;
         }
       }
