@@ -125,7 +125,7 @@ class HandleSession implements HttpHandler {
 
         return res;
       } catch (Exception e) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
 
         String errorMessage = "Unable to execute request for an existing session: " + e.getMessage();

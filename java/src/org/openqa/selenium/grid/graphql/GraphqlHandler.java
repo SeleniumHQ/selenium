@@ -40,6 +40,7 @@ import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.IOException;
@@ -129,7 +130,10 @@ public class GraphqlHandler implements HttpHandler {
         HTTP_RESPONSE_EVENT.accept(attributeMap, response);
 
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue("Unable to find query"));
+                         EventAttribute.setValue("Unable to find query"));
+
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
+        span.setStatus(Status.NOT_FOUND);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         return response;
       }
@@ -167,6 +171,9 @@ public class GraphqlHandler implements HttpHandler {
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
         EventAttribute.setValue("Error while executing the query"));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
+      span.setStatus(Status.INTERNAL);
 
       return response;
     }
