@@ -40,6 +40,7 @@ import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
@@ -187,7 +188,7 @@ public class RelaySessionFactory implements SessionFactory {
           }
         });
       } catch (Exception e) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
         EXCEPTION.accept(attributeMap, e);
         String errorMessage = String.format("Error while creating session with the service %s. %s",
