@@ -285,6 +285,13 @@ public class LocalDistributor extends Distributor implements Closeable {
         return;
       }
 
+      if (status.getAvailability() != UP) {
+        // A Node might be draining or down (in the case of Relay nodes)
+        // but the heartbeat is still running.
+        // We do not need to add this Node for now.
+        return;
+      }
+
       Set<Capabilities> capabilities = status.getSlots().stream()
         .map(Slot::getStereotype)
         .map(ImmutableCapabilities::copyOf)
@@ -314,9 +321,10 @@ public class LocalDistributor extends Distributor implements Closeable {
     NodeStatus initialNodeStatus;
     try {
       initialNodeStatus = node.getStatus();
-      if (initialNodeStatus.getAvailability() == DRAINING) {
-        // A Node might be draining but the heartbeat is still running.
-        // We do not need to add this Node again.
+      if (initialNodeStatus.getAvailability() != UP) {
+        // A Node might be draining or down (in the case of Relay nodes)
+        // but the heartbeat is still running.
+        // We do not need to add this Node for now.
         return this;
       }
       model.add(initialNodeStatus);
@@ -383,13 +391,13 @@ public class LocalDistributor extends Distributor implements Closeable {
     return () -> {
       boolean checkFailed = false;
       Exception failedCheckException = null;
-      LOG.log(getDebugLogLevel(), "Running health check for " + node.getUri());
+      LOG.log(getDebugLogLevel(), "Running healthcheck for Node " + node.getUri());
 
       HealthCheck.Result result;
       try {
         result = healthCheck.check();
       } catch (Exception e) {
-        LOG.log(Level.WARNING, "Unable to process node " + id, e);
+        LOG.log(Level.WARNING, "Unable to process Node healthcheck " + id, e);
         result = new HealthCheck.Result(DOWN, "Unable to run healthcheck. Assuming down");
         checkFailed = true;
         failedCheckException = e;
