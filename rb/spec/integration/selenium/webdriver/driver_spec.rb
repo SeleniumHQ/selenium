@@ -39,6 +39,11 @@ module Selenium
         end
       end
 
+      it 'should raise error when w3c is false', exclusive: {browser: %i[chrome]} do
+        options = Selenium::WebDriver::Chrome::Options.new(w3c: false)
+        expect { Selenium::WebDriver.for :chrome, capabilities: options }.to raise_error(Error::WebDriverError)
+      end
+
       it 'should get driver status' do
         status = driver.status
         expect(status).to include('ready', 'message')
