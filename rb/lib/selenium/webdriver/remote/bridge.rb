@@ -49,6 +49,7 @@ module Selenium
         #
 
         def create_session(capabilities)
+          check_chrome_w3c_false(capabilities)
           response = execute(:new_session, {}, prepare_capabilities_payload(capabilities))
 
           @session_id = response['sessionId']
@@ -665,6 +666,27 @@ module Selenium
           string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..]}" if string[0]&.match?(/[[:digit:]]/)
 
           string
+        end
+
+        #
+        # Checks if w3c key is set to false and raises error for the same.
+        #
+        def check_chrome_w3c_false(capabilities)
+          return unless capabilities['browserName'] == 'chrome' && capabilities.key?('goog:chromeOptions')
+
+          capability = capabilities['goog:chromeOptions']
+          w3c = true
+
+          if capability.instance_of?(Hash)
+            raw_w3c = capability['w3c']
+            w3c = raw_w3c.nil? || raw_w3c
+          end
+
+          return if w3c
+
+          raise Error::WebDriverError, "Setting 'w3c: false' is not allowed.\n"\
+                                       "Please update to W3C Syntax: https://www"\
+                                       ".selenium.dev/blog/2022/legacy-protocol-support/"
         end
       end # Bridge
     end # Remote
