@@ -35,7 +35,7 @@ module Selenium
 
       it 'should warn if extension of provided path is not png' do
         jpg_path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.jpg"
-        message = "name used for saved screenshot does not match file type. "\
+        message = "name used for saved screenshot does not match file type. " \
                   "It should end with .png extension"
         expect(WebDriver.logger).to receive(:warn).with(message, id: :screenshot).twice
 
@@ -68,7 +68,7 @@ module Selenium
         expect(File.exist?(path)).to be true
         expect(File.size(path)).to be_positive
       ensure
-        File.delete(path) if File.exist?(path)
+        FileUtils.rm_rf(path)
       end
 
       describe 'page size' do
@@ -77,7 +77,7 @@ module Selenium
         end
 
         after do
-          File.delete(path) if File.exist?(path)
+          FileUtils.rm_rf(path)
         end
 
         it 'takes viewport screenshot by default' do

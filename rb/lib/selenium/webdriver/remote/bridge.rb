@@ -426,8 +426,8 @@ module Selenium
 
         def submit_element(element)
           script = "var form = arguments[0];\n" \
-                   "while (form.nodeName != \"FORM\" && form.parentNode) {\n" \
-                   "  form = form.parentNode;\n" \
+                   "while (form.nodeName != \"FORM\" && form.parentNode) {\n  " \
+                   "form = form.parentNode;\n" \
                    "}\n" \
                    "if (!form) { throw Error('Unable to find containing form element'); }\n" \
                    "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
