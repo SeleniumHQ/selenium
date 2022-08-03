@@ -215,7 +215,12 @@ public class RelaySessionFactory implements SessionFactory {
       LOG.log(Debug.getDebugLogLevel(), Contents.string(response));
       return response.getStatus() == 200;
     } catch (Exception e) {
-      LOG.log(Level.WARNING, "Error checking service status " + serviceStatusUrl, e);
+      LOG.log(
+        Level.WARNING,
+        () -> String.format("Error checking service status %s. %s",
+                            serviceStatusUrl,
+                            e.getMessage()));
+      LOG.log(Debug.getDebugLogLevel(), "Error checking service status " + serviceStatusUrl, e);
     }
     return false;
   }

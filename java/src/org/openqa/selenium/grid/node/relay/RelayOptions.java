@@ -27,7 +27,6 @@ import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -105,6 +104,8 @@ public class RelayOptions {
     }
   }
 
+  // Method being used in SessionSlot
+  @SuppressWarnings("unused")
   private boolean isServiceUp(HttpClient client) {
     URI serviceStatusUri = getServiceStatusUri();
     if (serviceStatusUri == null) {
@@ -124,13 +125,6 @@ public class RelayOptions {
     Tracer tracer,
     HttpClient.Factory clientFactory,
     Duration sessionTimeout) {
-
-    HttpClient client = clientFactory
-      .createClient(ClientConfig.defaultConfig().baseUri(getServiceUri()));
-
-    if (!isServiceUp(client)) {
-      throw new ConfigException("Unable to reach the service at " + getServiceUri());
-    }
 
     List<String> allConfigs = config.getAll(RELAY_SECTION, "configs")
       .orElseThrow(() -> new ConfigException("Unable to find configs for " + getServiceUri()));
