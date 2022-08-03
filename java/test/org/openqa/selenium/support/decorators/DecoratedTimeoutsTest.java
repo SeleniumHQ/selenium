@@ -32,9 +32,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @Tag("UnitTests")
-public class DecoratedTimeoutsTest {
+class DecoratedTimeoutsTest {
 
   private static class Fixture {
+
     WebDriver originalDriver;
     WebDriver decoratedDriver;
     WebDriver.Options originalOptions;
@@ -47,7 +48,7 @@ public class DecoratedTimeoutsTest {
       originalDriver = mock(WebDriver.class);
       when(originalOptions.timeouts()).thenReturn(original);
       when(originalDriver.manage()).thenReturn(originalOptions);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.manage().timeouts();
     }
   }
@@ -60,32 +61,32 @@ public class DecoratedTimeoutsTest {
   }
 
   @Test
-  public void implicitlyWaitLegacy() {
+  void implicitlyWaitLegacy() {
     verifyFunction($ -> $.implicitlyWait(10, TimeUnit.SECONDS));
   }
 
   @Test
-  public void implicitlyWait() {
+  void implicitlyWait() {
     verifyFunction($ -> $.implicitlyWait(Duration.ofSeconds(10)));
   }
 
   @Test
-  public void setScriptTimeoutLegacy() {
+  void setScriptTimeoutLegacy() {
     verifyFunction($ -> $.setScriptTimeout(10, TimeUnit.SECONDS));
   }
 
   @Test
-  public void setScriptTimeout() {
+  void setScriptTimeout() {
     verifyFunction($ -> $.setScriptTimeout(Duration.ofSeconds(10)));
   }
 
   @Test
-  public void pageLoadTimeoutLegacy() {
+  void pageLoadTimeoutLegacy() {
     verifyFunction($ -> $.pageLoadTimeout(10, TimeUnit.SECONDS));
   }
 
   @Test
-  public void pageLoadTimeout() {
+  void pageLoadTimeout() {
     verifyFunction($ -> $.pageLoadTimeout(Duration.ofSeconds(10)));
   }
 }

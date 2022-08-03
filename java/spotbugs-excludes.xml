@@ -17,7 +17,7 @@
   </Match>
 
   <Match>
-    <Bug code="RCN,MS,DCN,UwF"/>
+    <Bug code="RCN,MS,DCN,UwF,THROWS,SSD"/>
   </Match>
 
   <Match>

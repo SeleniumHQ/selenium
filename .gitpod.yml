@@ -1,0 +1,34 @@
+image:
+  file: ./scripts/gitpod/.gitpod.Dockerfile
+
+tasks:
+  - name: Supervisor (VNC and noVNC)
+    command: /usr/bin/supervisord --configuration /etc/supervisord.conf &
+  - name: Set cache path and warm it up
+    init: |
+      echo "build --repository_cache=/workspace/.cache/bazel-repo" >> /workspace/selenium/.bazelrc.local
+      echo "test --repository_cache=/workspace/.cache/bazel-repo" >> /workspace/selenium/.bazelrc.local
+      echo "build --disk_cache=/workspace/.cache/bazel-disk" >> /workspace/selenium/.bazelrc.local
+      echo "test --disk_cache=/workspace/.cache/bazel-disk" >> /workspace/selenium/.bazelrc.local
+      echo "build --jobs=10" >> /workspace/selenium/.bazelrc.local
+      echo "test --jobs=10" >> /workspace/selenium/.bazelrc.local
+      bazel build grid
+
+ports:
+  - name: VNC
+    description: Port where VNC server is listening
+    port: 5900
+    onOpen: ignore
+  - name: XVFB
+    description: Port where XVFB server is listening
+    port: 6099
+    onOpen: ignore
+  - name: noVNC
+    description: Port where the noVNC view is available
+    port: 7900
+    onOpen: notify
+  - name: Build and test ports
+    description: Other ports opened while building or testing
+    port: 8000-65535
+    onOpen: ignore
+

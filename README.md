@@ -78,6 +78,14 @@ skipped silently if you are not building on Windows.
 
 ## Building
 
+### Contribute with GitPod
+
+GitPod provides a ready to use environment to develop.
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/SeleniumHQ/selenium)
+
+To configure and use your local machine, keep reading.
+
 ### Bazel
 
 [Bazel](https://bazel.build/) was built by the fine folks at Google. Bazel manages dependency
