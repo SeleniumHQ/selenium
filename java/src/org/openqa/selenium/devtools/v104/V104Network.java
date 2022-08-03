@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v101;
+package org.openqa.selenium.devtools.v104;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
@@ -26,14 +26,14 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.DevToolsException;
 import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Network;
-import org.openqa.selenium.devtools.v101.fetch.Fetch;
-import org.openqa.selenium.devtools.v101.fetch.model.AuthChallengeResponse;
-import org.openqa.selenium.devtools.v101.fetch.model.AuthRequired;
-import org.openqa.selenium.devtools.v101.fetch.model.HeaderEntry;
-import org.openqa.selenium.devtools.v101.fetch.model.RequestPattern;
-import org.openqa.selenium.devtools.v101.fetch.model.RequestPaused;
-import org.openqa.selenium.devtools.v101.fetch.model.RequestStage;
-import org.openqa.selenium.devtools.v101.network.model.Request;
+import org.openqa.selenium.devtools.v104.fetch.Fetch;
+import org.openqa.selenium.devtools.v104.fetch.model.AuthChallengeResponse;
+import org.openqa.selenium.devtools.v104.fetch.model.AuthRequired;
+import org.openqa.selenium.devtools.v104.fetch.model.HeaderEntry;
+import org.openqa.selenium.devtools.v104.fetch.model.RequestPattern;
+import org.openqa.selenium.devtools.v104.fetch.model.RequestPaused;
+import org.openqa.selenium.devtools.v104.fetch.model.RequestStage;
+import org.openqa.selenium.devtools.v104.network.model.Request;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -51,28 +51,28 @@ import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class V101Network extends Network<AuthRequired, RequestPaused> {
+public class V104Network extends Network<AuthRequired, RequestPaused> {
 
-  private static final Logger LOG = Logger.getLogger(V101Network.class.getName());
+  private static final Logger LOG = Logger.getLogger(V104Network.class.getName());
 
-  public V101Network(DevTools devTools) {
+  public V104Network(DevTools devTools) {
     super(devTools);
   }
 
   @Override
   protected Command<Void> setUserAgentOverride(UserAgent userAgent) {
-    return org.openqa.selenium.devtools.v101.network.Network.setUserAgentOverride(
+    return org.openqa.selenium.devtools.v104.network.Network.setUserAgentOverride(
       userAgent.userAgent(), userAgent.acceptLanguage(), userAgent.platform(), Optional.empty());
   }
 
   @Override
   protected Command<Void> enableNetworkCaching() {
-    return org.openqa.selenium.devtools.v101.network.Network.setCacheDisabled(false);
+    return org.openqa.selenium.devtools.v104.network.Network.setCacheDisabled(false);
   }
 
   @Override
   protected Command<Void> disableNetworkCaching() {
-    return org.openqa.selenium.devtools.v101.network.Network.setCacheDisabled(true);
+    return org.openqa.selenium.devtools.v104.network.Network.setCacheDisabled(true);
   }
 
   @Override
