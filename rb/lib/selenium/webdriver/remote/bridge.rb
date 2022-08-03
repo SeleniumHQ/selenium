@@ -684,8 +684,8 @@ module Selenium
 
           return if w3c
 
-          raise Error::WebDriverError, "Setting 'w3c: false' inside 'goog:chromeOptions' is not "\
-                                       "allowed. \nPlease update to W3C Syntax: https://www"\
+          raise Error::WebDriverError, "Setting 'w3c: false' is not allowed.\n"\
+                                       "Please update to W3C Syntax: https://www"\
                                        ".selenium.dev/blog/2022/legacy-protocol-support/"
         end
       end # Bridge
