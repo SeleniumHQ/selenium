@@ -29,17 +29,20 @@ module Selenium
       PROTOCOL = {ctap2: "ctap2", u2f: "ctap1/u2f"}.freeze
       TRANSPORT = {ble: "ble", usb: "usb", nfc: "nfc", internal: "internal"}.freeze
 
-      attr_accessor :protocol, :transport, :has_resident_key, :has_user_verification, :is_user_consenting,
-                    :is_user_verified
+      attr_accessor :protocol, :transport, :resident_key, :user_verification, :user_consenting, :user_verified
+      alias_method :resident_key?, :resident_key
+      alias_method :user_verification?, :user_verification
+      alias_method :user_consenting?, :user_consenting
+      alias_method :user_verified?, :user_verified
 
-      def initialize(protocol: PROTOCOL[:ctap2], transport: TRANSPORT[:usb], has_resident_key: false,
-                     has_user_verification: false, is_user_consenting: true, is_user_verified: false)
+      def initialize(protocol: :ctap2, transport: :usb, resident_key: false,
+                     user_verification: false, user_consenting: true, user_verified: false)
         @protocol = protocol
         @transport = transport
-        @has_resident_key = has_resident_key
-        @has_user_verification = has_user_verification
-        @is_user_consenting = is_user_consenting
-        @is_user_verified = is_user_verified
+        @resident_key = resident_key
+        @user_verification = user_verification
+        @user_consenting = user_consenting
+        @user_verified = user_verified
       end
 
       #
@@ -47,14 +50,12 @@ module Selenium
       #
 
       def as_json(*)
-        {
-          protocol: @protocol,
-          transport: @transport,
-          hasResidentKey: @has_resident_key,
-          hasUserVerification: @has_user_verification,
-          isUserConsenting: @is_user_consenting,
-          isUserVerified: @is_user_verified
-        }
+        {'protocol' => PROTOCOL[protocol],
+         'transport' => TRANSPORT[transport],
+         'hasResidentKey' => resident_key?,
+         'hasUserVerification' => user_verification?,
+         'isUserConsenting' => user_consenting?,
+         'isUserVerified' => user_verified?}
       end
     end # VirtualAuthenticatorOptions
   end # WebDriver

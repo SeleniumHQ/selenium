@@ -21,56 +21,14 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe VirtualAuthenticator, exclusive: {browser: %i[chrome]} do
-      def create_rk_disabled_u2f_authenticator
-        options = VirtualAuthenticatorOptions.new
-        options.protocol = VirtualAuthenticatorOptions::PROTOCOL[:u2f]
-        options.has_resident_key = false
-        driver.add_virtual_authenticator(options)
+    describe VirtualAuthenticator, exclusive: {browser: %i[chrome edge]} do
+      # A pkcs#8 encoded unencrypted EC256 private key as a base64url string.
+      let(:pkcs8_private_key) do
+        "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q" \
+          "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU" \
+          "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB"
       end
-
-      def create_rk_enabled_u2f_authenticator
-        options = VirtualAuthenticatorOptions.new
-        options.protocol = VirtualAuthenticatorOptions::PROTOCOL[:u2f]
-        options.has_resident_key = true
-        driver.add_virtual_authenticator(options)
-      end
-
-      def create_rk_disabled_ctap2_authenticator
-        options = VirtualAuthenticatorOptions.new
-        options.protocol = VirtualAuthenticatorOptions::PROTOCOL[:ctap2]
-        options.has_resident_key = false
-        options.has_user_verification = true
-        options.is_user_verified = true
-        driver.add_virtual_authenticator(options)
-      end
-
-      def create_rk_enabled_ctap2_authenticator
-        options = VirtualAuthenticatorOptions.new
-        options.protocol = VirtualAuthenticatorOptions::PROTOCOL[:ctap2]
-        options.has_resident_key = true
-        options.has_user_verification = true
-        options.is_user_verified = true
-        driver.add_virtual_authenticator(options)
-      end
-
-      def get_assertion_for(credential_id)
-        driver.execute_async_script(get_credential, credential_id)
-      end
-
-      def extract_raw_id_from(response)
-        response['credential']['rawId']
-      end
-
-      def extract_id_from(response)
-        response['credential']['id']
-      end
-
-      #
-      # A private key as a base64url string.
-      #
-
-      let(:base64_encoded_pk) do
+      let(:encoded_private_key) do
         "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr" \
           "MsinWohEce47BFPJlTaDzHSvOW2eeunBO89ZcvvVc8RLz4qyQ8rO98xS1jtgqi1NcBPETDrtzthODu/gd0sjB2Tk3TLuBGV" \
           "oPXt54a+Oo4JbBJ6h3s0+5eAfGplCbSNq6hN3Jh9YOTw5ZA6GCEy5l8zBaOgjXytd2v2OdSVoEDNiNQRkjJd2rmS2oi9AyQ" \
@@ -90,302 +48,214 @@ module Selenium
           "zJOGpf9x2RSWzQJ+dq8+6fACgfFZOVpN644+sAHfNPAI/gnNKU5OfUv+eav8fBnzlf1A3y3GIkyMyzFN3DE7e0n/lyqxE4H" \
           "BYGpI8g=="
       end
+      let(:u2f) { VirtualAuthenticatorOptions.new(protocol: :u2f) }
+      let(:ctap2) { VirtualAuthenticatorOptions.new(user_verification: true, user_verified: true) }
 
-      let(:register_credential) do
-        "registerCredential().then(arguments[arguments.length - 1]);"
+      before { driver.navigate.to url_for('virtual-authenticator.html') }
+
+      after { @authenticator&.remove! if @authenticator&.valid? }
+
+      def register_credential(require_resident: false, user_verification: false)
+        params = if require_resident
+                   '{authenticatorSelection: {requireResidentKey: true}}'
+                 elsif user_verification
+                   "{userVerification: 'required'}"
+                 else
+                   ''
+                 end
+        driver.execute_async_script "registerCredential(#{params}).then(arguments[arguments.length - 1]);"
       end
 
-      let(:get_credential) do
-        "getCredential([{\n" \
-          "\"type\": \"public-key\",\n" \
-          "\"id\": Int8Array.from(arguments[0]),\n" \
-          "}]).then(arguments[arguments.length - 1]);\n"
+      def credential(id)
+        script = <<~CREDENTIAL
+          getCredential([{
+            "type": "public-key",
+            "id": Int8Array.from(arguments[0]),
+          }]).then(arguments[arguments.length - 1]);
+        CREDENTIAL
+        driver.execute_async_script(script, id)
       end
 
-      before do
-        driver.navigate.to url_for('virtual-authenticator.html')
+      describe '#intialize' do
+        it 'creates resident key disabled u2f' do
+          @authenticator = driver.add_virtual_authenticator(u2f)
+
+          expect(@authenticator.options.protocol).to eq :u2f
+          expect(@authenticator.options.resident_key?).to eq false
+        end
+
+        it 'creates resident key enabled u2f' do
+          u2f.resident_key = true
+          @authenticator = driver.add_virtual_authenticator(u2f)
+
+          expect(@authenticator.options.protocol).to eq :u2f
+          expect(@authenticator.options.resident_key?).to eq true
+        end
+
+        it 'creates resident key disabled ctap2' do
+          @authenticator = driver.add_virtual_authenticator(ctap2)
+
+          expect(@authenticator.options.protocol).to eq :ctap2
+          expect(@authenticator.options.resident_key?).to eq false
+          expect(@authenticator.options.user_verified?).to eq true
+          expect(@authenticator.options.user_verification?).to eq true
+        end
+
+        it 'creates resident key enabled ctap2' do
+          ctap2.resident_key = true
+          @authenticator = driver.add_virtual_authenticator(ctap2)
+
+          expect(@authenticator.options.protocol).to eq :ctap2
+          expect(@authenticator.options.resident_key?).to eq true
+          expect(@authenticator.options.user_verified?).to eq true
+          expect(@authenticator.options.user_verification?).to eq true
+        end
       end
 
-      after do
-        driver.remove_virtual_authenticator(@authenticator) unless @authenticator.nil?
+      describe '#remove!' do
+        it 'removes authenticator' do
+          @authenticator = driver.add_virtual_authenticator(u2f)
+
+          @authenticator.remove!
+
+          expect(@authenticator.valid?).to eq false
+        end
       end
 
-      it 'should test create authenticator' do
-        #
-        # Register a credential on the Virtual Authenticator.
-        #
+      describe '#add_credential' do
+        it 'to non-resident ctap' do
+          @authenticator = driver.add_virtual_authenticator(ctap2)
 
-        @authenticator = create_rk_disabled_u2f_authenticator
-        expect(@authenticator).not_to eq(nil)
+          byte_array_id = [1, 2, 3, 4]
+          credential = Credential.non_resident(id: byte_array_id,
+                                               rp_id: 'localhost',
+                                               private_key: Credential.decode(encoded_private_key))
 
-        response = driver.execute_async_script(register_credential)
-        expect(response['status']).to eq('OK')
-
-        #
-        # Attempt to use the credential to get an assertion.
-        #
-        response = get_assertion_for(extract_raw_id_from(response))
-        expect(response['status']).to eq('OK')
-      end
-
-      it 'should test remove authenticator' do
-        options = VirtualAuthenticatorOptions.new
-        @authenticator = driver.add_virtual_authenticator(options)
-        expect(@authenticator).not_to eq(nil)
-
-        driver.remove_virtual_authenticator(@authenticator)
-        @authenticator = nil
-      end
-
-      it 'should test add non-resident credential' do
-        #
-        # Add a non-resident credential using the testing API.
-        #
-        @authenticator = create_rk_disabled_ctap2_authenticator
-        credential = Credential.non_resident(
-          id: [1, 2, 3, 4],
-          rp_id: 'localhost',
-          private_key: Credential.decode(base64_encoded_pk),
-          sign_count: 0
-        )
-
-        @authenticator.add_credential(credential)
-        #
-        # Attempt to use the credential to generate an assertion.
-        #
-        response = get_assertion_for([1, 2, 3, 4])
-        expect(response['status']).to eq('OK')
-      end
-
-      it 'should test add non-resident credential when authenticator uses U2F protocol' do
-        @authenticator = create_rk_disabled_u2f_authenticator
-        base64_enc_pk =
-          "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q" \
-          "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU" \
-          "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB"
-
-        credential = Credential.non_resident(
-          id: [1, 2, 3, 4],
-          rp_id: 'localhost',
-          private_key: Credential.decode(base64_enc_pk),
-          sign_count: 0
-        )
-        @authenticator.add_credential(credential)
-        response = get_assertion_for([1, 2, 3, 4])
-        expect(response['status']).to eq('OK')
-      end
-
-      it 'should test add resident credential' do
-        @authenticator = create_rk_enabled_ctap2_authenticator
-        credential = Credential.resident(
-          id: [1, 2, 3, 4],
-          rp_id: 'localhost',
-          user_handle: [1],
-          private_key: Credential.decode(base64_encoded_pk),
-          sign_count: 0
-        )
-        @authenticator.add_credential(credential)
-        #
-        # Attempt to use the credential to generate an assertion. Notice we use an
-        # empty allowCredentials array.
-        #
-
-        response = driver.execute_async_script("getCredential([]).then(arguments[arguments.length - 1]);")
-        expect(response['status']).to eq("OK")
-        expect(response['attestation']['userHandle'].include?(1)).to eq(true)
-      end
-
-      it 'should test add resident credential not supported when authenticator uses U2F protocol' do
-        @authenticator = create_rk_enabled_u2f_authenticator
-        base64_enc_pk =
-          "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q" \
-          "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU" \
-          "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB"
-
-        credential = Credential.resident(
-          id: [1, 2, 3, 4],
-          rp_id: 'localhost',
-          user_handle: [1],
-          private_key: Credential.decode(base64_enc_pk),
-          sign_count: 0
-        )
-
-        #
-        # Throws InvalidArgumentError
-        #
-
-        begin
           @authenticator.add_credential(credential)
-        rescue StandardError => e
-          expect(e.class).to eq(WebDriver::Error::InvalidArgumentError)
+
+          expect(credential(byte_array_id)['status']).to eq('OK')
+        end
+
+        it 'to non-resident u2f' do
+          @authenticator = driver.add_virtual_authenticator(u2f)
+
+          byte_array_id = [1, 2, 3, 4]
+          credential = Credential.non_resident(id: byte_array_id,
+                                               rp_id: 'localhost',
+                                               private_key: Credential.decode(pkcs8_private_key))
+
+          @authenticator.add_credential(credential)
+
+          expect(credential(byte_array_id)['status']).to eq('OK')
+        end
+
+        it 'to resident ctap' do
+          ctap2.resident_key = true
+          @authenticator = driver.add_virtual_authenticator(ctap2)
+
+          byte_array_id = [1, 2, 3, 4]
+          credential = Credential.resident(id: byte_array_id,
+                                           rp_id: 'localhost',
+                                           user_handle: [1],
+                                           private_key: Credential.decode(encoded_private_key))
+
+          @authenticator.add_credential(credential)
+
+          expect(credential(byte_array_id)['status']).to eq('OK')
+          expect(@authenticator.credentials.first.user_handle).to eq [1]
+        end
+
+        it 'to resident u2f' do
+          u2f.resident_key = true
+          @authenticator = driver.add_virtual_authenticator(u2f)
+
+          byte_array_id = [1, 2, 3, 4]
+          credential = Credential.resident(id: byte_array_id,
+                                           rp_id: 'localhost',
+                                           user_handle: [1],
+                                           private_key: Credential.decode(encoded_private_key))
+
+          msg = /The Authenticator does not support Resident Credentials/
+          expect { @authenticator.add_credential(credential) }.to raise_error(Error::InvalidArgumentError, msg)
         end
       end
 
-      it 'should test get credentials' do
-        @authenticator = create_rk_enabled_ctap2_authenticator
-        #
-        # Register a resident credential.
-        #
+      describe '#credentials' do
+        it 'gets multiple' do
+          ctap2.resident_key = true
+          @authenticator = driver.add_virtual_authenticator(ctap2)
 
-        response1 = driver.execute_async_script(
-          "registerCredential({authenticatorSelection: {requireResidentKey: true}})" \
-          " .then(arguments[arguments.length - 1]);"
-        )
-        expect(response1['status']).to eq('OK')
+          # Add multiple credentials with JS
+          res_cred_resp = register_credential(require_resident: true)['credential']
+          non_res_cred_resp = register_credential['credential']
+          expect(res_cred_resp['id']).not_to eq(non_res_cred_resp['id'])
 
-        #
-        # Register a non resident credential.
-        #
+          credentials = @authenticator.credentials
+          expect(credentials.length).to eq(2)
 
-        response2 = driver.execute_async_script(register_credential)
-        expect(response2['status']).to eq('OK')
+          res_cred_output = credentials.find { |cred| Credential.encode(cred.id).match res_cred_resp['id'] }
+          non_res_cred_output = credentials.tap { |cred| cred.delete(res_cred_output) }.first
 
-        credential_1_id = extract_raw_id_from(response1)
-        credential_2_id = extract_raw_id_from(response2)
+          expect(res_cred_output.resident_credential?).to eq true
+          expect(res_cred_output.rp_id).to eq 'localhost'
+          expect(res_cred_output.sign_count).to eq 1
+          expect(res_cred_output.user_handle).to eq [1]
 
-        expect(credential_1_id.sort).not_to eq(credential_2_id.sort)
+          expect(non_res_cred_output.resident_credential?).to eq false
+          expect(non_res_cred_output.rp_id).to eq nil
+          expect(non_res_cred_output.sign_count).to eq 1
+          expect(non_res_cred_output.user_handle).to be_nil
+        end
+      end
 
-        #
-        # Retrieve the two credentials.
-        #
+      describe '#remove_credential' do
+        it 'by raw ID' do
+          @authenticator = driver.add_virtual_authenticator(u2f)
 
-        credentials = @authenticator.credentials
+          credential = register_credential['credential']
+          raw_id = credential['rawId']
+          id = credential['id']
+          2.times { register_credential }
 
-        expect(credentials.length).to eq(2)
+          @authenticator.remove_credential(raw_id)
 
-        credential1 = nil
-        credential2 = nil
-
-        credentials.each do |credential|
-          if credential.id == credential_1_id
-            credential1 = credential
-          elsif credential.id == credential_2_id
-            credential2 = credential
-          else
-            raise "Unrecognized credential id"
-          end
+          expect(@authenticator.credentials.map(&:id)).not_to include(id)
         end
 
-        expect(credential1.resident_credential?).to eq(true)
-        expect(credential1.private_key).not_to eq(nil)
-        expect(credential1.rp_id).to eq('localhost')
-        expect(credential1.user_handle).to eq([1])
-        expect(credential1.sign_count).to eq(1)
+        it 'by encoded ID' do
+          @authenticator = driver.add_virtual_authenticator(u2f)
 
-        expect(credential2.resident_credential?).to eq(false)
-        expect(credential2.private_key).not_to eq(nil)
-        #
-        # Non resident keys do not store raw RP IDs or user handles.
-        #
-        expect(credential2.rp_id).to eq(nil)
-        expect(credential2.user_handle).to eq(nil)
-        expect(credential2.sign_count).to eq(1)
+          id = register_credential.dig('credential', 'id')
+          2.times { register_credential }
+
+          @authenticator.remove_credential(id)
+
+          expect(@authenticator.credentials.map(&:id)).not_to include(id)
+        end
       end
 
-      it 'should test remove credential by rawID' do
-        @authenticator = create_rk_disabled_u2f_authenticator
+      describe '#remove_all_credentials' do
+        it 'removes multiple' do
+          @authenticator = driver.add_virtual_authenticator(u2f)
+          3.times { register_credential }
 
-        response = driver.execute_async_script(register_credential)
-        expect(response['status']).to eq('OK')
+          @authenticator.remove_all_credentials
 
-        #
-        # Remove a credential by its ID as an array of bytes.
-        #
-
-        raw_id = extract_raw_id_from(response)
-        @authenticator.remove_credential(raw_id)
-
-        #
-        # Trying to get an assertion should fail.
-        #
-
-        response = get_assertion_for(raw_id)
-        expect(response['status']).to start_with("NotAllowedError")
+          expect(@authenticator.credentials).to be_empty
+        end
       end
 
-      it 'should test remove credential by base64url Id' do
-        @authenticator = create_rk_disabled_u2f_authenticator
-        response = driver.execute_async_script(register_credential)
-        raw_id = extract_raw_id_from(response)
-        credential_id = extract_id_from(response)
+      describe '#user_verified=' do
+        it 'can not obtain credential requiring verification when set to false' do
+          ctap2.resident_key = true
+          @authenticator = driver.add_virtual_authenticator(ctap2)
 
-        #
-        # Remove a credential by its base64url ID.
-        #
+          raw_id = register_credential(user_verification: true).dig('credential', 'rawId')
 
-        @authenticator.remove_credential(credential_id)
+          @authenticator.user_verified = false
 
-        response = get_assertion_for(raw_id)
-        expect(response['status']).to start_with("NotAllowedError")
-      end
-
-      it 'should test remove all credentials' do
-        @authenticator = create_rk_disabled_u2f_authenticator
-
-        response1 = driver.execute_async_script(register_credential)
-        expect(response1['status']).to eq('OK')
-        raw_id1 = extract_raw_id_from(response1)
-
-        response2 = driver.execute_async_script(register_credential)
-        expect(response2['status']).to eq('OK')
-        raw_id2 = extract_raw_id_from(response2)
-
-        #
-        # Remove all credentials.
-        #
-
-        @authenticator.remove_all_credentials
-
-        #
-        # Trying to get an assertion allowing for any of both should fail.
-        #
-
-        response = driver.execute_async_script(
-          "getCredential([{" \
-          "  \"type\": \"public-key\"," \
-          "  \"id\": Int8Array.from(arguments[0])," \
-          "}, {" \
-          "  \"type\": \"public-key\"," \
-          "  \"id\": Int8Array.from(arguments[1])," \
-          "}]).then(arguments[arguments.length - 1]);",
-          raw_id1,
-          raw_id2
-        )
-        expect(response['status']).to start_with("NotAllowedError")
-      end
-
-      it 'should test set user verified' do
-        @authenticator = create_rk_enabled_ctap2_authenticator
-
-        #
-        # Register a credential requiring User Verification
-        #
-
-        response = driver.execute_async_script(
-          "registerCredential({authenticatorSelection: {userVerification: 'required'}})" \
-          "  .then(arguments[arguments.length - 1]);"
-        )
-        expect(response['status']).to eq('OK')
-
-        raw_id = extract_raw_id_from(response)
-
-        #
-        # Getting an assertion requiring user verification should succeed.
-        #
-
-        response = driver.execute_async_script(get_credential, raw_id)
-        expect(response['status']).to eq('OK')
-
-        #
-        # Disable user verification.
-        #
-        @authenticator.user_verified = false
-
-        #
-        # Getting an assertion requiring user verification should fail.
-        #
-        response = driver.execute_async_script(get_credential, raw_id)
-        expect(response['status']).to start_with("NotAllowedError")
+          expect(credential(raw_id)['status']).to include "NotAllowedError"
+        end
       end
     end # VirtualAuthenticator
   end # WebDriver

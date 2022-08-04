@@ -249,15 +249,12 @@ module Selenium
       end
 
       #
-      # virtual-authenticator
+      # @return [VirtualAuthenticator]
+      # @see VirtualAuthenticator
       #
 
       def add_virtual_authenticator(options)
         bridge.add_virtual_authenticator(options)
-      end
-
-      def remove_virtual_authenticator(authenticator)
-        bridge.remove_virtual_authenticator(authenticator)
       end
 
       #-------------------------------- sugar  --------------------------------

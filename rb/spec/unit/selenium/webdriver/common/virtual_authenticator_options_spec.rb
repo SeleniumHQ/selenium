@@ -23,65 +23,35 @@ module Selenium
   module WebDriver
     describe VirtualAuthenticatorOptions do
       let(:options) do
-        VirtualAuthenticatorOptions.new
+        VirtualAuthenticatorOptions.new(transport: :nfc,
+                                        protocol: :u2f,
+                                        resident_key: true,
+                                        user_verification: true,
+                                        user_consenting: false,
+                                        user_verified: true)
       end
 
-      it 'can test_transport' do
-        options.transport = VirtualAuthenticatorOptions::TRANSPORT[:usb]
-        expect(options.transport).to eq(VirtualAuthenticatorOptions::TRANSPORT[:usb])
-
-        options.transport = VirtualAuthenticatorOptions::TRANSPORT[:nfc]
-        expect(options.transport).to eq(VirtualAuthenticatorOptions::TRANSPORT[:nfc])
+      describe '#initialize' do
+        it 'sets parameters' do
+          expect(options.transport).to eq(:nfc)
+          expect(options.protocol).to eq(:u2f)
+          expect(options.resident_key?).to eq(true)
+          expect(options.user_verification?).to eq(true)
+          expect(options.user_consenting?).to eq(false)
+          expect(options.user_verified?).to eq(true)
+        end
       end
 
-      it 'can test_protocol' do
-        options.protocol = VirtualAuthenticatorOptions::PROTOCOL[:u2f]
-        expect(options.protocol).to eq(VirtualAuthenticatorOptions::PROTOCOL[:u2f])
-
-        options.protocol = VirtualAuthenticatorOptions::PROTOCOL[:ctap2]
-        expect(options.protocol).to eq(VirtualAuthenticatorOptions::PROTOCOL[:ctap2])
-      end
-
-      it 'can test_has_resident_key' do
-        options.has_resident_key = true
-        expect(options.has_resident_key).to eq(true)
-
-        options.has_resident_key = false
-        expect(options.has_resident_key).to eq(false)
-      end
-
-      it 'can test_has_user_verification' do
-        options.has_user_verification = true
-        expect(options.has_user_verification).to eq(true)
-
-        options.has_user_verification = false
-        expect(options.has_user_verification).to eq(false)
-      end
-
-      it 'can test_is_user_consenting' do
-        options.is_user_consenting = true
-        expect(options.is_user_consenting).to eq(true)
-
-        options.is_user_consenting = false
-        expect(options.is_user_consenting).to eq(false)
-      end
-
-      it 'can test_is_user_verified' do
-        options.is_user_verified = true
-        expect(options.is_user_verified).to eq(true)
-
-        options.is_user_verified = false
-        expect(options.is_user_verified).to eq(false)
-      end
-
-      it 'can test_to_dict_with_defaults' do
-        default_options = options.as_json
-        expect(default_options[:transport]).to eq(VirtualAuthenticatorOptions::TRANSPORT[:usb])
-        expect(default_options[:protocol]).to eq(VirtualAuthenticatorOptions::PROTOCOL[:ctap2])
-        expect(default_options[:hasResidentKey]).to eq(false)
-        expect(default_options[:hasUserVerification]).to eq(false)
-        expect(default_options[:isUserConsenting]).to eq(true)
-        expect(default_options[:isUserVerified]).to eq(false)
+      describe '#as_json' do
+        it 'converts default options to JSON' do
+          json = options.as_json
+          expect(json['transport']).to eq('nfc')
+          expect(json['protocol']).to eq('ctap1/u2f')
+          expect(json['hasResidentKey']).to eq(true)
+          expect(json['hasUserVerification']).to eq(true)
+          expect(json['isUserConsenting']).to eq(false)
+          expect(json['isUserVerified']).to eq(true)
+        end
       end
     end # VirtualAuthenticatorOptions
   end # WebDriver
