@@ -845,7 +845,6 @@ namespace OpenQA.Selenium
             }
             else if (argAsObjectReference != null)
             {
-                // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.
                 Dictionary<string, object> webDriverObjectReferenceDictionary = argAsObjectReference.ToDictionary();
                 converted = webDriverObjectReferenceDictionary;
             }
