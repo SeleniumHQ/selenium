@@ -248,6 +248,18 @@ module Selenium
         bridge.execute_async_script(script, *args)
       end
 
+      #
+      # virtual-authenticator
+      #
+
+      def add_virtual_authenticator(options)
+        bridge.add_virtual_authenticator(options)
+      end
+
+      def remove_virtual_authenticator(authenticator)
+        bridge.remove_virtual_authenticator(authenticator)
+      end
+
       #-------------------------------- sugar  --------------------------------
 
       #
