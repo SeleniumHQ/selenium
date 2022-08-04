@@ -20,41 +20,53 @@
 module Selenium
   module WebDriver
     class VirtualAuthenticator
-      attr_reader :id, :bridge
+
+      attr_reader :options
 
       #
       # api private
+      # Use `Driver#add_virtual_authenticator`
       #
 
-      def initialize(bridge, authenticator_id)
+      def initialize(bridge, authenticator_id, options)
         @id = authenticator_id
         @bridge = bridge
+        @options = options
+        @valid = true
       end
 
       def add_credential(credential)
         credential = credential.as_json
-        credential[:authenticatorId] = @id
-        bridge.add_credential credential
+        @bridge.add_credential credential, @id
       end
 
       def credentials
-        credential_data = bridge.credentials @id
+        credential_data = @bridge.credentials @id
         credential_data.map do |cred|
           Credential.from_json(cred)
         end
       end
 
       def remove_credential(credential_id)
-        credential_id = Base64.urlsafe_encode64(credential_id.pack('C*')) if credential_id.instance_of?(Array)
-        bridge.remove_credential credential_id, @id
+        credential_id = Credential.encode(credential_id) if credential_id.instance_of?(Array)
+        @bridge.remove_credential credential_id, @id
       end
 
       def remove_all_credentials
-        bridge.remove_all_credentials @id
+        @bridge.remove_all_credentials @id
       end
 
       def user_verified=(verified)
-        bridge.user_verified verified, @id
+        @bridge.user_verified verified, @id
+      end
+
+      def remove!
+        @bridge.remove_virtual_authenticator(@id)
+        @valid = false
+      end
+
+      def valid?
+        @valid
       end
     end # VirtualAuthenticator
   end # WebDriver

@@ -574,15 +574,15 @@ module Selenium
 
         def add_virtual_authenticator(options)
           authenticator_id = execute :add_virtual_authenticator, {}, options.as_json
-          VirtualAuthenticator.new(self, authenticator_id)
+          VirtualAuthenticator.new(self, authenticator_id, options)
         end
 
-        def remove_virtual_authenticator(authenticator)
-          execute :remove_virtual_authenticator, {}, {authenticatorId: authenticator.id}
+        def remove_virtual_authenticator(id)
+          execute :remove_virtual_authenticator, {authenticatorId: id}
         end
 
-        def add_credential(credential)
-          execute :add_credential, {}, credential
+        def add_credential(credential, id)
+          execute :add_credential, {authenticatorId: id}, credential
         end
 
         def credentials(authenticator_id)
@@ -590,15 +590,15 @@ module Selenium
         end
 
         def remove_credential(credential_id, authenticator_id)
-          execute :remove_credential, {}, {credentialId: credential_id, authenticatorId: authenticator_id}
+          execute :remove_credential, {credentialId: credential_id, authenticatorId: authenticator_id}
         end
 
         def remove_all_credentials(authenticator_id)
-          execute :remove_all_credentials, {}, {authenticatorId: authenticator_id}
+          execute :remove_all_credentials, {authenticatorId: authenticator_id}
         end
 
         def user_verified(verified, authenticator_id)
-          execute :set_user_verified, {}, {authenticatorId: authenticator_id, isUserVerified: verified}
+          execute :set_user_verified, {authenticatorId: authenticator_id}, {isUserVerified: verified}
         end
 
         private

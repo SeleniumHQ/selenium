@@ -159,7 +159,8 @@ module Selenium
           remove_virtual_authenticator: [:delete, 'session/:session_id/webauthn/authenticator/:authenticatorId'],
           add_credential: [:post, 'session/:session_id/webauthn/authenticator/:authenticatorId/credential'],
           get_credentials: [:get, 'session/:session_id/webauthn/authenticator/:authenticatorId/credentials'],
-          remove_credential: [:delete, 'session/:session_id/webauthn/authenticator/:authenticatorId/credentials/:credentialId'],
+          remove_credential: [:delete,
+                              'session/:session_id/webauthn/authenticator/:authenticatorId/credentials/:credentialId'],
           remove_all_credentials: [:delete, 'session/:session_id/webauthn/authenticator/:authenticatorId/credentials'],
           set_user_verified: [:post, 'session/:session_id/webauthn/authenticator/:authenticatorId/uv']
 
