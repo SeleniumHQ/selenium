@@ -25,25 +25,44 @@
 module Selenium
   module WebDriver
     class Credential
-      def initialize(id:, is_resident_credential:, rp_id:, user_handle:, private_key:, sign_count:)
+      class << self
+        def resident(**opts)
+          Credential.new(resident_credential: true, **opts)
+        end
+
+        def non_resident(**opts)
+          Credential.new(resident_credential: false, **opts)
+        end
+
+        def encode(byte_array)
+          Base64.urlsafe_encode64(byte_array&.pack('C*'))
+        end
+
+        def decode(base64)
+          Base64.urlsafe_decode64(base64).unpack('C*')
+        end
+
+        def from_json(opts)
+          user_handle = opts['userHandle'] ? decode(opts['userHandle']) : nil
+          new(id: decode(opts["credentialId"]),
+              resident_credential: opts["isResidentCredential"],
+              rp_id: opts['rpId'],
+              private_key: opts['privateKey'],
+              sign_count: opts['signCount'],
+              user_handle: user_handle)
+        end
+      end
+
+      attr_reader :id, :resident_credential, :rp_id, :user_handle, :private_key, :sign_count
+      alias_method :resident_credential?, :resident_credential
+
+      def initialize(id:, resident_credential:, rp_id:, private_key:, user_handle: nil, sign_count: 0)
         @id = id
-        @is_resident_credential = is_resident_credential
+        @resident_credential = resident_credential
         @rp_id = rp_id
         @user_handle = user_handle
         @private_key = private_key
         @sign_count = sign_count
-      end
-
-      attr_reader :id, :is_resident_credential, :rp_id, :user_handle, :private_key, :sign_count
-
-      def self.create_resident_credential(id, rp_id, user_handle, private_key, sign_count)
-        Credential.new(id: id, is_resident_credential: true, rp_id: rp_id, user_handle: user_handle,
-                       private_key: private_key, sign_count: sign_count)
-      end
-
-      def self.create_non_resident_credential(id, rp_id, private_key, sign_count)
-        Credential.new(id: id, is_resident_credential: false, rp_id: rp_id, user_handle: nil,
-                       private_key: private_key, sign_count: sign_count)
       end
 
       #
@@ -51,38 +70,13 @@ module Selenium
       #
 
       def as_json(*)
-        credential_data = {
-          credentialId: Base64.urlsafe_encode64(@id&.pack('C*')),
-          isResidentCredential: @is_resident_credential,
-          rpId: @rp_id,
-          privateKey: Base64.urlsafe_encode64(@private_key),
-          signCount: @sign_count
-        }
-
-        credential_data[:userHandle] = Base64.urlsafe_encode64(@user_handle&.pack('C*')) unless user_handle.nil?
+        credential_data = {'credentialId' => Credential.encode(id),
+                           'isResidentCredential' => resident_credential?,
+                           'rpId' => rp_id,
+                           'privateKey' => Credential.encode(private_key),
+                           'signCount' => sign_count}
+        credential_data['userHandle'] = Credential.encode(user_handle) if user_handle
         credential_data
-      end
-
-      #
-      # @api private
-      #
-
-      def self.from_json(data)
-        id = Base64.urlsafe_decode64(data["credentialId"]).unpack('C*')
-        is_resident_credential = data["isResidentCredential"]
-        rp_id = data['rpId']
-        private_key = Base64.urlsafe_decode64(data["privateKey"])
-        sign_count = data['signCount']
-        user_handle = (Base64.urlsafe_decode64(data["userHandle"]).unpack('C*') if data.key?("userHandle"))
-
-        Credential.new(
-          id: id,
-          is_resident_credential: is_resident_credential,
-          rp_id: rp_id,
-          user_handle: user_handle,
-          private_key: private_key,
-          sign_count: sign_count
-        )
       end
     end # Credential
   end # WebDriver

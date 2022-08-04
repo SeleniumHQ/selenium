@@ -142,11 +142,11 @@ module Selenium
         # Add a non-resident credential using the testing API.
         #
         @authenticator = create_rk_disabled_ctap2_authenticator
-        credential = Credential.create_non_resident_credential(
-          [1, 2, 3, 4],
-          'localhost',
-          Base64.urlsafe_decode64(base64_encoded_pk),
-          0
+        credential = Credential.non_resident(
+          id: [1, 2, 3, 4],
+          rp_id: 'localhost',
+          private_key: Credential.decode(base64_encoded_pk),
+          sign_count: 0
         )
 
         @authenticator.add_credential(credential)
@@ -160,15 +160,15 @@ module Selenium
       it 'should test add non-resident credential when authenticator uses U2F protocol' do
         @authenticator = create_rk_disabled_u2f_authenticator
         base64_enc_pk =
-          "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"\
-          "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"\
+          "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q" \
+          "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU" \
           "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB"
 
-        credential = Credential.create_non_resident_credential(
-          [1, 2, 3, 4],
-          'localhost',
-          Base64.urlsafe_decode64(base64_enc_pk),
-          0
+        credential = Credential.non_resident(
+          id: [1, 2, 3, 4],
+          rp_id: 'localhost',
+          private_key: Credential.decode(base64_enc_pk),
+          sign_count: 0
         )
         @authenticator.add_credential(credential)
         response = get_assertion_for([1, 2, 3, 4])
@@ -177,12 +177,12 @@ module Selenium
 
       it 'should test add resident credential' do
         @authenticator = create_rk_enabled_ctap2_authenticator
-        credential = Credential.create_resident_credential(
-          [1, 2, 3, 4],
-          'localhost',
-          [1],
-          Base64.urlsafe_decode64(base64_encoded_pk),
-          0
+        credential = Credential.resident(
+          id: [1, 2, 3, 4],
+          rp_id: 'localhost',
+          user_handle: [1],
+          private_key: Credential.decode(base64_encoded_pk),
+          sign_count: 0
         )
         @authenticator.add_credential(credential)
         #
@@ -198,16 +198,16 @@ module Selenium
       it 'should test add resident credential not supported when authenticator uses U2F protocol' do
         @authenticator = create_rk_enabled_u2f_authenticator
         base64_enc_pk =
-          "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"\
-          "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"\
+          "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q" \
+          "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU" \
           "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB"
 
-        credential = Credential.create_resident_credential(
-          [1, 2, 3, 4],
-          'localhost',
-          [1],
-          Base64.urlsafe_decode64(base64_enc_pk),
-          0
+        credential = Credential.resident(
+          id: [1, 2, 3, 4],
+          rp_id: 'localhost',
+          user_handle: [1],
+          private_key: Credential.decode(base64_enc_pk),
+          sign_count: 0
         )
 
         #
@@ -266,13 +266,13 @@ module Selenium
           end
         end
 
-        expect(credential1.is_resident_credential).to eq(true)
+        expect(credential1.resident_credential?).to eq(true)
         expect(credential1.private_key).not_to eq(nil)
         expect(credential1.rp_id).to eq('localhost')
         expect(credential1.user_handle).to eq([1])
         expect(credential1.sign_count).to eq(1)
 
-        expect(credential2.is_resident_credential).to eq(false)
+        expect(credential2.resident_credential?).to eq(false)
         expect(credential2.private_key).not_to eq(nil)
         #
         # Non resident keys do not store raw RP IDs or user handles.
@@ -341,7 +341,7 @@ module Selenium
         #
 
         response = driver.execute_async_script(
-          "getCredential([{"\
+          "getCredential([{" \
           "  \"type\": \"public-key\"," \
           "  \"id\": Int8Array.from(arguments[0])," \
           "}, {" \
@@ -362,7 +362,7 @@ module Selenium
         #
 
         response = driver.execute_async_script(
-          "registerCredential({authenticatorSelection: {userVerification: 'required'}})"\
+          "registerCredential({authenticatorSelection: {userVerification: 'required'}})" \
           "  .then(arguments[arguments.length - 1]);"
         )
         expect(response['status']).to eq('OK')
