@@ -568,6 +568,39 @@ module Selenium
           ShadowRoot.new self, shadow_root_id_from(id)
         end
 
+        #
+        # virtual-authenticator
+        #
+
+        def add_virtual_authenticator(options)
+          authenticator_id = execute :add_virtual_authenticator, {}, options.as_json
+          VirtualAuthenticator.new(self, authenticator_id)
+        end
+
+        def remove_virtual_authenticator(authenticator)
+          execute :remove_virtual_authenticator, {}, {authenticatorId: authenticator.id}
+        end
+
+        def add_credential(credential)
+          execute :add_credential, {}, credential
+        end
+
+        def credentials(authenticator_id)
+          execute :get_credentials, {}, {authenticatorId: authenticator_id}
+        end
+
+        def remove_credential(credential_id, authenticator_id)
+          execute :remove_credential, {}, {credentialId: credential_id, authenticatorId: authenticator_id}
+        end
+
+        def remove_all_credentials(authenticator_id)
+          execute :remove_all_credentials, {}, {authenticatorId: authenticator_id}
+        end
+
+        def user_verified(verified, authenticator_id)
+          execute :set_user_verified, {}, {authenticatorId: authenticator_id, isUserVerified: verified}
+        end
+
         private
 
         #
