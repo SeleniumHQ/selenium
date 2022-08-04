@@ -358,7 +358,7 @@ RSpec/Rails/AvoidSetupHook: # new in 2.4
 Style/EnvHome: # new in 1.29
   Enabled: true
 Layout/LineContinuationLeadingSpace: # new in 1.31
-  Enabled: true
+  Enabled: false
 Layout/LineContinuationSpacing: # new in 1.31
   Enabled: true
 Lint/ConstantOverwrittenInRescue: # new in 1.31
