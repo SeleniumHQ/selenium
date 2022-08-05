@@ -32,6 +32,12 @@ setup_args = {
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
+    'project_urls': {
+        'Bug Tracker': 'https://github.com/SeleniumHQ/selenium/issues',
+        'Changes': 'https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES',
+        'Documentation': 'https://www.selenium.dev/documentation/overview/',
+        'Source Code': 'https://github.com/SeleniumHQ/selenium/tree/trunk/py',
+    },
     'python_requires': '~=3.7',
     'classifiers': ['Development Status :: 5 - Production/Stable',
                     'Intended Audience :: Developers',
