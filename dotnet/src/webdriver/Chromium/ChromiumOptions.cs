@@ -190,10 +190,20 @@ namespace OpenQA.Selenium.Chromium
         /// should use the legacy OSS protocol dialect or a dialect compliant with the W3C
         /// WebDriver Specification.
         /// </summary>
+        [Obsolete("Spec Compliant Protocol is the only supported protocol")]
         public bool UseSpecCompliantProtocol
         {
             get { return this.useSpecCompliantProtocol; }
-            set { this.useSpecCompliantProtocol = value; }
+            set
+            {
+                if (!value)
+                {
+                    throw new ArgumentException("Only the spec compliant protocol is supported, " +
+                                                "Please update to W3C Syntax: " +
+                                                "https://www.selenium.dev/blog/2022/legacy-protocol-support/");
+                }
+                this.useSpecCompliantProtocol = true;
+            }
         }
 
         /// <summary>
