@@ -705,8 +705,7 @@ public class RemoteWebDriver implements WebDriver,
         w3c = rawW3C == null || Boolean.parseBoolean(String.valueOf(rawW3C));
       }
       if (!w3c) {
-        logger.log(
-          Level.WARNING,
+        throw new WebDriverException(
           "Setting 'w3c: false' inside 'goog:chromeOptions' will no longer be supported " +
           "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/"
         );
