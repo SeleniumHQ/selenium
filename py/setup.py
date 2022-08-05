@@ -35,7 +35,7 @@ setup_args = {
     'project_urls': {
         'Bug Tracker': 'https://github.com/SeleniumHQ/selenium/issues',
         'Changes': 'https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES',
-        'Documentation': 'https://seleniumhq.github.io/selenium/docs/api/py/api.html',
+        'Documentation': 'https://www.selenium.dev/documentation/overview/',
         'Source Code': 'https://github.com/SeleniumHQ/selenium/tree/trunk/py',
     },
     'python_requires': '~=3.7',
