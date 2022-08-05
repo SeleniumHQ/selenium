@@ -586,7 +586,7 @@ module Selenium
         end
 
         def credentials(authenticator_id)
-          execute :get_credentials, {}, {authenticatorId: authenticator_id}
+          execute :get_credentials, {authenticatorId: authenticator_id}
         end
 
         def remove_credential(credential_id, authenticator_id)
