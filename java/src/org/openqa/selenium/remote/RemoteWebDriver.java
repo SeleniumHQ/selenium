@@ -727,8 +727,7 @@ public class RemoteWebDriver implements WebDriver,
       if (!w3c) {
         logger.log(
           Level.WARNING,
-          "Setting 'w3c: true' inside 'goog:chromeOptions' will not be accepted from " +
-          "Selenium 4.4; " +
+          "Setting 'w3c: false' inside 'goog:chromeOptions' will no longer be supported " +
           "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/"
         );
       }
