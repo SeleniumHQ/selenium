@@ -1,3 +1,15 @@
+v4.4.0
+======
+* Add CDP support for v104, and remove v101
+* Removed obsolete TouchActions class
+* Removed all methods marked obsolete from 4.0
+* Updated Newtonsoft.Json to address security issue
+* Implemented ability to run different versions of browser and driver for Chrome
+* Implemented VirtualAuth support
+* Fixed bug with unsuccessful http requests in session start
+* Fixed bug checking whether driver supports DevTools
+* Marked UseSpecCompliantProtocol obsolete and throwing error when user sets to false
+
 v4.3.0
 ======
 * Added CDP support for v103, and remove v100
