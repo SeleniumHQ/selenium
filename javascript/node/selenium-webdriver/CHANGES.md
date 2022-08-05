@@ -1,3 +1,6 @@
+## v4.4.0
+* Add support CDP 104 and remove CDP 101
+
 ## v4.3.1
 
 * create new default service for every driver instance in chromium (#10796)

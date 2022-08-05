@@ -163,6 +163,17 @@ class ChromiumOptions(ArgOptions):
         """
         caps = self._caps
         chrome_options = self.experimental_options.copy()
+        if 'w3c' in chrome_options:
+            if chrome_options['w3c']:
+                warnings.warn(
+                    "Setting 'w3c: True' is redundant and will no longer be allowed",
+                    DeprecationWarning,
+                    stacklevel=2
+                )
+            else:
+                raise AttributeError('setting w3c to False is not allowed, '
+                                     'Please update to W3C Syntax: '
+                                     'https://www.selenium.dev/blog/2022/legacy-protocol-support/')
         if self.mobile_options:
             chrome_options.update(self.mobile_options)
         chrome_options["extensions"] = self.extensions

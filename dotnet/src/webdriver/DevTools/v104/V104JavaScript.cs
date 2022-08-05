@@ -1,4 +1,4 @@
-// <copyright file="V101JavaScript.cs" company="WebDriver Committers">
+// <copyright file="V104JavaScript.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -18,25 +18,25 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V101.Page;
-using OpenQA.Selenium.DevTools.V101.Runtime;
+using OpenQA.Selenium.DevTools.V104.Page;
+using OpenQA.Selenium.DevTools.V104.Runtime;
 
-namespace OpenQA.Selenium.DevTools.V101
+namespace OpenQA.Selenium.DevTools.V104
 {
     /// <summary>
-    /// Class containing the JavaScript implementation for version 101 of the DevTools Protocol.
+    /// Class containing the JavaScript implementation for version 104 of the DevTools Protocol.
     /// </summary>
-    public class V101JavaScript : JavaScript
+    public class V104JavaScript : JavaScript
     {
         private RuntimeAdapter runtime;
         private PageAdapter page;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V101JavaScript"/> class.
+        /// Initializes a new instance of the <see cref="V104JavaScript"/> class.
         /// </summary>
         /// <param name="runtime">The DevTools Protocol adapter for the Runtime domain.</param>
         /// <param name="page">The DevTools Protocol adapter for the Page domain.</param>
-        public V101JavaScript(RuntimeAdapter runtime, PageAdapter page)
+        public V104JavaScript(RuntimeAdapter runtime, PageAdapter page)
         {
             this.runtime = runtime;
             this.page = page;

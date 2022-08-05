@@ -325,7 +325,7 @@ public class LocalNode extends Node {
       attributeMap.put("current.session.count", EventAttribute.setValue(currentSessionCount));
 
       if (getCurrentSessionCount() >= maxSessionCount) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.RESOURCE_EXHAUSTED);
         attributeMap.put("max.session.count", EventAttribute.setValue(maxSessionCount));
         span.addEvent("Max session count reached", attributeMap);
@@ -352,7 +352,7 @@ public class LocalNode extends Node {
       }
 
       if (slotToUse == null) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.NOT_FOUND);
         span.addEvent("No slot matched the requested capabilities. ", attributeMap);
         return Either.left(
@@ -394,7 +394,8 @@ public class LocalNode extends Node {
           getEncoder(session.getDownstreamDialect()).apply(externalSession)));
       } else {
         slotToUse.release();
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
+        span.setStatus(Status.ABORTED);
         span.addEvent("Unable to create session with the driver", attributeMap);
         return Either.left(possibleSession.left());
       }

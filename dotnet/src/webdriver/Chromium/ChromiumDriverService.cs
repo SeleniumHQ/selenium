@@ -35,6 +35,7 @@ namespace OpenQA.Selenium.Chromium
         private string portServerAddress = string.Empty;
         private string whitelistedIpAddresses = string.Empty;
         private int adbPort = -1;
+        private bool disableBuildCheck;
         private bool enableVerboseLogging;
         private bool enableAppendLog;
 
@@ -87,6 +88,17 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to skip version compatibility check
+        /// between the driver and the browser.
+        /// Defaults to <see langword="false"/>.
+        /// </summary>
+        public bool DisableBuildCheck
+        {
+            get { return this.disableBuildCheck; }
+            set { this.disableBuildCheck = value; }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether to enable verbose logging for the ChromeDriver executable.
         /// Defaults to <see langword="false"/>.
         /// </summary>
@@ -133,6 +145,11 @@ namespace OpenQA.Selenium.Chromium
                 if (this.SuppressInitialDiagnosticInformation)
                 {
                     argsBuilder.Append(" --silent");
+                }
+
+                if (this.disableBuildCheck)
+                {
+                    argsBuilder.Append(" --disable-build-check");
                 }
 
                 if (this.enableVerboseLogging)
