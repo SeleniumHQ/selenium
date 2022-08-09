@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -207,25 +207,37 @@ implements java.io.Closeable</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createSession(java.lang.String)">createSession</a></span>&#8203;(java.lang.String&nbsp;windowHandle)</code></th>
+<td class="colLast">
+<div class="block">Create CDP session on given window/tab (aka target).</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createSessionIfThereIsNotOne()">createSessionIfThereIsNotOne</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createSessionIfThereIsNotOne(java.lang.String)">createSessionIfThereIsNotOne</a></span>&#8203;(java.lang.String&nbsp;windowHandle)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#disconnectSession()">disconnectSession</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="idealized/target/model/SessionID.html" title="class in org.openqa.selenium.devtools.idealized.target.model">SessionID</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCdpSession()">getCdpSession</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="idealized/Domains.html" title="interface in org.openqa.selenium.devtools.idealized">Domains</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDomains()">getDomains</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#send(org.openqa.selenium.devtools.Command)">send</a></span>&#8203;(<a href="Command.html" title="class in org.openqa.selenium.devtools">Command</a>&lt;X&gt;&nbsp;command)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -344,6 +356,15 @@ implements java.io.Closeable</pre>
 <pre class="methodSignature">public&nbsp;void&nbsp;createSessionIfThereIsNotOne()</pre>
 </li>
 </ul>
+<a id="createSessionIfThereIsNotOne(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createSessionIfThereIsNotOne</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;createSessionIfThereIsNotOne&#8203;(java.lang.String&nbsp;windowHandle)</pre>
+</li>
+</ul>
 <a id="createSession()">
 <!--   -->
 </a>
@@ -351,6 +372,23 @@ implements java.io.Closeable</pre>
 <li class="blockList">
 <h4>createSession</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;createSession()</pre>
+</li>
+</ul>
+<a id="createSession(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createSession</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;createSession&#8203;(java.lang.String&nbsp;windowHandle)</pre>
+<div class="block">Create CDP session on given window/tab (aka target).
+ If windowHandle is null, then the first "page" type will be selected.
+ Pass the windowHandle if you have multiple windows/tabs opened to connect to
+ the expected window/tab.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>windowHandle</code> - result of <a href="../WebDriver.html#getWindowHandle()"><code>WebDriver.getWindowHandle()</code></a>, optional.</dd>
+</dl>
 </li>
 </ul>
 <a id="getCdpSession()">

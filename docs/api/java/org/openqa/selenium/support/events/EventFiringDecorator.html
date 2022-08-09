@@ -120,17 +120,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <main role="main">
 <div class="header">
 <div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">org.openqa.selenium.support.events</a></div>
-<h2 title="Class EventFiringDecorator" class="title">Class EventFiringDecorator</h2>
+<h2 title="Class EventFiringDecorator" class="title">Class EventFiringDecorator&lt;T extends <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li><a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">org.openqa.selenium.support.decorators.WebDriverDecorator</a></li>
+<li><a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">org.openqa.selenium.support.decorators.WebDriverDecorator</a>&lt;T&gt;</li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.selenium.support.events.EventFiringDecorator</li>
+<li>org.openqa.selenium.support.events.EventFiringDecorator&lt;T&gt;</li>
 </ul>
 </li>
 </ul>
@@ -141,8 +141,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <hr>
 <pre><a href="../../Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
-public class <span class="typeNameLabel">EventFiringDecorator</span>
-extends <a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a></pre>
+public class <span class="typeNameLabel">EventFiringDecorator&lt;T extends <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>
+extends <a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a>&lt;T&gt;</pre>
 <div class="block">This decorator creates a wrapper around an arbitrary <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> instance that notifies
  registered listeners about events happening in this WebDriver and derived objects, such as
  <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s and <a href="../../Alert.html" title="interface in org.openqa.selenium"><code>Alert</code></a>.
@@ -349,7 +349,7 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.support.decorators.<a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a></h3>
-<code><a href="../decorators/WebDriverDecorator.html#call(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D)">call</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.Alert)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.Navigation)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.Options)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.TargetLocator)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.Timeouts)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.Window)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebElement)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createProxy(org.openqa.selenium.support.decorators.Decorated,java.lang.Class)">createProxy</a>, <a href="../decorators/WebDriverDecorator.html#decorate(org.openqa.selenium.WebDriver)">decorate</a>, <a href="../decorators/WebDriverDecorator.html#getDecoratedDriver()">getDecoratedDriver</a></code></li>
+<code><a href="../decorators/WebDriverDecorator.html#call(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D)">call</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.Alert)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.virtualauthenticator.VirtualAuthenticator)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.Navigation)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.Options)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.TargetLocator)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.Timeouts)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebDriver.Window)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(org.openqa.selenium.WebElement)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createDecorated(T)">createDecorated</a>, <a href="../decorators/WebDriverDecorator.html#createProxy(org.openqa.selenium.support.decorators.Decorated,java.lang.Class)">createProxy</a>, <a href="../decorators/WebDriverDecorator.html#decorate(T)">decorate</a>, <a href="../decorators/WebDriverDecorator.html#getDecoratedDriver()">getDecoratedDriver</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -404,7 +404,7 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
                        java.lang.Object[]&nbsp;args)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../decorators/WebDriverDecorator.html#beforeCall(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D)">beforeCall</a></code>&nbsp;in class&nbsp;<code><a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a></code></dd>
+<dd><code><a href="../decorators/WebDriverDecorator.html#beforeCall(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D)">beforeCall</a></code>&nbsp;in class&nbsp;<code><a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a>&lt;<a href="EventFiringDecorator.html" title="type parameter in EventFiringDecorator">T</a> extends <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -420,7 +420,7 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
                       java.lang.Object&nbsp;result)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../decorators/WebDriverDecorator.html#afterCall(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)">afterCall</a></code>&nbsp;in class&nbsp;<code><a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a></code></dd>
+<dd><code><a href="../decorators/WebDriverDecorator.html#afterCall(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.Object)">afterCall</a></code>&nbsp;in class&nbsp;<code><a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a>&lt;<a href="EventFiringDecorator.html" title="type parameter in EventFiringDecorator">T</a> extends <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -437,7 +437,7 @@ extends <a href="../decorators/WebDriverDecorator.html" title="class in org.open
                          throws java.lang.Throwable</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../decorators/WebDriverDecorator.html#onError(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.reflect.InvocationTargetException)">onError</a></code>&nbsp;in class&nbsp;<code><a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a></code></dd>
+<dd><code><a href="../decorators/WebDriverDecorator.html#onError(org.openqa.selenium.support.decorators.Decorated,java.lang.reflect.Method,java.lang.Object%5B%5D,java.lang.reflect.InvocationTargetException)">onError</a></code>&nbsp;in class&nbsp;<code><a href="../decorators/WebDriverDecorator.html" title="class in org.openqa.selenium.support.decorators">WebDriverDecorator</a>&lt;<a href="EventFiringDecorator.html" title="type parameter in EventFiringDecorator">T</a> extends <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.lang.Throwable</code></dd>
 </dl>

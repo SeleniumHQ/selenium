@@ -120,14 +120,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <main role="main">
 <div class="header">
 <div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">org.openqa.selenium.support.decorators</a></div>
-<h2 title="Class WebDriverDecorator" class="title">Class WebDriverDecorator</h2>
+<h2 title="Class WebDriverDecorator" class="title">Class WebDriverDecorator&lt;T extends <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>org.openqa.selenium.support.decorators.WebDriverDecorator</li>
+<li>org.openqa.selenium.support.decorators.WebDriverDecorator&lt;T&gt;</li>
 </ul>
 </li>
 </ul>
@@ -140,7 +140,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre><a href="../../Beta.html" title="annotation in org.openqa.selenium">@Beta</a>
-public class <span class="typeNameLabel">WebDriverDecorator</span>
+public class <span class="typeNameLabel">WebDriverDecorator&lt;T extends <a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</span>
 extends java.lang.Object</pre>
 <div class="block">This class helps to create decorators for instances of <a href="../../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> and
  derived objects, such as <a href="../../WebElement.html" title="interface in org.openqa.selenium"><code>WebElement</code></a>s and <a href="../../Alert.html" title="interface in org.openqa.selenium"><code>Alert</code></a>, that can
@@ -323,6 +323,10 @@ extends java.lang.Object</pre>
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E()">WebDriverDecorator</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.Class)">WebDriverDecorator</a></span>&#8203;(java.lang.Class&lt;<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&gt;&nbsp;targetClass)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -374,38 +378,38 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
-<td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDecorated(org.openqa.selenium.WebDriver)">createDecorated</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDecorated(org.openqa.selenium.WebDriver.Navigation)">createDecorated</a></span>&#8203;(<a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>&nbsp;original)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDecorated(org.openqa.selenium.WebDriver.Options)">createDecorated</a></span>&#8203;(<a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>&nbsp;original)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDecorated(org.openqa.selenium.WebDriver.TargetLocator)">createDecorated</a></span>&#8203;(<a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>&nbsp;original)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDecorated(org.openqa.selenium.WebDriver.Timeouts)">createDecorated</a></span>&#8203;(<a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>&nbsp;original)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDecorated(org.openqa.selenium.WebDriver.Window)">createDecorated</a></span>&#8203;(<a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a>&nbsp;original)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDecorated(org.openqa.selenium.WebElement)">createDecorated</a></span>&#8203;(<a href="../../WebElement.html" title="interface in org.openqa.selenium">WebElement</a>&nbsp;original)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDecorated(T)">createDecorated</a></span>&#8203;(<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&nbsp;driver)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i12" class="altColor">
@@ -415,12 +419,12 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i13" class="rowColor">
-<td class="colFirst"><code><a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#decorate(org.openqa.selenium.WebDriver)">decorate</a></span>&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;original)</code></th>
+<td class="colFirst"><code><a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#decorate(T)">decorate</a></span>&#8203;(<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&nbsp;original)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i14" class="altColor">
-<td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;</code></td>
+<td class="colFirst"><code><a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDecoratedDriver()">getDecoratedDriver</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -459,10 +463,19 @@ extends java.lang.Object</pre>
 <a id="&lt;init&gt;()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>WebDriverDecorator</h4>
 <pre>public&nbsp;WebDriverDecorator()</pre>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.lang.Class)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>WebDriverDecorator</h4>
+<pre>public&nbsp;WebDriverDecorator&#8203;(java.lang.Class&lt;<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&gt;&nbsp;targetClass)</pre>
 </li>
 </ul>
 </li>
@@ -477,11 +490,13 @@ extends java.lang.Object</pre>
 <h3>Method Detail</h3>
 <a id="decorate(org.openqa.selenium.WebDriver)">
 <!--   -->
+</a><a id="decorate(T)">
+<!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>decorate</h4>
-<pre class="methodSignature">public final&nbsp;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;decorate&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;original)</pre>
+<pre class="methodSignature">public final&nbsp;<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&nbsp;decorate&#8203;(<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&nbsp;original)</pre>
 </li>
 </ul>
 <a id="getDecoratedDriver()">
@@ -490,16 +505,18 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getDecoratedDriver</h4>
-<pre class="methodSignature">public&nbsp;<a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;getDecoratedDriver()</pre>
+<pre class="methodSignature">public&nbsp;<a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&gt;&nbsp;getDecoratedDriver()</pre>
 </li>
 </ul>
 <a id="createDecorated(org.openqa.selenium.WebDriver)">
+<!--   -->
+</a><a id="createDecorated(T)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>createDecorated</h4>
-<pre class="methodSignature">public&nbsp;<a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&gt;&nbsp;createDecorated&#8203;(<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a>&nbsp;driver)</pre>
+<pre class="methodSignature">public&nbsp;<a href="Decorated.html" title="interface in org.openqa.selenium.support.decorators">Decorated</a>&lt;<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&gt;&nbsp;createDecorated&#8203;(<a href="WebDriverDecorator.html" title="type parameter in WebDriverDecorator">T</a>&nbsp;driver)</pre>
 </li>
 </ul>
 <a id="createDecorated(org.openqa.selenium.WebElement)">
