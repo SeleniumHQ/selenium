@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.firefox.firefox_binary &#8212; Selenium 4.3 documentation</title>
+    <title>selenium.webdriver.firefox.firefox_binary &#8212; Selenium 4.4 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -190,7 +190,11 @@
         <span class="sd">&quot;&quot;&quot;Return the command to start firefox.&quot;&quot;&quot;</span>
         <span class="n">start_cmd</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span><span class="p">:</span>  <span class="c1"># small darwin due to lower() in self.platform</span>
-            <span class="n">start_cmd</span> <span class="o">=</span> <span class="s2">&quot;/Applications/Firefox.app/Contents/MacOS/firefox-bin&quot;</span>
+            <span class="n">ffname</span> <span class="o">=</span> <span class="s2">&quot;firefox&quot;</span>
+            <span class="n">start_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="n">ffname</span><span class="p">)</span>
+            <span class="c1"># use hardcoded path if nothing else was found by which()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">start_cmd</span><span class="p">:</span>
+                <span class="n">start_cmd</span> <span class="o">=</span> <span class="s2">&quot;/Applications/Firefox.app/Contents/MacOS/firefox-bin&quot;</span>
             <span class="c1"># fallback to homebrew installation for mac users</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">start_cmd</span><span class="p">):</span>
                 <span class="n">start_cmd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">start_cmd</span>
@@ -288,7 +292,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
