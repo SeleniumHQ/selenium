@@ -1155,7 +1155,7 @@
       <span class='id identifier rubyid_download_server'>download_server</span><span class='lparen'>(</span><span class='id identifier rubyid_redirected'>redirected</span><span class='comma'>,</span> <span class='id identifier rubyid_destination'>destination</span><span class='rparen'>)</span>
     <span class='kw'>end</span>
   <span class='kw'>rescue</span> <span class='const'>StandardError</span>
-    <span class='const'>FileUtils</span><span class='period'>.</span><span class='id identifier rubyid_rm'>rm</span> <span class='id identifier rubyid_download_file_name'>download_file_name</span> <span class='kw'>if</span> <span class='const'>File</span><span class='period'>.</span><span class='id identifier rubyid_exist?'>exist?</span> <span class='id identifier rubyid_download_file_name'>download_file_name</span>
+    <span class='const'>FileUtils</span><span class='period'>.</span><span class='id identifier rubyid_rm_rf'>rm_rf</span> <span class='id identifier rubyid_download_file_name'>download_file_name</span>
     <span class='id identifier rubyid_raise'>raise</span>
   <span class='kw'>end</span>
 
@@ -1583,7 +1583,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Jun 24 00:25:11 2022 by
+  Generated on Tue Aug  9 14:21:54 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.1.2).
 </div>

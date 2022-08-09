@@ -277,30 +277,14 @@
 63
 64
 65
-66
-67
-68
-69
-70
-71
-72
-73
-74</pre>
+66</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver_extensions/has_network_interception.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_intercept'>intercept</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_devtools'>devtools</span><span class='period'>.</span><span class='id identifier rubyid_network'>network</span><span class='period'>.</span><span class='id identifier rubyid_set_cache_disabled'>set_cache_disabled</span><span class='lparen'>(</span><span class='label'>cache_disabled:</span> <span class='kw'>true</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_devtools'>devtools</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='period'>.</span><span class='id identifier rubyid_on'>on</span><span class='lparen'>(</span><span class='symbol'>:request_paused</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_params'>params</span><span class='op'>|</span>
-    <span class='id identifier rubyid_id'>id</span> <span class='op'>=</span> <span class='id identifier rubyid_params'>params</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>requestId</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
-    <span class='kw'>if</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>responseStatusCode</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>responseErrorReason</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-      <span class='id identifier rubyid_intercept_response'>intercept_response</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_pending_response_requests'>pending_response_requests</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span><span class='rparen'>)</span>
-    <span class='kw'>else</span>
-      <span class='id identifier rubyid_intercept_request'>intercept_request</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
-    <span class='kw'>end</span>
-  <span class='kw'>end</span>
-  <span class='id identifier rubyid_devtools'>devtools</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='period'>.</span><span class='id identifier rubyid_enable'>enable</span><span class='lparen'>(</span><span class='label'>patterns:</span> <span class='lbracket'>[</span><span class='lbrace'>{</span><span class='label'>requestStage:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Request</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>requestStage:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Response</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='ivar'>@interceptor</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="../DevTools.html" title="Selenium::WebDriver::DevTools (class)">DevTools</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../DevTools/NetworkInterceptor.html" title="Selenium::WebDriver::DevTools::NetworkInterceptor (class)">NetworkInterceptor</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../DevTools/NetworkInterceptor.html#initialize-instance_method" title="Selenium::WebDriver::DevTools::NetworkInterceptor#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_devtools'>devtools</span><span class='rparen'>)</span>
+  <span class='ivar'>@interceptor</span><span class='period'>.</span><span class='id identifier rubyid_intercept'>intercept</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -312,7 +296,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Jun 24 00:25:11 2022 by
+  Generated on Tue Aug  9 14:21:54 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.1.2).
 </div>

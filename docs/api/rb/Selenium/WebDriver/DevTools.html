@@ -95,7 +95,7 @@
   <dl>
     <dt>Defined in:</dt>
     <dd>rb/lib/selenium/webdriver/devtools.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/devtools/request.rb,<br /> rb/lib/selenium/webdriver/devtools/response.rb,<br /> rb/lib/selenium/webdriver/devtools/console_event.rb,<br /> rb/lib/selenium/webdriver/devtools/pinned_script.rb,<br /> rb/lib/selenium/webdriver/devtools/mutation_event.rb,<br /> rb/lib/selenium/webdriver/devtools/exception_event.rb</span>
+  rb/lib/selenium/webdriver/devtools/request.rb,<br /> rb/lib/selenium/webdriver/devtools/response.rb,<br /> rb/lib/selenium/webdriver/devtools/console_event.rb,<br /> rb/lib/selenium/webdriver/devtools/pinned_script.rb,<br /> rb/lib/selenium/webdriver/devtools/mutation_event.rb,<br /> rb/lib/selenium/webdriver/devtools/exception_event.rb,<br /> rb/lib/selenium/webdriver/devtools/network_interceptor.rb</span>
 </dd>
   </dl>
   
@@ -107,7 +107,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="DevTools/ConsoleEvent.html" title="Selenium::WebDriver::DevTools::ConsoleEvent (class)">ConsoleEvent</a></span>, <span class='object_link'><a href="DevTools/ExceptionEvent.html" title="Selenium::WebDriver::DevTools::ExceptionEvent (class)">ExceptionEvent</a></span>, <span class='object_link'><a href="DevTools/MutationEvent.html" title="Selenium::WebDriver::DevTools::MutationEvent (class)">MutationEvent</a></span>, <span class='object_link'><a href="DevTools/PinnedScript.html" title="Selenium::WebDriver::DevTools::PinnedScript (class)">PinnedScript</a></span>, <span class='object_link'><a href="DevTools/Request.html" title="Selenium::WebDriver::DevTools::Request (class)">Request</a></span>, <span class='object_link'><a href="DevTools/Response.html" title="Selenium::WebDriver::DevTools::Response (class)">Response</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="DevTools/ConsoleEvent.html" title="Selenium::WebDriver::DevTools::ConsoleEvent (class)">ConsoleEvent</a></span>, <span class='object_link'><a href="DevTools/ExceptionEvent.html" title="Selenium::WebDriver::DevTools::ExceptionEvent (class)">ExceptionEvent</a></span>, <span class='object_link'><a href="DevTools/MutationEvent.html" title="Selenium::WebDriver::DevTools::MutationEvent (class)">MutationEvent</a></span>, <span class='object_link'><a href="DevTools/NetworkInterceptor.html" title="Selenium::WebDriver::DevTools::NetworkInterceptor (class)">NetworkInterceptor</a></span>, <span class='object_link'><a href="DevTools/PinnedScript.html" title="Selenium::WebDriver::DevTools::PinnedScript (class)">PinnedScript</a></span>, <span class='object_link'><a href="DevTools/Request.html" title="Selenium::WebDriver::DevTools::Request (class)">Request</a></span>, <span class='object_link'><a href="DevTools/Response.html" title="Selenium::WebDriver::DevTools::Response (class)">Response</a></span>
     
   
 </p>
@@ -294,14 +294,14 @@
       <pre class="lines">
 
 
-30
 31
 32
 33
-34</pre>
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>url:</span><span class='rparen'>)</span>
   <span class='ivar'>@ws</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="WebSocketConnection.html" title="Selenium::WebDriver::WebSocketConnection (class)">WebSocketConnection</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="WebSocketConnection.html#initialize-instance_method" title="Selenium::WebDriver::WebSocketConnection#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>url:</span> <span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
@@ -336,7 +336,6 @@
       <pre class="lines">
 
 
-53
 54
 55
 56
@@ -347,10 +346,11 @@
 61
 62
 63
-64</pre>
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_method_missing'>method_missing</span><span class='lparen'>(</span><span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid__args'>_args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_desired_class'>desired_class</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Selenium::DevTools::V</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../DevTools.html" title="Selenium::DevTools (module)">DevTools</a></span></span><span class='period'>.</span><span class='id identifier rubyid_version'><span class='object_link'><a href="../DevTools.html#version-class_method" title="Selenium::DevTools.version (method)">version</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>::</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_method'>method</span><span class='period'>.</span><span class='id identifier rubyid_capitalize'>capitalize</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -391,12 +391,12 @@
       <pre class="lines">
 
 
-40
 41
-42</pre>
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_callbacks'>callbacks</span>
   <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_callbacks'>callbacks</span>
@@ -421,12 +421,12 @@
       <pre class="lines">
 
 
-36
 37
-38</pre>
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='ivar'>@ws</span><span class='period'>.</span><span class='id identifier rubyid_close'>close</span>
@@ -473,13 +473,13 @@
       <pre class="lines">
 
 
-66
 67
 68
-69</pre>
+69
+70</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_respond_to_missing?'>respond_to_missing?</span><span class='lparen'>(</span><span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid__args'>_args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_desired_class'>desired_class</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Selenium::DevTools::V</span><span class='embexpr_beg'>#{</span><span class='const'><span class='object_link'><a href="../../Selenium.html" title="Selenium (module)">Selenium</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../DevTools.html" title="Selenium::DevTools (module)">DevTools</a></span></span><span class='period'>.</span><span class='id identifier rubyid_version'><span class='object_link'><a href="../DevTools.html#version-class_method" title="Selenium::DevTools.version (method)">version</a></span></span><span class='embexpr_end'>}</span><span class='tstring_content'>::</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_method'>method</span><span class='period'>.</span><span class='id identifier rubyid_capitalize'>capitalize</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
@@ -527,17 +527,17 @@
       <pre class="lines">
 
 
-44
 45
 46
 47
 48
 49
 50
-51</pre>
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>method:</span> <span class='id identifier rubyid_method'>method</span><span class='comma'>,</span> <span class='label'>params:</span> <span class='id identifier rubyid_params'>params</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='rbrace'>}</span>
@@ -557,7 +557,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Jun 24 00:25:11 2022 by
+  Generated on Tue Aug  9 14:21:54 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.1.2).
 </div>

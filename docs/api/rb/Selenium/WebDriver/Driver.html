@@ -233,6 +233,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#add_virtual_authenticator-instance_method" title="#add_virtual_authenticator (instance method)">#<strong>add_virtual_authenticator</strong>(options)  &#x21d2; VirtualAuthenticator </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#browser-instance_method" title="#browser (instance method)">#<strong>browser</strong>  &#x21d2; Object </a>
     
 
@@ -972,14 +994,14 @@
       <pre class="lines">
 
 
-283
-284
-285
-286
-287</pre>
+292
+293
+294
+295
+296</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 283</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 292</span>
 
 <span class='kw'>def</span> <span class='op'>[]</span><span class='lparen'>(</span><span class='id identifier rubyid_sel'>sel</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_sel'>sel</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_sel'>sel</span><span class='rbrace'>}</span> <span class='kw'>if</span> <span class='id identifier rubyid_sel'>sel</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_sel'>sel</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
@@ -1051,6 +1073,65 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="add_virtual_authenticator-instance_method">
+  
+    #<strong>add_virtual_authenticator</strong>(options)  &#x21d2; <tt><span class='object_link'><a href="VirtualAuthenticator.html" title="Selenium::WebDriver::VirtualAuthenticator (class)">VirtualAuthenticator</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="VirtualAuthenticator.html" title="Selenium::WebDriver::VirtualAuthenticator (class)">VirtualAuthenticator</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+  <p class="tag_title">See Also:</p>
+  <ul class="see">
+    
+      <li><span class='object_link'><a href="VirtualAuthenticator.html" title="Selenium::WebDriver::VirtualAuthenticator (class)">VirtualAuthenticator</a></span></li>
+    
+  </ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+256
+257
+258</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 256</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_virtual_authenticator'>add_virtual_authenticator</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_add_virtual_authenticator'>add_virtual_authenticator</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="browser-instance_method">
   
     #<strong>browser</strong>  &#x21d2; <tt>Object</tt> 
@@ -1065,12 +1146,12 @@
       <pre class="lines">
 
 
-289
-290
-291</pre>
+298
+299
+300</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 289</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 298</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='op'>&amp;.</span><span class='id identifier rubyid_browser'>browser</span>
@@ -1095,12 +1176,12 @@
       <pre class="lines">
 
 
-293
-294
-295</pre>
+302
+303
+304</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 293</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 302</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_capabilities'>capabilities</span>
   <span class='id identifier rubyid_bridge'>bridge</span><span class='period'>.</span><span class='id identifier rubyid_capabilities'>capabilities</span>
@@ -1781,12 +1862,12 @@
       <pre class="lines">
 
 
-302
-303
-304</pre>
+311
+312
+313</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 302</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/driver.rb', line 311</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_ref'>ref</span>
   <span class='lbracket'>[</span><span class='symbol'>:driver</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='rbracket'>]</span>
@@ -2083,7 +2164,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Jun 24 00:25:11 2022 by
+  Generated on Tue Aug  9 14:21:55 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.1.2).
 </div>

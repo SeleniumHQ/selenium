@@ -278,7 +278,21 @@
 </span>  <span class='comment'># server extensions
 </span>  <span class='comment'>#
 </span>
-  <span class='label'>upload_file:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/se/file</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='label'>upload_file:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/se/file</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+
+  <span class='comment'>#
+</span>  <span class='comment'># virtual-authenticator
+</span>  <span class='comment'>#
+</span>
+  <span class='label'>add_virtual_authenticator:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>remove_virtual_authenticator:</span> <span class='lbracket'>[</span><span class='symbol'>:delete</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>add_credential:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId/credential</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>get_credentials:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId/credentials</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>remove_credential:</span> <span class='lbracket'>[</span><span class='symbol'>:delete</span><span class='comma'>,</span>
+                      <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId/credentials/:credentialId</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>remove_all_credentials:</span> <span class='lbracket'>[</span><span class='symbol'>:delete</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId/credentials</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
+  <span class='label'>set_user_verified:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/webauthn/authenticator/:authenticatorId/uv</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
@@ -480,6 +494,52 @@
 
   
     <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_credential-instance_method" title="#add_credential (instance method)">#<strong>add_credential</strong>(credential, id)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#add_virtual_authenticator-instance_method" title="#add_virtual_authenticator (instance method)">#<strong>add_virtual_authenticator</strong>(options)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>virtual-authenticator.</p>
+</div></span>
   
 </li>
 
@@ -724,6 +784,28 @@
     <span class="summary_desc"><div class='inline'>
 <p>Creates session.</p>
 </div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#credentials-instance_method" title="#credentials (instance method)">#<strong>credentials</strong>(authenticator_id)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
   
 </li>
 
@@ -1693,6 +1775,50 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#remove_all_credentials-instance_method" title="#remove_all_credentials (instance method)">#<strong>remove_all_credentials</strong>(authenticator_id)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_credential-instance_method" title="#remove_credential (instance method)">#<strong>remove_credential</strong>(credential_id, authenticator_id)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#remove_local_storage_item-instance_method" title="#remove_local_storage_item (instance method)">#<strong>remove_local_storage_item</strong>(key)  &#x21d2; Object </a>
     
 
@@ -1716,6 +1842,28 @@
   <span class="summary_signature">
     
       <a href="#remove_session_storage_item-instance_method" title="#remove_session_storage_item (instance method)">#<strong>remove_session_storage_item</strong>(key)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#remove_virtual_authenticator-instance_method" title="#remove_virtual_authenticator (instance method)">#<strong>remove_virtual_authenticator</strong>(id)  &#x21d2; Object </a>
     
 
     
@@ -2204,6 +2352,28 @@
   <span class="summary_signature">
     
       <a href="#url-instance_method" title="#url (instance method)">#<strong>url</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#user_verified-instance_method" title="#user_verified (instance method)">#<strong>user_verified</strong>(verified, authenticator_id)  &#x21d2; Object </a>
     
 
     
@@ -2742,6 +2912,79 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="add_credential-instance_method">
+  
+    #<strong>add_credential</strong>(credential, id)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+584
+585
+586</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 584</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_credential'>add_credential</span><span class='lparen'>(</span><span class='id identifier rubyid_credential'>credential</span><span class='comma'>,</span> <span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:add_credential</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_id'>id</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_credential'>credential</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="add_virtual_authenticator-instance_method">
+  
+    #<strong>add_virtual_authenticator</strong>(options)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>virtual-authenticator</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+575
+576
+577
+578</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 575</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_add_virtual_authenticator'>add_virtual_authenticator</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_authenticator_id'>authenticator_id</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:add_virtual_authenticator</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
+  <span class='const'><span class='object_link'><a href="../VirtualAuthenticator.html" title="Selenium::WebDriver::VirtualAuthenticator (class)">VirtualAuthenticator</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../VirtualAuthenticator.html#initialize-instance_method" title="Selenium::WebDriver::VirtualAuthenticator#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="alert=-instance_method">
   
     #<strong>alert=</strong>(keys)  &#x21d2; <tt>Object</tt> 
@@ -3131,6 +3374,36 @@
   <span class='kw'>when</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Safari</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Safari Technology Preview</span><span class='tstring_end'>&#39;</span></span>
     <span class='id identifier rubyid_extend'>extend</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../WebDriver.html" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Safari.html" title="Selenium::WebDriver::Safari (module)">Safari</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Safari/Features.html" title="Selenium::WebDriver::Safari::Features (module)">Features</a></span></span><span class='rparen'>)</span>
   <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="credentials-instance_method">
+  
+    #<strong>credentials</strong>(authenticator_id)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+588
+589
+590</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 588</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_credentials'>credentials</span><span class='lparen'>(</span><span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_credentials</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -4712,6 +4985,66 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="remove_all_credentials-instance_method">
+  
+    #<strong>remove_all_credentials</strong>(authenticator_id)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+596
+597
+598</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 596</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_all_credentials'>remove_all_credentials</span><span class='lparen'>(</span><span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:remove_all_credentials</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_credential-instance_method">
+  
+    #<strong>remove_credential</strong>(credential_id, authenticator_id)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+592
+593
+594</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 592</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_credential'>remove_credential</span><span class='lparen'>(</span><span class='id identifier rubyid_credential_id'>credential_id</span><span class='comma'>,</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:remove_credential</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>credentialId:</span> <span class='id identifier rubyid_credential_id'>credential_id</span><span class='comma'>,</span> <span class='label'>authenticatorId:</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="remove_local_storage_item-instance_method">
   
     #<strong>remove_local_storage_item</strong>(key)  &#x21d2; <tt>Object</tt> 
@@ -4765,6 +5098,36 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_session_storage_item'>remove_session_storage_item</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_execute_script'>execute_script</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sessionStorage.removeItem(&#39;</span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_key'>key</span><span class='embexpr_end'>}</span><span class='tstring_content'>&#39;)</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="remove_virtual_authenticator-instance_method">
+  
+    #<strong>remove_virtual_authenticator</strong>(id)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+580
+581
+582</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 580</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_remove_virtual_authenticator'>remove_virtual_authenticator</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:remove_virtual_authenticator</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_id'>id</span><span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -5240,8 +5603,8 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_submit_element'>submit_element</span><span class='lparen'>(</span><span class='id identifier rubyid_element'>element</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_script'>script</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>var form = arguments[0];\n</span><span class='tstring_end'>&quot;</span></span> \
-           <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>while (form.nodeName != \&quot;FORM\&quot; &amp;&amp; form.parentNode) {\n</span><span class='tstring_end'>&quot;</span></span> \
-           <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>  form = form.parentNode;\n</span><span class='tstring_end'>&quot;</span></span> \
+           <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>while (form.nodeName != \&quot;FORM\&quot; &amp;&amp; form.parentNode) {\n  </span><span class='tstring_end'>&quot;</span></span> \
+           <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>form = form.parentNode;\n</span><span class='tstring_end'>&quot;</span></span> \
            <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>}\n</span><span class='tstring_end'>&quot;</span></span> \
            <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>if (!form) { throw Error(&#39;Unable to find containing form element&#39;); }\n</span><span class='tstring_end'>&quot;</span></span> \
            <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>if (!form.ownerDocument) { throw Error(&#39;Unable to find owning document&#39;); }\n</span><span class='tstring_end'>&quot;</span></span> \
@@ -5552,6 +5915,36 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="user_verified-instance_method">
+  
+    #<strong>user_verified</strong>(verified, authenticator_id)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+600
+601
+602</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/remote/bridge.rb', line 600</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_user_verified'>user_verified</span><span class='lparen'>(</span><span class='id identifier rubyid_verified'>verified</span><span class='comma'>,</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_user_verified</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>authenticatorId:</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>isUserVerified:</span> <span class='id identifier rubyid_verified'>verified</span><span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="window_handle-instance_method">
   
     #<strong>window_handle</strong>  &#x21d2; <tt>Object</tt> 
@@ -5733,7 +6126,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Jun 24 00:25:11 2022 by
+  Generated on Tue Aug  9 14:21:55 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-3.1.2).
 </div>
