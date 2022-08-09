@@ -86,7 +86,7 @@ merged_assembly = rule(
         "target_framework": attr.string(mandatory = True),
         "merge_tool": attr.label(
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             default = Label("//third_party/dotnet/ilmerge:ilmerge.exe"),
             allow_single_file = True,
         ),

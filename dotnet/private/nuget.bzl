@@ -49,7 +49,7 @@ nuget_push = rule(
         "api_key": attr.label(default = ":nuget-api-key"),
         "nuget_exe": attr.label(
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             default = Label("//third_party/dotnet/nuget:nuget.exe"),
             allow_single_file = True,
         ),
@@ -142,7 +142,7 @@ nuget_package = rule(
         "is_windows": attr.bool(default = False),
         "nuget_exe": attr.label(
             executable = True,
-            cfg = "host",
+            cfg = "exec",
             default = Label("//third_party/dotnet/nuget:nuget.exe"),
             allow_single_file = True,
         ),
