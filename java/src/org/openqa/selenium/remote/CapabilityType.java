@@ -139,37 +139,4 @@ public interface CapabilityType {
   String STRICT_FILE_INTERACTABILITY = "strictFileInteractability";
   String UNHANDLED_PROMPT_BEHAVIOUR = "unhandledPromptBehavior";
 
-
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  interface ForSeleniumServer {
-
-    /**
-     * @deprecated Non W3C compliant
-     */
-    @Deprecated
-    String AVOIDING_PROXY = "avoidProxy";
-    /**
-     * @deprecated Non W3C compliant
-     */
-    @Deprecated
-    String ONLY_PROXYING_SELENIUM_TRAFFIC = "onlyProxySeleniumTraffic";
-    /**
-     * @deprecated Non W3C compliant
-     */
-    @Deprecated
-    String PROXYING_EVERYTHING = "proxyEverything";
-    /**
-     * @deprecated Non W3C compliant
-     */
-    @Deprecated
-    String PROXY_PAC = "proxy_pac";
-    /**
-     * @deprecated Non W3C compliant
-     */
-    @Deprecated
-    String ENSURING_CLEAN_SESSION = "ensureCleanSession";
-  }
 }
