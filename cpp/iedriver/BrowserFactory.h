@@ -133,6 +133,7 @@ class BrowserFactory {
   int ie_major_version_;
   std::wstring ie_executable_location_;
   std::wstring edge_executable_located_location_;
+  bool ie_redirects_edge_;
 
   bool edge_ie_mode_;
   std::wstring edge_executable_location_;

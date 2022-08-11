@@ -45,6 +45,7 @@
 
 #define EDGE_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\App Paths\\msedge.exe"
 #define IE_CLSID_REGISTRY_KEY L"SOFTWARE\\Classes\\InternetExplorer.Application\\CLSID"
+#define IE_REDIRECT L"Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Ext\\CLSID"
 #define IE_SECURITY_ZONES_REGISTRY_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings\\Zones"
 #define IE_TABPROCGROWTH_REGISTRY_KEY L"Software\\Microsoft\\Internet Explorer\\Main"
 
@@ -126,7 +127,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->clear_cache_ = settings.clear_cache_before_launch;
   this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
   this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
-  this->edge_ie_mode_ = settings.attach_to_edge_ie;
+  this->edge_ie_mode_ = settings.attach_to_edge_ie || this->ie_redirects_edge_;
   LOG(DEBUG) << "path before was " << settings.edge_executable_path << "\n";
   this->edge_executable_location_ = StringUtilities::ToWString(settings.edge_executable_path);
   LOG(DEBUG) << "path after was " << this->edge_executable_location_.c_str() << "\n";
@@ -1242,6 +1243,17 @@ BOOL CALLBACK BrowserFactory::FindDialogWindowForProcess(HWND hwnd, LPARAM arg) 
 
 void BrowserFactory::GetIEExecutableLocation() {
   LOG(TRACE) << "Entering BrowserFactory::GetIEExecutableLocation";
+
+   std::wstring redirection;
+    if (RegistryUtilities::GetRegistryValue(HKEY_LOCAL_MACHINE,
+      IE_REDIRECT,
+      L"{1FD49718-1D00-4B19-AF5F-070AF6D5D54C}",
+      &redirection)) {
+      this->ie_redirects_edge_ = redirection == L"1";
+    }
+    else {
+      LOG(WARN) << "Unable to determine IE to Edge Redirection";
+    }
 
   std::wstring class_id;
   if (RegistryUtilities::GetRegistryValue(HKEY_LOCAL_MACHINE,
