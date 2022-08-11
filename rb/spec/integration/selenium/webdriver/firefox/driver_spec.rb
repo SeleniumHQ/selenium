@@ -24,6 +24,7 @@ module Selenium
     module Firefox
       describe Driver, exclusive: {browser: :firefox} do
         let(:extension) { '../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi' }
+        let(:extension_dir) { '../../../../../../common/extensions/webextensions-selenium-example' }
 
         describe '#print_options' do
           let(:magic_number) { 'JVBER' }
@@ -72,6 +73,11 @@ module Selenium
 
           it 'with temporary as parameter' do
             ext = File.expand_path(extension, __dir__)
+            driver.install_addon(ext, true)
+          end
+
+          it 'with path as unpacked directory' do
+            ext = File.expand_path(extension_dir, __dir__)
             driver.install_addon(ext, true)
           end
         end
