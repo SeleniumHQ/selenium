@@ -1531,7 +1531,7 @@ class WebDriver {
 
   /**
    * Adds a virtual authenticator with the given options.
-   * @param options VirtualAuthenticatorOptions object to set authenticator optons.
+   * @param options VirtualAuthenticatorOptions object to set authenticator options.
    */
   async addVirtualAuthenticator(options) {
     this.authenticatorId_ = await this.execute(
