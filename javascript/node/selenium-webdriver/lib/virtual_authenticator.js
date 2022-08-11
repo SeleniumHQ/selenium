@@ -18,29 +18,37 @@
 'use strict'
 
 /**
+ * Protocol for virtual authenticators
+ * @enum {string}
+ */
+const Protocol = {
+  'CTAP2': 'ctap2',
+  'U2F': 'ctap1/u2f',
+}
+
+/**
+ * AuthenticatorTransport values
+ * @enum {string}
+ */
+const Transport = {
+  'BLE': 'ble',
+  'USB': 'usb',
+  'NFC': 'nfc',
+  'INTERNAL': 'internal',
+}
+
+/**
  * Options for the creation of virtual authenticators.
  * @see http://w3c.github.io/webauthn/#sctn-automation
  */
 class VirtualAuthenticatorOptions {
 
-  static Protocol = {
-    "CTAP2": 'ctap2',
-    "U2F": 'ctap1/u2f',
-  }
-
-  static Transport = {
-    "BLE": 'ble',
-    "USB": 'usb',
-    "NFC": 'nfc',
-    "INTERNAL": 'internal',
-  }
-
   /**
    * Constructor to initialise VirtualAuthenticatorOptions object.
    */
   constructor() {
-    this._protocol = VirtualAuthenticatorOptions.Protocol["CTAP2"]
-    this._transport = VirtualAuthenticatorOptions.Transport["USB"]
+    this._protocol = Protocol['CTAP2']
+    this._transport = Transport['USB']
     this._hasResidentKey = false
     this._hasUserVerification = false
     this._isUserConsenting = true
@@ -102,8 +110,7 @@ class VirtualAuthenticatorOptions {
       "hasResidentKey": this.getHasResidentKey(),
       "hasUserVerification": this.getHasUserVerification(),
       "isUserConsenting": this.getIsUserConsenting(),
-      "isUserVerified": this.getIsUserVerified(),
-
+      'isUserVerified': this.getIsUserVerified()
     }
   }
 }
@@ -113,14 +120,13 @@ class VirtualAuthenticatorOptions {
  * @see https://w3c.github.io/webauthn/#credential-parameters
  */
 class Credential {
-  constructor(
+  constructor (
     credentialId,
     isResidentCredential,
     rpId,
     userHandle,
     privateKey,
-    signCount
-  ) {
+    signCount) {
     this._id = credentialId
     this._isResidentCredential = isResidentCredential
     this._rpId = rpId
@@ -224,7 +230,8 @@ class Credential {
   }
 }
 
-module.exports = {
-  Credential,
-  VirtualAuthenticatorOptions,
-}
+module.exports.Credential = Credential
+module.exports.VirtualAuthenticatorOptions = VirtualAuthenticatorOptions
+module.exports.Transport = Transport
+module.exports.Protocol = Protocol
+
