@@ -17,26 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-import static java.util.Collections.EMPTY_LIST;
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
-import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
-
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
@@ -62,6 +46,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
+import static org.openqa.selenium.remote.WebDriverFixture.errorResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
 
 @Tag("UnitTests")
 public class RemoteWebDriverUnitTest {
@@ -659,18 +658,6 @@ public class RemoteWebDriverUnitTest {
 
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.SET_TIMEOUT, ImmutableMap.of("pageLoad", 10000L)));
-  }
-
-  @Test
-  public void canHandleIME() {
-    WebDriverFixture fixture = new WebDriverFixture(
-      echoCapabilities, valueResponder(singletonList("cheese")));
-
-    List<String> engines = fixture.driver.manage().ime().getAvailableEngines();
-
-    assertThat(engines).hasSize(1).contains("cheese");
-    fixture.verifyCommands(
-      new CommandPayload(DriverCommand.IME_GET_AVAILABLE_ENGINES, emptyMap()));
   }
 
   @Test
