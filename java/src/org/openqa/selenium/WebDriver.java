@@ -276,13 +276,6 @@ public interface WebDriver extends SearchContext {
     Timeouts timeouts();
 
     /**
-     * @return the interface for controlling IME engines to generate complex-script input.
-     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
-     */
-    @Deprecated
-    ImeHandler ime();
-
-    /**
      * @return the interface for managing the current window.
      */
     Window window();
@@ -632,60 +625,6 @@ public interface WebDriver extends SearchContext {
      * for more details.
      */
     void refresh();
-  }
-
-  /**
-   * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
-   * An interface for managing input methods.
-   */
-  @Deprecated
-  interface ImeHandler {
-    /**
-     * All available engines on the machine. To use an engine, it has to be activated.
-     *
-     * @return list of available IME engines.
-     * @throws ImeNotAvailableException if the host does not support IME.
-     */
-    List<String> getAvailableEngines();
-
-    /**
-     * Get the name of the active IME engine. The name string is platform-specific.
-     *
-     * @return name of the active IME engine.
-     * @throws ImeNotAvailableException if the host does not support IME.
-     */
-    String getActiveEngine();
-
-    /**
-     * Indicates whether IME input active at the moment (not if it's available).
-     *
-     * @return true if IME input is available and currently active, false otherwise.
-     * @throws ImeNotAvailableException if the host does not support IME.
-     */
-    boolean isActivated();
-
-    /**
-     * De-activate IME input (turns off the currently activated engine). Note that getActiveEngine
-     * may still return the name of the engine but isActivated will return false.
-     *
-     * @throws ImeNotAvailableException if the host does not support IME.
-     */
-    void deactivate();
-
-    /**
-     * Make an engines that is available (appears on the list returned by getAvailableEngines)
-     * active. After this call, the only loaded engine on the IME daemon will be this one and the
-     * input sent using sendKeys will be converted by the engine. Note that this is a
-     * platform-independent method of activating IME (the platform-specific way being using keyboard
-     * shortcuts).
-     *
-     *
-     * @param engine name of engine to activate.
-     * @throws ImeNotAvailableException if the host does not support IME.
-     * @throws ImeActivationFailedException if the engine is not available or if activation failed
-     *         for other reasons.
-     */
-    void activateEngine(String engine);
   }
 
   @Beta

@@ -51,7 +51,7 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.3'
+  '4.4'
 end
 
 def version

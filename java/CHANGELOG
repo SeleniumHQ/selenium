@@ -4,8 +4,10 @@ v4.4.0
 * Supported CDP versions: 85, 102, 103, 104
 * Fix bug to ensure correct window handle used by CDP (#10811)
 * Remove makeW3CSafe from NewSession in Command Payload
-* Add status endpoint (#10832)
 * Allow decorating child classes of WebDriver (#10737)
+* Throwing an error when user sets `w3c:false` in `goog:chromeOptions`
+* Allow a Relay Node to boot and check periodically for the status endpoint.
+* Forwarding requests with non-W3C locators (useful for Relay Nodes with Appium)
 
 v4.3.0
 ======

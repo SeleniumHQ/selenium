@@ -839,55 +839,11 @@ public class RemoteWebDriver implements WebDriver,
       return new RemoteTimeouts();
     }
 
-    /**
-     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
-     */
-    @Override
-    public ImeHandler ime() {
-      return new RemoteInputMethodManager();
-    }
-
     @Override
     @Beta
     public Window window() {
       return new RemoteWindow();
     }
-
-    /**
-     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
-     */
-    @Deprecated
-    protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
-
-      @Override
-      @SuppressWarnings("unchecked")
-      public List<String> getAvailableEngines() {
-        Response response = execute(DriverCommand.IME_GET_AVAILABLE_ENGINES);
-        return (List<String>) response.getValue();
-      }
-
-      @Override
-      public String getActiveEngine() {
-        Response response = execute(DriverCommand.IME_GET_ACTIVE_ENGINE);
-        return (String) response.getValue();
-      }
-
-      @Override
-      public boolean isActivated() {
-        Response response = execute(DriverCommand.IME_IS_ACTIVATED);
-        return (Boolean) response.getValue();
-      }
-
-      @Override
-      public void deactivate() {
-        execute(DriverCommand.IME_DEACTIVATE);
-      }
-
-      @Override
-      public void activateEngine(String engine) {
-        execute(DriverCommand.IME_ACTIVATE_ENGINE(engine));
-      }
-    } // RemoteInputMethodManager class
 
     protected class RemoteTimeouts implements Timeouts {
 

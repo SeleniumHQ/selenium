@@ -79,11 +79,6 @@ import org.openqa.selenium.remote.server.handler.GetWindowPosition;
 import org.openqa.selenium.remote.server.handler.GetWindowSize;
 import org.openqa.selenium.remote.server.handler.GoBack;
 import org.openqa.selenium.remote.server.handler.GoForward;
-import org.openqa.selenium.remote.server.handler.ImeActivateEngine;
-import org.openqa.selenium.remote.server.handler.ImeDeactivate;
-import org.openqa.selenium.remote.server.handler.ImeGetActiveEngine;
-import org.openqa.selenium.remote.server.handler.ImeGetAvailableEngines;
-import org.openqa.selenium.remote.server.handler.ImeIsActivated;
 import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
 import org.openqa.selenium.remote.server.handler.MaximizeWindow;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
@@ -199,11 +194,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
 import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
 import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
-import static org.openqa.selenium.remote.DriverCommand.IME_ACTIVATE_ENGINE;
-import static org.openqa.selenium.remote.DriverCommand.IME_DEACTIVATE;
-import static org.openqa.selenium.remote.DriverCommand.IME_GET_ACTIVE_ENGINE;
-import static org.openqa.selenium.remote.DriverCommand.IME_GET_AVAILABLE_ENGINES;
-import static org.openqa.selenium.remote.DriverCommand.IME_IS_ACTIVATED;
 import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
@@ -448,12 +438,6 @@ public class JsonHttpCommandHandler {
     addNewMapping(MOUSE_DOWN, MouseDown::new);
     addNewMapping(MOUSE_UP, MouseUp::new);
     addNewMapping(SEND_KEYS_TO_ACTIVE_ELEMENT, SendKeyToActiveElement::new);
-
-    addNewMapping(IME_GET_AVAILABLE_ENGINES, ImeGetAvailableEngines::new);
-    addNewMapping(IME_GET_ACTIVE_ENGINE, ImeGetActiveEngine::new);
-    addNewMapping(IME_IS_ACTIVATED, ImeIsActivated::new);
-    addNewMapping(IME_DEACTIVATE, ImeDeactivate::new);
-    addNewMapping(IME_ACTIVATE_ENGINE, ImeActivateEngine::new);
 
     addNewMapping(ACTIONS, W3CActions::new);
 
