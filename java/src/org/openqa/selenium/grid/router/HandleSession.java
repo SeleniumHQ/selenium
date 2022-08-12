@@ -140,7 +140,7 @@ class HandleSession implements HttpHandler {
           response.setContent(asJson(ImmutableMap.of(
             "value", req.getUri(),
             "message", errorMessage,
-            "error", NoSuchSessionException.class.getName())));
+            "error", "invalid session id")));
           return response;
         }
 
