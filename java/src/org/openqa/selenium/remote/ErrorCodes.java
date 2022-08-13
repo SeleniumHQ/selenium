@@ -79,8 +79,6 @@ public class ErrorCodes {
   public static final int UNEXPECTED_ALERT_PRESENT = 26;
   public static final int NO_ALERT_PRESENT = 27;
   public static final int ASYNC_SCRIPT_TIMEOUT = 28;
-  public static final int IME_NOT_AVAILABLE = 30;
-  public static final int IME_ENGINE_ACTIVATION_FAILED = 31;
   public static final int INVALID_SELECTOR_ERROR = 32;
   public static final int SESSION_NOT_CREATED = 33;
   public static final int MOVE_TARGET_OUT_OF_BOUNDS = 34;
