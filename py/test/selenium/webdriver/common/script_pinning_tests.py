@@ -75,4 +75,3 @@ def test_unpinning_non_existing_script_raises(driver, pages):
     pages.load("simpleTest.html")
     with pytest.raises(KeyError, match=re.escape(r"No script with key: ScriptKey(id=1) existed in {}")):
         driver.unpin(ScriptKey(1))
-
