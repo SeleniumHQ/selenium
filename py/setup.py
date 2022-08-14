@@ -70,7 +70,7 @@ setup_args = {
                  'selenium.webdriver.remote',
                  'selenium.webdriver.support', ],
     'include_package_data': True,
-    'install_requires': ['urllib3[secure, socks]~=1.26', "trio~=0.17", "trio-websocket~=0.9"],
+    'install_requires': ["urllib3[socks]~=1.26", "trio~=0.17", "trio-websocket~=0.9"],
     'zip_safe': False
 }
 
