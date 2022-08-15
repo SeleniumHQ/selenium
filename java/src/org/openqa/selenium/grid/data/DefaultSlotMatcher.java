@@ -103,7 +103,7 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
         }
       })
       .reduce(Boolean::logicalAnd)
-      .orElse(false);
+      .orElse(true);
   }
 
   private Boolean platformVersionMatch(Capabilities stereotype, Capabilities capabilities) {
