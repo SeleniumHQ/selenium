@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.grid.data;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultSlotMatcherTest {
 
@@ -381,4 +381,23 @@ public class DefaultSlotMatcherTest {
     assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }
 
+  @Test
+  public void extensionCapsAlsoMatch() {
+    Capabilities stereotype = new ImmutableCapabilities(
+      CapabilityType.PLATFORM_NAME, Platform.IOS,
+      "appium:platformVersion", "15.5",
+      "appium:automationName", "XCUITest",
+      "appium:deviceName", "iPhone 13"
+    );
+
+    Capabilities capabilities = new ImmutableCapabilities(
+      CapabilityType.PLATFORM_NAME, Platform.IOS,
+      "appium:platformVersion", "15.5",
+      "appium:automationName", "XCUITest",
+      "appium:noReset", true,
+      "appium:deviceName", "iPhone 13"
+    );
+
+    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
+  }
 }
