@@ -91,6 +91,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -180,12 +181,17 @@ public class LocalNode extends Node {
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
         if (notification.getKey() != null && notification.getValue() != null) {
-          // Attempt to stop the session
           SessionSlot slot = notification.getValue();
-          SessionId sessionId = notification.getKey();
+          SessionId id = notification.getKey();
+          if (notification.wasEvicted()) {
+            // Session is timing out, stopping it by sending a DELETE
+            LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
+            slot.execute(new HttpRequest(DELETE, "/session/" + id));
+          }
+          // Attempt to stop the session
           slot.stop();
           // Invalidate temp file system
-          this.tempFileSystems.invalidate(sessionId);
+          this.tempFileSystems.invalidate(id);
           // Decrement pending sessions if Node is draining
           if (this.isDraining()) {
             int done = pendingSessions.decrementAndGet();
