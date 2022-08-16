@@ -94,6 +94,16 @@ public class ClientConfig {
     }
   }
 
+  public ClientConfig connectionTimeout(Duration timeout) {
+    return new ClientConfig(
+      baseUri,
+      Require.nonNull("Connection timeout", timeout),
+      readTimeout,
+      filters,
+      proxy,
+      credentials);
+  }
+
   public Duration connectionTimeout() {
     return connectionTimeout;
   }
