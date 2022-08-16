@@ -239,6 +239,21 @@ suite(function (env) {
       assert.strictEqual(await el.getAttribute('value'), 'foobar')
     })
 
+    it('can send keys to designated element', async function () {
+      await driver.get(Pages.formPage)
+
+      let el = await driver.findElement(By.id('email'))
+      assert.strictEqual(await el.getAttribute('value'), '')
+
+      await driver.actions().sendKeys(el, 'foobar').perform()
+
+      await driver.wait(
+        async () => (await el.getAttribute('value')) === 'foobar',
+        10000
+      )
+      assert.strictEqual(await el.getAttribute('value'), 'foobar')
+    })
+
     ignore(env.browsers(Browser.FIREFOX, Browser.SAFARI)).it(
       'can scroll with the wheel input',
       async function () {
