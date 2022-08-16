@@ -39,4 +39,6 @@ Gem::Specification.new do |s|
   ] + Dir['lib/selenium/devtools/**/*']
 
   s.require_paths = ["lib"]
+
+  s.add_runtime_dependency 'selenium-webdriver', '~> 4.2'
 end

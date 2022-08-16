@@ -15,19 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.server.handler;
+package org.openqa.selenium.devtools.v104;
 
-import org.openqa.selenium.remote.server.Session;
+import com.google.auto.service.AutoService;
 
-public class ImeDeactivate extends WebDriverHandler<Void> {
+import org.openqa.selenium.devtools.CdpInfo;
 
-  public ImeDeactivate(Session session) {
-    super(session);
-  }
+@AutoService(CdpInfo.class)
+public class V104CdpInfo extends CdpInfo {
 
-  @Override
-  public Void call() {
-    getDriver().manage().ime().deactivate();
-    return null;
+  public V104CdpInfo() {
+    super(104, V104Domains::new);
   }
 }

@@ -37,8 +37,6 @@ public class DistributorOptions {
   static final String DEFAULT_SLOT_MATCHER = "org.openqa.selenium.grid.data.DefaultSlotMatcher";
   static final String DEFAULT_SLOT_SELECTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector";
-  static final String DEFAULT_GRID_MODEL_IMPLEMENTATION =
-    "org.openqa.selenium.grid.distributor.GridModel";
   static final boolean DEFAULT_REJECT_UNSUPPORTED_CAPS = false;
   private final Config config;
 

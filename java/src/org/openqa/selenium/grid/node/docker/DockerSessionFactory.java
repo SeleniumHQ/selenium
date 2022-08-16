@@ -176,7 +176,7 @@ public class DockerSessionFactory implements SessionFactory {
       try {
         waitForServerToStart(client, Duration.ofMinutes(1));
       } catch (TimeoutException e) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
 
         EXCEPTION.accept(attributeMap, e);
@@ -205,7 +205,7 @@ public class DockerSessionFactory implements SessionFactory {
         attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(),
                          EventAttribute.setValue(response.toString()));
       } catch (IOException | RuntimeException e) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
 
         EXCEPTION.accept(attributeMap, e);

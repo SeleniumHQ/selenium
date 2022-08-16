@@ -41,7 +41,7 @@ zip_file = rule(
         "_zip": attr.label(
             default = "@bazel_tools//tools/zip:zipper",
             executable = True,
-            cfg = "host",
+            cfg = "exec",
         ),
     },
 )

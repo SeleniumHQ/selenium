@@ -224,7 +224,7 @@ java_module = rule(
             default = [],
         ),
         "_javabase": attr.label(
-            cfg = "host",
+            cfg = "exec",
             default = "@bazel_tools//tools/jdk:current_java_runtime",
             providers = [java_common.JavaRuntimeInfo],
         ),
@@ -234,18 +234,18 @@ java_module = rule(
         "_merge_jars": attr.label(
             default = "@rules_jvm_external//private/tools/java/rules/jvm/external/jar:MergeJars",
             executable = True,
-            cfg = "host",
+            cfg = "exec",
         ),
         "_module_generator": attr.label(
             default = "//java/src/dev/selenium/tools/modules:ModuleGenerator",
             executable = True,
-            cfg = "host",
+            cfg = "exec",
         ),
         "_singlejar": attr.label(
             default = "@bazel_tools//tools/jdk:singlejar",
             allow_files = True,
             executable = True,
-            cfg = "host",
+            cfg = "exec",
         ),
     },
 )

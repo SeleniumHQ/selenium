@@ -1,4 +1,4 @@
-// <copyright file="V101Target.cs" company="WebDriver Committers">
+// <copyright file="V104Target.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -21,22 +21,22 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V101.Target;
+using OpenQA.Selenium.DevTools.V104.Target;
 
-namespace OpenQA.Selenium.DevTools.V101
+namespace OpenQA.Selenium.DevTools.V104
 {
     /// <summary>
-    /// Class providing functionality for manipulating targets for version 101 of the DevTools Protocol
+    /// Class providing functionality for manipulating targets for version 104 of the DevTools Protocol
     /// </summary>
-    public class V101Target : DevTools.Target
+    public class V104Target : DevTools.Target
     {
         private TargetAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V101Target"/> class.
+        /// Initializes a new instance of the <see cref="V104Target"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Target domain.</param>
-        public V101Target(TargetAdapter adapter)
+        public V104Target(TargetAdapter adapter)
         {
             this.adapter = adapter;
             adapter.DetachedFromTarget += OnDetachedFromTarget;

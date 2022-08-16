@@ -50,8 +50,6 @@ import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.json.JsonException;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -62,9 +60,6 @@ import org.openqa.selenium.print.PrintOptions;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 import org.openqa.selenium.remote.tracing.TracedHttpClient;
 import org.openqa.selenium.remote.tracing.Tracer;
@@ -99,7 +94,6 @@ import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-import static org.openqa.selenium.remote.http.Contents.string;
 
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
@@ -309,20 +303,6 @@ public class RemoteWebDriver implements WebDriver,
       return new ImmutableCapabilities();
     }
     return capabilities;
-  }
-
-  public static Status status(URL remoteAddress) {
-    HttpResponse response = new HttpResponse();
-    try (HttpClient client = HttpClient.Factory.createDefault().createClient(remoteAddress)) {
-      HttpRequest request = new HttpRequest(HttpMethod.GET, "/status");
-      response = client.execute(request);
-      Map<String, Object> responseMap = new Json().toType(string(response), Map.class);
-      Map<String, Object> value = (Map<String, Object>) responseMap.get("value");
-
-      return new Status((boolean) value.get("ready"), (String) value.get("message"));
-    } catch (JsonException e) {
-      throw new WebDriverException("Unable to parse remote response: " + string(response), e);
-    }
   }
 
   @Override
@@ -725,10 +705,8 @@ public class RemoteWebDriver implements WebDriver,
         w3c = rawW3C == null || Boolean.parseBoolean(String.valueOf(rawW3C));
       }
       if (!w3c) {
-        logger.log(
-          Level.WARNING,
-          "Setting 'w3c: true' inside 'goog:chromeOptions' will not be accepted from " +
-          "Selenium 4.4; " +
+        throw new WebDriverException(
+          "Setting 'w3c: false' inside 'goog:chromeOptions' will no longer be supported " +
           "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/"
         );
       }
@@ -861,55 +839,11 @@ public class RemoteWebDriver implements WebDriver,
       return new RemoteTimeouts();
     }
 
-    /**
-     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
-     */
-    @Override
-    public ImeHandler ime() {
-      return new RemoteInputMethodManager();
-    }
-
     @Override
     @Beta
     public Window window() {
       return new RemoteWindow();
     }
-
-    /**
-     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
-     */
-    @Deprecated
-    protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
-
-      @Override
-      @SuppressWarnings("unchecked")
-      public List<String> getAvailableEngines() {
-        Response response = execute(DriverCommand.IME_GET_AVAILABLE_ENGINES);
-        return (List<String>) response.getValue();
-      }
-
-      @Override
-      public String getActiveEngine() {
-        Response response = execute(DriverCommand.IME_GET_ACTIVE_ENGINE);
-        return (String) response.getValue();
-      }
-
-      @Override
-      public boolean isActivated() {
-        Response response = execute(DriverCommand.IME_IS_ACTIVATED);
-        return (Boolean) response.getValue();
-      }
-
-      @Override
-      public void deactivate() {
-        execute(DriverCommand.IME_DEACTIVATE);
-      }
-
-      @Override
-      public void activateEngine(String engine) {
-        execute(DriverCommand.IME_ACTIVATE_ENGINE(engine));
-      }
-    } // RemoteInputMethodManager class
 
     protected class RemoteTimeouts implements Timeouts {
 

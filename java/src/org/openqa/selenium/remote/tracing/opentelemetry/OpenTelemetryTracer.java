@@ -22,6 +22,7 @@ import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapPropagator;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.AutoConfiguredOpenTelemetrySdk;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
@@ -71,10 +72,14 @@ public class OpenTelemetryTracer implements org.openqa.selenium.remote.tracing.T
     // If the metrics exporter property is not set to none, external dependency is required.
     System.setProperty("otel.metrics.exporter", "none");
     String exporter = System.getProperty("otel.traces.exporter");
-    if(exporter == null) {
+    if (exporter == null) {
       System.setProperty("otel.traces.exporter", "none");
     }
-    OpenTelemetrySdk autoConfiguredSdk = AutoConfiguredOpenTelemetrySdk.initialize().getOpenTelemetrySdk();
+    OpenTelemetrySdk autoConfiguredSdk = AutoConfiguredOpenTelemetrySdk.builder()
+      .addTracerProviderCustomizer(((sdkTracerProviderBuilder, configProperties) -> sdkTracerProviderBuilder
+        .addSpanProcessor(SeleniumSpanExporter.getSpanProcessor())))
+      .build()
+      .getOpenTelemetrySdk();
 
     return new OpenTelemetryTracer(
       autoConfiguredSdk.getTracer("default"),
