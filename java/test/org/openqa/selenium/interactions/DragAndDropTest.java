@@ -55,9 +55,6 @@ public class DragAndDropTest extends JupiterTestBase {
 
   @Test
   public void testDragAndDropRelative() {
-    assumeFalse(Browser.detect() == Browser.LEGACY_OPERA &&
-                TestUtilities.getEffectivePlatform(driver).is(Platform.WINDOWS));
-
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
