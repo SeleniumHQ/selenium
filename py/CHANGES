@@ -1,3 +1,6 @@
+Selenium 4.4.2
+* Add explicit dependency for certifi (#10953)
+
 Selenium 4.4.1
 * Removal of urllib3[secure] extras (deprecated) dependency
 
