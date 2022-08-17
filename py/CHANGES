@@ -1,3 +1,6 @@
+Selenium 4.4.1
+* Removal of urllib3[secure] extras (deprecated) dependency
+
 Selenium 4.4.0
 * More flexibility in locating Firefox binary (#10818)
 * Add CDP for v104, remove support for v101
