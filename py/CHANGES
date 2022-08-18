@@ -1,3 +1,6 @@
+Selenium 4.4.3
+* Update explicit dependency for certifi to remove upper bound (#10956)
+
 Selenium 4.4.2
 * Add explicit dependency for certifi (#10953)
 
