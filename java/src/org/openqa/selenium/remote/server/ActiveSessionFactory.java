@@ -84,7 +84,6 @@ public class ActiveSessionFactory implements SessionFactory {
         .put(containsKey(Pattern.compile("^moz:.*")), "org.openqa.selenium.firefox.GeckoDriverService")
         .put(browserName(IE.browserName()), "org.openqa.selenium.ie.InternetExplorerDriverService")
         .put(containsKey("se:ieOptions"), "org.openqa.selenium.ie.InternetExplorerDriverService")
-        .put(browserName(OPERA.browserName()), "org.openqa.selenium.opera.OperaDriverService")
         .put(browserName(SAFARI.browserName()), "org.openqa.selenium.safari.SafariDriverService")
         .put(containsKey(Pattern.compile("^safari\\..*")), "org.openqa.selenium.safari.SafariDriverService")
         .build()
