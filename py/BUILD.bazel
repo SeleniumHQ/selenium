@@ -170,7 +170,7 @@ py_wheel(
         "urllib3[socks]~=1.26",
         "trio~=0.17",
         "trio-websocket~=0.9",
-        "certifi~=2021.10.8",
+        "certifi>=2021.10.8",
     ],
     strip_path_prefixes = [
         "py/",
