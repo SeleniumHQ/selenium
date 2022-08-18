@@ -40,7 +40,6 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.testing.drivers.Browser;
@@ -213,10 +212,6 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
       case FIREFOX:
         return new FirefoxOptions();
-
-      case LEGACY_OPERA:
-      case OPERA:
-        return new OperaOptions();
 
       case SAFARI:
         return new SafariOptions();
