@@ -24,6 +24,8 @@ const { Browser } = require('../index')
 
 let singleSelectValues1 = {'name': 'selectomatic', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']};
 let disabledSelect = {'name': 'no-select', 'values': ['Foo']};
+let multiSelectValues1 = {'name': 'multi', 'values': ['Eggs', 'Ham', 'Sausages', 'Onion gravy']}
+let multiSelectValues2 = {'name': 'select_empty_multiple', 'values': ['select_1', 'select_2', 'select_3', 'select_4']}
 
 suite(
   function (env) {
@@ -98,6 +100,57 @@ suite(
         await selectorObject.selectByVisibleText('Bar');
         let lastSelected = await selectorObject.getFirstSelectedOption()
         assert.deepEqual(await firstSelected.getAttribute('value'), await lastSelected.getAttribute('value') )
+      })
+
+      it('Should select by multiple index', async function () {
+        await driver.get(Pages.formPage)
+
+        let selector = new Select(driver.findElement(By.name(multiSelectValues1['name'])));
+        await selector.deselectAll();
+
+        for(let x in multiSelectValues1['values']) {
+          await selector.selectByIndex(x)
+        }
+
+        let ele = await selector.getAllSelectedOptions();
+
+        for(let x in ele) {
+          assert.deepEqual(await ele[x].getText(), multiSelectValues1['values'][x] )
+        }
+      })
+
+      it('Should select by multiple value', async function () {
+        await driver.get(Pages.formPage)
+
+        let selector = new Select(driver.findElement(By.name(multiSelectValues2['name'])));
+        await selector.deselectAll();
+
+        for(let value of multiSelectValues2['values']) {
+          await selector.selectByValue(value)
+        }
+
+        let ele = await selector.getAllSelectedOptions();
+
+        for(let x in ele) {
+          assert.deepEqual(await ele[x].getText(), multiSelectValues2['values'][x] )
+        }
+      })
+
+      it('Should select by multiple text', async function () {
+        await driver.get(Pages.formPage)
+
+        let selector = new Select(driver.findElement(By.name(multiSelectValues2['name'])));
+        await selector.deselectAll();
+
+        for(let value of multiSelectValues2['values']) {
+          await selector.selectByVisibleText(value)
+        }
+
+        let ele = await selector.getAllSelectedOptions();
+
+        for(let x in ele) {
+          assert.deepEqual(await ele[x].getText(), multiSelectValues2['values'][x] )
+        }
       })
     })
   },
