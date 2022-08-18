@@ -31,7 +31,7 @@ const error = require('./error')
 const logging = require('./logging')
 const promise = require('./promise')
 const { Session } = require('./session')
-const { WebElement } = require('./webdriver')
+const webElement = require('./webelement')
 
 const getAttribute = requireAtom(
   'get-attribute.js',
@@ -462,7 +462,7 @@ const CLIENTS =
 class Executor {
   /**
    * @param {!(Client|IThenable<!Client>)} client The client to use for sending
-   *     requests to the server, or a promise-like object that will resolve to
+   *     requests to the server, or a promise-like object that will resolve
    *     to the client.
    */
   constructor(client) {
@@ -625,10 +625,10 @@ function buildPath(path, parameters) {
       let key = pathParameters[i].substring(2) // Trim the /:
       if (key in parameters) {
         let value = parameters[key]
-        if (WebElement.isId(value)) {
+        if (webElement.isId(value)) {
           // When inserting a WebElement into the URL, only use its ID value,
           // not the full JSON.
-          value = WebElement.extractId(value)
+          value = webElement.extractId(value)
         }
         path = path.replace(pathParameters[i], '/' + value)
         delete parameters[key]

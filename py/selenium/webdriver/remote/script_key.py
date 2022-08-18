@@ -28,3 +28,6 @@ class ScriptKey:
 
     def __eq__(self, other):
         return self._id == other
+
+    def __repr__(self) -> str:
+        return f"ScriptKey(id={self.id})"

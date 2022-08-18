@@ -27,11 +27,17 @@ for scheme in INSTALL_SCHEMES.values():
 setup_args = {
     'cmdclass': {'install': install},
     'name': 'selenium',
-    'version': "4.3.0",
+    'version': "4.4.3",
     'license': 'Apache 2.0',
     'description': 'Python bindings for Selenium',
     'long_description': open(join(abspath(dirname(__file__)), "README.rst")).read(),
     'url': 'https://github.com/SeleniumHQ/selenium/',
+    'project_urls': {
+        'Bug Tracker': 'https://github.com/SeleniumHQ/selenium/issues',
+        'Changes': 'https://github.com/SeleniumHQ/selenium/blob/trunk/py/CHANGES',
+        'Documentation': 'https://www.selenium.dev/documentation/overview/',
+        'Source Code': 'https://github.com/SeleniumHQ/selenium/tree/trunk/py',
+    },
     'python_requires': '~=3.7',
     'classifiers': ['Development Status :: 5 - Production/Stable',
                     'Intended Audience :: Developers',
@@ -64,7 +70,12 @@ setup_args = {
                  'selenium.webdriver.remote',
                  'selenium.webdriver.support', ],
     'include_package_data': True,
-    'install_requires': ['urllib3[secure, socks]~=1.26', "trio~=0.17", "trio-websocket~=0.9"],
+    'install_requires': [
+        "urllib3[socks]~=1.26",
+        "trio~=0.17",
+        "trio-websocket~=0.9",
+        "certifi>=2021.10.8",
+    ],
     'zip_safe': False
 }
 

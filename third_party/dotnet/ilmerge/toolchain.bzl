@@ -11,7 +11,7 @@ merge_toolchain = rule(
             executable = True,
             allow_single_file = True,
             mandatory = True,
-            cfg = "host",
+            cfg = "exec",
         ),
     },
 )

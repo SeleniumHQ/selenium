@@ -138,13 +138,6 @@ public interface DriverCommand {
   // W3C Actions APIs
   String ACTIONS = "actions";
   String CLEAR_ACTIONS_STATE = "clearActionState";
-  // Those allow interactions with the Input Methods installed on
-  // the system.
-  String IME_GET_AVAILABLE_ENGINES = "imeGetAvailableEngines";
-  String IME_GET_ACTIVE_ENGINE = "imeGetActiveEngine";
-  String IME_IS_ACTIVATED = "imeIsActivated";
-  String IME_DEACTIVATE = "imeDeactivate";
-  String IME_ACTIVATE_ENGINE = "imeActivateEngine";
   // Window API
   String SET_CURRENT_WINDOW_POSITION = "setWindowPosition";
   String GET_CURRENT_WINDOW_POSITION = "getWindowPosition";

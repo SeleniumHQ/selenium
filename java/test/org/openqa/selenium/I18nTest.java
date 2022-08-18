@@ -17,23 +17,18 @@
 
 package org.openqa.selenium;
 
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.TestUtilities;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
-
-import java.util.List;
 
 public class I18nTest extends JupiterTestBase {
 
@@ -116,56 +111,6 @@ public class I18nTest extends JupiterTestBase {
     String text = driver.findElement(By.tagName("body")).getText();
 
     assertThat(text).isEqualTo(shalom);
-  }
-
-  @Test
-  @Ignore(IE)
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  @Ignore(FIREFOX)
-  @NotYetImplemented(HTMLUNIT)
-  public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
-    assumeTrue(TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX), "IME is supported on Linux only.");
-
-    driver.get(pages.formPage);
-
-    WebElement input = driver.findElement(By.id("working"));
-
-    // Activate IME. By default, this keycode activates IBus input for Japanese.
-    WebDriver.ImeHandler ime = driver.manage().ime();
-
-    List<String> engines = ime.getAvailableEngines();
-    String desiredEngine = "anthy";
-
-    if (!engines.contains(desiredEngine)) {
-      System.out.println("Desired engine " + desiredEngine + " not available, skipping test.");
-      return;
-    }
-
-    ime.activateEngine(desiredEngine);
-
-    int totalWaits = 0;
-    while (!ime.isActivated() && (totalWaits < 10)) {
-      Thread.sleep(500);
-      totalWaits++;
-    }
-    assertThat(ime.isActivated()).isTrue();
-    assertThat(ime.getActiveEngine()).isEqualTo(desiredEngine);
-
-    // Send the Romaji for "Tokyo". The space at the end instructs the IME to transform the word.
-    input.sendKeys("toukyou ");
-    input.sendKeys(Keys.ENTER);
-
-    String elementValue = input.getAttribute("value");
-
-    ime.deactivate();
-    assertThat(ime.isActivated()).isFalse();
-
-    // IME is not present. Don't fail because of that. But it should have the Romaji value
-    // instead.
-    assertThat(elementValue)
-      .describedAs("The elemnt's value should either remain in Romaji or be converted properly.")
-      .isEqualTo(tokyo);
   }
 
   @Test
