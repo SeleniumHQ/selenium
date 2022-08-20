@@ -51,6 +51,11 @@ public class EdgeDriverService extends DriverService {
   public static final String EDGE_DRIVER_LOG_PROPERTY = "webdriver.edge.logfile";
 
   /**
+   * System property that defines the log level when MicrosoftWebDriver output is logged.
+   */
+  public static final String EDGE_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.edge.loglevel";
+
+  /**
    * Boolean system property that defines whether the MicrosoftWebDriver executable should be started
    * with verbose logging.
    */
@@ -114,6 +119,7 @@ public class EdgeDriverService extends DriverService {
 
     private final boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
+    private String loglevel = System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY);
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
 
@@ -145,6 +151,14 @@ public class EdgeDriverService extends DriverService {
      */
     public EdgeDriverService.Builder withVerbose(boolean verbose) {
       this.verbose = verbose;
+      return this;
+    }
+
+    /**
+     * Configures the driver server log level.
+     */
+    public EdgeDriverService.Builder withLoglevel(String level) {
+      this.loglevel = level;
       return this;
     }
 
@@ -198,6 +212,9 @@ public class EdgeDriverService extends DriverService {
       }
       if (silent) {
         args.add("--silent");
+      }
+      if (loglevel != null) {
+        args.add(String.format("--log-level=%s", loglevel));
       }
       if (allowedListIps != null) {
         args.add(String.format("--whitelisted-ips=%s", allowedListIps));
