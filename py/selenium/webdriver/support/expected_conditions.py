@@ -313,8 +313,7 @@ def element_to_be_clickable(mark):
         target = visibility_of(target)(driver)
         if target and target.is_enabled():
             return target
-        else:
-            return False
+        return False
 
     return _predicate
 
