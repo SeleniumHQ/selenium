@@ -25,7 +25,7 @@ class BaseOptions(metaclass=ABCMeta):
     Base class for individual browser options
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._caps = self.default_capabilities
         self.set_capability("pageLoadStrategy", "normal")
@@ -225,7 +225,7 @@ class BaseOptions(metaclass=ABCMeta):
 
 class ArgOptions(BaseOptions):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._arguments = []
         self._ignore_local_proxy = False
@@ -249,7 +249,7 @@ class ArgOptions(BaseOptions):
         else:
             raise ValueError('argument can not be null')
 
-    def ignore_local_proxy_environment_variables(self):
+    def ignore_local_proxy_environment_variables(self) -> None:
         """
             By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from being picked up and used.
         """
