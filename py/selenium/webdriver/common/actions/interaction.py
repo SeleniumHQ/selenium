@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import typing
 
 KEY = "key"
 POINTER = "pointer"
@@ -33,18 +33,17 @@ class Interaction:
 
     PAUSE = "pause"
 
-    def __init__(self, source):
+    def __init__(self, source) -> None:
         self.source = source
 
 
 class Pause(Interaction):
 
-    def __init__(self, source, duration=0):
-        super(Interaction, self).__init__()
-        self.source = source
+    def __init__(self, source, duration: float = 0) -> None:
+        super().__init__(source)
         self.duration = duration
 
-    def encode(self):
+    def encode(self) -> typing.Dict[str, typing.Union[str, int]]:
         return {
             "type": self.PAUSE,
             "duration": int(self.duration * 1000)
