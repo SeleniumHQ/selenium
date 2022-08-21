@@ -158,6 +158,8 @@ module.exports = function exec(command, opt_options) {
 
 // Exported to improve generated API documentation.
 
-module.exports.Command = Command
-module.exports.Options = Options
-module.exports.Result = Result
+module.exports = {
+  Command,
+  Options,
+  Result,
+}

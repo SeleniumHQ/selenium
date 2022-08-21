@@ -17,7 +17,7 @@
  * under the License.
  */
 
-'use strict';
+'use strict'
 
 const { By, escapeCss } = require('./by')
 
@@ -122,16 +122,15 @@ class ISelect {
  * @implements ISelect
  */
 class Select {
-
   /**
    * Create an Select Element
    * @param {WebElement} element Select WebElement.
    */
-  constructor (element) {
+  constructor(element) {
     this.element = element
 
-    this.element.getAttribute('tagName').then(function(tagName){
-      if(tagName.toLowerCase() !== 'select') {
+    this.element.getAttribute('tagName').then(function (tagName) {
+      if (tagName.toLowerCase() !== 'select') {
         throw new Error(`Select only works on <select> elements`)
       }
     })
@@ -154,23 +153,27 @@ class Select {
    * @param index
    */
   async selectByIndex(index) {
-    if(index < 0) {
+    if (index < 0) {
       throw new Error('Index needs to be 0 or any other positive number')
     }
 
-    let options  = await this.element.findElements(By.tagName('option'));
+    let options = await this.element.findElements(By.tagName('option'))
 
     if (options.length === 0) {
-      throw new Error('Select element doesn\'t contain any option element')
+      throw new Error("Select element doesn't contain any option element")
     }
 
     if (options.length - 1 < index) {
-      throw new Error(`Option with index "${index}" not found. Select element only contains ${options.length-1} option elements`)
+      throw new Error(
+        `Option with index "${index}" not found. Select element only contains ${
+          options.length - 1
+        } option elements`
+      )
     }
 
     for (let option of options) {
-      if(await option.getAttribute('index') === index.toString()) {
-        if(!(await option.isSelected())){
+      if ((await option.getAttribute('index')) === index.toString()) {
+        if (!(await option.isSelected())) {
           await option.click()
         }
       }
@@ -195,25 +198,25 @@ class Select {
    * @param {string} value value of option element to be selected
    */
   async selectByValue(value) {
-    let matched = false;
-    let isMulti = await this.isMultiple();
+    let matched = false
+    let isMulti = await this.isMultiple()
 
     let options = await this.element.findElements({
       css: 'option[value =' + escapeCss(value) + ']',
     })
 
     for (let option of options) {
-      if(!(await option.isSelected())){
+      if (!(await option.isSelected())) {
         await option.click()
       }
 
-      if(!isMulti) {
+      if (!isMulti) {
         return
       }
-      matched = true;
+      matched = true
     }
 
-    if(!matched) {
+    if (!matched) {
       throw new Error(`Cannot locate option with value: ${value}`)
     }
   }
@@ -236,9 +239,7 @@ class Select {
    *
    */
   async selectByVisibleText(text) {
-    text = typeof text === 'number'
-      ? text.toString()
-      : text
+    text = typeof text === 'number' ? text.toString() : text
 
     const normalized = text
       .trim() // strip leading and trailing white-space characters
@@ -260,8 +261,10 @@ class Select {
       `./optgroup/option${spaceFormat}`,
     ]
 
-    const optionElement = await this.element.findElement({xpath: selections.join('|')})
-    if(!(await optionElement.isSelected())){
+    const optionElement = await this.element.findElement({
+      xpath: selections.join('|'),
+    })
+    if (!(await optionElement.isSelected())) {
       await optionElement.click()
     }
   }
@@ -271,7 +274,7 @@ class Select {
    * @returns {!Promise<!Array<!WebElement>>}
    */
   async getOptions() {
-    return await this.element.findElements({tagName: 'option'})
+    return await this.element.findElements({ tagName: 'option' })
   }
 
   /**
@@ -279,7 +282,7 @@ class Select {
    * @returns {Promise<boolean>}
    */
   async isMultiple() {
-    return (await this.element.getAttribute('multiple'))!==null
+    return (await this.element.getAttribute('multiple')) !== null
   }
 
   /**
@@ -288,14 +291,14 @@ class Select {
    * @returns {Promise<void>}
    */
   async getAllSelectedOptions() {
-    const opts = await this.getOptions();
-    const results = [];
-    for(let options of opts) {
-      if(await options.isSelected()){
-        results.push(options);
+    const opts = await this.getOptions()
+    const results = []
+    for (let options of opts) {
+      if (await options.isSelected()) {
+        results.push(options)
       }
     }
-    return results;
+    return results
   }
 
   /**
@@ -303,7 +306,7 @@ class Select {
    * @returns {Promise<Element>}
    */
   async getFirstSelectedOption() {
-    return (await this.getAllSelectedOptions())[0];
+    return (await this.getAllSelectedOptions())[0]
   }
 
   /**
@@ -311,15 +314,15 @@ class Select {
    * @returns {Promise<void>}
    */
   async deselectAll() {
-    if(!this.isMultiple()){
-      throw new Error("You may only deselect all options of a multi-select")
+    if (!this.isMultiple()) {
+      throw new Error('You may only deselect all options of a multi-select')
     }
 
-    const options = await this.getOptions();
+    const options = await this.getOptions()
 
-    for(let option of options){
-      if(await option.isSelected()) {
-        await option.click();
+    for (let option of options) {
+      if (await option.isSelected()) {
+        await option.click()
       }
     }
   }
@@ -330,16 +333,14 @@ class Select {
    * @returns {Promise<void>}
    */
   async deselectByVisibleText(text) {
-    if(!(await this.isMultiple())){
-      throw new Error("You may only deselect options of a multi-select")
+    if (!(await this.isMultiple())) {
+      throw new Error('You may only deselect options of a multi-select')
     }
 
-     /**
+    /**
      * convert value into string
      */
-    text = typeof text === 'number'
-      ? text.toString()
-      : text
+    text = typeof text === 'number' ? text.toString() : text
 
     const normalized = text
       .trim() // strip leading and trailing white-space characters
@@ -361,8 +362,10 @@ class Select {
       `./optgroup/option${spaceFormat}`,
     ]
 
-    const optionElement = await this.element.findElement({xpath: selections.join('|')})
-    if(await optionElement.isSelected()){
+    const optionElement = await this.element.findElement({
+      xpath: selections.join('|'),
+    })
+    if (await optionElement.isSelected()) {
       await optionElement.click()
     }
   }
@@ -376,27 +379,31 @@ class Select {
    * @returns {Promise<void>}
    */
   async deselectByIndex(index) {
-    if(!(await this.isMultiple())){
-      throw new Error("You may only deselect options of a multi-select")
+    if (!(await this.isMultiple())) {
+      throw new Error('You may only deselect options of a multi-select')
     }
 
-    if(index < 0) {
+    if (index < 0) {
       throw new Error('Index needs to be 0 or any other positive number')
     }
 
-    let options  = await this.element.findElements(By.tagName('option'));
+    let options = await this.element.findElements(By.tagName('option'))
 
     if (options.length === 0) {
-      throw new Error('Select element doesn\'t contain any option element')
+      throw new Error("Select element doesn't contain any option element")
     }
 
     if (options.length - 1 < index) {
-      throw new Error(`Option with index "${index}" not found. Select element only contains ${options.length-1} option elements`)
+      throw new Error(
+        `Option with index "${index}" not found. Select element only contains ${
+          options.length - 1
+        } option elements`
+      )
     }
 
     for (let option of options) {
-      if(await option.getAttribute('index') === index.toString()) {
-        if(await option.isSelected()){
+      if ((await option.getAttribute('index')) === index.toString()) {
+        if (await option.isSelected()) {
           await option.click()
         }
       }
@@ -409,27 +416,27 @@ class Select {
    * @returns {Promise<void>}
    */
   async deselectByValue(value) {
-    if(!(await this.isMultiple())){
-      throw new Error("You may only deselect options of a multi-select")
+    if (!(await this.isMultiple())) {
+      throw new Error('You may only deselect options of a multi-select')
     }
 
-    let matched = false;
+    let matched = false
 
     let options = await this.element.findElements({
       css: 'option[value =' + escapeCss(value) + ']',
     })
 
     for (let option of options) {
-      if(await option.isSelected()){
+      if (await option.isSelected()) {
         await option.click()
       }
-      matched = true;
+      matched = true
     }
 
-    if(!matched) {
+    if (!matched) {
       throw new Error(`Cannot locate option with value: ${value}`)
     }
   }
 }
 
-module.exports =  { Select };
+module.exports = { Select }
