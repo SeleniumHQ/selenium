@@ -252,7 +252,7 @@ def frame_to_be_available_and_switch_to_it(locator):
 
     def _predicate(driver):
         try:
-            if hasattr(locator, '__iter__') and type(locator) is not str:
+            if hasattr(locator, '__iter__') and not isinstance(locator, str):
                 driver.switch_to.frame(driver.find_element(*locator))
             else:
                 driver.switch_to.frame(locator)
