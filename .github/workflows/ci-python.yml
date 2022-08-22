@@ -147,7 +147,7 @@ jobs:
       - name: Run browser tests in Chrome
         uses: ./.github/actions/bazel-test
         with:
-          command: //py:test-chrome
+          query: //py:test-chrome
           attempts: 3
         env:
           DISPLAY: :99
@@ -228,7 +228,7 @@ jobs:
       - name: Run browser tests in Firefox
         uses: ./.github/actions/bazel-test
         with:
-          command: //py:test-firefox
+          query: //py:test-firefox
           attempts: 3
         env:
           DISPLAY: :99
