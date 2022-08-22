@@ -27,6 +27,7 @@ const { By, escapeCss } = require('./by')
  *
  * @interface
  */
+// eslint-disable-next-line no-unused-vars
 class ISelect {
   /**
    * @return {!Promise<boolean>} Whether this select element supports selecting multiple options at the same time? This
