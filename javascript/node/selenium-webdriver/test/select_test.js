@@ -18,14 +18,23 @@
 'use strict'
 
 const assert = require('assert')
-const { Select, By} = require('..')
+const { Select, By } = require('..')
 const { Pages, ignore, suite } = require('../lib/test')
 const { Browser } = require('../index')
 
-let singleSelectValues1 = {'name': 'selectomatic', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']};
-let disabledSelect = {'name': 'no-select', 'values': ['Foo']};
-let multiSelectValues1 = {'name': 'multi', 'values': ['Eggs', 'Ham', 'Sausages', 'Onion gravy']}
-let multiSelectValues2 = {'name': 'select_empty_multiple', 'values': ['select_1', 'select_2', 'select_3', 'select_4']}
+let singleSelectValues1 = {
+  name: 'selectomatic',
+  values: ['One', 'Two', 'Four', 'Still learning how to count, apparently'],
+}
+let disabledSelect = { name: 'no-select', values: ['Foo'] }
+let multiSelectValues1 = {
+  name: 'multi',
+  values: ['Eggs', 'Ham', 'Sausages', 'Onion gravy'],
+}
+let multiSelectValues2 = {
+  name: 'select_empty_multiple',
+  values: ['select_1', 'select_2', 'select_3', 'select_4'],
+}
 
 suite(
   function (env) {
@@ -42,114 +51,170 @@ suite(
       it('Should be able to select by value', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(driver.findElement(By.name(singleSelectValues1['name'])));
-        for(let x in singleSelectValues1['values']) {
-          await selector.selectByValue(singleSelectValues1['values'][x].toLowerCase())
-          let ele = await selector.getFirstSelectedOption();
-          assert.deepEqual(await ele.getText(), singleSelectValues1['values'][x] )
+        let selector = new Select(
+          driver.findElement(By.name(singleSelectValues1['name']))
+        )
+        for (let x in singleSelectValues1['values']) {
+          await selector.selectByValue(
+            singleSelectValues1['values'][x].toLowerCase()
+          )
+          let ele = await selector.getFirstSelectedOption()
+          assert.deepEqual(
+            await ele.getText(),
+            singleSelectValues1['values'][x]
+          )
         }
       })
 
       it('Should be able to select by index', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(driver.findElement(By.name(singleSelectValues1['name'])));
-        for(let x in singleSelectValues1['values']) {
+        let selector = new Select(
+          driver.findElement(By.name(singleSelectValues1['name']))
+        )
+        for (let x in singleSelectValues1['values']) {
           await selector.selectByIndex(x)
-          let ele = await selector.getFirstSelectedOption();
-          assert.deepEqual(await ele.getText(), singleSelectValues1['values'][x] )
+          let ele = await selector.getFirstSelectedOption()
+          assert.deepEqual(
+            await ele.getText(),
+            singleSelectValues1['values'][x]
+          )
         }
       })
 
       it('Should be able to select by visible text', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(driver.findElement(By.name(singleSelectValues1['name'])));
-        for(let x in singleSelectValues1['values']) {
+        let selector = new Select(
+          driver.findElement(By.name(singleSelectValues1['name']))
+        )
+        for (let x in singleSelectValues1['values']) {
           await selector.selectByVisibleText(singleSelectValues1['values'][x])
-          let ele = await selector.getFirstSelectedOption();
-          assert.deepEqual(await ele.getText(), singleSelectValues1['values'][x] )
+          let ele = await selector.getFirstSelectedOption()
+          assert.deepEqual(
+            await ele.getText(),
+            singleSelectValues1['values'][x]
+          )
         }
       })
 
-      ignore(browsers(Browser.FIREFOX)).it('Should check selected option if select is disabled by index', async function () {
-        await driver.get(Pages.formPage)
+      ignore(browsers(Browser.FIREFOX)).it(
+        'Should check selected option if select is disabled by index',
+        async function () {
+          await driver.get(Pages.formPage)
 
-        let selectorObject = new Select(driver.findElement(By.name(disabledSelect['name'])));
-        let firstSelected = await selectorObject.getFirstSelectedOption()
-        await selectorObject.selectByIndex(1);
-        let lastSelected = await selectorObject.getFirstSelectedOption()
-        assert.deepEqual(await firstSelected.getAttribute('value'), await lastSelected.getAttribute('value') )
-      })
+          let selectorObject = new Select(
+            driver.findElement(By.name(disabledSelect['name']))
+          )
+          let firstSelected = await selectorObject.getFirstSelectedOption()
+          await selectorObject.selectByIndex(1)
+          let lastSelected = await selectorObject.getFirstSelectedOption()
+          assert.deepEqual(
+            await firstSelected.getAttribute('value'),
+            await lastSelected.getAttribute('value')
+          )
+        }
+      )
 
-      ignore(browsers(Browser.FIREFOX)).it('Should check selected option if select is disabled by value', async function () {
-        await driver.get(Pages.formPage)
+      ignore(browsers(Browser.FIREFOX)).it(
+        'Should check selected option if select is disabled by value',
+        async function () {
+          await driver.get(Pages.formPage)
 
-        let selectorObject = new Select(driver.findElement(By.name(disabledSelect['name'])));
-        let firstSelected = await selectorObject.getFirstSelectedOption()
-        await selectorObject.selectByValue('bar');
-        let lastSelected = await selectorObject.getFirstSelectedOption()
-        assert.deepEqual(await firstSelected.getAttribute('value'), await lastSelected.getAttribute('value') )
-      })
+          let selectorObject = new Select(
+            driver.findElement(By.name(disabledSelect['name']))
+          )
+          let firstSelected = await selectorObject.getFirstSelectedOption()
+          await selectorObject.selectByValue('bar')
+          let lastSelected = await selectorObject.getFirstSelectedOption()
+          assert.deepEqual(
+            await firstSelected.getAttribute('value'),
+            await lastSelected.getAttribute('value')
+          )
+        }
+      )
 
-      ignore(browsers(Browser.FIREFOX)).it('Should check selected option if select is disabled by visible text', async function () {
-        await driver.get(Pages.formPage)
+      ignore(browsers(Browser.FIREFOX)).it(
+        'Should check selected option if select is disabled by visible text',
+        async function () {
+          await driver.get(Pages.formPage)
 
-        let selectorObject = new Select(driver.findElement(By.name(disabledSelect['name'])));
-        let firstSelected = await selectorObject.getFirstSelectedOption()
-        await selectorObject.selectByVisibleText('Bar');
-        let lastSelected = await selectorObject.getFirstSelectedOption()
-        assert.deepEqual(await firstSelected.getAttribute('value'), await lastSelected.getAttribute('value') )
-      })
+          let selectorObject = new Select(
+            driver.findElement(By.name(disabledSelect['name']))
+          )
+          let firstSelected = await selectorObject.getFirstSelectedOption()
+          await selectorObject.selectByVisibleText('Bar')
+          let lastSelected = await selectorObject.getFirstSelectedOption()
+          assert.deepEqual(
+            await firstSelected.getAttribute('value'),
+            await lastSelected.getAttribute('value')
+          )
+        }
+      )
 
       it('Should select by multiple index', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(driver.findElement(By.name(multiSelectValues1['name'])));
-        await selector.deselectAll();
+        let selector = new Select(
+          driver.findElement(By.name(multiSelectValues1['name']))
+        )
+        await selector.deselectAll()
 
-        for(let x in multiSelectValues1['values']) {
+        for (let x in multiSelectValues1['values']) {
           await selector.selectByIndex(x)
         }
 
-        let ele = await selector.getAllSelectedOptions();
+        let ele = await selector.getAllSelectedOptions()
 
-        for(let x in ele) {
-          assert.deepEqual(await ele[x].getText(), multiSelectValues1['values'][x] )
+        for (let x in ele) {
+          assert.deepEqual(
+            await ele[x].getText(),
+            multiSelectValues1['values'][x]
+          )
         }
       })
 
       it('Should select by multiple value', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(driver.findElement(By.name(multiSelectValues2['name'])));
-        await selector.deselectAll();
+        let selector = new Select(
+          driver.findElement(By.name(multiSelectValues2['name']))
+        )
+        await selector.deselectAll()
 
-        for(let value of multiSelectValues2['values']) {
+        for (let value of multiSelectValues2['values']) {
           await selector.selectByValue(value)
         }
 
-        let ele = await selector.getAllSelectedOptions();
+        let ele = await selector.getAllSelectedOptions()
 
-        for(let x in ele) {
-          assert.deepEqual(await ele[x].getText(), multiSelectValues2['values'][x] )
+        for (let x in ele) {
+          assert.deepEqual(
+            await ele[x].getText(),
+            multiSelectValues2['values'][x]
+          )
         }
       })
 
       it('Should select by multiple text', async function () {
         await driver.get(Pages.formPage)
 
-        let selector = new Select(driver.findElement(By.name(multiSelectValues2['name'])));
-        await selector.deselectAll();
+        let selector = new Select(
+          driver.findElement(By.name(multiSelectValues2['name']))
+        )
+        await selector.deselectAll()
 
-        for(let value of multiSelectValues2['values']) {
+        for (let value of multiSelectValues2['values']) {
           await selector.selectByVisibleText(value)
         }
 
-        let ele = await selector.getAllSelectedOptions();
+        let ele = await selector.getAllSelectedOptions()
 
-        for(let x in ele) {
-          assert.deepEqual(await ele[x].getText(), multiSelectValues2['values'][x] )
+        for (let x in ele) {
+          assert.deepEqual(
+            await ele[x].getText(),
+            multiSelectValues2['values'][x]
+          )
         }
       })
     })
