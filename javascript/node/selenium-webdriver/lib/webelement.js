@@ -27,38 +27,40 @@ const ELEMENT_ID_KEY = 'element-6066-11e4-a52e-4f735466cecf'
 /**
  * Contains logic about WebElements.
  */
-class Element {
-  /**
-   * @param {?} obj the object to test.
-   * @return {boolean} whether the object is a valid encoded WebElement ID.
-   */
-  static isId (obj) {
-    return (
-      obj &&
-      typeof obj === 'object' &&
-      (typeof obj[ELEMENT_ID_KEY] === 'string' ||
-       typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string')
-    )
-  }
-
-  /**
-   * Extracts the encoded WebElement ID from the object.
-   *
-   * @param {?} obj The object to extract the ID from.
-   * @return {string} the extracted ID.
-   * @throws {TypeError} if the object is not a valid encoded ID.
-   */
-  static extractId (obj) {
-    if (obj && typeof obj === 'object') {
-      if (typeof obj[ELEMENT_ID_KEY] === 'string') {
-        return obj[ELEMENT_ID_KEY]
-      } else if (typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string') {
-        return obj[LEGACY_ELEMENT_ID_KEY]
-      }
-    }
-    throw new TypeError('object is not a WebElement ID')
-  }
+/**
+ * @param {?} obj the object to test.
+ * @return {boolean} whether the object is a valid encoded WebElement ID.
+ */
+function isId(obj) {
+  return (
+    obj &&
+    typeof obj === 'object' &&
+    (typeof obj[ELEMENT_ID_KEY] === 'string' ||
+      typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string')
+  )
 }
 
-module.exports.isId = Element.isId
-module.exports.extractId = Element.extractId
+/**
+ * Extracts the encoded WebElement ID from the object.
+ *
+ * @param {?} obj The object to extract the ID from.
+ * @return {string} the extracted ID.
+ * @throws {TypeError} if the object is not a valid encoded ID.
+ */
+function extractId(obj) {
+  if (obj && typeof obj === 'object') {
+    if (typeof obj[ELEMENT_ID_KEY] === 'string') {
+      return obj[ELEMENT_ID_KEY]
+    } else if (typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string') {
+      return obj[LEGACY_ELEMENT_ID_KEY]
+    }
+  }
+  throw new TypeError('object is not a WebElement ID')
+}
+
+// PUBLIC API
+
+module.exports = {
+  isId,
+  extractId,
+}
