@@ -121,7 +121,7 @@ class Command {
  * @param {Options=} opt_options The command options.
  * @return {!Command} The launched command.
  */
-module.exports = function exec(command, opt_options) {
+function exec(command, opt_options) {
   const options = opt_options || {}
 
   let proc = childProcess.spawn(command, options.args || [], {
@@ -162,4 +162,5 @@ module.exports = {
   Command,
   Options,
   Result,
+  exec
 }
