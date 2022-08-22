@@ -22,8 +22,8 @@
  * @enum {string}
  */
 const Protocol = {
-  CTAP2: 'ctap2',
-  U2F: 'ctap1/u2f',
+  'CTAP2': 'ctap2',
+  'U2F': 'ctap1/u2f',
 }
 
 /**
@@ -31,10 +31,10 @@ const Protocol = {
  * @enum {string}
  */
 const Transport = {
-  BLE: 'ble',
-  USB: 'usb',
-  NFC: 'nfc',
-  INTERNAL: 'internal',
+  'BLE': 'ble',
+  'USB': 'usb',
+  'NFC': 'nfc',
+  'INTERNAL': 'internal',
 }
 
 /**
