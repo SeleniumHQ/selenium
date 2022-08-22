@@ -20,15 +20,16 @@ package org.openqa.selenium.grid.node;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.grid.security.AddSecretFilter;
 import org.openqa.selenium.grid.security.Secret;
-import org.openqa.selenium.remote.AddWebDriverSpecHeaders;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.AddWebDriverSpecHeaders;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -55,6 +56,7 @@ import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
@@ -62,14 +64,16 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 class CustomLocatorHandler implements Routable {
 
+  private static final Logger LOG = Logger.getLogger(CustomLocatorHandler.class.getName());
   private static final Json JSON = new Json();
   private static final UrlTemplate FIND_ELEMENT = new UrlTemplate("/session/{sessionId}/element");
   private static final UrlTemplate FIND_ELEMENTS = new UrlTemplate("/session/{sessionId}/elements");
-  private static final UrlTemplate FIND_CHILD_ELEMENT = new UrlTemplate("/session/{sessionId}/element/{elementId}/element");
-  private static final UrlTemplate FIND_CHILD_ELEMENTS = new UrlTemplate("/session/{sessionId}/element/{elementId}/elements");
-
-  private final HttpHandler toNode;
-  private final Map<String, Function<Object, By>> extraLocators;
+  private static final UrlTemplate
+    FIND_CHILD_ELEMENT =
+    new UrlTemplate("/session/{sessionId}/element/{elementId}/element");
+  private static final UrlTemplate
+    FIND_CHILD_ELEMENTS =
+    new UrlTemplate("/session/{sessionId}/element/{elementId}/elements");
   // These are derived from the w3c webdriver spec
   private static final Set<String> W3C_STRATEGIES = ImmutableSet.of(
     "css selector",
@@ -77,6 +81,8 @@ class CustomLocatorHandler implements Routable {
     "partial link text",
     "tag name",
     "xpath");
+  private final HttpHandler toNode;
+  private final Map<String, Function<Object, By>> extraLocators;
 
   @VisibleForTesting
   CustomLocatorHandler(Node node, Secret registrationSecret, Set<CustomLocator> extraLocators) {
@@ -141,20 +147,28 @@ class CustomLocatorHandler implements Routable {
 
     Function<Object, By> customLocator = extraLocators.get(using);
     if (customLocator == null) {
-      return new HttpResponse()
-        .setStatus(HTTP_BAD_REQUEST)
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
-            "error", "invalid argument",
-            "message", "Unable to determine element locating strategy for " + using,
-            "stacktrace", ""))));
+      LOG.warning(
+        () -> String.format(
+          "No custom locator found for '%s', the remote end will determine if the locator is valid.",
+          using));
+      return toNode.execute(req);
+    }
+
+    String usingLocator = String.valueOf(using);
+    if ("id".equalsIgnoreCase(usingLocator) || "name".equalsIgnoreCase(usingLocator)) {
+      LOG.warning(
+        () -> String.format(
+          "Custom conversion to a CSS locator from '%s' will be removed "
+          + "soon. Please switch to a valid W3C WebDriver locator strategy https://www.w3.org/TR/webdriver1/#locator-strategies",
+          using));
     }
 
     CommandExecutor executor = new NodeWrappingExecutor(toNode);
     RemoteWebDriver driver = new CustomWebDriver(
       executor,
       HttpSessionId.getSessionId(req.getUri())
-        .orElseThrow(() -> new IllegalArgumentException("Cannot locate session ID from " + req.getUri())));
+        .orElseThrow(
+          () -> new IllegalArgumentException("Cannot locate session ID from " + req.getUri())));
 
     SearchContext context = null;
     RemoteWebElement element;

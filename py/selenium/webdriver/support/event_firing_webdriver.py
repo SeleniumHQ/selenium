@@ -109,13 +109,13 @@ class EventFiringWebDriver:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def _dispatch(self, l_call, l_args, d_call, d_args):
-        getattr(self._listener, "before_%s" % l_call)(*l_args)
+        getattr(self._listener, f"before_{l_call}")(*l_args)
         try:
             result = getattr(self._driver, d_call)(*d_args)
-        except Exception as e:
-            self._listener.on_exception(e, self._driver)
+        except Exception as exc:
+            self._listener.on_exception(exc, self._driver)
             raise
-        getattr(self._listener, "after_%s" % l_call)(*l_args)
+        getattr(self._listener, f"after_{l_call}")(*l_args)
         return _wrap_elements(result, self)
 
     def _unwrap_element_args(self, args):
@@ -139,8 +139,8 @@ class EventFiringWebDriver:
         else:
             try:
                 object.__setattr__(self._driver, item, value)
-            except Exception as e:
-                self._listener.on_exception(e, self._driver)
+            except Exception as exc:
+                self._listener.on_exception(exc, self._driver)
                 raise
 
     def __getattr__(self, name):
@@ -148,15 +148,15 @@ class EventFiringWebDriver:
             try:
                 result = attrib(*args, **kwargs)
                 return _wrap_elements(result, self)
-            except Exception as e:
-                self._listener.on_exception(e, self._driver)
+            except Exception as exc:
+                self._listener.on_exception(exc, self._driver)
                 raise
 
         try:
             attrib = getattr(self._driver, name)
             return _wrap if callable(attrib) else attrib
-        except Exception as e:
-            self._listener.on_exception(e, self._driver)
+        except Exception as exc:
+            self._listener.on_exception(exc, self._driver)
             raise
 
 
@@ -195,13 +195,13 @@ class EventFiringWebElement:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def _dispatch(self, l_call, l_args, d_call, d_args):
-        getattr(self._listener, "before_%s" % l_call)(*l_args)
+        getattr(self._listener, f"before_{l_call}")(*l_args)
         try:
             result = getattr(self._webelement, d_call)(*d_args)
-        except Exception as e:
-            self._listener.on_exception(e, self._driver)
+        except Exception as exc:
+            self._listener.on_exception(exc, self._driver)
             raise
-        getattr(self._listener, "after_%s" % l_call)(*l_args)
+        getattr(self._listener, f"after_{l_call}")(*l_args)
         return _wrap_elements(result, self._ef_driver)
 
     def __setattr__(self, item, value):
@@ -210,8 +210,8 @@ class EventFiringWebElement:
         else:
             try:
                 object.__setattr__(self._webelement, item, value)
-            except Exception as e:
-                self._listener.on_exception(e, self._driver)
+            except Exception as exc:
+                self._listener.on_exception(exc, self._driver)
                 raise
 
     def __getattr__(self, name):
@@ -219,15 +219,15 @@ class EventFiringWebElement:
             try:
                 result = attrib(*args, **kwargs)
                 return _wrap_elements(result, self._ef_driver)
-            except Exception as e:
-                self._listener.on_exception(e, self._driver)
+            except Exception as exc:
+                self._listener.on_exception(exc, self._driver)
                 raise
 
         try:
             attrib = getattr(self._webelement, name)
             return _wrap if callable(attrib) else attrib
-        except Exception as e:
-            self._listener.on_exception(e, self._driver)
+        except Exception as exc:
+            self._listener.on_exception(exc, self._driver)
             raise
 
 

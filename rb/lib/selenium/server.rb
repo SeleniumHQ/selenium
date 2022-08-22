@@ -92,7 +92,7 @@ module Selenium
             download_server(redirected, destination)
           end
         rescue StandardError
-          FileUtils.rm download_file_name if File.exist? download_file_name
+          FileUtils.rm_rf download_file_name
           raise
         end
 

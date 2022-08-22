@@ -20,6 +20,8 @@
 const assert = require('assert')
 const virtualAuthenticatorOptions =
   require('../../lib/virtual_authenticator').VirtualAuthenticatorOptions
+const Transport = require('../../lib/virtual_authenticator').Transport
+const Protocol = require('../../lib/virtual_authenticator').Protocol
 
 let options
 
@@ -29,34 +31,34 @@ describe('VirtualAuthenticatorOptions', function () {
   })
 
   it('can testSetTransport', function () {
-    options.setTransport(virtualAuthenticatorOptions.Transport['USB'])
+    options.setTransport(Transport['USB'])
     assert.equal(
       options.getTransport(),
-      virtualAuthenticatorOptions.Transport['USB']
+      Transport['USB']
     )
   })
 
   it('can testGetTransport', function () {
-    options._transport = virtualAuthenticatorOptions.Transport['NFC']
+    options._transport = Transport['NFC']
     assert.equal(
       options.getTransport(),
-      virtualAuthenticatorOptions.Transport['NFC']
+      Transport['NFC']
     )
   })
 
   it('can testSetProtocol', function () {
-    options.setProtocol(virtualAuthenticatorOptions.Protocol['U2F'])
+    options.setProtocol(Protocol['U2F'])
     assert.equal(
       options.getProtocol(),
-      virtualAuthenticatorOptions.Protocol['U2F']
+      Protocol['U2F']
     )
   })
 
   it('can testGetProtocol', function () {
-    options._protocol = virtualAuthenticatorOptions.Protocol['CTAP2']
+    options._protocol = Protocol['CTAP2']
     assert.equal(
       options.getProtocol(),
-      virtualAuthenticatorOptions.Protocol['CTAP2']
+      Protocol['CTAP2']
     )
   })
 
@@ -104,11 +106,11 @@ describe('VirtualAuthenticatorOptions', function () {
     let default_options = options.toDict()
     assert.equal(
       default_options['transport'],
-      virtualAuthenticatorOptions.Transport['USB']
+      Transport['USB']
     )
     assert.equal(
       default_options['protocol'],
-      virtualAuthenticatorOptions.Protocol['CTAP2']
+      Protocol['CTAP2']
     )
     assert.equal(default_options['hasResidentKey'], false)
     assert.equal(default_options['hasUserVerification'], false)

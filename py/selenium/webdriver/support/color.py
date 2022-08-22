@@ -177,7 +177,7 @@ class Color:
             self.red, self.green, self.blue, self.alpha)
 
     def __str__(self) -> str:
-        return "Color: %s" % self.rgba
+        return f"Color: {self.rgba}"
 
 
 # Basic, extended and transparent colour keywords as defined by the W3C HTML4 spec

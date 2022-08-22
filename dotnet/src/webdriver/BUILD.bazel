@@ -63,10 +63,10 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@json.net//:Newtonsoft.Json",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
         "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@json.net//:Newtonsoft.Json",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -111,10 +111,10 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@json.net//:Newtonsoft.Json",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
         "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@json.net//:Newtonsoft.Json",
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
@@ -151,10 +151,10 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@json.net//:Newtonsoft.Json",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
         "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@json.net//:Newtonsoft.Json",
         "@net//:System",
         "@net//:System.Core",
         "@net//:System.Data",
@@ -200,10 +200,10 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@json.net//:Newtonsoft.Json",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
         "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@json.net//:Newtonsoft.Json",
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
 
@@ -213,10 +213,10 @@ generated_assembly_info(
     target_framework = "{}".format(framework),
     visibility = ["//visibility:public"],
     deps = [
-        "@json.net//:Newtonsoft.Json",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
         "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@json.net//:Newtonsoft.Json",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 
@@ -227,10 +227,10 @@ generated_assembly_info(
     target_framework = "{}".format(framework),
     visibility = ["//visibility:public"],
     deps = [
-        "@json.net//:Newtonsoft.Json",
-        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
-        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
         "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
+        "@json.net//:Newtonsoft.Json",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
 

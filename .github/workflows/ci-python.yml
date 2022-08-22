@@ -145,9 +145,10 @@ jobs:
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Chrome
-        uses: ./.github/actions/bazel
+        uses: ./.github/actions/bazel-test
         with:
-          command: test //py:test-chrome
+          query: //py:test-chrome
+          attempts: 3
         env:
           DISPLAY: :99
 
@@ -225,9 +226,10 @@ jobs:
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Firefox
-        uses: ./.github/actions/bazel
+        uses: ./.github/actions/bazel-test
         with:
-          command: test //py:test-firefox
+          query: //py:test-firefox
+          attempts: 3
         env:
           DISPLAY: :99
 

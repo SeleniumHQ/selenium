@@ -125,7 +125,7 @@ class HandleSession implements HttpHandler {
 
         return res;
       } catch (Exception e) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
 
         String errorMessage = "Unable to execute request for an existing session: " + e.getMessage();
@@ -140,7 +140,7 @@ class HandleSession implements HttpHandler {
           response.setContent(asJson(ImmutableMap.of(
             "value", req.getUri(),
             "message", errorMessage,
-            "error", NoSuchSessionException.class.getName())));
+            "error", "invalid session id")));
           return response;
         }
 

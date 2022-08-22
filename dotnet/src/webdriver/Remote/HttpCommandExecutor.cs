@@ -282,7 +282,7 @@ namespace OpenQA.Selenium.Remote
                 {
                     HttpResponseInfo httpResponseInfo = new HttpResponseInfo();
                     httpResponseInfo.Body = await responseMessage.Content.ReadAsStringAsync();
-                    httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType.ToString();
+                    httpResponseInfo.ContentType = responseMessage.Content.Headers.ContentType?.ToString();
                     httpResponseInfo.StatusCode = responseMessage.StatusCode;
 
                     return httpResponseInfo;

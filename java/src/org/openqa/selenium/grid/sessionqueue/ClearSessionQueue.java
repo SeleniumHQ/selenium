@@ -29,7 +29,9 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 public class ClearSessionQueue implements HttpHandler {
@@ -70,6 +72,8 @@ public class ClearSessionQueue implements HttpHandler {
       HTTP_RESPONSE.accept(span, response);
       return response;
     } catch (Exception e) {
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
+      span.setStatus(Status.INTERNAL);
       HttpResponse response = new HttpResponse().setStatus((HTTP_INTERNAL_ERROR)).setContent(
         asJson(ImmutableMap.of(
           "value", 0,

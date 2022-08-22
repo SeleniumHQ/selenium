@@ -1,3 +1,18 @@
+4.4.0 (2022-08-09)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.103.1 to fix websocket dependency requirement
+  * Released selenium-devtools 0.104.0 (supports CDP v85, v102, v103, v104)
+  * Have network interceptor ignore cancelled requests (#10856)
+  * Improve websocket message handling
+
+Chromium:
+  * Prevent users from setting w3c: false and warn for true (thanks Tamsil Amani!)
+
+Ruby:
+  * Implement Virtual Authenticator (#10903, #10541) (thanks Tamsil Amani!)
+
 4.3.0 (2022-06-23)
 =========================
 

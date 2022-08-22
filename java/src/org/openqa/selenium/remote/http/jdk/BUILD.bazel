@@ -1,0 +1,21 @@
+load("//java:defs.bzl", "java_export")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
+    name = "jdk",
+    srcs = glob(["*.java"]),
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-http-jdk-client:%s" % SE_VERSION,
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    visibility = [
+        "//visibility:public",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote/http",
+    ],
+)

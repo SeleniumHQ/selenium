@@ -31,6 +31,8 @@ const Button = {
   LEFT: 0,
   MIDDLE: 1,
   RIGHT: 2,
+  BACK: 3,
+  FORWARD: 4
 }
 
 /**
@@ -801,7 +803,13 @@ class Actions {
    * @return {!Actions} a self reference.
    */
   sendKeys(...keys) {
+    const { WebElement } = require('./webdriver')
+
     const actions = []
+    if(keys.length > 1 && keys[0] instanceof WebElement) {
+      this.click(keys[0]);
+      keys.shift()
+    }
     for (const key of keys) {
       if (typeof key === 'string') {
         for (const symbol of key) {
