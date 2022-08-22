@@ -144,6 +144,7 @@ suite(function (env) {
     if (driver.virtualAuthenticatorId() != null) {
       await driver.removeVirtualAuthenticator()
     }
+    await driver.quit()
   })
 
   describe('VirtualAuthenticator Test Suit 2', function () {
