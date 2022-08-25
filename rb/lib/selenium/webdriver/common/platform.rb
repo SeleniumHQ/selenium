@@ -105,7 +105,6 @@ module Selenium
 
       def cygwin?
         RUBY_PLATFORM.include?('cygwin')
-        !Regexp.last_match.nil?
       end
 
       def null_device
