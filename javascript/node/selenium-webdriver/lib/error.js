@@ -17,6 +17,8 @@
 
 'use strict'
 
+const { isObject } = require('./util')
+
 /**
  * The base WebDriver error type. This error type is only used directly when a
  * more appropriate category is not defined for the offending error.
@@ -505,7 +507,7 @@ function encodeError(err) {
  * @see https://w3c.github.io/webdriver/webdriver-spec.html#protocol
  */
 function isErrorResponse(data) {
-  return data && typeof data === 'object' && typeof data.error === 'string'
+  return isObject(data) && typeof data.error === 'string'
 }
 
 /**
@@ -540,15 +542,13 @@ function throwDecodedError(data) {
 function checkLegacyResponse(responseObj) {
   // Handle the legacy Selenium error response format.
   if (
-    responseObj &&
-    typeof responseObj === 'object' &&
-    typeof responseObj['status'] === 'number' &&
-    responseObj['status'] !== 0
+    isObject(responseObj) &&
+    typeof responseObj.status === 'number' &&
+    responseObj.status !== 0
   ) {
-    let status = responseObj['status']
-    let ctor = LEGACY_ERROR_CODE_TO_TYPE.get(status) || WebDriverError
+    const { status, value } = responseObj
 
-    let value = responseObj['value']
+    let ctor = LEGACY_ERROR_CODE_TO_TYPE.get(status) || WebDriverError
 
     if (!value || typeof value !== 'object') {
       throw new ctor(value + '')

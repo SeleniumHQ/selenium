@@ -37,8 +37,9 @@ const { Capabilities } = require('./capabilities')
 const path = require('path')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
-const Credential = require('./virtual_authenticator').Credential
+const { Credential } = require('./virtual_authenticator')
 const webElement = require('./webelement')
+const { isObject } = require('./util')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -214,7 +215,7 @@ function fromWireValue(driver, value) {
   } else if (ShadowRoot.isId(value)) {
     let id = ShadowRoot.extractId(value)
     value = new ShadowRoot(driver, id)
-  } else if (value && typeof value === 'object') {
+  } else if (isObject(value)) {
     let result = {}
     for (let key in value) {
       if (Object.prototype.hasOwnProperty.call(value, key)) {
