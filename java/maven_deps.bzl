@@ -80,7 +80,7 @@ def selenium_java_deps():
             "org.junit.platform:junit-platform-suite-api:%s" % junit_platform_version,
             "net.bytebuddy:byte-buddy:1.12.10",
             "dev.failsafe:failsafe:3.2.4",
-            "net.sourceforge.htmlunit:htmlunit-core-js:2.62.0",
+            "net.sourceforge.htmlunit:htmlunit-core-js:2.64.0",
             "org.apache.commons:commons-exec:1.3",
             "org.assertj:assertj-core:3.23.1",
             "org.asynchttpclient:async-http-client:2.12.3",
