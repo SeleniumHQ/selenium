@@ -3,7 +3,7 @@ load(
     _java_binary = "java_binary",
     _java_import = "java_import",
 )
-load("@rules_jvm_external//:defs.bzl", _artifact = "artifact", _javadoc = "javadoc")
+load("@rules_jvm_external//:defs.bzl", _artifact = "artifact", _javadoc = "javadoc", _maven_bom = "maven_bom")
 load("//java/private:dist_zip.bzl", _java_dist_zip = "java_dist_zip")
 load("//java/private:library.bzl", _java_export = "java_export", _java_library = "java_library", _java_test = "java_test")
 load("//java/private:merge_jars.bzl", _merge_jars = "merge_jars")
@@ -29,6 +29,7 @@ java_module = _java_module
 java_selenium_test_suite = _java_selenium_test_suite
 java_test = _java_test
 javadoc = _javadoc
+maven_bom = _maven_bom
 merge_jars = _merge_jars
 selenium_test = _selenium_test
 JUNIT5_DEPS = _JUNIT5_DEPS
