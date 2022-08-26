@@ -47,8 +47,31 @@ before submitting your pull requests.
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
 * [Python 3.7+](https://www.python.org/downloads/) and `python` on the `PATH`
+  - On Mac
+  
+    ```bash
+      brew install python
+      export PATH="/usr/local/opt/python/libexec/bin:$PATH"
+    ```
 * [Ruby 3+](https://www.ruby-lang.org/en/documentation/installation/) and `ruby` on the `PATH`
+  - On Mac
+  
+    ```bash
+      brew install readline rbenv ruby-install
+      rbenv init
+      touch ~/.bash_profile
+      echo 'eval "$(rbenv init -)"' >> ~/.bash_profile
+      source ~/.bash_profile
+      Copy and paste this into the terminal (update version to latest release if desired):
+      rbenv install 3.0.0
+      rbenv local 3.0.0
+    ```
+    restart terminal
+    
+    run `ruby -v` and it should show 3.0.0
+    
 * [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
+    
 * macOS users:
   * Install the latest version of Xcode including the command-line tools. This command should work `xcode-select --install` 
   * Apple Silicon Macs should add `build --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
@@ -219,6 +242,7 @@ bazel build //rb/...
 To build the .NET code run:
 
 ```sh
+cd ROOT/selenium
 bazel build //dotnet/...
 ```
 
