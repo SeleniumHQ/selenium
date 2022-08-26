@@ -1,5 +1,6 @@
-load("@rules_jvm_external//:defs.bzl", "artifact")
 load("@contrib_rules_jvm//java:defs.bzl", "spotbugs_config")
+load(":defs.bzl", "artifact", "maven_bom")
+load(":version.bzl", "SE_VERSION")
 
 exports_files(
     srcs = [
@@ -10,6 +11,36 @@ exports_files(
     visibility = [
         "//visibility:public",
     ],
+)
+
+# Generated from: bazel query 'kind(maven_publish, set(//java/... //third_party/...))' | sort
+maven_bom(
+    name = "bindings",
+    java_exports = [
+        "//java/src/com/thoughtworks/selenium/webdriven",
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/chromium",
+        "//java/src/org/openqa/selenium/devtools/v102",
+        "//java/src/org/openqa/selenium/devtools/v103",
+        "//java/src/org/openqa/selenium/devtools/v104",
+        "//java/src/org/openqa/selenium/devtools/v85",
+        "//java/src/org/openqa/selenium/edge",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid/sessionmap/jdbc",
+        "//java/src/org/openqa/selenium/grid/sessionmap/redis",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/lift",
+        "//java/src/org/openqa/selenium/remote/http/jdk",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/safari",
+        "//java/src/org/openqa/selenium/support",
+        "//java/src/org/openqa/selenium:client-combined",
+        "//java/src/org/openqa/selenium:core",
+    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-parent:%s" % SE_VERSION,
 )
 
 java_plugin(

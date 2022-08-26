@@ -93,31 +93,6 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
   '//java/test/org/openqa/selenium/environment:webserver'
 ]
 
-# Java targets required for release. These should all be java_export targets.
-# Generated from: bazel query 'kind(maven_publish, set(//java/... //third_party/...))' | sort
-JAVA_RELEASE_TARGETS = %w[
-  //java/src/org/openqa/selenium/chrome:chrome.publish
-  //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v85:v85.publish
-  //java/src/org/openqa/selenium/devtools/v102:v102.publish
-  //java/src/org/openqa/selenium/devtools/v103:v103.publish
-  //java/src/org/openqa/selenium/devtools/v104:v104.publish
-  //java/src/org/openqa/selenium/edge:edge.publish
-  //java/src/org/openqa/selenium/firefox:firefox.publish
-  //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
-  //java/src/org/openqa/selenium/grid/sessionmap/redis:redis.publish
-  //java/src/org/openqa/selenium/grid:grid.publish
-  //java/src/org/openqa/selenium/ie:ie.publish
-  //java/src/org/openqa/selenium/json:json.publish
-  //java/src/org/openqa/selenium/lift:lift.publish
-  //java/src/org/openqa/selenium/remote/http:http.publish
-  //java/src/org/openqa/selenium/remote:remote.publish
-  //java/src/org/openqa/selenium/safari:safari.publish
-  //java/src/org/openqa/selenium/support:support.publish
-  //java/src/org/openqa/selenium:client-combined.publish
-  //java/src/org/openqa/selenium:core.publish
-]
-
 # Notice that because we're using rake, anything you can do in a normal rake
 # build can also be done here. For example, here we set the default task
 task default: [:grid]
@@ -397,17 +372,13 @@ def read_user_pass_from_m2_settings
   return [user, pass]
 end
 
-task 'publish-maven': JAVA_RELEASE_TARGETS do
+task 'publish-maven': ['//java:bindings'] do
  creds = read_user_pass_from_m2_settings
-  JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
-  end
+ Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], '//java:bindings')
 end
 
 task :'maven-install' do
-  JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=false'], p)
-  end
+  Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=false'], '//java:bindings')
 end
 
 desc 'Build the selenium client jars'

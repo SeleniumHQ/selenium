@@ -73,4 +73,14 @@
   <dependencies>
 {dependencies}
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+{parent}
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>

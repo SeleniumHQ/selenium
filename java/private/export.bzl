@@ -3,6 +3,7 @@ load(
     "javadoc",
     "pom_file",
 )
+load("@rules_jvm_external//private/rules:maven_bom_fragment.bzl", "maven_bom_fragment")
 load("@rules_jvm_external//private/rules:maven_project_jar.bzl", "maven_project_jar")
 load("@rules_jvm_external//private/rules:maven_publish.bzl", "maven_publish")
 load("//java/private:module.bzl", "java_module")
@@ -91,6 +92,17 @@ def java_export(
         javadocs = "%s-docs" % name,
         artifact_jar = ":%s-maven-module" % name,
         source_jar = ":%s-maven-source" % name,
+        visibility = visibility,
+    )
+
+    maven_bom_fragment(
+        name = "%s.bom-fragment" % name,
+        maven_coordinates = maven_coordinates,
+        artifact = ":%s" % lib_name,
+        src_artifact = "%s-maven-source" % name,
+        javadoc_artifact = None if "no-javadocs" in tags else "%s-docs" % name,
+        pom_template = pom_template,
+        tags = tags,
         visibility = visibility,
     )
 
