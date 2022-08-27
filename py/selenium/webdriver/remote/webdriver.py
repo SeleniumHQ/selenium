@@ -823,7 +823,7 @@ class WebDriver(BaseWebDriver):
                 my_timeouts.implicit_wait = 10
                 driver.timeouts = my_timeouts
         """
-        self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
+        _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
 
     def find_element(self, by=By.ID, value=None) -> WebElement:
         """
@@ -1081,7 +1081,7 @@ class WebDriver(BaseWebDriver):
         return self._file_detector
 
     @file_detector.setter
-    def file_detector(self, detector):
+    def file_detector(self, detector) -> None:
         """
         Set the file detector to be used when sending keyboard input.
         By default, this is set to a file detector that does nothing.
@@ -1112,7 +1112,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_SCREEN_ORIENTATION)['value']
 
     @orientation.setter
-    def orientation(self, value):
+    def orientation(self, value) -> None:
         """
         Sets the current orientation of the device
 
