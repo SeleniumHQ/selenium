@@ -19,7 +19,6 @@
 import contextlib
 import copy
 import pkgutil
-
 import types
 import warnings
 from abc import ABCMeta
