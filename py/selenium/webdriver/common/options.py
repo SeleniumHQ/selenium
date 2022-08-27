@@ -26,13 +26,12 @@ class BaseOptions(metaclass=ABCMeta):
     Base class for individual browser options
     """
 
-    _ignore_local_proxy: bool
-
     def __init__(self) -> None:
         super().__init__()
         self._caps = self.default_capabilities
         self.set_capability("pageLoadStrategy", "normal")
         self.mobile_options: Optional[dict] = None
+        self._ignore_local_proxy: bool = False
 
     @property
     def capabilities(self):
