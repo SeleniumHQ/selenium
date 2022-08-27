@@ -30,22 +30,22 @@ def options():
 
 def test_set_transport(options):
     options.transport = VirtualAuthenticatorOptions.Transport.USB
-    assert options.transport == VirtualAuthenticatorOptions.Transport.USB.value
+    assert options.transport == VirtualAuthenticatorOptions.Transport.USB
 
 
 def test_get_transport(options):
     options._transport = VirtualAuthenticatorOptions.Transport.NFC
-    assert options.transport == VirtualAuthenticatorOptions.Transport.NFC.value
+    assert options.transport == VirtualAuthenticatorOptions.Transport.NFC
 
 
 def test_set_protocol(options):
     options.protocol = VirtualAuthenticatorOptions.Protocol.U2F
-    assert options.protocol == VirtualAuthenticatorOptions.Protocol.U2F.value
+    assert options.protocol == VirtualAuthenticatorOptions.Protocol.U2F
 
 
 def test_get_protocol(options):
     options._protocol = VirtualAuthenticatorOptions.Protocol.CTAP2
-    assert options.protocol == VirtualAuthenticatorOptions.Protocol.CTAP2.value
+    assert options.protocol == VirtualAuthenticatorOptions.Protocol.CTAP2
 
 
 def test_set_has_resident_key(options):
