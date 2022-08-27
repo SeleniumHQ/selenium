@@ -25,7 +25,7 @@ import pytest
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
-from selenium.webdriver.base import WebDriver
+from selenium.webdriver.remote.webdriver import WebDriver
 from test.selenium.webdriver.common.webserver import Pages, SimpleWebServer
 from test.selenium.webdriver.common.network import get_lan_ip
 

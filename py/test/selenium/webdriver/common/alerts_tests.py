@@ -20,7 +20,7 @@ from typing import Iterator
 
 import pytest
 
-from selenium.webdriver.base import WebDriver
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait

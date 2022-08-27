@@ -33,7 +33,7 @@ except ImportError:
     from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer  # type: ignore
     from SocketServer import ThreadingMixIn  # type: ignore
 
-from selenium.webdriver.base import WebDriver
+from selenium.webdriver.remote.webdriver import WebDriver
 
 
 def updir():
