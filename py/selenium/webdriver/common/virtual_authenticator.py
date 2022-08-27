@@ -40,17 +40,10 @@ class Transport(Enum):
     INTERNAL = "internal"
 
 
-# These aliases are necessary for these types to be referenced in the class
-# scope of VirtualAuthenticatorOptions, which shadows the names "Protocol" and
-# "Transport" as class attributes:
-_Protocol = Protocol
-_Transport = Transport
-
-
 class VirtualAuthenticatorOptions:
 
-    Protocol = Protocol
-    Transport = Transport
+    Protocol: typing.TypeAlias = Protocol
+    Transport: typing.TypeAlias = Transport
 
     def __init__(self) -> None:
         """Constructor. Initialize VirtualAuthenticatorOptions object.
@@ -76,7 +69,7 @@ class VirtualAuthenticatorOptions:
         return self._protocol.value
 
     @protocol.setter
-    def protocol(self, protocol: _Protocol) -> None:
+    def protocol(self, protocol: Protocol) -> None:
         self._protocol = protocol
 
     @property
@@ -84,7 +77,7 @@ class VirtualAuthenticatorOptions:
         return self._transport.value
 
     @transport.setter
-    def transport(self, transport: _Transport) -> None:
+    def transport(self, transport: Transport) -> None:
         self._transport = transport
 
     @property
