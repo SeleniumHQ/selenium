@@ -52,7 +52,7 @@ class ShadowRoot:
             value = '[name="%s"]' % value
 
         return self._execute(
-            Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value}
+            Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by.value, "value": value}
         )["value"]
 
     def find_elements(self, by: By = By.ID, value: str = None):
@@ -67,7 +67,7 @@ class ShadowRoot:
             value = '[name="%s"]' % value
 
         return self._execute(
-            Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by, "value": value}
+            Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by.value, "value": value}
         )["value"]
 
     # Private Methods
