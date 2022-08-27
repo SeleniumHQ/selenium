@@ -422,7 +422,7 @@ class WebElement(BaseWebElement):
             value = '[name="%s"]' % value
 
         return self._execute(Command.FIND_CHILD_ELEMENT,
-                             {"using": by, "value": value})['value']
+                             {"using": by.value, "value": value})['value']
 
     def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
         """
