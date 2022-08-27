@@ -38,7 +38,7 @@ import re
 from textwrap import dedent, indent as tw_indent
 import typing
 
-import inflection  # type: ignore
+import inflection
 
 
 log_level = getattr(logging, os.environ.get('LOG_LEVEL', 'warning').upper())

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Dict, Type
+from typing import Any, Dict, Optional, Type
 
 from selenium.common.exceptions import (ElementClickInterceptedException,
                                         ElementNotInteractableException,
@@ -114,7 +114,6 @@ class ErrorHandler:
             return
         value = None
         message = response.get("message", "")
-        screen: str = response.get("screen", "")
         stacktrace = None
         if isinstance(status, int):
             value_json = response.get('value', None)
@@ -208,7 +207,7 @@ class ErrorHandler:
         if message == "" and 'message' in value:
             message = value['message']
 
-        screen = None  # type: ignore[assignment]
+        screen: Optional[str] = None
         if 'screen' in value:
             screen = value['screen']
 

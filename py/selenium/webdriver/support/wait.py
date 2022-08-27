@@ -16,18 +16,18 @@
 # under the License.
 
 import time
-import typing
+from typing import Iterable, Optional, Tuple, Type, Union
 
-from selenium.types import WaitExcTypes
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 
 POLL_FREQUENCY: float = 0.5  # How long to sleep in between calls to the method
-IGNORED_EXCEPTIONS: typing.Tuple[typing.Type[Exception]] = (NoSuchElementException,)  # default to be ignored.
+IGNORED_EXCEPTIONS: Tuple[Type[Exception]] = (NoSuchElementException,)  # default to be ignored.
 
 
 class WebDriverWait:
-    def __init__(self, driver, timeout: float, poll_frequency: float = POLL_FREQUENCY, ignored_exceptions: typing.Optional[WaitExcTypes] = None):
+    def __init__(self, driver, timeout: float, poll_frequency: float = POLL_FREQUENCY,
+                 ignored_exceptions: Optional[Union[Iterable[Type[Exception]], Type[Exception]]] = None):
         """Constructor, takes a WebDriver instance and timeout in seconds.
 
            :Args:
@@ -53,13 +53,10 @@ class WebDriverWait:
             self._poll = POLL_FREQUENCY
         exceptions = list(IGNORED_EXCEPTIONS)
         if ignored_exceptions:
-            try:
+            if isinstance(ignored_exceptions, Iterable):
                 exceptions.extend(iter(ignored_exceptions))
-            except TypeError:
-                # ignored_exceptions is not iterable. This is a violation of
-                # the types declared on this method, but for compatability, we
-                # allow it:
-                exceptions.append(ignored_exceptions)  # type: ignore
+            else:
+                exceptions.append(ignored_exceptions)
         self._ignored_exceptions = tuple(exceptions)
 
     def __repr__(self):
