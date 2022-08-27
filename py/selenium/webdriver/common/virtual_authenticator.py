@@ -40,8 +40,9 @@ class Transport(Enum):
     INTERNAL = "internal"
 
 
-# to enable these types to be referenced in the class scope of
-# VirtualAuthenticatorOptions, which shadows these enum's normal names:
+# These aliases are necessary for these types to be referenced in the class
+# scope of VirtualAuthenticatorOptions, which shadows the names "Protocol" and
+# "Transport" as class attributes:
 _Protocol = Protocol
 _Transport = Transport
 
