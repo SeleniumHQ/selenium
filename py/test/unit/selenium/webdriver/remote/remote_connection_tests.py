@@ -166,20 +166,6 @@ def test_get_socks_proxy_when_set(mock_socks_proxy_settings):
     assert type(conn) == SOCKSProxyManager
 
 
-class MockResponse:
-    code = 200
-    headers = []
-
-    def read(self):
-        return b"{}"
-
-    def close(self):
-        pass
-
-    def getheader(self, *args, **kwargs):
-        pass
-
-
 @pytest.fixture(scope="function")
 def mock_proxy_settings_missing(monkeypatch):
     monkeypatch.delenv("HTTPS_PROXY", raising=False)

@@ -21,11 +21,6 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-try:
-    str = unicode
-except NameError:
-    pass
-
 
 def test_should_be_able_to_execute_simple_javascript_and_return_astring(driver, pages):
     pages.load("xhtmlTest.html")

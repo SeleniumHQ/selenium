@@ -1230,7 +1230,7 @@ class WebDriver(BaseWebDriver):
         """
         Adds a virtual authenticator with the given options.
         """
-        self._authenticator_id = self.execute(Command.ADD_VIRTUAL_AUTHENTICATOR, options.to_dict())['value']
+        self._authenticator_id = self.execute(Command.ADD_VIRTUAL_AUTHENTICATOR, cast(dict, options.to_dict()))['value']
 
     @property
     def virtual_authenticator_id(self) -> Optional[str]:

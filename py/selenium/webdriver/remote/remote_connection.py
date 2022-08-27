@@ -18,7 +18,8 @@
 import logging
 import socket
 import string
-from typing import Optional
+from typing import Dict, Optional
+from urllib.parse import ParseResult
 
 import os
 import typing
@@ -94,7 +95,7 @@ class RemoteConnection:
         cls._ca_certs = path
 
     @classmethod
-    def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
+    def get_remote_connection_headers(cls, parsed_url, keep_alive: bool = False) -> Dict[str, str]:
         """
         Get headers for remote request.
 

@@ -56,7 +56,7 @@ GET_CREDENTIAL = '''getCredential([{
                     }]).then(arguments[arguments.length - 1]);'''
 
 
-def create_rk_enabled_u2f_authenticator(driver) -> WebDriver:
+def create_rk_enabled_u2f_authenticator(driver: WebDriver) -> WebDriver:
 
     options = VirtualAuthenticatorOptions()
     options.protocol = VirtualAuthenticatorOptions.Protocol.U2F
