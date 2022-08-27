@@ -16,9 +16,11 @@
 # under the License.
 
 import sys
+from typing import Iterator
 
 import pytest
 
+from selenium.webdriver.base import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -26,10 +28,11 @@ from selenium.common.exceptions import (
     InvalidElementStateException,
     NoAlertPresentException,
     UnexpectedAlertPresentException)
+from test.selenium.webdriver.common.webserver import Pages
 
 
 @pytest.fixture(autouse=True)
-def close_alert(driver):
+def close_alert(driver) -> Iterator[None]:
     yield
     try:
         driver.switch_to.alert.dismiss()
@@ -37,7 +40,7 @@ def close_alert(driver):
         pass
 
 
-def test_should_be_able_to_override_the_window_alert_method(driver, pages):
+def test_should_be_able_to_override_the_window_alert_method(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.execute_script(
         "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }")
@@ -54,7 +57,7 @@ def test_should_be_able_to_override_the_window_alert_method(driver, pages):
         raise e
 
 
-def test_should_allow_users_to_accept_an_alert_manually(driver, pages):
+def test_should_allow_users_to_accept_an_alert_manually(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
     alert = _wait_for_alert(driver)
@@ -63,7 +66,7 @@ def test_should_allow_users_to_accept_an_alert_manually(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-def test_should_allow_users_to_accept_an_alert_with_no_text_manually(driver, pages):
+def test_should_allow_users_to_accept_an_alert_with_no_text_manually(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(By.ID, "empty-alert").click()
     alert = _wait_for_alert(driver)
@@ -73,7 +76,7 @@ def test_should_allow_users_to_accept_an_alert_with_no_text_manually(driver, pag
     assert "Testing Alerts" == driver.title
 
 
-def test_should_get_text_of_alert_opened_in_set_timeout(driver, pages):
+def test_should_get_text_of_alert_opened_in_set_timeout(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(By.ID, "slow-alert").click()
 
@@ -88,7 +91,7 @@ def test_should_get_text_of_alert_opened_in_set_timeout(driver, pages):
         alert.accept()
 
 
-def test_should_allow_users_to_dismiss_an_alert_manually(driver, pages):
+def test_should_allow_users_to_dismiss_an_alert_manually(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
     alert = _wait_for_alert(driver)
@@ -97,7 +100,7 @@ def test_should_allow_users_to_dismiss_an_alert_manually(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-def test_should_allow_auser_to_accept_aprompt(driver, pages):
+def test_should_allow_auser_to_accept_aprompt(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="prompt").click()
     alert = _wait_for_alert(driver)
@@ -107,7 +110,7 @@ def test_should_allow_auser_to_accept_aprompt(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-def test_should_allow_auser_to_dismiss_aprompt(driver, pages):
+def test_should_allow_auser_to_dismiss_aprompt(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="prompt").click()
     alert = _wait_for_alert(driver)
@@ -117,7 +120,7 @@ def test_should_allow_auser_to_dismiss_aprompt(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-def test_should_allow_auser_to_set_the_value_of_aprompt(driver, pages):
+def test_should_allow_auser_to_set_the_value_of_aprompt(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="prompt").click()
     alert = _wait_for_alert(driver)
@@ -130,7 +133,7 @@ def test_should_allow_auser_to_set_the_value_of_aprompt(driver, pages):
 
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_remote
-def test_setting_the_value_of_an_alert_throws(driver, pages):
+def test_setting_the_value_of_an_alert_throws(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
 
@@ -148,7 +151,7 @@ def test_setting_the_value_of_an_alert_throws(driver, pages):
     condition=sys.platform == 'darwin',
     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
     run=False)
-def test_alert_should_not_allow_additional_commands_if_dimissed(driver, pages):
+def test_alert_should_not_allow_additional_commands_if_dimissed(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
 
@@ -162,7 +165,7 @@ def test_alert_should_not_allow_additional_commands_if_dimissed(driver, pages):
 @pytest.mark.xfail_firefox(reason='Fails on travis')
 @pytest.mark.xfail_remote(reason='Fails on travis')
 @pytest.mark.xfail_safari
-def test_should_allow_users_to_accept_an_alert_in_aframe(driver, pages):
+def test_should_allow_users_to_accept_an_alert_in_aframe(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithAlert"))
     driver.find_element(By.ID, "alertInFrame").click()
@@ -176,7 +179,7 @@ def test_should_allow_users_to_accept_an_alert_in_aframe(driver, pages):
 @pytest.mark.xfail_firefox(reason='Fails on travis')
 @pytest.mark.xfail_remote(reason='Fails on travis')
 @pytest.mark.xfail_safari
-def test_should_allow_users_to_accept_an_alert_in_anested_frame(driver, pages):
+def test_should_allow_users_to_accept_an_alert_in_anested_frame(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithIframe"))
     driver.switch_to.frame(driver.find_element(By.NAME, "iframeWithAlert"))
@@ -194,7 +197,7 @@ def test_should_throw_an_exception_if_an_alert_has_not_been_dealt_with_and_dismi
     # //TODO(David) Complete this test
 
 
-def test_prompt_should_use_default_value_if_no_keys_sent(driver, pages):
+def test_prompt_should_use_default_value_if_no_keys_sent(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(By.ID, "prompt-with-default").click()
 
@@ -205,7 +208,7 @@ def test_prompt_should_use_default_value_if_no_keys_sent(driver, pages):
     assert "This is a default value" == txt
 
 
-def test_prompt_should_have_null_value_if_dismissed(driver, pages):
+def test_prompt_should_have_null_value_if_dismissed(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(By.ID, "prompt-with-default").click()
     alert = _wait_for_alert(driver)
@@ -214,7 +217,7 @@ def test_prompt_should_have_null_value_if_dismissed(driver, pages):
     assert "null" == driver.find_element(By.ID, "text").text
 
 
-def test_handles_two_alerts_from_one_interaction(driver, pages):
+def test_handles_two_alerts_from_one_interaction(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
 
     driver.find_element(By.ID, "double-prompt").click()
@@ -232,7 +235,7 @@ def test_handles_two_alerts_from_one_interaction(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def test_should_handle_alert_on_page_load(driver, pages):
+def test_should_handle_alert_on_page_load(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(By.ID, "open-page-with-onload-alert").click()
     alert = _wait_for_alert(driver)
@@ -241,7 +244,7 @@ def test_should_handle_alert_on_page_load(driver, pages):
     assert "onload" == value
 
 
-def test_should_handle_alert_on_page_load_using_get(driver, pages):
+def test_should_handle_alert_on_page_load_using_get(driver: WebDriver, pages: Pages) -> None:
     pages.load("pageWithOnLoad.html")
     alert = _wait_for_alert(driver)
     value = alert.text
@@ -253,7 +256,7 @@ def test_should_handle_alert_on_page_load_using_get(driver, pages):
 
 @pytest.mark.xfail_chrome(reason='Non W3C conformant')
 @pytest.mark.xfail_chromiumedge(reason='Non W3C conformant')
-def test_should_handle_alert_on_page_before_unload(driver, pages):
+def test_should_handle_alert_on_page_before_unload(driver: WebDriver, pages: Pages) -> None:
     pages.load("pageWithOnBeforeUnloadMessage.html")
 
     element = driver.find_element(By.ID, "navigate")
@@ -261,7 +264,7 @@ def test_should_handle_alert_on_page_before_unload(driver, pages):
     WebDriverWait(driver, 3).until(EC.title_is("Testing Alerts"))
 
 
-def test_should_allow_the_user_to_get_the_text_of_an_alert(driver, pages):
+def test_should_allow_the_user_to_get_the_text_of_an_alert(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
     alert = _wait_for_alert(driver)
@@ -270,7 +273,7 @@ def test_should_allow_the_user_to_get_the_text_of_an_alert(driver, pages):
     assert "cheese" == value
 
 
-def test_should_allow_the_user_to_get_the_text_of_aprompt(driver, pages):
+def test_should_allow_the_user_to_get_the_text_of_aprompt(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(By.ID, "prompt").click()
 
@@ -281,7 +284,7 @@ def test_should_allow_the_user_to_get_the_text_of_aprompt(driver, pages):
     assert "Enter something" == value
 
 
-def test_alert_should_not_allow_additional_commands_if_dismissed(driver, pages):
+def test_alert_should_not_allow_additional_commands_if_dismissed(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
 
@@ -297,7 +300,7 @@ def test_alert_should_not_allow_additional_commands_if_dismissed(driver, pages):
 @pytest.mark.xfail_remote(
     reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
 @pytest.mark.xfail_chrome
-def test_unexpected_alert_present_exception_contains_alert_text(driver, pages):
+def test_unexpected_alert_present_exception_contains_alert_text(driver: WebDriver, pages: Pages) -> None:
     pages.load("alerts.html")
     driver.find_element(by=By.ID, value="alert").click()
     alert = _wait_for_alert(driver)

@@ -33,6 +33,8 @@ except ImportError:
     from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer  # type: ignore
     from SocketServer import ThreadingMixIn  # type: ignore
 
+from selenium.webdriver.base import WebDriver
+
 
 def updir():
     dirname = os.path.dirname
@@ -167,6 +169,18 @@ class SimpleWebServer:
         if localhost:
             return f"http://{DEFAULT_HOST}:{self.port}/{path}"
         return f"http://{self.host}:{self.port}/{path}"
+
+
+class Pages:
+    def __init__(self, driver: WebDriver, webserver: SimpleWebServer) -> None:
+        self._driver = driver
+        self._webserver = webserver
+
+    def url(self, name: str, localhost: bool = False) -> str:
+        return self._webserver.where_is(name, localhost)
+
+    def load(self, name: str):
+        return self._driver.get(self.url(name))
 
 
 def main(argv=None):

@@ -25,7 +25,9 @@ import pytest
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
-from test.selenium.webdriver.common.webserver import SimpleWebServer
+from selenium.webdriver.base import WebDriver
+from test.selenium.webdriver.common.webserver import Pages, SimpleWebServer
+from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.network import get_lan_ip
 
 from urllib.request import urlopen
@@ -185,14 +187,8 @@ def pytest_exception_interact(node, call, report):
 
 
 @pytest.fixture
-def pages(driver, webserver):
-    class Pages:
-        def url(self, name, localhost=False):
-            return webserver.where_is(name, localhost)
-
-        def load(self, name):
-            driver.get(self.url(name))
-    return Pages()
+def pages(driver: WebDriver, webserver: SimpleWebServer) -> Pages:
+    return Pages(driver, webserver)
 
 
 @pytest.fixture(autouse=True, scope='session')
