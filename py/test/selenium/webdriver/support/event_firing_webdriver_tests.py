@@ -17,6 +17,7 @@
 
 
 from io import BytesIO
+from typing import Iterator
 
 import pytest
 
@@ -25,35 +26,37 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.remote.webdriver import WebDriver
+from test.selenium.common.webserver import Pages
 
 
 @pytest.fixture
-def log():
+def log() -> Iterator[BytesIO]:
     log = BytesIO()
     yield log
     log.close()
 
 
-def test_should_fire_navigation_events(driver, log, pages):
+def test_should_fire_navigation_events(driver: WebDriver, log: BytesIO, pages: Pages) -> None:
 
     class EventListener(AbstractEventListener):
 
-        def before_navigate_to(self, url, driver):
+        def before_navigate_to(self, url: str, driver: WebDriver) -> None:
             log.write(("before_navigate_to %s" % url.split("/")[-1]).encode())
 
-        def after_navigate_to(self, url, driver):
+        def after_navigate_to(self, url: str, driver: WebDriver) -> None:
             log.write(("after_navigate_to %s" % url.split("/")[-1]).encode())
 
-        def before_navigate_back(self, driver):
+        def before_navigate_back(self, driver: WebDriver) -> None:
             log.write(b"before_navigate_back")
 
-        def after_navigate_back(self, driver):
+        def after_navigate_back(self, driver: WebDriver) -> None:
             log.write(b"after_navigate_back")
 
-        def before_navigate_forward(self, driver):
+        def before_navigate_forward(self, driver: WebDriver) -> None:
             log.write(b"before_navigate_forward")
 
-        def after_navigate_forward(self, driver):
+        def after_navigate_forward(self, driver: WebDriver) -> None:
             log.write(b"after_navigate_forward")
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
@@ -77,7 +80,7 @@ def test_should_fire_navigation_events(driver, log, pages):
 
 
 @pytest.mark.xfail_safari
-def test_should_fire_click_event(driver, log, pages):
+def test_should_fire_click_event(driver: WebDriver, log: BytesIO, pages: Pages) -> None:
 
     class EventListener(AbstractEventListener):
 
@@ -95,7 +98,7 @@ def test_should_fire_click_event(driver, log, pages):
     assert b"before_click" + b"after_click" == log.getvalue()
 
 
-def test_should_fire_change_value_event(driver, log, pages):
+def test_should_fire_change_value_event(driver: WebDriver, log: BytesIO, pages: Pages) -> None:
 
     class EventListener(AbstractEventListener):
 
@@ -122,15 +125,15 @@ def test_should_fire_change_value_event(driver, log, pages):
             b"after_change_value_of") == log.getvalue()
 
 
-def test_should_fire_find_event(driver, log, pages):
+def test_should_fire_find_event(driver: WebDriver, log: BytesIO, pages: Pages) -> None:
 
     class EventListener(AbstractEventListener):
 
-        def before_find(self, by, value, driver):
-            log.write((f"before_find by {by} {value}").encode())
+        def before_find(self, by: By, value: str, driver: WebDriver):
+            log.write((f"before_find by {by.value} {value}").encode())
 
-        def after_find(self, by, value, driver):
-            log.write((f"after_find by {by} {value}").encode())
+        def after_find(self, by: By, value: str, driver: WebDriver):
+            log.write((f"after_find by {by.value} {value}").encode())
 
     ef_driver = EventFiringWebDriver(driver, EventListener())
     ef_driver.get(pages.url("simpleTest.html"))
@@ -154,10 +157,10 @@ def test_should_fire_find_event(driver, log, pages):
             b"after_find by css selector frame#sixth") == log.getvalue()
 
 
-def test_should_call_listener_when_an_exception_is_thrown(driver, log, pages):
+def test_should_call_listener_when_an_exception_is_thrown(driver: WebDriver, log, pages: Pages) -> None:
 
     class EventListener(AbstractEventListener):
-        def on_exception(self, exception, driver):
+        def on_exception(self, exception: BaseException, driver: WebDriver) -> None:
             if isinstance(exception, NoSuchElementException):
                 log.write(b"NoSuchElementException is thrown")
 
@@ -168,7 +171,7 @@ def test_should_call_listener_when_an_exception_is_thrown(driver, log, pages):
     assert b"NoSuchElementException is thrown" == log.getvalue()
 
 
-def test_should_unwrap_element_args_when_calling_scripts(driver, log, pages):
+def test_should_unwrap_element_args_when_calling_scripts(driver: WebDriver, log: BytesIO, pages: Pages) -> None:
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     ef_driver.get(pages.url("javascriptPage.html"))
     button = ef_driver.find_element(By.ID, "plainButton")
@@ -178,7 +181,7 @@ def test_should_unwrap_element_args_when_calling_scripts(driver, log, pages):
     assert "plainButton" == value
 
 
-def test_should_unwrap_element_args_when_switching_frames(driver, log, pages):
+def test_should_unwrap_element_args_when_switching_frames(driver: WebDriver, log: BytesIO, pages: Pages) -> None:
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     ef_driver.get(pages.url("iframes.html"))
     frame = ef_driver.find_element(By.ID, "iframe1")
@@ -186,7 +189,7 @@ def test_should_unwrap_element_args_when_switching_frames(driver, log, pages):
     assert "click me!" == ef_driver.find_element(By.ID, "imageButton").get_attribute("alt")
 
 
-def test_should_be_able_to_access_wrapped_instance_from_event_calls(driver):
+def test_should_be_able_to_access_wrapped_instance_from_event_calls(driver: WebDriver) -> None:
 
     class EventListener(AbstractEventListener):
         def before_navigate_to(url, d):
@@ -197,7 +200,7 @@ def test_should_be_able_to_access_wrapped_instance_from_event_calls(driver):
     assert driver is wrapped_driver
 
 
-def test_using_kwargs(driver, pages):
+def test_using_kwargs(driver: WebDriver, pages: Pages) -> None:
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     ef_driver.get(pages.url("javascriptPage.html"))
     ef_driver.get_cookie(name="cookie_name")
@@ -205,7 +208,7 @@ def test_using_kwargs(driver, pages):
     element.get_attribute(name="id")
 
 
-def test_missing_attributes_raise_error(driver, pages):
+def test_missing_attributes_raise_error(driver: WebDriver, pages: Pages) -> None:
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
 
     with pytest.raises(AttributeError):
@@ -215,10 +218,10 @@ def test_missing_attributes_raise_error(driver, pages):
     element = ef_driver.find_element(By.ID, "writableTextInput")
 
     with pytest.raises(AttributeError):
-        element.attribute_should_not_exist
+        element.attribute_should_not_exist  # type: ignore [attr-defined]
 
 
-def test_can_use_pointer_input_with_event_firing_webdriver(driver, pages):
+def test_can_use_pointer_input_with_event_firing_webdriver(driver: WebDriver, pages: Pages) -> None:
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     pages.load("javascriptPage.html")
     to_click = ef_driver.find_element(By.ID, "clickField")
@@ -232,7 +235,7 @@ def test_can_use_pointer_input_with_event_firing_webdriver(driver, pages):
 
 
 @pytest.mark.xfail_safari
-def test_can_use_key_input_with_event_firing_webdriver(driver, pages):
+def test_can_use_key_input_with_event_firing_webdriver(driver: WebDriver, pages: Pages) -> None:
     ef_driver = EventFiringWebDriver(driver, AbstractEventListener())
     pages.load("javascriptPage.html")
     ef_driver.find_element(By.ID, "keyUp").click()
