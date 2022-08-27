@@ -98,6 +98,9 @@ class RelativeBy:
         self.root = root
         self.filters = filters or []
 
+    def __str__(self) -> str:
+        return str(self.to_dict()["relative"]["root"])
+
     def above(self, element_or_locator: Union[WebElement, dict] = None) -> "RelativeBy":
         """
             Add a filter to look for elements above.

@@ -856,7 +856,7 @@ class WebDriver(BaseWebDriver):
         if isinstance(by, RelativeBy):
             elements = self.find_elements(by=by, value=value)
             if not elements:
-                raise NoSuchElementException(f"Cannot locate relative element with: {by.root}")
+                raise NoSuchElementException(f"Cannot locate relative element with: {by}")
             return elements[0]
 
         if by == By.ID:
