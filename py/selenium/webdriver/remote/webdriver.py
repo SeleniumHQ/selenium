@@ -900,7 +900,7 @@ class WebDriver(BaseWebDriver):
         # Return empty list if driver returns null
         # See https://github.com/SeleniumHQ/selenium/issues/4555
         return self.execute(Command.FIND_ELEMENTS, {
-            'using': by,
+            'using': by.value,
             'value': value})['value'] or []
 
     @property

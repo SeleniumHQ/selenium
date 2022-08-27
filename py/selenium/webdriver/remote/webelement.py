@@ -446,7 +446,7 @@ class WebElement(BaseWebElement):
             value = '[name="%s"]' % value
 
         return self._execute(Command.FIND_CHILD_ELEMENTS,
-                             {"using": by, "value": value})['value']
+                             {"using": by.value, "value": value})['value']
 
     def __hash__(self):
         return int(md5_hash(self._id.encode('utf-8')).hexdigest(), 16)
