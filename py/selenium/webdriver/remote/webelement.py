@@ -24,7 +24,7 @@ import warnings
 import zipfile
 from abc import ABCMeta
 from io import BytesIO
-from typing import Iterable, cast
+from typing import Iterable
 
 from selenium.common.exceptions import WebDriverException, JavascriptException
 from selenium.types import AnyKey

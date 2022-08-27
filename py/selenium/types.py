@@ -17,7 +17,7 @@
 
 """Selenium type definitions."""
 
-from typing import Iterable, Type, Union
+from typing import Union
 
 
 AnyKey = Union[str, int, float]
