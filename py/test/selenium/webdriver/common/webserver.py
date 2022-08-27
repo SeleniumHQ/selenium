@@ -25,13 +25,13 @@ import threading
 try:
     from urllib import request as urllib_request
 except ImportError:
-    import urllib as urllib_request  # type: ignore
+    import urllib as urllib_request  # type: ignore [no-redef]
 try:
     from http.server import BaseHTTPRequestHandler, HTTPServer
     from socketserver import ThreadingMixIn
 except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer  # type: ignore
-    from SocketServer import ThreadingMixIn  # type: ignore
+    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer  # type: ignore [no-redef]
+    from SocketServer import ThreadingMixIn  # type: ignore [no-redef]
 
 from selenium.webdriver.remote.webdriver import WebDriver
 

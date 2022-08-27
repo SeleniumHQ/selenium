@@ -47,7 +47,7 @@ class RemoteConnection:
 
     browser_name: Optional[str] = None
     # this is not part of socket's public API:
-    _timeout = socket._GLOBAL_DEFAULT_TIMEOUT  # type: ignore
+    _timeout = socket._GLOBAL_DEFAULT_TIMEOUT  # type: ignore [attr-defined]
     _ca_certs = certifi.where()
 
     @classmethod
