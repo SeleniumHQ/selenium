@@ -95,7 +95,7 @@ class RemoteConnection:
         cls._ca_certs = path
 
     @classmethod
-    def get_remote_connection_headers(cls, parsed_url, keep_alive: bool = False) -> Dict[str, str]:
+    def get_remote_connection_headers(cls, parsed_url: ParseResult, keep_alive: bool = False) -> Dict[str, str]:
         """
         Get headers for remote request.
 
