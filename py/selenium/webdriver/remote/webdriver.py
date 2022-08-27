@@ -867,7 +867,7 @@ class WebDriver(BaseWebDriver):
             value = '[name="%s"]' % value
 
         return self.execute(Command.FIND_ELEMENT, {
-            'using': by,
+            'using': by.value,
             'value': value})['value']
 
     def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
