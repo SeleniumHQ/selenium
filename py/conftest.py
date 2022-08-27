@@ -28,7 +28,6 @@ from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.base import WebDriver
 from test.selenium.webdriver.common.webserver import Pages, SimpleWebServer
 from test.selenium.webdriver.common.network import get_lan_ip
-from test.selenium.webdriver.common.network import get_lan_ip
 
 from urllib.request import urlopen
 
