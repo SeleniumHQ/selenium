@@ -377,12 +377,12 @@ class WebDriver(BaseWebDriver):
         if 'sessionId' not in response:
             response = response['value']
         self.session_id = response['sessionId']
-        self.caps = response.get('value')
 
-        # if capabilities is none we are probably speaking to
-        # a W3C endpoint
-        if not self.caps:
-            self.caps = response.get('capabilities')
+        self.caps = cast(Dict[str, Any], response.get(
+            'value',
+            # if capabilities is none we are probably speaking to a W3C endpoint
+            response.get('capabilities')
+        ))
 
     def _wrap_value(self, value):
         if isinstance(value, dict):

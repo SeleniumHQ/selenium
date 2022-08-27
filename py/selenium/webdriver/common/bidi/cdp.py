@@ -418,6 +418,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         Returns a new :class:`CdpSession` connected to the specified target.
         '''
         global devtools
+        assert devtools is not None, "Devtools have not been imported. Call import_devtools(ver) first."
         session_id = await self.execute(devtools.target.attach_to_target(
             target_id, True))
         session = CdpSession(self.ws, session_id, target_id)
