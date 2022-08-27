@@ -411,6 +411,10 @@ class WebElement(BaseWebElement):
 
         :rtype: WebElement
         """
+
+        if not isinstance(by, By):
+            raise WebDriverException("The by argument must be a By")
+
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
@@ -435,6 +439,10 @@ class WebElement(BaseWebElement):
 
         :rtype: list of WebElement
         """
+
+        if not isinstance(by, By):
+            raise WebDriverException("The by argument must be a By")
+
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
