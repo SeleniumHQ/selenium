@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from __future__ import annotations
+
 import functools
 
 from base64 import urlsafe_b64encode, urlsafe_b64decode
