@@ -15,8 +15,9 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from __future__ import annotations
 
-from typing import Dict, List, Union
+from typing import Literal, Optional, TypedDict, Union
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -55,6 +56,20 @@ def locate_with(by: By, using: str) -> "RelativeBy":
     return RelativeBy({by: using})
 
 
+class Filter(TypedDict):
+    kind: Literal["above", "below", "left", "right", "near"]
+    args: list[WebElement | dict | int]
+
+
+class RelativeByDictRelative(TypedDict):
+    root: Optional[dict[str, str]]
+    filters: list[Filter]
+
+
+class RelativeByDict(TypedDict):
+    relative: RelativeByDictRelative
+
+
 class RelativeBy:
     """
         Gives the opportunity to find elements based on their relative location
@@ -71,7 +86,7 @@ class RelativeBy:
             assert "mid" in ids
     """
 
-    def __init__(self, root: Dict[By, str] = None, filters: List = None):
+    def __init__(self, root: dict[By, str] = None, filters: list[Filter] = None) -> None:
         """
             Creates a new RelativeBy object. It is preferred if you use the
             `locate_with` method as this signature could change.
@@ -83,7 +98,7 @@ class RelativeBy:
         self.root = root
         self.filters = filters or []
 
-    def above(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    def above(self, element_or_locator: Union[WebElement, dict] = None) -> "RelativeBy":
         """
             Add a filter to look for elements above.
             :Args:
@@ -95,7 +110,7 @@ class RelativeBy:
         self.filters.append({"kind": "above", "args": [element_or_locator]})
         return self
 
-    def below(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    def below(self, element_or_locator: Union[WebElement, dict] = None) -> "RelativeBy":
         """
             Add a filter to look for elements below.
             :Args:
@@ -107,7 +122,7 @@ class RelativeBy:
         self.filters.append({"kind": "below", "args": [element_or_locator]})
         return self
 
-    def to_left_of(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    def to_left_of(self, element_or_locator: Union[WebElement, dict] = None) -> "RelativeBy":
         """
             Add a filter to look for elements to the left of.
             :Args:
@@ -119,7 +134,7 @@ class RelativeBy:
         self.filters.append({"kind": "left", "args": [element_or_locator]})
         return self
 
-    def to_right_of(self, element_or_locator: Union[WebElement, Dict] = None) -> "RelativeBy":
+    def to_right_of(self, element_or_locator: Union[WebElement, dict] = None) -> "RelativeBy":
         """
             Add a filter to look for elements right of.
             :Args:
@@ -131,7 +146,7 @@ class RelativeBy:
         self.filters.append({"kind": "right", "args": [element_or_locator]})
         return self
 
-    def near(self, element_or_locator_distance: Union[WebElement, Dict, int] = None) -> "RelativeBy":
+    def near(self, element_or_locator_distance: Union[WebElement, dict, int] = None) -> "RelativeBy":
         """
             Add a filter to look for elements near.
             :Args:
@@ -143,13 +158,13 @@ class RelativeBy:
         self.filters.append({"kind": "near", "args": [element_or_locator_distance]})
         return self
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> RelativeByDict:
         """
             Create a dict that will be passed to the driver to start searching for the element
         """
         return {
             'relative': {
-                'root': self.root,
+                'root': {k.value: v for k, v in self.root.items()} if self.root is not None else None,
                 'filters': self.filters,
             }
         }

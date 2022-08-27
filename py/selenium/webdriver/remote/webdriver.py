@@ -16,6 +16,9 @@
 # under the License.
 
 """The WebDriver implementation."""
+
+from __future__ import annotations
+
 import contextlib
 import copy
 import pkgutil
@@ -839,7 +842,7 @@ class WebDriver(BaseWebDriver):
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
 
-    def find_element(self, by=By.ID, value=None) -> WebElement:
+    def find_element(self, by: By | RelativeBy = By.ID, value=None) -> WebElement:
         """
         Find an element given a By strategy and locator.
 
@@ -870,7 +873,7 @@ class WebDriver(BaseWebDriver):
             'using': by.value,
             'value': value})['value']
 
-    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
+    def find_elements(self, by: By | RelativeBy = By.ID, value=None) -> List[WebElement]:
         """
         Find elements given a By strategy and locator.
 
@@ -1267,7 +1270,7 @@ class WebDriver(BaseWebDriver):
         return [Credential.from_dict(credential) for credential in credential_data['value']]
 
     @required_virtual_authenticator
-    def remove_credential(self, credential_id: Union[str, bytearray]) -> None:
+    def remove_credential(self, credential_id: str | bytearray) -> None:
         """
         Removes a credential from the authenticator.
         """
