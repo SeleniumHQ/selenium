@@ -118,7 +118,7 @@ class Log():
     @asynccontextmanager
     async def add_listener(self, event_type) -> AsyncIterator[Dict[str, Any]]:
         """
-        Listens for certain events that are passed in.
+        Listen for certain events that are passed in.
 
         :Args:
          - event_type: The type of event that we want to look at.
