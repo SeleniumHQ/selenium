@@ -87,8 +87,7 @@ class Color:
         elif m.match(RGBA_PATTERN, str_):
             return cls(*m.groups)
         elif m.match(RGBA_PCT_PATTERN, str_):
-            r, g, b = (float(each) / 100 * 255 for each in m.groups[:3])
-            rgba: Tuple[float, float, float, str] = (r, g, b, m.groups[3])
+            rgba = tuple(float(each) / 100 * 255 for each in m.groups[:3]) + (float(m.groups[3]),)
             return cls(*rgba)
         elif m.match(HEX_PATTERN, str_):
             rgb = tuple(int(each, 16) for each in m.groups)
