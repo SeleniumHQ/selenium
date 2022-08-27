@@ -93,16 +93,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to use the legacy driver implementation.
-        /// </summary>
-        [Obsolete(".NET bindings no longer support the legacy driver implementation. Setting this property no longer has any effect. .NET users should always be using geckodriver.")]
-        public bool UseLegacyImplementation
-        {
-            get { return false; }
-            set { }
-        }
-
-        /// <summary>
         /// Gets or sets the <see cref="FirefoxProfile"/> object to be used with this instance.
         /// </summary>
         public FirefoxProfile Profile
@@ -272,58 +262,6 @@ namespace OpenQA.Selenium.Firefox
         {
             this.ValidateCapabilityName(optionName);
             this.additionalFirefoxOptions[optionName] = optionValue;
-        }
-
-        /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Firefox driver.
-        /// </summary>
-        /// <param name="capabilityName">The name of the capability to add.</param>
-        /// <param name="capabilityValue">The value of the capability to add.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or
-        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
-        /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object)"/>
-        /// where <paramref name="capabilityName"/> has already been added will overwrite the
-        /// existing value with the new value in <paramref name="capabilityValue"/>.
-        /// Also, by default, calling this method adds capabilities to the options object passed to
-        /// geckodriver.exe.</remarks>
-        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalFirefoxOption method for adding additional options")]
-        public override void AddAdditionalCapability(string capabilityName, object capabilityValue)
-        {
-            // Add the capability to the FirefoxOptions object by default. This is to handle
-            // the 80% case where the geckodriver team adds a new option in geckodriver.exe
-            // and the bindings have not yet had a type safe option added.
-            this.AddAdditionalFirefoxOption(capabilityName, capabilityValue);
-        }
-
-        /// <summary>
-        /// Provides a means to add additional capabilities not yet added as type safe options
-        /// for the Firefox driver.
-        /// </summary>
-        /// <param name="capabilityName">The name of the capability to add.</param>
-        /// <param name="capabilityValue">The value of the capability to add.</param>
-        /// <param name="isGlobalCapability">Indicates whether the capability is to be set as a global
-        /// capability for the driver instead of a Firefox-specific option.</param>
-        /// <exception cref="ArgumentException">
-        /// thrown when attempting to add a capability for which there is already a type safe option, or
-        /// when <paramref name="capabilityName"/> is <see langword="null"/> or the empty string.
-        /// </exception>
-        /// <remarks>Calling <see cref="AddAdditionalCapability(string, object, bool)"/>
-        /// where <paramref name="capabilityName"/> has already been added will overwrite the
-        /// existing value with the new value in <paramref name="capabilityValue"/></remarks>
-        [Obsolete("Use the temporary AddAdditionalOption method or the AddAdditionalFirefoxOption method for adding additional options")]
-        public void AddAdditionalCapability(string capabilityName, object capabilityValue, bool isGlobalCapability)
-        {
-            if (isGlobalCapability)
-            {
-                this.AddAdditionalOption(capabilityName, capabilityValue);
-            }
-            else
-            {
-                this.AddAdditionalFirefoxOption(capabilityName, capabilityValue);
-            }
         }
 
         /// <summary>

@@ -24,7 +24,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;

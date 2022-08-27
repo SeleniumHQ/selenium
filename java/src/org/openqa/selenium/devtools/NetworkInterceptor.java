@@ -91,7 +91,7 @@ public class NetworkInterceptor implements AutoCloseable {
     }
 
     this.tools = ((HasDevTools) driver).getDevTools();
-    tools.createSessionIfThereIsNotOne();
+    tools.createSessionIfThereIsNotOne(driver.getWindowHandle());
 
     tools.getDomains().network().interceptTrafficWith(filter);
   }

@@ -17,18 +17,15 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(JUnit4.class)
 public class CompoundMutatorTest {
   private ScriptMutator mutator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     mutator = new CompoundMutator("http://selenium.googlecode.com");
   }
@@ -67,9 +64,9 @@ public class CompoundMutatorTest {
     mutator.mutate("return selenium.browserbot.getDocument()", builder);
     String script = builder.toString();
 
-    assertTrue(script, script.contains("selenium.browserbot = {}"));
-    assertTrue(script, script.contains("selenium = {}"));
-    assertTrue(script, script.contains("getDocument = function() { return document; }"));
+    assertTrue(script.contains("selenium.browserbot = {}"), script);
+    assertTrue(script.contains("selenium = {}"), script);
+    assertTrue(script.contains("getDocument = function() { return document; }"), script);
   }
 
   @Test
@@ -79,7 +76,7 @@ public class CompoundMutatorTest {
     mutator.mutate("return selenium.browserbot.getDocument()", builder);
     String script = builder.toString();
 
-    assertTrue(script, script.startsWith("return eval('"));
-    assertTrue(script, script.endsWith("');"));
+    assertTrue(script.startsWith("return eval('"), script);
+    assertTrue(script.endsWith("');"), script);
   }
 }

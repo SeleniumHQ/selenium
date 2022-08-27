@@ -23,19 +23,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.lang.reflect.Method;
 
-@Category(UnitTests.class)
-public class IntegrationTest {
+@Tag("UnitTests")
+class IntegrationTest {
 
-  static class CountCalls extends WebDriverDecorator {
+  static class CountCalls extends WebDriverDecorator<WebDriver> {
 
     int counterBefore = 0;
     int counterAfter = 0;
@@ -59,7 +58,7 @@ public class IntegrationTest {
   }
 
   @Test
-  public void canDecorateWebDriverMethods() {
+  void canDecorateWebDriverMethods() {
     CountCalls decorator = new CountCalls();
     WebDriver originalDriver = mock(WebDriver.class);
     WebDriver decoratedDriver = decorator.decorate(originalDriver);
@@ -70,7 +69,7 @@ public class IntegrationTest {
   }
 
   @Test
-  public void canDecorateWebElementMethods() {
+  void canDecorateWebElementMethods() {
     CountCalls decorator = new CountCalls();
     WebDriver originalDriver = mock(WebDriver.class);
     WebElement element = mock(WebElement.class);

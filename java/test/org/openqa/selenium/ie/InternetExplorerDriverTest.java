@@ -17,8 +17,9 @@
 
 package org.openqa.selenium.ie;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +27,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
@@ -38,26 +39,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 
-public class InternetExplorerDriverTest extends JUnit4TestBase {
+public class InternetExplorerDriverTest extends JupiterTestBase {
 
   @Test
-  public void builderGeneratesDefaultChromeOptions() {
-    WebDriver driver = InternetExplorerDriver.builder().build();
-    driver.quit();
+  @NoDriverBeforeTest
+  public void builderGeneratesDefaultIEOptions() {
+    localDriver = InternetExplorerDriver.builder().build();
+    Capabilities capabilities = ((InternetExplorerDriver) localDriver).getCapabilities();
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
+    assertThat(capabilities.getCapability("browserName")).isEqualTo("internet explorer");
   }
 
   @Test
-  public void builderOverridesDefaultChromeOptions() {
+  @NoDriverBeforeTest
+  public void builderOverridesDefaultIEOptions() {
     InternetExplorerOptions options = new InternetExplorerOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
-    WebDriver driver = InternetExplorerDriver.builder().oneOf(options).build();
-    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
-
-    driver.quit();
+    localDriver = InternetExplorerDriver.builder().oneOf(options).build();
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
   }
 
   @Test
-  public void builderWithClientConfigthrowsException() {
+  public void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = InternetExplorerDriver.builder().config(clientConfig);
 
@@ -70,8 +73,8 @@ public class InternetExplorerDriverTest extends JUnit4TestBase {
   @NoDriverBeforeTest
   public void canRestartTheIeDriverInATightLoop() {
     for (int i = 0; i < 5; i++) {
-      WebDriver driver = newIeDriver();
-      driver.quit();
+      WebDriver driverInLoop = newIeDriver();
+      driverInLoop.quit();
     }
   }
 

@@ -433,10 +433,8 @@ describe('http', function () {
         function test(value) {
           it(`value=${value}`, function () {
             const command = new Command(
-              CommandName.GET_CURRENT_URL).setParameter(
-              'sessionId',
-              's123'
-            )
+              CommandName.GET_CURRENT_URL
+            ).setParameter('sessionId', 's123')
 
             send.returns(
               Promise.resolve(

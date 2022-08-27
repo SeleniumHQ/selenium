@@ -20,9 +20,9 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -107,7 +107,7 @@ public class SessionCleanUpTest {
   private Secret registrationSecret;
   private Server<?> server;
 
-  @Before
+  @BeforeEach
   public void setup() {
     tracer = DefaultTestTracer.createTracer();
     registrationSecret = new Secret("hereford hop");
@@ -122,7 +122,7 @@ public class SessionCleanUpTest {
     clientFactory = HttpClient.Factory.createDefault();
   }
 
-  @After
+  @AfterEach
   public void stopServer() {
     if (server != null) {
       server.stop();
@@ -221,12 +221,13 @@ public class SessionCleanUpTest {
     Optional<Map<String, Object>> maybeResponse =
       Optional.ofNullable(Values.get(httpResponse, Map.class));
 
+    assertThat(maybeResponse.isPresent()).isTrue();
     String rawResponse = JSON.toJson(maybeResponse.get().get("sessionId"));
     SessionId id = JSON.toType(rawResponse, SessionId.class);
 
     Session session = sessions.get(id);
 
-    assertThat(session.getCapabilities()).isEqualTo(capabilities);
+    assertThat(session.getCapabilities().getBrowserName()).isEqualTo(capabilities.getBrowserName());
 
     nodeServer.stop();
 
@@ -296,7 +297,7 @@ public class SessionCleanUpTest {
     SessionId id = result.right().getSession().getId();
     Session session = sessions.get(id);
 
-    assertThat(session.getCapabilities()).isEqualTo(capabilities);
+    assertThat(session.getCapabilities().getBrowserName()).isEqualTo(capabilities.getBrowserName());
 
     availability.set(DOWN);
 

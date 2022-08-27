@@ -20,6 +20,8 @@ package org.openqa.selenium.remote;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
@@ -30,7 +32,6 @@ import org.openqa.selenium.remote.session.ChromeFilter;
 import org.openqa.selenium.remote.session.EdgeFilter;
 import org.openqa.selenium.remote.session.FirefoxFilter;
 import org.openqa.selenium.remote.session.InternetExplorerFilter;
-import org.openqa.selenium.remote.session.OperaFilter;
 import org.openqa.selenium.remote.session.ProxyTransform;
 import org.openqa.selenium.remote.session.SafariFilter;
 import org.openqa.selenium.remote.session.StripAnyPlatform;
@@ -199,7 +200,6 @@ public class CapabilitiesUtils {
       .add(new EdgeFilter())
       .add(new FirefoxFilter())
       .add(new InternetExplorerFilter())
-      .add(new OperaFilter())
       .add(new SafariFilter());
     return adapters.build();
   }

@@ -351,6 +351,22 @@ def test_should_be_able_to_switch_to_the_top_if_the_frame_is_deleted_from_under_
     WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
 
 
+def test_frame_to_be_available_and_switch_to_it_using_string_inputs(driver, pages):
+    # Similar to above test, but using `iframe = "iframe1"` instead of `iframe = 0`
+    pages.load("frame_switching_tests/deletingFrame.html")
+    iframe = "iframe1"
+    WebDriverWait(driver, 3).until(EC.frame_to_be_available_and_switch_to_it(iframe))
+    # we should be in the frame now
+    killIframe = driver.find_element(By.ID, "killIframe")
+    killIframe.click()
+    driver.switch_to.default_content()
+
+    addIFrame = driver.find_element(By.ID, "addBackFrame")
+    addIFrame.click()
+    WebDriverWait(driver, 3).until(EC.frame_to_be_available_and_switch_to_it(iframe))
+    WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "success")))
+
+
 def test_should_be_able_to_switch_to_the_top_if_the_frame_is_deleted_from_under_us_with_webelement(driver, pages):
     pages.load("frame_switching_tests/deletingFrame.html")
     iframe = driver.find_element(By.ID, "iframe1")

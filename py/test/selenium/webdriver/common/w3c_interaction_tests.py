@@ -17,6 +17,7 @@
 
 import pytest
 
+from selenium.webdriver.common.actions.wheel_input import WheelInput
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
@@ -187,9 +188,9 @@ def test_pen_pointer_properties(driver, pages):
     center = _get_inview_center(pointerArea.rect, _get_viewport_rect(driver))
     actions.pointer_action.move_to(pointerArea) \
         .pointer_down(pressure=0.36, tilt_x=-72, tilt_y=9, twist=86) \
-        .move_to(pointerArea, x=10, y=40) \
+        .move_to(pointerArea, x=5, y=10) \
         .pointer_up() \
-        .move_to(pointerArea, x=10, y=50)
+        .move_to(pointerArea, x=5, y=10)
     actions.perform()
     events = _get_events(driver)
     assert events[3]["type"] == "pointerdown"
@@ -224,11 +225,11 @@ def test_touch_pointer_properties(driver, pages):
     center = _get_inview_center(pointerArea.rect, _get_viewport_rect(driver))
     touch_input = PointerInput(interaction.POINTER_TOUCH, "touch")
     touch_chain = ActionBuilder(driver, mouse=touch_input)
-    touch_chain.pointer_action.move_to(pointerArea, x=50, y=25) \
+    touch_chain.pointer_action.move_to(pointerArea) \
         .pointer_down(width=23, height=31, pressure=0.78, tilt_x=21, tilt_y=-8, twist=355) \
-        .move_to(pointerArea, x=60, y=35, width=39, height=35, pressure=0.91, tilt_x=-19, tilt_y=62, twist=345) \
+        .move_to(pointerArea, x=10, y=10, width=39, height=35, pressure=0.91, tilt_x=-19, tilt_y=62, twist=345) \
         .pointer_up() \
-        .move_to(pointerArea, x=80, y=50)
+        .move_to(pointerArea, x=15, y=15)
     touch_chain.perform()
     events = _get_events(driver)
     assert len(events) == 7
@@ -257,6 +258,27 @@ def test_touch_pointer_properties(driver, pages):
     assert events[3]["tiltX"] == -19
     assert events[3]["tiltY"] == 62
     assert events[3]["twist"] == 345
+
+
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_scroll_mouse_wheel(driver, pages):
+    pages.load("scrollingPage.html")
+    driver.execute_script("document.scrollingElement.scrollTop = 0")
+    scrollable = driver.find_element(By.CSS_SELECTOR, "#scrollable")
+
+    wheel_input = WheelInput("wheel")
+    actions = ActionBuilder(driver, wheel=wheel_input)
+    actions.wheel_action.scroll(0, 0, 5, 10, 0, scrollable)
+
+    actions.perform()
+    events = _get_events(driver)
+    assert len(events) == 1
+    assert events[0]["type"] == "wheel"
+    assert events[0]["deltaX"] >= 5
+    assert events[0]["deltaY"] >= 10
+    assert events[0]["deltaZ"] == 0
+    assert events[0]["target"] == "scrollContent"
 
 
 def _perform_drag_and_drop_with_mouse(driver, pages):
@@ -295,7 +317,7 @@ def _get_events(driver):
     # test_keys_wdspec.html), so this converts them back into unicode literals.
     for e in events:
         # example: turn "U+d83d" (6 chars) into u"\ud83d" (1 char)
-        if "key" in e and e["key"].startswith(u"U+"):
+        if "key" in e and e["key"].startswith("U+"):
             key = e["key"]
             hex_suffix = key[key.index("+") + 1:]
             e["key"] = chr(int(hex_suffix, 16))

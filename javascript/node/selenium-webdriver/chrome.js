@@ -140,7 +140,6 @@ const CHROMEDRIVER_EXE =
   process.platform === 'win32' ? 'chromedriver.exe' : 'chromedriver'
 
 /** @type {remote.DriverService} */
-let defaultService = null
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -240,6 +239,14 @@ class Driver extends chromium.Driver {
       super.createSession(caps, opt_serviceExecutor)
     )
   }
+
+  /**
+   * returns new instance chrome driver service
+   * @returns {remote.DriverService}
+   */
+  static getDefaultService() {
+    return new ServiceBuilder().build()
+  }
 }
 
 /**
@@ -252,47 +259,14 @@ function locateSynchronously() {
   return io.findInPath(CHROMEDRIVER_EXE, true)
 }
 
-/**
- * Sets the default service to use for new ChromeDriver instances.
- * @param {!remote.DriverService} service The service to use.
- * @throws {Error} If the default service is currently running.
- */
-function setDefaultService(service) {
-  if (defaultService && defaultService.isRunning()) {
-    throw Error(
-      `The previously configured ChromeDriver service is still running. ` +
-        `You must shut it down before you may adjust its configuration.`
-    )
-  }
-  defaultService = service
-}
-
-/**
- * Returns the default ChromeDriver service. If such a service has not been
- * configured, one will be constructed using the default configuration for
- * a ChromeDriver executable found on the system PATH.
- * @return {!remote.DriverService} The default ChromeDriver service.
- */
-function getDefaultService() {
-  if (!defaultService) {
-    defaultService = new ServiceBuilder().build()
-  }
-  return defaultService
-}
-
 Options.prototype.CAPABILITY_KEY = 'goog:chromeOptions'
 Options.prototype.BROWSER_NAME_VALUE = Browser.CHROME
-Driver.getDefaultService = getDefaultService
 Driver.prototype.VENDOR_COMMAND_PREFIX = 'goog'
 
 // PUBLIC API
-
 module.exports = {
   Driver: Driver,
   Options,
-  ServiceBuilder ,
-  getDefaultService,
-  setDefaultService,
-  locateSynchronously
+  ServiceBuilder,
+  locateSynchronously,
 }
-

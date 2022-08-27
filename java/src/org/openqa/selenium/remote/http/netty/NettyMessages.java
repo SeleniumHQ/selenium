@@ -47,8 +47,7 @@ class NettyMessages {
     // Utility classes.
   }
 
-  protected static Request toNettyRequest(ClientConfig config,
-                                          HttpRequest request) {
+  protected static Request toNettyRequest(ClientConfig config, HttpRequest request) {
 
     URI baseUrl = config.baseUri();
     int timeout = toClampedInt(config.readTimeout().toMillis());

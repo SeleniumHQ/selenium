@@ -68,22 +68,6 @@ namespace OpenQA.Selenium
         /// <summary>
         /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified tag name.
         /// </summary>
-        /// <param name="tagName">The tag name of the element to find.</param>
-        /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
-        [Obsolete("Use the WithLocator method instead, passing By.TagName.")]
-        public static RelativeBy WithTagName(string tagName)
-        {
-            if (string.IsNullOrEmpty(tagName))
-            {
-                throw new ArgumentException("Tag name must not be null or the empty string", nameof(tagName));
-            }
-
-            return new RelativeBy(By.TagName(tagName));
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified tag name.
-        /// </summary>
         /// <param name="by">A By object that will be used to find the initial element.</param>
         /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
         public static RelativeBy WithLocator(By by)

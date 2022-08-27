@@ -19,8 +19,9 @@ package org.openqa.selenium.json;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -35,7 +36,6 @@ import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.StringReader;
 import java.time.Instant;
@@ -61,7 +61,7 @@ import static org.openqa.selenium.logging.LogType.CLIENT;
 import static org.openqa.selenium.logging.LogType.DRIVER;
 import static org.openqa.selenium.logging.LogType.SERVER;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class JsonTest {
 
   @Test
@@ -129,14 +129,6 @@ public class JsonTest {
     assertThat(seen.theName).isEqualTo("fishy");
   }
 
-  public static class BeanWithSetter {
-    String theName;
-
-    public void setName(String name) {
-      theName = name;
-    }
-  }
-
   @Test
   public void shouldAllowUserToPopulateFieldsDirectly() {
     Map<String, String> map = ImmutableMap.of("theName", "fishy");
@@ -157,14 +149,6 @@ public class JsonTest {
     BeanWithFinalField seen = json.toType(raw, BeanWithFinalField.class, PropertySetting.BY_FIELD);
 
     assertThat(seen.theName).isEqualTo("fishy");
-  }
-
-  public static class BeanWithFinalField {
-    private final String theName;
-
-    public BeanWithFinalField() {
-      this.theName = "magic";
-    }
   }
 
   @Test
@@ -257,14 +241,16 @@ public class JsonTest {
 
   @Test
   public void shouldProperlyFillInACapabilitiesObject() {
-    DesiredCapabilities capabilities =
-        new DesiredCapabilities("browser", CapabilityType.VERSION, Platform.ANY);
-    capabilities.setJavascriptEnabled(true);
+    DesiredCapabilities capabilities = new DesiredCapabilities(CapabilityType.BROWSER_NAME,
+                                                               CapabilityType.BROWSER_VERSION,
+                                                               Platform.ANY);
     String text = new Json().toJson(capabilities);
 
     Capabilities readCapabilities = new Json().toType(text, DesiredCapabilities.class);
 
-    assertThat(readCapabilities).isEqualTo(capabilities);
+    assertThat(readCapabilities.getBrowserName()).isEqualTo(capabilities.getBrowserName());
+    assertThat(readCapabilities.getBrowserVersion()).isEqualTo(capabilities.getBrowserVersion());
+    assertThat(readCapabilities.getPlatformName()).isEqualTo(capabilities.getPlatformName());
   }
 
   @Test
@@ -536,12 +522,31 @@ public class JsonTest {
     Json json = new Json();
     String raw = json.toJson(value);
     Map<String, String> roundTripped = json.toType(
-        raw,
-        new TypeToken<Map<String, String>>(){}.getType());
+      raw,
+      new TypeToken<Map<String, String>>() {
+      }.getType());
 
     assertThat(roundTripped.get("boolean")).isEqualTo("true");
     assertThat(roundTripped.get("integer")).isEqualTo("42");
     assertThat(roundTripped.get("float")).isEqualTo("3.14");
+  }
+
+  public static class BeanWithSetter {
+
+    String theName;
+
+    public void setName(String name) {
+      theName = name;
+    }
+  }
+
+  public static class BeanWithFinalField {
+
+    private final String theName;
+
+    public BeanWithFinalField() {
+      this.theName = "magic";
+    }
   }
 
   public static class SimpleBean {

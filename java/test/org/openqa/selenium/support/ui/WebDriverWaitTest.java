@@ -17,16 +17,9 @@
 
 package org.openqa.selenium.support.ui;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.By;
@@ -44,18 +37,24 @@ import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.IOException;
 import java.time.Duration;
 
-@Category(UnitTests.class)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
+
+@Tag("UnitTests")
 public class WebDriverWaitTest {
 
   @Mock private WebDriver mockDriver;
   @Mock private WebElement mockElement;
 
-  @Before
+  @BeforeEach
   public void createMocks() {
     MockitoAnnotations.initMocks(this);
   }
@@ -77,8 +76,8 @@ public class WebDriverWaitTest {
         new WebDriverWait(testDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(d -> false))
-        .withMessageContaining("Capabilities {javascriptEnabled: true, platform: ANY, platformName: ANY}")
+      .isThrownBy(() -> wait.until(d -> false))
+      .withMessageContaining("Capabilities {platformName: ANY}")
         .withMessageContaining("Session ID: foo");
   }
 

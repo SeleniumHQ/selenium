@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!--
+Copryight 2012 Software Freedom Conservancy
+Copyright 2010-2012 WebDriver committers
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+
+<head>
+  <title>text_test.html</title>
+  <meta charset="UTF-8">
+  <script src="test_bootstrap.js"></script>
+  <script type="text/javascript">
+    goog.require('bot.dom');
+    goog.require('bot.locators');
+    goog.require('goog.testing.jsunit');
+    goog.require('goog.testing.ExpectedFailures');
+  </script>
+
+  <script type="text/javascript">
+    var findElement = bot.locators.findElement;
+    var getText = bot.dom.getVisibleText;
+
+    customElements.define('custom-shadow-element',
+      class extends HTMLElement {
+        constructor() {
+          {
+            super();
+            this.attachShadow({ mode: 'open' });
+          }
+        }
+      });
+    function setCustomElement(html) {
+      document.querySelector("custom-shadow-element").shadowRoot.innerHTML = html;
+    }
+
+    function tearDown() {
+      let elem = document.querySelector("custom-shadow-element");
+      elem.shadowRoot.innerHTML = "";
+
+    }
+
+    function testTextInShadowDOM() {
+      setCustomElement("<div><a href=# id=linkText>full link text</a></div>")
+      let elem = findElement({ tagName: "custom-shadow-element" });
+      let text = getText(elem);
+      assertEquals(text, "full link text");
+    }
+
+    function testHiddenTextInShadowDOM() {
+      setCustomElement("<div><a href=# id=linkText>full <div style='display:none'>link</div> text</a></div>")
+      let elem = findElement({ tagName: "custom-shadow-element" });
+      let text = getText(elem);
+      assertEquals(text, "full text");
+    }
+
+  </script>
+
+</head>
+
+<body>
+  <custom-shadow-element></custom-shadow-element>
+</body>
+
+</html>

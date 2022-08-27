@@ -47,7 +47,8 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 5.0']
   s.add_runtime_dependency 'rexml', ['~> 3.2', '>= 3.2.5']
-  s.add_runtime_dependency 'rubyzip', ['>= 1.2.2']
+  s.add_runtime_dependency 'rubyzip', ['>= 1.2.2', '< 3.0']
+  s.add_runtime_dependency 'websocket', ['~> 1.0']
 
   # childprocess requires ffi on windows but doesn't declare it in its dependencies
   s.add_development_dependency 'ffi'
@@ -55,10 +56,10 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rack', ['~> 2.0']
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', ['~> 3.0']
-  s.add_development_dependency 'rubocop', ['~> 1.22']
-  s.add_development_dependency 'rubocop-performance'
+  s.add_development_dependency 'rubocop', ['~> 1.31']
+  s.add_development_dependency 'rubocop-performance', ['~> 1.13']
   s.add_development_dependency 'rubocop-rake'
-  s.add_development_dependency 'rubocop-rspec'
+  s.add_development_dependency 'rubocop-rspec', ['~> 2.12']
   s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'webrick', ['~> 1.7']
   s.add_development_dependency 'yard', ['~> 0.9.11']

@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Dict, Mapping, Type, TypeVar
+from typing import Any, Dict, Type
 
 from selenium.common.exceptions import (ElementClickInterceptedException,
                                         ElementNotInteractableException,
@@ -46,10 +46,6 @@ from selenium.common.exceptions import (ElementClickInterceptedException,
                                         UnexpectedAlertPresentException,
                                         UnknownMethodException,
                                         WebDriverException)
-
-
-_KT = TypeVar("_KT")
-_VT = TypeVar("_VT")
 
 
 class ErrorCode:
@@ -225,13 +221,13 @@ class ErrorHandler:
                 stacktrace = []
                 try:
                     for frame in st_value:
-                        line = self._value_or_default(frame, 'lineNumber', '')
-                        file = self._value_or_default(frame, 'fileName', '<anonymous>')
+                        line = frame.get("lineNumber", "")
+                        file = frame.get("fileName", "<anonymous>")
                         if line:
-                            file = "%s:%s" % (file, line)
-                        meth = self._value_or_default(frame, 'methodName', '<anonymous>')
+                            file = f"{file}:{line}"
+                        meth = frame.get('methodName', '<anonymous>')
                         if 'className' in frame:
-                            meth = "%s.%s" % (frame['className'], meth)
+                            meth = "{}.{}".format(frame['className'], meth)
                         msg = "    at %s (%s)"
                         msg = msg % (meth, file)
                         stacktrace.append(msg)
@@ -245,6 +241,3 @@ class ErrorHandler:
                 alert_text = value['alert'].get('text')
             raise exception_class(message, screen, stacktrace, alert_text)  # type: ignore[call-arg]  # mypy is not smart enough here
         raise exception_class(message, screen, stacktrace)
-
-    def _value_or_default(self, obj: Mapping[_KT, _VT], key: _KT, default: _VT) -> _VT:
-        return obj[key] if key in obj else default

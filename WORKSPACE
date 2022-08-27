@@ -7,12 +7,13 @@ workspace(
 )
 
 load("//common/private:env.bzl", "env")
+
 env(
     name = "python_version",
-    env_var=["PYTHON_VERSION"]
+    env_var = ["PYTHON_VERSION"],
 )
-load("@python_version//:defs.bzl", "PYTHON_VERSION")
 
+load("@python_version//:defs.bzl", "PYTHON_VERSION")
 
 register_toolchains(":py_toolchain")
 
@@ -60,9 +61,9 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "cdf6b84084aad8f10bf20b46b77cb48d83c319ebe6458a18e9d2cebf57807cdd",
-    strip_prefix = "rules_python-0.8.1",
-    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.8.1.tar.gz",
+    sha256 = "56dc7569e5dd149e576941bdb67a57e19cd2a7a63cc352b62ac047732008d7e1",
+    strip_prefix = "rules_python-0.10.0",
+    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.10.0.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "python_register_toolchains")
@@ -79,8 +80,8 @@ load("@rules_python//python:pip.bzl", "pip_parse")
 
 pip_parse(
     name = "py_dev_requirements",
-    requirements_lock = "//py:requirements_lock.txt",
     python_interpreter_target = interpreter,
+    requirements_lock = "//py:requirements_lock.txt",
 )
 
 load("@py_dev_requirements//:requirements.bzl", "install_deps")
@@ -103,9 +104,9 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
-RULES_JVM_EXTERNAL_TAG = "4.2"
+RULES_JVM_EXTERNAL_TAG = "4.3"
 
-RULES_JVM_EXTERNAL_SHA = "cd1a77b7b02e8e008439ca76fd34f5b07aecb8c752961f9640dea15e9e5ba1ca"
+RULES_JVM_EXTERNAL_SHA = "6274687f6fc5783b589f56a2f1ed60de3ce1f99bc4e8f9edef3de43bdf7c6e74"
 
 http_archive(
     name = "rules_jvm_external",
@@ -128,6 +129,21 @@ rules_jvm_external_deps()
 load("@rules_jvm_external//:setup.bzl", "rules_jvm_external_setup")
 
 rules_jvm_external_setup()
+
+http_archive(
+    name = "contrib_rules_jvm",
+    sha256 = "a939cd04da2deee16131898d91d8e23559dcd1a30a5128beac30a2b01b33c94f",
+    strip_prefix = "rules_jvm-0.4.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/archive/v0.4.0.tar.gz",
+)
+
+load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
+
+contrib_rules_jvm_deps()
+
+load("@contrib_rules_jvm//:setup.bzl", "contrib_rules_jvm_setup")
+
+contrib_rules_jvm_setup()
 
 load("//java:maven_deps.bzl", "selenium_java_deps")
 
@@ -152,9 +168,10 @@ selenium_register_dotnet()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "e328cb2c9401be495fa7d79c306f5ee3040e8a03b2ebb79b022e15ca03770096",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.4.2/rules_nodejs-5.4.2.tar.gz"],
+    sha256 = "f10a3a12894fc3c9bf578ee5a5691769f6805c4be84359681a785a0c12e8d2b6",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.5.3/rules_nodejs-5.5.3.tar.gz"],
 )
+
 load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
 
 build_bazel_rules_nodejs_dependencies()

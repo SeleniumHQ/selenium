@@ -142,7 +142,7 @@ jobs:
       - name: Run linter
         uses: ./.github/actions/bazel-test
         with:
-          query: attr(tags, lint, tests(//java/...))
+          query: attr(tags, lint, tests(//java/...)) except attr(tags, no-lint, tests(//java/...))
 
   browser_tests:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
@@ -192,7 +192,7 @@ jobs:
       - name: Run browser tests in ${{ matrix.browser }}
         uses: ./.github/actions/bazel-test
         with:
-          query: attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'lint|rc|remote', tests(//java/...))
+          query: attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'rc|remote', tests(//java/...))
           attempts: 3
         env:
           DISPLAY: :99

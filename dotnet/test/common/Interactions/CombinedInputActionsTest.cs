@@ -194,9 +194,10 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement element = driver.FindElement(By.Id("eventish"));
             Point location = element.Location;
+            Size size = element.Size;
 
             new Actions(driver)
-                .MoveToElement(element, 20, 10)
+                .MoveToElement(element, 20 - size.Width / 2, 10 - size.Height / 2)
                 .Click()
                 .Perform();
 
@@ -373,6 +374,14 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement result = driver.FindElement(By.Id("result"));
             WaitFor(() => { return result.Text.Contains("item 1"); }, "Result element does not contain text 'item 1'");
+        }
+
+        [Test]
+        public void PerformsPause()
+        {
+            DateTime start = DateTime.Now;
+            new Actions(driver).Pause(TimeSpan.FromMilliseconds(1200)).Build().Perform();
+            Assert.IsTrue(DateTime.Now - start > TimeSpan.FromMilliseconds(1200));
         }
 
         private bool FuzzyPositionMatching(int expectedX, int expectedY, string locationTuple)

@@ -25,7 +25,6 @@ from .ie.options import Options as IeOptions  # noqa
 from .edge.webdriver import WebDriver as Edge  # noqa
 from .edge.webdriver import WebDriver as ChromiumEdge  # noqa
 from .edge.options import Options as EdgeOptions  # noqa
-from .opera.webdriver import WebDriver as Opera  # noqa
 from .safari.webdriver import WebDriver as Safari  # noqa
 from .webkitgtk.webdriver import WebDriver as WebKitGTK  # noqa
 from .webkitgtk.options import Options as WebKitGTKOptions  # noqa
@@ -37,4 +36,29 @@ from .common.action_chains import ActionChains  # noqa
 from .common.proxy import Proxy  # noqa
 from .common.keys import Keys  # noqa
 
-__version__ = '4.1.5'
+__version__ = '4.4.3'
+
+# We need an explicit __all__ because the above won't otherwise be exported.
+__all__ = [
+    "Firefox",
+    "FirefoxProfile",
+    "FirefoxOptions",
+    "Chrome",
+    "ChromeOptions",
+    "Ie",
+    "IeOptions",
+    "Edge",
+    "ChromiumEdge",
+    "EdgeOptions",
+    "Opera",
+    "Safari",
+    "WebKitGTK",
+    "WebKitGTKOptions",
+    "WPEWebKit",
+    "WPEWebKitOptions",
+    "Remote",
+    "DesiredCapabilities",
+    "ActionChains",
+    "Proxy",
+    "Keys",
+]

@@ -427,7 +427,8 @@ namespace OpenQA.Selenium.Support.Events
         /// </para>
         /// <para>
         /// Arguments must be a number (which will be converted to a <see cref="long"/>),
-        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>.
+        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>,
+        /// or a <see cref="IWrapsElement"/>.
         /// An exception will be thrown if the arguments do not meet these criteria.
         /// The arguments will be made available to the JavaScript via the "arguments" magic
         /// variable, as if the function were called via "Function.apply"
@@ -488,7 +489,8 @@ namespace OpenQA.Selenium.Support.Events
         /// </para>
         /// <para>
         /// Arguments must be a number (which will be converted to a <see cref="long"/>),
-        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>.
+        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>,
+        /// or a <see cref="IWrapsElement"/>.
         /// An exception will be thrown if the arguments do not meet these criteria.
         /// The arguments will be made available to the JavaScript via the "arguments" magic
         /// variable, as if the function were called via "Function.apply"
@@ -1561,30 +1563,7 @@ namespace OpenQA.Selenium.Support.Events
             /// <summary>
             /// Gets the value of a JavaScript property of this element.
             /// </summary>
-            /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
-            /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
-            /// value is not set or the property does not exist.</returns>
-            [Obsolete("Use the GetDomProperty method instead.")]
-            public string GetProperty(string propertyName)
-            {
-                string elementProperty = string.Empty;
-                try
-                {
-                    elementProperty = this.underlyingElement.GetProperty(propertyName);
-                }
-                catch (Exception ex)
-                {
-                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
-                    throw;
-                }
-
-                return elementProperty;
-            }
-
-            /// <summary>
-            /// Gets the value of a JavaScript property of this element.
-            /// </summary>
-            /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+            /// <param name="propertyName">The name of the JavaScript property to get the value of.</param>
             /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
             /// value is not set or the property does not exist.</returns>
             public string GetDomProperty(string propertyName)
@@ -1717,7 +1696,7 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
-            /// Determines whether the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>. 
+            /// Determines whether the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>.
             /// </summary>
             /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
             /// <returns><see langword="true"/> if the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>; otherwise, <see langword="false"/>.</returns>
@@ -1728,7 +1707,7 @@ namespace OpenQA.Selenium.Support.Events
                 {
                     return false;
                 }
-                
+
                 IWrapsElement otherWrapper = other as IWrapsElement;
                 if (otherWrapper != null)
                 {

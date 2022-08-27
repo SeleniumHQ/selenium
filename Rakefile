@@ -51,11 +51,11 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.1'
+  '4.4'
 end
 
 def version
-  "#{release_version}.4"
+  "#{release_version}.0"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -99,9 +99,9 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
-  //java/src/org/openqa/selenium/devtools/v99:v99.publish
-  //java/src/org/openqa/selenium/devtools/v100:v100.publish
-  //java/src/org/openqa/selenium/devtools/v101:v101.publish
+  //java/src/org/openqa/selenium/devtools/v102:v102.publish
+  //java/src/org/openqa/selenium/devtools/v103:v103.publish
+  //java/src/org/openqa/selenium/devtools/v104:v104.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
@@ -110,7 +110,6 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/ie:ie.publish
   //java/src/org/openqa/selenium/json:json.publish
   //java/src/org/openqa/selenium/lift:lift.publish
-  //java/src/org/openqa/selenium/opera:opera.publish
   //java/src/org/openqa/selenium/remote/http:http.publish
   //java/src/org/openqa/selenium/remote:remote.publish
   //java/src/org/openqa/selenium/safari:safari.publish
@@ -134,7 +133,6 @@ task tests: [
   '//java/test/org/openqa/selenium/ie:ie',
   '//java/test/org/openqa/selenium/chrome:chrome',
   '//java/test/org/openqa/selenium/edge:edge',
-  '//java/test/org/openqa/selenium/opera:opera',
   '//java/test/org/openqa/selenium/support:small-tests',
   '//java/test/org/openqa/selenium/support:large-tests',
   '//java/test/org/openqa/selenium/remote:small-tests',
@@ -187,7 +185,6 @@ task test_ie: [
 ]
 task test_jobbie: [:test_ie]
 task test_firefox: ['//java/test/org/openqa/selenium/firefox:marionette:run']
-task test_opera: ['//java/test/org/openqa/selenium/opera:opera:run']
 task test_remote_server: [
   '//java/test/org/openqa/selenium/remote/server:small-tests:run',
   '//java/test/org/openqa/selenium/remote/server/log:test:run'
@@ -220,7 +217,6 @@ task test_java_webdriver: %i[
 task test_java_webdriver: [:test_ie] if SeleniumRake::Checks.windows?
 task test_java_webdriver: [:test_chrome] if SeleniumRake::Checks.chrome?
 task test_java_webdriver: [:test_edge] if SeleniumRake::Checks.edge?
-task test_java_webdriver: [:test_opera] if SeleniumRake::Checks.opera?
 
 task test_java: [
   '//java/test/org/openqa/selenium/atoms:test:run',
@@ -360,10 +356,12 @@ task 'prep-release-zip': [
   '//java/src/org/openqa/selenium:client-zip',
   '//java/src/org/openqa/selenium/grid:server-zip',
   '//java/src/org/openqa/selenium/grid:executable-grid',
-  '//java/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'
 ] do
-  ["build/dist/selenium-server-#{version}.zip", "build/dist/selenium-java-#{version}.zip",
-   "build/dist/selenium-server-#{version}.jar", "build/dist/selenium-html-runner-#{version}.jar"].each do |f|
+  [
+    "build/dist/selenium-server-#{version}.zip",
+    "build/dist/selenium-java-#{version}.zip",
+    "build/dist/selenium-server-#{version}.jar"
+  ].each do |f|
     rm_f(f) if File.exists?(f)
   end
 
@@ -375,8 +373,6 @@ task 'prep-release-zip': [
   chmod 0666, "build/dist/selenium-java-#{version}.zip"
   cp Rake::Task['//java/src/org/openqa/selenium/grid:executable-grid'].out, "build/dist/selenium-server-#{version}.jar", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.jar"
-  cp Rake::Task['//java/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'].out, "build/dist/selenium-html-runner-#{version}.jar", preserve: false
-  chmod 0666, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
 task 'release-java': %i[prep-release-zip publish-maven]
@@ -401,7 +397,7 @@ def read_user_pass_from_m2_settings
   return [user, pass]
 end
 
-task 'publish-maven': JAVA_RELEASE_TARGETS + %w[//java/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar] do
+task 'publish-maven': JAVA_RELEASE_TARGETS do
  creds = read_user_pass_from_m2_settings
   JAVA_RELEASE_TARGETS.each do |p|
     Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
@@ -410,7 +406,7 @@ end
 
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=true'], p)
+    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=false'], p)
   end
 end
 

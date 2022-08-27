@@ -25,19 +25,18 @@ import static org.mockito.Mockito.when;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.TraceContext;
 import org.openqa.selenium.remote.tracing.Tracer;
-import org.openqa.selenium.testing.UnitTests;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.UUID;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class TracedCommandExecutorTest {
   @Mock
   private CommandExecutor commandExecutor;
@@ -50,7 +49,7 @@ public class TracedCommandExecutorTest {
 
   private TracedCommandExecutor tracedCommandExecutor;
 
-  @Before
+  @BeforeEach
   public void createMocksAndTracedCommandExecutor() {
     MockitoAnnotations.initMocks(this);
     when(tracer.getCurrentContext()).thenReturn(traceContext);

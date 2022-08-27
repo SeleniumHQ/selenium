@@ -17,21 +17,16 @@
 
 package org.openqa.selenium.javascript;
 
-import static java.util.stream.Collectors.toList;
-
-import org.junit.runner.Description;
-import org.junit.runner.Runner;
-import org.junit.runner.notification.Failure;
-import org.junit.runner.notification.RunNotifier;
-import org.junit.runners.ParentRunner;
-import org.junit.runners.model.InitializationError;
-import org.junit.runners.model.Statement;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.Closeable;
@@ -39,34 +34,51 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-/**
- * JUnit4 test runner for Closure-based JavaScript tests.
- */
-public class JavaScriptTestSuite extends ParentRunner<Runner> {
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
-  private final List<Runner> children;
+/**
+ * JUnit5 test base for Closure-based JavaScript tests.
+ */
+public class JavaScriptTestSuite {
+
   private final Supplier<WebDriver> driverSupplier;
 
-  public JavaScriptTestSuite(Class<?> testClass) throws InitializationError, IOException {
-    super(testClass);
+  private final long timeout;
 
-    long timeout = Math.max(0, Long.getLong("js.test.timeout", 0));
+  private TestEnvironment testEnvironment;
 
-    driverSupplier = new DriverSupplier();
-
-    children = createChildren(driverSupplier, timeout);
+  public JavaScriptTestSuite() {
+    this.timeout = Math.max(0, Long.getLong("js.test.timeout", 0));
+    this.driverSupplier = new DriverSupplier();
   }
 
   private static boolean isBazel() {
     return InProject.findRunfilesRoot() != null;
   }
 
-  private static List<Runner> createChildren(
-      final Supplier<WebDriver> driverSupplier, final long timeout) throws IOException {
+  @BeforeEach
+  public void setup() {
+    testEnvironment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
+  }
+
+  @AfterEach
+  public void teardown() throws IOException {
+    if (testEnvironment != null) {
+      testEnvironment.stop();
+    }
+    if (driverSupplier != null) {
+      ((Closeable) driverSupplier).close();
+    }
+  }
+
+  @TestFactory
+  public Collection<DynamicTest> dynamicTests() throws IOException {
     final Path baseDir = InProject.findProjectRoot();
     final Function<String, URL> pathToUrlFn = s -> {
       AppServer appServer = GlobalTestEnvironment.get().getAppServer();
@@ -83,83 +95,15 @@ public class JavaScriptTestSuite extends ParentRunner<Runner> {
 
     List<Path> tests = TestFileLocator.findTestFiles();
     return tests.stream()
-        .map(file -> {
-          final String path = TestFileLocator.getTestFilePath(baseDir, file);
-          Description description = Description.createSuiteDescription(
-              path.replaceAll(".html$", ""));
+      .map(file -> {
+        final String path = TestFileLocator.getTestFilePath(baseDir, file);
+        String title = path.replaceAll(".html$", "");
+        ClosureTestStatement testStatement = new ClosureTestStatement(
+          driverSupplier, path, pathToUrlFn, timeout);
 
-          Statement testStatement = new ClosureTestStatement(
-              driverSupplier, path, pathToUrlFn, timeout);
-          return new StatementRunner(testStatement, description);
-        })
-        .collect(toList());
-  }
-
-  @Override
-  protected List<Runner> getChildren() {
-    return children;
-  }
-
-  @Override
-  protected Description describeChild(Runner child) {
-    return child.getDescription();
-  }
-
-  @Override
-  protected void runChild(Runner child, RunNotifier notifier) {
-    child.run(notifier);
-  }
-
-  @Override
-  protected Statement classBlock(RunNotifier notifier) {
-    final Statement suite = super.classBlock(notifier);
-
-    return new Statement() {
-      @Override
-      public void evaluate() throws Throwable {
-        TestEnvironment testEnvironment = null;
-        try {
-          testEnvironment = GlobalTestEnvironment.getOrCreate(InProcessTestEnvironment::new);
-          suite.evaluate();
-        } finally {
-          if (testEnvironment != null) {
-            testEnvironment.stop();
-          }
-          if (driverSupplier instanceof Closeable) {
-            ((Closeable) driverSupplier).close();
-          }
-        }
-      }
-    };
-  }
-
-  private static class StatementRunner extends Runner {
-
-    private final Description description;
-    private final Statement testStatement;
-
-    private StatementRunner(Statement testStatement, Description description) {
-      this.testStatement = testStatement;
-      this.description = description;
-    }
-
-    @Override
-    public Description getDescription() {
-      return description;
-    }
-
-    @Override
-    public void run(RunNotifier notifier) {
-      notifier.fireTestStarted(description);
-      try {
-        testStatement.evaluate();
-      } catch (Throwable throwable) {
-        Failure failure = new Failure(description, throwable);
-        notifier.fireTestFailure(failure);
-      } finally {
-        notifier.fireTestFinished(description);
-      }
-    }
+        return dynamicTest(title, testStatement::evaluate);
+      })
+      .collect(toList());
   }
 
   private static class DriverSupplier implements Supplier<WebDriver>, Closeable {

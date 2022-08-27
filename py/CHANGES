@@ -1,3 +1,34 @@
+Selenium (TBA next version)
+* Fix frame_to_be_available_and_switch_to_it() for string inputs (#10963)
+
+Selenium 4.4.3
+* Update explicit dependency for certifi to remove upper bound (#10956)
+
+Selenium 4.4.2
+* Add explicit dependency for certifi (#10953)
+
+Selenium 4.4.1
+* Removal of urllib3[secure] extras (deprecated) dependency
+
+Selenium 4.4.0
+* More flexibility in locating Firefox binary (#10818)
+* Add CDP for v104, remove support for v101
+* Throw error when setting w3c to False on Chromium, and warning when setting w3c to True
+
+Selenium 4.3.0
+* Deprecated find_element_by_* and find_elements_by_* are now removed (#10712)
+* Deprecated Opera support has been removed (#10630)
+* Fully upgraded from python 2x to 3.7 syntax and features (#10647)
+* Added a devtools version fallback mechanism to look for an older version when mismatch occurs (#10749)
+* Better support for co-operative multi inheritance by utilising super() throughout
+* Improved type hints throughout
+
+Selenium 4.2.0
+* Fix bug preventing Firefox from setting accept_insecure_certs to False (#10442)
+* Deprecated opera classes as not w3c compatible (#10379)
+* Fix SecurityError: Invalid Domain problem (#10653)
+* Implement convenience methods for scrolling
+
 Selenium 4.1.5
 * use `typing_extensions` to be compatible with `py37` (#10613)
 

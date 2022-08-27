@@ -17,22 +17,24 @@
 
 package org.openqa.selenium;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-public class AuthenticationTest extends JUnit4TestBase {
+public class AuthenticationTest extends JupiterTestBase {
 
-  @Before
+  @BeforeEach
   public void testRequiresAuthentication() {
     assumeThat(driver).isInstanceOf(HasAuthentication.class);
   }
 
-  @Test(timeout = 10000)
+  @Test
+  @Timeout(10)
   @NoDriverAfterTest
   public void canAccessUrlProtectedByBasicAuth() {
     ((HasAuthentication) driver).register(UsernameAndPassword.of("test", "test"));

@@ -143,7 +143,7 @@ describe('HttpClient', function () {
     agent.maxSockets = 1 // Only making 1 request.
 
     const client = new HttpClient(server.url(), agent, null, {
-      'user-agent': 'test'
+      'user-agent': 'test',
     })
 
     return client.send(request).then(function (response) {

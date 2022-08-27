@@ -24,19 +24,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Category(UnitTests.class)
-public class DecoratedAlertTest {
+@Tag("UnitTests")
+class DecoratedAlertTest {
 
   private static class Fixture {
+
     WebDriver originalDriver;
     WebDriver decoratedDriver;
     WebDriver.TargetLocator originalSwitch;
@@ -49,7 +49,7 @@ public class DecoratedAlertTest {
       originalDriver = mock(WebDriver.class);
       when(originalSwitch.alert()).thenReturn(original);
       when(originalDriver.switchTo()).thenReturn(originalSwitch);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.switchTo().alert();
     }
   }
@@ -70,22 +70,22 @@ public class DecoratedAlertTest {
   }
 
   @Test
-  public void sendKeys() {
+  void sendKeys() {
     verifyFunction($ -> $.sendKeys("test"));
   }
 
   @Test
-  public void accept() {
+  void accept() {
     verifyFunction(Alert::accept);
   }
 
   @Test
-  public void dismiss() {
+  void dismiss() {
     verifyFunction(Alert::dismiss);
   }
 
   @Test
-  public void getText() {
+  void getText() {
     verifyFunction(Alert::getText, "test");
   }
 }

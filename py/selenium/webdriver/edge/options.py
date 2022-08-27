@@ -23,7 +23,7 @@ class Options(ChromiumOptions):
     KEY = "ms:edgeOptions"
 
     def __init__(self):
-        super(Options, self).__init__()
+        super().__init__()
         self._use_webview = False
 
     @property
@@ -31,7 +31,7 @@ class Options(ChromiumOptions):
         return self._use_webview
 
     @use_webview.setter
-    def use_webview(self, value: bool):
+    def use_webview(self, value: bool) -> None:
         self._use_webview = bool(value)
 
     def to_capabilities(self) -> dict:
@@ -39,7 +39,7 @@ class Options(ChromiumOptions):
         Creates a capabilities with all the options that have been set and
         :Returns: A dictionary with everything
         """
-        caps = super(Options, self).to_capabilities()
+        caps = super().to_capabilities()
         if self._use_webview:
             caps['browserName'] = 'webview2'
 

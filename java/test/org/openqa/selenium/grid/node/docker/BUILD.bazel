@@ -1,0 +1,22 @@
+load("//java:defs.bzl", "JUNIT5_DEPS", "artifact", "java_test_suite")
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = glob(["*Test.java"]),
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/docker",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/node/docker",
+        artifact("com.google.guava:guava"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)

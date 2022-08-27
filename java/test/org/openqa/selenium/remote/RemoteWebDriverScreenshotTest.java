@@ -17,21 +17,21 @@
 
 package org.openqa.selenium.remote;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.OutputType.BASE64;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.OutputType.BASE64;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
 @Ignore(HTMLUNIT)
-public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
+public class RemoteWebDriverScreenshotTest extends JupiterTestBase {
 
   @Test
   @Ignore
@@ -54,13 +54,6 @@ public class RemoteWebDriverScreenshotTest extends JUnit4TestBase {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");
       return;
-    }
-
-    RemoteWebDriver remote = (RemoteWebDriver) driver;
-    Boolean screenshots = (Boolean) remote.getCapabilities()
-        .getCapability(CapabilityType.TAKES_SCREENSHOT);
-    if (screenshots == null || !screenshots) {
-      System.out.println("Skipping test: remote driver cannot take screenshots");
     }
 
     driver.get(pages.formPage);

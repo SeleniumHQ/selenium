@@ -15,7 +15,7 @@ namespace OpenQA.Selenium
         {
             driver.Url = simpleTestPage;
             IWebElement head = driver.FindElement(By.XPath("/html"));
-            string attribute = head.GetProperty("cheese");
+            string attribute = head.GetDomProperty("cheese");
             Assert.That(attribute, Is.Null);
         }
 
@@ -25,9 +25,9 @@ namespace OpenQA.Selenium
         {
             driver.Url = formsPage;
             IWebElement element = driver.FindElement(By.Id("working"));
-            Assert.AreEqual(string.Empty, element.GetProperty("value"));
+            Assert.AreEqual(string.Empty, element.GetDomProperty("value"));
             element.SendKeys("hello world");
-            Assert.AreEqual("hello world", element.GetProperty("value"));
+            Assert.AreEqual("hello world", element.GetDomProperty("value"));
         }
     }
 }

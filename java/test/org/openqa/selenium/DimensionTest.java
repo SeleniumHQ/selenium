@@ -19,14 +19,13 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 /**
  * Test WebDriver's Dimensions class.
  */
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class DimensionTest {
   @Test
   public void testSimpleAssignment() {

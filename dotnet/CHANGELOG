@@ -1,3 +1,44 @@
+v4.4.0
+======
+* Add CDP support for v104, and remove v101
+* Removed obsolete TouchActions class
+* Removed all methods marked obsolete from 4.0
+* Updated Newtonsoft.Json to address security issue
+* Implemented ability to run different versions of browser and driver for Chrome
+* Implemented VirtualAuth support
+* Fixed bug with unsuccessful http requests in session start
+* Fixed bug checking whether driver supports DevTools
+* Marked UseSpecCompliantProtocol obsolete and throwing error when user sets to false
+
+v4.3.0
+======
+* Added CDP support for v103, and remove v100
+* Removed Element `GetProperty()` method
+* Removed execute Chrome command methods
+* Removed AddAdditionalCapability() methods from Browser Options classes
+* Removed IFindsBy locator interfaces
+* Removed HTML5 commands, interfaces and classes since not w3c supported
+* Removed support for moving to top left of element due to inconsistencies
+
+v4.2.0
+======
+* Implement setting pointer event properties
+* Add CDP support for v102, and remove v99
+* Add performance to LogType
+* Removed Opera classes
+* Implemented Action Wheel Input and scrolling methods
+* Allow RemoteWebDriver to access Selenium logs
+* Fix bug where Actions class did not reset sequences after calling perform
+* Add Pause action to Actions class
+
+v4.1.1
+======
+* Add Zenkaku/Hankaku key
+* Allow Cookie name to be empty String when value not empty
+* Only add websocket-port if connectToRunningBrowser is not set
+* Add support for Chromium to cast desktop
+* Add CDP support for v99, v100, v101 and remove v94, v95, v96
+
 v4.1.0
 ======
 * add CDP support for v96 and remove v93

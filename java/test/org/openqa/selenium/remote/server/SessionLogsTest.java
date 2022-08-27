@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.remote.server;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.SessionLogHandler;
@@ -32,7 +32,7 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
 
@@ -42,7 +42,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
@@ -56,24 +56,24 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 @Ignore(CHROME)
 @Ignore(EDGE)
 @Ignore(SAFARI)
-public class SessionLogsTest extends JUnit4TestBase {
+public class SessionLogsTest extends JupiterTestBase {
 
   private static OutOfProcessSeleniumServer server;
   private RemoteWebDriver localDriver;
 
-  @BeforeClass
+  @BeforeAll
   public static void startUpServer() throws IOException {
     server = new OutOfProcessSeleniumServer();
     server.enableLogCapture();
     server.start("standalone");
   }
 
-  @AfterClass
+  @AfterAll
   public static void stopServer() {
     server.stop();
   }
 
-  @After
+  @AfterEach
   public void stopDriver() {
     if (localDriver != null) {
       localDriver.quit();

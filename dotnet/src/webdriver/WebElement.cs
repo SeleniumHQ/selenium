@@ -475,19 +475,6 @@ namespace OpenQA.Selenium
         /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
         /// value is not set or the property does not exist.</returns>
         /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
-        [Obsolete("Use the GetDomProperty method instead.")]
-        public virtual string GetProperty(string propertyName)
-        {
-            return this.GetDomProperty(propertyName);
-        }
-
-        /// <summary>
-        /// Gets the value of a JavaScript property of this element.
-        /// </summary>
-        /// <param name="propertyName">The name of the JavaScript property to get the value of.</param>
-        /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
-        /// value is not set or the property does not exist.</returns>
-        /// <exception cref="StaleElementReferenceException">Thrown when the target element is no longer valid in the document DOM.</exception>
         public virtual string GetDomProperty(string propertyName)
         {
             string propertyValue = string.Empty;
@@ -633,11 +620,17 @@ namespace OpenQA.Selenium
             }
             else
             {
-                IWebElement form = this.FindElement(By.XPath("./ancestor-or-self::form"));
-                this.driver.ExecuteScript(
-                    "var e = arguments[0].ownerDocument.createEvent('Event');" +
-                    "e.initEvent('submit', true, true);" +
-                    "if (arguments[0].dispatchEvent(e)) { arguments[0].submit(); }", form);
+                String script = "var form = arguments[0];\n" +
+                                "while (form.nodeName != \"FORM\" && form.parentNode) {\n" +
+                                "  form = form.parentNode;\n" +
+                                "}\n" +
+                                "if (!form) { throw Error('Unable to find containing form element'); }\n" +
+                                "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" +
+                                "var e = form.ownerDocument.createEvent('Event');\n" +
+                                "e.initEvent('submit', true, true);\n" +
+                                "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n";
+
+                this.driver.ExecuteScript(script, this);
             }
         }
 

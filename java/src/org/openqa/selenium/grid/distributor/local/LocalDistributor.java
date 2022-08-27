@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
@@ -51,6 +52,9 @@ import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.GridModel;
 import org.openqa.selenium.grid.distributor.config.DistributorOptions;
 import org.openqa.selenium.grid.distributor.selector.SlotSelector;
+import org.openqa.selenium.grid.jmx.JMXHelper;
+import org.openqa.selenium.grid.jmx.ManagedAttribute;
+import org.openqa.selenium.grid.jmx.ManagedService;
 import org.openqa.selenium.grid.log.LoggingOptions;
 import org.openqa.selenium.grid.node.HealthCheck;
 import org.openqa.selenium.grid.node.Node;
@@ -114,9 +118,14 @@ import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
 import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
+
+@ManagedService(objectName = "org.seleniumhq.grid:type=Distributor,name=LocalDistributor",
+  description = "Grid 4 node distributor")
 public class LocalDistributor extends Distributor implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
+
+  private static final SessionId RESERVED = new SessionId("reserved");
 
   private final Tracer tracer;
   private final EventBus bus;
@@ -228,6 +237,8 @@ public class LocalDistributor extends Distributor implements Closeable {
       period,
       TimeUnit.MILLISECONDS
     );
+
+    new JMXHelper().register(this);
   }
 
   public static Distributor create(Config config) {
@@ -274,6 +285,13 @@ public class LocalDistributor extends Distributor implements Closeable {
         return;
       }
 
+      if (status.getAvailability() != UP) {
+        // A Node might be draining or down (in the case of Relay nodes)
+        // but the heartbeat is still running.
+        // We do not need to add this Node for now.
+        return;
+      }
+
       Set<Capabilities> capabilities = status.getSlots().stream()
         .map(Slot::getStereotype)
         .map(ImmutableCapabilities::copyOf)
@@ -303,9 +321,10 @@ public class LocalDistributor extends Distributor implements Closeable {
     NodeStatus initialNodeStatus;
     try {
       initialNodeStatus = node.getStatus();
-      if (initialNodeStatus.getAvailability() == DRAINING) {
-        // A Node might be draining but the heartbeat is still running.
-        // We do not need to add this Node again.
+      if (initialNodeStatus.getAvailability() != UP) {
+        // A Node might be draining or down (in the case of Relay nodes)
+        // but the heartbeat is still running.
+        // We do not need to add this Node for now.
         return this;
       }
       model.add(initialNodeStatus);
@@ -372,13 +391,13 @@ public class LocalDistributor extends Distributor implements Closeable {
     return () -> {
       boolean checkFailed = false;
       Exception failedCheckException = null;
-      LOG.log(getDebugLogLevel(), "Running health check for " + node.getUri());
+      LOG.log(getDebugLogLevel(), "Running healthcheck for Node " + node.getUri());
 
       HealthCheck.Result result;
       try {
         result = healthCheck.check();
       } catch (Exception e) {
-        LOG.log(Level.WARNING, "Unable to process node " + id, e);
+        LOG.log(Level.WARNING, "Unable to process Node healthcheck " + id, e);
         result = new HealthCheck.Result(DOWN, "Unable to run healthcheck. Assuming down");
         checkFailed = true;
         failedCheckException = e;
@@ -484,12 +503,15 @@ public class LocalDistributor extends Distributor implements Closeable {
     Map<String, EventAttributeValue> attributeMap = new HashMap<>();
     try {
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-        EventAttribute.setValue(getClass().getName()));
+                       EventAttribute.setValue(getClass().getName()));
 
-      attributeMap.put("request.payload", EventAttribute.setValue(request.getDesiredCapabilities().toString()));
+      attributeMap.put("request.payload",
+                       EventAttribute.setValue(request.getDesiredCapabilities().toString()));
       String sessionReceivedMessage = "Session request received by the Distributor";
       span.addEvent(sessionReceivedMessage, attributeMap);
-      LOG.info(String.format("%s: \n %s", sessionReceivedMessage, request.getDesiredCapabilities()));
+      LOG.info(String.format("%s: %n %s",
+                             sessionReceivedMessage,
+                             request.getDesiredCapabilities()));
 
       // If there are no capabilities at all, something is horribly wrong
       if (request.getDesiredCapabilities().isEmpty()) {
@@ -497,8 +519,9 @@ public class LocalDistributor extends Distributor implements Closeable {
           new SessionNotCreatedException("No capabilities found in session request payload");
         EXCEPTION.accept(attributeMap, exception);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue("Unable to create session. No capabilities found: " +
-            exception.getMessage()));
+                         EventAttribute.setValue(
+                           "Unable to create session. No capabilities found: " +
+                           exception.getMessage()));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
         return Either.left(exception);
       }
@@ -519,7 +542,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         SlotId selectedSlot = reserveSlot(request.getRequestId(), caps);
         if (selectedSlot == null) {
           LOG.info(
-            String.format("Unable to find a free slot for request %s. \n %s ",
+            String.format("Unable to find a free slot for request %s. %n %s ",
                           request.getRequestId(),
                           caps));
           retry = true;
@@ -549,7 +572,7 @@ public class LocalDistributor extends Distributor implements Closeable {
           String sessionCreatedMessage = "Session created by the Distributor";
           span.addEvent(sessionCreatedMessage, attributeMap);
           LOG.info(
-            String.format("%s. Id: %s \n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+            String.format("%s. Id: %s %n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
 
           return Either.right(response);
         } catch (SessionNotCreatedException e) {
@@ -566,10 +589,17 @@ public class LocalDistributor extends Distributor implements Closeable {
         attributeMap.put(
           AttributeKey.EXCEPTION_MESSAGE.getKey(),
           EventAttribute.setValue("Will retry session " + request.getRequestId()));
+
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
+        span.setStatus(Status.ABORTED);
+        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       } else {
         EXCEPTION.accept(attributeMap, lastFailure);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-          EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
+                         EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
+
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
+        span.setStatus(Status.ABORTED);
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       }
       return Either.left(lastFailure);
@@ -667,6 +697,42 @@ public class LocalDistributor extends Distributor implements Closeable {
     } finally {
       writeLock.unlock();
     }
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "NodeUpCount")
+  public long getUpNodeCount() {
+    return model.getSnapshot().stream()
+      .filter(nodeStatus -> nodeStatus.getAvailability().equals(UP))
+      .count();
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "NodeDownCount")
+  public long getDownNodeCount() {
+    return model.getSnapshot().stream()
+      .filter(nodeStatus -> !nodeStatus.getAvailability().equals(UP))
+      .count();
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "ActiveSlots")
+  public int getActiveSlots() {
+    return model.getSnapshot().stream()
+      .map(NodeStatus::getSlots)
+      .flatMap(Collection::stream)
+      .filter(slot -> slot.getSession() != null)
+      .filter(slot -> !slot.getSession().getId().equals(RESERVED))
+      .mapToInt(slot -> 1)
+      .sum();
+  }
+
+  @VisibleForTesting
+  @ManagedAttribute(name = "IdleSlots")
+  public int getIdleSlots() {
+    return (int) (model.getSnapshot().stream()
+          .map(NodeStatus::getSlots)
+          .count() - getActiveSlots());
   }
 
   @Override

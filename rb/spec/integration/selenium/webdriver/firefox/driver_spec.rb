@@ -60,7 +60,7 @@ module Selenium
             end
 
           ensure
-            File.delete(path) if File.exist?(path)
+            FileUtils.rm_rf(path)
           end
         end
 

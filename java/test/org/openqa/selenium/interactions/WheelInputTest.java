@@ -20,21 +20,19 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
-import org.openqa.selenium.interactions.PointerInput.Origin;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.PropertySetting;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class WheelInputTest {
 
   @Test
@@ -50,7 +48,7 @@ public class WheelInputTest {
       0,
       0,
       Duration.ofMillis(100),
-      Origin.fromElement(element));
+      WheelInput.ScrollOrigin.fromElement(element));
     Sequence sequence = new Sequence(wheelInput, 0).addAction(scroll);
 
     String rawJson = new Json().toJson(sequence);
@@ -84,7 +82,7 @@ public class WheelInputTest {
       30,
       60,
       Duration.ofSeconds(1),
-      Origin.viewport());
+      WheelInput.ScrollOrigin.fromViewport());
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
@@ -110,7 +108,7 @@ public class WheelInputTest {
       30,
       60,
       Duration.ofSeconds(1),
-      Origin.fromElement(innerElement));
+      WheelInput.ScrollOrigin.fromElement(innerElement));
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
@@ -121,20 +119,6 @@ public class WheelInputTest {
       .containsEntry("deltaY", 60)
       .containsEntry("duration", 1000L)
       .containsEntry("origin", innerElement);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void shouldNotAllowPointerOrigin() {
-
-    WheelInput wheelInput = new WheelInput("test-wheel");
-    WheelInput.ScrollInteraction interaction = new WheelInput.ScrollInteraction(
-      wheelInput,
-      25,
-      50,
-      30,
-      60,
-      Duration.ofSeconds(1),
-      Origin.pointer());
   }
 
   private static class ActionSequenceJson {

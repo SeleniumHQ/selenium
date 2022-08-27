@@ -1,3 +1,87 @@
+4.4.0 (2022-08-09)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.103.1 to fix websocket dependency requirement
+  * Released selenium-devtools 0.104.0 (supports CDP v85, v102, v103, v104)
+  * Have network interceptor ignore cancelled requests (#10856)
+  * Improve websocket message handling
+
+Chromium:
+  * Prevent users from setting w3c: false and warn for true (thanks Tamsil Amani!)
+
+Ruby:
+  * Implement Virtual Authenticator (#10903, #10541) (thanks Tamsil Amani!)
+
+4.3.0 (2022-06-23)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.103.0 (supports CDP v85, v101, v102, v103)
+
+Ruby:
+  * Allow specifying which button is clicked in pointer action class methods
+  * Remove deprecated `Persistent` http class
+  * Remove deprecated HasRemoteStatus module
+  * Remove deprecated `Manager#new_window` and `Manager#logs`
+  * `ActionBuilder#move_to` no longer attempts to move to top left corner of element
+  * Remove deprecated support for sending Service parameters directly to Driver constructor
+  * Remove deprecated setters and getters for driver path on Browser modules
+  * Remove deprecated support for passing in options argument to Options class
+  * Allow `:options` parameter to take `Options` instance argument like other languages
+  * Remove deprecated support for `:desired_capabilities` & `:options` with `Hash` argument
+
+4.2.1 (2022-05-31)
+=========================
+
+Ruby
+  * Fix bug in setting default duration in Actions constructor
+
+4.2.0 (2022-05-27)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.97.0 (supports CDP v85, v95, v96, v97)
+  * Released selenium-devtools 0.98.0 (supports CDP v85, v96, v97, v98)
+  * Released selenium-devtools 0.99.0 (supports CDP v85, v97, v98, v99)
+  * Released selenium-devtools 0.100.0 (supports CDP v85, v98, v99, v100)
+  * Released selenium-devtools 0.101.0 (supports CDP v85, v99, v100, v101)
+  * Released selenium-devtools 0.102.0 (supports CDP v85, v100, v101, v102)
+  * Implement simple BiDi connection
+  * Fix bug in initial BiDi implementation (thanks Boris Petrov!)
+  * Fix bug with mutating headers in request interception (#10574)
+  * Fix bug with empty response headers (thanks Viren Negi!)
+
+Firefox:
+  * Add support to Firefox Options for environment capability
+  * Use addon parameter instead of path parameter to avoid using file detector
+  * Restore #from_name method to Firefox profile (#10146)
+
+Chromium:
+  * Add support for casting desktop
+
+Ruby:
+  * Updated minimum required Ruby version to 2.7
+  * Fix bug by not attempting to stop service process when it's not started (#10015)
+  * Fix bug to not stop service process when it's not started (thanks Atsushi Tatsuma!)
+  * Use driver endpoint to get page source instead of JavaScript
+  * Add zenkaku_hankaku key support
+  * Fix download support of Selenium Server
+  * Do not convert Tag Name to CSS Selector
+
+ActionBuilder:
+  * Raise error if input device not found
+  * Move `TypingInteraction` from `Interactions::KeyInput` to `Interactions` module
+  * Throw better errors for `PointerInput` methods
+  * Allow each action interaction class to validate its own source
+  * Set all Interactions classes to private
+  * Allow device names to use a default id if one is not specified
+  * Deprecate default mouse and keyboard values in constructor, favoring devices parameter
+  * Add support for pointer event properties
+  * Implement scroll wheel support
+  * Deprecate ordered pair parameters for pause method in favor of keywords
+  * Deprecate move to element with offset changing origin to top left of element
+
 4.1.0 (2021-11-22)
 =========================
 

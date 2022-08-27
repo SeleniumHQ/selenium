@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.events;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.net.PortProber;
@@ -37,11 +38,11 @@ public class ZeroMqTcpTest {
   private EventBus bus;
   private ZContext zContext;
 
-  @Before
+  @BeforeEach
   public void getBus() {
     Secret secret = new Secret("cheese");
     zContext = new ZContext();
-    bus =  ZeroMqEventBus.create(
+    bus = ZeroMqEventBus.create(
       zContext,
       "tcp://*:" + PortProber.findFreePort(),
       "tcp://*:" + PortProber.findFreePort(),
@@ -49,13 +50,14 @@ public class ZeroMqTcpTest {
       secret);
   }
 
-  @After
+  @AfterEach
   public void closeBus() {
     bus.close();
     zContext.close();
   }
 
-  @Test(timeout = 4000)
+  @Test
+  @Timeout(4)
   public void shouldBeAbleToPublishToAKnownTopic() throws InterruptedException {
     EventName cheese = new EventName("cheese");
     Event event = new Event(cheese, null);
@@ -68,7 +70,8 @@ public class ZeroMqTcpTest {
     assertThat(latch.getCount()).isEqualTo(0);
   }
 
-  @Test(timeout = 4000)
+  @Test
+  @Timeout(4)
   public void shouldNotReceiveEventsNotMeantForTheTopic() {
     AtomicInteger count = new AtomicInteger(0);
     bus.addListener(new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));

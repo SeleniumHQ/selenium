@@ -66,17 +66,10 @@ module Selenium
 
       attr_accessor :options
 
-      def initialize(options: nil, **opts)
+      def initialize(**opts)
         self.class.set_capabilities
 
-        @options = if options
-                     WebDriver.logger.deprecate(":options as keyword for initializing #{self.class}",
-                                                "custom values directly in #new constructor",
-                                                id: :options_options)
-                     opts.merge(options)
-                   else
-                     opts
-                   end
+        @options = opts
         @options[:browser_name] = self.class::BROWSER
       end
 

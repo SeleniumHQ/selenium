@@ -18,11 +18,10 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.ImeActivationFailedException;
-import org.openqa.selenium.ImeNotAvailableException;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
@@ -42,7 +41,6 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,11 +49,27 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class ErrorHandlerTest {
   private ErrorHandler handler;
 
-  @Before
+  private static void assertStackTracesEqual(StackTraceElement[] expected, StackTraceElement[] actual) {
+    assertThat(actual.length).as("Stacktrace length").isEqualTo(expected.length);
+    for (int i = 0; i < expected.length; i++) {
+      String message = "Frames at index [" + i + "]";
+      assertThat(actual[i].getFileName()).as(message).isEqualTo(expected[i].getFileName());
+      assertThat(actual[i].getClassName()).as(message).isEqualTo(expected[i].getClassName());
+      assertThat(actual[i].getMethodName()).as(message).isEqualTo(expected[i].getMethodName());
+      assertThat(actual[i].getLineNumber()).as(message).isEqualTo(expected[i].getLineNumber());
+    }
+  }
+
+  private static Map<String, Object> toMap(Object o) {
+    String rawJson = new Json().toJson(o);
+    return new Json().toType(rawJson, Map.class);
+  }
+
+  @BeforeEach
   public void setUp() {
     handler = new ErrorHandler();
     handler.setIncludeServerErrors(true);
@@ -397,8 +411,6 @@ public class ErrorHandlerTest {
     exceptions.put(ErrorCodes.UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class);
     exceptions.put(ErrorCodes.NO_ALERT_PRESENT, NoAlertPresentException.class);
     exceptions.put(ErrorCodes.ASYNC_SCRIPT_TIMEOUT, ScriptTimeoutException.class);
-    exceptions.put(ErrorCodes.IME_NOT_AVAILABLE, ImeNotAvailableException.class);
-    exceptions.put(ErrorCodes.IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class);
     exceptions.put(ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);
     exceptions.put(ErrorCodes.SESSION_NOT_CREATED, SessionNotCreatedException.class);
     exceptions.put(ErrorCodes.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class);
@@ -428,21 +440,5 @@ public class ErrorHandlerTest {
     response.setStatus(status);
     response.setValue(value);
     return response;
-  }
-
-  private static void assertStackTracesEqual(StackTraceElement[] expected, StackTraceElement[] actual) {
-    assertThat(actual.length).as("Stacktrace length").isEqualTo(expected.length);
-    for (int i = 0; i < expected.length; i++) {
-      String message = "Frames at index [" + i + "]";
-      assertThat(actual[i].getFileName()).as(message).isEqualTo(expected[i].getFileName());
-      assertThat(actual[i].getClassName()).as(message).isEqualTo(expected[i].getClassName());
-      assertThat(actual[i].getMethodName()).as(message).isEqualTo(expected[i].getMethodName());
-      assertThat(actual[i].getLineNumber()).as(message).isEqualTo(expected[i].getLineNumber());
-    }
-  }
-
-  private static Map<String, Object> toMap(Object o) {
-    String rawJson = new Json().toJson(o);
-    return new Json().toType(rawJson, Map.class);
   }
 }

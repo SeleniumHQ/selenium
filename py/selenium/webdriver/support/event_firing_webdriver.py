@@ -14,9 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-
-import warnings
+import typing
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -104,91 +102,27 @@ class EventFiringWebDriver:
     def quit(self):
         self._dispatch("quit", (self._driver,), "quit", ())
 
-    def find_element(self, by=By.ID, value=None):
+    def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None):
+    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
-    def find_element_by_id(self, id_):
-        warnings.warn("find_element_by_id is deprecated. Please use find_element(by=By.ID, value=id_) instead")
-        return self.find_element(by=By.ID, value=id_)
-
-    def find_elements_by_id(self, id_):
-        warnings.warn("find_elements_by_id is deprecated. Please use find_elements(by=By.ID, value=id_) instead")
-        return self.find_elements(by=By.ID, value=id_)
-
-    def find_element_by_xpath(self, xpath):
-        warnings.warn("find_element_by_xpath is deprecated. Please use find_element(by=By.XPATH, value=xpath) instead")
-        return self.find_element(by=By.XPATH, value=xpath)
-
-    def find_elements_by_xpath(self, xpath):
-        warnings.warn("find_elements_by_xpath is deprecated. Please use find_elements(by=By.XPATH, value=xpath) instead")
-        return self.find_elements(by=By.XPATH, value=xpath)
-
-    def find_element_by_link_text(self, link_text):
-        warnings.warn("find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead")
-        return self.find_element(by=By.LINK_TEXT, value=link_text)
-
-    def find_elements_by_link_text(self, text):
-        warnings.warn("find_elements_by_link_text is deprecated. Please use find_elements(by=By.LINK_TEXT, value=text) instead")
-        return self.find_elements(by=By.LINK_TEXT, value=text)
-
-    def find_element_by_partial_link_text(self, link_text):
-        warnings.warn("find_element_by_partial_link_text is deprecated. Please use find_element(by=By.PARTIAL_LINK_TEXT, value=link_text) instead")
-        return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_elements_by_partial_link_text(self, link_text):
-        warnings.warn("find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead")
-        return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_element_by_name(self, name):
-        warnings.warn("find_element_by_name is deprecated. Please use find_element(by=By.NAME, value=name) instead")
-        return self.find_element(by=By.NAME, value=name)
-
-    def find_elements_by_name(self, name):
-        warnings.warn("find_elements_by_name is deprecated. Please use find_elements(by=By.NAME, value=name) instead")
-        return self.find_elements(by=By.NAME, value=name)
-
-    def find_element_by_tag_name(self, name):
-        warnings.warn("find_element_by_tag_name is deprecated. Please use find_element(by=By.TAG_NAME, value=name) instead")
-        return self.find_element(by=By.TAG_NAME, value=name)
-
-    def find_elements_by_tag_name(self, name):
-        warnings.warn("find_elements_by_tag_name is deprecated. Please use find_elements(by=By.TAG_NAME, value=name) instead")
-        return self.find_elements(by=By.TAG_NAME, value=name)
-
-    def find_element_by_class_name(self, name):
-        warnings.warn("find_element_by_class_name is deprecated. Please use find_element(by=By.CLASS_NAME, value=name) instead")
-        return self.find_element(by=By.CLASS_NAME, value=name)
-
-    def find_elements_by_class_name(self, name):
-        warnings.warn("find_elements_by_class_name is deprecated. Please use find_elements(by=By.CLASS_NAME, value=name) instead")
-        return self.find_elements(by=By.CLASS_NAME, value=name)
-
-    def find_element_by_css_selector(self, css_selector):
-        warnings.warn("find_element_by_css_selector is deprecated. Please use find_element(by=By.CSS_SELECTOR, value=css_selector) instead")
-        return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
-
-    def find_elements_by_css_selector(self, css_selector):
-        warnings.warn("find_elements_by_css_selector is deprecated. Please use find_elements(by=By.CSS_SELECTOR, value=css_selector) instead")
-        return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
-
     def _dispatch(self, l_call, l_args, d_call, d_args):
-        getattr(self._listener, "before_%s" % l_call)(*l_args)
+        getattr(self._listener, f"before_{l_call}")(*l_args)
         try:
             result = getattr(self._driver, d_call)(*d_args)
-        except Exception as e:
-            self._listener.on_exception(e, self._driver)
-            raise e
-        getattr(self._listener, "after_%s" % l_call)(*l_args)
+        except Exception as exc:
+            self._listener.on_exception(exc, self._driver)
+            raise
+        getattr(self._listener, f"after_{l_call}")(*l_args)
         return _wrap_elements(result, self)
 
     def _unwrap_element_args(self, args):
         if isinstance(args, EventFiringWebElement):
             return args.wrapped_element
         elif isinstance(args, tuple):
-            return tuple([self._unwrap_element_args(item) for item in args])
+            return tuple(self._unwrap_element_args(item) for item in args)
         elif isinstance(args, list):
             return [self._unwrap_element_args(item) for item in args]
         else:
@@ -205,24 +139,24 @@ class EventFiringWebDriver:
         else:
             try:
                 object.__setattr__(self._driver, item, value)
-            except Exception as e:
-                self._listener.on_exception(e, self._driver)
-                raise e
+            except Exception as exc:
+                self._listener.on_exception(exc, self._driver)
+                raise
 
     def __getattr__(self, name):
         def _wrap(*args, **kwargs):
             try:
                 result = attrib(*args, **kwargs)
                 return _wrap_elements(result, self)
-            except Exception as e:
-                self._listener.on_exception(e, self._driver)
+            except Exception as exc:
+                self._listener.on_exception(exc, self._driver)
                 raise
 
         try:
             attrib = getattr(self._driver, name)
             return _wrap if callable(attrib) else attrib
-        except Exception as e:
-            self._listener.on_exception(e, self._driver)
+        except Exception as exc:
+            self._listener.on_exception(exc, self._driver)
             raise
 
 
@@ -254,84 +188,20 @@ class EventFiringWebElement:
     def send_keys(self, *value):
         self._dispatch("change_value_of", (self._webelement, self._driver), "send_keys", value)
 
-    def find_element(self, by=By.ID, value=None):
+    def find_element(self, by=By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None):
+    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
-    def find_element_by_id(self, id_):
-        warnings.warn("find_element_by_id is deprecated. Please use find_element(by=By.ID, value=id_) instead")
-        return self.find_element(by=By.ID, value=id_)
-
-    def find_elements_by_id(self, id_):
-        warnings.warn("find_elements_by_id is deprecated. Please use find_elements(by=By.ID, value=id_) instead")
-        return self.find_elements(by=By.ID, value=id_)
-
-    def find_element_by_name(self, name):
-        warnings.warn("find_element_by_name is deprecated. Please use find_element(by=By.NAME, value=name) instead")
-        return self.find_element(by=By.NAME, value=name)
-
-    def find_elements_by_name(self, name):
-        warnings.warn("find_elements_by_name is deprecated. Please use find_elements(by=By.NAME, value=name)=By.NAME, value=name) instead")
-        return self.find_elements(by=By.NAME, value=name)
-
-    def find_element_by_link_text(self, link_text):
-        warnings.warn("find_element_by_link_text is deprecated. Please use find_element(by=By.LINK_TEXT, value=link_text) instead")
-        return self.find_element(by=By.LINK_TEXT, value=link_text)
-
-    def find_elements_by_link_text(self, link_text):
-        warnings.warn("find_elements_by_link_text is deprecated. Please use find_elements(by=By.LINK_TEXT, value=text) instead")
-        return self.find_elements(by=By.LINK_TEXT, value=link_text)
-
-    def find_element_by_partial_link_text(self, link_text):
-        warnings.warn("find_element_by_partial_link_text is deprecated. Please use find_element(by=By.PARTIAL_LINK_TEXT, value=link_text) instead")
-        return self.find_element(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_elements_by_partial_link_text(self, link_text):
-        warnings.warn("find_elements_by_partial_link_text is deprecated. Please use find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text) instead")
-        return self.find_elements(by=By.PARTIAL_LINK_TEXT, value=link_text)
-
-    def find_element_by_tag_name(self, name):
-        warnings.warn("find_element_by_tag_name is deprecated. Please use find_element(by=By.TAG_NAME, value=name) instead")
-        return self.find_element(by=By.TAG_NAME, value=name)
-
-    def find_elements_by_tag_name(self, name):
-        warnings.warn("find_elements_by_tag_name is deprecated. Please use find_elements(by=By.TAG_NAME, value=name) instead")
-        return self.find_elements(by=By.TAG_NAME, value=name)
-
-    def find_element_by_xpath(self, xpath):
-        warnings.warn("find_element_by_xpath is deprecated. Please use find_element(by=By.XPATH, value=xpath) instead")
-        return self.find_element(by=By.XPATH, value=xpath)
-
-    def find_elements_by_xpath(self, xpath):
-        warnings.warn("find_elements_by_xpath is deprecated. Please use find_elements(by=By.XPATH, value=xpath) instead")
-        return self.find_elements(by=By.XPATH, value=xpath)
-
-    def find_element_by_class_name(self, name):
-        warnings.warn("find_element_by_class_name is deprecated. Please use find_element(by=By.CLASS_NAME, value=name) instead")
-        return self.find_element(by=By.CLASS_NAME, value=name)
-
-    def find_elements_by_class_name(self, name):
-        warnings.warn("find_elements_by_class_name is deprecated. Please use find_elements(by=By.CLASS_NAME, value=name) instead")
-        return self.find_elements(by=By.CLASS_NAME, value=name)
-
-    def find_element_by_css_selector(self, css_selector):
-        warnings.warn("find_element_by_css_selector is deprecated. Please use find_element(by=By.CSS_SELECTOR, value=css_selector) instead")
-        return self.find_element(by=By.CSS_SELECTOR, value=css_selector)
-
-    def find_elements_by_css_selector(self, css_selector):
-        warnings.warn("find_elements_by_css_selector is deprecated. Please use find_elements(by=By.CSS_SELECTOR, value=css_selector) instead")
-        return self.find_elements(by=By.CSS_SELECTOR, value=css_selector)
-
     def _dispatch(self, l_call, l_args, d_call, d_args):
-        getattr(self._listener, "before_%s" % l_call)(*l_args)
+        getattr(self._listener, f"before_{l_call}")(*l_args)
         try:
             result = getattr(self._webelement, d_call)(*d_args)
-        except Exception as e:
-            self._listener.on_exception(e, self._driver)
-            raise e
-        getattr(self._listener, "after_%s" % l_call)(*l_args)
+        except Exception as exc:
+            self._listener.on_exception(exc, self._driver)
+            raise
+        getattr(self._listener, f"after_{l_call}")(*l_args)
         return _wrap_elements(result, self._ef_driver)
 
     def __setattr__(self, item, value):
@@ -340,25 +210,26 @@ class EventFiringWebElement:
         else:
             try:
                 object.__setattr__(self._webelement, item, value)
-            except Exception as e:
-                self._listener.on_exception(e, self._driver)
-                raise e
+            except Exception as exc:
+                self._listener.on_exception(exc, self._driver)
+                raise
 
     def __getattr__(self, name):
         def _wrap(*args, **kwargs):
             try:
                 result = attrib(*args, **kwargs)
                 return _wrap_elements(result, self._ef_driver)
-            except Exception as e:
-                self._listener.on_exception(e, self._driver)
+            except Exception as exc:
+                self._listener.on_exception(exc, self._driver)
                 raise
 
         try:
             attrib = getattr(self._webelement, name)
             return _wrap if callable(attrib) else attrib
-        except Exception as e:
-            self._listener.on_exception(e, self._driver)
+        except Exception as exc:
+            self._listener.on_exception(exc, self._driver)
             raise
 
 
+# Register a virtual subclass.
 WebElement.register(EventFiringWebElement)

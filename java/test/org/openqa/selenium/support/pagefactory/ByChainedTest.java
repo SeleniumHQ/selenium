@@ -25,19 +25,18 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class ByChainedTest {
 
   private static final List<WebElement> NO_ELEMENTS = Collections.emptyList();

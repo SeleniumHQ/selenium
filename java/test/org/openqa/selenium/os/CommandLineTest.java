@@ -17,20 +17,7 @@
 
 package org.openqa.selenium.os;
 
-import static java.lang.System.getenv;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.os.CommandLine.getLibraryPathPropertyName;
-import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
-
-import org.junit.Assume;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.build.BazelBuild;
 
@@ -39,6 +26,19 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.System.getenv;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.os.CommandLine.getLibraryPathPropertyName;
+import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
 public class CommandLineTest {
 
@@ -125,7 +125,7 @@ public class CommandLineTest {
   public void canDetectSuccess() {
     assumeThat(isOnTravis()).as("Operation not permitted on travis").isFalse();
     CommandLine commandLine = new CommandLine(
-        testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
+      testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     commandLine.execute();
     assertThat(commandLine.getExitCode()).isEqualTo(0);
     assertThat(commandLine.isSuccessful()).isTrue();
@@ -140,10 +140,10 @@ public class CommandLineTest {
 
   @Test
   public void canUpdateLibraryPath() {
-    Assume.assumeTrue(Platform.getCurrent().is(WINDOWS));
+    assumeTrue(Platform.getCurrent().is(WINDOWS));
     commandLine.updateDynamicLibraryPath("C:\\My\\Tools");
     verify(process).setEnvironmentVariable(
-        getLibraryPathPropertyName(), String.format("%s;%s", getenv("PATH"), "C:\\My\\Tools"));
+      getLibraryPathPropertyName(), String.format("%s;%s", getenv("PATH"), "C:\\My\\Tools"));
   }
 
   private OsProcess spyProcess(CommandLine commandLine) {

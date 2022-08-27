@@ -25,16 +25,16 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.io.File;
 import java.io.IOException;
 
-public class FormHandlingTest extends JUnit4TestBase {
+public class FormHandlingTest extends JupiterTestBase {
 
   @Test
   public void testShouldClickOnSubmitInputElements() {
@@ -83,7 +83,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("SearchableText"));
-    assertThatExceptionOfType(JavascriptException.class).isThrownBy(element::submit);
+    assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(element::submit);
   }
 
   @Test
@@ -282,14 +282,10 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   public void canSubmitFormWithSubmitButtonIdEqualToSubmit() {
-    String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
-    driver.get(appServer.create(new Page().withBody(
-        String.format("<form action='%s'>", blank),
-        "  <input type='submit' id='submit' value='Submit'>",
-        "</form>")));
-
-    driver.findElement(By.id("submit")).submit();
-    wait.until(titleIs("Submitted Successfully!"));
+    driver.get(pages.formPage);
+    driver.findElement(By.id("submit")).click();
+    wait.until(titleIs("We Arrive Here"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   @Test

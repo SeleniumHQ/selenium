@@ -1,3 +1,76 @@
+v4.4.0
+======
+
+* Supported CDP versions: 85, 102, 103, 104
+* Fix bug to ensure correct window handle used by CDP (#10811)
+* Remove makeW3CSafe from NewSession in Command Payload
+* Allow decorating child classes of WebDriver (#10737)
+* Throwing an error when user sets `w3c:false` in `goog:chromeOptions`
+* Allow a Relay Node to boot and check periodically for the status endpoint.
+* Forwarding requests with non-W3C locators (useful for Relay Nodes with Appium)
+
+v4.3.0
+======
+
+* Supported CDP versions: 85, 101, 102, 103
+* Remove deprecated methods that use capabilities in WebDrivers (#10427)
+* Removal of deprecated Actions commands
+  Deprecated in (1/7/2017) for selenium-3.1.0 and (10/29/2018) for selenium-3.141.0
+* Removing deprecated getPlatform and getVersion
+* Removing a few non-W3C ways of matching browsers
+* Add support for BiDi log event (#10696)
+* Warning when user sets `w3c: true` in `goog:chromeOptions`
+* Adding native ARM support for sockets
+* Add Firefox profile preferences when retrieving from a file
+* Add BiDi augmenter support (#10789)
+* [cdp] Add support CDP 103 and remove CDP 100
+
+v4.2.2
+======
+
+* Supported CDP versions: 85, 100, 101, 102
+* Throwing warnings for non-W3C before creating session (#10741)
+* Update ExpectedCondition to extend java util Function (#10695)
+* Fixing SafariTechPreview
+
+v4.2.1
+======
+
+* Supported CDP versions: 85, 100, 101, 102
+* Improving warnings for non W3C capability checks (#10711)
+* Adding LOGGING_PREFS to Edge and Chrome options
+
+v4.2.0
+======
+
+* Supported CDP versions: 85, 100, 101, 102
+* Add wheel input (#10445)
+* Adding `--allow-origins` when starting GeckoDriver
+* Deactivating automatic retries in the HTTPClient
+* Implement separate Origin class for WheelInput (#10636)
+* Deprecating IME
+* Add javadocs to scroll()
+* Add support to create a BiDi session
+* [grid] Include JMX monitoring feature in the Grid local distributor (#10674)
+* [grid] Fixing Node drain when session expires
+* [grid] Add docker device mapping configuration (#10645)
+* [grid] Flag to disable CDP if needed (#10661)
+* [cdp] Add support Chrome 102 and remove for Chrome 99
+* Improve error message for unsuccessfully submitting form
+* [grid] Add deprecation notices to Grid logs and Java stdout,
+  check https://www.selenium.dev/blog/2022/legacy-protocol-support/
+* Deprecating non W3C caps and Augmenters using them,
+  check https://www.selenium.dev/blog/2022/legacy-protocol-support/
+* Logging warnings when non-W3C caps are being used,
+  check https://www.selenium.dev/blog/2022/legacy-protocol-support/
+* Removing HTMLRunner, this was a server extracted from the old
+  Grid server which was used to run HTML test
+  suites exported from the old Selenium IDE
+* Fix screen rotate error (#10693)
+* Make the action movement methods specify the button number
+* Convert RemoteWebElement::getLocation and ::getSize from JWP Standard to W3C Standard (#10700)
+* Creating browser name for SAFARI_TECH_PREVIEW
+
 v4.1.4
 ======
 

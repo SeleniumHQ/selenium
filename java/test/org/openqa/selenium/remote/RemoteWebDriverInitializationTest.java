@@ -17,6 +17,27 @@
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.mockito.ArgumentCaptor;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.SessionNotCreatedException;
+import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpResponse;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Duration;
+import java.util.UUID;
+
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,29 +54,7 @@ import static org.openqa.selenium.remote.WebDriverFixture.nullResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.mockito.ArgumentCaptor;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.testing.UnitTests;
-
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.Duration;
-import java.util.UUID;
-
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class RemoteWebDriverInitializationTest {
   private boolean quitCalled = false;
 
@@ -172,24 +171,7 @@ public class RemoteWebDriverInitializationTest {
     CommandExecutor executor = mock(CommandExecutor.class);
     when(executor.execute(any())).thenReturn(resp);
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
-    assertThat(driver.getCapabilities().getCapability("platform")).isEqualTo(Platform.UNIX);
-  }
-
-  private class BadStartSessionRemoteWebDriver extends RemoteWebDriver {
-    public BadStartSessionRemoteWebDriver(CommandExecutor executor,
-                                          Capabilities desiredCapabilities) {
-      super(executor, desiredCapabilities);
-    }
-
-    @Override
-    protected void startSession(Capabilities desiredCapabilities) {
-      throw new RuntimeException("Stub session that should fail");
-    }
-
-    @Override
-    public void quit() {
-      quitCalled = true;
-    }
+    assertThat(driver.getCapabilities().getCapability("platformName")).isEqualTo(Platform.UNIX);
   }
 
   @Test
@@ -224,5 +206,22 @@ public class RemoteWebDriverInitializationTest {
       throw new UncheckedIOException(ex);
     }
     verifyNoMoreInteractions(executor);
+  }
+
+  private class BadStartSessionRemoteWebDriver extends RemoteWebDriver {
+    public BadStartSessionRemoteWebDriver(CommandExecutor executor,
+                                          Capabilities desiredCapabilities) {
+      super(executor, desiredCapabilities);
+    }
+
+    @Override
+    protected void startSession(Capabilities desiredCapabilities) {
+      throw new RuntimeException("Stub session that should fail");
+    }
+
+    @Override
+    public void quit() {
+      quitCalled = true;
+    }
   }
 }

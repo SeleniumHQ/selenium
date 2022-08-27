@@ -24,20 +24,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@Category(UnitTests.class)
-public class DecoratedWindowTest {
+@Tag("UnitTests")
+class DecoratedWindowTest {
 
   private static class Fixture {
+
     WebDriver originalDriver;
     WebDriver decoratedDriver;
     WebDriver.Options originalOptions;
@@ -50,7 +50,7 @@ public class DecoratedWindowTest {
       originalDriver = mock(WebDriver.class);
       when(originalOptions.window()).thenReturn(original);
       when(originalDriver.manage()).thenReturn(originalOptions);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
       decorated = decoratedDriver.manage().window();
     }
   }
@@ -71,37 +71,37 @@ public class DecoratedWindowTest {
   }
 
   @Test
-  public void setSize() {
+  void setSize() {
     verifyFunction($ -> $.setSize(new Dimension(100, 200)));
   }
 
   @Test
-  public void setPosition() {
+  void setPosition() {
     verifyFunction($ -> $.setPosition(new Point(10, 20)));
   }
 
   @Test
-  public void getSize() {
+  void getSize() {
     verifyFunction(WebDriver.Window::getSize, new Dimension(100, 200));
   }
 
   @Test
-  public void getPosition() {
+  void getPosition() {
     verifyFunction(WebDriver.Window::getPosition, new Point(10, 20));
   }
 
   @Test
-  public void maximize() {
+  void maximize() {
     verifyFunction(WebDriver.Window::maximize);
   }
 
   @Test
-  public void minimize() {
+  void minimize() {
     verifyFunction(WebDriver.Window::minimize);
   }
 
   @Test
-  public void fullscreen() {
+  void fullscreen() {
     verifyFunction(WebDriver.Window::fullscreen);
   }
 }

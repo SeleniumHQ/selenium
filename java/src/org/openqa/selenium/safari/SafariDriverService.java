@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.safari;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.Platform.MAC;
-import static org.openqa.selenium.remote.Browser.SAFARI;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -35,6 +31,10 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.remote.Browser.SAFARI;
 
 public class SafariDriverService extends DriverService {
 
@@ -85,8 +85,6 @@ public class SafariDriverService extends DriverService {
       int score = 0;
 
       if (SAFARI.is(capabilities)) {
-        score++;
-      } else if (SafariOptions.SAFARI_TECH_PREVIEW.equals(capabilities.getBrowserName())) {
         score++;
       }
 

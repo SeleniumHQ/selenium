@@ -17,20 +17,9 @@
 
 package org.openqa.selenium.lift;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.openqa.selenium.lift.Finders.first;
-import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
-
 import org.hamcrest.Description;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.lift.find.Finder;
@@ -39,11 +28,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.lift.Finders.first;
+import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
+
 /**
  * Unit test for {@link WebDriverTestContext}.
  *
  * @author rchatley (Robert Chatley)
- *
  */
 public class TestContextTest {
 
@@ -52,7 +50,7 @@ public class TestContextTest {
   private WebElement element1;
   private WebElement element2;
 
-  @Before
+  @BeforeEach
   public void createMocks() {
     webdriver = mock(WebDriver.class);
     context = new WebDriverTestContext(webdriver);
@@ -98,7 +96,7 @@ public class TestContextTest {
       fail("should have failed as only one element found");
     } catch (AssertionError error) {
       // expected
-      assertThat(error.getMessage(), containsString("a value greater than <1>"));
+      assertThat(error.getMessage()).contains("a value greater than <1>");
     }
 
     // From producing the error message.
@@ -151,7 +149,7 @@ public class TestContextTest {
       fail("should have failed as more than one element found");
     } catch (AssertionError error) {
       // expected
-      assertThat(error.getMessage(), containsString("did not know what to click on"));
+      assertThat(error.getMessage()).contains("did not know what to click on");
     }
   }
 

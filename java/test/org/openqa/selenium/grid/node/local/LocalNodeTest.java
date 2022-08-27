@@ -20,8 +20,8 @@ package org.openqa.selenium.grid.node.local;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -74,7 +74,7 @@ public class LocalNodeTest {
     return new EitherAssert<>(either);
   }
 
-  @Before
+  @BeforeEach
   public void setUp() throws URISyntaxException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
@@ -273,5 +273,33 @@ public class LocalNodeTest {
     }
 
     assertThat(localNode.isDraining()).isTrue();
+  }
+
+  @Test
+  public void cdpIsDisabledAndResponseCapsShowThat() throws URISyntaxException {
+    Tracer tracer = DefaultTestTracer.createTracer();
+    EventBus bus = new GuavaEventBus();
+    URI uri = new URI("http://localhost:7890");
+    Capabilities stereotype = new ImmutableCapabilities("browserName", "cheese");
+
+    LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .enableCdp(false)
+      .add(stereotype,
+           new TestSessionFactory((id, caps)
+                                    -> new Session(id, uri, stereotype, caps, Instant.now())));
+    LocalNode localNode = builder.build();
+
+    Either<WebDriverException, CreateSessionResponse> response = localNode.newSession(
+      new CreateSessionRequest(
+        ImmutableSet.of(W3C),
+        stereotype,
+        ImmutableMap.of()));
+    assertThat(response.isRight()).isTrue();
+
+    CreateSessionResponse sessionResponse = response.right();
+    Capabilities capabilities = sessionResponse.getSession().getCapabilities();
+    Object cdpEnabled = capabilities.getCapability("se:cdpEnabled");
+    assertThat(cdpEnabled).isNotNull();
+    assertThat(Boolean.parseBoolean(cdpEnabled.toString())).isFalse();
   }
 }

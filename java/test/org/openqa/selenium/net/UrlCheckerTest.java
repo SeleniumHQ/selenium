@@ -16,9 +16,9 @@
 // under the License.
 package org.openqa.selenium.net;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.HttpResponse;
 
@@ -40,7 +40,7 @@ public class UrlCheckerTest {
   private NettyAppServer server;
   private URL url;
 
-  @Before
+  @BeforeEach
   public void buildServer() throws MalformedURLException, UrlChecker.TimeoutException {
     // Warming NettyServer up
     final NettyAppServer server = createServer();
@@ -95,7 +95,7 @@ public class UrlCheckerTest {
     assertThat(elapsed).isLessThan(UrlChecker.CONNECT_TIMEOUT_MS + delay + 600L); // threshold
   }
 
-  @After
+  @AfterEach
   public void cleanup() {
     safelyCall(() -> server.stop());
     safelyCall(executorService::shutdownNow);

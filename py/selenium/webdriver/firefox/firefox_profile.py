@@ -117,7 +117,7 @@ class FirefoxProfile:
         return self._port
 
     @port.setter
-    def port(self, port):
+    def port(self, port) -> None:
         """
         Sets the port that WebDriver will be running on
         """
@@ -137,7 +137,7 @@ class FirefoxProfile:
         return self.default_preferences["webdriver_accept_untrusted_certs"]
 
     @accept_untrusted_certs.setter
-    def accept_untrusted_certs(self, value):
+    def accept_untrusted_certs(self, value) -> None:
         if value not in [True, False]:
             raise WebDriverException("Please pass in a Boolean to this call")
         self.set_preference("webdriver_accept_untrusted_certs", value)
@@ -147,7 +147,7 @@ class FirefoxProfile:
         return self.default_preferences["webdriver_assume_untrusted_issuer"]
 
     @assume_untrusted_cert_issuer.setter
-    def assume_untrusted_cert_issuer(self, value):
+    def assume_untrusted_cert_issuer(self, value) -> None:
         if value not in [True, False]:
             raise WebDriverException("Please pass in a Boolean to this call")
 
@@ -182,7 +182,7 @@ class FirefoxProfile:
         """
         with open(self.userPrefs, "w") as f:
             for key, value in user_prefs.items():
-                f.write('user_pref("%s", %s);\n' % (key, json.dumps(value)))
+                f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
     def _read_existing_userjs(self, userjs):
         import warnings
@@ -304,7 +304,7 @@ class FirefoxProfile:
             }
 
         if not os.path.exists(addon_path):
-            raise IOError('Add-on path does not exist: %s' % addon_path)
+            raise OSError('Add-on path does not exist: %s' % addon_path)
 
         try:
             if zipfile.is_zipfile(addon_path):
@@ -322,14 +322,14 @@ class FirefoxProfile:
             elif os.path.isdir(addon_path):
                 manifest_json_filename = os.path.join(addon_path, 'manifest.json')
                 if os.path.exists(manifest_json_filename):
-                    with open(manifest_json_filename, 'r') as f:
+                    with open(manifest_json_filename) as f:
                         return parse_manifest_json(f.read())
 
-                with open(os.path.join(addon_path, 'install.rdf'), 'r') as f:
+                with open(os.path.join(addon_path, 'install.rdf')) as f:
                     manifest = f.read()
             else:
-                raise IOError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
-        except (IOError, KeyError) as e:
+                raise OSError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
+        except (OSError, KeyError) as e:
             raise AddonFormatError(str(e), sys.exc_info()[2])
 
         try:

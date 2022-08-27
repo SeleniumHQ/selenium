@@ -17,6 +17,18 @@
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebDriverException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -27,20 +39,7 @@ import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.testing.UnitTests;
-
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class RemoteWebElementTest {
 
   @Test
@@ -298,7 +297,7 @@ public class RemoteWebElementTest {
     assertThat(fixture.element.getLocation()).isEqualTo(new Point(10, 20));
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_LOCATION,
+      new CommandPayload(DriverCommand.GET_ELEMENT_RECT,
                          ImmutableMap.of("id", fixture.element.getId())));
   }
 
@@ -311,7 +310,7 @@ public class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test

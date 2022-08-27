@@ -38,6 +38,7 @@ const safari = require('./safari')
 const session = require('./lib/session')
 const until = require('./lib/until')
 const webdriver = require('./lib/webdriver')
+const select = require('./lib/select')
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
@@ -77,7 +78,7 @@ function startSeleniumServer(jar) {
 function ensureFileDetectorsAreEnabled(ctor) {
   return class extends ctor {
     /** @param {input.FileDetector} detector */
-    setFileDetector (detector) {
+    setFileDetector(detector) {
       webdriver.WebDriver.prototype.setFileDetector.call(this, detector)
     }
   }
@@ -793,3 +794,4 @@ exports.error = error
 exports.logging = logging
 exports.promise = promise
 exports.until = until
+exports.Select = select.Select

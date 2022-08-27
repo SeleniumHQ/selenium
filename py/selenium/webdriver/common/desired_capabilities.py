@@ -69,10 +69,6 @@ class DesiredCapabilities(object):
         "browserName": "chrome",
     }
 
-    OPERA = {
-        "browserName": "opera",
-    }
-
     SAFARI = {
         "browserName": "safari",
         "platformName": "mac",

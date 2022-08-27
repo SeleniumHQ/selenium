@@ -210,6 +210,8 @@ public class GridModel {
       for (NodeStatus node : nodes) {
         NodeId id = node.getNodeId();
         if (nodeHealthCount.getOrDefault(id, 0) > UNHEALTHY_THRESHOLD) {
+          LOG.info(String.format("Removing Node %s, unhealthy threshold has been reached",
+                                 node.getExternalUri()));
           toRemove.add(node);
           break;
         }

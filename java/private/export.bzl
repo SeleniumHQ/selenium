@@ -57,8 +57,10 @@ def java_export(
         target = ":%s-project" % name,
         deps = kwargs.get("deps", []) + kwargs.get("runtime_deps", []),
         exports = exports,
+        hides = hides,
         opens_to = opens_to,
         tags = tags,
+        uses = uses,
     )
 
     native.filegroup(

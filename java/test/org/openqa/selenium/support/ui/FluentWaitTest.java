@@ -24,9 +24,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.NoSuchElementException;
@@ -34,12 +34,11 @@ import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.util.function.Function;
 
-@Category(UnitTests.class)
+@Tag("UnitTests")
 public class FluentWaitTest {
 
   private static final Object ARBITRARY_VALUE = new Object();
@@ -53,7 +52,7 @@ public class FluentWaitTest {
   @Mock
   private Sleeper mockSleeper;
 
-  @Before
+  @BeforeEach
   public void createMocks() {
     MockitoAnnotations.initMocks(this);
   }

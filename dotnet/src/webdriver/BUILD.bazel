@@ -40,14 +40,13 @@ generated_assembly_info(
         "DevTools/**/*.cs",
         "Edge/*.cs",
         "Firefox/**/*.cs",
-        "HTML5/*.cs",
         "IE/*.cs",
         "Interactions/*.cs",
         "Internal/*.cs",
-        "Opera/*.cs",
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
+        "VirtualAuth/*.cs",
     ]) + [
         ":assembly-info",
     ] + devtools_version_targets(),
@@ -64,6 +63,9 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@json.net//:Newtonsoft.Json",
         "@net//:System",
         "@net//:System.Core",
@@ -86,14 +88,13 @@ generated_assembly_info(
         "DevTools/**/*.cs",
         "Edge/*.cs",
         "Firefox/**/*.cs",
-        "HTML5/*.cs",
         "IE/*.cs",
         "Interactions/*.cs",
         "Internal/*.cs",
-        "Opera/*.cs",
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
+        "VirtualAuth/*.cs",
     ]) + [
         ":assembly-info",
     ] + devtools_version_targets(),
@@ -110,6 +111,9 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@json.net//:Newtonsoft.Json",
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
@@ -123,14 +127,13 @@ generated_assembly_info(
         "DevTools/**/*.cs",
         "Edge/*.cs",
         "Firefox/**/*.cs",
-        "Html5/*.cs",
         "IE/*.cs",
         "Interactions/*.cs",
         "Internal/*.cs",
-        "Opera/*.cs",
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
+        "VirtualAuth/*.cs",
     ]) + [
         ":assembly-info",
     ] + devtools_version_targets(),
@@ -148,6 +151,9 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@json.net//:Newtonsoft.Json",
         "@net//:System",
         "@net//:System.Core",
@@ -170,14 +176,13 @@ generated_assembly_info(
         "DevTools/**/*.cs",
         "Edge/*.cs",
         "Firefox/**/*.cs",
-        "Html5/*.cs",
         "IE/*.cs",
         "Interactions/*.cs",
         "Internal/*.cs",
-        "Opera/*.cs",
         "Remote/**/*.cs",
         "Safari/*.cs",
         "Support/*.cs",
+        "VirtualAuth/*.cs",
     ]) + [
         ":assembly-info",
     ] + devtools_version_targets(),
@@ -195,6 +200,9 @@ generated_assembly_info(
     ],
     visibility = ["//visibility:public"],
     deps = [
+        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@json.net//:Newtonsoft.Json",
     ],
 ) for standard_version in SUPPORTED_NET_STANDARD_VERSIONS]
@@ -205,6 +213,9 @@ generated_assembly_info(
     target_framework = "{}".format(framework),
     visibility = ["//visibility:public"],
     deps = [
+        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@json.net//:Newtonsoft.Json",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
@@ -216,6 +227,9 @@ generated_assembly_info(
     target_framework = "{}".format(framework),
     visibility = ["//visibility:public"],
     deps = [
+        "@identitymodel.abstractions//:Microsoft.IdentityModel.Abstractions",
+        "@identitymodel.logging//:Microsoft.IdentityModel.Logging",
+        "@identitymodel.tokens//:Microsoft.IdentityModel.Tokens",
         "@json.net//:Newtonsoft.Json",
     ],
 ) for framework in SUPPORTED_NET_FRAMEWORKS]
