@@ -19,8 +19,10 @@
 The By implementation.
 """
 
+from enum import Enum
 
-class By:
+
+class By(Enum):
     """
     Set of supported locator strategies.
     """

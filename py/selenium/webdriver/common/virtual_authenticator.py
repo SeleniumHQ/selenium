@@ -40,6 +40,12 @@ class Transport(Enum):
     INTERNAL = "internal"
 
 
+# to enable these types to be referenced in the class scope of
+# VirtualAuthenticatorOptions, which shadows these enum's normal names:
+_Protocol = Protocol
+_Transport = Transport
+
+
 class VirtualAuthenticatorOptions:
 
     Protocol = Protocol
@@ -69,7 +75,7 @@ class VirtualAuthenticatorOptions:
         return self._protocol.value
 
     @protocol.setter
-    def protocol(self, protocol: Protocol) -> None:
+    def protocol(self, protocol: _Protocol) -> None:
         self._protocol = protocol
 
     @property
@@ -77,7 +83,7 @@ class VirtualAuthenticatorOptions:
         return self._transport.value
 
     @transport.setter
-    def transport(self, transport: Transport) -> None:
+    def transport(self, transport: _Transport) -> None:
         self._transport = transport
 
     @property

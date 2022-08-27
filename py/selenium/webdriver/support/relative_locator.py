@@ -36,7 +36,7 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
     """
     if not tag_name:
         raise WebDriverException("tag_name can not be null")
-    return RelativeBy({"css selector": tag_name})
+    return RelativeBy({By.CSS_SELECTOR: tag_name})
 
 
 def locate_with(by: By, using: str) -> "RelativeBy":

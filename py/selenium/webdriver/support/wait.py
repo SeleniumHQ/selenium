@@ -55,8 +55,11 @@ class WebDriverWait:
         if ignored_exceptions:
             try:
                 exceptions.extend(iter(ignored_exceptions))
-            except TypeError:  # ignored_exceptions is not iterable
-                exceptions.append(ignored_exceptions)
+            except TypeError:
+                # ignored_exceptions is not iterable. This is a violation of
+                # the types declared on this method, but for compatability, we
+                # allow it:
+                exceptions.append(ignored_exceptions)  # type: ignore
         self._ignored_exceptions = tuple(exceptions)
 
     def __repr__(self):

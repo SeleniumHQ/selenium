@@ -52,9 +52,7 @@ class Service(service.Service):
         self.service_args = service_args or []
 
         self.quiet = quiet
-        log = PIPE
-        if quiet:
-            log = open(os.devnull, 'w')
+        log = open(os.devnull, 'w') if quiet else PIPE
         super().__init__(executable_path, port, log)
 
     def command_line_args(self):

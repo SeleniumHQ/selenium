@@ -27,7 +27,7 @@ from base64 import b64decode, urlsafe_b64encode
 from contextlib import asynccontextmanager, contextmanager
 from importlib import import_module
 import sys
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, TracebackType, Union, cast
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Type, Union, cast
 if sys.version_info >= (3, 8):
     from typing import TypedDict
 else:
@@ -59,6 +59,9 @@ from .script_key import ScriptKey
 from .shadowroot import ShadowRoot
 from .switch_to import SwitchTo
 from .webelement import WebElement
+
+if TYPE_CHECKING:
+    from selenium.webdriver.common.print_page_options import _PrintOpts
 
 _W3C_CAPABILITY_NAMES = frozenset([
     'acceptInsecureCerts',
@@ -290,7 +293,7 @@ class WebDriver(BaseWebDriver):
     def __exit__(self,
                  exc_type: Optional[Type[BaseException]],
                  exc: Optional[BaseException],
-                 traceback: Optional[TracebackType]):
+                 traceback: Optional[types.TracebackType]):
         self.quit()
 
     @contextmanager
@@ -695,7 +698,7 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_ALL_COOKIES)['value']
 
-    def get_cookie(self, name) -> Optional[dict]:
+    def get_cookie(self, name) -> Optional[ExecuteResponse]:
         """
         Get a single cookie by name. Returns the cookie if found, None if not.
 
@@ -706,6 +709,7 @@ class WebDriver(BaseWebDriver):
         """
         with contextlib.suppress(NoSuchCookieException):
             return self.execute(Command.GET_COOKIE, {"name": name})['value']
+        return None
 
     def delete_cookie(self, name) -> None:
         """
@@ -880,7 +884,7 @@ class WebDriver(BaseWebDriver):
         """
         if isinstance(by, RelativeBy):
             _pkg = '.'.join(__name__.split('.')[:-1])
-            raw_function = pkgutil.get_data(_pkg, 'findElements.js').decode('utf8')
+            raw_function = cast(bytes, pkgutil.get_data(_pkg, 'findElements.js')).decode('utf8')
             find_element_js = f"return ({raw_function}).apply(null, arguments);"
             return self.execute_script(find_element_js, by.to_dict())
 
@@ -1230,7 +1234,7 @@ class WebDriver(BaseWebDriver):
         self._authenticator_id = self.execute(Command.ADD_VIRTUAL_AUTHENTICATOR, options.to_dict())['value']
 
     @property
-    def virtual_authenticator_id(self) -> str:
+    def virtual_authenticator_id(self) -> Optional[str]:
         """
         Returns the id of the virtual authenticator.
         """

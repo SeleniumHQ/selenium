@@ -69,6 +69,6 @@ class WheelInput(InputDevice):
                          "deltaY": delta_y, "duration": duration,
                          "origin": origin})
 
-    def create_pause(self, pause_duration: Union[int, float]) -> None:
+    def create_pause(self, duration: Union[int, float] = 0) -> None:
         self.add_action(
-            {"type": "pause", "duration": int(pause_duration * 1000)})
+            {"type": "pause", "duration": int(duration * 1000)})

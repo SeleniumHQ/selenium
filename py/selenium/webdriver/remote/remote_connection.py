@@ -45,7 +45,8 @@ class RemoteConnection:
     https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
 
     browser_name: Optional[str] = None
-    _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
+    # this is not part of socket's public API:
+    _timeout = socket._GLOBAL_DEFAULT_TIMEOUT  # type: ignore
     _ca_certs = certifi.where()
 
     @classmethod

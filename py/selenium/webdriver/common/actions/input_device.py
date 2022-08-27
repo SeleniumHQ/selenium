@@ -16,7 +16,7 @@
 # under the License.
 
 from abc import abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Union
 import uuid
 
 
@@ -41,7 +41,7 @@ class InputDevice:
     def clear_actions(self):
         self.actions = []
 
-    def create_pause(self, duration=0):
+    def create_pause(self, duration: Union[int, float] = 0) -> None:
         pass
 
     @abstractmethod
