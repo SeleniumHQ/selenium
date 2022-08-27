@@ -135,7 +135,7 @@ class BaseOptions(metaclass=ABCMeta):
         else:
             raise ValueError("Timeout keys can only be one of the following: implicit, pageLoad, script")
 
-    def enable_mobile(self, android_package: Optional[str] = None, android_activity: Optional[str] = None,
+    def enable_mobile(self, android_package: str = "", android_activity: Optional[str] = None,
                       device_serial: Optional[str] = None) -> None:
         """
             Enables mobile browser use for browsers that support it

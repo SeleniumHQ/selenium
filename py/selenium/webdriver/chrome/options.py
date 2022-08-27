@@ -27,7 +27,7 @@ class Options(ChromiumOptions):
         return DesiredCapabilities.CHROME.copy()
 
     def enable_mobile(self,
-                      android_package: Optional[str] = "com.android.chrome",
+                      android_package: str = "com.android.chrome",
                       android_activity: Optional[str] = None,
                       device_serial: Optional[str] = None
                       ) -> None:

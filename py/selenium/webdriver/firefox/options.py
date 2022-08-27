@@ -128,7 +128,7 @@ class Options(ArgOptions):
             self._arguments.remove('-headless')
 
     def enable_mobile(
-        self, android_package: Optional[str] = "org.mozilla.firefox", android_activity: str = None, device_serial: str = None
+        self, android_package: str = "org.mozilla.firefox", android_activity: str = None, device_serial: str = None
     ):
         super().enable_mobile(android_package, android_activity, device_serial)
 
