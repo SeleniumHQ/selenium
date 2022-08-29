@@ -115,6 +115,7 @@ http_archive(
     ],
     patches = [
         "//java:rules_jvm_external_javadoc.patch",
+        "//java:rules_jvm_external_missing_dirs.patch",
         "//java:rules_jvm_external_visibility.patch",
     ],
     sha256 = RULES_JVM_EXTERNAL_SHA,
