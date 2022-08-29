@@ -56,11 +56,11 @@ let Server = function (requestHandler) {
       typeof opt_port !== 'function',
       'start invoked with function, not port (mocha callback)?'
     )
-    const port = opt_port || portprober.findFreePort('localhost')
+    const port = opt_port || portprober.findFreePort('127.0.0.1')
     return Promise.resolve(port)
       .then((port) => {
         return promise.checkedNodeCall(
-          server.listen.bind(server, port, 'localhost')
+          server.listen.bind(server, port, '127.0.0.1')
         )
       })
       .then(function () {

@@ -204,7 +204,7 @@ class Executor {
 // PUBLIC API
 
 module.exports = {
-  Command: Command,
-  Name: Name,
-  Executor: Executor,
+  Command,
+  Name,
+  Executor,
 }

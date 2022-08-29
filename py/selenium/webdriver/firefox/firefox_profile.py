@@ -117,7 +117,7 @@ class FirefoxProfile:
         return self._port
 
     @port.setter
-    def port(self, port):
+    def port(self, port) -> None:
         """
         Sets the port that WebDriver will be running on
         """
@@ -137,7 +137,7 @@ class FirefoxProfile:
         return self.default_preferences["webdriver_accept_untrusted_certs"]
 
     @accept_untrusted_certs.setter
-    def accept_untrusted_certs(self, value):
+    def accept_untrusted_certs(self, value) -> None:
         if value not in [True, False]:
             raise WebDriverException("Please pass in a Boolean to this call")
         self.set_preference("webdriver_accept_untrusted_certs", value)
@@ -147,7 +147,7 @@ class FirefoxProfile:
         return self.default_preferences["webdriver_assume_untrusted_issuer"]
 
     @assume_untrusted_cert_issuer.setter
-    def assume_untrusted_cert_issuer(self, value):
+    def assume_untrusted_cert_issuer(self, value) -> None:
         if value not in [True, False]:
             raise WebDriverException("Please pass in a Boolean to this call")
 
