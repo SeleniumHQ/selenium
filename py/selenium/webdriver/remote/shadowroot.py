@@ -40,7 +40,10 @@ class ShadowRoot:
             type(self), self.session.session_id, self._id
         )
 
-    def find_element(self, by: By = By.ID, value: str = None):
+    def find_element(self, by: By | str = By.ID, value: str = None):
+        if isinstance(by, str):
+            by = By.from_str(by)
+
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value
@@ -55,7 +58,10 @@ class ShadowRoot:
             Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by.value, "value": value}
         )["value"]
 
-    def find_elements(self, by: By = By.ID, value: str = None):
+    def find_elements(self, by: By | str = By.ID, value: str = None):
+        if isinstance(by, str):
+            by = By.from_str(by)
+
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = '[id="%s"]' % value

@@ -842,7 +842,7 @@ class WebDriver(BaseWebDriver):
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
 
-    def find_element(self, by: By | RelativeBy = By.ID, value=None) -> WebElement:
+    def find_element(self, by: By | RelativeBy | str = By.ID, value=None) -> WebElement:
         """
         Find an element given a By strategy and locator.
 
@@ -858,6 +858,8 @@ class WebDriver(BaseWebDriver):
             if not elements:
                 raise NoSuchElementException(f"Cannot locate relative element with: {by}")
             return elements[0]
+        elif isinstance(by, str):
+            by = By.from_str(by)
 
         if by == By.ID:
             by = By.CSS_SELECTOR
@@ -873,7 +875,7 @@ class WebDriver(BaseWebDriver):
             'using': by.value,
             'value': value})['value']
 
-    def find_elements(self, by: By | RelativeBy = By.ID, value=None) -> List[WebElement]:
+    def find_elements(self, by: By | RelativeBy | str = By.ID, value=None) -> List[WebElement]:
         """
         Find elements given a By strategy and locator.
 
@@ -889,6 +891,8 @@ class WebDriver(BaseWebDriver):
             raw_function = cast(bytes, pkgutil.get_data(_pkg, 'findElements.js')).decode('utf8')
             find_element_js = f"return ({raw_function}).apply(null, arguments);"
             return self.execute_script(find_element_js, by.to_dict())
+        elif isinstance(by, str):
+            by = By.from_str(by)
 
         if by == By.ID:
             by = By.CSS_SELECTOR

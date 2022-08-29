@@ -40,7 +40,7 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
     return RelativeBy({By.CSS_SELECTOR: tag_name})
 
 
-def locate_with(by: By, using: str) -> "RelativeBy":
+def locate_with(by: By | str, using: str) -> "RelativeBy":
     """
         Start searching for relative objects your search criteria with By.
 
@@ -53,6 +53,10 @@ def locate_with(by: By, using: str) -> "RelativeBy":
     """
     assert by is not None, "Please pass in a by argument"
     assert using is not None, "Please pass in a using argument"
+
+    if isinstance(by, str):
+        by = By.from_str(by)
+
     return RelativeBy({by: using})
 
 

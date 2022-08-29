@@ -400,7 +400,7 @@ class WebElement(BaseWebElement):
         params['id'] = self._id
         return self._parent.execute(command, params)
 
-    def find_element(self, by: By = By.ID, value=None) -> WebElement:
+    def find_element(self, by: By | str = By.ID, value=None) -> WebElement:
         """
         Find an element given a By strategy and locator.
 
@@ -412,8 +412,8 @@ class WebElement(BaseWebElement):
         :rtype: WebElement
         """
 
-        if not isinstance(by, By):
-            raise WebDriverException("The by argument must be a By")
+        if isinstance(by, str):
+            by = By.from_str(by)
 
         if by == By.ID:
             by = By.CSS_SELECTOR
@@ -428,7 +428,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.FIND_CHILD_ELEMENT,
                              {"using": by.value, "value": value})['value']
 
-    def find_elements(self, by: By = By.ID, value=None) -> list[WebElement]:
+    def find_elements(self, by: By | str = By.ID, value=None) -> list[WebElement]:
         """
         Find elements given a By strategy and locator.
 
@@ -440,8 +440,8 @@ class WebElement(BaseWebElement):
         :rtype: list of WebElement
         """
 
-        if not isinstance(by, By):
-            raise WebDriverException("The by argument must be a By")
+        if isinstance(by, str):
+            by = By.from_str(by)
 
         if by == By.ID:
             by = By.CSS_SELECTOR

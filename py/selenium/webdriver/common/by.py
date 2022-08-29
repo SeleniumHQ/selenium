@@ -19,7 +19,11 @@
 The By implementation.
 """
 
+from __future__ import annotations
+
 from enum import Enum
+
+from selenium.common.exceptions import WebDriverException
 
 
 class By(Enum):
@@ -35,3 +39,20 @@ class By(Enum):
     TAG_NAME = "tag name"
     CLASS_NAME = "class name"
     CSS_SELECTOR = "css selector"
+
+    @classmethod
+    def from_str(cls, by_str: str) -> By:
+        """
+        Take the string representation of a locator strategy ("id", "css
+        selector", etc.), and return the appropriate By enum value for it.
+        Throw a WebDriverException if no such By type exists.
+        """
+
+        for value in cls.__members__.values():
+            if value.value == by_str:
+                return value
+
+        raise WebDriverException(
+            f"{by_str!r} is not a valid locator strategy. Use a member of the By enum directly or one of: "
+            f"{', '.join(repr(v.value) for v in cls.__members__.values())}"
+        )
