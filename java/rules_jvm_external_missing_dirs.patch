@@ -1,0 +1,219 @@
+ .../rules/jvm/external/jar/MergeJars.java     | 87 ++++++++++++-------
+ tests/com/jvm/external/jar/MergeJarsTest.java | 33 ++++++-
+ 2 files changed, 87 insertions(+), 33 deletions(-)
+
+diff --git a/private/tools/java/rules/jvm/external/jar/MergeJars.java b/private/tools/java/rules/jvm/external/jar/MergeJars.java
+index bd278d0..9aaa069 100644
+--- a/private/tools/java/rules/jvm/external/jar/MergeJars.java
++++ b/private/tools/java/rules/jvm/external/jar/MergeJars.java
+@@ -19,12 +19,7 @@ package rules.jvm.external.jar;
+
+ import rules.jvm.external.ByteStreams;
+
+-import java.io.BufferedInputStream;
+-import java.io.ByteArrayOutputStream;
+-import java.io.File;
+-import java.io.IOException;
+-import java.io.InputStream;
+-import java.io.OutputStream;
++import java.io.*;
+ import java.nio.file.Files;
+ import java.nio.file.Path;
+ import java.nio.file.Paths;
+@@ -32,16 +27,7 @@ import java.nio.file.attribute.FileTime;
+ import java.security.MessageDigest;
+ import java.security.NoSuchAlgorithmException;
+ import java.time.Instant;
+-import java.util.Arrays;
+-import java.util.Comparator;
+-import java.util.HashMap;
+-import java.util.HashSet;
+-import java.util.LinkedHashSet;
+-import java.util.Map;
+-import java.util.Objects;
+-import java.util.Set;
+-import java.util.TreeMap;
+-import java.util.TreeSet;
++import java.util.*;
+ import java.util.jar.Attributes;
+ import java.util.jar.JarEntry;
+ import java.util.jar.JarOutputStream;
+@@ -105,6 +91,7 @@ public class MergeJars {
+       // Just write an empty jar and leave
+       try (OutputStream fos = Files.newOutputStream(out);
+            JarOutputStream jos = new JarOutputStream(fos)) {
++        // This space left blank deliberately
+       }
+       return;
+     }
+@@ -193,6 +180,7 @@ public class MergeJars {
+       entry = resetTime(entry);
+       jos.putNextEntry(entry);
+       jos.closeEntry();
++      createdDirectories.add(entry.getName());
+
+       entry = new JarEntry("META-INF/MANIFEST.MF");
+       entry = resetTime(entry);
+@@ -209,6 +197,7 @@ public class MergeJars {
+           entry = resetTime(entry);
+           jos.putNextEntry(entry);
+           jos.closeEntry();
++          createdDirectories.add(entry.getName());
+         }
+         for (Map.Entry<String, Set<String>> kv : allServices.entrySet()) {
+           entry = new JarEntry("META-INF/services/" + kv.getKey());
+@@ -227,27 +216,39 @@ public class MergeJars {
+
+       // We should never enter this loop without there being any sources
+       for (Map.Entry<String, Path> pathAndSource : fileToSourceJar.entrySet()) {
+-        // Get the original entry
+-        JarEntry je = new JarEntry(pathAndSource.getKey());
+-        je = resetTime(je);
+-        jos.putNextEntry(je);
++        String name = pathAndSource.getKey();
+
+-        if (je.isDirectory()) {
+-          jos.closeEntry();
++        // Make sure we're not trying to create root entries.
++        if (name.startsWith("/")) {
++          if (name.length() == 1) {
++            continue;
++          }
++          name = name.substring(1);
++        }
++
++        createDirectories(jos, name, createdDirectories);
++
++        if (createdDirectories.contains(name)) {
+           continue;
+         }
+
+         if (!Objects.equals(previousSource, pathAndSource.getValue())) {
+-          source.close();
++          if (source != null) {
++            source.close();
++          }
+           source = new ZipFile(pathAndSource.getValue().toFile());
+           previousSource = pathAndSource.getValue();
+         }
+
+-        ZipEntry original = source.getEntry(pathAndSource.getKey());
++        ZipEntry original = source.getEntry(name);
+         if (original == null) {
+           continue;
+         }
+
++        JarEntry je = new JarEntry(name);
++        je = resetTime(je);
++        jos.putNextEntry(je);
++
+         try (InputStream is = source.getInputStream(original)) {
+           ByteStreams.copy(is, jos);
+         }
+@@ -259,6 +260,37 @@ public class MergeJars {
+     }
+   }
+
++  private static void createDirectories(JarOutputStream jos, String name, Set<String> createdDirs) throws IOException {
++    if (!name.endsWith("/")) {
++      int slashIndex = name.lastIndexOf('/');
++      if (slashIndex != -1) {
++        createDirectories(jos, name.substring(0, slashIndex + 1), createdDirs);
++      }
++      return;
++    }
++
++    if (createdDirs.contains(name)) {
++      return;
++    }
++
++    String[] segments = name.split("/");
++    StringBuilder path = new StringBuilder();
++    for (String segment : segments) {
++      path.append(segment).append('/');
++
++      String newPath = path.toString();
++      if (createdDirs.contains(newPath)) {
++        continue;
++      }
++
++      JarEntry entry = new JarEntry(newPath);
++      entry = resetTime(entry);
++      jos.putNextEntry(entry);
++      jos.closeEntry();
++      createdDirs.add(newPath);
++    }
++  }
++
+   private static Set<String> readExcludedFileNames(Set<Path> excludes) throws IOException {
+     Set<String> paths = new HashSet<>();
+
+@@ -292,13 +324,6 @@ public class MergeJars {
+     return path;
+   }
+
+-  private static void delete(Path toDelete) throws IOException {
+-    Files.walk(toDelete)
+-            .sorted(Comparator.reverseOrder())
+-            .map(Path::toFile)
+-            .forEach(File::delete);
+-  }
+-
+   // Returns the normalized timestamp for a jar entry based on its name. This is necessary since
+   // javac will, when loading a class X, prefer a source file to a class file, if both files have
+   // the same timestamp. Therefore, we need to adjust the timestamp for class files to slightly
+diff --git a/tests/com/jvm/external/jar/MergeJarsTest.java b/tests/com/jvm/external/jar/MergeJarsTest.java
+index b247e15..0869233 100644
+--- a/tests/com/jvm/external/jar/MergeJarsTest.java
++++ b/tests/com/jvm/external/jar/MergeJarsTest.java
+@@ -20,12 +20,12 @@ import java.util.Set;
+ import java.util.jar.Attributes;
+ import java.util.jar.Manifest;
+ import java.util.zip.ZipEntry;
++import java.util.zip.ZipFile;
+ import java.util.zip.ZipInputStream;
+ import java.util.zip.ZipOutputStream;
+
+ import static java.nio.charset.StandardCharsets.UTF_8;
+-import static org.junit.Assert.assertEquals;
+-import static org.junit.Assert.assertTrue;
++import static org.junit.Assert.*;
+
+ public class MergeJarsTest {
+
+@@ -351,6 +351,35 @@ public class MergeJarsTest {
+     }
+   }
+
++  @Test
++  public void shouldAddMissingDirectories() throws IOException {
++    Path input = temp.newFile("example.jar").toPath();
++    createJar(input, ImmutableMap.of("foo/bar/baz.txt", "Hello, World!"));
++
++    Path output = temp.newFile("out.jar").toPath();
++
++    MergeJars.main(new String[] {
++            "--output", output.toAbsolutePath().toString(),
++            "--sources", input.toAbsolutePath().toString(),
++    });
++
++    Set<String> dirNames = new HashSet<>();
++    try (InputStream is = Files.newInputStream(output);
++         ZipInputStream zis = new ZipInputStream(is)) {
++      ZipEntry entry = zis.getNextEntry();
++      while (entry != null) {
++        if (entry.isDirectory()) {
++          dirNames.add(entry.getName());
++        }
++        entry = zis.getNextEntry();
++      }
++
++      assertTrue(dirNames.toString(), dirNames.contains("foo/"));
++      assertTrue(dirNames.toString(), dirNames.contains("foo/bar/"));
++    }
++
++  }
++
+   private void createJar(Path outputTo, Map<String, String> pathToContents) throws IOException {
+     try (OutputStream os = Files.newOutputStream(outputTo);
+          ZipOutputStream zos = new ZipOutputStream(os)) {

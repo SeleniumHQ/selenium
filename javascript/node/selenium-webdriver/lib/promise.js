@@ -22,16 +22,7 @@
 
 'use strict'
 
-/**
- * Determines whether a {@code value} should be treated as a promise.
- * Any object whose "then" property is a function will be considered a promise.
- *
- * @param {?} value The value to test.
- * @return {boolean} Whether the value is a promise.
- */
-function isPromise(value) {
-  return Object.prototype.toString.call(value) === '[object Promise]'
-}
+const { isObject, isPromise } = require('./util')
 
 /**
  * Creates a promise that will be resolved at a set time in the future.
@@ -218,7 +209,7 @@ async function fullyResolved(value) {
     return fullyResolveKeys(/** @type {!Array} */ (value))
   }
 
-  if (value && typeof value === 'object') {
+  if (isObject(value)) {
     return fullyResolveKeys(/** @type {!Object} */ (value))
   }
 

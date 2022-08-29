@@ -46,7 +46,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 15
+          node-version: '16.x'
       - name: Setup Java
         uses: actions/setup-java@v1
         with:

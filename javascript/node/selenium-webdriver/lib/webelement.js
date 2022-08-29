@@ -16,6 +16,7 @@
 // under the License.
 
 'use strict'
+const { isObject } = require('./util')
 
 /**
  * @fileoverview Defines some common methods used for WebElements.
@@ -33,8 +34,7 @@ const ELEMENT_ID_KEY = 'element-6066-11e4-a52e-4f735466cecf'
  */
 function isId(obj) {
   return (
-    obj &&
-    typeof obj === 'object' &&
+    isObject(obj) &&
     (typeof obj[ELEMENT_ID_KEY] === 'string' ||
       typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string')
   )
@@ -48,7 +48,7 @@ function isId(obj) {
  * @throws {TypeError} if the object is not a valid encoded ID.
  */
 function extractId(obj) {
-  if (obj && typeof obj === 'object') {
+  if (isObject(obj)) {
     if (typeof obj[ELEMENT_ID_KEY] === 'string') {
       return obj[ELEMENT_ID_KEY]
     } else if (typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string') {
