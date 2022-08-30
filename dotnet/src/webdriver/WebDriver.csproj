@@ -109,6 +109,7 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">

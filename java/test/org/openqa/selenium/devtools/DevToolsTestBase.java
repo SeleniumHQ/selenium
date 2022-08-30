@@ -35,7 +35,7 @@ public abstract class DevToolsTestBase extends JupiterTestBase {
     assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
 
     devTools = ((HasDevTools) driver).getDevTools();
-    devTools.createSessionIfThereIsNotOne();
+    devTools.createSessionIfThereIsNotOne(driver.getWindowHandle());
 
     try {
       devTools.clearListeners();

@@ -17,15 +17,8 @@
 
 package org.openqa.selenium.support.decorators;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.logging.Logs;
@@ -36,23 +29,15 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 @Tag("UnitTests")
-public class DecoratedOptionsTest {
-
-  private static class Fixture {
-    WebDriver originalDriver;
-    WebDriver decoratedDriver;
-    WebDriver.Options original;
-    WebDriver.Options decorated;
-
-    public Fixture() {
-      original = mock(WebDriver.Options.class);
-      originalDriver = mock(WebDriver.class);
-      when(originalDriver.manage()).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
-      decorated = decoratedDriver.manage();
-    }
-  }
+class DecoratedOptionsTest {
 
   private void verifyFunction(Consumer<WebDriver.Options> f) {
     Fixture fixture = new Fixture();
@@ -69,7 +54,8 @@ public class DecoratedOptionsTest {
     verifyNoMoreInteractions(fixture.original);
   }
 
-  private <R> void verifyDecoratingFunction(Function<WebDriver.Options, R> f, R result, Consumer<R> p) {
+  private <R> void verifyDecoratingFunction(Function<WebDriver.Options, R> f, R result,
+                                            Consumer<R> p) {
     Fixture fixture = new Fixture();
     when(f.apply(fixture.original)).thenReturn(result);
 
@@ -84,59 +70,70 @@ public class DecoratedOptionsTest {
   }
 
   @Test
-  public void addCookie() {
+  void addCookie() {
     verifyFunction($ -> $.addCookie(new Cookie("name", "value")));
   }
 
   @Test
-  public void deleteCookieNamed() {
+  void deleteCookieNamed() {
     verifyFunction($ -> $.deleteCookieNamed("test"));
   }
 
   @Test
-  public void deleteCookie() {
+  void deleteCookie() {
     verifyFunction($ -> $.deleteCookie(new Cookie("name", "value")));
   }
 
   @Test
-  public void deleteAllCookies() {
+  void deleteAllCookies() {
     verifyFunction(WebDriver.Options::deleteAllCookies);
   }
 
   @Test
-  public void getCookies() {
+  void getCookies() {
     Set<Cookie> cookies = new HashSet<>();
     cookies.add(new Cookie("name", "value"));
     verifyFunction(WebDriver.Options::getCookies, cookies);
   }
 
   @Test
-  public void getCookieNamed() {
+  void getCookieNamed() {
     verifyFunction($ -> $.getCookieNamed("test"), new Cookie("name", "value"));
   }
 
   @Test
-  public void timeouts() {
+  void timeouts() {
     WebDriver.Timeouts timeouts = mock(WebDriver.Timeouts.class);
-    verifyDecoratingFunction(WebDriver.Options::timeouts, timeouts, t -> t.implicitlyWait(Duration.ofSeconds(10)));
+    verifyDecoratingFunction(WebDriver.Options::timeouts, timeouts,
+                             t -> t.implicitlyWait(Duration.ofSeconds(10)));
   }
 
   @Test
-  public void imeNotDecorated() {
-    final WebDriver.ImeHandler ime = mock(WebDriver.ImeHandler.class);
-    verifyFunction(WebDriver.Options::ime, ime);
-  }
-
-  @Test
-  public void window() {
+  void window() {
     final WebDriver.Window window = mock(WebDriver.Window.class);
     verifyDecoratingFunction(WebDriver.Options::window, window, WebDriver.Window::maximize);
   }
 
   @Test
-  public void logsNotDecorated() {
+  void logsNotDecorated() {
     final Logs logs = mock(Logs.class);
     verifyFunction(WebDriver.Options::logs, logs);
+  }
+
+  private static class Fixture {
+
+    WebDriver originalDriver;
+    WebDriver decoratedDriver;
+    WebDriver.Options original;
+    WebDriver.Options decorated;
+
+    public Fixture() {
+      original = mock(WebDriver.Options.class);
+      originalDriver = mock(WebDriver.class);
+      when(originalDriver.manage()).thenReturn(original);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
+      decorated = decoratedDriver.manage();
+    }
   }
 
 }

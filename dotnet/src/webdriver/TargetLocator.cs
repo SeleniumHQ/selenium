@@ -106,9 +106,7 @@ namespace OpenQA.Selenium
                 throw new ArgumentException("frameElement cannot be converted to IWebElementReference", nameof(frameElement));
             }
 
-            // TODO: Remove "ELEMENT" addition when all remote ends are spec-compliant.
             Dictionary<string, object> elementDictionary = elementReference.ToDictionary();
-            elementDictionary.Add("ELEMENT", elementReference.ObjectReferenceId);
 
             Dictionary<string, object> parameters = new Dictionary<string, object>();
             parameters.Add("id", elementDictionary);

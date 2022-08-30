@@ -36,7 +36,7 @@ from .common.action_chains import ActionChains  # noqa
 from .common.proxy import Proxy  # noqa
 from .common.keys import Keys  # noqa
 
-__version__ = '4.3.0'
+__version__ = '4.4.3'
 
 # We need an explicit __all__ because the above won't otherwise be exported.
 __all__ = [

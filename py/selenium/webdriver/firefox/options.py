@@ -49,7 +49,7 @@ class Options(ArgOptions):
         return self._binary
 
     @binary.setter
-    def binary(self, new_binary: Union[str, FirefoxBinary]):
+    def binary(self, new_binary: Union[str, FirefoxBinary]) -> None:
         """Sets location of the browser binary, either by string or
         ``FirefoxBinary`` instance.
 
@@ -66,7 +66,7 @@ class Options(ArgOptions):
         return self.binary._start_cmd
 
     @binary_location.setter  # noqa
-    def binary_location(self, value: str):
+    def binary_location(self, value: str) -> None:
         """ Sets the location of the browser binary by string """
         self.binary = value
 
@@ -93,7 +93,7 @@ class Options(ArgOptions):
         return self._profile
 
     @profile.setter
-    def profile(self, new_profile: Union[str, FirefoxProfile]):
+    def profile(self, new_profile: Union[str, FirefoxProfile]) -> None:
         """Sets location of the browser profile to use, either by string
         or ``FirefoxProfile``.
 
@@ -115,7 +115,7 @@ class Options(ArgOptions):
         return '-headless' in self._arguments
 
     @headless.setter
-    def headless(self, value: bool):
+    def headless(self, value: bool) -> None:
         """
         Sets the headless argument
 

@@ -361,6 +361,16 @@ namespace OpenQA.Selenium
         /// </summary>
         public static readonly string GetLog = "getLog";
 
+        // Virtual Authenticator API
+        // http://w3c.github.io/webauthn#sctn-automation
+        public static readonly string AddVirtualAuthenticator = "addVirtualAuthenticator";
+        public static readonly string RemoveVirtualAuthenticator = "removeVirtualAuthenticator";
+        public static readonly string AddCredential = "addCredential";
+        public static readonly string GetCredentials = "getCredentials";
+        public static readonly string RemoveCredential = "removeCredential";
+        public static readonly string RemoveAllCredentials = "removeAllCredentials";
+        public static readonly string SetUserVerified = "setUserVerified";
+
         public static readonly IList<string> KnownCommands = new List<string>()
         {
             Status,
@@ -426,7 +436,14 @@ namespace OpenQA.Selenium
             IsElementDisplayed,
             UploadFile,
             GetLog,
-            GetAvailableLogTypes
+            GetAvailableLogTypes,
+            AddVirtualAuthenticator,
+            RemoveVirtualAuthenticator,
+            AddCredential,
+            GetCredentials,
+            RemoveCredential,
+            RemoveAllCredentials,
+            SetUserVerified
         }.AsReadOnly();
     }
 }

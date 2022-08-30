@@ -1,3 +1,20 @@
+Selenium (TBA next version)
+* Fix frame_to_be_available_and_switch_to_it() for string inputs (#10963)
+
+Selenium 4.4.3
+* Update explicit dependency for certifi to remove upper bound (#10956)
+
+Selenium 4.4.2
+* Add explicit dependency for certifi (#10953)
+
+Selenium 4.4.1
+* Removal of urllib3[secure] extras (deprecated) dependency
+
+Selenium 4.4.0
+* More flexibility in locating Firefox binary (#10818)
+* Add CDP for v104, remove support for v101
+* Throw error when setting w3c to False on Chromium, and warning when setting w3c to True
+
 Selenium 4.3.0
 * Deprecated find_element_by_* and find_elements_by_* are now removed (#10712)
 * Deprecated Opera support has been removed (#10630)

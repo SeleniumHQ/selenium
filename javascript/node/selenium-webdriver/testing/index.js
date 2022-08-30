@@ -88,7 +88,7 @@ function warn(msg) {
  * Extracts the browsers for a test suite to target from the `SELENIUM_BROWSER`
  * environment variable.
  *
- * @return {{name: string, version: string, platform: string}[]} the browsers to target.
+ * @return {{name: string, version: string, platform: string}}[] the browsers to target.
  */
 function getBrowsersToTestFromEnv() {
   let browsers = process.env['SELENIUM_BROWSER']

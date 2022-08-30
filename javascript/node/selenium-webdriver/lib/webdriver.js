@@ -37,7 +37,9 @@ const { Capabilities } = require('./capabilities')
 const path = require('path')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
-const Credential = require('./virtual_authenticator').Credential
+const { Credential } = require('./virtual_authenticator')
+const webElement = require('./webelement')
+const { isObject } = require('./util')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -213,7 +215,7 @@ function fromWireValue(driver, value) {
   } else if (ShadowRoot.isId(value)) {
     let id = ShadowRoot.extractId(value)
     value = new ShadowRoot(driver, id)
-  } else if (value && typeof value === 'object') {
+  } else if (isObject(value)) {
     let result = {}
     for (let key in value) {
       if (Object.prototype.hasOwnProperty.call(value, key)) {
@@ -618,17 +620,17 @@ class IWebDriver {
    * Takes a PDF of the current page. The driver makes a best effort to
    * return a PDF based on the provided parameters.
    *
-   * @param {{orientation: (string|undefined),
-   *         scale: (number|undefined),
-   *         background: (boolean|undefined)
-   *         width: (number|undefined)
-   *         height: (number|undefined)
-   *         top: (number|undefined)
-   *         bottom: (number|undefined)
-   *         left: (number|undefined)
-   *         right: (number|undefined)
-   *         shrinkToFit: (boolean|undefined)
-   *         pageRanges: (<Array>|undefined)}} options.
+   * @param {{orientation:(string|undefined),
+   *         scale:(number|undefined),
+   *         background:(boolean|undefined),
+   *         width:(number|undefined),
+   *         height:(number|undefined),
+   *         top:(number|undefined),
+   *         bottom:(number|undefined),
+   *         left:(number|undefined),
+   *         right:(number|undefined),
+   *         shrinkToFit:(boolean|undefined),
+   *         pageRanges:(Array|undefined)}} options
    */
   printPage(options) {} // eslint-disable-line
 }
@@ -1530,7 +1532,7 @@ class WebDriver {
 
   /**
    * Adds a virtual authenticator with the given options.
-   * @param options VirtualAuthenticatorOptions object to set authenticator optons.
+   * @param options VirtualAuthenticatorOptions object to set authenticator options.
    */
   async addVirtualAuthenticator(options) {
     this.authenticatorId_ = await this.execute(
@@ -2382,7 +2384,7 @@ class TargetLocator {
 
 const LEGACY_ELEMENT_ID_KEY = 'ELEMENT'
 const ELEMENT_ID_KEY = 'element-6066-11e4-a52e-4f735466cecf'
-const SHADOWROOT_ID_KEY = 'shadow-6066-11e4-a52e-4f735466cecf'
+const SHADOW_ROOT_ID_KEY = 'shadow-6066-11e4-a52e-4f735466cecf'
 
 /**
  * Represents a DOM element. WebElements can be found by searching from the
@@ -2427,14 +2429,7 @@ class WebElement {
    * @throws {TypeError} if the object is not a valid encoded ID.
    */
   static extractId(obj) {
-    if (obj && typeof obj === 'object') {
-      if (typeof obj[ELEMENT_ID_KEY] === 'string') {
-        return obj[ELEMENT_ID_KEY]
-      } else if (typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string') {
-        return obj[LEGACY_ELEMENT_ID_KEY]
-      }
-    }
-    throw new TypeError('object is not a WebElement ID')
+    return webElement.extractId(obj)
   }
 
   /**
@@ -2442,12 +2437,7 @@ class WebElement {
    * @return {boolean} whether the object is a valid encoded WebElement ID.
    */
   static isId(obj) {
-    return (
-      obj &&
-      typeof obj === 'object' &&
-      (typeof obj[ELEMENT_ID_KEY] === 'string' ||
-        typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string')
-    )
+    return webElement.isId(obj)
   }
 
   /**
@@ -2992,8 +2982,8 @@ class ShadowRoot {
    */
   static extractId(obj) {
     if (obj && typeof obj === 'object') {
-      if (typeof obj[SHADOWROOT_ID_KEY] === 'string') {
-        return obj[SHADOWROOT_ID_KEY]
+      if (typeof obj[SHADOW_ROOT_ID_KEY] === 'string') {
+        return obj[SHADOW_ROOT_ID_KEY]
       }
     }
     throw new TypeError('object is not a ShadowRoot ID')
@@ -3007,7 +2997,7 @@ class ShadowRoot {
     return (
       obj &&
       typeof obj === 'object' &&
-      typeof obj[SHADOWROOT_ID_KEY] === 'string'
+      typeof obj[SHADOW_ROOT_ID_KEY] === 'string'
     )
   }
 

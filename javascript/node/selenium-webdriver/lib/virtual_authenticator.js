@@ -18,29 +18,36 @@
 'use strict'
 
 /**
+ * Protocol for virtual authenticators
+ * @enum {string}
+ */
+const Protocol = {
+  CTAP2: 'ctap2',
+  U2F: 'ctap1/u2f',
+}
+
+/**
+ * AuthenticatorTransport values
+ * @enum {string}
+ */
+const Transport = {
+  BLE: 'ble',
+  USB: 'usb',
+  NFC: 'nfc',
+  INTERNAL: 'internal',
+}
+
+/**
  * Options for the creation of virtual authenticators.
  * @see http://w3c.github.io/webauthn/#sctn-automation
  */
 class VirtualAuthenticatorOptions {
-
-  static Protocol = {
-    "CTAP2": 'ctap2',
-    "U2F": 'ctap1/u2f',
-  }
-
-  static Transport = {
-    "BLE": 'ble',
-    "USB": 'usb',
-    "NFC": 'nfc',
-    "INTERNAL": 'internal',
-  }
-
   /**
    * Constructor to initialise VirtualAuthenticatorOptions object.
    */
   constructor() {
-    this._protocol = VirtualAuthenticatorOptions.Protocol["CTAP2"]
-    this._transport = VirtualAuthenticatorOptions.Transport["USB"]
+    this._protocol = Protocol['CTAP2']
+    this._transport = Transport['USB']
     this._hasResidentKey = false
     this._hasUserVerification = false
     this._isUserConsenting = true
@@ -97,13 +104,12 @@ class VirtualAuthenticatorOptions {
 
   toDict() {
     return {
-      "protocol": this.getProtocol(),
-      "transport": this.getTransport(),
-      "hasResidentKey": this.getHasResidentKey(),
-      "hasUserVerification": this.getHasUserVerification(),
-      "isUserConsenting": this.getIsUserConsenting(),
-      "isUserVerified": this.getIsUserVerified(),
-
+      protocol: this.getProtocol(),
+      transport: this.getTransport(),
+      hasResidentKey: this.getHasResidentKey(),
+      hasUserVerification: this.getHasUserVerification(),
+      isUserConsenting: this.getIsUserConsenting(),
+      isUserVerified: this.getIsUserVerified(),
     }
   }
 }
@@ -183,15 +189,17 @@ class Credential {
 
   toDict() {
     let credentialData = {
-      'credentialId': Buffer.from(this._id).toString('base64url'),
-      'isResidentCredential': this._isResidentCredential,
-      'rpId': this._rpId,
-      'privateKey': Buffer.from(this._privateKey, 'binary').toString('base64url'),
-      'signCount': this._signCount,
+      credentialId: Buffer.from(this._id).toString('base64url'),
+      isResidentCredential: this._isResidentCredential,
+      rpId: this._rpId,
+      privateKey: Buffer.from(this._privateKey, 'binary').toString('base64url'),
+      signCount: this._signCount,
     }
 
     if (this.userHandle() != null) {
-      credentialData['userHandle'] = Buffer.from(this._userHandle).toString('base64url')
+      credentialData['userHandle'] = Buffer.from(this._userHandle).toString(
+        'base64url'
+      )
     }
 
     return credentialData
@@ -204,7 +212,9 @@ class Credential {
     let id = new Uint8Array(Buffer.from(data['credentialId'], 'base64url'))
     let isResidentCredential = data['isResidentCredential']
     let rpId = data['rpId']
-    let privateKey = Buffer.from(data['privateKey'], 'base64url').toString('binary')
+    let privateKey = Buffer.from(data['privateKey'], 'base64url').toString(
+      'binary'
+    )
     let signCount = data['signCount']
     let userHandle
 
@@ -224,7 +234,11 @@ class Credential {
   }
 }
 
+// PUBLIC API
+
 module.exports = {
   Credential,
   VirtualAuthenticatorOptions,
+  Transport,
+  Protocol,
 }

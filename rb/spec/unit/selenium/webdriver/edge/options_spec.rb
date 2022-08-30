@@ -203,6 +203,17 @@ module Selenium
             expect(options.as_json).to eq("browserName" => "MicrosoftEdge", "ms:edgeOptions" => {})
           end
 
+          it 'should raise error when w3c is false' do
+            options.add_option(:w3c, false)
+            expect { options.as_json }.to raise_error(Error::InvalidArgumentError)
+          end
+
+          it 'should raise error when w3c is true' do
+            msg = /WARN Selenium \[:w3c\]/
+            options.add_option(:w3c, true)
+            expect { options.as_json }.to output(msg).to_stdout_from_any_process
+          end
+
           it 'returns added options' do
             options.add_option(:foo, 'bar')
             options.add_option('foo:bar', {foo: 'bar'})

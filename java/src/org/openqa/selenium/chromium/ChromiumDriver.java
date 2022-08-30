@@ -164,7 +164,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
     Require.nonNull("Check to use to see how we should authenticate", whenThisMatches);
     Require.nonNull("Credentials to use when authenticating", useTheseCredentials);
 
-    getDevTools().createSessionIfThereIsNotOne();
+    getDevTools().createSessionIfThereIsNotOne(getWindowHandle());
     getDevTools().getDomains().network().addAuthHandler(whenThisMatches, useTheseCredentials);
   }
 

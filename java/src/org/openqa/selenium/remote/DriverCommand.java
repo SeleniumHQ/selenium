@@ -32,7 +32,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonMap;
 
@@ -139,13 +138,6 @@ public interface DriverCommand {
   // W3C Actions APIs
   String ACTIONS = "actions";
   String CLEAR_ACTIONS_STATE = "clearActionState";
-  // Those allow interactions with the Input Methods installed on
-  // the system.
-  String IME_GET_AVAILABLE_ENGINES = "imeGetAvailableEngines";
-  String IME_GET_ACTIVE_ENGINE = "imeGetActiveEngine";
-  String IME_IS_ACTIVATED = "imeIsActivated";
-  String IME_DEACTIVATE = "imeDeactivate";
-  String IME_ACTIVATE_ENGINE = "imeActivateEngine";
   // Window API
   String SET_CURRENT_WINDOW_POSITION = "setWindowPosition";
   String GET_CURRENT_WINDOW_POSITION = "getWindowPosition";
@@ -177,7 +169,7 @@ public interface DriverCommand {
     return new CommandPayload(
       NEW_SESSION,
       ImmutableMap.of(
-        "capabilities", CapabilitiesUtils.makeW3CSafe(capabilities).collect(Collectors.toSet()),
+        "capabilities", capabilities,
         "desiredCapabilities", capabilities));
   }
 
@@ -191,7 +183,7 @@ public interface DriverCommand {
       NEW_SESSION,
       ImmutableMap.of(
         "capabilities",
-        capabilities.stream().flatMap(CapabilitiesUtils::makeW3CSafe).collect(Collectors.toSet()),
+        capabilities,
         "desiredCapabilities", capabilities.iterator().next()));
   }
 

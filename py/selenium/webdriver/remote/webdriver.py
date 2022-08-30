@@ -18,21 +18,32 @@
 """The WebDriver implementation."""
 import contextlib
 import copy
+import pkgutil
 import types
 import typing
-from importlib import import_module
-
-import pkgutil
-
-import sys
-from typing import Dict, List, Optional, Union
-
 import warnings
-
 from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
 from contextlib import asynccontextmanager, contextmanager
+from importlib import import_module
+from typing import Dict, List, Optional, Union
 
+from selenium.common.exceptions import (InvalidArgumentException,
+                                        JavascriptException,
+                                        WebDriverException,
+                                        NoSuchCookieException,
+                                        NoSuchElementException)
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.html5.application_cache import ApplicationCache
+from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.common.print_page_options import PrintOptions
+from selenium.webdriver.common.timeouts import Timeouts
+from selenium.webdriver.common.virtual_authenticator import (
+    Credential,
+    VirtualAuthenticatorOptions,
+    required_virtual_authenticator
+)
+from selenium.webdriver.support.relative_locator import RelativeBy
 from .bidi_connection import BidiConnection
 from .command import Command
 from .errorhandler import ErrorHandler
@@ -43,24 +54,6 @@ from .script_key import ScriptKey
 from .shadowroot import ShadowRoot
 from .switch_to import SwitchTo
 from .webelement import WebElement
-
-from selenium.common.exceptions import (InvalidArgumentException,
-                                        JavascriptException,
-                                        WebDriverException,
-                                        NoSuchCookieException,
-                                        NoSuchElementException)
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.options import BaseOptions
-from selenium.webdriver.common.print_page_options import PrintOptions
-from selenium.webdriver.common.timeouts import Timeouts
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
-from selenium.webdriver.support.relative_locator import RelativeBy
-from selenium.webdriver.common.virtual_authenticator import (
-    Credential,
-    VirtualAuthenticatorOptions,
-    required_virtual_authenticator
-)
-
 
 _W3C_CAPABILITY_NAMES = frozenset([
     'acceptInsecureCerts',
@@ -457,16 +450,21 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_TITLE).get("value", "")
 
-    def pin_script(self, script, script_key=None) -> ScriptKey:
-        _script_key = ScriptKey(script_key)
-        self.pinned_scripts[_script_key.id] = script
-        return _script_key
+    def pin_script(self, script: str, script_key=None) -> ScriptKey:
+        """Store common javascript scripts to be executed later by a unique hashable ID."""
+        script_key_instance = ScriptKey(script_key)
+        self.pinned_scripts[script_key_instance.id] = script
+        return script_key_instance
 
-    def unpin(self, script_key) -> None:
-        self.pinned_scripts.pop(script_key.id)
+    def unpin(self, script_key: ScriptKey) -> None:
+        """Remove a pinned script from storage."""
+        try:
+            self.pinned_scripts.pop(script_key.id)
+        except KeyError:
+            raise KeyError(f"No script with key: {script_key} existed in {self.pinned_scripts}") from None
 
     def get_pinned_scripts(self) -> List[str]:
-        return list(self.pinned_scripts.keys())
+        return list(self.pinned_scripts)
 
     def execute_script(self, script, *args):
         """
@@ -825,7 +823,7 @@ class WebDriver(BaseWebDriver):
                 my_timeouts.implicit_wait = 10
                 driver.timeouts = my_timeouts
         """
-        self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
+        _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
 
     def find_element(self, by=By.ID, value=None) -> WebElement:
         """
@@ -1083,7 +1081,7 @@ class WebDriver(BaseWebDriver):
         return self._file_detector
 
     @file_detector.setter
-    def file_detector(self, detector):
+    def file_detector(self, detector) -> None:
         """
         Set the file detector to be used when sending keyboard input.
         By default, this is set to a file detector that does nothing.
@@ -1114,7 +1112,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_SCREEN_ORIENTATION)['value']
 
     @orientation.setter
-    def orientation(self, value):
+    def orientation(self, value) -> None:
         """
         Sets the current orientation of the device
 
@@ -1168,7 +1166,6 @@ class WebDriver(BaseWebDriver):
 
     @asynccontextmanager
     async def bidi_connection(self):
-        assert sys.version_info >= (3, 7)
         global cdp
         import_cdp()
         if self.caps.get("se:cdp"):

@@ -116,6 +116,7 @@ function getModules() {
     path.join(__dirname, 'selenium-webdriver/lib/safari'),
     path.join(__dirname, 'selenium-webdriver/lib/test'),
     path.join(__dirname, 'selenium-webdriver/lib/tools'),
+    path.join(__dirname, 'selenium-webdriver/devtools/generator'),
     path.join(__dirname, 'selenium-webdriver/node_modules'),
     path.join(__dirname, 'selenium-webdriver/test')
   ];

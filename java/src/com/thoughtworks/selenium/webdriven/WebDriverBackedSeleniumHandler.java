@@ -28,7 +28,6 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.opera.OperaOptions;
 import org.openqa.selenium.remote.NewSessionPayload;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.FormEncodedData;
@@ -199,10 +198,6 @@ public class WebDriverBackedSeleniumHandler implements Routable {
 
         case "*MicrosoftEdge":
           caps = new EdgeOptions();
-          break;
-
-        case "*opera":
-          caps = new OperaOptions();
           break;
 
         case "*safari":

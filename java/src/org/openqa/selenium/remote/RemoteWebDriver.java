@@ -72,7 +72,6 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -104,27 +103,6 @@ public class RemoteWebDriver implements WebDriver,
   Interactive,
   PrintsPage,
   TakesScreenshot {
-
-  // TODO: Remove in 4.4 when all IE caps go inside se:ieOptions
-  private static final List<String> IE_CAPABILITY_NAMES = Arrays.asList(
-    "browserAttachTimeout",
-    "elementScrollBehavior",
-    "enablePersistentHover",
-    "ie.enableFullPageScreenshot",
-    "ie.forceCreateProcessApi",
-    "ie.forceShellWindowsApi",
-    "ie.ensureCleanSession",
-    "ie.browserCommandLineSwitches",
-    "ie.usePerProcessProxy",
-    "ignoreZoomSetting",
-    "initialBrowserUrl",
-    "ignoreProtectedModeSettings",
-    "requireWindowFocus",
-    "ie.fileUploadDialogTimeout",
-    "nativeEvents",
-    "ie.useLegacyFileUploadDialogHandling",
-    "ie.edgechromium",
-    "ie.edgepath");
 
   // TODO: This static logger should be unified with the per-instance localLogs
   private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
@@ -705,7 +683,6 @@ public class RemoteWebDriver implements WebDriver,
     List<String> invalid = capabilities.asMap().keySet()
       .stream()
       .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
-      .filter(key -> !IE_CAPABILITY_NAMES.contains(key))
       .collect(Collectors.toList());
 
     if (!invalid.isEmpty()) {
@@ -728,10 +705,8 @@ public class RemoteWebDriver implements WebDriver,
         w3c = rawW3C == null || Boolean.parseBoolean(String.valueOf(rawW3C));
       }
       if (!w3c) {
-        logger.log(
-          Level.WARNING,
-          "Setting 'w3c: true' inside 'goog:chromeOptions' will not be accepted from " +
-          "Selenium 4.4; " +
+        throw new WebDriverException(
+          "Setting 'w3c: false' inside 'goog:chromeOptions' will no longer be supported " +
           "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/"
         );
       }
@@ -864,55 +839,11 @@ public class RemoteWebDriver implements WebDriver,
       return new RemoteTimeouts();
     }
 
-    /**
-     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
-     */
-    @Override
-    public ImeHandler ime() {
-      return new RemoteInputMethodManager();
-    }
-
     @Override
     @Beta
     public Window window() {
       return new RemoteWindow();
     }
-
-    /**
-     * @deprecated Will be removed. IME is not part of W3C WebDriver and does not work on browsers.
-     */
-    @Deprecated
-    protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
-
-      @Override
-      @SuppressWarnings("unchecked")
-      public List<String> getAvailableEngines() {
-        Response response = execute(DriverCommand.IME_GET_AVAILABLE_ENGINES);
-        return (List<String>) response.getValue();
-      }
-
-      @Override
-      public String getActiveEngine() {
-        Response response = execute(DriverCommand.IME_GET_ACTIVE_ENGINE);
-        return (String) response.getValue();
-      }
-
-      @Override
-      public boolean isActivated() {
-        Response response = execute(DriverCommand.IME_IS_ACTIVATED);
-        return (Boolean) response.getValue();
-      }
-
-      @Override
-      public void deactivate() {
-        execute(DriverCommand.IME_DEACTIVATE);
-      }
-
-      @Override
-      public void activateEngine(String engine) {
-        execute(DriverCommand.IME_ACTIVATE_ENGINE(engine));
-      }
-    } // RemoteInputMethodManager class
 
     protected class RemoteTimeouts implements Timeouts {
 
