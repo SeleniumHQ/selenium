@@ -39,7 +39,7 @@ public class ClientConfig {
   private final Proxy proxy;
   private final Credentials credentials;
 
-  private ClientConfig(
+  protected ClientConfig(
     URI baseUri,
     Duration connectionTimeout,
     Duration readTimeout,

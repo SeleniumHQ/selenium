@@ -31,6 +31,8 @@ const Button = {
   LEFT: 0,
   MIDDLE: 1,
   RIGHT: 2,
+  BACK: 3,
+  FORWARD: 4,
 }
 
 /**
@@ -159,7 +161,8 @@ class FileDetector {
    * @return {!Promise<string>} A promise for the processed file path.
    * @package
    */
-  handleFile(driver, path) { // eslint-disable-line
+  handleFile(_driver, path) {
+    // eslint-disable-line
     return Promise.resolve(path)
   }
 }
@@ -804,8 +807,8 @@ class Actions {
     const { WebElement } = require('./webdriver')
 
     const actions = []
-    if(keys.length > 1 && keys[0] instanceof WebElement) {
-      this.click(keys[0]);
+    if (keys.length > 1 && keys[0] instanceof WebElement) {
+      this.click(keys[0])
       keys.shift()
     }
     for (const key of keys) {

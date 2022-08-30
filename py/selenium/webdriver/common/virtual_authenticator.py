@@ -20,13 +20,6 @@ import functools
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 from enum import Enum
 import typing
-import sys
-
-if typing.TYPE_CHECKING:
-    if sys.version_info >= (3, 8):
-        from typing import Literal
-    else:
-        from typing_extensions import Literal
 
 
 class Protocol(Enum):
@@ -64,8 +57,8 @@ class VirtualAuthenticatorOptions:
             - isUserVerified: False
         """
 
-        self._protocol: Literal = Protocol.CTAP2
-        self._transport: Literal = Transport.USB
+        self._protocol: Protocol = Protocol.CTAP2
+        self._transport: Transport = Transport.USB
         self._has_resident_key: bool = False
         self._has_user_verification: bool = False
         self._is_user_consenting: bool = True
@@ -88,7 +81,7 @@ class VirtualAuthenticatorOptions:
         self._transport = transport
 
     @property
-    def has_resident_key(self) -> None:
+    def has_resident_key(self) -> bool:
         return self._has_resident_key
 
     @has_resident_key.setter
@@ -96,7 +89,7 @@ class VirtualAuthenticatorOptions:
         self._has_resident_key = value
 
     @property
-    def has_user_verification(self) -> None:
+    def has_user_verification(self) -> bool:
         return self._has_user_verification
 
     @has_user_verification.setter
@@ -104,7 +97,7 @@ class VirtualAuthenticatorOptions:
         self._has_user_verification = value
 
     @property
-    def is_user_consenting(self) -> None:
+    def is_user_consenting(self) -> bool:
         return self._is_user_consenting
 
     @is_user_consenting.setter
@@ -112,14 +105,14 @@ class VirtualAuthenticatorOptions:
         self._is_user_consenting = value
 
     @property
-    def is_user_verified(self) -> None:
+    def is_user_verified(self) -> bool:
         return self._is_user_verified
 
     @is_user_verified.setter
     def is_user_verified(self, value: bool) -> None:
         self._is_user_verified = value
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> typing.Dict[str, typing.Any]:
         return {
             "protocol": self.protocol,
             "transport": self.transport,
@@ -131,7 +124,7 @@ class VirtualAuthenticatorOptions:
 
 
 class Credential:
-    def __init__(self, credential_id: bytes, is_resident_credential: bool, rp_id: str, user_handle: bytes, private_key: bytes, sign_count: int):
+    def __init__(self, credential_id: bytes, is_resident_credential: bool, rp_id: str, user_handle: typing.Optional[bytes], private_key: bytes, sign_count: int):
         """Constructor. A credential stored in a virtual authenticator.
         https://w3c.github.io/webauthn/#credential-parameters
 
@@ -151,7 +144,7 @@ class Credential:
         self._sign_count = sign_count
 
     @property
-    def id(self):
+    def id(self) -> str:
         return urlsafe_b64encode(self._id).decode()
 
     @property
@@ -159,21 +152,21 @@ class Credential:
         return self._is_resident_credential
 
     @property
-    def rp_id(self):
+    def rp_id(self) -> str:
         return self._rp_id
 
     @property
-    def user_handle(self):
+    def user_handle(self) -> typing.Optional[str]:
         if self._user_handle:
             return urlsafe_b64encode(self._user_handle).decode()
         return None
 
     @property
-    def private_key(self):
+    def private_key(self) -> str:
         return urlsafe_b64encode(self._private_key).decode()
 
     @property
-    def sign_count(self):
+    def sign_count(self) -> int:
         return self._sign_count
 
     @classmethod
@@ -192,7 +185,7 @@ class Credential:
         return cls(id, False, rp_id, None, private_key, sign_count)
 
     @classmethod
-    def create_resident_credential(cls, id: bytes, rp_id: str, user_handle: bytes, private_key: bytes, sign_count: int) -> 'Credential':
+    def create_resident_credential(cls, id: bytes, rp_id: str, user_handle: typing.Optional[bytes], private_key: bytes, sign_count: int) -> 'Credential':
         """Creates a resident (i.e. stateful) credential.
 
               :Args:
@@ -207,7 +200,7 @@ class Credential:
         """
         return cls(id, True, rp_id, user_handle, private_key, sign_count)
 
-    def to_dict(self):
+    def to_dict(self) -> typing.Dict[str, typing.Any]:
         credential_data = {
             'credentialId': self.id,
             'isResidentCredential': self._is_resident_credential,
@@ -222,7 +215,7 @@ class Credential:
         return credential_data
 
     @classmethod
-    def from_dict(cls, data):
+    def from_dict(cls, data: typing.Dict[str, typing.Any]) -> 'Credential':
         _id = urlsafe_b64decode(f"{data['credentialId']}==")
         is_resident_credential = bool(data['isResidentCredential'])
         rp_id = data.get('rpId', None)

@@ -252,7 +252,7 @@ def frame_to_be_available_and_switch_to_it(locator):
 
     def _predicate(driver):
         try:
-            if hasattr(locator, '__iter__'):
+            if hasattr(locator, '__iter__') and not isinstance(locator, str):
                 driver.switch_to.frame(driver.find_element(*locator))
             else:
                 driver.switch_to.frame(locator)
@@ -313,8 +313,7 @@ def element_to_be_clickable(mark):
         target = visibility_of(target)(driver)
         if target and target.is_enabled():
             return target
-        else:
-            return False
+        return False
 
     return _predicate
 

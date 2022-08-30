@@ -23,7 +23,7 @@ const url = require('url')
 
 const httpUtil = require('../http/util')
 const io = require('../io')
-const exec = require('../io/exec')
+const { exec } = require('../io/exec')
 const { Zip } = require('../io/zip')
 const cmd = require('../lib/command')
 const input = require('../lib/input')

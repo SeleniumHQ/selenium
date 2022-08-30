@@ -32,34 +32,22 @@ describe('VirtualAuthenticatorOptions', function () {
 
   it('can testSetTransport', function () {
     options.setTransport(Transport['USB'])
-    assert.equal(
-      options.getTransport(),
-      Transport['USB']
-    )
+    assert.equal(options.getTransport(), Transport['USB'])
   })
 
   it('can testGetTransport', function () {
     options._transport = Transport['NFC']
-    assert.equal(
-      options.getTransport(),
-      Transport['NFC']
-    )
+    assert.equal(options.getTransport(), Transport['NFC'])
   })
 
   it('can testSetProtocol', function () {
     options.setProtocol(Protocol['U2F'])
-    assert.equal(
-      options.getProtocol(),
-      Protocol['U2F']
-    )
+    assert.equal(options.getProtocol(), Protocol['U2F'])
   })
 
   it('can testGetProtocol', function () {
     options._protocol = Protocol['CTAP2']
-    assert.equal(
-      options.getProtocol(),
-      Protocol['CTAP2']
-    )
+    assert.equal(options.getProtocol(), Protocol['CTAP2'])
   })
 
   it('can testSetHasResidentKey', function () {
@@ -104,14 +92,8 @@ describe('VirtualAuthenticatorOptions', function () {
 
   it('can testToDictWithDefaults', function () {
     let default_options = options.toDict()
-    assert.equal(
-      default_options['transport'],
-      Transport['USB']
-    )
-    assert.equal(
-      default_options['protocol'],
-      Protocol['CTAP2']
-    )
+    assert.equal(default_options['transport'], Transport['USB'])
+    assert.equal(default_options['protocol'], Protocol['CTAP2'])
     assert.equal(default_options['hasResidentKey'], false)
     assert.equal(default_options['hasUserVerification'], false)
     assert.equal(default_options['isUserConsenting'], true)
