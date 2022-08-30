@@ -234,7 +234,11 @@ class Credential {
   }
 }
 
-module.exports.Credential = Credential
-module.exports.VirtualAuthenticatorOptions = VirtualAuthenticatorOptions
-module.exports.Transport = Transport
-module.exports.Protocol = Protocol
+// PUBLIC API
+
+module.exports = {
+  Credential,
+  VirtualAuthenticatorOptions,
+  Transport,
+  Protocol,
+}

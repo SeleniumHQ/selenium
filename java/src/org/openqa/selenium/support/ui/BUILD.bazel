@@ -6,7 +6,10 @@ java_library(
     srcs = [
         "Sleeper.java",
     ],
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__subpackages__",
+        "//java/test/org/openqa/selenium/support:__subpackages__",
+    ],
     deps = [
         artifact("com.google.guava:guava"),
     ],
@@ -18,7 +21,9 @@ java_library(
         "LoadableComponent.java",
         "SlowLoadableComponent.java",
     ],
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__subpackages__",
+    ],
 )
 
 java_library(
@@ -29,7 +34,9 @@ java_library(
         "Select.java",
         "UnexpectedTagNameException.java",
     ],
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__subpackages__",
+    ],
     deps = [
         "//java/src/org/openqa/selenium:core",
     ],
@@ -44,7 +51,9 @@ java_library(
         "Wait.java",
         "WebDriverWait.java",
     ],
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__subpackages__",
+    ],
     deps = [
         ":clock",
         "//java/src/org/openqa/selenium:core",

@@ -15,14 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.http.jdk;
+'use strict'
 
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.internal.WebSocketTestBase;
+/**
+ * Determines whether a {@code value} should be treated as an object.
+ * @param {?} value The value to test.
+ * @returns {boolean} Whether the value is an object.
+ */
+function isObject(value) {
+  return Object.prototype.toString.call(value) === '[object Object]'
+}
 
-public class JdkWebSocketTest extends WebSocketTestBase {
-  @Override
-  protected HttpClient.Factory createFactory() {
-    return new JdkHttpClient.Factory();
-  }
+/**
+ * Determines whether a {@code value} should be treated as a promise.
+ * Any object whose "then" property is a function will be considered a promise.
+ *
+ * @param {?} value The value to test.
+ * @return {boolean} Whether the value is a promise.
+ */
+function isPromise(value) {
+  return Object.prototype.toString.call(value) === '[object Promise]'
+}
+
+module.exports = {
+  isObject,
+  isPromise,
 }

@@ -162,5 +162,5 @@ module.exports = {
   Command,
   Options,
   Result,
-  exec
+  exec,
 }
