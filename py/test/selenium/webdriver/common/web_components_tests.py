@@ -17,7 +17,7 @@
 
 import pytest
 
-from selenium.common.exceptions import NoSuchShadowRootException
+from selenium.common.exceptions import NoSuchShadowRootException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.shadowroot import ShadowRoot
@@ -75,3 +75,27 @@ def test_can_find_elements_in_a_shadow_root(driver, pages):
     assert len(elements) == 1
 
     assert isinstance(elements[0], WebElement)
+
+
+@pytest.mark.xfail_safari
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_can_find_elements_in_a_shadow_root_using_a_string_locator(driver, pages):
+    pages.load("webComponents.html")
+    custom_element = driver.find_element("css selector", "custom-checkbox-element")
+    shadow_root = custom_element.shadow_root
+    elements = shadow_root.find_elements("css selector", "input")
+    assert len(elements) == 1
+
+    assert isinstance(elements[0], WebElement)
+
+
+@pytest.mark.xfail_safari
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_finding_element_in_a_shadowroot_fails_with_invalid_string_locator(driver, pages):
+    pages.load("webComponents.html")
+    custom_element = driver.find_element("css selector", "custom-checkbox-element")
+    shadow_root = custom_element.shadow_root
+    with pytest.raises(WebDriverException):
+        shadow_root.find_elements("not a real locator strategy", "value")
