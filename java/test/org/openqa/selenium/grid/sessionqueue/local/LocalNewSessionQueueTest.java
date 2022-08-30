@@ -51,6 +51,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -520,10 +521,12 @@ public class LocalNewSessionQueueTest {
       Map.of(),
       Map.of()));
 
-    Optional<SessionRequest> returned = queue.getNextAvailable(
-      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+    Map<Capabilities, Long> stereotypes = new HashMap<>();
+    stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
 
-    assertThat(returned).isEqualTo(Optional.of(expected));
+    List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
+
+    assertThat(returned.get(0)).isEqualTo(expected);
   }
 
   @ParameterizedTest
@@ -551,10 +554,12 @@ public class LocalNewSessionQueueTest {
       Map.of());
     localQueue.injectIntoQueue(expected);
 
-    Optional<SessionRequest> returned = queue.getNextAvailable(
-      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+    Map<Capabilities, Long> stereotypes = new HashMap<>();
+    stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
 
-    assertThat(returned).isEqualTo(Optional.of(expected));
+    List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
+
+    assertThat(returned.get(0)).isEqualTo(expected);
   }
 
   static class TestData {
