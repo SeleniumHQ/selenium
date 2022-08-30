@@ -15,17 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.sessionqueue.httpd;
+'use strict'
 
-import com.google.common.collect.ImmutableMap;
+/**
+ * Determines whether a {@code value} should be treated as an object.
+ * @param {?} value The value to test.
+ * @returns {boolean} Whether the value is an object.
+ */
+function isObject(value) {
+  return Object.prototype.toString.call(value) === '[object Object]'
+}
 
-import org.openqa.selenium.grid.config.MapConfig;
+/**
+ * Determines whether a {@code value} should be treated as a promise.
+ * Any object whose "then" property is a function will be considered a promise.
+ *
+ * @param {?} value The value to test.
+ * @return {boolean} Whether the value is a promise.
+ */
+function isPromise(value) {
+  return Object.prototype.toString.call(value) === '[object Promise]'
+}
 
-class DefaultNewSessionQueueConfig extends MapConfig {
-
-  DefaultNewSessionQueueConfig() {
-    super(ImmutableMap.of(
-        "server", ImmutableMap.of(
-            "port", 5559)));
-  }
+module.exports = {
+  isObject,
+  isPromise,
 }

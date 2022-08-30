@@ -41,9 +41,8 @@
  *     {name: string}|
  *     {partialLinkText: string}|
  *     {tagName: string}|
- *     {xpath: string})}
+ *     {xpath: string})} ByHash
  */
-var ByHash // eslint-disable-line
 
 /**
  * Error thrown if an invalid character is encountered while escaping a CSS

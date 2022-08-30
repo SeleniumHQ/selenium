@@ -32,6 +32,7 @@ const logging = require('./logging')
 const promise = require('./promise')
 const { Session } = require('./session')
 const webElement = require('./webelement')
+const { isObject } = require('./util')
 
 const getAttribute = requireAtom(
   'get-attribute.js',
@@ -572,10 +573,7 @@ function parseHttpResponse(command, httpResponse) {
 
   if (parsed && typeof parsed === 'object') {
     let value = parsed.value
-    let isW3C =
-      value !== null &&
-      typeof value === 'object' &&
-      typeof parsed.status === 'undefined'
+    let isW3C = isObject(value) && typeof parsed.status === 'undefined'
 
     if (!isW3C) {
       error.checkLegacyResponse(parsed)
@@ -645,10 +643,10 @@ function buildPath(path, parameters) {
 // PUBLIC API
 
 module.exports = {
-  Executor: Executor,
-  Client: Client,
-  Request: Request,
-  Response: Response,
+  Executor,
+  Client,
+  Request,
+  Response,
   // Exported for testing.
-  buildPath: buildPath,
+  buildPath,
 }

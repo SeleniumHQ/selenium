@@ -52,7 +52,9 @@ test.suite(function (env) {
   it('can set size of the current window from iframe', async function () {
     await driver.get(test.Pages.iframePage)
 
-    const frame = await driver.findElement({ css: 'iframe[name="iframe1-name"]' })
+    const frame = await driver.findElement({
+      css: 'iframe[name="iframe1-name"]',
+    })
     await driver.switchTo().frame(frame)
     await changeSizeBy(-20, -20)
   })

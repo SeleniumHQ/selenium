@@ -136,7 +136,9 @@ suite(function (env) {
 
   beforeEach(async function () {
     driver = await env.builder().build()
-    await driver.get(fileServer.Pages.virtualAuthenticator)
+    await driver.get(
+      fileServer.Pages.virtualAuthenticator.replace('127.0.0.1', 'localhost')
+    )
     assert.strictEqual(await driver.getTitle(), 'Virtual Authenticator Tests')
   })
 

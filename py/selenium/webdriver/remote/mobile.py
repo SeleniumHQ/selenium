@@ -79,7 +79,7 @@ class Mobile:
         return self._driver.execute(Command.CONTEXT_HANDLES)
 
     @context.setter
-    def context(self, new_context):
+    def context(self, new_context) -> None:
         """
         sets the current context
         """
