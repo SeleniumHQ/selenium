@@ -15,6 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from __future__ import annotations
+
 from hashlib import md5 as md5_hash
 
 from .command import Command
