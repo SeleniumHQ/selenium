@@ -135,7 +135,7 @@ class Select:
         if not matched:
             raise NoSuchElementException("Could not locate element with visible text: %s" % text)
 
-    def deselect_all(self):
+    def deselect_all(self) -> None:
         """Clear all selected entries. This is only valid when the SELECT supports multiple selections.
            throws NotImplementedError If the SELECT does not support multiple selections
         """
