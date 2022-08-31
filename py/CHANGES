@@ -1,8 +1,9 @@
 Selenium (TBA next version)
 * Fix frame_to_be_available_and_switch_to_it() for string inputs (#10963)
-* Implicit non w3c capability conversion for `acceptSslCerts`, `platform` and `version` is now deprecated.
+* Implicit non w3c capability conversion for `acceptSslCerts`, `platform` and `version` is now deprecated
 * Additional type hints
 * Less strict requirements on the version of `certifi`
+* Bugfix options returning `None` when strict_file_interactability, set_window_rect or accept_insecure_certs are not set
 
 
 Selenium 4.4.3
