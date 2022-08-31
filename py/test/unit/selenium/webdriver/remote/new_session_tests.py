@@ -22,9 +22,9 @@ from importlib import import_module
 import pytest
 
 from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.remote import webdriver
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.remote import webdriver
 
 
 def test_converts_oss_capabilities_to_w3c(mocker):
@@ -34,6 +34,17 @@ def test_converts_oss_capabilities_to_w3c(mocker):
     WebDriver(desired_capabilities=deepcopy(oss_caps))
     expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps}}
     mock.assert_called_with(Command.NEW_SESSION, expected_params)
+
+
+@pytest.mark.parametrize("oss_name, val, w3c_name", (
+    ('acceptSslCerts', True, 'acceptInsecureCerts'),
+    ("version", '11', "browserVersion"),
+    ("platform", 'windows', 'platformName')))
+def test_non_compliant_w3c_caps_is_deprecated(oss_name, val, w3c_name):
+    from selenium.webdriver.remote.webdriver import _make_w3c_caps
+    msg = f"{oss_name} is not a w3c capability.  use `{w3c_name}` instead.  This will no longer be converted in 4.7.0"
+    with pytest.warns(DeprecationWarning, match=msg):
+        _ = _make_w3c_caps({oss_name: val})
 
 
 def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
