@@ -157,7 +157,7 @@ class BaseOptions(metaclass=ABCMeta):
         """
         :returns: whether the session accepts insecure certificates
         """
-        return self._caps.get('acceptInsecureCerts')
+        return self._caps.get('acceptInsecureCerts', False)
 
     @accept_insecure_certs.setter
     def accept_insecure_certs(self, value: bool) -> None:
@@ -174,7 +174,7 @@ class BaseOptions(metaclass=ABCMeta):
         """
         :returns: whether session is strict about file interactability
         """
-        return self._caps.get('strictFileInteractability')
+        return self._caps.get('strictFileInteractability', False)
 
     @strict_file_interactability.setter
     def strict_file_interactability(self, value: bool) -> None:
@@ -190,7 +190,7 @@ class BaseOptions(metaclass=ABCMeta):
         """
         :returns: whether the remote end supports setting window size and position
         """
-        return self._caps.get('setWindowRect')
+        return self._caps.get('setWindowRect', False)
 
     @set_window_rect.setter
     def set_window_rect(self, value: bool) -> None:

@@ -58,3 +58,10 @@ def test_enable_mobile_with_device_serial(options):
                           android_activity="crackers",
                           device_serial="1234")
     options.mobile_options["androidDeviceSerial"] == "1234"
+
+
+def test_missing_capabilities_return_false_rather_than_none():
+    options = ArgOptions()
+    assert options.strict_file_interactability is False
+    assert options.set_window_rect is False
+    assert options.accept_insecure_certs is False
