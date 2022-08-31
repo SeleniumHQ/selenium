@@ -75,7 +75,6 @@ _OSS_W3C_CONVERSION = {
     'platform': 'platformName'
 }
 
-
 cdp = None
 
 
@@ -104,7 +103,11 @@ def _make_w3c_caps(caps):
         caps['proxy']['proxyType'] = caps['proxy']['proxyType'].lower()
     for k, v in caps.items():
         if v and k in _OSS_W3C_CONVERSION:
-            always_match[_OSS_W3C_CONVERSION[k]] = v.lower() if k == 'platform' else v
+            # Todo: Remove in 4.7.0 (Deprecated in 4.5.0)
+            w3c_equivalent = _OSS_W3C_CONVERSION[k]
+            warnings.warn(f"{k} is not a w3c capability.  use `{w3c_equivalent}` instead.  This will no longer be"
+                          f" converted in 4.7.0", DeprecationWarning, stacklevel=2)
+            always_match[w3c_equivalent] = v.lower() if k == 'platform' else v
         if k in _W3C_CAPABILITY_NAMES or ':' in k:
             always_match[k] = v
     if profile:
@@ -1191,7 +1194,8 @@ class WebDriver(BaseWebDriver):
         http = urllib3.PoolManager()
         _firefox = False
         if self.caps.get("browserName") == "chrome":
-            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get("debuggerAddress")
+            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get(
+                "debuggerAddress")
         else:
             _firefox = True
             debugger_address = self.caps.get("moz:debuggerAddress")
