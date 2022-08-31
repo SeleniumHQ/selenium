@@ -39,7 +39,7 @@ class Options(ArgOptions):
 
     SAFARI_TECH_PREVIEW = 'Safari Technology Preview'
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._binary_location = None
         self._preferences: dict = {}

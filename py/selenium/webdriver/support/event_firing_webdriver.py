@@ -41,7 +41,7 @@ class EventFiringWebDriver:
     A wrapper around an arbitrary WebDriver instance which supports firing events
     """
 
-    def __init__(self, driver, event_listener):
+    def __init__(self, driver, event_listener) -> None:
         """
         Creates a new instance of the EventFiringWebDriver
 
@@ -165,7 +165,7 @@ class EventFiringWebElement:
     A wrapper around WebElement instance which supports firing events
     """
 
-    def __init__(self, webelement, ef_driver):
+    def __init__(self, webelement, ef_driver) -> None:
         """
         Creates a new instance of the EventFiringWebElement
         """

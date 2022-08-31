@@ -22,7 +22,7 @@ from selenium.webdriver.common.options import ArgOptions
 class Options(ArgOptions):
     KEY = 'webkitgtk:browserOptions'
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._binary_location = ''
         self._overlay_scrollbars_enabled = True
