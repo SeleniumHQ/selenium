@@ -95,9 +95,8 @@ public interface JavascriptExecutor {
    * <p>
    * The default timeout for a script to be executed is 0ms. In most cases, including the examples
    * below, one must set the script timeout
-   * {@link WebDriver.Timeouts#setScriptTimeout(java.time.Duration)} beforehand
+   * {@link WebDriver.Timeouts#scriptTimeout(java.time.Duration)} beforehand
    * to a value sufficiently large enough.
-   *
    *
    * <p>
    * Example #1: Performing a sleep in the browser under test. <pre>{@code
@@ -141,11 +140,10 @@ public interface JavascriptExecutor {
    * criteria. The arguments will be made available to the JavaScript via the "arguments"
    * variable.
    *
-   *
    * @param script The JavaScript to execute.
    * @param args The arguments to the script. May be empty.
    * @return One of Boolean, Long, String, List, Map, WebElement, or null.
-   * @see WebDriver.Timeouts#setScriptTimeout(java.time.Duration)
+   * @see WebDriver.Timeouts#scriptTimeout(java.time.Duration)
    */
   Object executeAsyncScript(String script, Object... args);
 
