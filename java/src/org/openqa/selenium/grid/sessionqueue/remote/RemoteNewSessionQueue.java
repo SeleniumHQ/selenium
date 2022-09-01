@@ -142,9 +142,7 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
-    List<SessionRequest> value = Values.get(response, SESSION_REQUEST_TYPE);
-
-    return value;
+    return Values.get(response, SESSION_REQUEST_TYPE);
   }
 
   @Override
