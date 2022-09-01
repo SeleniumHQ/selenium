@@ -531,7 +531,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToReturnTheNextAvailableBatchThatMatchesStereotypes(Supplier<TestData> supplier) {
+  void shouldBeAbleToReturnTheNextAvailableBatchThatMatchesStereotypes(Supplier<TestData> supplier) {
     setup(supplier);
 
     SessionRequest firstSessionRequest = new SessionRequest(
