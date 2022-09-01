@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.internal.Require;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -183,9 +182,8 @@ public interface JavascriptExecutor {
    * @return The {@link ScriptKey}s of all currently pinned scripts.
    */
   default Set<ScriptKey> getPinnedScripts() {
-    return Collections.unmodifiableSet(UnpinnedScriptKey.getPinnedScripts(this).stream()
-      .map(key -> (ScriptKey) key)
-      .collect(Collectors.toSet()));
+    return UnpinnedScriptKey.getPinnedScripts(this).stream()
+      .map(ScriptKey.class::cast).collect(Collectors.toUnmodifiableSet());
   }
 
   /**
