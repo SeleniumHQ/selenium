@@ -102,6 +102,7 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 public class DistributorTest {
 
   private static final Logger LOG = Logger.getLogger("Distributor Test");
+  private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private final Secret registrationSecret = new Secret("hellim");
   private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
   private Tracer tracer;
@@ -159,7 +160,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
@@ -221,7 +223,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -263,7 +266,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -306,7 +310,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     Distributor distributor = new RemoteDistributor(
       tracer,
       new PassthroughHttpClient.Factory(local),
@@ -345,7 +350,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     distributor.drain(node.getId());
 
@@ -383,7 +389,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -428,7 +435,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -476,7 +484,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -519,7 +528,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     local.add(node);
     local.add(node);
@@ -563,7 +573,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5))
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize)
       .add(heavy)
       .add(medium)
       .add(lightest)
@@ -606,7 +617,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5))
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize)
       .add(leastRecent);
     waitToHaveCapacity(distributor);
 
@@ -690,7 +702,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
     waitForAllNodesToMeetCondition(distributor, 1, DOWN);
@@ -740,7 +753,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     waitToHaveCapacity(distributor);
@@ -780,7 +794,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -835,7 +850,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -875,7 +891,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -920,7 +937,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
     distributor.add(node);
     waitForAllNodesToMeetCondition(distributor, 1, DOWN);
@@ -984,7 +1002,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -1043,7 +1062,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     //Create all three Capability types
     Capabilities edge = new ImmutableCapabilities("browserName", "edge");
@@ -1148,7 +1168,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     local.add(firstNode);
     local.add(secondNode);
@@ -1191,7 +1212,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     local.add(brokenNode);
     local.add(node);
     waitForAllNodesToHaveCapacity(local, 2);

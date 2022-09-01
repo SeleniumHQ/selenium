@@ -73,6 +73,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 public class NewSessionCreationTest {
 
+  private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private Tracer tracer;
   private EventBus bus;
   private HttpClient.Factory clientFactory;
@@ -112,7 +113,8 @@ public class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
@@ -211,7 +213,8 @@ public class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
 
     distributor.add(localNode);
@@ -279,7 +282,8 @@ public class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       true,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
 
     distributor.add(localNode);

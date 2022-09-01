@@ -162,7 +162,8 @@ public class Standalone extends TemplateGridServerCommand {
       registrationSecret,
       distributorOptions.getHealthCheckInterval(),
       distributorOptions.shouldRejectUnsupportedCaps(),
-      newSessionRequestOptions.getSessionRequestRetryInterval());
+      newSessionRequestOptions.getSessionRequestRetryInterval(),
+      distributorOptions.getNewSessionThreadPoolSize());
     combinedHandler.addHandler(distributor);
 
     Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)

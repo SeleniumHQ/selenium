@@ -38,6 +38,8 @@ public class DistributorOptions {
   static final String DEFAULT_SLOT_SELECTOR_IMPLEMENTATION =
     "org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector";
   static final boolean DEFAULT_REJECT_UNSUPPORTED_CAPS = false;
+  static final int DEFAULT_NEWSESSION_THREADPOOL_SIZE =
+    Runtime.getRuntime().availableProcessors() * 3;
   private final Config config;
 
   public DistributorOptions(Config config) {
@@ -115,6 +117,14 @@ public class DistributorOptions {
       "slot-selector",
       SlotSelector.class,
       DEFAULT_SLOT_SELECTOR_IMPLEMENTATION);
+  }
+
+  public int getNewSessionThreadPoolSize() {
+    // If the user sets 0 or less, we default to 1 to ensure Grid is running.
+    return Math.max(
+      config.getInt(DISTRIBUTOR_SECTION, "newsession-threadpool-size")
+        .orElse(DEFAULT_NEWSESSION_THREADPOOL_SIZE),
+      1);
   }
 
   public boolean shouldRejectUnsupportedCaps() {

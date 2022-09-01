@@ -167,15 +167,8 @@ public class LocalDistributor extends Distributor implements Closeable {
         return thread;
       });
 
-  private final Executor sessionCreatorExecutor = Executors.newFixedThreadPool(
-    Runtime.getRuntime().availableProcessors(),
-    r -> {
-      Thread thread = new Thread(r);
-      thread.setName("Local Distributor - Session Creation");
-      thread.setDaemon(true);
-      return thread;
-    }
-  );
+  private final Executor sessionCreatorExecutor;
+
   private final NewSessionQueue sessionQueue;
 
   private final boolean rejectUnsupportedCaps;
@@ -190,7 +183,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     Secret registrationSecret,
     Duration healthcheckInterval,
     boolean rejectUnsupportedCaps,
-    Duration sessionRequestRetryInterval) {
+    Duration sessionRequestRetryInterval,
+    int newSessionThreadPoolSize) {
     super(tracer, clientFactory, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -215,6 +209,16 @@ public class LocalDistributor extends Distributor implements Closeable {
         register(nodeStatus);
       }
     }));
+
+    sessionCreatorExecutor =  Executors.newFixedThreadPool(
+      newSessionThreadPoolSize,
+      r -> {
+        Thread thread = new Thread(r);
+        thread.setName("Local Distributor - Session Creation");
+        thread.setDaemon(true);
+        return thread;
+      }
+    );
 
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
@@ -261,7 +265,8 @@ public class LocalDistributor extends Distributor implements Closeable {
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval(),
       distributorOptions.shouldRejectUnsupportedCaps(),
-      newSessionQueueOptions.getSessionRequestRetryInterval());
+      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      distributorOptions.getNewSessionThreadPoolSize());
   }
 
   @Override
