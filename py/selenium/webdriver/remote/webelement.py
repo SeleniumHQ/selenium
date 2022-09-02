@@ -457,11 +457,11 @@ class WebElement(BaseWebElement):
         try:
             return self._execute(Command.UPLOAD_FILE, {'file': content})['value']
         except WebDriverException as e:
-            if "Unrecognized command: POST" in e.__str__():
+            if "Unrecognized command: POST" in str(e):
                 return filename
-            elif "Command not found: POST " in e.__str__():
+            elif "Command not found: POST " in str(e):
                 return filename
-            elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in e.__str__():
+            elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in str(e):
                 return filename
             else:
                 raise
