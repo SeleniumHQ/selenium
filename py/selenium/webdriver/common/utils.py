@@ -136,15 +136,16 @@ def is_url_connectable(port: Union[int, str]) -> bool:
 
 def keys_to_typing(value: Iterable[AnyKey]) -> List[str]:
     """Processes the values that will be typed in the element."""
-    typing: List[str] = []
+    _typing: List[str] = []
     for val in value:
         if isinstance(val, Keys):
-            typing.append(val)
-        elif isinstance(val, int) or isinstance(val, float):
+            # Todo: Does this even work?
+            _typing.append(val)
+        elif isinstance(val, (int, float)):
             val = str(val)
             for i in range(len(val)):
-                typing.append(val[i])
+                _typing.append(val[i])
         else:
             for i in range(len(val)):
-                typing.append(val[i])
-    return typing
+                _typing.append(val[i])
+    return _typing
