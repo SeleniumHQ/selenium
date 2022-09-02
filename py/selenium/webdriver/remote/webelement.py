@@ -443,7 +443,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return int(md5_hash(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
