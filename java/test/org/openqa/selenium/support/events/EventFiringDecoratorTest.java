@@ -399,7 +399,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldBeAbleToDecorateAChildClassOfWebDriver() {
+  void shouldBeAbleToDecorateAChildClassOfWebDriver() {
     RemoteWebDriver driver = mock(RemoteWebDriver.class);
     when(driver.getCapabilities()).thenReturn(new ImmutableCapabilities("browserName", "firefox"));
 
@@ -419,7 +419,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldBeAbleToCallDecoratedMethodForDecoratedChildClass() {
+  void shouldBeAbleToCallDecoratedMethodForDecoratedChildClass() {
     RemoteWebDriver driver = mock(RemoteWebDriver.class);
     when(driver.getWindowHandle()).thenThrow(new WebDriverException());
 
