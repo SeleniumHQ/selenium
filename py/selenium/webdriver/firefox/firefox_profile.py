@@ -59,7 +59,7 @@ class FirefoxProfile:
                       DeprecationWarning, stacklevel=2)
         if not FirefoxProfile.DEFAULT_PREFERENCES:
             with open(os.path.join(os.path.dirname(__file__),
-                                   WEBDRIVER_PREFERENCES)) as default_prefs:
+                                   WEBDRIVER_PREFERENCES), encoding='utf-8') as default_prefs:
                 FirefoxProfile.DEFAULT_PREFERENCES = json.load(default_prefs)
 
         self.default_preferences = copy.deepcopy(
@@ -180,7 +180,7 @@ class FirefoxProfile:
         """
         writes the current user prefs dictionary to disk
         """
-        with open(self.userPrefs, "w") as f:
+        with open(self.userPrefs, "w", encoding='utf-8') as f:
             for key, value in user_prefs.items():
                 f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
@@ -189,7 +189,7 @@ class FirefoxProfile:
 
         PREF_RE = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         try:
-            with open(userjs) as f:
+            with open(userjs, encoding='utf-8') as f:
                 for usr in f:
                     matches = re.search(PREF_RE, usr)
                     try:
@@ -322,10 +322,10 @@ class FirefoxProfile:
             elif os.path.isdir(addon_path):
                 manifest_json_filename = os.path.join(addon_path, 'manifest.json')
                 if os.path.exists(manifest_json_filename):
-                    with open(manifest_json_filename) as f:
+                    with open(manifest_json_filename, encoding='utf-8') as f:
                         return parse_manifest_json(f.read())
 
-                with open(os.path.join(addon_path, 'install.rdf')) as f:
+                with open(os.path.join(addon_path, 'install.rdf'), encoding='utf-8') as f:
                     manifest = f.read()
             else:
                 raise OSError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
