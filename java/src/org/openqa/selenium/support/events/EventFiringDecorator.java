@@ -165,6 +165,11 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     this.listeners = Arrays.asList(listeners);
   }
 
+  public EventFiringDecorator(Class<T> targetClass, WebDriverListener... listeners) {
+    super(targetClass);
+    this.listeners = Arrays.asList(listeners);
+  }
+
   @Override
   public void beforeCall(Decorated<?> target, Method method, Object[] args) {
     listeners.forEach(listener -> fireBeforeEvents(listener, target, method, args));
