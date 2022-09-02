@@ -63,7 +63,7 @@ class PointerInput(InputDevice):
         return {"type": self.type,
                 "parameters": {"pointerType": self.kind},
                 "id": self.name,
-                "actions": [acts for acts in self.actions]}
+                "actions": self.actions}
 
     def _convert_keys(self, actions):
         out = {}
