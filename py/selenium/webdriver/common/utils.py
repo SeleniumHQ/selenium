@@ -126,10 +126,7 @@ def is_url_connectable(port: Union[int, str]) -> bool:
 
     try:
         res = url_request.urlopen("http://127.0.0.1:%s/status" % port)
-        if res.getcode() == 200:
-            return True
-        else:
-            return False
+        return res.getcode() == 200
     except Exception:
         return False
 

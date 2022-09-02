@@ -402,9 +402,8 @@ class RemoteConnection:
                 if 'value' not in data:
                     data['value'] = None
                 return data
-            else:
-                data = {'status': 0, 'value': data}
-                return data
+            data = {'status': 0, 'value': data}
+            return data
         finally:
             LOGGER.debug("Finished Request")
             response.close()
