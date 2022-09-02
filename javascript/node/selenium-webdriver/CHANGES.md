@@ -1,3 +1,35 @@
+## v4.5.0
+
+#### :rocket: New Feature
+
+* Adds 'Select' support package
+  * selectByIndex
+  * selectByValue
+  * selectByVisibleText
+  * getAllSelectedOptions
+  * getFirstSelectedOption
+  * deselectAll
+  * deselectByVisibleText
+  * deselectByIndex
+  * deselectByValue
+* Add support for Actions API sendKeys to designated element
+* Adds mouse button enum for forward and backward navigation
+
+#### :bug: Bug Fix
+
+* Set min node support to 14.x.x (issue 1 in #10970)
+* fix: geckodriver session with node 18.x.x (issue 2 in #10970)
+
+#### :nail_care: Polish
+
+* tests: Quit driver instance after each test
+* tests: Adds select by multiple(index,value, text) tests
+* chore/code style changes, add util (#10975)
+* chore/code style changes to common format (#10964)
+* destructuring exports
+* Moving from static to const to make js-dossier happy
+* Removing circular dependency Between webdriver.js and http.js
+
 ## v4.4.0
 * Add support CDP 104 and remove CDP 101
 
@@ -1129,3 +1161,4 @@ major version release (i.e. 1.0.0).
 * Initial release for npm:
 
         npm install selenium-webdriver
+
