@@ -320,7 +320,7 @@ class Proxy:
         self.socksVersion = value
 
     def _verify_proxy_type_compatibility(self, compatible_proxy):
-        if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatible_proxy:
+        if self.proxyType not in (ProxyType.UNSPECIFIED, compatible_proxy):
             raise Exception(f"Specified proxy type ({compatible_proxy}) not compatible with current setting ({self.proxyType})")
 
     def add_to_capabilities(self, capabilities):
