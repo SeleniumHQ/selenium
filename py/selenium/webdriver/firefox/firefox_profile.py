@@ -345,7 +345,7 @@ class FirefoxProfile:
             for node in description.childNodes:
                 # Remove the namespace prefix from the tag for comparison
                 entry = node.nodeName.replace(em, "")
-                if entry in details.keys():
+                if entry in details:
                     details.update({entry: get_text(node)})
             if not details.get('id'):
                 for i in range(description.attributes.length):
