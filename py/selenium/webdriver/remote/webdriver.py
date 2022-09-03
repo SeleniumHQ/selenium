@@ -160,7 +160,7 @@ def create_matches(options: List[BaseOptions]) -> Dict:
         always[k] = v
 
     for i in opts:
-        for k in always.keys():
+        for k in always:
             del i[k]
 
     capabilities["capabilities"]["alwaysMatch"] = always
