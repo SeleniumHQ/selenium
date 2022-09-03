@@ -222,7 +222,7 @@ class RemoteConnection:
             Command.GET_ELEMENT_TEXT: ('GET', '/session/$sessionId/element/$id/text'),
             Command.SEND_KEYS_TO_ELEMENT:
                 ('POST', '/session/$sessionId/element/$id/value'),
-            Command.UPLOAD_FILE: ('POST', "/session/$sessionId/se/file"),
+            Command.UPLOAD_FILE: ('POST', "/session/$sessionId/file"),
             Command.GET_ELEMENT_TAG_NAME:
                 ('GET', '/session/$sessionId/element/$id/name'),
             Command.IS_ELEMENT_SELECTED:
