@@ -132,7 +132,6 @@ class SwitchTo:
                 driver.switch_to.window('main')
         """
         self._w3c_window(window_name)
-        return
 
     def _w3c_window(self, window_name):
         def send_handle(h):
