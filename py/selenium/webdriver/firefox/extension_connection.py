@@ -65,14 +65,14 @@ class ExtensionConnection(RemoteConnection):
                             {'desiredCapabilities': DesiredCapabilities.FIREFOX})
 
     @classmethod
-    def connect_and_quit(self):
+    def connect_and_quit(cls):
         """Connects to an running browser and quit immediately."""
-        self._request('%s/extensions/firefox/quit' % _URL)
+        cls._request('%s/extensions/firefox/quit' % _URL)
 
     @classmethod
-    def is_connectable(self):
+    def is_connectable(cls):
         """Tries to connect to the extension but do not retrieve context."""
-        utils.is_connectable(self.profile.port)
+        utils.is_connectable(cls.profile.port)
 
 
 class ExtensionConnectionError(Exception):

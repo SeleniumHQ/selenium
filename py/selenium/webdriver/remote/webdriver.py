@@ -160,7 +160,7 @@ def create_matches(options: List[BaseOptions]) -> Dict:
         always[k] = v
 
     for i in opts:
-        for k in always.keys():
+        for k in always:
             del i[k]
 
     capabilities["capabilities"]["alwaysMatch"] = always
@@ -253,8 +253,7 @@ class WebDriver(BaseWebDriver):
             if desired_capabilities:
                 if not isinstance(desired_capabilities, dict):
                     raise WebDriverException("Desired Capabilities must be a dictionary")
-                else:
-                    capabilities.update(desired_capabilities)
+                capabilities.update(desired_capabilities)
         self.command_executor = command_executor
         if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(capabilities, command_executor=command_executor,
@@ -329,8 +328,7 @@ class WebDriver(BaseWebDriver):
         """
         if 'browserName' in self.caps:
             return self.caps['browserName']
-        else:
-            raise KeyError('browserName not specified in session capabilities')
+        raise KeyError('browserName not specified in session capabilities')
 
     def start_client(self):
         """

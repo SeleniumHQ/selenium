@@ -17,7 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 require File.expand_path('../spec_helper', __dir__)
 require 'selenium/webdriver/support/cdp_client_generator'
 

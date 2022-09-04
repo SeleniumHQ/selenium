@@ -126,8 +126,7 @@ class Service:
         for x in range(30):
             if not self.is_connectable():
                 break
-            else:
-                sleep(1)
+            sleep(1)
 
     def stop(self):
         """

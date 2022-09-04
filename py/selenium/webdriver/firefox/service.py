@@ -46,7 +46,7 @@ class Service(service.Service):
             in the services' environment.
 
         """
-        log_file = open(log_path, "a+") if log_path else None
+        log_file = open(log_path, "a+", encoding='utf-8') if log_path else None
 
         super().__init__(executable_path, port=port, log_file=log_file, env=env)
         self.service_args = service_args or []

@@ -126,25 +126,23 @@ def is_url_connectable(port: Union[int, str]) -> bool:
 
     try:
         res = url_request.urlopen("http://127.0.0.1:%s/status" % port)
-        if res.getcode() == 200:
-            return True
-        else:
-            return False
+        return res.getcode() == 200
     except Exception:
         return False
 
 
 def keys_to_typing(value: Iterable[AnyKey]) -> List[str]:
     """Processes the values that will be typed in the element."""
-    typing: List[str] = []
+    _typing: List[str] = []
     for val in value:
         if isinstance(val, Keys):
-            typing.append(val)
-        elif isinstance(val, int) or isinstance(val, float):
+            # Todo: Does this even work?
+            _typing.append(val)
+        elif isinstance(val, (int, float)):
             val = str(val)
             for i in range(len(val)):
-                typing.append(val[i])
+                _typing.append(val[i])
         else:
             for i in range(len(val)):
-                typing.append(val[i])
-    return typing
+                _typing.append(val[i])
+    return _typing

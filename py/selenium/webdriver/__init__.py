@@ -50,7 +50,6 @@ __all__ = [
     "Edge",
     "ChromiumEdge",
     "EdgeOptions",
-    "Opera",
     "Safari",
     "WebKitGTK",
     "WebKitGTKOptions",

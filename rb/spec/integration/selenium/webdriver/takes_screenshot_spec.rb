@@ -109,7 +109,7 @@ module Selenium
           end
         end
 
-        it 'does not take full page screenshot', exclude: {browser: :firefox} do
+        it 'does not take full page screenshot', except: {browser: :firefox} do
           expect {
             driver.save_screenshot path, full_page: true
           }.to raise_exception(Error::UnsupportedOperationError, /Full Page Screenshots are not supported/)
