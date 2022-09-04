@@ -154,20 +154,19 @@ class FirefoxProfile:
         self.set_preference("webdriver_assume_untrusted_issuer", value)
 
     @property
-    def encoded(self):
+    def encoded(self) -> str:
         """
         A zipped, base64 encoded string of profile directory
         for use with remote WebDriver JSON wire protocol
         """
         self.update_preferences()
         fp = BytesIO()
-        zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
-        path_root = len(self.path) + 1  # account for trailing slash
-        for base, dirs, files in os.walk(self.path):
-            for fyle in files:
-                filename = os.path.join(base, fyle)
-                zipped.write(filename, filename[path_root:])
-        zipped.close()
+        with zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED) as zipped:
+            path_root = len(self.path) + 1  # account for trailing slash
+            for base, _, files in os.walk(self.path):
+                for fyle in files:
+                    filename = os.path.join(base, fyle)
+                    zipped.write(filename, filename[path_root:])
         return base64.b64encode(fp.getvalue()).decode('UTF-8')
 
     def _create_tempfolder(self):
@@ -185,13 +184,12 @@ class FirefoxProfile:
                 f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
     def _read_existing_userjs(self, userjs):
-        import warnings
 
-        PREF_RE = re.compile(r'user_pref\("(.*)",\s(.*)\)')
+        pref_pattern = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         try:
             with open(userjs, encoding='utf-8') as f:
                 for usr in f:
-                    matches = re.search(PREF_RE, usr)
+                    matches = pref_pattern.search(usr)
                     try:
                         self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
                     except Exception:
