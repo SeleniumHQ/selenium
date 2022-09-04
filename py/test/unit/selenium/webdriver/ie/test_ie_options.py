@@ -18,7 +18,8 @@
 
 import pytest
 
-from selenium.webdriver.ie.options import ElementScrollBehavior, Options
+from selenium.webdriver.ie.options import ElementScrollBehavior
+from selenium.webdriver.ie.options import Options
 
 TIMEOUT = 30
 

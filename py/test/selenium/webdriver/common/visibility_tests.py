@@ -17,10 +17,8 @@
 
 import pytest
 
-from selenium.common.exceptions import (
-    ElementNotInteractableException,
-    ElementNotVisibleException,
-)
+from selenium.common.exceptions import ElementNotInteractableException
+from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.common.by import By
 
 

@@ -15,7 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from base64 import urlsafe_b64decode, urlsafe_b64encode
+from base64 import urlsafe_b64decode
+from base64 import urlsafe_b64encode
 from typing import Tuple
 
 import pytest

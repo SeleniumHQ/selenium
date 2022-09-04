@@ -17,11 +17,9 @@
 
 import pytest
 
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    NoSuchFrameException,
-    WebDriverException,
-)
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchFrameException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait

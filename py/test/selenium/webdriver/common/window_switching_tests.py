@@ -17,7 +17,8 @@
 
 import pytest
 
-from selenium.common.exceptions import NoSuchWindowException, WebDriverException
+from selenium.common.exceptions import NoSuchWindowException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.window import WindowTypes
 from selenium.webdriver.support import expected_conditions as EC

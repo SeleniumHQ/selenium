@@ -17,10 +17,8 @@
 
 import pytest
 
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    UnexpectedTagNameException,
-)
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import UnexpectedTagNameException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 
