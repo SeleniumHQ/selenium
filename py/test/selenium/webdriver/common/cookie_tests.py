@@ -16,8 +16,8 @@
 # under the License.
 
 import calendar
-import time
 import random
+import time
 
 import pytest
 

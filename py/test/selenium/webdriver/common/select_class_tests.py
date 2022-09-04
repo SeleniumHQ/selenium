@@ -19,9 +19,10 @@ import pytest
 
 from selenium.common.exceptions import (
     NoSuchElementException,
-    UnexpectedTagNameException)
-from selenium.webdriver.support.ui import Select
+    UnexpectedTagNameException,
+)
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 
 disabledSelect = {'name': 'no-select', 'values': ['Foo']}
 singleSelectValues1 = {'name': 'selectomatic', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}

@@ -15,17 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import List
-import pytest
 from base64 import b64decode, urlsafe_b64decode, urlsafe_b64encode
+from typing import List
+
+import pytest
 
 from selenium.common.exceptions import InvalidArgumentException
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.virtual_authenticator import (
     Credential,
     VirtualAuthenticatorOptions,
 )
-
+from selenium.webdriver.remote.webdriver import WebDriver
 
 # working Key
 BASE64__ENCODED_PK = '''

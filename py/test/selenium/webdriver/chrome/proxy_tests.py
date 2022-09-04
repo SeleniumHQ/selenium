@@ -16,6 +16,7 @@
 # under the License.
 
 import os
+
 import urllib3
 
 from selenium import webdriver

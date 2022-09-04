@@ -16,8 +16,9 @@
 # under the License.
 
 
-from selenium.webdriver.ie.options import Options, ElementScrollBehavior
 import pytest
+
+from selenium.webdriver.ie.options import ElementScrollBehavior, Options
 
 TIMEOUT = 30
 
