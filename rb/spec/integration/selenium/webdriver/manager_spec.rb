@@ -81,10 +81,7 @@ module Selenium
           expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
         end
 
-        it 'should not allow domain to be set for localhost',
-           exclude: [{browser: %i[chrome edge],
-                      reason: "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3733"}],
-           except: {browser: %i[safari safari_preview]} do
+        it 'should not allow domain to be set for localhost', except: {browser: %i[safari safari_preview]} do
           expect {
             driver.manage.add_cookie name: 'domain',
                                      value: 'localhost',
