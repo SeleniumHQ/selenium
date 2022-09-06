@@ -281,7 +281,8 @@ public class FirefoxDriver extends RemoteWebDriver
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
     org.openqa.selenium.bidi.Connection connection =
-      new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
+      new org.openqa.selenium.bidi.Connection(wsClient,
+                                              wsUri.toString().replace("127.0.0.1", "localhost"));
 
     biDi = new BiDi(connection);
 
