@@ -204,6 +204,8 @@ class ErrorHandler:
         if not value:
             value = response['value']
         if isinstance(value, str):
+            if len(value) == 0:
+                raise exception_class("unknown status: " + str(status))
             raise exception_class(value)
         if message == "" and 'message' in value:
             message = value['message']
