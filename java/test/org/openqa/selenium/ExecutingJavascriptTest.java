@@ -45,7 +45,6 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.By.id;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
@@ -491,16 +490,12 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
-  public void testShouldBeAbleToReturnADateObject() {
+  public void testShouldBeAbleToReturnADateObject() throws ParseException {
     driver.get(pages.simpleTestPage);
 
     String date = (String) executeScript("return new Date();");
 
-    try {
-      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
-    } catch (ParseException e) {
-      fail();
-    }
+    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(date);
   }
 
   @Test
