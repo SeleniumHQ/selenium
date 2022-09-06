@@ -31,7 +31,7 @@ public class TestGet extends InternalSelenseTestBase {
     selenium.open("test_get.html");
     // IE uppercases the property names of the style.
     // Firefox lowercases the property names of the style.
-    // IE omits the trailing semi-colon.
+    // IE omits the trailing semicolon.
     verifyTrue(Pattern.compile("(width|WIDTH): 644px; (height|HEIGHT): 41px(;?)")
         .matcher(selenium.getAttribute("//img[@alt='banner']@style")).find());
     // This asserts on the current behavior of selArrayToString(). Commas and
