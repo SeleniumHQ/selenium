@@ -49,7 +49,7 @@ public class SeleneseTestBase {
   /** Use this object to run all of your selenium tests */
   protected Selenium selenium;
 
-  protected StringBuffer verificationErrors = new StringBuffer();
+  protected StringBuilder verificationErrors = new StringBuilder();
 
   public SeleneseTestBase() {
     super();
@@ -184,7 +184,7 @@ public class SeleneseTestBase {
    */
   public void verifyEquals(boolean expected, boolean actual) {
     try {
-      assertEquals(Boolean.valueOf(expected), Boolean.valueOf(actual));
+      assertEquals(expected, actual);
     } catch (Error e) {
       verificationErrors.append(throwableToString(e));
     }
@@ -346,10 +346,7 @@ public class SeleneseTestBase {
   }
 
   private static String verifyEqualsAndReturnComparisonDumpIfNot(String[] expected, String[] actual) {
-    boolean misMatch = false;
-    if (expected.length != actual.length) {
-      misMatch = true;
-    }
+    boolean misMatch = expected.length != actual.length;
     for (int j = 0; j < expected.length; j++) {
       if (!seleniumEquals(expected[j], actual[j])) {
         misMatch = true;
@@ -364,9 +361,9 @@ public class SeleneseTestBase {
   }
 
   private static String stringArrayToString(String[] sa) {
-    StringBuffer sb = new StringBuffer("{");
-    for (int j = 0; j < sa.length; j++) {
-      sb.append(" ").append("\"").append(sa[j]).append("\"");
+    StringBuilder sb = new StringBuilder("{");
+    for (String s : sa) {
+      sb.append(" ").append("\"").append(s).append("\"");
     }
     sb.append(" }");
     return sb.toString();
@@ -380,7 +377,7 @@ public class SeleneseTestBase {
   }
 
   public static String join(String[] sa, char c) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int j = 0; j < sa.length; j++) {
       sb.append(sa[j]);
       if (j < sa.length - 1) {
@@ -477,7 +474,7 @@ public class SeleneseTestBase {
 
   /** Clears out the list of verification errors */
   public void clearVerificationErrors() {
-    verificationErrors = new StringBuffer();
+    verificationErrors = new StringBuilder();
   }
 
   /** checks for verification errors and stops the browser

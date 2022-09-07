@@ -46,8 +46,8 @@ import java.util.List;
 public class HttpCommandProcessor implements CommandProcessor {
 
   private String pathToServlet;
-  private String browserStartCommand;
-  private String browserURL;
+  private final String browserStartCommand;
+  private final String browserURL;
   private String sessionId;
   private String extensionJs;
   private String rcServerLocation;
@@ -65,8 +65,7 @@ public class HttpCommandProcessor implements CommandProcessor {
    */
   public HttpCommandProcessor(String serverHost, int serverPort, String browserStartCommand,
       String browserURL) {
-    rcServerLocation = serverHost +
-        ":" + Integer.toString(serverPort);
+    rcServerLocation = serverHost + ":" + serverPort;
     this.pathToServlet = "http://" + rcServerLocation + "/selenium-server/driver/";
     this.browserStartCommand = browserStartCommand;
     this.browserURL = browserURL;
@@ -131,7 +130,7 @@ public class HttpCommandProcessor implements CommandProcessor {
   }
 
   private String stringContentsOfInputStream(Reader rdr) throws IOException {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     int c;
     try {
       while ((c = rdr.read()) != -1) {
@@ -219,7 +218,7 @@ public class HttpCommandProcessor implements CommandProcessor {
   }
 
   private String buildCommandBody(String command) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append(command);
     if (sessionId != null) {
       sb.append("&sessionId=");
@@ -307,13 +306,13 @@ public class HttpCommandProcessor implements CommandProcessor {
    */
   public static String[] parseCSV(String input) {
     List<String> output = new ArrayList<>();
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (int i = 0; i < input.length(); i++) {
       char c = input.charAt(i);
       switch (c) {
         case ',':
           output.add(sb.toString());
-          sb = new StringBuffer();
+          sb = new StringBuilder();
           continue;
         case '\\':
           i++;
@@ -324,7 +323,7 @@ public class HttpCommandProcessor implements CommandProcessor {
       }
     }
     output.add(sb.toString());
-    return output.toArray(new String[output.size()]);
+    return output.toArray(new String[0]);
   }
 
   @Override
@@ -338,7 +337,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     }
     if (n instanceof Long && n.intValue() == n.longValue()) {
       // SRC-315 we should return Integers if possible
-      return Integer.valueOf(n.intValue());
+      return n.intValue();
     }
     return n;
   }
