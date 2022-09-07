@@ -45,7 +45,7 @@ public class IgnoreComparator {
     return ignore != null && shouldIgnore(Stream.of(ignore));
   }
 
-  private boolean shouldIgnore(Stream<Ignore> ignoreList) {
+  public boolean shouldIgnore(Stream<Ignore> ignoreList) {
     return ignoreList.anyMatch(
       driver -> (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
                 && ((!driver.travis() || TestUtilities.isOnTravis())
