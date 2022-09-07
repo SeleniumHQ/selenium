@@ -171,7 +171,7 @@ public class TextHandlingTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
-  public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
+  public void testShouldRetainTheFormattingOfTextWithinAPreElementThatIsWithinARegularBlock() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("div-with-pre")).getText();
 

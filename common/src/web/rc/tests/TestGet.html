@@ -28,7 +28,7 @@ Copyright 2011-2015 Software Freedom Conservancy
       </td>
     </tr>
     <!-- test API getters -->
-    
+
     <tr>
       <td>open</td>
       <td>../tests/html/test_get.html</td>
@@ -37,13 +37,13 @@ Copyright 2011-2015 Software Freedom Conservancy
 
     <!-- IE uppercases the property names of the style.
          Firefox lowercases the property names of the style.
-         IE omits the trailing semi-colon. -->
+         IE omits the trailing semicolon. -->
     <tr>
       <td>verifyAttribute</td>
       <td>//img[@alt='banner']@style</td>
       <td>regexp:(width|WIDTH): 644px; (height|HEIGHT): 41px(;?)</td>
     </tr>
-    
+
     <!-- This asserts on the current behavior of selArrayToString(). Commas and
          backslashes are escaped in array values. Backslash-craziness!! -->
     <tr>
