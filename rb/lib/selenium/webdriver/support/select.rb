@@ -218,6 +218,8 @@ module Selenium
         end
 
         def select_option(option)
+          raise Error::UnsupportedOperationError, 'You may not select a disabled option' unless option.enabled?
+
           option.click unless option.selected?
         end
 
