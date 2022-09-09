@@ -26,8 +26,11 @@ module Selenium
         #
 
         def initialize(element)
-          tag_name = element.tag_name
+          unless element.enabled?
+            raise Error::UnsupportedOperationError, 'Select element is disabled and may not be used.'
+          end
 
+          tag_name = element.tag_name
           raise ArgumentError, "unexpected tag name #{tag_name.inspect}" unless tag_name.casecmp('select').zero?
 
           @element = element
