@@ -207,6 +207,8 @@ class Select:
 
     def _set_selected(self, option) -> None:
         if not option.is_selected():
+            if not option.is_enabled():
+                raise NotImplementedError("You may not select a disabled option")
             option.click()
 
     def _unset_selected(self, option) -> None:
