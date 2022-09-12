@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 #
-# Contributing to Chrome DevTools Protocol: https://docs.google.com/document/d/1c-COD2kaK__5iMM5SEx-PzNA7HFmgttcYfOHHX0HaOM/edit?usp=sharing
+# Contributing to Chrome DevTools Protocol: https://goo.gle/devtools-contribution-guide-cdp
 
 version
   major 1
@@ -168,6 +168,8 @@ experimental domain Accessibility
       optional array of AXProperty ignoredReasons
       # This `Node`'s role, whether explicit or implicit.
       optional AXValue role
+      # This `Node`'s Chrome raw role.
+      optional AXValue chromeRole
       # The accessible name for this `Node`.
       optional AXValue name
       # The accessible description for this `Node`.
@@ -697,14 +699,12 @@ experimental domain Audits
   type AttributionReportingIssueType extends string
     enum
       PermissionPolicyDisabled
-      InvalidAttributionSourceEventId
       AttributionSourceUntrustworthyOrigin
       AttributionUntrustworthyOrigin
-      InvalidAttributionSourceExpiry
-      InvalidAttributionSourcePriority
+      InvalidHeader
 
   # Details for issues around "Attribution Reporting API" usage.
-  # Explainer: https://github.com/WICG/conversion-measurement-api
+  # Explainer: https://github.com/WICG/attribution-reporting-api
   type AttributionReportingIssueDetails extends object
     properties
       AttributionReportingIssueType violationType
@@ -743,26 +743,66 @@ experimental domain Audits
 
   type DeprecationIssueType extends string
     enum
+      AuthorizationCoveredByWildcard
+      CanRequestURLHTTPContainingNewline
+      ChromeLoadTimesConnectionInfo
+      ChromeLoadTimesFirstPaintAfterLoadTime
+      ChromeLoadTimesWasAlternateProtocolAvailable
+      CookieWithTruncatingChar
+      CrossOriginAccessBasedOnDocumentDomain
+      CrossOriginWindowAlert
+      CrossOriginWindowConfirm
+      CSSSelectorInternalMediaControlsOverlayCastButton
       DeprecationExample
-      Untranslated
+      DocumentDomainSettingWithoutOriginAgentClusterHeader
+      EventPath
+      ExpectCTHeader
+      GeolocationInsecureOrigin
+      GeolocationInsecureOriginDeprecatedNotRemoved
+      GetUserMediaInsecureOrigin
+      HostCandidateAttributeGetter
+      IdentityInCanMakePaymentEvent
+      InsecurePrivateNetworkSubresourceRequest
+      LegacyConstraintGoogIPv6
+      LocalCSSFileExtensionRejected
+      MediaSourceAbortRemove
+      MediaSourceDurationTruncatingBuffered
+      NavigateEventRestoreScroll
+      NavigateEventTransitionWhile
+      NoSysexWebMIDIWithoutPermission
+      NotificationInsecureOrigin
+      NotificationPermissionRequestedIframe
+      ObsoleteWebRtcCipherSuite
+      OpenWebDatabaseInsecureContext
+      OverflowVisibleOnReplacedElement
+      PictureSourceSrc
+      PrefixedCancelAnimationFrame
+      PrefixedRequestAnimationFrame
+      PrefixedStorageInfo
+      PrefixedVideoDisplayingFullscreen
+      PrefixedVideoEnterFullscreen
+      PrefixedVideoExitFullScreen
+      PrefixedVideoSupportsFullscreen
+      RangeExpand
+      RequestedSubresourceWithEmbeddedCredentials
+      RTCConstraintEnableDtlsSrtpFalse
+      RTCConstraintEnableDtlsSrtpTrue
+      RTCPeerConnectionComplexPlanBSdpUsingDefaultSdpSemantics
+      RTCPeerConnectionSdpSemanticsPlanB
+      RtcpMuxPolicyNegotiate
+      SharedArrayBufferConstructedWithoutIsolation
+      TextToSpeech_DisallowedByAutoplay
+      V8SharedArrayBufferConstructedInExtensionWithoutIsolation
+      XHRJSONEncodingDetection
+      XMLHttpRequestSynchronousInNonWorkerOutsideBeforeUnload
+      XRSupportsSession
 
   # This issue tracks information needed to print a deprecation message.
-  # The formatting is inherited from the old console.log version, see more at:
-  # https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/deprecation.cc
-  # TODO(crbug.com/1264960): Re-work format to add i18n support per:
-  # https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/README.md
+  # https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md
   type DeprecationIssueDetails extends object
     properties
       optional AffectedFrame affectedFrame
       SourceCodeLocation sourceCodeLocation
-      # The content of an untranslated deprecation issue,
-      # e.g. "window.inefficientLegacyStorageMethod will be removed in M97,
-      # around January 2022. Please use Web Storage or Indexed Database
-      # instead. This standard was abandoned in January, 1970. See
-      # https://www.chromestatus.com/feature/5684870116278272 for more details."
-      deprecated optional string message
-      # The id of an untranslated deprecation issue e.g. PrefixedStorageInfo.
-      deprecated optional string deprecationType
       DeprecationIssueType type
 
   type ClientHintIssueReason extends string
@@ -1296,6 +1336,8 @@ experimental domain CSS
     properties
       # Pseudo element type.
       DOM.PseudoType pseudoType
+      # Pseudo element custom ident.
+      optional string pseudoIdentifier
       # Matches of CSS rules applicable to the pseudo style.
       array of RuleMatch matches
 
@@ -1406,6 +1448,9 @@ experimental domain CSS
       # Cascade layer array. Contains the layer hierarchy that this rule belongs to starting
       # with the innermost layer and going outwards.
       experimental optional array of CSSLayer layers
+      # @scope CSS at-rule array.
+      # The array enumerates @scope at-rules starting with the innermost one, going outwards.
+      experimental optional array of CSSScope scopes
 
   # CSS coverage information.
   type RuleUsage extends object
@@ -1555,6 +1600,17 @@ experimental domain CSS
       # Identifier of the stylesheet containing this object (if exists).
       optional StyleSheetId styleSheetId
 
+  # CSS Scope at-rule descriptor.
+  experimental type CSSScope extends object
+    properties
+      # Scope rule text.
+      string text
+      # The associated rule header range in the enclosing stylesheet (if
+      # available).
+      optional SourceRange range
+      # Identifier of the stylesheet containing this object (if exists).
+      optional StyleSheetId styleSheetId
+
   # CSS Layer at-rule descriptor.
   experimental type CSSLayer extends object
     properties
@@ -1615,6 +1671,8 @@ experimental domain CSS
       string fontWeight
       # The font-stretch.
       string fontStretch
+      # The font-display.
+      string fontDisplay
       # The unicode-range.
       string unicodeRange
       # The src.
@@ -1757,6 +1815,8 @@ experimental domain CSS
       optional array of InheritedPseudoElementMatches inheritedPseudoElements
       # A list of CSS keyframed animations matching this node.
       optional array of CSSKeyframesRule cssKeyframesRules
+      # Id of the first parent element that does not have display: contents.
+      experimental optional DOM.NodeId parentLayoutNodeId
 
   # Returns all media queries parsed by the rendering engine.
   command getMediaQueries
@@ -1854,6 +1914,16 @@ experimental domain CSS
     returns
       # The resulting CSS Supports rule after modification.
       CSSSupports supports
+
+  # Modifies the expression of a scope at-rule.
+  experimental command setScopeText
+    parameters
+      StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS Scope rule after modification.
+      CSSScope scope
 
   # Modifies the rule selector.
   command setRuleSelector
@@ -2214,6 +2284,9 @@ domain DOM
       optional string value
       # Pseudo element type for this node.
       optional PseudoType pseudoType
+      # Pseudo element identifier for this node. Only present if there is a
+      # valid pseudoType.
+      optional string pseudoIdentifier
       # Shadow root type.
       optional ShadowRootType shadowRootType
       # Frame ID for frame owner elements.
@@ -2235,6 +2308,7 @@ domain DOM
       # Whether the node is SVG.
       optional boolean isSVG
       optional CompatibilityMode compatibilityMode
+      optional BackendNode assignedSlot
 
   # A structure holding an RGBA color.
   type RGBA extends object
@@ -2608,6 +2682,14 @@ domain DOM
       # Query selector result.
       array of NodeId nodeIds
 
+  # Returns NodeIds of current top layer elements.
+  # Top layer is rendered closest to the user within a viewport, therefore its elements always
+  # appear on top of all other content.
+  experimental command getTopLayerElements
+    returns
+      # NodeIds of top layer elements
+      array of NodeId nodeIds
+
   # Re-does the last undone action.
   experimental command redo
 
@@ -2867,6 +2949,9 @@ domain DOM
       NodeId parentId
       # The added pseudo element.
       Node pseudoElement
+
+  # Called when top layer elements are changed.
+  experimental event topLayerElementsUpdated
 
   # Called when a pseudo element is removed from an element.
   experimental event pseudoElementRemoved
@@ -3245,6 +3330,9 @@ experimental domain DOMSnapshot
       optional RareIntegerData contentDocumentIndex
       # Type of a pseudo element node.
       optional RareStringData pseudoType
+      # Pseudo element identifier for this node. Only present if there is a
+      # valid pseudoType.
+      optional RareStringData pseudoIdentifier
       # Whether this DOM node responds to mouse clicks. This includes nodes that have had click
       # event listeners attached via JavaScript as well as anchor tags that naturally navigate when
       # clicked.
@@ -3354,11 +3442,15 @@ experimental domain DOMSnapshot
 # Query and modify DOM storage.
 experimental domain DOMStorage
 
+  type SerializedStorageKey extends string
+
   # DOM Storage identifier.
   type StorageId extends object
     properties
       # Security origin for the storage.
-      string securityOrigin
+      optional string securityOrigin
+      # Represents a key by which DOM Storage keys its CachedStorageAreas
+      optional SerializedStorageKey storageKey
       # Whether the storage is local storage (not session storage).
       boolean isLocalStorage
 
@@ -3544,6 +3636,8 @@ domain Emulation
       string architecture
       string model
       boolean mobile
+      optional string bitness
+      optional boolean wow64
 
   # Tells whether emulation is supported.
   command canEmulate
@@ -3765,6 +3859,11 @@ domain Emulation
       # Image types to disable.
       array of DisabledImageType imageTypes
 
+  experimental command setHardwareConcurrencyOverride
+    parameters
+      # Hardware concurrency to report
+      integer hardwareConcurrency
+
   # Allows overriding user agent with the given string.
   command setUserAgentOverride
     parameters
@@ -3801,7 +3900,7 @@ experimental domain HeadlessExperimental
   # Sends a BeginFrame to the target and returns when the frame was completed. Optionally captures a
   # screenshot from the resulting frame. Requires that the target was created with enabled
   # BeginFrameControl. Designed for use with --run-all-compositor-stages-before-draw, see also
-  # https://goo.gl/3zHXhB for more background.
+  # https://goo.gle/chrome-headless-rendering for more background.
   command beginFrame
     parameters
       # Timestamp of this BeginFrame in Renderer TimeTicks (milliseconds of uptime). If not set,
@@ -4780,6 +4879,7 @@ domain Network
       TextTrack
       XHR
       Fetch
+      Prefetch
       EventSource
       WebSocket
       Manifest
@@ -5008,6 +5108,12 @@ domain Network
       array of SignedCertificateTimestamp signedCertificateTimestampList
       # Whether the request complied with Certificate Transparency policy
       CertificateTransparencyCompliance certificateTransparencyCompliance
+      # The signature algorithm used by the server in the TLS server signature,
+      # represented as a TLS SignatureScheme code point. Omitted if not
+      # applicable or not known.
+      optional integer serverSignatureAlgorithm
+      # Whether the connection used Encrypted ClientHello
+      boolean encryptedClientHello
 
   # Whether the request complied with Certificate Transparency policy.
   type CertificateTransparencyCompliance extends string
@@ -6265,9 +6371,10 @@ domain Network
     enum
       SameOrigin
       SameOriginAllowPopups
+      RestrictProperties
       UnsafeNone
       SameOriginPlusCoep
-      SameOriginAllowPopupsPlusCoep
+      RestrictPropertiesPlusCoep
 
   experimental type CrossOriginOpenerPolicyStatus extends object
     properties
@@ -6908,6 +7015,16 @@ domain Page
       AdFrameType adFrameType
       optional array of AdFrameExplanation explanations
 
+  # Identifies the bottom-most script which caused the frame to be labelled
+  # as an ad.
+  experimental type AdScriptId extends object
+    properties
+      # Script Id of the bottom-most script which caused the frame to be labelled
+      # as an ad.
+      Runtime.ScriptId scriptId
+      # Id of adScriptId's debugger.
+      Runtime.UniqueDebuggerId debuggerId
+
   # Indicates whether the frame is a secure context and why it is the case.
   experimental type SecureContextType extends string
     enum
@@ -6945,13 +7062,13 @@ domain Page
       ambient-light-sensor
       attribution-reporting
       autoplay
+      bluetooth
       browsing-topics
       camera
       ch-dpr
       ch-device-memory
       ch-downlink
       ch-ect
-      ch-partitioned-cookies
       ch-prefers-color-scheme
       ch-rtt
       ch-save-data
@@ -6979,6 +7096,7 @@ domain Page
       encrypted-media
       execution-while-out-of-viewport
       execution-while-not-rendered
+      federated-credentials
       focus-without-user-activation
       fullscreen
       frobulate
@@ -6990,6 +7108,7 @@ domain Page
       interest-cohort
       join-ad-interest-group
       keyboard-map
+      local-fonts
       magnetometer
       microphone
       midi
@@ -7001,6 +7120,7 @@ domain Page
       screen-wake-lock
       serial
       shared-autofill
+      shared-storage
       storage-access-api
       sync-xhr
       trust-token-redemption
@@ -7019,6 +7139,8 @@ domain Page
       IframeAttribute
       # Inside fenced frame.
       InFencedFrameTree
+      # Inside an Isolated Application.
+      InIsolatedApp
 
   experimental type PermissionsPolicyBlockLocator extends object
     properties
@@ -7294,6 +7416,8 @@ domain Page
       optional string cursive
       # The fantasy font-family.
       optional string fantasy
+      # The math font-family.
+      optional string math
 
   # Font families collection for a script.
   experimental type ScriptFontFamilies extends object
@@ -7580,7 +7704,8 @@ domain Page
     returns
       # Frame id that has navigated (or failed to navigate)
       FrameId frameId
-      # Loader identifier.
+      # Loader identifier. This is omitted in case of same-document navigation,
+      # as the previously committed loaderId would not change.
       optional Network.LoaderId loaderId
       # User friendly error message, present if and only if navigation has failed.
       optional string errorText
@@ -7614,12 +7739,15 @@ domain Page
       optional number marginLeft
       # Right margin in inches. Defaults to 1cm (~0.4 inches).
       optional number marginRight
-      # Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means
-      # print all pages.
+      # Paper ranges to print, one based, e.g., '1-5, 8, 11-13'. Pages are
+      # printed in the document order, not in the order specified, and no
+      # more than once.
+      # Defaults to empty string, which implies the entire document is printed.
+      # The page numbers are quietly capped to actual page count of the
+      # document, and ranges beyond the end of the document are ignored.
+      # If this results in no pages to print, an error is reported.
+      # It is an error to specify a range with start greater than end.
       optional string pageRanges
-      # Whether to silently ignore invalid but successfully parsed page ranges, such as '3-2'.
-      # Defaults to false.
-      optional boolean ignoreInvalidPageRanges
       # HTML template for the print header. Should be valid HTML markup with following
       # classes used to inject printing values into them:
       # - `date`: formatted print date
@@ -7918,12 +8046,12 @@ domain Page
     parameters
       # Id of the frame containing input node.
       experimental FrameId frameId
-      # Input node id.
-      experimental DOM.BackendNodeId backendNodeId
       # Input mode.
       enum mode
         selectSingle
         selectMultiple
+      # Input node id. Only present for file choosers opened via an <input type="file"> element.
+      experimental optional DOM.BackendNodeId backendNodeId
 
   # Fired when frame has been attached to its parent.
   event frameAttached
@@ -7934,6 +8062,9 @@ domain Page
       FrameId parentFrameId
       # JavaScript stack trace of when frame was attached, only set if frame initiated from script.
       optional Runtime.StackTrace stack
+      # Identifies the bottom-most script which caused the frame to be labelled
+      # as an ad. Only sent if frame is labelled as an ad and id is available.
+      experimental optional AdScriptId adScriptId
 
   # Fired when frame no longer has a scheduled navigation.
   deprecated event frameClearedScheduledNavigation
@@ -8102,7 +8233,6 @@ domain Page
       JavaScriptExecution
       RendererProcessKilled
       RendererProcessCrashed
-      GrantedMediaStreamAccess
       SchedulerTrackedFeatureUsed
       ConflictingBrowsingInstance
       CacheFlushed
@@ -8129,7 +8259,6 @@ domain Page
       ForegroundCacheLimit
       BrowsingInstanceNotSwapped
       BackForwardCacheDisabledForDelegate
-      OptInUnloadHeaderNotPresent
       UnloadHandlerExistsInMainFrame
       UnloadHandlerExistsInSubFrame
       ServiceWorkerUnregistration
@@ -8196,7 +8325,6 @@ domain Page
       ContentMediaDevicesDispatcherHost
       ContentWebBluetooth
       ContentWebUSB
-      ContentMediaSession
       ContentMediaSessionService
       ContentScreenReader
 
@@ -8264,6 +8392,38 @@ domain Page
   type PrerenderFinalStatus extends string
     enum
       Activated
+      Destroyed
+      LowEndDevice
+      CrossOriginRedirect
+      CrossOriginNavigation
+      InvalidSchemeRedirect
+      InvalidSchemeNavigation
+      InProgressNavigation
+      NavigationRequestBlockedByCsp
+      MainFrameNavigation
+      MojoBinderPolicy
+      RendererProcessCrashed
+      RendererProcessKilled
+      Download
+      TriggerDestroyed
+      NavigationNotCommitted
+      NavigationBadHttpStatus
+      ClientCertRequested
+      NavigationRequestNetworkError
+      MaxNumOfRunningPrerendersExceeded
+      CancelAllHostsForTesting
+      DidFailLoad
+      Stop
+      SslCertificateError
+      LoginAuthRequested
+      UaChangeRequiresReload
+      BlockedByClient
+      AudioOutputDeviceRequested
+      MixedContent
+      TriggerBackgrounded
+      EmbedderTriggeredAndSameOriginRedirected
+      EmbedderTriggeredAndCrossOriginRedirected
+      EmbedderTriggeredAndDestroyed
 
   # Fired when a prerender attempt is completed.
   event prerenderAttemptCompleted
@@ -8752,6 +8912,8 @@ experimental domain Storage
   depends on Browser
   depends on Network
 
+  type SerializedStorageKey extends string
+
   # Enum of possible storage types.
   type StorageType extends string
     enum
@@ -8814,11 +8976,26 @@ experimental domain Storage
       array of InterestGroupAd ads
       array of InterestGroupAd adComponents
 
+  # Returns a storage key given a frame id.
+  command getStorageKeyForFrame
+    parameters
+      Page.FrameId frameId
+    returns
+      SerializedStorageKey storageKey
+
   # Clears storage for origin.
   command clearDataForOrigin
     parameters
       # Security origin.
       string origin
+      # Comma separated list of StorageType to clear.
+      string storageTypes
+
+  # Clears storage for storage key.
+  command clearDataForStorageKey
+    parameters
+      # Storage key.
+      string storageKey
       # Comma separated list of StorageType to clear.
       string storageTypes
 
@@ -9388,6 +9565,9 @@ experimental domain Tracing
         recordContinuously
         recordAsMuchAsPossible
         echoToConsole
+      # Size of the trace buffer in kilobytes. If not specified or zero is passed, a default value
+      # of 200 MB would be used.
+      optional number traceBufferSizeInKb
       # Turns on JavaScript stack sampling.
       optional boolean enableSampling
       # Turns on system tracing.
@@ -10031,6 +10211,13 @@ experimental domain WebAuthn
   # Enable the WebAuthn domain and start intercepting credential storage and
   # retrieval with a virtual authenticator.
   command enable
+    parameters
+      # Whether to enable the WebAuthn user interface. Enabling the UI is
+      # recommended for debugging and demo purposes, as it is closer to the real
+      # experience. Disabling the UI is recommended for automated testing.
+      # Supported at the embedder's discretion if UI is available.
+      # Defaults to false.
+      optional boolean enableUI
 
   # Disable the WebAuthn domain.
   command disable

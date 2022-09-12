@@ -48,7 +48,7 @@ goog.require('goog.dom.TagName');
  * of a boolean attribute that is present will often be the empty string.
  *
  * <p>For the style attribute, it standardizes the value by lower-casing the
- * property names and always including a trailing semi-colon.
+ * property names and always including a trailing semicolon.
  *
  * @param {!Element} element The element to use.
  * @param {string} attributeName The name of the attribute to return.
@@ -107,7 +107,7 @@ bot.dom.core.SPLIT_STYLE_ATTRIBUTE_ON_SEMICOLONS_REGEXP_ =
 /**
  * Standardize a style attribute value, which includes:
  *  (1) converting all property names lowercase
- *  (2) ensuring it ends in a trailing semi-colon
+ *  (2) ensuring it ends in a trailing semicolon
  * @param {string} value The style attribute value.
  * @return {string} The identical value, with the formatting rules described
  *     above applied.

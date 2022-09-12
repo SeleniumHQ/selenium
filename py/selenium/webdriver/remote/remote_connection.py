@@ -127,7 +127,7 @@ class RemoteConnection:
     def _get_proxy_url(self):
         if self._url.startswith('https://'):
             return os.environ.get('https_proxy', os.environ.get('HTTPS_PROXY'))
-        elif self._url.startswith('http://'):
+        if self._url.startswith('http://'):
             return os.environ.get('http_proxy', os.environ.get('HTTP_PROXY'))
 
     def _identify_http_proxy_auth(self):
@@ -402,9 +402,8 @@ class RemoteConnection:
                 if 'value' not in data:
                     data['value'] = None
                 return data
-            else:
-                data = {'status': 0, 'value': data}
-                return data
+            data = {'status': 0, 'value': data}
+            return data
         finally:
             LOGGER.debug("Finished Request")
             response.close()

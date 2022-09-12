@@ -17,12 +17,6 @@
 
 package com.thoughtworks.selenium;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -32,6 +26,12 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 /**
  * {@link com.thoughtworks.selenium.HttpCommandProcessor} unit test class.
@@ -102,15 +102,12 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testResourcesClosedWhenNoIoes() {
+  public void testResourcesClosedWhenNoIoes() throws IOException {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
-    try {
-      cmdProc.getCommandResponseAsString("testCommand");
-      cmdProc.verifyClosedResources(true, true, true);
-    } catch (IOException ioe) {
-      fail();
-    }
+
+    cmdProc.getCommandResponseAsString("testCommand");
+    cmdProc.verifyClosedResources(true, true, true);
   }
 
   @Test

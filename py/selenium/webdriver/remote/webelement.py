@@ -443,7 +443,7 @@ class WebElement(BaseWebElement):
         return self._execute(Command.FIND_CHILD_ELEMENTS,
                              {"using": by, "value": value})['value']
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return int(md5_hash(self._id.encode('utf-8')).hexdigest(), 16)
 
     def _upload(self, filename):
@@ -457,11 +457,11 @@ class WebElement(BaseWebElement):
         try:
             return self._execute(Command.UPLOAD_FILE, {'file': content})['value']
         except WebDriverException as e:
-            if "Unrecognized command: POST" in e.__str__():
+            if "Unrecognized command: POST" in str(e):
                 return filename
-            elif "Command not found: POST " in e.__str__():
+            elif "Command not found: POST " in str(e):
                 return filename
-            elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in e.__str__():
+            elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in str(e):
                 return filename
             else:
                 raise

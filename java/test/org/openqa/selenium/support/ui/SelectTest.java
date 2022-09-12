@@ -173,23 +173,6 @@ public class SelectTest {
   }
 
   @Test
-  public void shouldNotAllowOptionsToBeSelectedInDisabledSelect() {
-    final WebElement firstOption = mockOption("first", false);
-
-    final WebElement element = mockSelectWebElement("multiple");
-    when(element.isEnabled()).thenReturn(false);
-    when(element.findElements(By.xpath(".//option[normalize-space(.) = \"fish\"]")))
-        .thenReturn(Collections.singletonList(firstOption));
-
-    Select select = new Select(element);
-    assertThatThrownBy(() -> select.selectByVisibleText("fish"))
-      .isInstanceOf(UnsupportedOperationException.class)
-      .hasMessage("You may not select an option in disabled select");
-
-    verify(firstOption, never()).click();
-  }
-
-  @Test
   public void shouldAllowOptionsToBeSelectedByIndex() {
     final WebElement firstOption = mockOption("first", true, 0);
     final WebElement secondOption = mockOption("second", false, 1);

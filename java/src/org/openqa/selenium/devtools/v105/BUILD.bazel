@@ -3,7 +3,7 @@ load("//common:defs.bzl", "copy_file")
 load("//java:defs.bzl", "java_export", "java_library")
 load("//java:version.bzl", "SE_VERSION")
 
-cdp_version = "v102"
+cdp_version = "v105"
 
 java_export(
     name = cdp_version,
