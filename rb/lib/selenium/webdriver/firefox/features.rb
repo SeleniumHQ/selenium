@@ -17,8 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'zip'
-
 module Selenium
   module WebDriver
     module Firefox
@@ -37,23 +35,11 @@ module Selenium
         end
 
         def install_addon(path, temporary)
-          if File.directory?(path)
-            zip = "#{path}.zip"
-            # Delete zip file if it already exists
-            File.delete(zip) if File.file?(zip)
-
-            Zip::File.open(zip, Zip::File::CREATE) do |z_file|
-              Dir[File.join(path, "**", "**")].each do |file|
-                z_file.add(file.sub("#{path}/", ""), file)
-              end
-            end
-
-            addon = File.open(zip, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
-            # Delete the zip file
-            File.delete(zip)
-          else
-            addon = File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
-          end
+          addon = if File.directory?(path)
+                    Zipper.zip(path)
+                  else
+                    File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
+                  end
 
           payload = {addon: addon}
           payload[:temporary] = temporary unless temporary.nil?
