@@ -76,9 +76,21 @@ copy_file(
 )
 
 copy_file(
-    name = "favourite_color",
+    name = "webextensions-selenium-example-xpi",
     src = "//common/extensions:webextensions-selenium-example.xpi",
-    out = "test/selenium/webdriver/firefox/webextensions-selenium-example.xpi",
+    out = "test/extensions/webextensions-selenium-example.xpi",
+)
+
+copy_file(
+    name = "webextensions-selenium-example-zip",
+    src = "//common/extensions:webextensions-selenium-example.zip",
+    out = "test/extensions/webextensions-selenium-example.zip",
+)
+
+copy_file(
+    name = "webextensions-selenium-example-unsigned-zip",
+    src = "//common/extensions:webextensions-selenium-example-unsigned.zip",
+    out = "test/extensions/webextensions-selenium-example-unsigned.zip",
 )
 
 py_library(
@@ -207,8 +219,9 @@ py_library(
         "setup.cfg",
         "test/selenium/webdriver/common/test_file.txt",
         "test/selenium/webdriver/common/test_file2.txt",
-        ":favourite_color",
-
+        ":webextensions-selenium-example-xpi",
+        ":webextensions-selenium-example-zip",
+        ":webextensions-selenium-example-unsigned-zip",
     ],
     imports = ["."],
     deps = [
@@ -376,9 +389,6 @@ py_test_suite(
         "--instafail",
         "--driver=firefox",
     ],
-    data = [
-        "//common/extensions",
-    ],
     tags = [
         "no-sandbox",
     ],
@@ -401,7 +411,6 @@ py_test_suite(
         "--driver=remote",
     ],
     data = [
-        "//common/extensions",
         "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     tags = [
