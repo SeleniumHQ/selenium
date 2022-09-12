@@ -94,7 +94,6 @@ py_library(
         ":get-attribute",
         ":is-displayed",
         ":mutation-listener",
-        ":favourite_color",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -208,6 +207,8 @@ py_library(
         "setup.cfg",
         "test/selenium/webdriver/common/test_file.txt",
         "test/selenium/webdriver/common/test_file2.txt",
+        ":favourite_color",
+
     ],
     imports = ["."],
     deps = [
