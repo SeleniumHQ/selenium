@@ -14,10 +14,11 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import typing
 from abc import ABCMeta, abstractmethod
-from selenium.webdriver.common.proxy import Proxy
+
 from selenium.common.exceptions import InvalidArgumentException
+from selenium.webdriver.common.proxy import Proxy
 
 
 class BaseOptions(metaclass=ABCMeta):
@@ -25,7 +26,7 @@ class BaseOptions(metaclass=ABCMeta):
     Base class for individual browser options
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._caps = self.default_capabilities
         self.set_capability("pageLoadStrategy", "normal")
@@ -35,7 +36,7 @@ class BaseOptions(metaclass=ABCMeta):
     def capabilities(self):
         return self._caps
 
-    def set_capability(self, name, value):
+    def set_capability(self, name, value) -> None:
         """ Sets a capability """
         self._caps[name] = value
 
@@ -128,12 +129,13 @@ class BaseOptions(metaclass=ABCMeta):
 
         :param timeouts: values in milliseconds for implicit wait, page load and script timeout
         """
-        if all(x in timeouts.keys() for x in ["implicit", "pageLoad", "script"]):
+        if all(x in timeouts.keys() for x in ("implicit", "pageLoad", "script")):
             self.set_capability("timeouts", timeouts)
         else:
             raise ValueError("Timeout keys can only be one of the following: implicit, pageLoad, script")
 
-    def enable_mobile(self, android_package: str = None, android_activity: str = None, device_serial: str = None):
+    def enable_mobile(self, android_package: typing.Optional[str] = None, android_activity: typing.Optional[str] = None,
+                      device_serial: typing.Optional[str] = None) -> None:
         """
             Enables mobile browser use for browsers that support it
 
@@ -155,7 +157,7 @@ class BaseOptions(metaclass=ABCMeta):
         """
         :returns: whether the session accepts insecure certificates
         """
-        return self._caps.get('acceptInsecureCerts')
+        return self._caps.get('acceptInsecureCerts', False)
 
     @accept_insecure_certs.setter
     def accept_insecure_certs(self, value: bool) -> None:
@@ -172,10 +174,10 @@ class BaseOptions(metaclass=ABCMeta):
         """
         :returns: whether session is strict about file interactability
         """
-        return self._caps.get('strictFileInteractability')
+        return self._caps.get('strictFileInteractability', False)
 
     @strict_file_interactability.setter
-    def strict_file_interactability(self, value: bool):
+    def strict_file_interactability(self, value: bool) -> None:
         """
         Whether interactability checks will be applied to file type input elements. The default is false.
 
@@ -188,10 +190,10 @@ class BaseOptions(metaclass=ABCMeta):
         """
         :returns: whether the remote end supports setting window size and position
         """
-        return self._caps.get('setWindowRect')
+        return self._caps.get('setWindowRect', False)
 
     @set_window_rect.setter
-    def set_window_rect(self, value: bool):
+    def set_window_rect(self, value: bool) -> None:
         """
         Whether the remote end supports all of the resizing and positioning commands. The default is false.
         https://w3c.github.io/webdriver/#dfn-strict-file-interactability
@@ -208,7 +210,7 @@ class BaseOptions(metaclass=ABCMeta):
         return self._proxy
 
     @proxy.setter
-    def proxy(self, value: Proxy):
+    def proxy(self, value: Proxy) -> None:
         if not isinstance(value, Proxy):
             raise InvalidArgumentException("Only Proxy objects can be passed in.")
         self._proxy = value
@@ -225,7 +227,7 @@ class BaseOptions(metaclass=ABCMeta):
 
 class ArgOptions(BaseOptions):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._arguments = []
         self._ignore_local_proxy = False
@@ -249,7 +251,7 @@ class ArgOptions(BaseOptions):
         else:
             raise ValueError('argument can not be null')
 
-    def ignore_local_proxy_environment_variables(self):
+    def ignore_local_proxy_environment_variables(self) -> None:
         """
             By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from being picked up and used.
         """

@@ -22,6 +22,7 @@ const virtualAuthenticatorCredential =
   require('../lib/virtual_authenticator').Credential
 const virtualAuthenticatorOptions =
   require('../lib/virtual_authenticator').VirtualAuthenticatorOptions
+const Protocol = require('../lib/virtual_authenticator').Protocol
 const { ignore, suite } = require('../lib/test')
 const { Browser } = require('../lib/capabilities')
 const fileServer = require('../lib/test/fileserver')
@@ -37,7 +38,7 @@ const GET_CREDENTIAL = `getCredential([{
 async function createRkEnabledU2fAuthenticator(driver) {
   let options
   options = new virtualAuthenticatorOptions()
-  options.setProtocol(virtualAuthenticatorOptions.Protocol['U2F'])
+  options.setProtocol(Protocol['U2F'])
   options.setHasResidentKey(true)
   await driver.addVirtualAuthenticator(options)
   return driver
@@ -46,7 +47,7 @@ async function createRkEnabledU2fAuthenticator(driver) {
 async function createRkDisabledU2fAuthenticator(driver) {
   let options
   options = new virtualAuthenticatorOptions()
-  options.setProtocol(virtualAuthenticatorOptions.Protocol['U2F'])
+  options.setProtocol(Protocol['U2F'])
   options.setHasResidentKey(false)
   await driver.addVirtualAuthenticator(options)
   return driver
@@ -55,7 +56,7 @@ async function createRkDisabledU2fAuthenticator(driver) {
 async function createRkEnabledCTAP2Authenticator(driver) {
   let options
   options = new virtualAuthenticatorOptions()
-  options.setProtocol(virtualAuthenticatorOptions.Protocol['CTAP2'])
+  options.setProtocol(Protocol['CTAP2'])
   options.setHasResidentKey(true)
   options.setHasUserVerification(true)
   options.setIsUserVerified(true)
@@ -66,7 +67,7 @@ async function createRkEnabledCTAP2Authenticator(driver) {
 async function createRkDisabledCTAP2Authenticator(driver) {
   let options
   options = new virtualAuthenticatorOptions()
-  options.setProtocol(virtualAuthenticatorOptions.Protocol['CTAP2'])
+  options.setProtocol(Protocol['CTAP2'])
   options.setHasResidentKey(false)
   options.setHasUserVerification(true)
   options.setIsUserVerified(true)
@@ -135,7 +136,9 @@ suite(function (env) {
 
   beforeEach(async function () {
     driver = await env.builder().build()
-    await driver.get(fileServer.Pages.virtualAuthenticator)
+    await driver.get(
+      fileServer.Pages.virtualAuthenticator.replace('127.0.0.1', 'localhost')
+    )
     assert.strictEqual(await driver.getTitle(), 'Virtual Authenticator Tests')
   })
 
@@ -143,6 +146,7 @@ suite(function (env) {
     if (driver.virtualAuthenticatorId() != null) {
       await driver.removeVirtualAuthenticator()
     }
+    await driver.quit()
   })
 
   describe('VirtualAuthenticator Test Suit 2', function () {

@@ -59,7 +59,7 @@ class FirefoxProfile:
                       DeprecationWarning, stacklevel=2)
         if not FirefoxProfile.DEFAULT_PREFERENCES:
             with open(os.path.join(os.path.dirname(__file__),
-                                   WEBDRIVER_PREFERENCES)) as default_prefs:
+                                   WEBDRIVER_PREFERENCES), encoding='utf-8') as default_prefs:
                 FirefoxProfile.DEFAULT_PREFERENCES = json.load(default_prefs)
 
         self.default_preferences = copy.deepcopy(
@@ -117,7 +117,7 @@ class FirefoxProfile:
         return self._port
 
     @port.setter
-    def port(self, port):
+    def port(self, port) -> None:
         """
         Sets the port that WebDriver will be running on
         """
@@ -137,7 +137,7 @@ class FirefoxProfile:
         return self.default_preferences["webdriver_accept_untrusted_certs"]
 
     @accept_untrusted_certs.setter
-    def accept_untrusted_certs(self, value):
+    def accept_untrusted_certs(self, value) -> None:
         if value not in [True, False]:
             raise WebDriverException("Please pass in a Boolean to this call")
         self.set_preference("webdriver_accept_untrusted_certs", value)
@@ -147,27 +147,26 @@ class FirefoxProfile:
         return self.default_preferences["webdriver_assume_untrusted_issuer"]
 
     @assume_untrusted_cert_issuer.setter
-    def assume_untrusted_cert_issuer(self, value):
+    def assume_untrusted_cert_issuer(self, value) -> None:
         if value not in [True, False]:
             raise WebDriverException("Please pass in a Boolean to this call")
 
         self.set_preference("webdriver_assume_untrusted_issuer", value)
 
     @property
-    def encoded(self):
+    def encoded(self) -> str:
         """
         A zipped, base64 encoded string of profile directory
         for use with remote WebDriver JSON wire protocol
         """
         self.update_preferences()
         fp = BytesIO()
-        zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
-        path_root = len(self.path) + 1  # account for trailing slash
-        for base, dirs, files in os.walk(self.path):
-            for fyle in files:
-                filename = os.path.join(base, fyle)
-                zipped.write(filename, filename[path_root:])
-        zipped.close()
+        with zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED) as zipped:
+            path_root = len(self.path) + 1  # account for trailing slash
+            for base, _, files in os.walk(self.path):
+                for fyle in files:
+                    filename = os.path.join(base, fyle)
+                    zipped.write(filename, filename[path_root:])
         return base64.b64encode(fp.getvalue()).decode('UTF-8')
 
     def _create_tempfolder(self):
@@ -180,18 +179,17 @@ class FirefoxProfile:
         """
         writes the current user prefs dictionary to disk
         """
-        with open(self.userPrefs, "w") as f:
+        with open(self.userPrefs, "w", encoding='utf-8') as f:
             for key, value in user_prefs.items():
                 f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
     def _read_existing_userjs(self, userjs):
-        import warnings
 
-        PREF_RE = re.compile(r'user_pref\("(.*)",\s(.*)\)')
+        pref_pattern = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         try:
-            with open(userjs) as f:
+            with open(userjs, encoding='utf-8') as f:
                 for usr in f:
-                    matches = re.search(PREF_RE, usr)
+                    matches = pref_pattern.search(usr)
                     try:
                         self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
                     except Exception:
@@ -322,10 +320,10 @@ class FirefoxProfile:
             elif os.path.isdir(addon_path):
                 manifest_json_filename = os.path.join(addon_path, 'manifest.json')
                 if os.path.exists(manifest_json_filename):
-                    with open(manifest_json_filename) as f:
+                    with open(manifest_json_filename, encoding='utf-8') as f:
                         return parse_manifest_json(f.read())
 
-                with open(os.path.join(addon_path, 'install.rdf')) as f:
+                with open(os.path.join(addon_path, 'install.rdf'), encoding='utf-8') as f:
                     manifest = f.read()
             else:
                 raise OSError('Add-on path is neither an XPI nor a directory: %s' % addon_path)
@@ -345,7 +343,7 @@ class FirefoxProfile:
             for node in description.childNodes:
                 # Remove the namespace prefix from the tag for comparison
                 entry = node.nodeName.replace(em, "")
-                if entry in details.keys():
+                if entry in details:
                     details.update({entry: get_text(node)})
             if not details.get('id'):
                 for i in range(description.attributes.length):

@@ -58,6 +58,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
@@ -65,6 +66,8 @@ import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
 import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DriverServiceSessionFactory implements SessionFactory {
+
+  private static final Logger LOG = Logger.getLogger(DriverServiceSessionFactory.class.getName());
 
   private final Tracer tracer;
   private final HttpClient.Factory clientFactory;
@@ -106,7 +109,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
                                                         + "match the stereotype."));
     }
 
-    try (Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply")) {
+    Span span = tracer.getCurrentContext().createSpan("driver_service_factory.apply");
+    Map<String, EventAttributeValue> attributeMap = new HashMap<>();
+    try {
 
       Capabilities capabilities = sessionCapabilitiesMutator
         .apply(sessionRequest.getDesiredCapabilities());
@@ -116,7 +121,6 @@ public class DriverServiceSessionFactory implements SessionFactory {
         capabilities = generalizePlatform(capabilities);
       }
 
-      Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       CAPABILITIES.accept(span, capabilities);
       CAPABILITIES_EVENT.accept(attributeMap, capabilities);
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
@@ -182,11 +186,13 @@ public class DriverServiceSessionFactory implements SessionFactory {
             }
           });
       } catch (Exception e) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
         EXCEPTION.accept(attributeMap, e);
         String errorMessage = "Error while creating session with the driver service. "
                               + "Stopping driver service: " + e.getMessage();
+        LOG.warning(errorMessage);
+
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue(errorMessage));
         span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
@@ -194,7 +200,19 @@ public class DriverServiceSessionFactory implements SessionFactory {
         return Either.left(new SessionNotCreatedException(errorMessage));
       }
     } catch (Exception e) {
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
+      span.setStatus(Status.CANCELLED);
+      EXCEPTION.accept(attributeMap, e);
+      String errorMessage = "Error while creating session with the driver service. " + e.getMessage();
+      LOG.warning(errorMessage);
+
+      attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
+                       EventAttribute.setValue(errorMessage));
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
+
       return Either.left(new SessionNotCreatedException(e.getMessage()));
+    } finally {
+      span.close();
     }
   }
 

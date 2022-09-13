@@ -53,7 +53,7 @@ java_library(
         ":annotations",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote",
-        "//java/src/org/openqa/selenium/support/ui:wait",
+        "//java/src/org/openqa/selenium/support",
         "//java/test/org/openqa/selenium/build",
         "//java/test/org/openqa/selenium/environment",
         "//java/test/org/openqa/selenium/testing/drivers",

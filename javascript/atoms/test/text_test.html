@@ -232,13 +232,13 @@ limitations under the License.
       assertEquals("Some text", text);
     }
 
-    function testShouldRetainTheFormatingOfTextWithinAPreElement() {
+    function testShouldRetainTheFormattingOfTextWithinAPreElement() {
       var text = getVisibleTextByElementId("preformatted");
 
       assertEquals("   This section has a preformatted\n    text block    \n  split in four lines\n         ", text);
     }
 
-    function testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
+    function testShouldRetainTheFormattingOfTextWithinAPreElementThatIsWithinARegularBlock() {
       var text = getVisibleTextByElementId("div-with-pre");
 
       assertEquals("before pre\n   This section has a preformatted\n    text block    \n  split in four lines\n         \nafter pre", text);
@@ -263,7 +263,7 @@ limitations under the License.
       assertEquals("hello, world! bla-bla-bla", text);
       text = getVisibleTextByElementId("uppercased");
       assertEquals("HELLO, WORLD! BLA-BLA-BLA", text);
-      
+
       text = getVisibleTextByElementId("capitalized-1");
       assertEquals("Äåìî", text);
       text = getVisibleTextByElementId("capitalized-2");
@@ -362,7 +362,7 @@ limitations under the License.
   <div id="div-with-pre">
     <p>before pre</p>
     <pre id="preformatted">   This section has a preformatted
-    text block    
+    text block
   split in four lines
          </pre>
     <p>after pre</p>

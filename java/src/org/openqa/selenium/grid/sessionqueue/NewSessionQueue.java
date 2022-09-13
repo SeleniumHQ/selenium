@@ -44,6 +44,7 @@ import java.util.UUID;
 import static org.openqa.selenium.remote.http.Route.combine;
 import static org.openqa.selenium.remote.http.Route.delete;
 import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.options;
 import static org.openqa.selenium.remote.http.Route.post;
 
 public abstract class NewSessionQueue implements HasReadyState, Routable {
@@ -67,6 +68,8 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
           );
           return addToQueue(sessionRequest);
         }),
+      options("/session")
+        .to(() -> req -> new HttpResponse()),
       post("/se/grid/newsessionqueue/session")
         .to(() -> new AddToSessionQueue(tracer, this))
         .with(requiresSecret),

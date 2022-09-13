@@ -66,7 +66,7 @@ class Options(ArgOptions):
         return self._options.get(self.BROWSER_ATTACH_TIMEOUT)
 
     @browser_attach_timeout.setter
-    def browser_attach_timeout(self, value: int):
+    def browser_attach_timeout(self, value: int) -> None:
         """
         Sets the options Browser Attach Timeout
 
@@ -84,7 +84,7 @@ class Options(ArgOptions):
         return self._options.get(self.ELEMENT_SCROLL_BEHAVIOR)
 
     @element_scroll_behavior.setter
-    def element_scroll_behavior(self, value: ElementScrollBehavior):
+    def element_scroll_behavior(self, value: ElementScrollBehavior) -> None:
         """
         Sets the options Element Scroll Behavior
 
@@ -102,7 +102,7 @@ class Options(ArgOptions):
         return self._options.get(self.ENSURE_CLEAN_SESSION)
 
     @ensure_clean_session.setter
-    def ensure_clean_session(self, value: bool):
+    def ensure_clean_session(self, value: bool) -> None:
         """
         Sets the options Ensure Clean Session value
 
@@ -118,7 +118,7 @@ class Options(ArgOptions):
         return self._options.get(self.FILE_UPLOAD_DIALOG_TIMEOUT)
 
     @file_upload_dialog_timeout.setter
-    def file_upload_dialog_timeout(self, value: int):
+    def file_upload_dialog_timeout(self, value: int) -> None:
         """
         Sets the options File Upload Dialog Timeout value
 
@@ -136,7 +136,7 @@ class Options(ArgOptions):
         return self._options.get(self.FORCE_CREATE_PROCESS_API)
 
     @force_create_process_api.setter
-    def force_create_process_api(self, value: bool):
+    def force_create_process_api(self, value: bool) -> None:
         """
         Sets the options Force Create Process Api value
 
@@ -152,7 +152,7 @@ class Options(ArgOptions):
         return self._options.get(self.FORCE_SHELL_WINDOWS_API)
 
     @force_shell_windows_api.setter
-    def force_shell_windows_api(self, value: bool):
+    def force_shell_windows_api(self, value: bool) -> None:
         """
         Sets the options Force Shell Windows Api value
 
@@ -168,7 +168,7 @@ class Options(ArgOptions):
         return self._options.get(self.FULL_PAGE_SCREENSHOT)
 
     @full_page_screenshot.setter
-    def full_page_screenshot(self, value: bool):
+    def full_page_screenshot(self, value: bool) -> None:
         """
         Sets the options Full Page Screenshot value
 
@@ -184,7 +184,7 @@ class Options(ArgOptions):
         return self._options.get(self.IGNORE_PROTECTED_MODE_SETTINGS)
 
     @ignore_protected_mode_settings.setter
-    def ignore_protected_mode_settings(self, value: bool):
+    def ignore_protected_mode_settings(self, value: bool) -> None:
         """
         Sets the options Ignore Protected Mode Settings value
 
@@ -200,7 +200,7 @@ class Options(ArgOptions):
         return self._options.get(self.IGNORE_ZOOM_LEVEL)
 
     @ignore_zoom_level.setter
-    def ignore_zoom_level(self, value: bool):
+    def ignore_zoom_level(self, value: bool) -> None:
         """
         Sets the options Ignore Zoom Level value
 
@@ -216,7 +216,7 @@ class Options(ArgOptions):
         return self._options.get(self.INITIAL_BROWSER_URL)
 
     @initial_browser_url.setter
-    def initial_browser_url(self, value: str):
+    def initial_browser_url(self, value: str) -> None:
         """
         Sets the options Initial Browser Url value
 
@@ -232,7 +232,7 @@ class Options(ArgOptions):
         return self._options.get(self.NATIVE_EVENTS)
 
     @native_events.setter
-    def native_events(self, value: bool):
+    def native_events(self, value: bool) -> None:
         """
         Sets the options Native Events value
 
@@ -248,7 +248,7 @@ class Options(ArgOptions):
         return self._options.get(self.PERSISTENT_HOVER)
 
     @persistent_hover.setter
-    def persistent_hover(self, value: bool):
+    def persistent_hover(self, value: bool) -> None:
         """
         Sets the options Persistent Hover value
 
@@ -264,7 +264,7 @@ class Options(ArgOptions):
         return self._options.get(self.REQUIRE_WINDOW_FOCUS)
 
     @require_window_focus.setter
-    def require_window_focus(self, value: bool):
+    def require_window_focus(self, value: bool) -> None:
         """
         Sets the options Require Window Focus value
 
@@ -280,7 +280,7 @@ class Options(ArgOptions):
         return self._options.get(self.USE_PER_PROCESS_PROXY)
 
     @use_per_process_proxy.setter
-    def use_per_process_proxy(self, value: bool):
+    def use_per_process_proxy(self, value: bool) -> None:
         """
         Sets the options User Per Process Proxy value
 
@@ -296,7 +296,7 @@ class Options(ArgOptions):
         return self._options.get(self.USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING)
 
     @use_legacy_file_upload_dialog_handling.setter
-    def use_legacy_file_upload_dialog_handling(self, value: bool):
+    def use_legacy_file_upload_dialog_handling(self, value: bool) -> None:
         """
         Sets the options Use Legacy File Upload Dialog Handling value
 
@@ -312,7 +312,7 @@ class Options(ArgOptions):
         return self._options.get(self.ATTACH_TO_EDGE_CHROME)
 
     @attach_to_edge_chrome.setter
-    def attach_to_edge_chrome(self, value: bool):
+    def attach_to_edge_chrome(self, value: bool) -> None:
         """
         Sets the options Attach to Edge Chrome value
 
@@ -328,7 +328,7 @@ class Options(ArgOptions):
         return self._options.get(self.EDGE_EXECUTABLE_PATH)
 
     @edge_executable_path.setter
-    def edge_executable_path(self, value: str):
+    def edge_executable_path(self, value: str) -> None:
         """
         Sets the options Initial Browser Url value
 

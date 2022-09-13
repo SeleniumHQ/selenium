@@ -22,7 +22,7 @@ from selenium.webdriver.common.options import ArgOptions
 class Options(ArgOptions):
     KEY = 'wpe:browserOptions'
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._binary_location = ''
         self._caps = DesiredCapabilities.WPEWEBKIT.copy()
@@ -31,19 +31,19 @@ class Options(ArgOptions):
     def capabilities(self):
         return self._caps
 
-    def set_capability(self, name, value):
+    def set_capability(self, name, value) -> None:
         """Sets a capability."""
         self._caps[name] = value
 
     @property
-    def binary_location(self):
+    def binary_location(self) -> str:
         """
         Returns the location of the browser binary otherwise an empty string
         """
         return self._binary_location
 
     @binary_location.setter
-    def binary_location(self, value):
+    def binary_location(self, value) -> None:
         """
         Allows you to set the browser binary to launch
 

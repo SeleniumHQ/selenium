@@ -4,7 +4,7 @@ inputs:
   version:
     description: 'Bazelisk version to download'
     required: false
-    default: 'v1.11.0'
+    default: 'v1.13.0'
 runs:
   using: "composite"
   steps:

@@ -20,6 +20,7 @@ package org.openqa.selenium.support.ui;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -74,6 +75,7 @@ public class SelectTest {
     final WebElement element = mock(WebElement.class);
     when(element.getTagName()).thenReturn("select");
     when(element.getDomAttribute("multiple")).thenReturn(multiple);
+    when(element.isEnabled()).thenReturn(true);
     return element;
   }
 
@@ -93,12 +95,14 @@ public class SelectTest {
 
   private WebElement mockOption(String name, boolean isSelected) {
     final WebElement optionBad = mock(WebElement.class, name);
+    when(optionBad.isEnabled()).thenReturn(true);
     when(optionBad.isSelected()).thenReturn(isSelected);
     return optionBad;
   }
 
   private WebElement mockOption(String name, boolean isSelected, int index) {
     WebElement option = mockOption(name, isSelected);
+    when(option.isEnabled()).thenReturn(true);
     when(option.getAttribute("index")).thenReturn(String.valueOf(index));
     return option;
   }
@@ -149,6 +153,23 @@ public class SelectTest {
     select.selectByVisibleText("fish");
 
     verify(firstOption).click();
+  }
+
+  @Test
+  public void shouldNotAllowDisabledOptionsToBeSelected() {
+    final WebElement firstOption = mockOption("first", false);
+    when(firstOption.isEnabled()).thenReturn(false);
+
+    final WebElement element = mockSelectWebElement("multiple");
+    when(element.findElements(By.xpath(".//option[normalize-space(.) = \"fish\"]")))
+        .thenReturn(Collections.singletonList(firstOption));
+
+    Select select = new Select(element);
+    assertThatThrownBy(() -> select.selectByVisibleText("fish"))
+      .isInstanceOf(UnsupportedOperationException.class)
+      .hasMessage("You may not select a disabled option");
+
+    verify(firstOption, never()).click();
   }
 
   @Test
@@ -252,6 +273,7 @@ public class SelectTest {
     when(element.findElements(xpath1)).thenReturn(emptyList());
     when(element.findElements(xpath2)).thenReturn(Collections.singletonList(firstOption));
     when(firstOption.getText()).thenReturn("foo bar");
+    when(firstOption.isEnabled()).thenReturn(true);
 
     Select select = new Select(element);
     select.selectByVisibleText("foo bar");

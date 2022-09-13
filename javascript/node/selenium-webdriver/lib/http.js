@@ -31,7 +31,8 @@ const error = require('./error')
 const logging = require('./logging')
 const promise = require('./promise')
 const { Session } = require('./session')
-const { WebElement } = require('./webdriver')
+const webElement = require('./webelement')
+const { isObject } = require('./util')
 
 const getAttribute = requireAtom(
   'get-attribute.js',
@@ -462,7 +463,7 @@ const CLIENTS =
 class Executor {
   /**
    * @param {!(Client|IThenable<!Client>)} client The client to use for sending
-   *     requests to the server, or a promise-like object that will resolve to
+   *     requests to the server, or a promise-like object that will resolve
    *     to the client.
    */
   constructor(client) {
@@ -572,10 +573,7 @@ function parseHttpResponse(command, httpResponse) {
 
   if (parsed && typeof parsed === 'object') {
     let value = parsed.value
-    let isW3C =
-      value !== null &&
-      typeof value === 'object' &&
-      typeof parsed.status === 'undefined'
+    let isW3C = isObject(value) && typeof parsed.status === 'undefined'
 
     if (!isW3C) {
       error.checkLegacyResponse(parsed)
@@ -625,10 +623,10 @@ function buildPath(path, parameters) {
       let key = pathParameters[i].substring(2) // Trim the /:
       if (key in parameters) {
         let value = parameters[key]
-        if (WebElement.isId(value)) {
+        if (webElement.isId(value)) {
           // When inserting a WebElement into the URL, only use its ID value,
           // not the full JSON.
-          value = WebElement.extractId(value)
+          value = webElement.extractId(value)
         }
         path = path.replace(pathParameters[i], '/' + value)
         delete parameters[key]
@@ -645,10 +643,10 @@ function buildPath(path, parameters) {
 // PUBLIC API
 
 module.exports = {
-  Executor: Executor,
-  Client: Client,
-  Request: Request,
-  Response: Response,
+  Executor,
+  Client,
+  Request,
+  Response,
   // Exported for testing.
-  buildPath: buildPath,
+  buildPath,
 }

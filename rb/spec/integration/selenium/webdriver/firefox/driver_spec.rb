@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Firefox
       describe Driver, exclusive: {browser: :firefox} do
-        let(:extension) { '../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi' }
+        let(:extensions) { '../../../../../../common/extensions/' }
 
         describe '#print_options' do
           let(:magic_number) { 'JVBER' }
@@ -60,27 +60,84 @@ module Selenium
             end
 
           ensure
-            File.delete(path) if File.exist?(path)
+            FileUtils.rm_rf(path)
           end
         end
 
         describe '#install_addon' do
-          it 'with path as parameter' do
-            ext = File.expand_path(extension, __dir__)
-            driver.install_addon(ext)
-          end
-
-          it 'with temporary as parameter' do
-            ext = File.expand_path(extension, __dir__)
-            driver.install_addon(ext, true)
-          end
-        end
-
-        describe '#uninstall_addon' do
-          it 'uninstalls based on id' do
-            ext = File.expand_path(extension, __dir__)
+          it 'install and uninstall xpi file' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example.xpi", __dir__)
             id = driver.install_addon(ext)
+
+            expect(id).to eq 'webextensions-selenium-example@example.com'
+            driver.navigate.to url_for('blank.html')
+
+            injected = driver.find_element(id: "webextensions-selenium-example")
+            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+
             driver.uninstall_addon(id)
+            driver.navigate.refresh
+            expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+          end
+
+          it 'install and uninstall signed zip file' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example.zip", __dir__)
+            id = driver.install_addon(ext)
+
+            expect(id).to eq 'webextensions-selenium-example@example.com'
+            driver.navigate.to url_for('blank.html')
+
+            injected = driver.find_element(id: "webextensions-selenium-example")
+            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+
+            driver.uninstall_addon(id)
+            driver.navigate.refresh
+            expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+          end
+
+          it 'install and uninstall unsigned zip file' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example-unsigned.zip", __dir__)
+            id = driver.install_addon(ext, true)
+
+            expect(id).to eq 'webextensions-selenium-example@example.com'
+            driver.navigate.to url_for('blank.html')
+
+            injected = driver.find_element(id: "webextensions-selenium-example")
+            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+
+            driver.uninstall_addon(id)
+            driver.navigate.refresh
+            expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+          end
+
+          it 'install and uninstall signed directory' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed/", __dir__)
+            id = driver.install_addon(ext)
+
+            expect(id).to eq 'webextensions-selenium-example@example.com'
+            driver.navigate.to url_for('blank.html')
+
+            injected = driver.find_element(id: "webextensions-selenium-example")
+            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+
+            driver.uninstall_addon(id)
+            driver.navigate.refresh
+            expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
+          end
+
+          it 'install and uninstall unsigned directory' do
+            ext = File.expand_path("#{extensions}/webextensions-selenium-example/", __dir__)
+            id = driver.install_addon(ext, true)
+
+            expect(id).to eq 'webextensions-selenium-example@example.com'
+            driver.navigate.to url_for('blank.html')
+
+            injected = driver.find_element(id: "webextensions-selenium-example")
+            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+
+            driver.uninstall_addon(id)
+            driver.navigate.refresh
+            expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
         end
 

@@ -18,8 +18,10 @@
 package org.openqa.selenium.grid.distributor.config;
 
 
-import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
+
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
@@ -30,7 +32,6 @@ import java.util.Set;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_GRID_MODEL_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_REJECT_UNSUPPORTED_CAPS;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_MATCHER;
@@ -65,12 +66,6 @@ public class DistributorFlags implements HasRoles {
     name = "implementation",
     example = DEFAULT_DISTRIBUTOR_IMPLEMENTATION)
   private String implementation = DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
-
-  @Parameter(
-    names = {"--grid-model"},
-    description = "Full classname of non-default grid model. This is used to store states of the all the registered Nodes.")
-  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "grid-model", example = DEFAULT_GRID_MODEL_IMPLEMENTATION)
-  private String gridModel = DEFAULT_GRID_MODEL_IMPLEMENTATION;
 
   @Parameter(
     names = {"--slot-matcher"},

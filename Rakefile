@@ -51,7 +51,7 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.3'
+  '4.4'
 end
 
 def version
@@ -99,9 +99,9 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
-  //java/src/org/openqa/selenium/devtools/v101:v101.publish
-  //java/src/org/openqa/selenium/devtools/v102:v102.publish
   //java/src/org/openqa/selenium/devtools/v103:v103.publish
+  //java/src/org/openqa/selenium/devtools/v104:v104.publish
+  //java/src/org/openqa/selenium/devtools/v105:v105.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
@@ -110,7 +110,6 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/ie:ie.publish
   //java/src/org/openqa/selenium/json:json.publish
   //java/src/org/openqa/selenium/lift:lift.publish
-  //java/src/org/openqa/selenium/opera:opera.publish
   //java/src/org/openqa/selenium/remote/http:http.publish
   //java/src/org/openqa/selenium/remote:remote.publish
   //java/src/org/openqa/selenium/safari:safari.publish
@@ -134,7 +133,6 @@ task tests: [
   '//java/test/org/openqa/selenium/ie:ie',
   '//java/test/org/openqa/selenium/chrome:chrome',
   '//java/test/org/openqa/selenium/edge:edge',
-  '//java/test/org/openqa/selenium/opera:opera',
   '//java/test/org/openqa/selenium/support:small-tests',
   '//java/test/org/openqa/selenium/support:large-tests',
   '//java/test/org/openqa/selenium/remote:small-tests',
@@ -187,7 +185,6 @@ task test_ie: [
 ]
 task test_jobbie: [:test_ie]
 task test_firefox: ['//java/test/org/openqa/selenium/firefox:marionette:run']
-task test_opera: ['//java/test/org/openqa/selenium/opera:opera:run']
 task test_remote_server: [
   '//java/test/org/openqa/selenium/remote/server:small-tests:run',
   '//java/test/org/openqa/selenium/remote/server/log:test:run'
@@ -220,7 +217,6 @@ task test_java_webdriver: %i[
 task test_java_webdriver: [:test_ie] if SeleniumRake::Checks.windows?
 task test_java_webdriver: [:test_chrome] if SeleniumRake::Checks.chrome?
 task test_java_webdriver: [:test_edge] if SeleniumRake::Checks.edge?
-task test_java_webdriver: [:test_opera] if SeleniumRake::Checks.opera?
 
 task test_java: [
   '//java/test/org/openqa/selenium/atoms:test:run',

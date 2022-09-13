@@ -65,6 +65,8 @@ def test_should_get_the_position_of_the_current_window(driver):
     assert position.get('y') >= 0
 
 
+@pytest.mark.xfail_firefox(reason='https://github.com/mozilla/geckodriver/issues/2042')
+@pytest.mark.xfail_remote(reason='https://github.com/mozilla/geckodriver/issues/2042')
 def test_should_set_the_position_of_the_current_window(driver):
     position = driver.get_window_position()
 
@@ -91,6 +93,8 @@ def test_should_get_the_rect_of_the_current_window(driver):
     assert rect.get('height') >= 0
 
 
+@pytest.mark.xfail_firefox(reason='https://github.com/mozilla/geckodriver/issues/2042')
+@pytest.mark.xfail_remote(reason='https://github.com/mozilla/geckodriver/issues/2042')
 @pytest.mark.xfail_safari(raises=WebDriverException,
                           reason='Get Window Rect command not implemented')
 def test_should_set_the_rect_of_the_current_window(driver):

@@ -238,7 +238,4 @@ class ChromiumDriver(RemoteWebDriver):
             self.service.stop()
 
     def create_options(self) -> BaseOptions:
-        if self.vendor_prefix == "ms":
-            return EdgeOptions()
-        else:
-            return ChromeOptions()
+        return EdgeOptions() if self.vendor_prefix == "ms" else ChromeOptions()

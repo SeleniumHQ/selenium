@@ -45,8 +45,12 @@ public class Select implements ISelect, WrapsElement {
   public Select(WebElement element) {
     String tagName = element.getTagName();
 
-    if (null == tagName || !"select".equals(tagName.toLowerCase())) {
+    if (!"select".equalsIgnoreCase(tagName)) {
       throw new UnexpectedTagNameException("select", tagName);
+    }
+
+    if (!element.isEnabled()) {
+      throw new UnsupportedOperationException("Select element is disabled and may not be used.");
     }
 
     this.element = element;
@@ -311,8 +315,15 @@ public class Select implements ISelect, WrapsElement {
    *          deselected (false)
    */
   private void setSelected(WebElement option, boolean select) {
+    assertOptionIsEnabled(option, select);
     if (option.isSelected() != select) {
       option.click();
+    }
+  }
+
+  private void assertOptionIsEnabled(WebElement option, boolean select) {
+    if (select && !option.isEnabled()) {
+      throw new UnsupportedOperationException("You may not select a disabled option");
     }
   }
 

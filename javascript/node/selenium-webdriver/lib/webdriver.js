@@ -37,7 +37,9 @@ const { Capabilities } = require('./capabilities')
 const path = require('path')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
-const Credential = require('./virtual_authenticator').Credential
+const { Credential } = require('./virtual_authenticator')
+const webElement = require('./webelement')
+const { isObject } = require('./util')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -213,7 +215,7 @@ function fromWireValue(driver, value) {
   } else if (ShadowRoot.isId(value)) {
     let id = ShadowRoot.extractId(value)
     value = new ShadowRoot(driver, id)
-  } else if (value && typeof value === 'object') {
+  } else if (isObject(value)) {
     let result = {}
     for (let key in value) {
       if (Object.prototype.hasOwnProperty.call(value, key)) {
@@ -272,7 +274,7 @@ class IWebDriver {
 
   /**
    * @return {!Promise<!Capabilities>} A promise that will resolve with
-   *     the this instance's capabilities.
+   *     the instance's capabilities.
    */
   getCapabilities() {}
 
@@ -453,7 +455,7 @@ class IWebDriver {
    * @return {!(IThenable<T>|WebElementPromise)} A promise that will be
    *     resolved with the first truthy value returned by the condition
    *     function, or rejected if the condition times out. If the input
-   *     input condition is an instance of a {@link WebElementCondition},
+   *     condition is an instance of a {@link WebElementCondition},
    *     the returned value will be a {@link WebElementPromise}.
    * @throws {TypeError} if the provided `condition` is not a valid type.
    * @template T
@@ -584,7 +586,7 @@ class IWebDriver {
   findElements(locator) {} // eslint-disable-line
 
   /**
-   * Takes a screenshot of the current page. The driver makes a best effort to
+   * Takes a screenshot of the current page. The driver makes the best effort to
    * return a screenshot of the following, in order of preference:
    *
    * 1. Entire page
@@ -618,17 +620,17 @@ class IWebDriver {
    * Takes a PDF of the current page. The driver makes a best effort to
    * return a PDF based on the provided parameters.
    *
-   * @param {{orientation: (string|undefined),
-   *         scale: (number|undefined),
-   *         background: (boolean|undefined)
-   *         width: (number|undefined)
-   *         height: (number|undefined)
-   *         top: (number|undefined)
-   *         bottom: (number|undefined)
-   *         left: (number|undefined)
-   *         right: (number|undefined)
-   *         shrinkToFit: (boolean|undefined)
-   *         pageRanges: (<Array>|undefined)}} options.
+   * @param {{orientation:(string|undefined),
+   *         scale:(number|undefined),
+   *         background:(boolean|undefined),
+   *         width:(number|undefined),
+   *         height:(number|undefined),
+   *         top:(number|undefined),
+   *         bottom:(number|undefined),
+   *         left:(number|undefined),
+   *         right:(number|undefined),
+   *         shrinkToFit:(boolean|undefined),
+   *         pageRanges:(Array|undefined)}} options
    */
   printPage(options) {} // eslint-disable-line
 }
@@ -713,10 +715,9 @@ class WebDriver {
   static createSession(executor, capabilities, onQuit = undefined) {
     let cmd = new command.Command(command.Name.NEW_SESSION)
 
-    // For OSS remote ends.
-    cmd.setParameter('desiredCapabilities', capabilities)
     // For W3C remote ends.
     cmd.setParameter('capabilities', {
+      firstMatch: [{}],
       alwaysMatch: filterNonW3CCaps(capabilities),
     })
 
@@ -1311,7 +1312,7 @@ class WebDriver {
 
   /**
    * Sets a listener for Fetch.authRequired event from CDP
-   * If event is triggered, it enter username and password
+   * If event is triggered, it enters username and password
    * and allows the test to move forward
    * @param {string} username
    * @param {string} password
@@ -1530,7 +1531,7 @@ class WebDriver {
 
   /**
    * Adds a virtual authenticator with the given options.
-   * @param options VirtualAuthenticatorOptions object to set authenticator optons.
+   * @param options VirtualAuthenticatorOptions object to set authenticator options.
    */
   async addVirtualAuthenticator(options) {
     this.authenticatorId_ = await this.execute(
@@ -2058,7 +2059,7 @@ class Window {
   }
 
   /**
-   * Retrieves the a rect describing the current top-level window's size and
+   * Retrieves a rect describing the current top-level window's size and
    * position.
    *
    * @return {!Promise<{x: number, y: number, width: number, height: number}>}
@@ -2382,7 +2383,7 @@ class TargetLocator {
 
 const LEGACY_ELEMENT_ID_KEY = 'ELEMENT'
 const ELEMENT_ID_KEY = 'element-6066-11e4-a52e-4f735466cecf'
-const SHADOWROOT_ID_KEY = 'shadow-6066-11e4-a52e-4f735466cecf'
+const SHADOW_ROOT_ID_KEY = 'shadow-6066-11e4-a52e-4f735466cecf'
 
 /**
  * Represents a DOM element. WebElements can be found by searching from the
@@ -2427,14 +2428,7 @@ class WebElement {
    * @throws {TypeError} if the object is not a valid encoded ID.
    */
   static extractId(obj) {
-    if (obj && typeof obj === 'object') {
-      if (typeof obj[ELEMENT_ID_KEY] === 'string') {
-        return obj[ELEMENT_ID_KEY]
-      } else if (typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string') {
-        return obj[LEGACY_ELEMENT_ID_KEY]
-      }
-    }
-    throw new TypeError('object is not a WebElement ID')
+    return webElement.extractId(obj)
   }
 
   /**
@@ -2442,12 +2436,7 @@ class WebElement {
    * @return {boolean} whether the object is a valid encoded WebElement ID.
    */
   static isId(obj) {
-    return (
-      obj &&
-      typeof obj === 'object' &&
-      (typeof obj[ELEMENT_ID_KEY] === 'string' ||
-        typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string')
-    )
+    return webElement.isId(obj)
   }
 
   /**
@@ -2550,7 +2539,7 @@ class WebElement {
   }
 
   /**
-   * Locates all of the descendants of this element that match the given search
+   * Locates all the descendants of this element that match the given search
    * criteria.
    *
    * @param {!(by.By|Function)} locator The locator strategy to use when
@@ -2717,7 +2706,7 @@ class WebElement {
    * the value of the property with the same name is returned. If neither value
    * is set, null is returned (for example, the "value" property of a textarea
    * element). The "style" attribute is converted as best can be to a
-   * text representation with a trailing semi-colon. The following are deemed to
+   * text representation with a trailing semicolon. The following are deemed to
    * be "boolean" attributes and will return either "true" or null:
    *
    * async, autofocus, autoplay, checked, compact, complete, controls, declare,
@@ -2992,8 +2981,8 @@ class ShadowRoot {
    */
   static extractId(obj) {
     if (obj && typeof obj === 'object') {
-      if (typeof obj[SHADOWROOT_ID_KEY] === 'string') {
-        return obj[SHADOWROOT_ID_KEY]
+      if (typeof obj[SHADOW_ROOT_ID_KEY] === 'string') {
+        return obj[SHADOW_ROOT_ID_KEY]
       }
     }
     throw new TypeError('object is not a ShadowRoot ID')
@@ -3007,7 +2996,7 @@ class ShadowRoot {
     return (
       obj &&
       typeof obj === 'object' &&
-      typeof obj[SHADOWROOT_ID_KEY] === 'string'
+      typeof obj[SHADOW_ROOT_ID_KEY] === 'string'
     )
   }
 
@@ -3083,7 +3072,7 @@ class ShadowRoot {
   }
 
   /**
-   * Locates all of the descendants of this element that match the given search
+   * Locates all the descendants of this element that match the given search
    * criteria.
    *
    * @param {!(by.By|Function)} locator The locator strategy to use when

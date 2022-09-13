@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Licensed to the Software Freedom Conservancy (SFC) under one or more contributor license agreements.  See the NOTICE file
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
 # regarding copyright ownership.  The SFC licenses this file
 # to you under the Apache License, Version 2.0 (the

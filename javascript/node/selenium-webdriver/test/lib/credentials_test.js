@@ -103,7 +103,7 @@ describe('Credentials', function () {
   })
 
   it('can testRkDisabledCredential', function () {
-    const { _id, rpId, userHandle, privateKey, signCount } = data
+    const { _id, rpId, privateKey, signCount } = data
     const credential =
       new virtualAuthenticatorCredential().createNonResidentCredential(
         _id,

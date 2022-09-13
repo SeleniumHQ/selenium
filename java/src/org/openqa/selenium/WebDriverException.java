@@ -19,7 +19,6 @@ package org.openqa.selenium;
 
 import org.openqa.selenium.net.HostIdentifier;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,7 +53,6 @@ public class WebDriverException extends RuntimeException {
    * Returns the detail message string of this exception that includes not only the original
    * message passed to the exception constructor but also driver information, system
    * information and extra information added by {@link #addInfo(String, String)} method.
-   *
    * To get the original message use {@link #getRawMessage()}
    *
    * @return the detail message string of this exception.
@@ -91,10 +89,15 @@ public class WebDriverException extends RuntimeException {
 
   public String getSystemInformation() {
     return String.format(
-      "System info: host: '%s', ip: '%s', os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
-      HostIdentifier.getHostName(), HostIdentifier.getHostAddress(),
+      "System info: os.name: '%s', os.arch: '%s', os.version: '%s', java.version: '%s'",
       System.getProperty("os.name"), System.getProperty("os.arch"),
       System.getProperty("os.version"), System.getProperty("java.version"));
+  }
+
+  public static String getHostInformation() {
+    return String.format(
+      "Host info: host: '%s', ip: '%s'",
+      HostIdentifier.getHostName(), HostIdentifier.getHostAddress());
   }
 
   public String getSupportUrl() {

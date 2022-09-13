@@ -245,7 +245,7 @@ class WebDriver(RemoteWebDriver):
                 driver.install_addon('/path/to/firebug.xpi')
         """
 
-        if(os.path.isdir(path)):
+        if os.path.isdir(path):
             fp = BytesIO()
             path_root = len(path) + 1  # account for trailing slash
             with zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED) as zipped:

@@ -115,7 +115,7 @@ class Proxy:
         return self.proxyType
 
     @proxy_type.setter
-    def proxy_type(self, value):
+    def proxy_type(self, value) -> None:
         """
         Sets proxy type.
 
@@ -133,7 +133,7 @@ class Proxy:
         return self.autodetect
 
     @auto_detect.setter
-    def auto_detect(self, value):
+    def auto_detect(self, value) -> None:
         """
         Sets autodetect setting.
 
@@ -156,7 +156,7 @@ class Proxy:
         return self.ftpProxy
 
     @ftp_proxy.setter
-    def ftp_proxy(self, value):
+    def ftp_proxy(self, value) -> None:
         """
         Sets ftp proxy setting.
 
@@ -175,7 +175,7 @@ class Proxy:
         return self.httpProxy
 
     @http_proxy.setter
-    def http_proxy(self, value):
+    def http_proxy(self, value) -> None:
         """
         Sets http proxy setting.
 
@@ -194,7 +194,7 @@ class Proxy:
         return self.noProxy
 
     @no_proxy.setter
-    def no_proxy(self, value):
+    def no_proxy(self, value) -> None:
         """
         Sets noproxy setting.
 
@@ -213,7 +213,7 @@ class Proxy:
         return self.proxyAutoconfigUrl
 
     @proxy_autoconfig_url.setter
-    def proxy_autoconfig_url(self, value):
+    def proxy_autoconfig_url(self, value) -> None:
         """
         Sets proxy autoconfig url setting.
 
@@ -232,7 +232,7 @@ class Proxy:
         return self.sslProxy
 
     @ssl_proxy.setter
-    def ssl_proxy(self, value):
+    def ssl_proxy(self, value) -> None:
         """
         Sets https proxy setting.
 
@@ -251,7 +251,7 @@ class Proxy:
         return self.socksProxy
 
     @socks_proxy.setter
-    def socks_proxy(self, value):
+    def socks_proxy(self, value) -> None:
         """
         Sets socks proxy setting.
 
@@ -270,7 +270,7 @@ class Proxy:
         return self.socksUsername
 
     @socks_username.setter
-    def socks_username(self, value):
+    def socks_username(self, value) -> None:
         """
         Sets socks proxy username setting.
 
@@ -289,7 +289,7 @@ class Proxy:
         return self.socksPassword
 
     @socks_password.setter
-    def socks_password(self, value):
+    def socks_password(self, value) -> None:
         """
         Sets socks proxy password setting.
 
@@ -308,7 +308,7 @@ class Proxy:
         return self.socksVersion
 
     @socks_version.setter
-    def socks_version(self, value):
+    def socks_version(self, value) -> None:
         """
         Sets socks proxy version setting.
 
@@ -319,9 +319,9 @@ class Proxy:
         self.proxyType = ProxyType.MANUAL
         self.socksVersion = value
 
-    def _verify_proxy_type_compatibility(self, compatibleProxy):
-        if self.proxyType != ProxyType.UNSPECIFIED and self.proxyType != compatibleProxy:
-            raise Exception(f"Specified proxy type ({compatibleProxy}) not compatible with current setting ({self.proxyType})")
+    def _verify_proxy_type_compatibility(self, compatible_proxy):
+        if self.proxyType not in (ProxyType.UNSPECIFIED, compatible_proxy):
+            raise Exception(f"Specified proxy type ({compatible_proxy}) not compatible with current setting ({self.proxyType})")
 
     def add_to_capabilities(self, capabilities):
         """

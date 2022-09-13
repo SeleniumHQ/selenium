@@ -84,7 +84,7 @@ module Selenium
               expect(File.exist?(path)).to be true
               expect(File.size(path)).to be_positive
             ensure
-              File.delete(path) if File.exist?(path)
+              FileUtils.rm_rf(path)
             end
           end
         end

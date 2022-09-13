@@ -47,6 +47,7 @@ const Pages = (function () {
   addPage('ajaxyPage', 'ajaxy_page.html')
   addPage('alertsPage', 'alerts.html')
   addPage('basicAuth', 'basicAuth')
+  addPage('blankPage', 'blank.html')
   addPage('bodyTypingPage', 'bodyTypingTest.html')
   addPage('booleanAttributes', 'booleanAttributes.html')
   addPage('childPage', 'child/childPage.html')

@@ -1,3 +1,36 @@
+v4.5.0
+======
+* Supported CDP versions: 85, 103, 104, 105
+* Allow event firing decorator to accept a target class (#1694)
+* Fix Javadoc for executeAsyncScript method
+* [cdp] Add  support for CDP 105 and remove CDP 102
+* Make httpclient ClientConfig constructor protected (#10985) 
+* Throw an error when trying to select a disabled select or option (#10812)
+* Add "webdriver.edge.loglevel" system property (#10961)
+* Remove deprecated Opera support (#10379)
+* [grid] Adding handler for options when using CORS and creating a session
+* Add a JDK 11 HTTP client (#10730)
+* [grid] Delete a session when a session times out (#10820) 
+* Set high redirect default value in Netty client
+* [grid] Remove unused "grid-mode" flag
+* Improve default matcher to enable Appium
+* Remove host info for most exceptions, except SessionNotCreatedException (#9792)
+* Change message when session is not found in Grid for better exception handling
+* Remove IME support
+* Remove deprecated ForSeleniumServer caps
+* Remove deprecated BrowserType
+
+v4.4.0
+======
+
+* Supported CDP versions: 85, 102, 103, 104
+* Fix bug to ensure correct window handle used by CDP (#10811)
+* Remove makeW3CSafe from NewSession in Command Payload
+* Allow decorating child classes of WebDriver (#10737)
+* Throwing an error when user sets `w3c:false` in `goog:chromeOptions`
+* Allow a Relay Node to boot and check periodically for the status endpoint.
+* Forwarding requests with non-W3C locators (useful for Relay Nodes with Appium)
+
 v4.3.0
 ======
 

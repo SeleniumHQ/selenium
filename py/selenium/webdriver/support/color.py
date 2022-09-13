@@ -98,7 +98,7 @@ class Color:
             return cls(*rgb)
         elif m.match(HSL_PATTERN, str_) or m.match(HSLA_PATTERN, str_):
             return cls._from_hsl(*m.groups)
-        elif str_.upper() in Colors.keys():
+        elif str_.upper() in Colors:
             return Colors[str_.upper()]
         else:
             raise ValueError("Could not convert %s into color" % str_)
@@ -177,7 +177,7 @@ class Color:
             self.red, self.green, self.blue, self.alpha)
 
     def __str__(self) -> str:
-        return "Color: %s" % self.rgba
+        return f"Color: {self.rgba}"
 
 
 # Basic, extended and transparent colour keywords as defined by the W3C HTML4 spec

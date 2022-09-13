@@ -18,20 +18,32 @@
 """The WebDriver implementation."""
 import contextlib
 import copy
+import pkgutil
 import types
 import typing
-from importlib import import_module
-
-import pkgutil
-
-from typing import Dict, List, Optional, Union
-
 import warnings
-
 from abc import ABCMeta
 from base64 import b64decode, urlsafe_b64encode
 from contextlib import asynccontextmanager, contextmanager
+from importlib import import_module
+from typing import Dict, List, Optional, Union
 
+from selenium.common.exceptions import (InvalidArgumentException,
+                                        JavascriptException,
+                                        WebDriverException,
+                                        NoSuchCookieException,
+                                        NoSuchElementException)
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.html5.application_cache import ApplicationCache
+from selenium.webdriver.common.options import BaseOptions
+from selenium.webdriver.common.print_page_options import PrintOptions
+from selenium.webdriver.common.timeouts import Timeouts
+from selenium.webdriver.common.virtual_authenticator import (
+    Credential,
+    VirtualAuthenticatorOptions,
+    required_virtual_authenticator
+)
+from selenium.webdriver.support.relative_locator import RelativeBy
 from .bidi_connection import BidiConnection
 from .command import Command
 from .errorhandler import ErrorHandler
@@ -42,24 +54,6 @@ from .script_key import ScriptKey
 from .shadowroot import ShadowRoot
 from .switch_to import SwitchTo
 from .webelement import WebElement
-
-from selenium.common.exceptions import (InvalidArgumentException,
-                                        JavascriptException,
-                                        WebDriverException,
-                                        NoSuchCookieException,
-                                        NoSuchElementException)
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.options import BaseOptions
-from selenium.webdriver.common.print_page_options import PrintOptions
-from selenium.webdriver.common.timeouts import Timeouts
-from selenium.webdriver.common.html5.application_cache import ApplicationCache
-from selenium.webdriver.support.relative_locator import RelativeBy
-from selenium.webdriver.common.virtual_authenticator import (
-    Credential,
-    VirtualAuthenticatorOptions,
-    required_virtual_authenticator
-)
-
 
 _W3C_CAPABILITY_NAMES = frozenset([
     'acceptInsecureCerts',
@@ -80,7 +74,6 @@ _OSS_W3C_CONVERSION = {
     'version': 'browserVersion',
     'platform': 'platformName'
 }
-
 
 cdp = None
 
@@ -110,7 +103,11 @@ def _make_w3c_caps(caps):
         caps['proxy']['proxyType'] = caps['proxy']['proxyType'].lower()
     for k, v in caps.items():
         if v and k in _OSS_W3C_CONVERSION:
-            always_match[_OSS_W3C_CONVERSION[k]] = v.lower() if k == 'platform' else v
+            # Todo: Remove in 4.7.0 (Deprecated in 4.5.0)
+            w3c_equivalent = _OSS_W3C_CONVERSION[k]
+            warnings.warn(f"{k} is not a w3c capability.  use `{w3c_equivalent}` instead.  This will no longer be"
+                          f" converted in 4.7.0", DeprecationWarning, stacklevel=2)
+            always_match[w3c_equivalent] = v.lower() if k == 'platform' else v
         if k in _W3C_CAPABILITY_NAMES or ':' in k:
             always_match[k] = v
     if profile:
@@ -163,7 +160,7 @@ def create_matches(options: List[BaseOptions]) -> Dict:
         always[k] = v
 
     for i in opts:
-        for k in always.keys():
+        for k in always:
             del i[k]
 
     capabilities["capabilities"]["alwaysMatch"] = always
@@ -256,8 +253,7 @@ class WebDriver(BaseWebDriver):
             if desired_capabilities:
                 if not isinstance(desired_capabilities, dict):
                     raise WebDriverException("Desired Capabilities must be a dictionary")
-                else:
-                    capabilities.update(desired_capabilities)
+                capabilities.update(desired_capabilities)
         self.command_executor = command_executor
         if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(capabilities, command_executor=command_executor,
@@ -332,8 +328,7 @@ class WebDriver(BaseWebDriver):
         """
         if 'browserName' in self.caps:
             return self.caps['browserName']
-        else:
-            raise KeyError('browserName not specified in session capabilities')
+        raise KeyError('browserName not specified in session capabilities')
 
     def start_client(self):
         """
@@ -456,16 +451,21 @@ class WebDriver(BaseWebDriver):
         """
         return self.execute(Command.GET_TITLE).get("value", "")
 
-    def pin_script(self, script, script_key=None) -> ScriptKey:
-        _script_key = ScriptKey(script_key)
-        self.pinned_scripts[_script_key.id] = script
-        return _script_key
+    def pin_script(self, script: str, script_key=None) -> ScriptKey:
+        """Store common javascript scripts to be executed later by a unique hashable ID."""
+        script_key_instance = ScriptKey(script_key)
+        self.pinned_scripts[script_key_instance.id] = script
+        return script_key_instance
 
-    def unpin(self, script_key) -> None:
-        self.pinned_scripts.pop(script_key.id)
+    def unpin(self, script_key: ScriptKey) -> None:
+        """Remove a pinned script from storage."""
+        try:
+            self.pinned_scripts.pop(script_key.id)
+        except KeyError:
+            raise KeyError(f"No script with key: {script_key} existed in {self.pinned_scripts}") from None
 
     def get_pinned_scripts(self) -> List[str]:
-        return list(self.pinned_scripts.keys())
+        return list(self.pinned_scripts)
 
     def execute_script(self, script, *args):
         """
@@ -824,7 +824,7 @@ class WebDriver(BaseWebDriver):
                 my_timeouts.implicit_wait = 10
                 driver.timeouts = my_timeouts
         """
-        self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
+        _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
 
     def find_element(self, by=By.ID, value=None) -> WebElement:
         """
@@ -1082,7 +1082,7 @@ class WebDriver(BaseWebDriver):
         return self._file_detector
 
     @file_detector.setter
-    def file_detector(self, detector):
+    def file_detector(self, detector) -> None:
         """
         Set the file detector to be used when sending keyboard input.
         By default, this is set to a file detector that does nothing.
@@ -1113,7 +1113,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_SCREEN_ORIENTATION)['value']
 
     @orientation.setter
-    def orientation(self, value):
+    def orientation(self, value) -> None:
         """
         Sets the current orientation of the device
 
@@ -1192,7 +1192,8 @@ class WebDriver(BaseWebDriver):
         http = urllib3.PoolManager()
         _firefox = False
         if self.caps.get("browserName") == "chrome":
-            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get("debuggerAddress")
+            debugger_address = self.caps.get(f"{self.vendor_prefix}:{self.caps.get('browserName')}Options").get(
+                "debuggerAddress")
         else:
             _firefox = True
             debugger_address = self.caps.get("moz:debuggerAddress")

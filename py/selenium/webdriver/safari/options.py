@@ -14,12 +14,14 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
+
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
 
 
 class Log:
-    def __init__(self):
+    def __init__(self) -> None:
         self.level = None
 
     def to_capabilities(self) -> dict:
@@ -37,7 +39,7 @@ class Options(ArgOptions):
 
     SAFARI_TECH_PREVIEW = 'Safari Technology Preview'
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._binary_location = None
         self._preferences: dict = {}
@@ -51,7 +53,7 @@ class Options(ArgOptions):
         return self._binary_location
 
     @binary_location.setter
-    def binary_location(self, value: str):
+    def binary_location(self, value: str) -> None:
         """
         Allows you to set the browser binary to launch
 
@@ -82,7 +84,7 @@ class Options(ArgOptions):
         return caps
 
     @property
-    def default_capabilities(self) -> dict:
+    def default_capabilities(self) -> typing.Dict[str, str]:
         return DesiredCapabilities.SAFARI.copy()
 
     @property
@@ -91,7 +93,7 @@ class Options(ArgOptions):
         return self._caps.get(self.AUTOMATIC_INSPECTION)
 
     @automatic_inspection.setter
-    def automatic_inspection(self, value: bool):
+    def automatic_inspection(self, value: bool) -> None:
         """
         Sets the option Automatic Inspection to value
 
@@ -107,7 +109,7 @@ class Options(ArgOptions):
         return self._caps.get(self.AUTOMATIC_PROFILING)
 
     @automatic_profiling.setter
-    def automatic_profiling(self, value: bool):
+    def automatic_profiling(self, value: bool) -> None:
         """
         Sets the option Automatic Profiling to value
 
@@ -123,7 +125,7 @@ class Options(ArgOptions):
         return self._caps.get('browserName') == self.SAFARI_TECH_PREVIEW
 
     @use_technology_preview.setter
-    def use_technology_preview(self, value: bool):
+    def use_technology_preview(self, value: bool) -> None:
         """
         Sets browser name to Safari Technology Preview if value else to safari.
 

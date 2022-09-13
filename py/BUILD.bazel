@@ -15,13 +15,13 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.3.0"
+SE_VERSION = "4.4.3"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v101",
-    "v102",
     "v103",
+    "v104",
+    "v105",
 ]
 
 TEST_DEPS = [
@@ -76,9 +76,21 @@ copy_file(
 )
 
 copy_file(
-    name = "favourite_color",
+    name = "webextensions-selenium-example-xpi",
     src = "//common/extensions:webextensions-selenium-example.xpi",
-    out = "test/selenium/webdriver/firefox/webextensions-selenium-example.xpi",
+    out = "test/extensions/webextensions-selenium-example.xpi",
+)
+
+copy_file(
+    name = "webextensions-selenium-example-zip",
+    src = "//common/extensions:webextensions-selenium-example.zip",
+    out = "test/extensions/webextensions-selenium-example.zip",
+)
+
+copy_file(
+    name = "webextensions-selenium-example-unsigned-zip",
+    src = "//common/extensions:webextensions-selenium-example-unsigned.zip",
+    out = "test/extensions/webextensions-selenium-example-unsigned.zip",
 )
 
 py_library(
@@ -94,7 +106,6 @@ py_library(
         ":get-attribute",
         ":is-displayed",
         ":mutation-listener",
-        ":favourite_color",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -167,9 +178,10 @@ py_wheel(
     python_requires = "~=3.7",
     python_tag = "py3",
     requires = [
-        "urllib3[secure, socks]~=1.26",
+        "urllib3[socks]~=1.26",
         "trio~=0.17",
         "trio-websocket~=0.9",
+        "certifi>=2021.10.8",
     ],
     strip_path_prefixes = [
         "py/",
@@ -207,6 +219,9 @@ py_library(
         "setup.cfg",
         "test/selenium/webdriver/common/test_file.txt",
         "test/selenium/webdriver/common/test_file2.txt",
+        ":webextensions-selenium-example-xpi",
+        ":webextensions-selenium-example-zip",
+        ":webextensions-selenium-example-unsigned-zip",
     ],
     imports = ["."],
     deps = [
@@ -374,9 +389,6 @@ py_test_suite(
         "--instafail",
         "--driver=firefox",
     ],
-    data = [
-        "//common/extensions",
-    ],
     tags = [
         "no-sandbox",
     ],
@@ -399,7 +411,6 @@ py_test_suite(
         "--driver=remote",
     ],
     data = [
-        "//common/extensions",
         "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     tags = [

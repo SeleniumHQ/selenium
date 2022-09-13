@@ -39,7 +39,7 @@ public class ClientConfig {
   private final Proxy proxy;
   private final Credentials credentials;
 
-  private ClientConfig(
+  protected ClientConfig(
     URI baseUri,
     Duration connectionTimeout,
     Duration readTimeout,
@@ -92,6 +92,16 @@ public class ClientConfig {
     } catch (MalformedURLException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  public ClientConfig connectionTimeout(Duration timeout) {
+    return new ClientConfig(
+      baseUri,
+      Require.nonNull("Connection timeout", timeout),
+      readTimeout,
+      filters,
+      proxy,
+      credentials);
   }
 
   public Duration connectionTimeout() {

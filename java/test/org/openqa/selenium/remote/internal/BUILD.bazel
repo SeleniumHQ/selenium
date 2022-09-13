@@ -7,6 +7,7 @@ java_library(
     srcs = [
         "DomainSocketsTestBase.java",
         "HttpClientTestBase.java",
+        "WebSocketTestBase.java",
     ],
     visibility = [
         "//java/test/org/openqa/selenium:__subpackages__",
@@ -14,6 +15,8 @@ java_library(
     deps = [
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/grid/server",
+        "//java/src/org/openqa/selenium/netty/server",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/remote/http",
         "//java/test/org/openqa/selenium/environment",
