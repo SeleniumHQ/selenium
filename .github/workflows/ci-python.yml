@@ -179,10 +179,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Firefox (Remote)
@@ -219,10 +217,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox
-        uses: browser-actions/setup-firefox@latest
-      - name: Setup GeckoDriver
-        uses: browser-actions/setup-geckodriver@latest
+      - name: Setup Firefox and GeckoDriver
+        uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run browser tests in Firefox
