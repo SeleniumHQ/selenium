@@ -37,6 +37,8 @@ class Select:
             raise UnexpectedTagNameException(
                 "Select only works on <select> elements, not on <%s>" %
                 webelement.tag_name)
+        if not webelement.is_enabled():
+            raise NotImplementedError("Select element is disabled and may not be used.")
         self._el = webelement
         multi = self._el.get_dom_attribute("multiple")
         self.is_multiple = multi and multi != "false"
@@ -205,6 +207,8 @@ class Select:
 
     def _set_selected(self, option) -> None:
         if not option.is_selected():
+            if not option.is_enabled():
+                raise NotImplementedError("You may not select a disabled option")
             option.click()
 
     def _unset_selected(self, option) -> None:

@@ -168,7 +168,7 @@ public class JdkHttpClient implements HttpClient {
           CloseMessage closeMessage = (CloseMessage) message;
           makeCall = () -> underlyingSocket.sendClose(closeMessage.code(), closeMessage.reason());
         } else {
-          throw new IllegalArgumentException("Unsupport message type: " + message);
+          throw new IllegalArgumentException("Unsupported message type: " + message);
         }
 
         synchronized (underlyingSocket) {

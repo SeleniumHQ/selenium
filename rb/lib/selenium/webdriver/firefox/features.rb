@@ -35,7 +35,11 @@ module Selenium
         end
 
         def install_addon(path, temporary)
-          addon = File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
+          addon = if File.directory?(path)
+                    Zipper.zip(path)
+                  else
+                    File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
+                  end
 
           payload = {addon: addon}
           payload[:temporary] = temporary unless temporary.nil?

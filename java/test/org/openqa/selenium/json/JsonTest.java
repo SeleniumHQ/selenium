@@ -336,7 +336,7 @@ public class JsonTest {
   }
 
   @Test
-  public void sShouldBeAbleToReconsituteASessionId() {
+  public void sShouldBeAbleToReconstituteASessionId() {
     String json = new Json().toJson(new SessionId("id"));
     SessionId sessionId = new Json().toType(json, SessionId.class);
 

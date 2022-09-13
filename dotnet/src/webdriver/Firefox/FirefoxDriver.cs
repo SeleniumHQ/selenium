@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.IO.Compression;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
@@ -257,10 +258,34 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
+        /// Installs a Firefox add-on from a directory.
+        /// </summary>
+        /// <param name="addOnDirectoryToInstall">Full path of the directory of the add-on to install.</param>
+        /// <param name="temporary">Whether the add-on is temporary; required for unsigned add-ons.</param>
+        public string InstallAddOnFromDirectory(string addOnDirectoryToInstall, bool temporary = false)
+        {
+            if (string.IsNullOrEmpty(addOnDirectoryToInstall))
+            {
+                throw new ArgumentNullException(nameof(addOnDirectoryToInstall), "Add-on file name must not be null or the empty string");
+            }
+
+            if (!Directory.Exists(addOnDirectoryToInstall))
+            {
+                throw new ArgumentException("Directory " + addOnDirectoryToInstall + " does not exist", nameof(addOnDirectoryToInstall));
+            }
+
+            string addOnFileToInstall = Path.Combine(Path.GetTempPath(), "addon" + new Random().Next() + ".zip");
+            ZipFile.CreateFromDirectory(addOnDirectoryToInstall, addOnFileToInstall);
+
+            return this.InstallAddOn(addOnFileToInstall, temporary);
+        }
+
+        /// <summary>
         /// Installs a Firefox add-on from a file, typically a .xpi file.
         /// </summary>
         /// <param name="addOnFileToInstall">Full path and file name of the add-on to install.</param>
-        public void InstallAddOnFromFile(string addOnFileToInstall)
+        /// <param name="temporary">Whether the add-on is temporary; required for unsigned add-ons.</param>
+        public string InstallAddOnFromFile(string addOnFileToInstall, bool temporary = false)
         {
             if (string.IsNullOrEmpty(addOnFileToInstall))
             {
@@ -272,31 +297,31 @@ namespace OpenQA.Selenium.Firefox
                 throw new ArgumentException("File " + addOnFileToInstall + " does not exist", nameof(addOnFileToInstall));
             }
 
-            // Implementation note: There is a version of the install add-on
-            // command that can be used with a file name directly, by passing
-            // a "path" property in the parameters object of the command. If
-            // delegating to the "use the base64-encoded blob" version causes
-            // issues, we can change this method to use the file name directly
-            // instead.
             byte[] addOnBytes = File.ReadAllBytes(addOnFileToInstall);
-            string base64AddOn = Convert.ToBase64String(addOnBytes);
-            this.InstallAddOn(base64AddOn);
+            string base64EncodedAddOn = Convert.ToBase64String(addOnBytes);
+
+            return this.InstallAddOn(base64EncodedAddOn, temporary);
         }
 
         /// <summary>
         /// Installs a Firefox add-on.
         /// </summary>
         /// <param name="base64EncodedAddOn">The base64-encoded string representation of the add-on binary.</param>
-        public void InstallAddOn(string base64EncodedAddOn)
+        /// <param name="temporary">Whether the add-on is temporary; required for unsigned add-ons.</param>
+        public string InstallAddOn(string base64EncodedAddOn, bool temporary = false)
         {
             if (string.IsNullOrEmpty(base64EncodedAddOn))
             {
                 throw new ArgumentNullException(nameof(base64EncodedAddOn), "Base64 encoded add-on must not be null or the empty string");
             }
 
-            Dictionary<string, object> parameters = new Dictionary<string, object>();
-            parameters["addon"] = base64EncodedAddOn;
-            this.Execute(InstallAddOnCommand, parameters);
+            Dictionary<string, object> parameters = new Dictionary<string, object>
+            {
+                ["addon"] = base64EncodedAddOn,
+                ["temporary"] = temporary
+            };
+            Response response = this.Execute(InstallAddOnCommand, parameters);
+            return (string)response.Value;
         }
 
         /// <summary>

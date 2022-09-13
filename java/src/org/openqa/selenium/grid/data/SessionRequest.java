@@ -84,7 +84,7 @@ public class SessionRequest {
     Map<String, Object> metadata,
     Map<String, String> traceHeaders) {
     this.requestId = Require.nonNull("Request ID", requestId);
-    this.enqueued = Require.nonNull("Enqueud time", enqueued);
+    this.enqueued = Require.nonNull("Enqueued time", enqueued);
     this.downstreamDialects = unmodifiableSet(
       new HashSet<>(Require.nonNull("Downstream dialects", downstreamDialects)));
     this.desiredCapabilities = unmodifiableSet(
