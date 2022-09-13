@@ -15,26 +15,26 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from .firefox.webdriver import WebDriver as Firefox  # noqa
+from .chrome.options import Options as ChromeOptions  # noqa
+from .chrome.webdriver import WebDriver as Chrome  # noqa
+from .common.action_chains import ActionChains  # noqa
+from .common.desired_capabilities import DesiredCapabilities  # noqa
+from .common.keys import Keys  # noqa
+from .common.proxy import Proxy  # noqa
+from .edge.options import Options as EdgeOptions  # noqa
+from .edge.webdriver import WebDriver as ChromiumEdge  # noqa
+from .edge.webdriver import WebDriver as Edge  # noqa
 from .firefox.firefox_profile import FirefoxProfile  # noqa
 from .firefox.options import Options as FirefoxOptions  # noqa
-from .chrome.webdriver import WebDriver as Chrome  # noqa
-from .chrome.options import Options as ChromeOptions  # noqa
-from .ie.webdriver import WebDriver as Ie  # noqa
+from .firefox.webdriver import WebDriver as Firefox  # noqa
 from .ie.options import Options as IeOptions  # noqa
-from .edge.webdriver import WebDriver as Edge  # noqa
-from .edge.webdriver import WebDriver as ChromiumEdge  # noqa
-from .edge.options import Options as EdgeOptions  # noqa
-from .safari.webdriver import WebDriver as Safari  # noqa
-from .webkitgtk.webdriver import WebDriver as WebKitGTK  # noqa
-from .webkitgtk.options import Options as WebKitGTKOptions  # noqa
-from .wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
-from .wpewebkit.options import Options as WPEWebKitOptions  # noqa
+from .ie.webdriver import WebDriver as Ie  # noqa
 from .remote.webdriver import WebDriver as Remote  # noqa
-from .common.desired_capabilities import DesiredCapabilities  # noqa
-from .common.action_chains import ActionChains  # noqa
-from .common.proxy import Proxy  # noqa
-from .common.keys import Keys  # noqa
+from .safari.webdriver import WebDriver as Safari  # noqa
+from .webkitgtk.options import Options as WebKitGTKOptions  # noqa
+from .webkitgtk.webdriver import WebDriver as WebKitGTK  # noqa
+from .wpewebkit.options import Options as WPEWebKitOptions  # noqa
+from .wpewebkit.webdriver import WebDriver as WPEWebKit  # noqa
 
 __version__ = '4.4.3'
 

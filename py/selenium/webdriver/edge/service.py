@@ -16,8 +16,8 @@
 # under the License.
 
 from typing import List
-from selenium.webdriver.chromium import service
 
+from selenium.webdriver.chromium import service
 
 DEFAULT_EXECUTABLE_PATH = 'msedgedriver'
 

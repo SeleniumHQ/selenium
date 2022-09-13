@@ -17,11 +17,11 @@
 
 import re
 
+from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import WebDriverException
-from selenium.common.exceptions import NoAlertPresentException
 from selenium.webdriver.remote.webdriver import WebElement
 
 """

@@ -17,11 +17,13 @@
 
 
 import os
+import time
 from platform import system
-from subprocess import Popen, STDOUT
+from subprocess import STDOUT
+from subprocess import Popen
+
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
-import time
 
 
 class FirefoxBinary:
@@ -119,7 +121,10 @@ class FirefoxBinary:
 
     def _find_exe_in_registry(self):
         try:
-            from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
+            from _winreg import HKEY_CURRENT_USER
+            from _winreg import HKEY_LOCAL_MACHINE
+            from _winreg import OpenKey
+            from _winreg import QueryValue
         except ImportError:
             from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
         import shlex

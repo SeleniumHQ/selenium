@@ -19,6 +19,5 @@
 
 import typing
 
-
 AnyKey = typing.Union[str, int, float]
 WaitExcTypes = typing.Iterable[typing.Type[Exception]]

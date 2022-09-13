@@ -19,7 +19,8 @@
 Exceptions that may happen in all the webdriver code.
 """
 
-from typing import Optional, Sequence
+from typing import Optional
+from typing import Sequence
 
 
 class WebDriverException(Exception):

@@ -16,7 +16,10 @@
 # under the License.
 
 
-from typing import Dict, List, Union
+from typing import Dict
+from typing import List
+from typing import Union
+
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement

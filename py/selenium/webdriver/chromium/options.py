@@ -18,7 +18,9 @@
 import base64
 import os
 import warnings
-from typing import List, Union, BinaryIO
+from typing import BinaryIO
+from typing import List
+from typing import Union
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions

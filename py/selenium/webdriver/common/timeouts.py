@@ -18,7 +18,6 @@
 
 from typing import TYPE_CHECKING
 
-
 if TYPE_CHECKING:
     import sys
     if sys.version_info >= (3, 8):
