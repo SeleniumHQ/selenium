@@ -37,6 +37,7 @@
 'use strict'
 
 const { By, escapeCss } = require('./by')
+const error = require('./error')
 
 /**
  * ISelect interface makes a protocol for all kind of select elements (standard html and custom
@@ -191,9 +192,7 @@ class Select {
 
     for (let option of options) {
       if ((await option.getAttribute('index')) === index.toString()) {
-        if (!(await option.isSelected())) {
-          await option.click()
-        }
+        await this.setSelected(option)
       }
     }
   }
@@ -224,9 +223,7 @@ class Select {
     })
 
     for (let option of options) {
-      if (!(await option.isSelected())) {
-        await option.click()
-      }
+      await this.setSelected(option)
 
       if (!isMulti) {
         return
@@ -282,9 +279,7 @@ class Select {
     const optionElement = await this.element.findElement({
       xpath: selections.join('|'),
     })
-    if (!(await optionElement.isSelected())) {
-      await optionElement.click()
-    }
+    await this.setSelected(optionElement)
   }
 
   /**
@@ -453,6 +448,17 @@ class Select {
 
     if (!matched) {
       throw new Error(`Cannot locate option with value: ${value}`)
+    }
+  }
+
+  async setSelected(option) {
+    if (!(await option.isSelected())) {
+      if (!(await option.isEnabled())) {
+        throw new error.UnsupportedOperationError(
+          `You may not select a disabled option`
+        )
+      }
+      await option.click()
     }
   }
 }
