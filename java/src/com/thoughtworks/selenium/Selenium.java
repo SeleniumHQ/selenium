@@ -666,7 +666,7 @@ public interface Selenium {
    * <p>
    * 4.) If <em>that</em> fails, we'll try looping over all of the known windows to try to find the
    * appropriate "title". Since "title" is not necessarily unique, this may have unexpected
-   * behavior.
+   * behaviour.
    * </p>
    * <p>
    * If you're having trouble figuring out the name of a window that you want to manipulate, look at
@@ -778,7 +778,7 @@ public interface Selenium {
    * <p>
    * By default, Selenium's overridden window.confirm() function will return true, as if the user
    * had manually clicked OK; after running this command, the next call to confirm() will return
-   * false, as if the user had clicked Cancel. Selenium will then resume using the default behavior
+   * false, as if the user had clicked Cancel. Selenium will then resume using the default behaviour
    * for future confirmations, automatically returning true (OK) unless/until you explicitly call
    * this command for each confirmation.
    * </p>
@@ -795,7 +795,7 @@ public interface Selenium {
    * window.confirm() function will normally automatically return true, as if the user had manually
    * clicked OK, so you shouldn't need to use this command unless for some reason you need to change
    * your mind prior to the next confirmation. After any confirmation, Selenium will resume using
-   * the default behavior for future confirmations, automatically returning true (OK) unless/until
+   * the default behaviour for future confirmations, automatically returning true (OK) unless/until
    * you explicitly call chooseCancelOnNextConfirmation for each confirmation.
    * </p>
    * <p>
@@ -886,7 +886,7 @@ public interface Selenium {
    * OK. This can be changed by prior execution of the chooseCancelOnNextConfirmation command.
    * </p>
    * <p>
-   * If an confirmation is generated but you do not consume it with getConfirmation, the next
+   * If a confirmation is generated but you do not consume it with getConfirmation, the next
    * Selenium action will fail.
    * </p>
    * <p>
@@ -1124,7 +1124,7 @@ public interface Selenium {
   /**
    * Determines if the specified element is visible. An element can be rendered invisible by setting
    * the CSS "visibility" property to "hidden", or the "display" property to "none", either for the
-   * element itself or one if its ancestors. This method will fail if the element is not present.
+   * element itself or one of its ancestors. This method will fail if the element is not present.
    *
    * @param locator an <a href="#locators">element locator</a>
    * @return true if the specified element is visible, false otherwise
@@ -1169,7 +1169,7 @@ public interface Selenium {
    * If a given field has no ID, it will appear as "" in this array.
    * </p>
    *
-   * @return the IDs of all field on the page
+   * @return the IDs of all fields on the page
    */
   String[] getAllFields();
 
@@ -1705,7 +1705,7 @@ public interface Selenium {
 
   /**
    * Tells the Selenium server to add the specified key and value as a custom outgoing request
-   * header. This only works if the browser is configured to use the built in Selenium proxy.
+   * header. This only works if the browser is configured to use the builtin Selenium proxy.
    *
    * @param key the header name.
    * @param value the header value.
