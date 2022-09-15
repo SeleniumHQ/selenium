@@ -211,7 +211,7 @@ public class JdkHttpClient implements HttpClient {
   }
 
   private URI getWebSocketUri(HttpRequest request) {
-    URI uri = messages.getRawURI(request);
+    URI uri = messages.getRawUri(request);
     if ("http".equalsIgnoreCase(uri.getScheme())) {
       try {
         uri = new URI("ws", uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(), uri.getFragment());

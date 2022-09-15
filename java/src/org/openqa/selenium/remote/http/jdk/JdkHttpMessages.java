@@ -20,13 +20,11 @@ package org.openqa.selenium.remote.http.jdk;
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.util.Objects;
@@ -115,7 +113,7 @@ class JdkHttpMessages {
     return rawUrl;
   }
 
-  public URI getRawURI(HttpRequest req) {
+  public URI getRawUri(HttpRequest req) {
     String rawUrl = getRawUrl(config.baseUri(), req.getUri());
     return URI.create(rawUrl);
   }
