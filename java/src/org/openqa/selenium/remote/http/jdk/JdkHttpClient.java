@@ -123,10 +123,18 @@ public class JdkHttpClient implements HttpClient {
       client.newWebSocketBuilder().buildAsync(
         uri,
         new java.net.http.WebSocket.Listener() {
+          final StringBuilder builder = new StringBuilder();
 
           @Override
           public CompletionStage<?> onText(java.net.http.WebSocket webSocket, CharSequence data, boolean last) {
-            listener.onText(data);
+            builder.append(data);
+
+            if (last) {
+              listener.onText(builder.toString());
+              builder.setLength(0);
+            }
+
+            webSocket.request(1);
             return null;
           }
 
@@ -136,6 +144,7 @@ public class JdkHttpClient implements HttpClient {
             data.get(ary, 0, ary.length);
 
             listener.onBinary(ary);
+            webSocket.request(1);
             return null;
           }
 
@@ -148,6 +157,7 @@ public class JdkHttpClient implements HttpClient {
           @Override
           public void onError(java.net.http.WebSocket webSocket, Throwable error) {
             listener.onError(error);
+            webSocket.request(1);
           }
         });
 
