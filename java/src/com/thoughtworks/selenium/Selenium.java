@@ -1705,7 +1705,7 @@ public interface Selenium {
 
   /**
    * Tells the Selenium server to add the specified key and value as a custom outgoing request
-   * header. This only works if the browser is configured to use the builtin Selenium proxy.
+   * header. This only works if the browser is configured to use the built-in Selenium proxy.
    *
    * @param key the header name.
    * @param value the header value.
