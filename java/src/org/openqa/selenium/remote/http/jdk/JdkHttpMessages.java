@@ -19,11 +19,14 @@ package org.openqa.selenium.remote.http.jdk;
 
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.util.Objects;
@@ -68,11 +71,12 @@ class JdkHttpMessages {
         break;
 
       case POST:
-          builder = builder.POST(BodyPublishers.ofInputStream(req.getContent()));
-          break;
+        // Copy the content into a byte array to avoid reading the content inputstream multiple times.
+        builder = builder.POST(BodyPublishers.ofByteArray(Contents.bytes(req.getContent())));
+        break;
 
       case PUT:
-        builder = builder.PUT(BodyPublishers.ofInputStream(req.getContent()));
+        builder = builder.PUT(BodyPublishers.ofByteArray(Contents.bytes(req.getContent())));
         break;
 
       default:
@@ -80,6 +84,11 @@ class JdkHttpMessages {
     }
 
     for (String name : req.getHeaderNames()) {
+      // Avoid explicitly setting content-length
+      // This prevents the IllegalArgumentException that states 'restricted header name: "Content-Length"'
+      if (name.equals("Content-Length")) {
+        continue;
+      }
       for (String value : req.getHeaders(name)) {
         builder = builder.header(name, value);
       }
@@ -104,6 +113,11 @@ class JdkHttpMessages {
     }
 
     return rawUrl;
+  }
+
+  public URI getRawURI(HttpRequest req) {
+    String rawUrl = getRawUrl(config.baseUri(), req.getUri());
+    return URI.create(rawUrl);
   }
 
   public HttpResponse createResponse(java.net.http.HttpResponse<InputStream> response) {
