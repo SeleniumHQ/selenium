@@ -20,6 +20,7 @@
 * Set min node support to 14.x.x (issue 1 in #10970)
 * fix: geckodriver session with node 18.x.x (issue 2 in #10970)
 * fix: JS firefox driver crashes on setting a profile (fixed with [commit](https://github.com/SeleniumHQ/selenium/commit/fa6deeea6bda1e73317157845772e114bd569b7d))
+* fix: "SetExperimental" option is not available in webdriverjs (Javascript/Typescript) (#10959)
 
 #### :nail_care: Polish
 
