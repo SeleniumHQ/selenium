@@ -33,6 +33,7 @@ import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -230,9 +231,9 @@ public class JdkHttpClient implements HttpClient {
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     Objects.requireNonNull(req, "Request");
-    BodyHandler<InputStream> streamHandler = BodyHandlers.ofInputStream();
+    BodyHandler<byte[]> byteHandler = BodyHandlers.ofByteArray();
     try {
-      return messages.createResponse(client.send(messages.createRequest(req), streamHandler));
+      return messages.createResponse(client.send(messages.createRequest(req), byteHandler));
     } catch (HttpTimeoutException e) {
       throw new TimeoutException(e);
     } catch (IOException e) {
