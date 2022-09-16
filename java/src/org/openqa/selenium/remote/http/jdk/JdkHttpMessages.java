@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -118,12 +119,12 @@ class JdkHttpMessages {
     return URI.create(rawUrl);
   }
 
-  public HttpResponse createResponse(java.net.http.HttpResponse<InputStream> response) {
+  public HttpResponse createResponse(java.net.http.HttpResponse<byte[]> response) {
     HttpResponse res = new HttpResponse();
     res.setStatus(response.statusCode());
     response.headers().map()
       .forEach((name, values) -> values.stream().filter(Objects::nonNull).forEach(value -> res.addHeader(name, value)));
-    res.setContent(response::body);
+    res.setContent(() -> new ByteArrayInputStream(response.body()));
 
     return res;
   }
