@@ -132,6 +132,8 @@ jobs:
             ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
@@ -144,6 +146,8 @@ jobs:
         uses: ./.github/actions/setup-chrome
       - name: Start XVFB
         run: Xvfb :99 &
+      - name: Start Fluxbox
+        run: fluxbox -display :99 &
       - name: Run browser tests in Chrome
         uses: ./.github/actions/bazel-test
         with:
@@ -171,6 +175,8 @@ jobs:
             ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
@@ -183,6 +189,8 @@ jobs:
         uses: ./.github/actions/setup-firefox
       - name: Start XVFB
         run: Xvfb :99 &
+      - name: Start Fluxbox
+        run: fluxbox -display :99 &
       - name: Run browser tests in Firefox (Remote)
         uses: ./.github/actions/bazel
         with:
@@ -209,6 +217,8 @@ jobs:
             ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
@@ -219,8 +229,10 @@ jobs:
           java-version: '11'
       - name: Setup Firefox and GeckoDriver
         uses: ./.github/actions/setup-firefox
-      - name: Start XVFB
+      - name: Start Xvfb
         run: Xvfb :99 &
+      - name: Start Fluxbox
+        run: fluxbox -display :99 &
       - name: Run browser tests in Firefox
         uses: ./.github/actions/bazel-test
         with:
