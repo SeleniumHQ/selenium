@@ -188,7 +188,6 @@ public class ElementDomPropertyTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(FIREFOX)
   public void testGetValueOfUserDefinedProperty() {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));
