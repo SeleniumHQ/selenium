@@ -23,7 +23,16 @@
  * @returns {boolean} Whether the value is an object.
  */
 function isObject(value) {
-  return Object.prototype.toString.call(value) === '[object Object]'
+  try {
+    // Use array notation so the Closure compiler does not obfuscate away our
+    // contract.
+    return (
+      (typeof value === 'object' || typeof value === 'function') &&
+      typeof value['then'] === 'function'
+    )
+  } catch (ex) {
+    return false
+  }
 }
 
 /**
