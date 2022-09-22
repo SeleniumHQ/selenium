@@ -43,6 +43,7 @@ def test_launch_firefox_with_service_log_path(log_path):
     else:
         assert driver.service.log_file.name == log_path["file"]
         assert driver.service.log_file.mode == log_path["mode"]
+        assert driver.service.log_file.encoding == log_path["encoding"] if "encoding" in log_path else "utf-8"
 
 
 def test_launch_firefox_with_service_default_log_path():
