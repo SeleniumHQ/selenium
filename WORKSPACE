@@ -1,9 +1,5 @@
 workspace(
     name = "selenium",
-    managed_directories = {
-        # Share the node_modules directory between Bazel and other tooling
-        "@npm": ["node_modules"],
-    },
 )
 
 load("//common/private:env.bzl", "env")
@@ -187,6 +183,7 @@ npm_install(
     name = "npm",
     package_json = "//:package.json",
     package_lock_json = "//:package-lock.json",
+    symlink_node_modules= False
 )
 
 http_archive(
