@@ -31,7 +31,7 @@ def test_we_can_launch_multiple_firefox_instances(capabilities):
     Firefox(capabilities=capabilities)
 
 
-@pytest.mark.parametrize('log_path', [None, "different_file.log", ("my_custom_pipe", "w"), ["windows.log", "a+", -1, "cp1253"]])
+@pytest.mark.parametrize('log_path', [None, "different_file.log", {"file":"my_custom_pipe", "mode":"w"}, {"file":"windows.log", "mode":"a+", "encoding":"cp1253"}])
 def test_launch_firefox_with_service_log_path(log_path):
     service = Service(log_path=log_path)
     driver = Firefox(service=service)
@@ -41,8 +41,8 @@ def test_launch_firefox_with_service_log_path(log_path):
         assert driver.service.log_file.name == log_path
         assert driver.service.log_file.mode == "a+"
     else:
-        assert driver.service.log_file.name == log_path[0]
-        assert driver.service.log_file.mode == log_path[1]
+        assert driver.service.log_file.name == log_path["file"]
+        assert driver.service.log_file.mode == log_path["mode"]
 
 
 def test_launch_firefox_with_service_default_log_path():

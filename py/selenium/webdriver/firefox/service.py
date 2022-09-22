@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, List, Sequence, Union
+from typing import Any, List, Mapping, Union
 
 from selenium.webdriver.common import (service, utils)
 
@@ -28,7 +28,7 @@ class Service(service.Service):
 
     def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
                  port: int = 0, service_args: List[str] = None,
-                 log_path: Union[str, Sequence[Any], None] = "geckodriver.log", env: dict = None):
+                 log_path: Union[str, Mapping[str,Any], None] = "geckodriver.log", env: dict = None):
         """Creates a new instance of the GeckoDriver remote service proxy.
 
         GeckoDriver provides a HTTP interface speaking the W3C WebDriver
@@ -41,8 +41,8 @@ class Service(service.Service):
         :param service_args: Optional list of arguments to pass to the
             GeckoDriver binary.
         :param log_path: Optional path for the GeckoDriver to log to.
-            Can also be called with a sequence of parameters which will be passed to open unmodified.
-            Defaults to _geckodriver.log_ in the current working directory and _a+_ respectively.
+            Can also be called with a mapping of parameters which will be expanded as kwargs to open.
+            Defaults to _geckodriver.log_ in the current working directory as file, _a+_ as mode and _utf-8_ as encoding.
             Pass _None_ to disable logging
         :param env: Optional dictionary of output variables to expose
             in the services' environment.
@@ -50,8 +50,8 @@ class Service(service.Service):
 
         log_file = None
         if log_path is not None:
-            open_args = (log_path, "a+", encoding='utf-8') if isinstance(log_path, str) else log_path
-            log_file = open(*open_args)
+            open_args = {"file": log_path, "mode":"a+", "encoding":"utf-8"} if isinstance(log_path, str) else log_path
+            log_file = open(**open_args)
 
 
         super().__init__(executable_path, port=port, log_file=log_file, env=env)
