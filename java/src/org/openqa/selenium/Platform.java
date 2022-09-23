@@ -58,7 +58,7 @@ public enum Platform {
   /**
    * For versions of Windows that "feel like" Windows Vista.
    */
-  VISTA("windows 7", "win7") {
+  VISTA("windows vista", "Windows Server 2008") {
     @Override
     public Platform family() {
       return WINDOWS;
