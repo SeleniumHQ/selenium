@@ -188,9 +188,9 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
         .expect(CName.NEW_SESSION)
         .withParameters({
-          desiredCapabilities: { browserName: 'firefox' },
           capabilities: {
             alwaysMatch: { browserName: 'firefox' },
+            firstMatch: [{}],
           },
         })
         .andReturnSuccess(aSession)
@@ -207,15 +207,12 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
         .expect(CName.NEW_SESSION)
         .withParameters({
-          desiredCapabilities: {
-            'moz:debuggerAddress': true,
-            browserName: 'firefox',
-          },
           capabilities: {
             alwaysMatch: {
               'moz:debuggerAddress': true,
               browserName: 'firefox',
             },
+            firstMatch: [{}],
           },
         })
         .andReturnSuccess(aSession)
@@ -230,9 +227,9 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
         .expect(CName.NEW_SESSION)
         .withParameters({
-          desiredCapabilities: { browserName: 'firefox', foo: 'bar' },
           capabilities: {
-            alwaysMatch: { browserName: 'firefox' },
+            alwaysMatch: { browserName: 'firefox'},
+            firstMatch: [{}],
           },
         })
         .andReturnSuccess(aSession)
@@ -249,9 +246,9 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
         .expect(CName.NEW_SESSION)
         .withParameters({
-          desiredCapabilities: { browserName: 'firefox' },
           capabilities: {
             alwaysMatch: { browserName: 'firefox' },
+            firstMatch: [{}],
           },
         })
         .andReturnError(new StubError())
@@ -268,9 +265,9 @@ describe('WebDriver', function () {
       let executor = new FakeExecutor()
         .expect(CName.NEW_SESSION)
         .withParameters({
-          desiredCapabilities: { browserName: 'firefox' },
           capabilities: {
             alwaysMatch: { browserName: 'firefox' },
+            firstMatch: [{}],
           },
         })
         .andReturnError(new StubError())
@@ -1725,229 +1722,6 @@ describe('WebDriver', function () {
           .end()
         let driver = executor.createDriver()
         return driver.manage().setTimeouts({ implicit: 3 })
-      })
-    })
-  })
-
-  describe('wire format', function () {
-    const FAKE_DRIVER = new FakeExecutor().createDriver()
-
-    describe('can serialize', function () {
-      function runSerializeTest(input, want) {
-        let executor = new FakeExecutor()
-          .expect(CName.NEW_SESSION)
-          .withParameters({
-            desiredCapabilities: { 'serialize-test': want },
-            capabilities: { alwaysMatch: {} },
-          })
-          .andReturnSuccess({ browserName: 'firefox' })
-          .end()
-        // We stuff the value to be serialized inside of a capabilities object,
-        // using a non-W3C key so that the value gets dropped from the W3C
-        // capabilities object.
-        return WebDriver.createSession(executor, {
-          'serialize-test': input,
-        }).getSession()
-      }
-
-      it('function as a string', function () {
-        function foo() {
-          return 'foo'
-        }
-        return runSerializeTest(foo, '' + foo)
-      })
-
-      it('object with toJSON()', function () {
-        return runSerializeTest(
-          new Date(605728511546),
-          '1989-03-12T17:55:11.546Z'
-        )
-      })
-
-      it('Session', function () {
-        return runSerializeTest(new Session('foo', {}), 'foo')
-      })
-
-      it('Capabilities', function () {
-        const prefs = new logging.Preferences()
-        prefs.setLevel(logging.Type.BROWSER, logging.Level.DEBUG)
-
-        const caps = Capabilities.chrome()
-        caps.setLoggingPrefs(prefs)
-
-        return runSerializeTest(caps, {
-          browserName: 'chrome',
-          'goog:loggingPrefs': { browser: 'DEBUG' },
-        })
-      })
-
-      it('WebElement', function () {
-        return runSerializeTest(
-          new WebElement(FAKE_DRIVER, 'fefifofum'),
-          WebElement.buildId('fefifofum')
-        )
-      })
-
-      it('WebElementPromise', function () {
-        return runSerializeTest(
-          new WebElementPromise(
-            FAKE_DRIVER,
-            Promise.resolve(new WebElement(FAKE_DRIVER, 'fefifofum'))
-          ),
-          WebElement.buildId('fefifofum')
-        )
-      })
-
-      describe('an array', function () {
-        it('with Serializable', function () {
-          return runSerializeTest([new Session('foo', {})], ['foo'])
-        })
-
-        it('with WebElement', function () {
-          return runSerializeTest(
-            [new WebElement(FAKE_DRIVER, 'fefifofum')],
-            [WebElement.buildId('fefifofum')]
-          )
-        })
-
-        it('with WebElementPromise', function () {
-          return runSerializeTest(
-            [
-              new WebElementPromise(
-                FAKE_DRIVER,
-                Promise.resolve(new WebElement(FAKE_DRIVER, 'fefifofum'))
-              ),
-            ],
-            [WebElement.buildId('fefifofum')]
-          )
-        })
-
-        it('complex array', function () {
-          const expected = [
-            'abc',
-            123,
-            true,
-            WebElement.buildId('fefifofum'),
-            [123, { foo: 'bar' }],
-          ]
-
-          const element = new WebElement(FAKE_DRIVER, 'fefifofum')
-          const input = ['abc', 123, true, element, [123, { foo: 'bar' }]]
-          return runSerializeTest(input, expected)
-        })
-
-        it('nested promises', function () {
-          return runSerializeTest(
-            ['abc', Promise.resolve([123, Promise.resolve(true)])],
-            ['abc', [123, true]]
-          )
-        })
-      })
-
-      describe('an object', function () {
-        it('literal', function () {
-          const expected = { sessionId: 'foo' }
-          return runSerializeTest({ sessionId: 'foo' }, expected)
-        })
-
-        it('with sub-objects', function () {
-          const expected = { sessionId: { value: 'foo' } }
-          return runSerializeTest({ sessionId: { value: 'foo' } }, expected)
-        })
-
-        it('with values that have toJSON', function () {
-          return runSerializeTest(
-            { a: { b: new Date(605728511546) } },
-            { a: { b: '1989-03-12T17:55:11.546Z' } }
-          )
-        })
-
-        it('with a Session', function () {
-          return runSerializeTest({ a: new Session('foo', {}) }, { a: 'foo' })
-        })
-
-        it('nested', function () {
-          const elementJson = WebElement.buildId('fefifofum')
-          const expected = {
-            script: 'return 1',
-            args: ['abc', 123, true, elementJson, [123, { foo: 'bar' }]],
-            sessionId: 'foo',
-          }
-
-          const element = new WebElement(FAKE_DRIVER, 'fefifofum')
-          const parameters = {
-            script: 'return 1',
-            args: ['abc', 123, true, element, [123, { foo: 'bar' }]],
-            sessionId: new Session('foo', {}),
-          }
-
-          return runSerializeTest(parameters, expected)
-        })
-
-        it('nested promises', function () {
-          const input = {
-            struct: Promise.resolve({
-              element: new WebElementPromise(
-                FAKE_DRIVER,
-                Promise.resolve(new WebElement(FAKE_DRIVER, 'fefifofum'))
-              ),
-            }),
-          }
-
-          const want = {
-            struct: {
-              element: WebElement.buildId('fefifofum'),
-            },
-          }
-
-          return runSerializeTest(input, want)
-        })
-      })
-    })
-
-    describe('can deserialize', function () {
-      function runDeserializeTest(original, want) {
-        let executor = new FakeExecutor()
-          .expect(CName.GET_CURRENT_URL)
-          .andReturnSuccess(original)
-          .end()
-        let driver = executor.createDriver()
-        return driver.getCurrentUrl().then(function (got) {
-          assert.deepStrictEqual(got, want)
-        })
-      }
-
-      it('primitives', function () {
-        return Promise.all([
-          runDeserializeTest(1, 1),
-          runDeserializeTest('', ''),
-          runDeserializeTest(true, true),
-          runDeserializeTest(undefined, null),
-          runDeserializeTest(null, null),
-        ])
-      })
-
-      it('simple object', function () {
-        return runDeserializeTest({ sessionId: 'foo' }, { sessionId: 'foo' })
-      })
-
-      it('nested object', function () {
-        return runDeserializeTest({ foo: { bar: 123 } }, { foo: { bar: 123 } })
-      })
-
-      it('array', function () {
-        return runDeserializeTest(
-          [{ foo: { bar: 123 } }],
-          [{ foo: { bar: 123 } }]
-        )
-      })
-
-      it('passes through function properties', function () {
-        function bar() {}
-        return runDeserializeTest(
-          [{ foo: { bar: 123 }, func: bar }],
-          [{ foo: { bar: 123 }, func: bar }]
-        )
       })
     })
   })

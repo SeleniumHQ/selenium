@@ -274,7 +274,7 @@ class IWebDriver {
 
   /**
    * @return {!Promise<!Capabilities>} A promise that will resolve with
-   *     the this instance's capabilities.
+   *     the instance's capabilities.
    */
   getCapabilities() {}
 
@@ -455,7 +455,7 @@ class IWebDriver {
    * @return {!(IThenable<T>|WebElementPromise)} A promise that will be
    *     resolved with the first truthy value returned by the condition
    *     function, or rejected if the condition times out. If the input
-   *     input condition is an instance of a {@link WebElementCondition},
+   *     condition is an instance of a {@link WebElementCondition},
    *     the returned value will be a {@link WebElementPromise}.
    * @throws {TypeError} if the provided `condition` is not a valid type.
    * @template T
@@ -586,7 +586,7 @@ class IWebDriver {
   findElements(locator) {} // eslint-disable-line
 
   /**
-   * Takes a screenshot of the current page. The driver makes a best effort to
+   * Takes a screenshot of the current page. The driver makes the best effort to
    * return a screenshot of the following, in order of preference:
    *
    * 1. Entire page
@@ -715,10 +715,9 @@ class WebDriver {
   static createSession(executor, capabilities, onQuit = undefined) {
     let cmd = new command.Command(command.Name.NEW_SESSION)
 
-    // For OSS remote ends.
-    cmd.setParameter('desiredCapabilities', capabilities)
     // For W3C remote ends.
     cmd.setParameter('capabilities', {
+      firstMatch: [{}],
       alwaysMatch: filterNonW3CCaps(capabilities),
     })
 
@@ -1313,7 +1312,7 @@ class WebDriver {
 
   /**
    * Sets a listener for Fetch.authRequired event from CDP
-   * If event is triggered, it enter username and password
+   * If event is triggered, it enters username and password
    * and allows the test to move forward
    * @param {string} username
    * @param {string} password
@@ -2060,7 +2059,7 @@ class Window {
   }
 
   /**
-   * Retrieves the a rect describing the current top-level window's size and
+   * Retrieves a rect describing the current top-level window's size and
    * position.
    *
    * @return {!Promise<{x: number, y: number, width: number, height: number}>}
@@ -2540,7 +2539,7 @@ class WebElement {
   }
 
   /**
-   * Locates all of the descendants of this element that match the given search
+   * Locates all the descendants of this element that match the given search
    * criteria.
    *
    * @param {!(by.By|Function)} locator The locator strategy to use when
@@ -2707,7 +2706,7 @@ class WebElement {
    * the value of the property with the same name is returned. If neither value
    * is set, null is returned (for example, the "value" property of a textarea
    * element). The "style" attribute is converted as best can be to a
-   * text representation with a trailing semi-colon. The following are deemed to
+   * text representation with a trailing semicolon. The following are deemed to
    * be "boolean" attributes and will return either "true" or null:
    *
    * async, autofocus, autoplay, checked, compact, complete, controls, declare,
@@ -3073,7 +3072,7 @@ class ShadowRoot {
   }
 
   /**
-   * Locates all of the descendants of this element that match the given search
+   * Locates all the descendants of this element that match the given search
    * criteria.
    *
    * @param {!(by.By|Function)} locator The locator strategy to use when

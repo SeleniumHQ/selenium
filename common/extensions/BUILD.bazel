@@ -11,12 +11,15 @@ filegroup(
         "//java/test/org/openqa/selenium/firefox:__pkg__",
         "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
+        "//rb:__pkg__",
     ],
 )
 
 exports_files(
     [
         "webextensions-selenium-example.xpi",
+        "webextensions-selenium-example.zip",
+        "webextensions-selenium-example-unsigned.zip",
     ],
     visibility = [
         "//java/test/org/openqa/selenium/firefox:__pkg__",

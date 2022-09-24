@@ -6461,11 +6461,11 @@
                 },
                 {
                     "name": "clearDeviceMetricsOverride",
-                    "description": "Clears the overriden device metrics."
+                    "description": "Clears the overridden device metrics."
                 },
                 {
                     "name": "clearGeolocationOverride",
-                    "description": "Clears the overriden Geolocation Position and Error."
+                    "description": "Clears the overridden Geolocation Position and Error."
                 },
                 {
                     "name": "resetPageScaleFactor",
@@ -6779,7 +6779,7 @@
                         },
                         {
                             "name": "initialVirtualTime",
-                            "description": "If set, base::Time::Now will be overriden to initially return this value.",
+                            "description": "If set, base::Time::Now will be overridden to initially return this value.",
                             "optional": true,
                             "$ref": "Network.TimeSinceEpoch"
                         }
@@ -12383,7 +12383,7 @@
                 },
                 {
                     "name": "clearDeviceMetricsOverride",
-                    "description": "Clears the overriden device metrics.",
+                    "description": "Clears the overridden device metrics.",
                     "experimental": true,
                     "deprecated": true,
                     "redirect": "Emulation"
@@ -12397,7 +12397,7 @@
                 },
                 {
                     "name": "clearGeolocationOverride",
-                    "description": "Clears the overriden Geolocation Position and Error.",
+                    "description": "Clears the overridden Geolocation Position and Error.",
                     "deprecated": true,
                     "redirect": "Emulation"
                 },

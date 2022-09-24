@@ -24,6 +24,8 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 
 disabledSelect = {'name': 'no-select', 'values': ['Foo']}
+disabledSingleSelect = {'name': 'single_disabled', 'values': ['Enabled', 'Disabled']}
+disabledMultiSelect = {'name': 'multi_disabled', 'values': ['Enabled', 'Disabled']}
 singleSelectValues1 = {'name': 'selectomatic', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}
 singleSelectValues2 = {'name': 'redirect', 'values': ['One', 'Two']}
 singleSelectValuesWithSpaces = {'name': 'select_with_spaces', 'values': ['One', 'Two', 'Four', 'Still learning how to count, apparently']}
@@ -41,14 +43,11 @@ def test_select_by_index_single(driver, pages):
             assert sel.first_selected_option.text == select['values'][x]
 
 
-@pytest.mark.xfail_firefox(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
-@pytest.mark.xfail_remote
-def test_select_disabled_by_index(driver, pages):
+def test_raises_exception_select_by_index_single_disabled(driver, pages):
     pages.load("formPage.html")
-    sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
-    selected = sel.first_selected_option
-    sel.select_by_index(1)
-    assert selected == sel.first_selected_option
+    sel = Select(driver.find_element(By.NAME, disabledSingleSelect['name']))
+    with pytest.raises(NotImplementedError):
+        sel.select_by_index(1)
 
 
 def test_select_by_value_single(driver, pages):
@@ -60,14 +59,11 @@ def test_select_by_value_single(driver, pages):
             assert sel.first_selected_option.text == select['values'][x]
 
 
-@pytest.mark.xfail_firefox(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
-@pytest.mark.xfail_remote
-def test_select_disabled_by_value(driver, pages):
+def test_raises_exception_select_by_value_single_disabled(driver, pages):
     pages.load("formPage.html")
-    sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
-    selected = sel.first_selected_option
-    sel.select_by_value('bar')
-    assert selected == sel.first_selected_option
+    sel = Select(driver.find_element(By.NAME, disabledSingleSelect['name']))
+    with pytest.raises(NotImplementedError):
+        sel.select_by_value(disabledSingleSelect['values'][1].lower())
 
 
 def test_select_by_visible_text_single(driver, pages):
@@ -81,30 +77,11 @@ def test_select_by_visible_text_single(driver, pages):
             assert sel.first_selected_option.text == select['values'][x]
 
 
-# @pytest.mark.xfail_chrome(
-#     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
-# @pytest.mark.xfail_chromiumedge(
-#     reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=822')
-# @pytest.mark.xfail_safari
-# def test_select_by_visible_text_should_normalize_spaces(driver, pages):
-#     pages.load("formPage.html")
-
-#     for select in [singleSelectValuesWithSpaces]:
-#         sel = Select(driver.find_element(By.NAME, select['name']))
-#         for x in range(len(select['values'])):
-#             print(select['values'][x])
-#             sel.select_by_visible_text(select['values'][x])
-#             assert sel.first_selected_option.text == select['values'][x]
-
-
-@pytest.mark.xfail_firefox(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
-@pytest.mark.xfail_remote
-def test_select_disabled_by_visible_text(driver, pages):
+def test_raises_exception_select_by_text_single_disabled(driver, pages):
     pages.load("formPage.html")
-    sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
-    selected = sel.first_selected_option
-    sel.select_by_visible_text('Bar')
-    assert selected == sel.first_selected_option
+    sel = Select(driver.find_element(By.NAME, disabledSingleSelect['name']))
+    with pytest.raises(NotImplementedError):
+        sel.select_by_visible_text(disabledSingleSelect['values'][1])
 
 
 def test_select_by_index_multiple(driver, pages):
@@ -121,6 +98,14 @@ def test_select_by_index_multiple(driver, pages):
                 assert selected[j].text == select['values'][j]
 
 
+def test_raises_exception_select_by_index_multiple_disabled(driver, pages):
+    pages.load("formPage.html")
+
+    sel = Select(driver.find_element(By.NAME, disabledMultiSelect['name']))
+    with pytest.raises(NotImplementedError):
+        sel.select_by_index(1)
+
+
 def test_select_by_value_multiple(driver, pages):
     pages.load("formPage.html")
 
@@ -135,6 +120,14 @@ def test_select_by_value_multiple(driver, pages):
                 assert selected[j].text == select['values'][j]
 
 
+def test_raises_exception_select_by_value_multiple_disabled(driver, pages):
+    pages.load("formPage.html")
+
+    sel = Select(driver.find_element(By.NAME, disabledMultiSelect['name']))
+    with pytest.raises(NotImplementedError):
+        sel.select_by_value(disabledMultiSelect['values'][1].lower())
+
+
 def test_select_by_visible_text_multiple(driver, pages):
     pages.load("formPage.html")
 
@@ -147,6 +140,14 @@ def test_select_by_visible_text_multiple(driver, pages):
             assert len(selected) == x + 1
             for j in range(len(selected)):
                 assert selected[j].text == select['values'][j]
+
+
+def test_raises_exception_select_by_text_multiple_disabled(driver, pages):
+    pages.load("formPage.html")
+
+    sel = Select(driver.find_element(By.NAME, disabledMultiSelect['name']))
+    with pytest.raises(NotImplementedError):
+        sel.select_by_visible_text(disabledMultiSelect['values'][1])
 
 
 def test_deselect_all_single(driver, pages):
@@ -247,7 +248,7 @@ def test_get_options(driver, pages):
 
 def test_get_all_selected_options_single(driver, pages):
     pages.load("formPage.html")
-    for select in [singleSelectValues1, singleSelectValues2, disabledSelect]:
+    for select in [singleSelectValues1, singleSelectValues2]:
         opts = Select(driver.find_element(By.NAME, select['name'])).all_selected_options
         assert len(opts) == 1
         assert opts[0].text == select['values'][0]
@@ -282,6 +283,12 @@ def test_raises_exception_for_invalid_tag_name(driver, pages):
     pages.load("formPage.html")
     with pytest.raises(UnexpectedTagNameException):
         Select(driver.find_element(By.TAG_NAME, "div"))
+
+
+def test_raises_exception_for_disabled_element(driver, pages):
+    pages.load("formPage.html")
+    with pytest.raises(NotImplementedError):
+        Select(driver.find_element(By.NAME, disabledSelect["name"]))
 
 
 def test_deselect_by_index_non_existent(driver, pages):

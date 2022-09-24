@@ -101,7 +101,7 @@ module Selenium
       # if it exists. If it does not, then the value of the attribute with the given name is returned.
       # If neither exists, null is returned.
       #
-      # The "style" attribute is converted as best can be to a text representation with a trailing semi-colon.
+      # The "style" attribute is converted as best can be to a text representation with a trailing semicolon.
       #
       # The following are deemed to be "boolean" attributes, and will return either "true" or "false":
       #

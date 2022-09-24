@@ -140,7 +140,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * neither exists, null is returned.
    * <p>
    * The "style" attribute is converted as best can be to a text representation with a trailing
-   * semi-colon.
+   * semicolon.
    * <p>
    * The following are deemed to be "boolean" attributes, and will return either "true" or null:
    * <p>

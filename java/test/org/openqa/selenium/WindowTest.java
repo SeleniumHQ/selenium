@@ -77,7 +77,6 @@ public class WindowTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, gitHubActions = true, issue = "https://github.com/mozilla/geckodriver/issues/2042")
   public void testGetsThePositionOfTheCurrentWindow() {
     // Window position is undefined on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
@@ -92,6 +91,7 @@ public class WindowTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = FIREFOX, gitHubActions = true, issue = "https://github.com/mozilla/geckodriver/issues/2042")
   public void testSetsThePositionOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).

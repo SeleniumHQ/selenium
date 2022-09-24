@@ -101,7 +101,8 @@ class BrowserFactory {
       ProcessWindowInfo* process_window_info,
       std::string* error_message);
 
-  void GetExecutableLocation(void);
+  void GetEdgeExecutableLocation(void);
+  void GetIEExecutableLocation(void);
   void GetIEVersion(void);
   bool ProtectedModeSettingsAreValid(void);
   int GetZoneProtectedModeSetting(const HKEY key_handle,
@@ -131,6 +132,8 @@ class BrowserFactory {
 
   int ie_major_version_;
   std::wstring ie_executable_location_;
+  std::wstring edge_executable_located_location_;
+  bool ie_redirects_edge_;
 
   bool edge_ie_mode_;
   std::wstring edge_executable_location_;
