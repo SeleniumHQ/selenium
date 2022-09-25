@@ -71,7 +71,7 @@ module Selenium
             options = Options.new(logging_prefs: {browser: 'ALL',
                                                   driver: 'ALL',
                                                   performance: 'ALL'})
-            create_driver!(capabilities: options)
+            create_driver!(options: options)
             driver.navigate.to url_for('errors.html')
           end
 
