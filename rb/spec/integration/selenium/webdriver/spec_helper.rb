@@ -53,8 +53,6 @@ RSpec.configure do |c|
     guards.add_condition(:driver, GlobalTestEnv.driver)
     guards.add_condition(:browser, GlobalTestEnv.browser)
     guards.add_condition(:platform, WebDriver::Platform.os)
-    window_manager = !WebDriver::Platform.linux? || !ENV['DESKTOP_SESSION'].nil?
-    guards.add_condition(:window_manager, window_manager)
 
     results = guards.disposition
     send(*results) if results

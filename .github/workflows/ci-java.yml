@@ -171,6 +171,8 @@ jobs:
             ${{ runner.os }}-bazel-build-
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -189,6 +191,8 @@ jobs:
           matrix.browser == 'chrome'
       - name: Start XVFB
         run: Xvfb :99 &
+      - name: Start Fluxbox
+        run: fluxbox -display :99 &
       - name: Run browser tests in ${{ matrix.browser }}
         uses: ./.github/actions/bazel-test
         with:
@@ -225,6 +229,8 @@ jobs:
             ${{ runner.os }}-bazel-build-
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -243,6 +249,8 @@ jobs:
           matrix.browser == 'chrome'
       - name: Start XVFB
         run: Xvfb :99 &
+      - name: Start Fluxbox
+        run: fluxbox -display :99 &
       - name: Run server tests
         uses: ./.github/actions/bazel-test
         with:
@@ -270,6 +278,8 @@ jobs:
             ${{ runner.os }}-bazel-build-
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -280,6 +290,8 @@ jobs:
           version: latest
       - name: Start XVFB
         run: Xvfb :99 &
+      - name: Start Fluxbox
+        run: fluxbox -display :99 &
       - name: Run browser tests in Firefox
         uses: ./.github/actions/bazel-test
         with:
