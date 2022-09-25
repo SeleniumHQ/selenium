@@ -85,7 +85,7 @@ module Selenium
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
             port: PortProber.above(4444),
-            log: $DEBUG,
+            log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60
           )
