@@ -120,7 +120,6 @@ std::string BrowserFactory::browser_command_line_switches(void) {
 void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   LOG(TRACE) << "Entering BrowserFactory::Initialize";
   this->ignore_protected_mode_settings_ = settings.ignore_protected_mode_settings;
-  this->ignore_zoom_setting_ = settings.ignore_zoom_setting;
   this->browser_attach_timeout_ = settings.browser_attach_timeout;
   this->force_createprocess_api_ = settings.force_create_process_api;
   this->force_shell_windows_api_ = settings.force_shell_windows_api;
@@ -128,6 +127,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
   this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
   this->edge_ie_mode_ = settings.attach_to_edge_ie || this->ie_redirects_edge_;
+  this->ignore_zoom_setting_ = settings.ignore_zoom_setting || this->edge_ie_mode_;
   LOG(DEBUG) << "path before was " << settings.edge_executable_path << "\n";
   this->edge_executable_location_ = StringUtilities::ToWString(settings.edge_executable_path);
   LOG(DEBUG) << "path after was " << this->edge_executable_location_.c_str() << "\n";
