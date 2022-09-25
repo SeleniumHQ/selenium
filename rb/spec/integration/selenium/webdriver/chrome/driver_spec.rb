@@ -58,14 +58,14 @@ module Selenium
           let(:options) { Chrome::Options.new(args: ['--headless']) }
 
           it 'should return base64 for print command' do
-            create_driver!(capabilities: options) do |driver|
+            create_driver!(options: options) do |driver|
               driver.navigate.to url_for('printPage.html')
               expect(driver.print_page).to include(magic_number)
             end
           end
 
           it 'should print with valid params' do
-            create_driver!(capabilities: options) do |driver|
+            create_driver!(options: options) do |driver|
               driver.navigate.to url_for('printPage.html')
               expect(driver.print_page(orientation: 'landscape',
                                        page_ranges: ['1-2'],
@@ -74,7 +74,7 @@ module Selenium
           end
 
           it 'should save pdf' do
-            create_driver!(capabilities: options) do |driver|
+            create_driver!(options: options) do |driver|
               driver.navigate.to url_for('printPage.html')
 
               path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.pdf"
@@ -95,7 +95,7 @@ module Selenium
             options = Options.new(logging_prefs: {browser: 'ALL',
                                                   driver: 'ALL',
                                                   performance: 'ALL'})
-            create_driver!(capabilities: options)
+            create_driver!(options: options)
             driver.navigate.to url_for('errors.html')
           end
 
