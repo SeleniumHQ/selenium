@@ -633,7 +633,7 @@ class WebDriver(BaseWebDriver):
                 driver.switch_to.default_content()
                 driver.switch_to.frame('frame_name')
                 driver.switch_to.frame(1)
-                driver.switch_to.frame(driver.find_elements(By.TAG_NAME,"iframe")[0])
+                driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])
                 driver.switch_to.parent_frame()
                 driver.switch_to.window('main')
         """
