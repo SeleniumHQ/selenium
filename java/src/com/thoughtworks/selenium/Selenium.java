@@ -538,7 +538,7 @@ public interface Selenium {
    * </li>
    * </ul>
    * <p>
-   * If no option locator prefix is provided, the default behaviour is to match on
+   * If no option locator prefix is provided, the default behavior is to match on
    * <strong>label</strong>.
    * </p>
    *
@@ -666,7 +666,7 @@ public interface Selenium {
    * <p>
    * 4.) If <em>that</em> fails, we'll try looping over all of the known windows to try to find the
    * appropriate "title". Since "title" is not necessarily unique, this may have unexpected
-   * behaviour.
+   * behavior.
    * </p>
    * <p>
    * If you're having trouble figuring out the name of a window that you want to manipulate, look at
@@ -778,7 +778,7 @@ public interface Selenium {
    * <p>
    * By default, Selenium's overridden window.confirm() function will return true, as if the user
    * had manually clicked OK; after running this command, the next call to confirm() will return
-   * false, as if the user had clicked Cancel. Selenium will then resume using the default behaviour
+   * false, as if the user had clicked Cancel. Selenium will then resume using the default behavior
    * for future confirmations, automatically returning true (OK) unless/until you explicitly call
    * this command for each confirmation.
    * </p>
@@ -795,7 +795,7 @@ public interface Selenium {
    * window.confirm() function will normally automatically return true, as if the user had manually
    * clicked OK, so you shouldn't need to use this command unless for some reason you need to change
    * your mind prior to the next confirmation. After any confirmation, Selenium will resume using
-   * the default behaviour for future confirmations, automatically returning true (OK) unless/until
+   * the default behavior for future confirmations, automatically returning true (OK) unless/until
    * you explicitly call chooseCancelOnNextConfirmation for each confirmation.
    * </p>
    * <p>
