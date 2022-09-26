@@ -1,3 +1,22 @@
+4.5.0 (Unreleased)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.105.0 (supports CDP v85, v103, v104, v105)
+  * Add HasBiDi support to Chrome
+
+Ruby:
+  * Fix bug in Platform code
+  * Update Select class to error when elements are disabled (#10812)
+
+Firefox:
+  * Add support for installing unsigned add-ons (#10265, thanks TamsilAmani!)
+  * Change accept_insecure_certificates to true by default (to match other bindings)
+  * Set debugger_address option to true by default
+
+Server:
+  * Add support for initializing server class with arguments and log level
+
 4.4.0 (2022-08-09)
 =========================
 
