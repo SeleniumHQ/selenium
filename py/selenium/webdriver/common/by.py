@@ -19,17 +19,20 @@
 The By implementation.
 """
 
+from enum import Enum, unique, auto
 
-class By:
+
+@unique
+class By(Enum):
     """
     Set of supported locator strategies.
     """
 
-    ID = "id"
-    XPATH = "xpath"
-    LINK_TEXT = "link text"
-    PARTIAL_LINK_TEXT = "partial link text"
-    NAME = "name"
-    TAG_NAME = "tag name"
-    CLASS_NAME = "class name"
-    CSS_SELECTOR = "css selector"
+    ID = auto()
+    XPATH = auto()
+    LINK_TEXT = auto()
+    PARTIAL_LINK_TEXT = auto()
+    NAME = auto()
+    TAG_NAME = auto()
+    CLASS_NAME = auto()
+    CSS_SELECTOR = auto()

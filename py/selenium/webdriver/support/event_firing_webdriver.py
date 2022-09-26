@@ -102,10 +102,10 @@ class EventFiringWebDriver:
     def quit(self) -> None:
         self._dispatch("quit", (self._driver,), "quit", ())
 
-    def find_element(self, by=By.ID, value=None) -> WebElement:
+    def find_element(self, by: By = By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
+    def find_elements(self, by: By = By.ID, value=None) -> typing.List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def _dispatch(self,
@@ -192,10 +192,10 @@ class EventFiringWebElement:
     def send_keys(self, *value) -> None:
         self._dispatch("change_value_of", (self._webelement, self._driver), "send_keys", value)
 
-    def find_element(self, by=By.ID, value=None) -> WebElement:
+    def find_element(self, by: By = By.ID, value=None) -> WebElement:
         return self._dispatch("find", (by, value, self._driver), "find_element", (by, value))
 
-    def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
+    def find_elements(self, by: By = By.ID, value=None) -> typing.List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
     def _dispatch(self, l_call, l_args, d_call, d_args):
