@@ -195,7 +195,6 @@ module Selenium
         def create_firefox_driver(**opts)
           WebDriver::Firefox.path = ENV.fetch('FIREFOX_BINARY', nil) if ENV.key?('FIREFOX_BINARY')
           options = opts.delete(:options) { WebDriver::Options.firefox }
-          options.debugger_address = true
           options.web_socket_url = true
           options.add_argument('--headless') if ENV['HEADLESS']
           WebDriver::Driver.for(:firefox, options: options, **opts)
