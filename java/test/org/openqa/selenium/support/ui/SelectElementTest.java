@@ -44,6 +44,13 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
+  public void shouldThrowAnExceptionIfTheElementIsDisabled() {
+    WebElement selectElement = driver.findElement(By.name("no-select"));
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> new Select(selectElement));
+  }
+
+  @Test
   public void shouldIndicateThatASelectCanSupportMultipleOptions() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
@@ -85,7 +92,6 @@ public class SelectElementTest extends JupiterTestBase {
 
     assertThat(select.getOptions()).extracting(WebElement::getText)
         .containsExactly("One", "Two", "Four", "Still learning how to count, apparently");
-
   }
 
   @Test
@@ -149,7 +155,16 @@ public class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.selectByVisibleText("not there"));
+      .isThrownBy(() -> select.selectByVisibleText("not there"));
+  }
+
+  @Test
+  public void shouldThrowExceptionOnSelectByVisibleTextIfOptionDisabled() {
+    WebElement selectElement = driver.findElement(By.name("single_disabled"));
+    Select select = new Select(selectElement);
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> select.selectByVisibleText("Disabled"));
   }
 
   @Test
@@ -171,6 +186,15 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
+  public void shouldThrowExceptionOnSelectByIndexIfOptionDisabled() {
+    WebElement selectElement = driver.findElement(By.name("single_disabled"));
+    Select select = new Select(selectElement);
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> select.selectByIndex(1));
+  }
+
+  @Test
   public void shouldAllowOptionsToBeSelectedByReturnedValue() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
@@ -186,6 +210,15 @@ public class SelectElementTest extends JupiterTestBase {
 
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> select.selectByValue("not there"));
+  }
+
+  @Test
+  public void shouldThrowExceptionOnSelectByReturnedValueIfOptionDisabled() {
+    WebElement selectElement = driver.findElement(By.name("single_disabled"));
+    Select select = new Select(selectElement);
+
+    assertThatExceptionOfType(UnsupportedOperationException.class)
+      .isThrownBy(() -> select.selectByValue("disabled"));
   }
 
   @Test

@@ -33,6 +33,7 @@ import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -52,7 +53,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -123,10 +123,18 @@ public class JdkHttpClient implements HttpClient {
       client.newWebSocketBuilder().buildAsync(
         uri,
         new java.net.http.WebSocket.Listener() {
+          final StringBuilder builder = new StringBuilder();
 
           @Override
           public CompletionStage<?> onText(java.net.http.WebSocket webSocket, CharSequence data, boolean last) {
-            listener.onText(data);
+            builder.append(data);
+
+            if (last) {
+              listener.onText(builder.toString());
+              builder.setLength(0);
+            }
+
+            webSocket.request(1);
             return null;
           }
 
@@ -136,6 +144,7 @@ public class JdkHttpClient implements HttpClient {
             data.get(ary, 0, ary.length);
 
             listener.onBinary(ary);
+            webSocket.request(1);
             return null;
           }
 
@@ -148,6 +157,7 @@ public class JdkHttpClient implements HttpClient {
           @Override
           public void onError(java.net.http.WebSocket webSocket, Throwable error) {
             listener.onError(error);
+            webSocket.request(1);
           }
         });
 
@@ -168,7 +178,7 @@ public class JdkHttpClient implements HttpClient {
           CloseMessage closeMessage = (CloseMessage) message;
           makeCall = () -> underlyingSocket.sendClose(closeMessage.code(), closeMessage.reason());
         } else {
-          throw new IllegalArgumentException("Unsupport message type: " + message);
+          throw new IllegalArgumentException("Unsupported message type: " + message);
         }
 
         synchronized (underlyingSocket) {
@@ -201,7 +211,7 @@ public class JdkHttpClient implements HttpClient {
   }
 
   private URI getWebSocketUri(HttpRequest request) {
-    URI uri = messages.createRequest(request).uri();
+    URI uri = messages.getRawUri(request);
     if ("http".equalsIgnoreCase(uri.getScheme())) {
       try {
         uri = new URI("ws", uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
@@ -221,9 +231,9 @@ public class JdkHttpClient implements HttpClient {
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     Objects.requireNonNull(req, "Request");
-    BodyHandler<InputStream> streamHandler = BodyHandlers.ofInputStream();
+    BodyHandler<byte[]> byteHandler = BodyHandlers.ofByteArray();
     try {
-      return messages.createResponse(client.send(messages.createRequest(req), streamHandler));
+      return messages.createResponse(client.send(messages.createRequest(req), byteHandler));
     } catch (HttpTimeoutException e) {
       throw new TimeoutException(e);
     } catch (IOException e) {

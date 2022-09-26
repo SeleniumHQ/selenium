@@ -79,8 +79,11 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 public class FirefoxDriverTest extends JupiterTestBase {
 
-  private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
-  private static final String EXT_PATH_DIR = "common/extensions/webextensions-selenium-example";
+  private static final String EXT_XPI = "common/extensions/webextensions-selenium-example.xpi";
+  private static final String EXT_SIGNED_ZIP = "common/extensions/webextensions-selenium-example.zip";
+  private static final String EXT_UNSIGNED_ZIP = "common/extensions/webextensions-selenium-example-unsigned.zip";
+  private static final String EXT_SIGNED_DIR = "common/extensions/webextensions-selenium-example-signed";
+  private static final String EXT_UNSIGNED_DIR = "common/extensions/webextensions-selenium-example";
   private static char[] CHARS =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
       .toCharArray();
@@ -544,45 +547,88 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void canAddRemoveExtensions() {
-    Path extension = InProject.locate(EXT_PATH);
+  public void canAddRemoveXpiExtensions() {
+    Path extension = InProject.locate(EXT_XPI);
 
     String id = ((HasExtensions) driver).installExtension(extension);
     assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
 
-    try {
-      ((HasExtensions) driver).uninstallExtension(id);
-    } catch (WebDriverException ex) {
-      fail(ex.getMessage());
-    }
+    driver.get(pages.blankPage);
+    WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
+    assertThat(injected.getText()).isEqualTo("Content injected by webextensions-selenium-example");
+
+    ((HasExtensions) driver).uninstallExtension(id);
+
+    driver.navigate().refresh();
+    assertThat(driver.findElements(By.id("webextensions-selenium-example")).size()).isZero();
   }
 
   @Test
-  public void canAddRemoveTempExtensions() {
-    Path extension = InProject.locate(EXT_PATH);
+  public void canAddRemoveZipUnSignedExtensions() {
+    Path extension = InProject.locate(EXT_UNSIGNED_ZIP);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
     assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
 
-    try {
-      ((HasExtensions) driver).uninstallExtension(id);
-    } catch (WebDriverException ex) {
-      fail(ex.getMessage());
-    }
+    driver.get(pages.blankPage);
+    WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
+    assertThat(injected.getText()).isEqualTo("Content injected by webextensions-selenium-example");
+
+    ((HasExtensions) driver).uninstallExtension(id);
+
+    driver.navigate().refresh();
+    assertThat(driver.findElements(By.id("webextensions-selenium-example")).size()).isZero();
   }
 
   @Test
-  public void canAddRemoveTempExtensionsDirectory() {
-    Path extension = InProject.locate(EXT_PATH_DIR);
+  public void canAddRemoveZipSignedExtensions() {
+    Path extension = InProject.locate(EXT_SIGNED_ZIP);
+
+    String id = ((HasExtensions) driver).installExtension(extension);
+    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+
+    driver.get(pages.blankPage);
+    WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
+    assertThat(injected.getText()).isEqualTo("Content injected by webextensions-selenium-example");
+
+    ((HasExtensions) driver).uninstallExtension(id);
+
+    driver.navigate().refresh();
+    assertThat(driver.findElements(By.id("webextensions-selenium-example")).size()).isZero();
+  }
+
+  @Test
+  public void canAddRemoveUnsignedExtensionsDirectory() {
+    Path extension = InProject.locate(EXT_UNSIGNED_DIR);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
     assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
 
-    try {
-      ((HasExtensions) driver).uninstallExtension(id);
-    } catch (WebDriverException ex) {
-      fail(ex.getMessage());
-    }
+    driver.get(pages.blankPage);
+    WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
+    assertThat(injected.getText()).isEqualTo("Content injected by webextensions-selenium-example");
+
+    ((HasExtensions) driver).uninstallExtension(id);
+
+    driver.navigate().refresh();
+    assertThat(driver.findElements(By.id("webextensions-selenium-example")).size()).isZero();
+  }
+
+  @Test
+  public void canAddRemoveSignedExtensionsDirectory() {
+    Path extension = InProject.locate(EXT_SIGNED_DIR);
+
+    String id = ((HasExtensions) driver).installExtension(extension);
+    assertThat(id).isEqualTo("webextensions-selenium-example@example.com");
+
+    driver.get(pages.blankPage);
+    WebElement injected = driver.findElement(By.id("webextensions-selenium-example"));
+    assertThat(injected.getText()).isEqualTo("Content injected by webextensions-selenium-example");
+
+    ((HasExtensions) driver).uninstallExtension(id);
+
+    driver.navigate().refresh();
+    assertThat(driver.findElements(By.id("webextensions-selenium-example")).size()).isZero();
   }
 
   @Test

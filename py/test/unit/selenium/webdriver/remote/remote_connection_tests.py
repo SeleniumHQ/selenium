@@ -72,7 +72,7 @@ def test_get_proxy_url_none(mock_proxy_settings_missing):
 def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
     remote_connection = RemoteConnection('http://remote', keep_alive=False)
     proxy_url = remote_connection._get_proxy_url()
-    raw_proxy_url, basic_auth_string = remote_connection._seperate_http_proxy_auth()
+    raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "http://user:password@http_proxy.com:8080"
     assert raw_proxy_url == "http://http_proxy.com:8080"
     assert basic_auth_string == "user:password"
@@ -81,7 +81,7 @@ def test_get_proxy_url_http_auth(mock_proxy_auth_settings):
 def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
     remote_connection = RemoteConnection('https://remote', keep_alive=False)
     proxy_url = remote_connection._get_proxy_url()
-    raw_proxy_url, basic_auth_string = remote_connection._seperate_http_proxy_auth()
+    raw_proxy_url, basic_auth_string = remote_connection._separate_http_proxy_auth()
     assert proxy_url == "https://user:password@https_proxy.com:8080"
     assert raw_proxy_url == "https://https_proxy.com:8080"
     assert basic_auth_string == "user:password"

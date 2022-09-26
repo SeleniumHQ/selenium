@@ -633,7 +633,7 @@ class WebDriver(BaseWebDriver):
                 driver.switch_to.default_content()
                 driver.switch_to.frame('frame_name')
                 driver.switch_to.frame(1)
-                driver.switch_to.frame(driver.find_elements_by_tag_name("iframe")[0])
+                driver.switch_to.frame(driver.find_elements(By.TAG_NAME, "iframe")[0])
                 driver.switch_to.parent_frame()
                 driver.switch_to.window('main')
         """
@@ -741,7 +741,7 @@ class WebDriver(BaseWebDriver):
             self.execute(Command.ADD_COOKIE, {'cookie': cookie_dict})
 
     # Timeouts
-    def implicitly_wait(self, time_to_wait) -> None:
+    def implicitly_wait(self, time_to_wait: float) -> None:
         """
         Sets a sticky timeout to implicitly wait for an element to be found,
            or a command to complete. This method only needs to be called one
@@ -759,7 +759,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.SET_TIMEOUTS, {
             'implicit': int(float(time_to_wait) * 1000)})
 
-    def set_script_timeout(self, time_to_wait) -> None:
+    def set_script_timeout(self, time_to_wait: float) -> None:
         """
         Set the amount of time that the script should wait during an
            execute_async_script call before throwing an error.
@@ -775,7 +775,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.SET_TIMEOUTS, {
             'script': int(float(time_to_wait) * 1000)})
 
-    def set_page_load_timeout(self, time_to_wait) -> None:
+    def set_page_load_timeout(self, time_to_wait: float) -> None:
         """
         Set the amount of time to wait for a page load to complete
            before throwing an error.
@@ -826,7 +826,7 @@ class WebDriver(BaseWebDriver):
         """
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())['value']
 
-    def find_element(self, by=By.ID, value=None) -> WebElement:
+    def find_element(self, by=By.ID, value: Optional[str] = None) -> WebElement:
         """
         Find an element given a By strategy and locator.
 
@@ -857,7 +857,7 @@ class WebDriver(BaseWebDriver):
             'using': by,
             'value': value})['value']
 
-    def find_elements(self, by=By.ID, value=None) -> List[WebElement]:
+    def find_elements(self, by=By.ID, value: Optional[str] = None) -> List[WebElement]:
         """
         Find elements given a By strategy and locator.
 

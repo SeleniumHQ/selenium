@@ -49,8 +49,10 @@ module Selenium
 
         it 'accepts provided Options as sole parameter' do
           opts = {invalid: 'foobar', args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", 'moz:firefoxOptions': opts}}})
-
+          expect_request(body: {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
+                                                             browserName: "firefox",
+                                                             'moz:firefoxOptions': opts,
+                                                             'moz:debuggerAddress': true}}})
           expect { Driver.new(options: Options.new(**opts)) }.not_to raise_exception
         end
 
@@ -99,9 +101,10 @@ module Selenium
 
             it 'with Options instance' do
               options = Options.new(args: ['-f'])
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox",
-                                                                 'moz:firefoxOptions': {args: ['-f']}}}})
-
+              expect_request(body: {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
+                                                                 browserName: "firefox",
+                                                                 'moz:firefoxOptions': {args: ['-f']},
+                                                                 'moz:debuggerAddress': true}}})
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end
 
@@ -113,8 +116,10 @@ module Selenium
             end
 
             it 'with Options instance and an instance of a custom object responding to #as_json' do
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox",
+              expect_request(body: {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
+                                                                 browserName: "firefox",
                                                                  'moz:firefoxOptions': {},
+                                                                 'moz:debuggerAddress': true,
                                                                  'company:key': 'value'}}})
               expect { Driver.new(capabilities: [Options.new, as_json_object.new]) }.not_to raise_exception
             end
@@ -123,7 +128,9 @@ module Selenium
               capabilities = Remote::Capabilities.new(browser_name: 'firefox', invalid: 'foobar')
               options = Options.new(args: ['-f'])
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox", invalid: 'foobar',
+                                                                 acceptInsecureCerts: true,
                                                                  'moz:firefoxOptions': {args: ['-f']},
+                                                                 'moz:debuggerAddress': true,
                                                                  'company:key': 'value'}}})
 
               expect { Driver.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception

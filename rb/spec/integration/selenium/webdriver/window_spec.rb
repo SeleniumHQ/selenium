@@ -60,10 +60,7 @@ module Selenium
         expect(pos.y).to be >= 0
       end
 
-      it 'sets the position of the current window',
-         except: {browser: :firefox,
-                  window_manager: false,
-                  reason: 'https://github.com/mozilla/geckodriver/issues/2042'} do
+      it 'sets the position of the current window' do
         pos = window.position
 
         target_x = pos.x + 10
@@ -89,10 +86,7 @@ module Selenium
         expect(rect.height).to be >= 0
       end
 
-      it 'sets the rect of the current window',
-         except: {browser: :firefox,
-                  window_manager: false,
-                  reason: 'https://github.com/mozilla/geckodriver/issues/2042'} do
+      it 'sets the rect of the current window' do
         rect = window.rect
 
         target_x = rect.x + 10
@@ -111,7 +105,7 @@ module Selenium
         expect(new_rect.height).to eq(target_height)
       end
 
-      it 'can maximize the current window', except: {window_manager: false, browser: %i[ie firefox safari]} do
+      it 'can maximize the current window' do
         window.size = old_size = Dimension.new(700, 700)
 
         window.maximize
@@ -122,7 +116,7 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can make window full screen', except: {window_manager: false, browser: :firefox} do
+      it 'can make window full screen' do
         window.size = old_size = Dimension.new(700, 700)
 
         window.full_screen
@@ -133,7 +127,7 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can minimize the window', only: {window_manager: true} do
+      it 'can minimize the window' do
         window.minimize
         expect(driver.execute_script('return document.hidden;')).to be true
       end

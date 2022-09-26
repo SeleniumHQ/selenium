@@ -47,7 +47,7 @@ public class EventFiringDecoratorTest {
 
   static class CollectorListener implements WebDriverListener {
 
-    StringBuffer acc = new StringBuffer();
+    protected final StringBuilder acc = new StringBuilder();
 
     @Override
     public void beforeAnyCall(Object target, Method method, Object[] args) {

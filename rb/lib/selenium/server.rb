@@ -182,15 +182,21 @@ module Selenium
     def initialize(jar, opts = {})
       raise Errno::ENOENT, jar unless File.exist?(jar)
 
-      @jar        = jar
-      @host       = '127.0.0.1'
-      @role       = opts.fetch(:role, 'standalone')
-      @port       = opts.fetch(:port, 4444)
-      @timeout    = opts.fetch(:timeout, 30)
+      @jar = jar
+      @host = '127.0.0.1'
+      @role = opts.fetch(:role, 'standalone')
+      @port = opts.fetch(:port, 4444)
+      @timeout = opts.fetch(:timeout, 30)
       @background = opts.fetch(:background, false)
-      @log        = opts[:log]
-      @log_file   = nil
-      @additional_args = []
+      @additional_args = opts.fetch(:args, [])
+      @log = opts[:log]
+      if opts[:log_level]
+        @log ||= true
+        @additional_args << '--log-level'
+        @additional_args << opts[:log_level].to_s
+      end
+
+      @log_file = nil
     end
 
     def start

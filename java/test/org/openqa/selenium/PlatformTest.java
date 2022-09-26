@@ -100,7 +100,7 @@ public class PlatformTest {
 
   @Test
   public void testShouldIdentifyVistaVariants() {
-    assertAllAre(Platform.VISTA, "Windows Vista", "windows server 2008", "Windows 7", "win7");
+    assertAllAre(Platform.VISTA, "Windows Vista", "windows server 2008");
   }
 
   @Test
