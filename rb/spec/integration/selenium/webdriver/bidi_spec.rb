@@ -21,11 +21,11 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe BiDi, exclusive: {browser: %i[firefox firefox_nightly]} do
+    describe BiDi, exclusive: {browser: %i[chrome_beta firefox firefox_nightly]} do
       it 'gets session status' do
         status = driver.bidi.session.status
-        expect(status.ready).to eq false
-        expect(status.message).to eq('Session already started')
+        expect(status).to respond_to(:ready)
+        expect(status.message).not_to be_empty
       end
     end
   end
