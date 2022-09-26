@@ -94,7 +94,7 @@ public class DesiredCapabilitiesTest {
   @Test
   public void shouldAutomaticallyConvertPlatformFromStringToEnum() {
     DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.PLATFORM_NAME, "windows 7");
+    caps.setCapability(CapabilityType.PLATFORM_NAME, "Windows Server 2008");
     assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo(Platform.VISTA);
     caps.setCapability(CapabilityType.PLATFORM_NAME, "win8.1");
     assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo(Platform.WIN8_1);

@@ -74,8 +74,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
       - uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - uses: ./.github/actions/setup-chrome
       - run: Xvfb :99 &
+      - name: Start Fluxbox
+        run: fluxbox -display :99 &
       - uses: ./.github/actions/bazel
         with:
           command: test --test_output=all //rb:${{ matrix.target }}
@@ -107,9 +111,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
       - uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - name: Setup Firefox and GeckoDriver
         uses: ./.github/actions/setup-firefox
       - run: Xvfb :99 &
+      - name: Start Fluxbox
+        run: fluxbox -display :99 &
       - uses: ./.github/actions/bazel
         with:
           command: test --test_output=all //rb:${{ matrix.target }}

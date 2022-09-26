@@ -190,14 +190,19 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("browserName" => "firefox", "moz:firefoxOptions" => {})
+            expect(options.as_json).to eq("browserName" => "firefox",
+                                          "acceptInsecureCerts" => true,
+                                          "moz:firefoxOptions" => {},
+                                          "moz:debuggerAddress" => true)
           end
 
           it 'returns added options' do
             options.add_option(:foo, 'bar')
             options.add_option('foo:bar', {foo: 'bar'})
-            expect(options.as_json).to eq("browserName" => "firefox",
+            expect(options.as_json).to eq("acceptInsecureCerts" => true,
+                                          "browserName" => "firefox",
                                           "foo:bar" => {"foo" => "bar"},
+                                          "moz:debuggerAddress" => true,
                                           "moz:firefoxOptions" => {"foo" => "bar"})
           end
 
@@ -241,6 +246,7 @@ module Selenium
                                                       'implicit' => 1},
                                        'setWindowRect' => false,
                                        'custom:options' => {'foo' => 'bar'},
+                                       'moz:debuggerAddress' => true,
                                        key => {'args' => %w[foo bar],
                                                'binary' => '/foo/bar',
                                                'prefs' => {'foo' => 'bar'},
