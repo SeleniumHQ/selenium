@@ -9,6 +9,11 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v4.5.0.0
+========
+* Auto-locate Edge if IE mode requested and location not specified
+* If system IE redirects to Edge, automatically use Edge in IE Mode
+
 v4.3.0.0
 ========
 * fix Edge IE mode issue that sometimes cannot get the handle of a newly opened window (#10702)
