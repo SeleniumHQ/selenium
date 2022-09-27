@@ -190,7 +190,9 @@ public class GeckoDriverService extends FirefoxDriverService {
       int wsPort = PortProber.findFreePort();
       args.add(String.format("--port=%d", getPort()));
       args.add(String.format("--websocket-port=%d", wsPort));
-      args.add(String.format("--allow-origins=http://localhost:%d", wsPort));
+      args.add("--allow-origins");
+      args.add(String.format("http://127.0.0.1:%d", wsPort));
+      args.add(String.format("http://localhost:%d", wsPort));
       if (firefoxBinary != null) {
         args.add("-b");
         args.add(firefoxBinary.getPath());
