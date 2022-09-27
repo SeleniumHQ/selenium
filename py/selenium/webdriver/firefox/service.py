@@ -50,7 +50,7 @@ class Service(service.Service):
 
         log_file = None
         if log_path is not None:
-            open_args = {"file": log_path, "mode":"a+", "encoding":"utf-8"} if isinstance(log_path, str) else {"mode":"a+", "encoding":"utf-8"} | log_path
+            open_args = {"file": log_path, "mode":"a+", "encoding":"utf-8"} if isinstance(log_path, str) else {"file": "geckodriver.log", "mode":"a+", "encoding":"utf-8"} | log_path
             log_file = open(**open_args)
 
 
