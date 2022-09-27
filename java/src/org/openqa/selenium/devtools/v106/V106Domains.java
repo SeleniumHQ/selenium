@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v103;
+package org.openqa.selenium.devtools.v106;
 
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.idealized.Domains;
@@ -24,23 +24,28 @@ import org.openqa.selenium.devtools.idealized.Javascript;
 import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.devtools.idealized.log.Log;
 import org.openqa.selenium.devtools.idealized.target.Target;
+import org.openqa.selenium.devtools.v106.V106Events;
+import org.openqa.selenium.devtools.v106.V106Javascript;
+import org.openqa.selenium.devtools.v106.V106Log;
+import org.openqa.selenium.devtools.v106.V106Network;
+import org.openqa.selenium.devtools.v106.V106Target;
 import org.openqa.selenium.internal.Require;
 
-public class V103Domains implements Domains {
+public class V106Domains implements Domains {
 
-  private final V103Javascript js;
-  private final V103Events events;
-  private final V103Log log;
-  private final V103Network network;
-  private final V103Target target;
+  private final V106Javascript js;
+  private final V106Events events;
+  private final V106Log log;
+  private final V106Network network;
+  private final V106Target target;
 
-  public V103Domains(DevTools devtools) {
+  public V106Domains(DevTools devtools) {
     Require.nonNull("DevTools", devtools);
-    events = new V103Events(devtools);
-    js = new V103Javascript(devtools);
-    log = new V103Log();
-    network = new V103Network(devtools);
-    target = new V103Target();
+    events = new V106Events(devtools);
+    js = new V106Javascript(devtools);
+    log = new V106Log();
+    network = new V106Network(devtools);
+    target = new V106Target();
   }
 
   @Override
