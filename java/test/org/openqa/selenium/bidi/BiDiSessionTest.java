@@ -30,8 +30,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class BiDiSessionTest {
 
   private FirefoxDriver driver;
-
-  @Disabled
+  
   @Test
   public void shouldBeAbleToCreateABiDiSession() {
     FirefoxOptions options = new FirefoxOptions();
