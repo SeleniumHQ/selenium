@@ -193,6 +193,7 @@ public class GeckoDriverService extends FirefoxDriverService {
       args.add("--allow-origins");
       args.add(String.format("http://127.0.0.1:%d", wsPort));
       args.add(String.format("http://localhost:%d", wsPort));
+      args.add(String.format("http://[::1]:%d", wsPort));
       if (firefoxBinary != null) {
         args.add("-b");
         args.add(firefoxBinary.getPath());
