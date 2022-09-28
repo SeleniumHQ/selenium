@@ -3,6 +3,7 @@
 
 BiDi:
   * Released selenium-devtools 0.105.0 (supports CDP v85, v103, v104, v105)
+  * Released selenium-devtools 0.106.0 (supports CDP v85, v104, v105, v106)
   * Add HasBiDi support to Chrome
 
 Ruby:
