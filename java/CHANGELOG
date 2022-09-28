@@ -1,6 +1,6 @@
 v4.5.0
 ======
-* Supported CDP versions: 85, 103, 104, 105
+* Supported CDP versions: 85, 104, 105, 106
 * Allow event firing decorator to accept a target class (#1694)
 * Fix Javadoc for executeAsyncScript method
 * [cdp] Add  support for CDP 105 and remove CDP 102
@@ -20,6 +20,7 @@ v4.5.0
 * Remove deprecated ForSeleniumServer caps
 * Remove deprecated BrowserType
 * Differentiate "Windows 7" and "Windows Vista" in Platform class
+* Fix bug preventing websocket connections in Firefox v105 from localhost
 
 v4.4.0
 ======
