@@ -73,7 +73,6 @@ org.openqa.selenium.logging.profiler
 org.openqa.selenium.mobile
 org.openqa.selenium.net
 org.openqa.selenium.netty.server
-org.openqa.selenium.opera
 org.openqa.selenium.os
 org.openqa.selenium.print
 org.openqa.selenium.remote

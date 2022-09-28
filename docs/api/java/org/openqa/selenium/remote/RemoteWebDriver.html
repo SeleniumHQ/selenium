@@ -140,7 +140,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><code><a href="../chromium/ChromiumDriver.html" title="class in org.openqa.selenium.chromium">ChromiumDriver</a></code>, <code><a href="../firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a></code>, <code><a href="../ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></code>, <code><a href="../opera/OperaDriver.html" title="class in org.openqa.selenium.opera">OperaDriver</a></code>, <code><a href="../safari/SafariDriver.html" title="class in org.openqa.selenium.safari">SafariDriver</a></code></dd>
+<dd><code><a href="../chromium/ChromiumDriver.html" title="class in org.openqa.selenium.chromium">ChromiumDriver</a></code>, <code><a href="../firefox/FirefoxDriver.html" title="class in org.openqa.selenium.firefox">FirefoxDriver</a></code>, <code><a href="../ie/InternetExplorerDriver.html" title="class in org.openqa.selenium.ie">InternetExplorerDriver</a></code>, <code><a href="../safari/SafariDriver.html" title="class in org.openqa.selenium.safari">SafariDriver</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">RemoteWebDriver</span>
@@ -187,7 +187,7 @@ implements <a href="../WebDriver.html" title="interface in org.openqa.selenium">
 <!--   -->
 </a>
 <h3>Nested classes/interfaces inherited from interface&nbsp;org.openqa.selenium.<a href="../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></h3>
-<code><a href="../WebDriver.ImeHandler.html" title="interface in org.openqa.selenium">WebDriver.ImeHandler</a>, <a href="../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>, <a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>, <a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>, <a href="../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>, <a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></li>
+<code><a href="../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>, <a href="../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>, <a href="../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>, <a href="../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>, <a href="../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1162,9 +1162,8 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
  <p>
  The default timeout for a script to be executed is 0ms. In most cases, including the examples
  below, one must set the script timeout
- <a href="../WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(java.time.Duration)</code></a> beforehand
+ <a href="../WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.scriptTimeout(java.time.Duration)</code></a> beforehand
  to a value sufficiently large enough.
-
 
  <p>
  Example #1: Performing a sleep in the browser under test. <pre><code>
@@ -1216,7 +1215,7 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>One of Boolean, Long, String, List, Map, WebElement, or null.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(java.time.Duration)</code></a></dd>
+<dd><a href="../WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.scriptTimeout(java.time.Duration)</code></a></dd>
 </dl>
 </li>
 </ul>

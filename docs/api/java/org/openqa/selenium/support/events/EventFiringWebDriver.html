@@ -166,7 +166,7 @@ implements <a href="../../WebDriver.html" title="interface in org.openqa.seleniu
 <!--   -->
 </a>
 <h3>Nested classes/interfaces inherited from interface&nbsp;org.openqa.selenium.<a href="../../WebDriver.html" title="interface in org.openqa.selenium">WebDriver</a></h3>
-<code><a href="../../WebDriver.ImeHandler.html" title="interface in org.openqa.selenium">WebDriver.ImeHandler</a>, <a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>, <a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>, <a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>, <a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>, <a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></li>
+<code><a href="../../WebDriver.Navigation.html" title="interface in org.openqa.selenium">WebDriver.Navigation</a>, <a href="../../WebDriver.Options.html" title="interface in org.openqa.selenium">WebDriver.Options</a>, <a href="../../WebDriver.TargetLocator.html" title="interface in org.openqa.selenium">WebDriver.TargetLocator</a>, <a href="../../WebDriver.Timeouts.html" title="interface in org.openqa.selenium">WebDriver.Timeouts</a>, <a href="../../WebDriver.Window.html" title="interface in org.openqa.selenium">WebDriver.Window</a></code></li>
 </ul>
 </li>
 </ul>
@@ -809,9 +809,8 @@ implements <a href="../../WebDriver.html" title="interface in org.openqa.seleniu
  <p>
  The default timeout for a script to be executed is 0ms. In most cases, including the examples
  below, one must set the script timeout
- <a href="../../WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(java.time.Duration)</code></a> beforehand
+ <a href="../../WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.scriptTimeout(java.time.Duration)</code></a> beforehand
  to a value sufficiently large enough.
-
 
  <p>
  Example #1: Performing a sleep in the browser under test. <pre><code>
@@ -863,7 +862,7 @@ implements <a href="../../WebDriver.html" title="interface in org.openqa.seleniu
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>One of Boolean, Long, String, List, Map, WebElement, or null.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(java.time.Duration)</code></a></dd>
+<dd><a href="../../WebDriver.Timeouts.html#scriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.scriptTimeout(java.time.Duration)</code></a></dd>
 </dl>
 </li>
 </ul>
