@@ -1,6 +1,7 @@
 v4.5.0
 ======
 * Add CDP support for v105, and remove v102
+* Add CDP support for v106, and remove v103
 * Update Select class to error when elements are disabled
 * Add support for installing unsigned add-ons in Firefox
 * Add return value for installing add-ons in Firefox
