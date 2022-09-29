@@ -4,7 +4,10 @@ load("//java:defs.bzl", "java_library")
 java_library(
     name = "decorators",
     srcs = glob(["*.java"]),
-    visibility = ["//visibility:public"],
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__subpackages__",
+        "//java/test/org/openqa/selenium/support/decorators:__pkg__",
+    ],
     deps = [
         "//java/src/org/openqa/selenium:core",
         artifact("net.bytebuddy:byte-buddy"),
