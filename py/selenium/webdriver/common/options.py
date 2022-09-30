@@ -15,7 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from abc import abstractmethod
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.common.proxy import Proxy

@@ -19,10 +19,11 @@ import time
 
 import pytest
 
-from selenium.common.exceptions import TimeoutException, InvalidSelectorException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import InvalidElementStateException
+from selenium.common.exceptions import InvalidSelectorException
+from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait

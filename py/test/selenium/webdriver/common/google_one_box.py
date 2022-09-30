@@ -15,10 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from page_loader import require_loaded
+from results_page import ResultsPage
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from results_page import ResultsPage
-from page_loader import require_loaded
 
 
 class GoogleOneBox:

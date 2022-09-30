@@ -20,11 +20,11 @@ The ActionChains implementation,
 """
 import warnings
 
-from .actions.wheel_input import ScrollOrigin
-
-from .utils import keys_to_typing
-from .actions.action_builder import ActionBuilder
 from selenium.webdriver.remote.webelement import WebElement
+
+from .actions.action_builder import ActionBuilder
+from .actions.wheel_input import ScrollOrigin
+from .utils import keys_to_typing
 
 
 class ActionChains:

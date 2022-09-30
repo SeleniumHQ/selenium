@@ -17,10 +17,11 @@
 
 import http.client as http_client
 
-
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from .service import DEFAULT_EXECUTABLE_PATH, Service
+
 from .options import Options
+from .service import DEFAULT_EXECUTABLE_PATH
+from .service import Service
 
 
 class WebDriver(RemoteWebDriver):

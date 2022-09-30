@@ -23,31 +23,38 @@ import types
 import typing
 import warnings
 from abc import ABCMeta
-from base64 import b64decode, urlsafe_b64encode
-from contextlib import asynccontextmanager, contextmanager
+from base64 import b64decode
+from base64 import urlsafe_b64encode
+from contextlib import asynccontextmanager
+from contextlib import contextmanager
 from importlib import import_module
-from typing import Dict, List, Optional, Union
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Union
 
-from selenium.common.exceptions import (InvalidArgumentException,
-                                        JavascriptException,
-                                        WebDriverException,
-                                        NoSuchCookieException,
-                                        NoSuchElementException)
+from selenium.common.exceptions import InvalidArgumentException
+from selenium.common.exceptions import JavascriptException
+from selenium.common.exceptions import NoSuchCookieException
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.html5.application_cache import ApplicationCache
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 from selenium.webdriver.common.timeouts import Timeouts
+from selenium.webdriver.common.virtual_authenticator import Credential
+from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions
 from selenium.webdriver.common.virtual_authenticator import (
-    Credential,
-    VirtualAuthenticatorOptions,
-    required_virtual_authenticator
+    required_virtual_authenticator,
 )
 from selenium.webdriver.support.relative_locator import RelativeBy
+
 from .bidi_connection import BidiConnection
 from .command import Command
 from .errorhandler import ErrorHandler
-from .file_detector import FileDetector, LocalFileDetector
+from .file_detector import FileDetector
+from .file_detector import LocalFileDetector
 from .mobile import Mobile
 from .remote_connection import RemoteConnection
 from .script_key import ScriptKey
@@ -123,8 +130,8 @@ def _make_w3c_caps(caps):
 
 def get_remote_connection(capabilities, command_executor, keep_alive, ignore_local_proxy=False):
     from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
-    from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
     from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+    from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
 
     candidates = [RemoteConnection, ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
     handler = next(
@@ -1187,6 +1194,7 @@ class WebDriver(BaseWebDriver):
 
     def _get_cdp_details(self):
         import json
+
         import urllib3
 
         http = urllib3.PoolManager()

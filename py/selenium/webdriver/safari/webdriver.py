@@ -16,17 +16,16 @@
 # under the License.
 
 import http.client as http_client
-
-
 import warnings
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from .options import Options
-from .service import DEFAULT_EXECUTABLE_PATH, Service
-from .remote_connection import SafariRemoteConnection
 
+from .options import Options
+from .remote_connection import SafariRemoteConnection
+from .service import DEFAULT_EXECUTABLE_PATH
+from .service import Service
 
 DEFAULT_SAFARI_CAPS = DesiredCapabilities.SAFARI.copy()
 

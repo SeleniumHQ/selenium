@@ -14,8 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from .wheel_input import WheelInput
 from .interaction import Interaction
+from .wheel_input import WheelInput
 
 
 class WheelActions(Interaction):

@@ -16,10 +16,10 @@
 # under the License.
 
 import functools
-
-from base64 import urlsafe_b64encode, urlsafe_b64decode
-from enum import Enum
 import typing
+from base64 import urlsafe_b64decode
+from base64 import urlsafe_b64encode
+from enum import Enum
 
 
 class Protocol(Enum):

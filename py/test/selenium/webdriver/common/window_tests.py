@@ -20,7 +20,6 @@ import pytest
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.support.wait import WebDriverWait
 
-
 # @pytest.mark.xfail_ie
 # @pytest.mark.xfail_chromiumedge(reason="Fails on Travis")
 # @pytest.mark.xfail_firefox(reason="Fails on Travis")

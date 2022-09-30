@@ -17,7 +17,6 @@
 
 from selenium.webdriver.common import service
 
-
 DEFAULT_EXECUTABLE_PATH = "WebKitWebDriver"
 
 

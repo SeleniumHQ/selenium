@@ -30,7 +30,6 @@ from xml.dom import minidom
 
 from selenium.common.exceptions import WebDriverException
 
-
 WEBDRIVER_EXT = "webdriver.xpi"
 WEBDRIVER_PREFERENCES = "webdriver_prefs.json"
 EXTENSION_NAME = "fxdriver@googlecode.com"

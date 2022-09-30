@@ -19,12 +19,14 @@
 The Utils methods.
 """
 
-from typing import Iterable, List, Optional, Union
-
 import socket
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Union
+
 from selenium.types import AnyKey
 from selenium.webdriver.common.keys import Keys
-
 
 _is_connectable_exceptions = (socket.error, ConnectionResetError)
 

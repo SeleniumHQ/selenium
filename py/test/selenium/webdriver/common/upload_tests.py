@@ -16,7 +16,9 @@
 # under the License.
 
 import os
+
 import pytest
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 

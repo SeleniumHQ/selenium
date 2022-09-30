@@ -16,6 +16,7 @@
 # under the License.
 
 from selenium.webdriver.remote.webelement import WebElement
+
 from . import interaction
 from .interaction import Interaction
 from .mouse_button import MouseButton

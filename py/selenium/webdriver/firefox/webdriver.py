@@ -15,12 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 import base64
-from io import BytesIO
 import os
-from shutil import rmtree
 import warnings
-from contextlib import contextmanager
 import zipfile
+from contextlib import contextmanager
+from io import BytesIO
+from shutil import rmtree
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
@@ -29,8 +29,8 @@ from .firefox_binary import FirefoxBinary
 from .firefox_profile import FirefoxProfile
 from .options import Options
 from .remote_connection import FirefoxRemoteConnection
-from .service import DEFAULT_EXECUTABLE_PATH, Service
-
+from .service import DEFAULT_EXECUTABLE_PATH
+from .service import Service
 
 # Default for log_path variable. To be deleted when deprecations for arguments are removed.
 DEFAULT_LOG_PATH = None

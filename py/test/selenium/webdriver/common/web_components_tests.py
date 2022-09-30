@@ -19,8 +19,8 @@ import pytest
 
 from selenium.common.exceptions import NoSuchShadowRootException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.remote.shadowroot import ShadowRoot
+from selenium.webdriver.remote.webelement import WebElement
 
 
 @pytest.mark.xfail_safari

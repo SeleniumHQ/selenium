@@ -16,23 +16,22 @@
 # under the License.
 
 import logging
+import os
+import platform
 import socket
 import string
-
-import os
 import typing
+from base64 import b64encode
+from urllib import parse
 
 import certifi
 import urllib3
-import platform
 
-from base64 import b64encode
-
-from urllib import parse
 from selenium import __version__
+
+from . import utils
 from .command import Command
 from .errorhandler import ErrorCode
-from . import utils
 
 LOGGER = logging.getLogger(__name__)
 

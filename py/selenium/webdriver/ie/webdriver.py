@@ -17,10 +17,12 @@
 
 import warnings
 
-from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from .service import DEFAULT_EXECUTABLE_PATH, Service
-from .options import Options
 from selenium.webdriver.common import utils
+from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
+
+from .options import Options
+from .service import DEFAULT_EXECUTABLE_PATH
+from .service import Service
 
 DEFAULT_TIMEOUT = 30
 DEFAULT_PORT = 0

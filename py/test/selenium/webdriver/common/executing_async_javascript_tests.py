@@ -17,9 +17,9 @@
 
 import pytest
 
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 

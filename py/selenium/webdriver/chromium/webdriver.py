@@ -15,13 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import warnings
+
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.service import Service
 from selenium.webdriver.edge.options import Options as EdgeOptions
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-import warnings
-
-from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 DEFAULT_PORT = 0

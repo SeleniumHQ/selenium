@@ -16,9 +16,10 @@
 # under the License.
 
 import os
-from selenium.webdriver.common import service, utils
 from subprocess import PIPE
 
+from selenium.webdriver.common import service
+from selenium.webdriver.common import utils
 
 DEFAULT_EXECUTABLE_PATH = "/usr/bin/safaridriver"
 

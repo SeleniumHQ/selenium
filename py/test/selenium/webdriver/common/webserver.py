@@ -22,15 +22,18 @@ import logging
 import os
 import re
 import threading
+
 try:
     from urllib import request as urllib_request
 except ImportError:
     import urllib as urllib_request
 try:
-    from http.server import BaseHTTPRequestHandler, HTTPServer
+    from http.server import BaseHTTPRequestHandler
+    from http.server import HTTPServer
     from socketserver import ThreadingMixIn
 except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+    from BaseHTTPServer import BaseHTTPRequestHandler
+    from BaseHTTPServer import HTTPServer
     from SocketServer import ThreadingMixIn
 
 
