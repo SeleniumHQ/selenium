@@ -17,8 +17,8 @@
 
 import pytest
 
-from selenium.webdriver.common.proxy import Proxy, ProxyType
-
+from selenium.webdriver.common.proxy import Proxy
+from selenium.webdriver.common.proxy import ProxyType
 
 MANUAL_PROXY = {
     'httpProxy': 'some.url:1234',

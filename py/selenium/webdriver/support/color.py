@@ -17,7 +17,9 @@
 from __future__ import annotations
 
 import sys
-from typing import Any, Sequence, TYPE_CHECKING
+from typing import TYPE_CHECKING
+from typing import Any
+from typing import Sequence
 
 if sys.version_info >= (3, 9):
     from re import Match
@@ -25,7 +27,10 @@ else:
     from typing import Match
 
 if TYPE_CHECKING:
-    from typing import SupportsInt, SupportsFloat, Union
+    from typing import SupportsFloat
+    from typing import SupportsInt
+    from typing import Union
+
     from typing_extensions import SupportsIndex
 
     ParseableFloat = Union[SupportsFloat, SupportsIndex, str, bytes, bytearray]

@@ -17,7 +17,8 @@
 
 from typing import List
 
-from selenium.webdriver.common import (service, utils)
+from selenium.webdriver.common import service
+from selenium.webdriver.common import utils
 
 DEFAULT_EXECUTABLE_PATH = "geckodriver"
 

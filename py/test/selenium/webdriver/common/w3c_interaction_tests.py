@@ -17,12 +17,12 @@
 
 import pytest
 
-from selenium.webdriver.common.actions.wheel_input import WheelInput
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
-from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.wheel_input import WheelInput
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 
 

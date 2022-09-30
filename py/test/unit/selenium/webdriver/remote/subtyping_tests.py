@@ -16,8 +16,8 @@
 # under the License.
 
 
-from selenium.webdriver.remote.webdriver import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webdriver import WebElement
 
 
 def test_web_element_not_subclassed():

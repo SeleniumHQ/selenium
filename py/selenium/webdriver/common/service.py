@@ -14,17 +14,16 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from subprocess import DEVNULL
-
 import errno
 import os
 import subprocess
 from platform import system
+from subprocess import DEVNULL
 from subprocess import PIPE
 from time import sleep
+
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
-
 
 _HAS_NATIVE_DEVNULL = True
 

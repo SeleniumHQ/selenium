@@ -15,10 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 import warnings
+
 from selenium.webdriver.chromium.webdriver import ChromiumDriver
-from .options import Options
-from .service import DEFAULT_EXECUTABLE_PATH, Service
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+from .options import Options
+from .service import DEFAULT_EXECUTABLE_PATH
+from .service import Service
 
 DEFAULT_PORT = 0
 DEFAULT_SERVICE_LOG_PATH = None

@@ -17,13 +17,13 @@
 
 """Tests for advanced user interactions."""
 import pytest
-from selenium.common.exceptions import MoveTargetOutOfBoundsException
-from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import MoveTargetOutOfBoundsException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.wheel_input import ScrollOrigin
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 
 

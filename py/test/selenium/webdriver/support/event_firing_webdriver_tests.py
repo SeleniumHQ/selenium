@@ -21,10 +21,11 @@ from io import BytesIO
 import pytest
 
 from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.events import EventFiringWebDriver, AbstractEventListener
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.events import AbstractEventListener
+from selenium.webdriver.support.events import EventFiringWebDriver
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 @pytest.fixture

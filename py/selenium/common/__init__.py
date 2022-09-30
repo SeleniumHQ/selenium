@@ -49,7 +49,6 @@ from .exceptions import UnexpectedTagNameException
 from .exceptions import UnknownMethodException
 from .exceptions import WebDriverException
 
-
 __all__ = ["WebDriverException",
            "InvalidSwitchToTargetException",
            "NoSuchFrameException",

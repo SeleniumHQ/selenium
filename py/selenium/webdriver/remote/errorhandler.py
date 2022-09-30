@@ -15,37 +15,39 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Any, Dict, Type
+from typing import Any
+from typing import Dict
+from typing import Type
 
-from selenium.common.exceptions import (ElementClickInterceptedException,
-                                        ElementNotInteractableException,
-                                        ElementNotSelectableException,
-                                        ElementNotVisibleException,
-                                        InsecureCertificateException,
-                                        InvalidCoordinatesException,
-                                        InvalidElementStateException,
-                                        InvalidSessionIdException,
-                                        InvalidSelectorException,
-                                        ImeNotAvailableException,
-                                        ImeActivationFailedException,
-                                        InvalidArgumentException,
-                                        InvalidCookieDomainException,
-                                        JavascriptException,
-                                        MoveTargetOutOfBoundsException,
-                                        NoSuchCookieException,
-                                        NoSuchElementException,
-                                        NoSuchFrameException,
-                                        NoSuchShadowRootException,
-                                        NoSuchWindowException,
-                                        NoAlertPresentException,
-                                        ScreenshotException,
-                                        SessionNotCreatedException,
-                                        StaleElementReferenceException,
-                                        TimeoutException,
-                                        UnableToSetCookieException,
-                                        UnexpectedAlertPresentException,
-                                        UnknownMethodException,
-                                        WebDriverException)
+from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import ElementNotInteractableException
+from selenium.common.exceptions import ElementNotSelectableException
+from selenium.common.exceptions import ElementNotVisibleException
+from selenium.common.exceptions import ImeActivationFailedException
+from selenium.common.exceptions import ImeNotAvailableException
+from selenium.common.exceptions import InsecureCertificateException
+from selenium.common.exceptions import InvalidArgumentException
+from selenium.common.exceptions import InvalidCookieDomainException
+from selenium.common.exceptions import InvalidCoordinatesException
+from selenium.common.exceptions import InvalidElementStateException
+from selenium.common.exceptions import InvalidSelectorException
+from selenium.common.exceptions import InvalidSessionIdException
+from selenium.common.exceptions import JavascriptException
+from selenium.common.exceptions import MoveTargetOutOfBoundsException
+from selenium.common.exceptions import NoAlertPresentException
+from selenium.common.exceptions import NoSuchCookieException
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchFrameException
+from selenium.common.exceptions import NoSuchShadowRootException
+from selenium.common.exceptions import NoSuchWindowException
+from selenium.common.exceptions import ScreenshotException
+from selenium.common.exceptions import SessionNotCreatedException
+from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import UnableToSetCookieException
+from selenium.common.exceptions import UnexpectedAlertPresentException
+from selenium.common.exceptions import UnknownMethodException
+from selenium.common.exceptions import WebDriverException
 
 
 class ErrorCode:
