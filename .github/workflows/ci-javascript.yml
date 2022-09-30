@@ -53,6 +53,8 @@ jobs:
           java-version: 11
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - name: Setup Firefox and GeckoDriver
         uses: ./.github/actions/setup-firefox
         with:
@@ -98,12 +100,16 @@ jobs:
           java-version: 11
       - name: Setup bazelisk
         uses: ./.github/actions/setup-bazelisk
+      - name: Setup Fluxbox
+        run: sudo apt-get -y install fluxbox
       - name: Setup Firefox and GeckoDriver
         uses: ./.github/actions/setup-firefox
         with:
           version: ${{ matrix.version }}
       - name: Start XVFB
         run: Xvfb :99 &
+      - name: Start Fluxbox
+        run: fluxbox -display :99 &
       - name: Run atom tests on Firefox
         uses: ./.github/actions/bazel
         with:

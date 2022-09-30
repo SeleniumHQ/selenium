@@ -35,6 +35,7 @@
 * Removing circular dependency Between webdriver.js and http.js
 * fix some typos in code and documentation 
 * add cdp v105 remove v102
+* add cdp v106 remove v103
 
 ## v4.4.0
 * Add support CDP 104 and remove CDP 101
