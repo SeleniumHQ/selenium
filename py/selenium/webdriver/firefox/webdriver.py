@@ -88,6 +88,7 @@ class WebDriver(RemoteWebDriver):
             binary to use for Firefox 47.0.1 and greater, which
             defaults to picking up the binary from the system path.
         :param options: Instance of ``options.Options``.
+        :param service: (Optional) service instance for managing the starting and stopping of the driver.
         :param service_log_path: Deprecated: Where to log information from the driver.
         :param service_args: Deprecated: List of args to pass to the driver service
         :param desired_capabilities: Deprecated: alias of capabilities. In future
