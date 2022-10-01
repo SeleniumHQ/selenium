@@ -110,10 +110,8 @@ def test_should_scroll_overflow_elements_if_click_point_is_out_of_view_but_eleme
     assert "clicked" == driver.find_element(By.ID, "clicked").text
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://github.com/w3c/webdriver/issues/408')
-@pytest.mark.xfail_remote(
-    reason='https://github.com/w3c/webdriver/issues/408')
+@pytest.mark.xfail_firefox(reason="https://github.com/w3c/webdriver/issues/408")
+@pytest.mark.xfail_remote(reason="https://github.com/w3c/webdriver/issues/408")
 @pytest.mark.xfail_safari
 def test_should_be_able_to_click_element_in_aframe_that_is_out_of_view(driver, pages):
     pages.load("scrolling_tests/page_with_frame_out_of_view.html")

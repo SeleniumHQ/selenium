@@ -27,7 +27,7 @@ def test_install_uninstall_signed_addon_xpi(driver, pages):
     extension = os.path.join(extensions, "webextensions-selenium-example.xpi")
 
     id = driver.install_addon(extension)
-    assert id == 'webextensions-selenium-example@example.com'
+    assert id == "webextensions-selenium-example@example.com"
 
     pages.load("blank.html")
     injected = driver.find_element(By.ID, "webextensions-selenium-example")
@@ -42,7 +42,7 @@ def test_install_uninstall_signed_addon_zip(driver, pages):
     extension = os.path.join(extensions, "webextensions-selenium-example.zip")
 
     id = driver.install_addon(extension)
-    assert id == 'webextensions-selenium-example@example.com'
+    assert id == "webextensions-selenium-example@example.com"
 
     pages.load("blank.html")
     injected = driver.find_element(By.ID, "webextensions-selenium-example")
@@ -54,10 +54,10 @@ def test_install_uninstall_signed_addon_zip(driver, pages):
 
 
 def test_install_uninstall_unsigned_addon_zip(driver, pages):
-    extension = os.path.join(extensions, 'webextensions-selenium-example-unsigned.zip')
+    extension = os.path.join(extensions, "webextensions-selenium-example-unsigned.zip")
 
     id = driver.install_addon(extension, temporary=True)
-    assert id == 'webextensions-selenium-example@example.com'
+    assert id == "webextensions-selenium-example@example.com"
 
     pages.load("blank.html")
     injected = driver.find_element(By.ID, "webextensions-selenium-example")
@@ -69,14 +69,14 @@ def test_install_uninstall_unsigned_addon_zip(driver, pages):
 
 
 def test_install_uninstall_signed_addon_dir(driver, pages):
-    zip = os.path.join(extensions, 'webextensions-selenium-example.zip')
+    zip = os.path.join(extensions, "webextensions-selenium-example.zip")
 
-    target = os.path.join(extensions, 'webextensions-selenium-example')
-    with zipfile.ZipFile(zip, 'r') as zip_ref:
+    target = os.path.join(extensions, "webextensions-selenium-example")
+    with zipfile.ZipFile(zip, "r") as zip_ref:
         zip_ref.extractall(target)
 
     id = driver.install_addon(target)
-    assert id == 'webextensions-selenium-example@example.com'
+    assert id == "webextensions-selenium-example@example.com"
 
     pages.load("blank.html")
     injected = driver.find_element(By.ID, "webextensions-selenium-example")
@@ -88,13 +88,13 @@ def test_install_uninstall_signed_addon_dir(driver, pages):
 
 
 def test_install_uninstall_unsigned_addon_dir(driver, pages):
-    zip = os.path.join(extensions, 'webextensions-selenium-example-unsigned.zip')
-    target = os.path.join(extensions, 'webextensions-selenium-example-unsigned')
-    with zipfile.ZipFile(zip, 'r') as zip_ref:
+    zip = os.path.join(extensions, "webextensions-selenium-example-unsigned.zip")
+    target = os.path.join(extensions, "webextensions-selenium-example-unsigned")
+    with zipfile.ZipFile(zip, "r") as zip_ref:
         zip_ref.extractall(target)
 
     id = driver.install_addon(target, temporary=True)
-    assert id == 'webextensions-selenium-example@example.com'
+    assert id == "webextensions-selenium-example@example.com"
 
     pages.load("blank.html")
     injected = driver.find_element(By.ID, "webextensions-selenium-example")

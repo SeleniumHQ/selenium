@@ -20,6 +20,6 @@ from selenium.webdriver import Chrome
 
 def test_execute_cdp_cmd():
     driver = Chrome()
-    version_info = driver.execute_cdp_cmd('Browser.getVersion', {})
+    version_info = driver.execute_cdp_cmd("Browser.getVersion", {})
     assert isinstance(version_info, dict)
-    assert 'userAgent' in version_info
+    assert "userAgent" in version_info

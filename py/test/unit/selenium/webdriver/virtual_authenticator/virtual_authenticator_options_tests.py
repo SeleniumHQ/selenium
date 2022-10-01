@@ -87,9 +87,9 @@ def test_get_is_user_verified(options):
 
 def test_to_dict_with_defaults(options):
     default_options = options.to_dict()
-    assert default_options['transport'] == VirtualAuthenticatorOptions.Transport.USB.value
-    assert default_options['protocol'] == VirtualAuthenticatorOptions.Protocol.CTAP2.value
-    assert default_options['hasResidentKey'] is False
-    assert default_options['hasUserVerification'] is False
-    assert default_options['isUserConsenting'] is True
-    assert default_options['isUserVerified'] is False
+    assert default_options["transport"] == VirtualAuthenticatorOptions.Transport.USB.value
+    assert default_options["protocol"] == VirtualAuthenticatorOptions.Protocol.CTAP2.value
+    assert default_options["hasResidentKey"] is False
+    assert default_options["hasUserVerification"] is False
+    assert default_options["isUserConsenting"] is True
+    assert default_options["isUserVerified"] is False
