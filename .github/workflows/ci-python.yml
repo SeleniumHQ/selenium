@@ -20,7 +20,7 @@ jobs:
     with:
       bazel-target-prefix: '//py'
 
-  tox_flake8:
+  tox_linting:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
     needs: check_workflow
     runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
       - name: Test with tox
         run: tox -c py/tox.ini
         env:
-          TOXENV: flake8
+          TOXENV: linting
 
   tox_docs:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
