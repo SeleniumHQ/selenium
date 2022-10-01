@@ -22,6 +22,8 @@ from subprocess import PIPE
 from selenium.webdriver.common import service
 from selenium.webdriver.common import utils
 
+DEFAULT_EXECUTABLE_PATH: str = "/usr/bin/safaridriver"
+
 
 class Service(service.Service):
     """
@@ -30,7 +32,7 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = "/usr/bin/safaridriver",
+        executable_path: str = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
         quiet: bool = False,
         service_args: typing.Optional[typing.List[str]] = None,
