@@ -16,12 +16,11 @@
 # under the License.
 
 import os
+import typing
 from subprocess import PIPE
 
 from selenium.webdriver.common import service
 from selenium.webdriver.common import utils
-
-DEFAULT_EXECUTABLE_PATH = "/usr/bin/safaridriver"
 
 
 class Service(service.Service):
@@ -31,10 +30,10 @@ class Service(service.Service):
 
     def __init__(
         self,
-        executable_path: str = DEFAULT_EXECUTABLE_PATH,
-        port=0,
-        quiet=False,
-        service_args=None,
+        executable_path: str = "/usr/bin/safaridriver",
+        port: int = 0,
+        quiet: bool = False,
+        service_args: typing.Optional[typing.List[str]] = None,
     ):
         """
         Creates a new instance of the Service
@@ -52,23 +51,20 @@ class Service(service.Service):
                 message = "SafariDriver was not found; are you running Safari 10 or later? You can download Safari at https://developer.apple.com/safari/download/."
             raise Exception(message)
 
-        if port == 0:
-            port = utils.free_port()
-
+        port = port or utils.free_port()
         self.service_args = service_args or []
-
         self.quiet = quiet
         log = PIPE
         if quiet:
             log = open(os.devnull, "w", encoding="utf-8")
         super().__init__(executable_path, port, log)
 
-    def command_line_args(self):
-        return ["-p", "%s" % self.port] + self.service_args
+    def command_line_args(self) -> typing.List[str]:
+        return ["-p", f"{self.port}"] + self.service_args
 
     @property
-    def service_url(self):
+    def service_url(self) -> str:
         """
         Gets the url of the SafariDriver Service
         """
-        return "http://localhost:%d" % self.port
+        return f"http://localhost:{self.port}"
