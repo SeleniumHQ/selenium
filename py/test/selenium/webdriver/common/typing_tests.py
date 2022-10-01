@@ -243,7 +243,7 @@ def test_all_printable_keys(driver, pages):
 def test_arrow_keys_and_page_up_and_down(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
-    element.send_keys("a{}b{}{}{}{}{}1".format(Keys.LEFT, Keys.RIGHT, Keys.UP, Keys.DOWN, Keys.PAGE_UP, Keys.PAGE_DOWN))
+    element.send_keys(f"a{Keys.LEFT}b{Keys.RIGHT}{Keys.UP}{Keys.DOWN}{Keys.PAGE_UP}{Keys.PAGE_DOWN}1")
     assert element.get_attribute("value") == "ba1"
 
 
