@@ -27,7 +27,7 @@ from selenium.webdriver.firefox.options import Options
 
 @pytest.fixture
 def driver_kwargs(driver_kwargs):
-    driver_kwargs['options'] = Options()
+    driver_kwargs["options"] = Options()
     return driver_kwargs
 
 
