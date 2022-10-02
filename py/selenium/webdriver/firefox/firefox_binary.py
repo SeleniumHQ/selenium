@@ -204,7 +204,7 @@ class FirefoxBinary:
         self._firefox_env["LD_LIBRARY_PATH"] = new_ld_lib_path
         self._firefox_env["LD_PRELOAD"] = self.NO_FOCUS_LIBRARY_NAME
 
-    def _extract_and_check(self, profile, no_focus_so_name, x86, amd64):
+    def _extract_and_check(self, profile, x86, amd64):
 
         paths = [x86, amd64]
         built_path = ""
