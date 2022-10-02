@@ -473,7 +473,7 @@ public class RemoteWebDriver implements WebDriver,
     }
 
     // Escape the quote marks
-    script = script.replaceAll("\"", "\\\"");
+    script = script.replace("\"", "\\\"");
 
     List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
         Collectors.toList());
@@ -489,7 +489,7 @@ public class RemoteWebDriver implements WebDriver,
     }
 
     // Escape the quote marks
-    script = script.replaceAll("\"", "\\\"");
+    script = script.replace("\"", "\\\"");
 
     List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
         Collectors.toList());
