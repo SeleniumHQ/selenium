@@ -166,7 +166,7 @@ class Service(ABC):
         terminate.  Terminating does not raise itself if something has gone
         wrong but (currently) silently ignores errors here."""
         try:
-            stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stdout
+            stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stderr
             for stream in stdin, stdout, stderr:
                 with contextlib.suppress(AttributeError):
                     stream.close()
