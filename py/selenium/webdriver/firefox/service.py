@@ -27,9 +27,14 @@ class Service(service.Service):
     """Object that manages the starting and stopping of the
     GeckoDriver."""
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
-                 port: int = 0, service_args: List[str] = None,
-                 log_path: str = "geckodriver.log", env: dict = None):
+    def __init__(
+        self,
+        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        port: int = 0,
+        service_args: List[str] = None,
+        log_path: str = "geckodriver.log",
+        env: dict = None,
+    ):
         """Creates a new instance of the GeckoDriver remote service proxy.
 
         GeckoDriver provides a HTTP interface speaking the W3C WebDriver
@@ -47,13 +52,13 @@ class Service(service.Service):
             in the services' environment.
 
         """
-        log_file = open(log_path, "a+", encoding='utf-8') if log_path else None
+        log_file = open(log_path, "a+", encoding="utf-8") if log_path else None
 
         super().__init__(executable_path, port=port, log_file=log_file, env=env)
         self.service_args = service_args or []
 
         # Set a port for CDP
-        if '--connect-existing' not in self.service_args:
+        if "--connect-existing" not in self.service_args:
             self.service_args.append("--websocket-port")
             self.service_args.append("%d" % utils.free_port())
 

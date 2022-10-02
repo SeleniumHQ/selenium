@@ -20,11 +20,11 @@ from selenium.webdriver.common.options import ArgOptions
 
 
 class Options(ArgOptions):
-    KEY = 'wpe:browserOptions'
+    KEY = "wpe:browserOptions"
 
     def __init__(self) -> None:
         super().__init__()
-        self._binary_location = ''
+        self._binary_location = ""
         self._caps = DesiredCapabilities.WPEWEBKIT.copy()
 
     @property

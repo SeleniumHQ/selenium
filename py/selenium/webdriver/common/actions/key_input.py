@@ -40,7 +40,6 @@ class KeyInput(InputDevice):
 
 
 class TypingInteraction(Interaction):
-
     def __init__(self, source, type_, key) -> None:
         super().__init__(source)
         self.type = type_

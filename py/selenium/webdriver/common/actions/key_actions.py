@@ -21,7 +21,6 @@ from .key_input import KeyInput
 
 
 class KeyActions(Interaction):
-
     def __init__(self, source=None):
         if not source:
             source = KeyInput(KEY)

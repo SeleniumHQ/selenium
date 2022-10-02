@@ -29,10 +29,14 @@ class WebDriver(RemoteWebDriver):
     Controls the WPEWebKitDriver and allows you to drive the browser.
     """
 
-    def __init__(self, executable_path=DEFAULT_EXECUTABLE_PATH,
-                 port=0, options=None,
-                 desired_capabilities=DesiredCapabilities.WPEWEBKIT,
-                 service_log_path=None):
+    def __init__(
+        self,
+        executable_path=DEFAULT_EXECUTABLE_PATH,
+        port=0,
+        options=None,
+        desired_capabilities=DesiredCapabilities.WPEWEBKIT,
+        service_log_path=None,
+    ):
         """
         Creates a new instance of the WPEWebKit driver.
 
@@ -53,9 +57,7 @@ class WebDriver(RemoteWebDriver):
         self.service = Service(executable_path, port=port, log_path=service_log_path)
         self.service.start()
 
-        super().__init__(
-            command_executor=self.service.service_url,
-            desired_capabilities=desired_capabilities)
+        super().__init__(command_executor=self.service.service_url, desired_capabilities=desired_capabilities)
         self._is_remote = False
 
     def quit(self):

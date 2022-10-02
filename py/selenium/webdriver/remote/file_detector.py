@@ -50,7 +50,7 @@ class LocalFileDetector(FileDetector):
     """
 
     def is_local_file(self, *keys: AnyKey) -> Optional[str]:
-        file_path = ''.join(keys_to_typing(keys))
+        file_path = "".join(keys_to_typing(keys))
 
         if not file_path:
             return None
