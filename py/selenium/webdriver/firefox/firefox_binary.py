@@ -168,7 +168,7 @@ class FirefoxBinary:
                 start_cmd = os.path.expanduser("~") + start_cmd
         elif self.platform == "windows":  # same
             start_cmd = self._find_exe_in_registry() or self._default_windows_location()
-        elif self.platform == "java" and os._name == "nt":
+        elif self.platform == "java" and os.name == "nt":
             start_cmd = self._default_windows_location()
         else:
             for ffname in ["firefox", "iceweasel"]:
