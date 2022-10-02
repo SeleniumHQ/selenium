@@ -109,11 +109,9 @@ class EventFiringWebDriver:
     def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
-    def _dispatch(self,
-                  l_call: str,
-                  l_args: typing.Tuple[typing.Any, ...],
-                  d_call: str,
-                  d_args: typing.Tuple[typing.Any, ...]):
+    def _dispatch(
+        self, l_call: str, l_args: typing.Tuple[typing.Any, ...], d_call: str, d_args: typing.Tuple[typing.Any, ...]
+    ):
         getattr(self._listener, f"before_{l_call}")(*l_args)
         try:
             result = getattr(self._driver, d_call)(*d_args)
@@ -166,7 +164,7 @@ class EventFiringWebDriver:
 
 
 class EventFiringWebElement:
-    """"
+    """ "
     A wrapper around WebElement instance which supports firing events
     """
 

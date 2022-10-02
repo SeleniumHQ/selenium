@@ -41,7 +41,7 @@ class Options(ChromiumOptions):
         """
         caps = super().to_capabilities()
         if self._use_webview:
-            caps['browserName'] = 'webview2'
+            caps["browserName"] = "webview2"
 
         return caps
 

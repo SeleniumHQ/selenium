@@ -19,7 +19,6 @@ from .wheel_input import WheelInput
 
 
 class WheelActions(Interaction):
-
     def __init__(self, source: WheelInput = None):
         if not source:
             source = WheelInput("wheel")
