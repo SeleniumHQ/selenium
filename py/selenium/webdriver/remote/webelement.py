@@ -445,13 +445,13 @@ class WebElement(BaseWebElement):
         """
         if by == By.ID:
             by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
+            value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
-            value = ".%s" % value
+            value = f".{value}"
         elif by == By.NAME:
             by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+            value = f'[name="{value}"]'
 
         return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value})["value"]
 
@@ -471,9 +471,8 @@ class WebElement(BaseWebElement):
         except WebDriverException as e:
             if "Unrecognized command: POST" in str(e):
                 return filename
-            elif "Command not found: POST " in str(e):
+            if "Command not found: POST " in str(e):
                 return filename
-            elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in str(e):
+            if '{"status":405,"value":["GET","HEAD","DELETE"]}' in str(e):
                 return filename
-            else:
-                raise
+            raise
