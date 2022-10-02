@@ -51,7 +51,7 @@ class Service:
         """
         Gets the url of the Service
         """
-        return "http://%s" % utils.join_host_port('localhost', self.port)
+        return f"http://{utils.join_host_port('localhost', self.port)}"
 
     def command_line_args(self):
         raise NotImplementedError("This method needs to be implemented in a sub class")
