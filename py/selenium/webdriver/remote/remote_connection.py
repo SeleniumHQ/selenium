@@ -20,7 +20,6 @@ import os
 import platform
 import socket
 import string
-import typing
 from base64 import b64encode
 from urllib import parse
 
@@ -156,7 +155,7 @@ class RemoteConnection:
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr, keep_alive=False, ignore_proxy: typing.Optional[bool] = False):
+    def __init__(self, remote_server_addr: str, keep_alive: bool = False, ignore_proxy: bool = False):
         self.keep_alive = keep_alive
         self._url = remote_server_addr
 
