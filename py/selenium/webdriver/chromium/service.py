@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import typing
 from typing import List
 
 from selenium.webdriver.common import service
@@ -29,10 +29,10 @@ class ChromiumService(service.Service):
         self,
         executable_path: str,
         port: int = 0,
-        service_args: List[str] = None,
-        log_path: str = None,
-        env: dict = None,
-        start_error_message: str = None,
+        service_args: typing.Optional[List[str]] = None,
+        log_path: typing.Optional[typing.Any[str, int]] = None,
+        env: typing.Optional[typing.Dict[typing.Any, typing.Any]] = None,
+        start_error_message: str = "",
     ):
         """
         Creates a new instance of the Service
