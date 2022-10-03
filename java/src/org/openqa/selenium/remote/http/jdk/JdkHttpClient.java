@@ -34,6 +34,7 @@ import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -124,6 +125,7 @@ public class JdkHttpClient implements HttpClient {
         uri,
         new java.net.http.WebSocket.Listener() {
           final StringBuilder builder = new StringBuilder();
+          final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
           @Override
           public CompletionStage<?> onText(java.net.http.WebSocket webSocket, CharSequence data, boolean last) {
@@ -140,10 +142,18 @@ public class JdkHttpClient implements HttpClient {
 
           @Override
           public CompletionStage<?> onBinary(java.net.http.WebSocket webSocket, ByteBuffer data, boolean last) {
-            byte[] ary = new byte[data.remaining()];
-            data.get(ary, 0, ary.length);
+            byte[] ary = new byte[8192];
 
-            listener.onBinary(ary);
+            while (data.hasRemaining()) {
+              int n = Math.min(ary.length, data.remaining());
+              data.get(ary, 0, n);
+              buffer.write(ary, 0, n);
+            }
+
+            if (last) {
+              listener.onBinary(buffer.toByteArray());
+              buffer.reset();
+            }
             webSocket.request(1);
             return null;
           }
