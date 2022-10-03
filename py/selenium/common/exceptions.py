@@ -193,10 +193,6 @@ class UnableToSetCookieException(WebDriverException):
     """
 
 
-class RemoteDriverServerException(WebDriverException):
-    """Todo: Remove this class? it looks unused."""
-
-
 class TimeoutException(WebDriverException):
     """
     Thrown when a command does not complete in enough time.
