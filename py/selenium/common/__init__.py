@@ -38,7 +38,6 @@ from .exceptions import NoSuchElementException
 from .exceptions import NoSuchFrameException
 from .exceptions import NoSuchShadowRootException
 from .exceptions import NoSuchWindowException
-from .exceptions import RemoteDriverServerException
 from .exceptions import ScreenshotException
 from .exceptions import SessionNotCreatedException
 from .exceptions import StaleElementReferenceException
@@ -66,7 +65,6 @@ __all__ = [
     "ElementNotSelectableException",
     "InvalidCookieDomainException",
     "UnableToSetCookieException",
-    "RemoteDriverServerException",
     "TimeoutException",
     "MoveTargetOutOfBoundsException",
     "UnexpectedTagNameException",
