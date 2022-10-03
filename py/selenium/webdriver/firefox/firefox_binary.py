@@ -197,7 +197,7 @@ class FirefoxBinary:
     def _modify_link_library_path(self):
         existing_ld_lib_path = os.environ.get("LD_LIBRARY_PATH", "")
 
-        new_ld_lib_path = self._extract_and_check(self.profile, self.NO_FOCUS_LIBRARY_NAME, "x86", "amd64")
+        new_ld_lib_path = self._extract_and_check(self.profile, "x86", "amd64")
 
         new_ld_lib_path += existing_ld_lib_path
 
