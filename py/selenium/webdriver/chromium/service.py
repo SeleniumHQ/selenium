@@ -26,7 +26,7 @@ class ChromiumService(service.Service):
     :param executable_path: install path of the executable.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-    :param log_path: (Optional) String to be passed to the executable as `--log-path`
+    :param log_path: (Optional) String to be passed to the executable as `--log-path`.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     :param start_error_message: (Optional) Error message that forms part of the error when problems occur
     launching the subprocess.
