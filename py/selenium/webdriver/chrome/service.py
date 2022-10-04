@@ -27,8 +27,8 @@ class Service(service.ChromiumService):
 
     :param executable_path: install path of the chromedriver executable, defaults to `chromedriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) Sequence of args/flags to be passed to the `chromedriver` subprocess.
-    :param log_path: (Optional) String to be passed to the executable as `--log-path`
+    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+    :param log_path: (Optional) String to be passed to the executable as `--log-path`.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
