@@ -34,15 +34,6 @@ lint_setup({
 })
 
 http_archive(
-    name = "platforms",
-    sha256 = "079945598e4b6cc075846f7fd6a9d0857c33a7afc0de868c2ccb96405225135d",
-    urls = [
-        "https://github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
-    ],
-)
-
-http_archive(
     name = "bazel_skylib",
     sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
     urls = [
@@ -164,6 +155,34 @@ load("//dotnet:workspace.bzl", "selenium_register_dotnet")
 selenium_register_dotnet()
 
 http_archive(
+    name = "rules_rust",
+    sha256 = "0cc7e6b39e492710b819e00d48f2210ae626b717a3ab96e048c43ab57e61d204",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_rust/releases/download/0.10.0/rules_rust-v0.10.0.tar.gz",
+        "https://github.com/bazelbuild/rules_rust/releases/download/0.10.0/rules_rust-v0.10.0.tar.gz",
+    ],
+)
+
+load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
+
+rules_rust_dependencies()
+
+rust_register_toolchains()
+
+load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
+
+crates_repository(
+    name = "crates",
+    cargo_lockfile = "//rust:Cargo.lock",
+    lockfile = "//rust:Cargo.Bazel.lock",
+    manifests = ["//rust:Cargo.toml"],
+)
+
+load("@crates//:defs.bzl", "crate_repositories")
+
+crate_repositories()
+
+http_archive(
     name = "build_bazel_rules_nodejs",
     sha256 = "b011d6206e4e76696eda8287618a2b6375ff862317847cdbe38f8d0cd206e9ce",
     urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.6.0/rules_nodejs-5.6.0.tar.gz"],
@@ -183,7 +202,7 @@ npm_install(
     name = "npm",
     package_json = "//:package.json",
     package_lock_json = "//:package-lock.json",
-    symlink_node_modules= False
+    symlink_node_modules = False,
 )
 
 http_archive(
