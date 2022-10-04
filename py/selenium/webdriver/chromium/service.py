@@ -15,42 +15,46 @@
 # specific language governing permissions and limitations
 # under the License.
 import typing
-from typing import List
 
 from selenium.webdriver.common import service
 
 
 class ChromiumService(service.Service):
-    """
-    Object that manages the starting and stopping the WebDriver instance of the ChromiumDriver
+    """A Service class that is responsible for the starting and stopping
+    the WebDriver instance of the ChromiumDriver.
+
+    :param executable_path: install path of the executable.
+    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
+    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+    :param log_path: (Optional) String to be passed to the executable as `--log-path`
+    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    :param start_error_message: (Optional) Error message that forms part of the error when problems occur
+    launching the subprocess.
     """
 
     def __init__(
         self,
         executable_path: str,
         port: int = 0,
-        service_args: typing.Optional[List[str]] = None,
+        service_args: typing.Optional[typing.Sequence[str]] = None,
         log_path: typing.Optional[str] = None,
-        env: typing.Optional[typing.Dict[typing.Any, typing.Any]] = None,
-        start_error_message: str = "",
+        env: typing.Optional[typing.Mapping[str, str]] = None,
+        start_error_message: typing.Optional[str] = None,
     ):
-        """
-        Creates a new instance of the Service
-
-        :Args:
-         - executable_path : Path to the WebDriver executable
-         - port : Port the service is running on
-         - service_args : List of args to pass to the WebDriver service
-         - log_path : Path for the WebDriver service to log to"""
-
         self.service_args = service_args or []
         if log_path:
-            self.service_args.append("--log-path=%s" % log_path)
+            self.service_args.append(f"--log-path={log_path}")
 
         if not start_error_message:
-            raise AttributeError("start_error_message should not be empty")
+            # Todo: Make this a required arg in future.
+            raise TypeError("`start_error_message` must be provided.")
 
-        super().__init__(executable_path, port=port, env=env, start_error_message=start_error_message)
+        super().__init__(
+            executable=executable_path,
+            port=port,
+            env=env,
+            start_error_message=start_error_message,
+        )
 
-    def command_line_args(self) -> List[str]:
+    def command_line_args(self) -> typing.List[str]:
         return ["--port=%d" % self.port] + self.service_args
