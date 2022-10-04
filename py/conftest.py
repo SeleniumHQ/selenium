@@ -241,3 +241,9 @@ def webserver():
     webserver.start()
     yield webserver
     webserver.stop()
+
+
+@pytest.fixture
+def edge_service():
+    from selenium.webdriver.edge.service import Service as EdgeService
+    return EdgeService
