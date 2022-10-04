@@ -30,7 +30,7 @@ class ChromiumService(service.Service):
         executable_path: str,
         port: int = 0,
         service_args: typing.Optional[List[str]] = None,
-        log_path: typing.Optional[typing.Union[str, int]] = None,
+        log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Dict[typing.Any, typing.Any]] = None,
         start_error_message: str = "",
     ):
