@@ -23,7 +23,6 @@ java_export(
     ]),
     hides = [
         "org.openqa.selenium.interactions.internal",
-        "org.openqa.selenium.internal",
     ],
     maven_coordinates = "org.seleniumhq.selenium:selenium-api:%s" % SE_VERSION,
     opens_to = [
