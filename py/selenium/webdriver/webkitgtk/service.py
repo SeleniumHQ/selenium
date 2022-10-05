@@ -38,7 +38,7 @@ class Service(service.Service):
         super().__init__(executable_path, port, log_file)
 
     def command_line_args(self):
-        return ["-p", "%d" % self.port]
+        return ["-p", f"{self.port}"]
 
     def send_remote_shutdown_command(self):
         pass

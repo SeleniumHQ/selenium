@@ -60,11 +60,11 @@ class Service(service.Service):
         # Set a port for CDP
         if "--connect-existing" not in self.service_args:
             self.service_args.append("--websocket-port")
-            self.service_args.append("%d" % utils.free_port())
+            self.service_args.append(f"{utils.free_port()}")
 
         # Set the webdriver port
         self.service_args.append("--port")
-        self.service_args.append("%d" % self.port)
+        self.service_args.append(f"{self.port}")
 
     def command_line_args(self) -> List[str]:
         return self.service_args

@@ -57,4 +57,4 @@ class ChromiumService(service.Service):
         )
 
     def command_line_args(self) -> typing.List[str]:
-        return ["--port=%d" % self.port] + self.service_args
+        return [f"--port={self.port}"] + self.service_args
