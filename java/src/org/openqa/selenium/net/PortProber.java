@@ -94,14 +94,27 @@ public class PortProber {
     }
   }
 
-  private static int checkPortIsFree(int port) {
+  static int checkPortIsFree(int port) {
     try (ServerSocket socket = new ServerSocket()) {
       socket.setReuseAddress(true);
       socket.bind(new InetSocketAddress("localhost", port));
-      return socket.getLocalPort();
     } catch (IOException e) {
       return -1;
     }
+    try (ServerSocket socket = new ServerSocket()) {
+      socket.setReuseAddress(true);
+      socket.bind(new InetSocketAddress("0.0.0.0", port));
+    } catch (IOException e) {
+      return -1;
+    }
+    try (ServerSocket socket = new ServerSocket()) {
+      socket.setReuseAddress(true);
+      socket.bind(new InetSocketAddress("::1", port));
+    } catch (IOException e) {
+      return -1;
+    }
+
+    return port;
   }
 
   public static void waitForPortUp(int port, int timeout, TimeUnit unit) {
