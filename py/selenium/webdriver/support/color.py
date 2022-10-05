@@ -88,26 +88,25 @@ class Color:
 
         if m.match(RGB_PATTERN, str_):
             return cls(*m.groups)
-        elif m.match(RGB_PCT_PATTERN, str_):
+        if m.match(RGB_PCT_PATTERN, str_):
             rgb = tuple(float(each) / 100 * 255 for each in m.groups)
             return cls(*rgb)
-        elif m.match(RGBA_PATTERN, str_):
+        if m.match(RGBA_PATTERN, str_):
             return cls(*m.groups)
-        elif m.match(RGBA_PCT_PATTERN, str_):
+        if m.match(RGBA_PCT_PATTERN, str_):
             rgba = tuple([float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])  # type: ignore
             return cls(*rgba)
-        elif m.match(HEX_PATTERN, str_):
+        if m.match(HEX_PATTERN, str_):
             rgb = tuple(int(each, 16) for each in m.groups)
             return cls(*rgb)
-        elif m.match(HEX3_PATTERN, str_):
+        if m.match(HEX3_PATTERN, str_):
             rgb = tuple(int(each * 2, 16) for each in m.groups)
             return cls(*rgb)
-        elif m.match(HSL_PATTERN, str_) or m.match(HSLA_PATTERN, str_):
+        if m.match(HSL_PATTERN, str_) or m.match(HSLA_PATTERN, str_):
             return cls._from_hsl(*m.groups)
-        elif str_.upper() in Colors:
+        if str_.upper() in Colors:
             return Colors[str_.upper()]
-        else:
-            raise ValueError("Could not convert %s into color" % str_)
+        raise ValueError("Could not convert %s into color" % str_)
 
     @classmethod
     def _from_hsl(cls, h: ParseableFloat, s: ParseableFloat, light: ParseableFloat, a: ParseableFloat = 1) -> Color:
@@ -131,12 +130,11 @@ class Color:
 
                 if hue < 1.0 / 6.0:
                     return lum1 + (lum2 - lum1) * 6.0 * hue
-                elif hue < 1.0 / 2.0:
+                if hue < 1.0 / 2.0:
                     return lum2
-                elif hue < 2.0 / 3.0:
+                if hue < 2.0 / 3.0:
                     return lum1 + (lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0
-                else:
-                    return lum1
+                return lum1
 
             r = hue_to_rgb(luminocity1, luminocity2, h + 1.0 / 3.0)
             g = hue_to_rgb(luminocity1, luminocity2, h)

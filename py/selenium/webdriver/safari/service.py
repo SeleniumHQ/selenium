@@ -28,7 +28,7 @@ class Service(service.Service):
     """A Service class that is responsible for the starting and stopping
     of `safaridriver`  This is only supported on MAC OSX.
 
-    :param executable_path: install path of the chromedriver executable, defaults to `/usr/bin/safaridriver`.
+    :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param quiet: Suppress driver stdout & stderr, redirects to os.devnull if enabled.
     :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.

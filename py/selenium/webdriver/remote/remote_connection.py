@@ -148,7 +148,7 @@ class RemoteConnection:
                 from urllib3.contrib.socks import SOCKSProxyManager
 
                 return SOCKSProxyManager(self._proxy_url, **pool_manager_init_args)
-            elif self._identify_http_proxy_auth():
+            if self._identify_http_proxy_auth():
                 self._proxy_url, self._basic_proxy_auth = self._separate_http_proxy_auth()
                 pool_manager_init_args["proxy_headers"] = urllib3.make_headers(proxy_basic_auth=self._basic_proxy_auth)
             return urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
