@@ -94,27 +94,21 @@ public class PortProber {
     }
   }
 
-  static int checkPortIsFree(int port) {
+  private static boolean isFree(String bindHost, int port) {
     try (ServerSocket socket = new ServerSocket()) {
       socket.setReuseAddress(true);
-      socket.bind(new InetSocketAddress("localhost", port));
-    } catch (IOException e) {
-      return -1;
+      socket.bind(new InetSocketAddress(bindHost, port));
+      return true;
+    } catch (Exception e) {
+      return false;
     }
-    try (ServerSocket socket = new ServerSocket()) {
-      socket.setReuseAddress(true);
-      socket.bind(new InetSocketAddress("0.0.0.0", port));
-    } catch (IOException e) {
-      return -1;
-    }
-    try (ServerSocket socket = new ServerSocket()) {
-      socket.setReuseAddress(true);
-      socket.bind(new InetSocketAddress("::1", port));
-    } catch (IOException e) {
-      return -1;
-    }
+  }
 
-    return port;
+  static int checkPortIsFree(int port) {
+    if (isFree("localhost", port) && isFree("0.0.0.0", port) && isFree("::1", port)) {
+      return port;
+    }
+    return -1;
   }
 
   public static void waitForPortUp(int port, int timeout, TimeUnit unit) {
