@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
 from selenium.webdriver.common import service
 
@@ -37,5 +38,5 @@ class Service(service.Service):
         log_file = open(log_path, "wb") if log_path else None
         super().__init__(executable_path, port, log_file)
 
-    def command_line_args(self):
+    def command_line_args(self) -> typing.List[str]:
         return ["-p", f"{self.port}"]
