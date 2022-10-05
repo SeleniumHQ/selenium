@@ -39,6 +39,3 @@ class Service(service.Service):
 
     def command_line_args(self):
         return ["-p", f"{self.port}"]
-
-    def send_remote_shutdown_command(self):
-        pass
