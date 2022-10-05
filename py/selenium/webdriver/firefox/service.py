@@ -47,7 +47,7 @@ class Service(service.Service):
         file = log_path or "geckodriver.log"
         log_file = open(file, "a+", encoding="utf-8")
         self.service_args = service_args or []
-        super().__init__(executable_path, port=port, log_file=log_file, env=env)
+        super().__init__(executable=executable_path, port=port, log_file=log_file, env=env)
 
         # Set a port for CDP
         if "--connect-existing" not in self.service_args:

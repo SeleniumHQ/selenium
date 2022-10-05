@@ -30,6 +30,7 @@ from urllib import request
 from urllib.error import URLError
 
 from selenium.common.exceptions import WebDriverException
+from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
 
 log = logging.getLogger(__name__)
@@ -39,13 +40,23 @@ _HAS_NATIVE_DEVNULL = True
 
 
 class Service(ABC):
+    """The abstract base class for all service objects.  Services typically launch a child program
+    in a new process as an interim process to communicate with a browser.
+
+    :param executable: install path of the executable.
+    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
+    :param log_file: (Optional) file descriptor (pos int) or file object with a valid file descriptor.
+        subprocess.PIPE & subprocess.DEVNULL are also valid values.
+    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    """
+
     def __init__(
         self,
         executable: str,
+        start_error_message: str,
         port: int = 0,
-        log_file=DEVNULL,
-        env: typing.Optional[typing.Dict[typing.Any, typing.Any]] = None,
-        start_error_message: str = "",
+        log_file: SubprocessStdAlias = DEVNULL,
+        env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
     ) -> None:
         self.path = executable
         self.port = port or utils.free_port()
@@ -65,6 +76,7 @@ class Service(ABC):
 
     @abstractmethod
     def command_line_args(self) -> typing.List[str]:
+        """A List of program arguments (excluding the executable)."""
         raise NotImplementedError("This method needs to be implemented in a sub class")
 
     def start(self) -> None:
