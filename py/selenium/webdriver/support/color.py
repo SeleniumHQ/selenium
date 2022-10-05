@@ -154,7 +154,7 @@ class Color:
 
     @property
     def rgba(self) -> str:
-        return f"rgb({self.red}, {self.green}, {self.blue}, {self.alpha})"
+        return f"rgba({self.red}, {self.green}, {self.blue}, {self.alpha})"
 
     @property
     def hex(self) -> str:

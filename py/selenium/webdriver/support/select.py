@@ -34,9 +34,7 @@ class Select:
             Select(driver.find_element(By.TAG_NAME, "select")).select_by_index(2)
         """
         if webelement.tag_name.lower() != "select":
-            raise UnexpectedTagNameException(
-                f"Select only works on <select> elements, not on <{webelement.tag_name}>"
-            )
+            raise UnexpectedTagNameException(f"Select only works on <select> elements, not on <{webelement.tag_name}>")
         if not webelement.is_enabled():
             raise NotImplementedError("Select element is disabled and may not be used.")
         self._el = webelement

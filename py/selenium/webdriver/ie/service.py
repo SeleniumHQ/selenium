@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import typing
 from typing import List
 
 from selenium.webdriver.common import service
@@ -31,9 +31,9 @@ class Service(service.Service):
         self,
         executable_path: str = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
-        host: str = None,
-        log_level: str = None,
-        log_file: str = None,
+        host: typing.Optional[str] = None,
+        log_level: typing.Optional[str] = None,
+        log_file: typing.Optional[str] = None,
     ):
         """
         Creates a new instance of the Service
