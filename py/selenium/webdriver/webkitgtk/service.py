@@ -28,7 +28,7 @@ class Service(service.Service):
     :param executable_path: install path of the WebKitWebDriver executable, defaults to `WebKitWebDriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
-    :param log_path: (Optional) String to be passed to the executable as `--log-path`.
+    :param log_path: (Optional) File path for the file to be opened and passed as the subprocess stdout/stderr handler.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
