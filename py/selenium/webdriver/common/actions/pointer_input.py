@@ -18,8 +18,10 @@ import typing
 
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.webdriver.remote.webelement import WebElement
+
 from .input_device import InputDevice
-from .interaction import POINTER, POINTER_KINDS
+from .interaction import POINTER
+from .interaction import POINTER_KINDS
 
 
 class PointerInput(InputDevice):
@@ -34,13 +36,7 @@ class PointerInput(InputDevice):
         self.name = name
 
     def create_pointer_move(self, duration=DEFAULT_MOVE_DURATION, x=0, y=0, origin=None, **kwargs):
-        action = {
-            "type": "pointerMove",
-            "duration": duration,
-            "x": x,
-            "y": y,
-            **kwargs
-        }
+        action = {"type": "pointerMove", "duration": duration, "x": x, "y": y, **kwargs}
         if isinstance(origin, WebElement):
             action["origin"] = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
         elif origin is not None:
@@ -48,11 +44,7 @@ class PointerInput(InputDevice):
         self.add_action(self._convert_keys(action))
 
     def create_pointer_down(self, **kwargs):
-        data = {
-            "type": "pointerDown",
-            "duration": 0,
-            **kwargs
-        }
+        data = {"type": "pointerDown", "duration": 0, **kwargs}
         self.add_action(self._convert_keys(data))
 
     def create_pointer_up(self, button):
@@ -65,10 +57,7 @@ class PointerInput(InputDevice):
         self.add_action({"type": "pause", "duration": int(pause_duration * 1000)})
 
     def encode(self):
-        return {"type": self.type,
-                "parameters": {"pointerType": self.kind},
-                "id": self.name,
-                "actions": self.actions}
+        return {"type": self.type, "parameters": {"pointerType": self.kind}, "id": self.name, "actions": self.actions}
 
     def _convert_keys(self, actions: typing.Dict[str, typing.Any]):
         out = {}
@@ -78,7 +67,7 @@ class PointerInput(InputDevice):
             if k in ("x", "y"):
                 out[k] = int(v)
                 continue
-            splits = k.split('_')
-            new_key = splits[0] + ''.join(v.title() for v in splits[1:])
+            splits = k.split("_")
+            new_key = splits[0] + "".join(v.title() for v in splits[1:])
             out[new_key] = v
         return out

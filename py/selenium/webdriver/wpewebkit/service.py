@@ -17,7 +17,6 @@
 
 from selenium.webdriver.common import service
 
-
 DEFAULT_EXECUTABLE_PATH = "WPEWebDriver"
 
 
@@ -26,8 +25,7 @@ class Service(service.Service):
     Object that manages the starting and stopping of the WPEWebKitDriver
     """
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
-                 port=0, log_path=None):
+    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH, port=0, log_path=None):
         """
         Creates a new instance of the Service
 
@@ -40,7 +38,7 @@ class Service(service.Service):
         super().__init__(executable_path, port, log_file)
 
     def command_line_args(self):
-        return ["-p", "%d" % self.port]
+        return ["-p", f"{self.port}"]
 
     def send_remote_shutdown_command(self):
         pass

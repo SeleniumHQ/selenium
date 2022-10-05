@@ -85,7 +85,7 @@ module Selenium
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
             port: PortProber.above(4444),
-            log: $DEBUG,
+            log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60
           )
@@ -139,9 +139,9 @@ module Selenium
 
           method = "create_#{driver}_driver".to_sym
           instance = if private_methods.include?(method)
-                       send method, opts
+                       send method, **opts
                      else
-                       WebDriver::Driver.for(driver, opts)
+                       WebDriver::Driver.for(driver, **opts)
                      end
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
@@ -185,48 +185,72 @@ module Selenium
           raise DriverInstantiationError, msg, @create_driver_error.backtrace
         end
 
-        def create_remote_driver(opt = {})
-          options = opt.delete(:capabilities)
-          opt[:capabilities] = [WebDriver::Remote::Capabilities.send(browser)]
-          opt[:capabilities] << options if options
-          opt[:url] = ENV.fetch('WD_REMOTE_URL', remote_server.webdriver_url)
-          opt[:http_client] ||= WebDriver::Remote::Http::Default.new
+        def create_remote_driver(**opts)
+          url = ENV.fetch('WD_REMOTE_URL', remote_server.webdriver_url)
+          options = opts.delete(:options) { WebDriver::Options.send(browser) }
+          method = "create_#{browser}_options".to_sym
+          options = send method, options if private_methods.include?(method)
 
-          WebDriver::Driver.for(:remote, opt)
+          WebDriver::Driver.for(:remote, url: url, options: options, **opts)
         end
 
-        def create_firefox_driver(opt = {})
-          WebDriver::Firefox.path = ENV.fetch('FIREFOX_BINARY', nil) if ENV.key?('FIREFOX_BINARY')
-          WebDriver::Driver.for :firefox, opt
+        def create_firefox_driver(**opts)
+          options = create_firefox_options(opts.delete(:options))
+          WebDriver::Driver.for(:firefox, options: options, **opts)
         end
 
-        def create_firefox_nightly_driver(opt = {})
-          ENV['FIREFOX_BINARY'] = ENV.fetch('FIREFOX_NIGHTLY_BINARY', nil)
-          opt[:capabilities] = [
-            WebDriver::Firefox::Options.new(debugger_address: true),
-            WebDriver::Remote::Capabilities.firefox(web_socket_url: true)
-          ]
-          create_firefox_driver(opt)
+        def create_firefox_nightly_driver(**opts)
+          options = create_firefox_options(opts.delete(:options))
+          options.binary = ENV['FIREFOX_NIGHTLY_BINARY'] if ENV.key?('FIREFOX_NIGHTLY_BINARY')
+          WebDriver::Driver.for(:firefox, options: options, **opts)
         end
 
-        def create_ie_driver(opt = {})
-          opt[:capabilities] = WebDriver::IE::Options.new(require_window_focus: true)
-          WebDriver::Driver.for :ie, opt
+        def create_firefox_options(options)
+          options ||= WebDriver::Options.firefox
+          options.web_socket_url = true
+          options.add_argument('--headless') if ENV['HEADLESS']
+          options.binary ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
+          options
         end
 
-        def create_chrome_driver(opt = {})
-          WebDriver::Chrome.path = ENV.fetch('CHROME_BINARY', nil) if ENV.key?('CHROME_BINARY')
-          WebDriver::Driver.for :chrome, opt
+        def create_ie_driver(**opts)
+          options = opts.delete(:options) { WebDriver::Options.ie }
+          options.require_window_focus = true
+          WebDriver::Driver.for(:ie, options: options, **opts)
         end
 
-        def create_safari_preview_driver(opt = {})
+        def create_chrome_beta_driver(**opts)
+          options = create_chrome_options(opts.delete(:options))
+          options.web_socket_url = true
+          service_opts = {args: ['--disable-build-check']}
+          service_opts[:path] = ENV['CHROMEDRIVER_BINARY'] if ENV.key?('CHROMEDRIVER_BINARY')
+          service = WebDriver::Service.chrome(**service_opts)
+          WebDriver::Driver.for(:chrome, options: options, service: service, **opts)
+        end
+
+        def create_chrome_driver(**opts)
+          options = create_chrome_options(opts.delete(:options))
+          WebDriver::Driver.for(:chrome, options: options, **opts)
+        end
+
+        def create_chrome_options(options)
+          options ||= WebDriver::Options.chrome
+          options.headless! if ENV['HEADLESS']
+          options.binary ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
+          options
+        end
+
+        def create_safari_preview_driver(**opts)
           WebDriver::Safari.technology_preview!
-          WebDriver::Driver.for :safari, opt
+          options = opts.delete(:options) { WebDriver::Options.safari }
+          WebDriver::Driver.for(:safari, options: options, **opts)
         end
 
-        def create_edge_driver(opt = {})
-          WebDriver::Edge.path = ENV.fetch('EDGE_BINARY', nil) if ENV.key?('EDGE_BINARY')
-          WebDriver::Driver.for :edge, opt
+        def create_edge_driver(**opts)
+          options = opts.delete(:options) { WebDriver::Options.edge }
+          options.headless! if ENV['HEADLESS']
+          options.binary = ENV.fetch('EDGE_BINARY', nil) if ENV.key?('EDGE_BINARY')
+          WebDriver::Driver.for(:edge, options: options, **opts)
         end
 
         def extract_browser_from_bazel_target_name

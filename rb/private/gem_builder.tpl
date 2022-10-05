@@ -11,6 +11,7 @@ def copy_srcs(from:, to:)
   Dir.chdir(from) do
     Dir.glob('**/*').each do |src|
       dst = File.join(to, src)
+      raise 'unable to find ' + src unless File.exist?(src)
       if File.directory?(src)
         FileUtils.mkdir_p(dst)
       else

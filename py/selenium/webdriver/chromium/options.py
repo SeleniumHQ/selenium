@@ -18,7 +18,9 @@
 import base64
 import os
 import warnings
-from typing import List, Union, BinaryIO
+from typing import BinaryIO
+from typing import List
+from typing import Union
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.common.options import ArgOptions
@@ -29,7 +31,7 @@ class ChromiumOptions(ArgOptions):
 
     def __init__(self) -> None:
         super().__init__()
-        self._binary_location = ''
+        self._binary_location = ""
         self._extension_files = []
         self._extensions = []
         self._experimental_options = {}
@@ -74,6 +76,7 @@ class ChromiumOptions(ArgOptions):
         """
         :Returns: A list of encoded extensions that will be loaded
         """
+
         def _decode(file_data: BinaryIO) -> str:
             # Should not use base64.encodestring() which inserts newlines every
             # 76 characters (per RFC 1521).  Chromedriver has to remove those
@@ -141,7 +144,7 @@ class ChromiumOptions(ArgOptions):
         """
         :Returns: True if the headless argument is set, else False
         """
-        return '--headless' in self._arguments
+        return "--headless" in self._arguments
 
     @headless.setter
     def headless(self, value: bool) -> None:
@@ -150,7 +153,7 @@ class ChromiumOptions(ArgOptions):
         :Args:
           value: boolean value indicating to set the headless option
         """
-        args = {'--headless'}
+        args = {"--headless"}
         if value is True:
             self._arguments.extend(args)
         else:
@@ -163,17 +166,17 @@ class ChromiumOptions(ArgOptions):
         """
         caps = self._caps
         chrome_options = self.experimental_options.copy()
-        if 'w3c' in chrome_options:
-            if chrome_options['w3c']:
+        if "w3c" in chrome_options:
+            if chrome_options["w3c"]:
                 warnings.warn(
-                    "Setting 'w3c: True' is redundant and will no longer be allowed",
-                    DeprecationWarning,
-                    stacklevel=2
+                    "Setting 'w3c: True' is redundant and will no longer be allowed", DeprecationWarning, stacklevel=2
                 )
             else:
-                raise AttributeError('setting w3c to False is not allowed, '
-                                     'Please update to W3C Syntax: '
-                                     'https://www.selenium.dev/blog/2022/legacy-protocol-support/')
+                raise AttributeError(
+                    "setting w3c to False is not allowed, "
+                    "Please update to W3C Syntax: "
+                    "https://www.selenium.dev/blog/2022/legacy-protocol-support/"
+                )
         if self.mobile_options:
             chrome_options.update(self.mobile_options)
         chrome_options["extensions"] = self.extensions

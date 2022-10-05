@@ -20,6 +20,7 @@ from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
+
 from .abstract_event_listener import AbstractEventListener
 
 
@@ -27,13 +28,11 @@ def _wrap_elements(result, ef_driver):
     # handle the case if another wrapper wraps EventFiringWebElement
     if isinstance(result, EventFiringWebElement):
         return result
-    elif isinstance(result, WebElement):
+    if isinstance(result, WebElement):
         return EventFiringWebElement(result, ef_driver)
-    elif isinstance(result, list):
+    if isinstance(result, list):
         return [_wrap_elements(item, ef_driver) for item in result]
-    # result is a built in type.
-    else:
-        return result
+    return result
 
 
 class EventFiringWebDriver:
@@ -108,11 +107,9 @@ class EventFiringWebDriver:
     def find_elements(self, by=By.ID, value=None) -> typing.List[WebElement]:
         return self._dispatch("find", (by, value, self._driver), "find_elements", (by, value))
 
-    def _dispatch(self,
-                  l_call: str,
-                  l_args: typing.Tuple[typing.Any, ...],
-                  d_call: str,
-                  d_args: typing.Tuple[typing.Any, ...]):
+    def _dispatch(
+        self, l_call: str, l_args: typing.Tuple[typing.Any, ...], d_call: str, d_args: typing.Tuple[typing.Any, ...]
+    ):
         getattr(self._listener, f"before_{l_call}")(*l_args)
         try:
             result = getattr(self._driver, d_call)(*d_args)
@@ -125,12 +122,11 @@ class EventFiringWebDriver:
     def _unwrap_element_args(self, args):
         if isinstance(args, EventFiringWebElement):
             return args.wrapped_element
-        elif isinstance(args, tuple):
+        if isinstance(args, tuple):
             return tuple(self._unwrap_element_args(item) for item in args)
-        elif isinstance(args, list):
+        if isinstance(args, list):
             return [self._unwrap_element_args(item) for item in args]
-        else:
-            return args
+        return args
 
     def _wrap_value(self, value):
         if isinstance(value, EventFiringWebElement):
@@ -165,7 +161,7 @@ class EventFiringWebDriver:
 
 
 class EventFiringWebElement:
-    """"
+    """ "
     A wrapper around WebElement instance which supports firing events
     """
 

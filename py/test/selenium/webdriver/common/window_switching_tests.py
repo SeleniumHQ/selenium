@@ -30,6 +30,7 @@ def close_windows(driver):
     main_windows_handle = driver.current_window_handle
     yield
     from urllib import request as url_request
+
     URLError = url_request.URLError
 
     try:

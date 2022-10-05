@@ -15,20 +15,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from base64 import b64decode
+from base64 import urlsafe_b64decode
+from base64 import urlsafe_b64encode
 from typing import List
+
 import pytest
-from base64 import b64decode, urlsafe_b64decode, urlsafe_b64encode
 
 from selenium.common.exceptions import InvalidArgumentException
+from selenium.webdriver.common.virtual_authenticator import Credential
+from selenium.webdriver.common.virtual_authenticator import VirtualAuthenticatorOptions
 from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.common.virtual_authenticator import (
-    Credential,
-    VirtualAuthenticatorOptions,
-)
-
 
 # working Key
-BASE64__ENCODED_PK = '''
+BASE64__ENCODED_PK = """
 MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr
 MsinWohEce47BFPJlTaDzHSvOW2eeunBO89ZcvvVc8RLz4qyQ8rO98xS1jtgqi1NcBPETDrtzthODu/gd0sjB2Tk3TLuBGV
 oPXt54a+Oo4JbBJ6h3s0+5eAfGplCbSNq6hN3Jh9YOTw5ZA6GCEy5l8zBaOgjXytd2v2OdSVoEDNiNQRkjJd2rmS2oi9AyQ
@@ -47,13 +47,13 @@ lUhAsyjJiQ/0bK1yX87ulqFVgO0Knmh+wNajrb9wiONAJTMICG7tiWJOm7fW5cfTJwWkBwYADmkfTRmH
 9QulbC3C/qgGFNrcWgcT9kCgYAZTa1P9bFCDU7hJc2mHwJwAW7/FQKEJg8SL33KINpLwcR8fqaYOdAHWWz636osVEqosRrH
 zJOGpf9x2RSWzQJ+dq8+6fACgfFZOVpN644+sAHfNPAI/gnNKU5OfUv+eav8fBnzlf1A3y3GIkyMyzFN3DE7e0n/lyqxE4H
 BYGpI8g==
-'''
+"""
 
 REGISTER_CREDENTIAL = "registerCredential().then(arguments[arguments.length - 1]);"
-GET_CREDENTIAL = '''getCredential([{
+GET_CREDENTIAL = """getCredential([{
                         "type": "public-key",
                         "id": Int8Array.from(arguments[0]),
-                    }]).then(arguments[arguments.length - 1]);'''
+                    }]).then(arguments[arguments.length - 1]);"""
 
 
 def create_rk_enabled_u2f_authenticator(driver) -> WebDriver:
@@ -119,9 +119,9 @@ def test_add_and_remove_virtual_authenticator(driver, pages):
     driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     result = driver.execute_async_script(REGISTER_CREDENTIAL)
-    assert result.get('status', '') == 'OK'
+    assert result.get("status", "") == "OK"
 
-    assert get_assertion_for(driver, result["credential"]["rawId"]).get('status', '') == 'OK'
+    assert get_assertion_for(driver, result["credential"]["rawId"]).get("status", "") == "OK"
 
     assert driver.virtual_authenticator_id is not None
 
@@ -147,7 +147,7 @@ def test_add_and_remove_non_resident_credentials(driver, pages):
     )
 
     driver.add_credential(credential)
-    assert get_assertion_for(driver, [1, 2, 3, 4]).get('status', '') == 'OK'
+    assert get_assertion_for(driver, [1, 2, 3, 4]).get("status", "") == "OK"
 
     driver.remove_virtual_authenticator()
     assert driver.virtual_authenticator_id is None
@@ -160,11 +160,11 @@ def test_add_non_resident_credential_when_authenticator_uses_u2f_protocol(driver
     driver = create_rk_disabled_u2f_authenticator(driver)
     driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
-    base64_pk = '''
+    base64_pk = """
     MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q
     hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU
     RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB
-    '''
+    """
 
     credential = Credential.create_non_resident_credential(
         bytearray({1, 2, 3, 4}),
@@ -173,7 +173,7 @@ def test_add_non_resident_credential_when_authenticator_uses_u2f_protocol(driver
         0,
     )
     driver.add_credential(credential)
-    assert get_assertion_for(driver, [1, 2, 3, 4]).get('status', '') == 'OK'
+    assert get_assertion_for(driver, [1, 2, 3, 4]).get("status", "") == "OK"
 
     driver.remove_virtual_authenticator()
 
@@ -185,11 +185,11 @@ def test_add_resident_credential_not_supported_when_authenticator_uses_u2f_proto
     driver = create_rk_enabled_u2f_authenticator(driver)
     driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
-    base64_pk = '''
+    base64_pk = """
     MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q
     hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU
     RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB
-    '''
+    """
 
     credential = Credential.create_resident_credential(
         bytearray({1, 2, 3, 4}),
@@ -212,15 +212,17 @@ def test_get_credentials(driver, pages):
     driver.get(pages.url("virtual-authenticator.html", localhost=True))
 
     # Register a Resident Credential
-    response1 = driver.execute_async_script('''
+    response1 = driver.execute_async_script(
+        """
     registerCredential({authenticatorSelection: {requireResidentKey: true}})
     .then(arguments[arguments.length - 1]);
-    ''')
-    assert response1.get('status', '') == 'OK'
+    """
+    )
+    assert response1.get("status", "") == "OK"
 
     # Register a Non-Resident Credential
     response2 = driver.execute_async_script(REGISTER_CREDENTIAL)
-    assert response2.get('status', '') == 'OK'
+    assert response2.get("status", "") == "OK"
 
     assert extract_id(response1) != extract_id(response2)
 
@@ -249,7 +251,9 @@ def test_get_credentials(driver, pages):
     assert credential2.private_key is not None, "Credential2 should have private key"
     # Non-resident credentials don't save RP ID
     assert credential2.rp_id is None, "Credential2 should not have RP ID. Since it's not resident credential"
-    assert credential2.user_handle is None, "Credential2 should not have user handle. Since it's not resident credential"
+    assert (
+        credential2.user_handle is None
+    ), "Credential2 should not have user handle. Since it's not resident credential"
     assert credential2.sign_count == 1
 
     driver.remove_virtual_authenticator()
@@ -264,7 +268,7 @@ def test_remove_credential_by_raw_Id(driver, pages):
 
     # register a credential
     response = driver.execute_async_script(REGISTER_CREDENTIAL)
-    assert response.get('status', '') == 'OK'
+    assert response.get("status", "") == "OK"
 
     # remove the credential using array of bytes: rawId
     raw_id = extract_raw_id(response)
@@ -285,7 +289,7 @@ def test_remove_credential_by_b64_urlId(driver, pages):
 
     # register a credential
     response = driver.execute_async_script(REGISTER_CREDENTIAL)
-    assert response.get('status', '') == 'OK'
+    assert response.get("status", "") == "OK"
 
     # remove the credential using array of bytes: rawId
     raw_id = extract_raw_id(response)
@@ -316,7 +320,7 @@ def test_remove_all_credentials(driver, pages):
     driver.remove_all_credentials()
 
     response = driver.execute_async_script(
-        '''
+        """
         getCredential([{
             "type": "public-key",
             "id": Int8Array.from(arguments[0]),
@@ -324,7 +328,7 @@ def test_remove_all_credentials(driver, pages):
             "type": "public-key",
             "id": Int8Array.from(arguments[1]),
         }]).then(arguments[arguments.length - 1]);
-        ''',
+        """,
         raw_id1,
         raw_id2,
     )
@@ -344,12 +348,12 @@ def test_set_user_verified(driver, pages):
     response = driver.execute_async_script(
         "registerCredential({authenticatorSelection: {userVerification: 'required'}}).then(arguments[arguments.length - 1]);"
     )
-    assert response.get('status', '') == 'OK'
+    assert response.get("status", "") == "OK"
     raw_id = response["credential"]["rawId"]
 
     # Getting an assertion requiring user verification should succeed.
     response = driver.execute_async_script(GET_CREDENTIAL, raw_id)
-    assert response.get('status', '') == 'OK'
+    assert response.get("status", "") == "OK"
 
     # Disable user verified.
     driver.set_user_verified(False)

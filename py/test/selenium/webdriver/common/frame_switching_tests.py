@@ -17,14 +17,12 @@
 
 import pytest
 
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    NoSuchFrameException,
-    WebDriverException)
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchFrameException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
+from selenium.webdriver.support.ui import WebDriverWait
 
 # ----------------------------------------------------------------------------------------------
 #
@@ -58,6 +56,7 @@ def test_should_open_page_with_broken_frameset(driver, pages):
 
     frame2 = driver.find_element(By.ID, "second")
     driver.switch_to.frame(frame2)  # IE9 can not switch to this broken frame - it has no window.
+
 
 # ----------------------------------------------------------------------------------------------
 #
@@ -206,6 +205,7 @@ def test_should_be_able_to_switch_to_parent_from_an_iframe(driver, pages):
     driver.switch_to.parent_frame()
     driver.find_element(By.ID, "iframe_page_heading")
 
+
 # ----------------------------------------------------------------------------------------------
 #
 # General frame handling behavior tests
@@ -223,13 +223,11 @@ def test_should_continue_to_refer_to_the_same_frame_once_it_has_been_selected(dr
     # TODO(simon): this should not be needed, and is only here because IE's submit returns too
     # soon.
 
-    WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.XPATH, '//p'), 'Success!'))
+    WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.XPATH, "//p"), "Success!"))
 
 
-@pytest.mark.xfail_firefox(raises=WebDriverException,
-                           reason='https://github.com/mozilla/geckodriver/issues/610')
-@pytest.mark.xfail_remote(raises=WebDriverException,
-                          reason='https://github.com/mozilla/geckodriver/issues/610')
+@pytest.mark.xfail_firefox(raises=WebDriverException, reason="https://github.com/mozilla/geckodriver/issues/610")
+@pytest.mark.xfail_remote(raises=WebDriverException, reason="https://github.com/mozilla/geckodriver/issues/610")
 @pytest.mark.xfail_safari
 def test_should_focus_on_the_replacement_when_aframe_follows_alink_to_a_top_targeted_page(driver, pages):
     pages.load("frameset.html")
@@ -326,8 +324,7 @@ def test_should_be_able_to_switch_to_the_top_if_the_frame_is_deleted_from_under_
     killIframe = driver.find_element(By.ID, "killIframe")
     killIframe.click()
     driver.switch_to.default_content()
-    WebDriverWait(driver, 3).until_not(
-        EC.presence_of_element_located((By.ID, "iframe1")))
+    WebDriverWait(driver, 3).until_not(EC.presence_of_element_located((By.ID, "iframe1")))
 
     addIFrame = driver.find_element(By.ID, "addBackFrame")
     addIFrame.click()
@@ -429,13 +426,14 @@ def test_should_not_switch_magically_to_the_top_window(driver, pages):
             submit = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, "submitButton")))
             input.clear()
             import random
+
             input.send_keys("rand%s" % int(random.random()))
             submit.click()
         finally:
             url = driver.execute_script("return window.location.href")
         # IE6 and Chrome add "?"-symbol to the end of the URL
     if url.endswith("?"):
-        url = url[:len(url) - 1]
+        url = url[: len(url) - 1]
 
     assert pages.url("frame_switching_tests/bug4876_iframe.html") == url
 

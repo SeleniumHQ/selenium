@@ -14,15 +14,15 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from . import interaction
-from .input_device import InputDevice
 from typing import Union
 
 from selenium.webdriver.remote.webelement import WebElement
 
+from . import interaction
+from .input_device import InputDevice
+
 
 class ScrollOrigin:
-
     def __init__(self, origin: Union[str, WebElement], x_offset: int, y_offset: int) -> None:
         self._origin = origin
         self._x_offset = x_offset
@@ -34,7 +34,7 @@ class ScrollOrigin:
 
     @classmethod
     def from_viewport(cls, x_offset: int = 0, y_offset: int = 0):
-        return cls('viewport', x_offset, y_offset)
+        return cls("viewport", x_offset, y_offset)
 
     @property
     def origin(self) -> Union[str, WebElement]:
@@ -50,25 +50,28 @@ class ScrollOrigin:
 
 
 class WheelInput(InputDevice):
-
     def __init__(self, name) -> None:
         super().__init__(name=name)
         self.name = name
         self.type = interaction.WHEEL
 
     def encode(self) -> dict:
-        return {"type": self.type,
-                "id": self.name,
-                "actions": self.actions}
+        return {"type": self.type, "id": self.name, "actions": self.actions}
 
-    def create_scroll(self, x: int, y: int, delta_x: int,
-                      delta_y: int, duration: int, origin) -> None:
+    def create_scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int, origin) -> None:
         if isinstance(origin, WebElement):
             origin = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
-        self.add_action({"type": "scroll", "x": x, "y": y, "deltaX": delta_x,
-                         "deltaY": delta_y, "duration": duration,
-                         "origin": origin})
+        self.add_action(
+            {
+                "type": "scroll",
+                "x": x,
+                "y": y,
+                "deltaX": delta_x,
+                "deltaY": delta_y,
+                "duration": duration,
+                "origin": origin,
+            }
+        )
 
     def create_pause(self, pause_duration: Union[int, float]) -> None:
-        self.add_action(
-            {"type": "pause", "duration": int(pause_duration * 1000)})
+        self.add_action({"type": "pause", "duration": int(pause_duration * 1000)})

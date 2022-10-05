@@ -15,10 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import pytest
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-
-import pytest
 
 
 def test_should_fire_key_press_events(driver, pages):
@@ -62,8 +62,8 @@ def test_should_be_able_to_type_capital_letters(driver, pages):
 def test_should_be_able_to_type_quote_marks(driver, pages):
     pages.load("javascriptPage.html")
     keyReporter = driver.find_element(by=By.ID, value="keyReporter")
-    keyReporter.send_keys("\"")
-    assert keyReporter.get_attribute("value") == "\""
+    keyReporter.send_keys('"')
+    assert keyReporter.get_attribute("value") == '"'
 
 
 def test_should_be_able_to_type_the_at_character(driver, pages):
@@ -195,15 +195,13 @@ def test_numeric_non_shift_keys(driver, pages):
     assert element.get_attribute("value") == numericLineCharsNonShifted
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
 def test_numeric_shift_keys(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
     element = driver.find_element(by=By.ID, value="keyReporter")
-    numericShiftsEtc = "~!@#$%^&*()_+{}:i\"<>?|END~"
+    numericShiftsEtc = '~!@#$%^&*()_+{}:i"<>?|END~'
     element.send_keys(numericShiftsEtc)
     assert element.get_attribute("value") == numericShiftsEtc
     assert "up: 16" in result.text.strip()
@@ -217,10 +215,8 @@ def test_lower_case_alpha_keys(driver, pages):
     assert element.get_attribute("value") == lowerAlphas
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
 def test_uppercase_alpha_keys(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
@@ -231,10 +227,8 @@ def test_uppercase_alpha_keys(driver, pages):
     assert "up: 16" in result.text.strip()
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
 def test_all_printable_keys(driver, pages):
     pages.load("javascriptPage.html")
     result = driver.find_element(by=By.ID, value="result")
@@ -249,10 +243,7 @@ def test_all_printable_keys(driver, pages):
 def test_arrow_keys_and_page_up_and_down(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
-    element.send_keys(
-        "a{}b{}{}{}{}{}1"
-        .format(Keys.LEFT, Keys.RIGHT, Keys.UP, Keys.DOWN, Keys.PAGE_UP, Keys.PAGE_DOWN)
-    )
+    element.send_keys(f"a{Keys.LEFT}b{Keys.RIGHT}{Keys.UP}{Keys.DOWN}{Keys.PAGE_UP}{Keys.PAGE_DOWN}1")
     assert element.get_attribute("value") == "ba1"
 
 
@@ -285,10 +276,8 @@ def test_delete_and_backspace_keys(driver, pages):
     assert element.get_attribute("value") == "abcdfgi"
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
 def test_special_space_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
@@ -296,20 +285,26 @@ def test_special_space_keys(driver, pages):
     assert element.get_attribute("value") == "abcd fgh ij"
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1255258')
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1255258")
 @pytest.mark.xfail_safari
 def test_numberpad_and_function_keys(driver, pages):
     pages.load("javascriptPage.html")
     element = driver.find_element(by=By.ID, value="keyReporter")
     element.send_keys(
-        "abcd{}{}{}{}{}{}{}{}{}{}{}{}abcd"
-        .format(
-            Keys.MULTIPLY, Keys.SUBTRACT, Keys.ADD, Keys.DECIMAL, Keys.SEPARATOR,
-            Keys.NUMPAD0, Keys.NUMPAD9, Keys.ADD, Keys.SEMICOLON, Keys.EQUALS, Keys.DIVIDE,
-            Keys.NUMPAD3
+        "abcd{}{}{}{}{}{}{}{}{}{}{}{}abcd".format(
+            Keys.MULTIPLY,
+            Keys.SUBTRACT,
+            Keys.ADD,
+            Keys.DECIMAL,
+            Keys.SEPARATOR,
+            Keys.NUMPAD0,
+            Keys.NUMPAD9,
+            Keys.ADD,
+            Keys.SEMICOLON,
+            Keys.EQUALS,
+            Keys.DIVIDE,
+            Keys.NUMPAD3,
         )
     )
     assert element.get_attribute("value") == "abcd*-+.,09+;=/3abcd"

@@ -17,17 +17,20 @@
 from __future__ import annotations
 
 import os
-from base64 import b64decode, encodebytes
-from hashlib import md5 as md5_hash
 import pkgutil
 import warnings
 import zipfile
 from abc import ABCMeta
+from base64 import b64decode
+from base64 import encodebytes
+from hashlib import md5 as md5_hash
 from io import BytesIO
 
-from selenium.common.exceptions import WebDriverException, JavascriptException
+from selenium.common.exceptions import JavascriptException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.utils import keys_to_typing
+
 from .command import Command
 from .shadowroot import ShadowRoot
 
@@ -40,9 +43,9 @@ isDisplayed_js = None
 def _load_js():
     global getAttribute_js
     global isDisplayed_js
-    _pkg = '.'.join(__name__.split('.')[:-1])
-    getAttribute_js = pkgutil.get_data(_pkg, 'getAttribute.js').decode('utf8')
-    isDisplayed_js = pkgutil.get_data(_pkg, 'isDisplayed.js').decode('utf8')
+    _pkg = ".".join(__name__.split(".")[:-1])
+    getAttribute_js = pkgutil.get_data(_pkg, "getAttribute.js").decode("utf8")
+    isDisplayed_js = pkgutil.get_data(_pkg, "isDisplayed.js").decode("utf8")
 
 
 class BaseWebElement(metaclass=ABCMeta):
@@ -50,6 +53,7 @@ class BaseWebElement(metaclass=ABCMeta):
     Abstract Base Class for WebElement.
     ABC's will allow custom types to be registered as a WebElement to pass type checks.
     """
+
     pass
 
 
@@ -71,17 +75,18 @@ class WebElement(BaseWebElement):
 
     def __repr__(self):
         return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
-            type(self), self._parent.session_id, self._id)
+            type(self), self._parent.session_id, self._id
+        )
 
     @property
     def tag_name(self) -> str:
         """This element's ``tagName`` property."""
-        return self._execute(Command.GET_ELEMENT_TAG_NAME)['value']
+        return self._execute(Command.GET_ELEMENT_TAG_NAME)["value"]
 
     @property
     def text(self) -> str:
         """The text of the element."""
-        return self._execute(Command.GET_ELEMENT_TEXT)['value']
+        return self._execute(Command.GET_ELEMENT_TEXT)["value"]
 
     def click(self) -> None:
         """Clicks the element."""
@@ -89,15 +94,17 @@ class WebElement(BaseWebElement):
 
     def submit(self):
         """Submits a form."""
-        script = "var form = arguments[0];\n" \
-                 "while (form.nodeName != \"FORM\" && form.parentNode) {\n" \
-                 "  form = form.parentNode;\n" \
-                 "}\n" \
-                 "if (!form) { throw Error('Unable to find containing form element'); }\n" \
-                 "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
-                 "var e = form.ownerDocument.createEvent('Event');\n" \
-                 "e.initEvent('submit', true, true);\n" \
-                 "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
+        script = (
+            "var form = arguments[0];\n"
+            'while (form.nodeName != "FORM" && form.parentNode) {\n'
+            "  form = form.parentNode;\n"
+            "}\n"
+            "if (!form) { throw Error('Unable to find containing form element'); }\n"
+            "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n"
+            "var e = form.ownerDocument.createEvent('Event');\n"
+            "e.initEvent('submit', true, true);\n"
+            "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
+        )
 
         try:
             self._parent.execute_script(script, self)
@@ -124,7 +131,7 @@ class WebElement(BaseWebElement):
             return self._execute(Command.GET_ELEMENT_PROPERTY, {"name": name})["value"]
         except WebDriverException:
             # if we hit an end point that doesn't understand getElementProperty lets fake it
-            return self.parent.execute_script('return arguments[0][arguments[1]]', self, name)
+            return self.parent.execute_script("return arguments[0][arguments[1]]", self, name)
 
     def get_dom_attribute(self, name) -> str:
         """
@@ -170,8 +177,8 @@ class WebElement(BaseWebElement):
         if getAttribute_js is None:
             _load_js()
         attribute_value = self.parent.execute_script(
-            "return (%s).apply(null, arguments);" % getAttribute_js,
-            self, name)
+            "return (%s).apply(null, arguments);" % getAttribute_js, self, name
+        )
         return attribute_value
 
     def is_selected(self) -> bool:
@@ -179,11 +186,11 @@ class WebElement(BaseWebElement):
 
         Can be used to check if a checkbox or radio button is selected.
         """
-        return self._execute(Command.IS_ELEMENT_SELECTED)['value']
+        return self._execute(Command.IS_ELEMENT_SELECTED)["value"]
 
     def is_enabled(self) -> bool:
         """Returns whether the element is enabled."""
-        return self._execute(Command.IS_ELEMENT_ENABLED)['value']
+        return self._execute(Command.IS_ELEMENT_ENABLED)["value"]
 
     def send_keys(self, *value) -> None:
         """Simulates typing into the element.
@@ -211,35 +218,42 @@ class WebElement(BaseWebElement):
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
         if self.parent._is_remote:
-            local_files = list(map(lambda keys_to_send:
-                                   self.parent.file_detector.is_local_file(str(keys_to_send)),
-                                   ''.join(map(str, value)).split('\n')))
+            local_files = list(
+                map(
+                    lambda keys_to_send: self.parent.file_detector.is_local_file(str(keys_to_send)),
+                    "".join(map(str, value)).split("\n"),
+                )
+            )
             if None not in local_files:
                 remote_files = []
                 for file in local_files:
                     remote_files.append(self._upload(file))
-                value = '\n'.join(remote_files)
+                value = "\n".join(remote_files)
 
-        self._execute(Command.SEND_KEYS_TO_ELEMENT,
-                      {'text': "".join(keys_to_typing(value)),
-                       'value': keys_to_typing(value)})
+        self._execute(
+            Command.SEND_KEYS_TO_ELEMENT, {"text": "".join(keys_to_typing(value)), "value": keys_to_typing(value)}
+        )
 
     @property
     def shadow_root(self) -> ShadowRoot:
         """
-            Returns a shadow root of the element if there is one or an error. Only works from
-            Chromium 96 onwards. Previous versions of Chromium based browsers will throw an
-            assertion exception.
+        Returns a shadow root of the element if there is one or an error. Only works from
+        Chromium 96 onwards. Previous versions of Chromium based browsers will throw an
+        assertion exception.
 
-            :Returns:
-              - ShadowRoot object or
-              - NoSuchShadowRoot - if no shadow root was attached to element
+        :Returns:
+          - ShadowRoot object or
+          - NoSuchShadowRoot - if no shadow root was attached to element
         """
         browser_main_version = int(self._parent.caps["browserVersion"].split(".")[0])
-        assert self._parent.caps["browserName"].lower() not in ["firefox",
-                                                                "safari"], "This only currently works in Chromium based browsers"
-        assert not browser_main_version <= 95, f"Please use Chromium based browsers with version 96 or later. Version used {self._parent.caps['browserVersion']}"
-        return self._execute(Command.GET_SHADOW_ROOT)['value']
+        assert self._parent.caps["browserName"].lower() not in [
+            "firefox",
+            "safari",
+        ], "This only currently works in Chromium based browsers"
+        assert (
+            not browser_main_version <= 95
+        ), f"Please use Chromium based browsers with version 96 or later. Version used {self._parent.caps['browserVersion']}"
+        return self._execute(Command.GET_SHADOW_ROOT)["value"]
 
     # RenderedWebElement Items
     def is_displayed(self) -> bool:
@@ -247,9 +261,7 @@ class WebElement(BaseWebElement):
         # Only go into this conditional for browsers that don't use the atom themselves
         if isDisplayed_js is None:
             _load_js()
-        return self.parent.execute_script(
-            "return (%s).apply(null, arguments);" % isDisplayed_js,
-            self)
+        return self.parent.execute_script("return (%s).apply(null, arguments);" % isDisplayed_js, self)
 
     @property
     def location_once_scrolled_into_view(self) -> dict:
@@ -261,47 +273,47 @@ class WebElement(BaseWebElement):
         the element is not visible.
 
         """
-        old_loc = self._execute(Command.W3C_EXECUTE_SCRIPT, {
-            'script': "arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()",
-            'args': [self]})['value']
-        return {"x": round(old_loc['x']),
-                "y": round(old_loc['y'])}
+        old_loc = self._execute(
+            Command.W3C_EXECUTE_SCRIPT,
+            {
+                "script": "arguments[0].scrollIntoView(true); return arguments[0].getBoundingClientRect()",
+                "args": [self],
+            },
+        )["value"]
+        return {"x": round(old_loc["x"]), "y": round(old_loc["y"])}
 
     @property
     def size(self) -> dict:
         """The size of the element."""
-        size = self._execute(Command.GET_ELEMENT_RECT)['value']
-        new_size = {"height": size["height"],
-                    "width": size["width"]}
+        size = self._execute(Command.GET_ELEMENT_RECT)["value"]
+        new_size = {"height": size["height"], "width": size["width"]}
         return new_size
 
     def value_of_css_property(self, property_name) -> str:
         """The value of a CSS property."""
-        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {
-            'propertyName': property_name})['value']
+        return self._execute(Command.GET_ELEMENT_VALUE_OF_CSS_PROPERTY, {"propertyName": property_name})["value"]
 
     @property
     def location(self) -> dict:
         """The location of the element in the renderable canvas."""
-        old_loc = self._execute(Command.GET_ELEMENT_RECT)['value']
-        new_loc = {"x": round(old_loc['x']),
-                   "y": round(old_loc['y'])}
+        old_loc = self._execute(Command.GET_ELEMENT_RECT)["value"]
+        new_loc = {"x": round(old_loc["x"]), "y": round(old_loc["y"])}
         return new_loc
 
     @property
     def rect(self) -> dict:
         """A dictionary with the size and location of the element."""
-        return self._execute(Command.GET_ELEMENT_RECT)['value']
+        return self._execute(Command.GET_ELEMENT_RECT)["value"]
 
     @property
     def aria_role(self) -> str:
-        """ Returns the ARIA role of the current web element"""
-        return self._execute(Command.GET_ELEMENT_ARIA_ROLE)['value']
+        """Returns the ARIA role of the current web element"""
+        return self._execute(Command.GET_ELEMENT_ARIA_ROLE)["value"]
 
     @property
     def accessible_name(self) -> str:
         """Returns the ARIA Level of the current webelement"""
-        return self._execute(Command.GET_ELEMENT_ARIA_LABEL)['value']
+        return self._execute(Command.GET_ELEMENT_ARIA_LABEL)["value"]
 
     @property
     def screenshot_as_base64(self) -> str:
@@ -313,7 +325,7 @@ class WebElement(BaseWebElement):
 
                 img_b64 = element.screenshot_as_base64
         """
-        return self._execute(Command.ELEMENT_SCREENSHOT)['value']
+        return self._execute(Command.ELEMENT_SCREENSHOT)["value"]
 
     @property
     def screenshot_as_png(self) -> bytes:
@@ -325,7 +337,7 @@ class WebElement(BaseWebElement):
 
                 element_png = element.screenshot_as_png
         """
-        return b64decode(self.screenshot_as_base64.encode('ascii'))
+        return b64decode(self.screenshot_as_base64.encode("ascii"))
 
     def screenshot(self, filename) -> bool:
         """
@@ -342,12 +354,14 @@ class WebElement(BaseWebElement):
 
                 element.screenshot('/Screenshots/foo.png')
         """
-        if not filename.lower().endswith('.png'):
-            warnings.warn("name used for saved screenshot does not match file "
-                          "type. It should end with a `.png` extension", UserWarning)
+        if not filename.lower().endswith(".png"):
+            warnings.warn(
+                "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
+                UserWarning,
+            )
         png = self.screenshot_as_png
         try:
-            with open(filename, 'wb') as f:
+            with open(filename, "wb") as f:
                 f.write(png)
         except OSError:
             return False
@@ -374,7 +388,7 @@ class WebElement(BaseWebElement):
         return self._id
 
     def __eq__(self, element):
-        return hasattr(element, 'id') and self._id == element.id
+        return hasattr(element, "id") and self._id == element.id
 
     def __ne__(self, element):
         return not self.__eq__(element)
@@ -392,7 +406,7 @@ class WebElement(BaseWebElement):
         """
         if not params:
             params = {}
-        params['id'] = self._id
+        params["id"] = self._id
         return self._parent.execute(command, params)
 
     def find_element(self, by=By.ID, value=None) -> WebElement:
@@ -416,8 +430,7 @@ class WebElement(BaseWebElement):
             by = By.CSS_SELECTOR
             value = '[name="%s"]' % value
 
-        return self._execute(Command.FIND_CHILD_ELEMENT,
-                             {"using": by, "value": value})['value']
+        return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
 
     def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
         """
@@ -432,36 +445,34 @@ class WebElement(BaseWebElement):
         """
         if by == By.ID:
             by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
+            value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
-            value = ".%s" % value
+            value = f".{value}"
         elif by == By.NAME:
             by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+            value = f'[name="{value}"]'
 
-        return self._execute(Command.FIND_CHILD_ELEMENTS,
-                             {"using": by, "value": value})['value']
+        return self._execute(Command.FIND_CHILD_ELEMENTS, {"using": by, "value": value})["value"]
 
     def __hash__(self) -> int:
-        return int(md5_hash(self._id.encode('utf-8')).hexdigest(), 16)
+        return int(md5_hash(self._id.encode("utf-8")).hexdigest(), 16)
 
     def _upload(self, filename):
         fp = BytesIO()
-        zipped = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
+        zipped = zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED)
         zipped.write(filename, os.path.split(filename)[1])
         zipped.close()
         content = encodebytes(fp.getvalue())
         if not isinstance(content, str):
-            content = content.decode('utf-8')
+            content = content.decode("utf-8")
         try:
-            return self._execute(Command.UPLOAD_FILE, {'file': content})['value']
+            return self._execute(Command.UPLOAD_FILE, {"file": content})["value"]
         except WebDriverException as e:
             if "Unrecognized command: POST" in str(e):
                 return filename
-            elif "Command not found: POST " in str(e):
+            if "Command not found: POST " in str(e):
                 return filename
-            elif '{"status":405,"value":["GET","HEAD","DELETE"]}' in str(e):
+            if '{"status":405,"value":["GET","HEAD","DELETE"]}' in str(e):
                 return filename
-            else:
-                raise
+            raise

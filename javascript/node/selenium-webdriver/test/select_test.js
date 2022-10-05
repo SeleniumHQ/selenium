@@ -26,7 +26,16 @@ let singleSelectValues1 = {
   name: 'selectomatic',
   values: ['One', 'Two', 'Four', 'Still learning how to count, apparently'],
 }
-let disabledSelect = { name: 'no-select', values: ['Foo'] }
+
+let disabledSingleSelect = {
+  name: 'single_disabled',
+  values: ['Enabled', 'Disabled'],
+}
+let disabledMultiSelect = {
+  name: 'multi_disabled',
+  values: ['Enabled', 'Disabled'],
+}
+
 let multiSelectValues1 = {
   name: 'multi',
   values: ['Eggs', 'Ham', 'Sausages', 'Onion gravy'],
@@ -98,60 +107,6 @@ suite(
         }
       })
 
-      ignore(browsers(Browser.FIREFOX)).it(
-        'Should check selected option if select is disabled by index',
-        async function () {
-          await driver.get(Pages.formPage)
-
-          let selectorObject = new Select(
-            driver.findElement(By.name(disabledSelect['name']))
-          )
-          let firstSelected = await selectorObject.getFirstSelectedOption()
-          await selectorObject.selectByIndex(1)
-          let lastSelected = await selectorObject.getFirstSelectedOption()
-          assert.deepEqual(
-            await firstSelected.getAttribute('value'),
-            await lastSelected.getAttribute('value')
-          )
-        }
-      )
-
-      ignore(browsers(Browser.FIREFOX)).it(
-        'Should check selected option if select is disabled by value',
-        async function () {
-          await driver.get(Pages.formPage)
-
-          let selectorObject = new Select(
-            driver.findElement(By.name(disabledSelect['name']))
-          )
-          let firstSelected = await selectorObject.getFirstSelectedOption()
-          await selectorObject.selectByValue('bar')
-          let lastSelected = await selectorObject.getFirstSelectedOption()
-          assert.deepEqual(
-            await firstSelected.getAttribute('value'),
-            await lastSelected.getAttribute('value')
-          )
-        }
-      )
-
-      ignore(browsers(Browser.FIREFOX)).it(
-        'Should check selected option if select is disabled by visible text',
-        async function () {
-          await driver.get(Pages.formPage)
-
-          let selectorObject = new Select(
-            driver.findElement(By.name(disabledSelect['name']))
-          )
-          let firstSelected = await selectorObject.getFirstSelectedOption()
-          await selectorObject.selectByVisibleText('Bar')
-          let lastSelected = await selectorObject.getFirstSelectedOption()
-          assert.deepEqual(
-            await firstSelected.getAttribute('value'),
-            await lastSelected.getAttribute('value')
-          )
-        }
-      )
-
       it('Should select by multiple index', async function () {
         await driver.get(Pages.formPage)
 
@@ -216,6 +171,142 @@ suite(
             multiSelectValues2['values'][x]
           )
         }
+      })
+
+      it('Should raise exception select by value single disabled', async function () {
+        await driver.get(Pages.formPage)
+
+        let selector = new Select(
+          driver.findElement(By.name(disabledSingleSelect['name']))
+        )
+
+        await assert.rejects(
+          async () => {
+            await selector.selectByValue(
+              disabledSingleSelect.values[1].toLowerCase()
+            )
+          },
+          (err) => {
+            assert.strictEqual(err.name, 'UnsupportedOperationError')
+            assert.strictEqual(
+              err.message,
+              'You may not select a disabled option'
+            )
+            return true
+          }
+        )
+      })
+
+      it('Should raise exception select by index single disabled', async function () {
+        await driver.get(Pages.formPage)
+
+        let selector = new Select(
+          driver.findElement(By.name(disabledSingleSelect['name']))
+        )
+
+        await assert.rejects(
+          async () => {
+            await selector.selectByIndex(1)
+          },
+          (err) => {
+            assert.strictEqual(err.name, 'UnsupportedOperationError')
+            assert.strictEqual(
+              err.message,
+              'You may not select a disabled option'
+            )
+            return true
+          }
+        )
+      })
+
+      it('Should raise exception select by text single disabled', async function () {
+        await driver.get(Pages.formPage)
+
+        let selector = new Select(
+          driver.findElement(By.name(disabledSingleSelect['name']))
+        )
+
+        await assert.rejects(
+          async () => {
+            await selector.selectByVisibleText(disabledSingleSelect.values[1])
+          },
+          (err) => {
+            assert.strictEqual(err.name, 'UnsupportedOperationError')
+            assert.strictEqual(
+              err.message,
+              'You may not select a disabled option'
+            )
+            return true
+          }
+        )
+      })
+
+      it('Should raise exception select by index multiple disabled', async function () {
+        await driver.get(Pages.formPage)
+
+        let selector = new Select(
+          driver.findElement(By.name(disabledMultiSelect['name']))
+        )
+
+        await assert.rejects(
+          async () => {
+            await selector.selectByIndex(1)
+          },
+          (err) => {
+            assert.strictEqual(err.name, 'UnsupportedOperationError')
+            assert.strictEqual(
+              err.message,
+              'You may not select a disabled option'
+            )
+            return true
+          }
+        )
+      })
+
+      it('Should raise exception select by value multiple disabled', async function () {
+        await driver.get(Pages.formPage)
+
+        let selector = new Select(
+          driver.findElement(By.name(disabledMultiSelect['name']))
+        )
+
+        await assert.rejects(
+          async () => {
+            await selector.selectByValue(
+              disabledMultiSelect.values[1].toLowerCase()
+            )
+          },
+          (err) => {
+            assert.strictEqual(err.name, 'UnsupportedOperationError')
+            assert.strictEqual(
+              err.message,
+              'You may not select a disabled option'
+            )
+            return true
+          }
+        )
+      })
+
+      it('Should raise exception select by text multiple disabled', async function () {
+        await driver.get(Pages.formPage)
+
+        let selector = new Select(
+          driver.findElement(By.name(disabledMultiSelect['name']))
+        )
+
+        await assert.rejects(
+          async () => {
+            await selector.selectByVisibleText(disabledMultiSelect.values[1])
+          },
+          (err) => {
+            assert.strictEqual(err.name, 'UnsupportedOperationError')
+            assert.strictEqual(
+              err.message,
+              'You may not select a disabled option'
+            )
+            return true
+          }
+        )
       })
     })
   },

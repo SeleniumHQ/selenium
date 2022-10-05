@@ -17,11 +17,13 @@
 
 
 import os
+import time
 from platform import system
-from subprocess import Popen, STDOUT
+from subprocess import STDOUT
+from subprocess import Popen
+
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common import utils
-import time
 
 
 class FirefoxBinary:
@@ -53,7 +55,8 @@ class FirefoxBinary:
                 "selenium.webdriver.firefox.firefox_binary import "
                 "FirefoxBinary\n\nbinary = "
                 "FirefoxBinary('/path/to/binary')\ndriver = "
-                "webdriver.Firefox(firefox_binary=binary)")
+                "webdriver.Firefox(firefox_binary=binary)"
+            )
         # Rather than modifying the environment of the calling Python process
         # copy it and modify as needed.
         self._firefox_env = os.environ.copy()
@@ -85,15 +88,13 @@ class FirefoxBinary:
     def _start_from_profile_path(self, path):
         self._firefox_env["XRE_PROFILE_PATH"] = path
 
-        if self.platform == 'linux':
+        if self.platform == "linux":
             self._modify_link_library_path()
         command = [self._start_cmd, "-foreground"]
         if self.command_line:
             for cli in self.command_line:
                 command.append(cli)
-        self.process = Popen(
-            command, stdout=self._log_file, stderr=STDOUT,
-            env=self._firefox_env)
+        self.process = Popen(command, stdout=self._log_file, stderr=STDOUT, env=self._firefox_env)
 
     def _wait_until_connectable(self, timeout=30):
         """Blocks until the extension is connectable in the firefox."""
@@ -104,27 +105,34 @@ class FirefoxBinary:
                 raise WebDriverException(
                     "The browser appears to have exited "
                     "before we could connect. If you specified a log_file in "
-                    "the FirefoxBinary constructor, check it for details.")
+                    "the FirefoxBinary constructor, check it for details."
+                )
             if count >= timeout:
                 self.kill()
                 raise WebDriverException(
                     "Can't load the profile. Possible firefox version mismatch. "
                     "You must use GeckoDriver instead for Firefox 48+. Profile "
                     "Dir: %s If you specified a log_file in the "
-                    "FirefoxBinary constructor, check it for details."
-                    % (self.profile.path))
+                    "FirefoxBinary constructor, check it for details." % (self.profile.path)
+                )
             count += 1
             time.sleep(1)
         return True
 
     def _find_exe_in_registry(self):
         try:
-            from _winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
+            from _winreg import HKEY_CURRENT_USER
+            from _winreg import HKEY_LOCAL_MACHINE
+            from _winreg import OpenKey
+            from _winreg import QueryValue
         except ImportError:
             from winreg import OpenKey, QueryValue, HKEY_LOCAL_MACHINE, HKEY_CURRENT_USER
         import shlex
-        keys = (r"SOFTWARE\Classes\FirefoxHTML\shell\open\command",
-                r"SOFTWARE\Classes\Applications\firefox.exe\shell\open\command")
+
+        keys = (
+            r"SOFTWARE\Classes\FirefoxHTML\shell\open\command",
+            r"SOFTWARE\Classes\Applications\firefox.exe\shell\open\command",
+        )
         command = ""
         for path in keys:
             try:
@@ -159,8 +167,8 @@ class FirefoxBinary:
             if not os.path.exists(start_cmd):
                 start_cmd = os.path.expanduser("~") + start_cmd
         elif self.platform == "windows":  # same
-            start_cmd = (self._find_exe_in_registry() or self._default_windows_location())
-        elif self.platform == 'java' and os._name == 'nt':
+            start_cmd = self._find_exe_in_registry() or self._default_windows_location()
+        elif self.platform == "java" and os.name == "nt":
             start_cmd = self._default_windows_location()
         else:
             for ffname in ["firefox", "iceweasel"]:
@@ -171,12 +179,15 @@ class FirefoxBinary:
                 # couldn't find firefox on the system path
                 raise RuntimeError(
                     "Could not find firefox in your system PATH."
-                    " Please specify the firefox binary location or install firefox")
+                    " Please specify the firefox binary location or install firefox"
+                )
         return start_cmd
 
     def _default_windows_location(self):
-        program_files = [os.getenv("PROGRAMFILES", r"C:\Program Files"),
-                         os.getenv("PROGRAMFILES(X86)", r"C:\Program Files (x86)")]
+        program_files = [
+            os.getenv("PROGRAMFILES", r"C:\Program Files"),
+            os.getenv("PROGRAMFILES(X86)", r"C:\Program Files (x86)"),
+        ]
         for path in program_files:
             binary_path = os.path.join(path, r"Mozilla Firefox\firefox.exe")
             if os.access(binary_path, os.X_OK):
@@ -184,17 +195,16 @@ class FirefoxBinary:
         return ""
 
     def _modify_link_library_path(self):
-        existing_ld_lib_path = os.environ.get('LD_LIBRARY_PATH', '')
+        existing_ld_lib_path = os.environ.get("LD_LIBRARY_PATH", "")
 
-        new_ld_lib_path = self._extract_and_check(
-            self.profile, self.NO_FOCUS_LIBRARY_NAME, "x86", "amd64")
+        new_ld_lib_path = self._extract_and_check(self.profile, "x86", "amd64")
 
         new_ld_lib_path += existing_ld_lib_path
 
         self._firefox_env["LD_LIBRARY_PATH"] = new_ld_lib_path
-        self._firefox_env['LD_PRELOAD'] = self.NO_FOCUS_LIBRARY_NAME
+        self._firefox_env["LD_PRELOAD"] = self.NO_FOCUS_LIBRARY_NAME
 
-    def _extract_and_check(self, profile, no_focus_so_name, x86, amd64):
+    def _extract_and_check(self, profile, x86, amd64):
 
         paths = [x86, amd64]
         built_path = ""
@@ -203,11 +213,8 @@ class FirefoxBinary:
             if not os.path.exists(library_path):
                 os.makedirs(library_path)
             import shutil
-            shutil.copy(os.path.join(
-                os.path.dirname(__file__),
-                path,
-                self.NO_FOCUS_LIBRARY_NAME),
-                library_path)
+
+            shutil.copy(os.path.join(os.path.dirname(__file__), path, self.NO_FOCUS_LIBRARY_NAME), library_path)
             built_path += library_path + ":"
 
         return built_path
@@ -215,7 +222,7 @@ class FirefoxBinary:
     def which(self, fname):
         """Returns the fully qualified path by searching Path of the given
         name"""
-        for pe in os.environ['PATH'].split(os.pathsep):
+        for pe in os.environ["PATH"].split(os.pathsep):
             checkname = os.path.join(pe, fname)
             if os.access(checkname, os.X_OK) and not os.path.isdir(checkname):
                 return checkname

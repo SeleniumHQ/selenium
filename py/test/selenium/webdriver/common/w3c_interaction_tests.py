@@ -17,12 +17,12 @@
 
 import pytest
 
-from selenium.webdriver.common.actions.wheel_input import WheelInput
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.actions import interaction
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 from selenium.webdriver.common.actions.pointer_input import PointerInput
-from selenium.webdriver.common.actions import interaction
+from selenium.webdriver.common.actions.wheel_input import WheelInput
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -44,13 +44,11 @@ def test_sending_keys_to_active_element_with_modifier(driver, pages):
 
     actions = ActionBuilder(driver)
     key_action = actions.key_action
-    key_action.key_down(Keys.SHIFT) \
-        .send_keys("abc") \
-        .key_up(Keys.SHIFT)
+    key_action.key_down(Keys.SHIFT).send_keys("abc").key_up(Keys.SHIFT)
 
     actions.perform()
 
-    assert "ABC" == e.get_attribute('value')
+    assert "ABC" == e.get_attribute("value")
 
 
 @pytest.mark.xfail_firefox
@@ -58,6 +56,7 @@ def test_sending_keys_to_active_element_with_modifier(driver, pages):
 def test_can_create_pause_action_on_keyboard(driver, pages):
     # If we don't get an error and takes less than 3 seconds to run, we are good
     import datetime
+
     start = datetime.datetime.now()
     actions1 = ActionBuilder(driver)
     key_actions = actions1.key_action
@@ -76,6 +75,7 @@ def test_can_create_pause_action_on_keyboard(driver, pages):
 def test_can_create_pause_action_on_pointer(driver, pages):
     # If we don't get an error and takes less than 3 seconds to run, we are good
     import datetime
+
     start = datetime.datetime.now()
     actions1 = ActionBuilder(driver)
     key_actions = actions1.pointer_action
@@ -103,11 +103,10 @@ def test_move_and_click(driver, pages):
     actions = ActionBuilder(driver)
     pointer = actions.pointer_action
 
-    pointer.move_to(toClick) \
-           .click()
+    pointer.move_to(toClick).click()
 
     actions.perform()
-    assert "Clicked" == toClick.get_attribute('value')
+    assert "Clicked" == toClick.get_attribute("value")
 
 
 def test_drag_and_drop(driver, pages):
@@ -124,9 +123,7 @@ def test_drag_and_drop(driver, pages):
     dropInto = driver.find_element(By.ID, "droppable")
     actions = ActionBuilder(driver)
     pointer = actions.pointer_action
-    pointer.click_and_hold(toDrag) \
-           .move_to(dropInto)\
-           .release()
+    pointer.click_and_hold(toDrag).move_to(dropInto).release()
 
     actions.perform()
 
@@ -145,7 +142,7 @@ def test_context_click(driver, pages):
     pointer.context_click(toContextClick)
 
     actions.perform()
-    assert "ContextClicked" == toContextClick.get_attribute('value')
+    assert "ContextClicked" == toContextClick.get_attribute("value")
 
 
 @pytest.mark.xfail_firefox
@@ -163,7 +160,7 @@ def test_double_click(driver, pages):
     pointer.double_click(toDoubleClick)
 
     actions.perform()
-    assert "DoubleClicked" == toDoubleClick.get_attribute('value')
+    assert "DoubleClicked" == toDoubleClick.get_attribute("value")
 
 
 def test_dragging_element_with_mouse_moves_it_to_another_list(driver, pages):
@@ -186,11 +183,9 @@ def test_pen_pointer_properties(driver, pages):
     pointer_input = PointerInput(interaction.POINTER_PEN, "pen")
     actions = ActionBuilder(driver, mouse=pointer_input)
     center = _get_inview_center(pointerArea.rect, _get_viewport_rect(driver))
-    actions.pointer_action.move_to(pointerArea) \
-        .pointer_down(pressure=0.36, tilt_x=-72, tilt_y=9, twist=86) \
-        .move_to(pointerArea, x=5, y=10) \
-        .pointer_up() \
-        .move_to(pointerArea, x=5, y=10)
+    actions.pointer_action.move_to(pointerArea).pointer_down(pressure=0.36, tilt_x=-72, tilt_y=9, twist=86).move_to(
+        pointerArea, x=5, y=10
+    ).pointer_up().move_to(pointerArea, x=5, y=10)
     actions.perform()
     events = _get_events(driver)
     assert events[3]["type"] == "pointerdown"
@@ -225,17 +220,26 @@ def test_touch_pointer_properties(driver, pages):
     center = _get_inview_center(pointerArea.rect, _get_viewport_rect(driver))
     touch_input = PointerInput(interaction.POINTER_TOUCH, "touch")
     touch_chain = ActionBuilder(driver, mouse=touch_input)
-    touch_chain.pointer_action.move_to(pointerArea) \
-        .pointer_down(width=23, height=31, pressure=0.78, tilt_x=21, tilt_y=-8, twist=355) \
-        .move_to(pointerArea, x=10, y=10, width=39, height=35, pressure=0.91, tilt_x=-19, tilt_y=62, twist=345) \
-        .pointer_up() \
-        .move_to(pointerArea, x=15, y=15)
+    touch_chain.pointer_action.move_to(pointerArea).pointer_down(
+        width=23, height=31, pressure=0.78, tilt_x=21, tilt_y=-8, twist=355
+    ).move_to(
+        pointerArea, x=10, y=10, width=39, height=35, pressure=0.91, tilt_x=-19, tilt_y=62, twist=345
+    ).pointer_up().move_to(
+        pointerArea, x=15, y=15
+    )
     touch_chain.perform()
     events = _get_events(driver)
     assert len(events) == 7
     event_types = [e["type"] for e in events]
-    assert ["pointerover", "pointerenter", "pointerdown", "pointermove",
-            "pointerup", "pointerout", "pointerleave"] == event_types
+    assert [
+        "pointerover",
+        "pointerenter",
+        "pointerdown",
+        "pointermove",
+        "pointerup",
+        "pointerout",
+        "pointerleave",
+    ] == event_types
     assert events[2]["type"] == "pointerdown"
     assert events[2]["pageX"] == pytest.approx(center["x"], abs=1.0)
     assert events[2]["pageY"] == pytest.approx(center["y"], abs=1.0)
@@ -290,10 +294,7 @@ def _perform_drag_and_drop_with_mouse(driver, pages):
 
     actions = ActionBuilder(driver)
     pointer = actions.pointer_action
-    pointer.click_and_hold(toDrag) \
-           .move_to(driver.find_element(By.ID, "leftitem-4")) \
-           .move_to(dragInto) \
-           .release()
+    pointer.click_and_hold(toDrag).move_to(driver.find_element(By.ID, "leftitem-4")).move_to(dragInto).release()
 
     assert "Nothing happened." == dragReporter.text
 
@@ -319,7 +320,7 @@ def _get_events(driver):
         # example: turn "U+d83d" (6 chars) into u"\ud83d" (1 char)
         if "key" in e and e["key"].startswith("U+"):
             key = e["key"]
-            hex_suffix = key[key.index("+") + 1:]
+            hex_suffix = key[key.index("+") + 1 :]
             e["key"] = chr(int(hex_suffix, 16))
 
         # WebKit sets code as 'Unidentified' for unidentified key codes, but
@@ -332,14 +333,12 @@ def _get_events(driver):
 def _get_inview_center(elem_rect, viewport_rect):
     x = {
         "left": max(0, min(elem_rect["x"], elem_rect["x"] + elem_rect["width"])),
-        "right": min(viewport_rect["width"], max(elem_rect["x"],
-                                                 elem_rect["x"] + elem_rect["width"])),
+        "right": min(viewport_rect["width"], max(elem_rect["x"], elem_rect["x"] + elem_rect["width"])),
     }
 
     y = {
         "top": max(0, min(elem_rect["y"], elem_rect["y"] + elem_rect["height"])),
-        "bottom": min(viewport_rect["height"], max(elem_rect["y"],
-                                                   elem_rect["y"] + elem_rect["height"])),
+        "bottom": min(viewport_rect["height"], max(elem_rect["y"], elem_rect["y"] + elem_rect["height"])),
     }
 
     return {
@@ -349,9 +348,11 @@ def _get_inview_center(elem_rect, viewport_rect):
 
 
 def _get_viewport_rect(driver):
-    return driver.execute_script("""
+    return driver.execute_script(
+        """
         return {
           height: window.innerHeight || document.documentElement.clientHeight,
           width: window.innerWidth || document.documentElement.clientWidth,
         };
-    """)
+    """
+    )

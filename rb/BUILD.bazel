@@ -11,9 +11,9 @@ package(default_visibility = ["//:__subpackages__"])
 
 CDP_VERSIONS = [
     "v85",
-    "v103",
     "v104",
     "v105",
+    "v106",
 ]
 
 copy_file(
@@ -292,9 +292,13 @@ ruby_test(
         "no-sandbox",
         "requires-network",
     ],
+    data = [
+        "//common/extensions",
+    ],
     deps = [
         ":bidi",
         ":firefox",
+        ":devtools",
         ":specs",
     ],
 )
@@ -317,6 +321,9 @@ ruby_test(
     tags = [
         "no-sandbox",
         "requires-network",
+    ],
+    data = [
+        "//common/extensions",
     ],
     deps = [
         ":bidi",
@@ -488,6 +495,7 @@ ruby_test(
     ],
     deps = [
         ":bidi",
+        ":devtools",
         ":firefox",
         ":remote",
         ":specs",

@@ -15,8 +15,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chromium.options import ChromiumOptions
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class Options(ChromiumOptions):
@@ -41,7 +41,7 @@ class Options(ChromiumOptions):
         """
         caps = super().to_capabilities()
         if self._use_webview:
-            caps['browserName'] = 'webview2'
+            caps["browserName"] = "webview2"
 
         return caps
 

@@ -429,17 +429,6 @@ public class ElementFindingTest extends JupiterTestBase {
     assertThat(element.getText()).isEqualTo("Test Chart");
   }
 
-  @Test
-  @Ignore(IE)
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
-  public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
-    driver.get(pages.simpleXmlDocument);
-    WebElement element = driver.findElement(By.xpath("//foo"));
-    assertThat(element.getText()).isEqualTo("baz");
-  }
-
   // By.xpath negative
 
   @Test

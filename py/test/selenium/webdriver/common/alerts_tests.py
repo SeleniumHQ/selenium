@@ -19,13 +19,12 @@ import sys
 
 import pytest
 
+from selenium.common.exceptions import InvalidElementStateException
+from selenium.common.exceptions import NoAlertPresentException
+from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.common.exceptions import (
-    InvalidElementStateException,
-    NoAlertPresentException,
-    UnexpectedAlertPresentException)
 
 
 @pytest.fixture(autouse=True)
@@ -39,11 +38,10 @@ def close_alert(driver):
 
 def test_should_be_able_to_override_the_window_alert_method(driver, pages):
     pages.load("alerts.html")
-    driver.execute_script(
-        "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }")
+    driver.execute_script("window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }")
     driver.find_element(by=By.ID, value="alert").click()
     try:
-        assert driver.find_element(By.ID, 'text').text == "cheese"
+        assert driver.find_element(By.ID, "text").text == "cheese"
     except Exception as e:
         # if we're here, likely the alert is displayed
         # not dismissing it will affect other tests
@@ -141,13 +139,11 @@ def test_setting_the_value_of_an_alert_throws(driver, pages):
 
 
 @pytest.mark.xfail_chrome(
-    condition=sys.platform == 'darwin',
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
-    run=False)
+    condition=sys.platform == "darwin", reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=26", run=False
+)
 @pytest.mark.xfail_chromiumedge(
-    condition=sys.platform == 'darwin',
-    reason='https://bugs.chromium.org/p/chromedriver/issues/detail?id=26',
-    run=False)
+    condition=sys.platform == "darwin", reason="https://bugs.chromium.org/p/chromedriver/issues/detail?id=26", run=False
+)
 def test_alert_should_not_allow_additional_commands_if_dimissed(driver, pages):
     pages.load("alerts.html")
     driver.find_element(By.ID, "alert").click()
@@ -159,8 +155,8 @@ def test_alert_should_not_allow_additional_commands_if_dimissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_firefox(reason='Fails on travis')
-@pytest.mark.xfail_remote(reason='Fails on travis')
+@pytest.mark.xfail_firefox(reason="Fails on travis")
+@pytest.mark.xfail_remote(reason="Fails on travis")
 @pytest.mark.xfail_safari
 def test_should_allow_users_to_accept_an_alert_in_aframe(driver, pages):
     pages.load("alerts.html")
@@ -173,8 +169,8 @@ def test_should_allow_users_to_accept_an_alert_in_aframe(driver, pages):
     assert "Testing Alerts" == driver.title
 
 
-@pytest.mark.xfail_firefox(reason='Fails on travis')
-@pytest.mark.xfail_remote(reason='Fails on travis')
+@pytest.mark.xfail_firefox(reason="Fails on travis")
+@pytest.mark.xfail_remote(reason="Fails on travis")
 @pytest.mark.xfail_safari
 def test_should_allow_users_to_accept_an_alert_in_anested_frame(driver, pages):
     pages.load("alerts.html")
@@ -248,11 +244,13 @@ def test_should_handle_alert_on_page_load_using_get(driver, pages):
     alert.accept()
 
     assert "onload" == value
-    WebDriverWait(driver, 3).until(EC.text_to_be_present_in_element((By.TAG_NAME, "p"), "Page with onload event handler"))
+    WebDriverWait(driver, 3).until(
+        EC.text_to_be_present_in_element((By.TAG_NAME, "p"), "Page with onload event handler")
+    )
 
 
-@pytest.mark.xfail_chrome(reason='Non W3C conformant')
-@pytest.mark.xfail_chromiumedge(reason='Non W3C conformant')
+@pytest.mark.xfail_chrome(reason="Non W3C conformant")
+@pytest.mark.xfail_chromiumedge(reason="Non W3C conformant")
 def test_should_handle_alert_on_page_before_unload(driver, pages):
     pages.load("pageWithOnBeforeUnloadMessage.html")
 
@@ -292,10 +290,8 @@ def test_alert_should_not_allow_additional_commands_if_dismissed(driver, pages):
         alert.text
 
 
-@pytest.mark.xfail_firefox(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
-@pytest.mark.xfail_remote(
-    reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1279211')
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
 @pytest.mark.xfail_chrome
 def test_unexpected_alert_present_exception_contains_alert_text(driver, pages):
     pages.load("alerts.html")

@@ -10,15 +10,15 @@ def pin_browsers():
 
     http_archive(
         name = "linux_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/104.0/linux-x86_64/en-US/firefox-104.0.tar.bz2",
-        sha256 = "9b8d307e7f6e46d468b7c9997f542821aa0cdef4d8ed95aa7dd1b66d48380478",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/104.0.2/linux-x86_64/en-US/firefox-104.0.2.tar.bz2",
+        sha256 = "89830b1a083ce589927e5807c632deb0a4d20d582b8bad558d2d63b731893420",
         build_file_content = "exports_files([\"firefox\"])",
     )
 
     dmg_archive(
         name = "mac_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/104.0/mac/en-US/Firefox%20104.0.dmg",
-        sha256 = "e7671127eedc92135b55844dcb9888120e8fb37550f59b3722af2ddca23f4e15",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/104.0.2/mac/en-US/Firefox%20104.0.2.dmg",
+        sha256 = "e49dc15eca7faaa4ddd537bff3a5f7848888bd0e97812e6724c4e43f37d29436",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
@@ -38,53 +38,53 @@ def pin_browsers():
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-104.0.1293.70.pkg?platform=Mac&Consent=0&channel=Stable",
-        sha256 = "18e1861cd4c51d7b6877f5d9f492feb5c34fcfad1f5165773024109cf483e166",
+        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-105.0.1343.33.pkg?platform=Mac&Consent=0&channel=Stable",
+        sha256 = "951d7337f1d9b45d8eda2434d31afd9b4b9027f8fbca53a21f4d9f3f374e74f1",
         move = {
-            "MicrosoftEdge-104.0.1293.70.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-105.0.1343.33.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.azureedge.net/104.0.1293.70/edgedriver_linux64.zip",
-        sha256 = "4b5df747d116fdf9cb8e84d28b5b9ba700573cf45ca56a437b7482e7142ffde0",
+        url = "https://msedgedriver.azureedge.net/105.0.1343.33/edgedriver_linux64.zip",
+        sha256 = "d164e8aa2233d4ad884230e22392a2985c7a0353dc8898898bb189e10a231dd8",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.azureedge.net/104.0.1293.70/edgedriver_mac64.zip",
-        sha256 = "09863ffc9b004ccf45eea26e53e2266edbcdfcdf000673bb2e0c02d39b89be04",
+        url = "https://msedgedriver.azureedge.net/105.0.1343.33/edgedriver_mac64.zip",
+        sha256 = "8ba14b0931b50b180510a2e2ed8bb63e534e26ebc09c766b03eac60852291af1",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 
     http_archive(
         name = "linux_chrome",
-        url = "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1012652/chrome-linux.zip",
-        sha256 = "1074f18c62d6b2908c8b74c20b9ca78eb756f4fa3aadd5c93c9db4a1f0cecc73",
+        url = "https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/1026933/chrome-linux.zip",
+        sha256 = "65ab83df17a63b211432b2b7596ba97b98be6b3103b930096050417b510e068e",
         build_file_content = "exports_files([\"chrome-linux\"])",
     )
 
     http_archive(
         name = "mac_chrome",
-        url = "https://storage.googleapis.com/chromium-browser-snapshots/Mac/1012652/chrome-mac.zip",
-        sha256 = "37bc3bcb2c7bf7d67ccb8067671c192e581c90b9f0a3f296fe839cff33166e9b",
+        url = "https://storage.googleapis.com/chromium-browser-snapshots/Mac/1026933/chrome-mac.zip",
+        sha256 = "8f3f899a849f7fb925b18da4396b90a81eb785783a3251c75b4d07207d9b5a09",
         strip_prefix = "chrome-mac",
         build_file_content = "exports_files([\"Chromium.app\"])",
     )
 
     http_archive(
         name = "linux_chromedriver",
-        url = "https://chromedriver.storage.googleapis.com/104.0.5112.79/chromedriver_linux64.zip",
-        sha256 = "7ce8ead8761c08c8bfb910c4f09ac5fe632d1de6ac464c3f8f2cd1a2ae895dd9",
+        url = "https://chromedriver.storage.googleapis.com/105.0.5195.52/chromedriver_linux64.zip",
+        sha256 = "c41cc88ac6c7b6e5c48b7ca629d48bf594903862a3d30cdeb35a97d48c397318",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
 
     http_archive(
         name = "mac_chromedriver",
-        url = "https://chromedriver.storage.googleapis.com/104.0.5112.79/chromedriver_mac64.zip",
-        sha256 = "65766e1c5cecf0e560cfb602bdc62e181d89a35258cf2dfbbb2a8cad37d2f451",
+        url = "https://chromedriver.storage.googleapis.com/105.0.5195.52/chromedriver_mac64.zip",
+        sha256 = "c0e2982c36f02216a4eaaaff2672b6aa702bbc2b904b00e4ca736c708b784867",
         build_file_content = "exports_files([\"chromedriver\"])",
     )
