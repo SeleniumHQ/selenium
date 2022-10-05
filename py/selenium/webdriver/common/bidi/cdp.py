@@ -150,7 +150,7 @@ class BrowserError(Exception):
         self.detail = obj.get("data")
 
     def __str__(self):
-        return "BrowserError<code={} message={}> {}".format(self.code, self.message, self.detail)
+        return f"BrowserError<code={self.code} message={self.message}> {self.detail}"
 
 
 class CdpConnectionClosed(WsConnectionClosed):
@@ -261,7 +261,7 @@ class CdpBase:
         try:
             cmd, event = self.inflight_cmd.pop(cmd_id)
         except KeyError:
-            logger.warning("Got a message with a command ID that does" " not exist: {}".format(data))
+            logger.warning(f"Got a message with a command ID that does not exist: {data}")
             return
         if "error" in data:
             # If the server reported an error, convert it to an exception and do
@@ -440,7 +440,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
                 try:
                     session = self.sessions[session_id]
                 except KeyError:
-                    raise BrowserError("Browser sent a message for an invalid " "session: {!r}".format(session_id))
+                    raise BrowserError(f"Browser sent a message for an invalid session: {session_id!r}")
                 session._handle_data(data)
             else:
                 self._handle_data(data)
