@@ -45,10 +45,6 @@ class ChromiumService(service.Service):
         if log_path:
             self.service_args.append(f"--log-path={log_path}")
 
-        if not start_error_message:
-            # Todo: Make this a required arg in future.
-            raise TypeError("`start_error_message` must be provided.")
-
         super().__init__(
             executable=executable_path,
             port=port,

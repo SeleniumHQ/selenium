@@ -31,6 +31,7 @@ class WebDriverException(Exception):
     def __init__(
         self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
     ) -> None:
+        super().__init__()
         self.msg = msg
         self.screen = screen
         self.stacktrace = stacktrace
