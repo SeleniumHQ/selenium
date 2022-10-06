@@ -36,7 +36,7 @@ namespace OpenQA.Selenium.DevTools
     ///</summary>
     public class DevToolsSession : IDevToolsSession
     {
-        public const int AutoDetectDevToolsProtocolVersion = 106;
+        public const int AutoDetectDevToolsProtocolVersion = 0;
 
         private readonly string debuggerEndpoint;
         private string websocketAddress;
