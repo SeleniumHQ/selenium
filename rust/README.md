@@ -9,7 +9,7 @@ Selenium Manager has been implemented as a CLI (Command-Line Interface) tool usi
 curl https://sh.rustup.rs -sSf | sh
 ```
 
-Alternatively, you can build it using [Bazel](https://bazel.build) by executing `bazel build //rust:webdriver-manager` from the top-level directory of the Selenium repo (the same one where the `WORKSPACE` file is) 
+Alternatively, you can build it using [Bazel](https://bazel.build) by executing `bazel build //rust:selenium-manager` from the top-level directory of the Selenium repo (the same one where the `WORKSPACE` file is).
 
 ## Usage
 Selenium Manager can be executed using Cargo as follows:
@@ -53,7 +53,7 @@ DEBUG	File extracted to /home/boni/.cache/selenium/chromedriver/linux64/106.0.52
 INFO	/home/boni/.cache/selenium/chromedriver/linux64/106.0.5249.61/chromedriver
 ```
 
-Alternatively, you can replace `cargo run` with `bazel run //rust:webdriver-manager`, for example `bazel run //rust:webdriver-manager -- --browser chrome --debug`
+Alternatively, you can replace `cargo run` with `bazel run //rust:selenium-manager`, for example `bazel run //rust:selenium-manager -- --browser chrome --debug`
 
 ## Roadmap
 The implementation of Selenium Manager has been planned to be incremental. In the beginning, it should be a component that each Selenium language binding can optionally use to manage the local browser infrastructure. In the mid-term, and as long as it becomes more stable and complete, it could be used as the default tool for automated browser and driver management. All in all, the milestone we propose are the following:

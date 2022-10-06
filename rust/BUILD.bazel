@@ -2,7 +2,7 @@ load("@crates//:defs.bzl", "all_crate_deps")
 load("@rules_rust//rust:defs.bzl", "rust_binary")
 
 rust_binary(
-    name = "webdriver-manager",
+    name = "selenium-manager",
     srcs = glob(["src/**/*.rs"]),
     edition = "2018",
     deps = all_crate_deps(normal = True),
