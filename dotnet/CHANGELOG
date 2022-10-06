@@ -1,3 +1,7 @@
+v4.5.1
+======
+* Fix bug preventing automatic detection of protocol version
+
 v4.5.0
 ======
 * Add CDP support for v105, and remove v102
