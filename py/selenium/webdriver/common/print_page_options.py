@@ -71,7 +71,7 @@ class PrintOptions:
         """
         :Returns: A hash of print options configured
         """
-        return self._print_options
+        return self._print_options.copy()
 
     @property
     def orientation(self) -> Optional[Orientation]:
