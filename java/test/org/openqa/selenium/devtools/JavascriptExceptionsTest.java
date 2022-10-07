@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JavascriptExceptionsTest extends DevToolsTestBase {
+class JavascriptExceptionsTest extends DevToolsTestBase {
 
   @Test
   @NotYetImplemented(value = Browser.FIREFOX, reason = "`Log` domain not yet supported")

@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Tag("UnitTests")
-public class AjaxElementLocatorTest {
+class AjaxElementLocatorTest {
 
   private TickingClock clock = new TickingClock();
 
@@ -50,7 +50,7 @@ public class AjaxElementLocatorTest {
   }
 
   @Test
-  public void shouldContinueAttemptingToFindElement() throws Exception {
+  void shouldContinueAttemptingToFindElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
@@ -67,7 +67,7 @@ public class AjaxElementLocatorTest {
   }
 
   @Test
-  public void shouldContinueAttemptingToFindElements() throws Exception {
+  void shouldContinueAttemptingToFindElements() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
@@ -86,7 +86,7 @@ public class AjaxElementLocatorTest {
   }
 
   @Test
-  public void shouldThrowNoSuchElementExceptionIfElementTakesTooLongToAppear() throws Exception {
+  void shouldThrowNoSuchElementExceptionIfElementTakesTooLongToAppear() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
@@ -108,7 +108,7 @@ public class AjaxElementLocatorTest {
   }
 
   @Test
-  public void shouldAlwaysDoAtLeastOneAttemptAtFindingTheElement() throws Exception {
+  void shouldAlwaysDoAtLeastOneAttemptAtFindingTheElement() throws Exception {
     Field f = Page.class.getDeclaredField("first");
     final WebDriver driver = mock(WebDriver.class);
     final By by = new ByIdOrName("first");
@@ -124,7 +124,7 @@ public class AjaxElementLocatorTest {
   }
 
   @Test
-  public void shouldWorkWithCustomAnnotations() {
+  void shouldWorkWithCustomAnnotations() {
     final WebDriver driver = mock(WebDriver.class);
 
     AbstractAnnotations npeAnnotations = new AbstractAnnotations() {

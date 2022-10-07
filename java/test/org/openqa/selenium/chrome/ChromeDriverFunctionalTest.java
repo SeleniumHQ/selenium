@@ -37,13 +37,16 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-public class ChromeDriverFunctionalTest extends JupiterTestBase {
+import com.google.common.util.concurrent.Uninterruptibles;
+
+class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
@@ -68,7 +71,7 @@ public class ChromeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void builderWithClientConfigThrowsException() {
+  void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = ChromeDriver.builder().config(clientConfig);
 
@@ -78,7 +81,7 @@ public class ChromeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void canSetPermission() {
+  void canSetPermission() {
     HasPermissions permissions = (HasPermissions) driver;
 
     driver.get(pages.clicksPage);
@@ -129,7 +132,7 @@ public class ChromeDriverFunctionalTest extends JupiterTestBase {
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Thread.sleep(1500);
+    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
@@ -143,12 +146,12 @@ public class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  public void canCastOnDesktop() throws InterruptedException {
+  public void canCastOnDesktop() {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Thread.sleep(1500);
+    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
@@ -161,7 +164,7 @@ public class ChromeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void canManageNetworkConditions() {
+  void canManageNetworkConditions() {
     HasNetworkConditions conditions = (HasNetworkConditions) driver;
 
     ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
@@ -183,7 +186,7 @@ public class ChromeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void canExecuteCdpCommands() {
+  void canExecuteCdpCommands() {
     HasCdp cdp = (HasCdp) driver;
 
     Map<String, Object> parameters = Map.of("url", pages.simpleTestPage);

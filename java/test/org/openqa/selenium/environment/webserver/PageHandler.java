@@ -25,7 +25,7 @@ import java.io.UncheckedIOException;
 
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-public class PageHandler implements HttpHandler {
+class PageHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {

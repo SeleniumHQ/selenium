@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 @Disabled("Incorrectly calculated base path")
 public class TestCookie extends InternalSelenseTestBase {
   @Test
-  public void testCookie() {
+  void testCookie() {
     String base =
         selenium
             .getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");

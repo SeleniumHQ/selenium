@@ -22,9 +22,9 @@ import com.google.common.net.InetAddresses;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.internal.Require;
 
-public class DomainHelper {
+class DomainHelper {
 
-  private AppServer appServer;
+  private final AppServer appServer;
 
   public DomainHelper(AppServer appServer) {
     this.appServer = appServer;

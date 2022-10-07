@@ -35,10 +35,10 @@ import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.List;
 
-public class UsingPageFactoryTest extends JupiterTestBase {
+class UsingPageFactoryTest extends JupiterTestBase {
 
   @Test
-  public void canExecuteJsUsingDecoratedElements() {
+  void canExecuteJsUsingDecoratedElements() {
     driver.get(pages.xhtmlTestPage);
 
     Page page = new Page();
@@ -51,7 +51,7 @@ public class UsingPageFactoryTest extends JupiterTestBase {
   }
 
   @Test
-  public void canListDecoratedElements() {
+  void canListDecoratedElements() {
     driver.get(pages.xhtmlTestPage);
 
     Page page = new Page();
@@ -64,7 +64,7 @@ public class UsingPageFactoryTest extends JupiterTestBase {
   }
 
   @Test
-  public void testDecoratedElementsShouldBeUnwrapped() {
+  void testDecoratedElementsShouldBeUnwrapped() {
     final RemoteWebElement element = new RemoteWebElement();
     element.setId("foo");
 
@@ -81,7 +81,7 @@ public class UsingPageFactoryTest extends JupiterTestBase {
   }
 
 
-  public class PublicPage {
+  class PublicPage {
     public WebElement element;
   }
 

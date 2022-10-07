@@ -96,7 +96,7 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class SessionCleanUpTest {
+class SessionCleanUpTest {
 
   public static final Json JSON = new Json();
   int publish;
@@ -134,7 +134,7 @@ public class SessionCleanUpTest {
   }
 
   @Test
-  public void shouldRemoveSessionAfterNodeIsShutDownGracefully() {
+  void shouldRemoveSessionAfterNodeIsShutDownGracefully() {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     CombinedHandler handler = new CombinedHandler();
 
@@ -221,7 +221,7 @@ public class SessionCleanUpTest {
     Optional<Map<String, Object>> maybeResponse =
       Optional.ofNullable(Values.get(httpResponse, Map.class));
 
-    assertThat(maybeResponse.isPresent()).isTrue();
+    assertThat(maybeResponse).isPresent();
     String rawResponse = JSON.toJson(maybeResponse.get().get("sessionId"));
     SessionId id = JSON.toType(rawResponse, SessionId.class);
 
@@ -241,7 +241,7 @@ public class SessionCleanUpTest {
   }
 
   @Test
-  public void shouldRemoveSessionAfterNodeIsDown() throws URISyntaxException {
+  void shouldRemoveSessionAfterNodeIsDown() throws URISyntaxException {
     CombinedHandler handler = new CombinedHandler();
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
 

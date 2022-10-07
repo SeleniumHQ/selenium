@@ -46,7 +46,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 
-public class CorrectEventFiringTest extends JupiterTestBase {
+class CorrectEventFiringTest extends JupiterTestBase {
 
   private static void clickOnElementWhichRecordsEvents(WebDriver driver) {
     driver.findElement(By.id("plainButton")).click();
@@ -180,7 +180,7 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldNotThrowIfEventHandlerThrows() {
+  void testShouldNotThrowIfEventHandlerThrows() {
     driver.get(pages.javascriptPage);
 
     try {
@@ -298,7 +298,7 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldEmitClickEventWhenClickingOnATextInputElement() {
+  void testShouldEmitClickEventWhenClickingOnATextInputElement() {
     driver.get(pages.javascriptPage);
 
     WebElement clicker = driver.findElement(By.id("clickField"));
@@ -332,7 +332,7 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
+  void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFire() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
 
     driver.get(pages.javascriptPage);
@@ -379,7 +379,7 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
+  void testSendingKeysToAnElementShouldCauseTheFocusEventToFire() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
 
     driver.get(pages.javascriptPage);
@@ -440,7 +440,7 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
+  void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
     formElement.submit();
@@ -448,7 +448,7 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
+  void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
     submit.submit();
@@ -456,7 +456,7 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
+  void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
     submit.submit();
@@ -465,11 +465,11 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
+  void testUploadingFileShouldFireOnChangeEvent() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
     WebElement result = driver.findElement(By.id("fileResults"));
-    assertThat(result.getText()).isEqualTo("");
+    assertThat(result.getText()).isEmpty();
 
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -486,7 +486,7 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReportTheXAndYCoordinatesWhenClicking() {
+  void testShouldReportTheXAndYCoordinatesWhenClicking() {
     driver.get(pages.clickEventPage);
 
     WebElement element = driver.findElement(By.id("eventish"));
@@ -500,7 +500,7 @@ public class CorrectEventFiringTest extends JupiterTestBase {
   }
 
   @Test
-  public void testClickEventsShouldBubble() {
+  void testClickEventsShouldBubble() {
     driver.get(pages.clicksPage);
     driver.findElement(By.id("bubblesFrom")).click();
     boolean eventBubbled = (Boolean)((JavascriptExecutor)driver).executeScript("return !!window.bubbledClick;");

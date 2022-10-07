@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 public class JUnit4AndTestNgConditionRunnerTest {
 
   @Test
-  public void testAssertionErrorIsOfRightType() {
+  void testAssertionErrorIsOfRightType() {
     JUnit4AndTestNgConditionRunner cr = new JUnit4AndTestNgConditionRunner(null, null, 1, 1);
     try {
       cr.throwAssertionException("foo");

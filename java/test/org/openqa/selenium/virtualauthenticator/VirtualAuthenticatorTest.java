@@ -37,7 +37,7 @@ import static org.assertj.core.api.Fail.fail;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class VirtualAuthenticatorTest extends JupiterTestBase {
+class VirtualAuthenticatorTest extends JupiterTestBase {
 
   /**
    * A pkcs#8 encoded encrypted RSA private key as a base64url string.
@@ -149,7 +149,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCreateAuthenticator() {
+  void testCreateAuthenticator() {
     // Register a credential on the Virtual Authenticator.
     createRKDisabledU2FAuthenticator();
     Object response = jsAwareDriver.executeAsyncScript(
@@ -164,7 +164,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testRemoveAuthenticator() {
+  void testRemoveAuthenticator() {
     VirtualAuthenticatorOptions options = new VirtualAuthenticatorOptions();
     VirtualAuthenticator authenticator =
       ((HasVirtualAuthenticator) driver).addVirtualAuthenticator(options);
@@ -173,7 +173,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testAddNonResidentCredential() {
+  void testAddNonResidentCredential() {
     // Add a non-resident credential using the testing API.
     createRKDisabledCTAP2Authenticator();
     byte[] credentialId = {1, 2, 3, 4};
@@ -187,7 +187,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testAddNonResidentCredentialWhenAuthenticatorUsesU2FProtocol() {
+  void testAddNonResidentCredentialWhenAuthenticatorUsesU2FProtocol() {
     // Add a non-resident credential using the testing API.
 
     createRKDisabledU2FAuthenticator();
@@ -214,7 +214,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testAddResidentCredential() {
+  void testAddResidentCredential() {
     // Add a resident credential using the testing API.
     createRKEnabledCTAP2Authenticator();
     byte[] credentialId = {1, 2, 3, 4};
@@ -233,7 +233,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testAddResidentCredentialNotSupportedWhenAuthenticatorUsesU2FProtocol() {
+  void testAddResidentCredentialNotSupportedWhenAuthenticatorUsesU2FProtocol() {
     assertThrows(InvalidArgumentException.class, () -> {
       // Add a resident credential using the testing API.
       createRKEnabledU2FAuthenticator();
@@ -258,7 +258,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testGetCredentials() {
+  void testGetCredentials() {
     // Create an authenticator and add two credentials.
     createRKEnabledCTAP2Authenticator();
 
@@ -309,7 +309,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testRemoveCredentialByRawId() {
+  void testRemoveCredentialByRawId() {
     createRKDisabledU2FAuthenticator();
 
     // Register credential.
@@ -329,7 +329,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testRemoveCredentialByBase64UrlId() {
+  void testRemoveCredentialByBase64UrlId() {
     createRKDisabledU2FAuthenticator();
 
     // Register credential.
@@ -349,7 +349,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testRemoveAllCredentials() {
+  void testRemoveAllCredentials() {
     createRKDisabledU2FAuthenticator();
 
     // Register two credentials.
@@ -381,7 +381,7 @@ public class VirtualAuthenticatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSetUserVerified() {
+  void testSetUserVerified() {
     createRKEnabledCTAP2Authenticator();
 
     // Register a credential requiring UV.

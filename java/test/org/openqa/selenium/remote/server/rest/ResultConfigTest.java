@@ -32,25 +32,25 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-public class ResultConfigTest {
+class ResultConfigTest {
   private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
   private static final SessionId dummySessionId = new SessionId("Test");
 
   @Test
-  public void testShouldNotAllowNullToBeUsedAsTheUrl() {
+  void testShouldNotAllowNullToBeUsedAsTheUrl() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> new ResultConfig(null, () -> () -> null, null, logger));
   }
 
   @Test
-  public void testShouldNotAllowNullToBeUsedForTheHandler() {
+  void testShouldNotAllowNullToBeUsedForTheHandler() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> new ResultConfig("/cheese", (Supplier<RestishHandler<?>>) null, null, logger));
   }
 
   @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
   @Test
-  public void testShouldGracefullyHandleNullInputs() {
+  void testShouldGracefullyHandleNullInputs() {
     ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, logger
     );
     assertNull(config.getRootExceptionCause(null));
@@ -58,7 +58,7 @@ public class ResultConfigTest {
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
-  public void testCanPeelNestedExceptions() {
+  void testCanPeelNestedExceptions() {
     RuntimeException runtime = new RuntimeException("root of all evils");
     InvocationTargetException invocation = new InvocationTargetException(runtime,
         "Got Runtime Exception");
@@ -75,7 +75,7 @@ public class ResultConfigTest {
 
   @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
-  public void testDoesNotPeelTooManyLayersFromNestedExceptions() {
+  void testDoesNotPeelTooManyLayersFromNestedExceptions() {
     RuntimeException runtime = new RuntimeException("root of all evils");
     NoSuchElementException noElement = new NoSuchElementException("no soup for you", runtime);
     InvocationTargetException invocation = new InvocationTargetException(noElement);

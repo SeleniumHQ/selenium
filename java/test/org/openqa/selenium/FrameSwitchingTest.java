@@ -39,7 +39,7 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class FrameSwitchingTest extends JupiterTestBase {
+class FrameSwitchingTest extends JupiterTestBase {
 
   private Random random;
 
@@ -58,13 +58,13 @@ public class FrameSwitchingTest extends JupiterTestBase {
   //
   // ----------------------------------------------------------------------------------------------
   @Test
-  public void testShouldAlwaysFocusOnTheTopMostFrameAfterANavigationEvent() {
+  void testShouldAlwaysFocusOnTheTopMostFrameAfterANavigationEvent() {
     driver.get(pages.framesetPage);
     driver.findElement(By.tagName("frameset")); // Test passes if this does not throw.
   }
 
   @Test
-  public void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
+  void testShouldNotAutomaticallySwitchFocusToAnIFrameWhenAPageContainingThemIsLoaded() {
     driver.get(pages.iframePage);
     driver.findElement(By.id("iframe_page_heading"));
   }
@@ -94,7 +94,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   //
   // ----------------------------------------------------------------------------------------------
   @Test
-  public void testShouldBeAbleToSwitchToAFrameByItsIndex() {
+  void testShouldBeAbleToSwitchToAFrameByItsIndex() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame(1);
 
@@ -102,7 +102,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToAnIframeByItsIndex() {
+  void testShouldBeAbleToSwitchToAnIframeByItsIndex() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
 
@@ -110,7 +110,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToAFrameByItsName() {
+  void testShouldBeAbleToSwitchToAFrameByItsName() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fourth");
 
@@ -118,7 +118,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToAnIframeByItsName() {
+  void testShouldBeAbleToSwitchToAnIframeByItsName() {
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1-name");
 
@@ -126,14 +126,14 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToAFrameByItsID() {
+  void testShouldBeAbleToSwitchToAFrameByItsID() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fifth");
     assertThat(driver.findElement(By.name("windowOne")).getText()).isEqualTo("Open new window");
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToAnIframeByItsID() {
+  void testShouldBeAbleToSwitchToAnIframeByItsID() {
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1");
 
@@ -141,14 +141,14 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToFrameWithNameContainingDot() {
+  void testShouldBeAbleToSwitchToFrameWithNameContainingDot() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("sixth.iframe1");
     assertThat(driver.findElement(By.tagName("body")).getText()).contains("Page number 3");
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement() {
+  void testShouldBeAbleToSwitchToAFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.framesetPage);
     WebElement frame = driver.findElement(By.tagName("frame"));
     driver.switchTo().frame(frame);
@@ -157,7 +157,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement() {
+  void testShouldBeAbleToSwitchToAnIFrameUsingAPreviouslyLocatedWebElement() {
     driver.get(pages.iframePage);
     WebElement frame = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(frame);
@@ -167,7 +167,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldEnsureElementIsAFrameBeforeSwitching() {
+  void testShouldEnsureElementIsAFrameBeforeSwitching() {
     driver.get(pages.framesetPage);
     WebElement frame = driver.findElement(By.tagName("frameset"));
 
@@ -176,7 +176,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame() {
+  void testFrameSearchesShouldBeRelativeToTheCurrentlySelectedFrame() {
     driver.get(pages.framesetPage);
 
     driver.switchTo().frame("second");
@@ -197,7 +197,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldSelectChildFramesByChainedCalls() {
+  void testShouldSelectChildFramesByChainedCalls() {
     driver.get(pages.framesetPage);
 
     driver.switchTo().frame("fourth").switchTo().frame("child2");
@@ -205,7 +205,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames() {
+  void testShouldThrowFrameNotFoundExceptionLookingUpSubFramesWithSuperFrameNames() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fourth");
 
@@ -214,7 +214,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
+  void testShouldThrowAnExceptionWhenAFrameCannotBeFound() {
     driver.get(pages.xhtmlTestPage);
 
     assertThatExceptionOfType(NoSuchFrameException.class)
@@ -222,7 +222,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
+  void testShouldThrowAnExceptionWhenAFrameCannotBeFoundByIndex() {
     driver.get(pages.xhtmlTestPage);
 
     assertThatExceptionOfType(NoSuchFrameException.class)
@@ -230,7 +230,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToParentFrame() {
+  void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
 
     driver.switchTo().frame("fourth").switchTo().parentFrame().switchTo().frame("first");
@@ -248,14 +248,14 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
+  void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
     driver.switchTo().parentFrame();
     assertThat(driver.getTitle()).isEqualTo("XHTML Test Page");
   }
 
   @Test
-  public void testShouldBeAbleToSwitchToParentFromAnIframe() {
+  void testShouldBeAbleToSwitchToParentFromAnIframe() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
 
@@ -270,7 +270,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   // ----------------------------------------------------------------------------------------------
 
   @Test
-  public void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
+  void testShouldContinueToReferToTheSameFrameOnceItHasBeenSelected() {
     driver.get(pages.framesetPage);
 
     driver.switchTo().frame(2);
@@ -295,7 +295,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
+  void testShouldAllowAUserToSwitchFromAnIframeBackToTheMainContentOfThePage() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
 
@@ -304,7 +304,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
+  void testShouldAllowTheUserToSwitchToAnIFrameAndRemainFocusedOnIt() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
 
@@ -318,7 +318,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickInAFrame() {
+  void testShouldBeAbleToClickInAFrame() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
 
@@ -332,7 +332,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation() {
+  void testShouldBeAbleToClickInAFrameThatRewritesTopWindowLocation() {
     driver.get(appServer.whereIs("click_tests/issue5237.html"));
     driver.switchTo().frame("search");
     driver.findElement(By.id("submit")).click();
@@ -341,7 +341,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickInASubFrame() {
+  void testShouldBeAbleToClickInASubFrame() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("sixth")
       .switchTo().frame("iframe1");
@@ -358,7 +358,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToFindElementsInIframesByXPath() {
+  void testShouldBeAbleToFindElementsInIframesByXPath() {
     driver.get(pages.iframePage);
 
     driver.switchTo().frame("iframe1");
@@ -369,7 +369,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrl() {
+  void testGetCurrentUrlReturnsTopLevelBrowsingContextUrl() {
     driver.get(pages.framesetPage);
     assertThat(driver.getCurrentUrl()).isEqualTo(pages.framesetPage);
 
@@ -378,7 +378,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
+  void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl()).isEqualTo(pages.iframePage);
 
@@ -464,14 +464,14 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnWindowTitleInAFrameset() {
+  void testShouldReturnWindowTitleInAFrameset() {
     driver.get(pages.framesetPage);
     driver.switchTo().frame("third");
     assertThat(driver.getTitle()).isEqualTo("Unique title");
   }
 
   @Test
-  public void testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame() {
+  void testJavaScriptShouldExecuteInTheContextOfTheCurrentFrame() {
     JavascriptExecutor executor = (JavascriptExecutor) driver;
 
     driver.get(pages.framesetPage);
@@ -481,7 +481,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldNotSwitchMagicallyToTheTopWindow() {
+  void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
     driver.get(baseUrl + "bug4876.html");
     driver.switchTo().frame(0);
@@ -507,7 +507,7 @@ public class FrameSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testGetShouldSwitchToDefaultContext() {
+  void testGetShouldSwitchToDefaultContext() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(driver.findElement(By.id("iframe1")));
     driver.findElement(By.id("cheese")); // Found on formPage.html but not on iframes.html.

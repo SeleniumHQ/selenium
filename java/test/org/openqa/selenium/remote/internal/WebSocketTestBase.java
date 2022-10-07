@@ -89,7 +89,7 @@ public abstract class WebSocketTestBase {
   }
 
   @Test
-  public void shouldBeAbleToSendATextMessage() throws InterruptedException {
+  void shouldBeAbleToSendATextMessage() throws InterruptedException {
     AtomicReference<String> message = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
 
@@ -110,7 +110,7 @@ public abstract class WebSocketTestBase {
   }
 
   @Test
-  public void shouldBeAbleToSendABinaryMessage() throws InterruptedException {
+  void shouldBeAbleToSendABinaryMessage() throws InterruptedException {
     AtomicReference<byte[]> message = new AtomicReference<>();
     CountDownLatch latch = new CountDownLatch(1);
 

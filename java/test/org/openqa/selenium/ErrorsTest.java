@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-public class ErrorsTest extends JupiterTestBase {
+class ErrorsTest extends JupiterTestBase {
 
   /**
    * This will trivially pass on browsers that do not support the onerror handler (e.g. Internet
@@ -36,6 +36,6 @@ public class ErrorsTest extends JupiterTestBase {
     driver.get(pages.errorsPage);
     Object result = ((JavascriptExecutor) driver).
         executeScript("return window.ERRORS.join('\\n');");
-    assertThat(result).isEqualTo("");
+    assertThat(result).isEmpty();
   }
 }

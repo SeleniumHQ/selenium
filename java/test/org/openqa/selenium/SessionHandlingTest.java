@@ -26,11 +26,11 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-public class SessionHandlingTest extends JupiterTestBase {
+class SessionHandlingTest extends JupiterTestBase {
 
   @NoDriverAfterTest
   @Test
-  public void callingQuitMoreThanOnceOnASessionIsANoOp() {
+  void callingQuitMoreThanOnceOnASessionIsANoOp() {
     driver.quit();
     sleepTight(3000);
     driver.quit();
@@ -48,7 +48,7 @@ public class SessionHandlingTest extends JupiterTestBase {
 
   @NoDriverAfterTest
   @Test
-  public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
+  void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     driver.close();
     sleepTight(3000);
     assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
@@ -56,14 +56,14 @@ public class SessionHandlingTest extends JupiterTestBase {
 
   @NoDriverAfterTest
   @Test
-  public void callingAnyOperationAfterQuitShouldThrowAnException() {
+  void callingAnyOperationAfterQuitShouldThrowAnException() {
     driver.quit();
     sleepTight(3000);
     assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(driver::getCurrentUrl);
   }
 
   @Test
-  public void shouldContinueAfterSleep() {
+  void shouldContinueAfterSleep() {
     sleepTight(10000);
     driver.getWindowHandle(); // should not throw
   }

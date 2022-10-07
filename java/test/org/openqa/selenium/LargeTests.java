@@ -26,6 +26,6 @@ import org.junit.platform.suite.api.Suite;
     ExecutingAsyncJavascriptTest.class
 })
 @Suite
-public class LargeTests {
+class LargeTests {
 
 }

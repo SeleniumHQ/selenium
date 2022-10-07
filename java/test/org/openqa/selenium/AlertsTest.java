@@ -41,7 +41,7 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
-public class AlertsTest extends JupiterTestBase {
+class AlertsTest extends JupiterTestBase {
 
   private static ExpectedCondition<Boolean> textInElementLocated(
     final By locator, final String text) {
@@ -83,7 +83,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
+  void testShouldBeAbleToOverrideTheWindowAlertMethod() {
     driver.get(alertPage("cheese"));
 
     ((JavascriptExecutor) driver).executeScript(
@@ -95,7 +95,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowUsersToAcceptAnAlertManually() {
+  void testShouldAllowUsersToAcceptAnAlertManually() {
     driver.get(alertPage("cheese"));
 
     driver.findElement(By.id("alert")).click();
@@ -107,7 +107,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldThrowIllegalArgumentExceptionWhenKeysNull() {
+  void testShouldThrowIllegalArgumentExceptionWhenKeysNull() {
     driver.get(alertPage("cheese"));
 
     driver.findElement(By.id("alert")).click();
@@ -118,7 +118,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
+  void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
     driver.get(alertPage(""));
 
     driver.findElement(By.id("alert")).click();
@@ -130,7 +130,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowUsersToDismissAnAlertManually() {
+  void testShouldAllowUsersToDismissAnAlertManually() {
     driver.get(alertPage("cheese"));
 
     driver.findElement(By.id("alert")).click();
@@ -142,7 +142,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowAUserToAcceptAPrompt() {
+  void testShouldAllowAUserToAcceptAPrompt() {
     driver.get(promptPage(null));
 
     driver.findElement(By.id("prompt")).click();
@@ -154,7 +154,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowAUserToDismissAPrompt() {
+  void testShouldAllowAUserToDismissAPrompt() {
     driver.get(promptPage(null));
 
     driver.findElement(By.id("prompt")).click();
@@ -166,7 +166,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowAUserToSetTheValueOfAPrompt() {
+  void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.get(promptPage(null));
 
     driver.findElement(By.id("prompt")).click();
@@ -178,7 +178,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSettingTheValueOfAnAlertThrows() {
+  void testSettingTheValueOfAnAlertThrows() {
     driver.get(alertPage("cheese"));
 
     driver.findElement(By.id("alert")).click();
@@ -189,7 +189,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
+  void testShouldAllowTheUserToGetTheTextOfAnAlert() {
     driver.get(alertPage("cheese"));
 
     driver.findElement(By.id("alert")).click();
@@ -201,7 +201,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowTheUserToGetTheTextOfAPrompt() {
+  void testShouldAllowTheUserToGetTheTextOfAPrompt() {
     driver.get(promptPage(null));
 
     driver.findElement(By.id("prompt")).click();
@@ -213,7 +213,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testAlertShouldNotAllowAdditionalCommandsIfDismissed() {
+  void testAlertShouldNotAllowAdditionalCommandsIfDismissed() {
     driver.get(alertPage("cheese"));
 
     driver.findElement(By.id("alert")).click();
@@ -226,7 +226,7 @@ public class AlertsTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
+  void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     String iframe = appServer.create(new Page()
         .withBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
     driver.get(appServer.create(new Page()
@@ -244,7 +244,7 @@ public class AlertsTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
+  void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
     String iframe = appServer.create(new Page()
         .withBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
     String iframe2 = appServer.create(new Page()
@@ -264,7 +264,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSwitchingToMissingAlertThrows() {
+  void testSwitchingToMissingAlertThrows() {
     driver.get(alertPage("cheese"));
 
     assertThatExceptionOfType(NoAlertPresentException.class)
@@ -272,7 +272,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSwitchingToMissingAlertInAClosedWindowThrows() {
+  void testSwitchingToMissingAlertInAClosedWindowThrows() {
     String blank = appServer.create(new Page());
     driver.get(appServer.create(new Page()
         .withBody(String.format(
@@ -293,7 +293,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testPromptShouldUseDefaultValueIfNoKeysSent() {
+  void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.get(promptPage("This is a default value"));
 
     wait.until(presenceOfElementLocated(By.id("prompt"))).click();
@@ -304,7 +304,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testPromptShouldHaveNullValueIfDismissed() {
+  void testPromptShouldHaveNullValueIfDismissed() {
     driver.get(promptPage("This is a default value"));
 
     driver.findElement(By.id("prompt")).click();
@@ -315,7 +315,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testHandlesTwoAlertsFromOneInteraction() {
+  void testHandlesTwoAlertsFromOneInteraction() {
     driver.get(appServer.create(new Page()
         .withScripts(
             "function setInnerText(id, value) {",
@@ -344,7 +344,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldHandleAlertOnPageLoad() {
+  void testShouldHandleAlertOnPageLoad() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
         .withBody("<p>Page with onload event handler</p>"));
@@ -361,7 +361,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldHandleAlertOnPageLoadUsingGet() {
+  void testShouldHandleAlertOnPageLoadUsingGet() {
     driver.get(appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
         .withBody("<p>Page with onload event handler</p>")));
@@ -412,7 +412,7 @@ public class AlertsTest extends JupiterTestBase {
 
   @NoDriverAfterTest
   @Test
-  public void testCanQuitWhenAnAlertIsPresent() {
+  void testCanQuitWhenAnAlertIsPresent() {
     driver.get(alertPage("cheese"));
 
     driver.findElement(By.id("alert")).click();
@@ -422,7 +422,7 @@ public class AlertsTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldHandleAlertOnFormSubmit() {
+  void shouldHandleAlertOnFormSubmit() {
     driver.get(appServer.create(new Page().withTitle("Testing Alerts").withBody(
         "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",
         "<input id='unused' type='submit' value='Submit'>",

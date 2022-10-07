@@ -31,13 +31,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class EnsureSpecCompliantHeadersTest {
+class EnsureSpecCompliantHeadersTest {
 
   private final HttpHandler alwaysOk = req -> new HttpResponse()
     .setContent(Contents.utf8String("Cheese"));
 
   @Test
-  public void shouldBlockRequestsWithNoContentType() {
+  void shouldBlockRequestsWithNoContentType() {
     HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of())
       .apply(alwaysOk)
       .execute(new HttpRequest(POST, "/session"));
@@ -46,7 +46,7 @@ public class EnsureSpecCompliantHeadersTest {
   }
 
   @Test
-  public void shouldAllowRequestsWithNoContentTypeWhenSkipCheckOnMatches() {
+  void shouldAllowRequestsWithNoContentTypeWhenSkipCheckOnMatches() {
     HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of("/gouda"))
       .apply(alwaysOk)
       .execute(new HttpRequest(POST, "/gouda"));
@@ -55,7 +55,7 @@ public class EnsureSpecCompliantHeadersTest {
   }
 
   @Test
-  public void requestsWithAnOriginHeaderShouldBeBlocked() {
+  void requestsWithAnOriginHeaderShouldBeBlocked() {
     HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of())
       .apply(alwaysOk)
       .execute(
@@ -67,7 +67,7 @@ public class EnsureSpecCompliantHeadersTest {
   }
 
   @Test
-  public void requestsWithAnAllowedOriginHeaderShouldBeAllowed() {
+  void requestsWithAnAllowedOriginHeaderShouldBeAllowed() {
     HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of("example.com"), ImmutableSet.of())
       .apply(alwaysOk)
       .execute(
@@ -80,7 +80,7 @@ public class EnsureSpecCompliantHeadersTest {
   }
 
   @Test
-  public void shouldAllowRequestsWithNoOriginHeader() {
+  void shouldAllowRequestsWithNoOriginHeader() {
     HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of())
       .apply(alwaysOk)
       .execute(

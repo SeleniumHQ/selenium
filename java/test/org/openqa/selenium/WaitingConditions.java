@@ -29,8 +29,8 @@ public class WaitingConditions {
 
   private static abstract class ElementTextComparator implements ExpectedCondition<String> {
     private String lastText = "";
-    private WebElement element;
-    private String expectedValue;
+    private final WebElement element;
+    private final String expectedValue;
 
     ElementTextComparator(WebElement element, String expectedValue) {
       this.element = element;
@@ -78,7 +78,7 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<String> elementTextToEqual(final By locator, final String value) {
-    return new ExpectedCondition<String>() {
+    return new ExpectedCondition<>() {
 
       @Override
       public String apply(WebDriver driver) {
@@ -181,7 +181,7 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {
-    return new ExpectedCondition<WebDriver>() {
+    return new ExpectedCondition<>() {
 
       @Override
       public WebDriver apply(WebDriver driver) {

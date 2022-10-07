@@ -40,18 +40,18 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 @Tag("UnitTests")
-public class FormEncodedDataTest {
+class FormEncodedDataTest {
 
   @Test
-  public void shouldRequireCorrectContentType() {
+  void shouldRequireCorrectContentType() {
     HttpRequest request = createRequest("key", "value").removeHeader("Content-Type");
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data).isEqualTo(Optional.empty());
+    assertThat(data).isNotPresent();
   }
 
   @Test
-  public void canReadASinglePairOfValues() {
+  void canReadASinglePairOfValues() {
     HttpRequest request = createRequest("key", "value");
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
@@ -60,7 +60,7 @@ public class FormEncodedDataTest {
   }
 
   @Test
-  public void canReadTwoValues() {
+  void canReadTwoValues() {
     HttpRequest request = createRequest("key", "value", "foo", "bar");
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
@@ -70,7 +70,7 @@ public class FormEncodedDataTest {
   }
 
   @Test
-  public void shouldSetEmptyValuesToTheEmptyString() {
+  void shouldSetEmptyValuesToTheEmptyString() {
     HttpRequest request = createRequest("key", null);
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
@@ -79,7 +79,7 @@ public class FormEncodedDataTest {
   }
 
   @Test
-  public void shouldDecodeParameterNames() {
+  void shouldDecodeParameterNames() {
     HttpRequest request = createRequest("%foo%", "value");
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
@@ -88,7 +88,7 @@ public class FormEncodedDataTest {
   }
 
   @Test
-  public void shouldDecodeParameterValues() {
+  void shouldDecodeParameterValues() {
     HttpRequest request = createRequest("key", "%bar%");
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
@@ -97,7 +97,7 @@ public class FormEncodedDataTest {
   }
 
   @Test
-  public void shouldCollectMultipleValuesForTheSameParameterNamePreservingOrder() {
+  void shouldCollectMultipleValuesForTheSameParameterNamePreservingOrder() {
     HttpRequest request = createRequest("foo", "bar", "foo", "baz");
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
@@ -106,7 +106,7 @@ public class FormEncodedDataTest {
   }
 
   @Test
-  public void aSingleParameterNameIsEnough() {
+  void aSingleParameterNameIsEnough() {
     HttpRequest request = new HttpRequest(GET, "/example")
       .addHeader("Content-Type", MediaType.FORM_DATA.toString())
       .setContent(bytes("param".getBytes()));

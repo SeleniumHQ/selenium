@@ -66,7 +66,7 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
-public class TakesScreenshotTest extends JupiterTestBase {
+class TakesScreenshotTest extends JupiterTestBase {
 
   private TakesScreenshot screenshooter;
   private File tempFile = null;
@@ -88,25 +88,25 @@ public class TakesScreenshotTest extends JupiterTestBase {
   }
 
   @Test
-  public void testGetScreenshotAsFile() {
+  void testGetScreenshotAsFile() {
     driver.get(pages.simpleTestPage);
     tempFile = screenshooter.getScreenshotAs(OutputType.FILE);
-    assertThat(tempFile.exists()).isTrue();
-    assertThat(tempFile.length()).isGreaterThan(0);
+    assertThat(tempFile).exists()
+      .isNotEmpty();
   }
 
   @Test
-  public void testGetScreenshotAsBase64() {
+  void testGetScreenshotAsBase64() {
     driver.get(pages.simpleTestPage);
     String screenshot = screenshooter.getScreenshotAs(OutputType.BASE64);
-    assertThat(screenshot.length()).isGreaterThan(0);
+    assertThat(screenshot.length()).isPositive();
   }
 
   @Test
-  public void testGetScreenshotAsBinary() {
+  void testGetScreenshotAsBinary() {
     driver.get(pages.simpleTestPage);
     byte[] screenshot = screenshooter.getScreenshotAs(OutputType.BYTES);
-    assertThat(screenshot.length).isGreaterThan(0);
+    assertThat(screenshot.length).isPositive();
   }
 
   @Test
@@ -130,13 +130,14 @@ public class TakesScreenshotTest extends JupiterTestBase {
 
   @Ignore(value = CHROME, gitHubActions = true)
   @Test
-  public void testShouldCaptureScreenshotOfAnElement() throws Exception {
+  void testShouldCaptureScreenshotOfAnElement() throws Exception {
     driver.get(appServer.whereIs("screen/screen.html"));
     WebElement element = driver.findElement(By.id("cell11"));
 
     byte[] imageData = element.getScreenshotAs(OutputType.BYTES);
-    assertThat(imageData).isNotNull();
-    assertThat(imageData.length).isGreaterThan(0);
+    assertThat(imageData)
+      .isNotNull()
+      .isNotEmpty();
     BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
     assertThat(image).isNotNull();
 
@@ -278,7 +279,7 @@ public class TakesScreenshotTest extends JupiterTestBase {
     try {
       byte[] imageData = screenshooter.getScreenshotAs(OutputType.BYTES);
       assertThat(imageData).isNotNull();
-      assertThat(imageData.length).isGreaterThan(0);
+      assertThat(imageData.length).isPositive();
       image = ImageIO.read(new ByteArrayInputStream(imageData));
       assertThat(image).isNotNull();
     } catch (IOException e) {

@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
-public class ClosureTestStatement {
+class ClosureTestStatement {
 
   private static final Logger LOG = Logger.getLogger(ClosureTestStatement.class.getName());
 

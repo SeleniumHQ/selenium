@@ -33,10 +33,10 @@ import org.openqa.selenium.json.Json;
 import java.util.Map;
 
 @Tag("UnitTests")
-public class JsonWireProtocolResponseTest {
+class JsonWireProtocolResponseTest {
 
   @Test
-  public void successfulResponseGetsParsedProperly() {
+  void successfulResponseGetsParsedProperly() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
         ImmutableMap.of(
@@ -56,13 +56,13 @@ public class JsonWireProtocolResponseTest {
     Response response = result.createResponse();
 
     assertThat(response.getState()).isEqualTo("success");
-    assertThat((int) response.getStatus()).isEqualTo(0);
+    assertThat((int) response.getStatus()).isZero();
 
     assertThat(response.getValue()).isEqualTo(caps.asMap());
   }
 
   @Test
-  public void shouldIgnoreAw3CProtocolReply() {
+  void shouldIgnoreAw3CProtocolReply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, Map<String, Object>> payload =
         ImmutableMap.of(
@@ -81,7 +81,7 @@ public class JsonWireProtocolResponseTest {
   }
 
   @Test
-  public void shouldIgnoreAGeckodriver013Reply() {
+  void shouldIgnoreAGeckodriver013Reply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
         ImmutableMap.of(
@@ -99,7 +99,7 @@ public class JsonWireProtocolResponseTest {
   }
 
   @Test
-  public void shouldProperlyPopulateAnError() {
+  void shouldProperlyPopulateAnError() {
     WebDriverException exception = new SessionNotCreatedException("me no likey");
     Json json = new Json();
 

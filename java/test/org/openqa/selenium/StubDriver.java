@@ -22,7 +22,7 @@ import org.openqa.selenium.logging.Logs;
 import java.util.List;
 import java.util.Set;
 
-public class StubDriver implements WebDriver, JavascriptExecutor {
+class StubDriver implements WebDriver, JavascriptExecutor {
 
   @Override
   public void get(String url) {

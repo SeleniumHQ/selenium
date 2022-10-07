@@ -22,7 +22,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 
-public class TickingClock extends Clock implements Sleeper {
+class TickingClock extends Clock implements Sleeper {
 
   private long now = 17;
 

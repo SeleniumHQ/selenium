@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestWaitInPopupWindow extends InternalSelenseTestBase {
   @Test
-  public void testWaitInPopupWindow() {
+  void testWaitInPopupWindow() {
     selenium.open("test_select_window.html");
     selenium.click("popupPage");
     selenium.waitForPopUp("myPopupWindow", "5000");

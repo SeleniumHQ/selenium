@@ -23,9 +23,9 @@ import java.util.List;
  * A WebElement that wraps another WebElement, for purposes of testing that JSON converters
  * serialized wrapped elements correctly.
  */
-public class WrappedWebElement implements WebElement, WrapsElement {
+class WrappedWebElement implements WebElement, WrapsElement {
 
-  private WebElement wrappedElement;
+  private final WebElement wrappedElement;
 
   public WrappedWebElement(WebElement element) {
     this.wrappedElement = element;

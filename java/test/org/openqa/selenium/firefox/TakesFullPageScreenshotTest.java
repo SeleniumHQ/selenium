@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 // TODO(user): test screenshots at guaranteed minimized browsers
 // TODO(user): test screenshots at guaranteed fullscreened/kiosked browsers (WINDOWS platform specific)
 
-public class TakesFullPageScreenshotTest extends JupiterTestBase {
+class TakesFullPageScreenshotTest extends JupiterTestBase {
 
   private FirefoxDriver screenshooter;
   private File tempFile = null;
@@ -81,29 +81,28 @@ public class TakesFullPageScreenshotTest extends JupiterTestBase {
   }
 
   @Test
-  public void testGetScreenshotAsFile() {
+  void testGetScreenshotAsFile() {
     driver.get(pages.simpleTestPage);
     tempFile = screenshooter.getFullPageScreenshotAs(OutputType.FILE);
-    assertThat(tempFile.exists()).isTrue();
-    assertThat(tempFile.length()).isGreaterThan(0);
+    assertThat(tempFile).exists().isNotEmpty();
   }
 
   @Test
-  public void testGetScreenshotAsBase64() {
+  void testGetScreenshotAsBase64() {
     driver.get(pages.simpleTestPage);
     String screenshot = screenshooter.getFullPageScreenshotAs(OutputType.BASE64);
-    assertThat(screenshot.length()).isGreaterThan(0);
+    assertThat(screenshot).isNotEmpty();
   }
 
   @Test
-  public void testGetScreenshotAsBinary() {
+  void testGetScreenshotAsBinary() {
     driver.get(pages.simpleTestPage);
     byte[] screenshot = screenshooter.getFullPageScreenshotAs(OutputType.BYTES);
-    assertThat(screenshot.length).isGreaterThan(0);
+    assertThat(screenshot).isNotEmpty();
   }
 
   @Test
-  public void testShouldCaptureScreenshotOfCurrentViewport() {
+  void testShouldCaptureScreenshotOfCurrentViewport() {
     driver.get(appServer.whereIs("screen/screen.html"));
 
     BufferedImage screenshot = getImage();
@@ -121,7 +120,7 @@ public class TakesFullPageScreenshotTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldCaptureScreenshotOfPageWithLongY() {
+  void testShouldCaptureScreenshotOfPageWithLongY() {
     driver.get(appServer.whereIs("screen/screen_y_long.html"));
 
     BufferedImage screenshot = getImage();
@@ -147,8 +146,9 @@ public class TakesFullPageScreenshotTest extends JupiterTestBase {
     BufferedImage image = null;
     try {
       byte[] imageData = screenshooter.getFullPageScreenshotAs(OutputType.BYTES);
-      assertThat(imageData).isNotNull();
-      assertThat(imageData.length).isGreaterThan(0);
+      assertThat(imageData)
+        .isNotNull()
+        .isNotEmpty();
       image = ImageIO.read(new ByteArrayInputStream(imageData));
       assertThat(image).isNotNull();
     } catch (IOException e) {

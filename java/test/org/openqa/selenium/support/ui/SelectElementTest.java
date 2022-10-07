@@ -29,7 +29,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-public class SelectElementTest extends JupiterTestBase {
+class SelectElementTest extends JupiterTestBase {
 
   @BeforeEach
   public void runBeforeEveryTest() {
@@ -37,56 +37,56 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
+  void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
     WebElement selectElement = driver.findElement(By.name("checky"));
     assertThatExceptionOfType(UnexpectedTagNameException.class)
         .isThrownBy(() -> new Select(selectElement));
   }
 
   @Test
-  public void shouldThrowAnExceptionIfTheElementIsDisabled() {
+  void shouldThrowAnExceptionIfTheElementIsDisabled() {
     WebElement selectElement = driver.findElement(By.name("no-select"));
     assertThatExceptionOfType(UnsupportedOperationException.class)
       .isThrownBy(() -> new Select(selectElement));
   }
 
   @Test
-  public void shouldIndicateThatASelectCanSupportMultipleOptions() {
+  void shouldIndicateThatASelectCanSupportMultipleOptions() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
     assertThat(select.isMultiple()).isTrue();
   }
 
   @Test
-  public void shouldIndicateThatASelectCanSupportMultipleOptionsWithEmptyMultipleAttribute() {
+  void shouldIndicateThatASelectCanSupportMultipleOptionsWithEmptyMultipleAttribute() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
     assertThat(select.isMultiple()).isTrue();
   }
 
   @Test
-  public void shouldIndicateThatASelectCanSupportMultipleOptionsWithTrueMultipleAttribute() {
+  void shouldIndicateThatASelectCanSupportMultipleOptionsWithTrueMultipleAttribute() {
     WebElement selectElement = driver.findElement(By.name("multi_true"));
     Select select = new Select(selectElement);
     assertThat(select.isMultiple()).isTrue();
   }
 
   @Test
-  public void shouldNotIndicateThatANormalSelectSupportsMultipleOptions() {
+  void shouldNotIndicateThatANormalSelectSupportsMultipleOptions() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
     assertThat(select.isMultiple()).isFalse();
   }
 
   @Test
-  public void shouldIndicateThatASelectCanSupportMultipleOptionsWithFalseMultipleAttribute() {
+  void shouldIndicateThatASelectCanSupportMultipleOptionsWithFalseMultipleAttribute() {
     WebElement selectElement = driver.findElement(By.name("multi_false"));
     Select select = new Select(selectElement);
     assertThat(select.isMultiple()).isTrue();
   }
 
   @Test
-  public void shouldReturnAllOptionsWhenAsked() {
+  void shouldReturnAllOptionsWhenAsked() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
 
@@ -95,7 +95,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldReturnOptionWhichIsSelected() {
+  void shouldReturnOptionWhichIsSelected() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
 
@@ -104,7 +104,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldReturnOptionsWhichAreSelected() {
+  void shouldReturnOptionsWhichAreSelected() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
 
@@ -113,7 +113,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldReturnFirstSelectedOption() {
+  void shouldReturnFirstSelectedOption() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
 
@@ -122,7 +122,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowANoSuchElementExceptionIfNothingIsSelected() {
+  void shouldThrowANoSuchElementExceptionIfNothingIsSelected() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
 
@@ -131,7 +131,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowOptionsToBeSelectedByVisibleText() {
+  void shouldAllowOptionsToBeSelectedByVisibleText() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
     select.selectByVisibleText("select_2");
@@ -150,7 +150,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowExceptionOnSelectByVisibleTextIfOptionDoesNotExist() {
+  void shouldThrowExceptionOnSelectByVisibleTextIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
 
@@ -159,7 +159,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowExceptionOnSelectByVisibleTextIfOptionDisabled() {
+  void shouldThrowExceptionOnSelectByVisibleTextIfOptionDisabled() {
     WebElement selectElement = driver.findElement(By.name("single_disabled"));
     Select select = new Select(selectElement);
 
@@ -168,7 +168,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowOptionsToBeSelectedByIndex() {
+  void shouldAllowOptionsToBeSelectedByIndex() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
     select.selectByIndex(1);
@@ -177,7 +177,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowExceptionOnSelectByIndexIfOptionDoesNotExist() {
+  void shouldThrowExceptionOnSelectByIndexIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
 
@@ -186,7 +186,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowExceptionOnSelectByIndexIfOptionDisabled() {
+  void shouldThrowExceptionOnSelectByIndexIfOptionDisabled() {
     WebElement selectElement = driver.findElement(By.name("single_disabled"));
     Select select = new Select(selectElement);
 
@@ -195,7 +195,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowOptionsToBeSelectedByReturnedValue() {
+  void shouldAllowOptionsToBeSelectedByReturnedValue() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
     select.selectByValue("select_2");
@@ -204,7 +204,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowExceptionOnSelectByReturnedValueIfOptionDoesNotExist() {
+  void shouldThrowExceptionOnSelectByReturnedValueIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
 
@@ -213,7 +213,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowExceptionOnSelectByReturnedValueIfOptionDisabled() {
+  void shouldThrowExceptionOnSelectByReturnedValueIfOptionDisabled() {
     WebElement selectElement = driver.findElement(By.name("single_disabled"));
     Select select = new Select(selectElement);
 
@@ -222,7 +222,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections() {
+  void shouldAllowUserToDeselectAllWhenSelectSupportsMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
     select.deselectAll();
@@ -231,7 +231,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
+  void shouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
 
@@ -239,7 +239,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowUserToDeselectOptionsByVisibleText() {
+  void shouldAllowUserToDeselectOptionsByVisibleText() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
     select.deselectByVisibleText("Eggs");
@@ -258,7 +258,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowOptionsToBeDeselectedByIndex() {
+  void shouldAllowOptionsToBeDeselectedByIndex() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
     select.deselectByIndex(0);
@@ -267,7 +267,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowOptionsToBeDeselectedByReturnedValue() {
+  void shouldAllowOptionsToBeDeselectedByReturnedValue() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
     select.deselectByValue("eggs");
@@ -276,7 +276,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowOptionsToBeSelectedFromTheSelectElementThatIsNarrowerThanOptions() {
+  void shouldAllowOptionsToBeSelectedFromTheSelectElementThatIsNarrowerThanOptions() {
     driver.get(pages.selectPage);
     WebElement selectElement = driver.findElement(By.id("narrow"));
     Select select = new Select(selectElement);
@@ -286,7 +286,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowExceptionOnDeselectByReturnedValueIfOptionDoesNotExist() {
+  void shouldThrowExceptionOnDeselectByReturnedValueIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
 
@@ -295,7 +295,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowExceptionOnDeselectByVisibleTextIfOptionDoesNotExist() {
+  void shouldThrowExceptionOnDeselectByVisibleTextIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
 
@@ -304,7 +304,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldThrowExceptionOnDeselectByIndexIfOptionDoesNotExist() {
+  void shouldThrowExceptionOnDeselectByIndexIfOptionDoesNotExist() {
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
     Select select = new Select(selectElement);
 
@@ -313,7 +313,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldNotAllowUserToDeselectByIndexWhenSelectDoesNotSupportMultipleSelections() {
+  void shouldNotAllowUserToDeselectByIndexWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
 
@@ -322,7 +322,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldNotAllowUserToDeselectByValueWhenSelectDoesNotSupportMultipleSelections() {
+  void shouldNotAllowUserToDeselectByValueWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
 
@@ -331,7 +331,7 @@ public class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldNotAllowUserToDeselectByVisibleTextWhenSelectDoesNotSupportMultipleSelections() {
+  void shouldNotAllowUserToDeselectByVisibleTextWhenSelectDoesNotSupportMultipleSelections() {
     WebElement selectElement = driver.findElement(By.name("selectomatic"));
     Select select = new Select(selectElement);
 

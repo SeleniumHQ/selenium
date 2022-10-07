@@ -30,28 +30,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 // https://docs.docker.com/engine/api/v1.41/#operation/SystemVersion
-public class VersionCommandTest {
+class VersionCommandTest {
 
   @Test
-  public void ifDockerIsDownReturnEmpty() {
+  void ifDockerIsDownReturnEmpty() {
     HttpHandler handler = req -> { throw new UncheckedIOException(new IOException("Eep")); };
 
     Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
 
-    assertThat(maybeDocker).isEqualTo(Optional.empty());
+    assertThat(maybeDocker).isNotPresent();
   }
 
   @Test
-  public void shouldReturnEmptyIfServerReturnsAnUnsuccessfulResponseStatus() {
+  void shouldReturnEmptyIfServerReturnsAnUnsuccessfulResponseStatus() {
     HttpHandler handler = req -> new HttpResponse().setStatus(HTTP_INTERNAL_ERROR);
 
     Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
 
-    assertThat(maybeDocker).isEqualTo(Optional.empty());
+    assertThat(maybeDocker).isNotPresent();
   }
 
   @Test
-  public void shouldReturnEmptyIfServerDoesNotSupportOurVersionOfTheDockerApi() {
+  void shouldReturnEmptyIfServerDoesNotSupportOurVersionOfTheDockerApi() {
     // We only support v1.40+
     HttpHandler handler = req -> new HttpResponse()
       .addHeader("Content-Type", "application/json")
@@ -59,11 +59,11 @@ public class VersionCommandTest {
 
     Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
 
-    assertThat(maybeDocker).isEqualTo(Optional.empty());
+    assertThat(maybeDocker).isNotPresent();
   }
 
   @Test
-  public void shouldReturnEmptyIfServerVersionOfDockerApiIsHigherThanAnyWeSupport() {
+  void shouldReturnEmptyIfServerVersionOfDockerApiIsHigherThanAnyWeSupport() {
     // I sincerely hope that there is no version "9999999" of the docker protocol.
     HttpHandler handler = req -> new HttpResponse()
       .addHeader("Content-Type", "application/json")
@@ -71,11 +71,11 @@ public class VersionCommandTest {
 
     Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
 
-    assertThat(maybeDocker).isEqualTo(Optional.empty());
+    assertThat(maybeDocker).isNotPresent();
   }
 
   @Test
-  public void shouldReturnADockerInstanceIfTheVersionOfTheApiSupportedIsOneSeleniumAlsoSupports() {
+  void shouldReturnADockerInstanceIfTheVersionOfTheApiSupportedIsOneSeleniumAlsoSupports() {
     HttpHandler handler = req -> new HttpResponse()
       .addHeader("Content-Type", "application/json")
       // Note: the version here does not exactly match any we claim to provide
@@ -83,7 +83,7 @@ public class VersionCommandTest {
 
     Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
 
-    assertThat(maybeDocker).isNotEqualTo(Optional.empty());
+    assertThat(maybeDocker).isPresent();
     assertThat(maybeDocker.get().version()).isEqualTo("1.41");
   }
 }

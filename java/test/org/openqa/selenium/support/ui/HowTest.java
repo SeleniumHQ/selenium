@@ -26,59 +26,59 @@ import org.openqa.selenium.support.ByIdOrName;
 import org.openqa.selenium.support.How;
 
 @Tag("UnitTests")
-public class HowTest {
+class HowTest {
 
   private static final String VALUE = "value";
 
   @Test
-  public void testBuildByClassName(){
+  void testBuildByClassName(){
     assertThat(How.CLASS_NAME.buildBy(VALUE).toString()).isEqualTo(By.className(VALUE).toString());
   }
 
   @Test
-  public void testBuildByCss(){
+  void testBuildByCss(){
     assertThat(How.CSS.buildBy(VALUE).toString()).isEqualTo(By.cssSelector(VALUE).toString());
   }
 
   @Test
-  public void testBuildById(){
+  void testBuildById(){
     assertThat(How.ID.buildBy(VALUE).toString()).isEqualTo(By.id(VALUE).toString());
   }
 
   @Test
-  public void testBuildByIdOrName(){
+  void testBuildByIdOrName(){
     assertThat(How.ID_OR_NAME.buildBy(VALUE).toString())
         .isEqualTo(new ByIdOrName(VALUE).toString());
   }
 
   @Test
-  public void testBuildByLinkText(){
+  void testBuildByLinkText(){
     assertThat(How.LINK_TEXT.buildBy(VALUE).toString()).isEqualTo(By.linkText(VALUE).toString());
   }
 
   @Test
-  public void testBuildByName(){
+  void testBuildByName(){
     assertThat(How.NAME.buildBy(VALUE).toString()).isEqualTo(By.name(VALUE).toString());
   }
 
   @Test
-  public void testBuildByPartialLinkText(){
+  void testBuildByPartialLinkText(){
     assertThat(How.PARTIAL_LINK_TEXT.buildBy(VALUE).toString())
         .isEqualTo(By.partialLinkText(VALUE).toString());
   }
 
   @Test
-  public void testBuildByTagName(){
+  void testBuildByTagName(){
     assertThat(How.TAG_NAME.buildBy(VALUE).toString()).isEqualTo(By.tagName(VALUE).toString());
   }
 
   @Test
-  public void testBuildByXpath(){
+  void testBuildByXpath(){
     assertThat(How.XPATH.buildBy(VALUE).toString()).isEqualTo(By.xpath(VALUE).toString());
   }
 
   @Test
-  public void testBuildUnset(){
+  void testBuildUnset(){
     assertThat(How.UNSET.buildBy(VALUE).toString()).isEqualTo(By.id(VALUE).toString());
   }
 }

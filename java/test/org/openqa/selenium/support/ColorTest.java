@@ -23,59 +23,59 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
 @Tag("UnitTests")
-public class ColorTest {
+class ColorTest {
   @Test
-  public void rgbToRgb() {
+  void rgbToRgb() {
     String rgb = "rgb(1, 2, 3)";
     assertThat(Color.fromString(rgb).asRgb()).isEqualTo(rgb);
   }
 
   @Test
-  public void rgbToRgba() {
+  void rgbToRgba() {
     String rgb = "rgb(1, 2, 3)";
     assertThat(Color.fromString(rgb).asRgba()).isEqualTo("rgba(1, 2, 3, 1)");
   }
 
   @Test
-  public void rgbPctToRgba() {
+  void rgbPctToRgba() {
     String rgba = "rgb(10%, 20%, 30%)";
     assertThat(Color.fromString(rgba).asRgba()).isEqualTo("rgba(25, 51, 76, 1)");
   }
 
   @Test
-  public void rgbAllowsWhitespace() {
+  void rgbAllowsWhitespace() {
     String rgb = "rgb(\t1,   2    , 3)";
     String canonicalRgb = "rgb(1, 2, 3)";
     assertThat(Color.fromString(rgb).asRgb()).isEqualTo(canonicalRgb);
   }
 
   @Test
-  public void rgbaToRgba() {
+  void rgbaToRgba() {
     String rgba = "rgba(1, 2, 3, 0.5)";
     assertThat(Color.fromString(rgba).asRgba()).isEqualTo("rgba(1, 2, 3, 0.5)");
   }
 
   @Test
-  public void rgbaPctToRgba() {
+  void rgbaPctToRgba() {
     String rgba = "rgba(10%, 20%, 30%, 0.5)";
     assertThat(Color.fromString(rgba).asRgba()).isEqualTo("rgba(25, 51, 76, 0.5)");
   }
 
   @Test
-  public void hexToHex() {
+  void hexToHex() {
     String hex = "#ff00a0";
     assertThat(Color.fromString(hex).asHex()).isEqualTo(hex);
   }
 
   @Test
-  public void hexToRgb() {
+  void hexToRgb() {
     String hex = "#01Ff03";
     String rgb = "rgb(1, 255, 3)";
     assertThat(Color.fromString(hex).asRgb()).isEqualTo(rgb);
   }
 
   @Test
-  public void hexToRgba() {
+  void hexToRgba() {
     String hex = "#01Ff03";
     String rgba = "rgba(1, 255, 3, 1)";
     assertThat(Color.fromString(hex).asRgba()).isEqualTo(rgba);
@@ -86,21 +86,21 @@ public class ColorTest {
   }
 
   @Test
-  public void rgbToHex() {
+  void rgbToHex() {
     String hex = "#01ff03";
     String rgb = "rgb(1, 255, 3)";
     assertThat(Color.fromString(rgb).asHex()).isEqualTo(hex);
   }
 
   @Test
-  public void hex3ToRgba() {
+  void hex3ToRgba() {
     String hex = "#0f3";
     String rgba = "rgba(0, 255, 51, 1)";
     assertThat(Color.fromString(hex).asRgba()).isEqualTo(rgba);
   }
 
   @Test
-  public void hslToRgba() {
+  void hslToRgba() {
     String hsl = "hsl(120, 100%, 25%)";
     String rgba = "rgba(0, 128, 0, 1)";
     assertThat(Color.fromString(hsl).asRgba()).isEqualTo(rgba);
@@ -122,7 +122,7 @@ public class ColorTest {
   }
 
   @Test
-  public void hslaToRgba() {
+  void hslaToRgba() {
     String hsla = "hsla(120, 100%, 25%, 1)";
     String rgba = "rgba(0, 128, 0, 1)";
     assertThat(Color.fromString(hsla).asRgba()).isEqualTo(rgba);
@@ -132,7 +132,7 @@ public class ColorTest {
   }
 
   @Test
-  public void baseColourToRgba() {
+  void baseColourToRgba() {
     String baseColour = "green";
     String rgba = "rgba(0, 128, 0, 1)";
     assertThat(Color.fromString(baseColour).asRgba()).isEqualTo(rgba);
@@ -142,28 +142,28 @@ public class ColorTest {
   }
 
   @Test
-  public void transparentToRgba() {
+  void transparentToRgba() {
     String transparent = "transparent";
     String rgba = "rgba(0, 0, 0, 0)";
     assertThat(Color.fromString(transparent).asRgba()).isEqualTo(rgba);
   }
 
   @Test
-  public void checkEqualsWorks() {
+  void checkEqualsWorks() {
     Color objectA = Color.fromString("#f00");
     Color objectB = Color.fromString("rgb(255, 0, 0)");
     assertThat(objectB).isEqualTo(objectA);
   }
 
   @Test
-  public void checkHashCodeWorks() {
+  void checkHashCodeWorks() {
     Color objectA = Color.fromString("#f00");
     Color objectB = Color.fromString("rgb(255, 0, 0)");
     assertThat(objectB.hashCode()).isEqualTo(objectA.hashCode());
   }
 
   @Test
-  public void checkSettingOpacityRGB() {
+  void checkSettingOpacityRGB() {
     String initial = "rgb(1, 255, 3)";
     Color actual = Color.fromString(initial);
 
@@ -174,7 +174,7 @@ public class ColorTest {
   }
 
   @Test
-  public void checkSettingOpacityRGBA() {
+  void checkSettingOpacityRGBA() {
     String initial = "rgba(1, 255, 3, 1)";
     Color actual = Color.fromString(initial);
 
@@ -185,14 +185,14 @@ public class ColorTest {
   }
 
   @Test
-  public void baseColourToAwt() {
+  void baseColourToAwt() {
     java.awt.Color green = java.awt.Color.GREEN;
     String rgba = "rgba(0, 255, 0, 1)";
     assertThat(green).isEqualTo(Color.fromString(rgba).getColor());
   }
 
   @Test
-  public void transparentColourToAwt() {
+  void transparentColourToAwt() {
     java.awt.Color transGreen = new java.awt.Color(0, 255, 0, 0);
     String rgba = "rgba(0, 255, 0, 0)";
     assertThat(transGreen).isEqualTo(Color.fromString(rgba).getColor());

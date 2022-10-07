@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
 import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnnotations;
 
-public class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
+class SeleniumExtension implements BeforeEachCallback, AfterEachCallback,
   TestWatcher, ExecutionCondition, TestExecutionExceptionHandler {
 
   private static final ThreadLocal<SeleniumExtension.Instances> instances = new ThreadLocal<>();

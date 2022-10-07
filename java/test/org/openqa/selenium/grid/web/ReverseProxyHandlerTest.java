@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
 
-public class ReverseProxyHandlerTest {
+class ReverseProxyHandlerTest {
 
   private Server server;
   private Tracer tracer = DefaultTestTracer.createTracer();
@@ -63,7 +63,7 @@ public class ReverseProxyHandlerTest {
   }
 
   @Test
-  public void shouldForwardRequestsToEndPoint() {
+  void shouldForwardRequestsToEndPoint() {
     HttpHandler handler = new ReverseProxyHandler(tracer, factory.createClient(server.url));
     HttpRequest req = new HttpRequest(HttpMethod.GET, "/ok");
     req.addHeader("X-Cheese", "Cake");
