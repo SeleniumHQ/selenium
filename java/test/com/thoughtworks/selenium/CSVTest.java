@@ -25,18 +25,17 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CSVTest {
+class CSVTest {
 
   Method CSV;
 
   @BeforeEach
   public void setUp() {
     Method[] methods = HttpCommandProcessor.class.getDeclaredMethods();
-    for (int i = 0; i < methods.length; i++) {
-      if ("parseCSV".equals(methods[i].getName())) {
-        Method csvMethod = methods[i];
-        csvMethod.setAccessible(true);
-        CSV = csvMethod;
+    for (Method method : methods) {
+      if ("parseCSV".equals(method.getName())) {
+        method.setAccessible(true);
+        CSV = method;
         break;
       }
     }

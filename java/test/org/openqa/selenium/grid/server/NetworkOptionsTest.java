@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid.server;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -62,7 +63,7 @@ class NetworkOptionsTest {
     // were a way to replace the storage engine in `Context`, I'd have done
     // that for this test run, but of course there is not.
 
-    Logger rootLogger = LogManager.getLogManager().getLogger("");
+    Logger rootLogger = LogManager.getLogManager().getLogger(StringUtils.EMPTY);
 
     CapturingHandler handler = new CapturingHandler("io.grpc");
     rootLogger.addHandler(handler);

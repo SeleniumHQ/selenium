@@ -20,6 +20,7 @@ package org.openqa.selenium.environment.webserver;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -56,7 +57,7 @@ class EchoHandler implements HttpHandler {
     String headers = StreamSupport.stream(request.getHeaderNames().spliterator(), false)
       .flatMap(name -> StreamSupport.stream(request.getHeaders(name).spliterator(), false)
         .map(value -> String.format("<tr><td>%s</td><td>%s</td></tr>", name, value)))
-      .collect(Collectors.joining(""));
+      .collect(Collectors.joining(StringUtils.EMPTY));
     String body = Contents.utf8String(request.getContent());
 
     response.setContent(Contents.string(String.format(RESPONSE_STRING, method, headers, body), UTF_8));

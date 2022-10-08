@@ -129,7 +129,7 @@ public class ConditionTest {
 
   /**
    * Why? Well because for some technologies/setups, any Selenium operation may result in a 'body
-   * not loaded' for the first few loops See http://jira.openqa.org/browse/SRC-302
+   * not loaded' for the first few loops See <a href="http://jira.openqa.org/browse/SRC-302"></a>
    */
   @Test
   void testCanLateNotifyOfSeleniumExceptionAfterTimeout() {
@@ -176,7 +176,7 @@ public class ConditionTest {
     Condition condition = new Condition() {
       @Override
       public boolean isTrue(ConditionRunner.Context runner) {
-        assertTrue(false, "OMG");
+        fail("OMG");
         return false;
       }
     };

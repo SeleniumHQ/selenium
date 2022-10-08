@@ -24,6 +24,7 @@ import static org.openqa.selenium.Architecture.ARM;
 import static org.openqa.selenium.Architecture.X64;
 import static org.openqa.selenium.Architecture.X86;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
@@ -121,7 +122,7 @@ class ArchitectureTest {
   @Test
   void determineArchEmpty() {
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> Architecture.extractFromSysProperty(""))
+        .isThrownBy(() -> Architecture.extractFromSysProperty(StringUtils.EMPTY))
         .withMessageContaining("Unknown architecture");
   }
 

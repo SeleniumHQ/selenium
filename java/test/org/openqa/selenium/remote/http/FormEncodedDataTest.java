@@ -19,6 +19,8 @@ package org.openqa.selenium.remote.http;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.net.MediaType;
+
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
@@ -75,7 +77,7 @@ class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", singletonList("")));
+    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", singletonList(StringUtils.EMPTY)));
   }
 
   @Test
@@ -113,7 +115,7 @@ class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("param", singletonList("")));
+    assertThat(data.get()).isEqualTo(ImmutableMap.of("param", singletonList(StringUtils.EMPTY)));
   }
 
   private HttpRequest createRequest(String key, String value, String... others) {

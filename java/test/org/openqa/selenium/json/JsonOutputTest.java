@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -186,7 +187,7 @@ class JsonOutputTest {
   @Test
   void nullAndAnEmptyStringAreEncodedDifferently() {
     String nullValue = convert(null);
-    String emptyString = convert("");
+    String emptyString = convert(StringUtils.EMPTY);
 
     assertThat(emptyString).isNotEqualTo(nullValue);
   }

@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
+
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -208,7 +210,7 @@ class JmxTest {
         new DefaultSlotMatcher(),
         Duration.ofSeconds(2),
         Duration.ofSeconds(2),
-        new Secret(""));
+        new Secret(StringUtils.EMPTY));
 
       assertThat(sessionQueue).isNotNull();
       MBeanInfo info = beanServer.getMBeanInfo(name);

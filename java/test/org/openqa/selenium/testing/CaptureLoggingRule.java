@@ -36,6 +36,8 @@ import java.util.logging.Logger;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.internal.Debug.isDebugging;
 
+import org.apache.commons.lang3.StringUtils;
+
 class CaptureLoggingRule {
 
   List<Handler> handlers;
@@ -45,7 +47,7 @@ class CaptureLoggingRule {
       return;
     }
 
-    Logger logger = LogManager.getLogManager().getLogger("");
+    Logger logger = LogManager.getLogManager().getLogger(StringUtils.EMPTY);
 
     // Capture the original log handlers
     handlers = Arrays.stream(logger.getHandlers())
@@ -64,7 +66,7 @@ class CaptureLoggingRule {
       return;
     }
 
-    Logger logger = LogManager.getLogManager().getLogger("");
+    Logger logger = LogManager.getLogManager().getLogger(StringUtils.EMPTY);
     Arrays.stream(logger.getHandlers())
       .filter(handler -> handler instanceof RecordingHandler)
       .map(handler -> (RecordingHandler) handler)
@@ -77,7 +79,7 @@ class CaptureLoggingRule {
     }
 
     // Find our recording handler
-    Logger logger = LogManager.getLogManager().getLogger("");
+    Logger logger = LogManager.getLogManager().getLogger(StringUtils.EMPTY);
     List<RecordingHandler> recordingHandlers = Arrays.stream(logger.getHandlers())
       .filter(handler -> handler instanceof RecordingHandler)
       .map(handler -> (RecordingHandler) handler)

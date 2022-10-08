@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CompoundMutatorTest {
+class CompoundMutatorTest {
   private ScriptMutator mutator;
 
   @BeforeEach

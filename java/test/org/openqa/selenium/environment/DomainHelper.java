@@ -22,7 +22,7 @@ import com.google.common.net.InetAddresses;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.internal.Require;
 
-class DomainHelper {
+public class DomainHelper {
 
   private final AppServer appServer;
 

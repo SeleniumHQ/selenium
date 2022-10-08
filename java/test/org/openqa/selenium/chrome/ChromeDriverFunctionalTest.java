@@ -127,7 +127,7 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  public void canCast() throws InterruptedException {
+  void canCast() {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called

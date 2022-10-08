@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -36,6 +37,6 @@ public class RedirectHandler implements HttpHandler {
     return new HttpResponse()
       .setStatus(HTTP_MOVED_TEMP)
       .setHeader("Location", targetLocation)
-      .setContent(utf8String(""));
+      .setContent(utf8String(StringUtils.EMPTY));
   }
 }
