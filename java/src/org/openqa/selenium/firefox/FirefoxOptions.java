@@ -254,6 +254,10 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     return setFirefoxOption(Keys.LOG, logLevel.toJson());
   }
 
+  /**
+   * @deprecated Set this directly with `addArguments("--headless=chrome")`
+   */
+  @Deprecated
   public FirefoxOptions setHeadless(boolean headless) {
     Object rawArgs = firefoxOptions.getOrDefault(Keys.ARGS.key(), new ArrayList<>());
     Require.stateCondition(rawArgs instanceof List, "Arg list of unexpected type: %s", rawArgs);

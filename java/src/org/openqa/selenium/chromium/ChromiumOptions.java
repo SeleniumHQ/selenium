@@ -186,6 +186,11 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
     return (T) this;
   }
 
+  /**
+   * @deprecated Chrome provides two headless modes use `addArguments("--headless")`
+   * or preferably `addArguments("--headless=chrome")`
+   */
+  @Deprecated
   public T setHeadless(boolean headless) {
     args.remove("--headless");
     if (headless) {

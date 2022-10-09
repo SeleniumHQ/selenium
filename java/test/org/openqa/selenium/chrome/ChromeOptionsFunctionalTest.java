@@ -43,9 +43,6 @@ public class ChromeOptionsFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canStartChromeWithCustomOptions() {
     ChromeOptions options = new ChromeOptions();
-    if (TestUtilities.isOnTravis()) {
-      options.setHeadless(true);
-    }
     options.addArguments("user-agent=foo;bar");
     localDriver = new ChromeDriver(options);
 
@@ -67,9 +64,6 @@ public class ChromeOptionsFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canSetAcceptInsecureCerts() {
     ChromeOptions options = new ChromeOptions();
-    if (TestUtilities.isOnTravis()) {
-      options.setHeadless(true);
-    }
     options.setAcceptInsecureCerts(true);
     localDriver = new ChromeDriver(options);
 
@@ -80,9 +74,6 @@ public class ChromeOptionsFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canAddExtensionFromFile() {
     ChromeOptions options = new ChromeOptions();
-    if (TestUtilities.isOnTravis()) {
-      options.setHeadless(true);
-    }
     options.addExtensions(InProject.locate(EXT_PATH).toFile());
     localDriver = new ChromeDriver(options);
 
@@ -98,9 +89,6 @@ public class ChromeOptionsFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     ChromeOptions options = new ChromeOptions();
-    if (TestUtilities.isOnTravis()) {
-      options.setHeadless(true);
-    }
     options.addEncodedExtensions(Base64.getEncoder().encodeToString(
       Files.readAllBytes(InProject.locate(EXT_PATH))));
     localDriver = new ChromeDriver(options);
