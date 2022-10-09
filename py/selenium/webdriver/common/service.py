@@ -161,7 +161,7 @@ class Service(ABC):
             with contextlib.suppress(Exception):
                 # Todo: Be explicit in what we are catching here.
                 if hasattr(self.log_file, "close"):
-                    self.log_file.close()
+                    self.log_file.close()  # type: ignore
 
         if self.process is not None:
             with contextlib.suppress(TypeError):
@@ -177,7 +177,7 @@ class Service(ABC):
             stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stderr
             for stream in stdin, stdout, stderr:
                 with contextlib.suppress(AttributeError):
-                    stream.close()
+                    stream.close()  # type: ignore
             self.process.terminate()
             self.process.wait(60)
             # Todo: only SIGKILL if necessary; the process may be cleanly exited by now.
