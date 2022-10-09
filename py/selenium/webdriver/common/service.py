@@ -90,7 +90,7 @@ class Service(ABC):
         try:
             cmd = [self.path]
             cmd.extend(self.command_line_args())
-            child_process = self.process = subprocess.Popen(
+            self.process = subprocess.Popen(
                 cmd,
                 env=self.env,
                 close_fds=system() != "Windows",
@@ -99,7 +99,7 @@ class Service(ABC):
                 stdin=PIPE,
                 creationflags=self.creation_flags,
             )
-            log.debug(f"Started executable: `{self.process}` in a child process with pid: {child_process.pid}")
+            log.debug(f"Started executable: `{self.path}` in a child process with pid: {self.process.pid}")
         except TypeError:
             raise
         except OSError as err:
