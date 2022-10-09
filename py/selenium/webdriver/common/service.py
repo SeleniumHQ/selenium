@@ -53,15 +53,15 @@ class Service(ABC):
     def __init__(
         self,
         executable: str,
-        start_error_message: str,
         port: int = 0,
         log_file: SubprocessStdAlias = DEVNULL,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
+        start_error_message: typing.Optional[str] = None,
     ) -> None:
         self.path = executable
         self.port = port or utils.free_port()
         self.log_file = open(os.devnull, "wb") if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL else log_file
-        self.start_error_message = start_error_message
+        self.start_error_message = start_error_message or ""
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.creation_flags = 0
         self.env = env or os.environ
