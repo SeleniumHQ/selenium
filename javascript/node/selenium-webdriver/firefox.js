@@ -301,6 +301,7 @@ class Options extends Capabilities {
    * Configures the geckodriver to start Firefox in headless mode.
    *
    * @return {!Options} A self reference.
+   * @deprecated Use {@link #addArguments} with "-headless" instead.
    */
   headless() {
     return this.addArguments('-headless')

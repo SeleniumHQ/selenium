@@ -36,19 +36,6 @@
  *     a unique browser session with a clean user profile (unless otherwise
  *     configured through the {@link Options} class).
  *
- * __Headless Chromium__ <a id="headless"></a>
- *
- * To start the browser in headless mode, simply call
- * {@linkplain Options#headless Options.headless()}.
- *
- *     let chrome = require('selenium-webdriver/chrome');
- *     let {Builder} = require('selenium-webdriver');
- *
- *     let driver = new Builder()
- *         .forBrowser('chrome')
- *         .setChromeOptions(new chrome.Options().headless())
- *         .build();
- *
  * __Customizing the Chromium WebDriver Server__ <a id="custom-server"></a>
  *
  * Subclasses of {@link Driver} are expected to provide a static
@@ -323,9 +310,10 @@ class Options extends Capabilities {
    * > downloads, saving files in the specified directory.
    *
    * @return {!Options} A self reference.
+   * @deprecated Use {@link #addArguments} with "headless" or preferably "headless=chrome" instead.
    */
   headless() {
-    return this.addArguments('headless')
+    return this.addArguments('headless=chrome')
   }
 
   /**
