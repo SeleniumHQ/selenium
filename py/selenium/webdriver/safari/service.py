@@ -16,8 +16,8 @@
 # under the License.
 
 import os
+import subprocess
 import typing
-from subprocess import PIPE
 
 from selenium.webdriver.common import service
 
@@ -46,13 +46,11 @@ class Service(service.Service):
         self._check_executable(executable_path)
         self.service_args = service_args or []
         self.quiet = quiet
-        log_file = PIPE
-        if quiet:
-            log_file = open(os.devnull, "w", encoding="utf-8")
+        log_file = subprocess.PIPE if not self.quiet else open(os.devnull, "w", encoding="utf-8")
         super().__init__(
             executable=executable_path,
             port=port,
-            log_file=log_file,
+            log_file=log_file,  # type: ignore
             env=env,
         )
 
