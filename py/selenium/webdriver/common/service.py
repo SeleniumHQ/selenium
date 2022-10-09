@@ -65,7 +65,6 @@ class Service(ABC):
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.creation_flags = 0
         self.env = env or os.environ
-        self.process: typing.Optional[subprocess.Popen] = None
 
     @property
     def service_url(self) -> str:
@@ -161,7 +160,8 @@ class Service(ABC):
         if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
             with contextlib.suppress(Exception):
                 # Todo: Be explicit in what we are catching here.
-                self.log_file.close()
+                if hasattr(self.log_file, "close"):
+                    self.log_file.close()
 
         if self.process is not None:
             with contextlib.suppress(TypeError):

@@ -25,7 +25,7 @@ class ChromiumService(service.Service):
 
     :param executable_path: install path of the executable.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param log_path: (Optional) String to be passed to the executable as `--log-path`.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     :param start_error_message: (Optional) Error message that forms part of the error when problems occur
@@ -36,7 +36,7 @@ class ChromiumService(service.Service):
         self,
         executable_path: str,
         port: int = 0,
-        service_args: typing.Optional[typing.Sequence[str]] = None,
+        service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         start_error_message: typing.Optional[str] = None,

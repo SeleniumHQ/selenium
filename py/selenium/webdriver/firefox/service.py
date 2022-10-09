@@ -29,7 +29,7 @@ class Service(service.Service):
 
     :param executable_path: install path of the geckodriver executable, defaults to `geckodriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param log_path: (Optional) File path for the file to be opened and passed as the subprocess stdout/stderr handler,
         defaults to `geckodriver.log`.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
