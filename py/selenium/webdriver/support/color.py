@@ -94,7 +94,7 @@ class Color:
         if m.match(RGBA_PATTERN, str_):
             return cls(*m.groups)
         if m.match(RGBA_PCT_PATTERN, str_):
-            rgba = tuple([float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])  # type: ignore
+            rgba = tuple([float(each) / 100 * 255 for each in m.groups[:3]] + [m.groups[3]])
             return cls(*rgba)
         if m.match(HEX_PATTERN, str_):
             rgb = tuple(int(each, 16) for each in m.groups)
