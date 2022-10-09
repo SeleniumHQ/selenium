@@ -109,6 +109,12 @@ class Options(ArgOptions):
         """
         :Returns: True if the headless argument is set, else False
         """
+        warnings.warn(
+            "headless method has been deprecated. Please check for '--headless' in arguments()",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         return "-headless" in self._arguments
 
     @headless.setter
@@ -119,6 +125,11 @@ class Options(ArgOptions):
         Args:
           value: boolean value indicating to set the headless option
         """
+        warnings.warn(
+            "This method for setting headless has been deprecated. Please use add_argument() with '--headless' or preferably '--headless=chrome'",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         if value:
             self._arguments.append("-headless")
         elif "-headless" in self._arguments:

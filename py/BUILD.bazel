@@ -342,7 +342,7 @@ py_test_suite(
     args = [
         "--instafail",
         "--driver=chrome",
-        "--headless=true",
+        "--headless=chrome",
     ],
     tags = [
         "no-sandbox",

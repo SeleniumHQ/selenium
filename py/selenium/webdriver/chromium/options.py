@@ -144,6 +144,12 @@ class ChromiumOptions(ArgOptions):
         """
         :Returns: True if the headless argument is set, else False
         """
+        warnings.warn(
+            "headless method has been deprecated. Please check for '--headless' in arguments()",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         return "--headless" in self._arguments
 
     @headless.setter
@@ -153,6 +159,11 @@ class ChromiumOptions(ArgOptions):
         :Args:
           value: boolean value indicating to set the headless option
         """
+        warnings.warn(
+            "This method for setting headless has been deprecated. Please use add_argument() with '--headless' or preferably '--headless=chrome'",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         args = {"--headless"}
         if value is True:
             self._arguments.extend(args)
