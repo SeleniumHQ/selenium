@@ -31,7 +31,7 @@ class Service(service.ChromiumService):
     :param verbose: (Deprecated) Whether to make the webdriver more verbose (passes the --verbose option to the binary).
         Defaults to False.
     :param log_path: (Optional) String to be passed to the executable as `--log-path`.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
@@ -41,7 +41,7 @@ class Service(service.ChromiumService):
         port: int = 0,
         verbose: bool = False,
         log_path: typing.Optional[str] = None,
-        service_args: typing.Optional[typing.Sequence[str]] = None,
+        service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
     ):
         self.service_args = service_args or []

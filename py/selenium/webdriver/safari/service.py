@@ -31,7 +31,7 @@ class Service(service.Service):
     :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param quiet: Suppress driver stdout & stderr, redirects to os.devnull if enabled.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
