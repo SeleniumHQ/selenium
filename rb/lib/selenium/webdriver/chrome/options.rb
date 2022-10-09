@@ -171,6 +171,9 @@ module Selenium
         #
 
         def headless!
+          WebDriver.logger.deprecate('Options#headless!',
+                                     "Options#add_argument with '--headless'",
+                                     id: :headless)
           add_argument '--headless'
         end
 

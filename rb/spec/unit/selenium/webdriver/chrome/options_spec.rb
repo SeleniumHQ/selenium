@@ -177,13 +177,6 @@ module Selenium
           end
         end
 
-        describe '#headless!' do
-          it 'should add necessary command-line arguments' do
-            options.headless!
-            expect(options.args).to eql(['--headless'])
-          end
-        end
-
         describe '#add_option' do
           it 'adds an option with ordered pairs' do
             options.add_option(:foo, 'bar')
