@@ -308,7 +308,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       case SUBMIT_ELEMENT:
         return toScript(
-          "var form = arguments[0];\n" +
+          "/* submit.js */ var form = arguments[0];\n" +
           "while (form.nodeName != \"FORM\" && form.parentNode) {\n" +
           "  form = form.parentNode;\n" +
           "}\n" +
@@ -342,7 +342,8 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
       String rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
       String script = String.format(
-        "return (%s).apply(null, arguments);",
+        "/* %s */ return (%s).apply(null, arguments);",
+        atomFileName,
         rawFunction);
       return toScript(script, args);
     } catch (IOException | NullPointerException e) {
