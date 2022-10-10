@@ -76,8 +76,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let mut driver_version = cli.driver_version;
+    let mut browser_version = cli.browser_version;
+
+    if !driver_version.is_empty() && !browser_version.is_empty() {
+      log::warn!("Ignoring --browser-version (since --driver-version is also used)");
+    }
+
     if driver_version.is_empty() {
-      let mut browser_version = cli.browser_version;
       if browser_version.is_empty() {
         match browser_manager.get_browser_version(os) {
           Some(version) => {
