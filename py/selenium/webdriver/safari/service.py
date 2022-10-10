@@ -16,8 +16,8 @@
 # under the License.
 
 import os
+import subprocess
 import typing
-from subprocess import PIPE
 
 from selenium.webdriver.common import service
 
@@ -31,7 +31,7 @@ class Service(service.Service):
     :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
     :param quiet: Suppress driver stdout & stderr, redirects to os.devnull if enabled.
-    :param service_args: (Optional) Sequence of args to be passed to the subprocess when launching the executable.
+    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
 
@@ -46,13 +46,11 @@ class Service(service.Service):
         self._check_executable(executable_path)
         self.service_args = service_args or []
         self.quiet = quiet
-        log_file = PIPE
-        if quiet:
-            log_file = open(os.devnull, "w", encoding="utf-8")
+        log_file = subprocess.PIPE if not self.quiet else open(os.devnull, "w", encoding="utf-8")
         super().__init__(
             executable=executable_path,
             port=port,
-            log_file=log_file,
+            log_file=log_file,  # type: ignore
             env=env,
         )
 
