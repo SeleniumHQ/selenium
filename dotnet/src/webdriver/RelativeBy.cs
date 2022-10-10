@@ -40,7 +40,7 @@ namespace OpenQA.Selenium
         protected RelativeBy() : base()
         {
             string atom = string.Empty;
-            using (Stream atomStream = ResourceUtilities.GetResourceStream("find-elements.js", "find-elements.js"))
+            using (Stream atomStream = ResourceUtilities.GetResourceStream("findElements.js", "findElements.js"))
             {
                 using (StreamReader atomReader = new StreamReader(atomStream))
                 {

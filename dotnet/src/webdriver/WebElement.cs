@@ -180,7 +180,7 @@ namespace OpenQA.Selenium
             {
                 Response commandResponse = null;
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
-                string atom = GetAtom("is-displayed.js");
+                string atom = GetAtom("isDisplayed.js");
                 parameters.Add("script", atom);
                 parameters.Add("args", new object[] { this.ToElementReference().ToDictionary() });
                 commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);
@@ -412,7 +412,7 @@ namespace OpenQA.Selenium
             Response commandResponse = null;
             string attributeValue = string.Empty;
             Dictionary<string, object> parameters = new Dictionary<string, object>();
-            string atom = GetAtom("get-attribute.js");
+            string atom = GetAtom("getAttribute.js");
             parameters.Add("script", atom);
             parameters.Add("args", new object[] { this.ToElementReference().ToDictionary(), attributeName });
             commandResponse = this.Execute(DriverCommand.ExecuteScript, parameters);

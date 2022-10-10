@@ -74,7 +74,7 @@ namespace OpenQA.Selenium
         public event EventHandler<JavaScriptExceptionThrownEventArgs> JavaScriptExceptionThrown;
 
         /// <summary>
-        /// Occurs when methods on the JavaScript console are called. 
+        /// Occurs when methods on the JavaScript console are called.
         /// </summary>
         public event EventHandler<JavaScriptConsoleApiCalledEventArgs> JavaScriptConsoleApiCalled;
 
@@ -335,7 +335,7 @@ namespace OpenQA.Selenium
         private string GetMutationListenerScript()
         {
             string listenerScript = string.Empty;
-            using (Stream resourceStream = ResourceUtilities.GetResourceStream("mutation-listener.js", "mutation-listener.js"))
+            using (Stream resourceStream = ResourceUtilities.GetResourceStream("mutationListener.js", "mutationListener.js"))
             {
                 using (StreamReader resourceReader = new StreamReader(resourceStream))
                 {

@@ -119,19 +119,19 @@
     </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js">
       <Visible>False</Visible>
-      <LogicalName>get-attribute.js</LogicalName>
+      <LogicalName>getAttribute.js</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\is-displayed.js">
       <Visible>False</Visible>
-      <LogicalName>is-displayed.js</LogicalName>
+      <LogicalName>isDisplayed.js</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\atoms\fragments\find-elements.js">
       <Visible>False</Visible>
-      <LogicalName>find-elements.js</LogicalName>
+      <LogicalName>findElements.js</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)..\..\..\javascript\cdp-support\mutation-listener.js">
       <Visible>False</Visible>
-      <LogicalName>mutation-listener.js</LogicalName>
+      <LogicalName>mutationListener.js</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -142,19 +142,19 @@
     </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/get-attribute.js">
       <Visible>False</Visible>
-      <LogicalName>get-attribute.js</LogicalName>
+      <LogicalName>getAttribute.js</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/is-displayed.js">
       <Visible>False</Visible>
-      <LogicalName>is-displayed.js</LogicalName>
+      <LogicalName>isDisplayed.js</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/atoms/fragments/find-elements.js">
       <Visible>False</Visible>
-      <LogicalName>find-elements.js</LogicalName>
+      <LogicalName>findElements.js</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)../../../javascript/cdp-support/mutation-listener.js">
       <Visible>False</Visible>
-      <LogicalName>mutation-listener.js</LogicalName>
+      <LogicalName>mutationListener.js</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
 
