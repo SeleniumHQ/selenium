@@ -160,11 +160,12 @@ def test_navigate(driver, pages):
     assert "We Arrive Here" == driver.title
 
 
-def test_get_attribute(driver, pages):
+def test_get_attribute(driver, pages, logger):
     url = pages.url("xhtmlTest.html")
     driver.get(url)
     elem = driver.find_element(By.ID, "id1")
     attr = elem.get_attribute("href")
+    assert "getAttribute.js" in logger.text
     assert f"{url}#" == attr
 
 

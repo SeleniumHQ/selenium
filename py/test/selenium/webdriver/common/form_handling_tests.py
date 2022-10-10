@@ -40,9 +40,10 @@ def test_should_be_able_to_click_image_buttons(driver, pages):
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 
-def test_should_submit_input_in_form(driver, pages):
+def test_should_submit_input_in_form(driver, pages, logger):
     pages.load("formPage.html")
     driver.find_element(By.NAME, "login").submit()
+    assert "submit.js" in logger.text
     WebDriverWait(driver, 3).until(EC.title_is("We Arrive Here"))
 
 

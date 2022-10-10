@@ -95,7 +95,7 @@ class WebElement(BaseWebElement):
     def submit(self):
         """Submits a form."""
         script = (
-            "var form = arguments[0];\n"
+            "/* submit.js */ var form = arguments[0];\n"
             'while (form.nodeName != "FORM" && form.parentNode) {\n'
             "  form = form.parentNode;\n"
             "}\n"
@@ -177,7 +177,7 @@ class WebElement(BaseWebElement):
         if getAttribute_js is None:
             _load_js()
         attribute_value = self.parent.execute_script(
-            "return (%s).apply(null, arguments);" % getAttribute_js, self, name
+            "/* getAttribute.js */ return (%s).apply(null, arguments);" % getAttribute_js, self, name
         )
         return attribute_value
 
@@ -261,7 +261,7 @@ class WebElement(BaseWebElement):
         # Only go into this conditional for browsers that don't use the atom themselves
         if isDisplayed_js is None:
             _load_js()
-        return self.parent.execute_script("return (%s).apply(null, arguments);" % isDisplayed_js, self)
+        return self.parent.execute_script("/* isDisplayed.js */ return (%s).apply(null, arguments);" % isDisplayed_js, self)
 
     @property
     def location_once_scrolled_into_view(self) -> dict:

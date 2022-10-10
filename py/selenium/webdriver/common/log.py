@@ -77,7 +77,7 @@ class Log:
             self.devtools.page.add_script_to_evaluate_on_new_document(self._mutation_listener_js)
         )
         self.driver.pin_script(self._mutation_listener_js, script_key)
-        self.driver.execute_script(f"return {self._mutation_listener_js}")
+        self.driver.execute_script(f"/* mutationListener.js */ return {self._mutation_listener_js}")
         event = {}
         async with runtime.wait_for(self.devtools.runtime.BindingCalled) as evnt:
             yield event

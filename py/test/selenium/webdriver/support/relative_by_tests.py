@@ -22,12 +22,13 @@ from selenium.webdriver.support.relative_locator import locate_with
 from selenium.webdriver.support.relative_locator import with_tag_name
 
 
-def test_should_be_able_to_find_first_one(driver, pages):
+def test_should_be_able_to_find_first_one(driver, pages, logger):
     pages.load("relative_locators.html")
     lowest = driver.find_element(By.ID, "below")
 
     el = driver.find_element(with_tag_name("p").above(lowest))
 
+    assert "findElements.js" in logger.text
     assert el.get_attribute("id") == "mid"
 
 

@@ -64,7 +64,7 @@ async def test_collect_js_exceptions(driver, pages):
 @pytest.mark.xfail_firefox
 @pytest.mark.xfail_safari
 @pytest.mark.xfail_remote
-async def test_collect_log_mutations(driver, pages):
+async def test_collect_log_mutations(driver, pages, logger):
     async with driver.bidi_connection() as session:
         log = Log(driver, session)
         async with log.mutation_events() as event:
@@ -74,6 +74,7 @@ async def test_collect_log_mutations(driver, pages):
                 EC.visibility_of(driver.find_element(By.ID, "revealed"))
             )
 
+    assert "mutationListener.js" in logger.text
     assert event["attribute_name"] == "style"
     assert event["current_value"] == ""
     assert event["old_value"] == "display:none;"

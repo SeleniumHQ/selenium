@@ -22,10 +22,11 @@ from selenium.common.exceptions import ElementNotVisibleException
 from selenium.webdriver.common.by import By
 
 
-def test_should_allow_the_user_to_tell_if_an_element_is_displayed_or_not(driver, pages):
+def test_should_allow_the_user_to_tell_if_an_element_is_displayed_or_not(driver, pages, logger):
     pages.load("javascriptPage.html")
 
     assert driver.find_element(by=By.ID, value="displayed").is_displayed() is True
+    assert "isDisplayed.js" in logger.text
     assert driver.find_element(by=By.ID, value="none").is_displayed() is False
     assert driver.find_element(by=By.ID, value="suppressedParagraph").is_displayed() is False
     assert driver.find_element(by=By.ID, value="hidden").is_displayed() is False
