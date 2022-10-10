@@ -1488,7 +1488,7 @@ class WebDriver {
         .toString()
     }
 
-    this.executeScript(mutationListener)
+    this.executeScript('/* mutationListener.js */ ' + mutationListener)
 
     await connection.execute(
       'Page.addScriptToEvaluateOnNewDocument',
@@ -2863,7 +2863,7 @@ class WebElement {
    */
   submit() {
     const script =
-      'var form = arguments[0];\n' +
+      '/* submit.js */ var form = arguments[0];\n' +
       'while (form.nodeName != "FORM" && form.parentNode) {\n' +
       '  form = form.parentNode;\n' +
       '}\n' +

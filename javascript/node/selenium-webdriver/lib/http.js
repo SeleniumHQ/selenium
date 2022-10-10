@@ -189,7 +189,7 @@ function toExecuteAtomCommand(command, atom, ...params) {
 
   return new cmd.Command(cmd.Name.EXECUTE_SCRIPT)
     .setParameter('sessionId', command.getParameter('sessionId'))
-    .setParameter('script', `return (${atom}).apply(null, arguments)`)
+    .setParameter('script', `/* ${atom} */ return (${atom}).apply(null, arguments)`)
     .setParameter(
       'args',
       params.map((param) => command.getParameter(param))
