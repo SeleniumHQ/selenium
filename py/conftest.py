@@ -14,11 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import logging
 import os
 import platform
 import socket
 import subprocess
+import sys
 import time
 from test.selenium.webdriver.common.network import get_lan_ip
 from test.selenium.webdriver.common.webserver import SimpleWebServer
@@ -69,6 +70,18 @@ def pytest_ignore_collect(path, config):
 
 
 driver_instance = None
+
+@pytest.fixture(scope="function")
+def logger(caplog):
+    selenium_logger = logging.getLogger("selenium")
+    selenium_logger.setLevel(logging.DEBUG)
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s Selenium %(message)s",
+                                           "%Y-%m-%d %H:%M:%S"))
+    selenium_logger.addHandler(handler)
+
+    yield caplog
+    selenium_logger.setLevel(logging.WARN)
 
 
 @pytest.fixture(scope="function")
