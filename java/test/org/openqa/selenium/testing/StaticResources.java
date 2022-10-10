@@ -61,13 +61,6 @@ class StaticResources {
     bazel.build("//javascript/atoms/fragments:find-elements");
     copy("javascript/atoms/fragments/find-elements.js",
          "org/openqa/selenium/support/locators/findElements.js");
-
-    // Firefox XPI
-    copy("third_party/js/selenium/webdriver_prefs.json",
-         "org/openqa/selenium/firefox/webdriver_prefs.json");
-    bazel.build("third_party/js/selenium:webdriver_xpi");
-    copy("third_party/js/selenium/webdriver.xpi",
-        "org/openqa/selenium/firefox/xpi/webdriver.xpi");
   }
 
   private static void copy(String copyFrom, String copyTo) {
