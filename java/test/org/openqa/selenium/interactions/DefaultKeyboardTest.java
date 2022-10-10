@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.interactions;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -139,7 +138,7 @@ class DefaultKeyboardTest extends JupiterTestBase {
     someKeys.perform();
 
     assertThatBodyEventsFiredAreExactly("keypress keypress");
-    assertThatFormEventsFiredAreExactly(StringUtils.EMPTY);
+    assertThatFormEventsFiredAreExactly("");
   }
 
   @Test

@@ -78,7 +78,7 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<String> elementTextToEqual(final By locator, final String value) {
-    return new ExpectedCondition<>() {
+    return new ExpectedCondition<String>() {
 
       @Override
       public String apply(WebDriver driver) {
@@ -181,7 +181,7 @@ public class WaitingConditions {
   }
 
   public static ExpectedCondition<WebDriver> windowToBeSwitchedToWithName(final String windowName) {
-    return new ExpectedCondition<>() {
+    return new ExpectedCondition<WebDriver>() {
 
       @Override
       public WebDriver apply(WebDriver driver) {

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.ie;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -121,7 +120,7 @@ class InternetExplorerDriverTest extends JupiterTestBase {
     // Intentionally wait to make sure hover DOES NOT persist.
     Thread.sleep(1000);
 
-    wait.until(d -> item.getText().equals(StringUtils.EMPTY));
+    wait.until(d -> item.getText().equals(""));
 
     assertThat(item.getText()).isEmpty();
   }

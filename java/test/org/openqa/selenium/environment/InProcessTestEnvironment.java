@@ -20,7 +20,7 @@ package org.openqa.selenium.environment;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 
-class InProcessTestEnvironment implements TestEnvironment {
+public class InProcessTestEnvironment implements TestEnvironment {
 
   private final AppServer appServer;
 

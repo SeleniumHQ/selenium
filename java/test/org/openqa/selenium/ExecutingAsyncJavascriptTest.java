@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -365,7 +364,7 @@ class ExecutingAsyncJavascriptTest extends JupiterTestBase {
     driver.get(pages.slowLoadingAlertPage);
     driver.manage().timeouts().setScriptTimeout(Duration.ofMillis(5000));
     assertThatExceptionOfType(UnhandledAlertException.class)
-        .isThrownBy(() -> executor.executeAsyncScript(StringUtils.EMPTY));
+        .isThrownBy(() -> executor.executeAsyncScript(""));
     // Shouldn't throw
     driver.getTitle();
   }

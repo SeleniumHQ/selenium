@@ -27,7 +27,6 @@ import static org.openqa.selenium.Proxy.ProxyType.SYSTEM;
 import static org.openqa.selenium.Proxy.ProxyType.UNSPECIFIED;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
@@ -68,31 +67,31 @@ class ProxyTest {
       .isThrownBy(() -> proxy.setAutodetect(true));
 
     assertThatExceptionOfType(IllegalStateException.class)
-      .isThrownBy(() -> proxy.setSocksPassword(StringUtils.EMPTY));
+      .isThrownBy(() -> proxy.setSocksPassword(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-      .isThrownBy(() -> proxy.setSocksUsername(StringUtils.EMPTY));
+      .isThrownBy(() -> proxy.setSocksUsername(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-      .isThrownBy(() -> proxy.setSocksProxy(StringUtils.EMPTY));
+      .isThrownBy(() -> proxy.setSocksProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-      .isThrownBy(() -> proxy.setFtpProxy(StringUtils.EMPTY));
+      .isThrownBy(() -> proxy.setFtpProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-      .isThrownBy(() -> proxy.setHttpProxy(StringUtils.EMPTY));
+      .isThrownBy(() -> proxy.setHttpProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-      .isThrownBy(() -> proxy.setNoProxy(StringUtils.EMPTY));
+      .isThrownBy(() -> proxy.setNoProxy(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
-      .isThrownBy(() -> proxy.setProxyAutoconfigUrl(StringUtils.EMPTY));
+      .isThrownBy(() -> proxy.setProxyAutoconfigUrl(""));
 
     assertThatExceptionOfType(IllegalStateException.class)
       .isThrownBy(() -> proxy.setProxyType(SYSTEM));
 
     assertThatExceptionOfType(IllegalStateException.class)
-      .isThrownBy(() -> proxy.setSslProxy(StringUtils.EMPTY));
+      .isThrownBy(() -> proxy.setSslProxy(""));
 
     final Proxy proxy2 = new Proxy();
     proxy2.setProxyType(AUTODETECT);

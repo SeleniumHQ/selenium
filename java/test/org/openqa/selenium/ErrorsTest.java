@@ -36,6 +36,6 @@ class ErrorsTest extends JupiterTestBase {
     driver.get(pages.errorsPage);
     Object result = ((JavascriptExecutor) driver).
         executeScript("return window.ERRORS.join('\\n');");
-    assertThat(result).isEmpty();
+    assertThat(result).isEqualTo("");
   }
 }

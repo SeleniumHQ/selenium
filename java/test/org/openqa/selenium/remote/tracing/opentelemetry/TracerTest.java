@@ -143,7 +143,7 @@ class TracerTest {
     assertThat(timedEvents).element(0).extracting(EventData::getName)
         .isEqualTo(event);
     assertThat(timedEvents).element(0).extracting(EventData::getTotalAttributeCount)
-        .isZero();
+      .isEqualTo(0);
   }
 
   @Test
@@ -168,7 +168,7 @@ class TracerTest {
     assertThat(timedEvents).element(1).extracting(EventData::getName)
         .isEqualTo(endEvent);
     assertThat(timedEvents).element(0).extracting(EventData::getTotalAttributeCount)
-        .isZero();
+        .isEqualTo(0);
   }
 
   @Test

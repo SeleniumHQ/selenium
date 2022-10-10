@@ -24,7 +24,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
@@ -103,8 +102,8 @@ class FluentWaitTest {
   void canIgnoreMultipleExceptions() throws InterruptedException {
     when(mockClock.instant()).thenReturn(EPOCH);
     when(mockCondition.apply(mockDriver))
-      .thenThrow(new NoSuchElementException(StringUtils.EMPTY))
-      .thenThrow(new NoSuchFrameException(StringUtils.EMPTY))
+      .thenThrow(new NoSuchElementException(""))
+      .thenThrow(new NoSuchFrameException(""))
       .thenReturn(ARBITRARY_VALUE);
 
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
@@ -119,7 +118,7 @@ class FluentWaitTest {
 
   @Test
   void propagatesUnIgnoredExceptions() {
-    final NoSuchWindowException exception = new NoSuchWindowException(StringUtils.EMPTY);
+    final NoSuchWindowException exception = new NoSuchWindowException("");
 
     when(mockClock.instant()).thenReturn(EPOCH);
     when(mockCondition.apply(mockDriver)).thenThrow(exception);
@@ -136,7 +135,7 @@ class FluentWaitTest {
 
   @Test
   void timeoutMessageIncludesLastIgnoredException() {
-    final NoSuchWindowException exception = new NoSuchWindowException(StringUtils.EMPTY);
+    final NoSuchWindowException exception = new NoSuchWindowException("");
 
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(500), EPOCH.plusMillis(1500), EPOCH.plusMillis(2500));
     when(mockCondition.apply(mockDriver))

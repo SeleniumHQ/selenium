@@ -25,7 +25,6 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
@@ -105,7 +104,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.id(StringUtils.EMPTY)));
+        .isThrownBy(() -> driver.findElement(By.id("")));
   }
 
   @Test
@@ -113,7 +112,7 @@ class ElementFindingTest extends JupiterTestBase {
   public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.id(StringUtils.EMPTY)));
+        .isThrownBy(() -> driver.findElements(By.id("")));
   }
 
   @Test
@@ -173,13 +172,13 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByEmptyNameShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.name(StringUtils.EMPTY)));
+        .isThrownBy(() -> driver.findElement(By.name("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyNameShouldReturnEmptyList() {
     driver.get(pages.formPage);
-    List<WebElement> elements = driver.findElements(By.name(StringUtils.EMPTY));
+    List<WebElement> elements = driver.findElements(By.name(""));
     assertThat(elements).isEmpty();
   }
 
@@ -233,14 +232,14 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.tagName(StringUtils.EMPTY)));
+        .isThrownBy(() -> driver.findElement(By.tagName("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.tagName(StringUtils.EMPTY)));
+        .isThrownBy(() -> driver.findElements(By.tagName("")));
   }
 
   @Test
@@ -322,14 +321,14 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.className(StringUtils.EMPTY)));
+        .isThrownBy(() -> driver.findElement(By.className("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.className(StringUtils.EMPTY)));
+        .isThrownBy(() -> driver.findElements(By.className("")));
   }
 
   @Test
@@ -574,14 +573,14 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.cssSelector(StringUtils.EMPTY)));
+        .isThrownBy(() -> driver.findElement(By.cssSelector("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.cssSelector(StringUtils.EMPTY)));
+        .isThrownBy(() -> driver.findElements(By.cssSelector("")));
   }
 
   @Test

@@ -26,7 +26,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 import org.mockito.ArgumentMatchers;
@@ -62,7 +61,7 @@ class SelectTest {
 
   @Test
   void shouldIndicateThatASelectCanSupportMultipleOptionsWithEmptyMultipleAttribute() {
-    Select select = selectElementWithMultipleEqualTo(StringUtils.EMPTY);
+    Select select = selectElementWithMultipleEqualTo("");
     assertThat(select.isMultiple()).isTrue();
   }
 

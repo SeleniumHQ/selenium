@@ -28,7 +28,6 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
@@ -118,7 +117,7 @@ class AlertsTest extends JupiterTestBase {
 
   @Test
   void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
-    driver.get(alertPage(StringUtils.EMPTY));
+    driver.get(alertPage(""));
 
     driver.findElement(By.id("alert")).click();
     Alert alert = wait.until(alertIsPresent());

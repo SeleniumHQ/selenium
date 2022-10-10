@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-class Build {
+public class Build {
   private static final Logger log = Logger.getLogger(Build.class.getName());
 
   private final List<String> targets = new ArrayList<>();

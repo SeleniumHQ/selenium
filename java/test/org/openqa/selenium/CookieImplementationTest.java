@@ -26,7 +26,6 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.DomainHelper;
@@ -522,7 +521,7 @@ class CookieImplementationTest extends JupiterTestBase {
     assertThat(driver.manage().getCookies()).isNotEmpty();
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertThat(documentCookie).as("Cookies were empty").isNotEqualTo(StringUtils.EMPTY);
+      assertThat(documentCookie).as("Cookies were empty").isNotEqualTo("");
     }
   }
 

@@ -54,7 +54,7 @@ import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-abstract class HttpClientTestBase {
+public abstract class HttpClientTestBase {
 
   protected abstract HttpClient.Factory createFactory();
 

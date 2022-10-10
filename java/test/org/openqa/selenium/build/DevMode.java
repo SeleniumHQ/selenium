@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-class DevMode {
+public class DevMode {
 
   // There is absolutely no way that this is going to be fragile. No way. Nada. Nope.
   private static final List<Supplier<Boolean>> DEV_MODE_CHECKS = Arrays.asList(
