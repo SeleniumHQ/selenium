@@ -620,7 +620,7 @@ namespace OpenQA.Selenium
             }
             else
             {
-                String script = "var form = arguments[0];\n" +
+                String script = "/* submit.js */ var form = arguments[0];\n" +
                                 "while (form.nodeName != \"FORM\" && form.parentNode) {\n" +
                                 "  form = form.parentNode;\n" +
                                 "}\n" +
@@ -717,7 +717,9 @@ namespace OpenQA.Selenium
                 }
             }
 
-            string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "return ({0}).apply(null, arguments);", atom);
+            string wrappedAtom = string.Format(CultureInfo.InvariantCulture, "/* {0} */ return ({1}).apply(null, arguments);",
+                atomResourceName,
+                atom);
             return wrappedAtom;
         }
 

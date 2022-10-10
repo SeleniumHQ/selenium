@@ -343,7 +343,7 @@ namespace OpenQA.Selenium
                 }
             }
 
-            return listenerScript;
+            return string.Format(CultureInfo.InvariantCulture, "/* mutationListener.js */ {0}", listenerScript);
         }
 
         private void OnScriptBindingCalled(object sender, BindingCalledEventArgs e)
