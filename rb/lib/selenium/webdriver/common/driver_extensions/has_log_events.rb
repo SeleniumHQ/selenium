@@ -135,7 +135,7 @@ module Selenium
         end
 
         def mutation_listener
-          @mutation_listener ||= read_atom(:mutationListener)
+          @mutation_listener ||= "/* mutationListener.js */ #{read_atom(:mutationListener)}"
         end
 
       end # HasLogEvents

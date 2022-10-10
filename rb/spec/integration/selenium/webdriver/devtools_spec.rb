@@ -72,7 +72,12 @@ module Selenium
 
       it 'notifies about log messages' do
         logs = []
-        driver.on_log_event(:console) { |log| logs.push(log) }
+        WebDriver.logger.level = :info
+        expect {
+          driver.on_log_event(:console) { |log| logs.push(log) }
+        }.to output(/mutationListener.js/).to_stdout_from_any_process
+        WebDriver.logger.level = :warn
+
         driver.navigate.to url_for('javascriptPage.html')
 
         driver.execute_script("console.log('I like cheese');")

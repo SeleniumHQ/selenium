@@ -43,7 +43,11 @@ module Selenium
       describe '#submit' do
         it 'valid submit button' do
           driver.navigate.to url_for('formPage.html')
-          driver.find_element(id: 'submitButton').submit
+          WebDriver.logger.level = :info
+          expect {
+            driver.find_element(id: 'submitButton').submit
+          }.to output(/submit.js/).to_stdout_from_any_process
+          WebDriver.logger.level = :warn
 
           sleep 0.5
           expect(driver.title).to eq('We Arrive Here')
@@ -139,7 +143,11 @@ module Selenium
           end
 
           it '#attribute returns value' do
-            expect(element.attribute(prop_or_attr)).to eq 'checkbox'
+            WebDriver.logger.level = :info
+            expect {
+              expect(element.attribute(prop_or_attr)).to eq 'checkbox'
+            }.to output(/getAttribute.js/).to_stdout_from_any_process
+            WebDriver.logger.level = :warn
           end
         end
 
@@ -463,7 +471,11 @@ module Selenium
 
       it 'should get displayed' do
         driver.navigate.to url_for('xhtmlTest.html')
-        expect(driver.find_element(class: 'header')).to be_displayed
+        WebDriver.logger.level = :info
+        expect {
+          expect(driver.find_element(class: 'header')).to be_displayed
+        }.to output(/isDisplayed.js/).to_stdout_from_any_process
+        WebDriver.logger.level = :warn
       end
 
       context 'size and location' do

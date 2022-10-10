@@ -111,8 +111,13 @@ module Selenium
         it 'should find above another' do
           driver.navigate.to url_for('relative_locators.html')
 
-          above = driver.find_element(relative: {tag_name: 'td', above: {id: 'center'}})
-          expect(above.attribute('id')).to eq('second')
+          WebDriver.logger.level = :info
+          expect {
+            @above = driver.find_element(relative: {tag_name: 'td', above: {id: 'center'}})
+          }.to output(/findElements.js/).to_stdout_from_any_process
+          WebDriver.logger.level = :warn
+
+          expect(@above.attribute('id')).to eq('second')
         end
 
         it 'should find child element' do

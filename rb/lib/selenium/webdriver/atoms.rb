@@ -28,7 +28,9 @@ module Selenium
       end
 
       def execute_atom(function_name, *arguments)
-        script = format("return (%<atom>s).apply(null, arguments)", atom: read_atom(function_name))
+        script = format("/* %<function>s.js */ return (%<atom>s).apply(null, arguments)",
+                        function: function_name,
+                        atom: read_atom(function_name))
         execute_script(script, *arguments)
       end
 

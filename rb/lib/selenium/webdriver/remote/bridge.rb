@@ -425,7 +425,7 @@ module Selenium
         end
 
         def submit_element(element)
-          script = "var form = arguments[0];\n" \
+          script = "/* submit.js */ var form = arguments[0];\n" \
                    "while (form.nodeName != \"FORM\" && form.parentNode) {\n  " \
                    "form = form.parentNode;\n" \
                    "}\n" \
@@ -449,7 +449,6 @@ module Selenium
         end
 
         def element_attribute(element, name)
-          WebDriver.logger.info "Using script for :getAttribute of #{name}"
           execute_atom :getAttribute, element, name
         end
 
@@ -509,7 +508,6 @@ module Selenium
         end
 
         def element_displayed?(element)
-          WebDriver.logger.info 'Using script for :isDisplayed'
           execute_atom :isDisplayed, element
         end
 
