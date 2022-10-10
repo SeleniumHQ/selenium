@@ -31,7 +31,7 @@ import org.openqa.selenium.devtools.HasDevTools;
 import java.util.Optional;
 
 @AutoService(WebDriverInfo.class)
-class FakeWebDriverInfo implements WebDriverInfo {
+public class FakeWebDriverInfo implements WebDriverInfo {
 
   @Override
   public String getDisplayName() {
