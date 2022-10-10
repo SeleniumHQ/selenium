@@ -24,7 +24,7 @@ mod metadata;
 
 /// Automated driver management for Selenium
 #[derive(Parser, Debug)]
-#[clap(version, about, long_about = None, disable_version_flag = true, help_template = "\
+#[clap(version, about, long_about = None, help_template = "\
 {name} {version}
 {about-with-newline}
 {usage-heading} {usage}
@@ -34,9 +34,13 @@ struct Cli {
     #[clap(short, long, value_parser)]
     browser: String,
 
+    /// Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
+    #[clap(short = 'D', long, value_parser, default_value = "")]
+    driver_version: String,
+
     /// Major browser version (e.g., 105, 106, etc.)
-    #[clap(short, long, value_parser, default_value = "")]
-    version: String,
+    #[clap(short = 'B', long, value_parser, default_value = "")]
+    browser_version: String,
 
     /// Display DEBUG messages
     #[clap(short, long)]
@@ -71,20 +75,23 @@ fn main() -> Result<(), Box<dyn Error>> {
         clear_cache();
     }
 
-    let mut browser_version = cli.version;
-    if browser_version.is_empty() {
+    let mut driver_version = cli.driver_version;
+    if driver_version.is_empty() {
+      let mut browser_version = cli.browser_version;
+      if browser_version.is_empty() {
         match browser_manager.get_browser_version(os) {
-            Some(version) => {
-                browser_version = version;
-                log::debug!("Detected browser: {} {}", browser_name, browser_version);
-            }
-            None => {
-                log::warn!("The version of {} cannot be detected. Trying with latest driver version", browser_name);
-            }
+          Some(version) => {
+            browser_version = version;
+            log::debug!("Detected browser: {} {}", browser_name, browser_version);
+          }
+          None => {
+            log::warn!("The version of {} cannot be detected. Trying with latest driver version", browser_name);
+          }
         }
+      }
+      driver_version = browser_manager.get_driver_version(&browser_version, os)?;
+      log::debug!("Required driver: {} {}", browser_manager.get_driver_name(), driver_version);
     }
-    let driver_version = browser_manager.get_driver_version(&browser_version, os)?;
-    log::debug!("Required driver: {} {}", browser_manager.get_driver_name(), driver_version);
 
     let driver_path = browser_manager.get_driver_path_in_cache(&driver_version, os, arch);
     if driver_path.exists() {
