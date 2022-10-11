@@ -21,12 +21,22 @@ Automated driver management for Selenium
 
 Usage: selenium-manager [OPTIONS] --browser <BROWSER>
 Options:
-  -b, --browser <BROWSER>  Browser type (e.g., chrome, firefox, edge)
-  -v, --version <VERSION>  Major browser version (e.g., 105, 106, etc.) [default: ]
-  -d, --debug              Display DEBUG messages
-  -t, --trace              Display TRACE messages
-  -c, --clear-cache        Clear driver cache
-  -h, --help               Print help information
+  -b, --browser <BROWSER>
+          Browser type (e.g., chrome, firefox, edge)
+  -D, --driver-version <DRIVER_VERSION>
+          Driver version (e.g., 106.0.5249.61, 0.31.0, etc.) [default: ]
+  -B, --browser-version <BROWSER_VERSION>
+          Major browser version (e.g., 105, 106, etc.) [default: ]
+  -d, --debug
+          Display DEBUG messages
+  -t, --trace
+          Display TRACE messages
+  -c, --clear-cache
+          Clear driver cache
+  -h, --help
+          Print help information
+  -V, --version
+          Print version information
 ```
 
 For instance, the command required to manage chromedriver is the following:
