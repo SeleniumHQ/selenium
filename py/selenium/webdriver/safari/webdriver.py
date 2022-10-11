@@ -105,10 +105,7 @@ class WebDriver(RemoteWebDriver):
             )
 
         self._reuse_service = reuse_service
-        if service:
-            self.service = service
-        else:
-            self.service = Service(executable_path, port=port, quiet=quiet, service_args=service_args)
+        self.service = service or Service(executable_path, port=port, quiet=quiet, service_args=service_args)
         if not reuse_service:
             self.service.start()
 

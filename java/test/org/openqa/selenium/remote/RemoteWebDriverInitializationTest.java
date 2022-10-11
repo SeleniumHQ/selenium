@@ -55,11 +55,11 @@ import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 
 @Tag("UnitTests")
-public class RemoteWebDriverInitializationTest {
+class RemoteWebDriverInitializationTest {
   private boolean quitCalled = false;
 
   @Test
-  public void testQuitsIfStartSessionFails() {
+  void testQuitsIfStartSessionFails() {
     assertThatExceptionOfType(RuntimeException.class)
       .isThrownBy(() -> new BadStartSessionRemoteWebDriver(mock(CommandExecutor.class), new ImmutableCapabilities()))
       .withMessageContaining("Stub session that should fail");
@@ -68,14 +68,14 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorIsNull() {
+  void constructorShouldThrowIfExecutorIsNull() {
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> new RemoteWebDriver((CommandExecutor) null, new ImmutableCapabilities()))
       .withMessage("Command executor must be set");
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorThrowsOnAnAttemptToStartASession() {
+  void constructorShouldThrowIfExecutorThrowsOnAnAttemptToStartASession() {
     CommandExecutor executor = WebDriverFixture.prepareExecutorMock(exceptionResponder);
 
     assertThatExceptionOfType(SessionNotCreatedException.class)
@@ -88,7 +88,7 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorReturnsNullOnAnAttemptToStartASession() {
+  void constructorShouldThrowIfExecutorReturnsNullOnAnAttemptToStartASession() {
     CommandExecutor executor = WebDriverFixture.prepareExecutorMock(nullResponder);
     assertThatExceptionOfType(SessionNotCreatedException.class)
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
@@ -97,7 +97,7 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorReturnsAResponseWithNullValueOnAnAttemptToStartASession() {
+  void constructorShouldThrowIfExecutorReturnsAResponseWithNullValueOnAnAttemptToStartASession() {
     CommandExecutor executor = WebDriverFixture.prepareExecutorMock(nullValueResponder);
     assertThatExceptionOfType(SessionNotCreatedException.class)
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
@@ -106,7 +106,7 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void constructorShouldThrowIfExecutorReturnsSomethingButNotCapabilitiesOnAnAttemptToStartASession() {
+  void constructorShouldThrowIfExecutorReturnsSomethingButNotCapabilitiesOnAnAttemptToStartASession() {
     CommandExecutor executor = WebDriverFixture.prepareExecutorMock(valueResponder("OK"));
     assertThatExceptionOfType(SessionNotCreatedException.class)
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()));
@@ -115,7 +115,7 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void constructorStartsSessionAndPassesCapabilities() throws IOException {
+  void constructorStartsSessionAndPassesCapabilities() throws IOException {
     CommandExecutor executor = WebDriverFixture.prepareExecutorMock(echoCapabilities, nullValueResponder);
     ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "cheese browser");
 
@@ -131,7 +131,7 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void canHandlePlatformNameCapability() {
+  void canHandlePlatformNameCapability() {
     WebDriverFixture fixture = new WebDriverFixture(
       new ImmutableCapabilities(
         "browserName", "cheese browser", "platformName", Platform.MOJAVE),
@@ -142,7 +142,7 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void canHandlePlatformOSSCapability() {
+  void canHandlePlatformOSSCapability() {
     WebDriverFixture fixture = new WebDriverFixture(
       new ImmutableCapabilities(
         "browserName", "cheese browser", "platform", Platform.MOJAVE),
@@ -153,7 +153,7 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void canHandleUnknownPlatformNameAndFallsBackToUnix() {
+  void canHandleUnknownPlatformNameAndFallsBackToUnix() {
     WebDriverFixture fixture = new WebDriverFixture(
       new ImmutableCapabilities(
         "browserName", "cheese browser", "platformName", "cheese platform"),
@@ -164,7 +164,7 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void canHandleNonStandardCapabilitiesReturnedByRemoteEnd() throws IOException {
+  void canHandleNonStandardCapabilitiesReturnedByRemoteEnd() throws IOException {
     Response resp = new Response();
     resp.setSessionId(UUID.randomUUID().toString());
     resp.setValue(ImmutableMap.of("platformName", "xxx"));
@@ -175,7 +175,7 @@ public class RemoteWebDriverInitializationTest {
   }
 
   @Test
-  public void canPassClientConfig() throws MalformedURLException {
+  void canPassClientConfig() throws MalformedURLException {
     HttpClient client = mock(HttpClient.class);
     when(client.execute(any())).thenReturn(new HttpResponse().setStatus(200).setContent(
       Contents.asJson(singletonMap("value", ImmutableMap.of(

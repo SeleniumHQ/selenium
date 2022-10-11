@@ -37,7 +37,7 @@ public class StabilityTest extends InternalSelenseTestBase {
   }
 
   @Test
-  public void retrieveLastRemoteControlLogsDoesNotTriggerOutOfMemoryErrors() {
+  void retrieveLastRemoteControlLogsDoesNotTriggerOutOfMemoryErrors() {
     for (int i = 1; i < 100000; i++) {
       selenium.retrieveLastRemoteControlLogs();
     }

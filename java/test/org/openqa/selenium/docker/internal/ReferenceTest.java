@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ReferenceTest {
+class ReferenceTest {
 
   public static Stream<Arguments> data() {
     String sha256 = "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
@@ -62,14 +62,14 @@ public class ReferenceTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldEvaluateValidInputsAsReferences(String input, Reference expected, String familiarName) {
+  void shouldEvaluateValidInputsAsReferences(String input, Reference expected, String familiarName) {
     Reference seen = Reference.parse(input);
     assertThat(seen).describedAs("%s -> %s", input, expected).isEqualTo(expected);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldEvaluateReferencesFamiliarName(String input, Reference expected, String familiarName) {
+  void shouldEvaluateReferencesFamiliarName(String input, Reference expected, String familiarName) {
     Reference seen = Reference.parse(input);
     assertThat(seen.getFamiliarName()).describedAs("%s -> %s", input, familiarName)
       .isEqualTo(familiarName);

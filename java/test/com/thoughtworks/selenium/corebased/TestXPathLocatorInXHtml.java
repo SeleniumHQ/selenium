@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 @Disabled
 public class TestXPathLocatorInXHtml extends InternalSelenseTestBase {
   @Test
-  public void testXPathLocatorInXHtml() {
+  void testXPathLocatorInXHtml() {
     selenium.open("test_locators.xhtml");
     verifyTrue(selenium.isElementPresent("xpath=//x:body"));
   }

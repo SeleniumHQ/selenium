@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-public class SafariDriverTest extends JupiterTestBase {
+class SafariDriverTest extends JupiterTestBase {
 
   private SafariDriverService service;
 
@@ -99,7 +99,7 @@ public class SafariDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void canChangePermissions() {
+  void canChangePermissions() {
     HasPermissions permissions = (HasPermissions) driver;
 
     assertThat(permissions.getPermissions().get("getUserMedia")).isEqualTo(true);

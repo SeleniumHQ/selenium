@@ -65,7 +65,7 @@ class WebDriverWait:
                 exceptions.append(ignored_exceptions)
         self._ignored_exceptions = tuple(exceptions)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(type(self), self._driver.session_id)
 
     def until(self, method, message: str = ""):

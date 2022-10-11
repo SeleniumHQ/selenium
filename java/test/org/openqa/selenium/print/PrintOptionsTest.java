@@ -23,10 +23,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @Tag("UnitTests")
-public class PrintOptionsTest {
+class PrintOptionsTest {
 
   @Test
-  public void setsDefaultValues() {
+  void setsDefaultValues() {
     PrintOptions printOptions = new PrintOptions();
 
     assertThat(printOptions.getScale()).isEqualTo(1.0);
@@ -35,7 +35,7 @@ public class PrintOptionsTest {
   }
 
   @Test
-  public void setsValuesAsPassed() {
+  void setsValuesAsPassed() {
     PrintOptions printOptions = new PrintOptions();
 
     printOptions.setBackground(true);

@@ -14,7 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import typing
 from typing import List
 
 from selenium.webdriver.common import service
@@ -31,9 +31,9 @@ class Service(service.Service):
         self,
         executable_path: str = DEFAULT_EXECUTABLE_PATH,
         port: int = 0,
-        host: str = None,
-        log_level: str = None,
-        log_file: str = None,
+        host: typing.Optional[str] = None,
+        log_level: typing.Optional[str] = None,
+        log_file: typing.Optional[str] = None,
     ):
         """
         Creates a new instance of the Service
@@ -48,11 +48,11 @@ class Service(service.Service):
            Default is "stdout"."""
         self.service_args = []
         if host:
-            self.service_args.append("--host=%s" % host)
+            self.service_args.append(f"--host={host}")
         if log_level:
-            self.service_args.append("--log-level=%s" % log_level)
+            self.service_args.append(f"--log-level={log_level}")
         if log_file:
-            self.service_args.append("--log-file=%s" % log_file)
+            self.service_args.append(f"--log-file={log_file}")
 
         super().__init__(
             executable_path,
@@ -61,4 +61,4 @@ class Service(service.Service):
         )
 
     def command_line_args(self) -> List[str]:
-        return ["--port=%d" % self.port] + self.service_args
+        return [f"--port={self.port}"] + self.service_args

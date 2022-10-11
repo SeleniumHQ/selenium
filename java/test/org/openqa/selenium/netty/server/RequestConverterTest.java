@@ -30,10 +30,10 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class RequestConverterTest {
+class RequestConverterTest {
 
   @Test
-  public void canConvertASimpleRequest() {
+  void canConvertASimpleRequest() {
     RequestConverter converter = new RequestConverter();
 
     EmbeddedChannel channel = new EmbeddedChannel(converter);
@@ -50,7 +50,7 @@ public class RequestConverterTest {
   }
 
   @Test
-  public void returnsAnErrorForUnhandledMethods() {
+  void returnsAnErrorForUnhandledMethods() {
     RequestConverter converter = new RequestConverter();
 
     EmbeddedChannel channel = new EmbeddedChannel(converter);

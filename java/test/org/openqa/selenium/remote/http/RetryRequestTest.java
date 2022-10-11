@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class RetryRequestTest {
+class RetryRequestTest {
 
   private HttpClient client;
   private static final String REQUEST_PATH = "http://%s:%s/hello";
@@ -52,7 +52,7 @@ public class RetryRequestTest {
   }
 
   @Test
-  public void shouldBeAbleToHandleARequest() {
+  void shouldBeAbleToHandleARequest() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server = new NettyAppServer(req -> {
       count.incrementAndGet();
@@ -73,7 +73,7 @@ public class RetryRequestTest {
   }
 
   @Test
-  public void shouldBeAbleToRetryARequestOnInternalServerError() {
+  void shouldBeAbleToRetryARequestOnInternalServerError() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server = new NettyAppServer(req -> {
       count.incrementAndGet();
@@ -98,7 +98,7 @@ public class RetryRequestTest {
   }
 
   @Test
-  public void shouldNotRetryRequestOnInternalServerErrorWithContent() {
+  void shouldNotRetryRequestOnInternalServerErrorWithContent() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server = new NettyAppServer(req -> {
       count.incrementAndGet();
@@ -121,7 +121,7 @@ public class RetryRequestTest {
   }
 
   @Test
-  public void shouldRetryRequestOnServerUnavailableError() {
+  void shouldRetryRequestOnServerUnavailableError() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server = new NettyAppServer(req -> {
       count.incrementAndGet();
@@ -147,7 +147,7 @@ public class RetryRequestTest {
   }
 
   @Test
-  public void shouldBeAbleToRetryARequestOnTimeout() {
+  void shouldBeAbleToRetryARequestOnTimeout() {
     AtomicInteger count = new AtomicInteger(0);
     AppServer server = new NettyAppServer(req -> {
       count.incrementAndGet();
@@ -175,7 +175,7 @@ public class RetryRequestTest {
   }
 
   @Test
-  public void shouldBeAbleToRetryARequestOnConnectionFailure() {
+  void shouldBeAbleToRetryARequestOnConnectionFailure() {
     AppServer server = new NettyAppServer(req -> new HttpResponse());
 
     URI uri = URI.create(server.whereIs("/"));

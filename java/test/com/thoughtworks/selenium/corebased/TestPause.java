@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestPause extends InternalSelenseTestBase {
   @Test
-  public void testPause() throws Exception {
+  void testPause() throws Exception {
     selenium.open("test_reload_onchange_page.html");
     // Make sure we can pause even when the page doesn't change
     Thread.sleep(100);

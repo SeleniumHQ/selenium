@@ -32,10 +32,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AnnotatedConfigTest {
+class AnnotatedConfigTest {
 
   @Test
-  public void shouldAllowConfigsToBeAnnotated() {
+  void shouldAllowConfigsToBeAnnotated() {
 
     class WithAnnotations {
 
@@ -50,7 +50,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void shouldAllowFieldsToBeSomethingOtherThanStrings() {
+  void shouldAllowFieldsToBeSomethingOtherThanStrings() {
     class WithTypes {
 
       @ConfigValue(section = "types", name = "bool", example = "false")
@@ -65,7 +65,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void shouldAllowCollectionTypeFieldsToBeAnnotated() {
+  void shouldAllowCollectionTypeFieldsToBeAnnotated() {
     class WithBadAnnotation {
 
       @ConfigValue(section = "the", name = "collection", example = "[]")
@@ -82,7 +82,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void shouldNotAllowMapTypeFieldsToBeAnnotated() {
+  void shouldNotAllowMapTypeFieldsToBeAnnotated() {
     assertThrows(ConfigException.class, () -> {
       class WithBadAnnotation {
 
@@ -95,7 +95,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void shouldWalkInheritanceHierarchy() {
+  void shouldWalkInheritanceHierarchy() {
     class Parent {
 
       @ConfigValue(section = "cheese", name = "type", example = "")
@@ -112,7 +112,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void configValuesFromChildClassesAreMoreImportant() {
+  void configValuesFromChildClassesAreMoreImportant() {
     class Parent {
 
       @ConfigValue(section = "cheese", name = "type", example = "\"gouda\"")
@@ -131,7 +131,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void defaultValuesForPrimitivesAreIgnored() {
+  void defaultValuesForPrimitivesAreIgnored() {
     // There's no way to tell the difference between the default values and the value having been
     // set to the default. Best not worry about it.
     class Defaults {
@@ -157,7 +157,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void shouldUseSetToFilterFields() {
+  void shouldUseSetToFilterFields() {
     class TypesToBeFiltered {
 
       @Parameter(names = {"--bool"})

@@ -39,11 +39,11 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
-public class LocatingElementListHandlerTest {
+class LocatingElementListHandlerTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void shouldAlwaysLocateTheElementPerCall() {
+  void shouldAlwaysLocateTheElementPerCall() {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
@@ -66,7 +66,7 @@ public class LocatingElementListHandlerTest {
   }
 
   @Test
-  public void shouldUseAnnotationsToLookUpByAlternativeMechanisms() {
+  void shouldUseAnnotationsToLookUpByAlternativeMechanisms() {
     final WebDriver driver = mock(WebDriver.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");
@@ -83,7 +83,7 @@ public class LocatingElementListHandlerTest {
   }
 
   @Test
-  public void findByAnnotationShouldBeInherited() {
+  void findByAnnotationShouldBeInherited() {
     final WebDriver driver = mock(WebDriver.class);
     final WebElement element1 = mock(WebElement.class, "webElement1");
     final WebElement element2 = mock(WebElement.class, "webElement2");

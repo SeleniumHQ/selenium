@@ -35,10 +35,10 @@ import org.openqa.selenium.support.pagefactory.ElementLocator;
 
 import java.lang.reflect.Proxy;
 
-public class LocatingElementHandlerTest {
+class LocatingElementHandlerTest {
 
   @Test
-  public void shouldAlwaysLocateTheElementPerCall() {
+  void shouldAlwaysLocateTheElementPerCall() {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element = mock(WebElement.class);
 
@@ -59,7 +59,7 @@ public class LocatingElementHandlerTest {
   }
 
   @Test
-  public void shouldUseAnnotationsToLookUpByAlternativeMechanisms() {
+  void shouldUseAnnotationsToLookUpByAlternativeMechanisms() {
     final WebDriver driver = mock(WebDriver.class);
     final WebElement element = mock(WebElement.class);
 
@@ -76,7 +76,7 @@ public class LocatingElementHandlerTest {
   }
 
   @Test
-  public void shouldNotRepeatedlyLookUpElementsMarkedAsNeverChanging() {
+  void shouldNotRepeatedlyLookUpElementsMarkedAsNeverChanging() {
     final ElementLocator locator = mock(ElementLocator.class);
     final WebElement element = mock(WebElement.class);
 
@@ -95,7 +95,7 @@ public class LocatingElementHandlerTest {
   }
 
   @Test
-  public void findByAnnotationShouldBeInherited() {
+  void findByAnnotationShouldBeInherited() {
     ChildPage page = new ChildPage();
 
     final WebDriver driver = mock(WebDriver.class);

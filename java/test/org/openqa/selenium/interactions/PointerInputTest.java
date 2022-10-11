@@ -35,10 +35,10 @@ import java.util.List;
 import java.util.Map;
 
 @Tag("UnitTests")
-public class PointerInputTest {
+class PointerInputTest {
 
   @Test
-  public void encodesWrappedElementInMoveOrigin() {
+  void encodesWrappedElementInMoveOrigin() {
     RemoteWebElement innerElement = new RemoteWebElement();
     innerElement.setId("12345");
     WebElement element = new WrappedWebElement(innerElement);
@@ -60,7 +60,7 @@ public class PointerInputTest {
   }
 
   @Test
-  public void acceptsPointerEventProperties() {
+  void acceptsPointerEventProperties() {
     PointerInput pen = new PointerInput(PointerInput.Kind.PEN, "my pen");
     Interaction pointerDown = pen.createPointerDown(0, PointerInput.eventProperties().setHeight(12).setTiltX(30));
 

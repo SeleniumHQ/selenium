@@ -22,7 +22,7 @@ import org.openqa.selenium.grid.server.Server;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class Urls {
+class Urls {
 
   private Urls() {
     // Utility class

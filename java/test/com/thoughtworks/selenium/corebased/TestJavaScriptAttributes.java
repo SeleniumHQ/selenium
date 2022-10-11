@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestJavaScriptAttributes extends InternalSelenseTestBase {
   @Test
-  public void testJavaScriptAttributes() {
+  void testJavaScriptAttributes() {
     selenium.open("test_javascript_attributes.html");
     selenium.click("//a[@onclick=\"alert('foo')\"]");
     assertEquals(selenium.getAlert(), "foo");

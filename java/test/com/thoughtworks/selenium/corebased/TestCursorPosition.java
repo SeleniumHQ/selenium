@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestCursorPosition extends InternalSelenseTestBase {
   @Test
-  public void testCursorPosition() {
+  void testCursorPosition() {
     selenium.open("test_type_page1.html");
     try {
       assertEquals(selenium.getCursorPosition("username"), "8");

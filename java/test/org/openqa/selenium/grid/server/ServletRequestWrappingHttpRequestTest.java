@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 import org.openqa.testing.FakeHttpServletRequest;
 import org.openqa.testing.UrlInfo;
 
-public class ServletRequestWrappingHttpRequestTest {
+class ServletRequestWrappingHttpRequestTest {
 
   @Test
-  public void shouldNotExtractQueryParametersFromPostedBody() {
+  void shouldNotExtractQueryParametersFromPostedBody() {
     FakeHttpServletRequest request = new FakeHttpServletRequest(
         "GET",
         new UrlInfo("http://example.com", "/", "some-url"));
@@ -39,7 +39,7 @@ public class ServletRequestWrappingHttpRequestTest {
   }
 
   @Test
-  public void shouldExtractQueryParametersFromQueryString() {
+  void shouldExtractQueryParametersFromQueryString() {
     FakeHttpServletRequest request = new FakeHttpServletRequest(
         "GET",
         new UrlInfo("http://example.com", "/", "some-url", "cheese=cheddar"));

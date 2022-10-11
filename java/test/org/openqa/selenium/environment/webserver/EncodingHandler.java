@@ -26,7 +26,7 @@ import java.io.UncheckedIOException;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static org.openqa.selenium.remote.http.Contents.string;
 
-public class EncodingHandler implements HttpHandler {
+class EncodingHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {

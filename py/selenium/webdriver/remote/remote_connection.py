@@ -20,7 +20,6 @@ import os
 import platform
 import socket
 import string
-import typing
 from base64 import b64encode
 from urllib import parse
 
@@ -149,14 +148,14 @@ class RemoteConnection:
                 from urllib3.contrib.socks import SOCKSProxyManager
 
                 return SOCKSProxyManager(self._proxy_url, **pool_manager_init_args)
-            elif self._identify_http_proxy_auth():
+            if self._identify_http_proxy_auth():
                 self._proxy_url, self._basic_proxy_auth = self._separate_http_proxy_auth()
                 pool_manager_init_args["proxy_headers"] = urllib3.make_headers(proxy_basic_auth=self._basic_proxy_auth)
             return urllib3.ProxyManager(self._proxy_url, **pool_manager_init_args)
 
         return urllib3.PoolManager(**pool_manager_init_args)
 
-    def __init__(self, remote_server_addr, keep_alive=False, ignore_proxy: typing.Optional[bool] = False):
+    def __init__(self, remote_server_addr: str, keep_alive: bool = False, ignore_proxy: bool = False):
         self.keep_alive = keep_alive
         self._url = remote_server_addr
 

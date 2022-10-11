@@ -43,7 +43,7 @@ import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
  *
  * @author rchatley (Robert Chatley)
  */
-public class TestContextTest {
+class TestContextTest {
 
   private WebDriver webdriver;
   private TestContext context;
@@ -59,12 +59,12 @@ public class TestContextTest {
   }
 
   @Test
-  public void isCreatedWithAWebDriverImplementation() {
+  void isCreatedWithAWebDriverImplementation() {
     new WebDriverTestContext(webdriver);
   }
 
   @Test
-  public void canNavigateToAGivenUrl() {
+  void canNavigateToAGivenUrl() {
 
     final String url = "http://www.example.com";
 
@@ -74,7 +74,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canAssertPresenceOfWebElements() {
+  void canAssertPresenceOfWebElements() {
 
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
@@ -85,7 +85,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() {
+  void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() {
 
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
@@ -105,7 +105,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canDirectTextInputToSpecificElements() {
+  void canDirectTextInputToSpecificElements() {
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
     final String inputText = "test";
 
@@ -117,7 +117,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canTriggerClicksOnSpecificElements() {
+  void canTriggerClicksOnSpecificElements() {
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
     when(finder.findFrom(webdriver)).thenReturn(oneElement());
@@ -128,7 +128,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void canTriggerClicksOnFirstElement() {
+  void canTriggerClicksOnFirstElement() {
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
     when(finder.findFrom(webdriver)).thenReturn(twoElements());
@@ -139,7 +139,7 @@ public class TestContextTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() {
+  void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() {
     final Finder<WebElement, WebDriver> finder = mock(Finder.class);
 
     when(finder.findFrom(webdriver)).thenReturn(twoElements());
