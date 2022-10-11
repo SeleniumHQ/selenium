@@ -35,146 +35,146 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
 @Tag("UnitTests")
-public class PlatformTest {
+class PlatformTest {
 
   @Test
-  public void testXpIsWindows() {
+  void testXpIsWindows() {
     assertThat(XP.is(WINDOWS)).isTrue();
   }
 
   @Test
-  public void testVistaIsWindows() {
+  void testVistaIsWindows() {
     assertThat(VISTA.is(WINDOWS)).isTrue();
   }
 
   @Test
-  public void testWin8IsWindows() {
+  void testWin8IsWindows() {
     assertThat(WIN8.is(WINDOWS)).isTrue();
   }
 
   @Test
-  public void testWin81IsWindows() {
+  void testWin81IsWindows() {
     assertThat(WIN8_1.is(WINDOWS)).isTrue();
   }
 
   @Test
-  public void testLinuxIsUnix() {
+  void testLinuxIsUnix() {
     assertThat(LINUX.is(UNIX)).isTrue();
   }
 
   @Test
-  public void testUnixIsNotLinux() {
+  void testUnixIsNotLinux() {
     assertThat(UNIX.is(LINUX)).isFalse();
   }
 
   @Test
-  public void testXpIsAny() {
+  void testXpIsAny() {
     assertThat(XP.is(ANY)).isTrue();
   }
 
   @Test
-  public void testWindowsIsAny() {
+  void testWindowsIsAny() {
     assertThat(WINDOWS.is(ANY)).isTrue();
   }
 
   @Test
-  public void testLinuxIsAny() {
+  void testLinuxIsAny() {
     assertThat(LINUX.is(ANY)).isTrue();
   }
 
   @Test
-  public void windowsIsNotMacOS() {
+  void windowsIsNotMacOS() {
     // Both of these are platform definitions, so return "null" for the family.
     assertThat(WINDOWS.is(MAC)).isFalse();
   }
 
   @Test
-  public void testUnixIsAny() {
+  void testUnixIsAny() {
     assertThat(UNIX.is(ANY)).isTrue();
   }
 
   @Test
-  public void testShouldIdentifyXPVariants() {
+  void testShouldIdentifyXPVariants() {
     assertAllAre(Platform.WINDOWS, "Windows 2003", "xp", "windows", "winnt");
   }
 
   @Test
-  public void testShouldIdentifyVistaVariants() {
+  void testShouldIdentifyVistaVariants() {
     assertAllAre(Platform.VISTA, "Windows Vista", "windows server 2008");
   }
 
   @Test
-  public void testShouldIdentifyMacVariants() {
+  void testShouldIdentifyMacVariants() {
     assertAllAre(Platform.MAC, "Darwin", "Mac OS X");
   }
 
   @Test
-  public void testShouldIdentifyUnixVariants() {
+  void testShouldIdentifyUnixVariants() {
     assertAllAre(Platform.UNIX, "solaris", "bsd");
   }
 
   @Test
-  public void testShouldIdentifyLinux() {
+  void testShouldIdentifyLinux() {
     assertAllAre(Platform.LINUX, "Linux");
   }
 
   @Test
-  public void windowsIsWindows() {
+  void windowsIsWindows() {
     assertThat(WINDOWS.is(WINDOWS)).isTrue();
   }
 
   @Test
-  public void macIsMac() {
+  void macIsMac() {
     assertThat(MAC.is(MAC)).isTrue();
   }
 
   @Test
-  public void linuxIsLinux() {
+  void linuxIsLinux() {
     assertThat(LINUX.is(LINUX)).isTrue();
   }
 
   @Test
-  public void unixIsUnix() {
+  void unixIsUnix() {
     assertThat(UNIX.is(UNIX)).isTrue();
   }
 
   @Test
-  public void androidIAndroid() {
+  void androidIAndroid() {
     assertThat(ANDROID.is(ANDROID)).isTrue();
   }
 
   @Test
-  public void iosIsIos() {
+  void iosIsIos() {
     assertThat(IOS.is(IOS)).isTrue();
   }
 
   @Test
-  public void testWindows8Detection() {
+  void testWindows8Detection() {
     assertThat(Platform.extractFromSysProperty("windows nt (unknown)", "6.2")).isEqualTo(Platform.WIN8);
   }
 
   @Test
-  public void testWindows81Detection() {
+  void testWindows81Detection() {
     assertThat(Platform.extractFromSysProperty("windows nt (unknown)", "6.3")).isEqualTo(Platform.WIN8_1);
   }
 
   @Test
-  public void testWindowsIsWindows() {
+  void testWindowsIsWindows() {
     assertThat(WINDOWS).isEqualTo(Platform.fromString("windows"));
   }
 
   @Test
-  public void canParseMacOsXCorrectly() {
+  void canParseMacOsXCorrectly() {
     assertThat(Platform.fromString("Mac OS X")).isEqualTo(MAC);
   }
 
   @Test
-  public void catalinaIsMac() {
+  void catalinaIsMac() {
     assertThat(CATALINA.is(MAC)).isTrue();
   }
 
   @Test
-  public void canParseCatalinaFromOSName() {
+  void canParseCatalinaFromOSName() {
     assertThat(Platform.fromString("macOS 10.15")).isEqualTo(CATALINA);
   }
 

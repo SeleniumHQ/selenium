@@ -38,7 +38,7 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
 
-public class NetworkInterceptorRestTest {
+class NetworkInterceptorRestTest {
 
   private NettyAppServer appServer;
   private WebDriver driver;
@@ -77,7 +77,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptPatchRequest() throws MalformedURLException {
+  void shouldInterceptPatchRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,
@@ -108,7 +108,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptPutRequest() throws MalformedURLException {
+  void shouldInterceptPutRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,
@@ -139,7 +139,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptPostRequest() throws MalformedURLException {
+  void shouldInterceptPostRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,
@@ -170,7 +170,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptDeleteRequest() throws MalformedURLException {
+  void shouldInterceptDeleteRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,
@@ -201,7 +201,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptGetRequest() throws MalformedURLException {
+  void shouldInterceptGetRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,

@@ -30,7 +30,7 @@ from selenium.webdriver.remote.webdriver import WebElement
 """
 
 
-def title_is(title):
+def title_is(title: str):
     """An expectation for checking the title of a page.
     title is the expected title, which must be an exact match
     returns True if the title matches, false otherwise."""
@@ -41,7 +41,7 @@ def title_is(title):
     return _predicate
 
 
-def title_contains(title):
+def title_contains(title: str):
     """An expectation for checking that the title contains a case-sensitive
     substring. title is the fragment of title expected
     returns True when the title matches, False otherwise
@@ -66,7 +66,7 @@ def presence_of_element_located(locator):
     return _predicate
 
 
-def url_contains(url):
+def url_contains(url: str):
     """An expectation for checking that the current url contains a
     case-sensitive substring.
     url is the fragment of url expected,
@@ -79,7 +79,7 @@ def url_contains(url):
     return _predicate
 
 
-def url_matches(pattern):
+def url_matches(pattern: str):
     """An expectation for checking the current url.
     pattern is the expected pattern, which must be an exact match
     returns True if the url matches, false otherwise."""
@@ -90,7 +90,7 @@ def url_matches(pattern):
     return _predicate
 
 
-def url_to_be(url):
+def url_to_be(url: str):
     """An expectation for checking the current url.
     url is the expected url, which must be an exact match
     returns True if the url matches, false otherwise."""
@@ -101,7 +101,7 @@ def url_to_be(url):
     return _predicate
 
 
-def url_changes(url):
+def url_changes(url: str):
     """An expectation for checking the current url.
     url is the expected url, which must not be an exact match
     returns True if the url is different, false otherwise."""

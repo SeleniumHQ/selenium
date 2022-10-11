@@ -142,7 +142,7 @@ public abstract class DomainSocketsTestBase {
   }
 
   @Test
-  public void shouldBeAbleToConnectToAUnixDomainSocketUrl() {
+  void shouldBeAbleToConnectToAUnixDomainSocketUrl() {
     ClientConfig config = ClientConfig.defaultConfig().baseUri(socket);
     HttpClient client = createFactory().createClient(config);
 

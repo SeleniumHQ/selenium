@@ -28,13 +28,11 @@ def _wrap_elements(result, ef_driver):
     # handle the case if another wrapper wraps EventFiringWebElement
     if isinstance(result, EventFiringWebElement):
         return result
-    elif isinstance(result, WebElement):
+    if isinstance(result, WebElement):
         return EventFiringWebElement(result, ef_driver)
-    elif isinstance(result, list):
+    if isinstance(result, list):
         return [_wrap_elements(item, ef_driver) for item in result]
-    # result is a built in type.
-    else:
-        return result
+    return result
 
 
 class EventFiringWebDriver:
@@ -124,12 +122,11 @@ class EventFiringWebDriver:
     def _unwrap_element_args(self, args):
         if isinstance(args, EventFiringWebElement):
             return args.wrapped_element
-        elif isinstance(args, tuple):
+        if isinstance(args, tuple):
             return tuple(self._unwrap_element_args(item) for item in args)
-        elif isinstance(args, list):
+        if isinstance(args, list):
             return [self._unwrap_element_args(item) for item in args]
-        else:
-            return args
+        return args
 
     def _wrap_value(self, value):
         if isinstance(value, EventFiringWebElement):

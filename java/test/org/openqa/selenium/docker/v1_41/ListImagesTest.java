@@ -34,10 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-public class ListImagesTest {
+class ListImagesTest {
 
   @Test
-  public void shouldReturnImageIfTagIsPresent() {
+  void shouldReturnImageIfTagIsPresent() {
 
     HttpHandler handler = req -> {
       String filters = req.getQueryParameter("filters");

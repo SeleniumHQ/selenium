@@ -42,13 +42,13 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
-public class DefaultKeyboardTest extends JupiterTestBase {
+class DefaultKeyboardTest extends JupiterTestBase {
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
 
   @Test
-  public void testBasicKeyboardInput() {
+  void testBasicKeyboardInput() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
     WebElement input = driver.findElement(By.id("textInput"));
@@ -198,7 +198,7 @@ public class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  public void canGenerateKeyboardShortcuts() {
+  void canGenerateKeyboardShortcuts() {
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
 
     WebElement body = driver.findElement(By.xpath("//body"));
@@ -267,7 +267,7 @@ public class DefaultKeyboardTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSelectionSelectAll() {
+  void testSelectionSelectAll() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC),
       "MacOS has alternative keyboard");
 
@@ -286,11 +286,11 @@ public class DefaultKeyboardTest extends JupiterTestBase {
       .sendKeys(Keys.DELETE)
       .perform();
 
-    assertThat(input.getAttribute("value")).isEqualTo("");
+    assertThat(input.getAttribute("value")).isEmpty();
   }
 
   @Test
-  public void testLeftArrowEntry() {
+  void testLeftArrowEntry() {
     final String leftArrowSpaceTestStringCore = "bfmtv.fr";
     final String leftArrowSpaceTestString = leftArrowSpaceTestStringCore + "est";
     final String leftArrowSpaceTestStringExpected = leftArrowSpaceTestStringCore + " est";

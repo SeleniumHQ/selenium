@@ -80,7 +80,7 @@ import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class LocalDistributorTest {
+class LocalDistributorTest {
 
   private final Secret registrationSecret = new Secret("bavarian smoked");
   private Tracer tracer;
@@ -106,7 +106,7 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void testAddNodeToDistributor() {
+  void testAddNodeToDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
@@ -138,7 +138,7 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void testRemoveNodeFromDistributor() {
+  void testRemoveNodeFromDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
@@ -167,11 +167,11 @@ public class LocalDistributorTest {
     distributor.remove(localNode.getId());
     DistributorStatus statusAfter = distributor.getStatus();
     final Set<NodeStatus> nodesAfter = statusAfter.getNodes();
-    assertThat(nodesAfter.size()).isEqualTo(0);
+    assertThat(nodesAfter.size()).isZero();
   }
 
   @Test
-  public void testAddSameNodeTwice() {
+  void testAddSameNodeTwice() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
@@ -199,7 +199,7 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToAddMultipleSessionsConcurrently() throws Exception {
+  void shouldBeAbleToAddMultipleSessionsConcurrently() throws Exception {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
@@ -287,7 +287,7 @@ public class LocalDistributorTest {
 
 
   @Test
-  public void testDrainNodeFromDistributor() {
+  void testDrainNodeFromDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
@@ -321,11 +321,11 @@ public class LocalDistributorTest {
     //Recheck the status - there should still be no node, it is removed
     DistributorStatus statusAfter = distributor.getStatus();
     Set<NodeStatus> nodesAfter = statusAfter.getNodes();
-    assertThat(nodesAfter.size()).isEqualTo(0);
+    assertThat(nodesAfter.size()).isZero();
   }
 
   @Test
-  public void testDrainNodeFromNode() {
+  void testDrainNodeFromNode() {
     assertThat(localNode.isDraining()).isFalse();
 
     NewSessionQueue queue  = new LocalNewSessionQueue(
@@ -352,7 +352,7 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void slowStartingNodesShouldNotCauseReservationsToBeSerialized() {
+  void slowStartingNodesShouldNotCauseReservationsToBeSerialized() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),

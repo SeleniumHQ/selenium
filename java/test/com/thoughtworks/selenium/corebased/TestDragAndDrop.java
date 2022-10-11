@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 @Disabled("Move target out of bounds, apparently")
 public class TestDragAndDrop extends InternalSelenseTestBase {
   @Test
-  public void testDragAndDrop() {
+  void testDragAndDrop() {
     selenium.open("slider/example.html");
     selenium.dragdrop("id=slider01", "800,0");
     assertEquals(selenium.getValue("id=output1"), "20");

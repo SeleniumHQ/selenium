@@ -31,6 +31,7 @@ class WebDriverException(Exception):
     def __init__(
         self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
     ) -> None:
+        super().__init__()
         self.msg = msg
         self.screen = screen
         self.stacktrace = stacktrace
@@ -191,10 +192,6 @@ class UnableToSetCookieException(WebDriverException):
     """
     Thrown when a driver fails to set a cookie.
     """
-
-
-class RemoteDriverServerException(WebDriverException):
-    """Todo: Remove this class? it looks unused."""
 
 
 class TimeoutException(WebDriverException):

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestGettingValueOfCheckbox extends InternalSelenseTestBase {
   @Test
-  public void testGettingValueOfCheckbox() {
+  void testGettingValueOfCheckbox() {
     selenium.open("test_submit.html");
 
     String elementLocator = "name=okayToSubmit";

@@ -71,16 +71,16 @@ class Mobile:
         """
         return self._driver.execute(Command.CURRENT_CONTEXT_HANDLE)
 
-    @property
-    def contexts(self):
-        """
-        returns a list of available contexts
-        """
-        return self._driver.execute(Command.CONTEXT_HANDLES)
-
     @context.setter
     def context(self, new_context) -> None:
         """
         sets the current context
         """
         self._driver.execute(Command.SWITCH_TO_CONTEXT, {"name": new_context})
+
+    @property
+    def contexts(self):
+        """
+        returns a list of available contexts
+        """
+        return self._driver.execute(Command.CONTEXT_HANDLES)

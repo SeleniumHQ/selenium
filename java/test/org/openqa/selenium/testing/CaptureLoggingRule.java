@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.internal.Debug.isDebugging;
 
-public class CaptureLoggingRule {
+class CaptureLoggingRule {
 
   List<Handler> handlers;
 

@@ -27,7 +27,7 @@ import org.openqa.selenium.build.InProject;
 
 import java.io.File;
 
-public class LocallyBuiltInternetExplorerDriver extends InternetExplorerDriver {
+class LocallyBuiltInternetExplorerDriver extends InternetExplorerDriver {
   public LocallyBuiltInternetExplorerDriver(Capabilities capabilities) {
     super(getService(), new InternetExplorerOptions().merge(capabilities));
   }

@@ -78,7 +78,7 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class SessionQueueGridTest {
+class SessionQueueGridTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
@@ -151,7 +151,7 @@ public class SessionQueueGridTest {
   }
 
   @Test
-  public void shouldBeAbleToCreateMultipleSessions() {
+  void shouldBeAbleToCreateMultipleSessions() {
     ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(2);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -179,14 +179,14 @@ public class SessionQueueGridTest {
   }
 
   @Test
-  public void shouldBeAbleToRejectRequest() {
+  void shouldBeAbleToRejectRequest() {
     // Grid has no slots for the requested capabilities
     HttpResponse httpResponse = createSession(ImmutableMap.of("browserName", "burger"));
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @Test
-  public void shouldBeAbleToClearQueue() {
+  void shouldBeAbleToClearQueue() {
     ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(1);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();

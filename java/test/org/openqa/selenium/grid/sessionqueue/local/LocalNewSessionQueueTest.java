@@ -83,7 +83,7 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
 @Timeout(60)
-public class LocalNewSessionQueueTest {
+class LocalNewSessionQueueTest {
 
   private static final Json JSON = new Json();
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
@@ -163,7 +163,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToAddToQueueAndGetValidResponse(Supplier<TestData> supplier) {
+  void shouldBeAbleToAddToQueueAndGetValidResponse(Supplier<TestData> supplier) {
     setup(supplier);
 
     AtomicBoolean isPresent = new AtomicBoolean(false);
@@ -196,12 +196,12 @@ public class LocalNewSessionQueueTest {
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
 
     assertThat(isPresent.get()).isTrue();
-    assertEquals(httpResponse.getStatus(), HTTP_OK);
+    assertEquals(HTTP_OK, httpResponse.getStatus());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToAddToQueueAndGetErrorResponse(Supplier<TestData> supplier) {
+  void shouldBeAbleToAddToQueueAndGetErrorResponse(Supplier<TestData> supplier) {
     setup(supplier);
 
     new Thread(() -> {
@@ -212,12 +212,12 @@ public class LocalNewSessionQueueTest {
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
 
-    assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
+    assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToRemoveFromQueue(Supplier<TestData> supplier) {
+  void shouldBeAbleToRemoveFromQueue(Supplier<TestData> supplier) {
     setup(supplier);
 
     Optional<SessionRequest> httpRequest = queue.remove(new RequestId(UUID.randomUUID()));
@@ -227,7 +227,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeClearQueue(Supplier<TestData> supplier) {
+  void shouldBeClearQueue(Supplier<TestData> supplier) {
     setup(supplier);
 
     RequestId requestId = new RequestId(UUID.randomUUID());
@@ -235,13 +235,13 @@ public class LocalNewSessionQueueTest {
 
     int count = queue.clearQueue();
 
-    assertEquals(count, 1);
+    assertEquals(1, count);
     assertFalse(queue.remove(requestId).isPresent());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToGetQueueContents(Supplier<TestData> supplier) {
+  void shouldBeAbleToGetQueueContents(Supplier<TestData> supplier) {
     setup(supplier);
 
     localQueue.injectIntoQueue(sessionRequest);
@@ -258,7 +258,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void queueCountShouldBeReturnedWhenQueueIsCleared(Supplier<TestData> supplier) {
+  void queueCountShouldBeReturnedWhenQueueIsCleared(Supplier<TestData> supplier) {
     setup(supplier);
 
     RequestId requestId = sessionRequest.getRequestId();
@@ -269,13 +269,13 @@ public class LocalNewSessionQueueTest {
 
     int count = queue.clearQueue();
 
-    assertEquals(count, 1);
+    assertEquals(1, count);
     assertFalse(queue.remove(requestId).isPresent());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void removingARequestIdThatDoesNotExistInTheQueueShouldNotBeAnError(Supplier<TestData> supplier) {
+  void removingARequestIdThatDoesNotExistInTheQueueShouldNotBeAnError(Supplier<TestData> supplier) {
     setup(supplier);
 
     localQueue.injectIntoQueue(sessionRequest);
@@ -286,7 +286,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToAddAgainToQueue(Supplier<TestData> supplier) {
+  void shouldBeAbleToAddAgainToQueue(Supplier<TestData> supplier) {
     setup(supplier);
 
     localQueue.injectIntoQueue(sessionRequest);
@@ -300,7 +300,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToRetryRequest(Supplier<TestData> supplier) {
+  void shouldBeAbleToRetryRequest(Supplier<TestData> supplier) {
     setup(supplier);
 
     AtomicBoolean isPresent = new AtomicBoolean(false);
@@ -358,13 +358,13 @@ public class LocalNewSessionQueueTest {
 
     assertThat(isPresent.get()).isTrue();
     assertThat(retrySuccess.get()).isTrue();
-    assertEquals(httpResponse.getStatus(), HTTP_OK);
+    assertEquals(HTTP_OK, httpResponse.getStatus());
   }
 
   @ParameterizedTest
   @MethodSource("data")
   @Timeout(5)
-  public void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime(Supplier<TestData> supplier) {
+  void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime(Supplier<TestData> supplier) {
     setup(supplier);
 
     AtomicBoolean processQueue = new AtomicBoolean(true);
@@ -425,8 +425,8 @@ public class LocalNewSessionQueueTest {
       String firstResponseContents = Contents.string(firstResponse);
       String secondResponseContents = Contents.string(secondResponse);
 
-      assertEquals(firstResponse.getStatus(), HTTP_OK);
-      assertEquals(secondResponse.getStatus(), HTTP_OK);
+      assertEquals(HTTP_OK, firstResponse.getStatus());
+      assertEquals(HTTP_OK, secondResponse.getStatus());
 
       assertNotEquals(firstResponseContents, secondResponseContents);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -440,7 +440,7 @@ public class LocalNewSessionQueueTest {
   @ParameterizedTest
   @MethodSource("data")
   @Timeout(5)
-  public void shouldBeAbleToTimeoutARequestOnRetry(Supplier<TestData> supplier) {
+  void shouldBeAbleToTimeoutARequestOnRetry(Supplier<TestData> supplier) {
     setup(supplier);
 
     final SessionRequest request = new SessionRequest(
@@ -459,7 +459,7 @@ public class LocalNewSessionQueueTest {
   @ParameterizedTest
   @MethodSource("data")
   @Timeout(5)
-  public void shouldBeAbleToClearQueueAndRejectMultipleRequests(Supplier<TestData> supplier) {
+  void shouldBeAbleToClearQueueAndRejectMultipleRequests(Supplier<TestData> supplier) {
     setup(supplier);
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -488,8 +488,8 @@ public class LocalNewSessionQueueTest {
       HttpResponse firstResponse = firstRequest.get(30, SECONDS);
       HttpResponse secondResponse = secondRequest.get(30, SECONDS);
 
-      assertEquals(firstResponse.getStatus(), HTTP_INTERNAL_ERROR);
-      assertEquals(secondResponse.getStatus(), HTTP_INTERNAL_ERROR);
+      assertEquals(HTTP_INTERNAL_ERROR, firstResponse.getStatus());
+      assertEquals(HTTP_INTERNAL_ERROR, secondResponse.getStatus());
 
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
       fail("Could not create session");
@@ -500,7 +500,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToReturnTheNextAvailableEntryThatMatchesAStereotype(Supplier<TestData> supplier) {
+  void shouldBeAbleToReturnTheNextAvailableEntryThatMatchesAStereotype(Supplier<TestData> supplier) {
     setup(supplier);
 
     SessionRequest expected = new SessionRequest(
@@ -528,7 +528,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldNotReturnANextAvailableEntryThatDoesNotMatchTheStereotypes(Supplier<TestData> supplier) {
+  void shouldNotReturnANextAvailableEntryThatDoesNotMatchTheStereotypes(Supplier<TestData> supplier) {
     setup(supplier);
 
     // Note that this is basically the same test as getting the entry

@@ -17,15 +17,23 @@
 
 package org.openqa.selenium.devtools;
 
+import static com.google.common.net.MediaType.XHTML_UTF_8;
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
+
 import com.google.common.net.MediaType;
+
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.NetworkInterceptor;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
@@ -36,16 +44,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.google.common.net.MediaType.XHTML_UTF_8;
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
-
-public class NetworkInterceptorTest {
+class NetworkInterceptorTest {
 
   private NettyAppServer appServer;
   private WebDriver driver;
@@ -90,7 +89,7 @@ public class NetworkInterceptorTest {
   }
 
   @Test
-  public void shouldProceedAsNormalIfRequestIsNotIntercepted() {
+  void shouldProceedAsNormalIfRequestIsNotIntercepted() {
     interceptor = new NetworkInterceptor(
       driver,
       Route.matching(req -> false).to(() -> req -> new HttpResponse()));
@@ -103,7 +102,7 @@ public class NetworkInterceptorTest {
   }
 
   @Test
-  public void shouldAllowTheInterceptorToChangeTheResponse() {
+  void shouldAllowTheInterceptorToChangeTheResponse() {
     interceptor = new NetworkInterceptor(
       driver,
       Route.matching(req -> true)
@@ -120,7 +119,7 @@ public class NetworkInterceptorTest {
   }
 
   @Test
-  public void shouldBeAbleToReturnAMagicResponseThatCausesTheOriginalRequestToProceed() {
+  void shouldBeAbleToReturnAMagicResponseThatCausesTheOriginalRequestToProceed() {
     AtomicBoolean seen = new AtomicBoolean(false);
 
     interceptor = new NetworkInterceptor(
@@ -139,7 +138,7 @@ public class NetworkInterceptorTest {
   }
 
   @Test
-  public void shouldClearListenersWhenNetworkInterceptorIsClosed() {
+  void shouldClearListenersWhenNetworkInterceptorIsClosed() {
     try (NetworkInterceptor interceptor = new NetworkInterceptor(
       driver,
       Route.matching(req -> true).to(
@@ -158,7 +157,7 @@ public class NetworkInterceptorTest {
   }
 
   @Test
-  public void shouldBeAbleToInterceptAResponse() {
+  void shouldBeAbleToInterceptAResponse() {
     try (NetworkInterceptor networkInterceptor = new NetworkInterceptor(
       driver,
       (Filter) next -> req -> {
@@ -176,10 +175,10 @@ public class NetworkInterceptorTest {
   }
 
   @Test
-  public void shouldHandleRedirects() {
+  void shouldHandleRedirects() {
     try (NetworkInterceptor networkInterceptor = new NetworkInterceptor(
       driver,
-      (Filter) next -> next::execute)) {
+      (Filter) next -> next)) {
       driver.get(appServer.whereIs("/redirect"));
 
       String body = driver.findElement(By.tagName("body")).getText();

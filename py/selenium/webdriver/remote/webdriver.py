@@ -395,14 +395,13 @@ class WebDriver(BaseWebDriver):
             for key, val in value.items():
                 converted[key] = self._wrap_value(val)
             return converted
-        elif isinstance(value, self._web_element_cls):
+        if isinstance(value, self._web_element_cls):
             return {"element-6066-11e4-a52e-4f735466cecf": value.id}
-        elif isinstance(value, self._shadowroot_cls):
+        if isinstance(value, self._shadowroot_cls):
             return {"shadow-6066-11e4-a52e-4f735466cecf": value.id}
-        elif isinstance(value, list):
+        if isinstance(value, list):
             return list(self._wrap_value(item) for item in value)
-        else:
-            return value
+        return value
 
     def create_web_element(self, element_id: str) -> WebElement:
         """Creates a web element with the specified `element_id`."""
@@ -412,16 +411,14 @@ class WebDriver(BaseWebDriver):
         if isinstance(value, dict):
             if "element-6066-11e4-a52e-4f735466cecf" in value:
                 return self.create_web_element(value["element-6066-11e4-a52e-4f735466cecf"])
-            elif "shadow-6066-11e4-a52e-4f735466cecf" in value:
+            if "shadow-6066-11e4-a52e-4f735466cecf" in value:
                 return self._shadowroot_cls(self, value["shadow-6066-11e4-a52e-4f735466cecf"])
-            else:
-                for key, val in value.items():
-                    value[key] = self._unwrap_value(val)
-                return value
-        elif isinstance(value, list):
-            return list(self._unwrap_value(item) for item in value)
-        else:
+            for key, val in value.items():
+                value[key] = self._unwrap_value(val)
             return value
+        if isinstance(value, list):
+            return list(self._unwrap_value(item) for item in value)
+        return value
 
     def execute(self, driver_command: str, params: dict = None) -> dict:
         """
@@ -923,7 +920,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_screenshot_as_file('/Screenshots/foo.png')
         """
-        if not filename.lower().endswith(".png"):
+        if not str(filename).lower().endswith(".png"):
             warnings.warn(
                 "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
                 UserWarning,
