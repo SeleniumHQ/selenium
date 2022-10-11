@@ -351,9 +351,6 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   }
 
   private Map<String, ?> toScript(String script, Object... args) {
-    // Escape the quote marks
-    script = script.replaceAll("\"", "\\\"");
-
     List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
         Collectors.toList());
 
