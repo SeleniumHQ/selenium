@@ -45,7 +45,7 @@ import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
  * @author rchatley (Robert Chatley)
  *
  */
-public class WebDriverTestContextTest {
+class WebDriverTestContextTest {
 
   WebDriver webdriver;
   TestContext context;
@@ -67,12 +67,12 @@ public class WebDriverTestContextTest {
   }
 
   @Test
-  public void isCreatedWithAWebDriverImplementation() {
+  void isCreatedWithAWebDriverImplementation() {
     new WebDriverTestContext(webdriver);
   }
 
   @Test
-  public void canNavigateToAGivenUrl() {
+  void canNavigateToAGivenUrl() {
     final String url = "http://www.example.com";
 
     context.goTo(url);
@@ -81,14 +81,14 @@ public class WebDriverTestContextTest {
   }
 
   @Test
-  public void canAssertPresenceOfWebElements() {
+  void canAssertPresenceOfWebElements() {
     when(finder.findFrom(webdriver)).thenReturn(oneElement());
 
     context.assertPresenceOf(finder);
   }
 
   @Test
-  public void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() {
+  void canCheckQuantitiesOfWebElementsAndThrowsExceptionOnMismatch() {
     when(finder.findFrom(webdriver)).thenReturn(oneElement());
 
     try {
@@ -104,7 +104,7 @@ public class WebDriverTestContextTest {
   }
 
   @Test
-  public void canDirectTextInputToSpecificElements() {
+  void canDirectTextInputToSpecificElements() {
     final String inputText = "test";
 
     when(finder.findFrom(webdriver)).thenReturn(oneElement());
@@ -113,14 +113,14 @@ public class WebDriverTestContextTest {
   }
 
   @Test
-  public void canTriggerClicksOnSpecificElements() {
+  void canTriggerClicksOnSpecificElements() {
     when(finder.findFrom(webdriver)).thenReturn(oneElement());
     context.clickOn(finder);
     verify(element).click();
   }
 
   @Test
-  public void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() {
+  void throwsAnExceptionIfTheFinderReturnsAmbiguousResults() {
     when(finder.findFrom(webdriver)).thenReturn(twoElements());
 
     try {
@@ -133,7 +133,7 @@ public class WebDriverTestContextTest {
   }
 
   @Test
-  public void supportsWaitingForElementToAppear() {
+  void supportsWaitingForElementToAppear() {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
     when(finder.findFrom(webdriver)).thenReturn(oneElement());
@@ -143,7 +143,7 @@ public class WebDriverTestContextTest {
   }
 
   @Test
-  public void supportsWaitingForElementToAppearWithTimeout() {
+  void supportsWaitingForElementToAppearWithTimeout() {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
     when(finder.findFrom(webdriver)).thenReturn(oneElement());
@@ -155,7 +155,7 @@ public class WebDriverTestContextTest {
   }
 
   @Test
-  public void failsAssertionIfElementNotDisplayedBeforeTimeout() {
+  void failsAssertionIfElementNotDisplayedBeforeTimeout() {
     context = new WebDriverTestContext(webdriver, clock, clock);
 
     when(finder.findFrom(webdriver)).thenReturn(oneElement());

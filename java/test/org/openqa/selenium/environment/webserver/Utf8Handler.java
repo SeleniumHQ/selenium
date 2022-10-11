@@ -29,7 +29,7 @@ import java.nio.file.Path;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class Utf8Handler implements HttpHandler {
+class Utf8Handler implements HttpHandler {
 
   private final Path webSrc;
   private final String stripPrefix;

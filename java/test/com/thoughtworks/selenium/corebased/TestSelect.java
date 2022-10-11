@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestSelect extends InternalSelenseTestBase {
   @Test
-  public void testSelect() {
+  void testSelect() {
     selenium.open("test_select.html");
     assertTrue(selenium.isSomethingSelected("theSelect"));
     assertEquals(selenium.getSelectedLabel("theSelect"), "Second Option");

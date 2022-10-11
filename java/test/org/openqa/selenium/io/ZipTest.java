@@ -34,7 +34,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Tag("UnitTests")
-public class ZipTest {
+class ZipTest {
   private File inputDir;
   private File outputDir;
   private TemporaryFilesystem tmpFs;
@@ -55,7 +55,7 @@ public class ZipTest {
   }
 
   @Test
-  public void testCanZipASingleFile() throws IOException {
+  void testCanZipASingleFile() throws IOException {
     File input = new File(inputDir, "foo.txt");
     File unwanted = new File(inputDir, "nay.txt");
     writeTestFile(input);
@@ -72,7 +72,7 @@ public class ZipTest {
   }
 
   @Test
-  public void testCanZipADirectory() throws IOException {
+  void testCanZipADirectory() throws IOException {
     File input1 = new File(inputDir, "foo.txt");
     File input2 = new File(inputDir, "bar/bar.txt");
     writeTestFile(input1);
@@ -89,7 +89,7 @@ public class ZipTest {
   }
 
   @Test
-  public void testCanUnzip() throws IOException {
+  void testCanUnzip() throws IOException {
     File testZip = File.createTempFile("testUnzip", "zip");
     writeTestZip(testZip, 25);
     File out = Zip.unzipToTempDir(new FileInputStream(testZip), "unzip", "stream");

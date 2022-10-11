@@ -27,10 +27,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 @Tag("UnitTests")
-public class ThreadGuardTest {
+class ThreadGuardTest {
 
   @Test
-  public void testProtect() throws Exception {
+  void testProtect() throws Exception {
     WebDriver actual = mock(WebDriver.class);
     final WebDriver protect = ThreadGuard.protect(actual);
     final AtomicInteger successes = new AtomicInteger();
@@ -40,11 +40,11 @@ public class ThreadGuardTest {
     });
     foo.start();
     foo.join();
-    assertThat(successes.get()).isEqualTo(0);
+    assertThat(successes.get()).isZero();
   }
 
   @Test
-  public void testProtectSuccess() {
+  void testProtectSuccess() {
     WebDriver actual = mock(WebDriver.class);
     final WebDriver protect = ThreadGuard.protect(actual);
     assertThat(protect.findElement(By.id("foo"))).isNull();

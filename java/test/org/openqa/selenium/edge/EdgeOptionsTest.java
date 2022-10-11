@@ -42,10 +42,10 @@ import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.remote.Browser.EDGE;
 
 @Tag("UnitTests")
-public class EdgeOptionsTest {
+class EdgeOptionsTest {
 
   @Test
-  public void testDefaultOptions() {
+  void testDefaultOptions() {
     EdgeOptions options = new EdgeOptions();
     checkCommonStructure(options);
     assertThat(options.asMap()).extracting(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
@@ -54,7 +54,7 @@ public class EdgeOptionsTest {
   }
 
   @Test
-  public void canAddArguments() {
+  void canAddArguments() {
     EdgeOptions options = new EdgeOptions();
     options.addArguments("--arg1", "--arg2");
     checkCommonStructure(options);
@@ -64,7 +64,7 @@ public class EdgeOptionsTest {
   }
 
   @Test
-  public void canAddExtensions() throws IOException {
+  void canAddExtensions() throws IOException {
     EdgeOptions options = new EdgeOptions();
     Path tmpDir = Files.createTempDirectory("webdriver");
     File ext1 = createTempFile(tmpDir, "ext1 content");
@@ -78,7 +78,7 @@ public class EdgeOptionsTest {
   }
 
   @Test
-  public void canMergeWithoutChangingOriginalObject() {
+  void canMergeWithoutChangingOriginalObject() {
     EdgeOptions options = new EdgeOptions();
     Map<String, Object> before = options.asMap();
     EdgeOptions merged = options.merge(
@@ -106,7 +106,7 @@ public class EdgeOptionsTest {
   }
 
   @Test
-  public void mergingOptionsMergesArguments() {
+  void mergingOptionsMergesArguments() {
     EdgeOptions one = new EdgeOptions().addArguments("verbose");
     EdgeOptions two = new EdgeOptions().addArguments("silent");
     EdgeOptions merged = one.merge(two);

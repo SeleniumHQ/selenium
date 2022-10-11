@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.environment.webserver;
 
-public class ServletServer {
+class ServletServer {
 
-  
+
 
 }

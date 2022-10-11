@@ -25,10 +25,10 @@ import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 @Tag("UnitTests")
-public class CompositeActionTest {
+class CompositeActionTest {
 
   @Test
-  public void invokingActions() {
+  void invokingActions() {
     CompositeAction sequence = new CompositeAction();
     final Action dummyAction1 = mock(Action.class);
     final Action dummyAction2 = mock(Action.class, "dummy2");

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class GetAttributeTest {
   @Test
-  public void shouldExtractElementAndAttributeName() {
+  void shouldExtractElementAndAttributeName() {
     GetAttribute getAttribute = new GetAttribute(new StubLibrary(), null);
 
     String[] pair = getAttribute.getNameAndAttribute("username@disabled");

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestHighlight extends InternalSelenseTestBase {
   @Test
-  public void testHighlight() {
+  void testHighlight() {
     selenium.open("test_locators.html");
     selenium.highlight("id1");
   }

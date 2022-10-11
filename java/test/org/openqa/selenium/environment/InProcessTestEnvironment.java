@@ -22,7 +22,7 @@ import org.openqa.selenium.environment.webserver.NettyAppServer;
 
 public class InProcessTestEnvironment implements TestEnvironment {
 
-  private AppServer appServer;
+  private final AppServer appServer;
 
   public InProcessTestEnvironment() {
     appServer = new NettyAppServer();

@@ -23,13 +23,13 @@ import org.junit.jupiter.api.Test;
 
 public class TestOpen extends InternalSelenseTestBase {
   @Test
-  public void testOpen() {
+  void testOpen() {
     selenium.open("test_open.html");
     verifyTrue(selenium.getLocation().matches("^.*/test_open\\.html$"));
   }
 
   @Test
-  public void testIsTextPresentCanDoExactAndRegexChecks() {
+  void testIsTextPresentCanDoExactAndRegexChecks() {
     selenium.open("test_open.html");
     verifyTrue(selenium.isTextPresent("This is a test of the open command."));
     verifyTrue(selenium.isTextPresent("glob:This is a test of the open command."));
@@ -41,7 +41,7 @@ public class TestOpen extends InternalSelenseTestBase {
   }
 
 @Test
-  public void testCanOpenSlowLoadingPage() {
+  void testCanOpenSlowLoadingPage() {
     selenium.open("test_page.slow.html");
     verifyTrue(selenium.getLocation().matches("^.*/test_page\\.slow\\.html$"));
     verifyEquals(selenium.getTitle(), "Slow Loading Page");

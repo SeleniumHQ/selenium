@@ -45,10 +45,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 @Tag("UnitTests")
-public class NewSessionPayloadTest {
+class NewSessionPayloadTest {
 
   @Test
-  public void shouldIndicateDownstreamOssDialect() {
+  void shouldIndicateDownstreamOssDialect() {
     Map<String, Map<String, String>> caps = singletonMap(
       "desiredCapabilities", singletonMap(
         "browserName", "cheese"));
@@ -64,7 +64,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldIndicateDownstreamW3cDialect() {
+  void shouldIndicateDownstreamW3cDialect() {
     Map<String, Map<String, Map<String, String>>> caps = singletonMap(
       "capabilities", singletonMap(
         "alwaysMatch", singletonMap(
@@ -81,7 +81,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldDefaultToAssumingADownstreamOssDialect() {
+  void shouldDefaultToAssumingADownstreamOssDialect() {
     Map<String, Object> caps = emptyMap();
     try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
       assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
@@ -94,7 +94,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldOfferStreamOfSingleOssCapabilitiesIfThatIsOnlyOption() {
+  void shouldOfferStreamOfSingleOssCapabilitiesIfThatIsOnlyOption() {
     List<Capabilities> capabilities = create(singletonMap(
       "desiredCapabilities", singletonMap(
         "browserName", "cheese")));
@@ -104,7 +104,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldReturnAlwaysMatchIfNoFirstMatchIsPresent() {
+  void shouldReturnAlwaysMatchIfNoFirstMatchIsPresent() {
     List<Capabilities> capabilities = create(singletonMap(
       "capabilities", singletonMap(
         "alwaysMatch", singletonMap(
@@ -115,7 +115,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldReturnEachFirstMatchIfNoAlwaysMatchIsPresent() {
+  void shouldReturnEachFirstMatchIfNoAlwaysMatchIsPresent() {
     List<Capabilities> capabilities = create(singletonMap(
       "capabilities", singletonMap(
         "firstMatch", asList(
@@ -128,7 +128,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldOfferStreamOfW3cCapabilitiesIfPresent() {
+  void shouldOfferStreamOfW3cCapabilitiesIfPresent() {
     List<Capabilities> capabilities = create(ImmutableMap.of(
       "desiredCapabilities", singletonMap(
         "browserName", "cheese"),
@@ -142,7 +142,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldMergeAlwaysAndFirstMatches() {
+  void shouldMergeAlwaysAndFirstMatches() {
     List<Capabilities> capabilities = create(singletonMap(
       "capabilities", ImmutableMap.of(
         "alwaysMatch", singletonMap(
@@ -161,7 +161,7 @@ public class NewSessionPayloadTest {
 
   // The name for the platform capability changed from "platform" to "platformName" in the spec.
   @Test
-  public void shouldCorrectlyExtractPlatformNameFromOssCapabilities() {
+  void shouldCorrectlyExtractPlatformNameFromOssCapabilities() {
     List<Capabilities> capabilities = create(singletonMap(
       "desiredCapabilities", singletonMap(
         "platformName", "linux")));
@@ -171,7 +171,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldCorrectlyExtractPlatformFromW3cCapabilities() {
+  void shouldCorrectlyExtractPlatformFromW3cCapabilities() {
     List<Capabilities> capabilities = create(singletonMap(
       "capabilities", singletonMap(
         "alwaysMatch", singletonMap(
@@ -181,7 +181,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldValidateW3cCapabilitiesByComplainingAboutKeysThatAreNotExtensions() {
+  void shouldValidateW3cCapabilitiesByComplainingAboutKeysThatAreNotExtensions() {
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> create(singletonMap(
         "capabilities", singletonMap(
@@ -190,7 +190,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldValidateW3cCapabilitiesByComplainingAboutDuplicateFirstAndAlwaysMatchKeys() {
+  void shouldValidateW3cCapabilitiesByComplainingAboutDuplicateFirstAndAlwaysMatchKeys() {
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> create(singletonMap(
         "capabilities", ImmutableMap.of(
@@ -201,7 +201,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void convertEverythingToFirstMatchOnlyIfPayloadContainsAlwaysMatchSectionAndOssCapabilities() {
+  void convertEverythingToFirstMatchOnlyIfPayloadContainsAlwaysMatchSectionAndOssCapabilities() {
     List<Capabilities> capabilities = create(ImmutableMap.of(
       "desiredCapabilities", ImmutableMap.of(
         "browserName", "firefox",
@@ -225,7 +225,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void forwardsMetaDataAssociatedWithARequest() throws IOException {
+  void forwardsMetaDataAssociatedWithARequest() throws IOException {
     try (NewSessionPayload payload = NewSessionPayload.create(ImmutableMap.of(
       "desiredCapabilities", EMPTY_MAP,
       "cloud:user", "bob",
@@ -240,7 +240,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void doesNotForwardRequiredCapabilitiesAsTheseAreVeryLegacy() throws IOException {
+  void doesNotForwardRequiredCapabilitiesAsTheseAreVeryLegacy() throws IOException {
     try (NewSessionPayload payload = NewSessionPayload.create(ImmutableMap.of(
       "capabilities", EMPTY_MAP,
       "requiredCapabilities", singletonMap("key", "so it's not empty")))) {
@@ -253,7 +253,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldPreserveMetadata() throws IOException {
+  void shouldPreserveMetadata() throws IOException {
     Map<String, Object> raw = ImmutableMap.of(
       "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
       "se:meta", "cheese is good");
@@ -268,7 +268,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void shouldExposeMetaData() {
+  void shouldExposeMetaData() {
     Map<String, Object> raw = ImmutableMap.of(
       "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
       "se:meta", "cheese is good");
@@ -280,7 +280,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void nullValuesInMetaDataAreIgnored() {
+  void nullValuesInMetaDataAreIgnored() {
     Map<String, Object> raw = new HashMap<>();
     raw.put("capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")));
     raw.put("se:bad", null);
@@ -293,7 +293,7 @@ public class NewSessionPayloadTest {
   }
 
   @Test
-  public void keysUsedForStoringCapabilitiesAreIgnoredFromMetadata() {
+  void keysUsedForStoringCapabilitiesAreIgnoredFromMetadata() {
     Map<String, Object> raw = ImmutableMap.of(
       "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
       "desiredCapabilities", emptyMap());

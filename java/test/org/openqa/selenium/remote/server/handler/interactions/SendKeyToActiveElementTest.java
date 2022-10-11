@@ -23,10 +23,10 @@ import org.openqa.selenium.remote.server.Session;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-public class SendKeyToActiveElementTest {
+class SendKeyToActiveElementTest {
 
   @Test
-  public void sendEmptyKeys() {
+  void sendEmptyKeys() {
     SendKeyToActiveElement sendKeys = new SendKeyToActiveElement(mock(Session.class));
     assertEquals("[send keys to active: []]", sendKeys.toString());
   }

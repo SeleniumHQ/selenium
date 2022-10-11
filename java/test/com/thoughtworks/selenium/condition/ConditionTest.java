@@ -34,7 +34,7 @@ public class ConditionTest {
     new JUnitConditionRunner(null, 1, 100);
 
   @Test
-  public void testAppendsInfoToFailureMessage() {
+  void testAppendsInfoToFailureMessage() {
     try {
       conditionRunner.waitFor("this condition should always fail", new AlwaysFalseCondition());
       fail("the condition should have failed");
@@ -45,7 +45,7 @@ public class ConditionTest {
   }
 
   @Test
-  public void testNotCanInvertFailingSituationQuickly() {
+  void testNotCanInvertFailingSituationQuickly() {
     Condition alwaysFalse = new AlwaysFalseCondition();
     long start = System.currentTimeMillis();
     final StringBuilder sb = new StringBuilder();
@@ -76,7 +76,7 @@ public class ConditionTest {
   }
 
   @Test
-  public void testNotCanNegatePassingSituationAfterTimeout() {
+  void testNotCanNegatePassingSituationAfterTimeout() {
     Condition alwaysTrue = new AlwaysTrueCondition();
     long start = System.currentTimeMillis();
     try {
@@ -92,7 +92,7 @@ public class ConditionTest {
   }
 
   @Test
-  public void testCanTurnTrueBeforeTimeout() {
+  void testCanTurnTrueBeforeTimeout() {
     long start = System.currentTimeMillis();
     final int[] time = new int[1];
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 2000);
@@ -108,7 +108,7 @@ public class ConditionTest {
   }
 
   @Test
-  public void testCannotTurnTrueAfterTimeout() {
+  void testCannotTurnTrueAfterTimeout() {
     long start = System.currentTimeMillis();
     final int[] time = new int[1];
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 500);
@@ -129,10 +129,10 @@ public class ConditionTest {
 
   /**
    * Why? Well because for some technologies/setups, any Selenium operation may result in a 'body
-   * not loaded' for the first few loops See http://jira.openqa.org/browse/SRC-302
+   * not loaded' for the first few loops See <a href="http://jira.openqa.org/browse/SRC-302"></a>
    */
   @Test
-  public void testCanLateNotifyOfSeleniumExceptionAfterTimeout() {
+  void testCanLateNotifyOfSeleniumExceptionAfterTimeout() {
     long start = System.currentTimeMillis();
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 500);
     try {
@@ -154,7 +154,7 @@ public class ConditionTest {
   }
 
   @Test
-  public void testRuntimeExceptionInsideConditionIsWrapped() {
+  void testRuntimeExceptionInsideConditionIsWrapped() {
     final RuntimeException thrownException = new RuntimeException("ooops");
     Condition condition = new Condition("foo") {
       @Override
@@ -172,11 +172,11 @@ public class ConditionTest {
   }
 
   @Test
-  public void testAssertionFailureInsideConditionIsNotWrapped() {
+  void testAssertionFailureInsideConditionIsNotWrapped() {
     Condition condition = new Condition() {
       @Override
       public boolean isTrue(ConditionRunner.Context runner) {
-        assertTrue(false, "OMG");
+        fail("OMG");
         return false;
       }
     };
@@ -189,7 +189,7 @@ public class ConditionTest {
   }
 
   @Test
-  public void testMessageWithArgs() {
+  void testMessageWithArgs() {
     final RuntimeException thrownException = new RuntimeException();
     Condition condition = new Condition("foo %s baz", "bar") {
       @Override

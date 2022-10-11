@@ -64,7 +64,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class LocalNodeTest {
+class LocalNodeTest {
 
   private LocalNode node;
   private Session session;
@@ -101,36 +101,36 @@ public class LocalNodeTest {
   }
 
   @Test
-  public void shouldThrowIfSessionIsNotPresent() {
+  void shouldThrowIfSessionIsNotPresent() {
     assertThatExceptionOfType(NoSuchSessionException.class)
         .isThrownBy(() -> node.getSession(new SessionId("12345")));
   }
 
   @Test
-  public void canRetrieveActiveSessionById() {
+  void canRetrieveActiveSessionById() {
     assertThat(node.getSession(session.getId())).isEqualTo(session);
   }
 
   @Test
-  public void isOwnerOfAnActiveSession() {
+  void isOwnerOfAnActiveSession() {
     assertThat(node.isSessionOwner(session.getId())).isTrue();
   }
 
   @Test
-  public void canStopASession() {
+  void canStopASession() {
     node.stop(session.getId());
     assertThatExceptionOfType(NoSuchSessionException.class)
         .isThrownBy(() -> node.getSession(session.getId()));
   }
 
   @Test
-  public void isNotOwnerOfAStoppedSession() {
+  void isNotOwnerOfAStoppedSession() {
     node.stop(session.getId());
     assertThat(node.isSessionOwner(session.getId())).isFalse();
   }
 
   @Test
-  public void cannotAcceptNewSessionsWhileDraining() {
+  void cannotAcceptNewSessionsWhileDraining() {
     node.drain();
     assertThat(node.isDraining()).isTrue();
     node.stop(session.getId()); //stop the default session
@@ -146,7 +146,7 @@ public class LocalNodeTest {
   }
 
   @Test
-  public void cannotCreateNewSessionsOnMaxSessionCount() {
+  void cannotCreateNewSessionsOnMaxSessionCount() {
     Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     Either<WebDriverException, CreateSessionResponse> sessionResponse = node.newSession(
       new CreateSessionRequest(
@@ -159,7 +159,7 @@ public class LocalNodeTest {
   }
 
   @Test
-  public void canReturnStatusInfo() {
+  void canReturnStatusInfo() {
     NodeStatus status = node.getStatus();
     assertThat(status.getSlots().stream()
                  .map(Slot::getSession)
@@ -175,7 +175,7 @@ public class LocalNodeTest {
   }
 
   @Test
-  public void nodeStatusInfoIsImmutable() {
+  void nodeStatusInfoIsImmutable() {
     NodeStatus status = node.getStatus();
     assertThat(status.getSlots().stream()
                  .map(Slot::getSession)
@@ -190,7 +190,7 @@ public class LocalNodeTest {
   }
 
   @Test
-  public void shouldBeAbleToCreateSessionsConcurrently() throws Exception {
+  void shouldBeAbleToCreateSessionsConcurrently() throws Exception {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
     URI uri = new URI("http://localhost:1234");
@@ -246,7 +246,7 @@ public class LocalNodeTest {
   }
 
   @Test
-  public void nodeDrainsAfterSessionCountIsReached() throws URISyntaxException {
+  void nodeDrainsAfterSessionCountIsReached() throws URISyntaxException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
     URI uri = new URI("http://localhost:5678");
@@ -276,7 +276,7 @@ public class LocalNodeTest {
   }
 
   @Test
-  public void cdpIsDisabledAndResponseCapsShowThat() throws URISyntaxException {
+  void cdpIsDisabledAndResponseCapsShowThat() throws URISyntaxException {
     Tracer tracer = DefaultTestTracer.createTracer();
     EventBus bus = new GuavaEventBus();
     URI uri = new URI("http://localhost:7890");

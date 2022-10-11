@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 @Disabled
 public class TestFramesNested extends InternalSelenseTestBase {
   @Test
-  public void testFramesNested() {
+  void testFramesNested() {
     selenium.open("NestedFrames.html");
     verifyEquals(selenium.getTitle(), "NestedFrames");
     verifyFalse(selenium.isTextPresent("This is a test"));

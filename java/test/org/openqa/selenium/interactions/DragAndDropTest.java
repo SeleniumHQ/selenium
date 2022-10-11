@@ -43,7 +43,7 @@ import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
 
 @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
-public class DragAndDropTest extends JupiterTestBase {
+class DragAndDropTest extends JupiterTestBase {
 
   private static void sleep(int ms) {
     try {
@@ -54,7 +54,7 @@ public class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  public void testDragAndDropRelative() {
+  void testDragAndDropRelative() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test1"));
     Point expectedLocation = img.getLocation();
@@ -69,7 +69,7 @@ public class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  public void testDragAndDropToElement() {
+  void testDragAndDropToElement() {
     driver.get(pages.dragAndDropPage);
     WebElement img1 = driver.findElement(By.id("test1"));
     WebElement img2 = driver.findElement(By.id("test2"));
@@ -79,7 +79,7 @@ public class DragAndDropTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testDragAndDropToElementInIframe() {
+  void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
     final WebElement iframe = driver.findElement(By.tagName("iframe"));
     ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1]", iframe,
@@ -93,7 +93,7 @@ public class DragAndDropTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testDragAndDropElementWithOffsetInIframeAtBottom() {
+  void testDragAndDropElementWithOffsetInIframeAtBottom() {
     driver.get(appServer.whereIs("iframeAtBottom.html"));
 
     final WebElement iframe = driver.findElement(By.tagName("iframe"));
@@ -124,7 +124,7 @@ public class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  public void testElementInDiv() {
+  void testElementInDiv() {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
@@ -133,7 +133,7 @@ public class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  public void testDragTooFar() {
+  void testDragTooFar() {
     driver.get(pages.dragAndDropPage);
     Actions actions = new Actions(driver);
 
@@ -177,7 +177,7 @@ public class DragAndDropTest extends JupiterTestBase {
   }
 
   @Test
-  public void testDragAndDropOnJQueryItems() {
+  void testDragAndDropOnJQueryItems() {
     driver.get(pages.droppableItems);
 
     WebElement toDrag = driver.findElement(By.id("draggable"));

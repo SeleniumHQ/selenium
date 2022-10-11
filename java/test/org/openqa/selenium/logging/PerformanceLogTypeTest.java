@@ -40,7 +40,7 @@ import java.util.logging.Level;
 @Ignore(IE)
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
-public class PerformanceLogTypeTest extends JupiterTestBase {
+class PerformanceLogTypeTest extends JupiterTestBase {
 
   private WebDriver localDriver;
 
@@ -53,7 +53,7 @@ public class PerformanceLogTypeTest extends JupiterTestBase {
   }
 
   @Test
-  public void performanceLogShouldBeDisabledByDefault() {
+  void performanceLogShouldBeDisabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PERFORMANCE))
         .describedAs("Performance log should not be enabled by default").isFalse();
@@ -67,7 +67,7 @@ public class PerformanceLogTypeTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldBeAbleToEnablePerformanceLog() {
+  void shouldBeAbleToEnablePerformanceLog() {
     createLocalDriverWithPerformanceLogType();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PERFORMANCE))
@@ -75,7 +75,7 @@ public class PerformanceLogTypeTest extends JupiterTestBase {
   }
 
   @Test
-  public void pageLoadShouldProducePerformanceLogEntries() {
+  void pageLoadShouldProducePerformanceLogEntries() {
     createLocalDriverWithPerformanceLogType();
     localDriver.get(pages.simpleTestPage);
     LogEntries entries = localDriver.manage().logs().get(LogType.PERFORMANCE);

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestEditable extends InternalSelenseTestBase {
   @Test
-  public void testEditable() {
+  void testEditable() {
     selenium.open("test_editable.html");
     verifyTrue(selenium.isEditable("normal_text"));
     verifyTrue(selenium.isEditable("normal_select"));

@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-public class UploadTest extends JupiterTestBase {
+class UploadTest extends JupiterTestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
   private static final String FILE_HTML = "<div>" + LOREM_IPSUM_TEXT + "</div>";
@@ -74,7 +74,7 @@ public class UploadTest extends JupiterTestBase {
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).click();
 
-    // Uploading files across a network may take a while, even if they're really small
+    // Uploading files across a network may take a while, even if they're tiny
     WebElement label = driver.findElement(By.id("upload_label"));
     wait.until(not(visibilityOf(label)));
 
@@ -101,7 +101,7 @@ public class UploadTest extends JupiterTestBase {
     driver.findElement(By.id("upload")).sendKeys(fileNames);
     driver.findElement(By.id("go")).click();
 
-    // Uploading files across a network may take a while, even if they're really small
+    // Uploading files across a network may take a while, even if they're tiny
     WebElement label = driver.findElement(By.id("upload_label"));
     wait.until(not(visibilityOf(label)));
 
@@ -112,12 +112,12 @@ public class UploadTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCleanFileInput() {
+  void testCleanFileInput() {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));
     element.sendKeys(testFile.getAbsolutePath());
     element.clear();
-    assertThat(element.getAttribute("value")).isEqualTo("");
+    assertThat(element.getAttribute("value")).isEmpty();
   }
 
   @Test
@@ -135,7 +135,7 @@ public class UploadTest extends JupiterTestBase {
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).click();
 
-    // Uploading files across a network may take a while, even if they're really small
+    // Uploading files across a network may take a while, even if they're tiny
     WebElement label = driver.findElement(By.id("upload_label"));
     wait.until(not(visibilityOf(label)));
 
@@ -154,7 +154,7 @@ public class UploadTest extends JupiterTestBase {
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).click();
 
-    // Uploading files across a network may take a while, even if they're really small
+    // Uploading files across a network may take a while, even if they're tiny
     WebElement label = driver.findElement(By.id("upload_label"));
     wait.until(not(visibilityOf(label)));
 

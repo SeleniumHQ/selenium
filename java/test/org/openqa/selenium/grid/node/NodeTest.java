@@ -89,7 +89,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class NodeTest {
+class NodeTest {
 
   private Tracer tracer;
   private EventBus bus;
@@ -144,7 +144,7 @@ public class NodeTest {
   }
 
   @Test
-  public void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
+  void shouldRefuseToCreateASessionIfNoFactoriesAttached() {
     Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret).build();
     HttpClient.Factory clientFactory = new PassthroughHttpClient.Factory(local);
     Node node = new RemoteNode(
@@ -162,7 +162,7 @@ public class NodeTest {
   }
 
   @Test
-  public void shouldCreateASessionIfTheCorrectCapabilitiesArePassedToIt() {
+  void shouldCreateASessionIfTheCorrectCapabilitiesArePassedToIt() {
     Either<WebDriverException, CreateSessionResponse> response = node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
 
@@ -171,7 +171,7 @@ public class NodeTest {
   }
 
   @Test
-  public void shouldRetryIfNoMatchingSlotIsAvailable() {
+  void shouldRetryIfNoMatchingSlotIsAvailable() {
     Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
       .add(caps, new SessionFactory() {
         @Override
@@ -204,7 +204,7 @@ public class NodeTest {
   }
 
   @Test
-  public void shouldOnlyCreateAsManySessionsAsFactories() {
+  void shouldOnlyCreateAsManySessionsAsFactories() {
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
         .build();
@@ -222,7 +222,7 @@ public class NodeTest {
   }
 
   @Test
-  public void willRefuseToCreateMoreSessionsThanTheMaxSessionCount() {
+  void willRefuseToCreateMoreSessionsThanTheMaxSessionCount() {
     Either<WebDriverException, CreateSessionResponse> response = node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
 
@@ -234,8 +234,8 @@ public class NodeTest {
   }
 
   @Test
-  public void stoppingASessionReducesTheNumberOfCurrentlyActiveSessions() {
-    assertThat(local.getCurrentSessionCount()).isEqualTo(0);
+  void stoppingASessionReducesTheNumberOfCurrentlyActiveSessions() {
+    assertThat(local.getCurrentSessionCount()).isZero();
 
     Either<WebDriverException, CreateSessionResponse> response = local.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
@@ -245,11 +245,11 @@ public class NodeTest {
 
     local.stop(session.getId());
 
-    assertThat(local.getCurrentSessionCount()).isEqualTo(0);
+    assertThat(local.getCurrentSessionCount()).isZero();
   }
 
   @Test
-  public void sessionsThatAreStoppedWillNotBeReturned() {
+  void sessionsThatAreStoppedWillNotBeReturned() {
     Either<WebDriverException, CreateSessionResponse> response = node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
     Session expected = response.right().getSession();
@@ -264,7 +264,7 @@ public class NodeTest {
   }
 
   @Test
-  public void stoppingASessionThatDoesNotExistWillThrowAnException() {
+  void stoppingASessionThatDoesNotExistWillThrowAnException() {
     assertThatExceptionOfType(NoSuchSessionException.class)
         .isThrownBy(() -> local.stop(new SessionId(UUID.randomUUID())));
 
@@ -273,7 +273,7 @@ public class NodeTest {
   }
 
   @Test
-  public void attemptingToGetASessionThatDoesNotExistWillCauseAnExceptionToBeThrown() {
+  void attemptingToGetASessionThatDoesNotExistWillCauseAnExceptionToBeThrown() {
     assertThatExceptionOfType(NoSuchSessionException.class)
         .isThrownBy(() -> local.getSession(new SessionId(UUID.randomUUID())));
 
@@ -282,7 +282,7 @@ public class NodeTest {
   }
 
   @Test
-  public void willRespondToWebDriverCommandsSentToOwnedSessions() {
+  void willRespondToWebDriverCommandsSentToOwnedSessions() {
     AtomicBoolean called = new AtomicBoolean(false);
 
     class Recording extends Session implements HttpHandler {
@@ -322,7 +322,7 @@ public class NodeTest {
   }
 
   @Test
-  public void shouldOnlyRespondToWebDriverCommandsForSessionsTheNodeOwns() {
+  void shouldOnlyRespondToWebDriverCommandsForSessionsTheNodeOwns() {
     Either<WebDriverException, CreateSessionResponse> response =
       node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
@@ -338,7 +338,7 @@ public class NodeTest {
   }
 
   @Test
-  public void aSessionThatTimesOutWillBeStoppedAndRemovedFromTheSessionMap() {
+  void aSessionThatTimesOutWillBeStoppedAndRemovedFromTheSessionMap() {
     AtomicReference<Instant> now = new AtomicReference<>(Instant.now());
 
     Clock clock = new MyClock(now);
@@ -360,7 +360,7 @@ public class NodeTest {
   }
 
   @Test
-  public void shouldNotPropagateExceptionsWhenSessionCreationFails() {
+  void shouldNotPropagateExceptionsWhenSessionCreationFails() {
     Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> {
           throw new SessionNotCreatedException("eeek");
@@ -374,7 +374,7 @@ public class NodeTest {
   }
 
   @Test
-  public void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
+  void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
         .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, stereotype, c, Instant.now())))
@@ -390,7 +390,7 @@ public class NodeTest {
   }
 
   @Test
-  public void quittingASessionShouldCauseASessionClosedEventToBeFired() {
+  void quittingASessionShouldCauseASessionClosedEventToBeFired() {
     AtomicReference<Object> obj = new AtomicReference<>();
     bus.addListener(SessionClosedEvent.listener(obj::set));
 
@@ -408,7 +408,7 @@ public class NodeTest {
   }
 
   @Test
-  public void canReturnStatus() {
+  void canReturnStatus() {
     Either<WebDriverException, CreateSessionResponse> response =
       node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
@@ -449,7 +449,7 @@ public class NodeTest {
   }
 
   @Test
-  public void returns404ForAnUnknownCommand() {
+  void returns404ForAnUnknownCommand() {
     HttpRequest req = new HttpRequest(GET, "/foo");
     HttpResponse res = node.execute(req);
     assertThat(res.getStatus()).isEqualTo(404);
@@ -461,7 +461,7 @@ public class NodeTest {
   }
 
   @Test
-  public void canUploadAFile() throws IOException {
+  void canUploadAFile() throws IOException {
     Either<WebDriverException, CreateSessionResponse> response =
       node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
@@ -485,7 +485,7 @@ public class NodeTest {
   }
 
   @Test
-  public void shouldNotCreateSessionIfDraining() {
+  void shouldNotCreateSessionIfDraining() {
     node.drain();
     assertThat(local.isDraining()).isTrue();
     assertThat(node.isDraining()).isTrue();
@@ -495,7 +495,7 @@ public class NodeTest {
   }
 
   @Test
-  public void shouldNotShutdownDuringOngoingSessionsIfDraining() throws InterruptedException {
+  void shouldNotShutdownDuringOngoingSessionsIfDraining() throws InterruptedException {
     Either<WebDriverException, CreateSessionResponse> firstResponse =
       node.newSession(createSessionRequest(caps));
     assertThatEither(firstResponse).isRight();
@@ -527,7 +527,7 @@ public class NodeTest {
   }
 
   @Test
-  public void shouldShutdownAfterSessionsCompleteIfDraining() throws InterruptedException {
+  void shouldShutdownAfterSessionsCompleteIfDraining() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 
@@ -548,11 +548,11 @@ public class NodeTest {
 
     latch.await(5, SECONDS);
 
-    assertThat(latch.getCount()).isEqualTo(0);
+    assertThat(latch.getCount()).isZero();
   }
 
   @Test
-  public void shouldAllowsWebDriverCommandsForOngoingSessionIfDraining() throws InterruptedException {
+  void shouldAllowsWebDriverCommandsForOngoingSessionIfDraining() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 

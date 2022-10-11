@@ -62,13 +62,13 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 
-public class ProtocolConverterTest {
+class ProtocolConverterTest {
 
   private final Json json = new Json();
   private final Tracer tracer = DefaultTestTracer.createTracer();
 
   @Test
-  public void shouldRoundTripASimpleCommand() throws IOException {
+  void shouldRoundTripASimpleCommand() throws IOException {
     SessionId sessionId = new SessionId("1234567");
 
     HttpHandler handler = new ProtocolConverter(
@@ -113,7 +113,7 @@ public class ProtocolConverterTest {
   }
 
   @Test
-  public void shouldAliasAComplexCommand() throws IOException {
+  void shouldAliasAComplexCommand() throws IOException {
     SessionId sessionId = new SessionId("1234567");
 
     // Downstream is JSON, upstream is W3C. This way we can force "isDisplayed" to become JS
@@ -168,7 +168,7 @@ public class ProtocolConverterTest {
   }
 
   @Test
-  public void shouldConvertAnException() throws IOException {
+  void shouldConvertAnException() throws IOException {
     // Json upstream, w3c downstream
     SessionId sessionId = new SessionId("1234567");
 
@@ -219,7 +219,7 @@ public class ProtocolConverterTest {
   }
 
   @Test
-  public void newJwpSessionResponseShouldBeCorrectlyConvertedToW3C() {
+  void newJwpSessionResponseShouldBeCorrectlyConvertedToW3C() {
     Map<String, Object> jwpNewSession = ImmutableMap.of("desiredCapabilities", ImmutableMap.of("cheese", "brie"));
 
     Map<String, Object> w3cResponse = ImmutableMap.of(
@@ -242,7 +242,7 @@ public class ProtocolConverterTest {
   }
 
   @Test
-  public void newW3CSessionResponseShouldBeCorrectlyConvertedToJwp() {
+  void newW3CSessionResponseShouldBeCorrectlyConvertedToJwp() {
     Map<String, Object> w3cNewSession = ImmutableMap.of(
       "capabilities", ImmutableMap.of());
 
@@ -269,7 +269,7 @@ public class ProtocolConverterTest {
   }
 
   @Test
-  public void newJwpSessionResponseShouldBeConvertedToW3CCorrectly() {
+  void newJwpSessionResponseShouldBeConvertedToW3CCorrectly() {
     Map<String, Object> w3cResponse = ImmutableMap.of(
       "value", ImmutableMap.of(
         "capabilities", ImmutableMap.of("cheese", "brie"),
@@ -292,7 +292,7 @@ public class ProtocolConverterTest {
   }
 
   @Test
-  public void contentLengthShouldBeSetCorrectlyOnSuccessfulNewSessionRequest() {
+  void contentLengthShouldBeSetCorrectlyOnSuccessfulNewSessionRequest() {
     Map<String, Object> w3cResponse = ImmutableMap.of(
       "value", ImmutableMap.of(
         "capabilities", ImmutableMap.of("cheese", "brie"),

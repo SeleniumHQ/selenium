@@ -20,7 +20,7 @@ package org.openqa.selenium.remote.http.netty;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.internal.DomainSocketsTestBase;
 
-public class NettyDomainSocketTest extends DomainSocketsTestBase {
+class NettyDomainSocketTest extends DomainSocketsTestBase {
 
   @Override
   protected HttpClient.Factory createFactory() {

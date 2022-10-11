@@ -31,10 +31,10 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class LoggingTest {
+class LoggingTest {
 
   @Test
-  public void testLogLevelConversions() {
+  void testLogLevelConversions() {
     assertThat(toLevel("ALL")).isEqualTo(ALL);
     assertThat(toLevel("DEBUG")).isEqualTo(FINE);
     assertThat(toLevel("INFO")).isEqualTo(INFO);
@@ -44,7 +44,7 @@ public class LoggingTest {
   }
 
   @Test
-  public void canCompareLoggingPreferences() {
+  void canCompareLoggingPreferences() {
     LoggingPreferences prefs1 = new LoggingPreferences();
     LoggingPreferences prefs2 = new LoggingPreferences();
     assertThat(prefs2).isEqualTo(prefs1);
@@ -57,7 +57,7 @@ public class LoggingTest {
   }
 
   @Test
-  public void canRepresentLogEntryAsJson() {
+  void canRepresentLogEntryAsJson() {
     long timestamp = 1572882588202L;
     LogEntry entry = new LogEntry(INFO, timestamp, "There is no more cheese");
     Map<String, Object> json = entry.toJson();
@@ -68,7 +68,7 @@ public class LoggingTest {
   }
 
   @Test
-  public void canRepresentLogEntryAsString() {
+  void canRepresentLogEntryAsString() {
     long timestamp = 1572882588202L;
     LogEntry entry = new LogEntry(INFO, timestamp, "There is no more cheese");
     assertThat(entry.toString()).isEqualTo("[2019-11-04T15:49:48.202Z] [INFO] There is no more cheese");

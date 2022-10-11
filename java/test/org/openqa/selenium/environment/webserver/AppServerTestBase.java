@@ -72,13 +72,13 @@ public abstract class AppServerTestBase {
   }
 
   @Test
-  public void hostsStaticPages() {
+  void hostsStaticPages() {
     driver.get(server.whereIs("simpleTest.html"));
     assertEquals("Hello WebDriver", driver.getTitle());
   }
 
   @Test
-  public void servesNumberedPages() {
+  void servesNumberedPages() {
     driver.get(server.whereIs("page/1"));
     assertEquals("Page1", driver.getTitle());
 
@@ -87,20 +87,20 @@ public abstract class AppServerTestBase {
   }
 
   @Test
-  public void numberedPagesExcludeQuerystring() {
+  void numberedPagesExcludeQuerystring() {
     driver.get(server.whereIs("page/1?foo=bar"));
     assertEquals("1", driver.findElement(By.id("pageNumber")).getText());
   }
 
   @Test
-  public void redirects() {
+  void redirects() {
     driver.get(server.whereIs("redirect"));
     assertEquals("We Arrive Here", driver.getTitle());
     assertTrue(driver.getCurrentUrl().contains("resultPage"));
   }
 
   @Test
-  public void sleeps() {
+  void sleeps() {
     long before = System.currentTimeMillis();
     driver.get(server.whereIs("sleep?time=1"));
 
@@ -111,14 +111,14 @@ public abstract class AppServerTestBase {
   }
 
   @Test
-  public void dealsWithUtf16() {
+  void dealsWithUtf16() {
     driver.get(server.whereIs("encoding"));
     String pageText = driver.findElement(By.tagName("body")).getText();
     assertTrue(pageText.contains("\u05E9\u05DC\u05D5\u05DD"));
   }
 
   @Test
-  public void manifestHasCorrectMimeType() throws IOException {
+  void manifestHasCorrectMimeType() throws IOException {
     String url = server.whereIs("html5/test.appcache");
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     HttpClient client = factory.createClient(new URL(url));
@@ -131,7 +131,7 @@ public abstract class AppServerTestBase {
   }
 
   @Test
-  public void uploadsFile() throws Throwable {
+  void uploadsFile() throws Throwable {
     String FILE_CONTENTS = "Uploaded file";
     File testFile = File.createTempFile("webdriver", "tmp");
     testFile.deleteOnExit();

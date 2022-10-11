@@ -39,7 +39,7 @@ import static org.mockito.Mockito.spy;
 public class HttpCommandProcessorUnitTest {
 
   @Test
-  public void testCanStopTheSeleneseSessionEvenIfThereIsNoCurrentSession() {
+  void testCanStopTheSeleneseSessionEvenIfThereIsNoCurrentSession() {
     final HttpCommandProcessor processor;
 
     processor = new HttpCommandProcessor("a Server", 1234, "", "a url");
@@ -47,7 +47,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testCanStopTheSeleneseSessionWhenASessionIsInProgress() {
+  void testCanStopTheSeleneseSessionWhenASessionIsInProgress() {
     final HttpCommandProcessor processor;
 
     processor = new HttpCommandProcessor("a Server", 1234, "", "a url") {
@@ -63,7 +63,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testResourcesClosedWhenIoeOnGetConnection() {
+  void testResourcesClosedWhenIoeOnGetConnection() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetConnection = true;
@@ -76,7 +76,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testResourcesClosedWhenIoeOnGetOutputStream() {
+  void testResourcesClosedWhenIoeOnGetOutputStream() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetOutputStream = true;
@@ -89,7 +89,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testResourcesClosedWhenIoeOnGetInputStream() {
+  void testResourcesClosedWhenIoeOnGetInputStream() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetInputStream = true;
@@ -102,7 +102,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testResourcesClosedWhenNoIoes() throws IOException {
+  void testResourcesClosedWhenNoIoes() throws IOException {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
 
@@ -111,7 +111,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testGetBooleanArray() {
+  void testGetBooleanArray() {
     HttpCommandProcessor processor =
         new HttpCommandProcessor("localhost", 4444, "*chrome", "http://www.openqa.org");
     processor = spy(processor);
