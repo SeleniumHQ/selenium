@@ -30,7 +30,7 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 
-public class I18nTest extends JupiterTestBase {
+class I18nTest extends JupiterTestBase {
 
   /**
    * The Hebrew word shalom (peace) encoded in order Shin (sh) Lamed (L) Vav (O) final-Mem (M).
@@ -55,13 +55,13 @@ public class I18nTest extends JupiterTestBase {
   private static final String theVoiceOfChina = "\u4E2D\u56FD\u4E4B\u58F0";
 
   @Test
-  public void testCn() {
+  void testCn() {
     driver.get(pages.chinesePage);
     driver.findElement(By.linkText(theVoiceOfChina)).click();
   }
 
   @Test
-  public void testEnteringHebrewTextFromLeftToRight() {
+  void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
 
@@ -71,7 +71,7 @@ public class I18nTest extends JupiterTestBase {
   }
 
   @Test
-  public void testEnteringHebrewTextFromRightToLeft() {
+  void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
 
@@ -102,7 +102,7 @@ public class I18nTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToReturnTheTextInAPage() {
+  void testShouldBeAbleToReturnTheTextInAPage() {
     String url = GlobalTestEnvironment.get()
       .getAppServer()
       .whereIs("encoding");

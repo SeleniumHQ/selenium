@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class TestAlerts extends InternalSelenseTestBase {
   @Test
-  public void testAlerts() throws Exception {
+  void testAlerts() throws Exception {
     selenium.open("test_verify_alert.html");
     verifyFalse(selenium.isAlertPresent());
     assertFalse(selenium.isAlertPresent());

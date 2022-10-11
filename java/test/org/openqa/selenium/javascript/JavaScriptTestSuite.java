@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 /**
  * JUnit5 test base for Closure-based JavaScript tests.
  */
-public class JavaScriptTestSuite {
+class JavaScriptTestSuite {
 
   private final Supplier<WebDriver> driverSupplier;
 

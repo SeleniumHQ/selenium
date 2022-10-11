@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestBrowserVersion extends InternalSelenseTestBase {
   @Test
-  public void testBrowserVersion() {
+  void testBrowserVersion() {
     System.out.println(selenium.getEval("browserVersion.name"));
   }
 }

@@ -26,10 +26,10 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-public class StaleElementReferenceTest extends JupiterTestBase {
+class StaleElementReferenceTest extends JupiterTestBase {
 
   @Test
-  public void testOldPage() {
+  void testOldPage() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
     driver.get(pages.xhtmlTestPage);

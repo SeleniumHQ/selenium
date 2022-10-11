@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.Random;
 import java.util.Set;
 
-public class CookieImplementationTest extends JupiterTestBase {
+class CookieImplementationTest extends JupiterTestBase {
 
   private DomainHelper domainHelper;
   private String cookiePage;
@@ -267,7 +267,7 @@ public class CookieImplementationTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() {
+  void testShouldBeAbleToIncludeLeadingPeriodInDomainName() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
@@ -513,7 +513,7 @@ public class CookieImplementationTest extends JupiterTestBase {
     assertThat(driver.manage().getCookies()).isEmpty();
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertThat(documentCookie).isEqualTo("");
+      assertThat(documentCookie).isEmpty();
     }
   }
 

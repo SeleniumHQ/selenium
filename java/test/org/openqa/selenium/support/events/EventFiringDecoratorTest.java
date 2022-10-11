@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Tag("UnitTests")
-public class EventFiringDecoratorTest {
+class EventFiringDecoratorTest {
 
   static class CollectorListener implements WebDriverListener {
 
@@ -71,7 +71,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldFireWebDriverEvents() {
+  void shouldFireWebDriverEvents() {
     WebDriver driver = mock(WebDriver.class);
     CollectorListener listener = new CollectorListener() {
       @Override
@@ -99,7 +99,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldFireWeElementEvents() {
+  void shouldFireWeElementEvents() {
     WebDriver driver = mock(WebDriver.class);
     WebElement element = mock(WebElement.class);
     when(driver.findElement(any())).thenReturn(element);
@@ -158,7 +158,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldFireNavigationEvents() {
+  void shouldFireNavigationEvents() {
     WebDriver driver = mock(WebDriver.class);
     WebDriver.Navigation navigation = mock(WebDriver.Navigation.class);
     when(driver.navigate()).thenReturn(navigation);
@@ -205,7 +205,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldFireAlertEvents() {
+  void shouldFireAlertEvents() {
     WebDriver driver = mock(WebDriver.class);
     WebDriver.TargetLocator switchTo = mock(WebDriver.TargetLocator.class);
     Alert alert = mock(Alert.class);
@@ -255,7 +255,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldAllowToExecuteJavaScript() {
+  void shouldAllowToExecuteJavaScript() {
     WebDriver driver = mock(WebDriver.class, withSettings()
       .extraInterfaces(JavascriptExecutor.class));
     when(((JavascriptExecutor) driver).executeScript("sum", "2", "2")).thenReturn("4");
@@ -291,7 +291,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldSuppressExceptionInBeforeAnyCall() {
+  void shouldSuppressExceptionInBeforeAnyCall() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener = new WebDriverListener() {
       @Override
@@ -306,7 +306,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldSuppressExceptionInBeforeClassMethodCall() {
+  void shouldSuppressExceptionInBeforeClassMethodCall() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener = new WebDriverListener() {
       @Override
@@ -321,7 +321,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldSuppressExceptionInBeforeMethod() {
+  void shouldSuppressExceptionInBeforeMethod() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener = new WebDriverListener() {
       @Override
@@ -336,7 +336,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldSuppressExceptionInAfterAnyCall() {
+  void shouldSuppressExceptionInAfterAnyCall() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener = new WebDriverListener() {
       @Override
@@ -351,7 +351,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldSuppressExceptionInAfterClassMethodCall() {
+  void shouldSuppressExceptionInAfterClassMethodCall() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener = new WebDriverListener() {
       @Override
@@ -367,7 +367,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldSuppressExceptionInAfterMethod() {
+  void shouldSuppressExceptionInAfterMethod() {
     WebDriver driver = mock(WebDriver.class);
     WebDriverListener listener = new WebDriverListener() {
       @Override
@@ -382,7 +382,7 @@ public class EventFiringDecoratorTest {
   }
 
   @Test
-  public void shouldSuppressExceptionInOnError() {
+  void shouldSuppressExceptionInOnError() {
     WebDriver driver = mock(WebDriver.class);
     when(driver.getWindowHandle()).thenThrow(new WebDriverException());
     WebDriverListener listener = new WebDriverListener() {

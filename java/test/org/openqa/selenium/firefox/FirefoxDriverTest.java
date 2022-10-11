@@ -77,7 +77,7 @@ import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
-public class FirefoxDriverTest extends JupiterTestBase {
+class FirefoxDriverTest extends JupiterTestBase {
 
   private static final String EXT_XPI = "common/extensions/webextensions-selenium-example.xpi";
   private static final String EXT_SIGNED_ZIP = "common/extensions/webextensions-selenium-example.zip";
@@ -120,7 +120,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void builderWithClientConfigThrowsException() {
+  void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = FirefoxDriver.builder().config(clientConfig);
 
@@ -221,7 +221,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldGetMeaningfulExceptionOnBrowserDeath() throws Exception {
+  void shouldGetMeaningfulExceptionOnBrowserDeath() throws Exception {
     RemoteWebDriver driver2 = (RemoteWebDriver) new WebDriverBuilder().get();
     driver2.get(pages.formPage);
 
@@ -250,7 +250,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
-  public void shouldWaitUntilBrowserHasClosedProperly() {
+  void shouldWaitUntilBrowserHasClosedProperly() {
     driver.get(pages.simpleTestPage);
     driver.quit();
     removeDriver();
@@ -267,7 +267,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
+  void shouldBeAbleToStartMoreThanOneInstanceOfTheFirefoxDriverSimultaneously() {
     localDriver = new WebDriverBuilder().get();
 
     driver.get(pages.xhtmlTestPage);
@@ -390,7 +390,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads()
+  void shouldAllowTwoInstancesOfFirefoxAtTheSameTimeInDifferentThreads()
     throws InterruptedException {
     class FirefoxRunner implements Runnable {
       private final String url;
@@ -439,7 +439,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void multipleFirefoxDriversRunningConcurrently() throws Exception {
+  void multipleFirefoxDriversRunningConcurrently() throws Exception {
     int numThreads = 6;
     final int numRoundsPerThread = 5;
     WebDriver[] drivers = new WebDriver[numThreads];
@@ -475,7 +475,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldBeAbleToUseTheSameProfileMoreThanOnce() {
+  void shouldBeAbleToUseTheSameProfileMoreThanOnce() {
     FirefoxProfile profile = new FirefoxProfile();
 
     profile.setPreference("browser.startup.homepage", pages.formPage);
@@ -498,7 +498,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
 
   // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1774
   @Test
-  public void canStartFirefoxDriverWithSubclassOfFirefoxProfile() {
+  void canStartFirefoxDriverWithSubclassOfFirefoxProfile() {
     new WebDriverBuilder().get(new FirefoxOptions().setProfile(new CustomFirefoxProfile())).quit();
     new WebDriverBuilder().get(new FirefoxOptions().setProfile(new FirefoxProfile() {
     })).quit();
@@ -508,7 +508,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
    * Tests that we do not pollute the global namespace with Sizzle in Firefox 3.
    */
   @Test
-  public void searchingByCssDoesNotPolluteGlobalNamespaceWithSizzleLibrary() {
+  void searchingByCssDoesNotPolluteGlobalNamespaceWithSizzleLibrary() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector("div.content"));
     assertThat(((JavascriptExecutor) driver).executeScript("return typeof Sizzle == 'undefined';"))
@@ -519,7 +519,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
    * Tests that we do not pollute the global namespace with Sizzle in Firefox 3.
    */
   @Test
-  public void searchingByCssDoesNotOverwriteExistingSizzleDefinition() {
+  void searchingByCssDoesNotOverwriteExistingSizzleDefinition() {
     driver.get(pages.xhtmlTestPage);
     ((JavascriptExecutor) driver).executeScript("window.Sizzle = 'original sizzle value';");
     driver.findElement(By.cssSelector("div.content"));
@@ -547,7 +547,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void canAddRemoveXpiExtensions() {
+  void canAddRemoveXpiExtensions() {
     Path extension = InProject.locate(EXT_XPI);
 
     String id = ((HasExtensions) driver).installExtension(extension);
@@ -564,7 +564,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void canAddRemoveZipUnSignedExtensions() {
+  void canAddRemoveZipUnSignedExtensions() {
     Path extension = InProject.locate(EXT_UNSIGNED_ZIP);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
@@ -581,7 +581,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void canAddRemoveZipSignedExtensions() {
+  void canAddRemoveZipSignedExtensions() {
     Path extension = InProject.locate(EXT_SIGNED_ZIP);
 
     String id = ((HasExtensions) driver).installExtension(extension);
@@ -598,7 +598,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void canAddRemoveUnsignedExtensionsDirectory() {
+  void canAddRemoveUnsignedExtensionsDirectory() {
     Path extension = InProject.locate(EXT_UNSIGNED_DIR);
 
     String id = ((HasExtensions) driver).installExtension(extension, true);
@@ -615,7 +615,7 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void canAddRemoveSignedExtensionsDirectory() {
+  void canAddRemoveSignedExtensionsDirectory() {
     Path extension = InProject.locate(EXT_SIGNED_DIR);
 
     String id = ((HasExtensions) driver).installExtension(extension);
@@ -632,16 +632,15 @@ public class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void canTakeFullPageScreenshot() {
+  void canTakeFullPageScreenshot() {
     File tempFile = ((HasFullPageScreenshot) driver).getFullPageScreenshotAs(OutputType.FILE);
-    assertThat(tempFile.exists()).isTrue();
-    assertThat(tempFile.length()).isGreaterThan(0);
+    assertThat(tempFile).exists().isNotEmpty();
   }
 
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
-  public void canSetContext() {
+  void canSetContext() {
     HasContext context = (HasContext) driver;
 
     assertThat(context.getContext()).isEqualTo(FirefoxCommandContext.CONTENT);

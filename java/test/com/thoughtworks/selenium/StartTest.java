@@ -47,7 +47,7 @@ public class StartTest {
   }
 
   @Test
-  public void shouldBeAbleToCreateAWebDriverBackedSeleniumInstance() {
+  void shouldBeAbleToCreateAWebDriverBackedSeleniumInstance() {
     WebDriver driver = new FirefoxDriver();
     Selenium selenium = new WebDriverBackedSelenium(driver, root);
 

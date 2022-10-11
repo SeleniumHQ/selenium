@@ -30,13 +30,13 @@ import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
-public class SvgElementTest extends JupiterTestBase {
+class SvgElementTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
   @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1428780")
   @NotYetImplemented(SAFARI)
-  public void testShouldClickOnGraphVisualElements() {
+  void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
 
@@ -68,7 +68,7 @@ public class SvgElementTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
-  public void testShouldClickOnGraphTextElements() {
+  void testShouldClickOnGraphTextElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
     List<WebElement> textElements = svg.findElements(By.cssSelector("text"));

@@ -24,7 +24,7 @@ import org.openqa.selenium.internal.Require;
 
 public class DomainHelper {
 
-  private AppServer appServer;
+  private final AppServer appServer;
 
   public DomainHelper(AppServer appServer) {
     this.appServer = appServer;

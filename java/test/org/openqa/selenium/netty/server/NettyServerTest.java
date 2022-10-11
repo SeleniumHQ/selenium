@@ -41,7 +41,7 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class NettyServerTest {
+class NettyServerTest {
 
   /**
    * There is a bug between an OkHttp client and the Netty server where a TCP
@@ -52,7 +52,7 @@ public class NettyServerTest {
    * it be something the server handles.
    */
   @Test
-  public void ensureMultipleCallsWorkAsExpected() {
+  void ensureMultipleCallsWorkAsExpected() {
     System.out.println("\n\n\n\nNetty!");
 
     AtomicInteger count = new AtomicInteger(0);
@@ -80,7 +80,7 @@ public class NettyServerTest {
   }
 
   @Test
-  public void shouldDisableAllowOrigin() {
+  void shouldDisableAllowOrigin() {
     Server<?> server = new NettyServer(
       new BaseServerOptions(
         new MapConfig(
@@ -101,7 +101,7 @@ public class NettyServerTest {
   }
 
   @Test
-  public void shouldAllowCORS() {
+  void shouldAllowCORS() {
     Config cfg = new CompoundConfig(
       new MapConfig(ImmutableMap.of("server", ImmutableMap.of("allow-cors", "true"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
@@ -124,7 +124,7 @@ public class NettyServerTest {
   }
 
   @Test
-  public void shouldNotBindToHost() {
+  void shouldNotBindToHost() {
     Config cfg = new CompoundConfig(
       new MapConfig(ImmutableMap.of("server", ImmutableMap.of(
         "bind-host", "false", "host", "anyRandomHost"))));

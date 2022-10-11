@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestDojoDragAndDrop extends InternalSelenseTestBase {
   @Test
-  public void testDojoDragAndDrop() {
+  void testDojoDragAndDrop() {
     selenium.open("dojo-0.4.0-mini/tests/dnd/test_simple.html");
     selenium.dragAndDropToObject("1_3", "2_1");
     assertTrue(selenium.isTextPresent("either side of me*list 1 item 3"));

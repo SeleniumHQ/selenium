@@ -31,7 +31,7 @@ import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-public class TextPagesTest extends JupiterTestBase {
+class TextPagesTest extends JupiterTestBase {
 
   private String textPage;
 
@@ -41,7 +41,7 @@ public class TextPagesTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToLoadASimplePageOfText() {
+  void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
     String source = driver.getPageSource();
     assertThat(source).contains("Test");

@@ -24,10 +24,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class DumpHttpExchangeFilterTest {
+class DumpHttpExchangeFilterTest {
 
   @Test
-  public void shouldIncludeRequestAndResponseHeaders() {
+  void shouldIncludeRequestAndResponseHeaders() {
     DumpHttpExchangeFilter dumpFilter = new DumpHttpExchangeFilter();
 
     String reqLog = dumpFilter.requestLogMessage(
@@ -45,7 +45,7 @@ public class DumpHttpExchangeFilterTest {
   }
 
   @Test
-  public void shouldIncludeRequestContentInLogMessage() {
+  void shouldIncludeRequestContentInLogMessage() {
     DumpHttpExchangeFilter dumpFilter = new DumpHttpExchangeFilter();
 
     String reqLog = dumpFilter.requestLogMessage(
@@ -55,7 +55,7 @@ public class DumpHttpExchangeFilterTest {
   }
 
   @Test
-  public void shouldIncludeResponseCodeInLogMessage() {
+  void shouldIncludeResponseCodeInLogMessage() {
     DumpHttpExchangeFilter dumpFilter = new DumpHttpExchangeFilter();
 
     String resLog = dumpFilter.responseLogMessage(
@@ -65,7 +65,7 @@ public class DumpHttpExchangeFilterTest {
   }
 
   @Test
-  public void shouldIncludeBodyOfResponseInLogMessage() {
+  void shouldIncludeBodyOfResponseInLogMessage() {
     DumpHttpExchangeFilter dumpFilter = new DumpHttpExchangeFilter();
 
     String resLog = dumpFilter.responseLogMessage(

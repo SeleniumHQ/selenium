@@ -49,7 +49,7 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class PageLoadingTest extends JupiterTestBase {
+class PageLoadingTest extends JupiterTestBase {
 
   private void initDriverWithLoadStrategy(String strategy) {
     createNewDriver(new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, strategy));
@@ -167,25 +167,25 @@ public class PageLoadingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testNormalStrategyShouldWaitForDocumentToBeLoaded() {
+  void testNormalStrategyShouldWaitForDocumentToBeLoaded() {
     driver.get(pages.simpleTestPage);
     assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
   }
 
   @Test
-  public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
+  void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
     driver.get(pages.redirectPage);
     assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   @Test
-  public void testShouldFollowMetaRedirects() {
+  void testShouldFollowMetaRedirects() {
     driver.get(pages.metaRedirectPage);
     wait.until(titleIs("We Arrive Here"));
   }
 
   @Test
-  public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
+  void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
     driver.get(pages.xhtmlTestPage);
     driver.get(pages.xhtmlTestPage + "#text");
     wait.until(presenceOfElementLocated(By.id("id1")));
@@ -201,7 +201,7 @@ public class PageLoadingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldThrowIfUrlIsMalformed() {
+  void testShouldThrowIfUrlIsMalformed() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("www.test.com"));
   }
@@ -222,7 +222,7 @@ public class PageLoadingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnURLOnNotExistedPage() {
+  void testShouldReturnURLOnNotExistedPage() {
     String url = appServer.whereIs("not_existed_page.html");
     driver.get(url);
     assertThat(driver.getCurrentUrl()).isEqualTo(url);
@@ -277,7 +277,7 @@ public class PageLoadingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
+  void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
     driver.get(pages.xhtmlTestPage);
 
     wait.until(visibilityOfElementLocated(By.name("sameWindow"))).click();
@@ -288,7 +288,7 @@ public class PageLoadingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
+  void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(pages.formPage);
 
     wait.until(visibilityOfElementLocated(By.id("imageButton"))).submit();
@@ -313,7 +313,7 @@ public class PageLoadingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToRefreshAPage() {
+  void testShouldBeAbleToRefreshAPage() {
     driver.get(pages.xhtmlTestPage);
 
     driver.navigate().refresh();
@@ -359,7 +359,7 @@ public class PageLoadingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
+  void testShouldTimeoutIfAPageTakesTooLongToLoad() {
     try {
       testPageLoadTimeoutIsEnforced(2);
     } finally {

@@ -26,31 +26,31 @@ import org.junit.jupiter.api.Test;
 public class BrowserConfigurationOptionsTest {
 
   @Test
-  public void testCanUseWithValidArg() {
+  void testCanUseWithValidArg() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
     assertTrue(bco.canUse("foobar"));
   }
 
   @Test
-  public void testCanUseWithNullArg() {
+  void testCanUseWithNullArg() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
     assertFalse(bco.canUse(null));
   }
 
   @Test
-  public void testCanUseWithEmptyArg() {
+  void testCanUseWithEmptyArg() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
     assertFalse(bco.canUse(""));
   }
 
   @Test
-  public void testSetProfileWithNullDoesNotSet() {
+  void testSetProfileWithNullDoesNotSet() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setProfile(null);
     assertFalse(bco.isSet(BrowserConfigurationOptions.PROFILE_NAME));
   }
 
   @Test
-  public void testSetProfileWithNonNullDoesSet() {
+  void testSetProfileWithNonNullDoesSet() {
     String profile = "foo";
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setProfile(profile);
     assertTrue(bco.isSet(BrowserConfigurationOptions.PROFILE_NAME));
@@ -58,14 +58,14 @@ public class BrowserConfigurationOptionsTest {
   }
 
   @Test
-  public void testSetSingleWindow() {
+  void testSetSingleWindow() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setSingleWindow();
     assertTrue(bco.isSingleWindow());
     assertTrue(bco.isSet(BrowserConfigurationOptions.SINGLE_WINDOW));
   }
 
   @Test
-  public void testSetSingleWindowWhenMultiWindowWasAlreadySet() {
+  void testSetSingleWindowWhenMultiWindowWasAlreadySet() {
     BrowserConfigurationOptions bco =
         new BrowserConfigurationOptions().setMultiWindow().setSingleWindow();
     assertTrue(bco.isSingleWindow());
@@ -74,14 +74,14 @@ public class BrowserConfigurationOptionsTest {
   }
 
   @Test
-  public void testSetMultiWindow() {
+  void testSetMultiWindow() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setMultiWindow();
     assertTrue(bco.isMultiWindow());
     assertTrue(bco.isSet(BrowserConfigurationOptions.MULTI_WINDOW));
   }
 
   @Test
-  public void testSetMultiWindowWhenSingleWindowWasAlreadySet() {
+  void testSetMultiWindowWhenSingleWindowWasAlreadySet() {
     BrowserConfigurationOptions bco =
         new BrowserConfigurationOptions().setSingleWindow().setMultiWindow();
     assertTrue(bco.isMultiWindow());
@@ -90,14 +90,14 @@ public class BrowserConfigurationOptionsTest {
   }
 
   @Test
-  public void testSetBrowserExecutablePathWithNullPath() {
+  void testSetBrowserExecutablePathWithNullPath() {
     BrowserConfigurationOptions bco =
         new BrowserConfigurationOptions().setBrowserExecutablePath(null);
     assertFalse(bco.isSet(BrowserConfigurationOptions.BROWSER_EXECUTABLE_PATH));
   }
 
   @Test
-  public void testSetBrowserExecutablePathWithValidPath() {
+  void testSetBrowserExecutablePathWithValidPath() {
     String path = "c:\\chrome\\is\\cool.exe with_arg";
     BrowserConfigurationOptions bco =
         new BrowserConfigurationOptions().setBrowserExecutablePath(path);
@@ -106,7 +106,7 @@ public class BrowserConfigurationOptionsTest {
   }
 
   @Test
-  public void testSetTimeoutInSeconds() {
+  void testSetTimeoutInSeconds() {
     int timeout = 17;
     BrowserConfigurationOptions bco =
         new BrowserConfigurationOptions().setTimeoutInSeconds(timeout);
@@ -115,19 +115,19 @@ public class BrowserConfigurationOptionsTest {
   }
 
   @Test
-  public void testGetTimeoutWhenNoneSet() {
+  void testGetTimeoutWhenNoneSet() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions();
     assertEquals(BrowserConfigurationOptions.DEFAULT_TIMEOUT_IN_SECONDS, bco.getTimeoutInSeconds());
   }
 
   @Test
-  public void testBrowserModeWithNullMode() {
+  void testBrowserModeWithNullMode() {
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setBrowserMode(null);
     assertFalse(bco.isSet(BrowserConfigurationOptions.BROWSER_MODE));
   }
 
   @Test
-  public void testBrowserModeWithNonNullMode() {
+  void testBrowserModeWithNonNullMode() {
     String mode = "hta";
     BrowserConfigurationOptions bco = new BrowserConfigurationOptions().setBrowserMode(mode);
     assertTrue(bco.isSet(BrowserConfigurationOptions.BROWSER_MODE));

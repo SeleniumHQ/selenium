@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConcatenatingConfigTest {
+class ConcatenatingConfigTest {
 
   @Test
-  public void shouldReturnSectionNames() {
+  void shouldReturnSectionNames() {
     Config config = new ConcatenatingConfig(
       "FOO",
       '_',
@@ -41,7 +41,7 @@ public class ConcatenatingConfigTest {
   }
 
   @Test
-  public void shouldReturnOptionNamesInSection() {
+  void shouldReturnOptionNamesInSection() {
     Config config = new ConcatenatingConfig(
       "FOO",
       '_',

@@ -24,10 +24,10 @@ import org.openqa.selenium.grid.config.MapConfig;
 
 import java.util.Map;
 
-public class BaseServerOptionsTest {
+class BaseServerOptionsTest {
 
   @Test
-  public void readingThePortTwiceShouldGiveTheSameResult() {
+  void readingThePortTwiceShouldGiveTheSameResult() {
     BaseServerOptions options = new BaseServerOptions(
       new MapConfig(Map.of("server", Map.of("port", -1))));
 
@@ -38,7 +38,7 @@ public class BaseServerOptionsTest {
   }
 
   @Test
-  public void serverConfigBindsToHostByDefault() {
+  void serverConfigBindsToHostByDefault() {
     BaseServerOptions options = new BaseServerOptions(
       new MapConfig(Map.of("server", Map.of("port", 4444))));
 

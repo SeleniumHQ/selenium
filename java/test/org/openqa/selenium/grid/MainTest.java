@@ -27,7 +27,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
-public class MainTest {
+class MainTest {
 
   ByteArrayOutputStream out;
   ByteArrayOutputStream err;
@@ -47,13 +47,13 @@ public class MainTest {
   }
 
   @Test
-  public void shouldPrintAListOfCommandsWhenStartedWithoutOptions() {
+  void shouldPrintAListOfCommandsWhenStartedWithoutOptions() {
     new Main(toPrintStream(out), toPrintStream(err), new String[]{}).go();
     assertThat(out.toString()).contains("A list of all the commands available");
   }
 
   @Test
-  public void shouldPrintAListOfCommandsWhenStartedWithHelpOption() {
+  void shouldPrintAListOfCommandsWhenStartedWithHelpOption() {
     new Main(toPrintStream(out), toPrintStream(err), new String[]{"--help"}).go();
     assertThat(out.toString()).contains("A list of all the commands available");
   }

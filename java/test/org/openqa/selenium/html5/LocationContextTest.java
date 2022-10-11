@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-public class LocationContextTest extends JupiterTestBase {
+class LocationContextTest extends JupiterTestBase {
 
   @BeforeEach
   public void hasLocationContext() {
@@ -36,7 +36,7 @@ public class LocationContextTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldSetAndGetLatitude() {
+  void testShouldSetAndGetLatitude() {
     driver.get(pages.html5Page);
 
     ((LocationContext) driver).setLocation(new Location(40.714353, -74.005973, 0.056747));
@@ -46,7 +46,7 @@ public class LocationContextTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldSetAndGetLongitude() {
+  void testShouldSetAndGetLongitude() {
     driver.get(pages.html5Page);
 
     ((LocationContext) driver).setLocation(new Location(40.714353, -74.005973, 0.056747));

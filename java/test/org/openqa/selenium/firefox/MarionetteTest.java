@@ -39,7 +39,7 @@ import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
-public class MarionetteTest extends JupiterTestBase {
+class MarionetteTest extends JupiterTestBase {
 
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
 

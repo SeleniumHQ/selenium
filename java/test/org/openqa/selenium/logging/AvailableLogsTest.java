@@ -40,7 +40,7 @@ import java.util.Set;
 @Ignore(IE)
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
-public class AvailableLogsTest extends JupiterTestBase {
+class AvailableLogsTest extends JupiterTestBase {
 
   private WebDriver localDriver;
 
@@ -53,14 +53,14 @@ public class AvailableLogsTest extends JupiterTestBase {
   }
 
   @Test
-  public void browserLogShouldBeEnabledByDefault() {
+  void browserLogShouldBeEnabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.BROWSER))
         .describedAs("Browser logs should be enabled by default").isTrue();
   }
 
   @Test
-  public void clientLogShouldBeEnabledByDefault() {
+  void clientLogShouldBeEnabledByDefault() {
     // Do one action to have *something* in the client logs.
     driver.get(pages.formPage);
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
@@ -78,14 +78,14 @@ public class AvailableLogsTest extends JupiterTestBase {
   }
 
   @Test
-  public void driverLogShouldBeEnabledByDefault() {
+  void driverLogShouldBeEnabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.DRIVER))
         .describedAs("Remote driver logs should be enabled by default").isTrue();
   }
 
   @Test
-  public void profilerLogShouldBeDisabledByDefault() {
+  void profilerLogShouldBeDisabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PROFILER))
         .describedAs("Profiler logs should not be enabled by default").isFalse();
@@ -102,7 +102,7 @@ public class AvailableLogsTest extends JupiterTestBase {
   }
 
   @Test
-  public void serverLogShouldBeEnabledByDefaultOnRemote() {
+  void serverLogShouldBeEnabledByDefaultOnRemote() {
     assumeTrue(Boolean.getBoolean("selenium.browser.remote"));
 
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestAddLocationStrategy extends InternalSelenseTestBase {
   @Test
-  public void testAddLocationStrategy() {
+  void testAddLocationStrategy() {
     selenium.open("test_click_page1.html");
     selenium.addLocationStrategy("foo", "return inDocument.getElementById(locator);");
     assertTrue(selenium.isElementPresent("foo=link"));

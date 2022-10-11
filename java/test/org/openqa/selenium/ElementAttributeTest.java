@@ -35,10 +35,10 @@ import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
-public class ElementAttributeTest extends JupiterTestBase {
+class ElementAttributeTest extends JupiterTestBase {
 
   @Test
-  public void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
+  void testShouldReturnNullWhenGettingTheValueOfAnAttributeThatIsNotListed() {
     driver.get(pages.simpleTestPage);
     WebElement head = driver.findElement(By.xpath("/html"));
     String attribute = head.getAttribute("cheese");
@@ -46,7 +46,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag() {
+  void testShouldReturnNullWhenGettingSrcAttributeOfInvalidImgTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("invalidImgTag"));
     String attribute = img.getAttribute("src");
@@ -54,7 +54,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag() {
+  void testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validImgTag"));
     String attribute = img.getAttribute("src");
@@ -62,7 +62,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag() {
+  void testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validAnchorTag"));
     String attribute = img.getAttribute("href");
@@ -70,14 +70,14 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
+  void testShouldReturnEmptyAttributeValuesWhenPresentAndTheValueIsActuallyEmpty() {
     driver.get(pages.simpleTestPage);
     WebElement body = driver.findElement(By.xpath("//body"));
-    assertThat(body.getAttribute("style")).isEqualTo("");
+    assertThat(body.getAttribute("style")).isEmpty();
   }
 
   @Test
-  public void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
+  void testShouldReturnTheValueOfTheDisabledAttributeAsNullIfNotSet() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='working']"));
     assertThat(inputElement.getAttribute("disabled")).isNull();
@@ -89,7 +89,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnTheValueOfTheIndexAttributeEvenIfItIsMissing() {
+  void testShouldReturnTheValueOfTheIndexAttributeEvenIfItIsMissing() {
     driver.get(pages.formPage);
 
     WebElement multiSelect = driver.findElement(By.id("multi"));
@@ -98,7 +98,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
+  void testShouldIndicateTheElementsThatAreDisabledAreNotEnabled() {
     driver.get(pages.formPage);
     WebElement inputElement = driver.findElement(By.xpath("//input[@id='notWorking']"));
     assertThat(inputElement.isEnabled()).isFalse();
@@ -108,7 +108,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings() {
+  void testElementsShouldBeDisabledIfTheyAreDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
     assertThat(disabledTextElement1.isEnabled()).isFalse();
@@ -127,23 +127,23 @@ public class ElementAttributeTest extends JupiterTestBase {
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
     assertThatExceptionOfType(InvalidElementStateException.class)
         .isThrownBy(() -> disabledTextElement1.sendKeys("foo"));
-    assertThat(disabledTextElement1.getText()).isEqualTo("");
+    assertThat(disabledTextElement1.getText()).isEmpty();
 
     WebElement disabledTextElement2 = driver.findElement(By.id("disabledTextElement2"));
     assertThatExceptionOfType(InvalidElementStateException.class)
         .isThrownBy(() -> disabledTextElement2.sendKeys("bar"));
-    assertThat(disabledTextElement2.getText()).isEqualTo("");
+    assertThat(disabledTextElement2.getText()).isEmpty();
   }
 
   @Test
-  public void testShouldIndicateWhenATextAreaIsDisabled() {
+  void testShouldIndicateWhenATextAreaIsDisabled() {
     driver.get(pages.formPage);
     WebElement textArea = driver.findElement(By.xpath("//textarea[@id='notWorkingArea']"));
     assertThat(textArea.isEnabled()).isFalse();
   }
 
   @Test
-  public void testShouldIndicateWhenASelectIsDisabled() {
+  void testShouldIndicateWhenASelectIsDisabled() {
     driver.get(pages.formPage);
 
     WebElement enabled = driver.findElement(By.name("selectomatic"));
@@ -154,7 +154,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnTheValueOfCheckedForACheckboxOnlyIfItIsChecked() {
+  void testShouldReturnTheValueOfCheckedForACheckboxOnlyIfItIsChecked() {
     driver.get(pages.formPage);
     WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
     assertThat(checkbox.getAttribute("checked")).isNull();
@@ -163,7 +163,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldOnlyReturnTheValueOfSelectedForRadioButtonsIfItIsSet() {
+  void testShouldOnlyReturnTheValueOfSelectedForRadioButtonsIfItIsSet() {
     driver.get(pages.formPage);
     WebElement neverSelected = driver.findElement(By.id("cheese"));
     WebElement initiallyNotSelected = driver.findElement(By.id("peas"));
@@ -180,7 +180,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected() {
+  void testShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
     List<WebElement> options = selectBox.findElements(By.tagName("option"));
@@ -193,7 +193,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnValueOfClassAttributeOfAnElement() {
+  void testShouldReturnValueOfClassAttributeOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 
     WebElement heading = driver.findElement(By.xpath("//h1"));
@@ -203,7 +203,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnTheContentsOfATextAreaAsItsValue() {
+  void testShouldReturnTheContentsOfATextAreaAsItsValue() {
     driver.get(pages.formPage);
 
     String value = driver.findElement(By.id("withText")).getAttribute("value");
@@ -212,7 +212,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnInnerHtml() {
+  void testShouldReturnInnerHtml() {
     driver.get(pages.simpleTestPage);
 
     String html = driver.findElement(By.id("wrappingtext")).getAttribute("innerHTML");
@@ -220,7 +220,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldTreatReadonlyAsAValue() {
+  void testShouldTreatReadonlyAsAValue() {
     driver.get(pages.formPage);
 
     WebElement element = driver.findElement(By.name("readonly"));
@@ -235,7 +235,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnHiddenTextForTextContentAttribute() {
+  void testShouldReturnHiddenTextForTextContentAttribute() {
     driver.get(pages.simpleTestPage);
 
     WebElement element = driver.findElement(By.id("hiddenline"));
@@ -245,14 +245,14 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldGetNumericAttribute() {
+  void testShouldGetNumericAttribute() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
     assertThat(element.getAttribute("rows")).isEqualTo("5");
   }
 
   @Test
-  public void testCanReturnATextApproximationOfTheStyleAttribute() {
+  void testCanReturnATextApproximationOfTheStyleAttribute() {
     driver.get(pages.javascriptPage);
 
     String style = driver.findElement(By.id("red-item")).getAttribute("style");
@@ -261,7 +261,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldCorrectlyReportValueOfColspan() {
+  void testShouldCorrectlyReportValueOfColspan() {
     driver.get(pages.tables);
 
     try {
@@ -282,7 +282,7 @@ public class ElementAttributeTest extends JupiterTestBase {
 
   // This is a test-case re-creating issue 900.
   @Test
-  public void testShouldReturnValueOfOnClickAttribute() {
+  void testShouldReturnValueOfOnClickAttribute() {
     driver.get(pages.javascriptPage);
 
     WebElement mouseclickDiv = driver.findElement(By.id("mouseclick"));
@@ -299,41 +299,41 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
+  void testGetAttributeDoesNotReturnAnObjectForSvgProperties() {
     driver.get(pages.svgPage);
     WebElement svgElement = driver.findElement(By.id("rotate"));
     assertThat(svgElement.getAttribute("transform")).isEqualTo("rotate(30)");
   }
 
   @Test
-  public void testCanRetrieveTheCurrentValueOfATextFormField_textInput() {
+  void testCanRetrieveTheCurrentValueOfATextFormField_textInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
-    assertThat(element.getAttribute("value")).isEqualTo("");
+    assertThat(element.getAttribute("value")).isEmpty();
     element.sendKeys("hello world");
     shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello world"));
   }
 
   @Test
-  public void testCanRetrieveTheCurrentValueOfATextFormField_emailInput() {
+  void testCanRetrieveTheCurrentValueOfATextFormField_emailInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("email"));
-    assertThat(element.getAttribute("value")).isEqualTo("");
+    assertThat(element.getAttribute("value")).isEmpty();
     element.sendKeys("hello@example.com");
     shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello@example.com"));
   }
 
   @Test
-  public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
+  void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("emptyTextArea"));
-    assertThat(element.getAttribute("value")).isEqualTo("");
+    assertThat(element.getAttribute("value")).isEmpty();
     element.sendKeys("hello world");
     shortWait.until(ExpectedConditions.attributeToBe(element, "value", "hello world"));
   }
 
   @Test
-  public void testShouldReturnNullForNonPresentBooleanAttributes() {
+  void testShouldReturnNullForNonPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
     WebElement element1 = driver.findElement(By.id("working"));
     assertThat(element1.getAttribute("required")).isNull();
@@ -342,7 +342,7 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnTrueForPresentBooleanAttributes() {
+  void testShouldReturnTrueForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
     WebElement element1 = driver.findElement(By.id("emailRequired"));
     assertThat(element1.getAttribute("required")).isEqualTo("true");
@@ -357,49 +357,49 @@ public class ElementAttributeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testMultipleAttributeShouldBeNullWhenNotSet() {
+  void testMultipleAttributeShouldBeNullWhenNotSet() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithoutMultiple"));
     assertThat(element.getAttribute("multiple")).isNull();
   }
 
   @Test
-  public void testMultipleAttributeShouldBeTrueWhenSet() {
+  void testMultipleAttributeShouldBeTrueWhenSet() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithMultipleEqualsMultiple"));
     assertThat(element.getAttribute("multiple")).isEqualTo("true");
   }
 
   @Test
-  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsBlank() {
+  void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsBlank() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithEmptyStringMultiple"));
     assertThat(element.getAttribute("multiple")).isEqualTo("true");
   }
 
   @Test
-  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithoutAValue() {
+  void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithoutAValue() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithMultipleWithoutValue"));
     assertThat(element.getAttribute("multiple")).isEqualTo("true");
   }
 
   @Test
-  public void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse() {
+  void testMultipleAttributeShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithRandomMultipleValue"));
     assertThat(element.getAttribute("multiple")).isEqualTo("true");
   }
 
   @Test
-  public void testGetAttributeOfUserDefinedProperty() {
+  void testGetAttributeOfUserDefinedProperty() {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));
     assertThat(element.getAttribute("dynamicProperty")).isEqualTo("sampleValue");
   }
 
   @Test
-  public void shouldTreatContenteditableAsEnumeratedButNotBoolean() {
+  void shouldTreatContenteditableAsEnumeratedButNotBoolean() {
     checkEnumeratedAttribute("contenteditable", "true", "false", "yes", "no", "", "blabla");
   }
 
@@ -422,7 +422,7 @@ public class ElementAttributeTest extends JupiterTestBase {
     });
 
     driver.get(appServer.create(new Page().withBody(String.format("<div id=\"attr\" %s>", name))));
-    assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEqualTo("");
+    assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEmpty();
 
     driver.get(appServer.create(new Page().withBody("<div id=\"attr\">")));
     assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isNull();

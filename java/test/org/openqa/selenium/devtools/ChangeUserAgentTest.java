@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ChangeUserAgentTest extends DevToolsTestBase {
+class ChangeUserAgentTest extends DevToolsTestBase {
 
   @Test
   @NotYetImplemented(value = Browser.FIREFOX, reason = "Network interception not yet supported")

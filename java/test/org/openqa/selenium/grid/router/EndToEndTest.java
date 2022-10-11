@@ -71,7 +71,7 @@ import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class EndToEndTest {
+class EndToEndTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private final Json json = new Json();
@@ -167,7 +167,7 @@ public class EndToEndTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void success(Supplier<Deployment> values) {
+  void success(Supplier<Deployment> values) {
     setFields(values);
 
     // The node added only has a single node. Make sure we can start and stop sessions.
@@ -183,7 +183,7 @@ public class EndToEndTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void exerciseDriver(Supplier<Deployment> values) {
+  void exerciseDriver(Supplier<Deployment> values) {
     setFields(values);
 
     // The node added only has a single node. Make sure we can start and stop sessions.
@@ -214,7 +214,7 @@ public class EndToEndTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldAllowPassthroughForW3CMode(Supplier<Deployment> values) {
+  void shouldAllowPassthroughForW3CMode(Supplier<Deployment> values) {
     setFields(values);
 
     HttpRequest request = new HttpRequest(POST, "/session");
@@ -242,7 +242,7 @@ public class EndToEndTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldRejectSessionRequestIfCapsNotSupported(Supplier<Deployment> values) {
+  void shouldRejectSessionRequestIfCapsNotSupported(Supplier<Deployment> values) {
     setFields(values);
 
     try {
@@ -257,7 +257,7 @@ public class EndToEndTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldAllowPassthroughForJWPMode(Supplier<Deployment> values) {
+  void shouldAllowPassthroughForJWPMode(Supplier<Deployment> values) {
     setFields(values);
 
     HttpRequest request = new HttpRequest(POST, "/session");
@@ -284,13 +284,13 @@ public class EndToEndTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldDoProtocolTranslationFromW3CLocalEndToJWPRemoteEnd(Supplier<Deployment> values) {
+  void shouldDoProtocolTranslationFromW3CLocalEndToJWPRemoteEnd(Supplier<Deployment> values) {
     setFields(values);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void responseShouldHaveContentTypeAndCacheControlHeaders(Supplier<Deployment> values) {
+  void responseShouldHaveContentTypeAndCacheControlHeaders(Supplier<Deployment> values) {
     setFields(values);
 
     try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {

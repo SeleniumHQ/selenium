@@ -32,10 +32,10 @@ import java.io.File;
 import java.time.Duration;
 
 @Tag("UnitTests")
-public class EdgeDriverServiceTest {
+class EdgeDriverServiceTest {
 
   @Test
-  public void builderPassesTimeoutToDriverService() {
+  void builderPassesTimeoutToDriverService() {
     File exe = new File("someFile");
     Duration defaultTimeout = Duration.ofSeconds(20);
     Duration customTimeout = Duration.ofSeconds(60);
@@ -52,8 +52,8 @@ public class EdgeDriverServiceTest {
   }
 
   @Test
-  public void testScoring() {
+  void testScoring() {
     EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
-    assertThat(builder.score(new EdgeOptions())).isGreaterThan(0);
+    assertThat(builder.score(new EdgeOptions())).isPositive();
   }
 }

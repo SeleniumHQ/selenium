@@ -26,7 +26,7 @@ public enum WindowType {
   TAB ("tab"),
   ;
 
-  private String text;
+  private final String text;
 
   WindowType(String text) {
     this.text = text;
