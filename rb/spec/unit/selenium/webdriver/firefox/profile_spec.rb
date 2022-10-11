@@ -41,22 +41,6 @@ module Selenium
           expect(ini).to have_received(:[]).with('default')
         end
 
-        it 'uses default preferences' do
-          expect(read_generated_prefs).to include('user_pref("browser.newtabpage.enabled", false)',
-                                                  'user_pref("browser.startup.homepage", "about:blank")',
-                                                  'user_pref("startup.homepage_welcome_url", "about:blank")',
-                                                  'user_pref("browser.usedOnWindows10.introURL", "about:blank")',
-                                                  'user_pref("network.captive-portal-service.enabled", false)',
-                                                  'user_pref("security.csp.enable", false)')
-        end
-
-        it 'can override welcome page' do
-          profile['startup.homepage_welcome_url'] = "http://google.com"
-
-          expect(read_generated_prefs).to include('user_pref("browser.startup.homepage", "about:blank")',
-                                                  'user_pref("startup.homepage_welcome_url", "http://google.com")')
-        end
-
         it 'should set additional preferences' do
           profile['foo.number'] = 123
           profile['foo.boolean'] = true
@@ -92,60 +76,6 @@ module Selenium
 
         it 'should raise an error if the value is already stringified' do
           expect { profile['foo.bar'] = '"stringified"' }.to raise_error(ArgumentError)
-        end
-
-        it 'can configure a manual proxy' do
-          proxy = Proxy.new(
-            http: 'foo:123',
-            ftp: 'bar:234',
-            ssl: 'baz:345',
-            no_proxy: 'localhost'
-          )
-
-          profile.proxy = proxy
-          expect(read_generated_prefs).to include('user_pref("network.proxy.http", "foo")',
-                                                  'user_pref("network.proxy.http_port", 123)',
-                                                  'user_pref("network.proxy.ftp", "bar")',
-                                                  'user_pref("network.proxy.ftp_port", 234)',
-                                                  'user_pref("network.proxy.ssl", "baz")',
-                                                  'user_pref("network.proxy.ssl_port", 345)',
-                                                  'user_pref("network.proxy.no_proxies_on", "localhost")',
-                                                  'user_pref("network.proxy.type", 1)')
-        end
-
-        it 'can configure a PAC proxy' do
-          profile.proxy = Proxy.new(pac: 'http://foo/bar.pac')
-
-          expect(read_generated_prefs).to include('user_pref("network.proxy.autoconfig_url", "http://foo/bar.pac"',
-                                                  'user_pref("network.proxy.type", 2)')
-        end
-
-        it 'can configure an auto-detected proxy' do
-          profile.proxy = Proxy.new(auto_detect: true)
-
-          expect(read_generated_prefs).to include('user_pref("network.proxy.type", 4)')
-        end
-
-        it 'can install extension' do
-          firebug = File.expand_path('../../../../../../third_party/firebug/firebug-1.5.0-fx.xpi', __dir__)
-          profile.add_extension(firebug)
-          extension_directory = File.expand_path('extensions/firebug@software.joehewitt.com', profile.layout_on_disk)
-          expect(Dir.exist?(extension_directory)).to eq(true)
-        end
-
-        it 'can install web extension without id' do
-          mooltipass = File.expand_path('../../../../../../third_party/firebug/mooltipass-1.1.87.xpi', __dir__)
-          profile.add_extension(mooltipass)
-          extension_directory = File.expand_path('extensions/MooltipassExtension@1.1.87', profile.layout_on_disk)
-          expect(Dir.exist?(extension_directory)).to eq(true)
-        end
-
-        it 'can install web extension with id' do
-          ext = File.expand_path('../../../../../../third_party/firebug/favourite_colour-1.1-an+fx.xpi', __dir__)
-          profile.add_extension(ext)
-          extension_directory = File.expand_path('extensions/favourite-colour-examples@mozilla.org',
-                                                 profile.layout_on_disk)
-          expect(Dir.exist?(extension_directory)).to eq(true)
         end
       end
     end # Firefox

@@ -24,32 +24,78 @@ module Selenium
     module Firefox
       describe Profile, exclusive: {browser: :firefox} do
         let(:profile) { Profile.new }
+        let(:options) { Options.new(profile: profile) }
 
-        def read_generated_prefs(from = nil)
-          prof = from || profile
-          dir = prof.layout_on_disk
+        before { quit_driver }
 
-          File.read(File.join(dir, 'user.js'))
+        def profile_times(profile)
+          JSON.parse(File.new("#{profile}/times.json").read)
         end
 
-        before do
-          quit_driver
-          sleep 2
-          profile['browser.startup.homepage'] = url_for('simpleTest.html')
-          profile['browser.startup.page'] = 1
-        end
+        describe '#initialize' do
+          it 'uses generated profile' do
+            profile['browser.startup.page'] = 1
+            profile['browser.startup.homepage'] = url_for('simpleTest.html')
 
-        it 'should instantiate the browser with the correct profile' do
-          create_driver!(options: Options.new(profile: profile)) do |driver|
-            expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
+            create_driver!(options: options) do |driver|
+              expect(driver.current_url).to include('simpleTest.html')
+            end
+          end
+
+          it 'accepts existing profile by path' do
+            # Get the driver to create an "existing" profile for us
+            create_driver! do |driver|
+              existing_profile = driver.capabilities['moz:profile']
+              create_driver!(options: Options.new(profile: Profile.new(existing_profile))) do |driver2|
+                current_profile = driver2.capabilities['moz:profile']
+                expect(profile_times(current_profile)).to eq profile_times(existing_profile)
+              end
+            end
+          end
+
+          it 'errors when profile path does not exist' do
+            expect { Profile.new('/invalid/path') }.to raise_error(Errno::ENOENT)
           end
         end
 
-        it 'should be able to use the same profile more than once' do
-          create_driver!(options: Options.new(profile: profile)) do |driver1|
-            expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
-            create_driver!(options: Options.new(profile: profile)) do |driver2|
-              expect { wait(5).until { driver2.find_element(id: 'oneline') } }.not_to raise_error
+        describe '#layout_from_disk' do
+          it 'creates empty user file by default' do
+            path = Profile.new.layout_on_disk
+            expect(path).to include('webdriver-profile')
+            expect(File.new("#{path}/user.js").read).to be_empty
+          end
+
+          it 'uses existing user file when provided' do
+            # Get the driver to create an "existing" profile for us
+            create_driver! do |driver|
+              existing_profile = driver.capabilities['moz:profile']
+              path = Profile.new(existing_profile).layout_on_disk
+              expect(path).to include('webdriver-rb-profilecopy')
+              expect(File.new("#{path}/user.js").read).not_to be_empty
+            end
+          end
+        end
+
+        describe '#from_name' do
+          it 'uses specified profile' do
+            name, path = Profile.ini.profile_paths.first
+            path_times = JSON.parse(File.new("#{path}/times.json").read)
+
+            create_driver!(options: Options.new(profile: Profile.from_name(name))) do |driver|
+              profile_dir = driver.capabilities['moz:profile']
+              prof_times = JSON.parse(File.new("#{profile_dir}/times.json").read)
+              expect(prof_times).to eq path_times
+            end
+          end
+        end
+
+        describe '#[]=' do
+          it 'adds preferences' do
+            profile['browser.startup.page'] = 1
+            profile['browser.startup.homepage'] = url_for('simpleTest.html')
+
+            create_driver!(options: options) do |driver|
+              expect(driver.current_url).to include('simpleTest.html')
             end
           end
         end

@@ -25,17 +25,6 @@ module Selenium
 
         VALID_PREFERENCE_TYPES = [TrueClass, FalseClass, Integer, Float, String].freeze
 
-        DEFAULT_PREFERENCES = {
-          "browser.newtabpage.enabled" => false,
-          "browser.startup.homepage" => "about:blank",
-          "browser.usedOnWindows10.introURL" => "about:blank",
-          "network.captive-portal-service.enabled" => false,
-          "security.csp.enable" => false
-        }.freeze
-
-        attr_reader   :name, :log_file
-        attr_writer   :secure_ssl, :load_no_focus_lib
-
         class << self
           def ini
             @ini ||= ProfilesIni.new
@@ -68,17 +57,14 @@ module Selenium
         def initialize(model = nil)
           @model = verify_model(model)
 
-          @additional_prefs = read_model_prefs
-          @extensions = {}
+          @additional_prefs = @model ? read_user_prefs(File.join(@model, 'user.js')) : {}
         end
 
         def layout_on_disk
           profile_dir = @model ? create_tmp_copy(@model) : Dir.mktmpdir('webdriver-profile')
           FileReaper << profile_dir
 
-          install_extensions(profile_dir)
           delete_lock_files(profile_dir)
-          delete_extensions_cache(profile_dir)
           update_user_prefs_in(profile_dir)
 
           profile_dir
@@ -103,77 +89,9 @@ module Selenium
           @additional_prefs[key.to_s] = value
         end
 
-        def port=(port)
-          self[WEBDRIVER_PREFS[:port]] = port
-        end
-
-        def log_file=(file)
-          @log_file = file
-          self[WEBDRIVER_PREFS[:log_file]] = file
-        end
-
-        #
-        # Add the extension (directory, .zip or .xpi) at the given path to the profile.
-        #
-
-        def add_extension(path, name = extension_name_for(path))
-          @extensions[name] = Extension.new(path)
-        end
-
-        def proxy=(proxy)
-          raise TypeError, "expected #{Proxy.name}, got #{proxy.inspect}:#{proxy.class}" unless proxy.is_a? Proxy
-
-          case proxy.type
-          when :manual
-            self['network.proxy.type'] = 1
-
-            set_manual_proxy_preference 'ftp', proxy.ftp
-            set_manual_proxy_preference 'http', proxy.http
-            set_manual_proxy_preference 'ssl', proxy.ssl
-            set_manual_proxy_preference 'socks', proxy.socks
-
-            self['network.proxy.no_proxies_on'] = proxy.no_proxy || ''
-          when :pac
-            self['network.proxy.type'] = 2
-            self['network.proxy.autoconfig_url'] = proxy.pac
-          when :auto_detect
-            self['network.proxy.type'] = 4
-          else
-            raise ArgumentError, "unsupported proxy type #{proxy.type}"
-          end
-        end
-
         alias_method :as_json, :encoded
 
         private
-
-        def set_manual_proxy_preference(key, value)
-          return unless value
-
-          host, port = value.to_s.split(':', 2)
-
-          self["network.proxy.#{key}"] = host
-          self["network.proxy.#{key}_port"] = Integer(port) if port
-        end
-
-        def install_extensions(directory)
-          destination = File.join(directory, 'extensions')
-
-          @extensions.each do |name, extension|
-            WebDriver.logger.debug({extenstion: name}.inspect)
-            extension.write_to(destination)
-          end
-        end
-
-        def read_model_prefs
-          return {} unless @model
-
-          read_user_prefs(File.join(@model, 'user.js'))
-        end
-
-        def delete_extensions_cache(directory)
-          FileUtils.rm_f File.join(directory, 'extensions.cache')
-        end
 
         def delete_lock_files(directory)
           %w[.parentlock parent.lock].each do |name|
@@ -181,18 +99,10 @@ module Selenium
           end
         end
 
-        def extension_name_for(path)
-          File.basename(path, File.extname(path))
-        end
-
         def update_user_prefs_in(directory)
           path = File.join(directory, 'user.js')
           prefs = read_user_prefs(path)
-          prefs.merge! self.class::DEFAULT_PREFERENCES
           prefs.merge!(@additional_prefs)
-
-          # If the user sets the home page, we should also start up there
-          prefs['startup.homepage_welcome_url'] ||= prefs['browser.startup.homepage']
 
           write_prefs prefs, path
         end
