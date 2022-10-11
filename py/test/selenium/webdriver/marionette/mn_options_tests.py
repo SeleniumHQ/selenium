@@ -19,7 +19,6 @@ import pytest
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.options import Log
 from selenium.webdriver.firefox.options import Options
@@ -45,20 +44,6 @@ class TestUnit:
         assert opts._profile is None
         assert opts._arguments == []
         assert isinstance(opts.log, Log)
-
-    def test_binary(self):
-        opts = Options()
-        assert opts.binary is None
-
-        other_binary = FirefoxBinary()
-        assert other_binary != opts.binary
-        opts.binary = other_binary
-        assert other_binary == opts.binary
-
-        path = "/path/to/binary"
-        opts.binary = path
-        assert isinstance(opts.binary, FirefoxBinary)
-        assert opts.binary._start_cmd == path
 
     def test_prefs(self):
         opts = Options()
@@ -115,13 +100,8 @@ class TestUnit:
         assert "args" in caps["moz:firefoxOptions"]
         assert caps["moz:firefoxOptions"]["args"] == ["--foo"]
 
-        binary = FirefoxBinary()
-        opts.binary = binary
         caps = opts.to_capabilities()
         assert "moz:firefoxOptions" in caps
-        assert "binary" in caps["moz:firefoxOptions"]
-        assert isinstance(caps["moz:firefoxOptions"]["binary"], str)
-        assert caps["moz:firefoxOptions"]["binary"] == binary._start_cmd
 
         opts.set_preference("spam", "ham")
         caps = opts.to_capabilities()

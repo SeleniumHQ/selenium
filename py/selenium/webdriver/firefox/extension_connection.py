@@ -20,7 +20,6 @@ import time
 
 from selenium.webdriver.common import utils
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
@@ -36,9 +35,6 @@ class ExtensionConnection(RemoteConnection):
         self.binary = firefox_binary
         HOST = host
         timeout = int(timeout)
-
-        if not self.binary:
-            self.binary = FirefoxBinary()
 
         if not HOST:
             HOST = "127.0.0.1"

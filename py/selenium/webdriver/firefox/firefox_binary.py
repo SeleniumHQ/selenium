@@ -18,6 +18,7 @@
 
 import os
 import time
+import warnings
 from platform import system
 from subprocess import STDOUT
 from subprocess import Popen
@@ -27,8 +28,6 @@ from selenium.webdriver.common import utils
 
 
 class FirefoxBinary:
-
-    NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
 
     def __init__(self, firefox_path=None, log_file=None):
         """
@@ -40,10 +39,11 @@ class FirefoxBinary:
                       Please note that with parallel run the output won't be synchronous.
                       By default, it will be redirected to /dev/null.
         """
+        warnings.warn(
+            "FirefoxBinary has been deprecated, please use a string to the location of Firefox as necessary", DeprecationWarning, stacklevel=2
+        )
+
         self._start_cmd = firefox_path
-        # We used to default to subprocess.PIPE instead of /dev/null, but after
-        # a while the pipe would fill up and Firefox would freeze.
-        self._log_file = log_file or open(os.devnull, "wb")
         self.command_line = None
         self.platform = system().lower()
         if not self._start_cmd:
@@ -57,67 +57,6 @@ class FirefoxBinary:
                 "FirefoxBinary('/path/to/binary')\ndriver = "
                 "webdriver.Firefox(firefox_binary=binary)"
             )
-        # Rather than modifying the environment of the calling Python process
-        # copy it and modify as needed.
-        self._firefox_env = os.environ.copy()
-        self._firefox_env["MOZ_CRASHREPORTER_DISABLE"] = "1"
-        self._firefox_env["MOZ_NO_REMOTE"] = "1"
-        self._firefox_env["NO_EM_RESTART"] = "1"
-
-    def add_command_line_options(self, *args):
-        self.command_line = args
-
-    def launch_browser(self, profile, timeout=30):
-        """Launches the browser for the given profile name.
-        It is assumed the profile already exists.
-        """
-        self.profile = profile
-
-        self._start_from_profile_path(self.profile.path)
-        self._wait_until_connectable(timeout=timeout)
-
-    def kill(self):
-        """Kill the browser.
-
-        This is useful when the browser is stuck.
-        """
-        if self.process:
-            self.process.kill()
-            self.process.wait()
-
-    def _start_from_profile_path(self, path):
-        self._firefox_env["XRE_PROFILE_PATH"] = path
-
-        if self.platform == "linux":
-            self._modify_link_library_path()
-        command = [self._start_cmd, "-foreground"]
-        if self.command_line:
-            for cli in self.command_line:
-                command.append(cli)
-        self.process = Popen(command, stdout=self._log_file, stderr=STDOUT, env=self._firefox_env)
-
-    def _wait_until_connectable(self, timeout=30):
-        """Blocks until the extension is connectable in the firefox."""
-        count = 0
-        while not utils.is_connectable(self.profile.port):
-            if self.process.poll():
-                # Browser has exited
-                raise WebDriverException(
-                    "The browser appears to have exited "
-                    "before we could connect. If you specified a log_file in "
-                    "the FirefoxBinary constructor, check it for details."
-                )
-            if count >= timeout:
-                self.kill()
-                raise WebDriverException(
-                    "Can't load the profile. Possible firefox version mismatch. "
-                    "You must use GeckoDriver instead for Firefox 48+. Profile "
-                    "Dir: %s If you specified a log_file in the "
-                    "FirefoxBinary constructor, check it for details." % (self.profile.path)
-                )
-            count += 1
-            time.sleep(1)
-        return True
 
     def _find_exe_in_registry(self):
         try:
@@ -193,31 +132,6 @@ class FirefoxBinary:
             if os.access(binary_path, os.X_OK):
                 return binary_path
         return ""
-
-    def _modify_link_library_path(self):
-        existing_ld_lib_path = os.environ.get("LD_LIBRARY_PATH", "")
-
-        new_ld_lib_path = self._extract_and_check(self.profile, "x86", "amd64")
-
-        new_ld_lib_path += existing_ld_lib_path
-
-        self._firefox_env["LD_LIBRARY_PATH"] = new_ld_lib_path
-        self._firefox_env["LD_PRELOAD"] = self.NO_FOCUS_LIBRARY_NAME
-
-    def _extract_and_check(self, profile, x86, amd64):
-
-        paths = [x86, amd64]
-        built_path = ""
-        for path in paths:
-            library_path = os.path.join(profile.path, path)
-            if not os.path.exists(library_path):
-                os.makedirs(library_path)
-            import shutil
-
-            shutil.copy(os.path.join(os.path.dirname(__file__), path, self.NO_FOCUS_LIBRARY_NAME), library_path)
-            built_path += library_path + ":"
-
-        return built_path
 
     def which(self, fname):
         """Returns the fully qualified path by searching Path of the given
