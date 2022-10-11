@@ -19,7 +19,7 @@ $ cargo run -- --help
 selenium-manager 1.0.0-M1
 Automated driver management for Selenium
 
-Usage: selenium-manager.exe [OPTIONS] --browser <BROWSER>
+Usage: selenium-manager [OPTIONS] --browser <BROWSER>
 Options:
   -b, --browser <BROWSER>
           Browser type (e.g., chrome, firefox, edge)
