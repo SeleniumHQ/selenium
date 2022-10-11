@@ -241,11 +241,5 @@ java_module = rule(
             executable = True,
             cfg = "exec",
         ),
-        "_singlejar": attr.label(
-            default = "@bazel_tools//tools/jdk:singlejar",
-            allow_files = True,
-            executable = True,
-            cfg = "exec",
-        ),
     },
 )
