@@ -34,8 +34,7 @@ module Selenium
 
         describe '#initialize' do
           it 'uses generated profile' do
-            profile['browser.startup.page'] = 1
-            profile['browser.startup.homepage'] = url_for('simpleTest.html')
+            profile.startup_url = url_for('simpleTest.html')
 
             create_driver!(options: options) do |driver|
               expect(driver.current_url).to include('simpleTest.html')

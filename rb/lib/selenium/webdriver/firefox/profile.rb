@@ -25,6 +25,8 @@ module Selenium
 
         VALID_PREFERENCE_TYPES = [TrueClass, FalseClass, Integer, Float, String].freeze
 
+        attr_accessor :startup_url
+
         class << self
           def ini
             @ini ||= ProfilesIni.new
@@ -103,6 +105,11 @@ module Selenium
           path = File.join(directory, 'user.js')
           prefs = read_user_prefs(path)
           prefs.merge!(@additional_prefs)
+
+          if @startup_url
+            prefs['browser.startup.page'] = 1
+            prefs['browser.startup.homepage'] = @startup_url
+          end
 
           write_prefs prefs, path
         end
