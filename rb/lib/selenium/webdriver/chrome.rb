@@ -24,7 +24,6 @@ module Selenium
     module Chrome
       autoload :Features, 'selenium/webdriver/chrome/features'
       autoload :Driver, 'selenium/webdriver/chrome/driver'
-      autoload :Profile, 'selenium/webdriver/chrome/profile'
       autoload :Options, 'selenium/webdriver/chrome/options'
       autoload :Service, 'selenium/webdriver/chrome/service'
 

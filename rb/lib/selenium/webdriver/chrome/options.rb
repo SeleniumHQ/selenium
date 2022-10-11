@@ -21,7 +21,7 @@ module Selenium
   module WebDriver
     module Chrome
       class Options < WebDriver::Options
-        attr_accessor :profile, :logging_prefs
+        attr_accessor :logging_prefs
 
         KEY = 'goog:chromeOptions'
         BROWSER = 'chrome'
@@ -52,7 +52,6 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new(args: ['start-maximized', 'user-data-dir=/tmp/temp_profile'])
         #   driver = Selenium::WebDriver.for(:chrome, capabilities: options)
         #
-        # @param [Profile] profile An instance of a Chrome::Profile Class
         # @param [Hash] opts the pre-defined options to create the Chrome::Options with
         # @option opts [Array] encoded_extensions List of extensions that do not need to be Base64 encoded
         # @option opts [Array<String>] args List of command-line arguments to use when starting Chrome
@@ -70,10 +69,8 @@ module Selenium
         # @option opts [Array<String>] window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(profile: nil, **opts)
+        def initialize(**opts)
           super(**opts)
-
-          @profile = profile
 
           @options = {args: [],
                       prefs: {},
@@ -229,11 +226,6 @@ module Selenium
           options['binary'] ||= binary_path if binary_path
 
           check_w3c(options[:w3c]) if options.key?(:w3c)
-
-          if @profile
-            options['args'] ||= []
-            options['args'] << "--user-data-dir=#{@profile.directory}"
-          end
 
           return if (@encoded_extensions + @extensions).empty?
 

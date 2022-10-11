@@ -105,18 +105,6 @@ module Selenium
               expect { Driver.new(capabilities: [options]) }.not_to raise_exception
             end
 
-            it 'with Options instance with profile' do
-              profile = Profile.new.tap(&:layout_on_disk)
-              allow(profile).to receive(:directory).and_return("PROF_DIR")
-              options = Options.new(profile: profile)
-
-              expect_request(body: {capabilities:
-                                       {alwaysMatch: {browserName: "chrome",
-                                                      'goog:chromeOptions': {args: ["--user-data-dir=PROF_DIR"]}}}})
-
-              expect { Driver.new(capabilities: [options]) }.not_to raise_exception
-            end
-
             it 'with Capabilities instance' do
               capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})

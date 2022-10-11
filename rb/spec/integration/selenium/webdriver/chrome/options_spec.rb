@@ -24,6 +24,7 @@ module Selenium
     module Chrome
       describe Options, exclusive: {browser: :chrome} do
         subject(:options) { Options.new }
+        let(:extensions) { '../../../../../../common/extensions/' }
 
         before { quit_driver }
 
@@ -60,6 +61,16 @@ module Selenium
           create_driver!(options: options) do |driver|
             ua = driver.execute_script 'return window.navigator.userAgent'
             expect(ua).to match(/HeadlessChrome/)
+          end
+        end
+
+        it 'adds extension' do
+          ext = File.expand_path("#{extensions}/webextensions-selenium-example.crx", __dir__)
+          options.extensions << ext
+          create_driver!(options: options) do |driver|
+            driver.get url_for('blank.html')
+            injected = driver.find_element(id: "webextensions-selenium-example")
+            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
           end
         end
       end

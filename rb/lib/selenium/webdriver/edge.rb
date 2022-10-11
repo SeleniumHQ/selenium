@@ -24,7 +24,6 @@ module Selenium
     module Edge
       autoload :Features, 'selenium/webdriver/edge/features'
       autoload :Driver, 'selenium/webdriver/edge/driver'
-      autoload :Profile, 'selenium/webdriver/edge/profile'
       autoload :Options, 'selenium/webdriver/edge/options'
       autoload :Service, 'selenium/webdriver/edge/service'
 
