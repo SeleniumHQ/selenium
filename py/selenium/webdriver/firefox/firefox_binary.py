@@ -40,7 +40,9 @@ class FirefoxBinary:
                       By default, it will be redirected to /dev/null.
         """
         warnings.warn(
-            "FirefoxBinary has been deprecated, please use a string to the location of Firefox as necessary", DeprecationWarning, stacklevel=2
+            "FirefoxBinary has been deprecated, please use a string to the location of Firefox as necessary",
+            DeprecationWarning,
+            stacklevel=2,
         )
 
         self._start_cmd = firefox_path

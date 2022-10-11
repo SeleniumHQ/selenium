@@ -70,12 +70,6 @@ copy_file(
 )
 
 copy_file(
-    name = "firefox-driver-prefs",
-    src = "//third_party/js/selenium:webdriver_json",
-    out = "selenium/webdriver/firefox/webdriver_prefs.json",
-)
-
-copy_file(
     name = "webextensions-selenium-example-xpi",
     src = "//common/extensions:webextensions-selenium-example.xpi",
     out = "test/extensions/webextensions-selenium-example.xpi",
@@ -102,7 +96,6 @@ py_library(
     data = [
         "selenium/py.typed",
         ":find-elements",
-        ":firefox-driver-prefs",
         ":get-attribute",
         ":is-displayed",
         ":mutation-listener",
