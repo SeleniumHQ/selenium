@@ -35,7 +35,7 @@ import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnno
 /**
  * Class that decides whether a test class or method should be ignored.
  */
-public class TestIgnorance {
+class TestIgnorance {
 
   private IgnoreComparator ignoreComparator = new IgnoreComparator();
   private Set<String> methods = new HashSet<>();

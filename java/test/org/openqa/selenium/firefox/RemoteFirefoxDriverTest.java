@@ -35,7 +35,7 @@ import java.nio.file.Path;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class RemoteFirefoxDriverTest extends JupiterTestBase {
+class RemoteFirefoxDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverAfterTest
@@ -52,10 +52,10 @@ public class RemoteFirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldTakeFullPageScreenshot() {
+  void shouldTakeFullPageScreenshot() {
     File tempFile = ((HasFullPageScreenshot) driver).getFullPageScreenshotAs(OutputType.FILE);
     assertThat(tempFile.exists()).isTrue();
-    assertThat(tempFile.length()).isGreaterThan(0);
+    assertThat(tempFile).isNotEmpty();
   }
 
   @Test

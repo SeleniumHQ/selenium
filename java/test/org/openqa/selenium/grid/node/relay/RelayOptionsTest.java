@@ -37,10 +37,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SuppressWarnings("DuplicatedCode")
-public class RelayOptionsTest {
+class RelayOptionsTest {
 
   @Test
-  public void basicConfigurationIsParsedSuccessfully() {
+  void basicConfigurationIsParsedSuccessfully() {
     String[] rawConfig = new String[]{
       "[relay]",
       "url = 'http://localhost:9999'",
@@ -69,7 +69,7 @@ public class RelayOptionsTest {
   }
 
   @Test
-  public void hostAndPortAreParsedSuccessfully() {
+  void hostAndPortAreParsedSuccessfully() {
     String[] rawConfig = new String[]{
       "[relay]",
       "host = '127.0.0.1'",
@@ -82,7 +82,7 @@ public class RelayOptionsTest {
   }
 
   @Test
-  public void statusUrlIsParsedSuccessfully() {
+  void statusUrlIsParsedSuccessfully() {
     String[] rawConfig = new String[]{
       "[relay]",
       "host = '127.0.0.1'",
@@ -98,7 +98,7 @@ public class RelayOptionsTest {
   }
 
   @Test
-  public void missingConfigsThrowsConfigException() {
+  void missingConfigsThrowsConfigException() {
     String[] rawConfig = new String[]{
       "[relay]",
       "host = '127.0.0.1'",
@@ -114,7 +114,7 @@ public class RelayOptionsTest {
   }
 
   @Test
-  public void incompleteConfigsThrowsConfigException() {
+  void incompleteConfigsThrowsConfigException() {
     String[] rawConfig = new String[]{
       "[relay]",
       "host = '127.0.0.1'",

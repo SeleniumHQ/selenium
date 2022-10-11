@@ -36,7 +36,7 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.devtools.events.CdpEventTypes.consoleEvent;
 import static org.openqa.selenium.devtools.events.CdpEventTypes.domMutation;
 
-public class LoggingTest extends JupiterTestBase {
+class LoggingTest extends JupiterTestBase {
 
   @BeforeEach
   public void checkAssumptions() {
@@ -44,7 +44,7 @@ public class LoggingTest extends JupiterTestBase {
   }
 
   @Test
-  public void demonstrateLoggingWorks() throws InterruptedException {
+  void demonstrateLoggingWorks() throws InterruptedException {
     HasLogEvents logger = (HasLogEvents) driver;
 
     AtomicReference<ConsoleEvent> seen = new AtomicReference<>();
@@ -62,7 +62,7 @@ public class LoggingTest extends JupiterTestBase {
   }
 
   @Test
-  public void watchDomMutations() throws InterruptedException {
+  void watchDomMutations() throws InterruptedException {
     HasLogEvents logger = (HasLogEvents) driver;
 
     AtomicReference<DomMutationEvent> seen = new AtomicReference<>();

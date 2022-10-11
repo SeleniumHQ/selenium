@@ -30,7 +30,7 @@ import org.openqa.selenium.build.BazelBuild;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
-public class OsProcessTest {
+class OsProcessTest {
 
   private final static String testExecutable = findExecutable(
     "java/test/org/openqa/selenium/os/echo");
@@ -38,7 +38,7 @@ public class OsProcessTest {
   private OsProcess process = new OsProcess(testExecutable);
 
   @Test
-  public void testSetEnvironmentVariableWithNullKeyThrows() {
+  void testSetEnvironmentVariableWithNullKeyThrows() {
     String key = null;
     String value = "Bar";
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -47,7 +47,7 @@ public class OsProcessTest {
   }
 
   @Test
-  public void testSetEnvironmentVariableWithNullValueThrows() {
+  void testSetEnvironmentVariableWithNullValueThrows() {
     String key = "Foo";
     String value = null;
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -56,7 +56,7 @@ public class OsProcessTest {
   }
 
   @Test
-  public void testSetEnvironmentVariableWithNonNullValueSets() {
+  void testSetEnvironmentVariableWithNonNullValueSets() {
     String key = "Foo";
     String value = "Bar";
     process.setEnvironmentVariable(key, value);
@@ -64,7 +64,7 @@ public class OsProcessTest {
   }
 
   @Test
-  public void testDestroy() {
+  void testDestroy() {
     process.executeAsync();
     assertThat(process.isRunning()).isTrue();
     process.destroy();
@@ -72,7 +72,7 @@ public class OsProcessTest {
   }
 
   @Test
-  public void canHandleOutput() throws InterruptedException {
+  void canHandleOutput() throws InterruptedException {
     process = new OsProcess(testExecutable, "ping");
     process.executeAsync();
     process.waitFor();
@@ -80,7 +80,7 @@ public class OsProcessTest {
   }
 
   @Test
-  public void canCopyOutput() throws InterruptedException {
+  void canCopyOutput() throws InterruptedException {
     process = new OsProcess(testExecutable, "Who", "else", "likes", "cheese?");
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     process.copyOutputTo(buffer);
@@ -91,17 +91,17 @@ public class OsProcessTest {
   }
 
   @Test
-  public void canDetectSuccess() throws InterruptedException {
+  void canDetectSuccess() throws InterruptedException {
     assumeThat(isOnTravis()).as("Operation not permitted on travis").isFalse();
     OsProcess process = new OsProcess(
       testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     process.executeAsync();
     process.waitFor();
-    assertThat(process.getExitCode()).isEqualTo(0);
+    assertThat(process.getExitCode()).isZero();
   }
 
   @Test
-  public void canDetectFailure() throws InterruptedException {
+  void canDetectFailure() throws InterruptedException {
     process.executeAsync();
     process.waitFor();
     assertThat(process.getExitCode()).isNotEqualTo(0);

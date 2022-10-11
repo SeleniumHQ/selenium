@@ -27,7 +27,7 @@ class ProxyTypeFactory:
 
     @staticmethod
     def make(ff_value, string):
-        return {'ff_value': ff_value, 'string': string}
+        return {"ff_value": ff_value, "string": string}
 
 
 class ProxyType:
@@ -39,22 +39,22 @@ class ProxyType:
        'string' is id of proxy type.
     """
 
-    DIRECT = ProxyTypeFactory.make(0, 'DIRECT')  # Direct connection, no proxy (default on Windows).
-    MANUAL = ProxyTypeFactory.make(1, 'MANUAL')  # Manual proxy settings (e.g., for httpProxy).
-    PAC = ProxyTypeFactory.make(2, 'PAC')  # Proxy autoconfiguration from URL.
-    RESERVED_1 = ProxyTypeFactory.make(3, 'RESERVED1')  # Never used.
-    AUTODETECT = ProxyTypeFactory.make(4, 'AUTODETECT')  # Proxy autodetection (presumably with WPAD).
-    SYSTEM = ProxyTypeFactory.make(5, 'SYSTEM')  # Use system settings (default on Linux).
-    UNSPECIFIED = ProxyTypeFactory.make(6, 'UNSPECIFIED')  # Not initialized (for internal use).
+    DIRECT = ProxyTypeFactory.make(0, "DIRECT")  # Direct connection, no proxy (default on Windows).
+    MANUAL = ProxyTypeFactory.make(1, "MANUAL")  # Manual proxy settings (e.g., for httpProxy).
+    PAC = ProxyTypeFactory.make(2, "PAC")  # Proxy autoconfiguration from URL.
+    RESERVED_1 = ProxyTypeFactory.make(3, "RESERVED1")  # Never used.
+    AUTODETECT = ProxyTypeFactory.make(4, "AUTODETECT")  # Proxy autodetection (presumably with WPAD).
+    SYSTEM = ProxyTypeFactory.make(5, "SYSTEM")  # Use system settings (default on Linux).
+    UNSPECIFIED = ProxyTypeFactory.make(6, "UNSPECIFIED")  # Not initialized (for internal use).
 
     @classmethod
     def load(cls, value):
-        if isinstance(value, dict) and 'string' in value:
-            value = value['string']
+        if isinstance(value, dict) and "string" in value:
+            value = value["string"]
         value = str(value).upper()
         for attr in dir(cls):
             attr_value = getattr(cls, attr)
-            if isinstance(attr_value, dict) and 'string' in attr_value and attr_value['string'] == value:
+            if isinstance(attr_value, dict) and "string" in attr_value and attr_value["string"] == value:
                 return attr_value
         raise Exception(f"No proxy type is found for {value}")
 
@@ -66,14 +66,14 @@ class Proxy:
 
     proxyType = ProxyType.UNSPECIFIED
     autodetect = False
-    ftpProxy = ''
-    httpProxy = ''
-    noProxy = ''
-    proxyAutoconfigUrl = ''
-    sslProxy = ''
-    socksProxy = ''
-    socksUsername = ''
-    socksPassword = ''
+    ftpProxy = ""
+    httpProxy = ""
+    noProxy = ""
+    proxyAutoconfigUrl = ""
+    sslProxy = ""
+    socksProxy = ""
+    socksUsername = ""
+    socksPassword = ""
     socksVersion = None
 
     def __init__(self, raw=None):
@@ -84,28 +84,28 @@ class Proxy:
          - raw: raw proxy data. If None, default class values are used.
         """
         if raw:
-            if 'proxyType' in raw and raw['proxyType']:
-                self.proxy_type = ProxyType.load(raw['proxyType'])
-            if 'ftpProxy' in raw and raw['ftpProxy']:
-                self.ftp_proxy = raw['ftpProxy']
-            if 'httpProxy' in raw and raw['httpProxy']:
-                self.http_proxy = raw['httpProxy']
-            if 'noProxy' in raw and raw['noProxy']:
-                self.no_proxy = raw['noProxy']
-            if 'proxyAutoconfigUrl' in raw and raw['proxyAutoconfigUrl']:
-                self.proxy_autoconfig_url = raw['proxyAutoconfigUrl']
-            if 'sslProxy' in raw and raw['sslProxy']:
-                self.sslProxy = raw['sslProxy']
-            if 'autodetect' in raw and raw['autodetect']:
-                self.auto_detect = raw['autodetect']
-            if 'socksProxy' in raw and raw['socksProxy']:
-                self.socks_proxy = raw['socksProxy']
-            if 'socksUsername' in raw and raw['socksUsername']:
-                self.socks_username = raw['socksUsername']
-            if 'socksPassword' in raw and raw['socksPassword']:
-                self.socks_password = raw['socksPassword']
-            if 'socksVersion' in raw and raw['socksVersion']:
-                self.socks_version = raw['socksVersion']
+            if "proxyType" in raw and raw["proxyType"]:
+                self.proxy_type = ProxyType.load(raw["proxyType"])
+            if "ftpProxy" in raw and raw["ftpProxy"]:
+                self.ftp_proxy = raw["ftpProxy"]
+            if "httpProxy" in raw and raw["httpProxy"]:
+                self.http_proxy = raw["httpProxy"]
+            if "noProxy" in raw and raw["noProxy"]:
+                self.no_proxy = raw["noProxy"]
+            if "proxyAutoconfigUrl" in raw and raw["proxyAutoconfigUrl"]:
+                self.proxy_autoconfig_url = raw["proxyAutoconfigUrl"]
+            if "sslProxy" in raw and raw["sslProxy"]:
+                self.sslProxy = raw["sslProxy"]
+            if "autodetect" in raw and raw["autodetect"]:
+                self.auto_detect = raw["autodetect"]
+            if "socksProxy" in raw and raw["socksProxy"]:
+                self.socks_proxy = raw["socksProxy"]
+            if "socksUsername" in raw and raw["socksUsername"]:
+                self.socks_username = raw["socksUsername"]
+            if "socksPassword" in raw and raw["socksPassword"]:
+                self.socks_password = raw["socksPassword"]
+            if "socksVersion" in raw and raw["socksVersion"]:
+                self.socks_version = raw["socksVersion"]
 
     @property
     def proxy_type(self):
@@ -321,7 +321,9 @@ class Proxy:
 
     def _verify_proxy_type_compatibility(self, compatible_proxy):
         if self.proxyType not in (ProxyType.UNSPECIFIED, compatible_proxy):
-            raise Exception(f"Specified proxy type ({compatible_proxy}) not compatible with current setting ({self.proxyType})")
+            raise Exception(
+                f"Specified proxy type ({compatible_proxy}) not compatible with current setting ({self.proxyType})"
+            )
 
     def add_to_capabilities(self, capabilities):
         """
@@ -331,25 +333,25 @@ class Proxy:
          - capabilities: The capabilities to which proxy will be added.
         """
         proxy_caps = {}
-        proxy_caps['proxyType'] = self.proxyType['string']
+        proxy_caps["proxyType"] = self.proxyType["string"]
         if self.autodetect:
-            proxy_caps['autodetect'] = self.autodetect
+            proxy_caps["autodetect"] = self.autodetect
         if self.ftpProxy:
-            proxy_caps['ftpProxy'] = self.ftpProxy
+            proxy_caps["ftpProxy"] = self.ftpProxy
         if self.httpProxy:
-            proxy_caps['httpProxy'] = self.httpProxy
+            proxy_caps["httpProxy"] = self.httpProxy
         if self.proxyAutoconfigUrl:
-            proxy_caps['proxyAutoconfigUrl'] = self.proxyAutoconfigUrl
+            proxy_caps["proxyAutoconfigUrl"] = self.proxyAutoconfigUrl
         if self.sslProxy:
-            proxy_caps['sslProxy'] = self.sslProxy
+            proxy_caps["sslProxy"] = self.sslProxy
         if self.noProxy:
-            proxy_caps['noProxy'] = self.noProxy
+            proxy_caps["noProxy"] = self.noProxy
         if self.socksProxy:
-            proxy_caps['socksProxy'] = self.socksProxy
+            proxy_caps["socksProxy"] = self.socksProxy
         if self.socksUsername:
-            proxy_caps['socksUsername'] = self.socksUsername
+            proxy_caps["socksUsername"] = self.socksUsername
         if self.socksPassword:
-            proxy_caps['socksPassword'] = self.socksPassword
+            proxy_caps["socksPassword"] = self.socksPassword
         if self.socksVersion:
-            proxy_caps['socksVersion'] = self.socksVersion
-        capabilities['proxy'] = proxy_caps
+            proxy_caps["socksVersion"] = self.socksVersion
+        capabilities["proxy"] = proxy_caps

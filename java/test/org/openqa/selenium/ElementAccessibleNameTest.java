@@ -25,7 +25,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
-public class ElementAccessibleNameTest extends JupiterTestBase {
+class ElementAccessibleNameTest extends JupiterTestBase {
 
   @Test
   @NotYetImplemented(Browser.FIREFOX)

@@ -36,7 +36,7 @@ import org.openqa.selenium.testing.NotYetImplemented;
 import java.time.Duration;
 import java.util.List;
 
-public class ImplicitWaitTest extends JupiterTestBase {
+class ImplicitWaitTest extends JupiterTestBase {
 
   @BeforeEach
   public void setUp() {
@@ -49,7 +49,7 @@ public class ImplicitWaitTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldSetAndGetImplicitWaitTimeout() {
+  void shouldSetAndGetImplicitWaitTimeout() {
     Duration timeout = driver.manage().timeouts().getImplicitWaitTimeout();
     assertThat(timeout).hasMillis(0);
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
@@ -58,7 +58,7 @@ public class ImplicitWaitTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldImplicitlyWaitForASingleElement() {
+  void testShouldImplicitlyWaitForASingleElement() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
 
@@ -69,7 +69,7 @@ public class ImplicitWaitTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled() {
+  void testShouldStillFailToFindAnElementWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -77,7 +77,7 @@ public class ImplicitWaitTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits() {
+  void testShouldReturnAfterFirstAttemptToFindOneAfterDisablingImplicitWaits() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
@@ -86,7 +86,7 @@ public class ImplicitWaitTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany() {
+  void testShouldImplicitlyWaitUntilAtLeastOneElementIsFoundWhenSearchingForMany() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
 
@@ -99,7 +99,7 @@ public class ImplicitWaitTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldStillFailToFindElementsWhenImplicitWaitsAreEnabled() {
+  void testShouldStillFailToFindElementsWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
     List<WebElement> elements = driver.findElements(By.className("redbox"));
@@ -107,7 +107,7 @@ public class ImplicitWaitTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldStillFailToFindElementsByIdWhenImplicitWaitsAreEnabled() {
+  void testShouldStillFailToFindElementsByIdWhenImplicitWaitsAreEnabled() {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
     List<WebElement> elements = driver.findElements(By.id("redbox"));
@@ -115,7 +115,7 @@ public class ImplicitWaitTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits() {
+  void testShouldReturnAfterFirstAttemptToFindManyAfterDisablingImplicitWaits() {
     driver.get(pages.dynamicPage);
     WebElement add = driver.findElement(By.id("adder"));
 

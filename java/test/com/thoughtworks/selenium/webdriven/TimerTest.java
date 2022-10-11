@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class TimerTest {
 
   @Test
-  public void testCannotExecuteCommandsAfterStoppingTheTimer() {
+  void testCannotExecuteCommandsAfterStoppingTheTimer() {
     Timer timer = new Timer(250);
     timer.stop();
     try {
@@ -38,7 +38,7 @@ public class TimerTest {
   }
 
   @Test
-  public void testShouldTimeOut() {
+  void testShouldTimeOut() {
     Timer timer = new Timer(10);
     try {
       timer.run(new SeleneseCallable(60), null, new String[0]);
@@ -50,7 +50,7 @@ public class TimerTest {
   }
 
   @Test
-  public void testShouldNotTimeOut() {
+  void testShouldNotTimeOut() {
     Timer timer = new Timer(200);
     timer.run(new SeleneseCallable(10), null, new String[0]);
     timer.stop();

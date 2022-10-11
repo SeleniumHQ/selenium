@@ -39,7 +39,7 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
-public class ClickTest extends JupiterTestBase {
+class ClickTest extends JupiterTestBase {
 
   @BeforeEach
   public void setUp() {
@@ -47,21 +47,21 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCanClickOnALinkAndFollowIt() {
+  void testCanClickOnALinkAndFollowIt() {
     driver.findElement(By.id("normal")).click();
 
     wait.until(titleIs("XHTML Test Page"));
   }
 
   @Test
-  public void testCanClickOnALinkThatOverflowsAndFollowIt() {
+  void testCanClickOnALinkThatOverflowsAndFollowIt() {
     driver.findElement(By.id("overflowLink")).click();
 
     wait.until(titleIs("XHTML Test Page"));
   }
 
   @Test
-  public void testCanClickOnAnAnchorAndNotReloadThePage() {
+  void testCanClickOnAnAnchorAndNotReloadThePage() {
     ((JavascriptExecutor) driver).executeScript("document.latch = true");
 
     driver.findElement(By.id("anchor")).click();
@@ -74,7 +74,7 @@ public class ClickTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testCanClickOnALinkThatUpdatesAnotherFrame() {
+  void testCanClickOnALinkThatUpdatesAnotherFrame() {
     driver.switchTo().frame("source");
 
     driver.findElement(By.id("otherframe")).click();
@@ -85,7 +85,7 @@ public class ClickTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
+  void testElementsFoundByJsCanLoadUpdatesInAnotherFrame() {
     driver.switchTo().frame("source");
 
     WebElement toClick = (WebElement) ((JavascriptExecutor) driver).executeScript(
@@ -99,7 +99,7 @@ public class ClickTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
+  void testJsLocatedElementsCanUpdateFramesIfFoundSomehowElse() {
     driver.switchTo().frame("source");
 
     // Prime the cache of elements
@@ -116,7 +116,7 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCanClickOnAnElementWithTopSetToANegativeNumber() {
+  void testCanClickOnAnElementWithTopSetToANegativeNumber() {
     String page = appServer.whereIs("styledPage.html");
     driver.get(page);
     WebElement searchBox = driver.findElement(By.name("searchBox"));
@@ -148,7 +148,7 @@ public class ClickTest extends JupiterTestBase {
 
   @NoDriverAfterTest(failedOnly = true)
   @Test
-  public void testShouldOnlyFollowHrefOnce() {
+  void testShouldOnlyFollowHrefOnce() {
     driver.get(pages.clicksPage);
     String current = driver.getWindowHandle();
     Set<String> currentWindowHandles = driver.getWindowHandles();
@@ -182,7 +182,7 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCanClickOnAnImageEnclosedInALink() {
+  void testCanClickOnAnImageEnclosedInALink() {
     driver.findElement(By.id("link-with-enclosed-image")).findElement(By.tagName("img")).click();
 
     wait.until(titleIs("XHTML Test Page"));
@@ -207,14 +207,14 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCanClickOnAnElementEnclosedInALink() {
+  void testCanClickOnAnElementEnclosedInALink() {
     driver.findElement(By.id("link-with-enclosed-span")).findElement(By.tagName("span")).click();
 
     wait.until(titleIs("XHTML Test Page"));
   }
 
   @Test
-  public void testShouldBeAbleToClickOnAnElementInTheViewport() {
+  void testShouldBeAbleToClickOnAnElementInTheViewport() {
     String url = appServer.whereIs("click_out_of_bounds.html");
 
     driver.get(url);
@@ -283,7 +283,7 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickOnRTLLanguageLink() {
+  void testShouldBeAbleToClickOnRTLLanguageLink() {
     String url = appServer.whereIs("click_rtl.html");
     driver.get(url);
 
@@ -294,7 +294,7 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooter() {
+  void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooter() {
     String url = appServer.whereIs("fixedFooterNoScroll.html");
     driver.get(url);
 
@@ -305,7 +305,7 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooterInQuirksMode() {
+  void testShouldBeAbleToClickOnLinkInAbsolutelyPositionedFooterInQuirksMode() {
     String url = appServer.whereIs("fixedFooterNoScrollQuirksMode.html");
     driver.get(url);
 
@@ -316,7 +316,7 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
+  void testShouldBeAbleToClickOnLinksWithNoHrefAttribute() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.linkText("No href"));
@@ -326,7 +326,7 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickOnALinkThatWrapsToTheNextLine() {
+  void testShouldBeAbleToClickOnALinkThatWrapsToTheNextLine() {
     driver.get(appServer.whereIs("click_tests/link_that_wraps.html"));
 
     driver.findElement(By.id("link")).click();
@@ -335,7 +335,7 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickOnASpanThatWrapsToTheNextLine() {
+  void testShouldBeAbleToClickOnASpanThatWrapsToTheNextLine() {
     driver.get(appServer.whereIs("click_tests/span_that_wraps.html"));
 
     driver.findElement(By.id("span")).click();
@@ -344,7 +344,7 @@ public class ClickTest extends JupiterTestBase {
   }
 
   @Test
-  public void clickingOnADisabledElementIsANoOp() {
+  void clickingOnADisabledElementIsANoOp() {
     driver.get(appServer.whereIs("click_tests/disabled_element.html"));
 
     driver.findElement(By.name("disabled")).click(); // Should not throw

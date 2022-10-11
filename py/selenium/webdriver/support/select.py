@@ -21,7 +21,6 @@ from selenium.webdriver.common.by import By
 
 
 class Select:
-
     def __init__(self, webelement) -> None:
         """
         Constructor. A check is made that the given element is, indeed, a SELECT tag. If it is not,
@@ -36,8 +35,8 @@ class Select:
         """
         if webelement.tag_name.lower() != "select":
             raise UnexpectedTagNameException(
-                "Select only works on <select> elements, not on <%s>" %
-                webelement.tag_name)
+                "Select only works on <select> elements, not on <%s>" % webelement.tag_name
+            )
         if not webelement.is_enabled():
             raise NotImplementedError("Select element is disabled and may not be used.")
         self._el = webelement
@@ -47,7 +46,7 @@ class Select:
     @property
     def options(self):
         """Returns a list of all options belonging to this select tag"""
-        return self._el.find_elements(By.TAG_NAME, 'option')
+        return self._el.find_elements(By.TAG_NAME, "option")
 
     @property
     def all_selected_options(self):
@@ -65,15 +64,15 @@ class Select:
 
     def select_by_value(self, value):
         """Select all options that have a value matching the argument. That is, when given "foo" this
-           would select an option like:
+        would select an option like:
 
-           <option value="foo">Bar</option>
+        <option value="foo">Bar</option>
 
-           :Args:
-            - value - The value to match against
+        :Args:
+         - value - The value to match against
 
-           throws NoSuchElementException If there is no option with specified value in SELECT
-           """
+        throws NoSuchElementException If there is no option with specified value in SELECT
+        """
         css = "option[value =%s]" % self._escape_string(value)
         opts = self._el.find_elements(By.CSS_SELECTOR, css)
         matched = False
@@ -87,13 +86,13 @@ class Select:
 
     def select_by_index(self, index):
         """Select the option at the given index. This is done by examining the "index" attribute of an
-           element, and not merely by counting.
+        element, and not merely by counting.
 
-           :Args:
-            - index - The option at this index will be selected
+        :Args:
+         - index - The option at this index will be selected
 
-           throws NoSuchElementException If there is no option with specified index in SELECT
-           """
+        throws NoSuchElementException If there is no option with specified index in SELECT
+        """
         match = str(index)
         for opt in self.options:
             if opt.get_attribute("index") == match:
@@ -103,15 +102,15 @@ class Select:
 
     def select_by_visible_text(self, text):
         """Select all options that display text matching the argument. That is, when given "Bar" this
-           would select an option like:
+        would select an option like:
 
-            <option value="foo">Bar</option>
+         <option value="foo">Bar</option>
 
-           :Args:
-            - text - The visible text to match against
+        :Args:
+         - text - The visible text to match against
 
-            throws NoSuchElementException If there is no option with specified text in SELECT
-           """
+         throws NoSuchElementException If there is no option with specified text in SELECT
+        """
         xpath = ".//option[normalize-space(.) = %s]" % self._escape_string(text)
         opts = self._el.find_elements(By.XPATH, xpath)
         matched = False
@@ -140,7 +139,7 @@ class Select:
 
     def deselect_all(self) -> None:
         """Clear all selected entries. This is only valid when the SELECT supports multiple selections.
-           throws NotImplementedError If the SELECT does not support multiple selections
+        throws NotImplementedError If the SELECT does not support multiple selections
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect all options of a multi-select")
@@ -149,14 +148,14 @@ class Select:
 
     def deselect_by_value(self, value):
         """Deselect all options that have a value matching the argument. That is, when given "foo" this
-           would deselect an option like:
+        would deselect an option like:
 
-            <option value="foo">Bar</option>
+         <option value="foo">Bar</option>
 
-           :Args:
-            - value - The value to match against
+        :Args:
+         - value - The value to match against
 
-            throws NoSuchElementException If there is no option with specified value in SELECT
+         throws NoSuchElementException If there is no option with specified value in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -171,12 +170,12 @@ class Select:
 
     def deselect_by_index(self, index):
         """Deselect the option at the given index. This is done by examining the "index" attribute of an
-           element, and not merely by counting.
+        element, and not merely by counting.
 
-           :Args:
-            - index - The option at this index will be deselected
+        :Args:
+         - index - The option at this index will be deselected
 
-            throws NoSuchElementException If there is no option with specified index in SELECT
+         throws NoSuchElementException If there is no option with specified index in SELECT
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -188,12 +187,12 @@ class Select:
 
     def deselect_by_visible_text(self, text):
         """Deselect all options that display text matching the argument. That is, when given "Bar" this
-           would deselect an option like:
+        would deselect an option like:
 
-           <option value="foo">Bar</option>
+        <option value="foo">Bar</option>
 
-           :Args:
-            - text - The visible text to match against
+        :Args:
+         - text - The visible text to match against
         """
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
@@ -218,10 +217,10 @@ class Select:
 
     def _escape_string(self, value: str) -> str:
         if '"' in value and "'" in value:
-            substrings = value.split("\"")
+            substrings = value.split('"')
             result = ["concat("]
             for substring in substrings:
-                result.append("\"%s\"" % substring)
+                result.append('"%s"' % substring)
                 result.append(", '\"', ")
             result = result[0:-1]
             if value.endswith('"'):
@@ -231,7 +230,7 @@ class Select:
         if '"' in value:
             return "'%s'" % value
 
-        return "\"%s\"" % value
+        return '"%s"' % value
 
     def _get_longest_token(self, value: str) -> str:
         items = value.split(" ")

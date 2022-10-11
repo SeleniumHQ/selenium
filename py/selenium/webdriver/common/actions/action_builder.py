@@ -85,14 +85,14 @@ class ActionBuilder:
         enc = {"actions": []}
         for device in self.devices:
             encoded = device.encode()
-            if encoded['actions']:
+            if encoded["actions"]:
                 enc["actions"].append(encoded)
                 device.actions = []
         self.driver.execute(Command.W3C_ACTIONS, enc)
 
     def clear_actions(self) -> None:
         """
-            Clears actions that are already stored on the remote end
+        Clears actions that are already stored on the remote end
         """
         self.driver.execute(Command.W3C_CLEAR_ACTIONS)
 

@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-public class StatusTest {
+class StatusTest {
 
   @Test
-  public void testStatusHandler() {
+  void testStatusHandler() {
     Status status = new Status();
     Object value = status.handle().getValue();
     assertThat(value).isInstanceOf(Map.class);

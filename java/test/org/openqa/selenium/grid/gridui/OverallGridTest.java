@@ -55,7 +55,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllE
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-public class OverallGridTest {
+class OverallGridTest {
 
   private Server<?> server;
   private WebDriver driver;
@@ -79,7 +79,7 @@ public class OverallGridTest {
   }
 
   @Test
-  public void shouldReportConcurrencyZeroPercentWhenGridIsStartedWithoutLoad() {
+  void shouldReportConcurrencyZeroPercentWhenGridIsStartedWithoutLoad() {
     driver.get(whereIs(server, "/ui/index.html#/sessions"));
 
     WebElement concurrency = wait
@@ -89,7 +89,7 @@ public class OverallGridTest {
   }
 
   @Test
-  public void shouldShowOneNodeRegistered() {
+  void shouldShowOneNodeRegistered() {
     driver.get(whereIs(server, "/ui/index.html#"));
 
     List<WebElement> nodeInfoIcons = wait
@@ -99,7 +99,7 @@ public class OverallGridTest {
   }
 
   @Test
-  public void shouldIncrementSessionCountWhenSessionStarts() {
+  void shouldIncrementSessionCountWhenSessionStarts() {
     remoteWebDriver = new RemoteWebDriver(server.getUrl(), Browser.detect().getCapabilities());
     driver.get(whereIs(server, "/ui/index.html#/sessions"));
 

@@ -30,10 +30,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Tag("UnitTests")
-public class FilterTest {
+class FilterTest {
 
   @Test
-  public void aFilterShouldWrapAnHttpHandler() {
+  void aFilterShouldWrapAnHttpHandler() {
     AtomicBoolean handlerCalled = new AtomicBoolean(false);
     AtomicBoolean filterCalled = new AtomicBoolean(false);
 
@@ -53,7 +53,7 @@ public class FilterTest {
   }
 
   @Test
-  public void shouldBePossibleToChainFiltersOneAfterAnother() {
+  void shouldBePossibleToChainFiltersOneAfterAnother() {
     HttpHandler handler = ((Filter) next -> req -> {
       HttpResponse res = next.execute(req);
       res.addHeader("cheese", "cheddar");
@@ -73,7 +73,7 @@ public class FilterTest {
   }
 
   @Test
-  public void eachFilterShouldOnlyBeCalledOnce() {
+  void eachFilterShouldOnlyBeCalledOnce() {
     AtomicInteger rootCalls = new AtomicInteger(0);
 
     HttpHandler root = req -> {
@@ -101,7 +101,7 @@ public class FilterTest {
   }
 
   @Test
-  public void filtersShouldBeCalledInTheOrderAddedWithLastInCalledFirst() {
+  void filtersShouldBeCalledInTheOrderAddedWithLastInCalledFirst() {
     List<String> ordered = new ArrayList<>();
 
     HttpHandler inner = req -> {

@@ -63,12 +63,12 @@ import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
 
 @Tag("UnitTests")
-public class RemoteWebDriverUnitTest {
+class RemoteWebDriverUnitTest {
 
   private static final String ELEMENT_KEY = "element-6066-11e4-a52e-4f735466cecf";
 
   @Test
-  public void canHandleGetCommand() {
+  void canHandleGetCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.get("http://some.host.com");
@@ -79,7 +79,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetCurrentUrlCommand() {
+  void canHandleGetCurrentUrlCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("http://some.host.com"));
 
@@ -90,7 +90,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetTitleCommand() {
+  void canHandleGetTitleCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -101,7 +101,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetPageSourceCommand() {
+  void canHandleGetPageSourceCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -112,7 +112,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleExecuteScriptCommand() {
+  void canHandleExecuteScriptCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -127,7 +127,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleExecuteAsyncScriptCommand() {
+  void canHandleExecuteAsyncScriptCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -140,7 +140,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementOSSCommand() {
+  void canHandleFindElementOSSCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
       valueResponder(ImmutableMap.of("ELEMENT", UUID.randomUUID().toString())));
@@ -153,7 +153,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementW3CCommand() {
+  void canHandleFindElementW3CCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
       valueResponder(ImmutableMap.of(ELEMENT_KEY, UUID.randomUUID().toString())));
@@ -166,7 +166,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementCommandWithNonStandardLocator() {
+  void canHandleFindElementCommandWithNonStandardLocator() {
     WebElement element1 = mock(WebElement.class);
     WebElement element2 = mock(WebElement.class);
     By locator = new By() {
@@ -183,7 +183,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementsOSSCommand() {
+  void canHandleFindElementsOSSCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
       valueResponder(Arrays.asList(
@@ -198,7 +198,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementsW3CCommand() {
+  void canHandleFindElementsW3CCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
       valueResponder(Arrays.asList(
@@ -213,7 +213,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFindElementsCommandWithNonStandardLocator() {
+  void canHandleFindElementsCommandWithNonStandardLocator() {
     WebElement element1 = mock(WebElement.class);
     WebElement element2 = mock(WebElement.class);
     By locator = new By() {
@@ -230,7 +230,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void returnsEmptyListIfRemoteEndReturnsNullFromFindElements() {
+  void returnsEmptyListIfRemoteEndReturnsNullFromFindElements() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     List<WebElement> result = fixture.driver.findElements(By.id("id"));
@@ -239,7 +239,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void throwsIfRemoteEndReturnsNullFromFindElement() {
+  void throwsIfRemoteEndReturnsNullFromFindElement() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -247,7 +247,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetWindowHandleCommand() {
+  void canHandleGetWindowHandleCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("Hello, world!"));
 
@@ -258,7 +258,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetWindowHandlesCommand() {
+  void canHandleGetWindowHandlesCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder(Arrays.asList("window 1", "window 2")));
 
@@ -269,7 +269,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleCloseCommand() {
+  void canHandleCloseCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.close();
@@ -279,7 +279,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleQuitCommand() {
+  void canHandleQuitCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.quit();
@@ -290,7 +290,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleQuitCommandAfterQuit() {
+  void canHandleQuitCommandAfterQuit() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.quit();
@@ -304,7 +304,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToWindowCommand() {
+  void canHandleSwitchToWindowCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     WebDriver driver2 = fixture.driver.switchTo().window("window1");
@@ -315,7 +315,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToNewWindowCommand() {
+  void canHandleSwitchToNewWindowCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder(ImmutableMap.of("handle", "new window")));
 
@@ -329,7 +329,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToFrameByIndexCommand() {
+  void canHandleSwitchToFrameByIndexCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     WebDriver driver2 = fixture.driver.switchTo().frame(1);
@@ -340,7 +340,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToFrameByNameCommand() {
+  void canHandleSwitchToFrameByNameCommand() {
     String elementId = UUID.randomUUID().toString();
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
@@ -359,7 +359,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToNonExistingFrameCommand() {
+  void canHandleSwitchToNonExistingFrameCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder(EMPTY_LIST));
 
@@ -374,7 +374,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToParentFrameCommand() {
+  void canHandleSwitchToParentFrameCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     WebDriver driver2 = fixture.driver.switchTo().parentFrame();
@@ -385,7 +385,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToTopCommand() {
+  void canHandleSwitchToTopCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     WebDriver driver2 = fixture.driver.switchTo().defaultContent();
@@ -396,7 +396,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSwitchToAlertCommand() {
+  void canHandleSwitchToAlertCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("Alarm!"));
 
@@ -408,7 +408,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleAlertAcceptCommand() {
+  void canHandleAlertAcceptCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("Alarm!"), nullValueResponder);
 
@@ -420,7 +420,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleAlertDismissCommand() {
+  void canHandleAlertDismissCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("Alarm!"), nullValueResponder);
 
@@ -432,7 +432,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleAlertSendKeysCommand() {
+  void canHandleAlertSendKeysCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("Are you sure?"), nullValueResponder);
 
@@ -444,7 +444,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleRefreshCommand() {
+  void canHandleRefreshCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.navigate().refresh();
@@ -454,7 +454,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleBackCommand() {
+  void canHandleBackCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.navigate().back();
@@ -464,7 +464,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleForwardCommand() {
+  void canHandleForwardCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.navigate().forward();
@@ -474,7 +474,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleNavigateToCommand() throws IOException {
+  void canHandleNavigateToCommand() throws IOException {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.navigate().to(new URL("http://www.test.com/"));
@@ -484,7 +484,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetCookiesCommand() {
+  void canHandleGetCookiesCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
       valueResponder(Arrays.asList(
@@ -503,7 +503,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetCookieNamedCommand() {
+  void canHandleGetCookieNamedCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
       valueResponder(Arrays.asList(
@@ -518,7 +518,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleAddCookieCommand() {
+  void canHandleAddCookieCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     Cookie cookie = new Cookie("x", "y");
@@ -529,7 +529,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleDeleteCookieCommand() {
+  void canHandleDeleteCookieCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     Cookie cookie = new Cookie("x", "y");
@@ -540,7 +540,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleDeleteAllCookiesCommand() {
+  void canHandleDeleteAllCookiesCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.manage().deleteAllCookies();
@@ -550,7 +550,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetWindowSizeCommand() {
+  void canHandleGetWindowSizeCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
       valueResponder(ImmutableMap.of("width", 400, "height", 600)));
@@ -563,7 +563,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetWindowSizeCommand() {
+  void canHandleSetWindowSizeCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.manage().window().setSize(new Dimension(400, 600));
@@ -574,7 +574,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetWindowPositionCommand() {
+  void canHandleGetWindowPositionCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
       valueResponder(ImmutableMap.of("x", 100, "y", 200)));
@@ -588,7 +588,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetWindowPositionCommand() {
+  void canHandleSetWindowPositionCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.manage().window().setPosition(new Point(100, 200));
@@ -599,7 +599,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleMaximizeCommand() {
+  void canHandleMaximizeCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.manage().window().maximize();
@@ -609,7 +609,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleFullscreenCommand() {
+  void canHandleFullscreenCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.manage().window().fullscreen();
@@ -619,7 +619,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetImplicitWaitCommand() {
+  void canHandleSetImplicitWaitCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
@@ -629,7 +629,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGetTimeoutsCommand() {
+  void canHandleGetTimeoutsCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
       valueResponder(ImmutableMap.of("implicit", 100, "script", 200, "pageLoad", 300)));
@@ -641,7 +641,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetScriptTimeoutCommand() {
+  void canHandleSetScriptTimeoutCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.manage().timeouts().setScriptTimeout(Duration.ofSeconds(10));
@@ -651,7 +651,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleSetPageLoadTimeoutCommand() {
+  void canHandleSetPageLoadTimeoutCommand() {
     WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
 
     fixture.driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
@@ -661,7 +661,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canAddVirtualAuthenticator() {
+  void canAddVirtualAuthenticator() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, valueResponder("authId"));
 
@@ -674,7 +674,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canRemoveVirtualAuthenticator() {
+  void canRemoveVirtualAuthenticator() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities, nullValueResponder);
     VirtualAuthenticator auth = mock(VirtualAuthenticator.class);
@@ -688,7 +688,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleWebDriverExceptionThrownByCommandExecutor() {
+  void canHandleWebDriverExceptionThrownByCommandExecutor() {
     WebDriverFixture fixture = new WebDriverFixture(
       new ImmutableCapabilities(
         "browserName", "cheese", "platformName", "WINDOWS"),
@@ -712,7 +712,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleGeneralExceptionThrownByCommandExecutor() {
+  void canHandleGeneralExceptionThrownByCommandExecutor() {
     WebDriverFixture fixture = new WebDriverFixture(
       new ImmutableCapabilities(
         "browserName", "cheese", "platformName", "WINDOWS"),
@@ -739,7 +739,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleWebDriverExceptionReturnedByCommandExecutor() {
+  void canHandleWebDriverExceptionReturnedByCommandExecutor() {
     WebDriverFixture fixture = new WebDriverFixture(
       new ImmutableCapabilities("browserName", "cheese"),
       echoCapabilities, errorResponder("element click intercepted", new WebDriverException("BOOM!!!")));
@@ -762,7 +762,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void canHandleResponseWithErrorCodeButNoExceptionReturnedByCommandExecutor() {
+  void canHandleResponseWithErrorCodeButNoExceptionReturnedByCommandExecutor() {
     WebDriverFixture fixture = new WebDriverFixture(
       new ImmutableCapabilities("browserName", "cheese"),
       echoCapabilities, errorResponder("element click intercepted", "BOOM!!!"));
@@ -785,7 +785,7 @@ public class RemoteWebDriverUnitTest {
   }
 
   @Test
-  public void noArgConstructorEmptyCapabilitiesTest() {
+  void noArgConstructorEmptyCapabilitiesTest() {
     RemoteWebDriver driver = new RemoteWebDriver() {}; // anonymous subclass
     assertThat(driver.getCapabilities()).isEqualTo(new ImmutableCapabilities());
   }

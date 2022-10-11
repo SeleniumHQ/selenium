@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 @Tag("UnitTests")
-public class ExecutableTest {
+class ExecutableTest {
 
   private String binaryPath;
 
@@ -43,14 +43,14 @@ public class ExecutableTest {
   }
 
   @Test
-  public void canFindVersion() {
+  void canFindVersion() {
     Executable exe = new Executable(new File(binaryPath));
     System.out.println(exe.getVersion());
     assertThat(exe.getVersion()).isNotEmpty().isNotEqualTo("1000.0 unknown");
   }
 
   @Test
-  public void canFindChannel() {
+  void canFindChannel() {
     Executable exe = new Executable(new File(binaryPath));
     System.out.println(exe.getChannel());
     assertThat(exe.getChannel()).isNotNull();

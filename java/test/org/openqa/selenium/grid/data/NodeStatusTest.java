@@ -33,10 +33,10 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
-public class NodeStatusTest {
+class NodeStatusTest {
 
   @Test
-  public void ensureRoundTripWorks() throws URISyntaxException {
+  void ensureRoundTripWorks() throws URISyntaxException {
     ImmutableCapabilities stereotype = new ImmutableCapabilities("cheese", "brie");
     NodeId nodeId = new NodeId(UUID.randomUUID());
     NodeStatus status = new NodeStatus(

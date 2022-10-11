@@ -38,7 +38,7 @@ jobs:
       - name: Test with tox
         run: tox -c py/tox.ini
         env:
-          TOXENV: linting
+          TOXENV: linting-check
 
   tox_docs:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}

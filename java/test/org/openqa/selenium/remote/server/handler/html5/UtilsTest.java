@@ -46,10 +46,10 @@ import org.openqa.selenium.remote.ExecuteMethod;
 /**
  * Tests for the {@link Utils} class.
  */
-public class UtilsTest {
+class UtilsTest {
 
   @Test
-  public void returnsInputDriverIfRequestedFeatureIsImplementedDirectly() {
+  void returnsInputDriverIfRequestedFeatureIsImplementedDirectly() {
     WebDriver driver = mock(Html5Driver.class);
     assertSame(driver, Utils.getApplicationCache(driver));
     assertSame(driver, Utils.getLocationContext(driver));
@@ -57,7 +57,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void throwsIfRequestedFeatureIsNotSupported() {
+  void throwsIfRequestedFeatureIsNotSupported() {
     WebDriver driver = mock(WebDriver.class);
     try {
       Utils.getApplicationCache(driver);
@@ -82,7 +82,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void providesRemoteAccessToAppCache() {
+  void providesRemoteAccessToAppCache() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
 
@@ -96,7 +96,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void providesRemoteAccessToLocationContext() {
+  void providesRemoteAccessToLocationContext() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
 
@@ -118,7 +118,7 @@ public class UtilsTest {
   }
 
   @Test
-  public void providesRemoteAccessToWebStorage() {
+  void providesRemoteAccessToWebStorage() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.SUPPORTS_WEB_STORAGE, true);
 

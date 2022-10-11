@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class XPathFinderTest {
+class XPathFinderTest {
 
   @Test
-  public void shouldReturnManyElements() {
+  void shouldReturnManyElements() {
     final String xpath = "//body";
 
     XPathFinder finder = new XPathFinder(xpath);

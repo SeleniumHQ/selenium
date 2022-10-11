@@ -23,7 +23,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import java.util.UUID;
 import java.util.function.Function;
 
-public class WebElementFixture extends WebDriverFixture {
+class WebElementFixture extends WebDriverFixture {
 
   public final RemoteWebElement element;
 

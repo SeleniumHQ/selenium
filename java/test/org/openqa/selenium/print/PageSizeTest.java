@@ -25,14 +25,14 @@ import org.openqa.selenium.print.PageSize;
 
 
 @Tag("UnitTests")
-public class PageSizeTest {
+class PageSizeTest {
 
   // Defaults assertion
   private static final double HEIGHT = 21.59;
   private static final double WIDTH = 27.94;
 
   @Test
-  public void setsDefaultHeightWidth() {
+  void setsDefaultHeightWidth() {
     PageSize pageSize = new PageSize();
 
     assertThat(pageSize.getHeight()).isEqualTo(HEIGHT);

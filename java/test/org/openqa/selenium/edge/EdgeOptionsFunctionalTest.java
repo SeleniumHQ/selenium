@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
-public class EdgeOptionsFunctionalTest extends JupiterTestBase {
+class EdgeOptionsFunctionalTest extends JupiterTestBase {
 
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.crx";
 
@@ -52,7 +52,7 @@ public class EdgeOptionsFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void optionsStayEqualAfterSerialization() {
+  void optionsStayEqualAfterSerialization() {
     EdgeOptions options1 = new EdgeOptions();
     EdgeOptions options2 = new EdgeOptions();
     assertThat(options2).isEqualTo(options1);

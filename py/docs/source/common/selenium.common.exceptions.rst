@@ -3,24 +3,24 @@
 
 .. automodule:: selenium.common.exceptions
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
+
+
+
+
+
+
    .. rubric:: Exceptions
 
    .. autosummary::
-   
+
       ElementClickInterceptedException
       ElementNotInteractableException
       ElementNotSelectableException
@@ -44,7 +44,6 @@
       NoSuchFrameException
       NoSuchShadowRootException
       NoSuchWindowException
-      RemoteDriverServerException
       ScreenshotException
       SessionNotCreatedException
       StaleElementReferenceException
@@ -54,8 +53,8 @@
       UnexpectedTagNameException
       UnknownMethodException
       WebDriverException
-   
-   
+
+
 
 
 

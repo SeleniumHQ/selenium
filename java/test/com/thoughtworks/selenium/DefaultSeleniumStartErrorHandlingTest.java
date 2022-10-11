@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
-public class DefaultSeleniumStartErrorHandlingTest {
+class DefaultSeleniumStartErrorHandlingTest {
 
   @Test
-  public void testWrapsConnectionRefusedWithUserFriendlyExceptionMessage() {
+  void testWrapsConnectionRefusedWithUserFriendlyExceptionMessage() {
     final FailOnStartCommandProcessor failOnStartCommandProcessor;
 
     failOnStartCommandProcessor = new FailOnStartCommandProcessor("Connection refused: connect");
@@ -41,7 +41,7 @@ public class DefaultSeleniumStartErrorHandlingTest {
   }
 
   @Test
-  public void testShouldLeaveOtherExceptionAlone() {
+  void testShouldLeaveOtherExceptionAlone() {
     FailOnStartCommandProcessor failOnStartCommandProcessor;
     failOnStartCommandProcessor =
         new FailOnStartCommandProcessor("some crazy unexpected exception");
