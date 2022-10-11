@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class TestWaitFor extends InternalSelenseTestBase {
   @Test
-  public void testWaitFor() throws Exception {
+  void testWaitFor() throws Exception {
     selenium.open("test_async_event.html");
     assertEquals(selenium.getValue("theField"), "oldValue");
     selenium.click("theButton");

@@ -23,52 +23,52 @@ import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UrlsTest {
+class UrlsTest {
 
   @Test
-  public void shouldCreateUrlFromProperlyFormedUrl() {
+  void shouldCreateUrlFromProperlyFormedUrl() {
     URI uri = Urls.from("http://localhost:4444");
 
     assertThat(uri).isEqualTo(URI.create("http://localhost:4444"));
   }
 
   @Test
-  public void shouldAssumeAPlainStringIsAHostName() {
+  void shouldAssumeAPlainStringIsAHostName() {
     URI uri = Urls.from("localhost");
 
     assertThat(uri).isEqualTo(URI.create("http://localhost"));
   }
 
   @Test
-  public void shouldHandleShortFormIp6AddressWithScheme() {
+  void shouldHandleShortFormIp6AddressWithScheme() {
     URI uri = Urls.from("https://2001:db8::1:0:0:1");
 
     assertThat(uri).isEqualTo(URI.create("https://2001:db8::1:0:0:1"));
   }
 
   @Test
-  public void shouldHandleAShortFormIp6Address() {
+  void shouldHandleAShortFormIp6Address() {
     URI uri = Urls.from("2001:db8::1:0:0:1");
 
     assertThat(uri).isEqualTo(URI.create("http://[2001:db8::1:0:0:1]"));
   }
 
   @Test
-  public void shouldHandleTheIp6LoopbackAddress() {
+  void shouldHandleTheIp6LoopbackAddress() {
     URI uri = Urls.from("::1");
 
     assertThat(uri).isEqualTo(URI.create("http://[::1]"));
   }
 
   @Test
-  public void shouldHandleTheUnspecifiedIp6Address() {
+  void shouldHandleTheUnspecifiedIp6Address() {
     URI uri = Urls.from("::");
 
     assertThat(uri).isEqualTo(URI.create("http://[::]"));
   }
 
   @Test
-  public void shouldHandleIpv6LoopbackAddressWithPath() {
+  void shouldHandleIpv6LoopbackAddressWithPath() {
     URI uri = Urls.from("::1/wd/hub");
 
     assertThat(uri).isEqualTo(URI.create("http://[::1]/wd/hub"));

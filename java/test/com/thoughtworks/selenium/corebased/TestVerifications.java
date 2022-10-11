@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestVerifications extends InternalSelenseTestBase {
   @Test
-  public void testVerifications() {
+  void testVerifications() {
     selenium.open("test_verifications.html?foo=bar");
     verifyTrue(selenium.getLocation().matches(
         "^.*/test_verifications\\.html[\\s\\S]*$"));

@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 public class TestRefresh extends InternalSelenseTestBase {
   @Disabled("The click on slowRefresh doesn't make the rc implementation wait")
   @Test
-  public void testRefresh() {
+  void testRefresh() {
     selenium.open("test_page.slow.html");
     System.out.println(selenium.getLocation());
     verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/common/rc/tests/html/test_page\\.slow\\.html$"));

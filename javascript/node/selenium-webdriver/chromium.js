@@ -706,7 +706,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Schedules a command to get Chromium network emulation settings.
    * @return {!Promise} A promise that will be resolved when network
-   *     emulation settings are retrievied.
+   *     emulation settings are retrieved.
    */
   getNetworkConditions() {
     return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS))

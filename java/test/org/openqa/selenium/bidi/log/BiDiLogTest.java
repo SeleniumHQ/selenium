@@ -35,7 +35,7 @@ import java.util.concurrent.TimeoutException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-public class BiDiLogTest {
+class BiDiLogTest {
 
   String page;
   private AppServer server;
@@ -53,7 +53,7 @@ public class BiDiLogTest {
   }
 
   @Test
-  public void canListenToConsoleLog()
+  void canListenToConsoleLog()
     throws InterruptedException, ExecutionException, TimeoutException {
     page = server.whereIs("/bidi/logEntryAdded.html");
 
@@ -68,7 +68,7 @@ public class BiDiLogTest {
       driver.findElement(By.id("consoleLog")).click();
       LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
-      assertThat(logEntry.getConsoleLogEntry().isPresent()).isTrue();
+      assertThat(logEntry.getConsoleLogEntry()).isPresent();
 
       ConsoleLogEntry consoleLogEntry = logEntry.getConsoleLogEntry().get();
       assertThat(consoleLogEntry.getText()).isEqualTo("Hello, world!");
@@ -82,7 +82,7 @@ public class BiDiLogTest {
   }
 
   @Test
-  public void canListenToJavascriptLog()
+  void canListenToJavascriptLog()
     throws InterruptedException, ExecutionException, TimeoutException {
     page = server.whereIs("/bidi/logEntryAdded.html");
 
@@ -96,7 +96,7 @@ public class BiDiLogTest {
       driver.findElement(By.id("jsException")).click();
       LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
-      assertThat(logEntry.getJavascriptLogEntry().isPresent()).isTrue();
+      assertThat(logEntry.getJavascriptLogEntry()).isPresent();
 
       GenericLogEntry javascriptLogEntry = logEntry.getJavascriptLogEntry().get();
       assertThat(javascriptLogEntry.getText()).isEqualTo("Error: Not working");
@@ -106,7 +106,7 @@ public class BiDiLogTest {
   }
 
   @Test
-  public void canRetrieveStacktraceForALog()
+  void canRetrieveStacktraceForALog()
     throws InterruptedException, ExecutionException, TimeoutException {
     page = server.whereIs("/bidi/logEntryAdded.html");
 
@@ -121,7 +121,7 @@ public class BiDiLogTest {
       driver.findElement(By.id("logWithStacktrace")).click();
       LogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
-      assertThat(logEntry.getJavascriptLogEntry().isPresent()).isTrue();
+      assertThat(logEntry.getJavascriptLogEntry()).isPresent();
       StackTrace stackTrace = logEntry.getJavascriptLogEntry().get().getStackTrace();
       assertThat(stackTrace).isNotNull();
       assertThat(stackTrace.getCallFrames().size()).isEqualTo(4);

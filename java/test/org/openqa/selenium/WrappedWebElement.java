@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class WrappedWebElement implements WebElement, WrapsElement {
 
-  private WebElement wrappedElement;
+  private final WebElement wrappedElement;
 
   public WrappedWebElement(WebElement element) {
     this.wrappedElement = element;

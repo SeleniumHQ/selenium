@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestStore extends InternalSelenseTestBase {
   @Test
-  public void testStore() {
+  void testStore() {
     selenium.open("test_verifications.html");
     String storedHiddenValue = selenium.getValue("theHidden");
     String storedSpanText = selenium.getText("theSpan");

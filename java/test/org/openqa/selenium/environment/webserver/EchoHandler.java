@@ -32,7 +32,7 @@ import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class EchoHandler implements HttpHandler {
+class EchoHandler implements HttpHandler {
 
   private static final String EPOCH_START = RFC_1123_DATE_TIME.format(
     ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneId.of("UTC")));
@@ -47,7 +47,7 @@ public class EchoHandler implements HttpHandler {
   public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
     HttpResponse response = new HttpResponse();
     response.setHeader("Content-Type", "text/html");
-    //Dont Cache Anything  at the browser
+    //Don't Cache Anything  at the browser
     response.setHeader("Cache-Control","no-cache");
     response.setHeader("Pragma","no-cache");
     response.setHeader ("Expires", EPOCH_START);

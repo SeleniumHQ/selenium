@@ -27,11 +27,11 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class
+class
 ClassPathResourceTest {
 
   @Test
-  public void shouldGetASingleFile() {
+  void shouldGetASingleFile() {
     URL res = getClass().getResource("/test/org/openqa/selenium/grid/web");
     assertThat(res).isNotNull();
 
@@ -43,17 +43,17 @@ ClassPathResourceTest {
   }
 
   @Test
-  public void shouldComplainIfResourceDoesNotExist() {
+  void shouldComplainIfResourceDoesNotExist() {
 
   }
 
   @Test
-  public void shouldReportDirectoriesAsDirectories() {
+  void shouldReportDirectoriesAsDirectories() {
 
   }
 
   @Test
-  public void shouldListContentsOfDirectoriesIfInSameJar() {
+  void shouldListContentsOfDirectoriesIfInSameJar() {
     URL res = getClass().getResource("/test/org/openqa/selenium/grid/web");
     assertThat(res).isNotNull();
 

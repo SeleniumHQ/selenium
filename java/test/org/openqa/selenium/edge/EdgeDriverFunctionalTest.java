@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-public class EdgeDriverFunctionalTest extends JupiterTestBase {
+class EdgeDriverFunctionalTest extends JupiterTestBase {
 
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
@@ -67,7 +67,7 @@ public class EdgeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void builderWithClientConfigThrowsException() {
+  void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = EdgeDriver.builder().config(clientConfig);
 
@@ -77,7 +77,7 @@ public class EdgeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void canSetPermission() {
+  void canSetPermission() {
     HasPermissions permissions = (HasPermissions) driver;
 
     driver.get(pages.clicksPage);
@@ -122,7 +122,7 @@ public class EdgeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void canCast() throws InterruptedException {
+  void canCast() throws InterruptedException {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
@@ -140,7 +140,7 @@ public class EdgeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void canManageNetworkConditions() {
+  void canManageNetworkConditions() {
     HasNetworkConditions conditions = (HasNetworkConditions) driver;
 
     ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
@@ -162,7 +162,7 @@ public class EdgeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void canExecuteCdpCommands() {
+  void canExecuteCdpCommands() {
     HasCdp cdp = (HasCdp) driver;
 
     Map<String, Object> parameters = Map.of("url", pages.simpleTestPage);

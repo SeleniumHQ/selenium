@@ -25,7 +25,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 
-public class GeneratedJsTestHandler implements HttpHandler {
+class GeneratedJsTestHandler implements HttpHandler {
 
   private final String stripPrefix;
 

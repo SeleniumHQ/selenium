@@ -45,7 +45,7 @@ public class TypeKeysTest {
   }
 
   @Test
-  public void substitutesArrowKeys() {
+  void substitutesArrowKeys() {
     String expected = newString(Keys.ARROW_DOWN, Keys.ARROW_LEFT, Keys.ARROW_RIGHT, Keys.ARROW_UP);
     String input = "\\40\\37\\39\\38";
 
@@ -55,7 +55,7 @@ public class TypeKeysTest {
   }
 
   @Test
-  public void substitutesReturnAndEscapeKeys() {
+  void substitutesReturnAndEscapeKeys() {
     String expected = newString(Keys.ENTER, Keys.RETURN, Keys.ESCAPE);
     String input = "\\10\\13\\27";
 

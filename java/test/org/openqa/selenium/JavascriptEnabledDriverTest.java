@@ -32,10 +32,10 @@ import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class JavascriptEnabledDriverTest extends JupiterTestBase {
+class JavascriptEnabledDriverTest extends JupiterTestBase {
 
   @Test
-  public void testDocumentShouldReflectLatestTitle() {
+  void testDocumentShouldReflectLatestTitle() {
     driver.get(pages.javascriptPage);
 
     assertThat(driver.getTitle()).isEqualTo("Testing Javascript");
@@ -61,7 +61,7 @@ public class JavascriptEnabledDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
+  void testShouldWaitForLoadsToCompleteAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
     driver.findElement(By.id("changeme")).click();
@@ -71,7 +71,7 @@ public class JavascriptEnabledDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
+  void testShouldBeAbleToFindElementAfterJavascriptCausesANewPageToLoad() {
     driver.get(pages.formPage);
 
     driver.findElement(By.id("changeme")).click();
@@ -119,7 +119,7 @@ public class JavascriptEnabledDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void testIssue80ClickShouldGenerateClickEvent() {
+  void testIssue80ClickShouldGenerateClickEvent() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("clickField"));
     assertThat(element.getAttribute("value")).isEqualTo("Hello");
@@ -143,7 +143,7 @@ public class JavascriptEnabledDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void testIfNoElementHasFocusTheActiveElementIsTheBody() {
+  void testIfNoElementHasFocusTheActiveElementIsTheBody() {
     driver.get(pages.simpleTestPage);
 
     WebElement element = driver.switchTo().activeElement();
@@ -175,7 +175,7 @@ public class JavascriptEnabledDriverTest extends JupiterTestBase {
    * If the click handler throws an exception, the firefox driver freezes. This is suboptimal.
    */
   @Test
-  public void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
+  void testShouldBeAbleToClickIfEvenSomethingHorribleHappens() {
     driver.get(pages.javascriptPage);
 
     driver.findElement(By.id("error")).click();
@@ -186,7 +186,7 @@ public class JavascriptEnabledDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToGetTheLocationOfAnElement() {
+  void testShouldBeAbleToGetTheLocationOfAnElement() {
     assumeTrue(driver instanceof JavascriptExecutor);
 
     driver.get(pages.javascriptPage);

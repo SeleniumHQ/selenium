@@ -28,7 +28,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 @Tag("UnitTests")
-public class PreferencesTest {
+class PreferencesTest {
 
   private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";
   private StringReader defaults;
@@ -39,17 +39,17 @@ public class PreferencesTest {
   }
 
   @Test
-  public void stringifyVsStringFormat() {
+  void stringifyVsStringFormat() {
     assertThat(String.format("\"%s\"", "stringifyMe")).isEqualTo("\"stringifyMe\"");
   }
 
   @Test
-  public void stringFormatOfStringify() {
+  void stringFormatOfStringify() {
     assertThat(String.format("\"%s\"", "\"stringifyMe\"")).isEqualTo("\"\"stringifyMe\"\"");
   }
 
   @Test
-  public void detectStringification() {
+  void detectStringification() {
     Preferences a = new Preferences(defaults);
 
     assertThat(canSet(a, "\"\"")).as("Empty String").isFalse();
@@ -64,7 +64,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void parsePreferences_boolean() {
+  void parsePreferences_boolean() {
     StringReader lines = new StringReader("user_pref(\"extensions.update.notifyUser\", false);");
     Preferences prefs = new Preferences(defaults, lines);
 
@@ -72,7 +72,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void parsePreferences_integer() {
+  void parsePreferences_integer() {
     StringReader lines = new StringReader("user_pref(\"dom.max_script_run_time\", 34);");
     Preferences prefs = new Preferences(defaults, lines);
 
@@ -80,7 +80,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void parsePreferences_string() {
+  void parsePreferences_string() {
     String prefWithComma = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) "
         + "AppleWebKit/532.9 (KHTML, like Gecko)";
     String prefWithQuotes = "lpr ${MOZ_PRINTER_NAME:+-P\"$MOZ_PRINTER_NAME\"}";
@@ -95,7 +95,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void parsePreferences_multiline() {
+  void parsePreferences_multiline() {
     Reader lines = new StringReader(
         "user_pref(\"extensions.update.notifyUser\", false);\n" +
             "user_pref(\"dom.max_script_run_time\", 32);");
@@ -106,7 +106,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void cannotOverrideAFrozenPreference() {
+  void cannotOverrideAFrozenPreference() {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
     preferences.setPreference("frozen.pref", false);
@@ -117,7 +117,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void canOverrideAFrozenPreferenceWithTheFrozenValue() {
+  void canOverrideAFrozenPreferenceWithTheFrozenValue() {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
 
@@ -127,7 +127,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void canOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
+  void canOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
     Preferences preferences = new Preferences(defaults);
     preferences.setPreference("dom.max_script_run_time", 29);
 

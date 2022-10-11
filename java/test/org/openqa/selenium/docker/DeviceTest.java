@@ -27,21 +27,21 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.docker.Device.device;
 
-public class DeviceTest {
+class DeviceTest {
 
   public static Stream<Arguments> data() {
-    return Arrays.asList(new Object[][]{
+    return Arrays.stream(new Object[][]{
       // pathOnHost, pathInContainer, cgroupPermissions, expectedCgroupPermissions
       {"/dev/tty", "/dev/tty", "crw", "crw", true},
       {"/dev/tty", "/dev/tty", null, "crw", true},
       {"/dev/tty", "/dev/tty", "", "crw", true},
       {"/dev/tty", "/dev/tty", "  ", "crw", true}
-    }).stream().map(Arguments::of);
+    }).map(Arguments::of);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void deviceShouldHaveDefinedPermissionsApplied(String pathOnHost, String pathInContainer, String cgroupPermissions,
+  void deviceShouldHaveDefinedPermissionsApplied(String pathOnHost, String pathInContainer, String cgroupPermissions,
                                                         String expectedCgroupPermissions, boolean matchCgroupPermissions) {
     Device device = device(pathOnHost, pathInContainer, cgroupPermissions);
     assertThat(device.getCgroupPermissions().contentEquals(expectedCgroupPermissions))

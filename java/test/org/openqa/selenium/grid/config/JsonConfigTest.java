@@ -24,10 +24,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JsonConfigTest {
+class JsonConfigTest {
 
   @Test
-  public void shouldUseATableAsASection() {
+  void shouldUseATableAsASection() {
     String raw = "{\"cheeses\": {\"selected\": \"brie\"}}";
     Config config = new JsonConfig(new StringReader(raw));
 

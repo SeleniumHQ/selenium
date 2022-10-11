@@ -26,7 +26,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.Set;
 
-public class LocalStorageTest extends JupiterTestBase {
+class LocalStorageTest extends JupiterTestBase {
   @BeforeEach
   public void checkHasWebStorage() {
     assumeTrue(driver instanceof WebStorage);
@@ -36,12 +36,12 @@ public class LocalStorageTest extends JupiterTestBase {
   }
 
   @Test
-  public void testLocalStorageSetAndGetItem() {
+  void testLocalStorageSetAndGetItem() {
     driver.get(pages.html5Page);
 
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
     local.clear();
-    assertThat(local.size()).isEqualTo(0);
+    assertThat(local.size()).isZero();
 
     local.setItem("FOO", "BAR");
     assertThat(local.getItem("FOO")).isEqualTo("BAR");
@@ -51,11 +51,11 @@ public class LocalStorageTest extends JupiterTestBase {
     assertThat(local.size()).isEqualTo(2);
 
     local.clear();
-    assertThat(local.size()).isEqualTo(0);
+    assertThat(local.size()).isZero();
   }
 
   @Test
-  public void testLocalStorageKeySet() {
+  void testLocalStorageKeySet() {
     driver.get(pages.html5Page);
 
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
@@ -73,7 +73,7 @@ public class LocalStorageTest extends JupiterTestBase {
   }
 
   @Test
-  public void testClearLocalStorage() {
+  void testClearLocalStorage() {
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
     local.setItem("FOO1", "BAR1");
     local.setItem("FOO2", "BAR2");
@@ -81,11 +81,11 @@ public class LocalStorageTest extends JupiterTestBase {
     assertThat(local.size()).isEqualTo(3);
 
     local.clear();
-    assertThat(local.size()).isEqualTo(0);
+    assertThat(local.size()).isZero();
   }
 
   @Test
-  public void testLocalStorageRemoveItem() {
+  void testLocalStorageRemoveItem() {
     driver.get(pages.html5Page);
 
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
@@ -94,12 +94,12 @@ public class LocalStorageTest extends JupiterTestBase {
     assertThat(local.size()).isEqualTo(1);
     String removedItemValue = local.removeItem("FOO");
     assertThat(removedItemValue).isEqualTo("BAR");
-    assertThat(local.size()).isEqualTo(0);
+    assertThat(local.size()).isZero();
     local.clear();
   }
 
   @Test
-  public void testLocalAndSessionStorageDontInterfereWithEachOther() {
+  void testLocalAndSessionStorageDontInterfereWithEachOther() {
     driver.get(pages.html5Page);
 
     LocalStorage local = ((WebStorage) driver).getLocalStorage();
@@ -115,11 +115,11 @@ public class LocalStorageTest extends JupiterTestBase {
     String removedItemValue = session.removeItem("FOO");
     assertThat(removedItemValue).isEqualTo("BAR_SESSION");
     assertThat(local.size()).isEqualTo(1);
-    assertThat(session.size()).isEqualTo(0);
+    assertThat(session.size()).isZero();
     removedItemValue = local.removeItem("FOO");
     assertThat(removedItemValue).isEqualTo("BAR_LOCAL");
-    assertThat(local.size()).isEqualTo(0);
-    assertThat(session.size()).isEqualTo(0);
+    assertThat(local.size()).isZero();
+    assertThat(session.size()).isZero();
     local.clear();
     session.clear();
   }

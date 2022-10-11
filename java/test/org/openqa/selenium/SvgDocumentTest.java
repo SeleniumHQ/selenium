@@ -26,7 +26,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-public class SvgDocumentTest extends JupiterTestBase {
+class SvgDocumentTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
