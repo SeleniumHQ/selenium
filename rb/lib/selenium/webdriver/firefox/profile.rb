@@ -21,8 +21,6 @@ module Selenium
   module WebDriver
     module Firefox
       class Profile
-        include ProfileHelper
-
         VALID_PREFERENCE_TYPES = [TrueClass, FalseClass, Integer, Float, String].freeze
 
         attr_accessor :startup_url
@@ -41,6 +39,16 @@ module Selenium
 
           def decoded(json)
             JSON.parse(json)
+          end
+
+          def from_json(json)
+            data = JSON.parse(json)
+
+            Tempfile.create do |zip_path|
+              File.open(zip_path, 'wb') { |zip_file| zip_file << Base64.decode64(data) }
+
+              new Zipper.unzip(zip_path)
+            end
           end
         end
 
@@ -91,6 +99,13 @@ module Selenium
           @additional_prefs[key.to_s] = value
         end
 
+        def to_json(*)
+          JSON.generate as_json
+        end
+
+        def encoded
+          Zipper.zip(layout_on_disk)
+        end
         alias_method :as_json, :encoded
 
         private
@@ -137,6 +152,26 @@ module Selenium
               file.puts %{user_pref("#{key}", #{value.to_json});}
             end
           end
+        end
+
+        def verify_model(model)
+          return unless model
+
+          raise Errno::ENOENT, model unless File.exist?(model)
+          raise Errno::ENOTDIR, model unless File.directory?(model)
+
+          model
+        end
+
+        def create_tmp_copy(directory)
+          tmp_directory = Dir.mktmpdir('webdriver-rb-profilecopy')
+
+          # TODO: must be a better way..
+          FileUtils.rm_rf tmp_directory
+          FileUtils.mkdir_p File.dirname(tmp_directory), mode: 0o700
+          FileUtils.cp_r directory, tmp_directory
+
+          tmp_directory
         end
       end # Profile
     end # Firefox
