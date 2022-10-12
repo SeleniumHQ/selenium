@@ -31,7 +31,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 
-public class CleanSessionTest extends JupiterTestBase {
+class CleanSessionTest extends JupiterTestBase {
 
   private static final Cookie COOKIE = new Cookie("foo", "bar");
 
@@ -90,7 +90,7 @@ public class CleanSessionTest extends JupiterTestBase {
   }
 
   @Test
-  public void doesNotLeakInternalMessagesToThePageUnderTest() {
+  void doesNotLeakInternalMessagesToThePageUnderTest() {
     driver.get(appServer.whereIs("messages.html"));
 
     JavascriptExecutor executor = (JavascriptExecutor) driver;
@@ -103,11 +103,11 @@ public class CleanSessionTest extends JupiterTestBase {
   }
 
   @Test
-  public void doesNotCreateExtraIframeOnPageUnderTest() {
+  void doesNotCreateExtraIframeOnPageUnderTest() {
     driver.get(appServer.whereIs("messages.html"));
-    assertThat(driver.findElements(By.tagName("iframe"))).hasSize(0);
+    assertThat(driver.findElements(By.tagName("iframe"))).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("return location.href;");
-    assertThat(driver.findElements(By.tagName("iframe"))).hasSize(0);
+    assertThat(driver.findElements(By.tagName("iframe"))).isEmpty();
   }
 }

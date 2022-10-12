@@ -25,12 +25,12 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DefaultSlotMatcherTest {
+class DefaultSlotMatcherTest {
 
   private final DefaultSlotMatcher slotMatcher = new DefaultSlotMatcher();
 
   @Test
-  public void fullMatch() {
+  void fullMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -45,7 +45,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void matchesBrowserAndVersion() {
+  void matchesBrowserAndVersion() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -59,7 +59,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void matchesBrowser() {
+  void matchesBrowser() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -72,7 +72,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void matchesEmptyBrowser() {
+  void matchesEmptyBrowser() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -85,7 +85,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void matchesPrefixedPlatformVersion() {
+  void matchesPrefixedPlatformVersion() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -102,7 +102,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void prefixedPlatformVersionDoesNotMatch() {
+  void prefixedPlatformVersionDoesNotMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -119,7 +119,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void matchesWhenPrefixedPlatformVersionIsNotRequested() {
+  void matchesWhenPrefixedPlatformVersionIsNotRequested() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -135,7 +135,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void prefixedPlatformVersionDoesNotMatchWhenNotPresentInStereotype() {
+  void prefixedPlatformVersionDoesNotMatchWhenNotPresentInStereotype() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -151,7 +151,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void platformDoesNotMatch() {
+  void platformDoesNotMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -166,7 +166,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void browserDoesNotMatch() {
+  void browserDoesNotMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -181,7 +181,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void browserVersionDoesNotMatch() {
+  void browserVersionDoesNotMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -196,7 +196,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void requestedPlatformDoesNotMatch() {
+  void requestedPlatformDoesNotMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80"
@@ -211,7 +211,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void shouldNotMatchIfRequestedBrowserVersionIsMissingFromStereotype() {
+  void shouldNotMatchIfRequestedBrowserVersionIsMissingFromStereotype() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.PLATFORM_NAME, Platform.WINDOWS
@@ -226,7 +226,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void matchesWithJsonWireProtocolCaps() {
+  void matchesWithJsonWireProtocolCaps() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "80",
@@ -241,7 +241,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void shouldNotMatchCapabilitiesThatAreDifferentButDoNotContainCommonCapabilityNames() {
+  void shouldNotMatchCapabilitiesThatAreDifferentButDoNotContainCommonCapabilityNames() {
     Capabilities stereotype = new ImmutableCapabilities("acceptInsecureCerts", "true");
     Capabilities capabilities = new ImmutableCapabilities("acceptInsecureCerts", "false");
 
@@ -249,7 +249,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void shouldMatchCapabilitiesThatAreTheSameButDoNotContainCommonCapabilityNames() {
+  void shouldMatchCapabilitiesThatAreTheSameButDoNotContainCommonCapabilityNames() {
     Capabilities stereotype = new ImmutableCapabilities("strictFileInteractability", "true");
     Capabilities capabilities = new ImmutableCapabilities("strictFileInteractability", "true");
 
@@ -257,7 +257,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void extensionPrefixedCapabilitiesMatches() {
+  void extensionPrefixedCapabilitiesMatches() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "84",
@@ -275,7 +275,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void extensionPrefixedCapabilitiesMatchesWhenNotPresentInStereotype() {
+  void extensionPrefixedCapabilitiesMatchesWhenNotPresentInStereotype() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "84",
@@ -292,7 +292,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void extensionPrefixedCapabilitiesDoNotMatch() {
+  void extensionPrefixedCapabilitiesDoNotMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "84",
@@ -310,7 +310,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void multipleExtensionPrefixedCapabilitiesMatch() {
+  void multipleExtensionPrefixedCapabilitiesMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "84",
@@ -330,7 +330,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void multipleExtensionPrefixedCapabilitiesDoNotMatchWhenOneIsDifferent() {
+  void multipleExtensionPrefixedCapabilitiesDoNotMatchWhenOneIsDifferent() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "84",
@@ -350,7 +350,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void vendorExtensionPrefixedCapabilitiesAreIgnoredForMatching() {
+  void vendorExtensionPrefixedCapabilitiesAreIgnoredForMatching() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
       CapabilityType.BROWSER_VERSION, "84",
@@ -370,7 +370,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void emptyCapabilitiesDoNotMatch() {
+  void emptyCapabilitiesDoNotMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "firefox",
       CapabilityType.BROWSER_VERSION, "98",
@@ -382,7 +382,7 @@ public class DefaultSlotMatcherTest {
   }
 
   @Test
-  public void extensionCapsAlsoMatch() {
+  void extensionCapsAlsoMatch() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.PLATFORM_NAME, Platform.IOS,
       "appium:platformVersion", "15.5",

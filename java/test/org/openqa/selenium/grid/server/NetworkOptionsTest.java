@@ -42,14 +42,14 @@ import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class NetworkOptionsTest {
+class NetworkOptionsTest {
   /**
    * An initial version of our wrapper around OpenTracing caused exceptions
    * to be thrown when spans were closed prematurely and out of order. This
    * test was written to both demonstrate that problem and to resolve it.
    */
   @Test
-  public void triggerFailureInTracing() {
+  void triggerFailureInTracing() {
     // I better explain this. The only hint that we have that our use of
     // OpenTelemetry is wrong is found in the log message that the
     // io.grpc.Context generates when `Context.detach` is called in an
@@ -87,7 +87,7 @@ public class NetworkOptionsTest {
   private static class CapturingHandler extends Handler {
 
     private final String loggerNamePrefix;
-    private Map<Level, List<String>> recordedMessages = new HashMap<>();
+    private final Map<Level, List<String>> recordedMessages = new HashMap<>();
 
     public CapturingHandler(String loggerNamePrefix) {
       this.loggerNamePrefix = loggerNamePrefix;

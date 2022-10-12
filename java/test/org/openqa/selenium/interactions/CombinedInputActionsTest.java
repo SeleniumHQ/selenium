@@ -52,7 +52,7 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 /**
  * Tests combined input actions.
  */
-public class CombinedInputActionsTest extends JupiterTestBase {
+class CombinedInputActionsTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
@@ -237,7 +237,7 @@ public class CombinedInputActionsTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void canMoveMouseToAnElementInAnIframeAndClick() {
+  void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
 
     wait.until(presenceOfElementLocated(By.id("ifr")));
@@ -254,7 +254,7 @@ public class CombinedInputActionsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCanClickOnLinks() {
+  void testCanClickOnLinks() {
     navigateToClicksPageAndClickLink();
   }
 
@@ -416,7 +416,7 @@ public class CombinedInputActionsTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("menu1"));
 
     final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEqualTo("");
+    assertThat(item.getText()).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     new Actions(driver).moveToElement(element).build().perform();
@@ -431,7 +431,7 @@ public class CombinedInputActionsTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCanClickOnSuckerFishMenuItem() {
+  void testCanClickOnSuckerFishMenuItem() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("menu1"));

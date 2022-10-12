@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class Build {
-  private static Logger log = Logger.getLogger(Build.class.getName());
+  private static final Logger log = Logger.getLogger(Build.class.getName());
 
-  private List<String> targets = new ArrayList<>();
+  private final List<String> targets = new ArrayList<>();
 
   public Build of(String... targets) {
     this.targets.addAll(Arrays.asList(targets));

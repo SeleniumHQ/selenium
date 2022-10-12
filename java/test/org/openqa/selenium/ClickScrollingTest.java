@@ -37,10 +37,10 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.drivers.Browser;
 
 @Ignore(value = HTMLUNIT, reason = "Scrolling requires rendering")
-public class ClickScrollingTest extends JupiterTestBase {
+class ClickScrollingTest extends JupiterTestBase {
 
   @Test
-  public void testClickingOnAnchorScrollsPage() {
+  void testClickingOnAnchorScrollsPage() {
     String scrollScript = "";
     scrollScript += "var pageY;";
     scrollScript += "if (typeof(window.pageYOffset) == 'number') {";
@@ -74,7 +74,7 @@ public class ClickScrollingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldScrollToClickOnAnElementHiddenByOverflow() {
+  void testShouldScrollToClickOnAnElementHiddenByOverflow() {
     String url = appServer.whereIs("click_out_of_bounds_overflow.html");
     driver.get(url);
 
@@ -83,7 +83,7 @@ public class ClickScrollingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickOnAnElementHiddenByOverflow() {
+  void testShouldBeAbleToClickOnAnElementHiddenByOverflow() {
     driver.get(appServer.whereIs("scroll.html"));
 
     WebElement link = driver.findElement(By.id("line8"));
@@ -104,7 +104,7 @@ public class ClickScrollingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickOnAnElementHiddenByYOverflow() {
+  void testShouldBeAbleToClickOnAnElementHiddenByYOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_y_overflow_auto.html"));
 
     driver.findElement(By.id("link")).click();
@@ -124,14 +124,14 @@ public class ClickScrollingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldNotScrollOverflowElementsWhichAreVisible() {
+  void testShouldNotScrollOverflowElementsWhichAreVisible() {
     driver.get(appServer.whereIs("scroll2.html"));
     WebElement list = driver.findElement(By.tagName("ul"));
     WebElement item = list.findElement(By.id("desired"));
     item.click();
     long yOffset =
         (Long)((JavascriptExecutor)driver).executeScript("return arguments[0].scrollTop;", list);
-    assertThat(yOffset).describedAs("Should not have scrolled").isEqualTo(0);
+    assertThat(yOffset).describedAs("Should not have scrolled").isZero();
   }
 
   @Test
@@ -148,7 +148,7 @@ public class ClickScrollingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToClickRadioButtonScrolledIntoView() {
+  void testShouldBeAbleToClickRadioButtonScrolledIntoView() {
     driver.get(appServer.whereIs("scroll4.html"));
     driver.findElement(By.id("radio")).click();
     // If we don't throw, we're good
@@ -179,7 +179,7 @@ public class ClickScrollingTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrame() {
+  void testShouldBeAbleToClickElementThatIsOutOfViewInAFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame.html"));
     driver.switchTo().frame("scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
@@ -229,7 +229,7 @@ public class ClickScrollingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldNotScrollWhenGettingElementSize() {
+  void testShouldNotScrollWhenGettingElementSize() {
     driver.get(appServer.whereIs("scroll3.html"));
     long scrollTop = getScrollTop();
     driver.findElement(By.id("button1")).getSize();

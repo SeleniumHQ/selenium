@@ -71,7 +71,7 @@ import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class NewSessionCreationTest {
+class NewSessionCreationTest {
 
   private Tracer tracer;
   private EventBus bus;
@@ -93,7 +93,7 @@ public class NewSessionCreationTest {
   }
 
   @Test
-  public void ensureJsCannotCreateANewSession() throws URISyntaxException {
+  void ensureJsCannotCreateANewSession() throws URISyntaxException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -163,7 +163,7 @@ public class NewSessionCreationTest {
   }
 
   @Test
-  public void shouldNotRetryNewSessionRequestOnUnexpectedError() throws URISyntaxException {
+  void shouldNotRetryNewSessionRequestOnUnexpectedError() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     int nodePort = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + nodePort);
@@ -240,7 +240,7 @@ public class NewSessionCreationTest {
 
   @Test
   @Timeout(10)
-  public void shouldRejectRequestForUnsupportedCaps() throws URISyntaxException {
+  void shouldRejectRequestForUnsupportedCaps() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     int nodePort = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + nodePort);

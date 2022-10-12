@@ -33,15 +33,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
-public class PerformanceLoggingMockTest {
+class PerformanceLoggingMockTest {
 
   @Test
-  public void testMergesRemoteLogs() {
+  void testMergesRemoteLogs() {
     final ExecuteMethod executeMethod = mock(ExecuteMethod.class);
 
     when(executeMethod.execute(
         DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
-        .thenReturn(Arrays.asList(ImmutableMap.of(
+        .thenReturn(List.of(ImmutableMap.of(
           "level", Level.INFO.getName(),
           "timestamp", 1L,
           "message", "second")));

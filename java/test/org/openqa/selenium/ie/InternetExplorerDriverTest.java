@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 
-public class InternetExplorerDriverTest extends JupiterTestBase {
+class InternetExplorerDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
@@ -60,7 +60,7 @@ public class InternetExplorerDriverTest extends JupiterTestBase {
   }
 
   @Test
-  public void builderWithClientConfigThrowsException() {
+  void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = InternetExplorerDriver.builder().config(clientConfig);
 
@@ -97,7 +97,7 @@ public class InternetExplorerDriverTest extends JupiterTestBase {
   @NoDriverBeforeTest
   @NoDriverAfterTest
   @Test
-  public void testPersistentHoverCanBeTurnedOff() throws Exception {
+  void testPersistentHoverCanBeTurnedOff() throws Exception {
     createNewDriver(new ImmutableCapabilities(ENABLE_PERSISTENT_HOVERING, false));
 
     driver.get(pages.javascriptPage);
@@ -107,7 +107,7 @@ public class InternetExplorerDriverTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("menu1"));
 
     WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEqualTo("");
+    assertThat(item.getText()).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     new Actions(driver).moveToElement(element).build().perform();
@@ -122,7 +122,7 @@ public class InternetExplorerDriverTest extends JupiterTestBase {
 
     wait.until(d -> item.getText().equals(""));
 
-    assertThat(item.getText()).isEqualTo("");
+    assertThat(item.getText()).isEmpty();
   }
 
   private WebDriver newIeDriver() {

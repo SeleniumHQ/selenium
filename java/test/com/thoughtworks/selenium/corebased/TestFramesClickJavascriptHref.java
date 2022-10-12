@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestFramesClickJavascriptHref extends InternalSelenseTestBase {
   @Test
-  public void testFramesClickJavascriptHref() {
+  void testFramesClickJavascriptHref() {
     selenium.open("Frames.html");
     selenium.selectFrame("mainFrame");
     selenium.open("test_click_javascript_page.html");

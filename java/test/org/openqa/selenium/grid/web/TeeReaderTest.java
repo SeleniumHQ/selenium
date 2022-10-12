@@ -28,10 +28,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 
 
-public class TeeReaderTest {
+class TeeReaderTest {
 
   @Test
-  public void shouldDuplicateStreams() {
+  void shouldDuplicateStreams() {
     String expected = "{\"key\": \"value\"}";
     Reader source = new StringReader(expected);
 

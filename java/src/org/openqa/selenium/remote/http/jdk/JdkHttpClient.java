@@ -33,9 +33,8 @@ import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -57,10 +56,13 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.net.http.HttpClient.Redirect.ALWAYS;
 
 public class JdkHttpClient implements HttpClient {
+  public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
   private final JdkHttpMessages messages;
   private final java.net.http.HttpClient client;
   private final Duration readTimeout;
@@ -124,12 +126,15 @@ public class JdkHttpClient implements HttpClient {
         uri,
         new java.net.http.WebSocket.Listener() {
           final StringBuilder builder = new StringBuilder();
+          final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
           @Override
           public CompletionStage<?> onText(java.net.http.WebSocket webSocket, CharSequence data, boolean last) {
+            LOG.fine("Text message received. Appending data");
             builder.append(data);
 
             if (last) {
+              LOG.fine("Final part of text message received. Calling listener with " + builder);
               listener.onText(builder.toString());
               builder.setLength(0);
             }
@@ -140,22 +145,35 @@ public class JdkHttpClient implements HttpClient {
 
           @Override
           public CompletionStage<?> onBinary(java.net.http.WebSocket webSocket, ByteBuffer data, boolean last) {
-            byte[] ary = new byte[data.remaining()];
-            data.get(ary, 0, ary.length);
+            LOG.fine("Binary data received. Appending data");
+            byte[] ary = new byte[8192];
 
-            listener.onBinary(ary);
+            while (data.hasRemaining()) {
+              int n = Math.min(ary.length, data.remaining());
+              data.get(ary, 0, n);
+              buffer.write(ary, 0, n);
+            }
+
+            if (last) {
+              LOG.fine("Final part of binary data received. Calling listener with "
+                       + buffer.size() + " bytes of data");
+              listener.onBinary(buffer.toByteArray());
+              buffer.reset();
+            }
             webSocket.request(1);
             return null;
           }
 
           @Override
           public CompletionStage<?> onClose(java.net.http.WebSocket webSocket, int statusCode, String reason) {
+            LOG.fine("Closing websocket");
             listener.onClose(statusCode, reason);
             return null;
           }
 
           @Override
           public void onError(java.net.http.WebSocket webSocket, Throwable error) {
+            LOG.log(Level.FINE, error, () -> "An error has occurred: " + error.getMessage());
             listener.onError(error);
             webSocket.request(1);
           }
@@ -170,11 +188,14 @@ public class JdkHttpClient implements HttpClient {
 
         if (message instanceof BinaryMessage) {
           BinaryMessage binaryMessage = (BinaryMessage) message;
+          LOG.fine("Sending binary message");
           makeCall = () -> underlyingSocket.sendBinary(ByteBuffer.wrap(binaryMessage.data()), true);
         } else if (message instanceof TextMessage) {
           TextMessage textMessage = (TextMessage) message;
+          LOG.fine("Sending text message: " + textMessage.text());
           makeCall = () -> underlyingSocket.sendText(textMessage.text(), true);
         } else if (message instanceof CloseMessage) {
+          LOG.fine("Sending close message");
           CloseMessage closeMessage = (CloseMessage) message;
           makeCall = () -> underlyingSocket.sendClose(closeMessage.code(), closeMessage.reason());
         } else {
@@ -182,6 +203,7 @@ public class JdkHttpClient implements HttpClient {
         }
 
         synchronized (underlyingSocket) {
+          long start = System.currentTimeMillis();
           CompletableFuture<java.net.http.WebSocket> future = makeCall.get();
           try {
             future.get(readTimeout.toMillis(), TimeUnit.MILLISECONDS);
@@ -198,6 +220,8 @@ public class JdkHttpClient implements HttpClient {
             throw new WebDriverException(e.getMessage());
           } catch (java.util.concurrent.TimeoutException e) {
             throw new TimeoutException(e);
+          } finally {
+            LOG.fine(String.format("Websocket response to %s read in %sms", message, (System.currentTimeMillis() - start)));
           }
         }
         return this;
@@ -205,6 +229,7 @@ public class JdkHttpClient implements HttpClient {
 
       @Override
       public void close() {
+        LOG.fine("Closing websocket");
         underlyingSocket.sendClose(1000, "WebDriver closing socket");
       }
     };
@@ -231,6 +256,10 @@ public class JdkHttpClient implements HttpClient {
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     Objects.requireNonNull(req, "Request");
+
+    LOG.fine("Executing request: " + req);
+    long start = System.currentTimeMillis();
+
     BodyHandler<byte[]> byteHandler = BodyHandlers.ofByteArray();
     try {
       return messages.createResponse(client.send(messages.createRequest(req), byteHandler));
@@ -241,7 +270,10 @@ public class JdkHttpClient implements HttpClient {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new RuntimeException(e);
+    } finally {
+      LOG.fine(String.format("Ending request %s in %sms", req, (System.currentTimeMillis() - start)));
     }
+
   }
 
   @AutoService(HttpClient.Factory.class)

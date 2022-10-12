@@ -43,7 +43,7 @@ import java.util.logging.Level;
 @Ignore(IE)
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
-public class GetLogsTest extends JupiterTestBase {
+class GetLogsTest extends JupiterTestBase {
 
   private WebDriver localDriver;
 
@@ -56,7 +56,7 @@ public class GetLogsTest extends JupiterTestBase {
   }
 
   @Test
-  public void logBufferShouldBeResetAfterEachGetLogCall() {
+  void logBufferShouldBeResetAfterEachGetLogCall() {
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -73,7 +73,7 @@ public class GetLogsTest extends JupiterTestBase {
   }
 
   @Test
-  public void differentLogsShouldNotContainTheSameLogEntries() {
+  void differentLogsShouldNotContainTheSameLogEntries() {
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -115,14 +115,14 @@ public class GetLogsTest extends JupiterTestBase {
   }
 
   @Test
-  public void turningOffLogShouldMeanNoLogMessages() {
+  void turningOffLogShouldMeanNoLogMessages() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     for (String logType : logTypes) {
       createWebDriverWithLogging(logType, Level.OFF);
       LogEntries entries = localDriver.manage().logs().get(logType);
       assertThat(entries.getAll())
           .describedAs("There should be no log entries for log type %s when logging is turned off.", logType)
-          .hasSize(0);
+          .isEmpty();
       quitDriver();
     }
   }

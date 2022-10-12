@@ -39,7 +39,7 @@ import java.util.stream.StreamSupport;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
 
-public class CookieHandler implements HttpHandler {
+class CookieHandler implements HttpHandler {
 
   private static final String EPOCH_START = RFC_1123_DATE_TIME.format(
     ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneId.of("UTC")));

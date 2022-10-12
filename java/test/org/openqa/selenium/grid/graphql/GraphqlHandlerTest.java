@@ -80,7 +80,7 @@ import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class GraphqlHandlerTest {
+class GraphqlHandlerTest {
 
   private static final Json JSON = new Json();
   private final Secret registrationSecret = new Secret("stilton");
@@ -137,7 +137,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetGridUri() {
+  void shouldBeAbleToGetGridUri() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { uri } }");
@@ -150,7 +150,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetGridVersion() {
+  void shouldBeAbleToGetGridVersion() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ grid { version } }");
@@ -174,7 +174,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionQueueSize() {
+  void shouldBeAbleToGetSessionQueueSize() {
     SessionRequest request = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
@@ -196,7 +196,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionQueueRequests() {
+  void shouldBeAbleToGetSessionQueueRequests() {
     SessionRequest request = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
@@ -220,7 +220,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeReturnAnEmptyListIfQueueIsEmpty() {
+  void shouldBeReturnAnEmptyListIfQueueIsEmpty() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,
@@ -234,7 +234,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldReturnAnEmptyListForNodesIfNoneAreRegistered() {
+  void shouldReturnAnEmptyListForNodesIfNoneAreRegistered() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler, "{ nodesInfo { nodes { uri } } }");
@@ -247,7 +247,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetUrlsOfAllNodes() throws URISyntaxException {
+  void shouldBeAbleToGetUrlsOfAllNodes() throws URISyntaxException {
     Capabilities stereotype = new ImmutableCapabilities("cheese", "stilton");
     String nodeUri = "http://localhost:5556";
     Node node = LocalNode.builder(tracer, bus, new URI(nodeUri), publicUri, registrationSecret)
@@ -278,7 +278,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionCount() throws URISyntaxException {
+  void shouldBeAbleToGetSessionCount() throws URISyntaxException {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
@@ -325,7 +325,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionInfo() throws URISyntaxException {
+  void shouldBeAbleToGetSessionInfo() throws URISyntaxException {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
@@ -392,7 +392,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetNodeInfoForSession() throws URISyntaxException {
+  void shouldBeAbleToGetNodeInfoForSession() throws URISyntaxException {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
@@ -457,7 +457,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSlotInfoForSession() throws URISyntaxException {
+  void shouldBeAbleToGetSlotInfoForSession() throws URISyntaxException {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
@@ -528,7 +528,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToGetSessionDuration() throws URISyntaxException {
+  void shouldBeAbleToGetSessionDuration() throws URISyntaxException {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
@@ -578,7 +578,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenSessionNotFound() throws URISyntaxException {
+  void shouldThrowExceptionWhenSessionNotFound() throws URISyntaxException {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
@@ -608,7 +608,7 @@ public class GraphqlHandlerTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenSessionIsEmpty() throws URISyntaxException {
+  void shouldThrowExceptionWhenSessionIsEmpty() throws URISyntaxException {
     String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 

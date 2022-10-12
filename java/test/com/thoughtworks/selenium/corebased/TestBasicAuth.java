@@ -30,7 +30,7 @@ import java.net.URL;
 @Disabled("Browsers don't allow basic auth through URL params any more")
 public class TestBasicAuth extends InternalSelenseTestBase {
   @Test
-  public void testBasicAuth() throws Exception {
+  void testBasicAuth() throws Exception {
     selenium.open(getUrl());
     assertEquals(selenium.getTitle(), "Welcome");
   }

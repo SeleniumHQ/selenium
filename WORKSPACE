@@ -91,9 +91,9 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
-RULES_JVM_EXTERNAL_TAG = "4.3"
+RULES_JVM_EXTERNAL_TAG = "4.4.2"
 
-RULES_JVM_EXTERNAL_SHA = "6274687f6fc5783b589f56a2f1ed60de3ce1f99bc4e8f9edef3de43bdf7c6e74"
+RULES_JVM_EXTERNAL_SHA = "735602f50813eb2ea93ca3f5e43b1959bd80b213b836a07a62a29d757670b77b"
 
 http_archive(
     name = "rules_jvm_external",
@@ -102,8 +102,6 @@ http_archive(
     ],
     patches = [
         "//java:rules_jvm_external_javadoc.patch",
-        "//java:rules_jvm_external_missing_dirs.patch",
-        "//java:rules_jvm_external_visibility.patch",
     ],
     sha256 = RULES_JVM_EXTERNAL_SHA,
     strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
@@ -228,10 +226,9 @@ rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
-    sha256 = "62eeb544ff1ef41d786e329e1536c1d541bb9bcad27ae984d57f18f314018e66",
+    sha256 = "451e08a4d78988c06fa3f9306ec813b836b1d076d0f055595444ba4ff22b867f",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.6.0/rules_pkg-0.6.0.tar.gz",
-        "https://github.com/bazelbuild/rules_pkg/releases/download/0.6.0/rules_pkg-0.6.0.tar.gz",
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.7.1/rules_pkg-0.7.1.tar.gz",
     ],
 )
 

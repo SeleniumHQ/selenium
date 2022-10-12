@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestClick extends InternalSelenseTestBase {
   @Test
-  public void testClick() throws Exception {
+  void testClick() throws Exception {
     selenium.open("test_click_page1.html");
     verifyEquals(selenium.getText("link"), "Click here for next page");
     selenium.click("link");

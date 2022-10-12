@@ -54,7 +54,7 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class ExecutingJavascriptTest extends JupiterTestBase {
+class ExecutingJavascriptTest extends JupiterTestBase {
 
   @BeforeEach
   public void setUp() {
@@ -66,7 +66,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString() {
+  void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAString() {
     driver.get(pages.xhtmlTestPage);
 
     Object result = executeScript("return document.title;");
@@ -75,7 +75,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnALong() {
+  void testShouldBeAbleToExecuteSimpleJavascriptAndReturnALong() {
     driver.get(pages.nestedPage);
 
     Object result = executeScript("return document.getElementsByName('checky').length;");
@@ -85,7 +85,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement() {
+  void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAWebElement() {
     driver.get(pages.xhtmlTestPage);
 
     Object result = executeScript("return document.getElementById('id1');");
@@ -95,7 +95,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean() {
+  void testShouldBeAbleToExecuteSimpleJavascriptAndReturnABoolean() {
     driver.get(pages.xhtmlTestPage);
 
     Object result = executeScript("return true;");
@@ -106,7 +106,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
+  void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
     driver.get(pages.javascriptPage);
 
     Object result = ((JavascriptExecutor) driver).executeScript(
@@ -118,7 +118,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
+  void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     driver.get(pages.javascriptPage);
     List<Object> expectedResult = new ArrayList<>();
     expectedResult.add("zero");
@@ -134,7 +134,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
+  void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
     driver.get(pages.javascriptPage);
 
     Object result = executeScript("return {abc: '123', tired: false};");
@@ -155,7 +155,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
+  void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
     driver.get(pages.javascriptPage);
 
     Map<String, Object> expectedResult = ImmutableMap.of(
@@ -215,7 +215,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testPassingAndReturningALongShouldReturnAWholeNumber() {
+  void testPassingAndReturningALongShouldReturnAWholeNumber() {
     driver.get(pages.javascriptPage);
     Long expectedResult = 1L;
     Object result = executeScript("return arguments[0];", expectedResult);
@@ -223,7 +223,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testReturningOverflownLongShouldReturnADouble() {
+  void testReturningOverflownLongShouldReturnADouble() {
     driver.get(pages.javascriptPage);
     Double expectedResult = 6.02214129e+23;
     Object result = executeScript("return arguments[0];", expectedResult);
@@ -231,7 +231,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testPassingAndReturningADoubleShouldReturnADecimal() {
+  void testPassingAndReturningADoubleShouldReturnADecimal() {
     driver.get(pages.javascriptPage);
     Double expectedResult = 1.2;
     Object result = executeScript("return arguments[0];", expectedResult);
@@ -239,7 +239,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldThrowAnExceptionWhenTheJavascriptIsBad() {
+  void testShouldThrowAnExceptionWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
 
     assertThatExceptionOfType(WebDriverException.class)
@@ -273,7 +273,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
+  void testShouldBeAbleToCallFunctionsDefinedOnThePage() {
     driver.get(pages.javascriptPage);
     executeScript("displayMessage('I like cheese');");
     String text = driver.findElement(By.id("result")).getText();
@@ -282,7 +282,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToPassAStringAnAsArgument() {
+  void testShouldBeAbleToPassAStringAnAsArgument() {
     driver.get(pages.javascriptPage);
     String value =
       (String) executeScript("return arguments[0] == 'fish' ? 'fish' : 'not fish';", "fish");
@@ -291,21 +291,21 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToPassABooleanAsArgument() {
+  void testShouldBeAbleToPassABooleanAsArgument() {
     driver.get(pages.javascriptPage);
     boolean value = (Boolean) executeScript("return arguments[0] == true;", true);
     assertThat(value).isTrue();
   }
 
   @Test
-  public void testShouldBeAbleToPassANumberAnAsArgument() {
+  void testShouldBeAbleToPassANumberAnAsArgument() {
     driver.get(pages.javascriptPage);
     boolean value = (Boolean) executeScript("return arguments[0] == 1 ? true : false;", 1);
     assertThat(value).isTrue();
   }
 
   @Test
-  public void testShouldBeAbleToPassAWebElementAsArgument() {
+  void testShouldBeAbleToPassAWebElementAsArgument() {
     driver.get(pages.javascriptPage);
     WebElement button = driver.findElement(By.id("plainButton"));
     String value =
@@ -317,7 +317,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testPassingArrayAsOnlyArgumentFlattensArray() {
+  void testPassingArrayAsOnlyArgumentFlattensArray() {
     driver.get(pages.javascriptPage);
     Object[] array = new Object[]{"zero", 1, true, 42.4242, false};
     String value = (String) executeScript("return arguments[0]", array);
@@ -325,7 +325,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
+  void testShouldBeAbleToPassAnArrayAsAdditionalArgument() {
     driver.get(pages.javascriptPage);
     Object[] array = new Object[]{"zero", 1, true, 42.4242, false};
     long length = (Long) executeScript("return arguments[1].length", "string", array);
@@ -333,7 +333,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToPassACollectionAsArgument() {
+  void testShouldBeAbleToPassACollectionAsArgument() {
     driver.get(pages.javascriptPage);
     Collection<Object> collection = new ArrayList<>();
     collection.add("Cheddar");
@@ -352,21 +352,21 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
+  void testShouldThrowAnExceptionIfAnArgumentIsNotValid() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> executeScript("return arguments[0];", driver));
   }
 
   @Test
-  public void testShouldBeAbleToPassInMoreThanOneArgument() {
+  void testShouldBeAbleToPassInMoreThanOneArgument() {
     driver.get(pages.javascriptPage);
     String result = (String) executeScript("return arguments[0] + arguments[1];", "one", "two");
     assertThat(result).isEqualTo("onetwo");
   }
 
   @Test
-  public void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
+  void testShouldBeAbleToGrabTheBodyOfFrameOnceSwitchedTo() {
     driver.get(pages.richTextPage);
 
     driver.switchTo().frame("editFrame");
@@ -374,12 +374,12 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
     String text = body.getText();
     driver.switchTo().defaultContent();
 
-    assertThat(text).isEqualTo("");
+    assertThat(text).isEmpty();
   }
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testShouldBeAbleToReturnAnArrayOfWebElements() {
+  void testShouldBeAbleToReturnAnArrayOfWebElements() {
     driver.get(pages.formPage);
 
     List<WebElement> items = (List<WebElement>) executeScript(
@@ -389,11 +389,11 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testJavascriptStringHandlingShouldWorkAsExpected() {
+  void testJavascriptStringHandlingShouldWorkAsExpected() {
     driver.get(pages.javascriptPage);
 
     String value = (String) executeScript("return '';");
-    assertThat(value).isEqualTo("");
+    assertThat(value).isEmpty();
 
     value = (String) executeScript("return undefined;");
     assertThat(value).isNull();
@@ -403,7 +403,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
+  void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
 
     Path jqueryFile = InProject.locate("common/src/web/js/jquery-3.5.1.min.js");
@@ -417,7 +417,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
+  void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
     String scriptToExec = "return document.getElementsByName('snack');";
 
@@ -437,7 +437,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToCreateAPersistentValue() {
+  void testShouldBeAbleToCreateAPersistentValue() {
     driver.get(pages.formPage);
 
     executeScript("document.alerts = []");
@@ -448,7 +448,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCanHandleAnArrayOfElementsAsAnObjectArray() {
+  void testCanHandleAnArrayOfElementsAsAnObjectArray() {
     driver.get(pages.formPage);
 
     List<WebElement> forms = driver.findElements(By.tagName("form"));
@@ -461,7 +461,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCanPassAMapAsAParameter() {
+  void testCanPassAMapAsAParameter() {
     driver.get(pages.simpleTestPage);
 
     List<Integer> nums = Arrays.asList(1, 2);
@@ -537,7 +537,7 @@ public class ExecutingJavascriptTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldUnwrapDeeplyNestedWebElementsAsArguments() {
+  void shouldUnwrapDeeplyNestedWebElementsAsArguments() {
     driver.get(pages.simpleTestPage);
 
     WebElement expected = driver.findElement(id("oneline"));

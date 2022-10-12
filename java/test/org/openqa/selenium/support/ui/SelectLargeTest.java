@@ -30,9 +30,9 @@ import java.util.List;
 /**
  * Test for issue r759.
  */
-public class SelectLargeTest extends JupiterTestBase {
+class SelectLargeTest extends JupiterTestBase {
   @Test
-  public void multipleSelectShouldBePossibleIfMultipleAttributeEmpty() {
+  void multipleSelectShouldBePossibleIfMultipleAttributeEmpty() {
     driver.get(pages.formPage);
 
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
@@ -50,7 +50,7 @@ public class SelectLargeTest extends JupiterTestBase {
   }
 
   @Test
-  public void selectByVisibleTextShouldNormalizeSpaces() {
+  void selectByVisibleTextShouldNormalizeSpaces() {
     driver.get(pages.formPage);
 
     WebElement selectElement = driver.findElement(By.name("select_with_spaces"));

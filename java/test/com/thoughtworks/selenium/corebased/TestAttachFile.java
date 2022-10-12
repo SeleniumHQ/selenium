@@ -50,7 +50,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
   }
 
   @Test
-  public void testAttachFile() throws Exception {
+  void testAttachFile() throws Exception {
     selenium.open("/common/upload.html");
     selenium.attachFile("upload", testFile.toURI().toURL().toString());
     selenium.click("go");
@@ -61,7 +61,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
   }
 
   @Test
-  public void testAttachNonExistingFile() throws Exception {
+  void testAttachNonExistingFile() throws Exception {
     selenium.open("/common/upload.html");
     try {
       selenium.attachFile("upload", testFile.toURI().toURL().toString() + "-missing");

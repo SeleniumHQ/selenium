@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
 @Tag("UnitTests")
-public class HttpClientFactoryTest {
+class HttpClientFactoryTest {
 
   private String oldProperty;
 
@@ -47,19 +47,19 @@ public class HttpClientFactoryTest {
   }
 
   @Test
-  public void canCreateDefaultHttpClientFactory() {
+  void canCreateDefaultHttpClientFactory() {
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("netty");
   }
 
   @Test
-  public void canCreateHttpClientFactoryByName() {
+  void canCreateHttpClientFactoryByName() {
     HttpClient.Factory factory = HttpClient.Factory.create("netty");
     assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("netty");
   }
 
   @Test
-  public void canCreateCustomClientFactoryByName() {
+  void canCreateCustomClientFactoryByName() {
     HttpClient.Factory factory = HttpClient.Factory.create("cheesy");
     assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("cheesy");
   }
@@ -75,20 +75,20 @@ public class HttpClientFactoryTest {
   }
 
   @Test
-  public void shouldRespectSystemProperties() {
+  void shouldRespectSystemProperties() {
     System.setProperty("webdriver.http.factory", "cheesy");
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("cheesy");
   }
 
   @Test
-  public void shouldNotCreateHttpClientFactoryByInvalidName() {
+  void shouldNotCreateHttpClientFactoryByInvalidName() {
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
         () -> HttpClient.Factory.create("orange"));
   }
 
   @Test
-  public void canDetectHttpClientFactoriesWithSameName() {
+  void canDetectHttpClientFactoriesWithSameName() {
     assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
         () -> HttpClient.Factory.create("duplicated"));
   }

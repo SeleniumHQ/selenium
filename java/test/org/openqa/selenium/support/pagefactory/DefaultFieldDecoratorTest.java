@@ -36,7 +36,7 @@ import org.openqa.selenium.support.FindBys;
 import org.openqa.selenium.support.PageFactory;
 
 @Tag("UnitTests")
-public class DefaultFieldDecoratorTest {
+class DefaultFieldDecoratorTest {
 
   // Unused fields are used by tests. Do not remove!
   @SuppressWarnings("unused") private WebElement element1;
@@ -79,7 +79,7 @@ public class DefaultFieldDecoratorTest {
   }
 
   @Test
-  public void decoratesWebElement() throws Exception {
+  void decoratesWebElement() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
                                   getClass().getDeclaredField("element1"))).isNotNull();
@@ -88,7 +88,7 @@ public class DefaultFieldDecoratorTest {
   }
 
   @Test
-  public void decoratesAnnotatedWebElementList() throws Exception {
+  void decoratesAnnotatedWebElementList() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
                                   getClass().getDeclaredField("list3"))).isNotNull();
@@ -99,7 +99,7 @@ public class DefaultFieldDecoratorTest {
   }
 
   @Test
-  public void doesNotDecorateNonAnnotatedWebElementList() throws Exception {
+  void doesNotDecorateNonAnnotatedWebElementList() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
                                   getClass().getDeclaredField("list1"))).isNull();
@@ -108,14 +108,14 @@ public class DefaultFieldDecoratorTest {
   }
 
   @Test
-  public void doesNotDecorateNonWebElement() throws Exception {
+  void doesNotDecorateNonWebElement() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
                                   getClass().getDeclaredField("num"))).isNull();
   }
 
   @Test
-  public void doesNotDecorateListOfSomethingElse() throws Exception {
+  void doesNotDecorateListOfSomethingElse() throws Exception {
     FieldDecorator decorator = createDecoratorWithDefaultLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
                                   getClass().getDeclaredField("list6"))).isNull();
@@ -126,7 +126,7 @@ public class DefaultFieldDecoratorTest {
   }
 
   @Test
-  public void doesNotDecorateNullLocator() throws Exception {
+  void doesNotDecorateNullLocator() throws Exception {
     FieldDecorator decorator = createDecoratorWithNullLocator();
     assertThat(decorator.decorate(getClass().getClassLoader(),
                                   getClass().getDeclaredField("element1"))).isNull();

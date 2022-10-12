@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestElementPresent extends InternalSelenseTestBase {
   @Test
-  public void testElementPresent() throws Exception {
+  void testElementPresent() throws Exception {
     selenium.open("test_element_present.html");
     assertTrue(selenium.isElementPresent("aLink"));
     selenium.click("removeLinkAfterAWhile");

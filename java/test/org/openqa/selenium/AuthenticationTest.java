@@ -26,7 +26,7 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-public class AuthenticationTest extends JupiterTestBase {
+class AuthenticationTest extends JupiterTestBase {
 
   @BeforeEach
   public void testRequiresAuthentication() {

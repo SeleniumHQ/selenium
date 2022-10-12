@@ -25,5 +25,5 @@ import org.junit.platform.suite.api.Suite;
   ShortTermMemoryHandlerUnitTest.class
 })
 @Suite
-public class LoggingTests {
+class LoggingTests {
 }

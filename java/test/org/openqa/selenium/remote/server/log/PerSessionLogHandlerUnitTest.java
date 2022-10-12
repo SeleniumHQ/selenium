@@ -32,12 +32,12 @@ import java.util.logging.LogRecord;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PerSessionLogHandlerUnitTest {
+class PerSessionLogHandlerUnitTest {
 
   private static final int CAPACITY = 1;
 
   @Test
-  public void testPopulationOfSessionLog() throws IOException {
+  void testPopulationOfSessionLog() throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
     SessionId sessionId = new SessionId("session-1");
     handler.attachToCurrentThread(sessionId);
@@ -79,7 +79,7 @@ public class PerSessionLogHandlerUnitTest {
   }
 
   @Test
-  public void testThreadToSessionMappingOnInitialNullSession()
+  void testThreadToSessionMappingOnInitialNullSession()
     throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
     LogRecord firstRecord = new LogRecord(Level.INFO, "First Log Record");
@@ -96,7 +96,7 @@ public class PerSessionLogHandlerUnitTest {
   }
 
   @Test
-  public void testThreadToSessionMappingOnTwoInitialNullSessions()
+  void testThreadToSessionMappingOnTwoInitialNullSessions()
     throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
     LogRecord firstRecord = new LogRecord(Level.INFO, "First Log Record");
@@ -125,7 +125,7 @@ public class PerSessionLogHandlerUnitTest {
   }
 
   @Test
-  public void testThreadToSessionMappingAndClearMapping() throws IOException {
+  void testThreadToSessionMappingAndClearMapping() throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
     LogRecord firstSessionLog = new LogRecord(Level.INFO,
       "First Session Related Log Record");
@@ -152,7 +152,7 @@ public class PerSessionLogHandlerUnitTest {
   }
 
   @Test
-  public void testShouldReturnEmptyLogIfNoRecordHasBeenLogged()
+  void testShouldReturnEmptyLogIfNoRecordHasBeenLogged()
     throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
 
@@ -160,7 +160,7 @@ public class PerSessionLogHandlerUnitTest {
   }
 
   @Test
-  public void testShouldNotCopyThreadTempLogsToSessionLogsIfNoLogRecordForThreadPresent()
+  void testShouldNotCopyThreadTempLogsToSessionLogsIfNoLogRecordForThreadPresent()
     throws IOException {
     PerSessionLogHandler handler = createPerSessionLogHandler();
 
