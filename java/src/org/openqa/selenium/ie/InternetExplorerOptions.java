@@ -58,7 +58,7 @@ import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
  */
 public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplorerOptions> {
 
-  final static String IE_OPTIONS = "se:ieOptions";
+  public static final String IE_OPTIONS = "se:ieOptions";
 
   private static final String FULL_PAGE_SCREENSHOT = "ie.enableFullPageScreenshot";
   private static final String UPLOAD_DIALOG_TIMEOUT = "ie.fileUploadDialogTimeout";
