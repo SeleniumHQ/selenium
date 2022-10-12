@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.web;
 
+import java.io.File;
+import java.util.Optional;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -39,21 +41,34 @@ public class GridUiRoute implements Routable {
   private final Route routes;
 
   public GridUiRoute() {
-    URL uiRoot = GridUiRoute.class.getResource(GRID_RESOURCE_WITH_PREFIX);
-    if (uiRoot != null) {
-      ResourceHandler uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, GRID_RESOURCE));
-      HttpResponse uiRedirect = new HttpResponse()
-        .setStatus(HTTP_MOVED_TEMP)
-        .addHeader("Location", "/ui");
-      routes = Route.combine(
-        get("/").to(() -> req -> uiRedirect),
-        get("/grid/console").to(() -> req -> uiRedirect),
-        Route.prefix("/ui").to(Route.matching(req -> true).to(() -> uiHandler)));
-    } else {
+    Class<?> clazz = GridUiRoute.class;
+    URL uiRoot = Optional
+      .ofNullable(clazz.getResource(GRID_RESOURCE_WITH_PREFIX))
+      .orElse(clazz.getProtectionDomain().getCodeSource().getLocation());
+
+    if (uiRoot == null) {
       LOG.warning("It was not possible to load the Grid UI.");
       Json json = new Json();
       routes = Route.matching(req -> false).to(() -> new NoHandler(json));
+      return;
     }
+
+    Resource resource;
+    if ("file".equalsIgnoreCase(uiRoot.getProtocol())) {
+      File jarFileToUse = new File(uiRoot.getFile());
+      resource = new IndependentJarFileResource(jarFileToUse, GRID_RESOURCE_WITH_PREFIX, "");
+    } else {
+      resource = new ClassPathResource(uiRoot, GRID_RESOURCE_WITH_PREFIX);
+    }
+
+    ResourceHandler uiHandler = new ResourceHandler(resource);
+    HttpResponse uiRedirect = new HttpResponse()
+      .setStatus(HTTP_MOVED_TEMP)
+      .addHeader("Location", "/ui");
+    routes = Route.combine(
+      get("/").to(() -> req -> uiRedirect),
+      get("/grid/console").to(() -> req -> uiRedirect),
+      Route.prefix("/ui").to(Route.matching(req -> true).to(() -> uiHandler)));
   }
 
   @Override
