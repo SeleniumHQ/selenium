@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestVisibility extends InternalSelenseTestBase {
-
   @Test
   void testVisibility() {
     selenium.open("test_visibility.html");

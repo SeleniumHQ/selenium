@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestSelectMultiLevelFrame extends InternalSelenseTestBase {
-
   @Test
   void testSelectMultiLevelFrame() {
     selenium.open("test_multi_level_frame.html");

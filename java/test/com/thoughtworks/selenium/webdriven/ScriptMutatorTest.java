@@ -34,8 +34,8 @@ public class ScriptMutatorTest extends JupiterTestBase {
     selenium.open(pages.tables);
 
     String rowCount = selenium.getEval(
-      "var table = selenium.browserbot.findElement('id=base'); " +
-      "table.rows[0].cells.length;");
+        "var table = selenium.browserbot.findElement('id=base'); " +
+        "table.rows[0].cells.length;");
 
     assertEquals("3", rowCount);
   }

@@ -90,8 +90,8 @@ public class WebDriverBackedSeleniumLargeTest extends JupiterTestBase {
   void testShouldBeAbleToInvokeSeleniumCoreElementLocatorsWithGetEval() {
     selenium.open(pages.simpleTestPage);
     String tagName = selenium.getEval(
-      "var el = selenium.browserbot.findElement('id=oneline');" +
-      "el.tagName.toUpperCase();");
+        "var el = selenium.browserbot.findElement('id=oneline');" +
+        "el.tagName.toUpperCase();");
     assertEquals("P", tagName);
   }
 }

@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestAddLocationStrategy extends InternalSelenseTestBase {
-
   @Test
   void testAddLocationStrategy() {
     selenium.open("test_click_page1.html");

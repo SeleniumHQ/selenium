@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestGettingValueOfCheckbox extends InternalSelenseTestBase {
-
   @Test
   void testGettingValueOfCheckbox() {
     selenium.open("test_submit.html");

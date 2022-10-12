@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestEvilClosingWindow extends InternalSelenseTestBase {
-
   @Test
   void testEvilClosingWindow() {
     selenium.open("test_select_window.html");
@@ -30,11 +29,11 @@ public class TestEvilClosingWindow extends InternalSelenseTestBase {
     selenium.waitForPopUp("myPopupWindow", "5000");
     selenium.selectWindow("myPopupWindow");
     verifyTrue(selenium.getLocation().matches(
-      "^.*/test_select_window_popup\\.html$"));
+        "^.*/test_select_window_popup\\.html$"));
     selenium.close();
     try {
       assertTrue(selenium.getLocation().matches(
-        "^.*/test_select_window_popup\\.html$"));
+          "^.*/test_select_window_popup\\.html$"));
       fail("expected failure");
     } catch (Throwable e) {
     }

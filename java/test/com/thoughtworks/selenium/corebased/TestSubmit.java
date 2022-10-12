@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestSubmit extends InternalSelenseTestBase {
-
   @Test
   void testSubmit() {
     selenium.open("test_submit.html");

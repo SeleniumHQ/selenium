@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestQuickOpen extends InternalSelenseTestBase {
-
   @Test
   void testQuickOpen() {
     // <tr>

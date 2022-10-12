@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class TestLargeHtml extends InternalSelenseTestBase {
-
   @Test
   void testLargeHtml() {
     selenium.open("test_large_html.html");

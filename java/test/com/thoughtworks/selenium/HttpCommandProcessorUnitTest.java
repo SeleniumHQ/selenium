@@ -17,12 +17,6 @@
 
 package com.thoughtworks.selenium;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -32,6 +26,12 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 
 /**
  * {@link com.thoughtworks.selenium.HttpCommandProcessor} unit test class.
@@ -65,7 +65,7 @@ public class HttpCommandProcessorUnitTest {
   @Test
   void testResourcesClosedWhenIoeOnGetConnection() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
-      "localhost", 4444, "*chrome", "http://www.google.com");
+        "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetConnection = true;
     try {
       cmdProc.getCommandResponseAsString("testCommand");
@@ -78,7 +78,7 @@ public class HttpCommandProcessorUnitTest {
   @Test
   void testResourcesClosedWhenIoeOnGetOutputStream() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
-      "localhost", 4444, "*chrome", "http://www.google.com");
+        "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetOutputStream = true;
     try {
       cmdProc.getCommandResponseAsString("testCommand");
@@ -91,7 +91,7 @@ public class HttpCommandProcessorUnitTest {
   @Test
   void testResourcesClosedWhenIoeOnGetInputStream() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
-      "localhost", 4444, "*chrome", "http://www.google.com");
+        "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetInputStream = true;
     try {
       cmdProc.getCommandResponseAsString("testCommand");
@@ -104,7 +104,7 @@ public class HttpCommandProcessorUnitTest {
   @Test
   void testResourcesClosedWhenNoIoes() throws IOException {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
-      "localhost", 4444, "*chrome", "http://www.google.com");
+        "localhost", 4444, "*chrome", "http://www.google.com");
 
     cmdProc.getCommandResponseAsString("testCommand");
     cmdProc.verifyClosedResources(true, true, true);
@@ -113,12 +113,12 @@ public class HttpCommandProcessorUnitTest {
   @Test
   void testGetBooleanArray() {
     HttpCommandProcessor processor =
-      new HttpCommandProcessor("localhost", 4444, "*chrome", "http://www.openqa.org");
+        new HttpCommandProcessor("localhost", 4444, "*chrome", "http://www.openqa.org");
     processor = spy(processor);
 
-    String[] cmdArgs = new String[]{"1", "2"};
-    String[] cmdResults = new String[]{"true", "false"};
-    boolean[] boolCmdResults = new boolean[]{true, false};
+    String[] cmdArgs = new String[] {"1", "2"};
+    String[] cmdResults = new String[] {"true", "false"};
+    boolean[] boolCmdResults = new boolean[] {true, false};
 
     doReturn(cmdResults).when(processor).getStringArray("command", cmdArgs);
 
@@ -144,14 +144,13 @@ public class HttpCommandProcessorUnitTest {
     private Reader closedReader;
 
     public IOEThrowingHttpCommandProcessor(String serverHost,
-                                           int serverPort, String browserStartCommand,
-                                           String browserURL) {
+        int serverPort, String browserStartCommand, String browserURL) {
       super(serverHost, serverPort, browserStartCommand, browserURL);
     }
 
     @Override
     protected HttpURLConnection getHttpUrlConnection(URL urlForServlet)
-      throws IOException {
+        throws IOException {
       if (throwIoeOnGetConnection) {
         throw new IOException("injected exception");
       }
@@ -160,7 +159,7 @@ public class HttpCommandProcessorUnitTest {
 
     @Override
     protected Writer getOutputStreamWriter(HttpURLConnection conn)
-      throws IOException {
+        throws IOException {
       if (throwIoeOnGetOutputStream) {
         throw new IOException("injected exception");
       }
@@ -169,7 +168,7 @@ public class HttpCommandProcessorUnitTest {
 
     @Override
     protected Reader getInputStreamReader(HttpURLConnection conn)
-      throws IOException {
+        throws IOException {
       if (throwIoeOnGetInputStream) {
         throw new IOException("injected exception");
       }
@@ -183,7 +182,7 @@ public class HttpCommandProcessorUnitTest {
 
     @Override
     protected void closeResources(HttpURLConnection conn, Writer wr,
-                                  Reader rdr) {
+        Reader rdr) {
       closedConn = conn;
       closedWriter = wr;
       closedReader = rdr;
@@ -191,10 +190,9 @@ public class HttpCommandProcessorUnitTest {
     }
 
     protected boolean verifyClosedResources(boolean connNotNull,
-                                            boolean writerNotNull, boolean readerNotNull) {
+        boolean writerNotNull, boolean readerNotNull) {
       return ((connNotNull && (null != closedConn))
-              && (writerNotNull && (null != closedWriter)) && (readerNotNull && (null
-                                                                                 != closedReader)));
+          && (writerNotNull && (null != closedWriter)) && (readerNotNull && (null != closedReader)));
     }
 
   }

@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestElementOrder extends InternalSelenseTestBase {
-
   @Test
   void testElementOrder() {
     selenium.open("test_element_order.html");

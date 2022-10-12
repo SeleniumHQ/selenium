@@ -28,5 +28,4 @@ import org.junit.platform.suite.api.Suite;
   WebDriverCommandProcessorTest.class})
 @Suite
 public class SmallTests {
-
 }

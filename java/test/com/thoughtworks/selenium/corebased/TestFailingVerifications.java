@@ -22,13 +22,12 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestFailingVerifications extends InternalSelenseTestBase {
-
   @Test
   void testFailingVerifications() {
     selenium.open("/test_verifications.html");
     try {
       assertTrue(selenium.getLocation().matches(
-        "^[\\s\\S]*/common/legacy/not_test_verifications\\.html$"));
+          "^[\\s\\S]*/common/legacy/not_test_verifications\\.html$"));
       fail("expected failure");
     } catch (Throwable e) {
     }
@@ -94,7 +93,7 @@ public class TestFailingVerifications extends InternalSelenseTestBase {
     }
     try {
       assertEquals(join(selenium.getSelectOptions("theSelect"), ','),
-                   "first\\,option,second option");
+          "first\\,option,second option");
       fail("expected failure");
     } catch (Throwable e) {
     }

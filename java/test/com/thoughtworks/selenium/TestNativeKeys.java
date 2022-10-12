@@ -25,7 +25,6 @@ import java.awt.event.KeyEvent;
 
 @Disabled("Focus does not focus")
 public class TestNativeKeys extends InternalSelenseTestBase {
-
   @Test
   void testKeyPressNative() {
     selenium.open("test_type_page1.html");

@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestErrorChecking extends InternalSelenseTestBase {
-
   @Test
   void testErrorChecking() {
     selenium.open("test_click_page1.html");

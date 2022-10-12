@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestFailingAssert extends InternalSelenseTestBase {
-
   @Test
   void testFailingAssert() {
     selenium.open("test_verifications.html");

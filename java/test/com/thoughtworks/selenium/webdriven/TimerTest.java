@@ -17,12 +17,11 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.thoughtworks.selenium.SeleniumException;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TimerTest {
 
@@ -59,7 +58,6 @@ public class TimerTest {
 
 
   class SeleneseCallable extends SeleneseCommand<Object> {
-
     final int waitFor;
 
     SeleneseCallable(int waitFor) {

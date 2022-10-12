@@ -81,7 +81,6 @@ import com.thoughtworks.selenium.corebased.TestWaitFor;
 import com.thoughtworks.selenium.corebased.TestWaitForNot;
 import com.thoughtworks.selenium.corebased.TestWaitInPopupWindow;
 import com.thoughtworks.selenium.corebased.TestXPathLocators;
-
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 

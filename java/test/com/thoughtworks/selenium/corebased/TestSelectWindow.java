@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import java.util.regex.Pattern;
 
 public class TestSelectWindow extends InternalSelenseTestBase {
-
   @Test
   void testSelectWindow() {
     selenium.open("test_select_window.html");
@@ -32,11 +31,11 @@ public class TestSelectWindow extends InternalSelenseTestBase {
     selenium.waitForPopUp("myPopupWindow", "5000");
     selenium.selectWindow("name=myPopupWindow");
     verifyTrue(selenium.getLocation().matches(
-      "^.*/test_select_window_popup\\.html$"));
+        "^.*/test_select_window_popup\\.html$"));
     verifyEquals(selenium.getTitle(), "Select Window Popup");
     verifyTrue(join(selenium.getAllWindowNames(), ',').matches("^[\\s\\S]*,[\\s\\S]*$"));
     verifyTrue(Pattern.compile("myPopupWindow").matcher(join(selenium.getAllWindowNames(), ','))
-                 .find());
+        .find());
     selenium.close();
     selenium.selectWindow("null");
     verifyTrue(selenium.getLocation().matches("^.*/test_select_window\\.html$"));
@@ -44,21 +43,21 @@ public class TestSelectWindow extends InternalSelenseTestBase {
     selenium.waitForPopUp("myPopupWindow", "5000");
     selenium.selectWindow("title=Select Window Popup");
     verifyTrue(selenium.getLocation().matches(
-      "^.*/test_select_window_popup\\.html$"));
+        "^.*/test_select_window_popup\\.html$"));
     selenium.close();
     selenium.selectWindow("null");
     selenium.click("popupAnonymous");
     selenium.waitForPopUp("anonymouspopup", "5000");
     selenium.selectWindow("anonymouspopup");
     verifyTrue(selenium.getLocation().matches(
-      "^.*/test_select_window_popup\\.html$"));
+        "^.*/test_select_window_popup\\.html$"));
     selenium.click("closePage");
     selenium.selectWindow("null");
     selenium.click("popupAnonymous");
     selenium.waitForPopUp("anonymouspopup", "5000");
     selenium.selectWindow("anonymouspopup");
     verifyTrue(selenium.getLocation().matches(
-      "^.*/test_select_window_popup\\.html$"));
+        "^.*/test_select_window_popup\\.html$"));
     selenium.click("closePage2");
   }
 }

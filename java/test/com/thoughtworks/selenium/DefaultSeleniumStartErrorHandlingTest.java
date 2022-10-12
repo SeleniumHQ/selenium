@@ -35,7 +35,7 @@ class DefaultSeleniumStartErrorHandlingTest {
       fail("Did not catch RuntimeException as expected");
     } catch (RuntimeException expected) {
       assertTrue(-1 != expected.getMessage().indexOf(
-        "Could not contact Selenium Server; have you started it on '' ?"));
+          "Could not contact Selenium Server; have you started it on '' ?"));
       assertTrue(-1 != expected.getMessage().indexOf("Connection refused: connect"));
     }
   }
@@ -44,7 +44,7 @@ class DefaultSeleniumStartErrorHandlingTest {
   void testShouldLeaveOtherExceptionAlone() {
     FailOnStartCommandProcessor failOnStartCommandProcessor;
     failOnStartCommandProcessor =
-      new FailOnStartCommandProcessor("some crazy unexpected exception");
+        new FailOnStartCommandProcessor("some crazy unexpected exception");
 
     try {
       new DefaultSelenium(failOnStartCommandProcessor).start();
@@ -57,7 +57,6 @@ class DefaultSeleniumStartErrorHandlingTest {
   }
 
   private static class FailOnStartCommandProcessor implements CommandProcessor {
-
     private final String message;
 
     FailOnStartCommandProcessor(String message) {

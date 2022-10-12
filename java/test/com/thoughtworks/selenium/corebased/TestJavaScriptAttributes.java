@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestJavaScriptAttributes extends InternalSelenseTestBase {
-
   @Test
   void testJavaScriptAttributes() {
     selenium.open("test_javascript_attributes.html");

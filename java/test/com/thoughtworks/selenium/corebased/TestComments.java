@@ -22,12 +22,11 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestComments extends InternalSelenseTestBase {
-
   @Test
   void testComments() {
     selenium.open("test_verifications.html?foo=bar");
     verifyTrue(selenium.getLocation().matches(
-      "^.*/test_verifications\\.html[\\s\\S]*$"));
+        "^.*/test_verifications\\.html[\\s\\S]*$"));
     verifyEquals(selenium.getValue("theText"), "the text value");
     verifyEquals(selenium.getValue("theHidden"), "the hidden value");
     verifyEquals(selenium.getText("theSpan"), "this is the span");

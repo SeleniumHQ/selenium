@@ -24,18 +24,17 @@ import com.thoughtworks.selenium.corebased.TestBasicAuth;
 import com.thoughtworks.selenium.corebased.TestBrowserVersion;
 import com.thoughtworks.selenium.corebased.TestCheckUncheck;
 import com.thoughtworks.selenium.corebased.TestClick;
-
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @SelectClasses({
-  TestAddLocationStrategy.class,
-  TestAddSelection.class,
-  TestAlerts.class,
-  TestBasicAuth.class,
-  TestBrowserVersion.class,
-  TestCheckUncheck.class,
-  TestClick.class,
+    TestAddLocationStrategy.class,
+    TestAddSelection.class,
+    TestAlerts.class,
+    TestBasicAuth.class,
+    TestBrowserVersion.class,
+    TestCheckUncheck.class,
+    TestClick.class,
 //    TestClickAt.class,
 //    TestClickBlankTarget.class,
 //    TestClickJavascriptHref.class,

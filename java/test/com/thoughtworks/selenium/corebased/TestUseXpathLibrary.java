@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 
 @Disabled("WebDriverBackedSelenium uses webdriver for xpath evaluation")
 public class TestUseXpathLibrary extends InternalSelenseTestBase {
-
   @Test
   void testUseXpathLibrary() {
     selenium.useXpathLibrary("ajaxslt");
@@ -32,14 +31,14 @@ public class TestUseXpathLibrary extends InternalSelenseTestBase {
     assertEquals(selenium.getXpathCount("//"), "1");
     selenium.useXpathLibrary("javascript-xpath");
     assertEquals(selenium.getEval("this.browserbot.xpathEvaluator.getCurrentEngine()"),
-                 "javascript-xpath");
+        "javascript-xpath");
     assertEquals(selenium.getXpathCount("//"), "1");
     selenium.useXpathLibrary("");
     assertEquals(selenium.getEval("this.browserbot.xpathEvaluator.getCurrentEngine()"),
-                 "javascript-xpath");
+        "javascript-xpath");
     selenium.useXpathLibrary("nonExisting-xpath-library");
     assertEquals(selenium.getEval("this.browserbot.xpathEvaluator.getCurrentEngine()"),
-                 "javascript-xpath");
+        "javascript-xpath");
     selenium.useXpathLibrary("default");
     assertEquals(selenium.getEval("this.browserbot.xpathEvaluator.getCurrentEngine()"), "ajaxslt");
   }

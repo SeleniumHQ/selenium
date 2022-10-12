@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestFramesOpen extends InternalSelenseTestBase {
-
   @Test
   void testFramesOpen() {
     selenium.open("Frames.html");

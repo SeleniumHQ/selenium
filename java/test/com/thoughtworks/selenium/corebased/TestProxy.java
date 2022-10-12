@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestProxy extends InternalSelenseTestBase {
-
   @Test
   void testProxy() {
     // selenium.setTimeout("20000");

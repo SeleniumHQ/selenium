@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestCheckUncheck extends InternalSelenseTestBase {
-
   @Test
   void testCheckUncheck() {
     selenium.open("test_check_uncheck.html");

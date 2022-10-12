@@ -22,8 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestClickJavascriptHrefWithVoidChrome extends
-                                                   InternalSelenseTestBase {
-
+    InternalSelenseTestBase {
   @Test
   void testClickJavascriptHrefWithVoidChrome() {
     selenium.open("test_click_javascript_href_void_chrome.html");

@@ -18,14 +18,8 @@
 package com.thoughtworks.selenium.webdriven;
 
 
-import static java.util.Collections.emptyMap;
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 import com.thoughtworks.selenium.DefaultSelenium;
 import com.thoughtworks.selenium.Selenium;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +35,11 @@ import org.openqa.selenium.remote.server.ActiveSessions;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.testing.Pages;
+
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class WebDriverBackedSeleniumHandlerTest {
 

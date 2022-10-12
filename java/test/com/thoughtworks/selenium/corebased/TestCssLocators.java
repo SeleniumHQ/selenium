@@ -23,7 +23,6 @@ import com.thoughtworks.selenium.Selenium;
 import org.junit.jupiter.api.Test;
 
 public class TestCssLocators extends InternalSelenseTestBase {
-
   @Test
   void testCssLocators() {
 
@@ -139,16 +138,14 @@ public class TestCssLocators extends InternalSelenseTestBase {
 
     // combinator test
 
-    verifyEquals(selenium.getText("css=div#combinatorTest span#firstChild ~ span"),
-                 "another child");
+    verifyEquals(selenium.getText("css=div#combinatorTest span#firstChild ~ span"), "another child");
 
     if (!isIe) {
       verifyEquals(selenium.getText("css=div#structuralPseudo :first-child"), "span1");
 
       verifyEquals(selenium.getText("css=div#structuralPseudo :last-child"), "div4");
 
-      verifyEquals(selenium.getText("css=div#structuralPseudo :not(span):not(:last-child)"),
-                   "div1");
+      verifyEquals(selenium.getText("css=div#structuralPseudo :not(span):not(:last-child)"), "div1");
     }
 
     if (isCapableOfAdvancedSelectors(selenium, isIe)) {

@@ -29,7 +29,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class TypeKeysTest {
-
   private ElementFinder elementFinder;
   private WebElement element;
 
@@ -50,7 +49,7 @@ public class TypeKeysTest {
     String expected = newString(Keys.ARROW_DOWN, Keys.ARROW_LEFT, Keys.ARROW_RIGHT, Keys.ARROW_UP);
     String input = "\\40\\37\\39\\38";
 
-    new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[]{"foo", input});
+    new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[] {"foo", input});
 
     verify(element).sendKeys(expected);
   }
@@ -60,7 +59,7 @@ public class TypeKeysTest {
     String expected = newString(Keys.ENTER, Keys.RETURN, Keys.ESCAPE);
     String input = "\\10\\13\\27";
 
-    new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[]{"foo", input});
+    new TypeKeys(new AlertOverrideStub(), elementFinder).apply(null, new String[] {"foo", input});
 
     verify(element).sendKeys(expected);
   }

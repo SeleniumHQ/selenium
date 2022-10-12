@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestOpenInTargetFrame extends InternalSelenseTestBase {
-
   @Test
   void testOpenInTargetFrame() throws Exception {
     selenium.open("test_open_in_target_frame.html");

@@ -64,7 +64,7 @@ public class TestAttachFile extends InternalSelenseTestBase {
   void testAttachNonExistingFile() throws Exception {
     selenium.open("/common/upload.html");
     try {
-      selenium.attachFile("upload", testFile.toURI().toURL() + "-missing");
+      selenium.attachFile("upload", testFile.toURI().toURL().toString() + "-missing");
     } catch (SeleniumException expected) {
       assertTrue(expected.getCause() instanceof IOException);
       return;

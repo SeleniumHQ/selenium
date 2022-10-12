@@ -17,14 +17,13 @@
 
 package com.thoughtworks.selenium.condition;
 
+import com.thoughtworks.selenium.Selenium;
+import com.thoughtworks.selenium.SeleniumException;
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
-
-import org.junit.jupiter.api.Test;
 
 /**
  * Test for Condition class.
@@ -41,8 +40,7 @@ public class ConditionTest {
       fail("the condition should have failed");
     } catch (AssertionError expected) {
       assertEquals("Condition \"Sky should be blue\" failed to become true within 100 msec; " +
-                   "this condition should always fail; [sky is in fact pink]",
-                   expected.getMessage());
+        "this condition should always fail; [sky is in fact pink]", expected.getMessage());
     }
   }
 
@@ -169,7 +167,7 @@ public class ConditionTest {
       fail("should have thrown a exception");
     } catch (AssertionError expected) {
       assertEquals("Exception while waiting for 'Condition \"foo\"'; cause: ooops",
-                   expected.getMessage());
+        expected.getMessage());
     }
   }
 
@@ -204,12 +202,11 @@ public class ConditionTest {
       fail("should have thrown a runtime exception");
     } catch (AssertionError expected) {
       assertEquals("Exception while waiting for 'Condition \"foo bar baz\"'",
-                   expected.getMessage());
+        expected.getMessage());
     }
   }
 
   private static class AlwaysFalseCondition extends Condition {
-
     public AlwaysFalseCondition() {
       super("Sky should be blue");
     }
@@ -222,7 +219,6 @@ public class ConditionTest {
   }
 
   private static class AlwaysTrueCondition extends Condition {
-
     public AlwaysTrueCondition() {
       super("Sky should be blue");
     }

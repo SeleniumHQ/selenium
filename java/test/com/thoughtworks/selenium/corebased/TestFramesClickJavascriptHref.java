@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestFramesClickJavascriptHref extends InternalSelenseTestBase {
-
   @Test
   void testFramesClickJavascriptHref() {
     selenium.open("Frames.html");

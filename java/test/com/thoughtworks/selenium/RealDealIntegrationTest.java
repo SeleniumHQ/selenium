@@ -24,12 +24,11 @@ public class RealDealIntegrationTest extends InternalSelenseTestBase {
   @Test
   void testWithJavaScript() {
     selenium
-      .setContext(
-        "A real test, using the real Selenium on the browser side served by Jetty, driven from Java");
+        .setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java");
     selenium.setBrowserLogLevel(SeleniumLogLevels.DEBUG);
     selenium.open("test_click_page1.html");
     assertTrue("link 'link' doesn't contain expected text",
-               selenium.getText("link").indexOf("Click here for next page") != -1);
+        selenium.getText("link").indexOf("Click here for next page") != -1);
     String[] links = selenium.getAllLinks();
     assertTrue(links.length > 3);
     assertEquals(links[3], "linkToAnchorOnThisPage");
@@ -49,8 +48,7 @@ public class RealDealIntegrationTest extends InternalSelenseTestBase {
   @Test
   void testFailure() {
     selenium
-      .setContext(
-        "A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java");
+        .setContext("A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java");
     selenium.open("test_click_page1.html");
     String badElementName = "This element doesn't exist, so Selenium should throw an exception";
     try {
@@ -58,10 +56,7 @@ public class RealDealIntegrationTest extends InternalSelenseTestBase {
       fail("No exception was thrown!");
     } catch (SeleniumException se) {
       assertTrue("Exception message isn't as expected: " + se.getMessage(), se.getMessage()
-                                                                              .indexOf(
-                                                                                badElementName
-                                                                                + " not found")
-                                                                            != -1);
+          .indexOf(badElementName + " not found") != -1);
     }
 
     assertFalse("Negative test", selenium.isTextPresent("Negative test: verify non-existent text"));

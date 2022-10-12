@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestClickJavascriptHref extends InternalSelenseTestBase {
-
   @Test
   void testClickJavascriptHref() {
     selenium.open("test_click_javascript_page.html");

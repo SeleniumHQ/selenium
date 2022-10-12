@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestEditable extends InternalSelenseTestBase {
-
   @Test
   void testEditable() {
     selenium.open("test_editable.html");

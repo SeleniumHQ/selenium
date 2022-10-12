@@ -22,14 +22,13 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestVerifications extends InternalSelenseTestBase {
-
   @Test
   void testVerifications() {
     selenium.open("test_verifications.html?foo=bar");
     verifyTrue(selenium.getLocation().matches(
-      "^.*/test_verifications\\.html[\\s\\S]*$"));
+        "^.*/test_verifications\\.html[\\s\\S]*$"));
     verifyTrue(selenium.getLocation().matches(
-      "^.*/test_verifications\\.html[\\s\\S]foo=bar$"));
+        "^.*/test_verifications\\.html[\\s\\S]foo=bar$"));
     verifyEquals(selenium.getValue("theText"), "the text value");
     verifyNotEquals("not the text value", selenium.getValue("theText"));
     verifyEquals(selenium.getValue("theHidden"), "the hidden value");
@@ -50,7 +49,7 @@ public class TestVerifications extends InternalSelenseTestBase {
     verifyEquals(selenium.getSelectedLabel("theSelect"), "second option");
     verifyEquals(selenium.getSelectedId("theSelect"), "o2");
     verifyEquals(join(selenium.getSelectOptions("theSelect"), ','),
-                 "first option,second option,third,,option");
+        "first option,second option,third,,option");
     verifyEquals(selenium.getAttribute("theText@class"), "foo");
     verifyNotEquals("fox", selenium.getAttribute("theText@class"));
     verifyEquals(selenium.getTitle(), "theTitle");

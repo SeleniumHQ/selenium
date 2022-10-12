@@ -18,15 +18,13 @@
 package com.thoughtworks.selenium;
 
 import com.thoughtworks.selenium.condition.ConditionTestSuite;
-
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @SelectClasses({
-  ConditionTestSuite.class,
-  WaitTest.class
+    ConditionTestSuite.class,
+    WaitTest.class
 })
 @Suite
 public class WaitTests {
-
 }

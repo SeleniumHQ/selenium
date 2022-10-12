@@ -67,7 +67,7 @@ public class BrowserConfigurationOptionsTest {
   @Test
   void testSetSingleWindowWhenMultiWindowWasAlreadySet() {
     BrowserConfigurationOptions bco =
-      new BrowserConfigurationOptions().setMultiWindow().setSingleWindow();
+        new BrowserConfigurationOptions().setMultiWindow().setSingleWindow();
     assertTrue(bco.isSingleWindow());
     assertFalse(bco.isMultiWindow());
     assertTrue(bco.isSet(BrowserConfigurationOptions.SINGLE_WINDOW));
@@ -83,7 +83,7 @@ public class BrowserConfigurationOptionsTest {
   @Test
   void testSetMultiWindowWhenSingleWindowWasAlreadySet() {
     BrowserConfigurationOptions bco =
-      new BrowserConfigurationOptions().setSingleWindow().setMultiWindow();
+        new BrowserConfigurationOptions().setSingleWindow().setMultiWindow();
     assertTrue(bco.isMultiWindow());
     assertFalse(bco.isSingleWindow());
     assertTrue(bco.isSet(BrowserConfigurationOptions.MULTI_WINDOW));
@@ -92,7 +92,7 @@ public class BrowserConfigurationOptionsTest {
   @Test
   void testSetBrowserExecutablePathWithNullPath() {
     BrowserConfigurationOptions bco =
-      new BrowserConfigurationOptions().setBrowserExecutablePath(null);
+        new BrowserConfigurationOptions().setBrowserExecutablePath(null);
     assertFalse(bco.isSet(BrowserConfigurationOptions.BROWSER_EXECUTABLE_PATH));
   }
 
@@ -100,7 +100,7 @@ public class BrowserConfigurationOptionsTest {
   void testSetBrowserExecutablePathWithValidPath() {
     String path = "c:\\chrome\\is\\cool.exe with_arg";
     BrowserConfigurationOptions bco =
-      new BrowserConfigurationOptions().setBrowserExecutablePath(path);
+        new BrowserConfigurationOptions().setBrowserExecutablePath(path);
     assertTrue(bco.isSet(BrowserConfigurationOptions.BROWSER_EXECUTABLE_PATH));
     assertEquals(path, bco.getBrowserExecutablePath());
   }
@@ -109,7 +109,7 @@ public class BrowserConfigurationOptionsTest {
   void testSetTimeoutInSeconds() {
     int timeout = 17;
     BrowserConfigurationOptions bco =
-      new BrowserConfigurationOptions().setTimeoutInSeconds(timeout);
+        new BrowserConfigurationOptions().setTimeoutInSeconds(timeout);
     assertTrue(bco.isSet(BrowserConfigurationOptions.TIMEOUT_IN_SECONDS));
     assertEquals(timeout, bco.getTimeoutInSeconds());
   }

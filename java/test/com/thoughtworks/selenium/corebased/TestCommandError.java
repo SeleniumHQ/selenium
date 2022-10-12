@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestCommandError extends InternalSelenseTestBase {
-
   @Test
   void testCommandError() {
     selenium.open("test_verifications.html");
