@@ -17,8 +17,22 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -63,19 +77,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class RouterTest {
 
@@ -255,8 +256,8 @@ class RouterTest {
       Instant.now(),
       ImmutableSet.of(OSS, W3C),
       ImmutableSet.of(chromeCapabilities),
-      ImmutableMap.of(),
-      ImmutableMap.of());
+     Map.of(),
+     Map.of());
 
     Either<SessionNotCreatedException, CreateSessionResponse> response =
       distributor.newSession(sessionRequest);

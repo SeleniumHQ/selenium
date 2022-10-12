@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.events.zeromq;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.common.collect.EvictingQueue;
 
 import org.openqa.selenium.events.Event;
@@ -56,8 +58,6 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 class UnboundZmqEventBus implements EventBus {
 
   static final EventName REJECTED_EVENT = new EventName("selenium-rejected-event");
@@ -71,34 +71,35 @@ class UnboundZmqEventBus implements EventBus {
   private final Map<EventName, List<Consumer<Event>>> listeners = new ConcurrentHashMap<>();
   private final Queue<UUID> recentMessages = EvictingQueue.create(128);
   private final String encodedSecret;
-  private ZMQ.Poller poller;
+  private final ZMQ.Poller poller;
 
   private ZMQ.Socket pub;
   private ZMQ.Socket sub;
 
-  UnboundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+  UnboundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection,
+                     Secret secret) {
     Require.nonNull("Secret", secret);
     StringBuilder builder = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(builder)) {
       out.setPrettyPrint(false).writeClassName(false).write(secret);
     }
-    this.encodedSecret = builder.toString();
+    encodedSecret = builder.toString();
 
-    this.socketPollingExecutor = Executors.newSingleThreadExecutor(r -> {
+    socketPollingExecutor = Executors.newSingleThreadExecutor(r -> {
       Thread thread = new Thread(r);
       thread.setName("Event Bus Poller");
       thread.setDaemon(true);
       return thread;
     });
 
-    this.socketPublishingExecutor = Executors.newSingleThreadExecutor(r -> {
+    socketPublishingExecutor = Executors.newSingleThreadExecutor(r -> {
       Thread thread = new Thread(r);
       thread.setName("Event Bus Publisher");
       thread.setDaemon(true);
       return thread;
     });
 
-    this.listenerNotificationExecutor = Executors.newFixedThreadPool(
+    listenerNotificationExecutor = Executors.newFixedThreadPool(
       Math.max(Runtime.getRuntime().availableProcessors() / 2, 2), // At least two threads
       r -> {
         Thread thread = new Thread(r);
@@ -107,14 +108,17 @@ class UnboundZmqEventBus implements EventBus {
         return thread;
       });
 
-    String connectionMessage = String.format("Connecting to %s and %s", publishConnection, subscribeConnection);
+    String
+      connectionMessage =
+      String.format("Connecting to %s and %s", publishConnection, subscribeConnection);
     LOG.info(connectionMessage);
 
     RetryPolicy<Object> retryPolicy = RetryPolicy.builder()
       .withMaxAttempts(5)
       .withDelay(5, 10, ChronoUnit.SECONDS)
       .onFailedAttempt(e -> LOG.log(Level.WARNING, String.format("%s failed", connectionMessage)))
-      .onRetry(e -> LOG.log(Level.WARNING, String.format("Failure #%s. Retrying.", e.getAttemptCount())))
+      .onRetry(
+        e -> LOG.log(Level.WARNING, String.format("Failure #%s. Retrying.", e.getAttemptCount())))
       .onRetriesExceeded(e -> LOG.log(Level.WARNING, "Connection aborted."))
       .build();
 
@@ -132,8 +136,8 @@ class UnboundZmqEventBus implements EventBus {
       }
     );
     // Connections are already established
-    this.poller = context.createPoller(1);
-    this.poller.register(Objects.requireNonNull(sub), ZMQ.Poller.POLLIN);
+    poller = context.createPoller(1);
+    poller.register(Objects.requireNonNull(sub), ZMQ.Poller.POLLIN);
 
     LOG.info("Sockets created");
 
@@ -169,7 +173,9 @@ class UnboundZmqEventBus implements EventBus {
 
       return InetAddress.getByName(uri.getHost()) instanceof Inet6Address;
     } catch (UnknownHostException | URISyntaxException e) {
-      LOG.log(Level.WARNING, String.format("Could not determine if the address %s is IPv6 or IPv4", connection), e);
+      LOG.log(Level.WARNING,
+              String.format("Could not determine if the address %s is IPv6 or IPv4", connection),
+              e);
     }
     return false;
   }
@@ -178,7 +184,9 @@ class UnboundZmqEventBus implements EventBus {
   public void addListener(EventListener<?> listener) {
     Require.nonNull("Listener", listener);
 
-    List<Consumer<Event>> typeListeners = listeners.computeIfAbsent(listener.getEventName(), t -> new LinkedList<>());
+    List<Consumer<Event>>
+      typeListeners =
+      listeners.computeIfAbsent(listener.getEventName(), t -> new LinkedList<>());
     typeListeners.add(listener);
   }
 
@@ -210,9 +218,10 @@ class UnboundZmqEventBus implements EventBus {
   }
 
   private class PollingRunnable implements Runnable {
+
     private final Secret secret;
 
-    public PollingRunnable(Secret secret) {
+    PollingRunnable(Secret secret) {
       this.secret = secret;
     }
 

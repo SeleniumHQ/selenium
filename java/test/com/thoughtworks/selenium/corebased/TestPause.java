@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestPause extends InternalSelenseTestBase {
+
   @Test
   void testPause() throws Exception {
     selenium.open("test_reload_onchange_page.html");

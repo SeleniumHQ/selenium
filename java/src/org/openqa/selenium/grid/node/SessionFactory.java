@@ -26,7 +26,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface SessionFactory extends
-  Function<CreateSessionRequest, Either<WebDriverException, ActiveSession>>,
-  Predicate<Capabilities> {
+                                Function<CreateSessionRequest, Either<WebDriverException, ActiveSession>>,
+                                Predicate<Capabilities> {
 
 }

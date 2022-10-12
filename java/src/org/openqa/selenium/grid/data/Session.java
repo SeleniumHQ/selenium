@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
@@ -29,8 +31,6 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
-
-import static java.util.Collections.unmodifiableMap;
 
 /**
  * Represents a running instance of a WebDriver session. It is identified by a {@link SessionId}.
@@ -45,45 +45,15 @@ public class Session implements Serializable {
   private final Capabilities capabilities;
   private final Instant startTime;
 
-  public Session(SessionId id, URI uri, Capabilities stereotype, Capabilities capabilities, Instant startTime) {
+  public Session(SessionId id, URI uri, Capabilities stereotype, Capabilities capabilities,
+                 Instant startTime) {
     this.id = Require.nonNull("Session ID", id);
     this.uri = Require.nonNull("Where the session is running", uri);
     this.startTime = Require.nonNull("Start time", startTime);
 
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.capabilities = ImmutableCapabilities.copyOf(
-        Require.nonNull("Session capabilities", capabilities));
-  }
-
-  public SessionId getId() {
-    return id;
-  }
-
-  public URI getUri() {
-    return uri;
-  }
-
-  public Capabilities getStereotype() {
-    return stereotype;
-  }
-
-  public Capabilities getCapabilities() {
-    return capabilities;
-  }
-
-  public Instant getStartTime() {
-    return startTime;
-  }
-
-  private Map<String, Object> toJson() {
-    // Deliberately shaped like the return value for the W3C New Session command's return value.
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("capabilities", getCapabilities());
-    toReturn.put("sessionId", getId().toString());
-    toReturn.put("stereotype", getStereotype());
-    toReturn.put("start", getStartTime());
-    toReturn.put("uri", getUri());
-    return unmodifiableMap(toReturn);
+      Require.nonNull("Session capabilities", capabilities));
   }
 
   private static Session fromJson(JsonInput input) {
@@ -124,6 +94,37 @@ public class Session implements Serializable {
     input.endObject();
 
     return new Session(id, uri, stereotype, caps, start);
+  }
+
+  public SessionId getId() {
+    return id;
+  }
+
+  public URI getUri() {
+    return uri;
+  }
+
+  public Capabilities getStereotype() {
+    return stereotype;
+  }
+
+  public Capabilities getCapabilities() {
+    return capabilities;
+  }
+
+  public Instant getStartTime() {
+    return startTime;
+  }
+
+  private Map<String, Object> toJson() {
+    // Deliberately shaped like the return value for the W3C New Session command's return value.
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("capabilities", getCapabilities());
+    toReturn.put("sessionId", getId().toString());
+    toReturn.put("stereotype", getStereotype());
+    toReturn.put("start", getStartTime());
+    toReturn.put("uri", getUri());
+    return unmodifiableMap(toReturn);
   }
 
   @Override

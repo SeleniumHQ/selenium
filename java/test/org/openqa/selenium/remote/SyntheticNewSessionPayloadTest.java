@@ -22,10 +22,10 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
 
-import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 
@@ -57,11 +57,11 @@ class SyntheticNewSessionPayloadTest {
 
   @Test
   void shouldDoNothingIfOssAndW3CPayloadsAreBothEmpty() {
-    Map<String, Object> empty = ImmutableMap.of(
-        "desiredCapabilities", emptyMap(),
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", emptyMap(),
-            "firstMatch", singletonList(emptyMap())));
+    Map<String, Object> empty = Map.of(
+      "desiredCapabilities", emptyMap(),
+      "capabilities", Map.of(
+        "alwaysMatch", emptyMap(),
+        "firstMatch", singletonList(emptyMap())));
 
     List<Capabilities> allCaps = getCapabilities(empty);
 
@@ -70,9 +70,9 @@ class SyntheticNewSessionPayloadTest {
 
   @Test
   void shouldDoNothingIfCapabilitiesArePresentButLeftEmpty() {
-    Map<String, Object> empty = ImmutableMap.of(
-        "desiredCapabilities", emptyMap(),
-        "capabilities", emptyMap());
+    Map<String, Object> empty = Map.of(
+      "desiredCapabilities", emptyMap(),
+      "capabilities", emptyMap());
 
     List<Capabilities> allCaps = getCapabilities(empty);
 
@@ -81,12 +81,12 @@ class SyntheticNewSessionPayloadTest {
 
   @Test
   void shouldDoNothingIfOssPayloadMatchesAlwaysMatchAndThereAreNoFirstMatches() {
-    Map<String, String> identicalCaps = ImmutableMap.of("browserName", "cheese");
+    Map<String, String> identicalCaps = Map.of("browserName", "cheese");
 
-    Map<String, Object> payload= ImmutableMap.of(
-        "desiredCapabilities", identicalCaps,
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", identicalCaps));
+    Map<String, Object> payload = Map.of(
+      "desiredCapabilities", identicalCaps,
+      "capabilities", Map.of(
+        "alwaysMatch", identicalCaps));
 
     List<Capabilities> allCaps = getCapabilities(payload);
 
@@ -95,12 +95,12 @@ class SyntheticNewSessionPayloadTest {
 
   @Test
   void shouldDoNothingIfOssPayloadMatchesAFirstMatchAndThereIsNoAlwaysMatch() {
-    Map<String, String> identicalCaps = ImmutableMap.of("browserName", "cheese");
+    Map<String, String> identicalCaps = Map.of("browserName", "cheese");
 
-    Map<String, Object> payload= ImmutableMap.of(
-        "desiredCapabilities", identicalCaps,
-        "capabilities", ImmutableMap.of(
-            "firstMatch", singletonList(identicalCaps)));
+    Map<String, Object> payload = Map.of(
+      "desiredCapabilities", identicalCaps,
+      "capabilities", Map.of(
+        "firstMatch", singletonList(identicalCaps)));
 
     List<Capabilities> allCaps = getCapabilities(payload);
 
@@ -109,15 +109,15 @@ class SyntheticNewSessionPayloadTest {
 
   @Test
   void shouldDoNothingIfOssPayloadMatchesAValidMergedW3CPayload() {
-    Map<String, String> caps = ImmutableMap.of(
-        "browserName", "cheese",
-        "se:cake", "more cheese");
+    Map<String, String> caps = Map.of(
+      "browserName", "cheese",
+      "se:cake", "more cheese");
 
-    Map<String, Object> payload= ImmutableMap.of(
-        "desiredCapabilities", caps,
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("browserName", "cheese"),
-            "firstMatch", singletonList(ImmutableMap.of("se:cake", "more cheese"))));
+    Map<String, Object> payload = Map.of(
+      "desiredCapabilities", caps,
+      "capabilities", Map.of(
+        "alwaysMatch", Map.of("browserName", "cheese"),
+        "firstMatch", singletonList(Map.of("se:cake", "more cheese"))));
 
     List<Capabilities> allCaps = getCapabilities(payload);
 
@@ -126,23 +126,23 @@ class SyntheticNewSessionPayloadTest {
 
   @Test
   void shouldExpandAllW3CMatchesToFirstMatchesAndRemoveAlwaysMatchIfSynthesizingAPayload() {
-    Map<String, Object> payload = ImmutableMap.of(
+    Map<String, Object> payload = Map.of(
       // OSS capabilities request a chrome webdriver
-      "desiredCapabilities", ImmutableMap.of("browserName", "chrome"),
+      "desiredCapabilities", Map.of("browserName", "chrome"),
       // Yet the w3c ones ask for IE and edge
-      "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("se:cake", "cheese"),
-            "firstMatch", Arrays.asList(
-              ImmutableMap.of("browserName", "edge"),
-              ImmutableMap.of("browserName", "cheese"))));
+      "capabilities", Map.of(
+        "alwaysMatch", Map.of("se:cake", "cheese"),
+        "firstMatch", Arrays.asList(
+          Map.of("browserName", "edge"),
+          Map.of("browserName", "cheese"))));
 
     try (NewSessionPayload newSession = NewSessionPayload.create(payload)) {
       List<Capabilities> allCaps = newSession.stream().collect(toList());
 
       assertThat(allCaps).containsExactlyInAnyOrder(
-          new ImmutableCapabilities("browserName", "cheese", "se:cake", "cheese"),
-          new ImmutableCapabilities("browserName", "chrome"),
-          new ImmutableCapabilities("browserName", "edge", "se:cake", "cheese"));
+        new ImmutableCapabilities("browserName", "cheese", "se:cake", "cheese"),
+        new ImmutableCapabilities("browserName", "chrome"),
+        new ImmutableCapabilities("browserName", "edge", "se:cake", "cheese"));
     }
   }
 
@@ -151,10 +151,10 @@ class SyntheticNewSessionPayloadTest {
     // This is one of the common cases --- asking for marionette to be false. There's no way to
     // encode this legally into the w3c payload (as it doesn't start with "se:"), yet it's a use-
     // case that needs to be properly supported.
-    Map<String, Object> rawCapabilities = ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of("marionette", false),
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("browserName", "chrome")));
+    Map<String, Object> rawCapabilities = Map.of(
+      "desiredCapabilities", Map.of("marionette", false),
+      "capabilities", Map.of(
+        "alwaysMatch", Map.of("browserName", "chrome")));
 
     List<Capabilities> allCaps = getCapabilities(rawCapabilities);
 

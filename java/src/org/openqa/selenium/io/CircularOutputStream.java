@@ -24,11 +24,12 @@ import java.nio.charset.Charset;
  * Captures the last N bytes of output.
  */
 public class CircularOutputStream extends OutputStream {
+
   private static final int DEFAULT_SIZE = 4096;
+  private final byte[] buffer;
   private int start;
   private int end;
   private boolean filled = false;
-  private byte[] buffer;
 
   public CircularOutputStream(int maxSize) {
     buffer = new byte[maxSize];

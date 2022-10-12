@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.devtools;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptException;
@@ -29,13 +31,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 class JavascriptExceptionsTest extends DevToolsTestBase {
 
   @Test
   @NotYetImplemented(value = Browser.FIREFOX, reason = "`Log` domain not yet supported")
-  public void canWatchJavascriptExceptions() throws InterruptedException, ExecutionException, TimeoutException {
+  public void canWatchJavascriptExceptions()
+    throws InterruptedException, ExecutionException, TimeoutException {
     String page = appServer.create(
       new Page()
         .withBody("<div id='button' onclick='helloWorld()'>click me</div>")

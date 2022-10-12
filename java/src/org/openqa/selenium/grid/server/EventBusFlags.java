@@ -59,8 +59,8 @@ public class EventBusFlags implements HasRoles {
   private Boolean bind;
 
   @Parameter(
-      names = {"--events-implementation"},
-      description = "Full classname of non-default event bus implementation")
+    names = {"--events-implementation"},
+    description = "Full classname of non-default event bus implementation")
   @ConfigValue(
     section = EVENTS_SECTION,
     name = "implementation",

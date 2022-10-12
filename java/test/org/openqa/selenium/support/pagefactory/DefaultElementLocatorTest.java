@@ -24,8 +24,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -185,7 +185,7 @@ class DefaultElementLocatorTest {
     ElementLocator locator = newLocator(driver, f);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(locator::findElement);
+      .isThrownBy(locator::findElement);
   }
 
   @Test
@@ -205,10 +205,11 @@ class DefaultElementLocatorTest {
     };
 
     assertThatExceptionOfType(NullPointerException.class)
-        .isThrownBy(() -> new DefaultElementLocator(driver, npeAnnotations));
+      .isThrownBy(() -> new DefaultElementLocator(driver, npeAnnotations));
   }
 
   private static class Page {
+
     @SuppressWarnings("unused")
     private WebElement first;
 

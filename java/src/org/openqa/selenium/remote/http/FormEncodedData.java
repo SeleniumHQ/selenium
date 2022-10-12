@@ -74,7 +74,8 @@ public class FormEncodedData {
     return Optional.of(toReturn.build());
   }
 
-  private static String read(Reader reader, Charset charSet, char delimiter, AtomicBoolean eof) throws IOException {
+  private static String read(Reader reader, Charset charSet, char delimiter, AtomicBoolean eof)
+    throws IOException {
     if (eof.get()) {
       return null;
     }
@@ -93,7 +94,7 @@ public class FormEncodedData {
       builder.append(c);
     }
 
-    return URLDecoder.decode(builder.toString(), charSet.toString());
+    return URLDecoder.decode(builder.toString(), charSet);
   }
 
 

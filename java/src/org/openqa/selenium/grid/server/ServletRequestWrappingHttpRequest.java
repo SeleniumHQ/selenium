@@ -18,7 +18,6 @@
 package org.openqa.selenium.grid.server;
 
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 
@@ -29,8 +28,8 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -96,7 +95,7 @@ class ServletRequestWrappingHttpRequest extends HttpRequest {
   private Map<String, Collection<String>> parseQueryString() {
     String queryString = req.getQueryString();
     if (queryString == null || queryString.isEmpty()) {
-      return ImmutableMap.of();
+      return Map.of();
     }
 
     ImmutableMultimap.Builder<String, String> allParams = ImmutableMultimap.builder();
@@ -119,12 +118,8 @@ class ServletRequestWrappingHttpRequest extends HttpRequest {
         }
       }
 
-      try {
-        allParams.put(URLDecoder.decode(key, "UTF-8"), URLDecoder.decode(value, "UTF-8"));
-      } catch (UnsupportedEncodingException e) {
-        // UTF-8 is mandated to be supported in Java, so this should never happen.
-        throw new RuntimeException(e);
-      }
+      allParams.put(URLDecoder.decode(key, StandardCharsets.UTF_8), URLDecoder.decode(value,
+                                                                                      StandardCharsets.UTF_8));
     }
 
     return allParams.build().asMap();

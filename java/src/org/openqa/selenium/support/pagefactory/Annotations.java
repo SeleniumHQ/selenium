@@ -30,12 +30,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class Annotations extends AbstractAnnotations {
-  private Field field;
+
+  private final Field field;
 
   /**
    * @param field expected to be an element in a Page Object
    */
-  public Annotations(Field field) {
+  Annotations(Field field) {
     this.field = field;
   }
 
@@ -56,6 +57,7 @@ public class Annotations extends AbstractAnnotations {
    * {@link org.openqa.selenium.support.FindBys} or
    * {@link org.openqa.selenium.support.FindAll} field annotations. In case
    * no annotations provided for field, uses field name as 'id' or 'name'.
+   *
    * @throws IllegalArgumentException when more than one annotation on a field provided
    */
   @Override
@@ -69,8 +71,8 @@ public class Annotations extends AbstractAnnotations {
       if (annotation.annotationType().isAnnotationPresent(PageFactoryFinder.class)) {
         try {
           builder = annotation.annotationType()
-              .getAnnotation(PageFactoryFinder.class).value()
-              .getDeclaredConstructor().newInstance();
+            .getAnnotation(PageFactoryFinder.class).value()
+            .getDeclaredConstructor().newInstance();
         } catch (ReflectiveOperationException e) {
           // Fall through.
         }
@@ -92,25 +94,25 @@ public class Annotations extends AbstractAnnotations {
     return field;
   }
 
-  protected By buildByFromDefault() {
+  private By buildByFromDefault() {
     return new ByIdOrName(field.getName());
   }
 
-  protected void assertValidAnnotations() {
+  private void assertValidAnnotations() {
     FindBys findBys = field.getAnnotation(FindBys.class);
     FindAll findAll = field.getAnnotation(FindAll.class);
     FindBy findBy = field.getAnnotation(FindBy.class);
     if (findBys != null && findBy != null) {
       throw new IllegalArgumentException("If you use a '@FindBys' annotation, " +
-           "you must not also use a '@FindBy' annotation");
+                                         "you must not also use a '@FindBy' annotation");
     }
     if (findAll != null && findBy != null) {
       throw new IllegalArgumentException("If you use a '@FindAll' annotation, " +
-           "you must not also use a '@FindBy' annotation");
+                                         "you must not also use a '@FindBy' annotation");
     }
     if (findAll != null && findBys != null) {
       throw new IllegalArgumentException("If you use a '@FindAll' annotation, " +
-           "you must not also use a '@FindBys' annotation");
+                                         "you must not also use a '@FindBys' annotation");
     }
   }
 }

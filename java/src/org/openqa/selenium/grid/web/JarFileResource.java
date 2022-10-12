@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.web;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.ByteStreams;
+
 import org.openqa.selenium.internal.Require;
 
 import java.io.ByteArrayOutputStream;
@@ -75,7 +76,8 @@ public class JarFileResource implements Resource {
     }
 
     if (from.length() < 2) {
-      throw new IllegalArgumentException("From string must have something following the slash: " + from);
+      throw new IllegalArgumentException(
+        "From string must have something following the slash: " + from);
     }
 
     return from.substring(1);

@@ -28,8 +28,8 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class RouteTest {
@@ -37,7 +37,7 @@ class RouteTest {
   @Test
   void shouldNotRouteUnhandledUrls() {
     Route route = Route.get("/hello").to(() -> req ->
-        new HttpResponse().setContent(utf8String("Hello, World!"))
+      new HttpResponse().setContent(utf8String("Hello, World!"))
     );
 
     Assertions.assertThat(route.matches(new HttpRequest(GET, "/greeting"))).isFalse();
@@ -46,7 +46,7 @@ class RouteTest {
   @Test
   void shouldRouteSimplePaths() {
     Route route = Route.get("/hello").to(() -> req ->
-        new HttpResponse().setContent(utf8String("Hello, World!"))
+      new HttpResponse().setContent(utf8String("Hello, World!"))
     );
 
     HttpRequest request = new HttpRequest(GET, "/hello");
@@ -59,7 +59,7 @@ class RouteTest {
   @Test
   void shouldAllowRoutesToBeUrlTemplates() {
     Route route = Route.post("/greeting/{name}").to(params -> req ->
-        new HttpResponse().setContent(utf8String(String.format("Hello, %s!", params.get("name")))));
+      new HttpResponse().setContent(utf8String(String.format("Hello, %s!", params.get("name")))));
 
     HttpRequest request = new HttpRequest(POST, "/greeting/cheese");
     Assertions.assertThat(route.matches(request)).isTrue();
@@ -71,7 +71,7 @@ class RouteTest {
   @Test
   void shouldAllowRoutesToBePrefixed() {
     Route route = Route.prefix("/cheese")
-        .to(Route.get("/type").to(() -> req -> new HttpResponse().setContent(utf8String("brie"))));
+      .to(Route.get("/type").to(() -> req -> new HttpResponse().setContent(utf8String("brie"))));
 
     HttpRequest request = new HttpRequest(GET, "/cheese/type");
     Assertions.assertThat(route.matches(request)).isTrue();
@@ -82,9 +82,10 @@ class RouteTest {
   @Test
   void shouldAllowRoutesToBeNested() {
     Route route = Route.prefix("/cheese").to(
-        Route.prefix("/favourite").to(
-            Route.get("/is/{kind}").to(
-                params -> req -> new HttpResponse().setContent(Contents.utf8String(params.get("kind"))))));
+      Route.prefix("/favourite").to(
+        Route.get("/is/{kind}").to(
+          params -> req -> new HttpResponse().setContent(
+            Contents.utf8String(params.get("kind"))))));
 
     HttpRequest good = new HttpRequest(GET, "/cheese/favourite/is/stilton");
     Assertions.assertThat(route.matches(good)).isTrue();
@@ -98,8 +99,9 @@ class RouteTest {
   @Test
   void nestedRoutesShouldStripPrefixFromRequest() {
     Route route = Route.prefix("/cheese")
-        .to(Route
-                .get("/type").to(() -> req -> new HttpResponse().setContent(Contents.utf8String(req.getUri()))));
+      .to(Route
+            .get("/type")
+            .to(() -> req -> new HttpResponse().setContent(Contents.utf8String(req.getUri()))));
 
     HttpRequest request = new HttpRequest(GET, "/cheese/type");
     Assertions.assertThat(route.matches(request)).isTrue();
@@ -110,9 +112,9 @@ class RouteTest {
   @Test
   void itShouldBePossibleToCombineRoutes() {
     Route route = Route.combine(
-        Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("world"))),
-        Route.post("/cheese").to(
-            () -> req -> new HttpResponse().setContent(utf8String("gouda"))));
+      Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("world"))),
+      Route.post("/cheese").to(
+        () -> req -> new HttpResponse().setContent(utf8String("gouda"))));
 
     HttpRequest greet = new HttpRequest(GET, "/hello");
     Assertions.assertThat(route.matches(greet)).isTrue();
@@ -128,8 +130,8 @@ class RouteTest {
   @Test
   void laterRoutesOverrideEarlierRoutesToFacilitateOverridingRoutes() {
     HttpHandler handler = Route.combine(
-        Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("world"))),
-        Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("buddy"))));
+      Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("world"))),
+      Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("buddy"))));
 
     HttpResponse response = handler.execute(new HttpRequest(GET, "/hello"));
     assertThat(string(response)).isEqualTo("buddy");
@@ -138,7 +140,7 @@ class RouteTest {
   @Test
   void shouldUseFallbackIfAnyDeclared() {
     HttpHandler handler = Route.delete("/negativity").to(() -> req -> new HttpResponse())
-        .fallbackTo(() -> req -> new HttpResponse().setStatus(HTTP_NOT_FOUND));
+      .fallbackTo(() -> req -> new HttpResponse().setStatus(HTTP_NOT_FOUND));
 
     HttpResponse res = handler.execute(new HttpRequest(DELETE, "/negativity"));
     assertThat(res.getStatus()).isEqualTo(HTTP_OK);

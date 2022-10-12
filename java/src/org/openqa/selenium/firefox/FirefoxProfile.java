@@ -106,7 +106,7 @@ public class FirefoxProfile {
 
   public String getStringPreference(String key, String defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference instanceof String) {
+    if (preference instanceof String) {
       return (String) preference;
     }
     return defaultValue;
@@ -114,7 +114,7 @@ public class FirefoxProfile {
 
   public int getIntegerPreference(String key, int defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference instanceof Integer) {
+    if (preference instanceof Integer) {
       return (Integer) preference;
     }
     return defaultValue;
@@ -122,7 +122,7 @@ public class FirefoxProfile {
 
   public boolean getBooleanPreference(String key, boolean defaultValue) {
     Object preference = additionalPrefs.getPreference(key);
-    if(preference instanceof Boolean) {
+    if (preference instanceof Boolean) {
       return (Boolean) preference;
     }
     return defaultValue;
@@ -135,12 +135,12 @@ public class FirefoxProfile {
 
     if (!model.exists()) {
       throw new UnableToCreateProfileException(
-          "Given model profile directory does not exist: " + model.getPath());
+        "Given model profile directory does not exist: " + model.getPath());
     }
 
     if (!model.isDirectory()) {
       throw new UnableToCreateProfileException(
-          "Given model profile directory is not a directory: " + model.getAbsolutePath());
+        "Given model profile directory is not a directory: " + model.getAbsolutePath());
     }
   }
 
@@ -330,7 +330,7 @@ public class FirefoxProfile {
   public File layoutOnDisk() {
     try {
       File profileDir = TemporaryFilesystem.getDefaultTmpFS()
-          .createTempDir("anonymous", "webdriver-profile");
+        .createTempDir("anonymous", "webdriver-profile");
       File userPrefs = new File(profileDir, "user.js");
 
       copyModel(model, profileDir);

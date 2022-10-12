@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class NoOp extends SeleneseCommand<Object> {
+
   private final Object returnValue;
 
   public NoOp(Object returnValue) {

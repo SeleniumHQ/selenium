@@ -32,9 +32,9 @@ public class CollectionCoercer<T extends Collection> extends TypeCoercer<T> {
   private final Collector<Object, ?, ? extends T> collector;
 
   public CollectionCoercer(
-      Class<T> stereotype,
-      JsonTypeCoercer coercer,
-      Collector<Object, ?, T> collector) {
+    Class<T> stereotype,
+    JsonTypeCoercer coercer,
+    Collector<Object, ?, T> collector) {
     this.stereotype = Require.nonNull("Stereotype", stereotype);
     this.coercer = Require.nonNull("Coercer", coercer);
     this.collector = Require.nonNull("Collector", collector);
@@ -61,8 +61,8 @@ public class CollectionCoercer<T extends Collection> extends TypeCoercer<T> {
     return (jsonInput, setting) -> {
       jsonInput.beginArray();
       T toReturn = new JsonInputIterator(jsonInput).asStream()
-          .map(in -> coercer.coerce(in, valueType, setting))
-          .collect(collector);
+        .map(in -> coercer.coerce(in, valueType, setting))
+        .collect(collector);
       jsonInput.endArray();
 
       return toReturn;

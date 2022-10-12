@@ -17,17 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.collect.ImmutableMap;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
@@ -39,50 +28,20 @@ import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
+
+
 import org.openqa.selenium.internal.Require;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 public abstract class Route implements HttpHandler, Routable {
-
-  public HttpHandler fallbackTo(Supplier<HttpHandler> handler) {
-    Require.nonNull("Handler", handler);
-    return req -> {
-      if (matches(req)) {
-        return Route.this.execute(req);
-      }
-      return Require.state("Handler", handler.get()).nonNull().execute(req);
-    };
-  }
-
-  @Override
-  public final HttpResponse execute(HttpRequest req) {
-    if (!matches(req)) {
-      return new HttpResponse()
-        .setStatus(HTTP_NOT_FOUND)
-        .setContent(asJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
-            "error", "unknown command",
-            "message", "Unable to find handler for " + req,
-            "stacktrace", ""))));
-    }
-
-    HttpResponse res = handle(req);
-
-    if (res != null) {
-      return res;
-    }
-
-    return new HttpResponse()
-      .setStatus(HTTP_INTERNAL_ERROR)
-      .addHeader("WebDriver-Error", "unsupported operation")
-      .addHeader("Selenium-Route", "NULL_RES")
-      .setContent(asJson(ImmutableMap.of(
-        "value", ImmutableMap.of(
-          "error", "unsupported operation",
-          "message", String.format("Found handler for %s, but nothing was returned", req),
-          "stacktrace", ""))));
-  }
-
-  protected abstract HttpResponse handle(HttpRequest req);
 
   public static PredicatedConfig matching(Predicate<HttpRequest> predicate) {
     return new PredicatedConfig(Require.nonNull("Predicate", predicate));
@@ -92,24 +51,24 @@ public abstract class Route implements HttpHandler, Routable {
     UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
-        new MatchesHttpMethod(DELETE).and(new MatchesTemplate(urlTemplate)),
-        urlTemplate);
+      new MatchesHttpMethod(DELETE).and(new MatchesTemplate(urlTemplate)),
+      urlTemplate);
   }
 
   public static TemplatizedRouteConfig get(String template) {
     UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
-        new MatchesHttpMethod(GET).and(new MatchesTemplate(urlTemplate)),
-        urlTemplate);
+      new MatchesHttpMethod(GET).and(new MatchesTemplate(urlTemplate)),
+      urlTemplate);
   }
 
   public static TemplatizedRouteConfig post(String template) {
     UrlTemplate urlTemplate = new UrlTemplate(Require.nonNull("URL template", template));
 
     return new TemplatizedRouteConfig(
-        new MatchesHttpMethod(POST).and(new MatchesTemplate(urlTemplate)),
-        urlTemplate);
+      new MatchesHttpMethod(POST).and(new MatchesTemplate(urlTemplate)),
+      urlTemplate);
   }
 
   public static TemplatizedRouteConfig options(String template) {
@@ -135,6 +94,47 @@ public abstract class Route implements HttpHandler, Routable {
     Require.nonNull("At least one route", routes);
     return new CombinedRoute(StreamSupport.stream(routes.spliterator(), false));
   }
+
+  public HttpHandler fallbackTo(Supplier<HttpHandler> handler) {
+    Require.nonNull("Handler", handler);
+    return req -> {
+      if (matches(req)) {
+        return Route.this.execute(req);
+      }
+      return Require.state("Handler", handler.get()).nonNull().execute(req);
+    };
+  }
+
+  @Override
+  public final HttpResponse execute(HttpRequest req) {
+    if (!matches(req)) {
+      return new HttpResponse()
+        .setStatus(HTTP_NOT_FOUND)
+        .setContent(asJson(Map.of(
+          "value",Map.of(
+            "error", "unknown command",
+            "message", "Unable to find handler for " + req,
+            "stacktrace", ""))));
+    }
+
+    HttpResponse res = handle(req);
+
+    if (res != null) {
+      return res;
+    }
+
+    return new HttpResponse()
+      .setStatus(HTTP_INTERNAL_ERROR)
+      .addHeader("WebDriver-Error", "unsupported operation")
+      .addHeader("Selenium-Route", "NULL_RES")
+      .setContent(asJson(Map.of(
+        "value",Map.of(
+          "error", "unsupported operation",
+          "message", String.format("Found handler for %s, but nothing was returned", req),
+          "stacktrace", ""))));
+  }
+
+  protected abstract HttpResponse handle(HttpRequest req);
 
   public static class TemplatizedRouteConfig {
 
@@ -164,9 +164,9 @@ public abstract class Route implements HttpHandler, Routable {
     private final Function<Map<String, String>, HttpHandler> handlerFunction;
 
     private TemplatizedRoute(
-        UrlTemplate template,
-        Predicate<HttpRequest> predicate,
-        Function<Map<String, String>, HttpHandler> handlerFunction) {
+      UrlTemplate template,
+      Predicate<HttpRequest> predicate,
+      Function<Map<String, String>, HttpHandler> handlerFunction) {
       this.template = Require.nonNull("URL template", template);
       this.predicate = Require.nonNull("Predicate", predicate);
       this.handlerFunction = Require.nonNull("Handler function", handlerFunction);
@@ -181,12 +181,12 @@ public abstract class Route implements HttpHandler, Routable {
     protected HttpResponse handle(HttpRequest req) {
       UrlTemplate.Match match = template.match(req.getUri());
       HttpHandler handler = handlerFunction.apply(
-          match == null ? ImmutableMap.of() : match.getParameters());
+        match == null ?Map.of() : match.getParameters());
 
       if (handler == null) {
         return new HttpResponse()
-            .setStatus(HTTP_INTERNAL_ERROR)
-            .setContent(utf8String("Unable to find handler for " + req));
+          .setStatus(HTTP_INTERNAL_ERROR)
+          .setContent(utf8String("Unable to find handler for " + req));
       }
 
       return handler.execute(req);
@@ -286,7 +286,7 @@ public abstract class Route implements HttpHandler, Routable {
       });
 
       request.getAttributeNames().forEach(
-          attr -> toForward.setAttribute(attr, request.getAttribute(attr)));
+        attr -> toForward.setAttribute(attr, request.getAttribute(attr)));
 
       // Don't forget to register our prefix
       Object rawPrefixes = request.getAttribute(ROUTE_PREFIX_KEY);
@@ -299,7 +299,9 @@ public abstract class Route implements HttpHandler, Routable {
       toForward.setAttribute(ROUTE_PREFIX_KEY, prefixes);
 
       request.getQueryParameterNames().forEach(name ->
-        request.getQueryParameters(name).forEach(value -> toForward.addQueryParameter(name, value))
+                                                 request.getQueryParameters(name).forEach(
+                                                   value -> toForward.addQueryParameter(name,
+                                                                                        value))
       );
 
       toForward.setContent(request.getContent());
@@ -327,21 +329,22 @@ public abstract class Route implements HttpHandler, Routable {
     @Override
     protected HttpResponse handle(HttpRequest req) {
       return allRoutes.stream()
-          .filter(route -> route.matches(req))
-          .findFirst()
-          .map(route -> (HttpHandler) route)
-          .orElse(request -> new HttpResponse()
-              .setStatus(HTTP_NOT_FOUND)
-              .setContent(utf8String("No handler found for " + request)))
-          .execute(req);
+        .filter(route -> route.matches(req))
+        .findFirst()
+        .map(route -> (HttpHandler) route)
+        .orElse(request -> new HttpResponse()
+          .setStatus(HTTP_NOT_FOUND)
+          .setContent(utf8String("No handler found for " + request)))
+        .execute(req);
     }
   }
 
   public static class PredicatedConfig {
+
     private final Predicate<HttpRequest> predicate;
 
     private PredicatedConfig(Predicate<HttpRequest> predicate) {
-        this.predicate = Require.nonNull("Predicate", predicate);
+      this.predicate = Require.nonNull("Predicate", predicate);
     }
 
     public Route to(Supplier<HttpHandler> handler) {

@@ -63,15 +63,15 @@ public class AddCookie extends WebDriverHandler<Void> {
 
     Number expiryNum = (Number) rawCookie.get("expiry");
     Date expiry = expiryNum == null ? null : new Date(
-        TimeUnit.SECONDS.toMillis(expiryNum.longValue()));
+      TimeUnit.SECONDS.toMillis(expiryNum.longValue()));
 
     return new Cookie.Builder(name, value)
-        .path(path)
-        .domain(domain)
-        .isSecure(secure)
-        .expiresOn(expiry)
-        .isHttpOnly(httpOnly)
-        .build();
+      .path(path)
+      .domain(domain)
+      .isSecure(secure)
+      .expiresOn(expiry)
+      .isHttpOnly(httpOnly)
+      .build();
   }
 
   private boolean getBooleanFromRaw(String key) {

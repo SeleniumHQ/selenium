@@ -35,61 +35,6 @@ public class Response {
     this.sessionId = String.valueOf(sessionId);
   }
 
-  public Integer getStatus() {
-    return status;
-  }
-
-  public void setStatus(Integer status) {
-    this.status = status;
-  }
-
-  public String getState() {
-    return state;
-  }
-
-  public void setState(String state) {
-    this.state = state;
-  }
-
-  public void setValue(Object value) {
-    this.value = value;
-  }
-
-  public Object getValue() {
-    return value;
-  }
-
-  public void setSessionId(String sessionId) {
-    this.sessionId = sessionId;
-  }
-
-  public String getSessionId() {
-    return sessionId;
-  }
-
-  @Override
-  public String toString() {
-    return String.format("(Response: SessionID: %s, Status: %s, Value: %s)", getSessionId(), getStatus(), getValue());
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof Response)) {
-      return false;
-    }
-
-    Response that = (Response) o;
-    return Objects.equals(value, that.value) &&
-           Objects.equals(sessionId, that.sessionId) &&
-           Objects.equals(status, that.status) &&
-           Objects.equals(state, that.state);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(value, sessionId, status, state);
-  }
-
   private static Response fromJson(Map<String, Object> json) {
     ErrorCodes errorCodes = new ErrorCodes();
     Response response = new Response();
@@ -127,5 +72,61 @@ public class Response {
     response.setValue(json.getOrDefault("value", json));
 
     return response;
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
+
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
+  }
+
+  public Object getValue() {
+    return value;
+  }
+
+  public void setValue(Object value) {
+    this.value = value;
+  }
+
+  public String getSessionId() {
+    return sessionId;
+  }
+
+  public void setSessionId(String sessionId) {
+    this.sessionId = sessionId;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("(Response: SessionID: %s, Status: %s, Value: %s)", getSessionId(),
+                         getStatus(), getValue());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Response)) {
+      return false;
+    }
+
+    Response that = (Response) o;
+    return Objects.equals(value, that.value) &&
+           Objects.equals(sessionId, that.sessionId) &&
+           Objects.equals(status, that.status) &&
+           Objects.equals(state, that.state);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(value, sessionId, status, state);
   }
 }

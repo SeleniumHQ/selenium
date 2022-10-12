@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.docker;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class VersionTest {
 
@@ -43,19 +43,23 @@ class VersionTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldMatch(Version first, Version second, boolean match, boolean lessThan, boolean greaterThan) {
+  void shouldMatch(Version first, Version second, boolean match, boolean lessThan,
+                   boolean greaterThan) {
     assertThat(first.equalTo(second)).describedAs("%s == %s", first, second).isEqualTo(match);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldImplementLessThan(Version first, Version second, boolean match, boolean lessThan, boolean greaterThan) {
+  void shouldImplementLessThan(Version first, Version second, boolean match, boolean lessThan,
+                               boolean greaterThan) {
     assertThat(first.isLessThan(second)).describedAs("%s < %s", first, second).isEqualTo(lessThan);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldImplementGreaterThan(Version first, Version second, boolean match, boolean lessThan, boolean greaterThan) {
-    assertThat(first.isGreaterThan(second)).describedAs("%s > %s", first, second).isEqualTo(greaterThan);
+  void shouldImplementGreaterThan(Version first, Version second, boolean match, boolean lessThan,
+                                  boolean greaterThan) {
+    assertThat(first.isGreaterThan(second)).describedAs("%s > %s", first, second)
+      .isEqualTo(greaterThan);
   }
 }

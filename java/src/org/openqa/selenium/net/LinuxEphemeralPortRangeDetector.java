@@ -31,18 +31,6 @@ public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetect
   private final int firstEphemeralPort;
   private final int lastEphemeralPort;
 
-  public static LinuxEphemeralPortRangeDetector getInstance() {
-    File file = new File("/proc/sys/net/ipv4/ip_local_port_range");
-    if (file.exists() && file.canRead()) {
-      try (Reader inputFil = Files.newBufferedReader(file.toPath(), Charset.defaultCharset())) {
-        return new LinuxEphemeralPortRangeDetector(inputFil);
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    }
-    return new LinuxEphemeralPortRangeDetector(new StringReader("49152 65535"));
-  }
-
   LinuxEphemeralPortRangeDetector(Reader inputFil) {
     FixedIANAPortRange defaultRange = new FixedIANAPortRange();
     int lowPort = defaultRange.getLowestEphemeralPort();
@@ -55,6 +43,18 @@ public class LinuxEphemeralPortRangeDetector implements EphemeralPortRangeDetect
     }
     firstEphemeralPort = lowPort;
     lastEphemeralPort = highPort;
+  }
+
+  public static LinuxEphemeralPortRangeDetector getInstance() {
+    File file = new File("/proc/sys/net/ipv4/ip_local_port_range");
+    if (file.exists() && file.canRead()) {
+      try (Reader inputFil = Files.newBufferedReader(file.toPath(), Charset.defaultCharset())) {
+        return new LinuxEphemeralPortRangeDetector(inputFil);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      }
+    }
+    return new LinuxEphemeralPortRangeDetector(new StringReader("49152 65535"));
   }
 
   @Override

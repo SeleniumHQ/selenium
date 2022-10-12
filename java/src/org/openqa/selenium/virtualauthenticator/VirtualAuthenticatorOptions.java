@@ -23,33 +23,10 @@ import java.util.Map;
 
 /**
  * Options for the creation of virtual authenticators.
+ *
  * @see <a href="https://w3c.github.io/webauthn/#sctn-automation">https://w3c.github.io/webauthn/#sctn-automation</a>
  */
 public class VirtualAuthenticatorOptions {
-
-  public enum Protocol {
-    CTAP2("ctap2"),
-    U2F("ctap1/u2f");
-
-    public final String id;
-
-    Protocol(String id) {
-      this.id = id;
-    }
-  }
-
-  public enum Transport {
-    BLE("ble"),
-    INTERNAL("internal"),
-    NFC("nfc"),
-    USB("usb");
-
-    public final String id;
-
-    Transport(String id) {
-      this.id = id;
-    }
-  }
 
   private Protocol protocol = Protocol.CTAP2;
   private Transport transport = Transport.USB;
@@ -57,8 +34,8 @@ public class VirtualAuthenticatorOptions {
   private boolean hasUserVerification = false;
   private boolean isUserConsenting = true;
   private boolean isUserVerified = false;
-
-  public VirtualAuthenticatorOptions() { }
+  public VirtualAuthenticatorOptions() {
+  }
 
   public VirtualAuthenticatorOptions setProtocol(Protocol protocol) {
     this.protocol = protocol;
@@ -99,5 +76,29 @@ public class VirtualAuthenticatorOptions {
     map.put("isUserConsenting", isUserConsenting);
     map.put("isUserVerified", isUserVerified);
     return Collections.unmodifiableMap(map);
+  }
+
+  public enum Protocol {
+    CTAP2("ctap2"),
+    U2F("ctap1/u2f");
+
+    public final String id;
+
+    Protocol(String id) {
+      this.id = id;
+    }
+  }
+
+  public enum Transport {
+    BLE("ble"),
+    INTERNAL("internal"),
+    NFC("nfc"),
+    USB("usb");
+
+    public final String id;
+
+    Transport(String id) {
+      this.id = id;
+    }
   }
 }

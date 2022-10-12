@@ -23,6 +23,7 @@ import java.time.Duration;
 import java.util.Map;
 
 class InitialHandshakeResponse {
+
   private final Duration requestDuration;
   private final int httpStatusCode;
   private final Map<?, ?> data;

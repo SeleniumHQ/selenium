@@ -19,12 +19,10 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBe;
 import static org.openqa.selenium.WaitingConditions.windowHandleCountToBeGreaterThan;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -40,7 +38,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,7 +54,7 @@ class WindowSwitchingTest extends JupiterTestBase {
   @AfterEach
   public void closeAllWindowsExceptForTheMainOne() {
     try {
-      driver.getWindowHandles().stream().filter(handle -> ! mainWindow.equals(handle))
+      driver.getWindowHandles().stream().filter(handle -> !mainWindow.equals(handle))
         .forEach(handle -> driver.switchTo().window(handle).close());
     } catch (Exception ignore) {
       System.err.println("Ignoring: " + ignore.getMessage());
@@ -261,7 +258,7 @@ class WindowSwitchingTest extends JupiterTestBase {
     // There should be two windows. We should also see each of the window titles at least once.
     assertThat(allWindowHandles).hasSize(2);
 
-    allWindowHandles.stream().filter(anObject -> ! mainHandle.equals(anObject)).forEach(handle -> {
+    allWindowHandles.stream().filter(anObject -> !mainHandle.equals(anObject)).forEach(handle -> {
       driver.switchTo().window(handle);
       driver.close();
     });
@@ -286,7 +283,7 @@ class WindowSwitchingTest extends JupiterTestBase {
     // There should be two windows. We should also see each of the window titles at least once.
     assertThat(allWindowHandles).hasSize(2);
 
-    allWindowHandles.stream().filter(anObject -> ! mainHandle.equals(anObject)).forEach(handle -> {
+    allWindowHandles.stream().filter(anObject -> !mainHandle.equals(anObject)).forEach(handle -> {
       driver.switchTo().window(handle);
       driver.close();
     });

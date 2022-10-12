@@ -46,7 +46,8 @@ public class ZeroMqEventBus {
     // Use the create method.
   }
 
-  public static EventBus create(ZContext context, String publish, String subscribe, boolean bind, Secret secret) {
+  public static EventBus create(ZContext context, String publish, String subscribe, boolean bind,
+                                Secret secret) {
     if (bind) {
       return new BoundZmqEventBus(context, publish, subscribe, secret);
     }
@@ -101,6 +102,7 @@ public class ZeroMqEventBus {
   }
 
   public static class RejectedEvent {
+
     private final EventName name;
     private final Object data;
 

@@ -25,8 +25,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.NoSuchElementException;
@@ -51,6 +51,7 @@ class FluentWaitTest {
   private java.time.Clock mockClock;
   @Mock
   private Sleeper mockSleeper;
+  private String state = null;
 
   @BeforeEach
   public void createMocks() {
@@ -79,7 +80,7 @@ class FluentWaitTest {
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
       .withTimeout(Duration.ofMillis(0))
       .pollingEvery(Duration.ofSeconds(2))
-        .ignoring(NoSuchElementException.class, NoSuchFrameException.class);
+      .ignoring(NoSuchElementException.class, NoSuchFrameException.class);
 
     assertThat(wait.until(mockCondition)).isEqualTo(true);
 
@@ -94,8 +95,8 @@ class FluentWaitTest {
     Wait<WebDriver> wait = new FluentWait<>(mockDriver, mockClock, mockSleeper)
       .withTimeout(Duration.ofMillis(0));
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(mockCondition))
-        .withNoCause();
+      .isThrownBy(() -> wait.until(mockCondition))
+      .withNoCause();
   }
 
   @Test
@@ -129,15 +130,16 @@ class FluentWaitTest {
       .ignoring(NoSuchElementException.class, NoSuchFrameException.class);
 
     assertThatExceptionOfType(NoSuchWindowException.class)
-        .isThrownBy(() -> wait.until(mockCondition))
-        .satisfies(expected -> assertThat(expected).isSameAs(exception));
+      .isThrownBy(() -> wait.until(mockCondition))
+      .satisfies(expected -> assertThat(expected).isSameAs(exception));
   }
 
   @Test
   void timeoutMessageIncludesLastIgnoredException() {
     final NoSuchWindowException exception = new NoSuchWindowException("");
 
-    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(500), EPOCH.plusMillis(1500), EPOCH.plusMillis(2500));
+    when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(500), EPOCH.plusMillis(1500),
+                                         EPOCH.plusMillis(2500));
     when(mockCondition.apply(mockDriver))
       .thenThrow(exception)
       .thenReturn(null);
@@ -148,15 +150,15 @@ class FluentWaitTest {
       .ignoring(NoSuchWindowException.class);
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(mockCondition))
-        .satisfies(expected -> assertThat(exception).isSameAs(expected.getCause()));
+      .isThrownBy(() -> wait.until(mockCondition))
+      .satisfies(expected -> assertThat(exception).isSameAs(expected.getCause()));
   }
 
   @Test
   void timeoutMessageIncludesCustomMessage() {
     TimeoutException exception = new TimeoutException(
-        "Expected condition failed: Expected custom timeout message "
-        + "(tried for 0 second(s) with 500 milliseconds interval)");
+      "Expected condition failed: Expected custom timeout message "
+      + "(tried for 0 second(s) with 500 milliseconds interval)");
 
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(1000));
     when(mockCondition.apply(mockDriver)).thenReturn(null);
@@ -166,17 +168,15 @@ class FluentWaitTest {
       .withMessage("Expected custom timeout message");
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(mockCondition))
-        .withMessage(exception.getMessage());
+      .isThrownBy(() -> wait.until(mockCondition))
+      .withMessage(exception.getMessage());
   }
-
-  private String state = null;
 
   @Test
   void timeoutMessageIncludesCustomMessageEvaluatedOnFailure() {
     TimeoutException exception = new TimeoutException(
-        "Expected condition failed: external state "
-        + "(tried for 0 second(s) with 500 milliseconds interval)");
+      "Expected condition failed: external state "
+      + "(tried for 0 second(s) with 500 milliseconds interval)");
 
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(1000));
     when(mockCondition.apply(mockDriver)).thenReturn(null);
@@ -188,15 +188,15 @@ class FluentWaitTest {
     state = "external state";
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(mockCondition))
-        .withMessage(exception.getMessage());
+      .isThrownBy(() -> wait.until(mockCondition))
+      .withMessage(exception.getMessage());
   }
 
   @Test
   void timeoutMessageIncludesToStringOfCondition() {
     TimeoutException exception = new TimeoutException(
-        "Expected condition failed: waiting for toString called "
-        + "(tried for 0 second(s) with 500 milliseconds interval)");
+      "Expected condition failed: waiting for toString called "
+      + "(tried for 0 second(s) with 500 milliseconds interval)");
 
     Function<Object, Boolean> condition = new Function<Object, Boolean>() {
       @Override
@@ -214,8 +214,8 @@ class FluentWaitTest {
       .withTimeout(Duration.ofMillis(0));
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(condition))
-        .withMessage(exception.getMessage());
+      .isThrownBy(() -> wait.until(condition))
+      .withMessage(exception.getMessage());
   }
 
   @Test
@@ -231,8 +231,8 @@ class FluentWaitTest {
       .ignoring(AssertionError.class);
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(mockCondition))
-        .satisfies(expected -> assertThat(exception).isSameAs(expected.getCause()));
+      .isThrownBy(() -> wait.until(mockCondition))
+      .satisfies(expected -> assertThat(exception).isSameAs(expected.getCause()));
   }
 
   @Test
@@ -254,8 +254,8 @@ class FluentWaitTest {
       .ignoring(TimeoutException.class);
 
     assertThatExceptionOfType(TestException.class)
-        .isThrownBy(() -> wait.until(mockCondition))
-        .satisfies(expected -> assertThat(sentinelException).isSameAs(expected));
+      .isThrownBy(() -> wait.until(mockCondition))
+      .satisfies(expected -> assertThat(sentinelException).isSameAs(expected));
   }
 
   private static class TestException extends RuntimeException {

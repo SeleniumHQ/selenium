@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.devtools;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.idealized.Domains;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
@@ -36,9 +38,8 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-
 public class DevTools implements Closeable {
+
   private static final Logger log = Logger.getLogger(DevTools.class.getName());
 
   private final Domains protocol;
@@ -65,7 +66,8 @@ public class DevTools implements Closeable {
       SessionID id = cdpSession;
       cdpSession = null;
       connection.sendAndWait(
-        cdpSession, getDomains().target().detachFromTarget(Optional.of(id), Optional.empty()), timeout);
+        cdpSession, getDomains().target().detachFromTarget(Optional.of(id), Optional.empty()),
+        timeout);
     }
   }
 

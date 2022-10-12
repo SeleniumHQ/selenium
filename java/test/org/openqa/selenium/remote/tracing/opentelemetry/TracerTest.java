@@ -17,6 +17,26 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.grid.web.CombinedHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.EventAttribute;
+import org.openqa.selenium.remote.tracing.EventAttributeValue;
+import org.openqa.selenium.remote.tracing.HttpTracing;
+import org.openqa.selenium.remote.tracing.Span;
+import org.openqa.selenium.remote.tracing.Status;
+import org.openqa.selenium.remote.tracing.Tracer;
+
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
@@ -33,21 +53,6 @@ import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.StatusData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.grid.web.CombinedHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Routable;
-import org.openqa.selenium.remote.http.Route;
-import org.openqa.selenium.remote.tracing.EventAttribute;
-import org.openqa.selenium.remote.tracing.EventAttributeValue;
-import org.openqa.selenium.remote.tracing.HttpTracing;
-import org.openqa.selenium.remote.tracing.Span;
-import org.openqa.selenium.remote.tracing.Status;
-import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,10 +69,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
 @Tag("UnitTests")
 class TracerTest {
@@ -98,10 +99,11 @@ class TracerTest {
 
     assertThat(values).hasSize(1);
     assertThat(values).element(0)
-        .extracting(SpanData::getStatus).extracting(StatusData::getStatusCode).isEqualTo(
+      .extracting(SpanData::getStatus).extracting(StatusData::getStatusCode).isEqualTo(
         StatusCode.ERROR);
     assertThat(values).element(0)
-        .extracting(el -> el.getAttributes().get(AttributeKey.stringKey("cheese"))).isEqualTo("gouda");
+      .extracting(el -> el.getAttributes().get(AttributeKey.stringKey("cheese")))
+      .isEqualTo("gouda");
   }
 
   @Test
@@ -117,8 +119,8 @@ class TracerTest {
       span.setAttribute("cheese", "gouda");
       span.setStatus(Status.NOT_FOUND);
       tracer.getPropagator().inject(tracer.getCurrentContext(),
-        cheeseReq,
-        (req, key, value) -> req.setHeader("cheese", "gouda"));
+                                    cheeseReq,
+                                    (req, key, value) -> req.setHeader("cheese", "gouda"));
     }
 
     assertThat(cheeseReq.getHeaderNames()).size().isEqualTo(1);
@@ -141,7 +143,7 @@ class TracerTest {
 
     List<EventData> timedEvents = spanData.getEvents();
     assertThat(timedEvents).element(0).extracting(EventData::getName)
-        .isEqualTo(event);
+      .isEqualTo(event);
     assertThat(timedEvents).element(0).extracting(EventData::getTotalAttributeCount)
       .isEqualTo(0);
   }
@@ -164,11 +166,11 @@ class TracerTest {
 
     List<EventData> timedEvents = spanData.getEvents();
     assertThat(timedEvents).element(0).extracting(EventData::getName)
-        .isEqualTo(startEvent);
+      .isEqualTo(startEvent);
     assertThat(timedEvents).element(1).extracting(EventData::getName)
-        .isEqualTo(endEvent);
+      .isEqualTo(endEvent);
     assertThat(timedEvents).element(0).extracting(EventData::getTotalAttributeCount)
-        .isEqualTo(0);
+      .isEqualTo(0);
   }
 
   @Test
@@ -193,13 +195,13 @@ class TracerTest {
     assertThat(httpSpanData.getEvents()).hasSize(1);
     List<EventData> httpTimedEvents = httpSpanData.getEvents();
     assertThat(httpTimedEvents).element(0).extracting(EventData::getName)
-        .isEqualTo(httpEvent);
+      .isEqualTo(httpEvent);
 
     SpanData dbSpanData = allSpans.get(1);
     assertThat(dbSpanData.getEvents()).hasSize(1);
     List<EventData> dbTimedEvents = dbSpanData.getEvents();
     assertThat(dbTimedEvents).element(0).extracting(EventData::getName)
-        .isEqualTo(databaseEvent);
+      .isEqualTo(databaseEvent);
   }
 
   @Test
@@ -468,9 +470,9 @@ class TracerTest {
     }
 
     SpanData parent = allSpans.stream().filter(data -> data.getName().equals("parent"))
-        .findFirst().orElseThrow(NoSuchElementException::new);
+      .findFirst().orElseThrow(NoSuchElementException::new);
     SpanData child = allSpans.stream().filter(data -> data.getName().equals("child"))
-        .findFirst().orElseThrow(NoSuchElementException::new);
+      .findFirst().orElseThrow(NoSuchElementException::new);
 
     assertThat(child.getParentSpanId()).isEqualTo(parent.getSpanId());
   }
@@ -490,9 +492,9 @@ class TracerTest {
     }
 
     SpanData parent = allSpans.stream().filter(data -> data.getName().equals("parent"))
-        .findFirst().orElseThrow(NoSuchElementException::new);
+      .findFirst().orElseThrow(NoSuchElementException::new);
     SpanData child = allSpans.stream().filter(data -> data.getName().equals("child"))
-        .findFirst().orElseThrow(NoSuchElementException::new);
+      .findFirst().orElseThrow(NoSuchElementException::new);
 
     assertThat(child.getParentSpanId()).isEqualTo(parent.getSpanId());
   }
@@ -514,7 +516,8 @@ class TracerTest {
   }
 
   @Test
-  void currentSpanIsKeptOnTracerCorrectlyBetweenThreads() throws ExecutionException, InterruptedException {
+  void currentSpanIsKeptOnTracerCorrectlyBetweenThreads()
+    throws ExecutionException, InterruptedException {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
 
@@ -593,9 +596,9 @@ class TracerTest {
 
     OpenTelemetrySdk openTelemetrySdk = OpenTelemetrySdk.builder().build();
     io.opentelemetry.api.trace.Span externalSpan = openTelemetrySdk
-        .getTracer("externalTracer")
-        .spanBuilder("externalSpan")
-        .startSpan();
+      .getTracer("externalTracer")
+      .spanBuilder("externalSpan")
+      .startSpan();
     Context parentContext = Context.current().with(externalSpan);
     tracer.setOpenTelemetryContext(parentContext);
 
@@ -607,10 +610,10 @@ class TracerTest {
     assertThat(allSpans).hasSize(2);
     assertThat(allSpans.get(0).getName()).isEqualTo("child");
     assertThat(allSpans.get(0).getParentSpanId())
-        .isEqualTo(parent.getId());
+      .isEqualTo(parent.getId());
     assertThat(allSpans.get(1).getName()).isEqualTo("parent");
     assertThat(allSpans.get(1).getParentSpanId())
-        .isEqualTo(externalSpan.getSpanContext().getSpanId());
+      .isEqualTo(externalSpan.getSpanContext().getSpanId());
   }
 
   private Tracer createTracer(List<SpanData> exportTo) {
@@ -624,7 +627,8 @@ class TracerTest {
           return CompletableResultCode.ofSuccess();
         }
 
-        @Override public CompletableResultCode flush() {
+        @Override
+        public CompletableResultCode flush() {
           return CompletableResultCode.ofSuccess();
         }
 

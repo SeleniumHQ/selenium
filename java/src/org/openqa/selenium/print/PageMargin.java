@@ -18,6 +18,7 @@
 package org.openqa.selenium.print;
 
 public class PageMargin {
+
   private final double top;
   private final double bottom;
   private final double left;

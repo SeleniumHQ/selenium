@@ -17,7 +17,18 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
+
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,17 +54,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.function.Predicate;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 class DriverServiceSessionFactoryTest {
 
@@ -90,7 +90,7 @@ class DriverServiceSessionFactoryTest {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
     Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
-      ImmutableSet.of(), toPayload("chrome"), ImmutableMap.of()));
+      ImmutableSet.of(), toPayload("chrome"),Map.of()));
 
     assertThat(session.isLeft()).isTrue();
     verifyNoInteractions(builder);
@@ -101,7 +101,7 @@ class DriverServiceSessionFactoryTest {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
     Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
-      ImmutableSet.of(Dialect.W3C), toPayload("firefox"), ImmutableMap.of()));
+      ImmutableSet.of(Dialect.W3C), toPayload("firefox"),Map.of()));
 
     assertThat(session.isLeft()).isTrue();
     verifyNoInteractions(builder);
@@ -114,7 +114,7 @@ class DriverServiceSessionFactoryTest {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
     Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
-      ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+      ImmutableSet.of(Dialect.W3C), toPayload("chrome"),Map.of()));
 
     assertThat(session.isLeft()).isTrue();
     verify(builder, times(1)).build();
@@ -125,14 +125,14 @@ class DriverServiceSessionFactoryTest {
   void shouldNotInstantiateSessionIfRemoteEndReturnsInvalidResponse() throws IOException {
     HttpClient httpClient = mock(HttpClient.class);
     when(httpClient.execute(any(HttpRequest.class))).thenReturn(
-        new HttpResponse().setStatus(200).setContent(() -> new ByteArrayInputStream(
-            "Hello, world!".getBytes())));
+      new HttpResponse().setStatus(200).setContent(() -> new ByteArrayInputStream(
+        "Hello, world!".getBytes())));
     when(clientFactory.createClient(any(URL.class))).thenReturn(httpClient);
 
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
     Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
-      ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+      ImmutableSet.of(Dialect.W3C), toPayload("chrome"),Map.of()));
 
     assertThat(session.isLeft()).isTrue();
 
@@ -155,7 +155,7 @@ class DriverServiceSessionFactoryTest {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
     Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
-      ImmutableSet.of(Dialect.W3C), toPayload("chrome"), ImmutableMap.of()));
+      ImmutableSet.of(Dialect.W3C), toPayload("chrome"),Map.of()));
 
     assertThat(session.isRight()).isTrue();
 

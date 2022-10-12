@@ -17,15 +17,16 @@
 
 package org.openqa.selenium.grid.web;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class
 ClassPathResourceTest {

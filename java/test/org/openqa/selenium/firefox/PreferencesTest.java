@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -57,10 +57,10 @@ class PreferencesTest {
     assertThat(canSet(a, ("\"StartOnly"))).as("Only start is stringified").isTrue();
     assertThat(canSet(a, ("EndOnly\""))).as("Only end is stringified").isTrue();
     assertThat(canSet(a, (String.format("\"%s\"", "FormatMe"))))
-        .as("Using String.format(\"%%s\")").isFalse();
+      .as("Using String.format(\"%%s\")").isFalse();
 
     assertThat(canSet(a, ("\"Julian\" \"TestEngineer\" Harty.\"")))
-        .as("\"Stringified string containing extra double-quotes\"").isFalse();
+      .as("\"Stringified string containing extra double-quotes\"").isFalse();
   }
 
   @Test
@@ -82,12 +82,12 @@ class PreferencesTest {
   @Test
   void parsePreferences_string() {
     String prefWithComma = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) "
-        + "AppleWebKit/532.9 (KHTML, like Gecko)";
+                           + "AppleWebKit/532.9 (KHTML, like Gecko)";
     String prefWithQuotes = "lpr ${MOZ_PRINTER_NAME:+-P\"$MOZ_PRINTER_NAME\"}";
 
     Reader lines = new StringReader(
-        "user_pref(\"general.useragent.override\", \"" + prefWithComma + "\");\n" +
-            "user_pref(\"print.print_command\", \"" + prefWithQuotes + "\");");
+      "user_pref(\"general.useragent.override\", \"" + prefWithComma + "\");\n" +
+      "user_pref(\"print.print_command\", \"" + prefWithQuotes + "\");");
     Preferences prefs = new Preferences(defaults, lines);
 
     assertThat(prefs.getPreference("general.useragent.override")).isEqualTo(prefWithComma);
@@ -97,8 +97,8 @@ class PreferencesTest {
   @Test
   void parsePreferences_multiline() {
     Reader lines = new StringReader(
-        "user_pref(\"extensions.update.notifyUser\", false);\n" +
-            "user_pref(\"dom.max_script_run_time\", 32);");
+      "user_pref(\"extensions.update.notifyUser\", false);\n" +
+      "user_pref(\"dom.max_script_run_time\", 32);");
     Preferences prefs = new Preferences(defaults, lines);
 
     assertThat(prefs.getPreference("extensions.update.notifyUser")).isEqualTo(false);
@@ -107,18 +107,23 @@ class PreferencesTest {
 
   @Test
   void cannotOverrideAFrozenPreference() {
-    StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
+    StringReader
+      reader =
+      new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
     preferences.setPreference("frozen.pref", false);
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(preferences::checkForChangesInFrozenPreferences)
-        .withMessage("Preference frozen.pref may not be overridden: frozen value=true, requested value=false");
+      .isThrownBy(preferences::checkForChangesInFrozenPreferences)
+      .withMessage(
+        "Preference frozen.pref may not be overridden: frozen value=true, requested value=false");
   }
 
   @Test
   void canOverrideAFrozenPreferenceWithTheFrozenValue() {
-    StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
+    StringReader
+      reader =
+      new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
 
     preferences.setPreference("frozen.pref", true);
@@ -132,8 +137,8 @@ class PreferencesTest {
     preferences.setPreference("dom.max_script_run_time", 29);
 
     assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(preferences::checkForChangesInFrozenPreferences)
-        .withMessage("dom.max_script_run_time must be == 0 || >= 30");
+      .isThrownBy(preferences::checkForChangesInFrozenPreferences)
+      .withMessage("dom.max_script_run_time must be == 0 || >= 30");
 
     preferences.setPreference("dom.max_script_run_time", 31);
     preferences.setPreference("dom.max_script_run_time", 0);

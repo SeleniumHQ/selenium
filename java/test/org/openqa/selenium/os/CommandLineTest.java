@@ -17,16 +17,6 @@
 
 package org.openqa.selenium.os;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.build.BazelBuild;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-
 import static java.lang.System.getenv;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
@@ -40,6 +30,16 @@ import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.CommandLine.getLibraryPathPropertyName;
 import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.build.BazelBuild;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
 class CommandLineTest {
 
   // ping can be found on every platform we support.
@@ -48,6 +48,15 @@ class CommandLineTest {
 
   private final CommandLine commandLine = new CommandLine(testExecutable);
   private final OsProcess process = spyProcess(commandLine);
+
+  private static String findExecutable(String relativePath) {
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      File workingDir = BazelBuild.findBinRoot(new File(".").getAbsoluteFile());
+      return new File(workingDir, relativePath).getAbsolutePath();
+    } else {
+      return relativePath;
+    }
+  }
 
   @Test
   void testSetEnvironmentVariableDelegatesToProcess() {
@@ -156,15 +165,6 @@ class CommandLineTest {
       return spyProcess;
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new RuntimeException(e);
-    }
-  }
-
-  private static String findExecutable(String relativePath) {
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      File workingDir = BazelBuild.findBinRoot(new File(".").getAbsoluteFile());
-      return new File(workingDir, relativePath).getAbsolutePath();
-    } else {
-      return relativePath;
     }
   }
 }

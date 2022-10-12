@@ -17,10 +17,13 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
@@ -45,11 +48,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
-
 @Tag("UnitTests")
 class AugmenterTest {
 
@@ -59,7 +57,7 @@ class AugmenterTest {
 
   @Test
   void shouldAugmentRotatable() {
-    final Capabilities caps = new ImmutableCapabilities(CapabilityType.ROTATABLE, true);
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.ROTATABLE, true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver returned = getAugmenter().augment(driver);
@@ -70,7 +68,7 @@ class AugmenterTest {
 
   @Test
   void shouldAugmentLocationContext() {
-    final Capabilities
+    Capabilities
       caps =
       new ImmutableCapabilities(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
@@ -83,7 +81,7 @@ class AugmenterTest {
 
   @Test
   void shouldAddInterfaceFromCapabilityIfNecessary() {
-    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver returned = getAugmenter()
@@ -154,7 +152,7 @@ class AugmenterTest {
   @Test
   void proxyShouldNotAppearInStackTraces() {
     // This will force the class to be enhanced
-    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", true);
 
     DetonatingDriver driver = new DetonatingDriver();
     driver.setCapabilities(caps);
@@ -188,10 +186,10 @@ class AugmenterTest {
   void shouldAllowReflexiveCalls() {
     Capabilities caps = new ImmutableCapabilities("find by magic", true);
     StubExecutor executor = new StubExecutor(caps);
-    final WebElement element = mock(WebElement.class);
+    WebElement element = mock(WebElement.class);
     executor.expect(
       FIND_ELEMENT,
-      ImmutableMap.of("using", "magic", "value", "cheese"),
+      Map.of("using", "magic", "value", "cheese"),
       element);
 
     WebDriver driver = new RemoteWebDriver(executor, caps);
@@ -209,8 +207,8 @@ class AugmenterTest {
 
   @Test
   void shouldAugmentMultipleInterfaces() {
-    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true,
-                                                        "numbers", true);
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", true,
+                                                  "numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver returned = getAugmenter()
@@ -232,7 +230,7 @@ class AugmenterTest {
 
   @Test
   void shouldAugmentWebDriverDecorator() {
-    final Capabilities
+    Capabilities
       caps =
       new ImmutableCapabilities(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
@@ -254,8 +252,8 @@ class AugmenterTest {
 
   @Test
   void shouldDecorateAugmentedWebDriver() {
-    final Capabilities caps = new ImmutableCapabilities("magic.numbers", true,
-                                                        "numbers", true);
+    Capabilities caps = new ImmutableCapabilities("magic.numbers", true,
+                                                  "numbers", true);
     WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
 
     WebDriver augmented = getAugmenter()
@@ -280,25 +278,6 @@ class AugmenterTest {
 
     int number = ((HasNumbers) decorated).getNumbers(decorated);
     assertThat(number).isEqualTo(42);
-  }
-
-  private static class ByMagic extends By {
-
-    private final String magicWord;
-
-    public ByMagic(String magicWord) {
-      this.magicWord = magicWord;
-    }
-
-    @Override
-    public List<WebElement> findElements(SearchContext context) {
-      return Collections.singletonList(((FindByMagic) context).findByMagic(magicWord));
-    }
-  }
-
-  public interface FindByMagic {
-
-    WebElement findByMagic(String magicWord);
   }
 
   @Test
@@ -334,12 +313,41 @@ class AugmenterTest {
       .isSameAs(driver.getCapabilities());
   }
 
+  public interface FindByMagic {
+
+    WebElement findByMagic(String magicWord);
+  }
+
+  public interface MyInterface {
+
+    String getHelloWorld();
+  }
+
+  public interface HasNumbers {
+
+    int getNumbers(WebDriver driver);
+  }
+
+  private static class ByMagic extends By {
+
+    private final String magicWord;
+
+    ByMagic(String magicWord) {
+      this.magicWord = magicWord;
+    }
+
+    @Override
+    public List<WebElement> findElements(SearchContext context) {
+      return Collections.singletonList(((FindByMagic) context).findByMagic(magicWord));
+    }
+  }
+
   protected static class StubExecutor implements CommandExecutor {
 
     private final Capabilities capabilities;
     private final List<Data> expected = new ArrayList<>();
 
-    protected StubExecutor(Capabilities capabilities) {
+    StubExecutor(Capabilities capabilities) {
       this.capabilities = capabilities;
     }
 
@@ -369,11 +377,11 @@ class AugmenterTest {
 
     private static class Data {
 
-      public String commandName;
       public Map<String, ?> args;
-      public Object returnValue;
+      String commandName;
+      Object returnValue;
 
-      public Data(String commandName, Map<String, ?> args, Object returnValue) {
+      Data(String commandName, Map<String, ?> args, Object returnValue) {
         this.commandName = commandName;
         this.args = args;
         this.returnValue = returnValue;
@@ -381,22 +389,17 @@ class AugmenterTest {
     }
   }
 
-  public interface MyInterface {
-
-    String getHelloWorld();
-  }
-
   public static class DetonatingDriver extends RemoteWebDriver {
 
     private Capabilities caps;
 
-    public void setCapabilities(Capabilities caps) {
-      this.caps = caps;
-    }
-
     @Override
     public Capabilities getCapabilities() {
       return caps;
+    }
+
+    public void setCapabilities(Capabilities caps) {
+      this.caps = caps;
     }
 
     @Override
@@ -410,14 +413,9 @@ class AugmenterTest {
     }
   }
 
-  public interface HasNumbers {
-
-    int getNumbers(WebDriver driver);
-  }
-
   public static class ChildRemoteDriver extends RemoteWebDriver implements HasMagicNumbers {
 
-    private int magicNumber = 3;
+    private final int magicNumber = 3;
 
     @Override
     public Capabilities getCapabilities() {

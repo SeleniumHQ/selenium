@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http;
 
+import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
+
 import org.openqa.selenium.internal.Require;
 
 import java.io.Closeable;
@@ -26,8 +28,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.openqa.selenium.remote.http.ClientConfig.defaultConfig;
-
 /**
  * Defines a simple client for making HTTP requests.
  */
@@ -35,7 +35,8 @@ public interface HttpClient extends Closeable, HttpHandler {
 
   WebSocket openSocket(HttpRequest request, WebSocket.Listener listener);
 
-  default void close() {}
+  default void close() {
+  }
 
   interface Factory {
 
@@ -45,20 +46,22 @@ public interface HttpClient extends Closeable, HttpHandler {
      * that has an {@link @HttpClientName} annotation with the given name as the value.
      *
      * @throws IllegalArgumentException if no implementation with the given name can be found
-     * @throws IllegalStateException if more than one implementation with the given name can be found
+     * @throws IllegalStateException    if more than one implementation with the given name can be found
      */
     static Factory create(String name) {
-      ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class, HttpClient.Factory.class.getClassLoader());
+      ServiceLoader<HttpClient.Factory>
+        loader =
+        ServiceLoader.load(HttpClient.Factory.class, HttpClient.Factory.class.getClassLoader());
       Set<Factory> factories = StreamSupport.stream(loader.spliterator(), true)
-          .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
-          .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
-          .collect(Collectors.toSet());
+        .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
+        .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
+        .collect(Collectors.toSet());
       if (factories.isEmpty()) {
         throw new IllegalArgumentException("Unknown HttpClient factory " + name);
       }
       if (factories.size() > 1) {
         throw new IllegalStateException(String.format(
-            "There are multiple HttpClient factories by name %s, check your classpath", name));
+          "There are multiple HttpClient factories by name %s, check your classpath", name));
       }
       return factories.iterator().next();
     }

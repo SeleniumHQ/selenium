@@ -37,23 +37,24 @@ import java.util.logging.Logger;
  */
 public class UrlChecker {
 
-  private static final Logger log = Logger.getLogger(UrlChecker.class.getName());
-
   static final int CONNECT_TIMEOUT_MS = 500;
+  private static final Logger log = Logger.getLogger(UrlChecker.class.getName());
   private static final int READ_TIMEOUT_MS = 1000;
   private static final long MAX_POLL_INTERVAL_MS = 320;
   private static final long MIN_POLL_INTERVAL_MS = 10;
 
   private static final AtomicInteger THREAD_COUNTER = new AtomicInteger(1);
   private static final ExecutorService EXECUTOR = Executors
-      .newCachedThreadPool(r -> {
-        Thread t = new Thread(r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet()); // Thread safety reviewed
-        t.setDaemon(true);
-        return t;
-      });
+    .newCachedThreadPool(r -> {
+      Thread
+        t =
+        new Thread(r, "UrlChecker-" + THREAD_COUNTER.incrementAndGet()); // Thread safety reviewed
+      t.setDaemon(true);
+      return t;
+    });
 
   public void waitUntilAvailable(long timeout, TimeUnit unit, final URL... urls)
-      throws TimeoutException {
+    throws TimeoutException {
     long start = System.nanoTime();
     log.fine("Waiting for " + Arrays.toString(urls));
     try {
@@ -87,8 +88,8 @@ public class UrlChecker {
       callback.get(timeout, unit);
     } catch (java.util.concurrent.TimeoutException e) {
       throw new TimeoutException(String.format(
-          "Timed out waiting for %s to be available after %d ms",
-          Arrays.toString(urls), MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
+        "Timed out waiting for %s to be available after %d ms",
+        Arrays.toString(urls), MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
       throw new RuntimeException(e);
@@ -98,7 +99,7 @@ public class UrlChecker {
   }
 
   public void waitUntilUnavailable(long timeout, TimeUnit unit, final URL url)
-      throws TimeoutException {
+    throws TimeoutException {
     long start = System.nanoTime();
     log.fine("Waiting for " + url);
     try {
@@ -128,8 +129,8 @@ public class UrlChecker {
       callback.get(timeout, unit);
     } catch (java.util.concurrent.TimeoutException e) {
       throw new TimeoutException(String.format(
-          "Timed out waiting for %s to become unavailable after %d ms",
-          url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
+        "Timed out waiting for %s to become unavailable after %d ms",
+        url, MILLISECONDS.convert(System.nanoTime() - start, NANOSECONDS)), e);
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
@@ -144,6 +145,7 @@ public class UrlChecker {
   }
 
   public static class TimeoutException extends Exception {
+
     public TimeoutException(String s, Throwable throwable) {
       super(s, throwable);
     }

@@ -20,6 +20,7 @@ package org.openqa.selenium.netty.server;
 import org.openqa.selenium.internal.Require;
 
 class WebSocketHandshakeComplete {
+
   private final String uri;
 
   public WebSocketHandshakeComplete(String uri) {

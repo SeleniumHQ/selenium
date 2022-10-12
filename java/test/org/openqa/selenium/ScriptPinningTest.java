@@ -17,16 +17,17 @@
 
 package org.openqa.selenium;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assumptions.assumeThat;
+
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 class ScriptPinningTest extends JupiterTestBase {
 
@@ -84,7 +85,8 @@ class ScriptPinningTest extends JupiterTestBase {
     ScriptKey cheese = executor.pin("return 'brie'");
     executor.unpin(cheese);
 
-    assertThatExceptionOfType(JavascriptException.class).isThrownBy(() -> executor.executeScript(cheese));
+    assertThatExceptionOfType(JavascriptException.class).isThrownBy(
+      () -> executor.executeScript(cheese));
   }
 
 }

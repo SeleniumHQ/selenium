@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.events;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,10 +31,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-
 class EventBusGuavaTest {
+
   private EventBus bus;
 
   @BeforeEach
@@ -62,7 +63,8 @@ class EventBusGuavaTest {
   @Timeout(4)
   void shouldNotReceiveEventsNotMeantForTheTopic() {
     AtomicInteger count = new AtomicInteger(0);
-    bus.addListener(new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));
+    bus.addListener(
+      new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));
 
     bus.fire(new Event(new EventName("cheese"), null));
 

@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.chromium;
 
+import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
@@ -30,14 +32,12 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
-
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasLaunchApp implements AugmenterProvider<HasLaunchApp>, AdditionalHttpCommands {
 
-  public static final String LAUNCH_APP = "launchApp";
+  private static final String LAUNCH_APP = "launchApp";
 
-  private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
+  private static final Map<String, CommandInfo> COMMANDS = Map.of(
     LAUNCH_APP, new CommandInfo("/session/:sessionId/chromium/launch_app", HttpMethod.POST));
 
   @Override
@@ -57,13 +57,10 @@ public class AddHasLaunchApp implements AugmenterProvider<HasLaunchApp>, Additio
 
   @Override
   public HasLaunchApp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
-    return new HasLaunchApp() {
-      @Override
-      public void launchApp(String id) {
-        Require.nonNull("id of Chromium App", id);
+    return id -> {
+      Require.nonNull("id of Chromium App", id);
 
-        executeMethod.execute(LAUNCH_APP, ImmutableMap.of("id", id));
-      }
+      executeMethod.execute(LAUNCH_APP, Map.of("id", id));
     };
   }
 }

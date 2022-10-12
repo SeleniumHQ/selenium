@@ -30,7 +30,9 @@ import java.util.logging.LogRecord;
  */
 public class TerseFormatter extends Formatter {
 
-  /** The string to write at the beginning of all log headers (e.g. "[FINE core]") */
+  /**
+   * The string to write at the beginning of all log headers (e.g. "[FINE core]")
+   */
   private static final String PREFIX = "";
 
   /**
@@ -38,13 +40,6 @@ public class TerseFormatter extends Formatter {
    * spaces between the header and the message body.
    */
   private static final String SUFFIX = " - ";
-
-  /**
-   * Line separator string.  This is the value of the line.separator
-   * property at the moment that the TerseFormatter was created.
-   */
-  private final String lineSeparator = System.getProperty("line.separator");
-
   /*
    * DGF - These have to be compile time constants to be used with switch
    */
@@ -52,7 +47,11 @@ public class TerseFormatter extends Formatter {
   private static final int INFO = 800; /* Derived from Level.INFO.intValue(); */
   private static final int WARNING = 900; /* Derived from Level.WARNING.intValue(); */
   private static final int SEVERE = 1000; /* Derived from Level.SEVERE.intValue(); */
-
+  /**
+   * Line separator string.  This is the value of the line.separator
+   * property at the moment that the TerseFormatter was created.
+   */
+  private final String lineSeparator = System.getProperty("line.separator");
   /**
    * Buffer for formatting messages. We will reuse this buffer in order to reduce memory
    * allocations.
@@ -79,7 +78,7 @@ public class TerseFormatter extends Formatter {
     buffer.append(' ');
     buffer.append(levelNumberToCommonsLevelName(record.getLevel()));
     String[] parts = record.getSourceClassName().split("\\.");
-    buffer.append(" [" + parts[parts.length-1] + "." + record.getSourceMethodName() + "]");
+    buffer.append(" [" + parts[parts.length - 1] + "." + record.getSourceMethodName() + "]");
     buffer.append(SUFFIX);
     buffer.append(formatMessage(record)).append(lineSeparator);
     if (record.getThrown() != null) {

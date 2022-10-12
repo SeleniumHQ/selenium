@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.ElementClickInterceptedException;
@@ -53,36 +52,36 @@ import java.util.Set;
 public class ErrorCodec {
 
   private static final W3CError
-      DEFAULT_ERROR =
-      new W3CError("unknown error", WebDriverException.class, 500);
+    DEFAULT_ERROR =
+    new W3CError("unknown error", WebDriverException.class, 500);
 
   private static final Set<W3CError> ERRORS = ImmutableSet.<W3CError>builder()
-      .add(new W3CError("script timeout", ScriptTimeoutException.class, 500))
-      .add(new W3CError("element click intercepted", ElementClickInterceptedException.class, 400))
-      .add(new W3CError("element not interactable", ElementNotInteractableException.class, 400))
-      .add(new W3CError("invalid argument", InvalidArgumentException.class, 400))
-      .add(new W3CError("invalid cookie domain", InvalidCookieDomainException.class, 400))
-      .add(new W3CError("invalid element state", InvalidElementStateException.class, 400))
-      .add(new W3CError("invalid selector", InvalidSelectorException.class, 400))
-      .add(new W3CError("invalid session id", NoSuchSessionException.class, 404))
-      .add(new W3CError("javascript error", JavascriptException.class, 500))
-      .add(new W3CError("move target out of bounds", MoveTargetOutOfBoundsException.class, 500))
-      .add(new W3CError("no such alert", NoAlertPresentException.class, 404))
-      .add(new W3CError("no such cookie", NoSuchCookieException.class, 404))
-      .add(new W3CError("no such element", NoSuchElementException.class, 404))
-      .add(new W3CError("no such frame", NoSuchFrameException.class, 404))
-      .add(new W3CError("no such window", NoSuchWindowException.class, 404))
-      .add(new W3CError("session not created", SessionNotCreatedException.class, 500))
-      .add(new W3CError("stale element reference", StaleElementReferenceException.class, 404))
-      .add(new W3CError("timeout", TimeoutException.class, 500))
-      .add(new W3CError("unable to capture screen", ScreenshotException.class, 500))
-      .add(new W3CError("unable to set cookie", UnableToSetCookieException.class, 500))
-      .add(new W3CError("unexpected alert open", UnhandledAlertException.class, 500))
-      .add(new W3CError("unknown error", WebDriverException.class, 500))
-      .add(new W3CError("unknown command", UnsupportedCommandException.class, 404))
-      .add(new W3CError("unknown method", UnsupportedCommandException.class, 405))
-      .add(new W3CError("unsupported operation", UnsupportedCommandException.class, 404))
-      .build();
+    .add(new W3CError("script timeout", ScriptTimeoutException.class, 500))
+    .add(new W3CError("element click intercepted", ElementClickInterceptedException.class, 400))
+    .add(new W3CError("element not interactable", ElementNotInteractableException.class, 400))
+    .add(new W3CError("invalid argument", InvalidArgumentException.class, 400))
+    .add(new W3CError("invalid cookie domain", InvalidCookieDomainException.class, 400))
+    .add(new W3CError("invalid element state", InvalidElementStateException.class, 400))
+    .add(new W3CError("invalid selector", InvalidSelectorException.class, 400))
+    .add(new W3CError("invalid session id", NoSuchSessionException.class, 404))
+    .add(new W3CError("javascript error", JavascriptException.class, 500))
+    .add(new W3CError("move target out of bounds", MoveTargetOutOfBoundsException.class, 500))
+    .add(new W3CError("no such alert", NoAlertPresentException.class, 404))
+    .add(new W3CError("no such cookie", NoSuchCookieException.class, 404))
+    .add(new W3CError("no such element", NoSuchElementException.class, 404))
+    .add(new W3CError("no such frame", NoSuchFrameException.class, 404))
+    .add(new W3CError("no such window", NoSuchWindowException.class, 404))
+    .add(new W3CError("session not created", SessionNotCreatedException.class, 500))
+    .add(new W3CError("stale element reference", StaleElementReferenceException.class, 404))
+    .add(new W3CError("timeout", TimeoutException.class, 500))
+    .add(new W3CError("unable to capture screen", ScreenshotException.class, 500))
+    .add(new W3CError("unable to set cookie", UnableToSetCookieException.class, 500))
+    .add(new W3CError("unexpected alert open", UnhandledAlertException.class, 500))
+    .add(new W3CError("unknown error", WebDriverException.class, 500))
+    .add(new W3CError("unknown command", UnsupportedCommandException.class, 404))
+    .add(new W3CError("unknown method", UnsupportedCommandException.class, 405))
+    .add(new W3CError("unsupported operation", UnsupportedCommandException.class, 404))
+    .build();
 
   private ErrorCodec() {
     // This will switch to being an interface at some point. Use `createDefault`
@@ -97,14 +96,14 @@ public class ErrorCodec {
 
     W3CError err = fromThrowable(throwable);
 
-    return ImmutableMap.of(
-        "value", ImmutableMap.of(
-            "error", err.w3cErrorString,
-            "message", throwable.getMessage(),
-            "stacktrace", Throwables.getStackTraceAsString(throwable)));
+    return Map.of(
+      "value", Map.of(
+        "error", err.w3cErrorString,
+        "message", throwable.getMessage(),
+        "stacktrace", Throwables.getStackTraceAsString(throwable)));
   }
 
-  public int getHttpStatusCode(Throwable throwable) {
+  int getHttpStatusCode(Throwable throwable) {
     Require.nonNull("Throwable to encode", throwable);
 
     return fromThrowable(throwable).httpErrorCode;
@@ -112,25 +111,25 @@ public class ErrorCodec {
 
   public WebDriverException decode(Map<String, Object> response) {
     if (!(response.get("value") instanceof Map)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response.toString());
+      throw new IllegalArgumentException("Unable to find mapping for " + response);
     }
 
     Map<?, ?> value = (Map<?, ?>) response.get("value");
     if (!(value.get("error") instanceof String)) {
-      throw new IllegalArgumentException("Unable to find mapping for " + response.toString());
+      throw new IllegalArgumentException("Unable to find mapping for " + response);
     }
 
     String error = (String) value.get("error");
     String message = value.get("message") instanceof String ? (String) value.get("message") : null;
 
     W3CError w3CError = ERRORS.stream()
-        .filter(err -> error.equals(err.w3cErrorString))
-        .findFirst()
-        .orElse(DEFAULT_ERROR);
+      .filter(err -> error.equals(err.w3cErrorString))
+      .findFirst()
+      .orElse(DEFAULT_ERROR);
 
     try {
       Constructor<? extends WebDriverException> constructor =
-          w3CError.exception.getConstructor(String.class);
+        w3CError.exception.getConstructor(String.class);
       return constructor.newInstance(message);
     } catch (ReflectiveOperationException e) {
       throw new WebDriverException(message, e);
@@ -139,21 +138,21 @@ public class ErrorCodec {
 
   private W3CError fromThrowable(Throwable throwable) {
     return ERRORS.stream()
-        .filter(err -> throwable.getClass().isAssignableFrom(err.exception))
-        .findFirst()
-        .orElse(DEFAULT_ERROR);
+      .filter(err -> throwable.getClass().isAssignableFrom(err.exception))
+      .findFirst()
+      .orElse(DEFAULT_ERROR);
   }
 
   private static class W3CError {
 
-    public final String w3cErrorString;
     public final Class<? extends WebDriverException> exception;
-    public final int httpErrorCode;
+    final String w3cErrorString;
+    final int httpErrorCode;
 
-    public W3CError(
-        String w3cErrorString,
-        Class<? extends WebDriverException> exception,
-        int httpErrorCode) {
+    W3CError(
+      String w3cErrorString,
+      Class<? extends WebDriverException> exception,
+      int httpErrorCode) {
       this.w3cErrorString = w3cErrorString;
       this.exception = exception;
       this.httpErrorCode = httpErrorCode;

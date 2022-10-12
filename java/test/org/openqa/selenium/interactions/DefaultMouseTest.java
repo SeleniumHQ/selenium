@@ -17,6 +17,21 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
+import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.support.Colors.GREEN;
+import static org.openqa.selenium.support.Colors.RED;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.not;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -33,21 +48,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.support.Colors.GREEN;
-import static org.openqa.selenium.support.Colors.RED;
-import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.not;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 /**
  * Tests operations that involve mouse and keyboard.
@@ -69,8 +69,8 @@ class DefaultMouseTest extends JupiterTestBase {
     Action holdItem = getBuilder(driver).clickAndHold(toDrag).build();
 
     Action moveToSpecificItem = getBuilder(driver)
-        .moveToElement(driver.findElement(By.id("leftitem-4")))
-        .build();
+      .moveToElement(driver.findElement(By.id("leftitem-4")))
+      .build();
 
     Action moveToOtherList = getBuilder(driver).moveToElement(dragInto).build();
 
@@ -155,7 +155,7 @@ class DefaultMouseTest extends JupiterTestBase {
     Action holdDrag = getBuilder(driver).clickAndHold(toDrag).build();
 
     Action move = getBuilder(driver)
-        .moveToElement(dropInto).build();
+      .moveToElement(dropInto).build();
 
     Action drop = getBuilder(driver).release(dropInto).build();
 
@@ -213,11 +213,11 @@ class DefaultMouseTest extends JupiterTestBase {
   void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> getBuilder(driver).moveToElement(null).build());
+      .isThrownBy(() -> getBuilder(driver).moveToElement(null).build());
   }
 
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
+  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   @NotYetImplemented(SAFARI)
   public void testMovingPastViewPortThrowsException() {
     assertThatExceptionOfType(MoveTargetOutOfBoundsException.class)
@@ -232,7 +232,7 @@ class DefaultMouseTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("otherframe"));
     getBuilder(driver).moveToElement(element).click().perform();
     driver.switchTo().defaultContent()
-        .switchTo().frame("target");
+      .switchTo().frame("target");
     wait.until(elementTextToEqual(By.id("span"), "An inline element"));
   }
 
@@ -243,7 +243,7 @@ class DefaultMouseTest extends JupiterTestBase {
 
     WebElement element = driver.findElement(By.id("menu1"));
 
-    final WebElement item = driver.findElement(By.id("item1"));
+    WebElement item = driver.findElement(By.id("item1"));
     assertThat(item.getText()).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
@@ -263,7 +263,7 @@ class DefaultMouseTest extends JupiterTestBase {
 
     WebElement element = driver.findElement(By.id("menu1"));
 
-    final WebElement item = driver.findElement(By.id("item1"));
+    WebElement item = driver.findElement(By.id("item1"));
     assertThat(item.getText()).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
@@ -301,7 +301,8 @@ class DefaultMouseTest extends JupiterTestBase {
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
     Dimension size = trackerDiv.getSize();
-    getBuilder(driver).moveToElement(trackerDiv, 95 - size.getWidth() / 2, 195 - size.getHeight() / 2).perform();
+    getBuilder(driver).moveToElement(trackerDiv, 95 - size.getWidth() / 2,
+                                     195 - size.getHeight() / 2).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -360,7 +361,8 @@ class DefaultMouseTest extends JupiterTestBase {
 
     getBuilder(driver).moveToElement(greenbox, xOffset, yOffset).perform();
 
-    shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
+    shortWait.until(
+      attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
 
     getBuilder(driver).moveToElement(greenbox, xOffset, yOffset)
       .moveByOffset(shiftX, shiftY).perform();
@@ -370,7 +372,8 @@ class DefaultMouseTest extends JupiterTestBase {
       .moveByOffset(shiftX, shiftY)
       .moveByOffset(-shiftX, -shiftY).perform();
 
-    shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
+    shortWait.until(
+      attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }
 
   @Test
@@ -385,17 +388,19 @@ class DefaultMouseTest extends JupiterTestBase {
     Dimension greenSize = greenbox.getSize();
     Dimension redSize = redbox.getSize();
 
-    getBuilder(driver).moveToElement(greenbox, 1 - greenSize.getWidth() / 2, 1 - greenSize.getHeight() / 2).perform();
+    getBuilder(driver).moveToElement(greenbox, 1 - greenSize.getWidth() / 2,
+                                     1 - greenSize.getHeight() / 2).perform();
 
     assertThat(Color.fromString(redbox.getCssValue("background-color")))
-        .isEqualTo(GREEN.getColorValue());
+      .isEqualTo(GREEN.getColorValue());
 
     getBuilder(driver).moveToElement(redbox).perform();
     assertThat(Color.fromString(redbox.getCssValue("background-color")))
-        .isEqualTo(RED.getColorValue());
+      .isEqualTo(RED.getColorValue());
 
-    getBuilder(driver).moveToElement(redbox, redSize.getWidth() / 1 + 1, redSize.getHeight() / 1 + 1)
-        .perform();
+    getBuilder(driver).moveToElement(redbox, redSize.getWidth() + 1,
+                                     redSize.getHeight() + 1)
+      .perform();
 
     wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }
@@ -413,7 +418,7 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   private ExpectedCondition<Boolean> fuzzyMatchingOfCoordinates(
-      final WebElement element, final int x, final int y) {
+    WebElement element, int x, int y) {
     return new ExpectedCondition<Boolean>() {
       @Override
       public Boolean apply(WebDriver ignored) {

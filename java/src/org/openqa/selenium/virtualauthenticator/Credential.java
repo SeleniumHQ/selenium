@@ -28,6 +28,7 @@ import java.util.Map;
 
 /**
  * A credential stored in a virtual authenticator.
+ *
  * @see <a href="https://w3c.github.io/webauthn/#credential-parameters">https://w3c.github.io/webauthn/#credential-parameters</a>
  */
 public class Credential {
@@ -38,6 +39,21 @@ public class Credential {
   private final PKCS8EncodedKeySpec privateKey;
   private final byte[] userHandle;
   private final int signCount;
+
+  private Credential(
+    byte[] id,
+    boolean isResidentCredential,
+    String rpId,
+    PKCS8EncodedKeySpec privateKey,
+    byte[] userHandle,
+    int signCount) {
+    this.id = Require.nonNull("Id", id);
+    this.isResidentCredential = isResidentCredential;
+    this.rpId = rpId;
+    this.privateKey = Require.nonNull("Private key", privateKey);
+    this.userHandle = userHandle;
+    this.signCount = signCount;
+  }
 
   /**
    * Creates a non resident (i.e. stateless) credential.
@@ -85,21 +101,6 @@ public class Credential {
       new PKCS8EncodedKeySpec(decoder.decode((String) map.get("privateKey"))),
       map.get("userHandle") == null ? null : decoder.decode((String) map.get("userHandle")),
       ((Long) map.get("signCount")).intValue());
-  }
-
-  private Credential(
-    byte[] id,
-    boolean isResidentCredential,
-    String rpId,
-    PKCS8EncodedKeySpec privateKey,
-    byte[] userHandle,
-    int signCount) {
-    this.id = Require.nonNull("Id", id);
-    this.isResidentCredential = isResidentCredential;
-    this.rpId = rpId;
-    this.privateKey = Require.nonNull("Private key", privateKey);
-    this.userHandle = userHandle;
-    this.signCount = signCount;
   }
 
   public byte[] getId() {

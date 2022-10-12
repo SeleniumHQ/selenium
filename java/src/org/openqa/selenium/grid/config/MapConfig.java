@@ -18,7 +18,7 @@
 package org.openqa.selenium.grid.config;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 
@@ -75,7 +75,7 @@ public class MapConfig implements Config {
   public Set<String> getOptions(String section) {
     Require.nonNull("Section name to get options for", section);
 
-    Map<String, Object> values = raw.getOrDefault(section, ImmutableMap.of());
+    Map<String, Object> values = raw.getOrDefault(section, Map.of());
     return ImmutableSortedSet.copyOf(values.keySet());
   }
 }

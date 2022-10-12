@@ -52,6 +52,47 @@ public class TargetInfo {
     this.browserContextId = browserContextId;
   }
 
+  private static TargetInfo fromJson(JsonInput input) {
+    TargetID targetId = null;
+    String type = null;
+    String title = null;
+    String url = null;
+    Boolean attached = null;
+    Optional<TargetID> openerId = Optional.empty();
+    Optional<BrowserContextID> browserContextId = Optional.empty();
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "targetId":
+          targetId = input.read(TargetID.class);
+          break;
+        case "type":
+          type = input.nextString();
+          break;
+        case "title":
+          title = input.nextString();
+          break;
+        case "url":
+          url = input.nextString();
+          break;
+        case "attached":
+          attached = input.nextBoolean();
+          break;
+        case "openerId":
+          openerId = Optional.ofNullable(input.read(TargetID.class));
+          break;
+        case "browserContextId":
+          browserContextId = Optional.ofNullable(input.read(BrowserContextID.class));
+          break;
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    input.endObject();
+    return new TargetInfo(targetId, type, title, url, attached, openerId, browserContextId);
+  }
+
   public TargetID getTargetId() {
     return targetId;
   }
@@ -85,46 +126,5 @@ public class TargetInfo {
   @Beta()
   public Optional<BrowserContextID> getBrowserContextId() {
     return browserContextId;
-  }
-
-  private static TargetInfo fromJson(JsonInput input) {
-    TargetID targetId = null;
-    String type = null;
-    String title = null;
-    String url = null;
-    Boolean attached = null;
-    Optional<TargetID> openerId = Optional.empty();
-    Optional<BrowserContextID> browserContextId = Optional.empty();
-    input.beginObject();
-    while (input.hasNext()) {
-      switch(input.nextName()) {
-        case "targetId":
-          targetId = input.read(TargetID.class);
-          break;
-        case "type":
-          type = input.nextString();
-          break;
-        case "title":
-          title = input.nextString();
-          break;
-        case "url":
-          url = input.nextString();
-          break;
-        case "attached":
-          attached = input.nextBoolean();
-          break;
-        case "openerId":
-          openerId = Optional.ofNullable(input.read(TargetID.class));
-          break;
-        case "browserContextId":
-          browserContextId = Optional.ofNullable(input.read(BrowserContextID.class));
-          break;
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-    input.endObject();
-    return new TargetInfo(targetId, type, title, url, attached, openerId, browserContextId);
   }
 }

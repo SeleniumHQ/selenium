@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestHtmlSource extends InternalSelenseTestBase {
+
   @Test
   void testHtmlSource() {
     selenium.open("test_html_source.html");

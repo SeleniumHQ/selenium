@@ -32,48 +32,12 @@ import java.util.stream.Stream;
 
 public class Tags {
 
-  private static final Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Stream.of(
-    new SimpleEntry<>(401, Status.UNAUTHENTICATED),
-    new SimpleEntry<>(404, Status.NOT_FOUND),
-    new SimpleEntry<>(408, Status.DEADLINE_EXCEEDED),
-    new SimpleEntry<>(429, Status.RESOURCE_EXHAUSTED),
-    new SimpleEntry<>(499, Status.CANCELLED),
-    new SimpleEntry<>(501, Status.UNIMPLEMENTED),
-    new SimpleEntry<>(503, Status.UNAVAILABLE),
-    new SimpleEntry<>(504, Status.DEADLINE_EXCEEDED)
-  ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
-
-  private Tags() {
-    // Utility class
-  }
-
   public static final BiConsumer<Span, Span.Kind> KIND =
     (span, kind) -> span.setAttribute(AttributeKey.SPAN_KIND.getKey(), kind.toString());
-
   public static final BiConsumer<Span, HttpRequest> HTTP_REQUEST = (span, req) -> {
     span.setAttribute(AttributeKey.HTTP_METHOD.getKey(), req.getMethod().toString());
     span.setAttribute(AttributeKey.HTTP_TARGET.getKey(), req.getUri());
   };
-
-  public static final BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
-    int statusCode = res.getStatus();
-    if (res.getTargetHost() != null) {
-      span.setAttribute(AttributeKey.HTTP_TARGET_HOST.getKey(), res.getTargetHost());
-    }
-    span.setAttribute(AttributeKey.HTTP_STATUS_CODE.getKey(), statusCode);
-
-    if (statusCode > 99 && statusCode < 400) {
-      span.setStatus(Status.OK);
-    } else if (statusCode > 399 && statusCode < 500) {
-      span
-        .setStatus(STATUS_CODE_TO_TRACING_STATUS.getOrDefault(statusCode, Status.INVALID_ARGUMENT));
-    } else if (statusCode > 499 && statusCode < 600) {
-      span.setStatus(STATUS_CODE_TO_TRACING_STATUS.getOrDefault(statusCode, Status.INTERNAL));
-    } else {
-      span.setStatus(Status.UNKNOWN);
-    }
-  };
-
   public static final BiConsumer<Map<String, EventAttributeValue>, HttpRequest>
     HTTP_REQUEST_EVENT = (map, req) -> {
     map.put(AttributeKey.HTTP_METHOD.getKey(), EventAttribute.setValue(req.getMethod().toString()));
@@ -110,7 +74,6 @@ public class Tags {
       map.put(AttributeKey.HTTP_FLAVOR.getKey(), EventAttribute.setValue((Integer) httpVersion));
     }
   };
-
   public static final BiConsumer<Map<String, EventAttributeValue>, HttpResponse>
     HTTP_RESPONSE_EVENT = (map, res) -> {
     int statusCode = res.getStatus();
@@ -120,7 +83,6 @@ public class Tags {
     }
     map.put(AttributeKey.HTTP_STATUS_CODE.getKey(), EventAttribute.setValue(statusCode));
   };
-
   public static final BiConsumer<Map<String, EventAttributeValue>, Throwable>
     EXCEPTION = (map, t) -> {
     StringWriter sw = new StringWriter();
@@ -132,4 +94,36 @@ public class Tags {
             EventAttribute.setValue(sw.toString()));
 
   };
+  private static final Map<Integer, Status> STATUS_CODE_TO_TRACING_STATUS = Stream.of(
+    new SimpleEntry<>(401, Status.UNAUTHENTICATED),
+    new SimpleEntry<>(404, Status.NOT_FOUND),
+    new SimpleEntry<>(408, Status.DEADLINE_EXCEEDED),
+    new SimpleEntry<>(429, Status.RESOURCE_EXHAUSTED),
+    new SimpleEntry<>(499, Status.CANCELLED),
+    new SimpleEntry<>(501, Status.UNIMPLEMENTED),
+    new SimpleEntry<>(503, Status.UNAVAILABLE),
+    new SimpleEntry<>(504, Status.DEADLINE_EXCEEDED)
+  ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+  public static final BiConsumer<Span, HttpResponse> HTTP_RESPONSE = (span, res) -> {
+    int statusCode = res.getStatus();
+    if (res.getTargetHost() != null) {
+      span.setAttribute(AttributeKey.HTTP_TARGET_HOST.getKey(), res.getTargetHost());
+    }
+    span.setAttribute(AttributeKey.HTTP_STATUS_CODE.getKey(), statusCode);
+
+    if (statusCode > 99 && statusCode < 400) {
+      span.setStatus(Status.OK);
+    } else if (statusCode > 399 && statusCode < 500) {
+      span
+        .setStatus(STATUS_CODE_TO_TRACING_STATUS.getOrDefault(statusCode, Status.INVALID_ARGUMENT));
+    } else if (statusCode > 499 && statusCode < 600) {
+      span.setStatus(STATUS_CODE_TO_TRACING_STATUS.getOrDefault(statusCode, Status.INTERNAL));
+    } else {
+      span.setStatus(Status.UNKNOWN);
+    }
+  };
+
+  private Tags() {
+    // Utility class
+  }
 }

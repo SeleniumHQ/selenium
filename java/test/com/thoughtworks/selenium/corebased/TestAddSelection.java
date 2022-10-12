@@ -23,6 +23,7 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.junit.jupiter.api.Test;
 
 public class TestAddSelection extends InternalSelenseTestBase {
+
   @Test
   void addingToSelectionWhenSelectHasEmptyMultipleAttribute() {
     selenium.open("test_multiple_select.html");

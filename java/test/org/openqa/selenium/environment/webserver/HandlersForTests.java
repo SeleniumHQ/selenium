@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.net.MediaType;
+
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.grid.security.BasicAuthenticationFilter;
 import org.openqa.selenium.grid.web.PathResource;
@@ -30,9 +34,6 @@ import org.openqa.selenium.remote.http.Route;
 
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class HandlersForTests implements Routable {
 
@@ -51,20 +52,23 @@ public class HandlersForTests implements Routable {
 
     Route route = Route.combine(
       Route.get("/basicAuth").to(() -> req ->
-        new HttpResponse()
-          .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
-          .setContent(Contents.string("<h1>authorized</h1>", UTF_8)))
+          new HttpResponse()
+            .addHeader("Content-Type", MediaType.HTML_UTF_8.toString())
+            .setContent(Contents.string("<h1>authorized</h1>", UTF_8)))
         .with(new BasicAuthenticationFilter("test", "test")),
       Route.get("/echo").to(EchoHandler::new),
       Route.get("/cookie").to(CookieHandler::new),
       Route.get("/encoding").to(EncodingHandler::new),
-      Route.matching(req -> req.getUri().startsWith("/generated/")).to(() -> new GeneratedJsTestHandler("/generated")),
-      Route.matching(req -> req.getUri().startsWith("/page/") && req.getMethod() == GET).to(PageHandler::new),
+      Route.matching(req -> req.getUri().startsWith("/generated/"))
+        .to(() -> new GeneratedJsTestHandler("/generated")),
+      Route.matching(req -> req.getUri().startsWith("/page/") && req.getMethod() == GET)
+        .to(PageHandler::new),
       Route.post("/createPage").to(() -> createPageHandler),
       Route.get("/redirect").to(RedirectHandler::new),
       Route.get("/sleep").to(SleepingHandler::new),
       Route.post("/upload").to(UploadHandler::new),
-      Route.matching(req -> req.getUri().startsWith("/utf8/")).to(() -> new Utf8Handler(webSrc, "/utf8/")),
+      Route.matching(req -> req.getUri().startsWith("/utf8/"))
+        .to(() -> new Utf8Handler(webSrc, "/utf8/")),
       Route.prefix(TEMP_SRC_CONTEXT_PATH).to(Route.combine(generatedPages)),
       new CommonWebResources());
 

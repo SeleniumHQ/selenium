@@ -23,16 +23,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LogCombiner {
+
   private static final Comparator<LogEntry> LOG_ENTRY_TIMESTAMP_COMPARATOR =
-      Comparator.comparingLong(LogEntry::getTimestamp);
+    Comparator.comparingLong(LogEntry::getTimestamp);
 
   public static LogEntries combine(LogEntries... entries) {
 
     return new LogEntries(
-        Stream.of(entries)
-            .map(LogEntries::getAll)
-            .flatMap(Collection::stream)
-            .sorted(LOG_ENTRY_TIMESTAMP_COMPARATOR)
-            .collect(Collectors.toList()));
+      Stream.of(entries)
+        .map(LogEntries::getAll)
+        .flatMap(Collection::stream)
+        .sorted(LOG_ENTRY_TIMESTAMP_COMPARATOR)
+        .collect(Collectors.toList()));
   }
 }

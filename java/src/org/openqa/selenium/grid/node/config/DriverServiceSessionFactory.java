@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.node.config;
 
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
@@ -60,10 +64,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DriverServiceSessionFactory implements SessionFactory {
 
@@ -203,7 +203,9 @@ public class DriverServiceSessionFactory implements SessionFactory {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);
       span.setStatus(Status.CANCELLED);
       EXCEPTION.accept(attributeMap, e);
-      String errorMessage = "Error while creating session with the driver service. " + e.getMessage();
+      String
+        errorMessage =
+        "Error while creating session with the driver service. " + e.getMessage();
       LOG.warning(errorMessage);
 
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
@@ -218,6 +220,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
   private Capabilities readDevToolsEndpointAndVersion(Capabilities caps) {
     class DevToolsInfo {
+
       public final URI cdpEndpoint;
       public final String version;
 

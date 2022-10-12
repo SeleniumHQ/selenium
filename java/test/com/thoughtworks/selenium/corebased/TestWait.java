@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestWait extends InternalSelenseTestBase {
+
   @Test
   void testWait() {
     // Link click

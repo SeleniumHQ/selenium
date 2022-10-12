@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.netty.server;
 
+import static io.netty.handler.codec.http.HttpMethod.GET;
+import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
+import static io.netty.handler.codec.http.HttpUtil.isKeepAlive;
+import static io.netty.handler.codec.http.HttpUtil.setContentLength;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Message;
 
@@ -44,13 +51,6 @@ import io.netty.util.AttributeKey;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-
-import static io.netty.handler.codec.http.HttpMethod.GET;
-import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
-import static io.netty.handler.codec.http.HttpUtil.isKeepAlive;
-import static io.netty.handler.codec.http.HttpUtil.setContentLength;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 // Plenty of code in this class is taken from Netty's own
 // AutobahnServerHandler. That code is also licensed under the Apache 2
@@ -109,7 +109,8 @@ class WebSocketUpgradeHandler extends ChannelInboundHandlerAdapter {
   private void handleHttpRequest(ChannelHandlerContext ctx, HttpRequest req) {
     // Handle a bad request.
     if (!req.decoderResult().isSuccess()) {
-      sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST, ctx.alloc().buffer(0)));
+      sendHttpResponse(ctx, req,
+                       new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST, ctx.alloc().buffer(0)));
       return;
     }
 

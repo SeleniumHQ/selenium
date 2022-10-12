@@ -38,6 +38,7 @@ import java.util.logging.Logger;
  * All current {@link ActiveSession}s that we're aware of.
  */
 public class ActiveSessions {
+
   private static final Logger LOG = Logger.getLogger(ActiveSessions.class.getName());
 
   private final Cache<SessionId, ActiveSession> allSessions;
@@ -57,9 +58,9 @@ public class ActiveSessions {
     };
 
     allSessions = CacheBuilder.newBuilder()
-        .expireAfterAccess(inactiveSessionTimeout, unit)
-        .removalListener(listener)
-        .build();
+      .expireAfterAccess(inactiveSessionTimeout, unit)
+      .removalListener(listener)
+      .build();
 
     addListener(new ActiveSessionListener() {
       @Override

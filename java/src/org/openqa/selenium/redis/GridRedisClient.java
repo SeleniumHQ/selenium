@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.redis;
 
-import io.lettuce.core.KeyValue;
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
-import io.lettuce.core.api.StatefulRedisConnection;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeId;
 import org.openqa.selenium.grid.data.NodeStatus;
@@ -30,6 +26,11 @@ import org.redisson.api.RSet;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
+
+import io.lettuce.core.KeyValue;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.RedisURI;
+import io.lettuce.core.api.StatefulRedisConnection;
 
 import java.io.Closeable;
 import java.net.URI;
@@ -41,6 +42,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GridRedisClient implements Closeable {
+
   private final RedisClient client;
   private final RedissonClient redissonClient;
   private final StatefulRedisConnection<String, String> connection;

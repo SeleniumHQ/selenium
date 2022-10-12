@@ -30,29 +30,25 @@ import java.util.function.BiConsumer;
 
 public class RemoteTags {
 
+  public static final BiConsumer<Span, SessionId> SESSION_ID = (span, id) ->
+    span.setAttribute(AttributeKey.SESSION_ID.getKey(), String.valueOf(id));
+  public static final BiConsumer<Map<String, EventAttributeValue>, SessionId>
+    SESSION_ID_EVENT =
+    (map, id) ->
+      map.put(AttributeKey.SESSION_ID.getKey(), EventAttribute.setValue(String.valueOf(id)));
   private static final Json JSON = new Json();
-
-  private RemoteTags() {
-    // Utility class
-  }
-
   public static final BiConsumer<Span, Capabilities> CAPABILITIES =
     (span, caps) ->
       span.setAttribute(AttributeKey.SESSION_CAPABILITIES.getKey(), convertCapsToJsonString(caps));
-
-  public static final BiConsumer<Span, SessionId> SESSION_ID = (span, id) ->
-      span.setAttribute(AttributeKey.SESSION_ID.getKey(), String.valueOf(id));
-
   public static final BiConsumer<Map<String, EventAttributeValue>, Capabilities>
     CAPABILITIES_EVENT =
     (map, caps) ->
       map.put(AttributeKey.SESSION_CAPABILITIES.getKey(),
-      EventAttribute.setValue(convertCapsToJsonString(caps)));
+              EventAttribute.setValue(convertCapsToJsonString(caps)));
 
-  public static final BiConsumer<Map<String, EventAttributeValue>, SessionId>
-      SESSION_ID_EVENT =
-      (map, id) ->
-          map.put(AttributeKey.SESSION_ID.getKey(), EventAttribute.setValue(String.valueOf(id)));
+  private RemoteTags() {
+    // Utility class
+  }
 
   private static String convertCapsToJsonString(Capabilities capabilities) {
     StringBuilder text = new StringBuilder();

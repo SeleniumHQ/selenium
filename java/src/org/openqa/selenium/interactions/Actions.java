@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
+import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,9 +35,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
-
-import static org.openqa.selenium.interactions.PointerInput.MouseButton.LEFT;
-import static org.openqa.selenium.interactions.PointerInput.MouseButton.RIGHT;
 
 /**
  * The user-facing API for emulating complex user gestures. Use this class rather than using the
@@ -66,8 +66,9 @@ public class Actions {
    * Note that the modifier key is <b>never</b> released implicitly - either
    * <i>keyUp(theKey)</i> or <i>sendKeys(Keys.NULL)</i>
    * must be called to release the modifier.
+   *
    * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
-   * provided key is none of those, {@link IllegalArgumentException} is thrown.
+   *            provided key is none of those, {@link IllegalArgumentException} is thrown.
    * @return A self reference.
    */
   public Actions keyDown(CharSequence key) {
@@ -77,16 +78,16 @@ public class Actions {
   /**
    * Performs a modifier key press after focusing on an element. Equivalent to:
    * <i>Actions.click(element).sendKeys(theKey);</i>
-   * @see #keyDown(CharSequence)
    *
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
-   * provided key is none of those, {@link IllegalArgumentException} is thrown.
+   * @param key    Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}. If the
+   *               provided key is none of those, {@link IllegalArgumentException} is thrown.
    * @param target WebElement to perform the action
    * @return A self reference.
+   * @see #keyDown(CharSequence)
    */
   public Actions keyDown(WebElement target, CharSequence key) {
     return focusInTicks(target)
-        .addKeyAction(key, codepoint -> tick(getActiveKeyboard().createKeyDown(codepoint)));
+      .addKeyAction(key, codepoint -> tick(getActiveKeyboard().createKeyDown(codepoint)));
   }
 
   /**
@@ -103,15 +104,15 @@ public class Actions {
   /**
    * Performs a modifier key release after focusing on an element. Equivalent to:
    * <i>Actions.click(element).sendKeys(theKey);</i>
-   * @see #keyUp(CharSequence) on behaviour regarding non-depressed modifier keys.
    *
-   * @param key Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
+   * @param key    Either {@link Keys#META}, {@link Keys#COMMAND}, {@link Keys#SHIFT}, {@link Keys#ALT} or {@link Keys#CONTROL}.
    * @param target WebElement to perform the action on
    * @return A self reference.
+   * @see #keyUp(CharSequence) on behaviour regarding non-depressed modifier keys.
    */
   public Actions keyUp(WebElement target, CharSequence key) {
     return focusInTicks(target)
-        .addKeyAction(key, codePoint -> tick(getActiveKeyboard().createKeyUp(codePoint)));
+      .addKeyAction(key, codePoint -> tick(getActiveKeyboard().createKeyUp(codePoint)));
   }
 
   /**
@@ -123,12 +124,10 @@ public class Actions {
    * elements should work. </li>
    * </ul>
    *
-   * @see WebElement#sendKeys(CharSequence...)
-   *
    * @param keys The keys.
    * @return A self reference.
-   *
    * @throws IllegalArgumentException if keys is null
+   * @see WebElement#sendKeys(CharSequence...)
    */
   public Actions sendKeys(CharSequence... keys) {
     return sendKeysInTicks(keys);
@@ -140,13 +139,11 @@ public class Actions {
    * This method is different from {@link WebElement#sendKeys(CharSequence...)} - see
    * {@link #sendKeys(CharSequence...)} for details how.
    *
-   * @see #sendKeys(java.lang.CharSequence[])
-   *
    * @param target element to focus on.
-   * @param keys The keys.
+   * @param keys   The keys.
    * @return A self reference.
-   *
    * @throws IllegalArgumentException if keys is null
+   * @see #sendKeys(java.lang.CharSequence[])
    */
   public Actions sendKeys(WebElement target, CharSequence... keys) {
     return focusInTicks(target).sendKeysInTicks(keys);
@@ -186,11 +183,12 @@ public class Actions {
    */
   public Actions clickAndHold(WebElement target) {
     return moveInTicks(target, 0, 0)
-        .tick(getActivePointer().createPointerDown(LEFT.asArg()));
+      .tick(getActivePointer().createPointerDown(LEFT.asArg()));
   }
 
   /**
    * Clicks (without releasing) at the current mouse location.
+   *
    * @return A self reference.
    */
   public Actions clickAndHold() {
@@ -232,30 +230,34 @@ public class Actions {
    */
   public Actions scrollByAmount(int deltaX, int deltaY) {
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport();
-    return tick(getActiveWheel().createScroll(0, 0, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
+    return tick(
+      getActiveWheel().createScroll(0, 0, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
   }
 
   /**
    * Scrolls by provided amount based on a provided origin.
    * The scroll origin is either the center of an element or the upper left of the viewport plus any offsets.
    * If the origin is an element, and the element is not in the viewport, the bottom of the element will first
-   *   be scrolled to the bottom of the viewport.
+   * be scrolled to the bottom of the viewport.
+   *
    * @param scrollOrigin Where scroll originates (viewport or element center) plus provided offsets.
-   * @param deltaX The distance along X axis to scroll using the wheel. A negative value scrolls left.
-   * @param deltaY The distance along Y axis to scroll using the wheel. A negative value scrolls up.
+   * @param deltaX       The distance along X axis to scroll using the wheel. A negative value scrolls left.
+   * @param deltaY       The distance along Y axis to scroll using the wheel. A negative value scrolls up.
    * @return A self reference.
    * @throws MoveTargetOutOfBoundsException If the origin with offset is outside the viewport.
    */
   public Actions scrollFromOrigin(WheelInput.ScrollOrigin scrollOrigin, int deltaX, int deltaY) {
     int x = scrollOrigin.getxOffset();
     int y = scrollOrigin.getyOffset();
-    return tick(getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
+    return tick(
+      getActiveWheel().createScroll(x, y, deltaX, deltaY, Duration.ofMillis(250), scrollOrigin));
   }
 
   /**
    * Releases the depressed left mouse button at the current mouse location.
-   * @see #release(org.openqa.selenium.WebElement)
+   *
    * @return A self reference.
+   * @see #release(org.openqa.selenium.WebElement)
    */
   public Actions release() {
     return tick(getActivePointer().createPointerUp(LEFT.asArg()));
@@ -276,6 +278,7 @@ public class Actions {
    * Clicks at the current mouse location. Useful when combined with
    * {@link #moveToElement(org.openqa.selenium.WebElement, int, int)} or
    * {@link #moveByOffset(int, int)}.
+   *
    * @return A self reference.
    */
   public Actions click() {
@@ -301,12 +304,13 @@ public class Actions {
    */
   public Actions doubleClick(WebElement target) {
     return moveInTicks(target, 0, 0)
-        .clickInTicks(LEFT)
-        .clickInTicks(LEFT);
+      .clickInTicks(LEFT)
+      .clickInTicks(LEFT);
   }
 
   /**
    * Performs a double-click at the current mouse location.
+   *
    * @return A self reference.
    */
   public Actions doubleClick() {
@@ -316,6 +320,7 @@ public class Actions {
   /**
    * Moves the mouse to the middle of the element. The element is scrolled into view and its
    * location is calculated using getClientRects.
+   *
    * @param target element to move to.
    * @return A self reference.
    */
@@ -325,11 +330,12 @@ public class Actions {
 
   /**
    * Moves the mouse to an offset from the element's in-view center point.
-   * @param target element to move to.
+   *
+   * @param target  element to move to.
    * @param xOffset Offset from the element's in-view center point. A negative value means
-   * an offset left of the point.
+   *                an offset left of the point.
    * @param yOffset Offset from the element's in-view center point. A negative value means
-   * an offset above the point.
+   *                an offset above the point.
    * @return A self reference.
    */
   public Actions moveToElement(WebElement target, int xOffset, int yOffset) {
@@ -338,25 +344,27 @@ public class Actions {
 
   private Actions moveInTicks(WebElement target, int xOffset, int yOffset) {
     return tick(getActivePointer().createPointerMove(
-        Duration.ofMillis(100),
-        Origin.fromElement(target),
-        xOffset,
-        yOffset));
+      Duration.ofMillis(100),
+      Origin.fromElement(target),
+      xOffset,
+      yOffset));
   }
 
   /**
    * Moves the mouse from its current position (or 0,0) by the given offset. If the coordinates
    * provided are outside the viewport (the mouse will end up outside the browser window) then
    * the viewport is scrolled to match.
+   *
    * @param xOffset horizontal offset. A negative value means moving the mouse left.
    * @param yOffset vertical offset. A negative value means moving the mouse up.
    * @return A self reference.
    * @throws MoveTargetOutOfBoundsException if the provided offset is outside the document's
-   * boundaries.
+   *                                        boundaries.
    */
   public Actions moveByOffset(int xOffset, int yOffset) {
     return tick(
-        getActivePointer().createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
+      getActivePointer().createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset,
+                                           yOffset));
   }
 
   /**
@@ -372,6 +380,7 @@ public class Actions {
 
   /**
    * Performs a context-click at the current mouse location.
+   *
    * @return A self reference.
    */
   public Actions contextClick() {
@@ -388,25 +397,26 @@ public class Actions {
    */
   public Actions dragAndDrop(WebElement source, WebElement target) {
     return moveInTicks(source, 0, 0)
-        .tick(getActivePointer().createPointerDown(LEFT.asArg()))
-        .moveInTicks(target, 0, 0)
-        .tick(getActivePointer().createPointerUp(LEFT.asArg()));
+      .tick(getActivePointer().createPointerDown(LEFT.asArg()))
+      .moveInTicks(target, 0, 0)
+      .tick(getActivePointer().createPointerUp(LEFT.asArg()));
   }
 
   /**
    * A convenience method that performs click-and-hold at the location of the source element,
    * moves by a given offset, then releases the mouse.
    *
-   * @param source element to emulate button down at.
+   * @param source  element to emulate button down at.
    * @param xOffset horizontal move offset.
    * @param yOffset vertical move offset.
    * @return A self reference.
    */
   public Actions dragAndDropBy(WebElement source, int xOffset, int yOffset) {
     return moveInTicks(source, 0, 0)
-        .tick(getActivePointer().createPointerDown(LEFT.asArg()))
-        .tick(getActivePointer().createPointerMove(Duration.ofMillis(250), Origin.pointer(), xOffset, yOffset))
-        .tick(getActivePointer().createPointerUp(LEFT.asArg()));
+      .tick(getActivePointer().createPointerDown(LEFT.asArg()))
+      .tick(getActivePointer().createPointerMove(Duration.ofMillis(250), Origin.pointer(), xOffset,
+                                                 yOffset))
+      .tick(getActivePointer().createPointerUp(LEFT.asArg()));
   }
 
   /**
@@ -431,8 +441,8 @@ public class Actions {
       boolean freshlyAdded = seenSources.add(action.getSource());
       if (!freshlyAdded) {
         throw new IllegalStateException(String.format(
-            "You may only add one action per input source per tick: %s",
-            Arrays.asList(actions)));
+          "You may only add one action per input source per tick: %s",
+          Arrays.asList(actions)));
       }
     }
 
@@ -452,8 +462,33 @@ public class Actions {
     return this;
   }
 
+  public Actions setActivePointer(PointerInput.Kind kind, String name) {
+    InputSource
+      inputSource =
+      sequences.keySet().stream().filter(input -> Objects.equals(input.getName(), name)).findFirst()
+        .orElse(null);
+
+    if (inputSource == null) {
+      this.activePointer = new PointerInput(kind, name);
+    } else {
+      this.activePointer = (PointerInput) inputSource;
+    }
+
+    return this;
+  }
+
+  public KeyInput getActiveKeyboard() {
+    if (this.activeKeyboard == null) {
+      setActiveKeyboard("default keyboard");
+    }
+    return this.activeKeyboard;
+  }
+
   public Actions setActiveKeyboard(String name) {
-    InputSource inputSource = sequences.keySet().stream().filter(input -> Objects.equals(input.getName(), name)).findFirst().orElse(null);
+    InputSource
+      inputSource =
+      sequences.keySet().stream().filter(input -> Objects.equals(input.getName(), name)).findFirst()
+        .orElse(null);
 
     if (inputSource == null) {
       this.activeKeyboard = new KeyInput(name);
@@ -464,16 +499,18 @@ public class Actions {
     return this;
   }
 
-  public Actions setActivePointer(PointerInput.Kind kind, String name) {
-    InputSource inputSource = sequences.keySet().stream().filter(input -> Objects.equals(input.getName(), name)).findFirst().orElse(null);
-
-    if (inputSource == null) {
-      this.activePointer = new PointerInput(kind, name);
-    } else {
-      this.activePointer = (PointerInput) inputSource;
+  public PointerInput getActivePointer() {
+    if (this.activePointer == null) {
+      setActivePointer(PointerInput.Kind.MOUSE, "default mouse");
     }
+    return this.activePointer;
+  }
 
-    return this;
+  public WheelInput getActiveWheel() {
+    if (this.activeWheel == null) {
+      setActiveWheel("default wheel");
+    }
+    return this.activeWheel;
   }
 
   public Actions setActiveWheel(String name) {
@@ -490,27 +527,6 @@ public class Actions {
     }
 
     return this;
-  }
-
-  public KeyInput getActiveKeyboard() {
-    if (this.activeKeyboard == null) {
-      setActiveKeyboard("default keyboard");
-    }
-    return this.activeKeyboard;
-  }
-
-  public PointerInput getActivePointer() {
-    if (this.activePointer == null) {
-      setActivePointer(PointerInput.Kind.MOUSE, "default mouse");
-    }
-    return this.activePointer;
-  }
-
-  public WheelInput getActiveWheel() {
-    if (this.activeWheel == null) {
-      setActiveWheel("default wheel");
-    }
-    return this.activeWheel;
   }
 
   /**
@@ -554,6 +570,7 @@ public class Actions {
   }
 
   private static class BuiltAction implements Action {
+
     private final WebDriver driver;
     private final Map<InputSource, Sequence> sequences;
 

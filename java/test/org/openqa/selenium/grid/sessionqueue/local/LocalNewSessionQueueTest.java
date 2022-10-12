@@ -17,7 +17,21 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
-import com.google.common.collect.ImmutableMap;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
+
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -69,19 +83,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 @Timeout(60)
 class LocalNewSessionQueueTest {
 
@@ -94,20 +95,6 @@ class LocalNewSessionQueueTest {
   private NewSessionQueue queue;
   private LocalNewSessionQueue localQueue;
   private SessionRequest sessionRequest;
-
-  public void setup(Supplier<TestData> supplier) {
-    TestData testData = supplier.get();
-    this.queue = testData.queue;
-    this.localQueue = testData.localQueue;
-
-    this.sessionRequest = new SessionRequest(
-      new RequestId(UUID.randomUUID()),
-      Instant.now(),
-      Set.of(W3C),
-      Set.of(CAPS),
-      Map.of(),
-      Map.of());
-  }
 
   public static Stream<Arguments> data() {
     Tracer tracer = DefaultTestTracer.createTracer();
@@ -141,10 +128,22 @@ class LocalNewSessionQueueTest {
       return new TestData(local, new RemoteNewSessionQueue(tracer, client, REGISTRATION_SECRET));
     });
 
-
     return toReturn.stream().map(Arguments::of);
   }
 
+  public void setup(Supplier<TestData> supplier) {
+    TestData testData = supplier.get();
+    this.queue = testData.queue;
+    this.localQueue = testData.localQueue;
+
+    this.sessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(CAPS),
+      Map.of(),
+      Map.of());
+  }
 
   @AfterEach
   public void shutdownQueue() {
@@ -157,7 +156,7 @@ class LocalNewSessionQueueTest {
       .until(
         r -> queue.getQueueContents().stream()
           .anyMatch(sessionRequestCapability ->
-            sessionRequestCapability.getRequestId().equals(r.getRequestId())));
+                      sessionRequestCapability.getRequestId().equals(r.getRequestId())));
 
   }
 
@@ -184,8 +183,8 @@ class LocalNewSessionQueueTest {
       CreateSessionResponse sessionResponse = new CreateSessionResponse(
         session,
         JSON.toJson(
-            ImmutableMap.of(
-              "value", ImmutableMap.of(
+           Map.of(
+              "value",Map.of(
                 "sessionId", sessionId,
                 "capabilities", capabilities)))
           .getBytes(UTF_8));
@@ -207,7 +206,7 @@ class LocalNewSessionQueueTest {
     new Thread(() -> {
       waitUntilAddedToQueue(sessionRequest);
       queue.complete(sessionRequest.getRequestId(),
-        Either.left(new SessionNotCreatedException("Error")));
+                     Either.left(new SessionNotCreatedException("Error")));
     }).start();
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
@@ -338,9 +337,9 @@ class LocalNewSessionQueueTest {
               new CreateSessionResponse(
                 session,
                 JSON.toJson(
-                    ImmutableMap.of(
+                   Map.of(
                       "value",
-                      ImmutableMap.of(
+                     Map.of(
                         "sessionId", sessionId,
                         "capabilities", capabilities)))
                   .getBytes(UTF_8));
@@ -388,8 +387,8 @@ class LocalNewSessionQueueTest {
             CreateSessionResponse sessionResponse = new CreateSessionResponse(
               session,
               JSON.toJson(
-                  ImmutableMap.of(
-                    "value", ImmutableMap.of(
+                 Map.of(
+                    "value",Map.of(
                       "sessionId", sessionId,
                       "capabilities", capabilities)))
                 .getBytes(UTF_8));
@@ -500,7 +499,8 @@ class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldBeAbleToReturnTheNextAvailableEntryThatMatchesAStereotype(Supplier<TestData> supplier) {
+  void shouldBeAbleToReturnTheNextAvailableEntryThatMatchesAStereotype(
+    Supplier<TestData> supplier) {
     setup(supplier);
 
     SessionRequest expected = new SessionRequest(
@@ -528,7 +528,8 @@ class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldNotReturnANextAvailableEntryThatDoesNotMatchTheStereotypes(Supplier<TestData> supplier) {
+  void shouldNotReturnANextAvailableEntryThatDoesNotMatchTheStereotypes(
+    Supplier<TestData> supplier) {
     setup(supplier);
 
     // Note that this is basically the same test as getting the entry
@@ -558,6 +559,7 @@ class LocalNewSessionQueueTest {
   }
 
   static class TestData {
+
     public final LocalNewSessionQueue localQueue;
     public final NewSessionQueue queue;
 

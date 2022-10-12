@@ -22,4 +22,5 @@ package org.openqa.selenium.html5;
  * separate storage area.
  */
 public interface LocalStorage extends Storage {
+
 }

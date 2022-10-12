@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -39,15 +38,15 @@ class ConfigTest {
   @Test
   void ensureFirstConfigValueIsChosen() {
     Config config = new CompoundConfig(
-        new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "foo"))),
-        new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "bar"))));
+      new MapConfig(Map.of("section", Map.of("option", "foo"))),
+      new MapConfig(Map.of("section", Map.of("option", "bar"))));
 
     assertEquals("foo", config.get("section", "option").get());
   }
 
   @Test
   void shouldReturnEmptyIfConfigValueIsMissing() {
-    Config config = new MapConfig(ImmutableMap.of());
+    Config config = new MapConfig(Map.of());
 
     assertFalse(config.get("section", "option").isPresent());
   }
@@ -55,8 +54,8 @@ class ConfigTest {
   @Test
   void shouldReadSystemProperties() {
     Config config = new CompoundConfig(
-        new MapConfig(ImmutableMap.of()),
-        new ConcatenatingConfig("", '.', System.getProperties()));
+      new MapConfig(Map.of()),
+      new ConcatenatingConfig("", '.', System.getProperties()));
 
     assertEquals(System.getProperty("user.home"), config.get("user", "home").get());
   }
@@ -64,9 +63,9 @@ class ConfigTest {
   @Test
   void shouldReturnAllMatchingOptions() {
     Config config = new CompoundConfig(
-        new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "foo"))),
-        new MapConfig(ImmutableMap.of("section", ImmutableMap.of("cake", "fish"))),
-        new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "bar"))));
+      new MapConfig(Map.of("section", Map.of("option", "foo"))),
+      new MapConfig(Map.of("section", Map.of("cake", "fish"))),
+      new MapConfig(Map.of("section", Map.of("option", "bar"))));
 
     assertEquals(Optional.empty(), config.getAll("cheese", "brie"));
     assertEquals(Optional.of(ImmutableList.of("fish")), config.getAll("section", "cake"));
@@ -76,9 +75,10 @@ class ConfigTest {
   @Test
   void shouldAllowMultipleValues() {
     class Settable {
+
       @Parameter(
-          names = {"-D"},
-          variableArity = true)
+        names = {"-D"},
+        variableArity = true)
       @ConfigValue(section = "food", name = "kinds", example = "[]")
       public List<String> field;
     }
@@ -86,8 +86,8 @@ class ConfigTest {
     Settable settable = new Settable();
 
     JCommander commander = JCommander.newBuilder()
-        .addObject(settable)
-        .build();
+      .addObject(settable)
+      .build();
 
     commander.parse("-D", "peas", "-D", "cheese", "-D", "sausages", "--boo");
 
@@ -99,9 +99,9 @@ class ConfigTest {
   @Test
   void compoundConfigsCanProperlyInstantiateClassesReferringToOptionsInOtherConfigs() {
     Config config = new CompoundConfig(
-      new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("taste", "delicious"))),
-      new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("name", "cheddar"))),
-      new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("scent", "smelly"))));
+      new MapConfig(Map.of("cheese", Map.of("taste", "delicious"))),
+      new MapConfig(Map.of("cheese", Map.of("name", "cheddar"))),
+      new MapConfig(Map.of("cheese", Map.of("scent", "smelly"))));
 
     String name = config.getClass("foo", "bar", String.class, ReadsConfig.class.getName());
 
@@ -111,7 +111,7 @@ class ConfigTest {
   @Test
   void shouldBeAbleToGetAClassWithDefaultConstructor() {
     Config config = new MapConfig(
-      ImmutableMap.of("foo", ImmutableMap.of("caps", ImmutableCapabilities.class.getName())));
+      Map.of("foo", Map.of("caps", ImmutableCapabilities.class.getName())));
 
     Capabilities caps = config.getClass(
       "foo",
@@ -123,6 +123,7 @@ class ConfigTest {
   }
 
   public static class ReadsConfig {
+
     public static String create(Config config) {
       return config.get("cheese", "name").orElse("no cheese");
     }

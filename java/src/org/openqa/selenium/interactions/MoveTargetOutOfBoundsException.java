@@ -24,6 +24,7 @@ import org.openqa.selenium.WebDriverException;
  * the size of the window.
  */
 public class MoveTargetOutOfBoundsException extends WebDriverException {
+
   public MoveTargetOutOfBoundsException(String message) {
     super(message);
   }

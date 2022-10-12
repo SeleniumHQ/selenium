@@ -25,5 +25,6 @@ import java.util.Map;
  * {@link Interaction} interface.
  */
 public interface Encodable {
+
   Map<String, Object> encode();
 }

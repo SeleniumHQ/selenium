@@ -22,4 +22,5 @@ import org.openqa.selenium.remote.server.rest.RestishHandler;
 import java.util.function.Function;
 
 public interface RequiresAllSessions extends Function<DriverSessions, RestishHandler<?>> {
+
 }

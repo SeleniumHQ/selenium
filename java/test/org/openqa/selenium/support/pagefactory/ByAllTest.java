@@ -27,8 +27,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -51,7 +51,7 @@ class ByAllTest {
   void findElementZeroBy() {
     ByAll by = new ByAll();
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> by.findElement(driver));
+      .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -96,7 +96,7 @@ class ByAllTest {
 
     ByAll by = new ByAll(By.name("cheese"));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> by.findElement(driver));
+      .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
@@ -208,6 +208,6 @@ class ByAllTest {
   @Test
   void testEquals() {
     assertThat(new ByAll(By.id("cheese"), By.name("photo")))
-        .isEqualTo(new ByAll(By.id("cheese"), By.name("photo")));
+      .isEqualTo(new ByAll(By.id("cheese"), By.name("photo")));
   }
 }

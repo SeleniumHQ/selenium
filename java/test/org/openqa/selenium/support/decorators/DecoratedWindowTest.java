@@ -24,8 +24,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
@@ -35,25 +35,6 @@ import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedWindowTest {
-
-  private static class Fixture {
-
-    WebDriver originalDriver;
-    WebDriver decoratedDriver;
-    WebDriver.Options originalOptions;
-    WebDriver.Window original;
-    WebDriver.Window decorated;
-
-    public Fixture() {
-      original = mock(WebDriver.Window.class);
-      originalOptions = mock(WebDriver.Options.class);
-      originalDriver = mock(WebDriver.class);
-      when(originalOptions.window()).thenReturn(original);
-      when(originalDriver.manage()).thenReturn(originalOptions);
-      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
-      decorated = decoratedDriver.manage().window();
-    }
-  }
 
   private void verifyFunction(Consumer<WebDriver.Window> f) {
     Fixture fixture = new Fixture();
@@ -103,5 +84,24 @@ class DecoratedWindowTest {
   @Test
   void fullscreen() {
     verifyFunction(WebDriver.Window::fullscreen);
+  }
+
+  private static class Fixture {
+
+    WebDriver originalDriver;
+    WebDriver decoratedDriver;
+    WebDriver.Options originalOptions;
+    WebDriver.Window original;
+    WebDriver.Window decorated;
+
+    public Fixture() {
+      original = mock(WebDriver.Window.class);
+      originalOptions = mock(WebDriver.Options.class);
+      originalDriver = mock(WebDriver.class);
+      when(originalOptions.window()).thenReturn(original);
+      when(originalDriver.manage()).thenReturn(originalOptions);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
+      decorated = decoratedDriver.manage().window();
+    }
   }
 }

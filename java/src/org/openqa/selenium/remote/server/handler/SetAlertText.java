@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.server.Session;
 import java.util.Map;
 
 public class SetAlertText extends WebDriverHandler<Void> {
+
   private String text;
 
   public SetAlertText(Session session) {

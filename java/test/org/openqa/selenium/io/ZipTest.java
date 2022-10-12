@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +35,7 @@ import java.util.zip.ZipOutputStream;
 
 @Tag("UnitTests")
 class ZipTest {
+
   private File inputDir;
   private File outputDir;
   private TemporaryFilesystem tmpFs;

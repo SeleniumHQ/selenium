@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.bidi.log;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,9 +34,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.Safely.safelyCall;
 
 class BiDiLogTest {
 

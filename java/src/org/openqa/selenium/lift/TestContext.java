@@ -32,7 +32,7 @@ public interface TestContext {
   void assertPresenceOf(Finder<WebElement, WebDriver> finder);
 
   void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
-      Finder<WebElement, WebDriver> finder);
+                        Finder<WebElement, WebDriver> finder);
 
   void type(String input, Finder<WebElement, WebDriver> finder);
 

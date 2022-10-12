@@ -96,7 +96,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
     WebElement proxy;
     proxy = (WebElement) Proxy.newProxyInstance(
-        loader, new Class[]{WebElement.class, WrapsElement.class, Locatable.class}, handler);
+      loader, new Class[]{WebElement.class, WrapsElement.class, Locatable.class}, handler);
     return proxy;
   }
 
@@ -106,7 +106,7 @@ public class DefaultFieldDecorator implements FieldDecorator {
 
     List<WebElement> proxy;
     proxy = (List<WebElement>) Proxy.newProxyInstance(
-        loader, new Class[]{List.class}, handler);
+      loader, new Class[]{List.class}, handler);
     return proxy;
   }
 

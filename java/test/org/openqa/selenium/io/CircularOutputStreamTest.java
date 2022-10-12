@@ -19,8 +19,8 @@ package org.openqa.selenium.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 
 @Tag("UnitTests")
 class CircularOutputStreamTest {
+
   @Test
   void testShouldReturnTheEntireWrittenContentIfSmallerThanTheBufferSize() throws Exception {
     String expected = "foo";
@@ -151,6 +152,7 @@ class CircularOutputStreamTest {
   }
 
   private static class WriteChar implements Runnable {
+
     private final CircularOutputStream stream;
     private final char c;
     private final int count;

@@ -17,6 +17,15 @@
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.CapabilityType.STRICT_FILE_INTERACTABILITY;
+import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
+
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Proxy;
@@ -31,16 +40,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_VERSION;
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.remote.CapabilityType.STRICT_FILE_INTERACTABILITY;
-import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
-import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
+public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions>
+  extends MutableCapabilities {
 
-public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> extends MutableCapabilities {
   public DO setBrowserVersion(String browserVersion) {
     setCapability(
       BROWSER_VERSION,
@@ -81,15 +83,15 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
 
   public DO setPageLoadStrategy(PageLoadStrategy strategy) {
     setCapability(
-        PAGE_LOAD_STRATEGY,
-        Require.nonNull("Page load strategy", strategy));
+      PAGE_LOAD_STRATEGY,
+      Require.nonNull("Page load strategy", strategy));
     return (DO) this;
   }
 
   public DO setUnhandledPromptBehaviour(UnexpectedAlertBehaviour behaviour) {
     setCapability(
-        UNHANDLED_PROMPT_BEHAVIOUR,
-        Require.nonNull("Unhandled prompt behavior", behaviour));
+      UNHANDLED_PROMPT_BEHAVIOUR,
+      Require.nonNull("Unhandled prompt behavior", behaviour));
     return (DO) this;
   }
 
@@ -146,6 +148,6 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
         }
       });
     }
-      return newTimeouts;
+    return newTimeouts;
   }
 }

@@ -17,7 +17,16 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,16 +78,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeoutException;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 class SessionQueueGridTest {
+
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
@@ -88,7 +89,7 @@ class SessionQueueGridTest {
     return new NettyServer(
       new BaseServerOptions(
         new MapConfig(
-          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
+         Map.of("server",Map.of("port", PortProber.findFreePort())))),
       handler);
   }
 
@@ -152,7 +153,7 @@ class SessionQueueGridTest {
 
   @Test
   void shouldBeAbleToCreateMultipleSessions() {
-    ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
+    ImmutableMap<String, String> caps =Map.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(2);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -181,13 +182,13 @@ class SessionQueueGridTest {
   @Test
   void shouldBeAbleToRejectRequest() {
     // Grid has no slots for the requested capabilities
-    HttpResponse httpResponse = createSession(ImmutableMap.of("browserName", "burger"));
+    HttpResponse httpResponse = createSession(Map.of("browserName", "burger"));
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @Test
   void shouldBeAbleToClearQueue() {
-    ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
+    ImmutableMap<String, String> caps =Map.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(1);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -241,8 +242,8 @@ class SessionQueueGridTest {
   private HttpResponse createSession(ImmutableMap<String, String> caps) {
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
+     Map.of(
+        "capabilities",Map.of(
           "alwaysMatch", caps))));
 
     try (HttpClient client = clientFactory.createClient(server.getUrl())) {

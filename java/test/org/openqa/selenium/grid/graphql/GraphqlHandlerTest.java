@@ -17,7 +17,16 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,24 +78,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class GraphqlHandlerTest {
 
   private static final Json JSON = new Json();
   private final Secret registrationSecret = new Secret("stilton");
   private final URI publicUri = new URI("http://example.com/grid-o-matic");
   private final String version = "4.0.0";
-  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+  private final Wait<Object>
+    wait =
+    new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
   private Distributor distributor;
   private NewSessionQueue queue;
   private Tracer tracer;
@@ -210,7 +210,7 @@ class GraphqlHandlerTest {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,
-      "{ sessionsInfo { sessionQueueRequests } }");
+                                                "{ sessionsInfo { sessionQueueRequests } }");
 
     assertThat(topLevel).isEqualTo(
       singletonMap(
@@ -224,7 +224,7 @@ class GraphqlHandlerTest {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
     Map<String, Object> topLevel = executeQuery(handler,
-      "{ sessionsInfo { sessionQueueRequests } }");
+                                                "{ sessionsInfo { sessionQueueRequests } }");
 
     assertThat(topLevel).isEqualTo(
       singletonMap(
@@ -249,7 +249,7 @@ class GraphqlHandlerTest {
   @Test
   void shouldBeAbleToGetUrlsOfAllNodes() throws URISyntaxException {
     Capabilities stereotype = new ImmutableCapabilities("cheese", "stilton");
-    String nodeUri = "http://localhost:5556";
+    final String nodeUri = "http://localhost:5556";
     Node node = LocalNode.builder(tracer, bus, new URI(nodeUri), publicUri, registrationSecret)
       .add(stereotype, new SessionFactory() {
         @Override
@@ -279,7 +279,7 @@ class GraphqlHandlerTest {
 
   @Test
   void shouldBeAbleToGetSessionCount() throws URISyntaxException {
-    String nodeUrl = "http://localhost:5556";
+    final String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
@@ -305,20 +305,22 @@ class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      response =
+      distributor.newSession(sessionRequest);
     if (response.isRight()) {
       Session session = response.right().getSession();
 
       assertThat(session).isNotNull();
       GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
       Map<String, Object> topLevel = executeQuery(handler,
-        "{ grid { sessionCount } }");
+                                                  "{ grid { sessionCount } }");
 
       assertThat(topLevel).isEqualTo(
         singletonMap(
           "data", singletonMap(
             "grid", singletonMap(
-              "sessionCount", 1L ))));
+              "sessionCount", 1L))));
     } else {
       fail("Session creation failed", response.left());
     }
@@ -326,7 +328,7 @@ class GraphqlHandlerTest {
 
   @Test
   void shouldBeAbleToGetSessionInfo() throws URISyntaxException {
-    String nodeUrl = "http://localhost:5556";
+    final String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
@@ -352,7 +354,9 @@ class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      response =
+      distributor.newSession(sessionRequest);
     if (response.isRight()) {
       Session session = response.right().getSession();
 
@@ -381,7 +385,7 @@ class GraphqlHandlerTest {
       assertThat(result).describedAs(result.toString()).isEqualTo(
         singletonMap(
           "data", singletonMap(
-            "session", ImmutableMap.of(
+            "session", Map.of(
               "id", sessionId,
               "capabilities", graphqlSession.getCapabilities(),
               "startTime", graphqlSession.getStartTime(),
@@ -393,7 +397,7 @@ class GraphqlHandlerTest {
 
   @Test
   void shouldBeAbleToGetNodeInfoForSession() throws URISyntaxException {
-    String nodeUrl = "http://localhost:5556";
+    final String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
@@ -419,7 +423,9 @@ class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      response =
+      distributor.newSession(sessionRequest);
 
     if (response.isRight()) {
       Session session = response.right().getSession();
@@ -448,7 +454,7 @@ class GraphqlHandlerTest {
       assertThat(result).describedAs(result.toString()).isEqualTo(
         singletonMap(
           "data", singletonMap(
-            "session", ImmutableMap.of(
+            "session", Map.of(
               "nodeId", graphqlSession.getNodeId(),
               "nodeUri", graphqlSession.getNodeUri().toString()))));
     } else {
@@ -458,7 +464,7 @@ class GraphqlHandlerTest {
 
   @Test
   void shouldBeAbleToGetSlotInfoForSession() throws URISyntaxException {
-    String nodeUrl = "http://localhost:5556";
+    final String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
@@ -484,7 +490,9 @@ class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      response =
+      distributor.newSession(sessionRequest);
 
     if (response.isRight()) {
       Session session = response.right().getSession();
@@ -518,7 +526,7 @@ class GraphqlHandlerTest {
         singletonMap(
           "data", singletonMap(
             "session", singletonMap(
-              "slot", ImmutableMap.of(
+              "slot", Map.of(
                 "id", graphqlSlot.getId(),
                 "stereotype", graphqlSlot.getStereotype(),
                 "lastStarted", graphqlSlot.getLastStarted())))));
@@ -529,7 +537,7 @@ class GraphqlHandlerTest {
 
   @Test
   void shouldBeAbleToGetSessionDuration() throws URISyntaxException {
-    String nodeUrl = "http://localhost:5556";
+    final String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
@@ -555,7 +563,9 @@ class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> response = distributor.newSession(sessionRequest);
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      response =
+      distributor.newSession(sessionRequest);
 
     if (response.isRight()) {
       Session session = response.right().getSession();
@@ -579,7 +589,7 @@ class GraphqlHandlerTest {
 
   @Test
   void shouldThrowExceptionWhenSessionNotFound() throws URISyntaxException {
-    String nodeUrl = "http://localhost:5556";
+    final String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
@@ -609,7 +619,7 @@ class GraphqlHandlerTest {
 
   @Test
   void shouldThrowExceptionWhenSessionIsEmpty() throws URISyntaxException {
-    String nodeUrl = "http://localhost:5556";
+    final String nodeUrl = "http://localhost:5556";
     URI nodeUri = new URI(nodeUrl);
 
     Node node = LocalNode.builder(tracer, bus, nodeUri, publicUri, registrationSecret)
@@ -623,7 +633,7 @@ class GraphqlHandlerTest {
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    String query = "{ session (id: \"\") { sessionDurationMillis } }";
+    final String query = "{ session (id: \"\") { sessionDurationMillis } }";
 
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
     Map<String, Object> result = executeQuery(handler, query);

@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class LocatingElementListHandler implements InvocationHandler {
+
   private final ElementLocator locator;
 
   public LocatingElementListHandler(ElementLocator locator) {

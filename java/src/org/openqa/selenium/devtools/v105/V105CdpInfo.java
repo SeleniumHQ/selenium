@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools.v105;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.devtools.CdpInfo;
 
 @AutoService(CdpInfo.class)

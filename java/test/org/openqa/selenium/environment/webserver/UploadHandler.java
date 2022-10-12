@@ -51,8 +51,8 @@ class UploadHandler implements HttpHandler {
     // I mean. Seriously. *sigh*
     try {
       String decoded = URLDecoder.decode(
-          string(req),
-          Charset.defaultCharset().displayName());
+        string(req),
+        Charset.defaultCharset().displayName());
 
       String[] splits = decoded.split("\r\n");
 
@@ -74,7 +74,8 @@ class UploadHandler implements HttpHandler {
         }
 
         if (inHeaders && splits[i].toLowerCase().startsWith("content-disposition:")) {
-          for (String keyValue : Splitter.on(';').trimResults().omitEmptyStrings().split(splits[i])) {
+          for (String keyValue : Splitter.on(';').trimResults().omitEmptyStrings()
+            .split(splits[i])) {
             Matcher matcher = Pattern.compile("(\\S+)\\s*=.*\"(.*?)\".*").matcher(keyValue);
             if (matcher.find()) {
               values.put(matcher.group(1), matcher.group(2));
@@ -88,10 +89,10 @@ class UploadHandler implements HttpHandler {
       }
 
       Object value = allParts.stream()
-          .filter(map -> "upload".equals(map.get("name")))
-          .findFirst()
-          .map(map -> map.get("content"))
-          .orElseThrow(() -> new RuntimeException("Cannot find uploaded data"));
+        .filter(map -> "upload".equals(map.get("name")))
+        .findFirst()
+        .map(map -> map.get("content"))
+        .orElseThrow(() -> new RuntimeException("Cannot find uploaded data"));
 
       content.append(value);
     } catch (UnsupportedEncodingException e) {

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ArgumentConverter implements Function<Object, Object> {
+
   private final KnownElements knownElements;
 
   public ArgumentConverter(KnownElements knownElements) {
@@ -42,7 +43,7 @@ public class ArgumentConverter implements Function<Object, Object> {
       Map<String, Object> paramAsMap = (Map<String, Object>) arg;
       if (paramAsMap.containsKey("ELEMENT")) {
         KnownElements.ProxiedElement element = (KnownElements.ProxiedElement) knownElements
-            .get((String) paramAsMap.get("ELEMENT"));
+          .get((String) paramAsMap.get("ELEMENT"));
         return element.getWrappedElement();
       }
 

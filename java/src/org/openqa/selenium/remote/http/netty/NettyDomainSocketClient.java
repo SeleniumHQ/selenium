@@ -67,7 +67,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -82,22 +81,22 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
   private final Class<? extends Channel> channelClazz;
   private final String path;
 
-  public NettyDomainSocketClient(ClientConfig config) {
+  NettyDomainSocketClient(ClientConfig config) {
     super(config);
     URI uri = config.baseUri();
     Require.argument("URI scheme", uri.getScheme()).equalTo("unix");
 
     if (Epoll.isAvailable()) {
-      this.eventLoopGroup = new EpollEventLoopGroup();
-      this.channelClazz = EpollDomainSocketChannel.class;
+      eventLoopGroup = new EpollEventLoopGroup();
+      channelClazz = EpollDomainSocketChannel.class;
     } else if (KQueue.isAvailable()) {
-      this.eventLoopGroup = new KQueueEventLoopGroup();
-      this.channelClazz = KQueueDomainSocketChannel.class;
+      eventLoopGroup = new KQueueEventLoopGroup();
+      channelClazz = KQueueDomainSocketChannel.class;
     } else {
       throw new IllegalStateException("No native library for unix domain sockets is available");
     }
 
-    this.path = uri.getPath();
+    path = uri.getPath();
   }
 
   @Override
@@ -113,12 +112,9 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
     req.getQueryParameterNames().forEach(
       name -> req.getQueryParameters(name).forEach(
         value -> {
-          try {
-            queryPairs.add(URLEncoder.encode(name, UTF_8.toString()) + "=" + URLEncoder.encode(value, UTF_8.toString()));
-          } catch (UnsupportedEncodingException e) {
-            Thread.currentThread().interrupt();
-            throw new UncheckedIOException(e);
-          }
+          queryPairs.add(
+            URLEncoder.encode(name, UTF_8) + "=" + URLEncoder.encode(value,
+                                                                     UTF_8));
         }));
     if (!queryPairs.isEmpty()) {
       uri.append("?");
@@ -132,7 +128,8 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
       HttpMethod.valueOf(req.getMethod().toString()),
       uri.toString(),
       Unpooled.wrappedBuffer(bytes));
-    req.getHeaderNames().forEach(name -> req.getHeaders(name).forEach(value -> fullRequest.headers().add(name, value)));
+    req.getHeaderNames().forEach(
+      name -> req.getHeaders(name).forEach(value -> fullRequest.headers().add(name, value)));
     if (req.getHeader("User-Agent") == null) {
       fullRequest.headers().set("User-Agent", AddSeleniumUserAgent.USER_AGENT);
     }
@@ -193,8 +190,8 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
                   latch.countDown();
                 } catch (IOException e) {
                   outRef.set(new HttpResponse()
-                    .setStatus(HTTP_INTERNAL_ERROR)
-                    .setContent(utf8String(Throwables.getStackTraceAsString(e))));
+                               .setStatus(HTTP_INTERNAL_ERROR)
+                               .setContent(utf8String(Throwables.getStackTraceAsString(e))));
                   latch.countDown();
                 }
               }
@@ -202,8 +199,8 @@ class NettyDomainSocketClient extends RemoteCall implements HttpClient {
               @Override
               public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
                 outRef.set(new HttpResponse()
-                  .setStatus(HTTP_INTERNAL_ERROR)
-                  .setContent(utf8String(Throwables.getStackTraceAsString(cause))));
+                             .setStatus(HTTP_INTERNAL_ERROR)
+                             .setContent(utf8String(Throwables.getStackTraceAsString(cause))));
                 latch.countDown();
               }
             });

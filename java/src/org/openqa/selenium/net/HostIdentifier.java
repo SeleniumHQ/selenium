@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class HostIdentifier {
+
   private static final Logger log = Logger.getLogger(HostIdentifier.class.getName());
 
   private static volatile String hostName;

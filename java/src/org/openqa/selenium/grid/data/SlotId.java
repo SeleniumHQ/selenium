@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableMap;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
@@ -26,8 +28,6 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import static java.util.Collections.unmodifiableMap;
-
 public class SlotId implements Serializable {
 
   private final NodeId nodeId;
@@ -36,41 +36,6 @@ public class SlotId implements Serializable {
   public SlotId(NodeId host, UUID uuid) {
     this.nodeId = Require.nonNull("Host id", host);
     this.uuid = Require.nonNull("Actual id", uuid);
-  }
-
-  public NodeId getOwningNodeId() {
-    return nodeId;
-  }
-
-  public UUID getSlotId() {
-    return uuid;
-  }
-
-  @Override
-  public String toString() {
-    return "SlotId{nodeId=" + nodeId + ", id=" + uuid + '}';
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (!(o instanceof SlotId)) {
-      return false;
-    }
-    SlotId that = (SlotId) o;
-    return Objects.equals(this.nodeId, that.nodeId) &&
-      Objects.equals(this.uuid, that.uuid);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(nodeId, uuid);
-  }
-
-  private Object toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("hostId", nodeId);
-    toReturn.put("id", uuid);
-    return unmodifiableMap(toReturn);
   }
 
   private static SlotId fromJson(JsonInput input) {
@@ -96,5 +61,40 @@ public class SlotId implements Serializable {
     input.endObject();
 
     return new SlotId(nodeId, id);
+  }
+
+  public NodeId getOwningNodeId() {
+    return nodeId;
+  }
+
+  public UUID getSlotId() {
+    return uuid;
+  }
+
+  @Override
+  public String toString() {
+    return "SlotId{nodeId=" + nodeId + ", id=" + uuid + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof SlotId)) {
+      return false;
+    }
+    SlotId that = (SlotId) o;
+    return Objects.equals(this.nodeId, that.nodeId) &&
+           Objects.equals(this.uuid, that.uuid);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(nodeId, uuid);
+  }
+
+  private Object toJson() {
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("hostId", nodeId);
+    toReturn.put("id", uuid);
+    return unmodifiableMap(toReturn);
   }
 }

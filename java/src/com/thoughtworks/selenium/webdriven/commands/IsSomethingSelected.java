@@ -24,14 +24,15 @@ import org.openqa.selenium.WebDriver;
 
 
 public class IsSomethingSelected extends SeleneseCommand<Boolean> {
+
   private final JavascriptLibrary library;
   private final String script;
 
   public IsSomethingSelected(JavascriptLibrary library) {
     this.library = library;
     script =
-        "return (" + library.getSeleniumScript("isSomethingSelected.js") +
-            ").apply(null, arguments)";
+      "return (" + library.getSeleniumScript("isSomethingSelected.js") +
+      ").apply(null, arguments)";
   }
 
   @Override

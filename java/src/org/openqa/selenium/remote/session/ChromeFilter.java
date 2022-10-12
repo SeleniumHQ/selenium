@@ -17,15 +17,16 @@
 
 package org.openqa.selenium.remote.session;
 
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import static org.openqa.selenium.remote.Browser.CHROME;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 public class ChromeFilter implements CapabilitiesFilter {
+
   @Override
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     String browserName = (String) unmodifiedCaps.getOrDefault(BROWSER_NAME, "");

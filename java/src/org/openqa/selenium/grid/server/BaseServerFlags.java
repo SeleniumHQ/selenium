@@ -35,13 +35,6 @@ import java.util.Set;
 public class BaseServerFlags implements HasRoles {
 
   private static final String SERVER_SECTION = "server";
-
-  @Parameter(
-    names = {"--host"},
-    description = "Server IP or hostname: usually determined automatically.")
-  @ConfigValue(section = SERVER_SECTION, name = "host", example = "\"localhost\"")
-  private String host;
-
   @Parameter(
     names = "--bind-host",
     description = "Whether the server should bind to the host address/name, or only use it to" +
@@ -50,8 +43,30 @@ public class BaseServerFlags implements HasRoles {
                   " external IP or hostname (e.g. inside a Docker container).",
     arity = 1)
   @ConfigValue(section = SERVER_SECTION, name = "bind-host", example = "true")
-  private Boolean bindHost = true;
-
+  private final Boolean bindHost = true;
+  @Parameter(
+    description = "Maximum number of listener threads. "
+                  + "Default value is: (available processors) * 3.",
+    names = "--max-threads")
+  @ConfigValue(section = SERVER_SECTION, name = "max-threads", example = "12")
+  private final int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
+  @Parameter(
+    names = "--allow-cors",
+    description = "Whether the Selenium server should allow web browser connections from any host",
+    arity = 1)
+  @ConfigValue(section = SERVER_SECTION, name = "allow-cors", example = "true")
+  private final Boolean allowCORS = false;
+  @Parameter(
+    description = "Use a self-signed certificate for HTTPS communication",
+    names = "--self-signed-https",
+    hidden = true)
+  @ConfigValue(section = SERVER_SECTION, name = "https-self-signed", example = "false")
+  private final Boolean isSelfSigned = false;
+  @Parameter(
+    names = {"--host"},
+    description = "Server IP or hostname: usually determined automatically.")
+  @ConfigValue(section = SERVER_SECTION, name = "host", example = "\"localhost\"")
+  private String host;
   @Parameter(
     description = "Port to listen on. There is no default as this parameter is used by "
                   + "different components, for example Router/Hub/Standalone will use 4444 and "
@@ -59,21 +74,6 @@ public class BaseServerFlags implements HasRoles {
     names = {"-p", "--port"})
   @ConfigValue(section = SERVER_SECTION, name = "port", example = "4444")
   private Integer port;
-
-  @Parameter(
-    description = "Maximum number of listener threads. "
-                  + "Default value is: (available processors) * 3.",
-    names = "--max-threads")
-  @ConfigValue(section = SERVER_SECTION, name = "max-threads", example = "12")
-  private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
-
-  @Parameter(
-    names = "--allow-cors",
-    description = "Whether the Selenium server should allow web browser connections from any host",
-    arity = 1)
-  @ConfigValue(section = SERVER_SECTION, name = "allow-cors", example = "true")
-  private Boolean allowCORS = false;
-
   @Parameter(
     description = "Private key for https. Get more detailed information by running"
                   + " \"java -jar selenium-server.jar info security\"",
@@ -83,7 +83,6 @@ public class BaseServerFlags implements HasRoles {
     name = "https-private-key",
     example = "\"/path/to/key.pkcs8\"")
   private Path httpsPrivateKey;
-
   @Parameter(
     description = "Server certificate for https. Get more detailed information by running"
                   + " \"java -jar selenium-server.jar info security\"",
@@ -93,17 +92,9 @@ public class BaseServerFlags implements HasRoles {
     name = "https-certificate",
     example = "\"/path/to/cert.pem\"")
   private Path httpsCertificate;
-
   @Parameter(description = "Node registration secret", names = "--registration-secret")
   @ConfigValue(section = SERVER_SECTION, name = "registration-secret", example = "\"Hunter2\"")
   private String registrationSecret;
-
-  @Parameter(
-    description = "Use a self-signed certificate for HTTPS communication",
-    names = "--self-signed-https",
-    hidden = true)
-  @ConfigValue(section = SERVER_SECTION, name = "https-self-signed", example = "false")
-  private Boolean isSelfSigned = false;
 
   @Override
   public Set<Role> getRoles() {

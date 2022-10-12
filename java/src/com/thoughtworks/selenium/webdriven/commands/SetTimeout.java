@@ -23,6 +23,7 @@ import com.thoughtworks.selenium.webdriven.Timer;
 import org.openqa.selenium.WebDriver;
 
 public class SetTimeout extends SeleneseCommand<Void> {
+
   private final Timer timer;
 
   public SetTimeout(Timer timer) {

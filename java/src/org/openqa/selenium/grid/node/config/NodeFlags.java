@@ -17,20 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import com.google.auto.service.AutoService;
-
-import com.beust.jcommander.Parameter;
-
-import org.openqa.selenium.grid.config.ConfigValue;
-import org.openqa.selenium.grid.config.HasRoles;
-import org.openqa.selenium.grid.config.NonSplittingSplitter;
-import org.openqa.selenium.grid.config.Role;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DETECT_DRIVERS;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
@@ -45,6 +31,20 @@ import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_T
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
 import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
 import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
+
+import com.google.auto.service.AutoService;
+
+import com.beust.jcommander.Parameter;
+
+import org.openqa.selenium.grid.config.ConfigValue;
+import org.openqa.selenium.grid.config.HasRoles;
+import org.openqa.selenium.grid.config.NonSplittingSplitter;
+import org.openqa.selenium.grid.config.Role;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings({"unused", "FieldMayBeFinal"})
 @AutoService(HasRoles.class)
@@ -149,7 +149,8 @@ public class NodeFlags implements HasRoles {
               "display-name = \"Firefox Nightly\"\n" +
               "webdriver-executable = \"/usr/local/bin/geckodriver\"\n" +
               "max-sessions = 2\n" +
-              "stereotype = \"{\\\"browserName\\\": \\\"firefox\\\", \\\"browserVersion\\\": \\\"86\\\", " +
+              "stereotype = \"{\\\"browserName\\\": \\\"firefox\\\", \\\"browserVersion\\\": \\\"86\\\", "
+              +
               "\\\"moz:firefoxOptions\\\": " +
               "{\\\"binary\\\":\\\"/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin\\\"}}\"")
   public List<String> driverConfiguration;

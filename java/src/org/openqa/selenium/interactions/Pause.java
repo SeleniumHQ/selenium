@@ -32,7 +32,7 @@ public class Pause extends Interaction implements Encodable {
 
   /**
    * @param duration If 0, this means "wait until all other actions in the tick have been
-   *   evaluated". Must be greater than 0.
+   *                 evaluated". Must be greater than 0.
    */
   // TODO(simons): Reduce visibility?
   public Pause(InputSource device, Duration duration) {

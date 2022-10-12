@@ -43,7 +43,7 @@ public class ByChained extends By implements Serializable {
 
   private static final long serialVersionUID = 1563769051170172451L;
 
-  private By[] bys;
+  private final By[] bys;
 
   public ByChained(By... bys) {
     this.bys = bys;
@@ -52,8 +52,9 @@ public class ByChained extends By implements Serializable {
   @Override
   public WebElement findElement(SearchContext context) {
     List<WebElement> elements = findElements(context);
-    if (elements.isEmpty())
-      throw new NoSuchElementException("Cannot locate an element using " + toString());
+    if (elements.isEmpty()) {
+      throw new NoSuchElementException("Cannot locate an element using " + this);
+    }
     return elements.get(0);
   }
 
@@ -68,7 +69,7 @@ public class ByChained extends By implements Serializable {
       if (elems.isEmpty()) {
         break; // if any one of the bys finds no elements, then return no elements
       }
-      final By by = bys[i];
+      By by = bys[i];
       elems = elems.stream()
         .map(elem -> elem.findElements(by))
         .flatMap(List::stream)

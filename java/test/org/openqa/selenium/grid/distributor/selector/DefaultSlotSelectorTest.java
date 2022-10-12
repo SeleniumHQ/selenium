@@ -17,9 +17,13 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.grid.data.Availability.UP;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -54,10 +58,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.grid.data.Availability.UP;
 
 class DefaultSlotSelectorTest {
 
@@ -142,7 +142,9 @@ class DefaultSlotSelectorTest {
     NodeStatus maximumLoad =
       createNode(ImmutableList.of(chrome), 12, 12);
 
-    Set<SlotId> ids = selector.selectSlot(chrome, ImmutableSet.of(maximumLoad, mediumLoad, lightLoad));
+    Set<SlotId>
+      ids =
+      selector.selectSlot(chrome, ImmutableSet.of(maximumLoad, mediumLoad, lightLoad));
     SlotId expected = ids.iterator().next();
 
     // The slot should belong to the Node with light load
@@ -241,7 +243,7 @@ class DefaultSlotSelectorTest {
       UP,
       Duration.ofSeconds(10),
       "4.0.0",
-      ImmutableMap.of(
+      Map.of(
         "name", "Max OS X",
         "arch", "x86_64",
         "version", "10.15.7"));
@@ -275,8 +277,10 @@ class DefaultSlotSelectorTest {
   }
 
   private class Handler extends Session implements HttpHandler {
+
     private Handler(Capabilities capabilities) {
-      super(new SessionId(UUID.randomUUID()), uri, new ImmutableCapabilities(), capabilities, Instant.now());
+      super(new SessionId(UUID.randomUUID()), uri, new ImmutableCapabilities(), capabilities,
+            Instant.now());
     }
 
     @Override

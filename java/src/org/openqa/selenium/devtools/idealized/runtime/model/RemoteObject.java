@@ -30,8 +30,8 @@ public class RemoteObject {
   @Override
   public String toString() {
     return value instanceof String ?
-      ("\"" + ((String) value).replace("\"", "\\\"") + "\"") :
-      String.valueOf(value);
+           ("\"" + ((String) value).replace("\"", "\\\"") + "\"") :
+           String.valueOf(value);
   }
 
   public String getType() {

@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableMap;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Map;
 import java.util.TreeMap;
-
-import static java.util.Collections.unmodifiableMap;
 
 public class NewSessionErrorResponse {
 
@@ -33,21 +33,6 @@ public class NewSessionErrorResponse {
   public NewSessionErrorResponse(RequestId requestId, String message) {
     this.requestId = Require.nonNull("Request Id", requestId);
     this.message = Require.nonNull("Message", message);
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public RequestId getRequestId() {
-    return requestId;
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new TreeMap<>();
-    toReturn.put("message", message);
-    toReturn.put("requestId", requestId);
-    return unmodifiableMap(toReturn);
   }
 
   private static NewSessionErrorResponse fromJson(JsonInput input) {
@@ -73,6 +58,21 @@ public class NewSessionErrorResponse {
     input.endObject();
 
     return new NewSessionErrorResponse(requestId, message);
+  }
+
+  public String getMessage() {
+    return message;
+  }
+
+  public RequestId getRequestId() {
+    return requestId;
+  }
+
+  private Map<String, Object> toJson() {
+    Map<String, Object> toReturn = new TreeMap<>();
+    toReturn.put("message", message);
+    toReturn.put("requestId", requestId);
+    return unmodifiableMap(toReturn);
   }
 
 }

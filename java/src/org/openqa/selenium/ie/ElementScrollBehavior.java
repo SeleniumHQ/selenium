@@ -19,19 +19,14 @@ package org.openqa.selenium.ie;
 
 public enum ElementScrollBehavior {
 
-  TOP (0),
-  BOTTOM (1),
+  TOP(0),
+  BOTTOM(1),
   ;
 
-  private int value;
+  private final int value;
 
   ElementScrollBehavior(int value) {
     this.value = value;
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(value);
   }
 
   public static ElementScrollBehavior fromString(String text) {
@@ -41,6 +36,11 @@ public enum ElementScrollBehavior {
       }
     }
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(value);
   }
 
   public int getValue() {

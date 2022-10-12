@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -43,18 +45,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot, WrapsDriver {
 
-public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot, WrapsDriver  {
-
-  private String foundBy;
   protected String id;
   protected RemoteWebDriver parent;
-  protected FileDetector fileDetector;
+  private FileDetector fileDetector;
+  private String foundBy;
 
-  protected void setFoundBy(SearchContext foundFrom, String locator, String term) {
-    this.foundBy = String.format("[%s] -> %s: %s", foundFrom, locator, term);
+  private static String stringValueOf(Object o) {
+    if (o == null) {
+      return null;
+    }
+    return String.valueOf(o);
+  }
+
+  void setFoundBy(SearchContext foundFrom, String locator, String term) {
+    foundBy = String.format("[%s] -> %s: %s", foundFrom, locator, term);
   }
 
   public void setParent(RemoteWebDriver parent) {
@@ -83,7 +89,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
     try {
       execute(DriverCommand.SUBMIT_ELEMENT(id));
     } catch (JavascriptException ex) {
-      String message = "To submit an element, it must be nested inside a form element";
+      final String message = "To submit an element, it must be nested inside a form element";
       throw new UnsupportedOperationException(message);
     }
   }
@@ -173,13 +179,6 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
         .getValue());
   }
 
-  private static String stringValueOf(Object o) {
-    if (o == null) {
-      return null;
-    }
-    return String.valueOf(o);
-  }
-
   @Override
   public boolean isSelected() {
     Object value = execute(DriverCommand.IS_ELEMENT_SELECTED(id))
@@ -235,7 +234,8 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
    */
   @Deprecated
   protected WebElement findElement(String using, String value) {
-    throw new UnsupportedOperationException("`findElement` has been replaced by usages of " + By.Remotable.class);
+    throw new UnsupportedOperationException(
+      "`findElement` has been replaced by usages of " + By.Remotable.class);
   }
 
   /**
@@ -243,7 +243,8 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
    */
   @Deprecated
   protected List<WebElement> findElements(String using, String value) {
-    throw new UnsupportedOperationException("`findElement` has been replaced by usages of " + By.Remotable.class);
+    throw new UnsupportedOperationException(
+      "`findElement` has been replaced by usages of " + By.Remotable.class);
   }
 
   @Override
@@ -256,7 +257,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
     try {
       return parent.execute(payload);
     } catch (WebDriverException ex) {
-      ex.addInfo("Element", this.toString());
+      ex.addInfo("Element", toString());
       throw ex;
     }
   }
@@ -265,7 +266,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
     try {
       return parent.execute(command, parameters);
     } catch (WebDriverException ex) {
-      ex.addInfo("Element", this.toString());
+      ex.addInfo("Element", toString());
       throw ex;
     }
   }
@@ -324,7 +325,6 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
   }
 
   @Override
-  @SuppressWarnings({"unchecked"})
   public Point getLocation() {
     Response response = execute(DriverCommand.GET_ELEMENT_RECT(id));
     Map<String, Object> rawPoint = (Map<String, Object>) response.getValue();
@@ -334,7 +334,6 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
   }
 
   @Override
-  @SuppressWarnings({"unchecked"})
   public Dimension getSize() {
     Response response = execute(DriverCommand.GET_ELEMENT_RECT(id));
     Map<String, Object> rawSize = (Map<String, Object>) response.getValue();
@@ -344,7 +343,6 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
   }
 
   @Override
-  @SuppressWarnings({"unchecked"})
   public Rectangle getRect() {
     Response response = execute(DriverCommand.GET_ELEMENT_RECT(id));
     Map<String, Object> rawRect = (Map<String, Object>) response.getValue();
@@ -366,9 +364,10 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
 
       @Override
       public Point inViewPort() {
-        Response response = execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW(getId()));
+        Response
+          response =
+          execute(DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW(getId()));
 
-        @SuppressWarnings("unchecked")
         Map<String, Number> mapped = (Map<String, Number>) response.getValue();
         return new Point(mapped.get("x").intValue(), mapped.get("y").intValue());
       }
@@ -403,6 +402,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
     }
   }
 
+  @Override
   public String toString() {
     if (foundBy == null) {
       return String.format("[%s -> unknown locator]", super.toString());
@@ -411,7 +411,7 @@ public class RemoteWebElement implements WebElement, Locatable, TakesScreenshot,
   }
 
   public Map<String, Object> toJson() {
-    return ImmutableMap.of(
+    return Map.of(
       Dialect.OSS.getEncodedElementKey(), getId(),
       Dialect.W3C.getEncodedElementKey(), getId());
   }

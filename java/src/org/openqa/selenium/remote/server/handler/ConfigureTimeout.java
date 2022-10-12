@@ -34,7 +34,7 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
   private static final String SCRIPT = "script";
   private static final List<String> knownTypes = Arrays.asList(IMPLICIT, PAGE_LOAD, SCRIPT);
 
-  private Map<String, Object> timeouts = new HashMap<>();
+  private final Map<String, Object> timeouts = new HashMap<>();
 
   public ConfigureTimeout(Session session) {
     super(session);
@@ -47,7 +47,7 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
 
     if (type != null) {
       // OSS
-      if (! knownTypes.contains(type)) {
+      if (!knownTypes.contains(type)) {
         throw new WebDriverException("Unknown wait type: " + type);
       }
       timeouts.put(type, allParameters.get("ms"));
@@ -55,7 +55,7 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
     } else {
       // W3C
       for (String key : allParameters.keySet()) {
-        if (! knownTypes.contains(key)) {
+        if (!knownTypes.contains(key)) {
           throw new WebDriverException("Unknown wait type: " + key);
         }
       }
@@ -68,28 +68,28 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
     if (timeouts.containsKey(IMPLICIT)) {
       try {
         getDriver().manage().timeouts().implicitlyWait(
-            Duration.ofMillis(((Number) timeouts.get(IMPLICIT)).longValue()));
+          Duration.ofMillis(((Number) timeouts.get(IMPLICIT)).longValue()));
       } catch (ClassCastException ex) {
         throw new WebDriverException(
-            "Illegal (non-numeric) timeout value passed: " + timeouts.get(IMPLICIT), ex);
+          "Illegal (non-numeric) timeout value passed: " + timeouts.get(IMPLICIT), ex);
       }
     }
     if (timeouts.containsKey(PAGE_LOAD)) {
       try {
         getDriver().manage().timeouts().pageLoadTimeout(
-            Duration.ofMillis(((Number) timeouts.get(PAGE_LOAD)).longValue()));
+          Duration.ofMillis(((Number) timeouts.get(PAGE_LOAD)).longValue()));
       } catch (ClassCastException ex) {
         throw new WebDriverException(
-            "Illegal (non-numeric) timeout value passed: " + timeouts.get(PAGE_LOAD), ex);
+          "Illegal (non-numeric) timeout value passed: " + timeouts.get(PAGE_LOAD), ex);
       }
     }
     if (timeouts.containsKey(SCRIPT)) {
       try {
         getDriver().manage().timeouts().setScriptTimeout(
-            Duration.ofMillis(((Number) timeouts.get(SCRIPT)).longValue()));
+          Duration.ofMillis(((Number) timeouts.get(SCRIPT)).longValue()));
       } catch (ClassCastException ex) {
         throw new WebDriverException(
-            "Illegal (non-numeric) timeout value passed: " + timeouts.get(SCRIPT), ex);
+          "Illegal (non-numeric) timeout value passed: " + timeouts.get(SCRIPT), ex);
       }
     }
     return null;
@@ -98,7 +98,7 @@ public class ConfigureTimeout extends WebDriverHandler<Void> {
   @Override
   public String toString() {
     return "[" + timeouts.entrySet().stream()
-        .map(entry -> String.format("%s: %s", entry.getKey(), entry.getValue()))
-        .collect(Collectors.joining(",")) + "]";
+      .map(entry -> String.format("%s: %s", entry.getKey(), entry.getValue()))
+      .collect(Collectors.joining(",")) + "]";
   }
 }

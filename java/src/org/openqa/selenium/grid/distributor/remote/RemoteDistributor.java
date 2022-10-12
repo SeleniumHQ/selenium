@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.grid.distributor.remote;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -40,18 +45,14 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 public class RemoteDistributor extends Distributor {
 
   private static final Logger LOG = Logger.getLogger("Selenium Distributor (Remote)");
   private final HttpHandler client;
   private final Filter addSecret;
 
-  public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url, Secret registrationSecret) {
+  public RemoteDistributor(Tracer tracer, HttpClient.Factory factory, URL url,
+                           Secret registrationSecret) {
     super(tracer, factory, registrationSecret);
     this.client = factory.createClient(url);
 
@@ -116,7 +117,8 @@ public class RemoteDistributor extends Distributor {
   }
 
   @Override
-  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(SessionRequest sessionRequest)
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(
+    SessionRequest sessionRequest)
     throws SessionNotCreatedException {
     HttpRequest req = new HttpRequest(POST, "/se/grid/distributor/session")
       .setContent(asJson(sessionRequest));

@@ -17,12 +17,14 @@
 
 package org.openqa.selenium.remote.tracing.empty;
 
-import io.opentelemetry.context.Context;
 import org.openqa.selenium.remote.tracing.Propagator;
 import org.openqa.selenium.remote.tracing.TraceContext;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import io.opentelemetry.context.Context;
+
 public class NullTracer implements Tracer {
+
   @Override
   public TraceContext getCurrentContext() {
     return new NullContext();

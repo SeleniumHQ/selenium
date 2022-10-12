@@ -32,7 +32,8 @@ public class I18nTest extends InternalSelenseTestBase {
 
   @Test
   void testRomance() {
-    String expected =
+    String
+      expected =
       "\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2";
     String id = "romance";
     verifyText(expected, id);

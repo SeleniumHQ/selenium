@@ -34,10 +34,6 @@ public enum AppCacheStatus {
     this.value = value;
   }
 
-  public int value() {
-    return value;
-  }
-
   /**
    * Gets the AppCacheStatus for the given int value.
    *
@@ -60,6 +56,10 @@ public enum AppCacheStatus {
       }
     }
     return null;
+  }
+
+  public int value() {
+    return value;
   }
 
 

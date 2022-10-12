@@ -66,7 +66,7 @@ class ObjectCoercer extends TypeCoercer {
 
         default:
           throw new JsonException(
-              "Object coercer cannot determine proper type: " + jsonInput.peek());
+            "Object coercer cannot determine proper type: " + jsonInput.peek());
       }
 
       return coercer.coerce(jsonInput, target, setting);

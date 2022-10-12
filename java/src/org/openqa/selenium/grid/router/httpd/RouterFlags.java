@@ -52,7 +52,7 @@ public class RouterFlags implements HasRoles {
   @Parameter(
     names = "--password",
     description = "Password clients must use to connect to the server. " +
-      "Both this and the username need to be set in order to be used.")
+                  "Both this and the username need to be set in order to be used.")
   @ConfigValue(section = "router", name = "password", example = "hunter2")
   private String password;
 

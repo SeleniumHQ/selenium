@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestGettingValueOfRadioButton extends InternalSelenseTestBase {
+
   @Test
   void testGettingValueOfCheckbox() {
     selenium.open("test_check_uncheck.html");

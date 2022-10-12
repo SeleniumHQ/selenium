@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.ie;
 
+import static java.util.Collections.unmodifiableList;
+import static org.openqa.selenium.remote.Browser.IE;
+
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -30,9 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.unmodifiableList;
-import static org.openqa.selenium.remote.Browser.IE;
-
 /**
  * Manages the life and death of an IEDriverServer.
  */
@@ -42,43 +42,44 @@ public class InternetExplorerDriverService extends DriverService {
    * System property that defines the location of the IEDriverServer executable
    * that will be used by the {@link #createDefaultService() default service}.
    */
-  public static final String IE_DRIVER_EXE_PROPERTY = "webdriver.ie.driver";
+  static final String IE_DRIVER_EXE_PROPERTY = "webdriver.ie.driver";
 
   /**
    * System property that defines the location of the file where IEDriverServer
    * should write log messages to.
    */
-  public static final String IE_DRIVER_LOGFILE_PROPERTY = "webdriver.ie.driver.logfile";
+  static final String IE_DRIVER_LOGFILE_PROPERTY = "webdriver.ie.driver.logfile";
 
   /**
    * System property that defines the detalization level the IEDriverServer logs.
    */
-  public static final String IE_DRIVER_LOGLEVEL_PROPERTY = "webdriver.ie.driver.loglevel";
+  static final String IE_DRIVER_LOGLEVEL_PROPERTY = "webdriver.ie.driver.loglevel";
 
   /**
    * System property that defines host to which will be bound IEDriverServer.
    */
-  public static final String IE_DRIVER_HOST_PROPERTY = "webdriver.ie.driver.host";
+  static final String IE_DRIVER_HOST_PROPERTY = "webdriver.ie.driver.host";
 
   /**
    * System property that defines path to which will be extracted IEDriverServer library.
    */
-  public static final String IE_DRIVER_EXTRACT_PATH_PROPERTY = "webdriver.ie.driver.extractpath";
+  static final String IE_DRIVER_EXTRACT_PATH_PROPERTY = "webdriver.ie.driver.extractpath";
 
   /**
    * System property that defines logging to stdout for IEDriverServer.
    */
-  public static final String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
+  static final String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
 
   /**
-   * @param executable The IEDriverServer executable.
-   * @param port Which port to start the IEDriverServer on.
+   * @param executable  The IEDriverServer executable.
+   * @param port        Which port to start the IEDriverServer on.
    * @param timeout     Timeout waiting for driver server to start.
-   * @param args The arguments to the launched server.
+   * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  private InternetExplorerDriverService(File executable, int port, Duration timeout, List<String> args,
+  private InternetExplorerDriverService(File executable, int port, Duration timeout,
+                                        List<String> args,
                                         Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
@@ -100,7 +101,7 @@ public class InternetExplorerDriverService extends DriverService {
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
-      InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
+    InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
 
     private InternetExplorerDriverLogLevel logLevel;
     private String host = null;
@@ -139,7 +140,7 @@ public class InternetExplorerDriverService extends DriverService {
      * @param host A host name.
      * @return A self reference.
      */
-    public Builder withHost(String host) {
+    Builder withHost(String host) {
       this.host = host;
       return this;
     }
@@ -150,7 +151,7 @@ public class InternetExplorerDriverService extends DriverService {
      * @param extractPath A path.
      * @return A self reference.
      */
-    public Builder withExtractPath(File extractPath) {
+    Builder withExtractPath(File extractPath) {
       this.extractPath = extractPath;
       return this;
     }
@@ -161,7 +162,7 @@ public class InternetExplorerDriverService extends DriverService {
      * @param silent To be silent in stdout or not.
      * @return A self reference.
      */
-    public Builder withSilent(Boolean silent) {
+    Builder withSilent(Boolean silent) {
       this.silent = silent;
       return this;
     }
@@ -212,7 +213,7 @@ public class InternetExplorerDriverService extends DriverService {
         args.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
       }
       if (logLevel != null) {
-        args.add(String.format("--log-level=%s", logLevel.toString()));
+        args.add(String.format("--log-level=%s", logLevel));
       }
       if (host != null) {
         args.add(String.format("--host=%s", host));

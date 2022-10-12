@@ -18,9 +18,9 @@
 package org.openqa.selenium.logging;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.AfterEach;
@@ -47,6 +47,26 @@ class GetLogsTest extends JupiterTestBase {
 
   private WebDriver localDriver;
 
+  /**
+   * Checks if there are overlapping entries in the given logs.
+   *
+   * @param firstLog  The first log.
+   * @param secondLog The second log.
+   * @return true if an overlapping entry is discovered, otherwise false.
+   */
+  private static boolean hasOverlappingLogEntries(LogEntries firstLog, LogEntries secondLog) {
+    for (LogEntry firstEntry : firstLog) {
+      for (LogEntry secondEntry : secondLog) {
+        if (firstEntry.getLevel().getName().equals(secondEntry.getLevel().getName()) &&
+            firstEntry.getMessage().equals(secondEntry.getMessage()) &&
+            firstEntry.getTimestamp() == secondEntry.getTimestamp()) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   @AfterEach
   public void quitDriver() {
     if (localDriver != null) {
@@ -68,8 +88,8 @@ class GetLogsTest extends JupiterTestBase {
     LogEntries secondEntries = driver.manage().logs().get(LogType.BROWSER);
     assertThat(secondEntries.getAll()).isNotEmpty();
     assertThat(hasOverlappingLogEntries(firstEntries, secondEntries))
-        .describedAs("There should be no overlapping log entries in consecutive get log calls")
-        .isFalse();
+      .describedAs("There should be no overlapping log entries in consecutive get log calls")
+      .isFalse();
   }
 
   @Test
@@ -87,31 +107,13 @@ class GetLogsTest extends JupiterTestBase {
       for (Map.Entry<String, LogEntries> nested : logTypeToEntriesMap.entrySet()) {
         if (!entry.getKey().equals(nested.getKey())) {
           assertThat(hasOverlappingLogEntries(entry.getValue(), nested.getValue()))
-            .describedAs("Two different log types (%s, %s) should not  contain the same log entries", entry.getKey(), nested.getKey())
+            .describedAs(
+              "Two different log types (%s, %s) should not  contain the same log entries",
+              entry.getKey(), nested.getKey())
             .isFalse();
         }
       }
     }
-  }
-
-  /**
-   * Checks if there are overlapping entries in the given logs.
-   *
-   * @param firstLog The first log.
-   * @param secondLog The second log.
-   * @return true if an overlapping entry is discovered, otherwise false.
-   */
-  private static boolean hasOverlappingLogEntries(LogEntries firstLog, LogEntries secondLog) {
-    for (LogEntry firstEntry : firstLog) {
-      for (LogEntry secondEntry : secondLog) {
-        if (firstEntry.getLevel().getName().equals(secondEntry.getLevel().getName()) &&
-            firstEntry.getMessage().equals(secondEntry.getMessage()) &&
-            firstEntry.getTimestamp() == secondEntry.getTimestamp()) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   @Test
@@ -121,8 +123,9 @@ class GetLogsTest extends JupiterTestBase {
       createWebDriverWithLogging(logType, Level.OFF);
       LogEntries entries = localDriver.manage().logs().get(logType);
       assertThat(entries.getAll())
-          .describedAs("There should be no log entries for log type %s when logging is turned off.", logType)
-          .isEmpty();
+        .describedAs("There should be no log entries for log type %s when logging is turned off.",
+                     logType)
+        .isEmpty();
       quitDriver();
     }
   }

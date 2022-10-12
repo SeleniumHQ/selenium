@@ -19,10 +19,10 @@ package org.openqa.selenium.bidi.log;
 
 import static java.util.Collections.unmodifiableMap;
 
+import org.openqa.selenium.json.JsonInput;
+
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.openqa.selenium.json.JsonInput;
 
 // @see <a href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
 public class GenericLogEntry extends BaseLogEntry {
@@ -36,10 +36,6 @@ public class GenericLogEntry extends BaseLogEntry {
                          StackTrace stackTrace) {
     super(level, text, timestamp, stackTrace);
     this.type = type;
-  }
-
-  public String getType() {
-    return type;
   }
 
   public static GenericLogEntry fromJson(JsonInput input) {
@@ -81,6 +77,10 @@ public class GenericLogEntry extends BaseLogEntry {
     input.endObject();
 
     return new GenericLogEntry(level, text, timestamp, type, stackTrace);
+  }
+
+  public String getType() {
+    return type;
   }
 
   private Map<String, Object> toJson() {

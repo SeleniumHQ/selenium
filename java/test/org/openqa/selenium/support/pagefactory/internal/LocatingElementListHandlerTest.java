@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
@@ -53,8 +53,8 @@ class LocatingElementListHandlerTest {
 
     LocatingElementListHandler handler = new LocatingElementListHandler(locator);
     List<WebElement> proxy =
-        (List<WebElement>) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {List.class}, handler);
+      (List<WebElement>) Proxy.newProxyInstance(getClass().getClassLoader(),
+                                                new Class[]{List.class}, handler);
 
     proxy.get(1).sendKeys("Fishy");
     assertThat(proxy).hasSize(2);
@@ -118,6 +118,7 @@ class LocatingElementListHandlerTest {
   }
 
   public static class ChildPage extends Page {
+
     public void getTextOfLinks() {
       for (WebElement element : links) {
         element.getText();

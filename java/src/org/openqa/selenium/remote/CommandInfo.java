@@ -20,6 +20,7 @@ package org.openqa.selenium.remote;
 import org.openqa.selenium.remote.http.HttpMethod;
 
 public class CommandInfo {
+
   private final String url;
   private final HttpMethod method;
 

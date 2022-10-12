@@ -23,6 +23,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class GetLocation extends SeleneseCommand<String> {
+
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     return ((JavascriptExecutor) driver).executeScript("return window.location.href").toString();

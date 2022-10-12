@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.logging.Level.WARNING;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 
@@ -59,11 +64,6 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.util.logging.Level.WARNING;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
-import static org.openqa.selenium.remote.DriverCommand.QUIT;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-
 /**
  * Create a new Selenium session using the W3C WebDriver protocol. This class will not generate any
  * data expected by the original JSON Wire Protocol, so will fail to create sessions as expected if
@@ -101,29 +101,29 @@ public class RemoteWebDriverBuilder {
   private final Map<String, Object> additionalCapabilities = new TreeMap<>();
   private final Map<String, Object> metadata = new TreeMap<>();
   private Function<ClientConfig, HttpHandler> handlerFactory =
-      config -> {
-        HttpClient.Factory factory = HttpClient.Factory.createDefault();
-        HttpClient client = factory.createClient(config);
-        return client.with(
-          next -> req -> {
-            try {
-              return client.execute(req);
-            } finally {
-              if (req.getMethod() == DELETE) {
-                HttpSessionId.getSessionId(req.getUri()).ifPresent(id -> {
-                  if (("/session/" + id).equals(req.getUri())) {
-                    try {
-                      client.close();
-                    } catch (UncheckedIOException e) {
-                      LOG.log(WARNING, "Swallowing exception while closing http client", e);
-                    }
-                    factory.cleanupIdleClients();
+    config -> {
+      HttpClient.Factory factory = HttpClient.Factory.createDefault();
+      HttpClient client = factory.createClient(config);
+      return client.with(
+        next -> req -> {
+          try {
+            return client.execute(req);
+          } finally {
+            if (req.getMethod() == DELETE) {
+              HttpSessionId.getSessionId(req.getUri()).ifPresent(id -> {
+                if (("/session/" + id).equals(req.getUri())) {
+                  try {
+                    client.close();
+                  } catch (UncheckedIOException e) {
+                    LOG.log(WARNING, "Swallowing exception while closing http client", e);
                   }
-                });
-              }
+                  factory.cleanupIdleClients();
+                }
+              });
             }
-          });
-      };
+          }
+        });
+    };
   private ClientConfig clientConfig = ClientConfig.defaultConfig();
   private URI remoteHost = null;
   private DriverService driverService;
@@ -143,7 +143,8 @@ public class RemoteWebDriverBuilder {
     Require.nonNull("Capabilities to use", maybeThis);
 
     if (!requestedCapabilities.isEmpty()) {
-      LOG.log(getDebugLogLevel(), "Removing existing requested capabilities: " + requestedCapabilities);
+      LOG.log(getDebugLogLevel(),
+              "Removing existing requested capabilities: " + requestedCapabilities);
       requestedCapabilities.clear();
     }
 
@@ -184,7 +185,8 @@ public class RemoteWebDriverBuilder {
     if (previous != null) {
       LOG.log(
         getDebugLogLevel(),
-        String.format("Overwriting metadata %s. Previous value %s, new value %s", key, previous, value));
+        String.format("Overwriting metadata %s. Previous value %s, new value %s", key, previous,
+                      value));
     }
 
     return this;
@@ -243,7 +245,8 @@ public class RemoteWebDriverBuilder {
   public RemoteWebDriverBuilder address(URI uri) {
     Require.nonNull("URI", uri);
 
-    if (driverService != null || (clientConfig.baseUri() != null && !clientConfig.baseUri().equals(uri))) {
+    if (driverService != null || (clientConfig.baseUri() != null && !clientConfig.baseUri()
+      .equals(uri))) {
       throw new IllegalArgumentException(
         "Attempted to set the base uri on both this builder and the http client config. " +
         "Please set in only one place. " + uri);
@@ -272,7 +275,8 @@ public class RemoteWebDriverBuilder {
 
     if (config.baseUri() != null) {
       if (remoteHost != null || driverService != null) {
-        throw new IllegalArgumentException("Base URI has already been set. Cannot also set it via client config");
+        throw new IllegalArgumentException(
+          "Base URI has already been set. Cannot also set it via client config");
       }
     }
 
@@ -290,7 +294,8 @@ public class RemoteWebDriverBuilder {
     Require.nonNull("Driver service", service);
 
     if (clientConfig.baseUri() != null || remoteHost != null) {
-      throw new IllegalArgumentException("Base URI has already been set. Cannot also set driver service.");
+      throw new IllegalArgumentException(
+        "Base URI has already been set. Cannot also set driver service.");
     }
 
     this.driverService = service;
@@ -321,20 +326,21 @@ public class RemoteWebDriverBuilder {
     }
 
     Set<WebDriverInfo> infos = StreamSupport.stream(
-         ServiceLoader.load(WebDriverInfo.class).spliterator(),
-         false)
-         .filter(WebDriverInfo::isAvailable)
-         .collect(Collectors.toSet());
+        ServiceLoader.load(WebDriverInfo.class).spliterator(),
+        false)
+      .filter(WebDriverInfo::isAvailable)
+      .collect(Collectors.toSet());
 
     Capabilities additional = new ImmutableCapabilities(additionalCapabilities);
     Optional<Supplier<WebDriver>> first = requestedCapabilities.stream()
       .map(caps -> caps.merge(additional))
       .flatMap(caps ->
-        infos.stream()
-          .filter(WebDriverInfo::isAvailable)
-          .filter(info -> info.isSupporting(caps))
-          .map(info -> (Supplier<WebDriver>) () -> info.createDriver(caps)
-            .orElseThrow(() -> new SessionNotCreatedException("Unable to create session with " + caps))))
+                 infos.stream()
+                   .filter(WebDriverInfo::isAvailable)
+                   .filter(info -> info.isSupporting(caps))
+                   .map(info -> (Supplier<WebDriver>) () -> info.createDriver(caps)
+                     .orElseThrow(() -> new SessionNotCreatedException(
+                       "Unable to create session with " + caps))))
       .findFirst();
 
     if (!first.isPresent()) {
@@ -390,9 +396,9 @@ public class RemoteWebDriverBuilder {
     HttpHandler client = handlerFactory.apply(driverClientConfig);
     HttpHandler handler = Require.nonNull("Http handler", client)
       .with(new CloseHttpClientFilter(client)
-        .andThen(new AddWebDriverSpecHeaders())
-        .andThen(new ErrorFilter())
-        .andThen(new DumpHttpExchangeFilter()));
+              .andThen(new AddWebDriverSpecHeaders())
+              .andThen(new ErrorFilter())
+              .andThen(new DumpHttpExchangeFilter()));
 
     Either<SessionNotCreatedException, ProtocolHandshake.Result> result;
     try {
@@ -447,7 +453,9 @@ public class RemoteWebDriverBuilder {
     Response newSessionResponse = result.createResponse();
     String id = newSessionResponse.getSessionId();
 
-    CommandExecutor baseExecutor = cmd -> commandEncoder.andThen(handler::execute).andThen(responseDecoder).apply(cmd);
+    CommandExecutor
+      baseExecutor =
+      cmd -> commandEncoder.andThen(handler::execute).andThen(responseDecoder).apply(cmd);
 
     CommandExecutor handleNewSession = cmd -> {
       if (DriverCommand.NEW_SESSION.equals(cmd.getName())) {

@@ -60,7 +60,7 @@ class ChildrenFindingTest extends JupiterTestBase {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.name("form2"));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> element.findElement(By.xpath(".//select/x")));
+      .isThrownBy(() -> element.findElement(By.xpath(".//select/x")));
   }
 
   @Test
@@ -128,7 +128,7 @@ class ChildrenFindingTest extends JupiterTestBase {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_id_div"));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> element.findElement(By.id("test_id_out")));
+      .isThrownBy(() -> element.findElement(By.id("test_id_out")));
   }
 
   @Test
@@ -185,7 +185,7 @@ class ChildrenFindingTest extends JupiterTestBase {
 
     assertThat(parent.findElements(By.id("test_id"))).isEmpty();
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> parent.findElement(By.id("test_id")));
+      .isThrownBy(() -> parent.findElement(By.id("test_id")));
   }
 
   @Test
@@ -288,7 +288,7 @@ class ChildrenFindingTest extends JupiterTestBase {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("login"));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> element.findElement(By.name("x")));
+      .isThrownBy(() -> element.findElement(By.name("x")));
   }
 
   @Test

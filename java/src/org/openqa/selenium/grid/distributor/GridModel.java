@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.events.EventBus;
@@ -49,10 +53,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
 
 public class GridModel {
 
@@ -94,7 +94,8 @@ public class GridModel {
         // If the ID and the URI are the same, use the same
         // availability as the version we have now: we're just refreshing
         // an existing node.
-        if (next.getNodeId().equals(node.getNodeId()) && next.getExternalUri().equals(node.getExternalUri())) {
+        if (next.getNodeId().equals(node.getNodeId()) && next.getExternalUri()
+          .equals(node.getExternalUri())) {
           iterator.remove();
 
           LOG.log(Debug.getDebugLogLevel(), "Refreshing node with id %s", node.getNodeId());
@@ -107,9 +108,10 @@ public class GridModel {
         }
 
         // If the URI is the same but NodeId is different, then the Node has restarted
-        if(!next.getNodeId().equals(node.getNodeId()) &&
-           next.getExternalUri().equals(node.getExternalUri())) {
-          LOG.info(String.format("Re-adding node with id %s and URI %s.", node.getNodeId(), node.getExternalUri()));
+        if (!next.getNodeId().equals(node.getNodeId()) &&
+            next.getExternalUri().equals(node.getExternalUri())) {
+          LOG.info(String.format("Re-adding node with id %s and URI %s.", node.getNodeId(),
+                                 node.getExternalUri()));
 
           events.fire(new NodeRestartedEvent(node));
           iterator.remove();
@@ -120,7 +122,8 @@ public class GridModel {
         // out of the loop: we want to add it as `DOWN` until something
         // changes our mind.
         if (next.getNodeId().equals(node.getNodeId())) {
-          LOG.info(String.format("Re-adding node with id %s and URI %s.", node.getNodeId(), node.getExternalUri()));
+          LOG.info(String.format("Re-adding node with id %s and URI %s.", node.getNodeId(),
+                                 node.getExternalUri()));
           iterator.remove();
           break;
         }
@@ -129,7 +132,8 @@ public class GridModel {
       // Nodes are initially added in the "down" state until something changes their availability
       LOG.log(
         Debug.getDebugLogLevel(),
-        String.format("Adding node with id %s and URI %s", node.getNodeId(), node.getExternalUri()));
+        String.format("Adding node with id %s and URI %s", node.getNodeId(),
+                      node.getExternalUri()));
       NodeStatus refreshed = rewrite(node, DOWN);
       nodes.add(refreshed);
       nodePurgeTimes.put(refreshed.getNodeId(), Instant.now());
@@ -218,8 +222,12 @@ public class GridModel {
 
         Instant now = Instant.now();
         Instant lastTouched = nodePurgeTimes.getOrDefault(id, Instant.now());
-        Instant lostTime = lastTouched.plus(node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER / 2));
-        Instant deadTime = lastTouched.plus(node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER));
+        Instant
+          lostTime =
+          lastTouched.plus(node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER / 2));
+        Instant
+          deadTime =
+          lastTouched.plus(node.getHeartbeatPeriod().multipliedBy(PURGE_TIMEOUT_MULTIPLIER));
 
         if (node.getAvailability() == UP && lostTime.isBefore(now)) {
           LOG.info(String.format("Switching Node %s from UP to DOWN", node.getExternalUri()));
@@ -287,7 +295,8 @@ public class GridModel {
     try {
       NodeStatus node = getNode(slotId.getOwningNodeId());
       if (node == null) {
-        LOG.warning(String.format("Asked to reserve slot on node %s, but unable to find node", slotId.getOwningNodeId()));
+        LOG.warning(String.format("Asked to reserve slot on node %s, but unable to find node",
+                                  slotId.getOwningNodeId()));
         return false;
       }
 
@@ -411,7 +420,8 @@ public class GridModel {
     try {
       NodeStatus node = getNode(slotId.getOwningNodeId());
       if (node == null) {
-        LOG.warning("Grid model and reality have diverged. Unable to find node " + slotId.getOwningNodeId());
+        LOG.warning(
+          "Grid model and reality have diverged. Unable to find node " + slotId.getOwningNodeId());
         return;
       }
 

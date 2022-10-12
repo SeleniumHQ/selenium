@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class DeleteAllVisibleCookies extends SeleneseCommand<Void> {
+
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     driver.manage().deleteAllCookies();

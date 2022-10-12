@@ -34,23 +34,24 @@ import java.util.function.Function;
 public class JsonInput implements Closeable {
 
   private final Reader source;
-  private volatile boolean readPerformed = false;
-  private JsonTypeCoercer coercer;
-  private PropertySetting setter;
-  private Input input;
+  private final boolean readPerformed = false;
+  private final Input input;
   // Used when reading maps and collections so that we handle de-nesting and
   // figuring out whether we're expecting a NAME properly.
-  private Deque<Container> stack = new ArrayDeque<>();
+  private final Deque<Container> stack = new ArrayDeque<>();
+  private JsonTypeCoercer coercer;
+  private PropertySetting setter;
 
   JsonInput(Reader source, JsonTypeCoercer coercer, PropertySetting setter) {
     this.source = Require.nonNull("Source", source);
     this.coercer = Require.nonNull("Coercer", coercer);
-    this.input = new Input(source);
+    input = new Input(source);
     this.setter = Require.nonNull("Setter", setter);
   }
 
   /**
    * Change how property setting is done. It's polite to set the value back once done processing.
+   *
    * @param setter The new {@link PropertySetting} to use.
    * @return The previous {@link PropertySetting} that has just been replaced.
    */
@@ -64,13 +65,13 @@ public class JsonInput implements Closeable {
     return addCoercers(Arrays.asList(coercers));
   }
 
-  public JsonInput addCoercers(Iterable<TypeCoercer<?>> coercers) {
+  private JsonInput addCoercers(Iterable<TypeCoercer<?>> coercers) {
     synchronized (this) {
       if (readPerformed) {
         throw new JsonException("JsonInput has already been used and may not be modified");
       }
 
-      this.coercer = new JsonTypeCoercer(coercer, coercers);
+      coercer = new JsonTypeCoercer(coercer, coercers);
     }
 
     return this;
@@ -89,18 +90,25 @@ public class JsonInput implements Closeable {
     skipWhitespace(input);
 
     switch (input.peek()) {
-      case 'f': case 't':
+      case 'f':
+      case 't':
         return JsonType.BOOLEAN;
 
       case 'n':
         return JsonType.NULL;
 
-      case '-': case '+':
-      case '0': case '1':
-      case '2': case '3':
-      case '4': case '5':
-      case '6': case '7':
-      case '8': case '9':
+      case '-':
+      case '+':
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
         return JsonType.NUMBER;
 
       case '"':
@@ -140,12 +148,12 @@ public class JsonInput implements Closeable {
     char read = input.read();
     if (read != ':') {
       throw new JsonException(
-          "Unable to read name. Expected colon separator, but saw '" + read + "'");
+        "Unable to read name. Expected colon separator, but saw '" + read + "'");
     }
     return name;
   }
 
-  public Object nextNull() {
+  Object nextNull() {
     expect(JsonType.NULL);
     return read("null", str -> null);
   }
@@ -178,7 +186,7 @@ public class JsonInput implements Closeable {
       }
       return number.longValue();
     } catch (NumberFormatException e) {
-      throw new JsonException("Unable to parse to a number: " + builder.toString() + ". " + input);
+      throw new JsonException("Unable to parse to a number: " + builder + ". " + input);
     }
   }
 
@@ -195,7 +203,7 @@ public class JsonInput implements Closeable {
   public boolean hasNext() {
     if (stack.isEmpty()) {
       throw new JsonException(
-          "Unable to determine if an item has next when not in a container type. " + input);
+        "Unable to determine if an item has next when not in a container type. " + input);
     }
 
     skipWhitespace(input);
@@ -220,7 +228,7 @@ public class JsonInput implements Closeable {
     if (expectation != Container.COLLECTION) {
       // The only other thing we could be closing is a map
       throw new JsonException(
-          "Attempt to close a JSON List, but a JSON Object was expected. " + input);
+        "Attempt to close a JSON List, but a JSON Object was expected. " + input);
     }
     input.read();
   }
@@ -304,7 +312,7 @@ public class JsonInput implements Closeable {
   private void expect(JsonType type) {
     if (peek() != type) {
       throw new JsonException(
-          "Expected to read a " + type + " but instead have: " + peek() + ". " + input);
+        "Expected to read a " + type + " but instead have: " + peek() + ". " + input);
     }
 
     // Special map handling. Woo!
@@ -336,11 +344,11 @@ public class JsonInput implements Closeable {
       char read = input.read();
       if (read != toCompare.charAt(i)) {
         throw new JsonException(String.format(
-            "Unable to read %s. Saw %s at position %d. %s",
-            toCompare,
-            read,
-            i,
-            input));
+          "Unable to read %s. Saw %s at position %d. %s",
+          toCompare,
+          read,
+          i,
+          input));
       }
     }
 

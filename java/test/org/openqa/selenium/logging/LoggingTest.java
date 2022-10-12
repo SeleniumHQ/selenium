@@ -62,15 +62,16 @@ class LoggingTest {
     LogEntry entry = new LogEntry(INFO, timestamp, "There is no more cheese");
     Map<String, Object> json = entry.toJson();
     assertThat(json)
-        .containsEntry("timestamp", timestamp)
-        .containsEntry("level", INFO)
-        .containsEntry("message", "There is no more cheese");
+      .containsEntry("timestamp", timestamp)
+      .containsEntry("level", INFO)
+      .containsEntry("message", "There is no more cheese");
   }
 
   @Test
   void canRepresentLogEntryAsString() {
     long timestamp = 1572882588202L;
     LogEntry entry = new LogEntry(INFO, timestamp, "There is no more cheese");
-    assertThat(entry.toString()).isEqualTo("[2019-11-04T15:49:48.202Z] [INFO] There is no more cheese");
+    assertThat(entry.toString()).isEqualTo(
+      "[2019-11-04T15:49:48.202Z] [INFO] There is no more cheese");
   }
 }

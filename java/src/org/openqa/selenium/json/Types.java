@@ -21,6 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 class Types {
+
   private Types() {
     // Utility class
   }

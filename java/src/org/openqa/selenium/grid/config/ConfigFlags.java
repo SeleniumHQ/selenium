@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.config;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
 
-import com.google.common.collect.ImmutableMap;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSortedSet;
 
@@ -64,7 +64,7 @@ public class ConfigFlags implements HasRoles {
 
   public Config readConfigFiles() {
     if (configFiles == null || configFiles.isEmpty()) {
-      return new MapConfig(ImmutableMap.of());
+      return new MapConfig(Map.of());
     }
 
     return new CompoundConfig(
@@ -85,9 +85,13 @@ public class ConfigFlags implements HasRoles {
       }
 
       config.getOptions(section).forEach(option ->
-        config.get(section, option).ifPresent(value ->
-          toOutput.computeIfAbsent(section, ignored -> new TreeMap<>()).put(option, value)
-        )
+                                           config.get(section, option).ifPresent(value ->
+                                                                                   toOutput.computeIfAbsent(
+                                                                                       section,
+                                                                                       ignored -> new TreeMap<>())
+                                                                                     .put(option,
+                                                                                          value)
+                                           )
       );
     }
 
@@ -110,7 +114,9 @@ public class ConfigFlags implements HasRoles {
 
     StringBuilder demoToml = new StringBuilder();
     demoToml.append("Configuration help for Toml config file").append("\n\n");
-    demoToml.append("In case of parsing errors, validate the config using https://www.toml-lint.com/").append("\n\n");
+    demoToml.append(
+        "In case of parsing errors, validate the config using https://www.toml-lint.com/")
+      .append("\n\n");
     demoToml.append("Refer https://toml.io/en/ for TOML usage guidance").append("\n\n");
     allOptions.forEach((section, options) -> {
       demoToml.append("[").append(section).append("]\n");

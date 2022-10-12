@@ -19,10 +19,10 @@ package org.openqa.selenium.remote.http;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import java.util.Map;
 
 @Tag("UnitTests")
 class UrlTemplateTest {
@@ -47,7 +47,7 @@ class UrlTemplateTest {
     UrlTemplate.Match match = new UrlTemplate("/i/like/{veggie}").match("/i/like/cake");
 
     assertThat(match.getUrl()).isEqualTo("/i/like/cake");
-    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("veggie", "cake"));
+    assertThat(match.getParameters()).isEqualTo(Map.of("veggie", "cake"));
   }
 
   @Test
@@ -55,7 +55,7 @@ class UrlTemplateTest {
     UrlTemplate.Match match = new UrlTemplate("{cake}/type").match("cheese/type");
 
     assertThat(match.getUrl()).isEqualTo("cheese/type");
-    assertThat(match.getParameters()).isEqualTo(ImmutableMap.of("cake", "cheese"));
+    assertThat(match.getParameters()).isEqualTo(Map.of("cake", "cheese"));
   }
 
   @Test

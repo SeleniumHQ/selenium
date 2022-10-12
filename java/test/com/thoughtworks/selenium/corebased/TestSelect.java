@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestSelect extends InternalSelenseTestBase {
+
   @Test
   void testSelect() {
     selenium.open("test_select.html");
@@ -67,7 +68,7 @@ public class TestSelect extends InternalSelenseTestBase {
     } catch (Throwable e) {
     }
     verifyEquals(
-        join(selenium.getSelectOptions("theSelect"), ','),
-        "First Option,Second Option,Third Option,Fourth Option,Fifth Option,Sixth Option,Empty Value Option,");
+      join(selenium.getSelectOptions("theSelect"), ','),
+      "First Option,Second Option,Third Option,Fourth Option,Fifth Option,Sixth Option,Empty Value Option,");
   }
 }

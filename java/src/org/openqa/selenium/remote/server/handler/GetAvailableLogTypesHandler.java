@@ -28,13 +28,13 @@ import java.util.Set;
 public class GetAvailableLogTypesHandler extends WebDriverHandler<Set<String>> {
 
   public GetAvailableLogTypesHandler(Session session) {
-	super(session);
+    super(session);
   }
 
   @Override
   public Set<String> call() {
     return Sets.union(
-        getDriver().manage().logs().getAvailableLogTypes(), ImmutableSet.of(LogType.SERVER));
+      getDriver().manage().logs().getAvailableLogTypes(), ImmutableSet.of(LogType.SERVER));
   }
 
   @Override

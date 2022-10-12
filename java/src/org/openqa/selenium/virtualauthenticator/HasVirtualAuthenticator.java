@@ -21,8 +21,10 @@ package org.openqa.selenium.virtualauthenticator;
  * Interface implemented by each driver that allows access to the virtual authenticator API.
  */
 public interface HasVirtualAuthenticator {
+
   /**
    * Adds a virtual authenticator with the given options.
+   *
    * @return the new virtual authenticator.
    */
   VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options);

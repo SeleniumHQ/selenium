@@ -21,9 +21,10 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @SelectClasses({PerSessionLogHandlerUnitTest.class,
-  LoggingManagerUnitTest.class,
-  ShortTermMemoryHandlerUnitTest.class
+                LoggingManagerUnitTest.class,
+                ShortTermMemoryHandlerUnitTest.class
 })
 @Suite
 class LoggingTests {
+
 }

@@ -121,7 +121,9 @@ class SelectElementHandlingTest extends JupiterTestBase {
   @Test
   void testCanSelectFromMultipleSelectWhereValueIsBelowVisibleRange() {
     driver.get(pages.selectPage);
-    WebElement option = driver.findElements(By.cssSelector("#selectWithMultipleLongList option")).get(4);
+    WebElement
+      option =
+      driver.findElements(By.cssSelector("#selectWithMultipleLongList option")).get(4);
     option.click();
     assertThat(option.isSelected()).isTrue();
   }

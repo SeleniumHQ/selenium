@@ -17,20 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.json.Json;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static java.util.Arrays.asList;
 import static java.util.Collections.EMPTY_MAP;
 import static java.util.Collections.emptyMap;
@@ -43,6 +29,21 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+
+
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.json.Json;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Tag("UnitTests")
 class NewSessionPayloadTest {
@@ -129,7 +130,7 @@ class NewSessionPayloadTest {
 
   @Test
   void shouldOfferStreamOfW3cCapabilitiesIfPresent() {
-    List<Capabilities> capabilities = create(ImmutableMap.of(
+    List<Capabilities> capabilities = create(Map.of(
       "desiredCapabilities", singletonMap(
         "browserName", "cheese"),
       "capabilities", singletonMap(
@@ -144,7 +145,7 @@ class NewSessionPayloadTest {
   @Test
   void shouldMergeAlwaysAndFirstMatches() {
     List<Capabilities> capabilities = create(singletonMap(
-      "capabilities", ImmutableMap.of(
+      "capabilities",Map.of(
         "alwaysMatch", singletonMap(
           "se:cake", "also cheese"),
         "firstMatch", asList(
@@ -193,7 +194,7 @@ class NewSessionPayloadTest {
   void shouldValidateW3cCapabilitiesByComplainingAboutDuplicateFirstAndAlwaysMatchKeys() {
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> create(singletonMap(
-        "capabilities", ImmutableMap.of(
+        "capabilities",Map.of(
           "alwaysMatch", singletonMap(
             "se:cake", "cheese"),
           "firstMatch", singletonList(
@@ -202,11 +203,11 @@ class NewSessionPayloadTest {
 
   @Test
   void convertEverythingToFirstMatchOnlyIfPayloadContainsAlwaysMatchSectionAndOssCapabilities() {
-    List<Capabilities> capabilities = create(ImmutableMap.of(
-      "desiredCapabilities", ImmutableMap.of(
+    List<Capabilities> capabilities = create(Map.of(
+      "desiredCapabilities",Map.of(
         "browserName", "firefox",
         "platform", "WINDOWS"),
-      "capabilities", ImmutableMap.of(
+      "capabilities",Map.of(
         "alwaysMatch", singletonMap(
           "platformName", "macos"),
         "firstMatch", asList(
@@ -214,19 +215,19 @@ class NewSessionPayloadTest {
           singletonMap("browserName", "firefox")))));
 
     assertEquals(asList(
-        // From OSS
-        new ImmutableCapabilities("browserName", "firefox", "platform", "WINDOWS"),
-        // Generated from OSS
-        new ImmutableCapabilities("browserName", "firefox", "platformName", "windows"),
-        // From the actual W3C capabilities
-        new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
-        new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")),
-      capabilities);
+                   // From OSS
+                   new ImmutableCapabilities("browserName", "firefox", "platform", "WINDOWS"),
+                   // Generated from OSS
+                   new ImmutableCapabilities("browserName", "firefox", "platformName", "windows"),
+                   // From the actual W3C capabilities
+                   new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
+                   new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")),
+                 capabilities);
   }
 
   @Test
   void forwardsMetaDataAssociatedWithARequest() throws IOException {
-    try (NewSessionPayload payload = NewSessionPayload.create(ImmutableMap.of(
+    try (NewSessionPayload payload = NewSessionPayload.create(Map.of(
       "desiredCapabilities", EMPTY_MAP,
       "cloud:user", "bob",
       "cloud:key", "there is no cake"))) {
@@ -241,7 +242,7 @@ class NewSessionPayloadTest {
 
   @Test
   void doesNotForwardRequiredCapabilitiesAsTheseAreVeryLegacy() throws IOException {
-    try (NewSessionPayload payload = NewSessionPayload.create(ImmutableMap.of(
+    try (NewSessionPayload payload = NewSessionPayload.create(Map.of(
       "capabilities", EMPTY_MAP,
       "requiredCapabilities", singletonMap("key", "so it's not empty")))) {
       StringBuilder toParse = new StringBuilder();
@@ -254,7 +255,7 @@ class NewSessionPayloadTest {
 
   @Test
   void shouldPreserveMetadata() throws IOException {
-    Map<String, Object> raw = ImmutableMap.of(
+    Map<String, Object> raw =Map.of(
       "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
       "se:meta", "cheese is good");
 
@@ -269,7 +270,7 @@ class NewSessionPayloadTest {
 
   @Test
   void shouldExposeMetaData() {
-    Map<String, Object> raw = ImmutableMap.of(
+    Map<String, Object> raw =Map.of(
       "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
       "se:meta", "cheese is good");
 
@@ -294,7 +295,7 @@ class NewSessionPayloadTest {
 
   @Test
   void keysUsedForStoringCapabilitiesAreIgnoredFromMetadata() {
-    Map<String, Object> raw = ImmutableMap.of(
+    Map<String, Object> raw =Map.of(
       "capabilities", singletonMap("alwaysMatch", singletonMap("browserName", "cheese")),
       "desiredCapabilities", emptyMap());
 

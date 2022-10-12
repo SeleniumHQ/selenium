@@ -20,8 +20,8 @@ package org.openqa.selenium.remote.http;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,7 +64,7 @@ class FilterTest {
       return res;
     }).andFinally(req -> new HttpResponse());
 
-      HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
+    HttpResponse res = handler.execute(new HttpRequest(GET, "/cheese"));
 
     assertThat(res).isNotNull();
     // Because the headers are applied to the response _after_ the request has been processed,

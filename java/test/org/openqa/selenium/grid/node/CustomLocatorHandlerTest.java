@@ -18,7 +18,20 @@
 package org.openqa.selenium.grid.node;
 
 
-import com.google.common.collect.ImmutableMap;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singleton;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,19 +71,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.when;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 class CustomLocatorHandlerTest {
 
   private final Secret registrationSecret = new Secret("cheese");
@@ -100,7 +100,8 @@ class CustomLocatorHandlerTest {
         .setContent(Contents.asJson(singletonMap("value", "1234"))));
 
     assertThat(res.getStatus()).isEqualTo(HTTP_BAD_REQUEST);
-    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> Values.get(res, MAP_TYPE));
+    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(
+      () -> Values.get(res, MAP_TYPE));
   }
 
   @Test
@@ -114,7 +115,8 @@ class CustomLocatorHandlerTest {
         .setContent(Contents.asJson(singletonMap("using", "magic"))));
 
     assertThat(res.getStatus()).isEqualTo(HTTP_BAD_REQUEST);
-    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> Values.get(res, MAP_TYPE));
+    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(
+      () -> Values.get(res, MAP_TYPE));
   }
 
   @Test
@@ -129,7 +131,7 @@ class CustomLocatorHandlerTest {
     assertThatExceptionOfType(NoSuchSessionException.class)
       .isThrownBy(() -> handler.execute(
         new HttpRequest(POST, "/session/1234/element")
-          .setContent(Contents.asJson(ImmutableMap.of(
+          .setContent(Contents.asJson(Map.of(
             "using", "cheese",
             "value", "tasty")))));
   }
@@ -138,8 +140,8 @@ class CustomLocatorHandlerTest {
   void shouldCallTheGivenLocatorForALocator() {
     Capabilities caps = new ImmutableCapabilities("browserName", "cheesefox");
     Node node = nodeBuilder.add(
-      caps,
-      new TestSessionFactory((id, c) -> new Session(id, nodeUri, caps, c, Instant.now())))
+        caps,
+        new TestSessionFactory((id, c) -> new Session(id, nodeUri, caps, c, Instant.now())))
       .build();
 
     HttpHandler handler = new CustomLocatorHandler(
@@ -164,11 +166,12 @@ class CustomLocatorHandlerTest {
 
     HttpResponse res = handler.with(new ErrorFilter()).execute(
       new HttpRequest(POST, "/session/1234/element")
-        .setContent(Contents.asJson(ImmutableMap.of(
+        .setContent(Contents.asJson(Map.of(
           "using", "cheese",
           "value", "tasty"))));
 
-    assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(() -> Values.get(res, WebElement.class));
+    assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(
+      () -> Values.get(res, WebElement.class));
   }
 
   @Test
@@ -200,11 +203,14 @@ class CustomLocatorHandlerTest {
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/elements")
-        .setContent(Contents.asJson(ImmutableMap.of(
+        .setContent(Contents.asJson(Map.of(
           "using", "cheese",
           "value", "tasty"))));
 
-    List<Map<String, Object>> elements = Values.get(res, new TypeToken<List<Map<String, Object>>>(){}.getType());
+    List<Map<String, Object>>
+      elements =
+      Values.get(res, new TypeToken<List<Map<String, Object>>>() {
+      }.getType());
     assertThat(elements).hasSize(1);
     Object seenId = elements.get(0).get(Dialect.W3C.getEncodedElementKey());
     assertThat(seenId).isEqualTo(elementId);
@@ -215,7 +221,8 @@ class CustomLocatorHandlerTest {
     String elementId = UUID.randomUUID().toString();
 
     Node node = Mockito.mock(Node.class);
-    when(node.executeWebDriverCommand(argThat(matchesUri("/session/{sessionId}/element/{elementId}/element"))))
+    when(node.executeWebDriverCommand(
+      argThat(matchesUri("/session/{sessionId}/element/{elementId}/element"))))
       .thenReturn(
         new HttpResponse()
           .addHeader("Content-Type", Json.JSON_UTF_8)
@@ -239,11 +246,14 @@ class CustomLocatorHandlerTest {
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/element/234345/elements")
-        .setContent(Contents.asJson(ImmutableMap.of(
+        .setContent(Contents.asJson(Map.of(
           "using", "cheese",
           "value", "tasty"))));
 
-    List<Map<String, Object>> elements = Values.get(res, new TypeToken<List<Map<String, Object>>>(){}.getType());
+    List<Map<String, Object>>
+      elements =
+      Values.get(res, new TypeToken<List<Map<String, Object>>>() {
+      }.getType());
     assertThat(elements).hasSize(1);
     Object seenId = elements.get(0).get(Dialect.W3C.getEncodedElementKey());
     assertThat(seenId).isEqualTo(elementId);
@@ -268,11 +278,14 @@ class CustomLocatorHandlerTest {
 
     HttpResponse res = handler.execute(
       new HttpRequest(POST, "/session/1234/elements")
-        .setContent(Contents.asJson(ImmutableMap.of(
+        .setContent(Contents.asJson(Map.of(
           "using", "id",
           "value", "tasty"))));
 
-    List<Map<String, Object>> elements = Values.get(res, new TypeToken<List<Map<String, Object>>>(){}.getType());
+    List<Map<String, Object>>
+      elements =
+      Values.get(res, new TypeToken<List<Map<String, Object>>>() {
+      }.getType());
     assertThat(elements).hasSize(1);
     Object seenId = elements.get(0).get(Dialect.W3C.getEncodedElementKey());
     assertThat(seenId).isEqualTo(elementId);

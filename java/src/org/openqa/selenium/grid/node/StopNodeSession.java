@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.UncheckedIOException;
 
 class StopNodeSession implements HttpHandler {
+
   private final Node node;
   private final SessionId id;
 

@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 @Disabled("Mock browser is not supported")
 public class MockBrowserTest {
+
   Selenium sel;
 
   @BeforeEach
@@ -47,9 +48,11 @@ public class MockBrowserTest {
     sel.click("foo");
     assertEquals(sel.getTitle(), "x", "Incorrect title");
     assertTrue(sel.isAlertPresent(), "alert wasn't present");
-    assertArrayEquals(sel.getAllButtons(), (new String[] {""}), "getAllButtons should return one empty string");
-    assertArrayEquals(sel.getAllLinks(), (new String[] {"1"}), "getAllLinks was incorrect");
-    assertArrayEquals(sel.getAllFields(), (new String[] {"1", "2", "3"}), "getAllFields was incorrect");
+    assertArrayEquals(sel.getAllButtons(), (new String[]{""}),
+                      "getAllButtons should return one empty string");
+    assertArrayEquals(sel.getAllLinks(), (new String[]{"1"}), "getAllLinks was incorrect");
+    assertArrayEquals(sel.getAllFields(), (new String[]{"1", "2", "3"}),
+                      "getAllFields was incorrect");
 
   }
 

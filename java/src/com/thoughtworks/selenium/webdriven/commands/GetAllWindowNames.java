@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetAllWindowNames extends SeleneseCommand<String[]> {
+
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     String current = driver.getWindowHandle();

@@ -18,14 +18,15 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Small test for name extraction
  */
 @Tag("UnitTests")
 class WebDriverExceptionTest {
+
   @Test
   void testExtractsADriverName() {
     StackTraceElement[] stackTrace = new StackTraceElement[2];
@@ -42,7 +43,7 @@ class WebDriverExceptionTest {
     StackTraceElement[] stackTrace = new StackTraceElement[3];
     stackTrace[0] = new StackTraceElement("SomeClass", "someMethod", "SomeClass.java", 5);
     stackTrace[1] =
-        new StackTraceElement("RemoteWebDriver", "someMethod", "RemoteWebDriver.java", 5);
+      new StackTraceElement("RemoteWebDriver", "someMethod", "RemoteWebDriver.java", 5);
     stackTrace[2] = new StackTraceElement("FirefoxDriver", "someMethod", "FirefoxDriver.java", 5);
 
     String gotName = WebDriverException.getDriverName(stackTrace);
@@ -73,7 +74,7 @@ class WebDriverExceptionTest {
     String message = "Oops!";
     WebDriverException ex = new WebDriverException(message);
     assertThat(ex.getMessage())
-        .contains(message, "Build info:", "System info:", "Driver info: driver.version: unknown");
+      .contains(message, "Build info:", "System info:", "Driver info: driver.version: unknown");
   }
 
   @Test
@@ -91,8 +92,8 @@ class WebDriverExceptionTest {
     WebDriverException parent = new WebDriverException(parentMessage);
     WebDriverException ex = new WebDriverException(myMessage, parent);
     assertThat(ex.getMessage())
-        .contains(myMessage)
-        .doesNotContain(parentMessage);
+      .contains(myMessage)
+      .doesNotContain(parentMessage);
   }
 
   @Test
@@ -101,8 +102,8 @@ class WebDriverExceptionTest {
     ex.addInfo("date", "today");
     ex.addInfo("time", "time unknown");
     assertThat(ex.getMessage())
-        .contains("date: today", "time unknown")
-        .doesNotContain("time: time unknown");
+      .contains("date: today", "time unknown")
+      .doesNotContain("time: time unknown");
   }
 
 }

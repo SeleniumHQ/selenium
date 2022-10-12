@@ -27,6 +27,10 @@ import org.openqa.selenium.WebElement;
  */
 public class SelectionMatcher extends TypeSafeMatcher<WebElement> {
 
+  public static Matcher<WebElement> selection() {
+    return new SelectionMatcher();
+  }
+
   @Override
   public boolean matchesSafely(WebElement item) {
     return item.isSelected();
@@ -35,9 +39,5 @@ public class SelectionMatcher extends TypeSafeMatcher<WebElement> {
   @Override
   public void describeTo(Description description) {
     description.appendText("should be selected");
-  }
-
-  public static Matcher<WebElement> selection() {
-    return new SelectionMatcher();
   }
 }

@@ -25,6 +25,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagedOperation {
+
   String name() default "";
+
   String description() default "";
 }

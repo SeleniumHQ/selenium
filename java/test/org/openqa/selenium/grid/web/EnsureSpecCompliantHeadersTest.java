@@ -17,19 +17,20 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.remote.http.Contents;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.http.Contents;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 class EnsureSpecCompliantHeadersTest {
 
@@ -68,12 +69,14 @@ class EnsureSpecCompliantHeadersTest {
 
   @Test
   void requestsWithAnAllowedOriginHeaderShouldBeAllowed() {
-    HttpResponse res = new EnsureSpecCompliantHeaders(ImmutableList.of("example.com"), ImmutableSet.of())
-      .apply(alwaysOk)
-      .execute(
-        new HttpRequest(POST, "/session")
-          .addHeader("Content-Type", JSON_UTF_8)
-          .addHeader("Origin", "example.com"));
+    HttpResponse
+      res =
+      new EnsureSpecCompliantHeaders(ImmutableList.of("example.com"), ImmutableSet.of())
+        .apply(alwaysOk)
+        .execute(
+          new HttpRequest(POST, "/session")
+            .addHeader("Content-Type", JSON_UTF_8)
+            .addHeader("Origin", "example.com"));
 
     assertThat(res.getStatus()).isEqualTo(HTTP_OK);
     assertThat(Contents.string(res)).isEqualTo("Cheese");

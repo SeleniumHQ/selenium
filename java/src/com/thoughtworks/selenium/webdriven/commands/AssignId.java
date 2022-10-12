@@ -24,6 +24,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class AssignId extends SeleneseCommand<Void> {
+
   private final JavascriptLibrary js;
   private final ElementFinder finder;
 
@@ -35,7 +36,7 @@ public class AssignId extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     js.executeScript(driver, "arguments[0].id = arguments[1]",
-        finder.findElement(driver, locator), value);
+                     finder.findElement(driver, locator), value);
 
     return null;
   }

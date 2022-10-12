@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -30,7 +29,7 @@ import java.util.function.Function;
 
 public class SessionCapabilitiesMutator implements Function<Capabilities, Capabilities> {
 
-  private static final ImmutableMap<String, String> BROWSER_OPTIONS = ImmutableMap.of(
+  private static final ImmutableMap<String, String> BROWSER_OPTIONS = Map.of(
     "chrome", "goog:chromeOptions",
     "firefox", "moz:firefoxOptions",
     "microsoftedge", "ms:edgeOptions");
@@ -39,7 +38,7 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
   private final Capabilities slotStereotype;
 
 
-  public SessionCapabilitiesMutator(Capabilities slotStereotype) {
+  SessionCapabilitiesMutator(Capabilities slotStereotype) {
     this.slotStereotype = slotStereotype;
   }
 
@@ -65,8 +64,9 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       return capabilities;
     }
 
-    @SuppressWarnings("unchecked")
-    Map<String, Object> stereotypeOptions = (Map<String, Object>) slotStereotype.asMap().get(options);
+    Map<String, Object>
+      stereotypeOptions =
+      (Map<String, Object>) slotStereotype.asMap().get(options);
 
     Map<String, Object> toReturn = new HashMap<>(capabilities.asMap());
 
@@ -75,7 +75,6 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       return new ImmutableCapabilities(toReturn);
     }
 
-    @SuppressWarnings("unchecked")
     Map<String, Object> capsOptions = (Map<String, Object>) toReturn.get(options);
     stereotypeOptions.forEach((key, value) -> {
       if (!capsOptions.containsKey(key)) {

@@ -16,6 +16,11 @@
 // under the License.
 package org.openqa.selenium.net;
 
+import static java.lang.System.currentTimeMillis;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,11 +32,6 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import static java.lang.System.currentTimeMillis;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.testing.Safely.safelyCall;
 
 class UrlCheckerTest {
 

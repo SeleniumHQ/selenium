@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.UncheckedIOException;
 
 class GetSessionUri implements HttpHandler {
+
   private final SessionMap sessionMap;
   private final SessionId sessionId;
 

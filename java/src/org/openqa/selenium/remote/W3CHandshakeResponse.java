@@ -52,11 +52,15 @@ class W3CHandshakeResponse implements HandshakeResponse {
       Response response = new Response();
       response.setState((String) rawError);
       response.setStatus(
-          new ErrorCodes().toStatus((String) rawError, Optional.of(tuple.getStatusCode())));
+        new ErrorCodes().toStatus((String) rawError, Optional.of(tuple.getStatusCode())));
 
-      Class<? extends WebDriverException> type = new ErrorCodes().getExceptionType((String) rawError);
+      Class<? extends WebDriverException>
+        type =
+        new ErrorCodes().getExceptionType((String) rawError);
       try {
-        WebDriverException exception = type.getConstructor(String.class).newInstance((String) rawMessage);
+        WebDriverException
+          exception =
+          type.getConstructor(String.class).newInstance(rawMessage);
         exception.addInfo("remote stacktrace", (String) rawStackTrace);
         response.setValue(exception);
       } catch (ReflectiveOperationException e) {
@@ -81,7 +85,7 @@ class W3CHandshakeResponse implements HandshakeResponse {
         return null;
       }
 
-      @SuppressWarnings("unchecked") Map<Object, Object> rawMap = (Map<Object, Object>) rawValue;
+      Map<Object, Object> rawMap = (Map<Object, Object>) rawValue;
       Object rawSessionId = rawMap.get("sessionId");
       Object rawCapabilities = rawMap.get("capabilities");
 
@@ -96,9 +100,9 @@ class W3CHandshakeResponse implements HandshakeResponse {
         }
       }
 
-      @SuppressWarnings("unchecked") Map<String, Object>
-          caps =
-          (Map<String, Object>) rawCapabilities;
+      Map<String, Object>
+        caps =
+        (Map<String, Object>) rawCapabilities;
 
       String sessionId = (String) rawSessionId;
       return new ProtocolHandshake.Result(Dialect.W3C, sessionId, caps);

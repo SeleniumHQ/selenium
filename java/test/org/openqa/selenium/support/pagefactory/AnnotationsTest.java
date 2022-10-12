@@ -20,8 +20,8 @@ package org.openqa.selenium.support.pagefactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
@@ -59,7 +59,7 @@ class AnnotationsTest {
   public List<WebElement> shortFindAllBy_field;
 
   @FindBys({@FindBy(how = How.NAME, using = "cheese"),
-      @FindBy(id = "fruit")})
+            @FindBy(id = "fruit")})
   public WebElement findBys_field;
 
   @FindAll({@FindBy(how = How.TAG_NAME, using = "div"),
@@ -68,7 +68,7 @@ class AnnotationsTest {
 
   @FindBy(how = How.NAME, using = "cheese")
   @FindBys({@FindBy(how = How.NAME, using = "cheese"),
-      @FindBy(id = "fruit")})
+            @FindBy(id = "fruit")})
   public WebElement findByAndFindBys_field;
 
   @FindBy(how = How.NAME, using = "cheese")
@@ -89,7 +89,7 @@ class AnnotationsTest {
   public List<WebElement> findAllByMultipleHows_field;
 
   @FindBys({@FindBy(id = "cheese", name = "fruit"),
-      @FindBy(id = "crackers")})
+            @FindBy(id = "crackers")})
   public WebElement findBysMultipleHows_field;
 
   @FindAll({@FindBy(id = "cheese", name = "fruit"),
@@ -98,6 +98,127 @@ class AnnotationsTest {
 
   @FindBy(using = "cheese")
   public WebElement findByUnsetHow_field;
+  @FindByXXXX()
+  public WebElement findBy_xxx;
+
+  @Test
+  void testDefault() throws Exception {
+    assertThat(new Annotations(getClass().getField("default_field")).buildBy())
+      .isEqualTo(new ByIdOrName("default_field"));
+  }
+
+  @Test
+  void testDefaultList() throws Exception {
+    assertThat(new Annotations(getClass().getField("defaultList_field")).buildBy())
+      .isEqualTo(new ByIdOrName("defaultList_field"));
+  }
+
+  @Test
+  void longFindBy() throws Exception {
+    assertThat(new Annotations(getClass().getField("longFindBy_field")).buildBy())
+      .isEqualTo(By.name("cheese"));
+  }
+
+  @Test
+  void longFindAllBy() throws Exception {
+    assertThat(new Annotations(getClass().getField("longFindAllBy_field")).buildBy())
+      .isEqualTo(By.name("cheese"));
+  }
+
+  @Test
+  void shortFindBy() throws Exception {
+    assertThat(new Annotations(getClass().getField("shortFindBy_field")).buildBy())
+      .isEqualTo(By.name("cheese"));
+  }
+
+  @Test
+  void shortFindAllBy() throws Exception {
+    assertThat(new Annotations(getClass().getField("shortFindAllBy_field")).buildBy())
+      .isEqualTo(By.name("cheese"));
+  }
+
+  @Test
+  void findBys() throws Exception {
+    assertThat(new Annotations(getClass().getField("findBys_field")).buildBy())
+      .isEqualTo(new ByChained(By.name("cheese"), By.id("fruit")));
+  }
+
+  @Test
+  void findAll() throws Exception {
+    assertThat(new Annotations(getClass().getField("findAll_field")).buildBy())
+      .isEqualTo(new ByAll(By.tagName("div"), By.id("fruit")));
+  }
+
+  @Test
+  void findByAndFindBys() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .describedAs("Expected field annotated with both @FindBy and @FindBys to throw exception")
+      .isThrownBy(() -> new Annotations(getClass().getField("findByAndFindBys_field")).buildBy());
+  }
+
+  @Test
+  void findAllAndFindBy() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .describedAs("Expected field annotated with both @FindAll and @FindBy to throw exception")
+      .isThrownBy(() -> new Annotations(getClass().getField("findByAndFindBys_field")).buildBy());
+  }
+
+  @Test
+  void findAllAndFindBys() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .describedAs("Expected field annotated with both @FindAll and @FindBys to throw exception")
+      .isThrownBy(() -> new Annotations(getClass().getField("findByAndFindBys_field")).buildBy());
+  }
+
+  @Test
+  void findByMultipleHows() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .describedAs("Expected field annotated with invalid @FindBy to throw error")
+      .isThrownBy(() -> new Annotations(getClass().getField("findByMultipleHows_field")).buildBy());
+  }
+
+  @Test
+  void findAllByMultipleHows() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .describedAs(
+        "Expected field annotated with @FindAllBy containing bad @FindAllBy to throw error")
+      .isThrownBy(
+        () -> new Annotations(getClass().getField("findAllByMultipleHows_field")).buildBy());
+  }
+
+  @Test
+  void findBysMultipleHows() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .describedAs("Expected field annotated with @FindBys containing bad @FindBy to throw error")
+      .isThrownBy(
+        () -> new Annotations(getClass().getField("findBysMultipleHows_field")).buildBy());
+  }
+
+  @Test
+  void findAllMultipleHows() {
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .describedAs("Expected field annotated with @FindAll containing bad @FindBy to throw error")
+      .isThrownBy(
+        () -> new Annotations(getClass().getField("findAllMultipleHows_field")).buildBy());
+  }
+
+  @Test
+  void findByUnsetHowIsEquivalentToFindById() throws Exception {
+    assertThat(new Annotations(getClass().getField("findByUnsetHow_field")).buildBy())
+      .isEqualTo(By.id("cheese"));
+  }
+
+  /*
+   * Example of how teams making their own @FindBy alike would experience a general purpose
+   * capability.
+   *
+   * @See @FindByXXXX (above)
+   */
+  @Test
+  void findBySomethingElse() throws Exception {
+    assertThat(new Annotations(getClass().getField("findBy_xxx")).buildBy().toString())
+      .isEqualTo("FindByXXXX's By");
+  }
 
   @Retention(RetentionPolicy.RUNTIME)
   @Target({ElementType.FIELD, ElementType.TYPE})
@@ -122,124 +243,6 @@ class AnnotationsTest {
       }
     }
 
-  }
-
-  @FindByXXXX()
-  public WebElement findBy_xxx;
-
-  @Test
-  void testDefault() throws Exception {
-    assertThat(new Annotations(getClass().getField("default_field")).buildBy())
-        .isEqualTo(new ByIdOrName("default_field"));
-  }
-
-  @Test
-  void testDefaultList() throws Exception {
-    assertThat(new Annotations(getClass().getField("defaultList_field")).buildBy())
-        .isEqualTo(new ByIdOrName("defaultList_field"));
-  }
-
-  @Test
-  void longFindBy() throws Exception {
-    assertThat(new Annotations(getClass().getField("longFindBy_field")).buildBy())
-        .isEqualTo(By.name("cheese"));
-  }
-
-  @Test
-  void longFindAllBy() throws Exception {
-    assertThat(new Annotations(getClass().getField("longFindAllBy_field")).buildBy())
-        .isEqualTo(By.name("cheese"));
-  }
-
-  @Test
-  void shortFindBy() throws Exception {
-    assertThat(new Annotations(getClass().getField("shortFindBy_field")).buildBy())
-        .isEqualTo(By.name("cheese"));
-  }
-
-  @Test
-  void shortFindAllBy() throws Exception {
-    assertThat(new Annotations(getClass().getField("shortFindAllBy_field")).buildBy())
-        .isEqualTo(By.name("cheese"));
-  }
-
-  @Test
-  void findBys() throws Exception {
-    assertThat(new Annotations(getClass().getField("findBys_field")).buildBy())
-        .isEqualTo(new ByChained(By.name("cheese"), By.id("fruit")));
-  }
-
-  @Test
-  void findAll() throws Exception {
-    assertThat(new Annotations(getClass().getField("findAll_field")).buildBy())
-        .isEqualTo(new ByAll(By.tagName("div"), By.id("fruit")));
-  }
-
-  @Test
-  void findByAndFindBys() {
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .describedAs("Expected field annotated with both @FindBy and @FindBys to throw exception")
-        .isThrownBy(() -> new Annotations(getClass().getField("findByAndFindBys_field")).buildBy());
-  }
-
-  @Test
-  void findAllAndFindBy() {
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .describedAs("Expected field annotated with both @FindAll and @FindBy to throw exception")
-        .isThrownBy(() -> new Annotations(getClass().getField("findByAndFindBys_field")).buildBy());
-  }
-
-  @Test
-  void findAllAndFindBys() {
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .describedAs("Expected field annotated with both @FindAll and @FindBys to throw exception")
-        .isThrownBy(() -> new Annotations(getClass().getField("findByAndFindBys_field")).buildBy());
-  }
-
-  @Test
-  void findByMultipleHows() {
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .describedAs("Expected field annotated with invalid @FindBy to throw error")
-        .isThrownBy(() -> new Annotations(getClass().getField("findByMultipleHows_field")).buildBy());
-  }
-
-  @Test
-  void findAllByMultipleHows() {
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .describedAs("Expected field annotated with @FindAllBy containing bad @FindAllBy to throw error")
-        .isThrownBy(() -> new Annotations(getClass().getField("findAllByMultipleHows_field")).buildBy());
-  }
-
-  @Test
-  void findBysMultipleHows() {
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .describedAs("Expected field annotated with @FindBys containing bad @FindBy to throw error")
-        .isThrownBy(() -> new Annotations(getClass().getField("findBysMultipleHows_field")).buildBy());
-  }
-
-  @Test
-  void findAllMultipleHows() {
-    assertThatExceptionOfType(IllegalArgumentException.class)
-        .describedAs("Expected field annotated with @FindAll containing bad @FindBy to throw error")
-        .isThrownBy(() -> new Annotations(getClass().getField("findAllMultipleHows_field")).buildBy());
-  }
-
-  @Test
-  void findByUnsetHowIsEquivalentToFindById() throws Exception {
-    assertThat(new Annotations(getClass().getField("findByUnsetHow_field")).buildBy())
-        .isEqualTo(By.id("cheese"));
-  }
-
-  /*
-   * Example of how teams making their own @FindBy alike would experience a general purpose
-   * capability.
-   *
-   * @See @FindByXXXX (above)
-   */
-  @Test
-  void findBySomethingElse() throws Exception {
-    assertThat(new Annotations(getClass().getField("findBy_xxx")).buildBy().toString())
-        .isEqualTo("FindByXXXX's By");
   }
 
 }

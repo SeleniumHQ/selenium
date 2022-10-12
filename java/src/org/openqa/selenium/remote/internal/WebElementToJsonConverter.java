@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.remote.internal;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.stream.Collectors.toList;
+
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebElement;
@@ -28,8 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * Converts {@link RemoteWebElement} objects, which may be
  * {@link WrapsElement wrapped}, into their JSON representation as defined by
@@ -37,9 +36,10 @@ import static java.util.stream.Collectors.toList;
  * Maps to catch nested references.
  *
  * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol#webelement-json-object">
- *     WebDriver JSON Wire Protocol</a>
+ * WebDriver JSON Wire Protocol</a>
  */
 public class WebElementToJsonConverter implements Function<Object, Object> {
+
   @Override
   public Object apply(Object arg) {
     if (arg == null || arg instanceof String || arg instanceof Boolean ||
@@ -52,7 +52,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
     }
 
     if (arg instanceof RemoteWebElement) {
-      return ImmutableMap.of(
+      return Map.of(
         Dialect.OSS.getEncodedElementKey(), ((RemoteWebElement) arg).getId(),
         Dialect.W3C.getEncodedElementKey(), ((RemoteWebElement) arg).getId());
     }
@@ -73,7 +73,7 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
         Object key = entry.getKey();
         if (!(key instanceof String)) {
           throw new IllegalArgumentException(
-              "All keys in Map script arguments must be strings: " + key.getClass().getName());
+            "All keys in Map script arguments must be strings: " + key.getClass().getName());
         }
         converted.put((String) key, apply(entry.getValue()));
       }
@@ -81,6 +81,6 @@ public class WebElementToJsonConverter implements Function<Object, Object> {
     }
 
     throw new IllegalArgumentException(
-        "Argument is of an illegal type: " + arg.getClass().getName());
+      "Argument is of an illegal type: " + arg.getClass().getName());
   }
 }

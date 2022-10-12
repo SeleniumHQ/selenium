@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.config;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
@@ -24,8 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class TomlConfigTest {
 

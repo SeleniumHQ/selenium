@@ -28,6 +28,7 @@ import org.openqa.selenium.remote.server.handler.interactions.TouchScreen;
 import java.util.Map;
 
 public class LongPressOnElement extends WebElementHandler<Void> {
+
   private static final String ELEMENT = "element";
   private String elementId;
 

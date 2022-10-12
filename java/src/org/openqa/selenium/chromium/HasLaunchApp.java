@@ -26,7 +26,6 @@ import org.openqa.selenium.Beta;
 public interface HasLaunchApp {
 
   /**
-   *
    * @param id which Chromium app to launch.
    */
   void launchApp(String id);

@@ -27,8 +27,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -50,23 +50,6 @@ import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedWebDriverTest {
-
-  private static class Fixture {
-
-    WebDriver original;
-    VirtualAuthenticator originalAuth;
-    WebDriver decorated;
-
-    public Fixture() {
-      original = mock(WebDriver.class, withSettings()
-        .extraInterfaces(JavascriptExecutor.class, TakesScreenshot.class,
-                         Interactive.class, HasVirtualAuthenticator.class));
-      originalAuth = mock(VirtualAuthenticator.class);
-      decorated = new WebDriverDecorator().decorate(original);
-      when(((HasVirtualAuthenticator) original).addVirtualAuthenticator(any()))
-        .thenReturn(originalAuth);
-    }
-  }
 
   @Test
   void shouldDecorate() {
@@ -282,5 +265,22 @@ class DecoratedWebDriverTest {
   void removeVirtualAuthenticator() {
     VirtualAuthenticator auth = mock(VirtualAuthenticator.class);
     verifyFunction($ -> ((HasVirtualAuthenticator) $).removeVirtualAuthenticator(auth));
+  }
+
+  private static class Fixture {
+
+    WebDriver original;
+    VirtualAuthenticator originalAuth;
+    WebDriver decorated;
+
+    public Fixture() {
+      original = mock(WebDriver.class, withSettings()
+        .extraInterfaces(JavascriptExecutor.class, TakesScreenshot.class,
+                         Interactive.class, HasVirtualAuthenticator.class));
+      originalAuth = mock(VirtualAuthenticator.class);
+      decorated = new WebDriverDecorator().decorate(original);
+      when(((HasVirtualAuthenticator) original).addVirtualAuthenticator(any()))
+        .thenReturn(originalAuth);
+    }
   }
 }

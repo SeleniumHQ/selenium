@@ -17,8 +17,16 @@
 
 package org.openqa.selenium.grid.node.local;
 
-import com.google.common.collect.ImmutableMap;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.OSS;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -41,14 +49,6 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Map;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 class CreateSessionTest {
 
   private final Json json = new Json();
@@ -57,9 +57,9 @@ class CreateSessionTest {
 
   @Test
   void shouldAcceptAW3CPayload() throws URISyntaxException {
-    String payload = json.toJson(ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-            "alwaysMatch", ImmutableMap.of("cheese", "brie"))));
+    String payload = json.toJson(Map.of(
+      "capabilities", Map.of(
+        "alwaysMatch", Map.of("cheese", "brie"))));
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(utf8String(payload));
@@ -67,19 +67,20 @@ class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-      DefaultTestTracer.createTracer(),
+        DefaultTestTracer.createTracer(),
         new GuavaEventBus(),
         uri,
         uri,
         registrationSecret)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
-        .build();
+      .add(stereotype, new TestSessionFactory(
+        (id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+      .build();
 
     Either<WebDriverException, CreateSessionResponse> response = node.newSession(
       new CreateSessionRequest(
         ImmutableSet.of(W3C),
         stereotype,
-        ImmutableMap.of()));
+        Map.of()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();
@@ -112,9 +113,9 @@ class CreateSessionTest {
 
   @Test
   void ifOnlyJWPPayloadSentResponseShouldBeJWPOnlyIfJWPConfigured()
-      throws URISyntaxException {
-    String payload = json.toJson(ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of("cheese", "brie")));
+    throws URISyntaxException {
+    String payload = json.toJson(Map.of(
+      "desiredCapabilities", Map.of("cheese", "brie")));
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(utf8String(payload));
@@ -122,19 +123,20 @@ class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-      DefaultTestTracer.createTracer(),
+        DefaultTestTracer.createTracer(),
         new GuavaEventBus(),
         uri,
         uri,
         registrationSecret)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
-        .build();
+      .add(stereotype, new TestSessionFactory(
+        (id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+      .build();
 
     Either<WebDriverException, CreateSessionResponse> response = node.newSession(
       new CreateSessionRequest(
         ImmutableSet.of(OSS),
         stereotype,
-        ImmutableMap.of()));
+        Map.of()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();
@@ -157,11 +159,11 @@ class CreateSessionTest {
 
   @Test
   void shouldPreferUsingTheW3CProtocol() throws URISyntaxException {
-    String payload = json.toJson(ImmutableMap.of(
-      "desiredCapabilities", ImmutableMap.of(
+    String payload = json.toJson(Map.of(
+      "desiredCapabilities", Map.of(
         "cheese", "brie"),
-      "capabilities", ImmutableMap.of(
-        "alwaysMatch", ImmutableMap.of("cheese", "brie"))));
+      "capabilities", Map.of(
+        "alwaysMatch", Map.of("cheese", "brie"))));
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(utf8String(payload));
@@ -169,19 +171,20 @@ class CreateSessionTest {
     URI uri = new URI("http://example.com");
 
     Node node = LocalNode.builder(
-      DefaultTestTracer.createTracer(),
-      new GuavaEventBus(),
-      uri,
-      uri,
-      registrationSecret)
-      .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
+        DefaultTestTracer.createTracer(),
+        new GuavaEventBus(),
+        uri,
+        uri,
+        registrationSecret)
+      .add(stereotype, new TestSessionFactory(
+        (id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
       .build();
 
     Either<WebDriverException, CreateSessionResponse> response = node.newSession(
       new CreateSessionRequest(
         ImmutableSet.of(W3C),
         stereotype,
-        ImmutableMap.of()));
+        Map.of()));
 
     if (response.isRight()) {
       CreateSessionResponse sessionResponse = response.right();

@@ -28,6 +28,7 @@ import java.util.Map;
  * RestishHandler used to fetch logs from the Remote WebDriver server.
  */
 public class GetLogHandler extends WebDriverHandler<LogEntries> {
+
   private volatile String type;
 
   public GetLogHandler(Session session) {

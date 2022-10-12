@@ -47,18 +47,6 @@ public class ConsoleLogEntry extends GenericLogEntry {
     this.args = args;
   }
 
-  public String getMethod() {
-    return method;
-  }
-
-  public String getRealm() {
-    return realm;
-  }
-
-  public List<Object> getArgs() {
-    return args;
-  }
-
   public static ConsoleLogEntry fromJson(JsonInput input) {
     BaseLogEntry.LogLevel level = null;
     String text = null;
@@ -114,6 +102,18 @@ public class ConsoleLogEntry extends GenericLogEntry {
     input.endObject();
 
     return new ConsoleLogEntry(level, text, timestamp, type, method, realm, args, stackTrace);
+  }
+
+  public String getMethod() {
+    return method;
+  }
+
+  public String getRealm() {
+    return realm;
+  }
+
+  public List<Object> getArgs() {
+    return args;
   }
 
   private Map<String, Object> toJson() {

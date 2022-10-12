@@ -17,6 +17,16 @@
 
 package org.openqa.selenium.lift;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
+
 import org.hamcrest.Description;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,32 +39,21 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.openqa.selenium.lift.match.NumericalMatchers.atLeast;
-
 /**
  * Unit test for {@link WebDriverTestContext}.
  *
  * @author rchatley (Robert Chatley)
- *
  */
 class WebDriverTestContextTest {
 
+  private static final int CLOCK_INCREMENT = 300;
+  final int TIMEOUT = CLOCK_INCREMENT * 3;
   WebDriver webdriver;
   TestContext context;
   WebElement element;
   WebElement element2;
   Finder<WebElement, WebDriver> finder;
   TickingClock clock;
-  private static final int CLOCK_INCREMENT = 300;
-  final int TIMEOUT = CLOCK_INCREMENT * 3;
 
   @BeforeEach
   public void createMocks() {
@@ -166,7 +165,7 @@ class WebDriverTestContextTest {
     } catch (AssertionError error) {
       // expected
       assertThat(error.getMessage()).
-          contains(String.format("Element was not rendered within %dms", TIMEOUT));
+        contains(String.format("Element was not rendered within %dms", TIMEOUT));
     }
 
     verify(finder, atLeastOnce()).findFrom(webdriver);

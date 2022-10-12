@@ -18,5 +18,6 @@
 package org.openqa.selenium.logging;
 
 public interface NeedsLocalLogs {
+
   void setLocalLogs(LocalLogs logs);
 }

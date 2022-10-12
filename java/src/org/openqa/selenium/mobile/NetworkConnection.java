@@ -32,6 +32,24 @@ package org.openqa.selenium.mobile;
 public interface NetworkConnection {
 
   /**
+   * Query the driver for the Airplane Mode setting state
+   *
+   * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} indicating if the
+   * device is in Airplane Mode
+   */
+  ConnectionType getNetworkConnection();
+
+  /**
+   * Set the Connection type Not all connection type combinations are valid for an individual type
+   * of device and the remote endpoint will make a best effort to set the type as requested
+   *
+   * @param type ConnectionType of what the network connection should be
+   * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} of what the
+   * device's network connection is
+   */
+  ConnectionType setNetworkConnection(ConnectionType type);
+
+  /**
    * ConnectionType is a bitmask to represent a device's network connection
    * <pre>
    * Data  | WIFI | Airplane
@@ -112,23 +130,5 @@ public interface NetworkConnection {
       return mask;
     }
   }
-
-  /**
-   * Query the driver for the Airplane Mode setting state
-   *
-   * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} indicating if the
-   * device is in Airplane Mode
-   */
-  ConnectionType getNetworkConnection();
-
-  /**
-   * Set the Connection type Not all connection type combinations are valid for an individual type
-   * of device and the remote endpoint will make a best effort to set the type as requested
-   *
-   * @param type ConnectionType of what the network connection should be
-   * @return {@link org.openqa.selenium.mobile.NetworkConnection.ConnectionType} of what the
-   * device's network connection is
-   */
-  ConnectionType setNetworkConnection(ConnectionType type);
 
 }

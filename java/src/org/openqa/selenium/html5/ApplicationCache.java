@@ -18,6 +18,7 @@
 package org.openqa.selenium.html5;
 
 public interface ApplicationCache {
+
   /**
    * The current state of the application cache.
    *

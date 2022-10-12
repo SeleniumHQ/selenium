@@ -46,7 +46,7 @@ class ClearTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("textInputNotEnabled"));
     assertThat(element.isEnabled()).isFalse();
     assertThatExceptionOfType(InvalidElementStateException.class)
-        .isThrownBy(element::clear);
+      .isThrownBy(element::clear);
   }
 
   @Test
@@ -54,7 +54,7 @@ class ClearTest extends JupiterTestBase {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("readOnlyTextInput"));
     assertThatExceptionOfType(InvalidElementStateException.class)
-        .isThrownBy(element::clear);
+      .isThrownBy(element::clear);
   }
 
   @Test
@@ -70,7 +70,7 @@ class ClearTest extends JupiterTestBase {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textAreaNotEnabled"));
     assertThatExceptionOfType(InvalidElementStateException.class)
-        .isThrownBy(element::clear);
+      .isThrownBy(element::clear);
   }
 
   @Test
@@ -78,7 +78,7 @@ class ClearTest extends JupiterTestBase {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textAreaReadOnly"));
     assertThatExceptionOfType(InvalidElementStateException.class)
-        .isThrownBy(element::clear);
+      .isThrownBy(element::clear);
   }
 
   @Test

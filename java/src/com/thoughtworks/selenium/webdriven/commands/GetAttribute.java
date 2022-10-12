@@ -28,6 +28,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 public class GetAttribute extends SeleneseCommand<String> {
+
   private final String getAttribute;
   private final JavascriptLibrary library;
   private final ElementFinder finder;
@@ -36,11 +37,12 @@ public class GetAttribute extends SeleneseCommand<String> {
     this.library = library;
     this.finder = finder;
     getAttribute =
-        "return (" + library.getSeleniumScript("getAttribute.js") + ").apply(null, arguments);";
+      "return (" + library.getSeleniumScript("getAttribute.js") + ").apply(null, arguments);";
   }
 
   @Override
-  protected String handleSeleneseCommand(WebDriver driver, String attributeLocator, String ignored) {
+  protected String handleSeleneseCommand(WebDriver driver, String attributeLocator,
+                                         String ignored) {
     try {
       return (String) library.executeScript(driver, getAttribute, attributeLocator);
     } catch (WebDriverException e) {

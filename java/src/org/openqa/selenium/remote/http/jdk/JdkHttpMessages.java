@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.remote.http.jdk;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.Contents;
@@ -24,15 +26,12 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublishers;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 class JdkHttpMessages {
 
@@ -49,7 +48,8 @@ class JdkHttpMessages {
     String queryString = StreamSupport.stream(req.getQueryParameterNames().spliterator(), false)
       .map(name -> {
         return StreamSupport.stream(req.getQueryParameters(name).spliterator(), false)
-          .map(value -> String.format("%s=%s", URLEncoder.encode(name, UTF_8), URLEncoder.encode(value, UTF_8)))
+          .map(value -> String.format("%s=%s", URLEncoder.encode(name, UTF_8),
+                                      URLEncoder.encode(value, UTF_8)))
           .collect(Collectors.joining("&"));
       })
       .collect(Collectors.joining("&"));
@@ -58,7 +58,9 @@ class JdkHttpMessages {
       rawUrl = rawUrl + "?" + queryString;
     }
 
-    java.net.http.HttpRequest.Builder builder = java.net.http.HttpRequest.newBuilder().uri(URI.create(rawUrl));
+    java.net.http.HttpRequest.Builder
+      builder =
+      java.net.http.HttpRequest.newBuilder().uri(URI.create(rawUrl));
 
     switch (req.getMethod()) {
       case DELETE:
@@ -79,7 +81,8 @@ class JdkHttpMessages {
         break;
 
       default:
-        throw new IllegalArgumentException(String.format("Unsupported request method %s: %s", req.getMethod(), req));
+        throw new IllegalArgumentException(
+          String.format("Unsupported request method %s: %s", req.getMethod(), req));
     }
 
     for (String name : req.getHeaderNames()) {
@@ -105,7 +108,7 @@ class JdkHttpMessages {
   private String getRawUrl(URI baseUrl, String uri) {
     String rawUrl;
     if (uri.startsWith("ws://") || uri.startsWith("wss://") ||
-      uri.startsWith("http://") || uri.startsWith("https://")) {
+        uri.startsWith("http://") || uri.startsWith("https://")) {
       rawUrl = uri;
     } else {
       rawUrl = baseUrl.toString().replaceAll("/$", "") + uri;
@@ -123,7 +126,8 @@ class JdkHttpMessages {
     HttpResponse res = new HttpResponse();
     res.setStatus(response.statusCode());
     response.headers().map()
-      .forEach((name, values) -> values.stream().filter(Objects::nonNull).forEach(value -> res.addHeader(name, value)));
+      .forEach((name, values) -> values.stream().filter(Objects::nonNull)
+        .forEach(value -> res.addHeader(name, value)));
     res.setContent(() -> new ByteArrayInputStream(response.body()));
 
     return res;

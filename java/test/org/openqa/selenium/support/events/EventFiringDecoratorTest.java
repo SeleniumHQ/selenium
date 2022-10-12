@@ -25,8 +25,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -44,31 +44,6 @@ import java.util.stream.Stream;
 
 @Tag("UnitTests")
 class EventFiringDecoratorTest {
-
-  static class CollectorListener implements WebDriverListener {
-
-    protected final StringBuilder acc = new StringBuilder();
-
-    @Override
-    public void beforeAnyCall(Object target, Method method, Object[] args) {
-      acc.append("beforeAnyCall ").append(method.getName()).append("\n");
-    }
-
-    @Override
-    public void afterAnyCall(Object target, Method method, Object[] args, Object result) {
-      acc.append("afterAnyCall ").append(method.getName()).append("\n");
-    }
-
-    @Override
-    public void beforeAnyWebDriverCall(WebDriver driver, Method method, Object[] args) {
-      acc.append("beforeAnyWebDriverCall ").append(method.getName()).append("\n");
-    }
-
-    @Override
-    public void afterAnyWebDriverCall(WebDriver driver, Method method, Object[] args, Object result) {
-      acc.append("afterAnyWebDriverCall ").append(method.getName()).append("\n");
-    }
-  }
 
   @Test
   void shouldFireWebDriverEvents() {
@@ -165,7 +140,8 @@ class EventFiringDecoratorTest {
 
     CollectorListener listener = new CollectorListener() {
       @Override
-      public void beforeAnyNavigationCall(WebDriver.Navigation navigation, Method method, Object[] args) {
+      public void beforeAnyNavigationCall(WebDriver.Navigation navigation, Method method,
+                                          Object[] args) {
         acc.append("beforeAnyNavigationCall ").append(method.getName()).append("\n");
       }
 
@@ -269,7 +245,8 @@ class EventFiringDecoratorTest {
       }
 
       @Override
-      public void afterExecuteScript(WebDriver driver, String script, Object[] args, Object result) {
+      public void afterExecuteScript(WebDriver driver, String script, Object[] args,
+                                     Object result) {
         acc.append(script).append("(");
         acc.append(Stream.of(args).map(Object::toString).collect(Collectors.joining(", ")));
         acc.append(") = ").append(result).append("\n");
@@ -387,7 +364,8 @@ class EventFiringDecoratorTest {
     when(driver.getWindowHandle()).thenThrow(new WebDriverException());
     WebDriverListener listener = new WebDriverListener() {
       @Override
-      public void onError(Object target, Method method, Object[] args, InvocationTargetException e) {
+      public void onError(Object target, Method method, Object[] args,
+                          InvocationTargetException e) {
         throw new RuntimeException("listener");
       }
     };
@@ -405,7 +383,8 @@ class EventFiringDecoratorTest {
 
     WebDriverListener listener = new WebDriverListener() {
       @Override
-      public void onError(Object target, Method method, Object[] args, InvocationTargetException e) {
+      public void onError(Object target, Method method, Object[] args,
+                          InvocationTargetException e) {
         throw new RuntimeException("listener");
       }
     };
@@ -425,7 +404,8 @@ class EventFiringDecoratorTest {
 
     WebDriverListener listener = new WebDriverListener() {
       @Override
-      public void onError(Object target, Method method, Object[] args, InvocationTargetException e) {
+      public void onError(Object target, Method method, Object[] args,
+                          InvocationTargetException e) {
         throw new RuntimeException("listener");
       }
     };
@@ -435,5 +415,31 @@ class EventFiringDecoratorTest {
 
     assertThatExceptionOfType(WebDriverException.class)
       .isThrownBy(decorated::getWindowHandle);
+  }
+
+  static class CollectorListener implements WebDriverListener {
+
+    protected final StringBuilder acc = new StringBuilder();
+
+    @Override
+    public void beforeAnyCall(Object target, Method method, Object[] args) {
+      acc.append("beforeAnyCall ").append(method.getName()).append("\n");
+    }
+
+    @Override
+    public void afterAnyCall(Object target, Method method, Object[] args, Object result) {
+      acc.append("afterAnyCall ").append(method.getName()).append("\n");
+    }
+
+    @Override
+    public void beforeAnyWebDriverCall(WebDriver driver, Method method, Object[] args) {
+      acc.append("beforeAnyWebDriverCall ").append(method.getName()).append("\n");
+    }
+
+    @Override
+    public void afterAnyWebDriverCall(WebDriver driver, Method method, Object[] args,
+                                      Object result) {
+      acc.append("afterAnyWebDriverCall ").append(method.getName()).append("\n");
+    }
   }
 }

@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.chromium;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toList;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.internal.Require;
@@ -35,10 +39,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Stream;
-
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Class to manage options specific to {@link ChromiumDriver}.
@@ -60,16 +60,16 @@ import static java.util.stream.Collectors.toList;
  *
  * @since Since chromedriver v17.0.963.0
  */
-public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDriverOptions<ChromiumOptions<?>> {
+public class ChromiumOptions<T extends ChromiumOptions<?>>
+  extends AbstractDriverOptions<ChromiumOptions<?>> {
 
-  private String binary;
   private final List<String> args = new ArrayList<>();
   private final List<File> extensionFiles = new ArrayList<>();
   private final List<String> extensions = new ArrayList<>();
   private final Map<String, Object> experimentalOptions = new HashMap<>();
-  private Map<String, Object> androidOptions = new HashMap<>();
-
   private final String capabilityName;
+  private String binary;
+  private Map<String, Object> androidOptions = new HashMap<>();
 
   public ChromiumOptions(String capabilityType, String browserType, String capability) {
     this.capabilityName = capability;
@@ -177,9 +177,9 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
    * Sets an experimental option. Useful for new ChromeDriver options not yet
    * exposed through the {@link ChromiumOptions} API.
    *
-   * @param name Name of the experimental option.
+   * @param name  Name of the experimental option.
    * @param value Value of the experimental option, which must be convertible
-   *     to JSON.
+   *              to JSON.
    */
   public T setExperimentalOption(String name, Object value) {
     experimentalOptions.put(Require.nonNull("Option name", name), value);
@@ -274,7 +274,8 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   protected void mergeInPlace(Capabilities capabilities) {
     Require.nonNull("Capabilities to merge", capabilities);
 
-    capabilities.getCapabilityNames().forEach(name -> setCapability(name, capabilities.getCapability(name)));
+    capabilities.getCapabilityNames()
+      .forEach(name -> setCapability(name, capabilities.getCapability(name)));
     if (capabilities instanceof ChromiumOptions) {
       ChromiumOptions<?> options = (ChromiumOptions<?>) capabilities;
       for (String arg : options.args) {

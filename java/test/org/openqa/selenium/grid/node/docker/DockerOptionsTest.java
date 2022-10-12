@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.node.docker;
 
+import static java.util.Arrays.asList;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,9 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
 
 class DockerOptionsTest {
 
@@ -59,14 +59,6 @@ class DockerOptionsTest {
     }).map(Arguments::of);
   }
 
-  @ParameterizedTest
-  @MethodSource("data")
-  void shouldReturnOnlyExpectedDeviceMappings(Config config, List<Device> devicesExpected) {
-    List<Device> returnedDevices = new DockerOptions(config).getDevicesMapping();
-    assertThat(devicesExpected.equals(returnedDevices))
-      .describedAs("Expected %s but was %s", devicesExpected, returnedDevices).isTrue();
-  }
-
   private static Device device(String pathOnHost, String pathInContainer) {
     return device(pathOnHost, pathInContainer, "");
   }
@@ -80,5 +72,13 @@ class DockerOptionsTest {
     Config config = Mockito.mock(Config.class);
     Mockito.when(config.getAll("docker", "devices")).thenReturn(Optional.of(deviceMapping));
     return config;
+  }
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldReturnOnlyExpectedDeviceMappings(Config config, List<Device> devicesExpected) {
+    List<Device> returnedDevices = new DockerOptions(config).getDevicesMapping();
+    assertThat(devicesExpected.equals(returnedDevices))
+      .describedAs("Expected %s but was %s", devicesExpected, returnedDevices).isTrue();
   }
 }

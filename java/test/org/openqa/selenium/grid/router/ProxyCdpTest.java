@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,10 +52,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class ProxyCdpTest {
 
@@ -92,11 +90,14 @@ class ProxyCdpTest {
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), new ImmutableCapabilities(), Instant.now()));
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(),
+                             new ImmutableCapabilities(), Instant.now()));
 
     // Now! Send a message. We expect it to eventually show up in the backend
     try (WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener(){})) {
+      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)),
+                  new WebSocket.Listener() {
+                  })) {
 
       socket.sendText("Cheese!");
 
@@ -106,26 +107,31 @@ class ProxyCdpTest {
   }
 
   @Test
-  void shouldForwardTextMessageFromServerToLocalEnd() throws URISyntaxException, InterruptedException {
+  void shouldForwardTextMessageFromServerToLocalEnd()
+    throws URISyntaxException, InterruptedException {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
-    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago", emptyConfig);
+    Server<?>
+      backend =
+      createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago", emptyConfig);
 
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), new ImmutableCapabilities(), Instant.now()));
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(),
+                             new ImmutableCapabilities(), Instant.now()));
 
     // Now! Send a message. We expect it to eventually show up in the backend
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
-    try(WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
-        @Override
-        public void onText(CharSequence data) {
-          text.set(data.toString());
-          latch.countDown();
-        }
-      })) {
+    try (WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
+      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)),
+                  new WebSocket.Listener() {
+                    @Override
+                    public void onText(CharSequence data) {
+                      text.set(data.toString());
+                      latch.countDown();
+                    }
+                  })) {
 
       socket.sendText("Cheese!");
 
@@ -136,35 +142,41 @@ class ProxyCdpTest {
 
   @Test
   void shouldBeAbleToSendMessagesOverSecureWebSocket()
-      throws URISyntaxException, InterruptedException {
+    throws URISyntaxException, InterruptedException {
 
-    Config secureConfig = new MapConfig(ImmutableMap.of(
-      "server", ImmutableMap.of(
+    Config secureConfig = new MapConfig(Map.of(
+      "server", Map.of(
         "https-self-signed", true)));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ProxyWebsocketsIntoGrid proxy = new ProxyWebsocketsIntoGrid(clientFactory, sessions);
 
-    Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheddar", emptyConfig);
+    Server<?>
+      backend =
+      createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Cheddar", emptyConfig);
 
-    Server<?> secureProxyServer = new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy);
+    Server<?>
+      secureProxyServer =
+      new NettyServer(new BaseServerOptions(secureConfig), nullHandler, proxy);
 
     secureProxyServer.start();
     // Push a session that resolves to the backend server into the session map
     SessionId id = new SessionId(UUID.randomUUID());
 
-    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(), new ImmutableCapabilities(), Instant.now()));
+    sessions.add(new Session(id, backend.getUrl().toURI(), new ImmutableCapabilities(),
+                             new ImmutableCapabilities(), Instant.now()));
 
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
     try (WebSocket socket = clientFactory.createClient(secureProxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
-        @Override
-        public void onText(CharSequence data) {
-          text.set(data.toString());
-          latch.countDown();
-        }
-      })) {
+      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)),
+                  new WebSocket.Listener() {
+                    @Override
+                    public void onText(CharSequence data) {
+                      text.set(data.toString());
+                      latch.countDown();
+                    }
+                  })) {
       socket.sendText("Cheese!");
 
       assertThat(latch.await(5, SECONDS)).isTrue();
@@ -174,7 +186,8 @@ class ProxyCdpTest {
     secureProxyServer.stop();
   }
 
-  private Server<?> createBackendServer(CountDownLatch latch, AtomicReference<String> incomingRef, String response, Config config) {
+  private Server<?> createBackendServer(CountDownLatch latch, AtomicReference<String> incomingRef,
+                                        String response, Config config) {
     return new NettyServer(
       new BaseServerOptions(config),
       nullHandler,

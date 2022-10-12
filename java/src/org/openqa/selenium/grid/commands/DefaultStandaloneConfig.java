@@ -17,17 +17,16 @@
 
 package org.openqa.selenium.grid.commands;
 
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.grid.config.MapConfig;
 
 class DefaultStandaloneConfig extends MapConfig {
 
   DefaultStandaloneConfig() {
-    super(ImmutableMap.of(
-      "events", ImmutableMap.of(
+    super(Map.of(
+      "events", Map.of(
         "implementation", "org.openqa.selenium.events.local.GuavaEventBus"),
-      "sessions", ImmutableMap.of(
+      "sessions", Map.of(
         "implementation", "org.openqa.selenium.grid.sessionmap.local.LocalSessionMap")));
   }
 

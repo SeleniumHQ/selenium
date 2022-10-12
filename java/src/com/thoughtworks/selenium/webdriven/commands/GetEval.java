@@ -27,6 +27,7 @@ import org.openqa.selenium.WebDriver;
  * An implementation of the "getEval" method from Selenium.
  */
 public class GetEval extends SeleneseCommand<String> {
+
   private final ScriptMutator mutator;
 
   public GetEval(ScriptMutator mutator) {

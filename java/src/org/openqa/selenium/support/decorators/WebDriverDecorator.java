@@ -194,6 +194,33 @@ public class WebDriverDecorator<T extends WebDriver> {
     this.targetWebDriverClass = targetClass;
   }
 
+  static Set<Class<?>> extractInterfaces(final Object object) {
+    return extractInterfaces(object.getClass());
+  }
+
+  private static Set<Class<?>> extractInterfaces(final Class<?> clazz) {
+    Set<Class<?>> allInterfaces = new HashSet<>();
+    extractInterfaces(allInterfaces, clazz);
+
+    return allInterfaces;
+  }
+
+  private static void extractInterfaces(final Set<Class<?>> collector, final Class<?> clazz) {
+    if (clazz == null || Object.class.equals(clazz)) {
+      return;
+    }
+
+    final Class<?>[] classes = clazz.getInterfaces();
+    for (Class<?> interfaceClass : classes) {
+      collector.add(interfaceClass);
+      for (Class<?> superInterface : interfaceClass.getInterfaces()) {
+        collector.add(superInterface);
+        extractInterfaces(collector, superInterface);
+      }
+    }
+    extractInterfaces(collector, clazz.getSuperclass());
+  }
+
   public final T decorate(T original) {
     Require.nonNull("WebDriver", original);
 
@@ -241,13 +268,15 @@ public class WebDriverDecorator<T extends WebDriver> {
     return new DefaultDecorated<>(original, this);
   }
 
-  public void beforeCall(Decorated<?> target, Method method, Object[] args) {}
+  public void beforeCall(Decorated<?> target, Method method, Object[] args) {
+  }
 
   public Object call(Decorated<?> target, Method method, Object[] args) throws Throwable {
     return decorateResult(method.invoke(target.getOriginal(), args));
   }
 
-  public void afterCall(Decorated<?> target, Method method, Object[] args, Object res) {}
+  public void afterCall(Decorated<?> target, Method method, Object[] args, Object res) {
+  }
 
   public Object onError(
     Decorated<?> target,
@@ -268,19 +297,23 @@ public class WebDriverDecorator<T extends WebDriver> {
       return createProxy(createDecorated((Alert) toDecorate), Alert.class);
     }
     if (toDecorate instanceof VirtualAuthenticator) {
-      return createProxy(createDecorated((VirtualAuthenticator) toDecorate), VirtualAuthenticator.class);
+      return createProxy(createDecorated((VirtualAuthenticator) toDecorate),
+                         VirtualAuthenticator.class);
     }
     if (toDecorate instanceof WebDriver.Navigation) {
-      return createProxy(createDecorated((WebDriver.Navigation) toDecorate), WebDriver.Navigation.class);
+      return createProxy(createDecorated((WebDriver.Navigation) toDecorate),
+                         WebDriver.Navigation.class);
     }
     if (toDecorate instanceof WebDriver.Options) {
       return createProxy(createDecorated((WebDriver.Options) toDecorate), WebDriver.Options.class);
     }
     if (toDecorate instanceof WebDriver.TargetLocator) {
-      return createProxy(createDecorated((WebDriver.TargetLocator) toDecorate), WebDriver.TargetLocator.class);
+      return createProxy(createDecorated((WebDriver.TargetLocator) toDecorate),
+                         WebDriver.TargetLocator.class);
     }
     if (toDecorate instanceof WebDriver.Timeouts) {
-      return createProxy(createDecorated((WebDriver.Timeouts) toDecorate), WebDriver.Timeouts.class);
+      return createProxy(createDecorated((WebDriver.Timeouts) toDecorate),
+                         WebDriver.Timeouts.class);
     }
     if (toDecorate instanceof WebDriver.Window) {
       return createProxy(createDecorated((WebDriver.Window) toDecorate), WebDriver.Window.class);
@@ -296,7 +329,9 @@ public class WebDriverDecorator<T extends WebDriver> {
   protected final <Z> Z createProxy(final Decorated<Z> decorated, Class<Z> clazz) {
     Set<Class<?>> decoratedInterfaces = extractInterfaces(decorated);
     Set<Class<?>> originalInterfaces = extractInterfaces(decorated.getOriginal());
-    Map<Class<?>, InvocationHandler> derivedInterfaces = deriveAdditionalInterfaces(decorated.getOriginal());
+    Map<Class<?>, InvocationHandler>
+      derivedInterfaces =
+      deriveAdditionalInterfaces(decorated.getOriginal());
 
     final InvocationHandler handler = (proxy, method, args) -> {
       try {
@@ -343,33 +378,6 @@ public class WebDriverDecorator<T extends WebDriver> {
     }
   }
 
-  static Set<Class<?>> extractInterfaces(final Object object) {
-    return extractInterfaces(object.getClass());
-  }
-
-  private static Set<Class<?>> extractInterfaces(final Class<?> clazz) {
-    Set<Class<?>> allInterfaces = new HashSet<>();
-    extractInterfaces(allInterfaces, clazz);
-
-    return allInterfaces;
-  }
-
-  private static void extractInterfaces(final Set<Class<?>> collector, final Class<?> clazz) {
-    if (clazz == null || Object.class.equals(clazz)) {
-      return;
-    }
-
-    final Class<?>[] classes = clazz.getInterfaces();
-    for (Class<?> interfaceClass : classes) {
-      collector.add(interfaceClass);
-      for (Class<?> superInterface : interfaceClass.getInterfaces()) {
-        collector.add(superInterface);
-        extractInterfaces(collector, superInterface);
-      }
-    }
-    extractInterfaces(collector, clazz.getSuperclass());
-  }
-
   private Map<Class<?>, InvocationHandler> deriveAdditionalInterfaces(Object object) {
     Map<Class<?>, InvocationHandler> handlers = new HashMap<>();
 
@@ -410,6 +418,7 @@ public class WebDriverDecorator<T extends WebDriver> {
 
   @FunctionalInterface
   protected interface JsonSerializer {
+
     Object toJson();
   }
 }

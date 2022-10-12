@@ -32,8 +32,14 @@ import java.util.List;
 import java.util.Map;
 
 public class ExecutableFinder {
+
   private static final List<String> ENDINGS = Platform.getCurrent().is(WINDOWS) ?
-      Arrays.asList("", ".cmd", ".exe", ".com", ".bat") : singletonList("");
+                                              Arrays.asList("", ".cmd", ".exe", ".com", ".bat")
+                                                                                : singletonList("");
+
+  private static boolean canExecute(File file) {
+    return file.exists() && !file.isDirectory() && file.canExecute();
+  }
 
   /**
    * Find the executable by scanning the file system and the PATH. In the case of Windows this
@@ -96,9 +102,5 @@ public class ExecutableFinder {
       }
     }
     return emptyList();
-  }
-
-  private static boolean canExecute(File file) {
-    return file.exists() && !file.isDirectory() && file.canExecute();
   }
 }

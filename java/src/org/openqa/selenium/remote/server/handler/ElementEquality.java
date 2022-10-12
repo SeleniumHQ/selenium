@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.server.Session;
 import java.util.Map;
 
 public class ElementEquality extends WebElementHandler<Boolean> {
+
   private volatile String otherId;
 
   public ElementEquality(Session session) {

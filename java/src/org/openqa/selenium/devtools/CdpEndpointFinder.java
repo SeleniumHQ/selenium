@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.devtools;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -31,11 +36,6 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class CdpEndpointFinder {
 

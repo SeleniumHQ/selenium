@@ -17,14 +17,6 @@
 
 package org.openqa.selenium.remote.codec.jwp;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.openqa.selenium.InvalidArgumentException;
-import org.openqa.selenium.remote.DriverCommand;
-import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
-
-import java.util.Map;
-
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_LOCAL_STORAGE;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_SESSION_STORAGE;
@@ -58,20 +50,29 @@ import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.openqa.selenium.InvalidArgumentException;
+import org.openqa.selenium.remote.DriverCommand;
+import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
+
+import java.util.Map;
+
 /**
  * A command codec that adheres to the Selenium project's JSON/HTTP wire protocol.
  *
  * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">
- *   JSON wire protocol</a>
+ * JSON wire protocol</a>
  */
 public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
 
   public JsonHttpCommandCodec() {
-    String sessionId = "/session/:sessionId";
+    final String sessionId = "/session/:sessionId";
 
-    String elementId = sessionId + "/element/:id";
+    final String elementId = sessionId + "/element/:id";
     defineCommand(GET_ELEMENT_ATTRIBUTE, get(elementId + "/attribute/:name"));
-    defineCommand(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW, get(elementId + "/location_in_view"));
+    defineCommand(GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW,
+                  get(elementId + "/location_in_view"));
     defineCommand(IS_ELEMENT_DISPLAYED, get(elementId + "/displayed"));
     defineCommand(SUBMIT_ELEMENT, post(elementId + "/submit"));
 
@@ -80,7 +81,7 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
 
     defineCommand(GET_PAGE_SOURCE, get(sessionId + "/source"));
 
-    String windowHandle = sessionId + "/window/:windowHandle";
+    final String windowHandle = sessionId + "/window/:windowHandle";
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post(windowHandle + "/maximize"));
     defineCommand(GET_CURRENT_WINDOW_POSITION, get(windowHandle + "/position"));
     defineCommand(SET_CURRENT_WINDOW_POSITION, post(windowHandle + "/position"));
@@ -98,7 +99,7 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
 
     defineCommand(GET_ACTIVE_ELEMENT, post(sessionId + "/element/active"));
 
-    String localStorage = sessionId + "/local_storage";
+    final String localStorage = sessionId + "/local_storage";
     defineCommand(CLEAR_LOCAL_STORAGE, delete(localStorage));
     defineCommand(GET_LOCAL_STORAGE_KEYS, get(localStorage));
     defineCommand(SET_LOCAL_STORAGE_ITEM, post(localStorage));
@@ -106,7 +107,7 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(GET_LOCAL_STORAGE_ITEM, get(localStorage + "/key/:key"));
     defineCommand(GET_LOCAL_STORAGE_SIZE, get(localStorage + "/size"));
 
-    String sessionStorage = sessionId + "/session_storage";
+    final String sessionStorage = sessionId + "/session_storage";
     defineCommand(CLEAR_SESSION_STORAGE, delete(sessionStorage));
     defineCommand(GET_SESSION_STORAGE_KEYS, get(sessionStorage));
     defineCommand(SET_SESSION_STORAGE_ITEM, post(sessionStorage));
@@ -131,14 +132,14 @@ public class JsonHttpCommandCodec extends AbstractHttpCommandCodec {
       case DriverCommand.SET_TIMEOUT:
         if (parameters.size() != 1) {
           throw new InvalidArgumentException(
-              "The JSON wire protocol only supports setting one time out at a time");
+            "The JSON wire protocol only supports setting one time out at a time");
         }
         Map.Entry<String, ?> entry = parameters.entrySet().iterator().next();
         String type = entry.getKey();
         if ("pageLoad".equals(type)) {
           type = "page load";
         }
-        return ImmutableMap.of("type", type, "ms", entry.getValue());
+        return Map.of("type", type, "ms", entry.getValue());
 
       case DriverCommand.SWITCH_TO_WINDOW:
         return ImmutableMap.<String, Object>builder()

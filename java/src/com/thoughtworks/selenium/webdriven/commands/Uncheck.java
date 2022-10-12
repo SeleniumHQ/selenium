@@ -24,6 +24,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class Uncheck extends SeleneseCommand<Void> {
+
   private final AlertOverride alertOverride;
   private final ElementFinder finder;
 
@@ -37,8 +38,9 @@ public class Uncheck extends SeleneseCommand<Void> {
     alertOverride.replaceAlertMethod(driver);
 
     WebElement element = finder.findElement(driver, locator);
-    if (element.isSelected())
+    if (element.isSelected()) {
       element.click();
+    }
 
     return null;
   }

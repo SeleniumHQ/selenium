@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.grid.commands;
 
+import com.google.auto.service.AutoService;
+import com.google.common.io.Resources;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.DefaultConsole;
-import com.google.auto.service.AutoService;
-import com.google.common.io.Resources;
+
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 import org.openqa.selenium.grid.config.Role;
@@ -122,7 +124,8 @@ public class InfoCommand implements CliCommand {
       }
 
       try (PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0)) {
-        outWriter.printf("%n%s%n%s%n%n", title, String.join("", Collections.nCopies(title.length(), "=")));
+        outWriter.printf("%n%s%n%s%n%n", title,
+                         String.join("", Collections.nCopies(title.length(), "=")));
         outWriter.print(content);
         outWriter.println("\n\n");
       }
@@ -130,7 +133,9 @@ public class InfoCommand implements CliCommand {
   }
 
   private String readContent(String path) throws IOException {
-    String unformattedText = Resources.toString(Resources.getResource(path), StandardCharsets.UTF_8);
+    String
+      unformattedText =
+      Resources.toString(Resources.getResource(path), StandardCharsets.UTF_8);
     StringBuilder formattedText = new StringBuilder();
     try (BufferedReader reader = new BufferedReader(new StringReader(unformattedText))) {
       boolean inCode = false;
@@ -150,8 +155,8 @@ public class InfoCommand implements CliCommand {
           }
           formattedText.append(line);
           if (inCode ||
-            line.matches("^\\s*\\*.*") ||
-            line.matches("^\\s*\\d+\\..*")) {
+              line.matches("^\\s*\\*.*") ||
+              line.matches("^\\s*\\d+\\..*")) {
             formattedText.append("\n");
           } else {
             formattedText.append(" ");

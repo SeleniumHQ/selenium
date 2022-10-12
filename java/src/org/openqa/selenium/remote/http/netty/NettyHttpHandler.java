@@ -56,7 +56,9 @@ public class NettyHttpHandler extends RemoteCall {
       NettyMessages.toNettyRequest(getConfig(), request));
 
     try {
-      Response response = whenResponse.get(getConfig().readTimeout().toMillis(), TimeUnit.MILLISECONDS);
+      Response
+        response =
+        whenResponse.get(getConfig().readTimeout().toMillis(), TimeUnit.MILLISECONDS);
       return NettyMessages.toSeleniumResponse(response);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();

@@ -83,7 +83,7 @@ public class TestUtilities {
     if (chromedriverVersion == null) {
       Object chrome = caps.getCapability("chrome");
       if (chrome != null) {
-        chromedriverVersion = (String) ((Map<?,?>) chrome).get("chromedriverVersion");
+        chromedriverVersion = (String) ((Map<?, ?>) chrome).get("chromedriverVersion");
       }
     }
     if (chromedriverVersion != null) {
@@ -176,8 +176,8 @@ public class TestUtilities {
   }
 
   public static boolean isLocal() {
-    return ! (Boolean.getBoolean("selenium.browser.remote")
-              || Boolean.getBoolean("selenium.browser.grid"));
+    return !(Boolean.getBoolean("selenium.browser.remote")
+             || Boolean.getBoolean("selenium.browser.grid"));
   }
 
   public static boolean isOnTravis() {

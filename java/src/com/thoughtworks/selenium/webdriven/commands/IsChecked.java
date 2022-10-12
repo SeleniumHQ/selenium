@@ -23,6 +23,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class IsChecked extends SeleneseCommand<Boolean> {
+
   private final ElementFinder finder;
 
   public IsChecked(ElementFinder finder) {

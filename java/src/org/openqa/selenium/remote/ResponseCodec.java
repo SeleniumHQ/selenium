@@ -29,7 +29,7 @@ public interface ResponseCodec<T> {
   /**
    * Encodes a response.
    *
-   * @param factory creates a new instance of {@code T}.
+   * @param factory  creates a new instance of {@code T}.
    * @param response the response to encode.
    * @return the encoded response.
    * @throws IllegalArgumentException If the object cannot be encoded.

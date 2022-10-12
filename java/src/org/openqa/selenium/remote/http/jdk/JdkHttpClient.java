@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.remote.http.jdk;
 
+import static java.net.http.HttpClient.Redirect.ALWAYS;
+
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
@@ -33,9 +36,7 @@ import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
@@ -60,9 +61,8 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.net.http.HttpClient.Redirect.ALWAYS;
-
 public class JdkHttpClient implements HttpClient {
+
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
   private final JdkHttpMessages messages;
   private final java.net.http.HttpClient client;
@@ -81,7 +81,8 @@ public class JdkHttpClient implements HttpClient {
     Credentials credentials = config.credentials();
     if (credentials != null) {
       if (!(credentials instanceof UsernameAndPassword)) {
-        throw new IllegalArgumentException("Credentials must be a user name and password: " + credentials);
+        throw new IllegalArgumentException(
+          "Credentials must be a user name and password: " + credentials);
       }
       UsernameAndPassword uap = (UsernameAndPassword) credentials;
       Authenticator authenticator = new Authenticator() {
@@ -129,7 +130,8 @@ public class JdkHttpClient implements HttpClient {
           final StringBuilder builder = new StringBuilder();
 
           @Override
-          public CompletionStage<?> onText(java.net.http.WebSocket webSocket, CharSequence data, boolean last) {
+          public CompletionStage<?> onText(java.net.http.WebSocket webSocket, CharSequence data,
+                                           boolean last) {
             LOG.fine("Text message received. Appending data");
             builder.append(data);
 
@@ -144,7 +146,8 @@ public class JdkHttpClient implements HttpClient {
           }
 
           @Override
-          public CompletionStage<?> onBinary(java.net.http.WebSocket webSocket, ByteBuffer data, boolean last) {
+          public CompletionStage<?> onBinary(java.net.http.WebSocket webSocket, ByteBuffer data,
+                                             boolean last) {
             LOG.fine("Binary data received.");
             byte[] ary = new byte[data.remaining()];
             data.get(ary, 0, ary.length);
@@ -155,7 +158,8 @@ public class JdkHttpClient implements HttpClient {
           }
 
           @Override
-          public CompletionStage<?> onClose(java.net.http.WebSocket webSocket, int statusCode, String reason) {
+          public CompletionStage<?> onClose(java.net.http.WebSocket webSocket, int statusCode,
+                                            String reason) {
             LOG.fine("Closing websocket");
             listener.onClose(statusCode, reason);
             return null;
@@ -211,7 +215,8 @@ public class JdkHttpClient implements HttpClient {
           } catch (java.util.concurrent.TimeoutException e) {
             throw new TimeoutException(e);
           } finally {
-            LOG.fine(String.format("Websocket response to %s read in %sms", message, (System.currentTimeMillis() - start)));
+            LOG.fine(String.format("Websocket response to %s read in %sms", message,
+                                   (System.currentTimeMillis() - start)));
           }
         }
         return this;
@@ -229,13 +234,17 @@ public class JdkHttpClient implements HttpClient {
     URI uri = messages.getRawUri(request);
     if ("http".equalsIgnoreCase(uri.getScheme())) {
       try {
-        uri = new URI("ws", uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
+        uri =
+          new URI("ws", uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(),
+                  uri.getQuery(), uri.getFragment());
       } catch (URISyntaxException e) {
         throw new RuntimeException(e);
       }
     } else if ("https".equalsIgnoreCase(uri.getScheme())) {
       try {
-        uri = new URI("wss", uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(), uri.getFragment());
+        uri =
+          new URI("wss", uri.getUserInfo(), uri.getHost(), uri.getPort(), uri.getPath(),
+                  uri.getQuery(), uri.getFragment());
       } catch (URISyntaxException e) {
         throw new RuntimeException(e);
       }
@@ -261,7 +270,8 @@ public class JdkHttpClient implements HttpClient {
       Thread.currentThread().interrupt();
       throw new RuntimeException(e);
     } finally {
-      LOG.fine(String.format("Ending request %s in %sms", req, (System.currentTimeMillis() - start)));
+      LOG.fine(
+        String.format("Ending request %s in %sms", req, (System.currentTimeMillis() - start)));
     }
 
   }

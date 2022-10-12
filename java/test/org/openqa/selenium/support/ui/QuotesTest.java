@@ -20,11 +20,12 @@ package org.openqa.selenium.support.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.support.ui.Quotes.escape;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class QuotesTest {
+
   @Test
   void shouldConvertAnUnquotedStringIntoOneWithQuotes() {
     assertThat(escape("foo")).isEqualTo("\"foo\"");
@@ -52,6 +53,6 @@ class QuotesTest {
   @Test
   void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
     assertThat(escape(
-        "Bar \"Rock'n'Roll\"")).isEqualTo("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')");
+      "Bar \"Rock'n'Roll\"")).isEqualTo("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')");
   }
 }

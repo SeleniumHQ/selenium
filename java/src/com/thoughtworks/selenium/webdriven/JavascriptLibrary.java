@@ -34,13 +34,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JavascriptLibrary {
 
   static final String PREFIX = "/" + JavascriptLibrary.class.getPackage()
-      .getName().replace(".", "/") + "/";
-  private final ConcurrentHashMap<String, String> scripts = new ConcurrentHashMap<>();
-
+    .getName().replace(".", "/") + "/";
   private static final String injectableSelenium =
-      "/com/thoughtworks/selenium/webdriven/injectableSelenium.js";
+    "/com/thoughtworks/selenium/webdriven/injectableSelenium.js";
   private static final String htmlUtils =
-      "/com/thoughtworks/selenium/webdriven/htmlutils.js";
+    "/com/thoughtworks/selenium/webdriven/htmlutils.js";
+  private final ConcurrentHashMap<String, String> scripts = new ConcurrentHashMap<>();
 
   /**
    * Loads the named Selenium script and returns it wrapped in an anonymous function.
@@ -85,7 +84,7 @@ public class JavascriptLibrary {
     }
 
     throw new UnsupportedOperationException(
-        "The underlying WebDriver instance does not support executing javascript");
+      "The underlying WebDriver instance does not support executing javascript");
   }
 
   private String readScript(String script) {

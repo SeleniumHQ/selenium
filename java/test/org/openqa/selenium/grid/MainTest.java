@@ -24,13 +24,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 class MainTest {
 
-  ByteArrayOutputStream out;
-  ByteArrayOutputStream err;
+  private ByteArrayOutputStream out;
+  private ByteArrayOutputStream err;
 
   @BeforeEach
   public void init() {
@@ -39,11 +38,7 @@ class MainTest {
   }
 
   private PrintStream toPrintStream(ByteArrayOutputStream baos) {
-    try {
-      return new PrintStream(baos, true, StandardCharsets.UTF_8.name());
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
+    return new PrintStream(baos, true, StandardCharsets.UTF_8);
   }
 
   @Test

@@ -17,23 +17,23 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.nio.charset.StandardCharsets.UTF_16LE;
+import static org.openqa.selenium.remote.http.Contents.string;
+
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 
-import static java.nio.charset.StandardCharsets.UTF_16LE;
-import static org.openqa.selenium.remote.http.Contents.string;
-
 class EncodingHandler implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     String text = "<html><title>Character encoding (UTF 16)</title>"
-      + "<body><p id='text'>"
-      + "\u05E9\u05DC\u05D5\u05DD" // "Shalom"
-      + "</p></body></html>";
+                  + "<body><p id='text'>"
+                  + "\u05E9\u05DC\u05D5\u05DD" // "Shalom"
+                  + "</p></body></html>";
 
     // Data should be transferred using UTF-8. Pick a different encoding
     return new HttpResponse()

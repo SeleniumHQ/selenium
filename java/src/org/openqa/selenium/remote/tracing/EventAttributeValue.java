@@ -88,13 +88,21 @@ public class EventAttributeValue {
     return booleanValue;
   }
 
-  public String[] getStringArrayValue() { return Arrays.copyOf(stringArrayValue, stringArrayValue.length); }
+  public String[] getStringArrayValue() {
+    return Arrays.copyOf(stringArrayValue, stringArrayValue.length);
+  }
 
-  public long[] getLongArrayValue() { return Arrays.copyOf(longArrayValue, longArrayValue.length); }
+  public long[] getLongArrayValue() {
+    return Arrays.copyOf(longArrayValue, longArrayValue.length);
+  }
 
-  public double[] getDoubleArrayValue() { return Arrays.copyOf(doubleArrayValue, doubleArrayValue.length); }
+  public double[] getDoubleArrayValue() {
+    return Arrays.copyOf(doubleArrayValue, doubleArrayValue.length);
+  }
 
-  public boolean[] getBooleanArrayValue() { return Arrays.copyOf(booleanArrayValue, booleanArrayValue.length); }
+  public boolean[] getBooleanArrayValue() {
+    return Arrays.copyOf(booleanArrayValue, booleanArrayValue.length);
+  }
 
   public Type getAttributeType() {
     return type;

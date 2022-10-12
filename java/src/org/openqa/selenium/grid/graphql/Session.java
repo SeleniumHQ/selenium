@@ -31,8 +31,8 @@ import java.time.format.DateTimeFormatter;
 public class Session {
 
   private static final DateTimeFormatter DATE_TIME_FORMATTER =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withZone(ZoneId.systemDefault());
-
+    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withZone(ZoneId.systemDefault());
+  private static final Json JSON = new Json();
   private final String id;
   private final Capabilities capabilities;
   private final Instant startTime;
@@ -40,7 +40,6 @@ public class Session {
   private final String nodeId;
   private final URI nodeUri;
   private final Slot slot;
-  private static final Json JSON = new Json();
 
   public Session(String id, Capabilities capabilities, Instant startTime, URI uri, String nodeId,
                  URI nodeUri, Slot slot) {
@@ -84,9 +83,9 @@ public class Session {
 
   public org.openqa.selenium.grid.graphql.Slot getSlot() {
     return new org.openqa.selenium.grid.graphql.Slot(
-        slot.getId().getSlotId(),
-        slot.getStereotype(),
-        slot.getLastStarted());
+      slot.getId().getSlotId(),
+      slot.getStereotype(),
+      slot.getLastStarted());
   }
 
 }

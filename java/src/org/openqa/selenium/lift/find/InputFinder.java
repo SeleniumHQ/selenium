@@ -26,16 +26,6 @@ import static org.openqa.selenium.lift.Matchers.value;
  */
 public class InputFinder extends HtmlTagFinder {
 
-  @Override
-  protected String tagDescription() {
-    return "input field";
-  }
-
-  @Override
-  protected String tagName() {
-    return "input";
-  }
-
   public static HtmlTagFinder textbox() {
     return new InputFinder().with(attribute("type", equalTo("text")));
   }
@@ -62,5 +52,15 @@ public class InputFinder extends HtmlTagFinder {
 
   public static HtmlTagFinder submitButton(String label) {
     return submitButton().with(value(label));
+  }
+
+  @Override
+  protected String tagDescription() {
+    return "input field";
+  }
+
+  @Override
+  protected String tagName() {
+    return "input";
   }
 }

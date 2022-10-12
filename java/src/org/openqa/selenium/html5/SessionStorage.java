@@ -24,4 +24,5 @@ package org.openqa.selenium.html5;
  * it will be accessible to any page from the same site opened in that window.
  */
 public interface SessionStorage extends Storage {
+
 }

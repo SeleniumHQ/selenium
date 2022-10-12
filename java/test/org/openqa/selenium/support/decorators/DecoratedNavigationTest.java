@@ -23,8 +23,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 
 import java.net.MalformedURLException;
@@ -33,22 +33,6 @@ import java.util.function.Consumer;
 
 @Tag("UnitTests")
 class DecoratedNavigationTest {
-
-  private static class Fixture {
-
-    WebDriver originalDriver;
-    WebDriver decoratedDriver;
-    WebDriver.Navigation original;
-    WebDriver.Navigation decorated;
-
-    public Fixture() {
-      original = mock(WebDriver.Navigation.class);
-      originalDriver = mock(WebDriver.class);
-      when(originalDriver.navigate()).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
-      decorated = decoratedDriver.navigate();
-    }
-  }
 
   private void verifyFunction(Consumer<WebDriver.Navigation> f) {
     Fixture fixture = new Fixture();
@@ -81,5 +65,21 @@ class DecoratedNavigationTest {
   @Test
   void refresh() {
     verifyFunction(WebDriver.Navigation::refresh);
+  }
+
+  private static class Fixture {
+
+    WebDriver originalDriver;
+    WebDriver decoratedDriver;
+    WebDriver.Navigation original;
+    WebDriver.Navigation decorated;
+
+    public Fixture() {
+      original = mock(WebDriver.Navigation.class);
+      originalDriver = mock(WebDriver.class);
+      when(originalDriver.navigate()).thenReturn(original);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
+      decorated = decoratedDriver.navigate();
+    }
   }
 }

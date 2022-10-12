@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.interactions;
 
+import static org.openqa.selenium.internal.Require.nonNegative;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.internal.Require;
@@ -26,8 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.openqa.selenium.internal.Require.nonNegative;
 
 /**
  * Models a <a href="https://www.w3.org/TR/webdriver/#dfn-pointer-input-source">pointer input
@@ -41,6 +41,10 @@ public class PointerInput implements InputSource, Encodable {
   public PointerInput(Kind kind, String name) {
     this.kind = Require.nonNull("Kind of pointer device", kind);
     this.name = Optional.ofNullable(name).orElse(UUID.randomUUID().toString());
+  }
+
+  public static PointerEventProperties eventProperties() {
+    return new PointerEventProperties();
   }
 
   @Override
@@ -71,7 +75,8 @@ public class PointerInput implements InputSource, Encodable {
     return new Move(this, duration, origin, x, y);
   }
 
-  public Interaction createPointerMove(Duration duration, Origin origin, int x, int y, PointerEventProperties eventProperties) {
+  public Interaction createPointerMove(Duration duration, Origin origin, int x, int y,
+                                       PointerEventProperties eventProperties) {
     return new Move(this, duration, origin, x, y, eventProperties);
   }
 
@@ -107,6 +112,43 @@ public class PointerInput implements InputSource, Encodable {
     return new PointerPress(this, PointerPress.Direction.UP, button, eventProperties);
   }
 
+  public enum Kind {
+    MOUSE("mouse"),
+    PEN("pen"),
+    TOUCH("touch"),
+    ;
+
+    private final String wireName;
+
+
+    Kind(String pointerSubType) {
+      this.wireName = pointerSubType;
+    }
+
+    public String getWireName() {
+      return wireName;
+    }
+  }
+
+  public enum MouseButton {
+    LEFT(0),
+    MIDDLE(1),
+    RIGHT(2),
+    BACK(3),
+    FORWARD(4),
+    ;
+
+    private final int button;
+
+    MouseButton(int button) {
+      this.button = button;
+    }
+
+    public int asArg() {
+      return button;
+    }
+  }
+
   private static class PointerPress extends Interaction implements Encodable {
 
     private final Direction direction;
@@ -118,7 +160,7 @@ public class PointerInput implements InputSource, Encodable {
 
       if (button < 0) {
         throw new IllegalStateException(
-            String.format("Button must be greater than or equal to 0: %d", button));
+          String.format("Button must be greater than or equal to 0: %d", button));
       }
 
       this.direction = Require.nonNull("Direction of move", direction);
@@ -130,11 +172,13 @@ public class PointerInput implements InputSource, Encodable {
      * @deprecated always use the constructor with the button
      */
     @Deprecated
-    public PointerPress(InputSource source, Direction direction, PointerEventProperties eventProperties) {
+    public PointerPress(InputSource source, Direction direction,
+                        PointerEventProperties eventProperties) {
       this(source, direction, 0, eventProperties);
     }
 
-    public PointerPress(InputSource source, Direction direction, int button, PointerEventProperties eventProperties) {
+    public PointerPress(InputSource source, Direction direction, int button,
+                        PointerEventProperties eventProperties) {
       super(source);
       this.button = button;
       this.eventProperties = Require.nonNull("pointer event properties", eventProperties);
@@ -176,11 +220,11 @@ public class PointerInput implements InputSource, Encodable {
     private final PointerEventProperties eventProperties;
 
     protected Move(
-        InputSource source,
-        Duration duration,
-        Origin origin,
-        int x,
-        int y,
+      InputSource source,
+      Duration duration,
+      Origin origin,
+      int x,
+      int y,
       PointerEventProperties eventProperties) {
       super(source);
 
@@ -215,52 +259,9 @@ public class PointerInput implements InputSource, Encodable {
     }
   }
 
-  public enum Kind {
-    MOUSE("mouse"),
-    PEN("pen"),
-    TOUCH("touch"),;
-
-    private final String wireName;
-
-
-    Kind(String pointerSubType) {
-      this.wireName = pointerSubType;
-    }
-
-    public String getWireName() {
-      return wireName;
-    }
-  }
-
-  public enum MouseButton {
-    LEFT(0),
-    MIDDLE(1),
-    RIGHT(2),
-    BACK(3),
-    FORWARD(4),
-    ;
-
-    private final int button;
-
-    MouseButton(int button) {
-      this.button = button;
-    }
-
-    public int asArg() {
-      return button;
-    }
-  }
-
   public static final class Origin {
-    private final Object originObject;
 
-    public Object asArg() {
-      Object arg = originObject;
-      while (arg instanceof WrapsElement) {
-        arg = ((WrapsElement) arg).getWrappedElement();
-      }
-      return arg;
-    }
+    private final Object originObject;
 
     private Origin(Object originObject) {
       this.originObject = originObject;
@@ -277,13 +278,18 @@ public class PointerInput implements InputSource, Encodable {
     public static Origin fromElement(WebElement element) {
       return new Origin(Require.nonNull("Element", element));
     }
-  }
 
-  public static PointerEventProperties eventProperties() {
-    return new PointerEventProperties();
+    public Object asArg() {
+      Object arg = originObject;
+      while (arg instanceof WrapsElement) {
+        arg = ((WrapsElement) arg).getWrappedElement();
+      }
+      return arg;
+    }
   }
 
   public static class PointerEventProperties implements Encodable {
+
     private Float width = null;
     private Float height = null;
     private Float pressure = null;

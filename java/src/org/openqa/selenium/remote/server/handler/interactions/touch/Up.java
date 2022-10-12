@@ -42,12 +42,14 @@ public class Up extends WebElementHandler<Void> {
     try {
       x = ((Number) allParameters.get(X)).intValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) x touch up position value passed: " + allParameters.get(X), ex);
+      throw new WebDriverException(
+        "Illegal (non-numeric) x touch up position value passed: " + allParameters.get(X), ex);
     }
     try {
       y = ((Number) allParameters.get(Y)).intValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) y touch up position value passed: " + allParameters.get(Y), ex);
+      throw new WebDriverException(
+        "Illegal (non-numeric) y touch up position value passed: " + allParameters.get(Y), ex);
     }
   }
 

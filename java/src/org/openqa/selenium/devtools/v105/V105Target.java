@@ -18,7 +18,8 @@
 package org.openqa.selenium.devtools.v105;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+
+
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.ConverterFunctions;
 import org.openqa.selenium.devtools.Event;
@@ -55,7 +56,7 @@ public class V105Target implements org.openqa.selenium.devtools.idealized.target
 
     return new Command<>(
       Target.getTargets().getMethod(),
-      ImmutableMap.of(),
+     Map.of(),
       input -> {
         List<TargetInfo> infos = mapper.apply(input);
         return infos.stream()
@@ -80,7 +81,7 @@ public class V105Target implements org.openqa.selenium.devtools.idealized.target
 
     return new Command<>(
       "Target.attachToTarget",
-      ImmutableMap.of(
+     Map.of(
         "targetId",
         new org.openqa.selenium.devtools.v105.target.model.TargetID(targetId.toString()),
         "flatten", true),

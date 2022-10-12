@@ -17,6 +17,17 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.stream.Collectors.toList;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
+
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -40,25 +51,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static java.util.stream.Collectors.toList;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
-
 class GridStatusHandler implements HttpHandler {
 
   private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool(
-      r -> {
-        Thread thread = new Thread(r, "Grid status executor");
-        thread.setDaemon(true);
-        return thread;
-      });
+    r -> {
+      Thread thread = new Thread(r, "Grid status executor");
+      thread.setDaemon(true);
+      return thread;
+    });
 
 
   private final Tracer tracer;
@@ -91,7 +91,7 @@ class GridStatusHandler implements HttpHandler {
                          EventAttribute.setValue("Error or timeout while getting Distributor "
                                                  + "status: " + e.getMessage()));
         HttpResponse response = new HttpResponse().setContent(asJson(
-          ImmutableMap.of("value", ImmutableMap.of(
+          Map.of("value", Map.of(
             "ready", false,
             "message", "Unable to read distributor status."))));
 
@@ -109,7 +109,7 @@ class GridStatusHandler implements HttpHandler {
                                                  + e.getMessage()));
 
         HttpResponse response = new HttpResponse().setContent(asJson(
-          ImmutableMap.of("value", ImmutableMap.of(
+          Map.of("value", Map.of(
             "ready", false,
             "message", "Reading distributor status was interrupted."))));
 
@@ -145,7 +145,7 @@ class GridStatusHandler implements HttpHandler {
       value.put("nodes", nodeResults);
 
       HttpResponse res = new HttpResponse()
-        .setContent(asJson(ImmutableMap.of("value", value.build())));
+        .setContent(asJson(Map.of("value", value.build())));
       HTTP_RESPONSE.accept(span, res);
       HTTP_RESPONSE_EVENT.accept(attributeMap, res);
       attributeMap.put("grid.status", EventAttribute.setValue(ready));

@@ -142,7 +142,8 @@ class NetworkInterceptorTest {
     try (NetworkInterceptor interceptor = new NetworkInterceptor(
       driver,
       Route.matching(req -> true).to(
-        () -> req -> new HttpResponse().setStatus(HTTP_NOT_FOUND).setContent(Contents.utf8String("Oh noes!"))))) {
+        () -> req -> new HttpResponse().setStatus(HTTP_NOT_FOUND)
+          .setContent(Contents.utf8String("Oh noes!"))))) {
       driver.get(appServer.whereIs("/cheese"));
 
       String text = driver.findElement(By.tagName("body")).getText();

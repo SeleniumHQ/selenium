@@ -131,12 +131,12 @@ public abstract class AbstractWebDriverEventListener implements WebDriverEventLi
 
   @Override
   public void afterSwitchToWindow(String windowName, WebDriver driver) {
-      // Do nothing
+    // Do nothing
   }
 
   @Override
   public void beforeSwitchToWindow(String windowName, WebDriver driver) {
-      // Do nothing
+    // Do nothing
   }
 
   @Override

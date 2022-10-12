@@ -42,12 +42,16 @@ public class BuildInfo {
     return properties;
   }
 
-  /** @return The embedded release label or "unknown". */
+  /**
+   * @return The embedded release label or "unknown".
+   */
   public String getReleaseLabel() {
     return read("Selenium-Version");
   }
 
-  /** @return The embedded build revision or "unknown". */
+  /**
+   * @return The embedded build revision or "unknown".
+   */
   public String getBuildRevision() {
     return read("Build-Revision");
   }
@@ -55,7 +59,7 @@ public class BuildInfo {
   @Override
   public String toString() {
     return String.format("Build info: version: '%s', revision: '%s'",
-        getReleaseLabel(), getBuildRevision());
+                         getReleaseLabel(), getBuildRevision());
   }
 
   private String read(String propertyName) {

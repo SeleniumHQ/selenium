@@ -21,6 +21,7 @@ import org.assertj.core.api.AbstractAssert;
 import org.openqa.selenium.internal.Either;
 
 public class EitherAssert<A, B> extends AbstractAssert<EitherAssert<A, B>, Either<A, B>> {
+
   public EitherAssert(Either<A, B> actual) {
     super(actual, EitherAssert.class);
   }

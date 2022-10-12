@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.devtools;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
@@ -50,11 +55,6 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 public class Connection implements Closeable {
 
   private static final Logger LOG = Logger.getLogger(Connection.class.getName());
@@ -66,7 +66,9 @@ public class Connection implements Closeable {
   });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
   private final WebSocket socket;
-  private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks = new ConcurrentHashMap<>();
+  private final Map<Long, Consumer<Either<Throwable, JsonInput>>>
+    methodCallbacks =
+    new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
 
@@ -75,31 +77,6 @@ public class Connection implements Closeable {
     Require.nonNull("URL to connect to", url);
 
     socket = client.openSocket(new HttpRequest(GET, url), new Listener());
-  }
-
-  private static class NamedConsumer<X> implements Consumer<X> {
-
-    private final String name;
-    private final Consumer<X> delegate;
-
-    private NamedConsumer(String name, Consumer<X> delegate) {
-      this.name = name;
-      this.delegate = delegate;
-    }
-
-    public static <X> Consumer<X> of(String name, Consumer<X> delegate) {
-      return new NamedConsumer<>(name, delegate);
-    }
-
-    @Override
-    public void accept(X x) {
-      delegate.accept(x);
-    }
-
-    @Override
-    public String toString() {
-      return "Consumer for " + name;
-    }
   }
 
   public <X> CompletableFuture<X> send(SessionID sessionId, Command<X> command) {
@@ -113,7 +90,8 @@ public class Connection implements Closeable {
             X value = command.getMapper().apply(inputOrException.right());
             result.complete(value);
           } catch (Throwable e) {
-            LOG.log(Level.WARNING, String.format("Unable to map result for %s", command.getMethod()), e);
+            LOG.log(Level.WARNING,
+                    String.format("Unable to map result for %s", command.getMethod()), e);
             result.completeExceptionally(e);
           }
         } else {
@@ -137,14 +115,14 @@ public class Connection implements Closeable {
     LOG.log(getDebugLogLevel(), () -> String.format("-> %s", json));
     socket.sendText(json);
 
-    if (!command.getSendsResponse() ) {
+    if (!command.getSendsResponse()) {
       result.complete(null);
     }
 
     return result;
   }
 
-  public <X> X sendAndWait(SessionID sessionId, Command<X> command, Duration timeout) {
+  <X> X sendAndWait(SessionID sessionId, Command<X> command, Duration timeout) {
     try {
       CompletableFuture<X> future = send(sessionId, command);
       return future.get(timeout.toMillis(), MILLISECONDS);
@@ -175,7 +153,7 @@ public class Connection implements Closeable {
     }
   }
 
-  public void clearListeners() {
+  void clearListeners() {
     Lock lock = callbacksLock.writeLock();
     lock.lock();
     try {
@@ -190,21 +168,6 @@ public class Connection implements Closeable {
     socket.close();
   }
 
-  private class Listener implements WebSocket.Listener {
-
-    @Override
-    public void onText(CharSequence data) {
-      EXECUTOR.execute(() -> {
-        try {
-          handle(data);
-        } catch (Throwable t) {
-          LOG.log(Level.WARNING, "Unable to process: " + data, t);
-          throw new DevToolsException(t);
-        }
-      });
-    }
-  }
-
   private void handle(CharSequence data) {
     // It's kind of gross to decode the data twice, but this lets us get started on something
     // that feels nice to users.
@@ -216,7 +179,9 @@ public class Connection implements Closeable {
     Map<String, Object> raw = JSON.toType(asString, MAP_TYPE);
     if (raw.get("id") instanceof Number
         && (raw.get("result") != null || raw.get("error") != null)) {
-      Consumer<Either<Throwable, JsonInput>> consumer = methodCallbacks.remove(((Number) raw.get("id")).longValue());
+      Consumer<Either<Throwable, JsonInput>>
+        consumer =
+        methodCallbacks.remove(((Number) raw.get("id")).longValue());
       if (consumer == null) {
         return;
       }
@@ -244,7 +209,8 @@ public class Connection implements Closeable {
     } else if (raw.get("method") instanceof String && raw.get("params") instanceof Map) {
       LOG.log(
         getDebugLogLevel(),
-        String.format("Method %s called with %d callbacks available", raw.get("method"), eventCallbacks.keySet().size()));
+        String.format("Method %s called with %d callbacks available", raw.get("method"),
+                      eventCallbacks.keySet().size()));
       Lock lock = callbacksLock.readLock();
       lock.lock();
       try {
@@ -261,14 +227,10 @@ public class Connection implements Closeable {
               Object value = null;
               input.beginObject();
               while (input.hasNext()) {
-                switch (input.nextName()) {
-                  case "params":
-                    value = event.getMapper().apply(input);
-                    break;
-
-                  default:
-                    input.skipValue();
-                    break;
+                if ("params".equals(input.nextName())) {
+                  value = event.getMapper().apply(input);
+                } else {
+                  input.skipValue();
                 }
               }
               input.endObject();
@@ -278,13 +240,14 @@ public class Connection implements Closeable {
                 return;
               }
 
-              final Object finalValue = value;
+              Object finalValue = value;
 
               for (Consumer<?> action : eventCallbacks.get(event)) {
-                @SuppressWarnings("unchecked") Consumer<Object> obj = (Consumer<Object>) action;
+                Consumer<Object> obj = (Consumer<Object>) action;
                 LOG.log(
                   getDebugLogLevel(),
-                  String.format("Calling callback for %s using %s being passed %s", event, obj, finalValue));
+                  String.format("Calling callback for %s using %s being passed %s", event, obj,
+                                finalValue));
                 obj.accept(finalValue);
               }
             }
@@ -294,6 +257,46 @@ public class Connection implements Closeable {
       }
     } else {
       LOG.warning("Unhandled type: " + data);
+    }
+  }
+
+  private static class NamedConsumer<X> implements Consumer<X> {
+
+    private final String name;
+    private final Consumer<X> delegate;
+
+    private NamedConsumer(String name, Consumer<X> delegate) {
+      this.name = name;
+      this.delegate = delegate;
+    }
+
+    public static <X> Consumer<X> of(String name, Consumer<X> delegate) {
+      return new NamedConsumer<>(name, delegate);
+    }
+
+    @Override
+    public void accept(X x) {
+      delegate.accept(x);
+    }
+
+    @Override
+    public String toString() {
+      return "Consumer for " + name;
+    }
+  }
+
+  private class Listener implements WebSocket.Listener {
+
+    @Override
+    public void onText(CharSequence data) {
+      EXECUTOR.execute(() -> {
+        try {
+          handle(data);
+        } catch (Throwable t) {
+          LOG.log(Level.WARNING, "Unable to process: " + data, t);
+          throw new DevToolsException(t);
+        }
+      });
     }
   }
 }

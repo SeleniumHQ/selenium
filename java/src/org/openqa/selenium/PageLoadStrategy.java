@@ -19,20 +19,14 @@ package org.openqa.selenium;
 
 public enum PageLoadStrategy {
 
-  NONE ("none"),
-  EAGER ("eager"),
-  NORMAL ("normal")
-  ;
+  NONE("none"),
+  EAGER("eager"),
+  NORMAL("normal");
 
-  private String text;
+  private final String text;
 
   PageLoadStrategy(String text) {
     this.text = text;
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(text);
   }
 
   public static PageLoadStrategy fromString(String text) {
@@ -44,5 +38,10 @@ public enum PageLoadStrategy {
       }
     }
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(text);
   }
 }

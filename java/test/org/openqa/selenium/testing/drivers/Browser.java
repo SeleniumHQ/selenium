@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
@@ -30,12 +32,9 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.safari.SafariDriverInfo;
 import org.openqa.selenium.safari.SafariOptions;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 public enum Browser {
   ALL(new ImmutableCapabilities(), "any", false),
@@ -98,7 +97,9 @@ public enum Browser {
     }
   },
   HTMLUNIT(
-    new ImmutableCapabilities(BROWSER_NAME, org.openqa.selenium.remote.Browser.HTMLUNIT.browserName()), "HtmlUnit", false),
+    new ImmutableCapabilities(BROWSER_NAME,
+                              org.openqa.selenium.remote.Browser.HTMLUNIT.browserName()),
+    "HtmlUnit", false),
   IE(new InternetExplorerOptions(), new InternetExplorerDriverInfo().getDisplayName(), false) {
     @Override
     public Capabilities getCapabilities() {
@@ -162,7 +163,8 @@ public enum Browser {
     try {
       return Browser.valueOf(browserName.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new RuntimeException(String.format("Cannot determine driver from name %s", browserName), e);
+      throw new RuntimeException(String.format("Cannot determine driver from name %s", browserName),
+                                 e);
     }
   }
 

@@ -17,9 +17,12 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.collect.ImmutableMap;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+
+
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
@@ -28,13 +31,11 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Set;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-
 public class CheckContentTypeHeader implements Filter {
 
   private static final HttpResponse NO_HEADER = new HttpResponse()
     .setStatus(HTTP_INTERNAL_ERROR)
-    .setContent(Contents.asJson(ImmutableMap.of("value", ImmutableMap.of(
+    .setContent(Contents.asJson(Map.of("value", Map.of(
       "error", "unknown error",
       "message", "Content-Type header is missing",
       "stacktrace", ""))));
@@ -42,7 +43,8 @@ public class CheckContentTypeHeader implements Filter {
   private final Set<String> skipChecksOn;
 
   public CheckContentTypeHeader(Set<String> skipChecksOn) {
-    this.skipChecksOn = ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
+    this.skipChecksOn =
+      ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
   }
 
   @Override
@@ -74,7 +76,7 @@ public class CheckContentTypeHeader implements Filter {
   private HttpResponse badType(String type) {
     return new HttpResponse()
       .setStatus(HTTP_INTERNAL_ERROR)
-      .setContent(Contents.asJson(ImmutableMap.of("value", ImmutableMap.of(
+      .setContent(Contents.asJson(Map.of("value", Map.of(
         "error", "unknown error",
         "message", "Content-Type header does not indicate utf-8 encoded json: " + type,
         "stacktrace", ""))));

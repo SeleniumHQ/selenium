@@ -19,15 +19,15 @@ package org.openqa.selenium.interactions;
 
 import static org.openqa.selenium.internal.Require.nonNegative;
 
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsElement;
+import org.openqa.selenium.internal.Require;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsElement;
-import org.openqa.selenium.internal.Require;
 
 /**
  * Models a <a href="https://www.w3.org/TR/webdriver/#dfn-wheel-input-source">wheel input source</a>.
@@ -50,7 +50,8 @@ public class WheelInput implements InputSource, Encodable {
     return SourceType.WHEEL;
   }
 
-  public Interaction createScroll(int x, int y, int deltaX, int deltaY, Duration duration, ScrollOrigin origin) {
+  public Interaction createScroll(int x, int y, int deltaX, int deltaY, Duration duration,
+                                  ScrollOrigin origin) {
     return new ScrollInteraction(this, x, y, deltaX, deltaY, duration, origin);
   }
 
@@ -108,17 +109,10 @@ public class WheelInput implements InputSource, Encodable {
   }
 
   public static final class ScrollOrigin {
+
     private final Object originObject;
     private int xOffset = 0;
     private int yOffset = 0;
-
-    public Object asArg() {
-      Object arg = originObject;
-      while (arg instanceof WrapsElement) {
-        arg = ((WrapsElement) arg).getWrappedElement();
-      }
-      return arg;
-    }
 
     private ScrollOrigin(Object originObject, int xOffset, int yOffset) {
       this.originObject = originObject;
@@ -132,8 +126,8 @@ public class WheelInput implements InputSource, Encodable {
 
     public static ScrollOrigin fromViewport(int xOffset, int yOffset) {
       return new ScrollOrigin("viewport",
-        Require.nonNull("xOffset", xOffset),
-        Require.nonNull("yOffset", yOffset));
+                              Require.nonNull("xOffset", xOffset),
+                              Require.nonNull("yOffset", yOffset));
     }
 
     public static ScrollOrigin fromElement(WebElement element) {
@@ -142,8 +136,16 @@ public class WheelInput implements InputSource, Encodable {
 
     public static ScrollOrigin fromElement(WebElement element, int xOffset, int yOffset) {
       return new ScrollOrigin(Require.nonNull("Element", element),
-        Require.nonNull("xOffset", xOffset),
-        Require.nonNull("yOffset", yOffset));
+                              Require.nonNull("xOffset", xOffset),
+                              Require.nonNull("yOffset", yOffset));
+    }
+
+    public Object asArg() {
+      Object arg = originObject;
+      while (arg instanceof WrapsElement) {
+        arg = ((WrapsElement) arg).getWrappedElement();
+      }
+      return arg;
     }
 
     public int getxOffset() {

@@ -18,16 +18,18 @@
 package org.openqa.selenium.grid.server;
 
 import com.google.common.io.ByteStreams;
+
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class JeeInterop {
 
@@ -37,7 +39,8 @@ public class JeeInterop {
 
   public static void copyResponse(HttpResponse from, HttpServletResponse to) {
     to.setStatus(from.getStatus());
-    from.getHeaderNames().forEach(name -> from.getHeaders(name).forEach(value -> to.addHeader(name, value)));
+    from.getHeaderNames()
+      .forEach(name -> from.getHeaders(name).forEach(value -> to.addHeader(name, value)));
 
     try (InputStream in = from.getContent().get();
          ServletOutputStream out = to.getOutputStream()) {
@@ -51,7 +54,8 @@ public class JeeInterop {
     return new ServletRequestWrappingHttpRequest(source);
   }
 
-  public static void execute(HttpHandler handler, HttpServletRequest request, HttpServletResponse response) {
+  public static void execute(HttpHandler handler, HttpServletRequest request,
+                             HttpServletResponse response) {
     copyResponse(handler.execute(toHttpRequest(request)), response);
   }
 }

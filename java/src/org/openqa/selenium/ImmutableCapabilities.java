@@ -17,13 +17,13 @@
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.SharedCapabilitiesMethods.setCapability;
+
 import org.openqa.selenium.internal.Require;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
-
-import static org.openqa.selenium.SharedCapabilitiesMethods.setCapability;
 
 public class ImmutableCapabilities implements Capabilities {
 
@@ -80,10 +80,10 @@ public class ImmutableCapabilities implements Capabilities {
   }
 
   public ImmutableCapabilities(
-      String k1, Object v1,
-      String k2, Object v2,
-      String k3, Object v3,
-      String k4, Object v4) {
+    String k1, Object v1,
+    String k2, Object v2,
+    String k3, Object v3,
+    String k4, Object v4) {
     Require.nonNull("First capability", k1);
     Require.nonNull("First value", v1);
     Require.nonNull("Second capability", k2);
@@ -105,11 +105,11 @@ public class ImmutableCapabilities implements Capabilities {
   }
 
   public ImmutableCapabilities(
-      String k1, Object v1,
-      String k2, Object v2,
-      String k3, Object v3,
-      String k4, Object v4,
-      String k5, Object v5) {
+    String k1, Object v1,
+    String k2, Object v2,
+    String k3, Object v3,
+    String k4, Object v4,
+    String k5, Object v5) {
     Require.nonNull("First capability", k1);
     Require.nonNull("First value", v1);
     Require.nonNull("Second capability", k2);
@@ -165,6 +165,16 @@ public class ImmutableCapabilities implements Capabilities {
     this.hashCode = SharedCapabilitiesMethods.hashCode(this);
   }
 
+  public static ImmutableCapabilities copyOf(Capabilities capabilities) {
+    Require.nonNull("Capabilities", capabilities);
+
+    if (capabilities instanceof ImmutableCapabilities) {
+      return (ImmutableCapabilities) capabilities;
+    }
+
+    return new ImmutableCapabilities(capabilities);
+  }
+
   @Override
   public Object getCapability(String capabilityName) {
     Require.nonNull("Capability name", capabilityName);
@@ -189,20 +199,9 @@ public class ImmutableCapabilities implements Capabilities {
     return SharedCapabilitiesMethods.equals(this, (Capabilities) o);
   }
 
-
   @Override
   public String toString() {
     return SharedCapabilitiesMethods.toString(this);
-  }
-
-  public static ImmutableCapabilities copyOf(Capabilities capabilities) {
-    Require.nonNull("Capabilities", capabilities);
-
-    if (capabilities instanceof ImmutableCapabilities) {
-      return (ImmutableCapabilities) capabilities;
-    }
-
-    return new ImmutableCapabilities(capabilities);
   }
 
 }

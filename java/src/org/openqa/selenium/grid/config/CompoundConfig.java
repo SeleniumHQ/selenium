@@ -17,18 +17,18 @@
 
 package org.openqa.selenium.grid.config;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
+import static java.util.Comparator.naturalOrder;
+
 import com.google.common.collect.ImmutableList;
+
+import org.openqa.selenium.internal.Require;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
-import static java.util.Comparator.naturalOrder;
-
-import org.openqa.selenium.internal.Require;
 
 public class CompoundConfig implements Config {
 

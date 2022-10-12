@@ -26,6 +26,7 @@ public interface HealthCheck {
   Result check();
 
   class Result {
+
     private final Availability availability;
     private final String message;
 

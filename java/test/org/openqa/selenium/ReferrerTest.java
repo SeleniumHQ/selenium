@@ -17,10 +17,21 @@
 
 package org.openqa.selenium;
 
+import static com.google.common.net.HttpHeaders.REFERER;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.build.InProject.locate;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
+import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import com.google.common.net.HostAndPort;
+
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.environment.webserver.AppServer;
@@ -34,7 +45,6 @@ import org.openqa.selenium.testing.SeleniumExtension;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -43,16 +53,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
-
-import static com.google.common.net.HttpHeaders.REFERER;
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.build.InProject.locate;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
-import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Safely.safelyCall;
 
 /**
  * Tests that "Referer" headers are generated as expected under various conditions.
@@ -80,12 +80,11 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
  */
 class ReferrerTest {
 
-  @RegisterExtension
-  static SeleniumExtension seleniumExtension = new SeleniumExtension();
-
   private static final String PAGE_1 = "/page1.html";
   private static final String PAGE_2 = "/page2.html";
   private static final String PAGE_3 = "/page3.html";
+  @RegisterExtension
+  static SeleniumExtension seleniumExtension = new SeleniumExtension();
   private static String page1;
   private static String page2;
   private static String page3;
@@ -98,6 +97,10 @@ class ReferrerTest {
     page1 = new String(Files.readAllBytes(locate("common/src/web/proxy" + PAGE_1)));
     page2 = new String(Files.readAllBytes(locate("common/src/web/proxy" + PAGE_2)));
     page3 = new String(Files.readAllBytes(locate("common/src/web/proxy/page3.html")));
+  }
+
+  private static String encode(String url) {
+    return URLEncoder.encode(url, UTF_8);
   }
 
   @BeforeEach
@@ -161,16 +164,8 @@ class ReferrerTest {
         new ExpectedRequest(PAGE_3, page2Url));
   }
 
-  private static String encode(String url) {
-    try {
-      return URLEncoder.encode(url, UTF_8.name());
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException("UTF-8 should always be supported!", e);
-    }
-  }
-
   private void performNavigation(WebDriver driver, String firstUrl) {
-    WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(5));
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
 
     driver.get(firstUrl);
     wait.until(titleIs("Page 1"));
@@ -189,14 +184,15 @@ class ReferrerTest {
   }
 
   private static class ExpectedRequest {
+
     private final String uri;
     private final String referer;
 
-    public ExpectedRequest(HttpRequest request) {
+    ExpectedRequest(HttpRequest request) {
       this(request.getUri(), request.getHeader(REFERER));
     }
 
-    public ExpectedRequest(String uri, String referer) {
+    ExpectedRequest(String uri, String referer) {
       this.uri = uri;
       this.referer = referer;
     }
@@ -204,9 +200,9 @@ class ReferrerTest {
     @Override
     public String toString() {
       return "ExpectedRequest{" +
-        "uri='" + uri + '\'' +
-        ", referer='" + referer + '\'' +
-        '}';
+             "uri='" + uri + '\'' +
+             ", referer='" + referer + '\'' +
+             '}';
     }
 
     @Override
@@ -215,8 +211,8 @@ class ReferrerTest {
         return false;
       }
       ExpectedRequest that = (ExpectedRequest) o;
-      return this.uri.equals(that.uri) &&
-        Objects.equals(this.referer, that.referer);
+      return uri.equals(that.uri) &&
+             Objects.equals(referer, that.referer);
     }
 
     @Override
@@ -254,16 +250,17 @@ class ReferrerTest {
         .setContent(Contents.utf8String(responseHtml));
     }
 
-    public List<ExpectedRequest> getRequests() {
+    List<ExpectedRequest> getRequests() {
       return requests.stream().collect(Collectors.toList());
     }
   }
 
   private static class TestServer {
+
     private final AppServer server;
     private final RecordingHandler handler = new RecordingHandler();
 
-    public TestServer() {
+    TestServer() {
       server = new NettyAppServer(handler);
       server.start();
     }
@@ -276,7 +273,7 @@ class ReferrerTest {
       server.stop();
     }
 
-    public List<ExpectedRequest> getRequests() {
+    List<ExpectedRequest> getRequests() {
       return handler.getRequests();
     }
 
@@ -287,11 +284,12 @@ class ReferrerTest {
   }
 
   private static class ProxyServer {
+
     private final AppServer server;
     private final RecordingHandler handler = new RecordingHandler();
     private String pacFileContents;
 
-    public ProxyServer() {
+    ProxyServer() {
       server = new NettyAppServer(
         req -> {
           if (pacFileContents != null && req.getUri().endsWith("/pac.js")) {
@@ -305,7 +303,7 @@ class ReferrerTest {
       server.start();
     }
 
-    public void setPacFileContents(String pacFileContents) {
+    void setPacFileContents(String pacFileContents) {
       this.pacFileContents = pacFileContents;
     }
 

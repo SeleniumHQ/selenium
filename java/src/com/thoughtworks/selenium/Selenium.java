@@ -159,30 +159,41 @@ package com.thoughtworks.selenium;
  * are backslash-escaped. When providing a pattern, the optional matching syntax (i.e. glob, regexp,
  * etc.) is specified once, as usual, at the beginning of the pattern.
  * </p>
+ *
  * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
 @Deprecated
 public interface Selenium {
 
-  /** Sets the per-session extension Javascript
+  /**
+   * Sets the per-session extension Javascript
+   *
    * @param extensionJs javascript extension
    */
   void setExtensionJs(String extensionJs);
 
-  /** Launches the browser with a new Selenium session */
+  /**
+   * Launches the browser with a new Selenium session
+   */
   void start();
 
-  /** Starts a new Selenium testing session with a String, representing a configuration
+  /**
+   * Starts a new Selenium testing session with a String, representing a configuration
+   *
    * @param optionsString option string
    */
   void start(String optionsString);
 
-  /** Starts a new Selenium testing session with a configuration options object
+  /**
+   * Starts a new Selenium testing session with a configuration options object
+   *
    * @param optionsObject options object
    */
   void start(Object optionsObject);
 
-  /** Ends the test session, killing the browser */
+  /**
+   * Ends the test session, killing the browser
+   */
   void stop();
 
   /**
@@ -196,7 +207,7 @@ public interface Selenium {
    * Shows in the RemoteRunner a banner for the current test The banner is 'classname : methodname'
    * The method name will be unCamelCased with the insertion of spaces at word boundaries
    *
-   * @param className class name
+   * @param className  class name
    * @param methodName method name
    */
   void showContextualBanner(String className, String methodName);
@@ -229,9 +240,9 @@ public interface Selenium {
    * Clicks on a link, button, checkbox or radio button. If the click action causes a new page to
    * load (like a link usually does), call waitForPageToLoad.
    *
-   * @param locator an element locator
+   * @param locator     an element locator
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
-   *        element returned by the locator.
+   *                    element returned by the locator.
    */
   void clickAt(String locator, String coordString);
 
@@ -239,9 +250,9 @@ public interface Selenium {
    * Doubleclicks on a link, button, checkbox or radio button. If the action causes a new page to
    * load (like a link usually does), call waitForPageToLoad.
    *
-   * @param locator an element locator
+   * @param locator     an element locator
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
-   *        element returned by the locator.
+   *                    element returned by the locator.
    */
   void doubleClickAt(String locator, String coordString);
 
@@ -249,16 +260,16 @@ public interface Selenium {
    * Simulates opening the context menu for the specified element (as might happen if the user
    * "right-clicked" on the element).
    *
-   * @param locator an element locator
+   * @param locator     an element locator
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
-   *        element returned by the locator.
+   *                    element returned by the locator.
    */
   void contextMenuAt(String locator, String coordString);
 
   /**
    * Explicitly simulate an event, to trigger the corresponding "on<em>event</em>" handler.
    *
-   * @param locator an <a href="#locators">element locator</a>
+   * @param locator   an <a href="#locators">element locator</a>
    * @param eventName the event name, e.g. "focus" or "blur"
    */
   void fireEvent(String locator, String eventName);
@@ -274,54 +285,70 @@ public interface Selenium {
   /**
    * Simulates a user pressing and releasing a key.
    *
-   * @param locator an <a href="#locators">element locator</a>
+   * @param locator     an <a href="#locators">element locator</a>
    * @param keySequence Either be a string(
-   *        "\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "
-   *        w", "\119".
+   *                    "\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "
+   *                    w", "\119".
    */
   void keyPress(String locator, String keySequence);
 
-  /** Press the shift key and hold it down until doShiftUp() is called or a new page is loaded. */
+  /**
+   * Press the shift key and hold it down until doShiftUp() is called or a new page is loaded.
+   */
   void shiftKeyDown();
 
-  /** Release the shift key. */
+  /**
+   * Release the shift key.
+   */
   void shiftKeyUp();
 
-  /** Press the meta key and hold it down until doMetaUp() is called or a new page is loaded. */
+  /**
+   * Press the meta key and hold it down until doMetaUp() is called or a new page is loaded.
+   */
   void metaKeyDown();
 
-  /** Release the meta key. */
+  /**
+   * Release the meta key.
+   */
   void metaKeyUp();
 
-  /** Press the alt key and hold it down until doAltUp() is called or a new page is loaded. */
+  /**
+   * Press the alt key and hold it down until doAltUp() is called or a new page is loaded.
+   */
   void altKeyDown();
 
-  /** Release the alt key. */
+  /**
+   * Release the alt key.
+   */
   void altKeyUp();
 
-  /** Press the control key and hold it down until doControlUp() is called or a new page is loaded. */
+  /**
+   * Press the control key and hold it down until doControlUp() is called or a new page is loaded.
+   */
   void controlKeyDown();
 
-  /** Release the control key. */
+  /**
+   * Release the control key.
+   */
   void controlKeyUp();
 
   /**
    * Simulates a user pressing a key (without releasing it yet).
    *
-   * @param locator an <a href="#locators">element locator</a>
+   * @param locator     an <a href="#locators">element locator</a>
    * @param keySequence Either be a string(
-   *        "\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "
-   *        w", "\119".
+   *                    "\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "
+   *                    w", "\119".
    */
   void keyDown(String locator, String keySequence);
 
   /**
    * Simulates a user releasing a key.
    *
-   * @param locator an <a href="#locators">element locator</a>
+   * @param locator     an <a href="#locators">element locator</a>
    * @param keySequence Either be a string(
-   *        "\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "
-   *        w", "\119".
+   *                    "\" followed by the numeric keycode  of the key to be pressed, normally the ASCII value of that key), or a single  character. For example: "
+   *                    w", "\119".
    */
   void keyUp(String locator, String keySequence);
 
@@ -359,9 +386,9 @@ public interface Selenium {
    * Simulates a user pressing the left mouse button (without releasing it yet) at the specified
    * location.
    *
-   * @param locator an <a href="#locators">element locator</a>
+   * @param locator     an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
-   *        element returned by the locator.
+   *                    element returned by the locator.
    */
   void mouseDownAt(String locator, String coordString);
 
@@ -369,9 +396,9 @@ public interface Selenium {
    * Simulates a user pressing the right mouse button (without releasing it yet) at the specified
    * location.
    *
-   * @param locator an <a href="#locators">element locator</a>
+   * @param locator     an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
-   *        element returned by the locator.
+   *                    element returned by the locator.
    */
   void mouseDownRightAt(String locator, String coordString);
 
@@ -395,9 +422,9 @@ public interface Selenium {
    * Simulates the event that occurs when the user releases the mouse button (i.e., stops holding
    * the button down) at the specified location.
    *
-   * @param locator an <a href="#locators">element locator</a>
+   * @param locator     an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
-   *        element returned by the locator.
+   *                    element returned by the locator.
    */
   void mouseUpAt(String locator, String coordString);
 
@@ -405,9 +432,9 @@ public interface Selenium {
    * Simulates the event that occurs when the user releases the right mouse button (i.e., stops
    * holding the button down) at the specified location.
    *
-   * @param locator an <a href="#locators">element locator</a>
+   * @param locator     an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
-   *        element returned by the locator.
+   *                    element returned by the locator.
    */
   void mouseUpRightAt(String locator, String coordString);
 
@@ -421,9 +448,9 @@ public interface Selenium {
   /**
    * Simulates a user pressing the mouse button (without releasing it yet) on the specified element.
    *
-   * @param locator an <a href="#locators">element locator</a>
+   * @param locator     an <a href="#locators">element locator</a>
    * @param coordString specifies the x,y position (i.e. - 10,20) of the mouse event relative to the
-   *        element returned by the locator.
+   *                    element returned by the locator.
    */
   void mouseMoveAt(String locator, String coordString);
 
@@ -436,7 +463,7 @@ public interface Selenium {
    * </p>
    *
    * @param locator an <a href="#locators">element locator</a>
-   * @param value the value to type
+   * @param value   the value to type
    */
   void type(String locator, String value);
 
@@ -460,17 +487,9 @@ public interface Selenium {
    * </p>
    *
    * @param locator an <a href="#locators">element locator</a>
-   * @param value the value to type
+   * @param value   the value to type
    */
   void typeKeys(String locator, String value);
-
-  /**
-   * Set execution speed (i.e., set the millisecond length of a delay which will follow each
-   * selenium operation). By default, there is no such delay, i.e., the delay is 0 milliseconds.
-   *
-   * @param value the number of milliseconds to pause after operation
-   */
-  void setSpeed(String value);
 
   /**
    * Get execution speed (i.e., get the millisecond length of the delay following each selenium
@@ -481,6 +500,14 @@ public interface Selenium {
    * @return the execution speed in milliseconds.
    */
   String getSpeed();
+
+  /**
+   * Set execution speed (i.e., set the millisecond length of a delay which will follow each
+   * selenium operation). By default, there is no such delay, i.e., the delay is 0 milliseconds.
+   *
+   * @param value the number of milliseconds to pause after operation
+   */
+  void setSpeed(String value);
 
   /**
    * Get RC logs associated with this session.
@@ -551,20 +578,20 @@ public interface Selenium {
    * Add a selection to the set of selected options in a multi-select element using an option
    * locator.
    *
-   * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
+   * @param locator       an <a href="#locators">element locator</a> identifying a multi-select box
    * @param optionLocator an option locator (a label by default)
    */
-   //@see #doSelect for details of option locators (THERE IS NO doSelect())
+  //@see #doSelect for details of option locators (THERE IS NO doSelect())
   void addSelection(String locator, String optionLocator);
 
   /**
    * Remove a selection from the set of selected options in a multi-select element using an option
    * locator.
    *
-   * @param locator an <a href="#locators">element locator</a> identifying a multi-select box
+   * @param locator       an <a href="#locators">element locator</a> identifying a multi-select box
    * @param optionLocator an option locator (a label by default)
    */
-   //@see #doSelect for details of option locators (NO SUCH METHOD I CAN FIND)
+  //@see #doSelect for details of option locators (NO SUCH METHOD I CAN FIND)
   void removeSelection(String locator, String optionLocator);
 
   /**
@@ -592,7 +619,7 @@ public interface Selenium {
    * restrictions in the browser (Same Origin Policy). If you need to open an URL on another domain,
    * use the Selenium Server to start a new browser session on that domain.
    *
-   * @param url the URL to open; may be relative or absolute
+   * @param url                the URL to open; may be relative or absolute
    * @param ignoreResponseCode if set to true, ignores http response code.
    */
   void open(String url, String ignoreResponseCode);
@@ -623,7 +650,7 @@ public interface Selenium {
    * "myFunnyWindow").
    * </p>
    *
-   * @param url the URL to open, which can be blank
+   * @param url      the URL to open, which can be blank
    * @param windowID the JavaScript window ID of the window to select
    */
   void openWindow(String url, String windowID);
@@ -703,7 +730,7 @@ public interface Selenium {
    * </ul>
    *
    * @param windowID an identifier for the popup window, which can take on a number of different
-   *        meanings
+   *                 meanings
    */
   void selectPopUp(String windowID);
 
@@ -739,7 +766,7 @@ public interface Selenium {
    * </p>
    *
    * @param currentFrameString starting frame
-   * @param target new frame (which might be relative to the current one)
+   * @param target             new frame (which might be relative to the current one)
    * @return true if the new frame is this code's window
    */
   boolean getWhetherThisFrameMatchFrameExpression(String currentFrameString, String target);
@@ -756,7 +783,7 @@ public interface Selenium {
    * </p>
    *
    * @param currentWindowString starting window
-   * @param target new window (which might be relative to the current one, e.g., "_parent")
+   * @param target              new window (which might be relative to the current one, e.g., "_parent")
    * @return true if the new window is this code's window
    */
   boolean getWhetherThisWindowMatchWindowExpression(String currentWindowString, String target);
@@ -765,12 +792,12 @@ public interface Selenium {
    * Waits for a popup window to appear and load up.
    *
    * @param windowID the JavaScript window "name" of the window that will appear (not the text of
-   *        the title bar) If unspecified, or specified as "null", this command will wait for the
-   *        first non-top window to appear (don't rely on this if you are working with multiple
-   *        popups simultaneously).
-   * @param timeout a timeout in milliseconds, after which the action will return with an error. If
-   *        this value is not specified, the default Selenium timeout will be used. See the
-   *        setTimeout() command.
+   *                 the title bar) If unspecified, or specified as "null", this command will wait for the
+   *                 first non-top window to appear (don't rely on this if you are working with multiple
+   *                 popups simultaneously).
+   * @param timeout  a timeout in milliseconds, after which the action will return with an error. If
+   *                 this value is not specified, the default Selenium timeout will be used. See the
+   *                 setTimeout() command.
    */
   void waitForPopUp(String windowID, String timeout);
 
@@ -813,10 +840,14 @@ public interface Selenium {
    */
   void answerOnNextPrompt(String answer);
 
-  /** Simulates the user clicking the "back" button on their browser. */
+  /**
+   * Simulates the user clicking the "back" button on their browser.
+   */
   void goBack();
 
-  /** Simulates the user clicking the "Refresh" button on their browser. */
+  /**
+   * Simulates the user clicking the "Refresh" button on their browser.
+   */
   void refresh();
 
   /**
@@ -995,7 +1026,7 @@ public interface Selenium {
    * doesn't exist or isn't a toggle-button.
    *
    * @param locator an <a href="#locators">element locator</a> pointing to a checkbox or radio
-   *        button
+   *                button
    * @return true if the checkbox is checked, false otherwise
    */
   boolean isChecked(String locator);
@@ -1099,7 +1130,7 @@ public interface Selenium {
    * (this is the case for the "style" attribute, for example).
    *
    * @param attributeLocator an element locator followed by an @ sign and then the name of the
-   *        attribute, e.g. "foo@bar"
+   *                         attribute, e.g. "foo@bar"
    * @return the value of the specified attribute
    */
   String getAttribute(String attributeLocator);
@@ -1184,11 +1215,20 @@ public interface Selenium {
   /**
    * deprecated - use dragAndDrop instead
    *
-   * @param locator an element locator
+   * @param locator         an element locator
    * @param movementsString offset in pixels from the current location to which the element should
-   *        be moved, e.g., "+70,-300"
+   *                        be moved, e.g., "+70,-300"
    */
   void dragdrop(String locator, String movementsString);
+
+  /**
+   * Returns the number of pixels between "mousemove" events during dragAndDrop commands
+   * (default=10).
+   *
+   * @return the number of pixels between "mousemove" events during dragAndDrop commands
+   * (default=10)
+   */
+  Number getMouseSpeed();
 
   /**
    * Configure the number of pixels between "mousemove" events during dragAndDrop commands
@@ -1208,36 +1248,32 @@ public interface Selenium {
   void setMouseSpeed(String pixels);
 
   /**
-   * Returns the number of pixels between "mousemove" events during dragAndDrop commands
-   * (default=10).
-   *
-   * @return the number of pixels between "mousemove" events during dragAndDrop commands
-   *         (default=10)
-   */
-  Number getMouseSpeed();
-
-  /**
    * Drags an element a certain distance and then drops it
    *
-   * @param locator an element locator
+   * @param locator         an element locator
    * @param movementsString offset in pixels from the current location to which the element should
-   *        be moved, e.g., "+70,-300"
+   *                        be moved, e.g., "+70,-300"
    */
   void dragAndDrop(String locator, String movementsString);
 
   /**
    * Drags an element and drops it on another element
    *
-   * @param locatorOfObjectToBeDragged an element to be dragged
+   * @param locatorOfObjectToBeDragged     an element to be dragged
    * @param locatorOfDragDestinationObject an element whose location (i.e., whose center-most pixel)
-   *        will be the point where locatorOfObjectToBeDragged is dropped
+   *                                       will be the point where locatorOfObjectToBeDragged is dropped
    */
-  void dragAndDropToObject(String locatorOfObjectToBeDragged, String locatorOfDragDestinationObject);
+  void dragAndDropToObject(String locatorOfObjectToBeDragged,
+                           String locatorOfDragDestinationObject);
 
-  /** Gives focus to the currently selected window */
+  /**
+   * Gives focus to the currently selected window
+   */
   void windowFocus();
 
-  /** Resize currently selected window to take up the entire screen */
+  /**
+   * Resize currently selected window to take up the entire screen
+   */
   void windowMaximize();
 
   /**
@@ -1272,11 +1308,11 @@ public interface Selenium {
    * Moves the text cursor to the specified position in the given input element or textarea. This
    * method will fail if the specified element isn't an input element or textarea.
    *
-   * @param locator an <a href="#locators">element locator</a> pointing to an input element or
-   *        textarea
+   * @param locator  an <a href="#locators">element locator</a> pointing to an input element or
+   *                 textarea
    * @param position the numerical position of the cursor in the field; position should be 0 to move
-   *        the position to the beginning of the field. You can also set the cursor to -1 to move it
-   *        to the end of the field.
+   *                 the position to the beginning of the field. You can also set the cursor to -1 to move it
+   *                 to the end of the field.
    */
   void setCursorPosition(String locator, String position);
 
@@ -1303,7 +1339,7 @@ public interface Selenium {
    * Retrieves the horizontal position of an element
    *
    * @param locator an <a href="#locators">element locator</a> pointing to an element OR an element
-   *        itself
+   *                itself
    * @return of pixels from the edge of the frame.
    */
   Number getElementPositionLeft(String locator);
@@ -1312,7 +1348,7 @@ public interface Selenium {
    * Retrieves the vertical position of an element
    *
    * @param locator an <a href="#locators">element locator</a> pointing to an element OR an element
-   *        itself
+   *                itself
    * @return of pixels from the edge of the frame.
    */
   Number getElementPositionTop(String locator);
@@ -1346,7 +1382,7 @@ public interface Selenium {
    * no cursor in the element.
    *
    * @param locator an <a href="#locators">element locator</a> pointing to an input element or
-   *        textarea
+   *                textarea
    * @return the numerical position of the cursor in the field
    */
   Number getCursorPosition(String locator);
@@ -1369,7 +1405,7 @@ public interface Selenium {
    * of tables.
    *
    * @param xpath the xpath expression to evaluate. do NOT wrap this expression in a 'count()'
-   *        function; we will do that for you.
+   *              function; we will do that for you.
    * @return the number of nodes that match the specified xpath
    */
   Number getXpathCount(String xpath);
@@ -1379,7 +1415,7 @@ public interface Selenium {
    * the number of tables.
    *
    * @param css the css selector to evaluate. do NOT wrap this expression in a 'count()' function;
-   *        we will do that for you.
+   *            we will do that for you.
    * @return the number of nodes that match the specified selector
    */
   Number getCssCount(String css);
@@ -1389,7 +1425,7 @@ public interface Selenium {
    * future using its ID rather than a slow/complicated XPath. This ID will disappear once the page
    * is reloaded.
    *
-   * @param locator an <a href="#locators">element locator</a> pointing to an element
+   * @param locator    an <a href="#locators">element locator</a> pointing to an element
    * @param identifier a string to be used as the ID of the specified element
    */
   void assignId(String locator, String identifier);
@@ -1402,7 +1438,7 @@ public interface Selenium {
    * slower than the native implementations.
    *
    * @param allow boolean, true means we'll prefer to use native XPath; false means we'll only use
-   *        JS XPath
+   *              JS XPath
    */
   void allowNativeXpath(String allow);
 
@@ -1417,7 +1453,7 @@ public interface Selenium {
    * "javascript-xpath").
    *
    * @param ignore boolean, true means we'll ignore attributes without value at the expense of xpath
-   *        "correctness"; false means we'll sacrifice speed for correctness.
+   *               "correctness"; false means we'll sacrifice speed for correctness.
    */
   void ignoreAttributesWithoutValue(String ignore);
 
@@ -1431,7 +1467,7 @@ public interface Selenium {
    * <code>selenium.browserbot.getCurrentWindow()</code>, and then run your JavaScript in there
    * </p>
    *
-   * @param script the JavaScript snippet to run
+   * @param script  the JavaScript snippet to run
    * @param timeout a timeout in milliseconds, after which this command will return with an error
    */
   void waitForCondition(String script, String timeout);
@@ -1477,7 +1513,7 @@ public interface Selenium {
    * See waitForPageToLoad for more information.
    *
    * @param frameAddress FrameAddress from the server side
-   * @param timeout a timeout in milliseconds, after which this command will return with an error
+   * @param timeout      a timeout in milliseconds, after which this command will return with an error
    */
   void waitForFrameToLoad(String frameAddress, String timeout);
 
@@ -1511,10 +1547,10 @@ public interface Selenium {
    *
    * @param nameValuePair name and value of the cookie in a format "name=value"
    * @param optionsString options for the cookie. Currently supported options include 'path',
-   *        'max_age' and 'domain'. the optionsString's format is
-   *        "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the
-   *        unit of the value of 'max_age' is second. Note that specifying a domain that isn't a
-   *        subset of the current domain will usually fail.
+   *                      'max_age' and 'domain'. the optionsString's format is
+   *                      "path=/path/, max_age=60, domain=.foo.com". The order of options are irrelevant, the
+   *                      unit of the value of 'max_age' is second. Note that specifying a domain that isn't a
+   *                      subset of the current domain will usually fail.
    */
   void createCookie(String nameValuePair, String optionsString);
 
@@ -1530,11 +1566,11 @@ public interface Selenium {
    * notation, it operates in O(n*m) time, where n is the number of dots in the domain name and m is
    * the number of slashes in the path.
    *
-   * @param name the name of the cookie to be deleted
+   * @param name          the name of the cookie to be deleted
    * @param optionsString options for the cookie. Currently supported options include 'path',
-   *        'domain' and 'recurse.' The optionsString's format is
-   *        "path=/path/, domain=.foo.com, recurse=true". The order of options are irrelevant. Note
-   *        that specifying a domain that isn't a subset of the current domain will usually fail.
+   *                      'domain' and 'recurse.' The optionsString's format is
+   *                      "path=/path/, domain=.foo.com, recurse=true". The order of options are irrelevant. Note
+   *                      that specifying a domain that isn't a subset of the current domain will usually fail.
    */
   void deleteCookie(String name, String optionsString);
 
@@ -1580,10 +1616,10 @@ public interface Selenium {
    * </ul>
    * The function must return null if the element can't be found.
    *
-   * @param strategyName the name of the strategy to define; this should use only letters [a-zA-Z]
-   *        with no spaces or other punctuation.
+   * @param strategyName       the name of the strategy to define; this should use only letters [a-zA-Z]
+   *                           with no spaces or other punctuation.
    * @param functionDefinition a string defining the body of a function in JavaScript. For example:
-   *        <code>return inDocument.getElementById(locator);</code>
+   *                           <code>return inDocument.getElementById(locator);</code>
    */
   void addLocationStrategy(String strategyName, String functionDefinition);
 
@@ -1597,17 +1633,17 @@ public interface Selenium {
    * details.
    *
    * @param filename the path to the file to persist the screenshot as. No filename extension will
-   *        be appended by default. Directories will not be created if they do not exist, and an
-   *        exception will be thrown, possibly by native code.
-   * @param kwargs a kwargs string that modifies the way the screenshot is captured. Example:
-   *        "background=#CCFFDD" . Currently valid options:
-   *        <dl>
-   *        <dt>background</dt>
-   *        <dd>the background CSS for the HTML document. This may be useful to set for capturing
-   *        screenshots of less-than-ideal layouts, for example where absolute positioning causes
-   *        the calculation of the canvas dimension to fail and a black background is exposed
-   *        (possibly obscuring black text).</dd>
-   *        </dl>
+   *                 be appended by default. Directories will not be created if they do not exist, and an
+   *                 exception will be thrown, possibly by native code.
+   * @param kwargs   a kwargs string that modifies the way the screenshot is captured. Example:
+   *                 "background=#CCFFDD" . Currently valid options:
+   *                 <dl>
+   *                 <dt>background</dt>
+   *                 <dd>the background CSS for the HTML document. This may be useful to set for capturing
+   *                 screenshots of less-than-ideal layouts, for example where absolute positioning causes
+   *                 the calculation of the canvas dimension to fail and a black background is exposed
+   *                 (possibly obscuring black text).</dd>
+   *                 </dl>
    */
   void captureEntirePageScreenshot(String filename, String kwargs);
 
@@ -1618,7 +1654,7 @@ public interface Selenium {
    * rollups.
    *
    * @param rollupName the name of the rollup command
-   * @param kwargs keyword arguments string that influences how the rollup expands into commands
+   * @param kwargs     keyword arguments string that influences how the rollup expands into commands
    */
   void rollup(String rollupName, String kwargs);
 
@@ -1633,8 +1669,8 @@ public interface Selenium {
    * The corresponding remove command is removeScript.
    *
    * @param scriptContent the Javascript content of the script to add
-   * @param scriptTagId (optional) the id of the new script tag. If specified, and an element with
-   *        this id already exists, this operation will fail.
+   * @param scriptTagId   (optional) the id of the new script tag. If specified, and an element with
+   *                      this id already exists, this operation will fail.
    */
   void addScript(String scriptContent, String scriptTagId);
 
@@ -1650,12 +1686,12 @@ public interface Selenium {
    * Allows choice of one of the available libraries.
    *
    * @param libraryName name of the desired library Only the following three can be chosen:
-   *        <ul>
-   *        <li>"ajaxslt" - Google's library</li>
-   *        <li>"javascript-xpath" - Cybozu Labs' faster library</li>
-   *        <li>"default" - The default library. Currently the default library is "ajaxslt" .</li>
-   *        </ul>
-   *        If libraryName isn't one of these three, then no change will be made.
+   *                    <ul>
+   *                    <li>"ajaxslt" - Google's library</li>
+   *                    <li>"javascript-xpath" - Cybozu Labs' faster library</li>
+   *                    <li>"default" - The default library. Currently the default library is "ajaxslt" .</li>
+   *                    </ul>
+   *                    If libraryName isn't one of these three, then no change will be made.
    */
   void useXpathLibrary(String libraryName);
 
@@ -1670,11 +1706,11 @@ public interface Selenium {
    * Sets a file input (upload) field to the file listed in fileLocator
    *
    * @param fieldLocator an <a href="#locators">element locator</a>
-   * @param fileLocator a URL pointing to the specified file. Before the file can be set in the
-   *        input field (fieldLocator), Selenium RC may need to transfer the file to the local
-   *        machine before attaching the file in a web page form. This is common in selenium grid
-   *        configurations where the RC server driving the browser is not the same machine that
-   *        started the test. Supported Browsers: Firefox ("*chrome") only.
+   * @param fileLocator  a URL pointing to the specified file. Before the file can be set in the
+   *                     input field (fieldLocator), Selenium RC may need to transfer the file to the local
+   *                     machine before attaching the file in a web page form. This is common in selenium grid
+   *                     configurations where the RC server driving the browser is not the same machine that
+   *                     started the test. Supported Browsers: Firefox ("*chrome") only.
    */
   void attachFile(String fieldLocator, String fileLocator);
 
@@ -1698,7 +1734,7 @@ public interface Selenium {
    * content is only the traffic seen since the last call.
    *
    * @param type The type of data to return the network traffic as. Valid values are: json, xml, or
-   *        plain.
+   *             plain.
    * @return A string representation in the defined type of the network traffic seen by the browser.
    */
   String captureNetworkTraffic(String type);
@@ -1707,7 +1743,7 @@ public interface Selenium {
    * Tells the Selenium server to add the specified key and value as a custom outgoing request
    * header. This only works if the browser is configured to use the built-in Selenium proxy.
    *
-   * @param key the header name.
+   * @param key   the header name.
    * @param value the header value.
    */
   void addCustomRequestHeader(String key, String value);
@@ -1720,10 +1756,10 @@ public interface Selenium {
    * Currently this only works in Mozilla and when running in chrome mode.
    *
    * @param kwargs A kwargs string that modifies the way the screenshot is captured. Example:
-   *        "background=#CCFFDD". This may be useful to set for capturing screenshots of
-   *        less-than-ideal layouts, for example where absolute positioning causes the calculation
-   *        of the canvas dimension to fail and a black background is exposed (possibly obscuring
-   *        black text).
+   *               "background=#CCFFDD". This may be useful to set for capturing screenshots of
+   *               less-than-ideal layouts, for example where absolute positioning causes the calculation
+   *               of the canvas dimension to fail and a black background is exposed (possibly obscuring
+   *               black text).
    * @return The base 64 encoded string of the page screenshot (PNG file)
    */
   String captureEntirePageScreenshotToString(String kwargs);
@@ -1754,7 +1790,7 @@ public interface Selenium {
    * first before running this command.
    *
    * @param keycode an integer keycode number corresponding to a java.awt.event.KeyEvent; note that
-   *        Java keycodes are NOT the same thing as JavaScript keycodes!
+   *                Java keycodes are NOT the same thing as JavaScript keycodes!
    */
   void keyDownNative(String keycode);
 
@@ -1766,7 +1802,7 @@ public interface Selenium {
    * to a particular element, focus on the element first before running this command.
    *
    * @param keycode an integer keycode number corresponding to a java.awt.event.KeyEvent; note that
-   *        Java keycodes are NOT the same thing as JavaScript keycodes!
+   *                Java keycodes are NOT the same thing as JavaScript keycodes!
    */
   void keyUpNative(String keycode);
 
@@ -1778,7 +1814,7 @@ public interface Selenium {
    * keystroke to a particular element, focus on the element first before running this command.
    *
    * @param keycode an integer keycode number corresponding to a java.awt.event.KeyEvent; note that
-   *        Java keycodes are NOT the same thing as JavaScript keycodes!
+   *                Java keycodes are NOT the same thing as JavaScript keycodes!
    */
   void keyPressNative(String keycode);
 }

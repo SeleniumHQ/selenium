@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.internal.HttpClientTestBase;
 
 @Tag("UnitTests")
 class NettyClientTest extends HttpClientTestBase {
+
   @Override
   protected HttpClient.Factory createFactory() {
     return new NettyClient.Factory();

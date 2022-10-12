@@ -52,10 +52,10 @@ public class CombinedHandler implements Predicate<HttpRequest>, Routable, HttpHa
   @Override
   public HttpResponse execute(HttpRequest req) {
     return handlers.entrySet().stream()
-        .filter(entry -> entry.getKey().matches(req))
-        .findFirst()
-        .map(Map.Entry::getValue)
-        .orElse(new NoHandler(new Json()))
-        .execute(req);
+      .filter(entry -> entry.getKey().matches(req))
+      .findFirst()
+      .map(Map.Entry::getValue)
+      .orElse(new NoHandler(new Json()))
+      .execute(req);
   }
 }

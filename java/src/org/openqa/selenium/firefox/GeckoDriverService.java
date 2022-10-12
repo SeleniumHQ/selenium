@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.firefox;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+
 import com.google.auto.service.AutoService;
 import com.google.common.io.ByteStreams;
 
@@ -35,10 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-
 /**
  * Manages the life and death of an GeckoDriver aka 'wires'.
  */
@@ -51,34 +51,34 @@ public class GeckoDriverService extends FirefoxDriverService {
   public static final String GECKO_DRIVER_EXE_PROPERTY = "webdriver.gecko.driver";
 
   /**
-   * @param executable The GeckoDriver executable.
-   * @param port Which port to start the GeckoDriver on.
-   * @param args The arguments to the launched server.
+   * @param executable  The GeckoDriver executable.
+   * @param port        Which port to start the GeckoDriver on.
+   * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
   public GeckoDriverService(
-      File executable,
-      int port,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
   /**
-   * @param executable The GeckoDriver executable.
-   * @param port Which port to start the GeckoDriver on.
-   * @param timeout Timeout waiting for driver server to start.
-   * @param args The arguments to the launched server.
+   * @param executable  The GeckoDriver executable.
+   * @param port        Which port to start the GeckoDriver on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
   public GeckoDriverService(
-      File executable,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
@@ -106,7 +106,7 @@ public class GeckoDriverService extends FirefoxDriverService {
         actualBinary = new FirefoxBinary(new File(String.valueOf(binary)));
       } else {
         throw new IllegalArgumentException(
-            "Expected binary to be a string or a binary: " + binary);
+          "Expected binary to be a string or a binary: " + binary);
       }
 
       builder.usingFirefoxBinary(actualBinary);
@@ -130,7 +130,7 @@ public class GeckoDriverService extends FirefoxDriverService {
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends FirefoxDriverService.Builder<
-        GeckoDriverService, GeckoDriverService.Builder> {
+    GeckoDriverService, GeckoDriverService.Builder> {
 
     private FirefoxBinary firefoxBinary;
 
@@ -140,7 +140,7 @@ public class GeckoDriverService extends FirefoxDriverService {
     @Override
     public int score(Capabilities capabilities) {
       if (capabilities.getCapability(FirefoxDriver.Capability.MARIONETTE) != null
-          && ! capabilities.is(FirefoxDriver.Capability.MARIONETTE)) {
+          && !capabilities.is(FirefoxDriver.Capability.MARIONETTE)) {
         return 0;
       }
 

@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.remote.html5;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 
 import java.util.function.Predicate;
-
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_LOCATION_CONTEXT;
 
 /**
  * @deprecated Uses a non W3C compliant capability and is not available in W3C WebDriver sessions

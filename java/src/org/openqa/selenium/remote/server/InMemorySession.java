@@ -18,7 +18,7 @@
 package org.openqa.selenium.remote.server;
 
 import com.google.common.base.StandardSystemProperty;
-import com.google.common.collect.ImmutableMap;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
@@ -64,8 +64,8 @@ class InMemorySession implements ActiveSession {
     }
 
     this.capabilities = caps.asMap().entrySet().stream()
-        .filter(e -> e.getValue() != null)
-        .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
+      .filter(e -> e.getValue() != null)
+      .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
 
     this.id = new SessionId(UUID.randomUUID().toString());
     this.downstream = Require.nonNull("Downstream dialect", downstream);
@@ -75,8 +75,8 @@ class InMemorySession implements ActiveSession {
     this.filesystem = TemporaryFilesystem.getTmpFsBasedOn(tempRoot);
 
     this.handler = new JsonHttpCommandHandler(
-        new PretendDriverSessions(),
-        LOG);
+      new PretendDriverSessions(),
+      LOG);
   }
 
   @Override
@@ -149,11 +149,13 @@ class InMemorySession implements ActiveSession {
 
         // Prefer the OSS dialect.
         Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
-        Dialect downstream = downstreamDialects.contains(Dialect.OSS) || downstreamDialects.isEmpty() ?
-                             Dialect.OSS :
-                             downstreamDialects.iterator().next();
+        Dialect
+          downstream =
+          downstreamDialects.contains(Dialect.OSS) || downstreamDialects.isEmpty() ?
+          Dialect.OSS :
+          downstreamDialects.iterator().next();
         return Optional.of(
-            new InMemorySession(driver, sessionRequest.getDesiredCapabilities(), downstream));
+          new InMemorySession(driver, sessionRequest.getDesiredCapabilities(), downstream));
       } catch (IllegalStateException e) {
         return Optional.empty();
       }

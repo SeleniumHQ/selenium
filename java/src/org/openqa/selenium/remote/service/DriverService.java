@@ -21,8 +21,6 @@ import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
@@ -61,9 +59,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class DriverService implements Closeable {
 
-  private static final String NAME = "Driver Service Executor";
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
-
+  private static final String NAME = "Driver Service Executor";
   private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
     Thread thread = new Thread(r);
     thread.setName(NAME);
@@ -93,50 +90,47 @@ public class DriverService implements Closeable {
   private OutputStream outputStream = System.err;
 
   /**
-  *
-  * @param executable The driver executable.
-  * @param port Which port to start the driver server on.
-  * @param timeout Timeout waiting for driver server to start.
-  * @param args The arguments to the launched server.
-  * @param environment The environment for the launched server.
-  * @throws IOException If an I/O error occurs.
-  */
- protected DriverService(
-     File executable,
-     int port,
-     Duration timeout,
-     List<String> args,
-     Map<String, String> environment) throws IOException {
-   this.executable = executable.getCanonicalPath();
-   this.timeout = timeout;
-   this.args = args;
-   this.environment = environment;
+   * @param executable  The driver executable.
+   * @param port        Which port to start the driver server on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args        The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
+  protected DriverService(
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
+    this.executable = executable.getCanonicalPath();
+    this.timeout = timeout;
+    this.args = args;
+    this.environment = environment;
 
-   this.url = getUrl(port);
- }
+    url = getUrl(port);
+  }
 
   /**
-   *
-   * @param exeName Name of the executable file to look for in PATH
+   * @param exeName     Name of the executable file to look for in PATH
    * @param exeProperty Name of a system property that specifies the path to the executable file
-   * @param exeDocs The link to the driver documentation page
+   * @param exeDocs     The link to the driver documentation page
    * @param exeDownload The link to the driver download page
-   *
    * @return The driver executable as a {@link File} object
    * @throws IllegalStateException If the executable not found or cannot be executed
    */
   protected static File findExecutable(
-      String exeName,
-      String exeProperty,
-      String exeDocs,
-      String exeDownload) {
+    String exeName,
+    String exeProperty,
+    String exeDocs,
+    String exeDownload) {
     String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
     Require.state("The path to the driver executable", exePath).nonNull(
-        "The path to the driver executable must be set by the %s system property;"
-            + " for more information, see %s. "
-            + "The latest version can be downloaded from %s",
-            exeProperty, exeDocs, exeDownload);
+      "The path to the driver executable must be set by the %s system property;"
+      + " for more information, see %s. "
+      + "The latest version can be downloaded from %s",
+      exeProperty, exeDocs, exeDownload);
 
     File exe = new File(exePath);
     checkExecutable(exe);
@@ -153,12 +147,12 @@ public class DriverService implements Closeable {
   }
 
   protected Map<String, String> getEnvironment() {
-   return environment;
- }
+    return environment;
+  }
 
   protected URL getUrl(int port) throws IOException {
-   return new URL(String.format("http://localhost:%d", port));
- }
+    return new URL(String.format("http://localhost:%d", port));
+  }
 
   /**
    * @return The base URL for the managed driver server.
@@ -196,7 +190,7 @@ public class DriverService implements Closeable {
       if (process != null) {
         return;
       }
-      process = new CommandLine(this.executable, args.toArray(new String[] {}));
+      process = new CommandLine(executable, args.toArray(new String[]{}));
       process.setEnvironmentVariables(environment);
       process.copyOutputTo(getOutputStream());
       process.executeAsync();
@@ -305,7 +299,7 @@ public class DriverService implements Closeable {
     this.outputStream = Require.nonNull("Output stream", outputStream);
   }
 
-  protected OutputStream getOutputStream() {
+  private OutputStream getOutputStream() {
     return outputStream;
   }
 
@@ -344,11 +338,10 @@ public class DriverService implements Closeable {
      * @param file The executable to use.
      * @return A self reference.
      */
-    @SuppressWarnings("unchecked")
     public B usingDriverExecutable(File file) {
       Require.nonNull("Driver executable file", file);
       checkExecutable(file);
-      this.exe = file;
+      exe = file;
       return (B) this;
     }
 
@@ -374,7 +367,7 @@ public class DriverService implements Closeable {
      * @return A self reference.
      */
     public B usingAnyFreePort() {
-      this.port = 0;
+      port = 0;
       return (B) this;
     }
 
@@ -384,12 +377,12 @@ public class DriverService implements Closeable {
      * server.
      *
      * @param environment A map of the environment variables to launch the
-     *     server with.
+     *                    server with.
      * @return A self reference.
      */
     @Beta
     public B withEnvironment(Map<String, String> environment) {
-      this.environment = ImmutableMap.copyOf(environment);
+      this.environment = Map.copyOf(environment);
       return (B) this;
     }
 
@@ -418,7 +411,7 @@ public class DriverService implements Closeable {
       return (B) this;
     }
 
-    protected Duration getDefaultTimeout() {
+    Duration getDefaultTimeout() {
       return DEFAULT_TIMEOUT;
     }
 
@@ -453,7 +446,8 @@ public class DriverService implements Closeable {
 
     protected abstract List<String> createArgs();
 
-    protected abstract DS createDriverService(File exe, int port, Duration timeout, List<String> args,
-        Map<String, String> environment);
+    protected abstract DS createDriverService(File exe, int port, Duration timeout,
+                                              List<String> args,
+                                              Map<String, String> environment);
   }
 }

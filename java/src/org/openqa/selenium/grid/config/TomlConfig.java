@@ -92,7 +92,7 @@ public class TomlConfig implements Config {
       if (collection.stream().anyMatch(item -> item instanceof TomlTable)) {
         List<String> toReturn = new ArrayList<>();
         collection.stream()
-          .map(item -> (TomlTable)item)
+          .map(item -> (TomlTable) item)
           .forEach(tomlTable -> tomlTable.toMap().entrySet().stream()
             .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
             .sorted()

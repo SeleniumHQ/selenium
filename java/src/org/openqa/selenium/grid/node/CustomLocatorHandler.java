@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.grid.node;
 
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.By;
@@ -58,9 +61,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 class CustomLocatorHandler implements Routable {
 
@@ -106,9 +106,9 @@ class CustomLocatorHandler implements Routable {
     }
 
     return FIND_ELEMENT.match(req.getUri()) != null ||
-      FIND_ELEMENTS.match(req.getUri()) != null ||
-      FIND_CHILD_ELEMENT.match(req.getUri()) != null ||
-      FIND_CHILD_ELEMENTS.match(req.getUri()) != null;
+           FIND_ELEMENTS.match(req.getUri()) != null ||
+           FIND_CHILD_ELEMENT.match(req.getUri()) != null ||
+           FIND_CHILD_ELEMENTS.match(req.getUri()) != null;
   }
 
   @Override
@@ -122,8 +122,8 @@ class CustomLocatorHandler implements Routable {
     if (!(using instanceof String)) {
       return new HttpResponse()
         .setStatus(HTTP_BAD_REQUEST)
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
+        .setContent(Contents.asJson(Map.of(
+          "value",Map.of(
             "error", "invalid argument",
             "message", "Unable to determine element locating strategy",
             "stacktrace", ""))));
@@ -138,8 +138,8 @@ class CustomLocatorHandler implements Routable {
     if (value == null) {
       return new HttpResponse()
         .setStatus(HTTP_BAD_REQUEST)
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
+        .setContent(Contents.asJson(Map.of(
+          "value",Map.of(
             "error", "invalid argument",
             "message", "Unable to determine element locator arguments",
             "stacktrace", ""))));
@@ -217,10 +217,11 @@ class CustomLocatorHandler implements Routable {
     }
 
     return new HttpResponse()
-      .setContent(Contents.asJson(ImmutableMap.of("value", toReturn)));
+      .setContent(Contents.asJson(Map.of("value", toReturn)));
   }
 
   private static class NodeWrappingExecutor implements CommandExecutor {
+
     private final HttpHandler toNode;
     private final CommandCodec<HttpRequest> commandCodec;
     private final ResponseCodec<HttpResponse> responseCodec;
@@ -254,6 +255,7 @@ class CustomLocatorHandler implements Routable {
   }
 
   private static class CustomWebDriver extends RemoteWebDriver {
+
     public CustomWebDriver(CommandExecutor executor, String sessionId) {
       super(executor, new ImmutableCapabilities());
 

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.DeviceRotation;
 import org.openqa.selenium.Rotatable;
@@ -34,13 +33,14 @@ class RemoteRotatable implements Rotatable {
 
   private final ExecuteMethod executeMethod;
 
-  public RemoteRotatable(ExecuteMethod executeMethod) {
+  RemoteRotatable(ExecuteMethod executeMethod) {
     this.executeMethod = Require.nonNull("Execute method", executeMethod);
   }
 
   @Override
   public void rotate(ScreenOrientation orientation) {
-    executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION, ImmutableMap.of("orientation", orientation));
+    executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION,
+                          Map.of("orientation", orientation));
   }
 
   @Override
@@ -61,7 +61,7 @@ class RemoteRotatable implements Rotatable {
       throw new IllegalStateException("Unexpected return value: " + result);
     }
 
-    @SuppressWarnings("unchecked") Map<String, Number> raw = (Map<String, Number>) result;
+    Map<String, Number> raw = (Map<String, Number>) result;
     return new DeviceRotation(raw);
   }
 }

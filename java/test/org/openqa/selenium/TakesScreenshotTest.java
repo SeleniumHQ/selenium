@@ -17,24 +17,6 @@
 
 package org.openqa.selenium;
 
-import com.google.common.collect.Sets;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -44,6 +26,26 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllE
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+
+import com.google.common.collect.Sets;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
+
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.imageio.ImageIO;
 
 /**
  * Test screenshot feature.
@@ -143,9 +145,9 @@ class TakesScreenshotTest extends JupiterTestBase {
 
     Raster raster = image.getRaster();
     String hex = String.format("#%02x%02x%02x",
-      (raster.getSample(1, 1, 0)),
-      (raster.getSample(1, 1, 1)),
-      (raster.getSample(1, 1, 2)));
+                               (raster.getSample(1, 1, 0)),
+                               (raster.getSample(1, 1, 1)),
+                               (raster.getSample(1, 1, 2)));
     assertThat(hex).isEqualTo("#0f12f7");
   }
 
@@ -308,7 +310,7 @@ class TakesScreenshotTest extends JupiterTestBase {
         int color = initialColor + (cnt * stepColor);
         String hex =
           String.format("#%02x%02x%02x", ((color & 0xFF0000) >> 16), ((color & 0x00FF00) >> 8),
-            ((color & 0x0000FF)));
+                        ((color & 0x0000FF)));
         colors.add(hex);
         cnt++;
       }
@@ -338,9 +340,9 @@ class TakesScreenshotTest extends JupiterTestBase {
       for (int i = 0; i < width; i = i + stepX) {
         for (int j = 0; j < height; j = j + stepY) {
           String hex = String.format("#%02x%02x%02x",
-            (raster.getSample(i, j, 0)),
-            (raster.getSample(i, j, 1)),
-            (raster.getSample(i, j, 2)));
+                                     (raster.getSample(i, j, 0)),
+                                     (raster.getSample(i, j, 1)),
+                                     (raster.getSample(i, j, 2)));
           colors.add(hex);
         }
       }
@@ -370,12 +372,12 @@ class TakesScreenshotTest extends JupiterTestBase {
 
     if (!expectedColors.containsAll(cleanActualColors)) {
       fail("There are unexpected colors on the screenshot: " +
-        Sets.difference(cleanActualColors, expectedColors));
+           Sets.difference(cleanActualColors, expectedColors));
     }
 
     if (!cleanActualColors.containsAll(expectedColors)) {
       fail("There are expected colors not present on the screenshot: " +
-        Sets.difference(expectedColors, cleanActualColors));
+           Sets.difference(expectedColors, cleanActualColors));
     }
   }
 

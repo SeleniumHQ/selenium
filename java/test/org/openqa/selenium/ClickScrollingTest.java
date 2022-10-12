@@ -18,23 +18,18 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.Browser;
 
 @Ignore(value = HTMLUNIT, reason = "Scrolling requires rendering")
 class ClickScrollingTest extends JupiterTestBase {
@@ -61,14 +56,11 @@ class ClickScrollingTest extends JupiterTestBase {
     // window.pageYOffset may not return integer value.
     // With the following changes in below we are checking the type of returned object and assigning respectively
     // the value of 'yOffset'
-    if ( x instanceof Long )
-    {
-      long yOffset = (Long)x;
+    if (x instanceof Long) {
+      long yOffset = (Long) x;
       assertThat(yOffset).describedAs("Did not scroll").isGreaterThan(300L);
-    }
-    else if ( x instanceof Double )
-    {
-      double yOffset = (Double)x;
+    } else if (x instanceof Double) {
+      double yOffset = (Double) x;
       assertThat(yOffset).describedAs("Did not scroll").isGreaterThan(300.0);
     }
   }
@@ -130,7 +122,7 @@ class ClickScrollingTest extends JupiterTestBase {
     WebElement item = list.findElement(By.id("desired"));
     item.click();
     long yOffset =
-        (Long)((JavascriptExecutor)driver).executeScript("return arguments[0].scrollTop;", list);
+      (Long) ((JavascriptExecutor) driver).executeScript("return arguments[0].scrollTop;", list);
     assertThat(yOffset).describedAs("Should not have scrolled").isZero();
   }
 
@@ -167,7 +159,7 @@ class ClickScrollingTest extends JupiterTestBase {
   @Test
   @NotYetImplemented(SAFARI)
   @Ignore(value = FIREFOX,
-    reason ="frame not scrolled into view",
+    reason = "frame not scrolled into view",
     issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
   public void testShouldBeAbleToClickElementInAFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_frame_out_of_view.html"));
@@ -219,7 +211,8 @@ class ClickScrollingTest extends JupiterTestBase {
     issue = "https://github.com/mozilla/geckodriver/issues/2013")
   @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
-    driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
+    driver.get(
+      appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
     driver.switchTo().frame("scrolling_frame");
     driver.switchTo().frame("nested_scrolling_frame");
     WebElement element = driver.findElement(By.name("scroll_checkbox"));
@@ -238,14 +231,14 @@ class ClickScrollingTest extends JupiterTestBase {
 
   private long getScrollTop() {
     wait.until(presenceOfElementLocated(By.tagName("body")));
-    return (Long)((JavascriptExecutor)driver).executeScript("return document.body.scrollTop;");
+    return (Long) ((JavascriptExecutor) driver).executeScript("return document.body.scrollTop;");
   }
 
   @SwitchToTopAfterTest
   @Test
   @NotYetImplemented(SAFARI)
   @Ignore(value = FIREFOX,
-    reason ="frame not scrolled into view",
+    reason = "frame not scrolled into view",
     issue = "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")
   public void testShouldBeAbleToClickElementInATallFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_tall_frame.html"));

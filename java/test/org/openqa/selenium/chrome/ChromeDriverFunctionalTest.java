@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.chrome;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assumptions.assumeThat;
+
+import com.google.common.util.concurrent.Uninterruptibles;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -37,14 +44,6 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.Assumptions.assumeThat;
-
-import com.google.common.util.concurrent.Uninterruptibles;
 
 class ChromeDriverFunctionalTest extends JupiterTestBase {
 
@@ -53,7 +52,7 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void builderGeneratesDefaultChromeOptions() {
+  void builderGeneratesDefaultChromeOptions() {
     localDriver = ChromeDriver.builder().build();
     Capabilities capabilities = ((ChromeDriver) localDriver).getCapabilities();
 
@@ -63,11 +62,12 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void builderOverridesDefaultChromeOptions() {
+  void builderOverridesDefaultChromeOptions() {
     ChromeOptions options = new ChromeOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = ChromeDriver.builder().oneOf(options).build();
-    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(
+      Duration.ofMillis(1));
   }
 
   @Test
@@ -115,13 +115,14 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
     assertThat(checkPermission(localDriver, CLIPBOARD_WRITE)).isEqualTo("granted");
   }
 
-  public String checkPermission(WebDriver driver, String permission){
-    @SuppressWarnings("unchecked")
-    Map<String, Object> result = (Map<String, Object>) ((JavascriptExecutor) driver).executeAsyncScript(
-      "callback = arguments[arguments.length - 1];"
-      + "callback(navigator.permissions.query({"
-      + "name: arguments[0]"
-      + "}));", permission);
+  private String checkPermission(WebDriver driver, String permission) {
+    Map<String, Object>
+      result =
+      (Map<String, Object>) ((JavascriptExecutor) driver).executeAsyncScript(
+        "callback = arguments[arguments.length - 1];"
+        + "callback(navigator.permissions.query({"
+        + "name: arguments[0]"
+        + "}));", permission);
     return result.get("state").toString();
   }
 
@@ -170,19 +171,19 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
     ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
     networkConditions.setLatency(Duration.ofMillis(200));
 
-      conditions.setNetworkConditions(networkConditions);
-      assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
+    conditions.setNetworkConditions(networkConditions);
+    assertThat(conditions.getNetworkConditions().getLatency()).isEqualTo(Duration.ofMillis(200));
 
     conditions.deleteNetworkConditions();
 
-      try {
-        conditions.getNetworkConditions();
-        fail("If Network Conditions were deleted, should not be able to get Network Conditions");
-      } catch (WebDriverException e) {
-        if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
-          throw e;
-        }
+    try {
+      conditions.getNetworkConditions();
+      fail("If Network Conditions were deleted, should not be able to get Network Conditions");
+    } catch (WebDriverException e) {
+      if (!e.getMessage().contains("network conditions must be set before it can be retrieved")) {
+        throw e;
       }
+    }
   }
 
   @Test

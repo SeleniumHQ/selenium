@@ -21,8 +21,6 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
@@ -37,6 +35,26 @@ import java.util.Map;
 class WebElementToJsonConverterTest {
 
   private static final WebElementToJsonConverter CONVERTER = new WebElementToJsonConverter();
+
+  private static WrappedWebElement wrapElement(WebElement element) {
+    return new WrappedWebElement(element);
+  }
+
+  private static void assertIsWebElementObject(Object value, String expectedKey) {
+    assertThat(value).isInstanceOf(Map.class);
+
+    Map<?, ?> map = (Map<?, ?>) value;
+    assertThat(map).hasSize(2);
+    assertThat(map.containsKey(Dialect.OSS.getEncodedElementKey())).isTrue();
+    assertThat(map.get(Dialect.OSS.getEncodedElementKey())).isEqualTo(expectedKey);
+    assertThat(map.containsKey(Dialect.W3C.getEncodedElementKey())).isTrue();
+    assertThat(map.get(Dialect.W3C.getEncodedElementKey())).isEqualTo(expectedKey);
+  }
+
+  private static void assertContentsInOrder(List<?> list, Object... expectedContents) {
+    List<Object> expected = asList(expectedContents);
+    assertThat(list).isEqualTo(expected);
+  }
 
   @Test
   void returnsPrimitivesAsIs() {
@@ -109,25 +127,24 @@ class WebElementToJsonConverterTest {
   @Test
   void requiresMapsToHaveStringKeys() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> CONVERTER.apply(ImmutableMap.of(new Object(), "bunny")));
+      .isThrownBy(() -> CONVERTER.apply(Map.of(new Object(), "bunny")));
   }
 
   @Test
   void requiresNestedMapsToHaveStringKeys() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> CONVERTER.apply(
-            ImmutableMap.of("one", ImmutableMap.of("two", ImmutableMap.of(3, "not good")))));
+      .isThrownBy(() -> CONVERTER.apply(
+        Map.of("one", Map.of("two", Map.of(3, "not good")))));
   }
 
   @Test
   void convertsASimpleMap() {
-    Object converted = CONVERTER.apply(ImmutableMap.of(
-        "one", 1,
-        "fruit", "apples",
-        "honest", true));
+    Object converted = CONVERTER.apply(Map.of(
+      "one", 1,
+      "fruit", "apples",
+      "honest", true));
     assertThat(converted).isInstanceOf(Map.class);
 
-    @SuppressWarnings("unchecked")
     Map<String, Object> map = (Map<String, Object>) converted;
     assertThat(map).hasSize(3);
     assertThat(map.get("one")).isEqualTo(1);
@@ -135,14 +152,13 @@ class WebElementToJsonConverterTest {
     assertThat(map.get("honest")).isEqualTo(true);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void convertsANestedMap() {
-    Object converted = CONVERTER.apply(ImmutableMap.of(
-        "one", 1,
-        "fruit", "apples",
-        "honest", true,
-        "nested", ImmutableMap.of("bugs", "bunny")));
+    Object converted = CONVERTER.apply(Map.of(
+      "one", 1,
+      "fruit", "apples",
+      "honest", true,
+      "nested", Map.of("bugs", "bunny")));
     assertThat(converted).isInstanceOf(Map.class);
 
     Map<String, Object> map = (Map<String, Object>) converted;
@@ -157,7 +173,6 @@ class WebElementToJsonConverterTest {
     assertThat(map.get("bugs")).isEqualTo("bunny");
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void convertsAListWithAWebElement() {
     RemoteWebElement element = new RemoteWebElement();
@@ -175,13 +190,12 @@ class WebElementToJsonConverterTest {
     assertIsWebElementObject(list.get(1), "anotherId");
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void convertsAMapWithAWebElement() {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 
-    Object value = CONVERTER.apply(ImmutableMap.of("one", element));
+    Object value = CONVERTER.apply(Map.of("one", element));
     assertThat(value).isInstanceOf(Map.class);
 
     Map<String, Object> map = (Map<String, Object>) value;
@@ -191,13 +205,13 @@ class WebElementToJsonConverterTest {
 
   @Test
   void convertsAnArray() {
-    Object value = CONVERTER.apply(new Object[] {
-        "abc123", true, 123, Math.PI
+    Object value = CONVERTER.apply(new Object[]{
+      "abc123", true, 123, Math.PI
     });
 
     assertThat(value).isInstanceOf(Collection.class);
     assertContentsInOrder(new ArrayList<>((Collection<?>) value),
-        "abc123", true, 123, Math.PI);
+                          "abc123", true, 123, Math.PI);
   }
 
   @Test
@@ -205,31 +219,11 @@ class WebElementToJsonConverterTest {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 
-    Object value = CONVERTER.apply(new Object[] { element });
+    Object value = CONVERTER.apply(new Object[]{element});
     assertContentsInOrder(new ArrayList<>((Collection<?>) value),
-        ImmutableMap.of(
-          Dialect.OSS.getEncodedElementKey(), "abc123",
-          Dialect.W3C.getEncodedElementKey(), "abc123"));
-  }
-
-  private static WrappedWebElement wrapElement(WebElement element) {
-    return new WrappedWebElement(element);
-  }
-
-  private static void assertIsWebElementObject(Object value, String expectedKey) {
-    assertThat(value).isInstanceOf(Map.class);
-
-    Map<?, ?>  map = (Map<?, ?>) value;
-    assertThat(map).hasSize(2);
-    assertThat(map.containsKey(Dialect.OSS.getEncodedElementKey())).isTrue();
-    assertThat(map.get(Dialect.OSS.getEncodedElementKey())).isEqualTo(expectedKey);
-    assertThat(map.containsKey(Dialect.W3C.getEncodedElementKey())).isTrue();
-    assertThat(map.get(Dialect.W3C.getEncodedElementKey())).isEqualTo(expectedKey);
-  }
-
-  private static void assertContentsInOrder(List<?> list, Object... expectedContents) {
-    List<Object> expected = asList(expectedContents);
-    assertThat(list).isEqualTo(expected);
+                          Map.of(
+                            Dialect.OSS.getEncodedElementKey(), "abc123",
+                            Dialect.W3C.getEncodedElementKey(), "abc123"));
   }
 
 }

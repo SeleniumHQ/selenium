@@ -43,155 +43,21 @@ import java.util.regex.Pattern;
 public class SeleneseTestBase {
 
   private static final boolean THIS_IS_WINDOWS = File.pathSeparator.equals(";");
-
-  private boolean captureScreenShotOnFailure = false;
-
-  /** Use this object to run all of your selenium tests */
+  /**
+   * Use this object to run all of your selenium tests
+   */
   protected Selenium selenium;
-
   protected StringBuilder verificationErrors = new StringBuilder();
+  private boolean captureScreenShotOnFailure = false;
 
   public SeleneseTestBase() {
     super();
   }
 
   /**
-   * Calls this.setUp(null)
+   * Like JUnit's Assert.assertEquals, but knows how to compare string arrays
    *
-   * @see #setUp(String)
-   * @throws Exception because why not
-   */
-  public void setUp() throws Exception {
-    this.setUp(null);
-  }
-
-
-  /**
-   * Calls this.setUp with the specified url and a default browser. On Windows, the default browser
-   * is *iexplore; otherwise, the default browser is *firefox.
-   *
-   * @see #setUp(String, String)
-   * @param url the baseUrl to use for your Selenium tests
-   * @throws Exception just in case
-   *
-   */
-  public void setUp(String url) throws Exception {
-    setUp(url, runtimeBrowserString());
-  }
-
-  protected String runtimeBrowserString() {
-    String defaultBrowser = System.getProperty("selenium.defaultBrowser");
-    if (null != defaultBrowser && defaultBrowser.startsWith("${")) {
-      defaultBrowser = null;
-    }
-    if (defaultBrowser == null) {
-      if (THIS_IS_WINDOWS) {
-        defaultBrowser = "*iexplore";
-      } else {
-        defaultBrowser = "*firefox";
-      }
-    }
-    return defaultBrowser;
-  }
-
-  /**
-   * Creates a new DefaultSelenium object and starts it using the specified baseUrl and browser
-   * string. The port is selected as follows: if the server package's RemoteControlConfiguration
-   * class is on the classpath, that class' default port is used. Otherwise, if the "server.port"
-   * system property is specified, that is used - failing that, the default of 4444 is used.
-   *
-   * @see #setUp(String, String, int)
-   * @param url the baseUrl for your tests
-   * @param browserString the browser to use, e.g. *firefox
-   * @throws Exception throws them all!
-   */
-  public void setUp(String url, String browserString) throws Exception {
-    setUp(url, browserString, getDefaultPort());
-  }
-
-  protected int getDefaultPort() {
-    try {
-      Class<?> c = Class.forName("org.openqa.selenium.server.RemoteControlConfiguration");
-      Method getDefaultPort = c.getMethod("getDefaultPort");
-      Number portNumber = (Number) getDefaultPort.invoke(null);
-      return portNumber.intValue();
-    } catch (ReflectiveOperationException | NumberFormatException e) {
-      return Integer.getInteger("selenium.port", 4444);
-    }
-  }
-
-  /**
-   * Creates a new DefaultSelenium object and starts it using the specified baseUrl and browser
-   * string. The port is selected as follows: if the server package's RemoteControlConfiguration
-   * class is on the classpath, that class' default port is used. Otherwise, if the "server.port"
-   * system property is specified, that is used - failing that, the default of 4444 is used.
-   *
-   * @see #setUp(String, String, int)
-   * @param url the baseUrl for your tests
-   * @param browserString the browser to use, e.g. *firefox
-   * @param port the port that you want to run your tests on
-   */
-  public void setUp(String url, String browserString, int port) {
-    if (url == null) {
-      url = "http://localhost:" + port;
-    }
-    selenium = new DefaultSelenium("localhost", port, browserString, url);
-    selenium.start();
-  }
-
-  /** Like assertTrue, but fails at the end of the test (during tearDown)
-   * @param b boolean to verify is true
-   */
-  public void verifyTrue(boolean b) {
-    try {
-      assertTrue(b);
-    } catch (Error e) {
-      verificationErrors.append(throwableToString(e));
-    }
-  }
-
-  /** Like assertFalse, but fails at the end of the test (during tearDown)
-   * @param b boolean to verify is false
-   */
-  public void verifyFalse(boolean b) {
-    try {
-      assertFalse(b);
-    } catch (Error e) {
-      verificationErrors.append(throwableToString(e));
-    }
-  }
-
-  /** @return  the body text of the current page */
-  public String getText() {
-    return selenium.getEval("this.page().bodyText()");
-  }
-
-  /** Like assertEquals, but fails at the end of the test (during tearDown)
-   * @param actual the actual object expected
-   * @param expected object that you want to compare to actual
-   */
-  public void verifyEquals(Object expected, Object actual) {
-    try {
-      assertEquals(expected, actual);
-    } catch (Error e) {
-      verificationErrors.append(throwableToString(e));
-    }
-  }
-
-  /** Like assertEquals, but fails at the end of the test (during tearDown)
-   * @param actual the actual object expected
-   * @param expected object that you want to compare to actual
-   */
-  public void verifyEquals(boolean expected, boolean actual) {
-    try {
-      assertEquals(expected, actual);
-    } catch (Error e) {
-      verificationErrors.append(throwableToString(e));
-    }
-  }
-
-  /** Like JUnit's Assert.assertEquals, but knows how to compare string arrays
-   * @param actual the actual object expected
+   * @param actual   the actual object expected
    * @param expected object that you want to compare to actual
    */
   public static void assertEquals(Object expected, Object actual) {
@@ -209,23 +75,26 @@ public class SeleneseTestBase {
       assertEquals((String[]) expected, (String[]) actual);
     } else {
       assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead",
-          expected.equals(actual));
+                 expected.equals(actual));
     }
   }
 
-  /** Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML Selenese
-   * @param actual the actual object expected
+  /**
+   * Like JUnit's Assert.assertEquals, but handles "regexp:" strings like HTML Selenese
+   *
+   * @param actual   the actual object expected
    * @param expected object that you want to compare to actual
    */
   public static void assertEquals(String expected, String actual) {
     assertTrue("Expected \"" + expected + "\" but saw \"" + actual + "\" instead",
-        seleniumEquals(expected, actual));
+               seleniumEquals(expected, actual));
   }
 
   /**
    * Like JUnit's Assert.assertEquals, but joins the string array with commas, and handles "regexp:"
    * strings like HTML Selenese
-   * @param actual the actual object expected
+   *
+   * @param actual   the actual object expected
    * @param expected object that you want to compare to actual
    */
   public static void assertEquals(String expected, String[] actual) {
@@ -236,7 +105,7 @@ public class SeleneseTestBase {
    * Compares two strings, but handles "regexp:" strings like HTML Selenese
    *
    * @param expectedPattern expression of expected
-   * @param actual expression of actual
+   * @param actual          expression of actual
    * @return true if actual matches the expectedPattern, or false otherwise
    */
   public static boolean seleniumEquals(String expectedPattern, String actual) {
@@ -284,13 +153,14 @@ public class SeleneseTestBase {
     expectedGlob = expectedGlob.replaceAll("\\?", ".");
     if (!Pattern.compile(expectedGlob, Pattern.DOTALL).matcher(actual).matches()) {
       System.out.println("expected \"" + actual + "\" to match glob \"" + expectedPattern
-          + "\" (had transformed the glob into regexp \"" + expectedGlob + "\"");
+                         + "\" (had transformed the glob into regexp \"" + expectedGlob + "\"");
       return false;
     }
     return true;
   }
 
-  private static Optional<Boolean> handleRegex(String prefix, String expectedPattern, String actual, int flags) {
+  private static Optional<Boolean> handleRegex(String prefix, String expectedPattern, String actual,
+                                               int flags) {
     if (expectedPattern.startsWith(prefix)) {
       String expectedRegEx = expectedPattern.replaceFirst(prefix, ".*") + ".*";
       Pattern p = Pattern.compile(expectedRegEx, flags);
@@ -306,10 +176,10 @@ public class SeleneseTestBase {
   /**
    * Compares two objects, but handles "regexp:" strings like HTML Selenese
    *
-   * @see #seleniumEquals(String, String)
-   * @param actual the actual object expected
+   * @param actual   the actual object expected
    * @param expected object that you want to compare to actual
    * @return true if actual matches the expectedPattern, or false otherwise
+   * @see #seleniumEquals(String, String)
    */
   public static boolean seleniumEquals(Object expected, Object actual) {
     if (expected == null) {
@@ -321,8 +191,10 @@ public class SeleneseTestBase {
     return expected.equals(actual);
   }
 
-  /** Asserts that two string arrays have identical string contents
-   * @param actual the actual object expected
+  /**
+   * Asserts that two string arrays have identical string contents
+   *
+   * @param actual   the actual object expected
    * @param expected object that you want to compare to actual
    */
   public static void assertEquals(String[] expected, String[] actual) {
@@ -332,20 +204,8 @@ public class SeleneseTestBase {
     }
   }
 
-  /**
-   * Asserts that two string arrays have identical string contents (fails at the end of the test,
-   * during tearDown)
-   * @param actual the actual object expected
-   * @param expected object that you want to compare to actual
-   */
-  public void verifyEquals(String[] expected, String[] actual) {
-    String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(expected, actual);
-    if (comparisonDumpIfNotEqual != null) {
-      verificationErrors.append(comparisonDumpIfNotEqual);
-    }
-  }
-
-  private static String verifyEqualsAndReturnComparisonDumpIfNot(String[] expected, String[] actual) {
+  private static String verifyEqualsAndReturnComparisonDumpIfNot(String[] expected,
+                                                                 String[] actual) {
     boolean misMatch = expected.length != actual.length;
     for (int j = 0; j < expected.length; j++) {
       if (!seleniumEquals(expected[j], actual[j])) {
@@ -355,7 +215,7 @@ public class SeleneseTestBase {
     }
     if (misMatch) {
       return "Expected " + stringArrayToString(expected) + " but saw "
-          + stringArrayToString(actual);
+             + stringArrayToString(actual);
     }
     return null;
   }
@@ -387,32 +247,10 @@ public class SeleneseTestBase {
     return sb.toString();
   }
 
-  /** Like assertNotEquals, but fails at the end of the test (during tearDown)
-   * @param actual the actual object expected
-   * @param expected object that you want to compare to actual
-   */
-  public void verifyNotEquals(Object expected, Object actual) {
-    try {
-      assertNotEquals(expected, actual);
-    } catch (AssertionError e) {
-      verificationErrors.append(throwableToString(e));
-    }
-  }
-
-  /** Like assertNotEquals, but fails at the end of the test (during tearDown)
-   * @param actual the actual object expected
-   * @param expected object that you want to compare to actual
-   */
-  public void verifyNotEquals(boolean expected, boolean actual) {
-    try {
-      assertNotEquals(Boolean.valueOf(expected), Boolean.valueOf(actual));
-    } catch (AssertionError e) {
-      verificationErrors.append(throwableToString(e));
-    }
-  }
-
-  /** Asserts that two objects are not the same (compares using .equals())
-   * @param actual the actual object expected
+  /**
+   * Asserts that two objects are not the same (compares using .equals())
+   *
+   * @param actual   the actual object expected
    * @param expected object that you want to compare to actual
    */
   public static void assertNotEquals(Object expected, Object actual) {
@@ -428,7 +266,9 @@ public class SeleneseTestBase {
   }
 
   static public void assertTrue(String message, boolean condition) {
-    if (!condition) fail(message);
+    if (!condition) {
+      fail(message);
+    }
   }
 
   static public void assertTrue(boolean condition) {
@@ -443,21 +283,211 @@ public class SeleneseTestBase {
     assertTrue(null, !condition);
   }
 
-  /** Asserts that two booleans are not the same
-   * @param actual the actual object expected
+  /**
+   * Asserts that two booleans are not the same
+   *
+   * @param actual   the actual object expected
    * @param expected object that you want to compare to actual
    */
   public static void assertNotEquals(boolean expected, boolean actual) {
     assertNotEquals(Boolean.valueOf(expected), Boolean.valueOf(actual));
   }
 
-  /** Sleeps for the specified number of milliseconds
+  /**
+   * Calls this.setUp(null)
+   *
+   * @throws Exception because why not
+   * @see #setUp(String)
+   */
+  public void setUp() throws Exception {
+    this.setUp(null);
+  }
+
+  /**
+   * Calls this.setUp with the specified url and a default browser. On Windows, the default browser
+   * is *iexplore; otherwise, the default browser is *firefox.
+   *
+   * @param url the baseUrl to use for your Selenium tests
+   * @throws Exception just in case
+   * @see #setUp(String, String)
+   */
+  public void setUp(String url) throws Exception {
+    setUp(url, runtimeBrowserString());
+  }
+
+  protected String runtimeBrowserString() {
+    String defaultBrowser = System.getProperty("selenium.defaultBrowser");
+    if (null != defaultBrowser && defaultBrowser.startsWith("${")) {
+      defaultBrowser = null;
+    }
+    if (defaultBrowser == null) {
+      if (THIS_IS_WINDOWS) {
+        defaultBrowser = "*iexplore";
+      } else {
+        defaultBrowser = "*firefox";
+      }
+    }
+    return defaultBrowser;
+  }
+
+  /**
+   * Creates a new DefaultSelenium object and starts it using the specified baseUrl and browser
+   * string. The port is selected as follows: if the server package's RemoteControlConfiguration
+   * class is on the classpath, that class' default port is used. Otherwise, if the "server.port"
+   * system property is specified, that is used - failing that, the default of 4444 is used.
+   *
+   * @param url           the baseUrl for your tests
+   * @param browserString the browser to use, e.g. *firefox
+   * @throws Exception throws them all!
+   * @see #setUp(String, String, int)
+   */
+  public void setUp(String url, String browserString) throws Exception {
+    setUp(url, browserString, getDefaultPort());
+  }
+
+  protected int getDefaultPort() {
+    try {
+      Class<?> c = Class.forName("org.openqa.selenium.server.RemoteControlConfiguration");
+      Method getDefaultPort = c.getMethod("getDefaultPort");
+      Number portNumber = (Number) getDefaultPort.invoke(null);
+      return portNumber.intValue();
+    } catch (ReflectiveOperationException | NumberFormatException e) {
+      return Integer.getInteger("selenium.port", 4444);
+    }
+  }
+
+  /**
+   * Creates a new DefaultSelenium object and starts it using the specified baseUrl and browser
+   * string. The port is selected as follows: if the server package's RemoteControlConfiguration
+   * class is on the classpath, that class' default port is used. Otherwise, if the "server.port"
+   * system property is specified, that is used - failing that, the default of 4444 is used.
+   *
+   * @param url           the baseUrl for your tests
+   * @param browserString the browser to use, e.g. *firefox
+   * @param port          the port that you want to run your tests on
+   * @see #setUp(String, String, int)
+   */
+  public void setUp(String url, String browserString, int port) {
+    if (url == null) {
+      url = "http://localhost:" + port;
+    }
+    selenium = new DefaultSelenium("localhost", port, browserString, url);
+    selenium.start();
+  }
+
+  /**
+   * Like assertTrue, but fails at the end of the test (during tearDown)
+   *
+   * @param b boolean to verify is true
+   */
+  public void verifyTrue(boolean b) {
+    try {
+      assertTrue(b);
+    } catch (Error e) {
+      verificationErrors.append(throwableToString(e));
+    }
+  }
+
+  /**
+   * Like assertFalse, but fails at the end of the test (during tearDown)
+   *
+   * @param b boolean to verify is false
+   */
+  public void verifyFalse(boolean b) {
+    try {
+      assertFalse(b);
+    } catch (Error e) {
+      verificationErrors.append(throwableToString(e));
+    }
+  }
+
+  /**
+   * @return the body text of the current page
+   */
+  public String getText() {
+    return selenium.getEval("this.page().bodyText()");
+  }
+
+  /**
+   * Like assertEquals, but fails at the end of the test (during tearDown)
+   *
+   * @param actual   the actual object expected
+   * @param expected object that you want to compare to actual
+   */
+  public void verifyEquals(Object expected, Object actual) {
+    try {
+      assertEquals(expected, actual);
+    } catch (Error e) {
+      verificationErrors.append(throwableToString(e));
+    }
+  }
+
+  /**
+   * Like assertEquals, but fails at the end of the test (during tearDown)
+   *
+   * @param actual   the actual object expected
+   * @param expected object that you want to compare to actual
+   */
+  public void verifyEquals(boolean expected, boolean actual) {
+    try {
+      assertEquals(expected, actual);
+    } catch (Error e) {
+      verificationErrors.append(throwableToString(e));
+    }
+  }
+
+  /**
+   * Asserts that two string arrays have identical string contents (fails at the end of the test,
+   * during tearDown)
+   *
+   * @param actual   the actual object expected
+   * @param expected object that you want to compare to actual
+   */
+  public void verifyEquals(String[] expected, String[] actual) {
+    String comparisonDumpIfNotEqual = verifyEqualsAndReturnComparisonDumpIfNot(expected, actual);
+    if (comparisonDumpIfNotEqual != null) {
+      verificationErrors.append(comparisonDumpIfNotEqual);
+    }
+  }
+
+  /**
+   * Like assertNotEquals, but fails at the end of the test (during tearDown)
+   *
+   * @param actual   the actual object expected
+   * @param expected object that you want to compare to actual
+   */
+  public void verifyNotEquals(Object expected, Object actual) {
+    try {
+      assertNotEquals(expected, actual);
+    } catch (AssertionError e) {
+      verificationErrors.append(throwableToString(e));
+    }
+  }
+
+  /**
+   * Like assertNotEquals, but fails at the end of the test (during tearDown)
+   *
+   * @param actual   the actual object expected
+   * @param expected object that you want to compare to actual
+   */
+  public void verifyNotEquals(boolean expected, boolean actual) {
+    try {
+      assertNotEquals(Boolean.valueOf(expected), Boolean.valueOf(actual));
+    } catch (AssertionError e) {
+      verificationErrors.append(throwableToString(e));
+    }
+  }
+
+  /**
+   * Sleeps for the specified number of milliseconds
+   *
    * @param millisecs number of
    */
   public void pause(int millisecs) {
     try {
       Thread.sleep(millisecs);
-    } catch (InterruptedException e) {}
+    } catch (InterruptedException e) {
+    }
   }
 
   /**
@@ -472,12 +502,16 @@ public class SeleneseTestBase {
     }
   }
 
-  /** Clears out the list of verification errors */
+  /**
+   * Clears out the list of verification errors
+   */
   public void clearVerificationErrors() {
     verificationErrors = new StringBuilder();
   }
 
-  /** checks for verification errors and stops the browser
+  /**
+   * checks for verification errors and stops the browser
+   *
    * @throws Exception actually, just AssertionError, but someone was lazy?
    */
   public void tearDown() throws Exception {

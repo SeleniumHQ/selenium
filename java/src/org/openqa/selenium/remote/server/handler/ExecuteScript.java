@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ExecuteScript extends WebDriverHandler<Object> {
+
   private volatile String script;
   private volatile List<Object> args = new ArrayList<>();
 
@@ -45,7 +46,7 @@ public class ExecuteScript extends WebDriverHandler<Object> {
     List<?> params = (List<?>) allParameters.get("args");
 
     args = Lists.newArrayList(Iterables.transform(params,
-        new ArgumentConverter(getKnownElements())));
+                                                  new ArgumentConverter(getKnownElements())));
   }
 
   @Override

@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.ie;
 
+import static org.openqa.selenium.remote.Browser.IE;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -26,9 +30,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 
 import java.util.Optional;
-
-import static org.openqa.selenium.remote.Browser.IE;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class InternetExplorerDriverInfo implements WebDriverInfo {
@@ -71,11 +72,12 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }
 
-    return Optional.of(new InternetExplorerDriver(new InternetExplorerOptions().merge(capabilities)));
+    return Optional.of(
+      new InternetExplorerDriver(new InternetExplorerOptions().merge(capabilities)));
   }
 }

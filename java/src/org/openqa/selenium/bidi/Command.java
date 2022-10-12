@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.bidi;
 
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
@@ -42,7 +41,7 @@ public class Command<X> {
 
   private Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
     this.method = Require.nonNull("Method name", method);
-    this.params = ImmutableMap.copyOf(Require.nonNull("Command parameters", params));
+    this.params = Map.copyOf(Require.nonNull("Command parameters", params));
     this.mapper = Require.nonNull("Mapper for result", mapper);
   }
 

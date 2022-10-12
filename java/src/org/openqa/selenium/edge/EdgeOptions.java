@@ -16,11 +16,11 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+import static org.openqa.selenium.remote.Browser.EDGE;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.remote.CapabilityType;
-
-import static org.openqa.selenium.remote.Browser.EDGE;
 
 /**
  * Class to manage options specific to {@link EdgeDriver}.
@@ -39,7 +39,6 @@ import static org.openqa.selenium.remote.Browser.EDGE;
  *     new URL("http://localhost:4444/"),
  *     new EdgeOptions());
  * </code></pre>
- *
  */
 public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 

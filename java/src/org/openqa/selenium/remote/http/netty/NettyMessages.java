@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.remote.http.netty;
 
+import static org.asynchttpclient.Dsl.request;
+import static org.openqa.selenium.remote.http.Contents.empty;
+import static org.openqa.selenium.remote.http.Contents.memoize;
+import static org.openqa.selenium.remote.http.netty.NettyClient.toClampedInt;
+
 import com.google.common.base.Strings;
 
 import org.asynchttpclient.Dsl;
@@ -35,11 +40,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
-
-import static org.asynchttpclient.Dsl.request;
-import static org.openqa.selenium.remote.http.Contents.empty;
-import static org.openqa.selenium.remote.http.Contents.memoize;
-import static org.openqa.selenium.remote.http.netty.NettyClient.toClampedInt;
 
 class NettyMessages {
 

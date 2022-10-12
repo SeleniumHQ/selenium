@@ -59,17 +59,17 @@ class Preferences {
   private static final Pattern PREFERENCE_PATTERN =
     Pattern.compile("user_pref\\(\"([^\"]+)\", (\"?.+?\"?)\\);");
 
-  private Map<String, Object> immutablePrefs = new HashMap<>();
-  private Map<String, Object> allPrefs = new HashMap<>();
+  private final Map<String, Object> immutablePrefs = new HashMap<>();
+  private final Map<String, Object> allPrefs = new HashMap<>();
 
-  public Preferences() {
+  Preferences() {
   }
 
-  public Preferences(Reader defaults) {
+  Preferences(Reader defaults) {
     readDefaultPreferences(defaults);
   }
 
-  public Preferences(Reader defaults, File userPrefs) {
+  Preferences(Reader defaults, File userPrefs) {
     readDefaultPreferences(defaults);
     try (Reader reader = Files.newBufferedReader(userPrefs.toPath(), Charset.defaultCharset())) {
       readPreferences(reader);
@@ -78,11 +78,11 @@ class Preferences {
     }
   }
 
-  public Preferences(File userPrefs) {
+  Preferences(File userPrefs) {
     readUserPrefs(userPrefs);
   }
 
-  public Preferences(Reader defaults, Reader reader) {
+  Preferences(Reader defaults, Reader reader) {
     readDefaultPreferences(defaults);
     try {
       readPreferences(reader);
@@ -126,12 +126,12 @@ class Preferences {
     }
   }
 
-  public void setPreference(String key, Object value) {
+  void setPreference(String key, Object value) {
     if (value instanceof String) {
       if (isStringified((String) value)) {
         throw new IllegalArgumentException(
-            String.format("Preference values must be plain strings: %s: %s",
-                          key, value));
+          String.format("Preference values must be plain strings: %s: %s",
+                        key, value));
       }
       allPrefs.put(key, value);
     } else if (value instanceof Number) {
@@ -153,12 +153,12 @@ class Preferences {
     }
   }
 
-  public void addTo(Preferences prefs) {
+  void addTo(Preferences prefs) {
     // TODO(simon): Stop being lazy
     prefs.allPrefs.putAll(allPrefs);
   }
 
-  public void writeTo(Writer writer) throws IOException {
+  void writeTo(Writer writer) throws IOException {
     for (Map.Entry<String, Object> pref : allPrefs.entrySet()) {
       writer.append("user_pref(\"").append(pref.getKey()).append("\", ");
       writer.append(valueAsPreference(pref.getValue()));
@@ -194,7 +194,7 @@ class Preferences {
   }
 
   @VisibleForTesting
-  protected Object getPreference(String key) {
+  Object getPreference(String key) {
     return allPrefs.get(key);
   }
 
@@ -212,9 +212,10 @@ class Preferences {
     Require.nonNull("Key", key);
     Require.nonNull("Value", value);
     Require.stateCondition(!immutablePrefs.containsKey(key) ||
-                  (immutablePrefs.containsKey(key) && value.equals(immutablePrefs.get(key))),
-                  "Preference %s may not be overridden: frozen value=%s, requested value=%s",
-                  key, immutablePrefs.get(key), value);
+                           (immutablePrefs.containsKey(key) && value.equals(
+                             immutablePrefs.get(key))),
+                           "Preference %s may not be overridden: frozen value=%s, requested value=%s",
+                           key, immutablePrefs.get(key), value);
     if (MAX_SCRIPT_RUN_TIME_KEY.equals(key)) {
       int n;
       if (value instanceof String) {
@@ -223,12 +224,12 @@ class Preferences {
         n = (Integer) value;
       } else {
         throw new IllegalStateException(String.format(
-            "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
+          "%s value must be a number: %s", MAX_SCRIPT_RUN_TIME_KEY, value.getClass().getName()));
       }
       Require.stateCondition(n == 0 || n >= DEFAULT_MAX_SCRIPT_RUN_TIME,
-                    "%s must be == 0 || >= %s",
-                    MAX_SCRIPT_RUN_TIME_KEY,
-                    DEFAULT_MAX_SCRIPT_RUN_TIME);
+                             "%s must be == 0 || >= %s",
+                             MAX_SCRIPT_RUN_TIME_KEY,
+                             DEFAULT_MAX_SCRIPT_RUN_TIME);
     }
   }
 

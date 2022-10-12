@@ -25,6 +25,7 @@ package org.openqa.selenium.net;
  * some of the jdk1.2 idioms from this interface into jdk1.5 idioms.
  */
 public interface NetworkInterfaceProvider {
+
   Iterable<NetworkInterface> getNetworkInterfaces();
 
   // TODO: Remove this whole method

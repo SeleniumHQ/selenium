@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.grid.sessionmap.redis;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,17 +34,13 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
+
 import redis.embedded.RedisServer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.openqa.selenium.testing.Safely.safelyCall;
 
 class RedisBackedSessionMapTest {
 

@@ -20,14 +20,20 @@ package org.openqa.selenium.docker;
 import java.time.Duration;
 
 public interface DockerProtocol {
+
   String version();
 
   Image getImage(String imageName) throws DockerException;
 
   Container create(ContainerConfig info);
+
   void startContainer(ContainerId id) throws DockerException;
+
   boolean isContainerPresent(ContainerId id) throws DockerException;
+
   void stopContainer(ContainerId id, Duration timeout) throws DockerException;
+
   ContainerInfo inspectContainer(ContainerId id) throws DockerException;
+
   ContainerLogs getContainerLogs(ContainerId id) throws DockerException;
 }

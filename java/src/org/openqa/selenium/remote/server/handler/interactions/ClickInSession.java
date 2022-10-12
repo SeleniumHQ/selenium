@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import java.util.Map;
 
 public class ClickInSession extends WebDriverHandler<Void> {
+
   volatile boolean leftMouseButton = true;
 
   public ClickInSession(Session session) {

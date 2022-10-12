@@ -26,8 +26,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchElementException;
@@ -44,22 +44,6 @@ import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedWebElementTest {
-
-  private static class Fixture {
-
-    WebDriver originalDriver;
-    WebDriver decoratedDriver;
-    WebElement original;
-    WebElement decorated;
-
-    public Fixture() {
-      original = mock(WebElement.class);
-      originalDriver = mock(WebDriver.class);
-      when(originalDriver.findElement(any())).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
-      decorated = decoratedDriver.findElement(By.id("test"));
-    }
-  }
 
   @Test
   void canConvertDecoratedToString() {
@@ -222,5 +206,21 @@ class DecoratedWebElementTest {
   @Test
   void getScreenshotAs() {
     verifyFunction($ -> $.getScreenshotAs(OutputType.BASE64), "");
+  }
+
+  private static class Fixture {
+
+    WebDriver originalDriver;
+    WebDriver decoratedDriver;
+    WebElement original;
+    WebElement decorated;
+
+    public Fixture() {
+      original = mock(WebElement.class);
+      originalDriver = mock(WebDriver.class);
+      when(originalDriver.findElement(any())).thenReturn(original);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
+      decorated = decoratedDriver.findElement(By.id("test"));
+    }
   }
 }

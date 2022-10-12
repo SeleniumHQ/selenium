@@ -40,7 +40,7 @@ public interface WebDriverInfo {
    * {@link #createDriver(Capabilities)} and a session will be created.
    *
    * @return The smallest set of {@link Capabilities} required to create an instance of this
-   *   {@link WebDriver} implementation.
+   * {@link WebDriver} implementation.
    */
   Capabilities getCanonicalCapabilities();
 

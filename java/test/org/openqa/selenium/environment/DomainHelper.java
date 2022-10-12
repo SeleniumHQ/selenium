@@ -32,17 +32,17 @@ public class DomainHelper {
 
   public String getUrlForFirstValidHostname(String path) {
     Require.precondition(
-        isValidHostname(appServer.getHostName()),
-        "Expected valid hostname but was %s",
-        appServer.getHostName());
+      isValidHostname(appServer.getHostName()),
+      "Expected valid hostname but was %s",
+      appServer.getHostName());
     return appServer.whereIs(path);
   }
 
   public String getSecureUrlForFirstValidHostname(String path) {
     Require.precondition(
-        isValidHostname(appServer.getHostName()),
-        "Expected valid hostname but was %s",
-        appServer.getHostName());
+      isValidHostname(appServer.getHostName()),
+      "Expected valid hostname but was %s",
+      appServer.getHostName());
     return appServer.whereIsSecure(path);
   }
 
@@ -57,7 +57,8 @@ public class DomainHelper {
   public boolean checkIsOnValidHostname() {
     boolean correct = getHostName() != null && isValidHostname(getHostName());
     if (!correct) {
-      System.out.println("Skipping test: unable to find domain name to use, hostname: " + getHostName());
+      System.out.println(
+        "Skipping test: unable to find domain name to use, hostname: " + getHostName());
     }
     return correct;
   }
@@ -66,7 +67,8 @@ public class DomainHelper {
     boolean correct = getHostName() != null && isValidSubDomain(getHostName());
 
     if (!correct) {
-      System.out.println("Skipping test: unable to find sub domain name to use, hostname: " + getHostName());
+      System.out.println(
+        "Skipping test: unable to find sub domain name to use, hostname: " + getHostName());
     }
     return correct;
   }
@@ -76,18 +78,18 @@ public class DomainHelper {
     boolean correct = getHostName() != null && isValidHostname(hostname);
     if (!correct) {
       System.out.println(
-          "Skipping test: unable to find alternate domain name to use, hostname: " + hostname);
+        "Skipping test: unable to find alternate domain name to use, hostname: " + hostname);
     }
     return correct;
   }
 
   private boolean isValidSubDomain(String hostname) {
     /*
-    * /etc/hosts needs to have e.g.
-    *
-    * 127.0.0.1       sub.selenium.tests
-    *
-    */
+     * /etc/hosts needs to have e.g.
+     *
+     * 127.0.0.1       sub.selenium.tests
+     *
+     */
     return hostname.split("\\.").length >= 3;
   }
 

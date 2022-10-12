@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.ie;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -35,15 +39,11 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 import java.awt.*;
 import java.time.Duration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
-
 class InternetExplorerDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void builderGeneratesDefaultIEOptions() {
+  void builderGeneratesDefaultIEOptions() {
     localDriver = InternetExplorerDriver.builder().build();
     Capabilities capabilities = ((InternetExplorerDriver) localDriver).getCapabilities();
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
@@ -52,11 +52,12 @@ class InternetExplorerDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void builderOverridesDefaultIEOptions() {
+  void builderOverridesDefaultIEOptions() {
     InternetExplorerOptions options = new InternetExplorerOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = InternetExplorerDriver.builder().oneOf(options).build();
-    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(
+      Duration.ofMillis(1));
   }
 
   @Test
@@ -71,7 +72,7 @@ class InternetExplorerDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canRestartTheIeDriverInATightLoop() {
+  void canRestartTheIeDriverInATightLoop() {
     for (int i = 0; i < 5; i++) {
       WebDriver driverInLoop = newIeDriver();
       driverInLoop.quit();
@@ -80,7 +81,7 @@ class InternetExplorerDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canStartMultipleIeDriverInstances() {
+  void canStartMultipleIeDriverInstances() {
     WebDriver firstDriver = newIeDriver();
     WebDriver secondDriver = newIeDriver();
     try {

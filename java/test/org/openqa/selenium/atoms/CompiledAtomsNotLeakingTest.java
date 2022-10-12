@@ -24,8 +24,8 @@ import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextFactory;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.json.Json;
 
@@ -99,7 +99,7 @@ class CompiledAtomsNotLeakingTest {
       // Should result in {status:0,value:{status:0,value:3}}
       // Global scope should not be modified.
       String nestedScript = String.format("(%s).call(null, %s, ['return 1+2;'], true)",
-          fragment, fragment);
+                                          fragment, fragment);
 
       String jsonResult = (String) eval(context, nestedScript, RESOURCE_PATH);
 
@@ -108,10 +108,10 @@ class CompiledAtomsNotLeakingTest {
       assertThat(result.get("status")).isInstanceOf(Long.class).as(jsonResult).isEqualTo(0L);
       assertThat(result.get("value")).isInstanceOf(Map.class);
       assertThat(result.get("value"))
-          .asInstanceOf(MAP)
-          .hasSize(2)
-          .containsEntry("status", 0L)
-          .containsEntry("value", 3L);
+        .asInstanceOf(MAP)
+        .hasSize(2)
+        .containsEntry("status", 0L)
+        .containsEntry("value", 3L);
 
       assertThat(eval(context, "_")).isEqualTo(1234);
       return null;

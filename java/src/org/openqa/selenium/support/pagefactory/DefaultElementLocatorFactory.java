@@ -22,6 +22,7 @@ import org.openqa.selenium.SearchContext;
 import java.lang.reflect.Field;
 
 public final class DefaultElementLocatorFactory implements ElementLocatorFactory {
+
   private final SearchContext searchContext;
 
   public DefaultElementLocatorFactory(SearchContext searchContext) {

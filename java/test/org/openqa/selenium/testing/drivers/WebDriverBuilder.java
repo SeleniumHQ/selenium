@@ -36,6 +36,7 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   private static final LinkedList<Runnable> shutdownActions = new LinkedList<>();
   private static final Set<WebDriver> managedDrivers = new HashSet<>();
+
   static {
     shutdownActions.add(() -> managedDrivers.forEach(WebDriver::quit));
     Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdownActions.forEach(Runnable::run)));
@@ -62,7 +63,9 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
 
   public WebDriver get(Capabilities desiredCapabilities) {
     Objects.requireNonNull(desiredCapabilities, "Capabilities to use must be set");
-    Capabilities desiredCaps = Objects.requireNonNull(Browser.detect()).getCapabilities().merge(desiredCapabilities);
+    Capabilities
+      desiredCaps =
+      Objects.requireNonNull(Browser.detect()).getCapabilities().merge(desiredCapabilities);
 
     WebDriver driver =
       Stream.of(new ExternalDriverSupplier(desiredCaps),
@@ -73,7 +76,8 @@ public class WebDriverBuilder implements Supplier<WebDriver> {
         .map(Supplier::get)
         .filter(Objects::nonNull)
         .findFirst()
-        .orElseThrow(() -> new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities));
+        .orElseThrow(
+          () -> new RuntimeException("Cannot instantiate driver instance: " + desiredCapabilities));
 
     modifyLogLevel(driver);
     managedDrivers.add(driver);

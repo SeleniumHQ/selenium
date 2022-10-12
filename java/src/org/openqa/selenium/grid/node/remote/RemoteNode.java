@@ -17,7 +17,17 @@
 
 package org.openqa.selenium.grid.node.remote;
 
-import com.google.common.collect.ImmutableMap;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.reader;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
@@ -58,17 +68,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.reader;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 public class RemoteNode extends Node {
 
   public static final Json JSON = new Json();
@@ -79,23 +78,23 @@ public class RemoteNode extends Node {
   private final Filter addSecret;
 
   public RemoteNode(
-      Tracer tracer,
-      HttpClient.Factory clientFactory,
-      NodeId id,
-      URI externalUri,
-      Secret registrationSecret,
-      Collection<Capabilities> capabilities) {
+    Tracer tracer,
+    HttpClient.Factory clientFactory,
+    NodeId id,
+    URI externalUri,
+    Secret registrationSecret,
+    Collection<Capabilities> capabilities) {
     super(tracer, id, externalUri, registrationSecret);
     this.externalUri = Require.nonNull("External URI", externalUri);
     this.capabilities = ImmutableSet.copyOf(capabilities);
 
-    this.client = Require.nonNull("HTTP client factory", clientFactory)
+    client = Require.nonNull("HTTP client factory", clientFactory)
       .createClient(fromUri(externalUri));
 
-    this.healthCheck = new RemoteCheck();
+    healthCheck = new RemoteCheck();
 
     Require.nonNull("Registration secret", registrationSecret);
-    this.addSecret = new AddSecretFilter(registrationSecret);
+    addSecret = new AddSecretFilter(registrationSecret);
   }
 
   @Override
@@ -110,10 +109,10 @@ public class RemoteNode extends Node {
   @Override
   public boolean isSupporting(Capabilities capabilities) {
     return this.capabilities.stream()
-        .anyMatch(caps -> caps.getCapabilityNames().stream()
-            .allMatch(name -> Objects.equals(
-                caps.getCapability(name),
-                capabilities.getCapability(name))));
+      .anyMatch(caps -> caps.getCapabilityNames().stream()
+        .allMatch(name -> Objects.equals(
+          caps.getCapability(name),
+          capabilities.getCapability(name))));
 
   }
 
@@ -136,7 +135,9 @@ public class RemoteNode extends Node {
 
       if (response.containsKey("sessionResponse")) {
         String rawResponse = JSON.toJson(response.get("sessionResponse"));
-        CreateSessionResponse sessionResponse = JSON.toType(rawResponse, CreateSessionResponse.class);
+        CreateSessionResponse
+          sessionResponse =
+          JSON.toType(rawResponse, CreateSessionResponse.class);
         return Either.right(sessionResponse);
       } else {
         String rawException = JSON.toJson(response.get("exception"));
@@ -248,20 +249,20 @@ public class RemoteNode extends Node {
 
     HttpResponse res = client.with(addSecret).execute(req);
 
-    if(res.getStatus() == HTTP_OK) {
+    if (res.getStatus() == HTTP_OK) {
       draining = true;
     }
   }
 
-  @SuppressWarnings("unused")
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
+    return Map.of(
       "id", getId(),
       "uri", externalUri,
       "capabilities", capabilities);
   }
 
   private class RemoteCheck implements HealthCheck {
+
     @Override
     public Result check() {
       try {
@@ -278,12 +279,13 @@ public class RemoteNode extends Node {
             return new Result(UP, externalUri + " is ok");
 
           default:
-            throw new IllegalStateException("Unknown node availability: " + status.getAvailability());
+            throw new IllegalStateException(
+              "Unknown node availability: " + status.getAvailability());
         }
       } catch (RuntimeException e) {
         return new Result(
-            DOWN,
-            "Unable to determine node status: " + e.getMessage());
+          DOWN,
+          "Unable to determine node status: " + e.getMessage());
       }
     }
   }

@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestXPathLocators extends InternalSelenseTestBase {
+
   @Test
   void testXPathLocators() {
     selenium.open("test_locators.html");
@@ -33,19 +34,19 @@ public class TestXPathLocators extends InternalSelenseTestBase {
     verifyFalse(selenium.isElementPresent("xpath=//a[@href='foo']"));
     verifyEquals(selenium.getAttribute("xpath=//a[contains(@href,'#id1')]/@class"), "a1");
     verifyTrue(selenium.isElementPresent("xpath=//a[text()=\"this is the" + "\u00a0"
-        + "third element\"]"));
+                                         + "third element\"]"));
     verifyEquals(selenium.getText("//a"), "this is the first element");
     verifyEquals(selenium.getAttribute("//a[contains(@href,'#id1')]/@class"), "a1");
     verifyEquals(
-        selenium.getText("xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td"),
-        "theCellText");
+      selenium.getText("xpath=(//table[@class='stylee'])//th[text()='theHeaderText']/../td"),
+      "theCellText");
     selenium.click("//input[@name='name2' and @value='yes']");
     verifyTrue(selenium.isElementPresent("xpath=//*[text()=\"right\"]"));
     verifyEquals(selenium.getValue("xpath=//div[@id='nested1']/div[1]//input[2]"), "nested3b");
     verifyEquals(selenium.getValue("xpath=id('nested1')/div[1]//input[2]"), "nested3b");
     verifyEquals(
-        selenium.getValue("xpath=id('anotherNested')//div[contains(@id, 'useful')]//input"),
-        "winner");
+      selenium.getValue("xpath=id('anotherNested')//div[contains(@id, 'useful')]//input"),
+      "winner");
     selenium.assignId("xpath=//*[text()=\"right\"]", "rightButton");
     verifyTrue(selenium.isElementPresent("rightButton"));
     verifyEquals(selenium.getXpathCount("id('nested1')/div[1]//input"), "2");

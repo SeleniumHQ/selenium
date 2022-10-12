@@ -17,7 +17,15 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+
+
+
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -28,13 +36,6 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.util.Objects;
-
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
 
 class AddToSessionMap implements HttpHandler {
 
@@ -62,7 +63,7 @@ class AddToSessionMap implements HttpHandler {
 
       sessions.add(session);
 
-      return new HttpResponse().setContent(asJson(ImmutableMap.of("value", true)));
+      return new HttpResponse().setContent(asJson(Map.of("value", true)));
     }
   }
 }

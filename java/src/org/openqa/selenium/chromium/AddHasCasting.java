@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
@@ -29,14 +28,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, AdditionalHttpCommands {
+public abstract class AddHasCasting
+  implements AugmenterProvider<HasCasting>, AdditionalHttpCommands {
 
-  public static final String GET_CAST_SINKS = "getCastSinks";
-  public static final String SET_CAST_SINK_TO_USE = "selectCastSink";
-  public static final String START_CAST_TAB_MIRRORING = "startCastTabMirroring";
-  public static final String START_CAST_DESKTOP_MIRRORING = "startDesktopMirroring";
-  public static final String GET_CAST_ISSUE_MESSAGE = "getCastIssueMessage";
-  public static final String STOP_CASTING = "stopCasting";
+  protected static final String GET_CAST_SINKS = "getCastSinks";
+  protected static final String SET_CAST_SINK_TO_USE = "selectCastSink";
+  protected static final String START_CAST_TAB_MIRRORING = "startCastTabMirroring";
+  protected static final String START_CAST_DESKTOP_MIRRORING = "startDesktopMirroring";
+  protected static final String GET_CAST_ISSUE_MESSAGE = "getCastIssueMessage";
+  protected static final String STOP_CASTING = "stopCasting";
 
   @Override
   public abstract Map<String, CommandInfo> getAdditionalCommands();
@@ -52,7 +52,6 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
   @Override
   public HasCasting getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasCasting() {
-      @SuppressWarnings("unchecked")
       @Override
       public List<Map<String, String>> getCastSinks() {
         return (List<Map<String, String>>) executeMethod.execute(GET_CAST_SINKS, null);
@@ -62,21 +61,22 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
       public void selectCastSink(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(SET_CAST_SINK_TO_USE, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(SET_CAST_SINK_TO_USE, Map.of("sinkName", deviceName));
       }
 
       @Override
       public void startDesktopMirroring(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(START_CAST_DESKTOP_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(START_CAST_DESKTOP_MIRRORING,
+                              Map.of("sinkName", deviceName));
       }
 
       @Override
       public void startTabMirroring(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(START_CAST_TAB_MIRRORING, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(START_CAST_TAB_MIRRORING, Map.of("sinkName", deviceName));
       }
 
       @Override
@@ -88,7 +88,7 @@ public abstract class AddHasCasting implements AugmenterProvider<HasCasting>, Ad
       public void stopCasting(String deviceName) {
         Require.nonNull("Device Name", deviceName);
 
-        executeMethod.execute(STOP_CASTING, ImmutableMap.of("sinkName", deviceName));
+        executeMethod.execute(STOP_CASTING, Map.of("sinkName", deviceName));
       }
     };
   }

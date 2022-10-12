@@ -17,12 +17,17 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.unmodifiableSet;
+import static net.bytebuddy.matcher.ElementMatchers.anyOf;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.description.annotation.AnnotationDescription;
 import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.MethodDelegation;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
@@ -48,10 +53,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static java.util.Collections.unmodifiableSet;
-import static net.bytebuddy.matcher.ElementMatchers.anyOf;
-import static net.bytebuddy.matcher.ElementMatchers.named;
-
 /**
  * Enhance the interfaces implemented by an instance of the
  * {@link org.openqa.selenium.WebDriver} based on the returned
@@ -61,29 +62,23 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  */
 @Beta
 public class Augmenter {
+
   private final Set<Augmentation<?>> augmentations;
 
   public Augmenter() {
     Set<Augmentation<?>> augmentations = new HashSet<>();
     Stream.of(
-        new AddApplicationCache(),
-        new AddLocationContext(),
-        new AddNetworkConnection(),
-        new AddRotatable(),
-        new AddWebStorage()
+      new AddApplicationCache(),
+      new AddLocationContext(),
+      new AddNetworkConnection(),
+      new AddRotatable(),
+      new AddWebStorage()
     ).forEach(provider -> augmentations.add(createAugmentation(provider)));
 
     StreamSupport.stream(ServiceLoader.load(AugmenterProvider.class).spliterator(), false)
-        .forEach(provider -> augmentations.add(createAugmentation(provider)));
+      .forEach(provider -> augmentations.add(createAugmentation(provider)));
 
     this.augmentations = unmodifiableSet(augmentations);
-  }
-
-  private static <X> Augmentation<X> createAugmentation(AugmenterProvider<X> provider) {
-    Require.nonNull("Interface provider", provider);
-    return new Augmentation<>(provider.isApplicable(),
-                              provider.getDescribedInterface(),
-                              provider::getImplementation);
   }
 
   private Augmenter(Set<Augmentation<?>> augmentations, Augmentation<?> toAdd) {
@@ -95,6 +90,13 @@ public class Augmenter {
     toUse.add(toAdd);
 
     this.augmentations = unmodifiableSet(toUse);
+  }
+
+  private static <X> Augmentation<X> createAugmentation(AugmenterProvider<X> provider) {
+    Require.nonNull("Interface provider", provider);
+    return new Augmentation<>(provider.isApplicable(),
+                              provider.getDescribedInterface(),
+                              provider::getImplementation);
   }
 
   public <X> Augmenter addDriverAugmentation(AugmenterProvider<X> provider) {
@@ -124,9 +126,11 @@ public class Augmenter {
     Require.nonNull("Capability predicate", whenThisMatches);
     Require.nonNull("Interface to implement", implementThis);
     Require.nonNull("Concrete implementation", usingThis, "of %s", implementThis);
-    Require.precondition(implementThis.isInterface(), "Expected %s to be an interface", implementThis);
+    Require.precondition(implementThis.isInterface(), "Expected %s to be an interface",
+                         implementThis);
 
-    return new Augmenter(augmentations, new Augmentation<>(whenThisMatches, implementThis, usingThis));
+    return new Augmenter(augmentations,
+                         new Augmentation<>(whenThisMatches, implementThis, usingThis));
   }
 
   private Predicate<Capabilities> check(String capabilityName) {
@@ -153,7 +157,8 @@ public class Augmenter {
    */
   public WebDriver augment(WebDriver driver) {
     Require.nonNull("WebDriver", driver);
-    Require.precondition(driver instanceof HasCapabilities, "Driver must have capabilities", driver);
+    Require.precondition(driver instanceof HasCapabilities, "Driver must have capabilities",
+                         driver);
 
     Capabilities caps = ImmutableCapabilities.copyOf(((HasCapabilities) driver).getCapabilities());
 
@@ -172,8 +177,11 @@ public class Augmenter {
     // Grab a remote execution method, if possible
     RemoteWebDriver remote = extractRemoteWebDriver(driver);
     ExecuteMethod execute = remote == null ?
-      (commandName, parameters) -> { throw new WebDriverException("Cannot execute remote command: " + commandName); } :
-      new RemoteExecuteMethod(remote);
+                            (commandName, parameters) -> {
+                              throw new WebDriverException(
+                                "Cannot execute remote command: " + commandName);
+                            } :
+                            new RemoteExecuteMethod(remote);
 
     DynamicType.Builder<? extends WebDriver> builder = new ByteBuddy()
       .subclass(driver.getClass())
@@ -248,6 +256,7 @@ public class Augmenter {
   }
 
   private static class Augmentation<X> {
+
     public final Predicate<Capabilities> whenMatches;
     public final Class<X> interfaceClass;
     public final BiFunction<Capabilities, ExecuteMethod, X> implementation;

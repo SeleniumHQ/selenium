@@ -20,8 +20,10 @@ package org.openqa.selenium.bidi;
 import java.util.Optional;
 
 public interface HasBiDi {
+
   default BiDi getBiDi() {
-    return maybeGetBiDi().orElseThrow(() -> new BiDiException("Unable to create a BiDi connection"));
+    return maybeGetBiDi().orElseThrow(
+      () -> new BiDiException("Unable to create a BiDi connection"));
   }
 
   Optional<BiDi> maybeGetBiDi();

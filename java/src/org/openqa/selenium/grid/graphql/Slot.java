@@ -17,25 +17,24 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.UUID;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
 public class Slot {
 
   private static final DateTimeFormatter DATE_TIME_FORMATTER =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withZone(ZoneId.systemDefault());
-
+    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withZone(ZoneId.systemDefault());
+  private static final Json JSON = new Json();
   private final UUID id;
   private final Capabilities stereotype;
   private final Instant lastStarted;
-  private static final Json JSON = new Json();
 
   public Slot(UUID id, Capabilities stereotype, Instant lastStarted) {
     this.id = Require.nonNull("Slot ID", id);

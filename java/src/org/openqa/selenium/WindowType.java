@@ -18,23 +18,18 @@
 package org.openqa.selenium;
 
 /**
- * Represents the type of a new browser window that may be created.
+ * Represents the type of new browser window that may be created.
  */
 public enum WindowType {
 
-  WINDOW ("window"),
-  TAB ("tab"),
+  WINDOW("window"),
+  TAB("tab"),
   ;
 
   private final String text;
 
   WindowType(String text) {
     this.text = text;
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(text);
   }
 
   public static WindowType fromString(String text) {
@@ -46,5 +41,10 @@ public enum WindowType {
       }
     }
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(text);
   }
 }

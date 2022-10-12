@@ -35,6 +35,6 @@ public class NodeRemovedEvent extends Event {
   public static EventListener<NodeStatus> listener(Consumer<NodeStatus> handler) {
     Require.nonNull("Handler", handler);
 
-    return new EventListener<>(NODE_REMOVED_EVENT, NodeStatus.class , handler);
+    return new EventListener<>(NODE_REMOVED_EVENT, NodeStatus.class, handler);
   }
 }

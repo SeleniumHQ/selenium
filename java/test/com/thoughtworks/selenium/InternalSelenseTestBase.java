@@ -17,10 +17,15 @@
 
 package com.thoughtworks.selenium;
 
+import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
+import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
+
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Resources;
+
 import com.thoughtworks.selenium.webdriven.WebDriverBackedSelenium;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
@@ -54,10 +59,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
-import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
-
 public class InternalSelenseTestBase extends SeleneseTestBase {
+
   private static final Logger log = Logger.getLogger(InternalSelenseTestBase.class.getName());
 
   private static final ImmutableSet<String> ATOM_TARGETS = ImmutableSet.of(
@@ -77,66 +80,6 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
 
   private static Selenium INSTANCE;
 
-  @BeforeEach
-  public void setup(TestInfo testInfo) {
-    // filter
-    String onlyRun = System.getProperty("only_run");
-    Assumptions.assumeTrue(onlyRun == null ||
-      Arrays.asList(onlyRun.split(",")).contains(this.getClass().getSimpleName()));
-    String mth = System.getProperty("method");
-
-    Assumptions.assumeTrue(mth == null || (testInfo.getTestMethod().isPresent()
-      && Arrays.asList(mth.split(",")).contains(testInfo.getTestMethod().get().getName())));
-
-    // traceMethodName
-    log.info(">>> Starting " + testInfo.getTestMethod().get().getName());
-
-    // initializeSelenium
-    selenium = INSTANCE;
-    if (selenium != null) {
-      return;
-    }
-
-    MutableCapabilities caps = new MutableCapabilities(createCapabilities());
-    caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, IGNORE);
-
-    String baseUrl = whereIs("/common/rc/tests/html/");
-
-    WebDriver driver = new WebDriverBuilder().get(caps);
-    selenium = new WebDriverBackedSelenium(driver, baseUrl);
-
-    selenium.setBrowserLogLevel("debug");
-    INSTANCE = selenium;
-
-
-    if (!(selenium instanceof WebDriverBackedSelenium)) {
-      return;
-    }
-
-    // addNecessaryJavascriptCommands
-    // We need to be a on page where we can execute JS
-    driver = ((WrapsDriver) selenium).getWrappedDriver();
-    driver.get(whereIs("/selenium-server"));
-
-    try {
-      URL scriptUrl =
-        Resources.getResource(getClass(), "/com/thoughtworks/selenium/testHelpers.js");
-      String script = Resources.toString(scriptUrl, StandardCharsets.UTF_8);
-
-      ((JavascriptExecutor) driver).executeScript(script);
-    } catch (IOException e) {
-      fail("Cannot read script: " + Throwables.getStackTraceAsString(e));
-    }
-
-    // returnFocusToMainWindow
-    if (selenium == null) {
-      return;
-    }
-
-    selenium.selectWindow("");
-    selenium.windowFocus();
-  }
-
   @BeforeAll
   public static void buildJavascriptLibraries() throws IOException {
     if (!Files.exists(InProject.findProjectRoot().resolve("Rakefile"))) {
@@ -154,11 +97,11 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     for (String target : ATOM_TARGETS) {
       bazel.build("//javascript/selenium-atoms:" + target);
       copy("javascript/selenium-atoms/" + target + ".js",
-        "com/thoughtworks/selenium/webdriven/" + target + ".js");
+           "com/thoughtworks/selenium/webdriven/" + target + ".js");
     }
     bazel.build("//third_party/js/sizzle:sizzle");
     copy("third_party/js/sizzle/sizzle.js",
-      "com/thoughtworks/selenium/webdriven/sizzle.js");
+         "com/thoughtworks/selenium/webdriven/sizzle.js");
   }
 
   private static void copy(String copyFrom, String copyTo) {
@@ -194,6 +137,67 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
       selenium.stop();
       INSTANCE = null;
     }
+  }
+
+  @BeforeEach
+  public void setup(TestInfo testInfo) {
+    // filter
+    String onlyRun = System.getProperty("only_run");
+    Assumptions.assumeTrue(onlyRun == null ||
+                           Arrays.asList(onlyRun.split(","))
+                             .contains(this.getClass().getSimpleName()));
+    String mth = System.getProperty("method");
+
+    Assumptions.assumeTrue(mth == null || (testInfo.getTestMethod().isPresent()
+                                           && Arrays.asList(mth.split(","))
+                                             .contains(testInfo.getTestMethod().get().getName())));
+
+    // traceMethodName
+    log.info(">>> Starting " + testInfo.getTestMethod().get().getName());
+
+    // initializeSelenium
+    selenium = INSTANCE;
+    if (selenium != null) {
+      return;
+    }
+
+    MutableCapabilities caps = new MutableCapabilities(createCapabilities());
+    caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, IGNORE);
+
+    String baseUrl = whereIs("/common/rc/tests/html/");
+
+    WebDriver driver = new WebDriverBuilder().get(caps);
+    selenium = new WebDriverBackedSelenium(driver, baseUrl);
+
+    selenium.setBrowserLogLevel("debug");
+    INSTANCE = selenium;
+
+    if (!(selenium instanceof WebDriverBackedSelenium)) {
+      return;
+    }
+
+    // addNecessaryJavascriptCommands
+    // We need to be a on page where we can execute JS
+    driver = ((WrapsDriver) selenium).getWrappedDriver();
+    driver.get(whereIs("/selenium-server"));
+
+    try {
+      URL scriptUrl =
+        Resources.getResource(getClass(), "/com/thoughtworks/selenium/testHelpers.js");
+      String script = Resources.toString(scriptUrl, StandardCharsets.UTF_8);
+
+      ((JavascriptExecutor) driver).executeScript(script);
+    } catch (IOException e) {
+      fail("Cannot read script: " + Throwables.getStackTraceAsString(e));
+    }
+
+    // returnFocusToMainWindow
+    if (selenium == null) {
+      return;
+    }
+
+    selenium.selectWindow("");
+    selenium.windowFocus();
   }
 
   private Capabilities createCapabilities() {

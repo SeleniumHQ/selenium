@@ -32,6 +32,10 @@ public class NodeId implements Comparable<NodeId>, Serializable {
     this.uuid = Require.nonNull("Actual id", uuid);
   }
 
+  private static NodeId fromJson(UUID id) {
+    return new NodeId(id);
+  }
+
   public UUID toUuid() {
     return uuid;
   }
@@ -63,9 +67,5 @@ public class NodeId implements Comparable<NodeId>, Serializable {
 
   private Object toJson() {
     return uuid;
-  }
-
-  private static NodeId fromJson(UUID id) {
-    return new NodeId(id);
   }
 }

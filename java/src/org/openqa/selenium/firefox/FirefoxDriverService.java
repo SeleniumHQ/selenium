@@ -28,24 +28,24 @@ import java.util.Map;
 public abstract class FirefoxDriverService extends DriverService {
 
   /**
-   * @param executable The GeckoDriver executable.
-   * @param port Which port to start the GeckoDriver on.
-   * @param timeout Timeout waiting for driver server to start.
-   * @param args The arguments to the launched server.
+   * @param executable  The GeckoDriver executable.
+   * @param port        Which port to start the GeckoDriver on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
   public FirefoxDriverService(
-      File executable,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
   public static abstract class Builder<DS extends FirefoxDriverService, B extends FirefoxDriverService.Builder<?, ?>>
-      extends DriverService.Builder<DS, B> {
+    extends DriverService.Builder<DS, B> {
 
     protected abstract Builder withOptions(FirefoxOptions options);
   }

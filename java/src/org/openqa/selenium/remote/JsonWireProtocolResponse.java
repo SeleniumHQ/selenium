@@ -84,8 +84,8 @@ class JsonWireProtocolResponse implements HandshakeResponse {
       }
 
       @SuppressWarnings("unchecked") Map<String, Object>
-          caps =
-          (Map<String, Object>) rawCapabilities;
+        caps =
+        (Map<String, Object>) rawCapabilities;
 
       String sessionId = (String) rawSessionId;
       return new ProtocolHandshake.Result(Dialect.OSS, sessionId, caps);

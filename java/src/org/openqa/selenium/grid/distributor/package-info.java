@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 /**
  * The {@link org.openqa.selenium.grid.distributor.Distributor} is responsible
  * for assigning new calls to Create Session to a

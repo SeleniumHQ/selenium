@@ -29,7 +29,9 @@ import java.net.URL;
  * Utility class for loading JavaScript resources.
  */
 class JavaScriptLoader {
-  private JavaScriptLoader() {}  // Utility class.
+
+  private JavaScriptLoader() {
+  }  // Utility class.
 
   static String loadResource(String resourcePath) throws IOException {
     URL resourceUrl = JavaScriptLoader.class.getResource(resourcePath);

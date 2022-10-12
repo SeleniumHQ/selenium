@@ -36,7 +36,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-abstract class HttpMessage<M extends HttpMessage<M>>  {
+abstract class HttpMessage<M extends HttpMessage<M>> {
 
   private final Multimap<String, String> headers = ArrayListMultimap.create();
   private final Map<String, Object> attributes = new HashMap<>();
@@ -73,10 +73,10 @@ abstract class HttpMessage<M extends HttpMessage<M>>  {
 
   public Iterable<String> getHeaders(String name) {
     return headers.entries().stream()
-        .filter(e -> Objects.nonNull(e.getKey()))
-        .filter(e -> e.getKey().equalsIgnoreCase(name.toLowerCase()))
-        .map(Map.Entry::getValue)
-        .collect(Collectors.toList());
+      .filter(e -> Objects.nonNull(e.getKey()))
+      .filter(e -> e.getKey().equalsIgnoreCase(name.toLowerCase()))
+      .map(Map.Entry::getValue)
+      .collect(Collectors.toList());
   }
 
   public String getHeader(String name) {
@@ -123,13 +123,13 @@ abstract class HttpMessage<M extends HttpMessage<M>>  {
     return charset;
   }
 
+  public Supplier<InputStream> getContent() {
+    return content;
+  }
+
   public M setContent(Supplier<InputStream> supplier) {
     this.content = Require.nonNull("Supplier", supplier);
     return self();
-  }
-
-  public Supplier<InputStream> getContent() {
-    return content;
   }
 
   @SuppressWarnings("unchecked")

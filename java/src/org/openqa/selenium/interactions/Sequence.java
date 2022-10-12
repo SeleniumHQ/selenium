@@ -50,14 +50,13 @@ public class Sequence implements Encodable {
   public Sequence addAction(Interaction action) {
     if (!action.isValidFor(device.getInputType())) {
       throw new IllegalArgumentException(String.format(
-          "Interaction (%s) is for wrong kind of input device: %s ",
-          action.getClass(),
-          device));
+        "Interaction (%s) is for wrong kind of input device: %s ",
+        action.getClass(),
+        device));
     }
     if (!(action instanceof Encodable)) {
       throw new IllegalArgumentException("Interaction must implement Encodable: " + action);
     }
-
 
     actions.add((Encodable) action);
 

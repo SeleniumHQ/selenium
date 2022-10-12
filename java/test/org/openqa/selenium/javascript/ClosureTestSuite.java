@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.javascript;
 
+import static org.assertj.core.api.Assumptions.assumeThat;
+
 import org.junit.jupiter.api.BeforeAll;
 
 import java.io.IOException;
-
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 class ClosureTestSuite extends JavaScriptTestSuite {
 

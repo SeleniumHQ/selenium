@@ -17,7 +17,20 @@
 
 package org.openqa.selenium.json;
 
-import com.google.common.collect.ImmutableMap;
+import static java.lang.Integer.valueOf;
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.SERVER;
+
 import com.google.common.collect.ImmutableSortedSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -62,20 +75,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Stream;
-
-import static java.lang.Integer.valueOf;
-import static java.time.format.DateTimeFormatter.ISO_INSTANT;
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
 
 @Tag("UnitTests")
 class JsonOutputTest {
@@ -144,10 +143,10 @@ class JsonOutputTest {
   @Test
   void shouldConvertNumbersAsLongs() {
     String json = convert(new Exception());
-    Map<?,?> map = new Json().toType(json, Map.class);
+    Map<?, ?> map = new Json().toType(json, Map.class);
 
     List<?> stack = (List<?>) map.get("stackTrace");
-    Map<?,?> line = (Map<?,?>) stack.get(0);
+    Map<?, ?> line = (Map<?, ?>) stack.get(0);
 
     Object o = line.get("lineNumber");
     assertThat(o).isInstanceOf(Long.class);
@@ -244,7 +243,7 @@ class JsonOutputTest {
 
     MutableCapabilities caps = new DesiredCapabilities("foo", "1", Platform.LINUX);
     caps.setCapability(CapabilityType.PROXY, proxy);
-    Map<String, ?> asMap = ImmutableMap.of("desiredCapabilities", caps);
+    Map<String, ?> asMap = Map.of("desiredCapabilities", caps);
     Command command = new Command(new SessionId("empty"), DriverCommand.NEW_SESSION, asMap);
 
     String json = convert(command.getParameters());
@@ -253,7 +252,7 @@ class JsonOutputTest {
     JsonObject capsAsMap = converted.get("desiredCapabilities").getAsJsonObject();
 
     assertThat(capsAsMap.get(CapabilityType.PROXY).getAsJsonObject().get("httpProxy").getAsString())
-        .isEqualTo(proxy.getHttpProxy());
+      .isEqualTo(proxy.getHttpProxy());
   }
 
   @Test
@@ -271,9 +270,9 @@ class JsonOutputTest {
   @Test
   void toJsonMethodCanConvertibleReturnedMap() {
     class ToJsonReturnsMap {
-      @SuppressWarnings("unused")
+
       public Map<String, Object> toJson() {
-        return ImmutableMap.of("cheese", "peas");
+        return Map.of("cheese", "peas");
       }
     }
 
@@ -287,7 +286,7 @@ class JsonOutputTest {
   @Test
   void toJsonMethodCanConvertReturnedCollection() {
     class ToJsonReturnsCollection {
-      @SuppressWarnings("unused")
+
       public Set<String> toJson() {
         return ImmutableSortedSet.of("cheese", "peas");
       }
@@ -309,7 +308,7 @@ class JsonOutputTest {
 
     Map<String, Object> value = new Json().toType(json, MAP_TYPE);
 
-    assertThat(value).isEqualTo(ImmutableMap.of("a key", "a value"));
+    assertThat(value).isEqualTo(Map.of("a key", "a value"));
   }
 
   @Test
@@ -318,12 +317,13 @@ class JsonOutputTest {
 
     Map<String, Object> value = new Json().toType(json, MAP_TYPE);
 
-    assertThat(value).isEqualTo(ImmutableMap.of("a key", "a value"));
+    assertThat(value).isEqualTo(Map.of("a key", "a value"));
   }
 
   @Test
   void toJsonDoesNotNeedToBePublic() {
     class PrivatelyMappable {
+
       private String toJson() {
         return "cheese";
       }
@@ -338,13 +338,13 @@ class JsonOutputTest {
   void convertsToJsonMethodResultToPrimitiveIfItIsNotJson() {
     // We want this parsed as a string primitive, but JsonParser will reject it
     // as malformed because of the slash.
-    String raw = "gnu/linux";
+    final String raw = "gnu/linux";
 
     // Make sure that the parser does actually reject this so the test is
     // meaningful. If this stops failing, choose a different malformed JSON
     // string.
     assertThatExceptionOfType(JsonException.class)
-        .isThrownBy(() -> new Json().toType(raw, String.class));
+      .isThrownBy(() -> new Json().toType(raw, String.class));
 
     String json = convert(new JsonAware(raw));
 
@@ -356,9 +356,8 @@ class JsonOutputTest {
     assertThat(json).isEqualTo("gnu/linux");
   }
 
-  @SuppressWarnings("DoNotCall")
   private void verifyStackTraceInJson(String json, StackTraceElement[] stackTrace) {
-    int posOfLastStackTraceElement = 0;
+    final int posOfLastStackTraceElement = 0;
     for (StackTraceElement e : stackTrace) {
       if (e.getFileName() != null) {
         // Native methods may have null filenames
@@ -411,7 +410,7 @@ class JsonOutputTest {
     RuntimeException clientError = new UnhandledAlertException("unhandled alert", "cheese!");
     Map<String, Object> obj = new Json().toType(new StringReader(convert(clientError)), Map.class);
     assertThat(obj).containsKey("alert");
-    assertThat(obj.get("alert")).isEqualTo(ImmutableMap.of("text", "cheese!"));
+    assertThat(obj.get("alert")).isEqualTo(Map.of("text", "cheese!"));
   }
 
 
@@ -424,13 +423,13 @@ class JsonOutputTest {
   @Test
   void shouldConvertDateFieldsToSecondsSince1970InUtcTime() {
     class Bean {
+
       private final Date date;
 
-      Bean(Date date) {
+      private Bean(Date date) {
         this.date = date;
       }
 
-      @SuppressWarnings("unused")
       public Date getDate() {
         return date;
       }
@@ -462,7 +461,7 @@ class JsonOutputTest {
     assertThat(converted.get("secure").getAsBoolean()).isTrue();
     assertThat(converted.get("httpOnly").getAsBoolean()).isTrue();
     assertThat(converted.get("expiry").getAsLong())
-        .isEqualTo(MILLISECONDS.toSeconds(expiry.getTime()));
+      .isEqualTo(MILLISECONDS.toSeconds(expiry.getTime()));
   }
 
   @Test
@@ -515,8 +514,8 @@ class JsonOutputTest {
   @Test
   void convertLogEntriesToJson() {
     long timestamp = new Date().getTime();
-    final LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");
-    final LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
+    LogEntry entry1 = new LogEntry(Level.OFF, timestamp, "entry1");
+    LogEntry entry2 = new LogEntry(Level.WARNING, timestamp, "entry2");
     LogEntries entries = new LogEntries(asList(entry1, entry2));
 
     String json = convert(entries);
@@ -536,7 +535,7 @@ class JsonOutputTest {
   @Test
   void shouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("some id");
-    String commandName = "some command";
+    final String commandName = "some command";
     Map<String, Object> parameters = new HashMap<>();
     parameters.put("param1", "value1");
     parameters.put("param2", "value2");
@@ -562,7 +561,7 @@ class JsonOutputTest {
   @Test
   void shouldConvertAUrlToAString() throws MalformedURLException {
     URL url = new URL("http://example.com/cheese?type=edam");
-    Map<String, URL> toConvert = ImmutableMap.of("url", url);
+    Map<String, URL> toConvert = Map.of("url", url);
 
     String seen = new Json().toJson(toConvert);
     JsonObject converted = JsonParser.parseString(seen).getAsJsonObject();
@@ -577,9 +576,9 @@ class JsonOutputTest {
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     Stream.of(SimplePropertyDescriptor.getPropertyDescriptors(Object.class))
-        .filter(pd -> !"class".equals(pd.getName()))
-        .map(SimplePropertyDescriptor::getName)
-        .forEach(name -> assertThat(converted.keySet()).contains(name));
+      .filter(pd -> !"class".equals(pd.getName()))
+      .map(SimplePropertyDescriptor::getName)
+      .forEach(name -> assertThat(converted.keySet()).contains(name));
   }
 
   @Test
@@ -588,13 +587,13 @@ class JsonOutputTest {
 
     try (JsonOutput jsonOutput = new Json().newOutput(builder)) {
       jsonOutput.beginArray()
-          .write("brie")
-          .write("peas")
-          .endArray();
+        .write("brie")
+        .write("peas")
+        .endArray();
     }
 
     assertThat((Object) new Json().toType(builder.toString(), Object.class))
-        .isEqualTo(Arrays.asList("brie", "peas"));
+      .isEqualTo(Arrays.asList("brie", "peas"));
   }
 
   @Test
@@ -603,32 +602,32 @@ class JsonOutputTest {
 
     try (JsonOutput jsonOutput = new Json().newOutput(builder)) {
       jsonOutput.beginObject()
-          .name("cheese").write("brie")
-          .name("vegetable").write("peas")
-          .endObject();
+        .name("cheese").write("brie")
+        .name("vegetable").write("peas")
+        .endObject();
     }
 
     assertThat((Object) new Json().toType(builder.toString(), MAP_TYPE))
-        .isEqualTo(ImmutableMap.of("cheese", "brie", "vegetable", "peas"));
+      .isEqualTo(Map.of("cheese", "brie", "vegetable", "peas"));
   }
 
   @Test
   void whenConvertingObjectsContainingClassesDoNotBeNoisy() {
-    String json = convert(ImmutableMap.of("thing", SimpleBean.class));
+    String json = convert(Map.of("thing", SimpleBean.class));
 
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
     assertThat(converted.size()).isEqualTo(1);
     assertThat(converted.getAsJsonPrimitive("thing").getAsString())
-        .isEqualTo(SimpleBean.class.getName());
+      .isEqualTo(SimpleBean.class.getName());
   }
 
   @Test
   void canDisablePrettyPrintingToGetSingleLineOutput() {
-    Map<String, Object> toEncode = ImmutableMap.of(
-        "ary", Arrays.asList("one", "two"),
-        "map", ImmutableMap.of("cheese", "cheddar"),
-        "string", "This has a \nnewline in it");
+    Map<String, Object> toEncode = Map.of(
+      "ary", Arrays.asList("one", "two"),
+      "map", Map.of("cheese", "cheddar"),
+      "string", "This has a \nnewline in it");
 
     StringBuilder json = new StringBuilder();
     try (JsonOutput out = new Json().newOutput(json)) {
@@ -649,7 +648,9 @@ class JsonOutputTest {
 
   @Test
   void shouldNotWriteOptionalFieldsThatAreEmptyInAMap() {
-    String json = convert(ImmutableMap.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
+    String
+      json =
+      convert(Map.of("there", Optional.of("cheese"), "notThere", Optional.empty()));
 
     JsonObject converted = JsonParser.parseString(json).getAsJsonObject();
 
@@ -670,6 +671,7 @@ class JsonOutputTest {
   @Test
   void shouldNotWriteOptionalValuesIfOnAnInstanceAndEmpty() {
     class WithOptionals {
+
       private final Optional<String> value = Optional.of("Cheese");
       private final Optional<String> noValue = Optional.empty();
 
@@ -693,6 +695,7 @@ class JsonOutputTest {
   @Test
   void onRequestShouldNotWriteClassNamesIntoJson() {
     class WithClassName {
+
       public String getCheese() {
         return "gouda";
       }
@@ -750,7 +753,6 @@ class JsonOutputTest {
     public abstract void eat(String foodStuff);
   }
 
-  @SuppressWarnings("unused")
   private static class SimpleBean {
 
     public String getFoo() {
@@ -766,16 +768,15 @@ class JsonOutputTest {
     }
   }
 
-  @SuppressWarnings("unused")
   private static class BeanWithArray {
+
     public String[] getNames() {
-      return new String[] {"peter", "paul", "mary"};
+      return new String[]{"peter", "paul", "mary"};
     }
   }
 
   private static class BeanWithCollection {
 
-    @SuppressWarnings("unused")
     public Set<?> getSomething() {
       Set<Integer> integers = new HashSet<>();
       integers.add(1);
@@ -786,16 +787,16 @@ class JsonOutputTest {
 
   private static class BeanWithNullCollection {
 
-    @SuppressWarnings("unused")
     public List<?> getList() {
       return null;
     }
   }
 
   class JsonAware {
-    private String convertedValue;
 
-    public JsonAware(String convertedValue) {
+    private final String convertedValue;
+
+    JsonAware(String convertedValue) {
       this.convertedValue = convertedValue;
     }
 
@@ -805,9 +806,10 @@ class JsonOutputTest {
   }
 
   class MappableJsonAware {
-    private String convertedValue;
 
-    public MappableJsonAware(String convertedValue) {
+    private final String convertedValue;
+
+    MappableJsonAware(String convertedValue) {
       this.convertedValue = convertedValue;
     }
 
@@ -816,35 +818,37 @@ class JsonOutputTest {
     }
 
     public Map<String, Object> asMap() {
-      return ImmutableMap.of("key", "value");
+      return Map.of("key", "value");
     }
   }
 
   class Mappable1 {
-    private String key;
-    private Object value;
 
-    public Mappable1(String key, Object value) {
+    private final String key;
+    private final Object value;
+
+    Mappable1(String key, Object value) {
       this.key = key;
       this.value = value;
     }
 
     public Map<String, Object> asMap() {
-      return ImmutableMap.of(key, value);
+      return Map.of(key, value);
     }
   }
 
   class Mappable2 {
-    private String key;
-    private Object value;
 
-    public Mappable2(String key, Object value) {
+    private final String key;
+    private final Object value;
+
+    Mappable2(String key, Object value) {
       this.key = key;
       this.value = value;
     }
 
     public Map<String, Object> toMap() {
-      return ImmutableMap.of(key, value);
+      return Map.of(key, value);
     }
   }
 }

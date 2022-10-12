@@ -60,24 +60,27 @@ class AlertsTest extends JupiterTestBase {
 
   private String alertPage(String alertText) {
     return appServer.create(new Page()
-        .withTitle("Testing Alerts")
-        .withBody("<a href='#' id='alert' onclick='alert(\""+alertText+"\");'>click me</a>"));
+                              .withTitle("Testing Alerts")
+                              .withBody("<a href='#' id='alert' onclick='alert(\"" + alertText
+                                        + "\");'>click me</a>"));
   }
 
   private String promptPage(String defaultText) {
     return appServer.create(new Page()
-        .withTitle("Testing Prompt")
-        .withScripts(
-            "function setInnerText(id, value) {",
-            "  document.getElementById(id).innerHTML = '<p>' + value + '</p>';",
-            "}",
-            defaultText == null
-              ? "function displayPrompt() { setInnerText('text', prompt('Enter something')); }"
-              : "function displayPrompt() { setInnerText('text', prompt('Enter something', '"+defaultText+"')); }")
+                              .withTitle("Testing Prompt")
+                              .withScripts(
+                                "function setInnerText(id, value) {",
+                                "  document.getElementById(id).innerHTML = '<p>' + value + '</p>';",
+                                "}",
+                                defaultText == null
+                                ? "function displayPrompt() { setInnerText('text', prompt('Enter something')); }"
+                                :
+                                "function displayPrompt() { setInnerText('text', prompt('Enter something', '"
+                                + defaultText + "')); }")
 
-        .withBody(
-            "<a href='#' id='prompt' onclick='displayPrompt();'>click me</a>",
-            "<div id='text'>acceptor</div>"));
+                              .withBody(
+                                "<a href='#' id='prompt' onclick='displayPrompt();'>click me</a>",
+                                "<div id='text'>acceptor</div>"));
   }
 
   @Test
@@ -85,7 +88,7 @@ class AlertsTest extends JupiterTestBase {
     driver.get(alertPage("cheese"));
 
     ((JavascriptExecutor) driver).executeScript(
-        "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
+      "window.alert = function(msg) { document.getElementById('text').innerHTML = msg; }");
     driver.findElement(By.id("alert")).click();
 
     // If we can perform any action, we're good to go
@@ -112,7 +115,7 @@ class AlertsTest extends JupiterTestBase {
     Alert alert = wait.until(alertIsPresent());
 
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> alert.sendKeys(null));
+      .isThrownBy(() -> alert.sendKeys(null));
   }
 
   @Test
@@ -132,7 +135,7 @@ class AlertsTest extends JupiterTestBase {
     driver.get(alertPage("cheese"));
 
     driver.findElement(By.id("alert")).click();
-    Alert alert =  wait.until(alertIsPresent());
+    Alert alert = wait.until(alertIsPresent());
     alert.dismiss();
 
     // If we can perform any action, we're good to go
@@ -183,7 +186,7 @@ class AlertsTest extends JupiterTestBase {
 
     Alert alert = wait.until(alertIsPresent());
     assertThatExceptionOfType(ElementNotInteractableException.class)
-        .isThrownBy(() -> alert.sendKeys("cheese"));
+      .isThrownBy(() -> alert.sendKeys("cheese"));
   }
 
   @Test
@@ -219,17 +222,19 @@ class AlertsTest extends JupiterTestBase {
     alert.accept();
 
     assertThatExceptionOfType(NoAlertPresentException.class)
-        .isThrownBy(alert::getText);
+      .isThrownBy(alert::getText);
   }
 
   @SwitchToTopAfterTest
   @Test
   void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     String iframe = appServer.create(new Page()
-        .withBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
+                                       .withBody(
+                                         "<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
     driver.get(appServer.create(new Page()
-        .withTitle("Testing Alerts")
-        .withBody(String.format("<iframe src='%s' name='iframeWithAlert'></iframe>", iframe))));
+                                  .withTitle("Testing Alerts")
+                                  .withBody(String.format(
+                                    "<iframe src='%s' name='iframeWithAlert'></iframe>", iframe))));
 
     driver.switchTo().frame("iframeWithAlert");
     driver.findElement(By.id("alertInFrame")).click();
@@ -244,12 +249,17 @@ class AlertsTest extends JupiterTestBase {
   @Test
   void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
     String iframe = appServer.create(new Page()
-        .withBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
+                                       .withBody(
+                                         "<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
     String iframe2 = appServer.create(new Page()
-        .withBody(String.format("<iframe src='%s' name='iframeWithAlert'></iframe>", iframe)));
+                                        .withBody(String.format(
+                                          "<iframe src='%s' name='iframeWithAlert'></iframe>",
+                                          iframe)));
     driver.get(appServer.create(new Page()
-        .withTitle("Testing Alerts")
-        .withBody(String.format("<iframe src='%s' name='iframeWithIframe'></iframe>", iframe2))));
+                                  .withTitle("Testing Alerts")
+                                  .withBody(String.format(
+                                    "<iframe src='%s' name='iframeWithIframe'></iframe>",
+                                    iframe2))));
 
     driver.switchTo().frame("iframeWithIframe").switchTo().frame("iframeWithAlert");
 
@@ -266,15 +276,16 @@ class AlertsTest extends JupiterTestBase {
     driver.get(alertPage("cheese"));
 
     assertThatExceptionOfType(NoAlertPresentException.class)
-        .isThrownBy(() -> driver.switchTo().alert());
+      .isThrownBy(() -> driver.switchTo().alert());
   }
 
   @Test
   void testSwitchingToMissingAlertInAClosedWindowThrows() {
     String blank = appServer.create(new Page());
     driver.get(appServer.create(new Page()
-        .withBody(String.format(
-            "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>", blank))));
+                                  .withBody(String.format(
+                                    "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>",
+                                    blank))));
 
     String mainWindow = driver.getWindowHandle();
     try {
@@ -283,7 +294,7 @@ class AlertsTest extends JupiterTestBase {
       driver.close();
 
       assertThatExceptionOfType(NoSuchWindowException.class)
-          .isThrownBy(() -> driver.switchTo().alert());
+        .isThrownBy(() -> driver.switchTo().alert());
 
     } finally {
       driver.switchTo().window(mainWindow);
@@ -315,18 +326,18 @@ class AlertsTest extends JupiterTestBase {
   @Test
   void testHandlesTwoAlertsFromOneInteraction() {
     driver.get(appServer.create(new Page()
-        .withScripts(
-            "function setInnerText(id, value) {",
-            "  document.getElementById(id).innerHTML = '<p>' + value + '</p>';",
-            "}",
-            "function displayTwoPrompts() {",
-            "  setInnerText('text1', prompt('First'));",
-            "  setInnerText('text2', prompt('Second'));",
-            "}")
-        .withBody(
-            "<a href='#' id='double-prompt' onclick='displayTwoPrompts();'>click me</a>",
-            "<div id='text1'></div>",
-            "<div id='text2'></div>")));
+                                  .withScripts(
+                                    "function setInnerText(id, value) {",
+                                    "  document.getElementById(id).innerHTML = '<p>' + value + '</p>';",
+                                    "}",
+                                    "function displayTwoPrompts() {",
+                                    "  setInnerText('text1', prompt('First'));",
+                                    "  setInnerText('text2', prompt('Second'));",
+                                    "}")
+                                  .withBody(
+                                    "<a href='#' id='double-prompt' onclick='displayTwoPrompts();'>click me</a>",
+                                    "<div id='text1'></div>",
+                                    "<div id='text2'></div>")));
 
     wait.until(presenceOfElementLocated(By.id("double-prompt"))).click();
     Alert alert1 = wait.until(alertIsPresent());
@@ -344,10 +355,12 @@ class AlertsTest extends JupiterTestBase {
   @Test
   void testShouldHandleAlertOnPageLoad() {
     String pageWithOnLoad = appServer.create(new Page()
-        .withOnLoad("javascript:alert(\"onload\")")
-        .withBody("<p>Page with onload event handler</p>"));
+                                               .withOnLoad("javascript:alert(\"onload\")")
+                                               .withBody("<p>Page with onload event handler</p>"));
     driver.get(appServer.create(new Page()
-        .withBody(String.format("<a id='link' href='%s'>open new page</a>", pageWithOnLoad))));
+                                  .withBody(
+                                    String.format("<a id='link' href='%s'>open new page</a>",
+                                                  pageWithOnLoad))));
 
     driver.findElement(By.id("link")).click();
     Alert alert = wait.until(alertIsPresent());
@@ -361,8 +374,8 @@ class AlertsTest extends JupiterTestBase {
   @Test
   void testShouldHandleAlertOnPageLoadUsingGet() {
     driver.get(appServer.create(new Page()
-        .withOnLoad("javascript:alert(\"onload\")")
-        .withBody("<p>Page with onload event handler</p>")));
+                                  .withOnLoad("javascript:alert(\"onload\")")
+                                  .withBody("<p>Page with onload event handler</p>")));
 
     Alert alert = wait.until(alertIsPresent());
     String value = alert.getText();
@@ -379,18 +392,19 @@ class AlertsTest extends JupiterTestBase {
   @NoDriverAfterTest
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
-        .withOnLoad("javascript:alert(\"onload\")")
-        .withBody("<p>Page with onload event handler</p>"));
+                                               .withOnLoad("javascript:alert(\"onload\")")
+                                               .withBody("<p>Page with onload event handler</p>"));
     driver.get(appServer.create(new Page()
-        .withBody(String.format(
-            "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>", pageWithOnLoad))));
+                                  .withBody(String.format(
+                                    "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>",
+                                    pageWithOnLoad))));
 
     Set<String> currentWindowHandles = driver.getWindowHandles();
     driver.findElement(By.id("open-new-window")).click();
     wait.until(newWindowIsOpened(currentWindowHandles));
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(alertIsPresent()));
+      .isThrownBy(() -> wait.until(alertIsPresent()));
   }
 
   @Test
@@ -403,9 +417,9 @@ class AlertsTest extends JupiterTestBase {
     wait.until(alertIsPresent());
 
     assertThatExceptionOfType(UnhandledAlertException.class)
-        .isThrownBy(driver::getTitle)
-        .withMessageContaining("cheese")
-        .satisfies(ex -> assertThat(ex.getAlertText()).isEqualTo("cheese"));
+      .isThrownBy(driver::getTitle)
+      .withMessageContaining("cheese")
+      .satisfies(ex -> assertThat(ex.getAlertText()).isEqualTo("cheese"));
   }
 
   @NoDriverAfterTest
@@ -422,9 +436,9 @@ class AlertsTest extends JupiterTestBase {
   @Test
   void shouldHandleAlertOnFormSubmit() {
     driver.get(appServer.create(new Page().withTitle("Testing Alerts").withBody(
-        "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",
-        "<input id='unused' type='submit' value='Submit'>",
-        "</form>")));
+      "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",
+      "<input id='unused' type='submit' value='Submit'>",
+      "</form>")));
 
     driver.findElement(By.id("theForm")).submit();
     Alert alert = wait.until(alertIsPresent());

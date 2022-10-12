@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools.idealized;
 
 public class OpaqueKey {
+
   private final Object value;
 
   public OpaqueKey(Object value) {

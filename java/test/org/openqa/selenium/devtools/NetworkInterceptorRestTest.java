@@ -17,26 +17,28 @@
 
 package org.openqa.selenium.devtools;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
+
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
-import org.openqa.selenium.remote.http.*;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
 
 class NetworkInterceptorRestTest {
 
@@ -58,11 +60,10 @@ class NetworkInterceptorRestTest {
     assumeThat(driver).isInstanceOf(HasDevTools.class);
     assumeThat(isFirefoxVersionOlderThan(87, driver)).isFalse();
 
-
     Route route = Route.matching(req -> req.getMethod() == HttpMethod.OPTIONS)
-        .to(() -> req -> new HttpResponse()
-          .addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH")
-          .addHeader("Access-Control-Allow-Origin", "*"));
+      .to(() -> req -> new HttpResponse()
+        .addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH")
+        .addHeader("Access-Control-Allow-Origin", "*"));
 
     appServer = new NettyAppServer(route);
     appServer.start();
@@ -124,18 +125,18 @@ class NetworkInterceptorRestTest {
     JavascriptExecutor js = (JavascriptExecutor) driver;
     Object response = js.executeAsyncScript(
       "var url = arguments[0];" +
-        "var callback = arguments[arguments.length - 1];" +
-        "var xhr = new XMLHttpRequest();" +
-        "xhr.open('PUT', url, true);" +
-        "xhr.onload = function() {" +
-        "  if (xhr.readyState == 4) {" +
-        "    callback(xhr.responseText);" +
-        "  }" +
-        "};" +
-        "xhr.send('Hey');", new URL(appServer.whereIs("/")).toString());
+      "var callback = arguments[arguments.length - 1];" +
+      "var xhr = new XMLHttpRequest();" +
+      "xhr.open('PUT', url, true);" +
+      "xhr.onload = function() {" +
+      "  if (xhr.readyState == 4) {" +
+      "    callback(xhr.responseText);" +
+      "  }" +
+      "};" +
+      "xhr.send('Hey');", new URL(appServer.whereIs("/")).toString());
 
-      assertThat(seen.get()).isTrue();
-      assertThat(response.toString()).contains("Received response for PUT");
+    assertThat(seen.get()).isTrue();
+    assertThat(response.toString()).contains("Received response for PUT");
   }
 
   @Test
@@ -155,15 +156,15 @@ class NetworkInterceptorRestTest {
     JavascriptExecutor js = (JavascriptExecutor) driver;
     Object response = js.executeAsyncScript(
       "var url = arguments[0];" +
-        "var callback = arguments[arguments.length - 1];" +
-        "var xhr = new XMLHttpRequest();" +
-        "xhr.open('POST', url, true);" +
-        "xhr.onload = function() {" +
-        "  if (xhr.readyState == 4) {" +
-        "    callback(xhr.responseText);" +
-        "  }" +
-        "};" +
-        "xhr.send('Hey');", new URL(appServer.whereIs("/")).toString());
+      "var callback = arguments[arguments.length - 1];" +
+      "var xhr = new XMLHttpRequest();" +
+      "xhr.open('POST', url, true);" +
+      "xhr.onload = function() {" +
+      "  if (xhr.readyState == 4) {" +
+      "    callback(xhr.responseText);" +
+      "  }" +
+      "};" +
+      "xhr.send('Hey');", new URL(appServer.whereIs("/")).toString());
 
     assertThat(seen.get()).isTrue();
     assertThat(response.toString()).contains("Received response for POST");
@@ -186,15 +187,15 @@ class NetworkInterceptorRestTest {
     JavascriptExecutor js = (JavascriptExecutor) driver;
     Object response = js.executeAsyncScript(
       "var url = arguments[0];" +
-        "var callback = arguments[arguments.length - 1];" +
-        "var xhr = new XMLHttpRequest();" +
-        "xhr.open('DELETE', url, true);" +
-        "xhr.onload = function() {" +
-        "  if (xhr.readyState == 4) {" +
-        "    callback(xhr.responseText);" +
-        "  }" +
-        "};" +
-        "xhr.send('Hey');", new URL(appServer.whereIs("/")).toString());
+      "var callback = arguments[arguments.length - 1];" +
+      "var xhr = new XMLHttpRequest();" +
+      "xhr.open('DELETE', url, true);" +
+      "xhr.onload = function() {" +
+      "  if (xhr.readyState == 4) {" +
+      "    callback(xhr.responseText);" +
+      "  }" +
+      "};" +
+      "xhr.send('Hey');", new URL(appServer.whereIs("/")).toString());
 
     assertThat(seen.get()).isTrue();
     assertThat(response.toString()).contains("Received response for DELETE");
@@ -217,15 +218,15 @@ class NetworkInterceptorRestTest {
     JavascriptExecutor js = (JavascriptExecutor) driver;
     Object response = js.executeAsyncScript(
       "var url = arguments[0];" +
-        "var callback = arguments[arguments.length - 1];" +
-        "var xhr = new XMLHttpRequest();" +
-        "xhr.open('GET', url, true);" +
-        "xhr.onload = function() {" +
-        "  if (xhr.readyState == 4) {" +
-        "    callback(xhr.responseText);" +
-        "  }" +
-        "};" +
-        "xhr.send();", new URL(appServer.whereIs("/")).toString());
+      "var callback = arguments[arguments.length - 1];" +
+      "var xhr = new XMLHttpRequest();" +
+      "xhr.open('GET', url, true);" +
+      "xhr.onload = function() {" +
+      "  if (xhr.readyState == 4) {" +
+      "    callback(xhr.responseText);" +
+      "  }" +
+      "};" +
+      "xhr.send();", new URL(appServer.whereIs("/")).toString());
 
     assertThat(seen.get()).isTrue();
     assertThat(response.toString()).contains("Received response for GET");

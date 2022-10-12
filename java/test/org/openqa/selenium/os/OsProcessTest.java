@@ -37,6 +37,15 @@ class OsProcessTest {
 
   private OsProcess process = new OsProcess(testExecutable);
 
+  private static String findExecutable(String relativePath) {
+    if (Platform.getCurrent().is(Platform.WINDOWS)) {
+      File workingDir = BazelBuild.findBinRoot(new File(".").getAbsoluteFile());
+      return new File(workingDir, relativePath).getAbsolutePath();
+    } else {
+      return relativePath;
+    }
+  }
+
   @Test
   void testSetEnvironmentVariableWithNullKeyThrows() {
     String key = null;
@@ -105,14 +114,5 @@ class OsProcessTest {
     process.executeAsync();
     process.waitFor();
     assertThat(process.getExitCode()).isNotEqualTo(0);
-  }
-
-  private static String findExecutable(String relativePath) {
-    if (Platform.getCurrent().is(Platform.WINDOWS)) {
-      File workingDir = BazelBuild.findBinRoot(new File(".").getAbsoluteFile());
-      return new File(workingDir, relativePath).getAbsolutePath();
-    } else {
-      return relativePath;
-    }
   }
 }

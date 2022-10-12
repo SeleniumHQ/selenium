@@ -30,6 +30,10 @@ public final class EventName {
     this.name = Require.nonNull("Type name", name);
   }
 
+  private static EventName fromJson(JsonInput input) {
+    return new EventName(input.nextString());
+  }
+
   public String getName() {
     return name;
   }
@@ -56,9 +60,5 @@ public final class EventName {
 
   private String toJson() {
     return name;
-  }
-
-  private static EventName fromJson(JsonInput input) {
-    return new EventName(input.nextString());
   }
 }

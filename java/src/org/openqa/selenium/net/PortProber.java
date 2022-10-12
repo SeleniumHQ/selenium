@@ -40,11 +40,11 @@ public class PortProber {
     final Platform current = Platform.getCurrent();
 
     if (current.is(Platform.LINUX)) {
-       ephemeralRangeDetector = LinuxEphemeralPortRangeDetector.getInstance();
-     } else if (current.is(Platform.XP)) {
-       ephemeralRangeDetector = new OlderWindowsVersionEphemeralPortDetector();
+      ephemeralRangeDetector = LinuxEphemeralPortRangeDetector.getInstance();
+    } else if (current.is(Platform.XP)) {
+      ephemeralRangeDetector = new OlderWindowsVersionEphemeralPortDetector();
     } else {
-       ephemeralRangeDetector = new FixedIANAPortRange();
+      ephemeralRangeDetector = new FixedIANAPortRange();
     }
   }
 
@@ -73,7 +73,9 @@ public class PortProber {
    */
   private static int createAcceptablePort() {
     synchronized (random) {
-      int FIRST_PORT = Math.max(START_OF_USER_PORTS, ephemeralRangeDetector.getLowestEphemeralPort());
+      int
+        FIRST_PORT =
+        Math.max(START_OF_USER_PORTS, ephemeralRangeDetector.getLowestEphemeralPort());
       int LAST_PORT = Math.min(HIGHEST_PORT, ephemeralRangeDetector.getHighestEphemeralPort());
 
       if (LAST_PORT - FIRST_PORT < 5000) {

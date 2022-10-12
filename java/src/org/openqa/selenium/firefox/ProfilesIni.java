@@ -35,14 +35,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProfilesIni {
-  private Map<String, File> profiles;
 
-  public ProfilesIni() {
+  private final Map<String, File> profiles;
+
+  ProfilesIni() {
     File appData = locateAppDataDirectory(Platform.getCurrent());
     profiles = readProfiles(appData);
   }
 
-  protected Map<String, File> readProfiles(File appData) {
+  private Map<String, File> readProfiles(File appData) {
     Map<String, File> toReturn = new HashMap<>();
 
     File profilesIni = new File(appData, "profiles.ini");
@@ -64,8 +65,9 @@ public class ProfilesIni {
       while (line != null) {
         if (line.startsWith("[Profile")) {
           File profile = newProfile(name, appData, path, isRelative);
-          if (profile != null)
+          if (profile != null) {
             toReturn.put(name, profile);
+          }
 
           name = null;
           path = null;
@@ -85,8 +87,9 @@ public class ProfilesIni {
       try {
         if (reader != null) {
           File profile = newProfile(name, appData, path, isRelative);
-          if (profile != null)
+          if (profile != null) {
             toReturn.put(name, profile);
+          }
 
           reader.close();
         }
@@ -98,14 +101,14 @@ public class ProfilesIni {
     return toReturn;
   }
 
-  protected File newProfile(String name, File appData, String path, boolean isRelative) {
+  private File newProfile(String name, File appData, String path, boolean isRelative) {
     if (name != null && path != null) {
       return isRelative ? new File(appData, path) : new File(path);
     }
     return null;
   }
 
-  public FirefoxProfile getProfile(String profileName) {
+  FirefoxProfile getProfile(String profileName) {
     File profileDir = profiles.get(profileName);
     if (profileDir == null) {
       return null;
@@ -130,15 +133,15 @@ public class ProfilesIni {
     return new FirefoxProfile(tempDir);
   }
 
-  protected File locateAppDataDirectory(Platform os) {
+  private File locateAppDataDirectory(Platform os) {
     File appData;
     if (os.is(WINDOWS)) {
       appData = new File(MessageFormat.format("{0}\\Mozilla\\Firefox", System.getenv("APPDATA")));
 
     } else if (os.is(MAC)) {
       appData =
-          new File(MessageFormat.format("{0}/Library/Application Support/Firefox",
-                                        System.getenv("HOME")));
+        new File(MessageFormat.format("{0}/Library/Application Support/Firefox",
+                                      System.getenv("HOME")));
 
     } else {
       appData = new File(MessageFormat.format("{0}/.mozilla/firefox", System.getenv("HOME")));
@@ -152,7 +155,8 @@ public class ProfilesIni {
 
     if (!appData.isDirectory()) {
       throw new WebDriverException("The discovered user firefox data directory " +
-          "(which normally contains the profiles) isn't a directory: " + appData.getAbsolutePath());
+                                   "(which normally contains the profiles) isn't a directory: "
+                                   + appData.getAbsolutePath());
     }
 
     return appData;

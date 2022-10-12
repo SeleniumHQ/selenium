@@ -35,7 +35,7 @@ public class GlobalTestEnvironment {
   }
 
   public static synchronized TestEnvironment getOrCreate(
-      Supplier<TestEnvironment> startThisIfNothingIsAlreadyRunning) {
+    Supplier<TestEnvironment> startThisIfNothingIsAlreadyRunning) {
     if (environment == null) {
       environment = startThisIfNothingIsAlreadyRunning.get();
       environment.assertIsValid();

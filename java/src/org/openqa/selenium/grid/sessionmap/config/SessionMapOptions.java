@@ -68,18 +68,18 @@ public class SessionMapOptions {
 
     try {
       return new URI(
-          scheme,
-          null,
-          hostname.get(),
-          port.get(),
-          "",
-          null,
-          null);
+        scheme,
+        null,
+        hostname.get(),
+        port.get(),
+        "",
+        null,
+        null);
     } catch (URISyntaxException e) {
       throw new ConfigException(
-          "Session map server uri configured through host (%s) and port (%d) is not a valid URI",
-          hostname.get(),
-          port.get());
+        "Session map server uri configured through host (%s) and port (%d) is not a valid URI",
+        hostname.get(),
+        port.get());
     }
   }
 

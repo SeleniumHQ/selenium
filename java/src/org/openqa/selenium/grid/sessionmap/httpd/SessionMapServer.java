@@ -17,8 +17,15 @@
 
 package org.openqa.selenium.grid.sessionmap.httpd;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Route.get;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.BuildInfo;
@@ -36,14 +43,6 @@ import org.openqa.selenium.remote.http.Route;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_MAP_ROLE;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Route.get;
 
 @AutoService(CliCommand.class)
 public class SessionMapServer extends TemplateGridServerCommand {
@@ -94,7 +93,7 @@ public class SessionMapServer extends TemplateGridServerCommand {
           new HttpResponse()
             .addHeader("Content-Type", JSON_UTF_8)
             .setContent(asJson(
-              ImmutableMap.of("value", ImmutableMap.of(
+              Map.of("value", Map.of(
                 "ready", true,
                 "message", "Session map is ready."))))),
         get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))),

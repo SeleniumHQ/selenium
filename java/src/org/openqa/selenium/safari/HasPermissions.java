@@ -32,12 +32,11 @@ public interface HasPermissions {
    * The only supported permission at this time is "getUserMedia".
    *
    * @param permission the name of the item to set permission on.
-   * @param value whether the permission has been granted.
+   * @param value      whether the permission has been granted.
    */
   void setPermissions(String permission, boolean value);
 
   /**
-   *
    * @return each permission and whether it is allowed or not.
    */
   Map<String, Boolean> getPermissions();

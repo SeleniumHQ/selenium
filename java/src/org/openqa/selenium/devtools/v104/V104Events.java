@@ -26,7 +26,6 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.devtools.idealized.Events;
 import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
-import org.openqa.selenium.devtools.v104.runtime.Runtime;
 import org.openqa.selenium.devtools.v104.runtime.model.ConsoleAPICalled;
 import org.openqa.selenium.devtools.v104.runtime.model.ExceptionDetails;
 import org.openqa.selenium.devtools.v104.runtime.model.ExceptionThrown;

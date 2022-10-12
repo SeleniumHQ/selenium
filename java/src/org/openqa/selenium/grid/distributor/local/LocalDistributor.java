@@ -17,8 +17,19 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Beta;
@@ -106,18 +117,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.internal.Debug.getDebugLogLevel;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.SESSION_URI;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=Distributor,name=LocalDistributor",
   description = "Grid 4 node distributor")
@@ -200,8 +199,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     this.slotSelector = Require.nonNull("Slot selector", slotSelector);
     this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
     this.healthcheckInterval = Require.nonNull("Health check interval", healthcheckInterval);
-    this.model = new GridModel(bus);
-    this.nodes = new ConcurrentHashMap<>();
+    model = new GridModel(bus);
+    nodes = new ConcurrentHashMap<>();
     this.rejectUnsupportedCaps = rejectUnsupportedCaps;
     Require.nonNull("Session request interval", sessionRequestRetryInterval);
 
@@ -230,7 +229,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
     // if sessionRequestRetryInterval is 0, we will schedule session creation every 10 millis
     long period = sessionRequestRetryInterval.isZero() ?
-                  10 : sessionRequestRetryInterval.toMillis();
+                        10 : sessionRequestRetryInterval.toMillis();
     newSessionService.scheduleAtFixedRate(
       GuardedRunnable.guard(newSessionRunnable),
       sessionRequestRetryInterval.toMillis(),
@@ -363,7 +362,7 @@ public class LocalDistributor extends Distributor implements Closeable {
       // Running the health check right after the Node registers itself. We retry the
       // execution because the Node might on a complex network topology. For example,
       // Kubernetes pods with IPs that take a while before they are reachable.
-      RetryPolicy<Object> initialHealthCheckPolicy =  RetryPolicy.builder()
+      RetryPolicy<Object> initialHealthCheckPolicy = RetryPolicy.builder()
         .withMaxAttempts(-1)
         .withMaxDuration(Duration.ofSeconds(90))
         .withDelay(Duration.ofSeconds(15))
@@ -378,7 +377,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
   private Runnable runNodeHealthChecks() {
     return () -> {
-      ImmutableMap<NodeId, Runnable> nodeHealthChecks = ImmutableMap.copyOf(allChecks);
+      ImmutableMap<NodeId, Runnable> nodeHealthChecks = Map.copyOf(allChecks);
       for (Runnable nodeHealthCheck : nodeHealthChecks.values()) {
         GuardedRunnable.guard(nodeHealthCheck).run();
       }
@@ -444,6 +443,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     return node.isDraining();
   }
 
+  @Override
   public void remove(NodeId nodeId) {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
@@ -458,7 +458,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
   @Override
   public DistributorStatus getStatus() {
-    Lock readLock = this.lock.readLock();
+    Lock readLock = lock.readLock();
     readLock.lock();
     try {
       return new DistributorStatus(model.getSnapshot());
@@ -471,7 +471,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   public void refresh() {
     List<Runnable> allHealthChecks = new ArrayList<>();
 
-    Lock readLock = this.lock.readLock();
+    Lock readLock = lock.readLock();
     readLock.lock();
     try {
       allHealthChecks.addAll(allChecks.values());
@@ -482,8 +482,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     allHealthChecks.parallelStream().forEach(Runnable::run);
   }
 
-  protected Set<NodeStatus> getAvailableNodes() {
-    Lock readLock = this.lock.readLock();
+  private Set<NodeStatus> getAvailableNodes() {
+    Lock readLock = lock.readLock();
     readLock.lock();
     try {
       return model.getSnapshot().stream()
@@ -495,7 +495,8 @@ public class LocalDistributor extends Distributor implements Closeable {
   }
 
   @Override
-  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(SessionRequest request)
+  public Either<SessionNotCreatedException, CreateSessionResponse> newSession(
+    SessionRequest request)
     throws SessionNotCreatedException {
     Require.nonNull("Requests to process", request);
 
@@ -507,7 +508,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
       attributeMap.put("request.payload",
                        EventAttribute.setValue(request.getDesiredCapabilities().toString()));
-      String sessionReceivedMessage = "Session request received by the Distributor";
+      final String sessionReceivedMessage = "Session request received by the Distributor";
       span.addEvent(sessionReceivedMessage, attributeMap);
       LOG.info(String.format("%s: %n %s",
                              sessionReceivedMessage,
@@ -527,7 +528,9 @@ public class LocalDistributor extends Distributor implements Closeable {
       }
 
       boolean retry = false;
-      SessionNotCreatedException lastFailure = new SessionNotCreatedException("Unable to create new session");
+      SessionNotCreatedException
+        lastFailure =
+        new SessionNotCreatedException("Unable to create new session");
       for (Capabilities caps : request.getDesiredCapabilities()) {
         if (isNotSupported(caps)) {
           continue;
@@ -569,7 +572,7 @@ public class LocalDistributor extends Distributor implements Closeable {
           span.setAttribute(SESSION_URI.getKey(), sessionUri);
           attributeMap.put(SESSION_URI.getKey(), EventAttribute.setValue(sessionUri));
 
-          String sessionCreatedMessage = "Session created by the Distributor";
+          final String sessionCreatedMessage = "Session created by the Distributor";
           span.addEvent(sessionCreatedMessage, attributeMap);
           LOG.info(
             String.format("%s. Id: %s %n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
@@ -596,7 +599,8 @@ public class LocalDistributor extends Distributor implements Closeable {
       } else {
         EXCEPTION.accept(attributeMap, lastFailure);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-                         EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
+                         EventAttribute.setValue(
+                           "Unable to create session: " + lastFailure.getMessage()));
 
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.ABORTED);
@@ -609,7 +613,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
       EXCEPTION.accept(attributeMap, e);
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-        EventAttribute.setValue("Unable to create session: " + e.getMessage()));
+                       EventAttribute.setValue("Unable to create session: " + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(e);
@@ -619,7 +623,9 @@ public class LocalDistributor extends Distributor implements Closeable {
 
       EXCEPTION.accept(attributeMap, e);
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-        EventAttribute.setValue("Unknown error in LocalDistributor while creating session: " + e.getMessage()));
+                       EventAttribute.setValue(
+                         "Unknown error in LocalDistributor while creating session: "
+                         + e.getMessage()));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       return Either.left(new SessionNotCreatedException(e.getMessage(), e));
@@ -628,7 +634,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
   }
 
-  private CreateSessionResponse startSession(SlotId selectedSlot, CreateSessionRequest singleRequest) {
+  private CreateSessionResponse startSession(SlotId selectedSlot,
+                                             CreateSessionRequest singleRequest) {
     Node node = nodes.get(selectedSlot.getOwningNodeId());
     if (node == null) {
       throw new SessionNotCreatedException("Unable to find owning node for slot");
@@ -684,7 +691,7 @@ public class LocalDistributor extends Distributor implements Closeable {
   private boolean reserve(SlotId id) {
     Require.nonNull("Slot ID", id);
 
-    Lock writeLock = this.lock.writeLock();
+    Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
       Node node = nodes.get(id.getOwningNodeId());
@@ -717,7 +724,7 @@ public class LocalDistributor extends Distributor implements Closeable {
 
   @VisibleForTesting
   @ManagedAttribute(name = "ActiveSlots")
-  public int getActiveSlots() {
+  private int getActiveSlots() {
     return model.getSnapshot().stream()
       .map(NodeStatus::getSlots)
       .flatMap(Collection::stream)
@@ -731,8 +738,8 @@ public class LocalDistributor extends Distributor implements Closeable {
   @ManagedAttribute(name = "IdleSlots")
   public int getIdleSlots() {
     return (int) (model.getSnapshot().stream()
-          .map(NodeStatus::getSlots)
-          .count() - getActiveSlots());
+                    .map(NodeStatus::getSlots)
+                    .count() - getActiveSlots());
   }
 
   @Override
@@ -782,7 +789,7 @@ public class LocalDistributor extends Distributor implements Closeable {
     }
 
     private void checkMatchingSlot(List<SessionRequestCapability> sessionRequests) {
-      for(SessionRequestCapability request : sessionRequests) {
+      for (SessionRequestCapability request : sessionRequests) {
         long unmatchableCount = request.getDesiredCapabilities().stream()
           .filter(LocalDistributor.this::isNotSupported)
           .count();
@@ -798,7 +805,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     private void handleNewSessionRequest(SessionRequest sessionRequest) {
       RequestId reqId = sessionRequest.getRequestId();
 
-      try (Span span = TraceSessionRequest.extract(tracer, sessionRequest).createSpan("distributor.poll_queue")) {
+      try (Span span = TraceSessionRequest.extract(tracer, sessionRequest)
+        .createSpan("distributor.poll_queue")) {
         Map<String, EventAttributeValue> attributeMap = new HashMap<>();
         attributeMap.put(
           AttributeKey.LOGGER_CLASS.getKey(),
@@ -809,10 +817,12 @@ public class LocalDistributor extends Distributor implements Closeable {
           EventAttribute.setValue(reqId.toString()));
 
         attributeMap.put("request", EventAttribute.setValue(sessionRequest.toString()));
-        Either<SessionNotCreatedException, CreateSessionResponse> response = newSession(sessionRequest);
+        Either<SessionNotCreatedException, CreateSessionResponse>
+          response =
+          newSession(sessionRequest);
 
         if (response.isLeft() && response.left() instanceof RetrySessionRequestException) {
-          try(Span childSpan = span.createSpan("distributor.retry")) {
+          try (Span childSpan = span.createSpan("distributor.retry")) {
             LOG.log(Debug.getDebugLogLevel(),
                     String.format("Retrying %s", sessionRequest.getDesiredCapabilities()));
             boolean retried = sessionQueue.retryAddToQueue(sessionRequest);

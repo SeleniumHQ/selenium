@@ -35,7 +35,7 @@ class ErrorsTest extends JupiterTestBase {
   public void testShouldNotGenerateErrorsWhenOpeningANewPage() {
     driver.get(pages.errorsPage);
     Object result = ((JavascriptExecutor) driver).
-        executeScript("return window.ERRORS.join('\\n');");
+      executeScript("return window.ERRORS.join('\\n');");
     assertThat(result).isEqualTo("");
   }
 }

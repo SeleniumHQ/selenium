@@ -163,6 +163,7 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
   }
 
   private static class ForwardingListener implements WebSocket.Listener {
+
     private final Consumer<Message> downstream;
 
     public ForwardingListener(Consumer<Message> downstream) {

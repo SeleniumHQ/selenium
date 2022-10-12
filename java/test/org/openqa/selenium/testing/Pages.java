@@ -20,6 +20,7 @@ package org.openqa.selenium.testing;
 import org.openqa.selenium.environment.webserver.AppServer;
 
 public class Pages {
+
   public String ajaxyPage;
   public String alertsPage;
   public String blankPage;

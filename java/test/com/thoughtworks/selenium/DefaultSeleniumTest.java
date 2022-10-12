@@ -52,6 +52,7 @@ public class DefaultSeleniumTest {
 
 
   private static class MyCommandProcessor implements CommandProcessor {
+
     StringBuilder commands = new StringBuilder();
 
     @Override

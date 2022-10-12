@@ -39,16 +39,15 @@ import java.util.Set;
  * Threading issues related to incorrect client threading may have mysterious and hard to diagnose
  * errors. Using this wrapper prevents this category of errors. It is recommended for all
  * multithreaded usage. This class has no overhead of any importance.
- *
  */
 public class ThreadGuard {
 
   public static WebDriver protect(WebDriver actualWebDriver) {
     WebDriverInvocationHandler invocationHandler = new WebDriverInvocationHandler(actualWebDriver);
     return (WebDriver) java.lang.reflect.Proxy
-        .newProxyInstance(actualWebDriver.getClass().getClassLoader(),
-                          getInterfaces(actualWebDriver),
-                          invocationHandler);
+      .newProxyInstance(actualWebDriver.getClass().getClassLoader(),
+                        getInterfaces(actualWebDriver),
+                        invocationHandler);
   }
 
   private static Class<?>[] getInterfaces(Object target) {
@@ -85,10 +84,10 @@ public class ThreadGuard {
         if (Thread.currentThread().getId() != threadId) {
           Thread currentThread = Thread.currentThread();
           throw new WebDriverException(
-              String.format("Thread safety error; this instance of WebDriver was constructed on " +
-                            "thread %s (id %d) and is being accessed by thread %s (id %d)" +
-                            "This is not permitted and *will* cause undefined behaviour",
-                            threadName, threadId, currentThread.getName(), currentThread.getId()));
+            String.format("Thread safety error; this instance of WebDriver was constructed on " +
+                          "thread %s (id %d) and is being accessed by thread %s (id %d)" +
+                          "This is not permitted and *will* cause undefined behaviour",
+                          threadName, threadId, currentThread.getName(), currentThread.getId()));
         }
         return invokeUnderlying(method, args);
       } catch (InvocationTargetException e) {
@@ -97,7 +96,7 @@ public class ThreadGuard {
     }
 
     protected Object invokeUnderlying(Method method, Object[] args)
-        throws IllegalAccessException, InvocationTargetException {
+      throws IllegalAccessException, InvocationTargetException {
       return method.invoke(underlying, args);
     }
   }

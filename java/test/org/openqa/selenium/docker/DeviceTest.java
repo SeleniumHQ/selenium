@@ -17,15 +17,15 @@
 
 package org.openqa.selenium.docker;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.docker.Device.device;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.docker.Device.device;
 
 class DeviceTest {
 
@@ -41,8 +41,10 @@ class DeviceTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  void deviceShouldHaveDefinedPermissionsApplied(String pathOnHost, String pathInContainer, String cgroupPermissions,
-                                                        String expectedCgroupPermissions, boolean matchCgroupPermissions) {
+  void deviceShouldHaveDefinedPermissionsApplied(String pathOnHost, String pathInContainer,
+                                                 String cgroupPermissions,
+                                                 String expectedCgroupPermissions,
+                                                 boolean matchCgroupPermissions) {
     Device device = device(pathOnHost, pathInContainer, cgroupPermissions);
     assertThat(device.getCgroupPermissions().contentEquals(expectedCgroupPermissions))
       .describedAs("Expected %s in cgroupPermissions", expectedCgroupPermissions)

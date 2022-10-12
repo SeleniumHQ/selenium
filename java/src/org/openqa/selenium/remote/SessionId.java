@@ -36,6 +36,21 @@ public class SessionId implements Serializable {
     this.opaqueKey = Require.nonNull("Session ID key", opaqueKey);
   }
 
+  private static SessionId fromJson(Object raw) {
+    if (raw instanceof String) {
+      return new SessionId(String.valueOf(raw));
+    }
+
+    if (raw instanceof Map) {
+      Map<?, ?> map = (Map<?, ?>) raw;
+      if (map.get("value") instanceof String) {
+        return new SessionId(String.valueOf(map.get("value")));
+      }
+    }
+
+    throw new JsonException("Unable to coerce session id from " + raw);
+  }
+
   @Override
   public String toString() {
     return opaqueKey;
@@ -53,20 +68,5 @@ public class SessionId implements Serializable {
 
   private String toJson() {
     return opaqueKey;
-  }
-
-  private static SessionId fromJson(Object raw) {
-    if (raw instanceof String) {
-      return new SessionId(String.valueOf(raw));
-    }
-
-    if (raw instanceof Map) {
-      Map<?, ?> map = (Map<?, ?>) raw;
-      if (map.get("value") instanceof String) {
-        return new SessionId(String.valueOf(map.get("value")));
-      }
-    }
-
-    throw new JsonException("Unable to coerce session id from " + raw);
   }
 }

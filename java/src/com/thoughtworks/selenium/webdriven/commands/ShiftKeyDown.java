@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class ShiftKeyDown extends SeleneseCommand<Void> {
+
   private final KeyState keyState;
 
   public ShiftKeyDown(KeyState keyState) {

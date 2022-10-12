@@ -40,6 +40,15 @@ public class HttpResponse extends HttpMessage<HttpResponse> {
   }
 
   /**
+   * Returns the host this response was received from, or null if it was not set.
+   *
+   * @return originating host
+   */
+  public String getTargetHost() {
+    return (String) getAttribute(HTTP_TARGET_HOST);
+  }
+
+  /**
    * Sets the host this response was received from.
    *
    * @param host originating host
@@ -47,15 +56,6 @@ public class HttpResponse extends HttpMessage<HttpResponse> {
   public HttpResponse setTargetHost(String host) {
     setAttribute(HTTP_TARGET_HOST, host);
     return this;
-  }
-
-  /**
-   * Returns the host this response was received from, or null if it was not set.
-   *
-   * @return originating host
-   */
-  public String getTargetHost() {
-    return (String) getAttribute(HTTP_TARGET_HOST);
   }
 
   @Override

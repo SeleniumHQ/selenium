@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
+
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -30,9 +33,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
 public class SafariTechPreviewDriverService extends DriverService {
 

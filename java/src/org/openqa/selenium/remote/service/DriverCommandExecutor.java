@@ -72,11 +72,11 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
    * Creates an {@link DriverCommandExecutor} that supports non-standard
    * {@code additionalCommands} in addition to the standard.
    *
-   * @param service driver server
+   * @param service            driver server
    * @param additionalCommands additional commands the remote end can process
    */
   protected DriverCommandExecutor(
-      DriverService service, Map<String, CommandInfo> additionalCommands) {
+    DriverService service, Map<String, CommandInfo> additionalCommands) {
     super(additionalCommands, service.getUrl());
     this.service = service;
   }

@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestGetTextContent extends InternalSelenseTestBase {
+
   @Test
   void testGetTextContent() {
     selenium.open("test_gettextcontent.html");

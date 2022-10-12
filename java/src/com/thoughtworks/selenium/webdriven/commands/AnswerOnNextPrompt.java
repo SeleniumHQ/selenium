@@ -27,16 +27,16 @@ public class AnswerOnNextPrompt extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     ((JavascriptExecutor) driver).executeScript(
-        "var canUseLocalStorage = false; " +
-        "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
-        "var canUseJSON = false; " +
-        "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
-        "if (canUseLocalStorage && canUseJSON) { " +
-        "  window.localStorage.setItem('__webdriverNextPrompt', JSON.stringify(arguments[0])); " +
-        "} else { " +
-        "  window.__webdriverNextPrompt = arguments[0];" +
-        "}",
-        locator);
+      "var canUseLocalStorage = false; " +
+      "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+      "var canUseJSON = false; " +
+      "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+      "if (canUseLocalStorage && canUseJSON) { " +
+      "  window.localStorage.setItem('__webdriverNextPrompt', JSON.stringify(arguments[0])); " +
+      "} else { " +
+      "  window.__webdriverNextPrompt = arguments[0];" +
+      "}",
+      locator);
     return null;
   }
 }

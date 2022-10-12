@@ -21,6 +21,7 @@ package org.openqa.selenium;
  * Indicates that a session could not be created.
  */
 public class SessionNotCreatedException extends WebDriverException {
+
   public SessionNotCreatedException(String msg) {
     super("Could not start a new session. " + msg +
           (msg != null && msg.contains("Host info") ? "" : " \n" + getHostInformation()));

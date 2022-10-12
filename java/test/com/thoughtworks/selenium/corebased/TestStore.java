@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestStore extends InternalSelenseTestBase {
+
   @Test
   void testStore() {
     selenium.open("test_verifications.html");

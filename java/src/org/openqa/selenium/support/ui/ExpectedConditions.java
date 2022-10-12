@@ -18,6 +18,7 @@
 package org.openqa.selenium.support.ui;
 
 import com.google.common.base.Joiner;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -963,8 +964,9 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("number of elements found by %s to be more than \"%s\". Current number: \"%s\"",
-                             locator, number, currentNumber);
+        return String.format(
+          "number of elements found by %s to be more than \"%s\". Current number: \"%s\"",
+          locator, number, currentNumber);
       }
     };
   }
@@ -991,8 +993,9 @@ public class ExpectedConditions {
 
       @Override
       public String toString() {
-        return String.format("number of elements found by %s to be less than \"%s\". Current number: \"%s\"",
-                             locator, number, currentNumber);
+        return String.format(
+          "number of elements found by %s to be less than \"%s\". Current number: \"%s\"",
+          locator, number, currentNumber);
       }
     };
   }
@@ -1028,9 +1031,9 @@ public class ExpectedConditions {
   /**
    * An expectation for checking given WebElement has DOM property with a specific value
    *
-   * @param element   used to check its parameters
-   * @param property  property name
-   * @param value     used as expected property value
+   * @param element  used to check its parameters
+   * @param property property name
+   * @param value    used as expected property value
    * @return Boolean true when element has DOM property with the value
    */
   public static ExpectedCondition<Boolean> domPropertyToBe(final WebElement element,
@@ -1194,8 +1197,8 @@ public class ExpectedConditions {
   /**
    * An expectation for checking child WebElement as a part of parent element to be visible
    *
-   * @param parent used to check parent element. For example table with locator
-   *  By.id("fish")
+   * @param parent       used to check parent element. For example table with locator
+   *                     By.id("fish")
    * @param childLocator used to find the ultimate child element.
    * @return visible nested element
    */
@@ -1228,7 +1231,7 @@ public class ExpectedConditions {
   /**
    * An expectation for checking child WebElement as a part of parent element to be visible
    *
-   * @param element     used as parent element. For example table with locator By.xpath("//table")
+   * @param element      used as parent element. For example table with locator By.xpath("//table")
    * @param childLocator used to find child element. For example td By.xpath("./tr/td")
    * @return visible sub-element
    */
@@ -1258,14 +1261,13 @@ public class ExpectedConditions {
   /**
    * An expectation for checking child WebElement as a part of parent element to present
    *
-   * @param locator     used to check parent element. For example table with locator
-   *                    By.xpath("//table")
+   * @param locator      used to check parent element. For example table with locator
+   *                     By.xpath("//table")
    * @param childLocator used to find child element. For example td By.xpath("./tr/td")
    * @return sub-element
    */
   public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(
-    final By locator, final By childLocator)
-  {
+    final By locator, final By childLocator) {
     return new ExpectedCondition<WebElement>() {
 
       @Override
@@ -1283,13 +1285,12 @@ public class ExpectedConditions {
   /**
    * An expectation for checking child WebElement as a part of parent element to be present
    *
-   * @param element     used as parent element
+   * @param element      used as parent element
    * @param childLocator used to find child element. For example td By.xpath("./tr/td")
    * @return sub-element
    */
   public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(
-    final WebElement element, final By childLocator)
-  {
+    final WebElement element, final By childLocator) {
 
     return new ExpectedCondition<WebElement>() {
 
@@ -1308,14 +1309,13 @@ public class ExpectedConditions {
   /**
    * An expectation for checking child WebElement as a part of parent element to present
    *
-   * @param parent     used to check parent element. For example table with locator
-   *                    By.xpath("//table")
+   * @param parent       used to check parent element. For example table with locator
+   *                     By.xpath("//table")
    * @param childLocator used to find child element. For example td By.xpath("./tr/td")
    * @return sub-element
    */
   public static ExpectedCondition<List<WebElement>> presenceOfNestedElementsLocatedBy(
-    final By parent, final By childLocator)
-  {
+    final By parent, final By childLocator) {
     return new ExpectedCondition<List<WebElement>>() {
 
       @Override
@@ -1348,7 +1348,8 @@ public class ExpectedConditions {
    * @param elements used to check their invisibility
    * @return Boolean true when all elements are not visible anymore
    */
-  public static ExpectedCondition<Boolean> invisibilityOfAllElements(final List<WebElement> elements) {
+  public static ExpectedCondition<Boolean> invisibilityOfAllElements(
+    final List<WebElement> elements) {
     return new ExpectedCondition<Boolean>() {
 
       @Override

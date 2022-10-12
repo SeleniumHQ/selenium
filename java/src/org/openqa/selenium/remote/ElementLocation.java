@@ -63,7 +63,9 @@ class ElementLocation {
     // We prefer to use the remote version if possible
     if (locator instanceof By.Remotable) {
       try {
-        WebElement element = ElementFinder.REMOTE.findElement(driver, context, createPayload, locator);
+        WebElement
+          element =
+          ElementFinder.REMOTE.findElement(driver, context, createPayload, locator);
         finders.put(locator.getClass(), ElementFinder.REMOTE);
         return element;
       } catch (NoSuchElementException e) {
@@ -77,7 +79,9 @@ class ElementLocation {
     // But if that's not an option, then default to using the locator
     // itself for finding things.
     try {
-      WebElement element = ElementFinder.CONTEXT.findElement(driver, context, createPayload, locator);
+      WebElement
+        element =
+        ElementFinder.CONTEXT.findElement(driver, context, createPayload, locator);
       finders.put(locator.getClass(), ElementFinder.CONTEXT);
       return element;
     } catch (NoSuchElementException e) {
@@ -105,7 +109,9 @@ class ElementLocation {
     // We prefer to use the remote version if possible
     if (locator instanceof By.Remotable) {
       try {
-        List<WebElement> element = ElementFinder.REMOTE.findElements(driver, context, createPayload, locator);
+        List<WebElement>
+          element =
+          ElementFinder.REMOTE.findElements(driver, context, createPayload, locator);
         finders.put(locator.getClass(), ElementFinder.REMOTE);
         return element;
       } catch (NoSuchElementException e) {
@@ -118,7 +124,9 @@ class ElementLocation {
 
     // But if that's not an option, then default to using the locator
     // itself for finding things.
-    List<WebElement> elements = ElementFinder.CONTEXT.findElements(driver, context, createPayload, locator);
+    List<WebElement>
+      elements =
+      ElementFinder.CONTEXT.findElements(driver, context, createPayload, locator);
 
     // Only store the finder if we actually completed successfully.
     finders.put(locator.getClass(), ElementFinder.CONTEXT);
@@ -177,7 +185,9 @@ class ElementLocation {
         CommandPayload commandPayload = createPayload.apply(params.using(), params.value());
 
         Response response = driver.execute(commandPayload);
-        @SuppressWarnings("unchecked") List<WebElement> elements = (List<WebElement>) response.getValue();
+        @SuppressWarnings("unchecked") List<WebElement>
+          elements =
+          (List<WebElement>) response.getValue();
 
         if (elements == null) { // see https://github.com/SeleniumHQ/selenium/issues/4555
           return Collections.emptyList();
@@ -187,8 +197,7 @@ class ElementLocation {
           .map(e -> massage(driver, context, e, locator))
           .collect(Collectors.toList());
       }
-    }
-    ;
+    };
 
     abstract WebElement findElement(
       RemoteWebDriver driver,
@@ -202,7 +211,8 @@ class ElementLocation {
       BiFunction<String, Object, CommandPayload> createPayload,
       By locator);
 
-    protected WebElement massage(RemoteWebDriver driver, SearchContext context, WebElement element, By locator) {
+    protected WebElement massage(RemoteWebDriver driver, SearchContext context, WebElement element,
+                                 By locator) {
       if (!(element instanceof RemoteWebElement)) {
         return element;
       }

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.chrome;
 
+
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
@@ -24,7 +25,7 @@ import java.util.logging.Level;
 
 /**
  * <a href="https://source.chromium.org/chromium/chromium/src/+/master:chrome/test/chromedriver/logging.cc">
- *   Log levels</a> defined by ChromeDriver
+ * Log levels</a> defined by ChromeDriver
  */
 public enum ChromeDriverLogLevel {
   ALL,
@@ -46,11 +47,6 @@ public enum ChromeDriverLogLevel {
     .put(Level.OFF, OFF)
     .build();
 
-  @Override
-  public String toString() {
-    return super.toString().toLowerCase();
-  }
-
   public static ChromeDriverLogLevel fromString(String text) {
     if (text != null) {
       for (ChromeDriverLogLevel b : ChromeDriverLogLevel.values()) {
@@ -64,5 +60,10 @@ public enum ChromeDriverLogLevel {
 
   public static ChromeDriverLogLevel fromLevel(Level level) {
     return logLevelToChromeLevelMap.getOrDefault(level, ALL);
+  }
+
+  @Override
+  public String toString() {
+    return super.toString().toLowerCase();
   }
 }

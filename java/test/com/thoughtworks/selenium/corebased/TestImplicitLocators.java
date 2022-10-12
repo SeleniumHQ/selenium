@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestImplicitLocators extends InternalSelenseTestBase {
+
   @Test
   void testImplicitLocators() {
     selenium.open("test_locators.html");

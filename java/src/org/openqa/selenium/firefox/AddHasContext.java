@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
@@ -30,15 +32,13 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalHttpCommands {
 
-  public static final String SET_CONTEXT = "setContext";
-  public static final String GET_CONTEXT = "getContext";
+  private static final String SET_CONTEXT = "setContext";
+  private static final String GET_CONTEXT = "getContext";
 
-  private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
+  private static final Map<String, CommandInfo> COMMANDS = Map.of(
     SET_CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.POST),
     GET_CONTEXT, new CommandInfo("/session/:sessionId/moz/context", HttpMethod.GET));
 
@@ -61,20 +61,21 @@ public class AddHasContext implements AugmenterProvider<HasContext>, AdditionalH
   public HasContext getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasContext() {
       @Override
-      public void setContext(FirefoxCommandContext context) {
-        Require.nonNull("Firefox Command Context", context);
-
-        executeMethod.execute(
-          SET_CONTEXT,
-          ImmutableMap.of("context", context));
-      }
-
-      @Override public FirefoxCommandContext getContext() {
+      public FirefoxCommandContext getContext() {
         String context = (String) executeMethod.execute(
           GET_CONTEXT,
           null);
 
         return FirefoxCommandContext.fromString(context);
+      }
+
+      @Override
+      public void setContext(FirefoxCommandContext context) {
+        Require.nonNull("Firefox Command Context", context);
+
+        executeMethod.execute(
+          SET_CONTEXT,
+          Map.of("context", context));
       }
     };
   }

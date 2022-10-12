@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.netty.server;
 
+import org.openqa.selenium.remote.http.BinaryMessage;
+import org.openqa.selenium.remote.http.CloseMessage;
+import org.openqa.selenium.remote.http.Message;
+import org.openqa.selenium.remote.http.TextMessage;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -24,10 +29,6 @@ import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
-import org.openqa.selenium.remote.http.BinaryMessage;
-import org.openqa.selenium.remote.http.CloseMessage;
-import org.openqa.selenium.remote.http.Message;
-import org.openqa.selenium.remote.http.TextMessage;
 
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;

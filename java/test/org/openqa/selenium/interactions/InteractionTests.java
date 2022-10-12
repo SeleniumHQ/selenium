@@ -20,10 +20,11 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @SelectClasses({DefaultKeyboardTest.class,
-  DefaultMouseTest.class,
-  CombinedInputActionsTest.class,
-  CompositeActionTest.class,
-  DragAndDropTest.class})
+                DefaultMouseTest.class,
+                CombinedInputActionsTest.class,
+                CompositeActionTest.class,
+                DragAndDropTest.class})
 @Suite
 class InteractionTests {
+
 }

@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.graphql;
 
 import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.Availability;
 import org.openqa.selenium.grid.data.NodeId;

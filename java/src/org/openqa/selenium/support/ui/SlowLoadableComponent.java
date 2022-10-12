@@ -34,7 +34,7 @@ import java.time.Instant;
  * @param <T> The type to be returned (normally the subclass' type)
  */
 public abstract class SlowLoadableComponent<T extends LoadableComponent<T>>
-    extends LoadableComponent<T> {
+  extends LoadableComponent<T> {
 
   private final Clock clock;
   private final Duration timeOutInSeconds;

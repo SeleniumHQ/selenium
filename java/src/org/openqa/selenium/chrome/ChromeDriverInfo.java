@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.chrome;
 
+import static org.openqa.selenium.remote.Browser.CHROME;
+
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -29,8 +31,6 @@ import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Optional;
-
-import static org.openqa.selenium.remote.Browser.CHROME;
 
 @AutoService(WebDriverInfo.class)
 public class ChromeDriverInfo extends ChromiumDriverInfo {
@@ -68,7 +68,7 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }

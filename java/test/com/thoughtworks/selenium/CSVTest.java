@@ -17,17 +17,17 @@
 
 package com.thoughtworks.selenium;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class CSVTest {
 
-  Method CSV;
+  private Method CSV;
 
   @BeforeEach
   public void setUp() {
@@ -41,7 +41,7 @@ class CSVTest {
     }
   }
 
-  public String[] parseCSV(String input, String[] expected) {
+  private String[] parseCSV(String input, String[] expected) {
     System.out.print(input + ": ");
     String[] output;
     try {
@@ -49,63 +49,63 @@ class CSVTest {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    System.out.println(Arrays.asList(output).toString());
+    System.out.println(Arrays.asList(output));
     compareStringArrays(expected, output);
     return output;
   }
 
   @Test
   void testSimple() {
-    String input = "1,2,3";
-    String[] expected = new String[] {"1", "2", "3"};
+    final String input = "1,2,3";
+    String[] expected = new String[]{"1", "2", "3"};
     parseCSV(input, expected);
   }
 
   @Test
   void testBackSlash() {
-    String input = "1,2\\,3,4"; // Java-escaped, but not CSV-escaped
-    String[] expected = new String[] {"1", "2,3", "4"}; // backslash should disappear in output
+    final String input = "1,2\\,3,4"; // Java-escaped, but not CSV-escaped
+    String[] expected = new String[]{"1", "2,3", "4"}; // backslash should disappear in output
     parseCSV(input, expected);
   }
 
   @Test
   void testRandomSingleBackSlash() {
-    String input = "1,\\2,3"; // Java-escaped, but not CSV-escaped
-    String[] expected = new String[] {"1", "2", "3"}; // backslash should disappear
+    final String input = "1,\\2,3"; // Java-escaped, but not CSV-escaped
+    String[] expected = new String[]{"1", "2", "3"}; // backslash should disappear
     parseCSV(input, expected);
   }
 
   @Test
   void testDoubleBackSlashBeforeComma() {
-    String input = "1,2\\\\,3"; // Java-escaped and CSV-escaped
-    String[] expected = new String[] {"1", "2\\", "3"}; // one backslash should disappear in output
+    final String input = "1,2\\\\,3"; // Java-escaped and CSV-escaped
+    String[] expected = new String[]{"1", "2\\", "3"}; // one backslash should disappear in output
     parseCSV(input, expected);
   }
 
   @Test
   void testRandomDoubleBackSlash() {
-    String input = "1,\\\\2,3"; // Java-escaped, and CSV-escaped
-    String[] expected = new String[] {"1", "\\2", "3"}; // one backslash should disappear in output
+    final String input = "1,\\\\2,3"; // Java-escaped, and CSV-escaped
+    String[] expected = new String[]{"1", "\\2", "3"}; // one backslash should disappear in output
     parseCSV(input, expected);
   }
 
   @Test
   void testTripleBackSlashBeforeComma() {
-    String input = "1,2\\\\\\,3,4"; // Java-escaped, and CSV-escaped
-    String[] expected = new String[] {"1", "2\\,3", "4"}; // one backslash should disappear in
-                                                          // output
+    final String input = "1,2\\\\\\,3,4"; // Java-escaped, and CSV-escaped
+    String[] expected = new String[]{"1", "2\\,3", "4"}; // one backslash should disappear in
+    // output
     parseCSV(input, expected);
   }
 
   @Test
   void test4BackSlashesBeforeComma() {
-    String input = "1,2\\\\\\\\,3"; // Java-escaped, and CSV-escaped
-    String[] expected = new String[] {"1", "2\\\\", "3"}; // two backslashes should disappear in
-                                                          // output
+    final String input = "1,2\\\\\\\\,3"; // Java-escaped, and CSV-escaped
+    String[] expected = new String[]{"1", "2\\\\", "3"}; // two backslashes should disappear in
+    // output
     parseCSV(input, expected);
   }
 
-  public void compareStringArrays(String[] expected, String[] actual) {
+  private void compareStringArrays(String[] expected, String[] actual) {
     assertEquals(expected.length, actual.length, "Wrong number of elements");
     for (int i = 0; i < expected.length; i++) {
       assertEquals(expected[i], actual[i]);

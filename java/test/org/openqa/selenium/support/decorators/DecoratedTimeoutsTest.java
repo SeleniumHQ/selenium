@@ -23,8 +23,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
@@ -33,25 +33,6 @@ import java.util.function.Consumer;
 
 @Tag("UnitTests")
 class DecoratedTimeoutsTest {
-
-  private static class Fixture {
-
-    WebDriver originalDriver;
-    WebDriver decoratedDriver;
-    WebDriver.Options originalOptions;
-    WebDriver.Timeouts original;
-    WebDriver.Timeouts decorated;
-
-    public Fixture() {
-      original = mock(WebDriver.Timeouts.class);
-      originalOptions = mock(WebDriver.Options.class);
-      originalDriver = mock(WebDriver.class);
-      when(originalOptions.timeouts()).thenReturn(original);
-      when(originalDriver.manage()).thenReturn(originalOptions);
-      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
-      decorated = decoratedDriver.manage().timeouts();
-    }
-  }
 
   private void verifyFunction(Consumer<WebDriver.Timeouts> f) {
     Fixture fixture = new Fixture();
@@ -88,5 +69,24 @@ class DecoratedTimeoutsTest {
   @Test
   void pageLoadTimeout() {
     verifyFunction($ -> $.pageLoadTimeout(Duration.ofSeconds(10)));
+  }
+
+  private static class Fixture {
+
+    WebDriver originalDriver;
+    WebDriver decoratedDriver;
+    WebDriver.Options originalOptions;
+    WebDriver.Timeouts original;
+    WebDriver.Timeouts decorated;
+
+    public Fixture() {
+      original = mock(WebDriver.Timeouts.class);
+      originalOptions = mock(WebDriver.Options.class);
+      originalDriver = mock(WebDriver.class);
+      when(originalOptions.timeouts()).thenReturn(original);
+      when(originalDriver.manage()).thenReturn(originalOptions);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
+      decorated = decoratedDriver.manage().timeouts();
+    }
   }
 }

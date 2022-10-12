@@ -23,6 +23,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class SetNextConfirmationState extends SeleneseCommand<Void> {
+
   private final boolean result;
 
   public SetNextConfirmationState(boolean result) {
@@ -32,16 +33,16 @@ public class SetNextConfirmationState extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     ((JavascriptExecutor) driver).executeScript(
-        "var canUseLocalStorage = false; " +
-        "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
-        "var canUseJSON = false; " +
-        "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
-        "if (canUseLocalStorage && canUseJSON) { " +
-        "  window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(arguments[0])); " +
-        "} else { " +
-        "  window.__webdriverNextConfirm = arguments[0];" +
-        "}"
-        , result);
+      "var canUseLocalStorage = false; " +
+      "try { canUseLocalStorage = !!window.localStorage; } catch(ex) { /* probe failed */ } " +
+      "var canUseJSON = false; " +
+      "try { canUseJSON = !!JSON; } catch(ex) { /* probe failed */ } " +
+      "if (canUseLocalStorage && canUseJSON) { " +
+      "  window.localStorage.setItem('__webdriverNextConfirm', JSON.stringify(arguments[0])); " +
+      "} else { " +
+      "  window.__webdriverNextConfirm = arguments[0];" +
+      "}"
+      , result);
     return null;
   }
 }

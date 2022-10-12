@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.safari;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.net.PortProber;
@@ -32,10 +36,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 class SafariDriverTest extends JupiterTestBase {
 
   private SafariDriverService service;
@@ -48,7 +48,7 @@ class SafariDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void builderGeneratesDefaultSafariOptions() {
+  void builderGeneratesDefaultSafariOptions() {
     localDriver = SafariDriver.builder().build();
     Capabilities capabilities = ((SafariDriver) localDriver).getCapabilities();
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
@@ -57,16 +57,17 @@ class SafariDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void builderOverridesDefaultSafariOptions() {
+  void builderOverridesDefaultSafariOptions() {
     SafariOptions options = new SafariOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = SafariDriver.builder().oneOf(options).build();
-    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(
+      Duration.ofMillis(1));
   }
 
   @Test
   @NoDriverBeforeTest
-  public void builderWithClientConfigThrowsException() {
+  void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = SafariDriver.builder().config(clientConfig);
 
@@ -77,7 +78,7 @@ class SafariDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canStartADriverUsingAService() throws IOException {
+  void canStartADriverUsingAService() throws IOException {
     int port = PortProber.findFreePort();
     service = new SafariDriverService.Builder().usingPort(port).build();
     service.start();
@@ -88,7 +89,7 @@ class SafariDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canStartTechnologyPreview() {
+  void canStartTechnologyPreview() {
     assumeTrue(technologyPreviewInstalled());
 
     SafariOptions options = new SafariOptions();
@@ -111,7 +112,7 @@ class SafariDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canAttachDebugger() {
+  void canAttachDebugger() {
     localDriver = new WebDriverBuilder().get(new SafariOptions());
     ((HasDebugger) localDriver).attachDebugger();
   }

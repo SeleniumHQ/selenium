@@ -27,21 +27,18 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 class Utf8Handler implements HttpHandler {
 
   private final Path webSrc;
   private final String stripPrefix;
 
-  public Utf8Handler(Path webSrc, String stripPrefix) {
+  Utf8Handler(Path webSrc, String stripPrefix) {
     this.webSrc = webSrc;
     this.stripPrefix = stripPrefix;
   }
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-
 
     try {
       String fileName = req.getUri();
@@ -53,7 +50,7 @@ class Utf8Handler implements HttpHandler {
 
       return new HttpResponse()
         .setHeader("Content-Type", "text/html; charset=UTF-8")
-        .setContent(Contents.utf8String(new String(Files.readAllBytes(target), UTF_8)));
+        .setContent(Contents.utf8String(Files.readString(target)));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

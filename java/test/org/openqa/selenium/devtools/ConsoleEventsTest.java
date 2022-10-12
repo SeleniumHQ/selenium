@@ -34,7 +34,8 @@ class ConsoleEventsTest extends DevToolsTestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  public void canWatchConsoleEvents() throws InterruptedException, ExecutionException, TimeoutException {
+  public void canWatchConsoleEvents()
+    throws InterruptedException, ExecutionException, TimeoutException {
     String page = appServer.create(
       new Page()
         .withBody("<div id='button' onclick='helloWorld()'>click me</div>")

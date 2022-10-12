@@ -81,7 +81,9 @@ public enum DeploymentTypes {
           additionalConfig,
           new TomlConfig(new StringReader(String.join("\n", rawConfig)))));
 
-      Server<?> server = new Standalone().asServer(new CompoundConfig(setRandomPort(), config)).start();
+      Server<?>
+        server =
+        new Standalone().asServer(new CompoundConfig(setRandomPort(), config)).start();
       waitUntilReady(server, Duration.ofSeconds(5));
 
       return new Deployment(server, server::stop);
@@ -98,7 +100,7 @@ public enum DeploymentTypes {
       int publish = PortProber.findFreePort();
       int subscribe = PortProber.findFreePort();
 
-      String[] rawConfig = new String[] {
+      String[] rawConfig = new String[]{
         "[events]",
         "publish = \"tcp://localhost:" + publish + "\"",
         "subscribe = \"tcp://localhost:" + subscribe + "\"",
@@ -152,7 +154,7 @@ public enum DeploymentTypes {
       int publish = PortProber.findFreePort();
       int subscribe = PortProber.findFreePort();
 
-      String[] rawConfig = new String[] {
+      String[] rawConfig = new String[]{
         "[events]",
         "publish = \"tcp://localhost:" + publish + "\"",
         "subscribe = \"tcp://localhost:" + subscribe + "\"",
@@ -177,7 +179,7 @@ public enum DeploymentTypes {
 
       Server<?> eventServer = new EventBusCommand()
         .asServer(new MemoizedConfig(new CompoundConfig(
-          new TomlConfig(new StringReader(String.join("\n", new String[] {
+          new TomlConfig(new StringReader(String.join("\n", new String[]{
             "[events]",
             "publish = \"tcp://localhost:" + publish + "\"",
             "subscribe = \"tcp://localhost:" + subscribe + "\"",
@@ -192,7 +194,7 @@ public enum DeploymentTypes {
       waitUntilReady(newSessionQueueServer, Duration.ofSeconds(5));
       Config newSessionQueueServerConfig = new TomlConfig(new StringReader(String.join(
         "\n",
-        new String[] {
+        new String[]{
           "[sessionqueue]",
           "hostname = \"localhost\"",
           "port = " + newSessionQueueServer.getUrl().getPort()
@@ -203,7 +205,7 @@ public enum DeploymentTypes {
         .asServer(new MemoizedConfig(new CompoundConfig(setRandomPort(), sharedConfig))).start();
       Config sessionMapConfig = new TomlConfig(new StringReader(String.join(
         "\n",
-        new String[] {
+        new String[]{
           "[sessions]",
           "hostname = \"localhost\"",
           "port = " + sessionMapServer.getUrl().getPort()
@@ -219,7 +221,7 @@ public enum DeploymentTypes {
         .start();
       Config distributorConfig = new TomlConfig(new StringReader(String.join(
         "\n",
-        new String[] {
+        new String[]{
           "[distributor]",
           "hostname = \"localhost\"",
           "port = " + distributorServer.getUrl().getPort()
@@ -270,18 +272,18 @@ public enum DeploymentTypes {
 
     try {
       new FluentWait<>(client)
-          .withTimeout(duration)
-          .pollingEvery(Duration.ofMillis(250))
-          .ignoring(IOException.class)
-          .ignoring(UncheckedIOException.class)
-          .ignoring(ConnectException.class)
-          .until(
-              c -> {
-                HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-                Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return Boolean.TRUE.equals(
-                  status != null && Boolean.parseBoolean(status.get("ready").toString()));
-              });
+        .withTimeout(duration)
+        .pollingEvery(Duration.ofMillis(250))
+        .ignoring(IOException.class)
+        .ignoring(UncheckedIOException.class)
+        .ignoring(ConnectException.class)
+        .until(
+          c -> {
+            HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+            Map<String, Object> status = Values.get(response, MAP_TYPE);
+            return Boolean.TRUE.equals(
+              status != null && Boolean.parseBoolean(status.get("ready").toString()));
+          });
     } finally {
       Safely.safelyCall(client::close);
     }
@@ -290,6 +292,7 @@ public enum DeploymentTypes {
   public abstract Deployment start(Capabilities capabilities, Config additionalConfig);
 
   public static class Deployment implements TearDownFixture {
+
     private final Server<?> server;
     private final List<TearDownFixture> tearDowns;
 

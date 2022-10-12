@@ -49,11 +49,11 @@ public class UploadFile extends WebDriverHandler<String> {
     File[] allFiles = tempDir.listFiles();
     if (allFiles == null) {
       throw new WebDriverException(
-          "Error reading temporary directory for uploaded files " + tempDir);
+        "Error reading temporary directory for uploaded files " + tempDir);
     }
     if (allFiles.length != 1) {
       throw new WebDriverException(
-          "Expected there to be only 1 file. There were: " + allFiles.length);
+        "Expected there to be only 1 file. There were: " + allFiles.length);
     }
 
     return allFiles[0].getAbsolutePath();

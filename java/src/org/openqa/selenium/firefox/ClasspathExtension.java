@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.net.URL;
 
 public class ClasspathExtension implements Extension {
+
   private final Class<?> loadResourcesUsing;
   private final String loadFrom;
 
@@ -56,7 +57,7 @@ public class ClasspathExtension implements Extension {
 
     URL resourceUrl = Resources.getResource(loadResourcesUsing, loadFrom);
 
-    try (OutputStream stream = new FileOutputStream(extractedXpi)){
+    try (OutputStream stream = new FileOutputStream(extractedXpi)) {
       Resources.copy(resourceUrl, stream);
     }
     new FileExtension(extractedXpi).writeTo(extensionsDir);

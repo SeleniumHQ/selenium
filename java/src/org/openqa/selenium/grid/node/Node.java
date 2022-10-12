@@ -17,10 +17,20 @@
 
 package org.openqa.selenium.grid.node;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.matching;
+import static org.openqa.selenium.remote.http.Route.post;
+
+
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeId;
@@ -41,7 +51,6 @@ import org.openqa.selenium.remote.locators.CustomLocator;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
-import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -51,14 +60,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.delete;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.matching;
-import static org.openqa.selenium.remote.http.Route.post;
 
 /**
  * A place where individual webdriver sessions are running. Those sessions may be in-memory, or
@@ -127,12 +128,15 @@ public abstract class Node implements HasReadyState, Routable {
     RequiresSecretFilter requiresSecret = new RequiresSecretFilter(registrationSecret);
 
     Set<CustomLocator> customLocators = StreamSupport.stream(
-      ServiceLoader.load(CustomLocator.class).spliterator(),
-      false)
+        ServiceLoader.load(CustomLocator.class).spliterator(),
+        false)
       .collect(Collectors.toSet());
 
     if (!customLocators.isEmpty()) {
-      String names = customLocators.stream().map(CustomLocator::getLocatorName).collect(Collectors.joining(", "));
+      String
+        names =
+        customLocators.stream().map(CustomLocator::getLocatorName)
+          .collect(Collectors.joining(", "));
       LOG.info("Binding additional locator mechanisms: " + names);
     }
 
@@ -140,7 +144,8 @@ public abstract class Node implements HasReadyState, Routable {
     routes = combine(
       // "getSessionId" is aggressive about finding session ids, so this needs to be the last
       // route that is checked.
-      matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner).orElse(false))
+      matching(req -> getSessionId(req.getUri()).map(SessionId::new).map(this::isSessionOwner)
+        .orElse(false))
         .to(() -> new ForwardWebDriverCommand(this))
         .with(spanDecorator("node.forward_command")),
       new CustomLocatorHandler(this, registrationSecret, customLocators),
@@ -174,7 +179,7 @@ public abstract class Node implements HasReadyState, Routable {
   }
 
   private static ImmutableMap<String, String> loadOsInfo() {
-    return ImmutableMap.of(
+    return Map.of(
       "arch", System.getProperty("os.arch"),
       "name", System.getProperty("os.name"),
       "version", System.getProperty("os.version"));
@@ -204,7 +209,8 @@ public abstract class Node implements HasReadyState, Routable {
     return OS_INFO;
   }
 
-  public abstract Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
+  public abstract Either<WebDriverException, CreateSessionResponse> newSession(
+    CreateSessionRequest sessionRequest);
 
   public abstract HttpResponse executeWebDriverCommand(HttpRequest req);
 
@@ -226,7 +232,9 @@ public abstract class Node implements HasReadyState, Routable {
 
   public abstract HealthCheck getHealthCheck();
 
-  public boolean isDraining() { return draining; }
+  public boolean isDraining() {
+    return draining;
+  }
 
   public abstract void drain();
 

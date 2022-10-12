@@ -26,11 +26,13 @@ import java.util.regex.Pattern;
 
 @Disabled("Incorrectly calculated base path")
 public class TestCookie extends InternalSelenseTestBase {
+
   @Test
   void testCookie() {
     String base =
-        selenium
-            .getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");
+      selenium
+        .getEval(
+          "parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");
     System.out.println(base);
     selenium.open(base + "/path1/cookie1.html");
     selenium.deleteAllVisibleCookies();
@@ -43,7 +45,7 @@ public class TestCookie extends InternalSelenseTestBase {
     selenium.createCookie("addedCookieForPath2=new value2", "path=" + base + "/path2/, max_age=60");
     selenium.open(base + "/path1/cookie1.html");
     verifyTrue(Pattern.compile("addedCookieForPath1=new value1").matcher(selenium.getCookie())
-        .find());
+                 .find());
     assertTrue(selenium.isCookiePresent("addedCookieForPath1"));
     verifyEquals(selenium.getCookieByName("addedCookieForPath1"), "new value1");
     verifyFalse(selenium.isCookiePresent("testCookie"));
@@ -61,13 +63,13 @@ public class TestCookie extends InternalSelenseTestBase {
     verifyEquals(selenium.getCookieByName("testCookieWithSameName"), "new value1");
     selenium.open(base + "/path2/cookie2.html");
     verifyTrue(Pattern.compile("testCookieWithSameName=new value1").matcher(selenium.getCookie())
-        .find());
+                 .find());
     verifyTrue(Pattern.compile("testCookieWithSameName=new value2").matcher(selenium.getCookie())
-        .find());
+                 .find());
     selenium.deleteCookie("testCookieWithSameName", base + "/path2/");
     selenium.open(base + "/path2/cookie2.html");
     verifyEquals(selenium.getCookieByName("testCookieWithSameName"), "new value1");
     verifyFalse(Pattern.compile("testCookieWithSameName=new value2").matcher(selenium.getCookie())
-        .find());
+                  .find());
   }
 }

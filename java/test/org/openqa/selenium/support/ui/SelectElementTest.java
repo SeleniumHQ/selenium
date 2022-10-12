@@ -40,7 +40,7 @@ class SelectElementTest extends JupiterTestBase {
   void shouldThrowAnExceptionIfTheElementIsNotASelectElement() {
     WebElement selectElement = driver.findElement(By.name("checky"));
     assertThatExceptionOfType(UnexpectedTagNameException.class)
-        .isThrownBy(() -> new Select(selectElement));
+      .isThrownBy(() -> new Select(selectElement));
   }
 
   @Test
@@ -91,7 +91,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThat(select.getOptions()).extracting(WebElement::getText)
-        .containsExactly("One", "Two", "Four", "Still learning how to count, apparently");
+      .containsExactly("One", "Two", "Four", "Still learning how to count, apparently");
   }
 
   @Test
@@ -100,7 +100,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThat(select.getAllSelectedOptions()).extracting(WebElement::getText)
-        .containsExactly("One");
+      .containsExactly("One");
   }
 
   @Test
@@ -109,7 +109,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThat(select.getAllSelectedOptions()).extracting(WebElement::getText)
-        .containsExactly("Eggs", "Sausages");
+      .containsExactly("Eggs", "Sausages");
   }
 
   @Test
@@ -127,7 +127,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(select::getFirstSelectedOption);
+      .isThrownBy(select::getFirstSelectedOption);
   }
 
   @Test
@@ -146,7 +146,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.selectByVisibleText("Apples"));
+      .isThrownBy(() -> select.selectByVisibleText("Apples"));
   }
 
   @Test
@@ -182,7 +182,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.selectByIndex(10));
+      .isThrownBy(() -> select.selectByIndex(10));
   }
 
   @Test
@@ -209,7 +209,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.selectByValue("not there"));
+      .isThrownBy(() -> select.selectByValue("not there"));
   }
 
   @Test
@@ -254,7 +254,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.deselectByVisibleText("Apples"));
+      .isThrownBy(() -> select.deselectByVisibleText("Apples"));
   }
 
   @Test
@@ -291,7 +291,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.deselectByValue("not there"));
+      .isThrownBy(() -> select.deselectByValue("not there"));
   }
 
   @Test
@@ -300,7 +300,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.deselectByVisibleText("not there"));
+      .isThrownBy(() -> select.deselectByVisibleText("not there"));
   }
 
   @Test
@@ -309,7 +309,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.deselectByIndex(10));
+      .isThrownBy(() -> select.deselectByIndex(10));
   }
 
   @Test
@@ -318,7 +318,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> select.deselectByIndex(10));
+      .isThrownBy(() -> select.deselectByIndex(10));
   }
 
   @Test
@@ -327,7 +327,7 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> select.deselectByValue("two"));
+      .isThrownBy(() -> select.deselectByValue("two"));
   }
 
   @Test
@@ -336,6 +336,6 @@ class SelectElementTest extends JupiterTestBase {
     Select select = new Select(selectElement);
 
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> select.deselectByVisibleText("Four"));
+      .isThrownBy(() -> select.deselectByVisibleText("Four"));
   }
 }

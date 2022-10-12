@@ -49,6 +49,23 @@ public class WebDriverException extends RuntimeException {
     super(message, cause);
   }
 
+  public static String getHostInformation() {
+    return String.format(
+      "Host info: host: '%s', ip: '%s'",
+      HostIdentifier.getHostName(), HostIdentifier.getHostAddress());
+  }
+
+  public static String getDriverName(StackTraceElement[] stackTraceElements) {
+    return Stream.of(stackTraceElements)
+      .filter(e -> e.getClassName().endsWith("Driver"))
+      .map(e -> {
+        String[] bits = e.getClassName().split("\\.");
+        return bits[bits.length - 1];
+      })
+      .reduce((first, last) -> last)
+      .orElse("unknown");
+  }
+
   /**
    * Returns the detail message string of this exception that includes not only the original
    * message passed to the exception constructor but also driver information, system
@@ -94,29 +111,12 @@ public class WebDriverException extends RuntimeException {
       System.getProperty("os.version"), System.getProperty("java.version"));
   }
 
-  public static String getHostInformation() {
-    return String.format(
-      "Host info: host: '%s', ip: '%s'",
-      HostIdentifier.getHostName(), HostIdentifier.getHostAddress());
-  }
-
   public String getSupportUrl() {
     return null;
   }
 
   public BuildInfo getBuildInformation() {
     return new BuildInfo();
-  }
-
-  public static String getDriverName(StackTraceElement[] stackTraceElements) {
-    return Stream.of(stackTraceElements)
-      .filter(e -> e.getClassName().endsWith("Driver"))
-      .map(e -> {
-        String[] bits = e.getClassName().split("\\.");
-        return bits[bits.length - 1];
-      })
-      .reduce((first, last) -> last)
-      .orElse("unknown");
   }
 
   public void addInfo(String key, String value) {

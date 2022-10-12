@@ -24,6 +24,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class Highlight extends SeleneseCommand<String> {
+
   private final JavascriptLibrary js;
   private final ElementFinder finder;
 

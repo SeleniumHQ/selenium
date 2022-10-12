@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -27,9 +30,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 
 import java.util.Optional;
-
-import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @SuppressWarnings("unused")
 @AutoService(WebDriverInfo.class)

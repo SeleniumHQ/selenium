@@ -33,6 +33,7 @@ public class PageSize {
     this.height = height;
     this.width = width;
   }
+
   public double getHeight() {
     return height;
   }

@@ -45,6 +45,7 @@ import java.util.function.Supplier;
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
 public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpResponse> {
+
   private final ErrorCodes errorCodes = new ErrorCodes();
   private final Json json = new Json();
 
@@ -84,7 +85,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
     } catch (JsonException e) {
       if (contentType.startsWith("application/json")) {
         throw new IllegalArgumentException(
-            "Cannot decode response content: " + content, e);
+          "Cannot decode response content: " + content, e);
       }
     } catch (ClassCastException e) {
       if (contentType.startsWith("application/json")) {
@@ -96,7 +97,7 @@ public abstract class AbstractHttpResponseCodec implements ResponseCodec<HttpRes
           return new Response();
         }
         throw new IllegalArgumentException(
-            "Cannot decode response content: " + content, e);
+          "Cannot decode response content: " + content, e);
       }
     }
 

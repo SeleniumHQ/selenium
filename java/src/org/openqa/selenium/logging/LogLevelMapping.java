@@ -25,14 +25,14 @@ import java.util.logging.Level;
 public class LogLevelMapping {
 
   /**
-   *  WebDriver log level DEBUG which is mapped to Level.FINE.
+   * WebDriver log level DEBUG which is mapped to Level.FINE.
    */
   private static final String DEBUG = "DEBUG";
 
   private static final Map<Integer, Level> levelMap;
 
   static {
-    Level[] supportedLevels = new Level[] {
+    Level[] supportedLevels = new Level[]{
       Level.ALL,
       Level.FINE,
       Level.INFO,

@@ -28,7 +28,7 @@ public interface HasDebugger {
   /**
    * This opens Safari's Web Inspector
    * If driver subsequently executes script of "debugger;" the execution will pause, no additional commands will be processed,
-   *  and the code will time out.
+   * and the code will time out.
    */
   void attachDebugger();
 }

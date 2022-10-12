@@ -26,6 +26,7 @@ import java.util.List;
  * "eval" block so that a meaningful return value can be created.
  */
 public class CompoundMutator implements ScriptMutator {
+
   // The ordering of mutators matters
   private final List<ScriptMutator> mutators = new ArrayList<>();
 
@@ -33,29 +34,29 @@ public class CompoundMutator implements ScriptMutator {
     addMutator(new VariableDeclaration("selenium", "var selenium = {};"));
     addMutator(new VariableDeclaration("selenium.browserbot", "selenium.browserbot = {};"));
     addMutator(new VariableDeclaration(
-        "selenium.browserbot.baseUrl", "selenium.browserbot.baseUrl = '" + baseUrl + "';"));
+      "selenium.browserbot.baseUrl", "selenium.browserbot.baseUrl = '" + baseUrl + "';"));
     addMutator(new VariableDeclaration(
-        "browserVersion", "var browserVersion = {};"));
+      "browserVersion", "var browserVersion = {};"));
     addMutator(new VariableDeclaration(
-        "browserVersion.isFirefox",
-        "browserVersion.isFirefox = navigator.userAgent.indexOf('Firefox') != -1 || " +
-            "navigator.userAgent.indexOf('Namoroka') != -1 " +
-            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
+      "browserVersion.isFirefox",
+      "browserVersion.isFirefox = navigator.userAgent.indexOf('Firefox') != -1 || " +
+      "navigator.userAgent.indexOf('Namoroka') != -1 " +
+      "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
     addMutator(new VariableDeclaration(
-        "browserVersion.isGecko",
-        "browserVersion.isGecko = navigator.userAgent.indexOf('Firefox') != -1 || " +
-            "navigator.userAgent.indexOf('Namoroka') != -1 " +
-            "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
+      "browserVersion.isGecko",
+      "browserVersion.isGecko = navigator.userAgent.indexOf('Firefox') != -1 || " +
+      "navigator.userAgent.indexOf('Namoroka') != -1 " +
+      "|| navigator.userAgent.indexOf('Shiretoko') != -1;"));
     addMutator(new VariableDeclaration(
-        "browserVersion.firefoxVersion",
-        "var r = /.*[Firefox|Namoroka|Shiretoko]\\/([\\d\\.]+).*/.exec(navigator.userAgent);" +
-            "browserVersion.firefoxVersion = r ? r[1] : '';"));
+      "browserVersion.firefoxVersion",
+      "var r = /.*[Firefox|Namoroka|Shiretoko]\\/([\\d\\.]+).*/.exec(navigator.userAgent);" +
+      "browserVersion.firefoxVersion = r ? r[1] : '';"));
     addMutator(new VariableDeclaration(
-        "browserVersion.isIE",
-        "browserVersion.isIE = navigator.appName == 'Microsoft Internet Explorer';"));
+      "browserVersion.isIE",
+      "browserVersion.isIE = navigator.appName == 'Microsoft Internet Explorer';"));
 
     addMutator(new FunctionDeclaration("selenium.page",
-        "if (!selenium.browserbot) { selenium.browserbot = {} }; return selenium.browserbot;"));
+                                       "if (!selenium.browserbot) { selenium.browserbot = {} }; return selenium.browserbot;"));
     addMutator(new FunctionDeclaration("selenium.browserbot.getCurrentWindow", "return window;"));
     addMutator(new FunctionDeclaration("selenium.browserbot.getUserWindow", "return window;"));
     addMutator(new FunctionDeclaration("selenium.page().getCurrentWindow", "return window;"));
@@ -65,15 +66,15 @@ public class CompoundMutator implements ScriptMutator {
     JavascriptLibrary library = new JavascriptLibrary();
 
     addMutator(new SeleniumMutator("selenium.getText",
-        library.getSeleniumScript("getText.js")));
+                                   library.getSeleniumScript("getText.js")));
     addMutator(new SeleniumMutator("selenium.isElementPresent",
-        library.getSeleniumScript("isElementPresent.js")));
+                                   library.getSeleniumScript("isElementPresent.js")));
     addMutator(new SeleniumMutator("selenium.isTextPresent",
-        library.getSeleniumScript("isTextPresent.js")));
+                                   library.getSeleniumScript("isTextPresent.js")));
     addMutator(new SeleniumMutator("selenium.isVisible",
-        library.getSeleniumScript("isVisible.js")));
+                                   library.getSeleniumScript("isVisible.js")));
     addMutator(new SeleniumMutator("selenium.browserbot.findElement",
-        library.getSeleniumScript("findElement.js")));
+                                   library.getSeleniumScript("findElement.js")));
   }
 
   public void addMutator(ScriptMutator mutator) {
@@ -96,8 +97,8 @@ public class CompoundMutator implements ScriptMutator {
 
   private String escape(String escapee) {
     return escapee
-        .replace("\\", "\\\\")
-        .replace("\n", "\\n")
-        .replace("'", "\\'");
+      .replace("\\", "\\\\")
+      .replace("\n", "\\n")
+      .replace("'", "\\'");
   }
 }

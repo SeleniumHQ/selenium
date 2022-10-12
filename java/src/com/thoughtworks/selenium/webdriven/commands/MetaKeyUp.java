@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class MetaKeyUp extends SeleneseCommand<Void> {
+
   private final KeyState keyState;
 
   public MetaKeyUp(KeyState keyState) {

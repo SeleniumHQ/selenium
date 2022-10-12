@@ -33,23 +33,23 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
   private final LogRecord[] lastRecords;
   private final int capacity;
   private final Formatter formatter;
-  private int minimumLevel;
+  private final int minimumLevel;
   private int currentIndex;
 
   /**
    * New handler keeping track of the last N records above a specific log level.
    *
-   * @param capacity Maximum number of records to keep in memory (i.e. N).
+   * @param capacity     Maximum number of records to keep in memory (i.e. N).
    * @param minimumLevel Only keep track of records whose level is equal or greater than
-   *        minimumLevel.
-   * @param formatter Formatter to use when retrieving log messages.
+   *                     minimumLevel.
+   * @param formatter    Formatter to use when retrieving log messages.
    */
-  public ShortTermMemoryHandler(int capacity, Level minimumLevel, Formatter formatter) {
+  ShortTermMemoryHandler(int capacity, Level minimumLevel, Formatter formatter) {
     this.capacity = capacity;
     this.formatter = formatter;
     this.minimumLevel = minimumLevel.intValue();
-    this.lastRecords = new LogRecord[capacity];
-    this.currentIndex = 0;
+    lastRecords = new LogRecord[capacity];
+    currentIndex = 0;
   }
 
 
@@ -77,8 +77,8 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
     }
   }
 
-  public synchronized LogRecord[] records() {
-    final ArrayList<LogRecord> validRecords;
+  synchronized LogRecord[] records() {
+    ArrayList<LogRecord> validRecords;
 
     validRecords = new ArrayList<>(capacity);
     for (int i = currentIndex; i < capacity; i++) {
@@ -94,8 +94,8 @@ public class ShortTermMemoryHandler extends java.util.logging.Handler {
     return validRecords.toArray(new LogRecord[0]);
   }
 
-  public synchronized String formattedRecords() {
-    final StringWriter writer;
+  synchronized String formattedRecords() {
+    StringWriter writer;
 
     writer = new StringWriter();
     for (LogRecord record : records()) {

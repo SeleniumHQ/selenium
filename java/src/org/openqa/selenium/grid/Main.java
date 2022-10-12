@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid;
 
+import static java.util.Comparator.comparing;
+
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.cli.WrappedPrintWriter;
 import org.openqa.selenium.grid.config.Role;
@@ -30,23 +32,27 @@ import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static java.util.Comparator.comparing;
-
 public class Main {
 
   private final PrintStream out;
   private final PrintStream err;
   private final String[] args;
 
-  public static void main(String[] args) {
-    new Main(System.out, System.err, args).go();
-  }
-
   Main(PrintStream out, PrintStream err, String[] args) {
     // It's not private to make it visible for tests
     this.out = out;
     this.err = err;
     this.args = args;
+  }
+
+  public static void main(String[] args) {
+    new Main(System.out, System.err, args).go();
+  }
+
+  private static Set<CliCommand> loadCommands(ClassLoader loader) {
+    Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
+    ServiceLoader.load(CliCommand.class, loader).forEach(commands::add);
+    return commands;
   }
 
   void go() {
@@ -56,12 +62,6 @@ public class Main {
     } else {
       launch(args, Main.class.getClassLoader());
     }
-  }
-
-  private static Set<CliCommand> loadCommands(ClassLoader loader) {
-    Set<CliCommand> commands = new TreeSet<>(comparing(CliCommand::getName));
-    ServiceLoader.load(CliCommand.class, loader).forEach(commands::add);
-    return commands;
   }
 
   private void showHelp(ClassLoader loader) {
@@ -76,9 +76,9 @@ public class Main {
     Set<CliCommand> commands = loadCommands(loader);
 
     CliCommand command = commands.parallelStream()
-        .filter(cmd -> commandName.equals(cmd.getName()))
-        .findFirst()
-        .orElse(new Help(commands));
+      .filter(cmd -> commandName.equals(cmd.getName()))
+      .findFirst()
+      .orElse(new Help(commands));
 
     command.configure(out, err, remainingArgs).run();
   }
@@ -116,11 +116,11 @@ public class Main {
     public Executable configure(PrintStream out, PrintStream err, String... args) {
       return () -> {
         int longest = commands.stream()
-                          .filter(CliCommand::isShown)
-                          .map(CliCommand::getName)
-                          .max(Comparator.comparingInt(String::length))
-                          .map(String::length)
-                          .orElse(0) + 2;  // two space padding either side
+                        .filter(CliCommand::isShown)
+                        .map(CliCommand::getName)
+                        .max(Comparator.comparingInt(String::length))
+                        .map(String::length)
+                        .orElse(0) + 2;  // two space padding either side
 
         PrintWriter outWriter = new WrappedPrintWriter(out, 72, 0);
         outWriter.append(getName()).append("\n\n");
@@ -138,11 +138,11 @@ public class Main {
 
         outWriter.write("\nFor each command, run with `--help` for command-specific help\n");
         outWriter.write("\nUse the `--ext` flag before the command name to specify an additional " +
-                  "classpath to use with the server (for example, to provide additional " +
-                  "commands, or to provide additional driver implementations). For example:\n");
+                        "classpath to use with the server (for example, to provide additional " +
+                        "commands, or to provide additional driver implementations). For example:\n");
         outWriter.write(String.format(
-            "%n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
-            File.pathSeparator));
+          "%n  java -jar selenium.jar --ext example.jar%sdir standalone --port 1234",
+          File.pathSeparator));
         out.println("\n");
       };
     }

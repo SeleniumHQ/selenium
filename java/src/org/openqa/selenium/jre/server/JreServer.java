@@ -18,7 +18,9 @@
 package org.openqa.selenium.jre.server;
 
 import com.google.common.io.ByteStreams;
+
 import com.sun.net.httpserver.HttpServer;
+
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.internal.Require;
@@ -58,7 +60,8 @@ public class JreServer implements Server<JreServer> {
         HttpResponse res = handler.execute(req);
 
         res.getHeaderNames().forEach(
-          name -> res.getHeaders(name).forEach(value -> httpExchange.getResponseHeaders().add(name, value)));
+          name -> res.getHeaders(name)
+            .forEach(value -> httpExchange.getResponseHeaders().add(name, value)));
         httpExchange.sendResponseHeaders(res.getStatus(), 0);
 
         try (InputStream in = res.getContent().get();

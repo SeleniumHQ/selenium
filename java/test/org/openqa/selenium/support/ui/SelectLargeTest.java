@@ -31,6 +31,7 @@ import java.util.List;
  * Test for issue r759.
  */
 class SelectLargeTest extends JupiterTestBase {
+
   @Test
   void multipleSelectShouldBePossibleIfMultipleAttributeEmpty() {
     driver.get(pages.formPage);
@@ -43,7 +44,7 @@ class SelectLargeTest extends JupiterTestBase {
 
     List<WebElement> picked = selection.getAllSelectedOptions();
     assertThat(picked).extracting(element -> element.getAttribute("id"))
-        .containsExactly("multi_2", "multi_3");
+      .containsExactly("multi_2", "multi_3");
 
     selection.deselectAll();
     assertThat(selection.getAllSelectedOptions()).isEmpty();

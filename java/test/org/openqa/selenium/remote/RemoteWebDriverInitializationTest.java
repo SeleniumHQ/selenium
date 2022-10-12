@@ -17,10 +17,26 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
+import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.nullResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
+import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 
-import org.junit.jupiter.api.Test;
+
+
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -38,30 +54,16 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.UUID;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.openqa.selenium.remote.WebDriverFixture.echoCapabilities;
-import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.nullResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
-import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
-
 @Tag("UnitTests")
 class RemoteWebDriverInitializationTest {
+
   private boolean quitCalled = false;
 
   @Test
   void testQuitsIfStartSessionFails() {
     assertThatExceptionOfType(RuntimeException.class)
-      .isThrownBy(() -> new BadStartSessionRemoteWebDriver(mock(CommandExecutor.class), new ImmutableCapabilities()))
+      .isThrownBy(() -> new BadStartSessionRemoteWebDriver(mock(CommandExecutor.class),
+                                                           new ImmutableCapabilities()))
       .withMessageContaining("Stub session that should fail");
 
     assertThat(quitCalled).isTrue();
@@ -82,7 +84,8 @@ class RemoteWebDriverInitializationTest {
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()))
       .withMessageContaining("Build info: ")
       .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-      .withMessageContaining("Command: [null, newSession {capabilities=[Capabilities {}], desiredCapabilities=Capabilities {}}]");
+      .withMessageContaining(
+        "Command: [null, newSession {capabilities=[Capabilities {}], desiredCapabilities=Capabilities {}}]");
 
     verifyNoCommands(executor);
   }
@@ -116,7 +119,9 @@ class RemoteWebDriverInitializationTest {
 
   @Test
   void constructorStartsSessionAndPassesCapabilities() throws IOException {
-    CommandExecutor executor = WebDriverFixture.prepareExecutorMock(echoCapabilities, nullValueResponder);
+    CommandExecutor
+      executor =
+      WebDriverFixture.prepareExecutorMock(echoCapabilities, nullValueResponder);
     ImmutableCapabilities capabilities = new ImmutableCapabilities("browserName", "cheese browser");
 
     RemoteWebDriver driver = new RemoteWebDriver(executor, capabilities);
@@ -167,7 +172,7 @@ class RemoteWebDriverInitializationTest {
   void canHandleNonStandardCapabilitiesReturnedByRemoteEnd() throws IOException {
     Response resp = new Response();
     resp.setSessionId(UUID.randomUUID().toString());
-    resp.setValue(ImmutableMap.of("platformName", "xxx"));
+    resp.setValue(Map.of("platformName", "xxx"));
     CommandExecutor executor = mock(CommandExecutor.class);
     when(executor.execute(any())).thenReturn(resp);
     RemoteWebDriver driver = new RemoteWebDriver(executor, new ImmutableCapabilities());
@@ -178,12 +183,12 @@ class RemoteWebDriverInitializationTest {
   void canPassClientConfig() throws MalformedURLException {
     HttpClient client = mock(HttpClient.class);
     when(client.execute(any())).thenReturn(new HttpResponse().setStatus(200).setContent(
-      Contents.asJson(singletonMap("value", ImmutableMap.of(
+      Contents.asJson(singletonMap("value",Map.of(
         "sessionId", UUID.randomUUID().toString(),
         "capabilities", new ImmutableCapabilities().asMap())))));
 
     HttpClient.Factory factory = mock(HttpClient.Factory.class);
-    ArgumentCaptor<ClientConfig > config = ArgumentCaptor.forClass(ClientConfig.class);
+    ArgumentCaptor<ClientConfig> config = ArgumentCaptor.forClass(ClientConfig.class);
     when(factory.createClient(config.capture())).thenReturn(client);
 
     CommandExecutor executor = new HttpCommandExecutor(
@@ -209,6 +214,7 @@ class RemoteWebDriverInitializationTest {
   }
 
   private class BadStartSessionRemoteWebDriver extends RemoteWebDriver {
+
     public BadStartSessionRemoteWebDriver(CommandExecutor executor,
                                           Capabilities desiredCapabilities) {
       super(executor, desiredCapabilities);

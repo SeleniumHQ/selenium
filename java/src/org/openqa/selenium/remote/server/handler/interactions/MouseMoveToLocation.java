@@ -27,6 +27,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import java.util.Map;
 
 public class MouseMoveToLocation extends WebDriverHandler<Void> {
+
   private static final String XOFFSET = "xoffset";
   private static final String YOFFSET = "yoffset";
   private static final String ELEMENT = "element";
@@ -54,12 +55,16 @@ public class MouseMoveToLocation extends WebDriverHandler<Void> {
       try {
         xOffset = ((Number) allParameters.get(XOFFSET)).intValue();
       } catch (ClassCastException ex) {
-        throw new WebDriverException("Illegal (non-numeric) x offset value for mouse move passed: " + allParameters.get(XOFFSET), ex);
+        throw new WebDriverException(
+          "Illegal (non-numeric) x offset value for mouse move passed: " + allParameters.get(
+            XOFFSET), ex);
       }
       try {
         yOffset = ((Number) allParameters.get(YOFFSET)).intValue();
       } catch (ClassCastException ex) {
-        throw new WebDriverException("Illegal (non-numeric) y offset value for mouse move passed: " + allParameters.get(YOFFSET), ex);
+        throw new WebDriverException(
+          "Illegal (non-numeric) y offset value for mouse move passed: " + allParameters.get(
+            YOFFSET), ex);
       }
       offsetsProvided = true;
     } else {

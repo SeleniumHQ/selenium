@@ -21,6 +21,7 @@ package org.openqa.selenium.grid.sessionmap.jdbc;
 import org.openqa.selenium.WebDriverException;
 
 public class JdbcException extends WebDriverException {
+
   public JdbcException() {
     super();
   }

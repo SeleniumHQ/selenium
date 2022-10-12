@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
@@ -30,9 +33,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
 
 public class NodeStatus {
 
@@ -58,8 +58,8 @@ public class NodeStatus {
     this.nodeId = Require.nonNull("Node id", nodeId);
     this.externalUri = Require.nonNull("URI", externalUri);
     this.maxSessionCount = Require.positive("Max session count",
-      maxSessionCount,
-      "Make sure that a driver is available on $PATH");
+                                            maxSessionCount,
+                                            "Make sure that a driver is available on $PATH");
     this.slots = unmodifiableSet(new HashSet<>(Require.nonNull("Slots", slots)));
     this.availability = Require.nonNull("Availability", availability);
     this.heartbeatPeriod = heartbeatPeriod;
@@ -201,11 +201,11 @@ public class NodeStatus {
 
     NodeStatus that = (NodeStatus) o;
     return Objects.equals(this.nodeId, that.nodeId) &&
-      Objects.equals(this.externalUri, that.externalUri) &&
-      this.maxSessionCount == that.maxSessionCount &&
-      Objects.equals(this.slots, that.slots) &&
-      Objects.equals(this.availability, that.availability) &&
-      Objects.equals(this.version, that.version);
+           Objects.equals(this.externalUri, that.externalUri) &&
+           this.maxSessionCount == that.maxSessionCount &&
+           Objects.equals(this.slots, that.slots) &&
+           Objects.equals(this.availability, that.availability) &&
+           Objects.equals(this.version, that.version);
   }
 
   @Override

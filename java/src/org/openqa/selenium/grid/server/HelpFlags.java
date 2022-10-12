@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.server;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.BuildInfo;
 
 import java.io.PrintStream;
@@ -36,10 +37,10 @@ public class HelpFlags {
       BuildInfo info = new BuildInfo();
 
       outputTo.printf(
-          "%s version: %s, revision: %s%n",
-          commander.getProgramName(),
-          info.getReleaseLabel(),
-          info.getBuildRevision());
+        "%s version: %s, revision: %s%n",
+        commander.getProgramName(),
+        info.getReleaseLabel(),
+        info.getBuildRevision());
 
       return true;
     }

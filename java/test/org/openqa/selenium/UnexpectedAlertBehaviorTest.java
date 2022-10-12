@@ -44,7 +44,8 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
   public void canAcceptUnhandledAlert() {
-    runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY, "This is a default value", false);
+    runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY,
+                                  "This is a default value", false);
   }
 
   @Test
@@ -88,14 +89,14 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canIgnoreUnhandledAlert() {
     assertThatExceptionOfType(UnhandledAlertException.class).isThrownBy(
-        () -> runScenarioWithUnhandledAlert(IGNORE, "Text ignored", true));
+      () -> runScenarioWithUnhandledAlert(IGNORE, "Text ignored", true));
     driver.switchTo().alert().dismiss();
   }
 
   private void runScenarioWithUnhandledAlert(
-      UnexpectedAlertBehaviour behaviour,
-      String expectedAlertText,
-      boolean silently) {
+    UnexpectedAlertBehaviour behaviour,
+    String expectedAlertText,
+    boolean silently) {
     Capabilities caps = behaviour == null
                         ? new ImmutableCapabilities()
                         : new ImmutableCapabilities(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
@@ -105,10 +106,10 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
     driver.findElement(By.id("prompt-with-default")).click();
 
     Wait<WebDriver> wait1
-        = silently
+      = silently
         ? wait
         : new WebDriverWait(driver, Duration.ofSeconds(10))
-              .ignoring(UnhandledAlertException.class);
+          .ignoring(UnhandledAlertException.class);
     wait1.until(elementTextToEqual(By.id("text"), expectedAlertText));
   }
 }

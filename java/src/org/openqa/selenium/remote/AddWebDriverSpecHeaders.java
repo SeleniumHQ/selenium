@@ -22,6 +22,7 @@ import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 
 public class AddWebDriverSpecHeaders implements Filter {
+
   @Override
   public HttpHandler apply(HttpHandler next) {
     return req -> {

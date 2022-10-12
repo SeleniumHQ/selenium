@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestClick extends InternalSelenseTestBase {
+
   @Test
   void testClick() throws Exception {
     selenium.open("test_click_page1.html");

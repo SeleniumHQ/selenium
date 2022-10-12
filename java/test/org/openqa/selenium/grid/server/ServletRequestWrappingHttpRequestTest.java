@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.google.common.collect.ImmutableMap;
+
 
 import org.junit.jupiter.api.Test;
 import org.openqa.testing.FakeHttpServletRequest;
@@ -30,9 +30,9 @@ class ServletRequestWrappingHttpRequestTest {
   @Test
   void shouldNotExtractQueryParametersFromPostedBody() {
     FakeHttpServletRequest request = new FakeHttpServletRequest(
-        "GET",
-        new UrlInfo("http://example.com", "/", "some-url"));
-    request.setParameters(ImmutableMap.of("cheese", "brie"));
+      "GET",
+      new UrlInfo("http://example.com", "/", "some-url"));
+    request.setParameters(Map.of("cheese", "brie"));
 
     String seen = new ServletRequestWrappingHttpRequest(request).getQueryParameter("cheese");
     assertThat(seen).isNull();
@@ -41,9 +41,9 @@ class ServletRequestWrappingHttpRequestTest {
   @Test
   void shouldExtractQueryParametersFromQueryString() {
     FakeHttpServletRequest request = new FakeHttpServletRequest(
-        "GET",
-        new UrlInfo("http://example.com", "/", "some-url", "cheese=cheddar"));
-    request.setParameters(ImmutableMap.of("cheese", "brie"));
+      "GET",
+      new UrlInfo("http://example.com", "/", "some-url", "cheese=cheddar"));
+    request.setParameters(Map.of("cheese", "brie"));
 
     String seen = new ServletRequestWrappingHttpRequest(request).getQueryParameter("cheese");
     assertThat(seen).isEqualTo("cheddar");

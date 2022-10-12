@@ -26,7 +26,12 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
 class SlowLoadingPageTest extends JupiterTestBase {
+
   private static final long LOAD_TIME_IN_SECONDS = 3;
+
+  private static void assertElapsed(long expected, long actual) {
+    assertThat(actual).isGreaterThanOrEqualTo(expected);
+  }
 
   @Test
   void testShouldBlockUntilPageLoads() {
@@ -54,9 +59,5 @@ class SlowLoadingPageTest extends JupiterTestBase {
     long refreshed = System.currentTimeMillis();
     driver.navigate().refresh();
     assertElapsed(LOAD_TIME_IN_SECONDS * 1000, System.currentTimeMillis() - refreshed);
-  }
-
-  private static void assertElapsed(long expected, long actual) {
-    assertThat(actual).isGreaterThanOrEqualTo(expected);
   }
 }

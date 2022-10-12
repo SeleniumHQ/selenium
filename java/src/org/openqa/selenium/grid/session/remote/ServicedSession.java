@@ -18,6 +18,8 @@
 package org.openqa.selenium.grid.session.remote;
 
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -35,8 +37,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.Tracer;
 
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Method;
@@ -48,7 +48,8 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
 
 @ManagedService
 public class ServicedSession extends RemoteSession {
@@ -58,12 +59,12 @@ public class ServicedSession extends RemoteSession {
   private final DriverService service;
 
   public ServicedSession(
-      DriverService service,
-      Dialect downstream,
-      Dialect upstream,
-      HttpHandler codec,
-      SessionId id,
-      Map<String, Object> capabilities) {
+    DriverService service,
+    Dialect downstream,
+    Dialect upstream,
+    HttpHandler codec,
+    SessionId id,
+    Map<String, Object> capabilities) {
     super(downstream, upstream, codec, id, capabilities);
 
     this.service = service;
@@ -89,6 +90,11 @@ public class ServicedSession extends RemoteSession {
     service.stop();
   }
 
+  public ObjectName getObjectName() throws MalformedObjectNameException {
+    return new ObjectName(String.format("org.seleniumhq.server:type=Session,browser=\"%s\",id=%s",
+                                        getCapabilities().get("browserName"), getId()));
+  }
+
   public static class Factory extends RemoteSession.Factory<DriverService> {
 
     private final Tracer tracer;
@@ -103,29 +109,29 @@ public class ServicedSession extends RemoteSession {
       this.serviceClassName = Require.nonNull("Driver service class name", serviceClassName);
       try {
         Class<? extends DriverService> driverClazz =
-            Class.forName(serviceClassName).asSubclass(DriverService.class);
+          Class.forName(serviceClassName).asSubclass(DriverService.class);
 
         Function<Capabilities, ? extends DriverService> factory =
-            get(driverClazz, Capabilities.class);
+          get(driverClazz, Capabilities.class);
         if (factory == null) {
           factory = get(driverClazz);
         }
 
         if (factory == null) {
           throw new IllegalArgumentException(
-              "DriverService has no mechanism to create a default instance: " + serviceClassName);
+            "DriverService has no mechanism to create a default instance: " + serviceClassName);
         }
 
         this.createService = factory;
       } catch (ReflectiveOperationException e) {
         throw new IllegalArgumentException(
-            "DriverService class does not exist: " + serviceClassName);
+          "DriverService class does not exist: " + serviceClassName);
       }
     }
 
     private Function<Capabilities, ? extends DriverService> get(
-        Class<? extends DriverService> driverServiceClazz,
-        Class... args) {
+      Class<? extends DriverService> driverServiceClazz,
+      Class... args) {
       try {
         Method serviceMethod = driverServiceClazz.getDeclaredMethod("createDefaultService", args);
         serviceMethod.setAccessible(true);
@@ -138,7 +144,7 @@ public class ServicedSession extends RemoteSession {
             }
           } catch (ReflectiveOperationException e) {
             throw new SessionNotCreatedException(
-                "Unable to create new service: " + driverServiceClazz.getSimpleName(), e);
+              "Unable to create new service: " + driverServiceClazz.getSimpleName(), e);
           }
         };
       } catch (ReflectiveOperationException e) {
@@ -164,12 +170,13 @@ public class ServicedSession extends RemoteSession {
         URL url = service.getUrl();
 
         return performHandshake(
-            tracer,
-            service,
-            url,
-            sessionRequest.getDownstreamDialects(),
-            sessionRequest.getDesiredCapabilities());
-      } catch (IOException | IllegalStateException | NullPointerException | InvalidArgumentException e) {
+          tracer,
+          service,
+          url,
+          sessionRequest.getDownstreamDialects(),
+          sessionRequest.getDesiredCapabilities());
+      } catch (IOException | IllegalStateException | NullPointerException |
+               InvalidArgumentException e) {
         LOG.log(Level.INFO, e.getMessage(), e);
         service.stop();
         return Optional.empty();
@@ -178,29 +185,24 @@ public class ServicedSession extends RemoteSession {
 
     @Override
     protected ServicedSession newActiveSession(
-        DriverService service,
-        Dialect downstream,
-        Dialect upstream,
-        HttpHandler codec,
-        SessionId id,
-        Map<String, Object> capabilities) {
+      DriverService service,
+      Dialect downstream,
+      Dialect upstream,
+      HttpHandler codec,
+      SessionId id,
+      Map<String, Object> capabilities) {
       return new ServicedSession(
-          service,
-          downstream,
-          upstream,
-          codec,
-          id,
-          capabilities);
+        service,
+        downstream,
+        upstream,
+        codec,
+        id,
+        capabilities);
     }
 
     @Override
     public String toString() {
       return getClass().getName() + " (provider: " + serviceClassName + ")";
     }
-  }
-
-  public ObjectName getObjectName() throws MalformedObjectNameException {
-    return new ObjectName(String.format("org.seleniumhq.server:type=Session,browser=\"%s\",id=%s",
-                                        getCapabilities().get("browserName"), getId()));
   }
 }

@@ -17,11 +17,15 @@
 
 package org.openqa.selenium.grid.commands;
 
+import static java.util.stream.Collectors.joining;
+
+import com.google.auto.service.AutoService;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.beust.jcommander.internal.DefaultConsole;
-import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.grid.config.DescribedOption;
 import org.openqa.selenium.grid.config.Role;
@@ -37,11 +41,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.util.stream.Collectors.joining;
-import static org.openqa.selenium.grid.config.StandardGridRoles.ALL_ROLES;
-
 @AutoService(CliCommand.class)
 public class CompletionCommand implements CliCommand {
+
   @Override
   public String getName() {
     return "completion";
@@ -97,15 +99,11 @@ public class CompletionCommand implements CliCommand {
         System.exit(1);
       }
 
-      switch (commander.getParsedCommand()) {
-        case "zsh":
-          outputZshCompletions(out);
-          break;
-
-        default:
-          err.println("Unrecognised shell: " + commander.getParsedCommand());
-          System.exit(1);
-          break;
+      if ("zsh".equals(commander.getParsedCommand())) {
+        outputZshCompletions(out);
+      } else {
+        err.println("Unrecognised shell: " + commander.getParsedCommand());
+        System.exit(1);
       }
     };
   }
@@ -130,7 +128,8 @@ public class CompletionCommand implements CliCommand {
     allCommands.keySet().stream()
       .sorted(Comparator.comparing(CliCommand::getName))
       .forEach(cmd -> {
-        out.println(String.format("        '%s:%s'", cmd.getName(), cmd.getDescription().replace("'", "'\\''")));
+        out.printf("        '%s:%s'%n", cmd.getName(),
+                   cmd.getDescription().replace("'", "'\\''"));
       });
 
     out.println("      )");
@@ -143,8 +142,8 @@ public class CompletionCommand implements CliCommand {
       .sorted(Comparator.comparing(CliCommand::getName))
       .forEach(cmd -> {
         String shellName = cmd.getName().replace('-', '_');
-        out.println(String.format("        (%s)", cmd.getName()));
-        out.println(String.format("          _selenium_%s", shellName));
+        out.printf("        (%s)%n", cmd.getName());
+        out.printf("          _selenium_%s%n", shellName);
         out.println("          ;;");
       });
 
@@ -154,7 +153,7 @@ public class CompletionCommand implements CliCommand {
     out.println("}\n\n");
 
     allCommands.forEach((cmd, options) -> {
-      out.println(String.format("_selenium_%s() {", cmd.getName().replace('-', '_')));
+      out.printf("_selenium_%s() {%n", cmd.getName().replace('-', '_'));
       out.println("  args=(");
 
       options.stream()
@@ -168,14 +167,15 @@ public class CompletionCommand implements CliCommand {
           }
 
           if (opt.flags().size() == 1) {
-            out.println(String.format("    '%s[%s]%s'", opt.flags().iterator().next(), quotedDesc, getZshType(opt)));
+            out.printf("    '%s[%s]%s'%n", opt.flags().iterator().next(), quotedDesc,
+                       getZshType(opt));
           } else {
             out.print("    '");
             out.print(opt.flags.stream().collect(joining(" ", "(", ")")));
             out.print("'");
             out.print(opt.flags.stream().collect(joining(",", "{", "}")));
             out.print("'");
-            out.print(String.format("[%s]", quotedDesc));
+            out.printf("[%s]", quotedDesc);
             out.print(getZshType(opt));
             out.print("'\n");
           }
@@ -221,5 +221,7 @@ public class CompletionCommand implements CliCommand {
   }
 
   @Parameters(commandNames = "zsh", commandDescription = "Create autocompletions for zsh")
-  private static class Zsh {}
+  private static class Zsh {
+
+  }
 }

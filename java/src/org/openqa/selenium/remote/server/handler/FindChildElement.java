@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -26,6 +25,7 @@ import org.openqa.selenium.remote.server.Session;
 import java.util.Map;
 
 public class FindChildElement extends WebElementHandler<Map<String, String>> {
+
   private volatile By by;
 
   public FindChildElement(Session session) {
@@ -43,7 +43,7 @@ public class FindChildElement extends WebElementHandler<Map<String, String>> {
     WebElement element = getElement().findElement(by);
     String elementId = getKnownElements().add(element);
 
-    return ImmutableMap.of("ELEMENT", elementId);
+    return Map.of("ELEMENT", elementId);
   }
 
   @Override

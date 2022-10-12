@@ -50,14 +50,19 @@ class DefaultDriverSupplier implements Supplier<WebDriver> {
         .filter(WebDriverInfo::isAvailable)
         .filter(info -> info.isSupporting(capabilities))
         .findFirst()
-        .orElseThrow(() -> new RuntimeException("No driver can be provided for capabilities " + capabilities))
+        .orElseThrow(
+          () -> new RuntimeException("No driver can be provided for capabilities " + capabilities))
         .createDriver(capabilities)
         .orElseThrow(() -> new RuntimeException("Unable to create driver"));
     } else {
       String className = System.getProperty("selenium.browser.class_name");
       try {
-        Class<? extends WebDriver> driverClass = Class.forName(className).asSubclass(WebDriver.class);
-        Constructor<? extends WebDriver> constructor = driverClass.getConstructor(Capabilities.class);
+        Class<? extends WebDriver>
+          driverClass =
+          Class.forName(className).asSubclass(WebDriver.class);
+        Constructor<? extends WebDriver>
+          constructor =
+          driverClass.getConstructor(Capabilities.class);
         driverConstructor = caps -> {
           try {
             return constructor.newInstance(caps);

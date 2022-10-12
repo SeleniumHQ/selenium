@@ -30,6 +30,7 @@ import java.util.List;
  * annotations {@link org.openqa.selenium.support.FindBy} and {@link org.openqa.selenium.support.CacheLookup}.
  */
 public class DefaultElementLocator implements ElementLocator {
+
   private final SearchContext searchContext;
   private final boolean shouldCache;
   private final By by;
@@ -40,7 +41,7 @@ public class DefaultElementLocator implements ElementLocator {
    * Creates a new element locator.
    *
    * @param searchContext The context to use when finding the element
-   * @param field The field on the Page Object that will hold the located value
+   * @param field         The field on the Page Object that will hold the located value
    */
   public DefaultElementLocator(SearchContext searchContext, Field field) {
     this(searchContext, new Annotations(field));
@@ -50,7 +51,7 @@ public class DefaultElementLocator implements ElementLocator {
    * Use this constructor in order to process custom annotations.
    *
    * @param searchContext The context to use when finding the element
-   * @param annotations AbstractAnnotations class implementation
+   * @param annotations   AbstractAnnotations class implementation
    */
   public DefaultElementLocator(SearchContext searchContext, AbstractAnnotations annotations) {
     this.searchContext = searchContext;

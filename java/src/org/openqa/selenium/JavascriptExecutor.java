@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
  * best to view the browser's console after executing the WebDriver request.
  */
 public interface JavascriptExecutor {
+
   /**
    * Executes JavaScript in the context of the currently selected frame or window. The script
    * fragment provided will be executed as the body of an anonymous function.
@@ -65,7 +66,7 @@ public interface JavascriptExecutor {
    * the function were called via "Function.apply"
    *
    * @param script The JavaScript to execute
-   * @param args The arguments to the script. May be empty
+   * @param args   The arguments to the script. May be empty
    * @return One of Boolean, Long, Double, String, List, Map or WebElement. Or null.
    */
   Object executeScript(String script, Object... args);
@@ -141,7 +142,7 @@ public interface JavascriptExecutor {
    * variable.
    *
    * @param script The JavaScript to execute.
-   * @param args The arguments to the script. May be empty.
+   * @param args   The arguments to the script. May be empty.
    * @return One of Boolean, Long, String, List, Map, WebElement, or null.
    * @see WebDriver.Timeouts#scriptTimeout(java.time.Duration)
    */
@@ -155,10 +156,10 @@ public interface JavascriptExecutor {
    * The default implementation of this adheres to the API's expectations
    * but is inefficient.
    *
-   * @see #executeScript(ScriptKey, Object...)
    * @param script The Javascript to execute.
    * @return A handle which may later be used in {@link #executeScript(ScriptKey, Object...)}
    * @throws JavascriptException If the script cannot be pinned for some reason.
+   * @see #executeScript(ScriptKey, Object...)
    */
   default ScriptKey pin(String script) {
     Require.nonNull("Script to pin", script);
@@ -184,8 +185,8 @@ public interface JavascriptExecutor {
    */
   default Set<ScriptKey> getPinnedScripts() {
     return Collections.unmodifiableSet(UnpinnedScriptKey.getPinnedScripts(this).stream()
-      .map(key -> (ScriptKey) key)
-      .collect(Collectors.toSet()));
+                                         .map(key -> (ScriptKey) key)
+                                         .collect(Collectors.toSet()));
   }
 
   /**

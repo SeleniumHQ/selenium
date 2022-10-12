@@ -65,7 +65,7 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   }
 
   protected void assertPresenceOf(Matcher<Integer> cardinalityConstraint,
-      Finder<WebElement, WebDriver> finder) {
+                                  Finder<WebElement, WebDriver> finder) {
     context.assertPresenceOf(cardinalityConstraint, finder);
   }
 
@@ -89,7 +89,7 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   /**
    * Type characters into an element of the page, typically an input field
    *
-   * @param text - characters to type
+   * @param text        - characters to type
    * @param inputFinder - specification for the page element
    */
   protected void type(String text, Finder<WebElement, WebDriver> inputFinder) {
@@ -117,21 +117,21 @@ public abstract class HamcrestWebDriverTestCase extends TestCase {
   }
 
   /**
-   * @return  the current page source
+   * @return the current page source
    */
   public String getPageSource() {
     return getWebDriver().getPageSource();
   }
 
   /**
-   * @return  the current page title
+   * @return the current page title
    */
   public String getTitle() {
     return getWebDriver().getTitle();
   }
 
   /**
-   * @return  the current URL
+   * @return the current URL
    */
   public String getCurrentUrl() {
     return getWebDriver().getCurrentUrl();

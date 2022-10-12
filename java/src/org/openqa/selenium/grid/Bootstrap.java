@@ -74,7 +74,7 @@ public class Bootstrap {
     try {
       Class<?> clazz = loader.loadClass(MAIN_CLASS);
       Method main = clazz.getMethod("main", String[].class);
-      main.invoke(null, new Object[] {args});
+      main.invoke(null, new Object[]{args});
     } catch (ReflectiveOperationException e) {
       e.printStackTrace();
       System.exit(1);
@@ -122,6 +122,7 @@ public class Bootstrap {
   }
 
   private static class PossessiveClassLoader extends ClassLoader {
+
     private final ClassLoader delegate;
     private final Set<String> blessed;
 
@@ -155,7 +156,7 @@ public class Bootstrap {
 
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       try (InputStream is = resource.openStream();
-          BufferedInputStream bis = new BufferedInputStream(is)) {
+           BufferedInputStream bis = new BufferedInputStream(is)) {
 
         int read;
         byte[] bytes = new byte[4096];

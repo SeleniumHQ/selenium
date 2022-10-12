@@ -46,28 +46,30 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class OsProcess {
+
   private static final Logger log = Logger.getLogger(OsProcess.class.getName());
 
   private final CircularOutputStream inputOut = new CircularOutputStream(32768);
-  private volatile String allInput;
   private final DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler();
   private final Executor executor = new DaemonExecutor();
-
-  private volatile OutputStream drainTo;
-  private SeleniumWatchDog executeWatchdog = new SeleniumWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
-  private PumpStreamHandler streamHandler;
-
   private final org.apache.commons.exec.CommandLine cl;
   private final Map<String, String> env = new ConcurrentHashMap<>();
+  private final SeleniumWatchDog
+    executeWatchdog =
+    new SeleniumWatchDog(ExecuteWatchdog.INFINITE_TIMEOUT);
+  private volatile String allInput;
+  private volatile OutputStream drainTo;
+  private PumpStreamHandler streamHandler;
 
-  public OsProcess(String executable, String... args) {
+  OsProcess(String executable, String... args) {
     String actualExe = new ExecutableFinder().find(executable);
-    Require.state("Actual executable", actualExe).nonNull("Unable to find executable for: %s", executable);
+    Require.state("Actual executable", actualExe)
+      .nonNull("Unable to find executable for: %s", executable);
     cl = new org.apache.commons.exec.CommandLine(actualExe);
     cl.addArguments(args, false);
   }
 
-  public void setEnvironmentVariable(String name, String value) {
+  void setEnvironmentVariable(String name, String value) {
     if (name == null) {
       throw new IllegalArgumentException("Cannot have a null environment variable name!");
     }
@@ -89,12 +91,13 @@ class OsProcess {
   }
 
   private ByteArrayInputStream getInputStream() {
-    return allInput != null ? new ByteArrayInputStream(allInput.getBytes(Charset.defaultCharset())) : null;
+    return allInput != null ? new ByteArrayInputStream(allInput.getBytes(Charset.defaultCharset()))
+                            : null;
   }
 
-  public void executeAsync() {
+  void executeAsync() {
     try {
-      final OutputStream outputStream = getOutputStream();
+      OutputStream outputStream = getOutputStream();
       executeWatchdog.reset();
       executor.setWatchdog(executeWatchdog);
       streamHandler = new PumpStreamHandler(outputStream, outputStream, getInputStream());
@@ -107,10 +110,10 @@ class OsProcess {
 
   private OutputStream getOutputStream() {
     return drainTo == null ? inputOut
-        : new MultiOutputStream(inputOut, drainTo);
+                           : new MultiOutputStream(inputOut, drainTo);
   }
 
-  public int destroy() {
+  int destroy() {
     SeleniumWatchDog watchdog = executeWatchdog;
     watchdog.waitForProcessStarted();
 
@@ -136,9 +139,9 @@ class OsProcess {
       } catch (IOException e) {
         // Ignore and destroy the process anyway.
         log.log(
-            Level.INFO,
-            "Unable to drain process streams. Ignoring but the exception being swallowed follows.",
-            e);
+          Level.INFO,
+          "Unable to drain process streams. Ignoring but the exception being swallowed follows.",
+          e);
       }
     }
 
@@ -147,7 +150,7 @@ class OsProcess {
     }
 
     log.severe(String.format("Unable to kill process %s", watchdog.process));
-    int exitCode = -1;
+    final int exitCode = -1;
     executor.setExitValue(exitCode);
     return exitCode;
   }
@@ -171,7 +174,7 @@ class OsProcess {
     }
     if (timedOut) {
       throw new TimeoutException(
-          String.format("Process timed out after waiting for %d ms.", timeout));
+        String.format("Process timed out after waiting for %d ms.", timeout));
     }
 
     // Wait until syserr and sysout have been read
@@ -181,21 +184,21 @@ class OsProcess {
     return !handler.hasResult();
   }
 
-  public int getExitCode() {
+  int getExitCode() {
     if (isRunning()) {
       throw new IllegalStateException(
-          "Cannot get exit code before executing command line: " + cl);
+        "Cannot get exit code before executing command line: " + cl);
     }
     return handler.getExitValue();
   }
 
-  public void checkForError() {
+  void checkForError() {
     if (handler.getException() != null) {
       log.severe(handler.getException().toString());
     }
   }
 
-  public String getStdOut() {
+  String getStdOut() {
     return inputOut.toString();
   }
 
@@ -203,7 +206,7 @@ class OsProcess {
     this.allInput = allInput;
   }
 
-  public void setWorkingDirectory(File workingDirectory) {
+  void setWorkingDirectory(File workingDirectory) {
     executor.setWorkingDirectory(workingDirectory);
   }
 
@@ -212,7 +215,7 @@ class OsProcess {
     return cl.toString() + "[ " + env + "]";
   }
 
-  public void copyOutputTo(OutputStream out) {
+  void copyOutputTo(OutputStream out) {
     drainTo = out;
   }
 
@@ -261,7 +264,7 @@ class OsProcess {
 
     private void destroyHarder() {
       try {
-        Process awaitFor = this.process.destroyForcibly();
+        Process awaitFor = process.destroyForcibly();
         awaitFor.waitFor(10, SECONDS);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();

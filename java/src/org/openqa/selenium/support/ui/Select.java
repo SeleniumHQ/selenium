@@ -68,7 +68,7 @@ public class Select implements ISelect, WrapsElement {
 
   /**
    * @return Whether this select element support selecting multiple options at the same time? This
-   *         is done by checking the value of the "multiple" attribute.
+   * is done by checking the value of the "multiple" attribute.
    */
   @Override
   public boolean isMultiple() {
@@ -93,13 +93,13 @@ public class Select implements ISelect, WrapsElement {
 
   /**
    * @return The first selected option in this select tag (or the currently selected option in a
-   *         normal select)
+   * normal select)
    * @throws NoSuchElementException If no option is selected
    */
   @Override
   public WebElement getFirstSelectedOption() {
     return getOptions().stream().filter(WebElement::isSelected).findFirst()
-        .orElseThrow(() -> new NoSuchElementException("No options are selected"));
+      .orElseThrow(() -> new NoSuchElementException("No options are selected"));
   }
 
   /**
@@ -223,7 +223,7 @@ public class Select implements ISelect, WrapsElement {
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param value The value to match against
-   * @throws NoSuchElementException If no matching option elements are found
+   * @throws NoSuchElementException        If no matching option elements are found
    * @throws UnsupportedOperationException If the SELECT does not support multiple selections
    */
   @Override
@@ -243,7 +243,7 @@ public class Select implements ISelect, WrapsElement {
    * element, and not merely by counting.
    *
    * @param index The option at this index will be deselected
-   * @throws NoSuchElementException If no matching option elements are found
+   * @throws NoSuchElementException        If no matching option elements are found
    * @throws UnsupportedOperationException If the SELECT does not support multiple selections
    */
   @Override
@@ -263,7 +263,7 @@ public class Select implements ISelect, WrapsElement {
    * &lt;option value="foo"&gt;Bar&lt;/option&gt;
    *
    * @param text The visible text to match against
-   * @throws NoSuchElementException If no matching option elements are found
+   * @throws NoSuchElementException        If no matching option elements are found
    * @throws UnsupportedOperationException If the SELECT does not support multiple selections
    */
   @Override
@@ -286,7 +286,7 @@ public class Select implements ISelect, WrapsElement {
 
   private List<WebElement> findOptionsByValue(String value) {
     List<WebElement> options = element.findElements(By.xpath(
-        ".//option[@value = " + Quotes.escape(value) + "]"));
+      ".//option[@value = " + Quotes.escape(value) + "]"));
     if (options.isEmpty()) {
       throw new NoSuchElementException("Cannot locate option with value: " + value);
     }
@@ -308,11 +308,9 @@ public class Select implements ISelect, WrapsElement {
   /**
    * Select or deselect specified option
    *
-   * @param option
-   *          The option which state needs to be changed
-   * @param select
-   *          Indicates whether the option needs to be selected (true) or
-   *          deselected (false)
+   * @param option The option which state needs to be changed
+   * @param select Indicates whether the option needs to be selected (true) or
+   *               deselected (false)
    */
   private void setSelected(WebElement option, boolean select) {
     assertOptionIsEnabled(option, select);

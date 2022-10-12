@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
@@ -53,10 +57,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
 public class CapabilitiesUtils {
 
   private static final Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
@@ -71,7 +71,8 @@ public class CapabilitiesUtils {
     return makeW3CSafe(possiblyInvalidCapabilities.asMap()).map(ImmutableCapabilities::new);
   }
 
-  public static Stream<Map<String, Object>> makeW3CSafe(Map<String, Object> possiblyInvalidCapabilities) {
+  static Stream<Map<String, Object>> makeW3CSafe(
+    Map<String, Object> possiblyInvalidCapabilities) {
     Require.nonNull("Capabilities", possiblyInvalidCapabilities);
 
     Set<CapabilitiesFilter> adapters = getCapabilityFilters();
@@ -98,7 +99,7 @@ public class CapabilitiesUtils {
       .peek(map -> usedKeys.addAll(map.keySet()))
       .collect(ImmutableList.toImmutableList());
     if (firsts.isEmpty()) {
-      firsts = ImmutableList.of(ImmutableMap.of());
+      firsts = ImmutableList.of(Map.of());
     }
 
     // Are there any remaining unused keys?
@@ -147,7 +148,6 @@ public class CapabilitiesUtils {
     if (rawProxy instanceof Proxy) {
       return ((Proxy) rawProxy).toJson();
     } else if (rawProxy instanceof Map) {
-      //noinspection unchecked
       return (Map<String, Object>) rawProxy;
     } else {
       return new HashMap<>();

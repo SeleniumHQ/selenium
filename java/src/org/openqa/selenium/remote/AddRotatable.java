@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.CapabilityType.ROTATABLE;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Rotatable;
 
 import java.util.function.Predicate;
-
-import static org.openqa.selenium.remote.CapabilityType.ROTATABLE;
 
 /**
  * @deprecated Uses a non W3C compliant capability and is not available in W3C WebDriver sessions
@@ -53,7 +53,7 @@ public class AddRotatable implements AugmenterProvider<Rotatable> {
 //      switch(m) {
 //        case "rotate":
 //          if (args[0] instanceof ScreenOrientation) {
-//            response = executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION, ImmutableMap.of("orientation", args[0]));
+//            response = executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION,Map.of("orientation", args[0]));
 //          } else if (args[0] instanceof DeviceRotation) {
 //            response = executeMethod.execute(DriverCommand.SET_SCREEN_ORIENTATION, ((DeviceRotation)args[0]).parameters());
 //          } else {

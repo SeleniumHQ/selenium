@@ -54,7 +54,8 @@ public class RelayFlags implements HasRoles {
     prefixed = true,
     example = "\n" +
               "max-sessions = 2\n" +
-              "stereotype = \"{\\\"browserName\\\": \\\"safari\\\", \\\"platformName\\\": \\\"iOS\\\", " +
+              "stereotype = \"{\\\"browserName\\\": \\\"safari\\\", \\\"platformName\\\": \\\"iOS\\\", "
+              +
               "\\\"appium:platformVersion\\\": \\\"14.5\\\" }}\"")
   public List<String> driverConfiguration;
 

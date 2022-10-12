@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.safari;
 
+import static org.openqa.selenium.remote.Browser.SAFARI;
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -24,10 +28,6 @@ import org.openqa.selenium.remote.AbstractDriverOptions;
 
 import java.util.Collections;
 import java.util.Set;
-
-import static org.openqa.selenium.remote.Browser.SAFARI;
-import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 /**
  * Class to manage options specific to {@link SafariDriver}.

@@ -27,9 +27,9 @@ public class HttpProfilerLogEntry extends ProfilerLogEntry {
     // We're going to make the assumption that command name is a simple string which doesn't need
     // escaping.
     return String.format(
-        "{\"event\": \"%s\", \"command\": \"%s\", \"startorend\": \"%s\"}",
-        eventType.toString(),
-        commandName,
-        isStart ? "start" : "end");
+      "{\"event\": \"%s\", \"command\": \"%s\", \"startorend\": \"%s\"}",
+      eventType.toString(),
+      commandName,
+      isStart ? "start" : "end");
   }
 }

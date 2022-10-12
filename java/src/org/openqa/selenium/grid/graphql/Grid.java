@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.graphql;
 
 import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -119,7 +120,7 @@ public class Grid {
     return distributorStatus.getNodes().stream()
       .map(NodeStatus::getSlots)
       .flatMap(Collection::stream)
-      .filter(slot -> slot.getSession()!=null)
+      .filter(slot -> slot.getSession() != null)
       .filter(slot -> !slot.getSession().getId().equals(RESERVED))
       .mapToInt(slot -> 1)
       .sum();

@@ -24,6 +24,7 @@ import com.thoughtworks.selenium.webdriven.JavascriptLibrary;
 import org.junit.jupiter.api.Test;
 
 public class GetAttributeTest {
+
   @Test
   void shouldExtractElementAndAttributeName() {
     GetAttribute getAttribute = new GetAttribute(new StubLibrary(), null);
@@ -35,6 +36,7 @@ public class GetAttributeTest {
   }
 
   private static class StubLibrary extends JavascriptLibrary {
+
     @Override
     public String getSeleniumScript(String name) {
       return "";

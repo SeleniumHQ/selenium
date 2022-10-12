@@ -17,15 +17,26 @@
 
 package org.openqa.selenium.remote;
 
-import org.junit.jupiter.api.Test;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+
+
+
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerOptions;
@@ -49,25 +60,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Browser.CHROME;
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-
-import com.google.common.collect.ImmutableMap;
-
 @Tag("UnitTests")
 class RemoteWebDriverBuilderTest {
 
   private static final SessionId SESSION_ID = new SessionId(UUID.randomUUID());
   private static final HttpResponse CANNED_SESSION_RESPONSE = new HttpResponse()
-    .setContent(Contents.asJson(ImmutableMap.of(
-      "value", ImmutableMap.of(
+    .setContent(Contents.asJson(Map.of(
+      "value",Map.of(
         "sessionId", SESSION_ID,
         // Primula is a canned cheese. Boom boom!
         "capabilities", new ImmutableCapabilities("se:cheese", "primula")))));
@@ -246,10 +245,10 @@ class RemoteWebDriverBuilderTest {
   @Test
   void settingBothDriverServiceAndUrlIsAnError() throws IOException {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
-        .withDriverService(new FakeDriverService());
+      .withDriverService(new FakeDriverService());
 
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> builder.address("http://localhost:89789"));
+      .isThrownBy(() -> builder.address("http://localhost:89789"));
   }
 
   @Test
@@ -284,7 +283,7 @@ class RemoteWebDriverBuilderTest {
         seen.set(config.baseUri());
         return req -> CANNED_SESSION_RESPONSE;
       })
-    .build();
+      .build();
 
     assertThat(seen.get()).isEqualTo(uri);
   }
@@ -342,7 +341,8 @@ class RemoteWebDriverBuilderTest {
       .oneOf(new FirefoxOptions())
       .address("http://localhost:34576")
       .connectingWith(config -> req -> {
-        allOk.set("no-cache".equals(req.getHeader("Cache-Control")) && JSON_UTF_8.equals(req.getHeader("Content-Type")));
+        allOk.set("no-cache".equals(req.getHeader("Cache-Control")) && JSON_UTF_8.equals(
+          req.getHeader("Content-Type")));
         return CANNED_SESSION_RESPONSE;
       })
       .build();
@@ -363,8 +363,8 @@ class RemoteWebDriverBuilderTest {
   @Test
   void shouldAugmentDriverIfPossible() {
     HttpResponse response = new HttpResponse()
-      .setContent(Contents.asJson(ImmutableMap.of(
-        "value", ImmutableMap.of(
+      .setContent(Contents.asJson(Map.of(
+        "value",Map.of(
           "sessionId", SESSION_ID,
           "capabilities", new ImmutableCapabilities("firefox", "caps")))));
 
@@ -378,7 +378,7 @@ class RemoteWebDriverBuilderTest {
       .connectingWith(config -> req -> response)
       .build();
 
-    int number = ((HasMagicNumbers)driver).getMagicNumber();
+    int number = ((HasMagicNumbers) driver).getMagicNumber();
 
     assertThat(driver).isInstanceOf(HasMagicNumbers.class);
     assertThat(number).isEqualTo(1);
@@ -397,8 +397,8 @@ class RemoteWebDriverBuilderTest {
     };
 
     HttpResponse response = new HttpResponse()
-      .setContent(Contents.asJson(ImmutableMap.of(
-        "value", ImmutableMap.of(
+      .setContent(Contents.asJson(Map.of(
+        "value",Map.of(
           "sessionId", SESSION_ID,
           "capabilities", new ImmutableCapabilities("firefox", "caps")))));
 
@@ -431,8 +431,8 @@ class RemoteWebDriverBuilderTest {
     };
 
     HttpResponse response = new HttpResponse()
-      .setContent(Contents.asJson(ImmutableMap.of(
-        "value", ImmutableMap.of(
+      .setContent(Contents.asJson(Map.of(
+        "value",Map.of(
           "sessionId", SESSION_ID,
           "capabilities", new ImmutableCapabilities("firefox", "caps",
                                                     "browserName", "firefox",
@@ -452,7 +452,9 @@ class RemoteWebDriverBuilderTest {
   private List<Capabilities> listCapabilities(HttpRequest request) {
     Map<String, Object> converted = new Json().toType(Contents.string(request), MAP_TYPE);
     Map<String, Object> w3cCaps = (Map<String, Object>) converted.get("capabilities");
-    Map<String, Object> always = (Map<String, Object>) w3cCaps.getOrDefault("alwaysMatch", emptyMap());
+    Map<String, Object>
+      always =
+      (Map<String, Object>) w3cCaps.getOrDefault("alwaysMatch", emptyMap());
     Capabilities alwaysMatch = new ImmutableCapabilities(always);
     List<Map<String, Object>> first = (List<Map<String, Object>>) w3cCaps
       .getOrDefault("firstMatch", singletonList(emptyMap()));
@@ -464,6 +466,7 @@ class RemoteWebDriverBuilderTest {
   }
 
   static class FakeDriverService extends DriverService {
+
     private boolean started;
 
     FakeDriverService() throws IOException {

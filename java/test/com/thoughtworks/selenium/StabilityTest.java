@@ -17,11 +17,11 @@
 
 package com.thoughtworks.selenium;
 
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WrapsDriver;
-
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 /**
  * Regression test suite for stability problems discovered in Selenium Remote Control

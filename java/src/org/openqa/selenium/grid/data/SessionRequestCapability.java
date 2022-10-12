@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
@@ -29,9 +32,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
-
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
 
 public class SessionRequestCapability {
 
@@ -46,6 +46,31 @@ public class SessionRequestCapability {
     this.requestId = Require.nonNull("Request ID", requestId);
     this.desiredCapabilities = unmodifiableSet(
       new LinkedHashSet<>(Require.nonNull("Capabilities", desiredCapabilities)));
+  }
+
+  private static SessionRequestCapability fromJson(JsonInput input) {
+    RequestId id = null;
+    Set<Capabilities> capabilities = null;
+
+    input.beginObject();
+    while (input.hasNext()) {
+      switch (input.nextName()) {
+        case "capabilities":
+          capabilities = input.read(SET_OF_CAPABILITIES);
+          break;
+
+        case "requestId":
+          id = input.read(RequestId.class);
+          break;
+
+        default:
+          input.skipValue();
+          break;
+      }
+    }
+    input.endObject();
+
+    return new SessionRequestCapability(id, capabilities);
   }
 
   public RequestId getRequestId() {
@@ -72,7 +97,7 @@ public class SessionRequestCapability {
     SessionRequestCapability that = (SessionRequestCapability) o;
 
     return this.requestId.equals(that.requestId) &&
-      this.desiredCapabilities.equals(that.desiredCapabilities);
+           this.desiredCapabilities.equals(that.desiredCapabilities);
   }
 
   @Override
@@ -85,30 +110,5 @@ public class SessionRequestCapability {
     toReturn.put("requestId", requestId);
     toReturn.put("capabilities", desiredCapabilities);
     return unmodifiableMap(toReturn);
-  }
-
-  private static SessionRequestCapability fromJson(JsonInput input) {
-    RequestId id = null;
-    Set<Capabilities> capabilities = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "capabilities":
-          capabilities = input.read(SET_OF_CAPABILITIES);
-          break;
-
-        case "requestId":
-          id = input.read(RequestId.class);
-          break;
-
-        default:
-          input.skipValue();
-          break;
-      }
-    }
-    input.endObject();
-
-    return new SessionRequestCapability(id, capabilities);
   }
 }

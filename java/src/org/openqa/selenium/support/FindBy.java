@@ -56,6 +56,7 @@ import java.lang.reflect.Field;
 @Target({ElementType.FIELD, ElementType.TYPE})
 @PageFactoryFinder(FindBy.FindByBuilder.class)
 public @interface FindBy {
+
   How how() default How.UNSET;
 
   String using() default "";
@@ -77,6 +78,7 @@ public @interface FindBy {
   String xpath() default "";
 
   class FindByBuilder extends AbstractFindByBuilder {
+
     @Override
     public By buildIt(Object annotation, Field field) {
       FindBy findBy = (FindBy) annotation;

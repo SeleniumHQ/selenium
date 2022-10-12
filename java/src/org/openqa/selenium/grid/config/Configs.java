@@ -45,6 +45,7 @@ public class Configs {
     }
 
     throw new ConfigException(
-      "Unable to determine file type. The file extension must be one of '.toml' or '.json' " + path);
+      "Unable to determine file type. The file extension must be one of '.toml' or '.json' "
+      + path);
   }
 }

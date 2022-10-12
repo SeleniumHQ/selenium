@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.security;
 
+import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
+import static org.openqa.selenium.grid.security.AddSecretFilter.HEADER_NAME;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
@@ -26,12 +30,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Collections;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_UNAUTHORIZED;
-import static org.openqa.selenium.grid.security.AddSecretFilter.HEADER_NAME;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-
-import com.google.common.collect.ImmutableMap;
 
 public class RequiresSecretFilter implements Filter {
 
@@ -52,12 +50,12 @@ public class RequiresSecretFilter implements Filter {
           .setStatus(HTTP_UNAUTHORIZED)
           .addHeader("Content-Type", JSON_UTF_8)
           .setContent(Contents.asJson(Collections.singletonMap(
-            "value", ImmutableMap.of(
-              "error", "unknown error",
-              "message", "Unauthorized access attempted to ",
-              "stacktrace", ""
-              )
-            ))
+                        "value", Map.of(
+                          "error", "unknown error",
+                          "message", "Unauthorized access attempted to ",
+                          "stacktrace", ""
+                        )
+                      ))
           );
       }
 

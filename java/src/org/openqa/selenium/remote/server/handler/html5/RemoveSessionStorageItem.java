@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import java.util.Map;
 
 public class RemoveSessionStorageItem extends WebDriverHandler<String> {
+
   private volatile String key;
 
   public RemoveSessionStorageItem(Session session) {
@@ -38,7 +39,7 @@ public class RemoveSessionStorageItem extends WebDriverHandler<String> {
   @Override
   public String call() {
     return Utils.getWebStorage(getUnwrappedDriver())
-        .getSessionStorage().removeItem(key);
+      .getSessionStorage().removeItem(key);
   }
 
   @Override

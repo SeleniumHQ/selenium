@@ -37,28 +37,29 @@ import java.util.List;
  * avoid locating elements by XPath.
  */
 public class AjaxElementLocator extends DefaultElementLocator {
-  protected final int timeOutInSeconds;
+
+  private final int timeOutInSeconds;
   private final Clock clock;
 
   /**
    * Use this constructor in order to process custom annotations.
    *
-   * @param context The context to use when finding the element
+   * @param context          The context to use when finding the element
    * @param timeOutInSeconds How long to wait for the element to appear. Measured in seconds.
-   * @param annotations	AbstractAnnotations class implementation
+   * @param annotations      AbstractAnnotations class implementation
    */
-  public AjaxElementLocator(
-      SearchContext context,
-      int timeOutInSeconds,
-      AbstractAnnotations annotations) {
+  AjaxElementLocator(
+    SearchContext context,
+    int timeOutInSeconds,
+    AbstractAnnotations annotations) {
     this(Clock.systemDefaultZone(), context, timeOutInSeconds, annotations);
   }
 
-  public AjaxElementLocator(
-      Clock clock,
-      SearchContext context,
-      int timeOutInSeconds,
-      AbstractAnnotations annotations) {
+  private AjaxElementLocator(
+    Clock clock,
+    SearchContext context,
+    int timeOutInSeconds,
+    AbstractAnnotations annotations) {
     super(context, annotations);
     this.timeOutInSeconds = timeOutInSeconds;
     this.clock = clock;
@@ -67,19 +68,19 @@ public class AjaxElementLocator extends DefaultElementLocator {
   /**
    * Main constructor.
    *
-   * @param searchContext The context to use when finding the element
-   * @param field The field representing this element
+   * @param searchContext    The context to use when finding the element
+   * @param field            The field representing this element
    * @param timeOutInSeconds How long to wait for the element to appear. Measured in seconds.
    */
-  public AjaxElementLocator(SearchContext searchContext, Field field, int timeOutInSeconds) {
+  AjaxElementLocator(SearchContext searchContext, Field field, int timeOutInSeconds) {
     this(Clock.systemDefaultZone(), searchContext, field, timeOutInSeconds);
   }
 
-  public AjaxElementLocator(
-      Clock clock,
-      SearchContext searchContext,
-      Field field,
-      int timeOutInSeconds) {
+  AjaxElementLocator(
+    Clock clock,
+    SearchContext searchContext,
+    Field field,
+    int timeOutInSeconds) {
     this(clock, searchContext, timeOutInSeconds, new Annotations(field));
   }
 
@@ -95,8 +96,8 @@ public class AjaxElementLocator extends DefaultElementLocator {
       return loadingElement.get().getElement();
     } catch (NoSuchElementError e) {
       throw new NoSuchElementException(
-          String.format("Timed out after %d seconds. %s", timeOutInSeconds, e.getMessage()),
-          e.getCause());
+        String.format("Timed out after %d seconds. %s", timeOutInSeconds, e.getMessage()),
+        e.getCause());
     }
   }
 
@@ -137,15 +138,23 @@ public class AjaxElementLocator extends DefaultElementLocator {
    * @param element The element to use
    * @return Whether or not it meets your criteria for "found"
    */
-  protected boolean isElementUsable(WebElement element) {
+  private boolean isElementUsable(WebElement element) {
     return true;
   }
 
+  private static class NoSuchElementError extends Error {
+
+    private NoSuchElementError(String message, Throwable throwable) {
+      super(message, throwable);
+    }
+  }
+
   private class SlowLoadingElement extends SlowLoadableComponent<SlowLoadingElement> {
+
     private NoSuchElementException lastException;
     private WebElement element;
 
-    public SlowLoadingElement(Clock clock, int timeOutInSeconds) {
+    SlowLoadingElement(Clock clock, int timeOutInSeconds) {
       super(clock, timeOutInSeconds);
     }
 
@@ -183,10 +192,11 @@ public class AjaxElementLocator extends DefaultElementLocator {
   }
 
   private class SlowLoadingElementList extends SlowLoadableComponent<SlowLoadingElementList> {
+
     private NoSuchElementException lastException;
     private List<WebElement> elements;
 
-    public SlowLoadingElementList(Clock clock, int timeOutInSeconds) {
+    SlowLoadingElementList(Clock clock, int timeOutInSeconds) {
       super(clock, timeOutInSeconds);
     }
 
@@ -204,7 +214,7 @@ public class AjaxElementLocator extends DefaultElementLocator {
     protected void isLoaded() throws Error {
       try {
         elements = AjaxElementLocator.super.findElements();
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
           throw new NoSuchElementException("Unable to locate the element");
         }
         for (WebElement element : elements) {
@@ -225,12 +235,6 @@ public class AjaxElementLocator extends DefaultElementLocator {
 
     public List<WebElement> getElements() {
       return elements;
-    }
-  }
-
-  private static class NoSuchElementError extends Error {
-    private NoSuchElementError(String message, Throwable throwable) {
-      super(message, throwable);
     }
   }
 

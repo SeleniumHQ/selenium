@@ -17,15 +17,17 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingEnvironment;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.internal.Require;
 
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
+
 import java.net.URI;
 
 public class GridData implements DataFetcher<Grid> {
+
   private final Distributor distributor;
   private final NewSessionQueue newSessionQueue;
   private final URI publicUri;

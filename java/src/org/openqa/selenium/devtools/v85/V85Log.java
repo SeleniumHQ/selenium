@@ -29,6 +29,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 public class V85Log implements org.openqa.selenium.devtools.idealized.log.Log {
+
   @Override
   public Command<Void> enable() {
     return Log.enable();

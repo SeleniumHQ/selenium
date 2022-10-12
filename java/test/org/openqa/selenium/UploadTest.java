@@ -68,8 +68,8 @@ class UploadTest extends JupiterTestBase {
   @NotYetImplemented(value = SAFARI, reason = "Returns wrong text of the frame body")
   public void testFileUploading() {
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID),
-      "This test as written assumes a file on local disk is accessible to the browser. "
-        + "That is not true for browsers on mobile platforms.");
+                "This test as written assumes a file on local disk is accessible to the browser. "
+                + "That is not true for browsers on mobile platforms.");
     driver.get(pages.uploadPage);
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).click();
@@ -95,8 +95,8 @@ class UploadTest extends JupiterTestBase {
       .map(File::getAbsolutePath)
       .collect(Collectors.joining("\n"));
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID),
-      "This test as written assumes a file on local disk is accessible to the browser. "
-        + "That is not true for browsers on mobile platforms.");
+                "This test as written assumes a file on local disk is accessible to the browser. "
+                + "That is not true for browsers on mobile platforms.");
     driver.get(pages.uploadPage);
     driver.findElement(By.id("upload")).sendKeys(fileNames);
     driver.findElement(By.id("go")).click();

@@ -49,6 +49,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 public class FileExtension implements Extension {
+
   private static final String EM_NAMESPACE_URI = "http://www.mozilla.org/2004/em-rdf#";
 
   private final File toInstall;
@@ -62,8 +63,8 @@ public class FileExtension implements Extension {
     if (!toInstall.isDirectory() &&
         !FileHandler.isZipped(toInstall.getAbsolutePath())) {
       throw new IOException(
-          String.format("Can only install from a zip file, an XPI or a directory: %s",
-              toInstall.getAbsolutePath()));
+        String.format("Can only install from a zip file, an XPI or a directory: %s",
+                      toInstall.getAbsolutePath()));
     }
 
     if (toInstall.isDirectory()) {
@@ -105,7 +106,7 @@ public class FileExtension implements Extension {
     File root = extensionToInstall;
     if (!extensionToInstall.isDirectory()) {
       try (BufferedInputStream bis = new BufferedInputStream(
-          new FileInputStream(extensionToInstall))) {
+        new FileInputStream(extensionToInstall))) {
         root = Zip.unzipToTempDir(bis, "unzip", "stream");
       }
     }
@@ -122,7 +123,7 @@ public class FileExtension implements Extension {
       return readIdFromManifestJson(root);
     } else {
       throw new WebDriverException(
-          "Extension should contain either install.rdf or manifest.json metadata file");
+        "Extension should contain either install.rdf or manifest.json metadata file");
     }
   }
 
@@ -146,7 +147,7 @@ public class FileExtension implements Extension {
 
       if (addOnId == null || addOnId.isEmpty()) {
         addOnId = ((String) manifestObject.get("name")).replaceAll(" ", "") +
-          "@" + manifestObject.get("version");
+                  "@" + manifestObject.get("version");
       }
 
       return addOnId;
@@ -197,11 +198,11 @@ public class FileExtension implements Extension {
       String id;
       if (idNode == null) {
         Node descriptionNode =
-            (Node) xpath.compile("//RDF:Description").evaluate(doc, XPathConstants.NODE);
+          (Node) xpath.compile("//RDF:Description").evaluate(doc, XPathConstants.NODE);
         Node idAttr = descriptionNode.getAttributes().getNamedItemNS(EM_NAMESPACE_URI, "id");
         if (idAttr == null) {
           throw new WebDriverException(
-              "Cannot locate node containing extension id: " + installRdf.getAbsolutePath());
+            "Cannot locate node containing extension id: " + installRdf.getAbsolutePath());
         }
         id = idAttr.getNodeValue();
       } else {

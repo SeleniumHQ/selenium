@@ -36,11 +36,9 @@ import static org.openqa.selenium.firefox.FirefoxOptions.FIREFOX_OPTIONS;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.assertj.core.api.InstanceOfAssertFactories;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -78,7 +76,7 @@ class FirefoxOptionsTest {
   void canInitFirefoxOptionsWithCapabilitiesThatContainFirefoxOptionsAsMap() {
     FirefoxProfile profile = new FirefoxProfile();
     Capabilities caps = new ImmutableCapabilities(
-      FIREFOX_OPTIONS, ImmutableMap.of("profile", profile));
+      FIREFOX_OPTIONS, Map.of("profile", profile));
 
     FirefoxOptions options = new FirefoxOptions(caps);
 
@@ -151,7 +149,7 @@ class FirefoxOptionsTest {
     Path binary = Files.createTempFile("firefox", ".exe");
     try (OutputStream ignored = Files.newOutputStream(binary, DELETE_ON_CLOSE)) {
       Files.write(binary, "".getBytes());
-      if (! TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
+      if (!TestUtilities.getEffectivePlatform().is(Platform.WINDOWS)) {
         Files.setPosixFilePermissions(binary, singleton(PosixFilePermission.OWNER_EXECUTE));
       }
       property.set(binary.toString());
@@ -185,7 +183,7 @@ class FirefoxOptionsTest {
 
   @Test
   void shouldThrowAnExceptionIfSystemPropertyProfileDoesNotExist() {
-    String unlikelyProfileName = "this-profile-does-not-exist-also-cheese";
+    final String unlikelyProfileName = "this-profile-does-not-exist-also-cheese";
     FirefoxProfile foundProfile = new ProfilesIni().getProfile(unlikelyProfileName);
     assumeThat(foundProfile).isNull();
 
@@ -202,8 +200,8 @@ class FirefoxOptionsTest {
 
   @Test
   void shouldGetStringPreferencesFromGetProfile() {
-    String key = "browser.startup.homepage";
-    String value = "about:robots";
+    final String key = "browser.startup.homepage";
+    final String value = "about:robots";
 
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference(key, value);
@@ -219,8 +217,8 @@ class FirefoxOptionsTest {
 
   @Test
   void shouldGetIntegerPreferencesFromGetProfile() {
-    String key = "key";
-    int value = 5;
+    final String key = "key";
+    final int value = 5;
 
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference(key, value);
@@ -236,8 +234,8 @@ class FirefoxOptionsTest {
 
   @Test
   void shouldGetBooleanPreferencesFromGetProfile() {
-    String key = "key";
-    boolean value = true;
+    final String key = "key";
+    final boolean value = true;
 
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference(key, value);
@@ -304,7 +302,8 @@ class FirefoxOptionsTest {
     Path tempFile = Files.createTempFile("firefoxoptions", "test");
 
     FirefoxOptions options = new FirefoxOptions(
-      new MutableCapabilities(new FirefoxOptions().setBinary(new FirefoxBinary(tempFile.toFile()))));
+      new MutableCapabilities(
+        new FirefoxOptions().setBinary(new FirefoxBinary(tempFile.toFile()))));
     Object options2 = options.asMap().get(FirefoxOptions.FIREFOX_OPTIONS);
     assertThat(options2)
       .asInstanceOf(InstanceOfAssertFactories.MAP)
@@ -391,9 +390,9 @@ class FirefoxOptionsTest {
     private final String name;
     private final String originalValue;
 
-    public JreSystemProperty(String name) {
+    JreSystemProperty(String name) {
       this.name = Require.nonNull("Name", name);
-      this.originalValue = System.getProperty(name);
+      originalValue = System.getProperty(name);
     }
 
     public String get() {
@@ -408,7 +407,7 @@ class FirefoxOptionsTest {
       }
     }
 
-    public void reset() {
+    void reset() {
       set(originalValue);
     }
   }

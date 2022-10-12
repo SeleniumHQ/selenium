@@ -26,18 +26,17 @@ import org.openqa.selenium.Beta;
 public interface HasContext {
 
   /**
-   * Context commands are operating on.
-   *
-   * @param context {@link FirefoxCommandContext} operating on page loaded in the browser or on browser elements hosting the page.
-   *
-   */
-  void setContext(FirefoxCommandContext context);
-
-  /**
    * Current context commands are operating on.
    *
    * @return {@link FirefoxCommandContext} value currently operating on commands
    */
   FirefoxCommandContext getContext();
+
+  /**
+   * Context commands are operating on.
+   *
+   * @param context {@link FirefoxCommandContext} operating on page loaded in the browser or on browser elements hosting the page.
+   */
+  void setContext(FirefoxCommandContext context);
 
 }

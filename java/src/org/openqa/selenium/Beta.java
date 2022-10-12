@@ -34,10 +34,12 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({
-    ElementType.ANNOTATION_TYPE,
-    ElementType.CONSTRUCTOR,
-    ElementType.FIELD,
-    ElementType.METHOD,
-    ElementType.TYPE})
+  ElementType.ANNOTATION_TYPE,
+  ElementType.CONSTRUCTOR,
+  ElementType.FIELD,
+  ElementType.METHOD,
+  ElementType.TYPE})
 @Documented
-public @interface Beta {}
+public @interface Beta {
+
+}

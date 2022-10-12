@@ -30,10 +30,10 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import com.google.common.collect.ImmutableMap;
 
-import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
@@ -52,7 +52,7 @@ class JsonHttpResponseCodecTest {
   void convertsResponses_success() {
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
-    response.setValue(ImmutableMap.of("color", "red"));
+    response.setValue(Map.of("color", "red"));
 
     HttpResponse converted = codec.encode(HttpResponse::new, response);
     assertThat(converted.getStatus()).isEqualTo(HTTP_OK);
@@ -70,7 +70,7 @@ class JsonHttpResponseCodecTest {
   void convertsResponses_failure() {
     Response response = new Response();
     response.setStatus(ErrorCodes.NO_SUCH_ELEMENT);
-    response.setValue(ImmutableMap.of("color", "red"));
+    response.setValue(Map.of("color", "red"));
 
     HttpResponse converted = codec.encode(HttpResponse::new, response);
     assertThat(converted.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
@@ -88,7 +88,7 @@ class JsonHttpResponseCodecTest {
   void roundTrip() {
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
-    response.setValue(ImmutableMap.of("color", "red"));
+    response.setValue(Map.of("color", "red"));
 
     HttpResponse httpResponse = codec.encode(HttpResponse::new, response);
     Response decoded = codec.decode(httpResponse);
@@ -145,7 +145,7 @@ class JsonHttpResponseCodecTest {
   void decodeJsonResponseMissingContentType() {
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
-    response.setValue(ImmutableMap.of("color", "red"));
+    response.setValue(Map.of("color", "red"));
 
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(HTTP_OK);
@@ -183,9 +183,9 @@ class JsonHttpResponseCodecTest {
   void shouldConvertElementReferenceToRemoteWebElement() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
-    response.setContent(asJson(ImmutableMap.of(
-        "status", 0,
-        "value", ImmutableMap.of(Dialect.OSS.getEncodedElementKey(), "345678"))));
+    response.setContent(asJson(Map.of(
+      "status", 0,
+      "value",Map.of(Dialect.OSS.getEncodedElementKey(), "345678"))));
 
     Response decoded = codec.decode(response);
     assertThat(((RemoteWebElement) decoded.getValue()).getId()).isEqualTo("345678");

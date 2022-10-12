@@ -23,6 +23,7 @@ import org.openqa.selenium.WebDriverException;
 import java.util.Map;
 
 public class BySelector {
+
   public By pickFromJsonParameters(Map<String, Object> allParameters) {
     String method = (String) allParameters.get("using");
     String selector = (String) allParameters.get("value");

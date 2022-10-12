@@ -24,20 +24,6 @@ import java.util.Map;
 
 public class PrintOptions {
 
-  public enum Orientation {
-    PORTRAIT("portrait"),
-    LANDSCAPE("landscape");
-
-    private final String serialFormat;
-    Orientation(String serialFormat) {
-      this.serialFormat = serialFormat;
-    }
-
-    @Override
-    public String toString() {
-      return serialFormat;
-    }
-  }
   private Orientation orientation = Orientation.PORTRAIT;
   private double scale = 1.0;
   private boolean background = false;
@@ -46,85 +32,102 @@ public class PrintOptions {
   private PageMargin pageMargin = new PageMargin();
   private String[] pageRanges;
 
-  public Orientation getOrientation() {
-    return this.orientation;
+  private Orientation getOrientation() {
+    return orientation;
   }
 
   public void setOrientation(Orientation orientation) {
     this.orientation = Require.nonNull("orientation", orientation);
   }
 
-  public String[] getPageRanges() {
-    return this.pageRanges;
+  private String[] getPageRanges() {
+    return pageRanges;
   }
 
-  public void setPageRanges(String firstRange, String ... ranges) {
+  public void setPageRanges(String firstRange, String... ranges) {
     Require.nonNull("pageRanges", firstRange);
-    this.pageRanges = new String[ranges.length + 1]; // Need to add all ranges and the initial range too.
+    pageRanges =
+      new String[ranges.length + 1]; // Need to add all ranges and the initial range too.
 
-    this.pageRanges[0] = firstRange;
+    pageRanges[0] = firstRange;
 
-    for (int i = 1; i < ranges.length; i++) {
-      this.pageRanges[i] = ranges[i - 1];
+    if (ranges.length - 1 >= 0) {
+      System.arraycopy(ranges, 0, pageRanges, 1, ranges.length - 1);
     }
+  }
+
+  public boolean getBackground() {
+    return background;
   }
 
   public void setBackground(boolean background) {
     this.background = Require.nonNull("background", background);
   }
 
-  public boolean getBackground() {
-    return this.background;
+  double getScale() {
+    return scale;
   }
 
-  public void setScale(double scale) {
+  void setScale(double scale) {
     if (scale < 0.1 || scale > 2) {
       throw new IllegalArgumentException("Scale value should be between 0.1 and 2");
     }
     this.scale = scale;
   }
 
-  public double getScale() {
-    return this.scale;
+  boolean getShrinkToFit() {
+    return shrinkToFit;
   }
 
-  public boolean getShrinkToFit() {
-    return this.shrinkToFit;
+  void setShrinkToFit(boolean value) {
+    shrinkToFit = Require.nonNull("value", value);
   }
 
-  public void setShrinkToFit(boolean value) {
-    this.shrinkToFit = Require.nonNull("value", value);
+  private PageSize getPageSize() {
+    return pageSize;
   }
 
   public void setPageSize(PageSize pageSize) {
     this.pageSize = Require.nonNull("pageSize", pageSize);
   }
 
+  private PageMargin getPageMargin() {
+    return pageMargin;
+  }
+
   public void setPageMargin(PageMargin margin) {
-    this.pageMargin = Require.nonNull("margin", margin);
-  }
-
-  public PageSize getPageSize() {
-    return this.pageSize;
-  }
-
-  public PageMargin getPageMargin() {
-    return this.pageMargin;
+    pageMargin = Require.nonNull("margin", margin);
   }
 
   public Map<String, Object> toMap() {
-    final Map<String, Object> options = new HashMap<>(7);
+    Map<String, Object> options = new HashMap<>(7);
     options.put("page", getPageSize());
     options.put("orientation", getOrientation().toString());
     options.put("scale", getScale());
     options.put("shrinkToFit", getShrinkToFit());
     options.put("background", getBackground());
-    final String[] effectivePageRanges = getPageRanges();
+    String[] effectivePageRanges = getPageRanges();
     if (effectivePageRanges != null) {
       options.put("effectivePageRanges", effectivePageRanges);
     }
     options.put("margin", getPageMargin());
 
-   return options;
+    return options;
+  }
+
+  public enum Orientation {
+    PORTRAIT("portrait"),
+    LANDSCAPE("landscape");
+
+    private final String serialFormat;
+
+    Orientation(String serialFormat) {
+      this.serialFormat = serialFormat;
+    }
+
+    @Override
+    public String toString() {
+      return serialFormat;
+    }
   }
 }

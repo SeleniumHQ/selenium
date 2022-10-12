@@ -18,5 +18,6 @@
 package org.openqa.selenium.interactions;
 
 public interface Locatable {
+
   Coordinates getCoordinates();
 }

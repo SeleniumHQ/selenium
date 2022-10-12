@@ -38,12 +38,14 @@ public class SetWindowSize extends WebDriverHandler<Void> {
     try {
       width = ((Number) allParameters.get("width")).intValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) window width value passed: " + allParameters.get("width"), ex);
+      throw new WebDriverException(
+        "Illegal (non-numeric) window width value passed: " + allParameters.get("width"), ex);
     }
     try {
       height = ((Number) allParameters.get("height")).intValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) window height value passed: " + allParameters.get("height"), ex);
+      throw new WebDriverException(
+        "Illegal (non-numeric) window height value passed: " + allParameters.get("height"), ex);
     }
 
     size = new Dimension(width, height);

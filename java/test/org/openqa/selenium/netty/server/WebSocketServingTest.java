@@ -17,7 +17,15 @@
 
 package org.openqa.selenium.netty.server;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -44,13 +52,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class WebSocketServingTest {
 
@@ -142,7 +143,8 @@ class WebSocketServingTest {
       (uri, sink) -> Optional.of(socket -> latch.countDown())).start();
 
     HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
-    WebSocket socket = client.openSocket(new HttpRequest(GET, "/cheese"), new WebSocket.Listener() {});
+    WebSocket socket = client.openSocket(new HttpRequest(GET, "/cheese"), new WebSocket.Listener() {
+    });
 
     socket.close();
 
@@ -173,11 +175,14 @@ class WebSocketServingTest {
     new FluentWait<>(messages).until(msgs -> msgs.size() == 2);
   }
 
-  public void serverShouldBeAbleToPushAMessageWithoutNeedingTheClientToSendAMessage() throws InterruptedException {
+  public void serverShouldBeAbleToPushAMessageWithoutNeedingTheClientToSendAMessage()
+    throws InterruptedException {
     class MyHandler implements Consumer<Message> {
 
       private final Consumer<Message> sink;
-      private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+      private final ScheduledExecutorService
+        executor =
+        Executors.newSingleThreadScheduledExecutor();
 
       public MyHandler(Consumer<Message> sink) {
         this.sink = sink;
@@ -215,7 +220,7 @@ class WebSocketServingTest {
 
   private BaseServerOptions defaultOptions() {
     return new BaseServerOptions(new MapConfig(
-      ImmutableMap.of("server", ImmutableMap.of(
+     Map.of("server",Map.of(
         "port", PortProber.findFreePort()
       ))));
   }

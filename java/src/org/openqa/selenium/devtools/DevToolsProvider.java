@@ -47,7 +47,9 @@ public class DevToolsProvider implements AugmenterProvider<HasDevTools> {
     String version = cdpVersion instanceof String ? (String) cdpVersion : caps.getBrowserVersion();
 
     CdpInfo info = new CdpVersionFinder().match(version).orElseGet(NoOpCdpInfo::new);
-    Optional<DevTools> devTools = SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
+    Optional<DevTools>
+      devTools =
+      SeleniumCdpConnection.create(caps).map(conn -> new DevTools(info::getDomains, conn));
 
     return () -> devTools;
   }

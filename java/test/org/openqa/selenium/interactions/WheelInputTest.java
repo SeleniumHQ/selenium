@@ -20,8 +20,8 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.json.Json;

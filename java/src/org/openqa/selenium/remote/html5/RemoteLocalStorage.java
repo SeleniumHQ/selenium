@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.html5;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
@@ -32,36 +30,36 @@ import java.util.Set;
  * Executes the commands to access HTML5 localStorage on the remote webdriver server.
  */
 public class RemoteLocalStorage implements LocalStorage {
+
   private final ExecuteMethod executeMethod;
 
-  public RemoteLocalStorage(ExecuteMethod executeMethod) {
+  RemoteLocalStorage(ExecuteMethod executeMethod) {
     this.executeMethod = executeMethod;
   }
 
   @Override
   public String getItem(String key) {
-    Map<String, String> args = ImmutableMap.of("key", key);
+    Map<String, String> args = Map.of("key", key);
     return (String) executeMethod.execute(DriverCommand.GET_LOCAL_STORAGE_ITEM, args);
   }
 
   @Override
   public Set<String> keySet() {
-    @SuppressWarnings("unchecked")
     Collection<String> result = (Collection<String>)
-        executeMethod.execute(DriverCommand.GET_LOCAL_STORAGE_KEYS, null);
+      executeMethod.execute(DriverCommand.GET_LOCAL_STORAGE_KEYS, null);
     return new HashSet<>(result);
   }
 
   @Override
   public void setItem(String key, String value) {
-    Map<String, String> args = ImmutableMap.of("key", key, "value", value);
+    Map<String, String> args = Map.of("key", key, "value", value);
     executeMethod.execute(DriverCommand.SET_LOCAL_STORAGE_ITEM, args);
   }
 
   @Override
   public String removeItem(String key) {
     String value = getItem(key);
-    Map<String, String> args = ImmutableMap.of("key", key);
+    Map<String, String> args = Map.of("key", key);
     executeMethod.execute(DriverCommand.REMOVE_LOCAL_STORAGE_ITEM, args);
     return value;
   }

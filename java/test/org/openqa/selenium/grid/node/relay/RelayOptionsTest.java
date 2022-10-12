@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.node.relay;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.config.Config;
@@ -32,9 +35,6 @@ import java.io.StringReader;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SuppressWarnings("DuplicatedCode")
 class RelayOptionsTest {

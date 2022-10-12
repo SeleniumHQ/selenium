@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.util.regex.Pattern;
 
 public class TestAlerts extends InternalSelenseTestBase {
+
   @Test
   void testAlerts() throws Exception {
     selenium.open("test_verify_alert.html");
@@ -31,10 +32,14 @@ public class TestAlerts extends InternalSelenseTestBase {
     assertFalse(selenium.isAlertPresent());
     selenium.click("oneAlert");
     verifyTrue(selenium.isAlertPresent());
-    for (int second = 0;; second++) {
-      if (second >= 60) fail("timeout");
+    for (int second = 0; ; second++) {
+      if (second >= 60) {
+        fail("timeout");
+      }
       try {
-        if (selenium.isAlertPresent()) break;
+        if (selenium.isAlertPresent()) {
+          break;
+        }
       } catch (Exception e) {
       }
       Thread.sleep(1000);

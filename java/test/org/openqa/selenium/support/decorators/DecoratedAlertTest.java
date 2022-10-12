@@ -24,8 +24,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 
@@ -34,25 +34,6 @@ import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedAlertTest {
-
-  private static class Fixture {
-
-    WebDriver originalDriver;
-    WebDriver decoratedDriver;
-    WebDriver.TargetLocator originalSwitch;
-    Alert original;
-    Alert decorated;
-
-    public Fixture() {
-      original = mock(Alert.class);
-      originalSwitch = mock(WebDriver.TargetLocator.class);
-      originalDriver = mock(WebDriver.class);
-      when(originalSwitch.alert()).thenReturn(original);
-      when(originalDriver.switchTo()).thenReturn(originalSwitch);
-      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
-      decorated = decoratedDriver.switchTo().alert();
-    }
-  }
 
   private void verifyFunction(Consumer<Alert> f) {
     Fixture fixture = new Fixture();
@@ -87,5 +68,24 @@ class DecoratedAlertTest {
   @Test
   void getText() {
     verifyFunction(Alert::getText, "test");
+  }
+
+  private static class Fixture {
+
+    WebDriver originalDriver;
+    WebDriver decoratedDriver;
+    WebDriver.TargetLocator originalSwitch;
+    Alert original;
+    Alert decorated;
+
+    public Fixture() {
+      original = mock(Alert.class);
+      originalSwitch = mock(WebDriver.TargetLocator.class);
+      originalDriver = mock(WebDriver.class);
+      when(originalSwitch.alert()).thenReturn(original);
+      when(originalDriver.switchTo()).thenReturn(originalSwitch);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
+      decorated = decoratedDriver.switchTo().alert();
+    }
   }
 }

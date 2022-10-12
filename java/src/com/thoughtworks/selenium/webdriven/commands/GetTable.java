@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GetTable extends SeleneseCommand<String> {
+
   private static final Pattern TABLE_PARTS = Pattern.compile("(.*)\\.(\\d+)\\.(\\d+)");
   private final ElementFinder finder;
   private final JavascriptLibrary js;
@@ -39,11 +40,12 @@ public class GetTable extends SeleneseCommand<String> {
   }
 
   @Override
-  protected String handleSeleneseCommand(WebDriver driver, String tableCellAddress, String ignored) {
+  protected String handleSeleneseCommand(WebDriver driver, String tableCellAddress,
+                                         String ignored) {
     Matcher matcher = TABLE_PARTS.matcher(tableCellAddress);
     if (!matcher.matches()) {
       throw new SeleniumException(
-          "Invalid target format. Correct format is tableName.rowNum.columnNum");
+        "Invalid target format. Correct format is tableName.rowNum.columnNum");
     }
 
     String tableName = matcher.group(1);
@@ -53,10 +55,12 @@ public class GetTable extends SeleneseCommand<String> {
     WebElement table = finder.findElement(driver, tableName);
 
     String script =
-        "var table = arguments[0]; var row = arguments[1]; var col = arguments[2];" +
-        "if (row > table.rows.length) { return \"Cannot access row \" + row + \" - table has \" + table.rows.length + \" rows\"; }" +
-        "if (col > table.rows[row].cells.length) { return \"Cannot access column \" + col + \" - table row has \" + table.rows[row].cells.length + \" columns\"; }" +
-        "return table.rows[row].cells[col];";
+      "var table = arguments[0]; var row = arguments[1]; var col = arguments[2];" +
+      "if (row > table.rows.length) { return \"Cannot access row \" + row + \" - table has \" + table.rows.length + \" rows\"; }"
+      +
+      "if (col > table.rows[row].cells.length) { return \"Cannot access column \" + col + \" - table row has \" + table.rows[row].cells.length + \" columns\"; }"
+      +
+      "return table.rows[row].cells[col];";
 
     Object value = js.executeScript(driver, script, table, row, col);
     if (value instanceof WebElement) {

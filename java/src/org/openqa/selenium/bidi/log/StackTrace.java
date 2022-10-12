@@ -36,10 +36,6 @@ public class StackTrace {
     this.callFrames = callFrames;
   }
 
-  public List<StackFrame> getCallFrames() {
-    return callFrames;
-  }
-
   public static StackTrace fromJson(JsonInput input) {
 
     List<StackFrame> callFrames = Collections.emptyList();
@@ -57,6 +53,10 @@ public class StackTrace {
     input.endObject();
 
     return new StackTrace(callFrames);
+  }
+
+  public List<StackFrame> getCallFrames() {
+    return callFrames;
   }
 
   private Map<String, Object> toJson() {

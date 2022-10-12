@@ -58,22 +58,23 @@ public class Page {
 
   public String toString() {
     return String.join("\n",
-        "<html>",
-        "<head>",
-        String.format("<title>%s</title>", title),
-        "</head>",
-        "<script type='text/javascript'>",
-        String.join("\n", scripts),
-        "</script>",
-        "<style>",
-        String.join("\n", styles),
-        "</style>",
-        String.format(
-            "<body %s %s>",
-            onLoad == null ? "" : String.format("onload='%s'", onLoad),
-            onBeforeUnload ==  null ? "" : String.format("onbeforeunload='%s'", onBeforeUnload)),
-        String.join("\n", bodyParts),
-        "</body>",
-        "</html>");
+                       "<html>",
+                       "<head>",
+                       String.format("<title>%s</title>", title),
+                       "</head>",
+                       "<script type='text/javascript'>",
+                       String.join("\n", scripts),
+                       "</script>",
+                       "<style>",
+                       String.join("\n", styles),
+                       "</style>",
+                       String.format(
+                         "<body %s %s>",
+                         onLoad == null ? "" : String.format("onload='%s'", onLoad),
+                         onBeforeUnload == null ? "" : String.format("onbeforeunload='%s'",
+                                                                     onBeforeUnload)),
+                       String.join("\n", bodyParts),
+                       "</body>",
+                       "</html>");
   }
 }

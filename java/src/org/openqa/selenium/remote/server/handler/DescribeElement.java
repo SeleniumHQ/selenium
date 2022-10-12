@@ -17,13 +17,12 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.remote.server.Session;
 
 import java.util.Map;
 
-public class DescribeElement extends WebElementHandler<Map<String,String>> {
+public class DescribeElement extends WebElementHandler<Map<String, String>> {
 
   public DescribeElement(Session session) {
     super(session);
@@ -31,7 +30,7 @@ public class DescribeElement extends WebElementHandler<Map<String,String>> {
 
   @Override
   public Map<String, String> call() {
-    return ImmutableMap.of("ELEMENT", getElementId());
+    return Map.of("ELEMENT", getElementId());
   }
 
   @Override

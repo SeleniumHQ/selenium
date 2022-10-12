@@ -49,12 +49,16 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
   protected abstract Handlers createHandlers(Config config);
 
   public static class Handlers {
-    public final HttpHandler httpHandler;
-    public final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler;
 
-    public Handlers(HttpHandler http, BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler) {
+    public final HttpHandler httpHandler;
+    public final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>>
+      websocketHandler;
+
+    public Handlers(HttpHandler http,
+                    BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> websocketHandler) {
       this.httpHandler = Require.nonNull("HTTP handler", http);
-      this.websocketHandler = websocketHandler == null ? (str, sink) -> Optional.empty() : websocketHandler;
+      this.websocketHandler =
+        websocketHandler == null ? (str, sink) -> Optional.empty() : websocketHandler;
     }
   }
 }

@@ -17,18 +17,18 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.Dialect.W3C;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SearchContext;
 
 import java.util.UUID;
-
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.Dialect.W3C;
 
 @Tag("UnitTests")
 class JsonToWebElementConverterTest {

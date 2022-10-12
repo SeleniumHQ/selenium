@@ -17,18 +17,6 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.WebDriverException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -38,6 +26,16 @@ import static org.openqa.selenium.remote.WebDriverFixture.exceptionResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebDriverException;
 
 @Tag("UnitTests")
 class RemoteWebElementTest {
@@ -58,7 +56,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.CLICK_ELEMENT, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -78,13 +76,15 @@ class RemoteWebElementTest {
       .withMessageContaining(String.format(
         "%s", fixture.driver.getCapabilities()))
       .withMessageContaining(String.format(
-        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
+        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(),
+        fixture.element.getId()))
       .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", fixture.driver.getSessionId()));
+        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]",
+        fixture.driver.getSessionId()));
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.CLICK_ELEMENT, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -104,22 +104,25 @@ class RemoteWebElementTest {
       .withMessageContaining(String.format(
         "%s", fixture.driver.getCapabilities()))
       .withMessageContaining(String.format(
-        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
+        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(),
+        fixture.element.getId()))
       .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", fixture.driver.getSessionId()))
+        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]",
+        fixture.driver.getSessionId()))
       .havingCause()
       .withMessage("BOOM!!!");
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.CLICK_ELEMENT, Map.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleWebDriverExceptionReturnedByCommandExecutor() {
     WebElementFixture fixture = new WebElementFixture(
       new ImmutableCapabilities("browserName", "cheese"),
-      echoCapabilities, errorResponder("element click intercepted", new WebDriverException("BOOM!!!")));
+      echoCapabilities,
+      errorResponder("element click intercepted", new WebDriverException("BOOM!!!")));
 
     assertThatExceptionOfType(WebDriverException.class)
       .isThrownBy(fixture.element::click)
@@ -132,13 +135,15 @@ class RemoteWebElementTest {
       .withMessageContaining(String.format(
         "%s", fixture.driver.getCapabilities()))
       .withMessageContaining(String.format(
-        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
+        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(),
+        fixture.element.getId()))
       .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]", fixture.driver.getSessionId()));
+        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]",
+        fixture.driver.getSessionId()));
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.CLICK_ELEMENT, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -158,13 +163,15 @@ class RemoteWebElementTest {
       .withMessageContaining(String.format(
         "%s", fixture.driver.getCapabilities()))
       .withMessageContaining(String.format(
-        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
+        "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(),
+        fixture.element.getId()))
       .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]", fixture.driver.getSessionId()));
+        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]",
+        fixture.driver.getSessionId()));
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.CLICK_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.CLICK_ELEMENT, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -175,7 +182,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.CLEAR_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.CLEAR_ELEMENT, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -186,7 +193,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.SUBMIT_ELEMENT, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.SUBMIT_ELEMENT, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -197,7 +204,7 @@ class RemoteWebElementTest {
     fixture.element.sendKeys("test");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.SEND_KEYS_TO_ELEMENT, ImmutableMap.of(
+      new CommandPayload(DriverCommand.SEND_KEYS_TO_ELEMENT, Map.of(
         "id", fixture.element.getId(), "value", new CharSequence[]{"test"})));
   }
 
@@ -208,7 +215,7 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getAttribute("id")).isEqualTo("test");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_ATTRIBUTE, ImmutableMap.of(
+      new CommandPayload(DriverCommand.GET_ELEMENT_ATTRIBUTE, Map.of(
         "id", fixture.element.getId(), "name", "id")));
   }
 
@@ -219,7 +226,7 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getDomAttribute("id")).isEqualTo("test");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_DOM_ATTRIBUTE, ImmutableMap.of(
+      new CommandPayload(DriverCommand.GET_ELEMENT_DOM_ATTRIBUTE, Map.of(
         "id", fixture.element.getId(), "name", "id")));
   }
 
@@ -230,7 +237,7 @@ class RemoteWebElementTest {
     assertThat(fixture.element.getDomProperty("id")).isEqualTo("test");
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_DOM_PROPERTY, ImmutableMap.of(
+      new CommandPayload(DriverCommand.GET_ELEMENT_DOM_PROPERTY, Map.of(
         "id", fixture.element.getId(), "name", "id")));
   }
 
@@ -242,7 +249,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.IS_ELEMENT_SELECTED, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.IS_ELEMENT_SELECTED, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -253,7 +260,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.IS_ELEMENT_ENABLED, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.IS_ELEMENT_ENABLED, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -264,7 +271,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.IS_ELEMENT_DISPLAYED, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.IS_ELEMENT_DISPLAYED, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -275,7 +282,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.GET_ELEMENT_TEXT, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.GET_ELEMENT_TEXT, Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -286,38 +293,38 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.GET_ELEMENT_TAG_NAME,
-                         ImmutableMap.of("id", fixture.element.getId())));
+                         Map.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleGetLocationCommand() {
     WebElementFixture fixture = new WebElementFixture(
-      echoCapabilities, valueResponder(ImmutableMap.of("x", 10, "y", 20)));
+      echoCapabilities, valueResponder(Map.of("x", 10, "y", 20)));
 
     assertThat(fixture.element.getLocation()).isEqualTo(new Point(10, 20));
 
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.GET_ELEMENT_RECT,
-                         ImmutableMap.of("id", fixture.element.getId())));
+                         Map.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleGetSizeCommand() {
     WebElementFixture fixture = new WebElementFixture(
-      echoCapabilities, valueResponder(ImmutableMap.of("width", 100, "height", 200)));
+      echoCapabilities, valueResponder(Map.of("width", 100, "height", 200)));
 
     assertThat(fixture.element.getSize()).isEqualTo(new Dimension(100, 200));
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.GET_ELEMENT_RECT, Map.of("id", fixture.element.getId())));
   }
 
   @Test
   void canHandleGetRectCommand() {
     WebElementFixture fixture = new WebElementFixture(
       echoCapabilities,
-      valueResponder(ImmutableMap.of(
+      valueResponder(Map.of(
         "x", 10, "y", 20, "width", 100, "height", 200)));
 
     assertThat(fixture.element.getRect()).isEqualTo(
@@ -325,7 +332,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.GET_ELEMENT_RECT,
-                         ImmutableMap.of("id", fixture.element.getId())));
+                         Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -336,7 +343,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY,
-                         ImmutableMap.of("id", fixture.element.getId(), "propertyName", "color")));
+                         Map.of("id", fixture.element.getId(), "propertyName", "color")));
   }
 
   @Test
@@ -347,7 +354,7 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.GET_ELEMENT_ARIA_ROLE,
-                         ImmutableMap.of("id", fixture.element.getId())));
+                         Map.of("id", fixture.element.getId())));
   }
 
   @Test
@@ -359,6 +366,6 @@ class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(DriverCommand.GET_ELEMENT_ACCESSIBLE_NAME,
-                         ImmutableMap.of("id", fixture.element.getId())));
+                         Map.of("id", fixture.element.getId())));
   }
 }

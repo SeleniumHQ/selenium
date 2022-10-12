@@ -35,7 +35,7 @@ public class LogEntry {
   /**
    * @param level     the severity of the log entry
    * @param timestamp UNIX Epoch timestamp at which this log entry was created
-   * @param message ew  the log entry's message
+   * @param message   ew  the log entry's message
    */
   public LogEntry(Level level, long timestamp, String message) {
     this.level = level;
@@ -73,8 +73,8 @@ public class LogEntry {
   @Override
   public String toString() {
     return String.format(
-        "[%s] [%s] %s",
-        DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(timestamp)), level, message);
+      "[%s] [%s] %s",
+      DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(timestamp)), level, message);
   }
 
   public Map<String, Object> toJson() {

@@ -24,15 +24,10 @@ public enum FirefoxCommandContext {
   CONTENT("content"),
   CHROME("chrome");
 
-  private String text;
+  private final String text;
 
   FirefoxCommandContext(String text) {
     this.text = text;
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(text);
   }
 
   public static FirefoxCommandContext fromString(String text) {
@@ -44,5 +39,10 @@ public enum FirefoxCommandContext {
       }
     }
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(text);
   }
 }

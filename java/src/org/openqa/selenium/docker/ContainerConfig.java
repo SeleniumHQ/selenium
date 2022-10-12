@@ -19,7 +19,6 @@ package org.openqa.selenium.docker;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 
 import org.openqa.selenium.Beta;
@@ -45,23 +44,23 @@ public class ContainerConfig {
   private final boolean autoRemove;
   private final long shmSize;
 
-  public ContainerConfig(Image image,
-                         Multimap<String, Map<String, Object>> portBindings,
-                         Map<String, String> envVars, Map<String, String> volumeBinds,
-                         List<Device> devices, String networkName, long shmSize) {
+  private ContainerConfig(Image image,
+                          Multimap<String, Map<String, Object>> portBindings,
+                          Map<String, String> envVars, Map<String, String> volumeBinds,
+                          List<Device> devices, String networkName, long shmSize) {
     this.image = image;
     this.portBindings = portBindings;
     this.envVars = envVars;
     this.volumeBinds = volumeBinds;
     this.devices = devices;
     this.networkName = networkName;
-    this.autoRemove = true;
+    autoRemove = true;
     this.shmSize = shmSize;
   }
 
   public static ContainerConfig image(Image image) {
-    return new ContainerConfig(image, HashMultimap.create(), ImmutableMap.of(), ImmutableMap.of(),
-                ImmutableList.of(), DEFAULT_DOCKER_NETWORK, DEFAULT_SHM_SIZE);
+    return new ContainerConfig(image, HashMultimap.create(), Map.of(), Map.of(),
+                               ImmutableList.of(), DEFAULT_DOCKER_NETWORK, DEFAULT_SHM_SIZE);
   }
 
   public ContainerConfig map(Port containerPort, Port hostPort) {
@@ -76,7 +75,7 @@ public class ContainerConfig {
     Multimap<String, Map<String, Object>> updatedBindings = HashMultimap.create(portBindings);
     updatedBindings.put(
       containerPort.getPort() + "/" + containerPort.getProtocol(),
-      ImmutableMap.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
+      Map.of("HostPort", String.valueOf(hostPort.getPort()), "HostIp", ""));
 
     return new ContainerConfig(image, updatedBindings, envVars, volumeBinds, devices,
                                networkName, shmSize);
@@ -112,7 +111,7 @@ public class ContainerConfig {
     Require.nonNull("Container device files", devices);
 
     return new ContainerConfig(image, portBindings, envVars, volumeBinds, devices, networkName,
-      shmSize);
+                               shmSize);
   }
 
   @Override
@@ -138,15 +137,15 @@ public class ContainerConfig {
       .map(key -> String.format("%s:%s", key, this.volumeBinds.get(key)))
       .collect(Collectors.toList());
 
-    List<Map<String, String>> devicesMapping = this.devices.stream()
-      .map(device -> ImmutableMap.of(
+    List<Map<String, String>> devicesMapping = devices.stream()
+      .map(device -> Map.of(
         "PathOnHost", device.getPathOnHost(),
         "PathInContainer", device.getPathInContainer(),
         "CgroupPermissions", device.getCgroupPermissions()
       ))
-        .collect(Collectors.toList());
+      .collect(Collectors.toList());
 
-    Map<String, Object> hostConfig = ImmutableMap.of(
+    Map<String, Object> hostConfig = Map.of(
       "PortBindings", portBindings.asMap(),
       "AutoRemove", autoRemove,
       "NetworkMode", networkName,
@@ -154,7 +153,7 @@ public class ContainerConfig {
       "Binds", volumeBinds,
       "Devices", devicesMapping);
 
-    return ImmutableMap.of(
+    return Map.of(
       "Image", image.getId(),
       "Env", envVars,
       "HostConfig", hostConfig);

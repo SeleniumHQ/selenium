@@ -28,6 +28,7 @@ import java.util.Set;
  * of logs, such as for profiling.
  */
 class StoringLocalLogs extends LocalLogs {
+
   private final Map<String, List<LogEntry>> localLogs = new HashMap<>();
   private final Set<String> logTypesToInclude;
 

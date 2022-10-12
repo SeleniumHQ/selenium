@@ -17,16 +17,17 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static org.openqa.selenium.docker.v1_41.DockerMessages.throwIfNecessary;
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 
-import static org.openqa.selenium.docker.v1_41.DockerMessages.throwIfNecessary;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 class StartContainer {
+
   private final HttpHandler client;
 
   public StartContainer(HttpHandler client) {

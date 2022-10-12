@@ -34,6 +34,7 @@ package org.openqa.selenium.support.ui;
  * @param <T> The type to be returned (normally the subclass' type)
  */
 public abstract class LoadableComponent<T extends LoadableComponent<T>> {
+
   /**
    * Ensure that the component is currently loaded.
    *

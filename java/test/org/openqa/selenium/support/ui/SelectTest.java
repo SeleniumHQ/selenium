@@ -26,8 +26,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -46,7 +46,7 @@ class SelectTest {
     when(element.getTagName()).thenReturn("a");
 
     assertThatExceptionOfType(UnexpectedTagNameException.class)
-        .isThrownBy(() -> new Select(element));
+      .isThrownBy(() -> new Select(element));
   }
 
   private Select selectElementWithMultipleEqualTo(final String multipleAttribute) {
@@ -138,7 +138,7 @@ class SelectTest {
     Select select = selectWithOptions(Collections.singletonList(firstOption));
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(select::getFirstSelectedOption);
+      .isThrownBy(select::getFirstSelectedOption);
   }
 
   @Test
@@ -147,7 +147,7 @@ class SelectTest {
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[normalize-space(.) = \"fish\"]")))
-        .thenReturn(Collections.singletonList(firstOption));
+      .thenReturn(Collections.singletonList(firstOption));
 
     Select select = new Select(element);
     select.selectByVisibleText("fish");
@@ -162,7 +162,7 @@ class SelectTest {
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[normalize-space(.) = \"fish\"]")))
-        .thenReturn(Collections.singletonList(firstOption));
+      .thenReturn(Collections.singletonList(firstOption));
 
     Select select = new Select(element);
     assertThatThrownBy(() -> select.selectByVisibleText("fish"))
@@ -190,7 +190,7 @@ class SelectTest {
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[@value = \"b\"]"))).thenReturn(
-        Collections.singletonList(firstOption));
+      Collections.singletonList(firstOption));
 
     Select select = new Select(element);
     select.selectByValue("b");
@@ -214,7 +214,7 @@ class SelectTest {
   void shouldNotAllowUserToDeselectAllWhenSelectDoesNotSupportMultipleSelections() {
     Select select = selectElementWithMultipleEqualTo(null);
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(select::deselectAll);
+      .isThrownBy(select::deselectAll);
   }
 
   @Test
@@ -224,7 +224,7 @@ class SelectTest {
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[normalize-space(.) = \"b\"]")))
-        .thenReturn(Arrays.asList(firstOption, secondOption));
+      .thenReturn(Arrays.asList(firstOption, secondOption));
 
     Select select = new Select(element);
     select.deselectByVisibleText("b");
@@ -252,7 +252,7 @@ class SelectTest {
 
     final WebElement element = mockSelectWebElement("multiple");
     when(element.findElements(By.xpath(".//option[@value = \"b\"]")))
-        .thenReturn(Arrays.asList(firstOption, secondOption));
+      .thenReturn(Arrays.asList(firstOption, secondOption));
 
     Select select = new Select(element);
     select.deselectByValue("b");
@@ -297,12 +297,12 @@ class SelectTest {
     Select select = new Select(element);
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.selectByIndex(12));
+      .isThrownBy(() -> select.selectByIndex(12));
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.selectByValue("not there"));
+      .isThrownBy(() -> select.selectByValue("not there"));
 
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> select.selectByVisibleText("also not there"));
+      .isThrownBy(() -> select.selectByVisibleText("also not there"));
   }
 }

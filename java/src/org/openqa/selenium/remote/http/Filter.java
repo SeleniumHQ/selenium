@@ -38,7 +38,7 @@ import java.util.function.Function;
  * }
  * </code></pre>
  *
- *<p>Because each filter returns an {@link HttpHandler}, it's easy to do processing before, or after
+ * <p>Because each filter returns an {@link HttpHandler}, it's easy to do processing before, or after
  * each request, as well as short-circuit things if necessary.
  */
 @FunctionalInterface

@@ -57,7 +57,8 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Section name", section);
     Require.nonNull("Option", option);
 
-    return seenOptions.computeIfAbsent(new Key(section, option), ignored -> delegate.getAll(section, option));
+    return seenOptions.computeIfAbsent(new Key(section, option),
+                                       ignored -> delegate.getAll(section, option));
   }
 
   @Override
@@ -65,7 +66,8 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Section name", section);
     Require.nonNull("Option", option);
 
-    return seenStrings.computeIfAbsent(new Key(section, option), ignored -> delegate.get(section, option));
+    return seenStrings.computeIfAbsent(new Key(section, option),
+                                       ignored -> delegate.get(section, option));
   }
 
   @Override
@@ -73,7 +75,8 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Section name", section);
     Require.nonNull("Option", option);
 
-    return seenInts.computeIfAbsent(new Key(section, option), ignored -> delegate.getInt(section, option));
+    return seenInts.computeIfAbsent(new Key(section, option),
+                                    ignored -> delegate.getInt(section, option));
   }
 
   @Override
@@ -81,7 +84,8 @@ public class MemoizedConfig implements Config {
     Require.nonNull("Section name", section);
     Require.nonNull("Option", option);
 
-    return seenBools.computeIfAbsent(new Key(section, option), ignored -> delegate.getBool(section, option));
+    return seenBools.computeIfAbsent(new Key(section, option),
+                                     ignored -> delegate.getBool(section, option));
   }
 
   @Override
@@ -116,6 +120,7 @@ public class MemoizedConfig implements Config {
   }
 
   private static class Key {
+
     private final String[] segments;
 
     public Key(String... segments) {

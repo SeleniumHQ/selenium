@@ -31,7 +31,7 @@ public class GetLocalStorageKeys extends WebDriverHandler<Set<String>> {
   @Override
   public Set<String> call() {
     return Utils.getWebStorage(getUnwrappedDriver())
-        .getLocalStorage().keySet();
+      .getLocalStorage().keySet();
   }
 
   @Override

@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.grid.node;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
+
 
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.SessionId;
@@ -26,8 +28,6 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
 
 class IsSessionOwner implements HttpHandler {
 
@@ -41,6 +41,6 @@ class IsSessionOwner implements HttpHandler {
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-    return new HttpResponse().setContent(asJson(ImmutableMap.of("value", node.isSessionOwner(id))));
+    return new HttpResponse().setContent(asJson(Map.of("value", node.isSessionOwner(id))));
   }
 }

@@ -33,8 +33,8 @@ public class Image {
 
   public String getName() {
     return summary.getRepoTags().stream()
-        .findFirst()
-        .orElseThrow(() -> new DockerException("Unable to find name"));
+      .findFirst()
+      .orElseThrow(() -> new DockerException("Unable to find name"));
   }
 
   public ImageId getId() {
@@ -49,7 +49,7 @@ public class Image {
   public String toString() {
     new Json().toJson(summary);
     return "Image{" +
-      "summary=" + summary +
-      '}';
+           "summary=" + summary +
+           '}';
   }
 }

@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
@@ -37,17 +35,17 @@ public class Status implements RestishHandler<Response> {
 
     BuildInfo buildInfo = new BuildInfo();
 
-    Object info = ImmutableMap.of(
-        "ready", true,
-        "message", "Server is running",
-        "build", ImmutableMap.of(
-            "version", buildInfo.getReleaseLabel(),
-            "revision", buildInfo.getBuildRevision()),
-        "os", ImmutableMap.of(
-            "name", System.getProperty("os.name"),
-            "arch", System.getProperty("os.arch"),
-            "version", System.getProperty("os.version")),
-        "java", ImmutableMap.of("version", System.getProperty("java.version")));
+    Object info = Map.of(
+      "ready", true,
+      "message", "Server is running",
+      "build", Map.of(
+        "version", buildInfo.getReleaseLabel(),
+        "revision", buildInfo.getBuildRevision()),
+      "os", Map.of(
+        "name", System.getProperty("os.name"),
+        "arch", System.getProperty("os.arch"),
+        "version", System.getProperty("os.version")),
+      "java", Map.of("version", System.getProperty("java.version")));
 
     response.setValue(info);
     return response;

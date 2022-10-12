@@ -25,6 +25,14 @@ import static org.openqa.selenium.lift.match.AttributeMatcher.attribute;
  */
 public class DivFinder extends HtmlTagFinder {
 
+  public static HtmlTagFinder div() {
+    return new DivFinder();
+  }
+
+  public static HtmlTagFinder div(String id) {
+    return div().with(attribute("id", equalTo(id)));
+  }
+
   @Override
   protected String tagDescription() {
     return "div";
@@ -33,14 +41,6 @@ public class DivFinder extends HtmlTagFinder {
   @Override
   protected String tagName() {
     return "div";
-  }
-
-  public static HtmlTagFinder div() {
-    return new DivFinder();
-  }
-
-  public static HtmlTagFinder div(String id) {
-    return div().with(attribute("id", equalTo(id)));
   }
 
 }

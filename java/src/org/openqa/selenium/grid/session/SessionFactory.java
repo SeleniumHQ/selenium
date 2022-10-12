@@ -26,5 +26,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface SessionFactory
-    extends Predicate<Capabilities>, Function<CreateSessionRequest, Optional<ActiveSession>> {
+  extends Predicate<Capabilities>, Function<CreateSessionRequest, Optional<ActiveSession>> {
+
 }

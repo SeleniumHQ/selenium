@@ -42,16 +42,16 @@ public class Rectangle {
     return x;
   }
 
-  public int getY() {
-    return y;
-  }
-
   /**
    * @deprecated Rectangle objects are supposed to be immutable, all setters will be removed soon
    */
   @Deprecated
   public void setX(int x) {
     this.x = x;
+  }
+
+  public int getY() {
+    return y;
   }
 
   /**
@@ -105,7 +105,7 @@ public class Rectangle {
 
     Rectangle rectangle = (Rectangle) o;
 
-    if (! getPoint().equals(rectangle.getPoint())) {
+    if (!getPoint().equals(rectangle.getPoint())) {
       return false;
     }
     return getDimension().equals(rectangle.getDimension());

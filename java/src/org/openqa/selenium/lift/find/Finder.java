@@ -23,6 +23,7 @@ import org.hamcrest.SelfDescribing;
 import java.util.Collection;
 
 public interface Finder<S, T> extends SelfDescribing {
+
   Collection<S> findFrom(T context);
 
   Finder<S, T> with(Matcher<S> textMatcher);

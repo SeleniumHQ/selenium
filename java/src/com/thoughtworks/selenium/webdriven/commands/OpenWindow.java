@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class OpenWindow extends SeleneseCommand<Void> {
+
   private final URL baseUrl;
   private final GetEval opener;
 
@@ -40,7 +41,7 @@ public class OpenWindow extends SeleneseCommand<Void> {
 
   @Override
   protected Void handleSeleneseCommand(final WebDriver driver, final String url,
-      final String windowID) {
+                                       final String windowID) {
     try {
       final String urlToOpen = url.contains("://") ? url : new URL(baseUrl, url).toString();
 

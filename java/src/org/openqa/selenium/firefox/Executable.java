@@ -72,11 +72,12 @@ class Executable {
     if (Files.exists(applicationIni)) {
       try (BufferedReader reader = Files.newBufferedReader(applicationIni)) {
         version = reader.lines()
-            .map(String::trim)
-            .filter(line -> line.startsWith("Version="))
-            .findFirst()
-            .map(line -> line.substring("Version=".length()))
-            .orElseThrow(() -> new WebDriverException("Cannot get version info for Firefox binary " + binary));
+          .map(String::trim)
+          .filter(line -> line.startsWith("Version="))
+          .findFirst()
+          .map(line -> line.substring("Version=".length()))
+          .orElseThrow(
+            () -> new WebDriverException("Cannot get version info for Firefox binary " + binary));
       } catch (IOException e) {
         throw new WebDriverException("Cannot get version info for Firefox binary " + binary, e);
       }
@@ -92,13 +93,14 @@ class Executable {
     if (Files.exists(channelPrefs)) {
       try (BufferedReader reader = Files.newBufferedReader(channelPrefs)) {
         channel = reader.lines()
-            .map(String::trim)
-            .filter(line -> line.startsWith("pref(\"app.update.channel\""))
-            .findFirst()
-            .map(line -> FirefoxBinary.Channel.fromString(
-                line.substring("pref(\"app.update.channel\", \"".length(),
-                               line.length() - "\");".length())))
-            .orElseThrow(() -> new WebDriverException("Cannot get channel info for Firefox binary " + binary));
+          .map(String::trim)
+          .filter(line -> line.startsWith("pref(\"app.update.channel\""))
+          .findFirst()
+          .map(line -> FirefoxBinary.Channel.fromString(
+            line.substring("pref(\"app.update.channel\", \"".length(),
+                           line.length() - "\");".length())))
+          .orElseThrow(
+            () -> new WebDriverException("Cannot get channel info for Firefox binary " + binary));
       } catch (IOException e) {
         throw new WebDriverException("Cannot get channel info for Firefox binary " + binary, e);
       }

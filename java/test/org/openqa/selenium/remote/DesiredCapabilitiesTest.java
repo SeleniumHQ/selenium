@@ -17,10 +17,12 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
+
+
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
@@ -31,15 +33,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @Tag("UnitTests")
 class DesiredCapabilitiesTest {
 
   @Test
   void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {
     Map<org.openqa.selenium.Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
-        new ConcurrentHashMap<>();
+      new ConcurrentHashMap<>();
 
     capabilitiesToDriver.put(new FirefoxOptions(), WebDriver.class);
     capabilitiesToDriver.put(new FirefoxOptions(), WebDriver.class);
@@ -83,11 +83,11 @@ class DesiredCapabilitiesTest {
   @Test
   void testExtractDebugLogLevelFromCapabilityMap() {
     Map<String, Object> capabilitiesMap
-        = ImmutableMap.of(CapabilityType.LOGGING_PREFS, ImmutableMap.of("browser", "DEBUG"));
+      =Map.of(CapabilityType.LOGGING_PREFS,Map.of("browser", "DEBUG"));
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
     LoggingPreferences prefs =
-        (LoggingPreferences) caps.getCapability(CapabilityType.LOGGING_PREFS);
+      (LoggingPreferences) caps.getCapability(CapabilityType.LOGGING_PREFS);
     assertThat(prefs.getLevel("browser")).isSameAs(Level.FINE);
   }
 
@@ -109,7 +109,7 @@ class DesiredCapabilitiesTest {
 
   @Test
   void shouldNotAutomaticallyConvertPlatformIfItNotConvertibleInConstructor() {
-    Map<String, Object> capabilitiesMap = ImmutableMap.of(CapabilityType.PLATFORM_NAME, "FreeBSD");
+    Map<String, Object> capabilitiesMap =Map.of(CapabilityType.PLATFORM_NAME, "FreeBSD");
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
     assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo("FreeBSD");
@@ -117,7 +117,7 @@ class DesiredCapabilitiesTest {
 
   @Test
   void shouldShortenLongValues() {
-    Map<String, Object> capabilitiesMap = ImmutableMap.of("key", createString(1025));
+    Map<String, Object> capabilitiesMap =Map.of("key", createString(1025));
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
     String expected = "key: " + createString(27) + "...";
@@ -127,7 +127,7 @@ class DesiredCapabilitiesTest {
   @Test
   void shouldShortenLongEnclosedValues() {
     Map<String, Object> capabilitiesMap
-        = ImmutableMap.of("key", ImmutableMap.of("subkey", createString(1025)));
+      =Map.of("key",Map.of("subkey", createString(1025)));
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
     String expected = "{subkey: " + createString(27) + "..." + "}";
@@ -149,7 +149,7 @@ class DesiredCapabilitiesTest {
 
   private String createString(int length) {
     StringBuilder outputBuffer = new StringBuilder(length);
-    for (int i = 0; i < length; i++){
+    for (int i = 0; i < length; i++) {
       outputBuffer.append("x");
     }
     return outputBuffer.toString();

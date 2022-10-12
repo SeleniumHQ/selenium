@@ -24,6 +24,8 @@ import java.util.Collection;
  * <a href="https://www.w3.org/TR/webdriver/#actions">Actions commands</a>.
  */
 public interface Interactive {
+
   void perform(Collection<Sequence> actions);
+
   void resetInputState();
 }

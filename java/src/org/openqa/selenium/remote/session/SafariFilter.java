@@ -17,20 +17,21 @@
 
 package org.openqa.selenium.remote.session;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.remote.Browser.SAFARI;
+
 import org.openqa.selenium.remote.CapabilityType;
 
 import java.util.Map;
 import java.util.Objects;
 
-import static org.openqa.selenium.remote.Browser.SAFARI;
-
 public class SafariFilter implements CapabilitiesFilter {
+
   @Override
   public Map<String, Object> apply(Map<String, Object> unmodifiedCaps) {
     ImmutableMap<String, Object> caps = unmodifiedCaps.entrySet().parallelStream()
       .filter(entry ->
-                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && SAFARI.is(String.valueOf(entry.getValue()))) ||
+                (CapabilityType.BROWSER_NAME.equals(entry.getKey()) && SAFARI.is(
+                  String.valueOf(entry.getValue()))) ||
                 "safari.options".equals(entry.getKey()))
       .distinct()
       .filter(entry -> Objects.nonNull(entry.getValue()))

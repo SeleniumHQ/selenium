@@ -24,6 +24,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class IsTextPresent extends SeleneseCommand<Boolean> {
+
   private final JavascriptLibrary js;
 
   public IsTextPresent(JavascriptLibrary js) {
@@ -35,7 +36,7 @@ public class IsTextPresent extends SeleneseCommand<Boolean> {
     String script = js.getSeleniumScript("isTextPresent.js");
 
     Boolean result = (Boolean) ((JavascriptExecutor) driver).executeScript(
-        "return (" + script + ")(arguments[0]);", pattern);
+      "return (" + script + ")(arguments[0]);", pattern);
 
     // Handle the null case
     return Boolean.TRUE.equals(result);

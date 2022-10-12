@@ -51,7 +51,7 @@ public class ErrorHandler {
   private static final String UNKNOWN_METHOD = "<anonymous method>";
   private static final String UNKNOWN_FILE = null;
 
-  private ErrorCodes errorCodes;
+  private final ErrorCodes errorCodes;
 
   private boolean includeServerErrors;
 
@@ -61,32 +61,31 @@ public class ErrorHandler {
 
   /**
    * @param includeServerErrors Whether to include server-side details in thrown exceptions if the
-   *        information is available.
+   *                            information is available.
    */
   public ErrorHandler(boolean includeServerErrors) {
     this.includeServerErrors = includeServerErrors;
-    this.errorCodes = new ErrorCodes();
+    errorCodes = new ErrorCodes();
   }
 
   /**
    * @param includeServerErrors Whether to include server-side details in thrown exceptions if the
-   *        information is available.
-   * @param codes The ErrorCodes object to use for linking error codes to exceptions.
+   *                            information is available.
+   * @param codes               The ErrorCodes object to use for linking error codes to exceptions.
    */
   public ErrorHandler(ErrorCodes codes, boolean includeServerErrors) {
     this.includeServerErrors = includeServerErrors;
-    this.errorCodes = codes;
+    errorCodes = codes;
   }
 
   public boolean isIncludeServerErrors() {
     return includeServerErrors;
   }
 
-  public void setIncludeServerErrors(boolean includeServerErrors) {
+  void setIncludeServerErrors(boolean includeServerErrors) {
     this.includeServerErrors = includeServerErrors;
   }
 
-  @SuppressWarnings("unchecked")
   public Response throwIfResponseFailed(Response response, long duration) throws RuntimeException {
     if (response.getStatus() == null || response.getStatus() == SUCCESS) {
       return response;
@@ -99,7 +98,7 @@ public class ErrorHandler {
     }
 
     Class<? extends WebDriverException> outerErrorType =
-        errorCodes.getExceptionType(response.getStatus());
+      errorCodes.getExceptionType(response.getStatus());
 
     Object value = response.getValue();
     String message = null;
@@ -110,7 +109,8 @@ public class ErrorHandler {
       if (!rawErrorData.containsKey(MESSAGE) && rawErrorData.containsKey("value")) {
         try {
           rawErrorData = (Map<String, Object>) rawErrorData.get("value");
-        } catch (ClassCastException cce) {}
+        } catch (ClassCastException cce) {
+        }
       }
       try {
         message = (String) rawErrorData.get(MESSAGE);
@@ -161,20 +161,20 @@ public class ErrorHandler {
 
     if (toThrow == null) {
       toThrow = createThrowable(outerErrorType,
-                                new Class<?>[] {String.class, Throwable.class, Integer.class},
-                                new Object[] {message, cause, response.getStatus()});
+                                new Class<?>[]{String.class, Throwable.class, Integer.class},
+                                new Object[]{message, cause, response.getStatus()});
     }
 
     if (toThrow == null) {
       toThrow = createThrowable(outerErrorType,
-          new Class<?>[] {String.class, Throwable.class},
-          new Object[] {message, cause});
+                                new Class<?>[]{String.class, Throwable.class},
+                                new Object[]{message, cause});
     }
 
     if (toThrow == null) {
       toThrow = createThrowable(outerErrorType,
-          new Class<?>[] {String.class},
-          new Object[] {message});
+                                new Class<?>[]{String.class},
+                                new Object[]{message});
     }
 
     if (toThrow == null) {
@@ -184,7 +184,6 @@ public class ErrorHandler {
     throw toThrow;
   }
 
-  @SuppressWarnings("unchecked")
   private UnhandledAlertException createUnhandledAlertException(Object value) {
     Map<String, Object> rawErrorData = (Map<String, Object>) value;
     if (rawErrorData.containsKey("alert") || rawErrorData.containsKey("alertText")) {
@@ -196,22 +195,23 @@ public class ErrorHandler {
         }
       }
       return createThrowable(UnhandledAlertException.class,
-          new Class<?>[] {String.class, String.class},
-          new Object[] {rawErrorData.get("message"), alertText});
+                             new Class<?>[]{String.class, String.class},
+                             new Object[]{rawErrorData.get("message"), alertText});
     }
     return null;
   }
 
   private String duration(long duration) {
-    String prefix = "\nCommand duration or timeout: ";
+    final String prefix = "\nCommand duration or timeout: ";
     if (duration < 1000) {
       return prefix + duration + " milliseconds";
     }
-    return prefix + (new BigDecimal(duration).divide(new BigDecimal(1000)).setScale(2, RoundingMode.HALF_UP)) + " seconds";
+    return prefix + (new BigDecimal(duration).divide(new BigDecimal(1000))
+                       .setScale(2, RoundingMode.HALF_UP)) + " seconds";
   }
 
   private <T extends Throwable> T createThrowable(
-      Class<T> clazz, Class<?>[] parameterTypes, Object[] parameters) {
+    Class<T> clazz, Class<?>[] parameterTypes, Object[] parameters) {
     try {
       Constructor<T> constructor = clazz.getConstructor(parameterTypes);
       return constructor.newInstance(parameters);
@@ -250,12 +250,11 @@ public class ErrorHandler {
     if (clazz.equals(UnhandledAlertException.class)) {
       toReturn = createUnhandledAlertException(rawErrorData);
     } else if (Throwable.class.isAssignableFrom(clazz)) {
-      @SuppressWarnings({"unchecked"})
       Class<? extends Throwable> throwableType = (Class<? extends Throwable>) clazz;
       toReturn = createThrowable(
-          throwableType,
-          new Class<?>[] {String.class},
-          new Object[] {message});
+        throwableType,
+        new Class<?>[]{String.class},
+        new Object[]{message});
     }
 
     if (toReturn == null) {
@@ -266,14 +265,13 @@ public class ErrorHandler {
     // The inverse is not always true.
     StackTraceElement[] stackTrace = new StackTraceElement[0];
     if (rawErrorData.get(STACK_TRACE) != null) {
-      @SuppressWarnings({"unchecked"})
       List<Map<String, Object>> stackTraceInfo =
-          (List<Map<String, Object>>) rawErrorData.get(STACK_TRACE);
+        (List<Map<String, Object>>) rawErrorData.get(STACK_TRACE);
 
       stackTrace = stackTraceInfo.stream()
-          .map(entry -> new FrameInfoToStackFrame().apply(entry))
-          .filter(Objects::nonNull)
-          .toArray(StackTraceElement[]::new);
+        .map(entry -> new FrameInfoToStackFrame().apply(entry))
+        .filter(Objects::nonNull)
+        .toArray(StackTraceElement[]::new);
     }
 
     toReturn.setStackTrace(stackTrace);
@@ -283,7 +281,8 @@ public class ErrorHandler {
   /**
    * Exception used as a place holder if the server returns an error without a stack trace.
    */
-  public static class UnknownServerException extends WebDriverException {
+  private static class UnknownServerException extends WebDriverException {
+
     private UnknownServerException(String s) {
       super(s);
     }
@@ -294,7 +293,12 @@ public class ErrorHandler {
    * WebDriver JSON response.
    */
   private static class FrameInfoToStackFrame
-      implements Function<Map<String, Object>, StackTraceElement> {
+    implements Function<Map<String, Object>, StackTraceElement> {
+
+    private static String toStringOrNull(Object o) {
+      return o == null ? null : o.toString();
+    }
+
     @Override
     public StackTraceElement apply(Map<String, Object> frameInfo) {
       if (frameInfo == null) {
@@ -303,7 +307,7 @@ public class ErrorHandler {
 
       Optional<Number> maybeLineNumberInteger = Optional.empty();
 
-      final Object lineNumberObject = frameInfo.get(LINE_NUMBER);
+      Object lineNumberObject = frameInfo.get(LINE_NUMBER);
       if (lineNumberObject instanceof Number) {
         maybeLineNumberInteger = Optional.of((Number) lineNumberObject);
       } else if (lineNumberObject != null) {
@@ -312,7 +316,7 @@ public class ErrorHandler {
       }
 
       // default -1 for unknown, see StackTraceElement constructor javadoc
-      final int lineNumber = maybeLineNumberInteger.orElse(-1).intValue();
+      int lineNumber = maybeLineNumberInteger.orElse(-1).intValue();
 
       // Gracefully handle remote servers that don't (or can't) send back
       // complete stack trace info. At least some of this information should
@@ -325,14 +329,10 @@ public class ErrorHandler {
                         toStringOrNull(frameInfo.get(FILE_NAME)) : UNKNOWN_FILE;
 
       return new StackTraceElement(
-          className,
-          methodName,
-          fileName,
-          lineNumber);
-    }
-
-    private static String toStringOrNull(Object o) {
-      return o == null ? null : o.toString();
+        className,
+        methodName,
+        fileName,
+        lineNumber);
     }
   }
 }

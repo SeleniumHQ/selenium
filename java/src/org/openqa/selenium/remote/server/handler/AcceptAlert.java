@@ -20,6 +20,7 @@ package org.openqa.selenium.remote.server.handler;
 import org.openqa.selenium.remote.server.Session;
 
 public class AcceptAlert extends WebDriverHandler<Void> {
+
   public AcceptAlert(Session session) {
     super(session);
   }

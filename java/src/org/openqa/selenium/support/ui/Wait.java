@@ -37,7 +37,7 @@ public interface Wait<F> {
    * implementor may throw whatever is idiomatic for a given test infrastructure (e.g. JUnit4 would
    * throw {@link AssertionError}).
    *
-   * @param <T> the return type of the method, which must not be Void
+   * @param <T>    the return type of the method, which must not be Void
    * @param isTrue the parameter to pass to the {@link ExpectedCondition}
    * @return truthy value from the isTrue condition
    */

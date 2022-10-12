@@ -18,7 +18,7 @@
 package org.openqa.selenium.devtools.v106;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.ConverterFunctions;
 import org.openqa.selenium.devtools.Event;
@@ -26,7 +26,6 @@ import org.openqa.selenium.devtools.idealized.browser.model.BrowserContextID;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.devtools.idealized.target.model.TargetID;
 import org.openqa.selenium.devtools.v106.target.Target;
-import org.openqa.selenium.devtools.v106.target.model.TargetFilter;
 import org.openqa.selenium.devtools.v106.target.model.TargetInfo;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
@@ -56,7 +55,7 @@ public class V106Target implements org.openqa.selenium.devtools.idealized.target
 
     return new Command<>(
       Target.getTargets(Optional.empty()).getMethod(),
-      ImmutableMap.of(),
+      Map.of(),
       input -> {
         List<TargetInfo> infos = mapper.apply(input);
         return infos.stream()
@@ -81,7 +80,7 @@ public class V106Target implements org.openqa.selenium.devtools.idealized.target
 
     return new Command<>(
       "Target.attachToTarget",
-      ImmutableMap.of(
+      Map.of(
         "targetId",
         new org.openqa.selenium.devtools.v106.target.model.TargetID(targetId.toString()),
         "flatten", true),

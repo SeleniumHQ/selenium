@@ -28,16 +28,6 @@ public class PageTitleFinder extends HtmlTagFinder {
   private PageTitleFinder() {
   }
 
-  @Override
-  protected String tagName() {
-    return "title";
-  }
-
-  @Override
-  protected String tagDescription() {
-    return "page title";
-  }
-
   public static HtmlTagFinder title() {
     return new PageTitleFinder();
   }
@@ -48,5 +38,15 @@ public class PageTitleFinder extends HtmlTagFinder {
 
   public static HtmlTagFinder titles() {
     return new PageTitleFinder();
+  }
+
+  @Override
+  protected String tagName() {
+    return "title";
+  }
+
+  @Override
+  protected String tagDescription() {
+    return "page title";
   }
 }

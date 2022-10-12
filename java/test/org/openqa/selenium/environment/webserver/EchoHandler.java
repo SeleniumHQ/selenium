@@ -48,9 +48,9 @@ class EchoHandler implements HttpHandler {
     HttpResponse response = new HttpResponse();
     response.setHeader("Content-Type", "text/html");
     //Don't Cache Anything  at the browser
-    response.setHeader("Cache-Control","no-cache");
-    response.setHeader("Pragma","no-cache");
-    response.setHeader ("Expires", EPOCH_START);
+    response.setHeader("Cache-Control", "no-cache");
+    response.setHeader("Pragma", "no-cache");
+    response.setHeader("Expires", EPOCH_START);
 
     String method = request.getMethod().toString();
     String headers = StreamSupport.stream(request.getHeaderNames().spliterator(), false)
@@ -59,7 +59,8 @@ class EchoHandler implements HttpHandler {
       .collect(Collectors.joining(""));
     String body = Contents.utf8String(request.getContent());
 
-    response.setContent(Contents.string(String.format(RESPONSE_STRING, method, headers, body), UTF_8));
+    response.setContent(
+      Contents.string(String.format(RESPONSE_STRING, method, headers, body), UTF_8));
 
     return response;
   }

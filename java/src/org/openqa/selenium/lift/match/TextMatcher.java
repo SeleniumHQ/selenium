@@ -33,6 +33,10 @@ public class TextMatcher extends TypeSafeMatcher<WebElement> {
     this.matcher = matcher;
   }
 
+  public static Matcher<WebElement> text(final Matcher<String> textMatcher) {
+    return new TextMatcher(textMatcher);
+  }
+
   @Override
   public boolean matchesSafely(WebElement item) {
     return matcher.matches(item.getText());
@@ -42,9 +46,5 @@ public class TextMatcher extends TypeSafeMatcher<WebElement> {
   public void describeTo(Description description) {
     description.appendText("text ");
     matcher.describeTo(description);
-  }
-
-  public static Matcher<WebElement> text(final Matcher<String> textMatcher) {
-    return new TextMatcher(textMatcher);
   }
 }

@@ -17,11 +17,25 @@
 
 package org.openqa.selenium.json;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.logging.Level.ALL;
+import static java.util.logging.Level.FINE;
+import static java.util.logging.Level.OFF;
+import static java.util.logging.Level.WARNING;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.byLessThan;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.Proxy.ProxyType.PAC;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.CLIENT;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.SERVER;
+
 import com.google.common.reflect.TypeToken;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -46,21 +60,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.logging.Level.ALL;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.OFF;
-import static java.util.logging.Level.WARNING;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.byLessThan;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.Proxy.ProxyType.PAC;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
-
 @Tag("UnitTests")
 class JsonTest {
 
@@ -79,8 +78,8 @@ class JsonTest {
 
   @Test
   void canRoundTripNumbers() {
-    Map<String, Object> original = ImmutableMap.of(
-        "options", ImmutableMap.of("args", Arrays.asList(1L, "hello")));
+    Map<String, Object> original = Map.of(
+      "options", Map.of("args", Arrays.asList(1L, "hello")));
 
     Json json = new Json();
     String converted = json.toJson(original);
@@ -91,9 +90,9 @@ class JsonTest {
 
   @Test
   void roundTripAFirefoxOptions() {
-    Map<String, Object> caps = ImmutableMap.of(
-        "moz:firefoxOptions", ImmutableMap.of(
-            "prefs", ImmutableMap.of("foo.bar", 1)));
+    Map<String, Object> caps = Map.of(
+      "moz:firefoxOptions", Map.of(
+        "prefs", Map.of("foo.bar", 1)));
     String json = new Json().toJson(caps);
     assertThat(json).doesNotContain("1.0");
 
@@ -107,12 +106,13 @@ class JsonTest {
   void shouldCoerceAListOfCapabilitiesIntoSomethingMutable() {
     // This is needed since Grid expects each of the capabilities to be mutable
     List<Capabilities> expected = Arrays.asList(
-        new ImmutableCapabilities("cheese", "brie"),
-        new ImmutableCapabilities("peas", 42L));
+      new ImmutableCapabilities("cheese", "brie"),
+      new ImmutableCapabilities("peas", 42L));
 
     Json json = new Json();
     String raw = json.toJson(expected);
-    List<Capabilities> seen = json.toType(raw, new TypeToken<List<Capabilities>>(){}.getType());
+    List<Capabilities> seen = json.toType(raw, new TypeToken<List<Capabilities>>() {
+    }.getType());
 
     assertThat(seen).isEqualTo(expected);
     assertThat(seen.get(0)).isInstanceOf(MutableCapabilities.class);
@@ -120,7 +120,7 @@ class JsonTest {
 
   @Test
   void shouldUseBeanSettersToPopulateFields() {
-    Map<String, String> map = ImmutableMap.of("name", "fishy");
+    Map<String, String> map = Map.of("name", "fishy");
 
     Json json = new Json();
     String raw = json.toJson(map);
@@ -131,7 +131,7 @@ class JsonTest {
 
   @Test
   void shouldAllowUserToPopulateFieldsDirectly() {
-    Map<String, String> map = ImmutableMap.of("theName", "fishy");
+    Map<String, String> map = Map.of("theName", "fishy");
 
     Json json = new Json();
     String raw = json.toJson(map);
@@ -142,7 +142,7 @@ class JsonTest {
 
   @Test
   void settingFinalFieldsShouldWork() {
-    Map<String, String> map = ImmutableMap.of("theName", "fishy");
+    Map<String, String> map = Map.of("theName", "fishy");
 
     Json json = new Json();
     String raw = json.toJson(map);
@@ -160,20 +160,20 @@ class JsonTest {
 
   @Test
   void canPopulateAMap() {
-    String raw = "{\"cheese\": \"brie\", \"foodstuff\": \"cheese\"}";
+    final String raw = "{\"cheese\": \"brie\", \"foodstuff\": \"cheese\"}";
 
     Map<String, String> map = new Json().toType(raw, Map.class);
     assertThat(map)
-        .hasSize(2)
-        .containsEntry("cheese", "brie")
-        .containsEntry("foodstuff", "cheese");
+      .hasSize(2)
+      .containsEntry("cheese", "brie")
+      .containsEntry("foodstuff", "cheese");
   }
 
   @Test
   void canPopulateAMapThatContainsNull() {
-    String raw = "{\"foo\": null}";
+    final String raw = "{\"foo\": null}";
 
-    Map<?,?> converted = new Json().toType(raw, Map.class);
+    Map<?, ?> converted = new Json().toType(raw, Map.class);
     assertThat(converted.size()).isEqualTo(1);
     assertThat(converted.containsKey("foo")).isTrue();
     assertThat(converted.get("foo")).isNull();
@@ -181,7 +181,7 @@ class JsonTest {
 
   @Test
   void canPopulateASimpleBean() {
-    String raw = "{\"value\": \"time\"}";
+    final String raw = "{\"value\": \"time\"}";
 
     SimpleBean bean = new Json().toType(raw, SimpleBean.class);
     assertThat(bean.getValue()).isEqualTo("time");
@@ -189,7 +189,7 @@ class JsonTest {
 
   @Test
   void canNotPopulateAnObjectOfAClassWithNoDefaultConstructor() {
-    String raw = "{\"value\": \"time\"}";
+    final String raw = "{\"value\": \"time\"}";
 
     assertThatExceptionOfType(JsonException.class)
       .isThrownBy(() -> new Json().toType(raw, NoDefaultConstructor.class))
@@ -202,7 +202,7 @@ class JsonTest {
 
   @Test
   void willSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
-    String raw = "{\"value\": \"time\", \"frob\": \"telephone\"}";
+    final String raw = "{\"value\": \"time\", \"frob\": \"telephone\"}";
 
     SimpleBean bean = new Json().toType(raw, SimpleBean.class);
 
@@ -211,9 +211,9 @@ class JsonTest {
 
   @Test
   void shouldSetPrimitiveValuesToo() {
-    String raw = "{\"magicNumber\": 3}";
+    final String raw = "{\"magicNumber\": 3}";
 
-    Map<?,?> map = new Json().toType(raw, Map.class);
+    Map<?, ?> map = new Json().toType(raw, Map.class);
 
     assertThat(map.get("magicNumber")).isEqualTo(3L);
   }
@@ -231,7 +231,7 @@ class JsonTest {
 
   @Test
   void shouldPopulateFieldsOnNestedBeans() {
-    String raw = "{\"name\": \"frank\", \"bean\": {\"value\": \"lots\"}}";
+    final String raw = "{\"name\": \"frank\", \"bean\": {\"value\": \"lots\"}}";
 
     ContainingBean bean = new Json().toType(raw, ContainingBean.class);
 
@@ -255,16 +255,17 @@ class JsonTest {
 
   @Test
   void shouldUseAMapToRepresentComplexObjects() {
-    String toModel = "{\"thing\": \"hairy\", \"hairy\": true}";
+    final String toModel = "{\"thing\": \"hairy\", \"hairy\": true}";
 
-    Map<?,?> modelled = new Json().toType(toModel, Object.class);
+    Map<?, ?> modelled = new Json().toType(toModel, Object.class);
     assertThat(modelled).hasSize(2);
   }
 
   @Test
   void shouldConvertAResponseWithAnElementInIt() {
-    String json =
-        "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
+    final String
+      json =
+      "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
     Response converted = new Json().toType(json, Response.class);
 
     assertThat(converted).extracting("value").asInstanceOf(MAP)
@@ -273,13 +274,13 @@ class JsonTest {
 
   @Test
   void shouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
-    String json = "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
+    final String json = "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
     new Json().toType(json, Response.class);
   }
 
   @Test
   void shouldBeAbleToSetAnObjectToABoolean() {
-    String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
+    final String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
 
     Response response = new Json().toType(json, Response.class);
 
@@ -315,13 +316,13 @@ class JsonTest {
     assertThat(first instanceof Map).isTrue();
 
     assertThat(first).asInstanceOf(MAP)
-        .containsEntry("name", "foo")
-        .containsEntry("value", "bar")
-        .containsEntry("domain", "localhost")
-        .containsEntry("path", "/rooted")
-        .containsEntry("secure", true)
-        .containsEntry("httpOnly", true)
-        .containsEntry("expiry", TimeUnit.MILLISECONDS.toSeconds(date.getTime()));
+      .containsEntry("name", "foo")
+      .containsEntry("value", "bar")
+      .containsEntry("domain", "localhost")
+      .containsEntry("path", "/rooted")
+      .containsEntry("secure", true)
+      .containsEntry("httpOnly", true)
+      .containsEntry("expiry", TimeUnit.MILLISECONDS.toSeconds(date.getTime()));
   }
 
   @Test
@@ -329,7 +330,7 @@ class JsonTest {
     Exception e = new Exception();
     String converted = new Json().toJson(e);
 
-    Map<?,?> reconstructed = new Json().toType(converted, Map.class);
+    Map<?, ?> reconstructed = new Json().toType(converted, Map.class);
     List<?> trace = (List<?>) reconstructed.get("stackTrace");
 
     assertThat(trace.get(0)).isInstanceOf(Map.class);
@@ -347,9 +348,9 @@ class JsonTest {
   void shouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("session id");
     Command original = new Command(
-        sessionId,
-        DriverCommand.NEW_SESSION,
-        ImmutableMap.of("food", "cheese"));
+      sessionId,
+      DriverCommand.NEW_SESSION,
+      Map.of("food", "cheese"));
     String raw = new Json().toJson(original);
     Command converted = new Json().toType(raw, Command.class);
 
@@ -373,17 +374,17 @@ class JsonTest {
   @Test
   void shouldParseCapabilitiesWithLoggingPreferences() {
     String caps = String.format(
-        "{\"%s\": {" +
-        "\"browser\": \"WARNING\"," +
-        "\"client\": \"DEBUG\", " +
-        "\"driver\": \"ALL\", " +
-        "\"server\": \"OFF\"}}",
-        CapabilityType.LOGGING_PREFS);
+      "{\"%s\": {" +
+      "\"browser\": \"WARNING\"," +
+      "\"client\": \"DEBUG\", " +
+      "\"driver\": \"ALL\", " +
+      "\"server\": \"OFF\"}}",
+      CapabilityType.LOGGING_PREFS);
 
     Capabilities converted = new Json().toType(caps, Capabilities.class);
 
     LoggingPreferences lp =
-        (LoggingPreferences) converted.getCapability(CapabilityType.LOGGING_PREFS);
+      (LoggingPreferences) converted.getCapability(CapabilityType.LOGGING_PREFS);
     assertThat(lp).isNotNull();
     assertThat(lp.getLevel(BROWSER)).isEqualTo(WARNING);
     assertThat(lp.getLevel(CLIENT)).isEqualTo(FINE);
@@ -393,14 +394,14 @@ class JsonTest {
 
   @Test
   void shouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
-    String jsonStr = "{\"inner\":\"{\\\"color\\\":\\\"green\\\",\\\"number\\\":123}\"}";
+    final String jsonStr = "{\"inner\":\"{\\\"color\\\":\\\"green\\\",\\\"number\\\":123}\"}";
 
     System.out.println(jsonStr);
 
     Object convertedOuter = new Json().toType(jsonStr, Map.class);
     assertThat(convertedOuter).isInstanceOf(Map.class);
 
-    Object convertedInner = ((Map<?,?>) convertedOuter).get("inner");
+    Object convertedInner = ((Map<?, ?>) convertedOuter).get("inner");
     assertThat(convertedInner).isNotNull();
     assertThat(convertedInner).isInstanceOf(String.class);
     assertThat(convertedInner.toString()).isEqualTo("{\"color\":\"green\",\"number\":123}");
@@ -411,7 +412,7 @@ class JsonTest {
     SessionId expectedId = new SessionId("thisisakey");
 
     // In selenium 2, the sessionId is an object. In selenium 3, it's a straight string.
-    String raw = "{\"sessionId\": \"" + expectedId.toString() + "\", " +
+    String raw = "{\"sessionId\": \"" + expectedId + "\", " +
                  "\"name\": \"some command\"," +
                  "\"parameters\": {}}";
 
@@ -435,7 +436,7 @@ class JsonTest {
   @Test
   void fromJsonMethodNeedNotOnlyAcceptAString() {
     Json json = new Json();
-    String raw = json.toJson(ImmutableMap.of("cheese", "truffled brie"));
+    String raw = json.toJson(Map.of("cheese", "truffled brie"));
     MapTakingFromJsonMethod res = json.toType(raw, MapTakingFromJsonMethod.class);
 
     assertThat(res.cheese).isEqualTo("truffled brie");
@@ -445,10 +446,9 @@ class JsonTest {
   @Test
   void decodingResponseWithNumbersInValueObject() {
     Response response = new Json().toType(
-        "{\"status\":0,\"value\":{\"width\":96,\"height\":46.19140625}}",
-        Response.class);
+      "{\"status\":0,\"value\":{\"width\":96,\"height\":46.19140625}}",
+      Response.class);
 
-    @SuppressWarnings("unchecked")
     Map<String, Number> value = (Map<String, Number>) response.getValue();
     assertThat(value.get("width").intValue()).isEqualTo(96);
     assertThat(value.get("height").intValue()).isEqualTo(46);
@@ -458,8 +458,8 @@ class JsonTest {
   @Test
   void shouldRecognizeNumericStatus() {
     Response response = new Json().toType(
-        "{\"status\":0,\"value\":\"cheese\"}",
-        Response.class);
+      "{\"status\":0,\"value\":\"cheese\"}",
+      Response.class);
 
     assertThat(response.getStatus().intValue()).isZero();
     assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
@@ -470,8 +470,8 @@ class JsonTest {
   @Test
   void shouldRecognizeStringStatus() {
     Response response = new Json().toType(
-        "{\"status\":\"success\",\"value\":\"cheese\"}",
-        Response.class);
+      "{\"status\":\"success\",\"value\":\"cheese\"}",
+      Response.class);
 
     assertThat(response.getStatus().intValue()).isZero();
     assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
@@ -482,8 +482,8 @@ class JsonTest {
   @Test
   void shouldConvertInvalidSelectorError() {
     Response response = new Json().toType(
-        "{\"state\":\"invalid selector\",\"message\":\"invalid xpath selector\"}",
-        Response.class);
+      "{\"state\":\"invalid selector\",\"message\":\"invalid xpath selector\"}",
+      Response.class);
     assertThat(response.getStatus().intValue()).isEqualTo(32);
     assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(32));
   }
@@ -491,9 +491,9 @@ class JsonTest {
   @Test
   void shouldRecognizeStringState() {
     Response response = new Json()
-        .toType(
-            "{\"state\":\"success\",\"value\":\"cheese\"}",
-            Response.class);
+      .toType(
+        "{\"state\":\"success\",\"value\":\"cheese\"}",
+        Response.class);
     assertThat(response.getState()).isEqualTo("success");
     assertThat(response.getStatus().intValue()).isZero();
     String value = (String) response.getValue();
@@ -514,10 +514,10 @@ class JsonTest {
 
   @Test
   void canCoerceSimpleValuesToStrings() {
-    Map<String, Object> value = ImmutableMap.of(
-        "boolean", true,
-        "integer", 42,
-        "float", 3.14);
+    Map<String, Object> value = Map.of(
+      "boolean", true,
+      "integer", 42,
+      "float", 3.14);
 
     Json json = new Json();
     String raw = json.toJson(value);
@@ -545,7 +545,7 @@ class JsonTest {
     private final String theName;
 
     public BeanWithFinalField() {
-      this.theName = "magic";
+      theName = "magic";
     }
   }
 
@@ -592,7 +592,7 @@ class JsonTest {
       this.name = name;
     }
 
-    public SimpleBean getBean() {
+    SimpleBean getBean() {
       return bean;
     }
 
@@ -602,9 +602,10 @@ class JsonTest {
   }
 
   public static class JsonAware {
-    private String convertedValue;
 
-    public JsonAware(String convertedValue) {
+    private final String convertedValue;
+
+    JsonAware(String convertedValue) {
       this.convertedValue = convertedValue;
     }
 
@@ -614,7 +615,8 @@ class JsonTest {
   }
 
   public static class PrivatelyAware {
-    private String convertedValue;
+
+    private final String convertedValue;
 
     public PrivatelyAware(String convertedValue) {
       this.convertedValue = convertedValue;
@@ -625,7 +627,7 @@ class JsonTest {
     }
   }
 
-  public static class MapTakingFromJsonMethod {
+  static class MapTakingFromJsonMethod {
 
     private String cheese;
 

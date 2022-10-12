@@ -27,8 +27,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ExecuteAsyncScript extends WebDriverHandler<Object> {
-  private volatile String script;
+
   private final List<Object> args = new ArrayList<>();
+  private volatile String script;
 
   public ExecuteAsyncScript(Session session) {
     super(session);

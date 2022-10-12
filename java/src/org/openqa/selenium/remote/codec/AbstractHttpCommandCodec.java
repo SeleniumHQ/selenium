@@ -17,25 +17,6 @@
 
 package org.openqa.selenium.remote.codec;
 
-import com.google.common.base.Objects;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-
-import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.net.Urls;
-import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.CommandCodec;
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static com.google.common.net.HttpHeaders.CACHE_CONTROL;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
@@ -114,12 +95,32 @@ import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+
+import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandCodec;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * A command codec that adheres to the W3C's WebDriver wire protocol.
  *
  * @see <a href="https://w3.org/tr/webdriver">W3C WebDriver spec</a>
  */
 public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpRequest> {
+
   private static final Splitter PATH_SPLITTER = Splitter.on('/').omitEmptyStrings();
   private static final String SESSION_ID_PARAM = "sessionId";
 
@@ -271,7 +272,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     return request;
   }
 
-  protected abstract Map<String,?> amendParameters(String name, Map<String, ?> parameters);
+  protected abstract Map<String, ?> amendParameters(String name, Map<String, ?> parameters);
 
   @Override
   public Command decode(final HttpRequest encodedCommand) {
@@ -290,7 +291,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     }
     if (name == null) {
       throw new UnsupportedCommandException(
-          encodedCommand.getMethod() + " " + encodedCommand.getUri());
+        encodedCommand.getMethod() + " " + encodedCommand.getUri());
     }
     Map<String, Object> parameters = new HashMap<>();
     spec.parsePathParameters(parts, parameters);
@@ -315,11 +316,11 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
   /**
    * Defines a new command mapping.
    *
-   * @param name The command name.
-   * @param method The HTTP method to use for the command.
+   * @param name        The command name.
+   * @param method      The HTTP method to use for the command.
    * @param pathPattern The URI path pattern for the command. When encoding a command, each
-   *     path segment prefixed with a ":" will be replaced with the corresponding parameter
-   *     from the encoded command.
+   *                    path segment prefixed with a ":" will be replaced with the corresponding parameter
+   *                    from the encoded command.
    */
   @Override
   public void defineCommand(String name, HttpMethod method, String pathPattern) {
@@ -362,17 +363,19 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     SessionId sessionId,
     Map<String, ?> parameters) {
     if ("sessionId".equals(parameterName)) {
-      Require.argument("Session id", sessionId).nonNull("Session ID may not be null for command %s", commandName);
+      Require.argument("Session id", sessionId)
+        .nonNull("Session ID may not be null for command %s", commandName);
       return sessionId.toString();
     }
 
     Object value = parameters.get(parameterName);
     Require.argument("Parameter", value).nonNull(
-        "Missing required parameter \"%s\" for command %s", parameterName, commandName);
+      "Missing required parameter \"%s\" for command %s", parameterName, commandName);
     return Urls.urlEncode(String.valueOf(value));
   }
 
   protected static class CommandSpec {
+
     private final HttpMethod method;
     private final String path;
     private final ImmutableList<String> pathSegments;
@@ -402,7 +405,7 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
      * Returns whether this instance matches the provided HTTP request.
      *
      * @param method The request method.
-     * @param parts The parsed request path segments.
+     * @param parts  The parsed request path segments.
      * @return Whether this instance matches the request.
      */
     boolean isFor(HttpMethod method, ImmutableList<String> parts) {

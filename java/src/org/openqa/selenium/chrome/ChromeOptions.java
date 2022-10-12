@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.chrome;
 
+import static org.openqa.selenium.remote.Browser.CHROME;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CapabilityType;
-
-import static org.openqa.selenium.remote.Browser.CHROME;
 
 /**
  * Class to manage options specific to {@link ChromeDriver}.
@@ -58,11 +58,6 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
     super(CapabilityType.BROWSER_NAME, CHROME.browserName(), CAPABILITY);
   }
 
-  public ChromeOptions setLogLevel(ChromeDriverLogLevel logLevel){
-    this.logLevel = Require.nonNull("Log level", logLevel);
-    return this;
-  }
-
   @Override
   public ChromeOptions merge(Capabilities extraCapabilities) {
     Require.nonNull("Capabilities to merge", extraCapabilities);
@@ -73,7 +68,12 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
     return newInstance;
   }
 
-  public ChromeDriverLogLevel getLogLevel(){
+  public ChromeDriverLogLevel getLogLevel() {
     return logLevel;
+  }
+
+  public ChromeOptions setLogLevel(ChromeDriverLogLevel logLevel) {
+    this.logLevel = Require.nonNull("Log level", logLevel);
+    return this;
   }
 }

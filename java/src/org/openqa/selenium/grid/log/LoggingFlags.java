@@ -70,9 +70,10 @@ public class LoggingFlags implements HasRoles {
                            + "C:\\path\\path\\to\\file\\gridlog.log "
                            + "Linux/Unix/MacOS path example: /path/to/file/gridlog.log"
     , names = "--log", arity = 1)
-  @ConfigValue(section = LOGGING_SECTION, name = "log-file", example = {"'\\\\path\\to\\file\\gridlog.log'",
-                                                                        "'C:\\path\\path\\to\\file\\gridlog.log'",
-                                                                        "'/path/to/file/gridlog.log'"})
+  @ConfigValue(section = LOGGING_SECTION, name = "log-file", example = {
+    "'\\\\path\\to\\file\\gridlog.log'",
+    "'C:\\path\\path\\to\\file\\gridlog.log'",
+    "'/path/to/file/gridlog.log'"})
   private String logFile;
 
   @Parameter(description = "Log encoding", names = "--log-encoding", arity = 1)

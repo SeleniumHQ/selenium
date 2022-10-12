@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.util.regex.Pattern;
 
 public class TestPatternMatching extends InternalSelenseTestBase {
+
   @Test
   void testPatternMatching() {
     selenium.open("test_verifications.html");
@@ -32,7 +33,7 @@ public class TestPatternMatching extends InternalSelenseTestBase {
     verifyTrue(selenium.getText("theSpan").matches("^[\\s\\S]* span$"));
     verifyTrue(selenium.getSelectedLabel("theSelect").matches("^second [\\s\\S]*$"));
     verifyTrue(join(selenium.getSelectOptions("theSelect"), ',').matches(
-        "^first[\\s\\S]*,second[\\s\\S]*,third[\\s\\S]*$"));
+      "^first[\\s\\S]*,second[\\s\\S]*,third[\\s\\S]*$"));
     verifyTrue(selenium.getAttribute("theText@class").matches("^[\\s\\S]oo$"));
     verifyTrue(selenium.getValue("theTextarea").matches("^Line 1[\\s\\S]*$"));
     verifyTrue(selenium.getValue("theText").matches("^[a-z ]+$"));
@@ -50,6 +51,6 @@ public class TestPatternMatching extends InternalSelenseTestBase {
     verifyEquals(selenium.getValue("theText"), "the text value");
     verifyEquals(selenium.getSelectedLabel("theSelect"), "second option");
     verifyTrue(Pattern.compile("^first.*?,second option,third*")
-        .matcher(join(selenium.getSelectOptions("theSelect"), ',')).find());
+                 .matcher(join(selenium.getSelectOptions("theSelect"), ',')).find());
   }
 }

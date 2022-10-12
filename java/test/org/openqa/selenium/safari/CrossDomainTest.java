@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.safari;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,9 +33,6 @@ import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.Pages;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class CrossDomainTest extends JupiterTestBase {
 

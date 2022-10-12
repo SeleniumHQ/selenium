@@ -22,16 +22,21 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestConfirmations extends InternalSelenseTestBase {
+
   @Test
   void testConfirmations() throws Exception {
     selenium.open("test_confirm.html");
     selenium.chooseCancelOnNextConfirmation();
     selenium.click("confirmAndLeave");
     verifyTrue(selenium.isConfirmationPresent());
-    for (int second = 0;; second++) {
-      if (second >= 60) fail("timeout");
+    for (int second = 0; ; second++) {
+      if (second >= 60) {
+        fail("timeout");
+      }
       try {
-        if (selenium.isConfirmationPresent()) break;
+        if (selenium.isConfirmationPresent()) {
+          break;
+        }
       } catch (Exception e) {
       }
       Thread.sleep(1000);

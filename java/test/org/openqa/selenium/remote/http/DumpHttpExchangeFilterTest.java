@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.junit.jupiter.api.Test;
-
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import org.junit.jupiter.api.Test;
 
 class DumpHttpExchangeFilterTest {
 
@@ -37,8 +37,8 @@ class DumpHttpExchangeFilterTest {
     assertThat(reqLog).contains("and Sausages");
 
     String resLog = dumpFilter.responseLogMessage(new HttpResponse()
-      .addHeader("Cheese", "Brie")
-      .setContent(string("Hello, World!", UTF_8)));
+                                                    .addHeader("Cheese", "Brie")
+                                                    .setContent(string("Hello, World!", UTF_8)));
 
     assertThat(resLog).contains("Cheese");
     assertThat(resLog).contains("Brie");

@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.server.handler.html5.Utils;
 import java.util.Map;
 
 public class SetNetworkConnection extends WebDriverHandler<Number> {
+
   private volatile ConnectionType type;
 
   public SetNetworkConnection(Session session) {
@@ -35,14 +36,15 @@ public class SetNetworkConnection extends WebDriverHandler<Number> {
   @Override
   public void setJsonParameters(Map<String, Object> allParameters) throws Exception {
     super.setJsonParameters(allParameters);
-    Map<String, Object> parameters = (Map<String, Object>)allParameters.get("parameters");
+    Map<String, Object> parameters = (Map<String, Object>) allParameters.get("parameters");
     Number bitmask = (Number) parameters.get("type");
     type = new ConnectionType(bitmask.intValue());
   }
 
   @Override
   public Number call() {
-    return Integer.parseInt(Utils.getNetworkConnection(getUnwrappedDriver()).setNetworkConnection(type).toString());
+    return Integer.parseInt(
+      Utils.getNetworkConnection(getUnwrappedDriver()).setNetworkConnection(type).toString());
   }
 
   @Override

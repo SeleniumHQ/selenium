@@ -17,8 +17,15 @@
 
 package org.openqa.selenium.grid.distributor;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
+
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,18 +99,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
-
 class DistributorTest {
 
   private static final Logger LOG = Logger.getLogger("Distributor Test");
   private final Secret registrationSecret = new Secret("hellim");
-  private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
+  private final Wait<Object>
+    wait =
+    new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
   private Tracer tracer;
   private EventBus bus;
   private Distributor local;
@@ -123,7 +125,7 @@ class DistributorTest {
     nodeUri = new URI("http://example:5678");
     routableUri = createUri();
     tracer = DefaultTestTracer.createTracer();
-    bus =  ZeroMqEventBus.create(
+    bus = ZeroMqEventBus.create(
       new ZContext(),
       "tcp://localhost:" + PortProber.findFreePort(),
       "tcp://localhost:" + PortProber.findFreePort(),
@@ -160,7 +162,9 @@ class DistributorTest {
       Duration.ofMinutes(5),
       false,
       Duration.ofSeconds(5));
-    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      result =
+      local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
 
@@ -351,7 +355,9 @@ class DistributorTest {
 
     assertTrue(node.isDraining());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(createRequest(caps));
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      result =
+      distributor.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
 
@@ -786,7 +792,9 @@ class DistributorTest {
 
     // Use up the one slot available
     Session session;
-    Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(createRequest(caps));
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      result =
+      distributor.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     session = result.right().getSession();
     // Make sure the session map has the session
@@ -997,12 +1005,13 @@ class DistributorTest {
     assertThatEither(result).isRight();
   }
 
-  private Set<Node> createNodeSet(CombinedHandler handler, Distributor distributor, int count, Capabilities...capabilities) {
+  private Set<Node> createNodeSet(CombinedHandler handler, Distributor distributor, int count,
+                                  Capabilities... capabilities) {
     Set<Node> nodeSet = new HashSet<>();
-    for (int i=0; i<count; i++) {
+    for (int i = 0; i < count; i++) {
       URI uri = createUri();
       LocalNode.Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret);
-      for (Capabilities caps: capabilities) {
+      for (Capabilities caps : capabilities) {
         builder.add(
           caps,
           new TestSessionFactory((id, hostCaps) -> new HandledSession(uri, hostCaps)));
@@ -1065,7 +1074,7 @@ class DistributorTest {
     waitForAllNodesToHaveCapacity(distributor, 11);
 
     //Assign 5 Chrome and 5 Firefox sessions to the distributor, make sure they don't go to the Edge node
-    for (int i=0; i<5; i++) {
+    for (int i = 0; i < 5; i++) {
       Either<SessionNotCreatedException, CreateSessionResponse> chromeResult =
         distributor.newSession(createRequest(chrome));
       assertThatEither(chromeResult).isRight();
@@ -1075,18 +1084,24 @@ class DistributorTest {
       assertThat(
         chromeSession.getUri()).isIn(
         chromeNodes
-          .stream().map(Node::getStatus).collect(Collectors.toList())     //List of getStatus() from the Set
-          .stream().map(NodeStatus::getExternalUri).collect(Collectors.toList())  //List of getUri() from the Set
+          .stream().map(Node::getStatus)
+          .collect(Collectors.toList())     //List of getStatus() from the Set
+          .stream().map(NodeStatus::getExternalUri).collect(Collectors.toList())
+        //List of getUri() from the Set
       );
 
       Either<SessionNotCreatedException, CreateSessionResponse> firefoxResult =
         distributor.newSession(createRequest(firefox));
-       assertThatEither(firefoxResult).isRight();
+      assertThatEither(firefoxResult).isRight();
       Session firefoxSession = firefoxResult.right().getSession();
       LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
 
-      boolean inFirefoxNodes = firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
-      boolean inChromeNodes = chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
+      boolean
+        inFirefoxNodes =
+        firefoxNodes.stream().anyMatch(node -> node.getUri().equals(firefoxSession.getUri()));
+      boolean
+        inChromeNodes =
+        chromeNodes.stream().anyMatch(node -> node.getUri().equals(chromeSession.getUri()));
       //This could be either, or, or both
       assertTrue(inFirefoxNodes || inChromeNodes);
     }
@@ -1113,7 +1128,7 @@ class DistributorTest {
       node.newSession(new CreateSessionRequest(
         ImmutableSet.copyOf(Dialect.values()),
         stereotype,
-        ImmutableMap.of()));
+        Map.of()));
     }
 
     return node;
@@ -1124,7 +1139,9 @@ class DistributorTest {
     return LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
       .add(
         stereotype,
-        new TestSessionFactory(stereotype, (id, caps) -> {throw new SessionNotCreatedException("Surprise!");}))
+        new TestSessionFactory(stereotype, (id, caps) -> {
+          throw new SessionNotCreatedException("Surprise!");
+        }))
       .build();
   }
 
@@ -1133,7 +1150,7 @@ class DistributorTest {
     CombinedHandler handler = new CombinedHandler();
 
     Node firstNode = createNode(new ImmutableCapabilities("browserName", "not cheese"), 1, 1);
-    Node secondNode =  createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0);
+    Node secondNode = createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0);
 
     handler.addHandler(firstNode);
     handler.addHandler(secondNode);
@@ -1159,15 +1176,17 @@ class DistributorTest {
       Instant.now(),
       Set.of(W3C),
       // Insertion order is assumed to be preserved
-        ImmutableSet.of(
-            // There's no capacity for this
-              new ImmutableCapabilities("browserName", "not cheese"),
-            // But there is for this, so we expect this to be created.
-              new ImmutableCapabilities("browserName", "cheese")),
+      ImmutableSet.of(
+        // There's no capacity for this
+        new ImmutableCapabilities("browserName", "not cheese"),
+        // But there is for this, so we expect this to be created.
+        new ImmutableCapabilities("browserName", "cheese")),
       Map.of(),
       Map.of());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(sessionRequest);
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      result =
+      local.newSession(sessionRequest);
 
     assertThat(result.isRight()).isTrue();
     Capabilities seen = result.right().getSession().getCapabilities();
@@ -1201,15 +1220,17 @@ class DistributorTest {
       Instant.now(),
       Set.of(W3C),
       // Insertion order is assumed to be preserved
-        ImmutableSet.of(
-            // There's no capacity for this
-              new ImmutableCapabilities("browserName", "not cheese"),
-            // But there is for this, so we expect this to be created.
-              new ImmutableCapabilities("browserName", "cheese")),
+      ImmutableSet.of(
+        // There's no capacity for this
+        new ImmutableCapabilities("browserName", "not cheese"),
+        // But there is for this, so we expect this to be created.
+        new ImmutableCapabilities("browserName", "cheese")),
       Map.of(),
       Map.of());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(sessionRequest);
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      result =
+      local.newSession(sessionRequest);
 
     assertThat(result.isRight()).isTrue();
     Capabilities seen = result.right().getSession().getCapabilities();
@@ -1247,7 +1268,8 @@ class DistributorTest {
       .pollingEvery(Duration.ofMillis(100))
       .until(d -> {
         Set<NodeStatus> nodes = d.getStatus().getNodes();
-        return nodes.size() == 0; });
+        return nodes.isEmpty();
+      });
   }
 
   private void waitForAllNodesToHaveCapacity(Distributor distributor, int nodeCount) {

@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestWaitInPopupWindow extends InternalSelenseTestBase {
+
   @Test
   void testWaitInPopupWindow() {
     selenium.open("test_select_window.html");

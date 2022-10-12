@@ -24,9 +24,11 @@ import org.openqa.selenium.remote.http.Routable;
 import java.util.function.Function;
 
 public class SpanWrappedRoutable extends SpanWrappedHttpHandler implements Routable {
+
   private final Routable delegate;
 
-  public SpanWrappedRoutable(Tracer tracer, Function<HttpRequest, String> namer, Routable delegate) {
+  public SpanWrappedRoutable(Tracer tracer, Function<HttpRequest, String> namer,
+                             Routable delegate) {
     super(tracer, namer, delegate);
 
     this.delegate = Require.nonNull("Routable to delegate to", delegate);

@@ -41,12 +41,14 @@ public interface VirtualAuthenticator {
 
   /**
    * Removes a credential from the authenticator.
+   *
    * @param credentialId the ID of the credential to be removed.
    */
   void removeCredential(byte[] credentialId);
 
   /**
    * Removes a credential from the authenticator.
+   *
    * @param credentialId the ID of the credential to be removed as a base64url
    *                     string.
    */
@@ -59,6 +61,7 @@ public interface VirtualAuthenticator {
 
   /**
    * Sets whether the authenticator will simulate success or fail on user verification.
+   *
    * @param verified true if the authenticator will pass user verification,
    *                 false otherwise.
    */

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetAllWindowTitles extends SeleneseCommand<String[]> {
+
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     String current = driver.getWindowHandle();
@@ -37,7 +38,7 @@ public class GetAllWindowTitles extends SeleneseCommand<String[]> {
 
     driver.switchTo().window(current);
 
-    return attributes.toArray(new String[attributes.size()]);
+    return attributes.toArray(new String[0]);
 
   }
 }

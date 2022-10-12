@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetAttributeFromAllWindows extends SeleneseCommand<String[]> {
+
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String attributeName, String ignored) {
     String current = driver.getWindowHandle();
@@ -34,7 +35,7 @@ public class GetAttributeFromAllWindows extends SeleneseCommand<String[]> {
     for (String handle : driver.getWindowHandles()) {
       driver.switchTo().window(handle);
       String value = (String) ((JavascriptExecutor) driver).executeScript(
-          "return '' + window[arguments[0]];", attributeName);
+        "return '' + window[arguments[0]];", attributeName);
       attributes.add(value);
     }
 

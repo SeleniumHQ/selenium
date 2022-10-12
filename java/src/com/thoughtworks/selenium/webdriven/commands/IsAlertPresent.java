@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class IsAlertPresent extends SeleneseCommand<Boolean> {
+
   private final AlertOverride alertOverride;
 
   public IsAlertPresent(AlertOverride alertOverride) {

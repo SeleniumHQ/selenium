@@ -28,6 +28,7 @@ public interface CapabilitiesFilter extends Function<Map<String, Object>, Map<St
 
   /**
    * Take a map of capabilities and extract those specific to a browser.
+   *
    * @return a {@link Map} of capabilities if any match, or {@code null} otherwise.
    */
   @Override

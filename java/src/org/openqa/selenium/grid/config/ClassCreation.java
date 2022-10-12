@@ -32,7 +32,9 @@ class ClassCreation {
 
     // Use the context class loader since this is what the `--ext`
     // flag modifies.
-    Class<?> classClazz = Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
+    Class<?>
+      classClazz =
+      Class.forName(clazz, true, Thread.currentThread().getContextClassLoader());
 
     try {
       Method create = classClazz.getMethod("create", org.openqa.selenium.grid.config.Config.class);

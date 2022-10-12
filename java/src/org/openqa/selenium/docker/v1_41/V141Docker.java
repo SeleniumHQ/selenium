@@ -85,7 +85,8 @@ public class V141Docker implements DockerProtocol {
       return allImages.iterator().next();
     }
 
-    throw new DockerException("Pull appears to have succeeded, but image not present locally: " + imageName);
+    throw new DockerException(
+      "Pull appears to have succeeded, but image not present locally: " + imageName);
   }
 
   @Override

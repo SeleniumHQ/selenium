@@ -23,12 +23,13 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class Submit extends SeleneseCommand<Void> {
-    private final AlertOverride alertOverride;
-    private final ElementFinder finder;
+
+  private final AlertOverride alertOverride;
+  private final ElementFinder finder;
 
   public Submit(AlertOverride alertOverride, ElementFinder finder) {
-      this.alertOverride = alertOverride;
-      this.finder = finder;
+    this.alertOverride = alertOverride;
+    this.finder = finder;
   }
 
   @Override

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -47,8 +46,8 @@ public class FindElements extends WebDriverHandler<Set<Map<String, String>>> {
   public Set<Map<String, String>> call() {
     List<WebElement> elements = getDriver().findElements(by);
     return elements.stream()
-        .map(element -> ImmutableMap.of("ELEMENT", getKnownElements().add(element)))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+      .map(element -> Map.of("ELEMENT", getKnownElements().add(element)))
+      .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   @Override

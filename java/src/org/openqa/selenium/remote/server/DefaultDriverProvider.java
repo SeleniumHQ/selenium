@@ -33,8 +33,8 @@ public class DefaultDriverProvider implements DriverProvider {
 
   private static final Logger LOG = Logger.getLogger(DefaultDriverProvider.class.getName());
 
-  private Capabilities capabilities;
-  private Class<? extends WebDriver> driverClass;
+  private final Capabilities capabilities;
+  private final Class<? extends WebDriver> driverClass;
 
   public DefaultDriverProvider(Capabilities capabilities, Class<? extends WebDriver> driverClass) {
     this.capabilities = new ImmutableCapabilities(capabilities);
@@ -49,22 +49,6 @@ public class DefaultDriverProvider implements DriverProvider {
     return new DefaultDriverProvider(capabilities, driverClass);
   }
 
-  @Override
-  public Capabilities getProvidedCapabilities() {
-    return capabilities;
-  }
-
-  /**
-   * Checks that the browser name set in the provided capabilities matches the browser name
-   * set in the desired capabilities.
-   * @param capabilities The desired capabilities
-   * @return true if the browser name is the same, false otherwise
-   */
-  @Override
-  public boolean canCreateDriverInstanceFor(Capabilities capabilities) {
-    return this.capabilities.getBrowserName().equals(capabilities.getBrowserName());
-  }
-
   private static Class<? extends WebDriver> getDriverClass(String driverClassName) {
     try {
       return Class.forName(driverClassName).asSubclass(WebDriver.class);
@@ -75,6 +59,23 @@ public class DefaultDriverProvider implements DriverProvider {
       LOG.log(Level.INFO, "Driver class is built for higher Java version: " + driverClassName);
       return null;
     }
+  }
+
+  @Override
+  public Capabilities getProvidedCapabilities() {
+    return capabilities;
+  }
+
+  /**
+   * Checks that the browser name set in the provided capabilities matches the browser name
+   * set in the desired capabilities.
+   *
+   * @param capabilities The desired capabilities
+   * @return true if the browser name is the same, false otherwise
+   */
+  @Override
+  public boolean canCreateDriverInstanceFor(Capabilities capabilities) {
+    return this.capabilities.getBrowserName().equals(capabilities.getBrowserName());
   }
 
   @Override

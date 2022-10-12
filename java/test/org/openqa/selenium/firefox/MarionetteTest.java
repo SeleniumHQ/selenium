@@ -17,7 +17,15 @@
 
 package org.openqa.selenium.firefox;
 
-import org.junit.jupiter.api.Assumptions;
+import static java.util.Optional.ofNullable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -30,36 +38,27 @@ import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 import java.nio.file.Path;
 
-import static java.util.Optional.ofNullable;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
-import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
-
 class MarionetteTest extends JupiterTestBase {
 
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
 
   @Test
   @NoDriverBeforeTest
-  public void canStartDriverWithEmptyOptions() {
+  void canStartDriverWithEmptyOptions() {
     localDriver = new FirefoxDriver(new FirefoxOptions());
     verifyItIsMarionette(localDriver);
   }
 
   @Test
   @NoDriverBeforeTest
-  public void canStartDriverWithNoParameters() {
+  void canStartDriverWithNoParameters() {
     localDriver = new FirefoxDriver();
     verifyItIsMarionette(localDriver);
   }
 
   @Test
   @NoDriverBeforeTest
-  public void canStartDriverWithSpecifiedBinary() {
+  void canStartDriverWithSpecifiedBinary() {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
     localDriver = new FirefoxDriver(new FirefoxOptions().setBinary(binary));
@@ -70,7 +69,7 @@ class MarionetteTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canStartDriverWithSpecifiedProfile() {
+  void canStartDriverWithSpecifiedProfile() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
@@ -83,7 +82,7 @@ class MarionetteTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canStartDriverWithSpecifiedBinaryAndProfile() {
+  void canStartDriverWithSpecifiedBinaryAndProfile() {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
     FirefoxProfile profile = new FirefoxProfile();
@@ -99,18 +98,20 @@ class MarionetteTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canPassCapabilities() {
+  void canPassCapabilities() {
     Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
     localDriver = new FirefoxDriver(new FirefoxOptions().merge(caps));
 
     verifyItIsMarionette(localDriver);
-    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
+    assertThat(
+      ((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo(
+      "none");
   }
 
   @Test
   @NoDriverBeforeTest
-  public void canSetPreferencesInFirefoxOptions() {
+  void canSetPreferencesInFirefoxOptions() {
     FirefoxOptions options = new FirefoxOptions()
       .addPreference("browser.startup.page", 1)
       .addPreference("browser.startup.homepage", pages.xhtmlTestPage);
@@ -123,7 +124,7 @@ class MarionetteTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canSetProfileInFirefoxOptions() {
+  void canSetProfileInFirefoxOptions() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
@@ -138,7 +139,7 @@ class MarionetteTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canSetProfileInCapabilities() {
+  void canSetProfileInCapabilities() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
@@ -153,7 +154,7 @@ class MarionetteTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canUseSameProfileInCapabilitiesAndDirectly() {
+  void canUseSameProfileInCapabilitiesAndDirectly() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
@@ -171,7 +172,7 @@ class MarionetteTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canPassCapabilitiesBinaryAndProfileSeparately() {
+  void canPassCapabilitiesBinaryAndProfileSeparately() {
     FirefoxBinary binary = spy(new FirefoxBinary());
 
     FirefoxProfile profile = new FirefoxProfile();
@@ -189,12 +190,14 @@ class MarionetteTest extends JupiterTestBase {
 
     verifyItIsMarionette(localDriver);
     verify(binary, atLeastOnce()).getPath();
-    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
+    assertThat(
+      ((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo(
+      "none");
   }
 
   @Test
   @NoDriverBeforeTest
-  public void canSetPreferencesAndProfileInFirefoxOptions() {
+  void canSetPreferencesAndProfileInFirefoxOptions() {
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.startup.page", 1);
     profile.setPreference("browser.startup.homepage", pages.xhtmlTestPage);
@@ -211,35 +214,40 @@ class MarionetteTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canSetPageLoadStrategyViaOptions() {
+  void canSetPageLoadStrategyViaOptions() {
     localDriver = new FirefoxDriver(
       new FirefoxOptions().setPageLoadStrategy(PageLoadStrategy.NONE));
 
     verifyItIsMarionette(localDriver);
-    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
+    assertThat(
+      ((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo(
+      "none");
   }
 
   @Test
   @NoDriverBeforeTest
-  public void canSetInsecureCertSupportViaOptions() {
+  void canSetInsecureCertSupportViaOptions() {
     localDriver = new FirefoxDriver(new FirefoxOptions().setAcceptInsecureCerts(true));
 
     verifyItIsMarionette(localDriver);
-    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(((FirefoxDriver) localDriver).getCapabilities()
+                 .getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @Test
   @NoDriverBeforeTest
-  public void canStartHeadless() {
+  void canStartHeadless() {
     localDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(true));
 
     verifyItIsMarionette(localDriver);
-    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability("moz:headless")).isEqualTo(true);
+    assertThat(
+      ((FirefoxDriver) localDriver).getCapabilities().getCapability("moz:headless")).isEqualTo(
+      true);
   }
 
   @Test
   @NoDriverBeforeTest
-  public void canInstallAndUninstallExtensionsOnTheFly() {
+  void canInstallAndUninstallExtensionsOnTheFly() {
     assumeTrue(driver instanceof FirefoxDriver);
     FirefoxDriver localDriver = (FirefoxDriver) driver;
     Path extension = InProject.locate(EXT_PATH);
@@ -251,6 +259,6 @@ class MarionetteTest extends JupiterTestBase {
   private void verifyItIsMarionette(WebDriver driver) {
     FirefoxDriver firefoxDriver = (FirefoxDriver) driver;
     assertThat(ofNullable(firefoxDriver.getCapabilities().getCapability("moz:processID"))
-      .orElse(firefoxDriver.getCapabilities().getCapability("processId"))).isNotNull();
+                 .orElse(firefoxDriver.getCapabilities().getCapability("processId"))).isNotNull();
   }
 }

@@ -17,10 +17,18 @@
 
 package org.openqa.selenium.grid.router;
 
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
@@ -52,15 +60,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-
 class HandleSession implements HttpHandler {
 
   private final Tracer tracer;
@@ -76,7 +75,7 @@ class HandleSession implements HttpHandler {
     this.httpClientFactory = Require.nonNull("HTTP client factory", httpClientFactory);
     this.sessions = Require.nonNull("Sessions", sessions);
 
-    this.httpClients = CacheBuilder.newBuilder()
+    httpClients = CacheBuilder.newBuilder()
       .expireAfterAccess(Duration.ofMinutes(1))
       .removalListener((RemovalListener<URL, HttpClient>) removal -> removal.getValue().close())
       .build();
@@ -105,11 +104,14 @@ class HandleSession implements HttpHandler {
 
       SessionId id = getSessionId(req.getUri()).map(SessionId::new)
         .orElseThrow(() -> {
-          NoSuchSessionException exception = new NoSuchSessionException("Cannot find session: " + req);
+          NoSuchSessionException
+            exception =
+            new NoSuchSessionException("Cannot find session: " + req);
           EXCEPTION.accept(attributeMap, exception);
           attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                            EventAttribute.setValue(
-                             "Unable to execute request for an existing session: " + exception.getMessage()));
+                             "Unable to execute request for an existing session: "
+                             + exception.getMessage()));
           span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
           return exception;
         });
@@ -128,7 +130,9 @@ class HandleSession implements HttpHandler {
         span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
 
-        String errorMessage = "Unable to execute request for an existing session: " + e.getMessage();
+        String
+          errorMessage =
+          "Unable to execute request for an existing session: " + e.getMessage();
         EXCEPTION.accept(attributeMap, e);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue(errorMessage));
@@ -137,7 +141,7 @@ class HandleSession implements HttpHandler {
         if (e instanceof NoSuchSessionException) {
           HttpResponse response = new HttpResponse();
           response.setStatus(404);
-          response.setContent(asJson(ImmutableMap.of(
+          response.setContent(asJson(Map.of(
             "value", req.getUri(),
             "message", errorMessage,
             "error", "invalid session id")));

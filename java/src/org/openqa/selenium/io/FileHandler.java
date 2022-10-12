@@ -33,7 +33,7 @@ import java.util.Objects;
 public class FileHandler {
 
   public static void copyResource(File outputDir, Class<?> forClassLoader, String... names)
-      throws IOException {
+    throws IOException {
     for (String name : names) {
       try (InputStream is = locateResource(forClassLoader, name)) {
         Zip.unzipFile(outputDir, is, name);
@@ -42,10 +42,10 @@ public class FileHandler {
   }
 
   private static InputStream locateResource(Class<?> forClassLoader, String name)
-      throws IOException {
+    throws IOException {
     String arch = Objects.requireNonNull(System.getProperty("os.arch")).toLowerCase() + "/";
     List<String> alternatives =
-        Arrays.asList(name, "/" + name, arch + name, "/" + arch + name);
+      Arrays.asList(name, "/" + name, arch + name, "/" + arch + name);
     if (System.getProperty("os.name").toLowerCase().contains("mac")) {
       alternatives.add("mac/" + name);
       alternatives.add("/mac/" + name);
@@ -68,8 +68,9 @@ public class FileHandler {
 
 
   public static boolean createDir(File dir) {
-    if ((dir.exists() || dir.mkdirs()) && dir.canWrite())
+    if ((dir.exists() || dir.mkdirs()) && dir.canWrite()) {
       return true;
+    }
 
     if (dir.exists()) {
       FileHandler.makeWritable(dir);

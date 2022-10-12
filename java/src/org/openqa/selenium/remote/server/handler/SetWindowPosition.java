@@ -38,12 +38,14 @@ public class SetWindowPosition extends WebDriverHandler<Void> {
     try {
       x = ((Number) allParameters.get("x")).intValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) x window position value passed: " + allParameters.get("x"), ex);
+      throw new WebDriverException(
+        "Illegal (non-numeric) x window position value passed: " + allParameters.get("x"), ex);
     }
     try {
       y = ((Number) allParameters.get("y")).intValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) y window position value passed: " + allParameters.get("y"), ex);
+      throw new WebDriverException(
+        "Illegal (non-numeric) y window position value passed: " + allParameters.get("y"), ex);
     }
 
     position = new Point(x, y);

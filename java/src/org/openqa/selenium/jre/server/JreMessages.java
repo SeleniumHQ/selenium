@@ -17,14 +17,15 @@
 
 package org.openqa.selenium.jre.server;
 
+import static org.openqa.selenium.remote.http.Contents.memoize;
+
 import com.sun.net.httpserver.HttpExchange;
+
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 
 import java.util.AbstractMap;
 import java.util.Arrays;
-
-import static org.openqa.selenium.remote.http.Contents.memoize;
 
 class JreMessages {
 
@@ -46,7 +47,8 @@ class JreMessages {
         .forEach(entry -> request.addQueryParameter(entry.getKey(), entry.getValue()));
     }
 
-    exchange.getRequestHeaders().forEach((name, values) -> values.forEach(value -> request.addHeader(name, value)));
+    exchange.getRequestHeaders()
+      .forEach((name, values) -> values.forEach(value -> request.addHeader(name, value)));
 
     request.setContent(memoize(exchange::getRequestBody));
 

@@ -33,10 +33,10 @@ class StatusTest {
 
     Map<String, Object> valueMap = (Map<String, Object>) value;
     assertThat(valueMap)
-        .containsEntry("ready", true)
-        .containsEntry("message", "Server is running")
-        .containsKey("build")
-        .containsKey("os")
-        .containsKey("java");
+      .containsEntry("ready", true)
+      .containsEntry("message", "Server is running")
+      .containsKey("build")
+      .containsKey("os")
+      .containsKey("java");
   }
 }

@@ -24,5 +24,6 @@ import java.io.File;
  * file.
  */
 public interface FileDetector {
+
   File getLocalFile(CharSequence... keys);
 }

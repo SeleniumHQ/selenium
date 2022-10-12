@@ -17,8 +17,14 @@
 
 package org.openqa.selenium.grid.node.k8s;
 
-import com.google.common.collect.ImmutableMap;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -73,12 +79,6 @@ import java.util.ServiceLoader;
 import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 /**
  * An implementation of {@link Node} that marks itself as draining immediately
@@ -143,14 +143,19 @@ public class OneShotNode extends Node {
     Optional<String> driverName = config.get("k8s", "driver_name").map(String::toLowerCase);
 
     // Find the webdriver info corresponding to the driver name
-    WebDriverInfo driverInfo = StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-      .filter(info -> info.isSupporting(stereotype))
-      .filter(info -> driverName.map(name -> name.equals(info.getDisplayName().toLowerCase())).orElse(true))
-      .findFirst()
-      .orElseThrow(() -> new ConfigException(
-        "Unable to find matching driver for %s and %s", stereotype, driverName.orElse("any driver")));
+    WebDriverInfo
+      driverInfo =
+      StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
+        .filter(info -> info.isSupporting(stereotype))
+        .filter(info -> driverName.map(name -> name.equals(info.getDisplayName().toLowerCase()))
+          .orElse(true))
+        .findFirst()
+        .orElseThrow(() -> new ConfigException(
+          "Unable to find matching driver for %s and %s", stereotype,
+          driverName.orElse("any driver")));
 
-    LOG.info(String.format("Creating one-shot node for %s with stereotype %s", driverInfo, stereotype));
+    LOG.info(
+      String.format("Creating one-shot node for %s with stereotype %s", driverInfo, stereotype));
     LOG.info("Grid URI is: " + nodeOptions.getPublicGridUri());
 
     return new OneShotNode(
@@ -160,13 +165,15 @@ public class OneShotNode extends Node {
       nodeOptions.getHeartbeatPeriod(),
       new NodeId(UUID.randomUUID()),
       serverOptions.getExternalUri(),
-      nodeOptions.getPublicGridUri().orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
+      nodeOptions.getPublicGridUri()
+        .orElseThrow(() -> new ConfigException("Unable to determine public grid address")),
       stereotype,
       driverInfo);
   }
 
   @Override
-  public Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+  public Either<WebDriverException, CreateSessionResponse> newSession(
+    CreateSessionRequest sessionRequest) {
     if (driver != null) {
       throw new IllegalStateException("Only expected one session at a time");
     }
@@ -182,13 +189,13 @@ public class OneShotNode extends Node {
     }
 
     this.driver = (RemoteWebDriver) driver.get();
-    this.sessionId = this.driver.getSessionId();
-    this.client = extractHttpClient(this.driver);
-    this.capabilities = rewriteCapabilities(this.driver);
-    this.sessionStart = Instant.now();
+    sessionId = this.driver.getSessionId();
+    client = extractHttpClient(this.driver);
+    capabilities = rewriteCapabilities(this.driver);
+    sessionStart = Instant.now();
 
-    LOG.info("Encoded response: " + JSON.toJson(ImmutableMap.of(
-      "value", ImmutableMap.of(
+    LOG.info("Encoded response: " + JSON.toJson(Map.of(
+      "value", Map.of(
         "sessionId", sessionId,
         "capabilities", capabilities))));
 
@@ -197,8 +204,8 @@ public class OneShotNode extends Node {
     return Either.right(
       new CreateSessionResponse(
         getSession(sessionId),
-        JSON.toJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
+        JSON.toJson(Map.of(
+          "value", Map.of(
             "sessionId", sessionId,
             "capabilities", capabilities))).getBytes(UTF_8)));
   }
@@ -240,7 +247,8 @@ public class OneShotNode extends Node {
     // Rewrite the se:options if necessary to add cdp url
     if (driverInfo.isSupportingCdp()) {
       String cdpPath = String.format("/session/%s/se/cdp", driver.getSessionId());
-      return new PersistentCapabilities(driver.getCapabilities()).setCapability("se:cdp", rewrite(cdpPath));
+      return new PersistentCapabilities(driver.getCapabilities()).setCapability("se:cdp",
+                                                                                rewrite(cdpPath));
     }
 
     return ImmutableCapabilities.copyOf(driver.getCapabilities());
@@ -350,8 +358,8 @@ public class OneShotNode extends Node {
           stereotype,
           Instant.EPOCH,
           driver == null ?
-            null :
-            new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()))),
+          null :
+          new Session(sessionId, getUri(), stereotype, capabilities, Instant.now()))),
       isDraining() ? DRAINING : UP,
       heartbeatPeriod,
       getNodeVersion(),
@@ -401,12 +409,12 @@ public class OneShotNode extends Node {
 
   @ManagedAttribute(name = "RemoteNodeUri")
   public URI getExternalUri() {
-    return this.getUri();
+    return getUri();
   }
 
   @ManagedAttribute(name = "GridUri")
   public URI getGridUri() {
-    return this.gridUri;
+    return gridUri;
   }
 
   @ManagedAttribute(name = "NodeId")

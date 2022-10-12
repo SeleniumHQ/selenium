@@ -124,12 +124,12 @@ class ElementDomAttributeTest extends JupiterTestBase {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
     assertThatExceptionOfType(InvalidElementStateException.class)
-        .isThrownBy(() -> disabledTextElement1.sendKeys("foo"));
+      .isThrownBy(() -> disabledTextElement1.sendKeys("foo"));
     assertThat(disabledTextElement1.getText()).isEmpty();
 
     WebElement disabledTextElement2 = driver.findElement(By.id("disabledTextElement2"));
     assertThatExceptionOfType(InvalidElementStateException.class)
-        .isThrownBy(() -> disabledTextElement2.sendKeys("bar"));
+      .isThrownBy(() -> disabledTextElement2.sendKeys("bar"));
     assertThat(disabledTextElement2.getText()).isEmpty();
   }
 

@@ -43,7 +43,7 @@ class TestFileLocator {
   private static final String TEST_DIRECTORY_PROPERTY = "js.test.dir";
   private static final String TEST_EXCLUDES_PROPERTY = "js.test.excludes";
 
-  public static List<Path> findTestFiles() throws IOException {
+  static List<Path> findTestFiles() throws IOException {
     Path directory = getTestDirectory();
     Set<Path> excludedFiles = getExcludedFiles(directory);
     return findTestFiles(directory, excludedFiles);
@@ -52,25 +52,27 @@ class TestFileLocator {
   private static List<Path> findTestFiles(Path directory, Set<Path> excludedFiles)
     throws IOException {
     return Files.find(
-      directory,
-      Integer.MAX_VALUE,
-      (path, basicFileAttributes) -> {
-        String name = path.getFileName().toString();
-        return name.endsWith("_test.html");
-        // TODO: revive support for _test.js files.
+        directory,
+        Integer.MAX_VALUE,
+        (path, basicFileAttributes) -> {
+          String name = path.getFileName().toString();
+          return name.endsWith("_test.html");
+          // TODO: revive support for _test.js files.
 //        Path sibling = path.resolveSibling(name.replace(".js", ".html"));
 //        return name.endsWith("_test.html")
 //               || (name.endsWith("_test.js") && !Files.exists(sibling));
-      })
+        })
       .filter(path -> !excludedFiles.contains(path))
       .collect(Collectors.toList());
   }
 
   private static Path getTestDirectory() {
-    String testDirName = Require.state("Test directory", getProperty(TEST_DIRECTORY_PROPERTY)).nonNull(
-                                 "You must specify the test directory with the %s system property",
-                                 TEST_DIRECTORY_PROPERTY);
-    
+    String
+      testDirName =
+      Require.state("Test directory", getProperty(TEST_DIRECTORY_PROPERTY)).nonNull(
+        "You must specify the test directory with the %s system property",
+        TEST_DIRECTORY_PROPERTY);
+
     Path runfiles = InProject.findRunfilesRoot();
     Path testDir;
     if (runfiles != null) {
@@ -86,7 +88,7 @@ class TestFileLocator {
     return testDir;
   }
 
-  private static Set<Path> getExcludedFiles(final Path testDirectory) {
+  private static Set<Path> getExcludedFiles(Path testDirectory) {
     String excludedFiles = getProperty(TEST_EXCLUDES_PROPERTY);
     if (excludedFiles == null) {
       return emptySet();
@@ -95,13 +97,13 @@ class TestFileLocator {
     Iterable<String> splitExcludes = Splitter.on(',').omitEmptyStrings().split(excludedFiles);
 
     return StreamSupport.stream(splitExcludes.spliterator(), false)
-        .map(testDirectory::resolve).collect(Collectors.toSet());
+      .map(testDirectory::resolve).collect(Collectors.toSet());
   }
 
-  public static String getTestFilePath(Path baseDir, Path testFile) {
+  static String getTestFilePath(Path baseDir, Path testFile) {
     String path = testFile.toAbsolutePath().toString()
-        .replace(baseDir.toAbsolutePath().toString() + File.separator, "")
-        .replace(File.separator, "/");
+      .replace(baseDir.toAbsolutePath() + File.separator, "")
+      .replace(File.separator, "/");
     if (path.endsWith(".js")) {
       path = "common/generated/" + path;
     }

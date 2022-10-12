@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -29,6 +30,7 @@ import org.openqa.selenium.remote.CapabilityType;
 
 @Disabled()
 public class TestClickAt extends InternalSelenseTestBase {
+
   @Test
   @Timeout(60)
   public void testClickAt() throws Exception {

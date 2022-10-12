@@ -30,10 +30,11 @@ import java.util.TreeSet;
  * on the second LocalLogs instance.
  */
 class CompositeLocalLogs extends LocalLogs {
-  private LocalLogs predefinedTypeLogger;
-  private LocalLogs allTypesLogger;
 
-  protected CompositeLocalLogs(LocalLogs predefinedTypeLogger, LocalLogs allTypesLogger) {
+  private final LocalLogs predefinedTypeLogger;
+  private final LocalLogs allTypesLogger;
+
+  CompositeLocalLogs(LocalLogs predefinedTypeLogger, LocalLogs allTypesLogger) {
     super();
     this.predefinedTypeLogger = predefinedTypeLogger;
     this.allTypesLogger = allTypesLogger;

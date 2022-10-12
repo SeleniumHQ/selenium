@@ -52,7 +52,8 @@ public class TestSessionFactory implements SessionFactory {
     this(new ImmutableCapabilities(), sessionGenerator);
   }
 
-  public TestSessionFactory(Capabilities stereotype, BiFunction<SessionId, Capabilities, Session> sessionGenerator) {
+  public TestSessionFactory(Capabilities stereotype,
+                            BiFunction<SessionId, Capabilities, Session> sessionGenerator) {
     this.stereotype = ImmutableCapabilities.copyOf(stereotype);
     this.sessionGenerator = sessionGenerator;
   }
@@ -72,7 +73,6 @@ public class TestSessionFactory implements SessionFactory {
     Dialect downstream = sessionRequest.getDownstreamDialects().contains(W3C) ?
                          W3C :
                          sessionRequest.getDownstreamDialects().iterator().next();
-
 
     BaseActiveSession activeSession = new BaseActiveSession(
       session.getId(),

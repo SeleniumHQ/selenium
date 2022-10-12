@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static java.util.Collections.singletonMap;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.data.SessionRequest;
 import org.openqa.selenium.internal.Require;
@@ -33,13 +38,10 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 import java.util.Set;
 
-import static java.util.Collections.singletonMap;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-
 class GetNextMatchingRequest implements HttpHandler {
-  private static final Type SET_OF_CAPABILITIES = new TypeToken<Set<Capabilities>>() {}.getType();
+
+  private static final Type SET_OF_CAPABILITIES = new TypeToken<Set<Capabilities>>() {
+  }.getType();
 
   private final Tracer tracer;
   private final NewSessionQueue queue;
@@ -57,7 +59,10 @@ class GetNextMatchingRequest implements HttpHandler {
 
       Optional<SessionRequest> maybeRequest = queue.getNextAvailable(stereotypes);
 
-      HttpResponse response =  new HttpResponse().setContent(Contents.asJson(singletonMap("value", maybeRequest.orElse(null))));
+      HttpResponse
+        response =
+        new HttpResponse().setContent(
+          Contents.asJson(singletonMap("value", maybeRequest.orElse(null))));
 
       HTTP_RESPONSE.accept(span, response);
 

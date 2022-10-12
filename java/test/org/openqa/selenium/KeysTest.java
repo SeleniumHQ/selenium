@@ -23,8 +23,8 @@ import static org.openqa.selenium.Keys.LEFT;
 import static org.openqa.selenium.Keys.chord;
 import static org.openqa.selenium.Keys.getKeyFromUnicode;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class KeysTest {
@@ -52,7 +52,7 @@ class KeysTest {
   @Test
   void invalidSubSequenceThrows() {
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
-        .isThrownBy(() -> LEFT.subSequence(-1, 10));
+      .isThrownBy(() -> LEFT.subSequence(-1, 10));
   }
 
   @Test

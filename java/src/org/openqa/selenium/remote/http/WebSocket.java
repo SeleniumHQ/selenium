@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.remote.http;
 
+import static java.util.logging.Level.WARNING;
+
 import java.io.Closeable;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-
-import static java.util.logging.Level.WARNING;
 
 public interface WebSocket extends Closeable {
 

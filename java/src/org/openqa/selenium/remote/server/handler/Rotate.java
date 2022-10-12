@@ -24,6 +24,7 @@ import org.openqa.selenium.remote.server.Session;
 import java.util.Map;
 
 public class Rotate extends WebDriverHandler<Void> {
+
   private volatile ScreenOrientation orientation;
 
   public Rotate(Session session) {

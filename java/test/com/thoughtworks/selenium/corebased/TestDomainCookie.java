@@ -22,11 +22,12 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestDomainCookie extends InternalSelenseTestBase {
+
   @Test
   void testDomainCookie() {
     String host =
-        selenium
-            .getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).host;");
+      selenium
+        .getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).host;");
 
     if (!selenium.getExpression(host).matches("^[\\s\\S]*\\.[\\s\\S]*\\.[\\s\\S]*$")) {
       System.out.println("Skipping test: hostname too short: " + host);
@@ -35,11 +36,13 @@ public class TestDomainCookie extends InternalSelenseTestBase {
 
     assertTrue(selenium.getExpression(host).matches("^[\\s\\S]*\\.[\\s\\S]*\\.[\\s\\S]*$"));
     String domain =
-        selenium
-            .getEval("var host = parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).host; host.replace(/^[^\\.]*/, \"\");");
+      selenium
+        .getEval(
+          "var host = parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).host; host.replace(/^[^\\.]*/, \"\");");
     String base =
-        selenium
-            .getEval("parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");
+      selenium
+        .getEval(
+          "parseUrl(canonicalize(absolutify(\"html\", selenium.browserbot.baseUrl))).pathname;");
     selenium.open(base + "/path1/cookie1.html");
     selenium.deleteCookie("testCookieWithSameName", "path=/");
     selenium.deleteCookie("addedCookieForPath1", "path=" + base + "/path1/");

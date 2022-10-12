@@ -17,20 +17,6 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.net.MediaType;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.Routable;
-import org.openqa.selenium.remote.http.UrlPath;
-
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import static com.google.common.net.MediaType.CACHE_MANIFEST_UTF_8;
 import static com.google.common.net.MediaType.CSS_UTF_8;
 import static com.google.common.net.MediaType.GIF;
@@ -50,6 +36,20 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import com.google.common.net.MediaType;
+
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.UrlPath;
+
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ResourceHandler implements Routable {
 

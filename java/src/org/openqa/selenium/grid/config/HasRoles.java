@@ -24,8 +24,6 @@ public interface HasRoles {
   /**
    * Obtains the set of commands that this set of flags applies to. Examples include things like
    * "distributor", "session-map". Maps to {@link org.openqa.selenium.cli.CliCommand#getName()}
-   *
-   * @return
    */
   Set<Role> getRoles();
 

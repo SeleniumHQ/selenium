@@ -28,16 +28,6 @@ public class LinkFinder extends HtmlTagFinder {
   private LinkFinder() {
   }
 
-  @Override
-  protected String tagName() {
-    return "a";
-  }
-
-  @Override
-  protected String tagDescription() {
-    return "link";
-  }
-
   public static HtmlTagFinder link() {
     return new LinkFinder();
   }
@@ -48,5 +38,15 @@ public class LinkFinder extends HtmlTagFinder {
 
   public static HtmlTagFinder links() {
     return link();
+  }
+
+  @Override
+  protected String tagName() {
+    return "a";
+  }
+
+  @Override
+  protected String tagDescription() {
+    return "link";
   }
 }

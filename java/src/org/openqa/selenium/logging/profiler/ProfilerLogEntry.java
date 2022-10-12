@@ -22,6 +22,7 @@ import org.openqa.selenium.logging.LogEntry;
 import java.util.logging.Level;
 
 public class ProfilerLogEntry extends LogEntry {
+
   public ProfilerLogEntry(EventType eventType, String message) {
     super(Level.INFO, System.currentTimeMillis(), message);
   }

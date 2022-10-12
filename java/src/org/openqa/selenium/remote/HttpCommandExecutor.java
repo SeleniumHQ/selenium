@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.emptyMap;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
+import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -36,13 +43,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 
-import static java.util.Collections.emptyMap;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
-import static org.openqa.selenium.remote.DriverCommand.NEW_SESSION;
-import static org.openqa.selenium.remote.DriverCommand.QUIT;
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-
 public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private final URL remoteServer;
@@ -54,37 +54,29 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
 
   private LocalLogs logs = LocalLogs.getNullLogger();
 
-  private static class DefaultClientFactoryHolder {
-    static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
-  }
-
-  public static HttpClient.Factory getDefaultClientFactory() {
-    return DefaultClientFactoryHolder.defaultClientFactory;
-  }
-
   public HttpCommandExecutor(URL addressOfRemoteServer) {
     this(emptyMap(), Require.nonNull("Server URL", addressOfRemoteServer));
   }
 
   public HttpCommandExecutor(ClientConfig config) {
     this(emptyMap(),
-      Require.nonNull("HTTP client configuration", config),
-      getDefaultClientFactory());
+         Require.nonNull("HTTP client configuration", config),
+         getDefaultClientFactory());
   }
 
   /**
    * Creates an {@link HttpCommandExecutor} that supports non-standard
    * {@code additionalCommands} in addition to the standard.
    *
-   * @param additionalCommands additional commands to allow the command executor to process
+   * @param additionalCommands    additional commands to allow the command executor to process
    * @param addressOfRemoteServer URL of remote end Selenium server
    */
   public HttpCommandExecutor(
     Map<String, CommandInfo> additionalCommands,
     URL addressOfRemoteServer) {
     this(Require.nonNull("Additional commands", additionalCommands),
-      Require.nonNull("Server URL", addressOfRemoteServer),
-      getDefaultClientFactory());
+         Require.nonNull("Server URL", addressOfRemoteServer),
+         getDefaultClientFactory());
   }
 
   public HttpCommandExecutor(
@@ -107,13 +99,17 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
     this.client = this.httpClientFactory.createClient(config);
   }
 
+  public static HttpClient.Factory getDefaultClientFactory() {
+    return DefaultClientFactoryHolder.defaultClientFactory;
+  }
+
   /**
    * It may be useful to extend the commands understood by this {@code HttpCommandExecutor} at run
    * time, and this can be achieved via this method. Note, this is protected, and expected usage is
    * for subclasses only to call this.
    *
    * @param commandName The name of the command to use.
-   * @param info CommandInfo for the command name provided
+   * @param info        CommandInfo for the command name provided
    */
   protected void defineCommand(String commandName, CommandInfo info) {
     Require.nonNull("Command name", commandName);
@@ -203,5 +199,10 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
       }
       throw e;
     }
+  }
+
+  private static class DefaultClientFactoryHolder {
+
+    static HttpClient.Factory defaultClientFactory = HttpClient.Factory.createDefault();
   }
 }

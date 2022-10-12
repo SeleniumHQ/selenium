@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.chrome;
 
+import static java.util.Collections.unmodifiableList;
+import static org.openqa.selenium.remote.Browser.CHROME;
+
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -29,9 +32,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Collections.unmodifiableList;
-import static org.openqa.selenium.remote.Browser.CHROME;
 
 /**
  * Manages the life and death of a ChromeDriver server.
@@ -54,14 +54,14 @@ public class ChromeDriverService extends DriverService {
    * Boolean system property that defines whether chromedriver should append to existing log file.
    */
   public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY =
-      "webdriver.chrome.appendLog";
+    "webdriver.chrome.appendLog";
 
   /**
    * Boolean system property that defines whether the chromedriver executable should be started
    * with verbose logging.
    */
   public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY =
-      "webdriver.chrome.verboseLogging";
+    "webdriver.chrome.verboseLogging";
 
   /**
    * Boolean system property that defines whether the chromedriver executable should be started
@@ -108,11 +108,11 @@ public class ChromeDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public ChromeDriverService(
-      File executable,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
@@ -147,7 +147,7 @@ public class ChromeDriverService extends DriverService {
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
-      ChromeDriverService, ChromeDriverService.Builder> {
+    ChromeDriverService, ChromeDriverService.Builder> {
 
     private final boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
     private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
@@ -280,11 +280,11 @@ public class ChromeDriverService extends DriverService {
 
     @Override
     protected ChromeDriverService createDriverService(
-        File exe,
-        int port,
-        Duration timeout,
-        List<String> args,
-        Map<String, String> environment) {
+      File exe,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) {
       try {
         return new ChromeDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

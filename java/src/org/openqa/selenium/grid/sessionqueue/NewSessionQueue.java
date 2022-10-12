@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.options;
+import static org.openqa.selenium.remote.http.Route.post;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
@@ -40,12 +46,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.delete;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.options;
-import static org.openqa.selenium.remote.http.Route.post;
 
 public abstract class NewSessionQueue implements HasReadyState, Routable {
 
@@ -107,7 +107,8 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
 
   public abstract Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes);
 
-  public abstract void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result);
+  public abstract void complete(RequestId reqId,
+                                Either<SessionNotCreatedException, CreateSessionResponse> result);
 
   public abstract int clearQueue();
 

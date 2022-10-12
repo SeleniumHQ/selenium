@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 class IgnoreComparator {
+
   private final Set<Browser> ignored = new HashSet<>();
 
   // TODO(simon): reduce visibility

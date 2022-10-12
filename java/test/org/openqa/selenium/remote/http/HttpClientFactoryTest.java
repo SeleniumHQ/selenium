@@ -24,8 +24,8 @@ import com.google.auto.service.AutoService;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class HttpClientFactoryTest {
@@ -64,16 +64,6 @@ class HttpClientFactoryTest {
     assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("cheesy");
   }
 
-  @AutoService(HttpClient.Factory.class)
-  @HttpClientName("cheesy")
-  @SuppressWarnings("unused")
-  public static class CheesyFactory implements HttpClient.Factory {
-    @Override
-    public HttpClient createClient(ClientConfig config) {
-      return null;
-    }
-  }
-
   @Test
   void shouldRespectSystemProperties() {
     System.setProperty("webdriver.http.factory", "cheesy");
@@ -84,19 +74,31 @@ class HttpClientFactoryTest {
   @Test
   void shouldNotCreateHttpClientFactoryByInvalidName() {
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> HttpClient.Factory.create("orange"));
+      () -> HttpClient.Factory.create("orange"));
   }
 
   @Test
   void canDetectHttpClientFactoriesWithSameName() {
     assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
-        () -> HttpClient.Factory.create("duplicated"));
+      () -> HttpClient.Factory.create("duplicated"));
+  }
+
+  @AutoService(HttpClient.Factory.class)
+  @HttpClientName("cheesy")
+  @SuppressWarnings("unused")
+  public static class CheesyFactory implements HttpClient.Factory {
+
+    @Override
+    public HttpClient createClient(ClientConfig config) {
+      return null;
+    }
   }
 
   @AutoService(HttpClient.Factory.class)
   @HttpClientName("duplicated")
   @SuppressWarnings("unused")
   public static class Factory1 implements HttpClient.Factory {
+
     @Override
     public HttpClient createClient(ClientConfig config) {
       return null;
@@ -107,6 +109,7 @@ class HttpClientFactoryTest {
   @HttpClientName("duplicated")
   @SuppressWarnings("unused")
   public static class Factory2 implements HttpClient.Factory {
+
     @Override
     public HttpClient createClient(ClientConfig config) {
       return null;

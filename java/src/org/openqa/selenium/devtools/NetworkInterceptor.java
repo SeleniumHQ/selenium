@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.devtools;
 
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -31,8 +31,6 @@ import org.openqa.selenium.remote.http.Route;
 
 import java.util.Map;
 import java.util.Optional;
-
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 /**
  * Provides a mechanism for stubbing out responses to requests in drivers which

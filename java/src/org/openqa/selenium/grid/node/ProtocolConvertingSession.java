@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.node;
 
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
@@ -33,8 +35,6 @@ import java.net.URL;
 import java.time.Instant;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 
 public abstract class ProtocolConvertingSession extends BaseActiveSession {
 

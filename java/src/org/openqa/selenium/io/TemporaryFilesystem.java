@@ -32,14 +32,29 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class
 TemporaryFilesystem {
 
+  private static final File sysTemp = new File(System.getProperty("java.io.tmpdir"));
+  private static final ReadWriteLock lock = new ReentrantReadWriteLock();
+  private static TemporaryFilesystem instance = new TemporaryFilesystem(sysTemp);
   private final Set<File> temporaryFiles = new CopyOnWriteArraySet<>();
   private final File baseDir;
   // Thread safety reviewed
   private final Thread shutdownHook = new Thread(this::deleteTemporaryFiles);
 
-  private static final File sysTemp = new File(System.getProperty("java.io.tmpdir"));
-  private static final ReadWriteLock lock = new ReentrantReadWriteLock();
-  private static TemporaryFilesystem instance = new TemporaryFilesystem(sysTemp);
+  private TemporaryFilesystem(File baseDir) {
+    this.baseDir = baseDir;
+
+    Runtime.getRuntime().addShutdownHook(shutdownHook);
+
+    if (!baseDir.exists()) {
+      throw new UncheckedIOException(
+        new IOException("Unable to find tmp dir: " + baseDir.getAbsolutePath()));
+    }
+    if (!baseDir.canWrite()) {
+      throw new UncheckedIOException(
+        new IOException("Unable to write to tmp dir: " + baseDir.getAbsolutePath()));
+    }
+
+  }
 
   public static TemporaryFilesystem getDefaultTmpFS() {
     Lock readLock = lock.readLock();
@@ -65,23 +80,6 @@ TemporaryFilesystem {
     return new TemporaryFilesystem(directory);
   }
 
-
-  private TemporaryFilesystem(File baseDir) {
-    this.baseDir = baseDir;
-
-    Runtime.getRuntime().addShutdownHook(shutdownHook);
-
-    if (!baseDir.exists()) {
-      throw new UncheckedIOException(
-          new IOException("Unable to find tmp dir: " + baseDir.getAbsolutePath()));
-    }
-    if (!baseDir.canWrite()) {
-      throw new UncheckedIOException(
-          new IOException("Unable to write to tmp dir: " + baseDir.getAbsolutePath()));
-    }
-
-  }
-
   /**
    * Create a temporary directory, and track it for deletion.
    *
@@ -102,7 +100,7 @@ TemporaryFilesystem {
       File dir = new File(file.getAbsolutePath());
       if (!dir.mkdirs()) {
         throw new UncheckedIOException(
-            new IOException("Cannot create profile directory at " + dir.getAbsolutePath()));
+          new IOException("Cannot create profile directory at " + dir.getAbsolutePath()));
       }
 
       // Create the directory and mark it writable.
@@ -112,7 +110,7 @@ TemporaryFilesystem {
       return dir;
     } catch (IOException e) {
       throw new UncheckedIOException(
-          new IOException("Unable to create temporary file at " + baseDir.getAbsolutePath()));
+        new IOException("Unable to create temporary file at " + baseDir.getAbsolutePath()));
     }
   }
 

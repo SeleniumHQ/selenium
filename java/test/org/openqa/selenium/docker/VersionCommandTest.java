@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.docker;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -25,16 +29,14 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Optional;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 // https://docs.docker.com/engine/api/v1.41/#operation/SystemVersion
 class VersionCommandTest {
 
   @Test
   void ifDockerIsDownReturnEmpty() {
-    HttpHandler handler = req -> { throw new UncheckedIOException(new IOException("Eep")); };
+    HttpHandler handler = req -> {
+      throw new UncheckedIOException(new IOException("Eep"));
+    };
 
     Optional<DockerProtocol> maybeDocker = new VersionCommand(handler).getDockerProtocol();
 

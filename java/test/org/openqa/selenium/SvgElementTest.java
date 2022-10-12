@@ -19,8 +19,8 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,18 @@ import java.util.List;
 
 class SvgElementTest extends JupiterTestBase {
 
+  private static WebElement findAppleElement(List<WebElement> textElements) {
+    for (WebElement currentElement : textElements) {
+      if (currentElement.getText().contains("Apple")) {
+        return currentElement;
+      }
+    }
+
+    return null;
+  }
+
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
+  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1428780")
   @NotYetImplemented(SAFARI)
   void testShouldClickOnGraphVisualElements() {
@@ -56,18 +66,8 @@ class SvgElementTest extends JupiterTestBase {
     assertThat(resultElement.getText()).isEqualTo("slice_green");
   }
 
-  private static WebElement findAppleElement(List<WebElement> textElements) {
-    for (WebElement currentElement : textElements) {
-      if (currentElement.getText().contains("Apple")) {
-        return currentElement;
-      }
-    }
-
-    return null;
-  }
-
   @Test
-  @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
+  @Ignore(value = HTMLUNIT, reason = "test should enable JavaScript")
   void testShouldClickOnGraphTextElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));

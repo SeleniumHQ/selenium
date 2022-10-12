@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static org.openqa.selenium.build.InProject.locate;
+
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.grid.web.MergedResource;
 import org.openqa.selenium.grid.web.PathResource;
@@ -29,8 +31,6 @@ import org.openqa.selenium.remote.http.Route;
 
 import java.io.UncheckedIOException;
 import java.nio.file.Path;
-
-import static org.openqa.selenium.build.InProject.locate;
 
 class CommonWebResources implements Routable {
 

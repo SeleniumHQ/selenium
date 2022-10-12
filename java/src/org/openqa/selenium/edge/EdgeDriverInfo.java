@@ -16,6 +16,9 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -27,9 +30,6 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chromium.ChromiumDriverInfo;
 
 import java.util.Optional;
-
-import static org.openqa.selenium.remote.Browser.EDGE;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class EdgeDriverInfo extends ChromiumDriverInfo {
@@ -74,7 +74,7 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }

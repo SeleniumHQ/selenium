@@ -22,6 +22,7 @@ package org.openqa.selenium;
  * For example, attempting to clear an element that isn’t both editable and resettable.
  */
 public class InvalidElementStateException extends WebDriverException {
+
   public InvalidElementStateException() {
     super();
   }

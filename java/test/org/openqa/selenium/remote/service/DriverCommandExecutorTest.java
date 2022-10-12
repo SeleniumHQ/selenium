@@ -28,8 +28,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.Command;
@@ -64,7 +64,9 @@ class DriverCommandExecutorTest {
 
   @Test
   void shouldNotStartDriverServerOnGetCommand() throws IOException {
-    Command command = new Command(new SessionId("some id"), DriverCommand.GET("https://example.com"));
+    Command
+      command =
+      new Command(new SessionId("some id"), DriverCommand.GET("https://example.com"));
     Response response = new Response();
     DriverService service = mock(DriverService.class);
     when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
@@ -96,7 +98,9 @@ class DriverCommandExecutorTest {
 
   @Test
   void shouldNotStopDriverServerOnExceptionForGetCommand() throws IOException {
-    Command command = new Command(new SessionId("some id"), DriverCommand.GET("https://example.com"));
+    Command
+      command =
+      new Command(new SessionId("some id"), DriverCommand.GET("https://example.com"));
     DriverService service = mock(DriverService.class);
     when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
 
@@ -111,7 +115,8 @@ class DriverCommandExecutorTest {
   }
 
   @Test
-  void shouldNotStopDriverServerOnExceptionForTheNewSessionCommandIfItWasAlreadyRunning() throws IOException {
+  void shouldNotStopDriverServerOnExceptionForTheNewSessionCommandIfItWasAlreadyRunning()
+    throws IOException {
     Command command = new Command(null, DriverCommand.NEW_SESSION(new ImmutableCapabilities()));
     DriverService service = mock(DriverService.class);
     when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
@@ -134,7 +139,8 @@ class DriverCommandExecutorTest {
     when(service.isRunning()).thenReturn(false);
 
     DriverCommandExecutor executor = spy(new DriverCommandExecutor(service));
-    doThrow(new ConnectException("Connection refused")).when(executor).invokeExecute(any(Command.class));
+    doThrow(new ConnectException("Connection refused")).when(executor)
+      .invokeExecute(any(Command.class));
     assertThatExceptionOfType(WebDriverException.class)
       .isThrownBy(() -> executor.execute(command))
       .withMessageContaining("The driver server has unexpectedly died!");

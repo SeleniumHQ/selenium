@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.remote.internal;
 
-import com.google.common.collect.ImmutableMap;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,22 +41,15 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.TextMessage;
 import org.openqa.selenium.remote.http.WebSocket;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.Safely.safelyCall;
-
 public abstract class WebSocketTestBase {
 
-  private HttpClient client;
-
-  protected abstract HttpClient.Factory createFactory();
-
   private static Server<?> server;
+  private HttpClient client;
 
   @BeforeAll
   public static void setUp() {
@@ -61,7 +58,8 @@ public abstract class WebSocketTestBase {
       req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!")),
       (uri, sink) -> {
         if ("/text".equals(uri)) {
-          return Optional.of(msg -> sink.accept(new TextMessage(String.format("Hello, %s!", ((TextMessage) msg).text()))));
+          return Optional.of(msg -> sink.accept(
+            new TextMessage(String.format("Hello, %s!", ((TextMessage) msg).text()))));
         }
 
         if ("/binary".equals(uri)) {
@@ -77,6 +75,15 @@ public abstract class WebSocketTestBase {
   public static void tearDown() {
     server.stop();
   }
+
+  private static BaseServerOptions defaultOptions() {
+    return new BaseServerOptions(new MapConfig(
+      Map.of("server", Map.of(
+        "port", PortProber.findFreePort()
+      ))));
+  }
+
+  protected abstract HttpClient.Factory createFactory();
 
   @BeforeEach
   public void createClient() {
@@ -123,18 +130,12 @@ public abstract class WebSocketTestBase {
 
     };
 
-    try (WebSocket socket = client.openSocket(new HttpRequest(HttpMethod.GET, "/binary"), listener)) {
+    try (WebSocket socket = client.openSocket(new HttpRequest(HttpMethod.GET, "/binary"),
+                                              listener)) {
       socket.sendBinary("cheese".getBytes(UTF_8));
       assertThat(latch.await(10, SECONDS)).isTrue();
     }
 
     assertThat(message.get()).isEqualTo("brie".getBytes(UTF_8));
-  }
-
-  private static BaseServerOptions defaultOptions() {
-    return new BaseServerOptions(new MapConfig(
-      ImmutableMap.of("server", ImmutableMap.of(
-        "port", PortProber.findFreePort()
-      ))));
   }
 }

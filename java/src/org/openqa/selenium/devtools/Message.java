@@ -32,8 +32,8 @@ public class Message {
   @Override
   public String toString() {
     return new StringJoiner(", ", Message.class.getSimpleName() + "[", "]")
-        .add("id=" + id)
-        .add("result=" + result)
-        .toString();
+      .add("id=" + id)
+      .add("result=" + result)
+      .toString();
   }
 }

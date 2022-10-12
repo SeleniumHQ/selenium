@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static org.openqa.selenium.remote.http.Route.delete;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.post;
+
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.DistributorStatus;
@@ -42,10 +46,6 @@ import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
-
-import static org.openqa.selenium.remote.http.Route.delete;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.post;
 
 /**
  * Responsible for being the central place where the {@link Node}s
@@ -85,8 +85,8 @@ import static org.openqa.selenium.remote.http.Route.post;
  */
 public abstract class Distributor implements HasReadyState, Predicate<HttpRequest>, Routable {
 
-  private final Route routes;
   protected final Tracer tracer;
+  private final Route routes;
 
   protected Distributor(
     Tracer tracer,
@@ -102,26 +102,27 @@ public abstract class Distributor implements HasReadyState, Predicate<HttpReques
     Json json = new Json();
     routes = Route.combine(
       post("/se/grid/distributor/node")
-          .to(() ->
-                new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
-          .with(requiresSecret),
+        .to(() ->
+              new AddNode(tracer, this, json, httpClientFactory, registrationSecret))
+        .with(requiresSecret),
       post("/se/grid/distributor/node/{nodeId}/drain")
-          .to((Map<String, String> params) ->
-                new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
-          .with(requiresSecret),
+        .to((Map<String, String> params) ->
+              new DrainNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+        .with(requiresSecret),
       delete("/se/grid/distributor/node/{nodeId}")
-          .to(params ->
-                new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
-          .with(requiresSecret),
+        .to(params ->
+              new RemoveNode(this, new NodeId(UUID.fromString(params.get("nodeId")))))
+        .with(requiresSecret),
       post("/se/grid/distributor/session")
         .to(() -> new CreateSession(this))
         .with(requiresSecret),
-    get("/se/grid/distributor/status")
-          .to(() -> new GetDistributorStatus(this))
-          .with(new SpanDecorator(tracer, req -> "distributor.status")));
+      get("/se/grid/distributor/status")
+        .to(() -> new GetDistributorStatus(this))
+        .with(new SpanDecorator(tracer, req -> "distributor.status")));
   }
 
-  public abstract Either<SessionNotCreatedException, CreateSessionResponse> newSession(SessionRequest request)
+  public abstract Either<SessionNotCreatedException, CreateSessionResponse> newSession(
+    SessionRequest request)
     throws SessionNotCreatedException;
 
   public abstract Distributor add(Node node);

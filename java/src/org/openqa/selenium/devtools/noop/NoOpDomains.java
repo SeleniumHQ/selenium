@@ -28,7 +28,7 @@ import org.openqa.selenium.devtools.idealized.target.Target;
 
 public class NoOpDomains implements Domains {
 
-  private static BuildInfo INFO = new BuildInfo();
+  private static final BuildInfo INFO = new BuildInfo();
 
   private final static String WARNING = String.format(
     "You are using a no-op implementation of the CDP. The most likely reason" +

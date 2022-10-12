@@ -22,15 +22,20 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestElementPresent extends InternalSelenseTestBase {
+
   @Test
   void testElementPresent() throws Exception {
     selenium.open("test_element_present.html");
     assertTrue(selenium.isElementPresent("aLink"));
     selenium.click("removeLinkAfterAWhile");
-    for (int second = 0;; second++) {
-      if (second >= 60) fail("timeout");
+    for (int second = 0; ; second++) {
+      if (second >= 60) {
+        fail("timeout");
+      }
       try {
-        if (!selenium.isElementPresent("aLink")) break;
+        if (!selenium.isElementPresent("aLink")) {
+          break;
+        }
       } catch (Exception e) {
       }
       Thread.sleep(1000);
@@ -38,10 +43,14 @@ public class TestElementPresent extends InternalSelenseTestBase {
 
     assertFalse(selenium.isElementPresent("aLink"));
     selenium.click("addLinkAfterAWhile");
-    for (int second = 0;; second++) {
-      if (second >= 60) fail("timeout");
+    for (int second = 0; ; second++) {
+      if (second >= 60) {
+        fail("timeout");
+      }
       try {
-        if (selenium.isElementPresent("aLink")) break;
+        if (selenium.isElementPresent("aLink")) {
+          break;
+        }
       } catch (Exception e) {
       }
       Thread.sleep(1000);

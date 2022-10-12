@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.edge;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assumptions.assumeThat;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -37,11 +42,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 class EdgeDriverFunctionalTest extends JupiterTestBase {
 
   private final String CLIPBOARD_READ = "clipboard-read";
@@ -49,7 +49,7 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void builderGeneratesDefaultEdgeOptions() {
+  void builderGeneratesDefaultEdgeOptions() {
     localDriver = EdgeDriver.builder().build();
     Capabilities capabilities = ((EdgeDriver) localDriver).getCapabilities();
 
@@ -59,11 +59,12 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void builderOverridesDefaultEdgeOptions() {
+  void builderOverridesDefaultEdgeOptions() {
     EdgeOptions options = new EdgeOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = EdgeDriver.builder().oneOf(options).build();
-    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(
+      Duration.ofMillis(1));
   }
 
   @Test
@@ -93,7 +94,7 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canSetPermissionHeadless() {
+  void canSetPermissionHeadless() {
     EdgeOptions options = new EdgeOptions();
     options.setHeadless(true);
 
@@ -111,10 +112,12 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
     assertThat(checkPermission(localDriver, CLIPBOARD_WRITE)).isEqualTo("granted");
   }
 
-  public String checkPermission(WebDriver driver, String permission){
+  public String checkPermission(WebDriver driver, String permission) {
     @SuppressWarnings("unchecked")
-    Map<String, Object> result = (Map<String, Object>) ((JavascriptExecutor) driver).executeAsyncScript(
-      "callback = arguments[arguments.length - 1];"
+    Map<String, Object>
+      result =
+      (Map<String, Object>) ((JavascriptExecutor) driver).executeAsyncScript(
+        "callback = arguments[arguments.length - 1];"
         + "callback(navigator.permissions.query({"
         + "name: arguments[0]"
         + "}));", permission);

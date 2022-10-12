@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.netty.server;
 
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.HttpHandler;
+import org.openqa.selenium.remote.http.Message;
+
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -26,21 +30,19 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.AttributeKey;
 
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.HttpHandler;
-import org.openqa.selenium.remote.http.Message;
-
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 class SeleniumHttpInitializer extends ChannelInitializer<SocketChannel> {
 
-  private static AttributeKey<Consumer<Message>> KEY = AttributeKey.newInstance("se-ws-handler");
-  private HttpHandler seleniumHandler;
+  private static final AttributeKey<Consumer<Message>>
+    KEY =
+    AttributeKey.newInstance("se-ws-handler");
   private final BiFunction<String, Consumer<Message>, Optional<Consumer<Message>>> webSocketHandler;
-  private SslContext sslCtx;
   private final boolean allowCors;
+  private final HttpHandler seleniumHandler;
+  private final SslContext sslCtx;
 
   SeleniumHttpInitializer(
     SslContext sslCtx,

@@ -23,6 +23,7 @@ package org.openqa.selenium;
  * can not be scrolled into the viewport.
  */
 public class ElementNotInteractableException extends InvalidElementStateException {
+
   public ElementNotInteractableException(String message) {
     super(message);
   }

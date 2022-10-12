@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.netty.server;
 
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
-import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

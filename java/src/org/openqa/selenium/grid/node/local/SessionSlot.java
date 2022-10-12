@@ -48,9 +48,9 @@ import java.util.logging.Logger;
 import java.util.stream.StreamSupport;
 
 public class SessionSlot implements
-  HttpHandler,
-  Function<CreateSessionRequest, Either<WebDriverException, ActiveSession>>,
-  Predicate<Capabilities> {
+                         HttpHandler,
+                         Function<CreateSessionRequest, Either<WebDriverException, ActiveSession>>,
+                         Predicate<Capabilities> {
 
   private static final Logger LOG = Logger.getLogger(SessionSlot.class.getName());
   private final EventBus bus;

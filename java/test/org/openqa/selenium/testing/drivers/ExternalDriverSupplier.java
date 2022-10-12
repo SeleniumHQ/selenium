@@ -57,6 +57,7 @@ import java.util.logging.Logger;
  * </dl>
  */
 class ExternalDriverSupplier implements Supplier<WebDriver> {
+
   private static final Logger logger = Logger.getLogger(ExternalDriverSupplier.class.getName());
 
   private static final String DELEGATE_SUPPLIER_CLASS_PROPERTY = "selenium.external.supplierClass";
@@ -68,17 +69,9 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     this.desiredCapabilities = new ImmutableCapabilities(desiredCapabilities);
   }
 
-  @Override
-  public WebDriver get() {
-    Optional<Supplier<WebDriver>> delegate = createDelegate(desiredCapabilities);
-    delegate = createForExternalServer(desiredCapabilities, delegate);
-
-    return delegate.orElse(()-> null).get();
-  }
-
   private static Optional<Supplier<WebDriver>> createForExternalServer(
-      Capabilities desiredCapabilities,
-      Optional<Supplier<WebDriver>> delegate) {
+    Capabilities desiredCapabilities,
+    Optional<Supplier<WebDriver>> delegate) {
     String externalUrl = System.getProperty(EXTERNAL_SERVER_URL_PROPERTY);
     if (externalUrl != null) {
       logger.info("Using external WebDriver server: " + externalUrl);
@@ -90,7 +83,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
       }
       Supplier<WebDriver> defaultSupplier = new DefaultRemoteSupplier(url, desiredCapabilities);
       Supplier<WebDriver> supplier = new ExternalServerDriverSupplier(
-          url, delegate.orElse(defaultSupplier));
+        url, delegate.orElse(defaultSupplier));
       return Optional.of(supplier);
     }
     return delegate;
@@ -104,7 +97,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
       try {
         @SuppressWarnings("unchecked")
         Constructor<Supplier<WebDriver>> ctor =
-            (Constructor<Supplier<WebDriver>>) clazz.getConstructor(Capabilities.class);
+          (Constructor<Supplier<WebDriver>>) clazz.getConstructor(Capabilities.class);
         return Optional.of(ctor.newInstance(desiredCapabilities));
       } catch (InvocationTargetException e) {
         throw new RuntimeException(e.getTargetException());
@@ -122,13 +115,21 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
       try {
         logger.info("Loading custom supplier: " + delegateClassName);
         Class<? extends Supplier<WebDriver>> clazz =
-            (Class<? extends Supplier<WebDriver>>) Class.forName(delegateClassName);
+          (Class<? extends Supplier<WebDriver>>) Class.forName(delegateClassName);
         return Optional.of(clazz);
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
     }
     return Optional.empty();
+  }
+
+  @Override
+  public WebDriver get() {
+    Optional<Supplier<WebDriver>> delegate = createDelegate(desiredCapabilities);
+    delegate = createForExternalServer(desiredCapabilities, delegate);
+
+    return delegate.orElse(() -> null).get();
   }
 
   /**
@@ -141,7 +142,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
     private final Supplier<WebDriver> delegateSupplier;
 
     private ExternalServerDriverSupplier(
-        URL serverUrl, Supplier<WebDriver> delegateSupplier) {
+      URL serverUrl, Supplier<WebDriver> delegateSupplier) {
       this.serverUrl = serverUrl;
       this.delegateSupplier = delegateSupplier;
     }
@@ -165,6 +166,7 @@ class ExternalDriverSupplier implements Supplier<WebDriver> {
    * Creates basic {@link RemoteWebDriver} instances.
    */
   private static class DefaultRemoteSupplier implements Supplier<WebDriver> {
+
     private final URL url;
     private final Capabilities desiredCapabilities;
 

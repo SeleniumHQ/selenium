@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.support.locators;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.By.cssSelector;
+import static org.openqa.selenium.By.tagName;
+import static org.openqa.selenium.By.xpath;
+import static org.openqa.selenium.support.locators.RelativeLocator.with;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -25,12 +31,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.By.cssSelector;
-import static org.openqa.selenium.By.tagName;
-import static org.openqa.selenium.By.xpath;
-import static org.openqa.selenium.support.locators.RelativeLocator.with;
 
 
 class RelativeLocatorTest extends JupiterTestBase {
@@ -42,7 +42,9 @@ class RelativeLocatorTest extends JupiterTestBase {
     WebElement lowest = driver.findElement(By.id("below"));
 
     List<WebElement> elements = driver.findElements(with(tagName("p")).above(lowest));
-    List<String> ids = elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+    List<String>
+      ids =
+      elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
     assertThat(ids).containsExactly("mid", "above");
   }
@@ -67,7 +69,9 @@ class RelativeLocatorTest extends JupiterTestBase {
     WebElement lowest = driver.findElement(By.id("below"));
 
     List<WebElement> elements = driver.findElements(with(cssSelector("p")).above(lowest));
-    List<String> ids = elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+    List<String>
+      ids =
+      elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
     assertThat(ids).containsExactly("mid", "above");
 
@@ -77,7 +81,9 @@ class RelativeLocatorTest extends JupiterTestBase {
   void shouldBeAbleToCombineFilters() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    List<WebElement> seen = driver.findElements(with(tagName("td")).above(By.id("center")).toRightOf(By.id("second")));
+    List<WebElement>
+      seen =
+      driver.findElements(with(tagName("td")).above(By.id("center")).toRightOf(By.id("second")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
@@ -88,7 +94,9 @@ class RelativeLocatorTest extends JupiterTestBase {
   void shouldBeAbleToCombineFiltersWithXpath() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-    List<WebElement> seen = driver.findElements(with(xpath("//td[1]")).below(By.id("second")).above(By.id("seventh")));
+    List<WebElement>
+      seen =
+      driver.findElements(with(xpath("//td[1]")).below(By.id("second")).above(By.id("seventh")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
@@ -100,8 +108,10 @@ class RelativeLocatorTest extends JupiterTestBase {
   void shouldBeAbleToCombineFiltersWithCssSelector() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
-
-    List<WebElement> seen = driver.findElements(with(cssSelector("td")).above(By.id("center")).toRightOf(By.id("second")));
+    List<WebElement>
+      seen =
+      driver.findElements(
+        with(cssSelector("td")).above(By.id("center")).toRightOf(By.id("second")));
 
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
@@ -124,7 +134,8 @@ class RelativeLocatorTest extends JupiterTestBase {
     // 5-8. Diagonally close (pythagoras sorting, with top row first
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-    assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
+    assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third",
+                                    "seventh", "ninth");
   }
 
   @Test
@@ -144,7 +155,8 @@ class RelativeLocatorTest extends JupiterTestBase {
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-    assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
+    assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third",
+                                    "seventh", "ninth");
   }
 
   @Test
@@ -163,27 +175,34 @@ class RelativeLocatorTest extends JupiterTestBase {
     // 5-8. Diagonally close (pythagoras sorting, with top row first
     //    because of DOM insertion order)
     List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-    assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
+    assertThat(ids).containsExactly("second", "eighth", "fourth", "sixth", "first", "third",
+                                    "seventh", "ninth");
   }
 
   @Test
   void ensureNoRepeatedElements() {
     String url = appServer.create(new Page()
-      .withTitle("Repeated Elements")
-      .withStyles(" .c {\n" +
-        "    \tposition: absolute;\n" +
-        "    \tborder: 1px solid black;\n" +
-        "    \theight: 50px;\n" +
-        "    \twidth: 50px;\n" +
-        "    }")
-      .withBody("<span style=\"position: relative;\">\n" +
-        "    <div id= \"a\" class=\"c\" style=\"left:25;top:0;\">El-A</div>\n" +
-        "    <div id= \"b\" class=\"c\" style=\"left:78;top:30;\">El-B</div>\n" +
-        "    <div id= \"c\" class=\"c\" style=\"left:131;top:60;\">El-C</div>\n" +
-        "    <div id= \"d\" class=\"c\" style=\"left:0;top:53;\">El-D</div>\n" +
-        "    <div id= \"e\" class=\"c\" style=\"left:53;top:83;\">El-E</div>\n" +
-        "    <div id= \"f\" class=\"c\" style=\"left:106;top:113;\">El-F</div>\n" +
-        "  </span>"));
+                                    .withTitle("Repeated Elements")
+                                    .withStyles(" .c {\n" +
+                                                "    \tposition: absolute;\n" +
+                                                "    \tborder: 1px solid black;\n" +
+                                                "    \theight: 50px;\n" +
+                                                "    \twidth: 50px;\n" +
+                                                "    }")
+                                    .withBody("<span style=\"position: relative;\">\n" +
+                                              "    <div id= \"a\" class=\"c\" style=\"left:25;top:0;\">El-A</div>\n"
+                                              +
+                                              "    <div id= \"b\" class=\"c\" style=\"left:78;top:30;\">El-B</div>\n"
+                                              +
+                                              "    <div id= \"c\" class=\"c\" style=\"left:131;top:60;\">El-C</div>\n"
+                                              +
+                                              "    <div id= \"d\" class=\"c\" style=\"left:0;top:53;\">El-D</div>\n"
+                                              +
+                                              "    <div id= \"e\" class=\"c\" style=\"left:53;top:83;\">El-E</div>\n"
+                                              +
+                                              "    <div id= \"f\" class=\"c\" style=\"left:106;top:113;\">El-F</div>\n"
+                                              +
+                                              "  </span>"));
 
     driver.get(url);
 

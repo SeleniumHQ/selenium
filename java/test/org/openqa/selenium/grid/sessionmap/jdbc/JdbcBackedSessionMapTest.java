@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.sessionmap.jdbc;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -39,14 +43,11 @@ import java.sql.Statement;
 import java.time.Instant;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 class JdbcBackedSessionMapTest {
+
+  private static final Tracer tracer = DefaultTestTracer.createTracer();
   private static Connection connection;
   private static EventBus bus;
-  private static final Tracer tracer = DefaultTestTracer.createTracer();
 
   @BeforeAll
   public static void createDB() throws SQLException {
@@ -88,6 +89,7 @@ class JdbcBackedSessionMapTest {
       sessions.get(new SessionId(UUID.randomUUID()));
     });
   }
+
   @Test
   void canCreateAJdbcBackedSessionMap() throws URISyntaxException {
     SessionMap sessions = getSessionMap();

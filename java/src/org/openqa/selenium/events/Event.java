@@ -66,10 +66,10 @@ public class Event {
   @Override
   public String toString() {
     return new StringJoiner(", ", Event.class.getSimpleName() + "[", "]")
-        .add("id=" + id)
-        .add("type=" + eventName)
-        .add("data=" + data)
-        .toString();
+      .add("id=" + id)
+      .add("type=" + eventName)
+      .add("data=" + data)
+      .toString();
   }
 
   @Override

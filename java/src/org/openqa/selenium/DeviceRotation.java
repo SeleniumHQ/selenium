@@ -30,6 +30,7 @@ import java.util.Objects;
  * <p>Example instantiation to rotate device to "Landscape Right": DeviceRotation(0, 0, 90);
  */
 public class DeviceRotation {
+
   // The default orientation is portrait.
   private int x = 0;
   private int y = 0;
@@ -51,7 +52,8 @@ public class DeviceRotation {
    */
   public DeviceRotation(Map<String, Number> map) {
     if (map == null || !map.containsKey("x") || !map.containsKey("y") || !map.containsKey("z")) {
-      throw new IllegalArgumentException("Could not initialize DeviceRotation with map given: " + map);
+      throw new IllegalArgumentException(
+        "Could not initialize DeviceRotation with map given: " + map);
     }
     this.x = map.get("x").intValue();
     this.y = map.get("y").intValue();
@@ -62,29 +64,38 @@ public class DeviceRotation {
   private void validateParameters(int x, int y, int z) {
     if (x < 0 || y < 0 || z < 0) {
       throw new IllegalArgumentException(String.format(
-          "DeviceRotation requires positive axis values: %nx = %s%ny = %s%nz = %s", x, y, z));
+        "DeviceRotation requires positive axis values: %nx = %s%ny = %s%nz = %s", x, y, z));
     } else if (x >= 360 || y >= 360 || z >= 360) {
       throw new IllegalArgumentException(String.format(
-          "DeviceRotation requires positive axis values  under 360: %nx = %s%ny = %s%nz = %s", x, y, z));
+        "DeviceRotation requires positive axis values  under 360: %nx = %s%ny = %s%nz = %s", x, y,
+        z));
     }
   }
 
-  /** @return The x. */
+  /**
+   * @return The x.
+   */
   public int getX() {
     return x;
   }
 
-  /** @return The y. */
+  /**
+   * @return The y.
+   */
   public int getY() {
     return y;
   }
 
-  /** @return The z. */
+  /**
+   * @return The z.
+   */
   public int getZ() {
     return z;
   }
 
-  /** @return All axes mapped to a Map. */
+  /**
+   * @return All axes mapped to a Map.
+   */
   public Map<String, Integer> parameters() {
     HashMap<String, Integer> values = new HashMap<>();
     values.put("x", this.x);

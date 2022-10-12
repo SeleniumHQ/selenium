@@ -17,22 +17,6 @@
 
 package org.openqa.selenium.ie;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.AbstractDriverOptions;
-
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.toList;
 import static org.openqa.selenium.ie.InternetExplorerDriver.BROWSER_ATTACH_TIMEOUT;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ELEMENT_SCROLL_BEHAVIOR;
@@ -49,12 +33,28 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.REQUIRE_WINDOW_FOCUS
 import static org.openqa.selenium.remote.Browser.IE;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.AbstractDriverOptions;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * Options for configuring the use of IE. Can be used like so:
  * <pre>InternetExplorerOptions options = new InternetExplorerOptions()
  *   .requireWindowFocus();
  *
- *new InternetExplorerDriver(options);</pre>
+ * new InternetExplorerDriver(options);</pre>
  */
 public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplorerOptions> {
 
@@ -63,7 +63,9 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   private static final String FULL_PAGE_SCREENSHOT = "ie.enableFullPageScreenshot";
   private static final String UPLOAD_DIALOG_TIMEOUT = "ie.fileUploadDialogTimeout";
   private static final String FORCE_WINDOW_SHELL_API = "ie.forceShellWindowsApi";
-  private static final String LEGACY_FILE_UPLOAD_DIALOG_HANDLING = "ie.useLegacyFileUploadDialogHandling";
+  private static final String
+    LEGACY_FILE_UPLOAD_DIALOG_HANDLING =
+    "ie.useLegacyFileUploadDialogHandling";
   private static final String ATTACH_TO_EDGE_CHROME = "ie.edgechromium";
   private static final String EDGE_EXECUTABLE_PATH = "ie.edgepath";
 
@@ -168,10 +170,10 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   }
 
   /**
-   *  Use the {@link org.openqa.selenium.Proxy} defined in other {@link Capabilities} on a
-   *  per-process basis, not updating the system installed proxy setting. This is only valid when
-   *  setting a {@link org.openqa.selenium.Proxy} where the
-   *  {@link org.openqa.selenium.Proxy.ProxyType} is one of
+   * Use the {@link org.openqa.selenium.Proxy} defined in other {@link Capabilities} on a
+   * per-process basis, not updating the system installed proxy setting. This is only valid when
+   * setting a {@link org.openqa.selenium.Proxy} where the
+   * {@link org.openqa.selenium.Proxy.ProxyType} is one of
    *  <ul>
    *    <li>{@link org.openqa.selenium.Proxy.ProxyType#DIRECT}
    *    <li>{@link org.openqa.selenium.Proxy.ProxyType#MANUAL}
@@ -203,7 +205,7 @@ public class InternetExplorerOptions extends AbstractDriverOptions<InternetExplo
   }
 
   public InternetExplorerOptions disableNativeEvents() {
-    return  amend(NATIVE_EVENTS, false);
+    return amend(NATIVE_EVENTS, false);
   }
 
   public InternetExplorerOptions ignoreZoomSettings() {

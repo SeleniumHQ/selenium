@@ -41,13 +41,15 @@ class EdgeOptionsFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canStartEdgeWithCustomOptions() {
+  void canStartEdgeWithCustomOptions() {
     EdgeOptions options = new EdgeOptions();
     options.addArguments("user-agent=foo;bar");
     localDriver = new WebDriverBuilder().get(options);
 
     localDriver.get(pages.clickJacker);
-    Object userAgent = ((JavascriptExecutor) localDriver).executeScript("return window.navigator.userAgent");
+    Object
+      userAgent =
+      ((JavascriptExecutor) localDriver).executeScript("return window.navigator.userAgent");
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
@@ -62,13 +64,14 @@ class EdgeOptionsFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canSetAcceptInsecureCerts() {
+  void canSetAcceptInsecureCerts() {
     EdgeOptions options = new EdgeOptions();
     options.setAcceptInsecureCerts(true);
     localDriver = new WebDriverBuilder().get(options);
     System.out.println(((HasCapabilities) localDriver).getCapabilities());
 
-    assertThat(((HasCapabilities) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(((HasCapabilities) localDriver).getCapabilities()
+                 .getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @Test
@@ -93,7 +96,7 @@ class EdgeOptionsFunctionalTest extends JupiterTestBase {
   public void canAddExtensionFromStringEncodedInBase64() throws IOException {
     EdgeOptions options = new EdgeOptions();
     options.addEncodedExtensions(Base64.getEncoder().encodeToString(
-        Files.readAllBytes(InProject.locate(EXT_PATH))));
+      Files.readAllBytes(InProject.locate(EXT_PATH))));
     localDriver = new WebDriverBuilder().get(options);
 
     localDriver.get(pages.echoPage);

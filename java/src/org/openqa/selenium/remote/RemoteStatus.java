@@ -32,32 +32,44 @@ public class RemoteStatus {
     osInfo = (Map<String, Object>) status.get("os");
   }
 
-  /** @return The release label. */
+  /**
+   * @return The release label.
+   */
   public String getReleaseLabel() {
     return (String) buildInfo.get("version");
   }
 
-  /** @return The build revision. */
+  /**
+   * @return The build revision.
+   */
   public String getBuildRevision() {
     return (String) buildInfo.get("revision");
   }
 
-  /** @return The build time. */
+  /**
+   * @return The build time.
+   */
   public String getBuildTime() {
     return (String) buildInfo.get("time");
   }
 
-  /** @return The operating system architecture. */
+  /**
+   * @return The operating system architecture.
+   */
   public String getOsArch() {
     return (String) osInfo.get("arch");
   }
 
-  /** @return The operating system name. */
+  /**
+   * @return The operating system name.
+   */
   public String getOsName() {
     return (String) osInfo.get("name");
   }
 
-  /** @return The operating system version. */
+  /**
+   * @return The operating system version.
+   */
   public String getOsVersion() {
     return (String) osInfo.get("version");
   }

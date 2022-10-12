@@ -19,8 +19,6 @@ package org.openqa.selenium.remote.server.handler;
 
 import static java.util.logging.Level.SEVERE;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
@@ -30,7 +28,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class FindElement extends WebDriverHandler<Map<String, String>> {
-  private static Logger log = Logger.getLogger(FindElement.class.getName());
+
+  private static final Logger log = Logger.getLogger(FindElement.class.getName());
   private volatile By by;
 
   public FindElement(Session session) {
@@ -48,7 +47,7 @@ public class FindElement extends WebDriverHandler<Map<String, String>> {
     try {
       WebElement element = getDriver().findElement(by);
       String elementId = getKnownElements().add(element);
-      return ImmutableMap.of("ELEMENT", elementId);
+      return Map.of("ELEMENT", elementId);
     } catch (RuntimeException e) {
       // Add logging to detect when issue #1800 occurs
       if (!(e instanceof NoSuchElementException)) {

@@ -29,7 +29,7 @@ public interface CustomLocator {
 
   /**
    * @return The locator name, which is the value of the {@code using}
-   *   property of the JSON payload.
+   * property of the JSON payload.
    */
   String getLocatorName();
 

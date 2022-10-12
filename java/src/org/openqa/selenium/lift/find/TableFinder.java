@@ -19,11 +19,18 @@ package org.openqa.selenium.lift.find;
 
 /**
  * A {@link Finder} for HTML table tags.
- *
  */
 public class TableFinder extends HtmlTagFinder {
 
   private TableFinder() {
+  }
+
+  public static HtmlTagFinder table() {
+    return new TableFinder();
+  }
+
+  public static HtmlTagFinder tables() {
+    return table();
   }
 
   @Override
@@ -34,13 +41,5 @@ public class TableFinder extends HtmlTagFinder {
   @Override
   protected String tagDescription() {
     return "table";
-  }
-
-  public static HtmlTagFinder table() {
-    return new TableFinder();
-  }
-
-  public static HtmlTagFinder tables() {
-    return table();
   }
 }

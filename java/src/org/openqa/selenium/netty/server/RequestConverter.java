@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.netty.server;
 
+import static io.netty.handler.codec.http.HttpMethod.DELETE;
+import static io.netty.handler.codec.http.HttpMethod.GET;
+import static io.netty.handler.codec.http.HttpMethod.HEAD;
+import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
+import static io.netty.handler.codec.http.HttpMethod.POST;
+import static org.openqa.selenium.remote.http.Contents.memoize;
+
 import com.google.common.io.ByteStreams;
 
 import org.openqa.selenium.internal.Debug;
@@ -50,13 +57,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
-import static io.netty.handler.codec.http.HttpMethod.DELETE;
-import static io.netty.handler.codec.http.HttpMethod.GET;
-import static io.netty.handler.codec.http.HttpMethod.HEAD;
-import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
-import static io.netty.handler.codec.http.HttpMethod.POST;
-import static org.openqa.selenium.remote.http.Contents.memoize;
-
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
@@ -84,7 +84,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       }
 
       if (nettyRequest.headers().contains("Sec-WebSocket-Version") &&
-        "upgrade".equals(nettyRequest.headers().get("Connection"))) {
+          "upgrade".equals(nettyRequest.headers().get("Connection"))) {
         // Pass this on to later in the pipeline.
         ReferenceCountUtil.retain(msg);
         ctx.fireChannelRead(msg);
@@ -97,9 +97,9 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       }
 
       req.setAttribute(AttributeKey.HTTP_SCHEME.getKey(),
-        nettyRequest.protocolVersion().protocolName());
+                       nettyRequest.protocolVersion().protocolName());
       req.setAttribute(AttributeKey.HTTP_FLAVOR.getKey(),
-        nettyRequest.protocolVersion().majorVersion());
+                       nettyRequest.protocolVersion().majorVersion());
 
       out = new PipedOutputStream();
       InputStream in = new PipedInputStream(out);

@@ -26,6 +26,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class WebDriverCommandProcessorTest {
+
   @Test
   void testDriverNeedNotImplementHasCapabilities() {
     WebDriver driver = mock(WebDriver.class,

@@ -35,6 +35,11 @@ public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
     this.matcher = matcher;
   }
 
+  public static Matcher<WebElement> attribute(final String name,
+                                              final Matcher<String> valueMatcher) {
+    return new AttributeMatcher(name, valueMatcher);
+  }
+
   @Override
   public boolean matchesSafely(WebElement item) {
     return matcher.matches(item.getAttribute(name));
@@ -44,10 +49,6 @@ public class AttributeMatcher extends TypeSafeMatcher<WebElement> {
   public void describeTo(Description description) {
     description.appendText("attribute ").appendValue(name);
     matcher.describeTo(description);
-  }
-
-  public static Matcher<WebElement> attribute(final String name, final Matcher<String> valueMatcher) {
-    return new AttributeMatcher(name, valueMatcher);
   }
 
 }

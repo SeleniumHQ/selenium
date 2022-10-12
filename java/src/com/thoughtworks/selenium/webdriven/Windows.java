@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Windows {
+
   private final Map<String, String> lastFrame = new HashMap<>();
   private final String originalWindowHandle;
 
@@ -132,7 +133,7 @@ public class Windows {
     }
 
     driver.switchTo()
-        .window(current);
+      .window(current);
     throw new SeleniumException("Unable to select window with title: " + title);
   }
 
@@ -163,7 +164,7 @@ public class Windows {
       }
       driver.switchTo().window(handle);
       String value = (String)
-          ((JavascriptExecutor) driver).executeScript("return window.name;");
+        ((JavascriptExecutor) driver).executeScript("return window.name;");
       if (value == null || "".equals(value)) {
         // We found it!
         return;

@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.remote.mobile;
 
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_NETWORK_CONNECTION;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 
 import java.util.function.Predicate;
-
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_NETWORK_CONNECTION;
 
 /**
  * @deprecated Uses a non W3C compliant capability and is not available in W3C WebDriver sessions
@@ -43,7 +43,8 @@ public class AddNetworkConnection implements AugmenterProvider<NetworkConnection
   }
 
   @Override
-  public NetworkConnection getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
+  public NetworkConnection getImplementation(Capabilities capabilities,
+                                             ExecuteMethod executeMethod) {
     return new RemoteNetworkConnection(executeMethod);
   }
 }

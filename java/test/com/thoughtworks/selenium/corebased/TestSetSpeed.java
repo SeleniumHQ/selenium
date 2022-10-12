@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 @Disabled("Set speed is a no-op, it seems")
 public class TestSetSpeed extends InternalSelenseTestBase {
+
   @Test
   void testSetSpeed() throws Exception {
     String lastSpeed = selenium.getSpeed();

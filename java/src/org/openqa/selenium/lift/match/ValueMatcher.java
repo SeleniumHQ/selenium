@@ -33,6 +33,10 @@ public class ValueMatcher extends TypeSafeMatcher<WebElement> {
     this.value = value;
   }
 
+  public static Matcher<WebElement> value(final Object value) {
+    return new ValueMatcher(value);
+  }
+
   @Override
   public boolean matchesSafely(WebElement item) {
     return item.getAttribute("value").equals(value);
@@ -41,9 +45,5 @@ public class ValueMatcher extends TypeSafeMatcher<WebElement> {
   @Override
   public void describeTo(Description description) {
     description.appendText("should have value ").appendValue(value);
-  }
-
-  public static Matcher<WebElement> value(final Object value) {
-    return new ValueMatcher(value);
   }
 }

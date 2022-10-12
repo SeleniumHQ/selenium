@@ -26,10 +26,11 @@ import java.util.Base64;
 /**
  * Defines the output type for a screenshot.
  *
- * @see TakesScreenshot
  * @param <T> Type for the screenshot output.
+ * @see TakesScreenshot
  */
 public interface OutputType<T> {
+
   /**
    * Obtain the screenshot as base64 data.
    */

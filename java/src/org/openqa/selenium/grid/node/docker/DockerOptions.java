@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.grid.node.docker;
 
+import static org.openqa.selenium.Platform.WINDOWS;
+import static org.openqa.selenium.docker.Device.device;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.docker.ContainerId;
@@ -46,17 +45,18 @@ import org.openqa.selenium.remote.tracing.Tracer;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.Platform.WINDOWS;
-import static org.openqa.selenium.docker.Device.device;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DockerOptions {
 
@@ -197,8 +197,12 @@ public class DockerOptions {
   }
 
   protected List<Device> getDevicesMapping() {
-    Pattern linuxDeviceMappingWithDefaultPermissionsPattern = Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+)$");
-    Pattern linuxDeviceMappingWithPermissionsPattern = Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+):([\\w]+)$");
+    Pattern
+      linuxDeviceMappingWithDefaultPermissionsPattern =
+      Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+)$");
+    Pattern
+      linuxDeviceMappingWithPermissionsPattern =
+      Pattern.compile("^([\\w\\/-]+):([\\w\\/-]+):([\\w]+)$");
 
     List<String> devices = config.getAll(DOCKER_SECTION, "devices")
       .orElseGet(Collections::emptyList);
@@ -206,7 +210,9 @@ public class DockerOptions {
     List<Device> deviceMapping = new ArrayList<>();
     for (int i = 0; i < devices.size(); i++) {
       String deviceMappingDefined = devices.get(i).trim();
-      Matcher matcher = linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
+      Matcher
+        matcher =
+        linuxDeviceMappingWithDefaultPermissionsPattern.matcher(deviceMappingDefined);
 
       if (matcher.matches()) {
         deviceMapping.add(device(matcher.group(1), matcher.group(2), null));
@@ -257,8 +263,8 @@ public class DockerOptions {
   private void loadImages(Docker docker, String... imageNames) {
     CompletableFuture<Void> cd = CompletableFuture.allOf(
       Arrays.stream(imageNames)
-            .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name)))
-          .toArray(CompletableFuture[]::new));
+        .map(name -> CompletableFuture.supplyAsync(() -> docker.getImage(name)))
+        .toArray(CompletableFuture[]::new));
 
     try {
       cd.get();

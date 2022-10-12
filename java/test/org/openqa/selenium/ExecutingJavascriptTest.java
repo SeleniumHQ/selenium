@@ -17,8 +17,22 @@
 
 package org.openqa.selenium;
 
+import static com.google.common.base.Throwables.getRootCause;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.openqa.selenium.By.id;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
+import static org.openqa.selenium.testing.drivers.Browser.EDGE;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -40,21 +54,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.base.Throwables.getRootCause;
-import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.openqa.selenium.By.id;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 class ExecutingJavascriptTest extends JupiterTestBase {
+
+  private static boolean compareLists(List<?> first, List<?> second) {
+    if (first.size() != second.size()) {
+      return false;
+    }
+    for (int i = 0; i < first.size(); ++i) {
+      if (first.get(i) instanceof List<?>) {
+        if (!compareLists((List<?>) first.get(i), (List<?>) second.get(i))) {
+          return false;
+        }
+      } else {
+        if (!first.get(i).equals(second.get(i))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
   @BeforeEach
   public void setUp() {
@@ -104,7 +122,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat((Boolean) result).isTrue();
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAStringsArray() {
     driver.get(pages.javascriptPage);
@@ -116,7 +133,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat((List<?>) result).isEqualTo(ImmutableList.of("zero", "one", "two"));
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnArray() {
     driver.get(pages.javascriptPage);
@@ -131,8 +147,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat((List<Object>) result).isEqualTo(expectedResult);
   }
 
-
-  @SuppressWarnings("unchecked")
   @Test
   void testShouldBeAbleToExecuteJavascriptAndReturnABasicObjectLiteral() {
     driver.get(pages.javascriptPage);
@@ -141,7 +155,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat(result).isInstanceOf(Map.class);
     Map<String, Object> map = (Map<String, Object>) result;
 
-    Map<String, Object> expected = ImmutableMap.of(
+    Map<String, Object> expected = Map.of(
       "abc", "123",
       "tired", false);
 
@@ -149,32 +163,32 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     // long as the expected keys are there.
     assertThat(map.size()).isGreaterThanOrEqualTo(expected.size());
     for (Map.Entry<String, Object> entry : expected.entrySet()) {
-      assertThat(map.get(entry.getKey())).as("Value by key %s, )", entry.getKey()).isEqualTo(entry.getValue());
+      assertThat(map.get(entry.getKey())).as("Value by key %s, )", entry.getKey())
+        .isEqualTo(entry.getValue());
     }
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAnObjectLiteral() {
     driver.get(pages.javascriptPage);
 
-    Map<String, Object> expectedResult = ImmutableMap.of(
+    Map<String, Object> expectedResult = Map.of(
       "foo", "bar",
       "baz", Arrays.asList("a", "b", "c"),
-      "person", ImmutableMap.of(
+      "person", Map.of(
         "first", "John",
         "last", "Doe")
     );
 
     Object result = executeScript(
       "return {foo:'bar', baz: ['a', 'b', 'c'], " +
-        "person: {first: 'John',last: 'Doe'}};");
+      "person: {first: 'John',last: 'Doe'}};");
     assertThat(result).isInstanceOf(Map.class);
 
     Map<String, Object> map = (Map<String, Object>) result;
     assertThat(map.size()).isGreaterThanOrEqualTo(3);
     assertThat(map.get("foo")).isEqualTo("bar");
-    assertThat((List<?>) map.get("baz")).isEqualTo((List<?>) expectedResult.get("baz"));
+    assertThat((List<?>) map.get("baz")).isEqualTo(expectedResult.get("baz"));
 
     Map<String, String> person = (Map<String, String>) map.get("person");
     assertThat(person.size()).isGreaterThanOrEqualTo(2);
@@ -182,7 +196,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat(person.get("last")).isEqualTo("Doe");
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   @Ignore(IE)
   public void testShouldBeAbleToExecuteSimpleJavascriptAndReturnAComplexObject() {
@@ -196,28 +209,10 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat(map.get("href")).isEqualTo(pages.javascriptPage);
   }
 
-  private static boolean compareLists(List<?> first, List<?> second) {
-    if (first.size() != second.size()) {
-      return false;
-    }
-    for (int i = 0; i < first.size(); ++i) {
-      if (first.get(i) instanceof List<?>) {
-        if (!compareLists((List<?>) first.get(i), (List<?>) second.get(i))) {
-          return false;
-        }
-      } else {
-        if (!first.get(i).equals(second.get(i))) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
   @Test
   void testPassingAndReturningALongShouldReturnAWholeNumber() {
     driver.get(pages.javascriptPage);
-    Long expectedResult = 1L;
+    final Long expectedResult = 1L;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertThat(result).isInstanceOfAny(Integer.class, Long.class).isEqualTo(expectedResult);
   }
@@ -225,7 +220,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
   @Test
   void testReturningOverflownLongShouldReturnADouble() {
     driver.get(pages.javascriptPage);
-    Double expectedResult = 6.02214129e+23;
+    final Double expectedResult = 6.02214129e+23;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertThat(result).isInstanceOf(Double.class).isEqualTo(expectedResult);
   }
@@ -233,7 +228,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
   @Test
   void testPassingAndReturningADoubleShouldReturnADecimal() {
     driver.get(pages.javascriptPage);
-    Double expectedResult = 1.2;
+    final Double expectedResult = 1.2;
     Object result = executeScript("return arguments[0];", expectedResult);
     assertThat(result).isInstanceOfAny(Float.class, Double.class).isEqualTo(expectedResult);
   }
@@ -257,9 +252,9 @@ class ExecutingJavascriptTest extends JupiterTestBase {
   public void testShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad() {
     driver.get(pages.xhtmlTestPage);
 
-    String js = "function functionB() { throw Error('errormessage'); };"
-      + "function functionA() { functionB(); };"
-      + "functionA();";
+    final String js = "function functionB() { throw Error('errormessage'); };"
+                      + "function functionA() { functionB(); };"
+                      + "functionA();";
     assertThatExceptionOfType(WebDriverException.class)
       .isThrownBy(() -> executeScript(js))
       .withMessageContaining("errormessage")
@@ -377,7 +372,6 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     assertThat(text).isEmpty();
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testShouldBeAbleToReturnAnArrayOfWebElements() {
     driver.get(pages.formPage);
@@ -407,7 +401,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     driver.get(pages.javascriptPage);
 
     Path jqueryFile = InProject.locate("common/src/web/js/jquery-3.5.1.min.js");
-    String jquery = new String(Files.readAllBytes(jqueryFile), US_ASCII);
+    String jquery = Files.readString(jqueryFile, US_ASCII);
     assertThat(jquery.length())
       .describedAs("The javascript code should be at least 50 KB.")
       .isGreaterThan(50000);
@@ -415,11 +409,10 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     executeScript(jquery);
   }
 
-  @SuppressWarnings("unchecked")
   @Test
   void testShouldBeAbleToExecuteScriptAndReturnElementsList() {
     driver.get(pages.formPage);
-    String scriptToExec = "return document.getElementsByName('snack');";
+    final String scriptToExec = "return document.getElementsByName('snack');";
 
     List<WebElement> resultsList = (List<WebElement>) executeScript(scriptToExec);
 
@@ -465,7 +458,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
     driver.get(pages.simpleTestPage);
 
     List<Integer> nums = Arrays.asList(1, 2);
-    Map<String, Object> args = ImmutableMap.of("bar", "test", "foo", nums);
+    Map<String, Object> args = Map.of("bar", "test", "foo", nums);
 
     Object res = ((JavascriptExecutor) driver).executeScript("return arguments[0]['foo'][1]", args);
 
@@ -477,11 +470,11 @@ class ExecutingJavascriptTest extends JupiterTestBase {
   public void testShouldThrowAnExceptionWhenArgumentsWithStaleElementPassed() {
     driver.get(pages.simpleTestPage);
 
-    final WebElement el = driver.findElement(id("oneline"));
+    WebElement el = driver.findElement(id("oneline"));
 
     driver.get(pages.simpleTestPage);
 
-    Map<String, Object> args = ImmutableMap.of(
+    Map<String, Object> args = Map.of(
       "key", Arrays.asList("a", new Object[]{"zero", 1, true, 42.4242, false, el}, "c"));
 
     assertThatExceptionOfType(StaleElementReferenceException.class)
@@ -542,9 +535,9 @@ class ExecutingJavascriptTest extends JupiterTestBase {
 
     WebElement expected = driver.findElement(id("oneline"));
 
-    Object args = ImmutableMap.of(
-      "top", ImmutableMap.of(
-        "key", singletonList(ImmutableMap.of(
+    Object args = Map.of(
+      "top", Map.of(
+        "key", singletonList(Map.of(
           "subkey", expected))));
     WebElement seen = (WebElement) executeScript(
       "return arguments[0].top.key[0].subkey", args);

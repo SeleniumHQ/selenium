@@ -41,6 +41,7 @@ import java.util.Objects;
  * </code></pre>
  */
 public abstract class By {
+
   /**
    * @param id The value of the "id" attribute to search for.
    * @return A By which locates elements by the value of the "id" attribute.
@@ -121,7 +122,7 @@ public abstract class By {
   public WebElement findElement(SearchContext context) {
     List<WebElement> allElements = findElements(context);
     if (allElements == null || allElements.isEmpty()) {
-      throw new NoSuchElementException("Cannot locate an element using " + toString());
+      throw new NoSuchElementException("Cannot locate an element using " + this);
     }
     return allElements.get(0);
   }
@@ -150,7 +151,8 @@ public abstract class By {
     WebDriver driver = getWebDriver(context);
 
     if (!(context instanceof JavascriptExecutor)) {
-      throw new IllegalArgumentException("Context does not provide a mechanism to execute JS: " + context);
+      throw new IllegalArgumentException(
+        "Context does not provide a mechanism to execute JS: " + context);
     }
 
     return (JavascriptExecutor) driver;
@@ -164,7 +166,7 @@ public abstract class By {
 
     By that = (By) o;
 
-    return this.toString().equals(that.toString());
+    return toString().equals(that.toString());
   }
 
   @Override
@@ -178,169 +180,12 @@ public abstract class By {
     return "[unknown locator]";
   }
 
-  public static class ById extends PreW3CLocator {
-
-    private final String id;
-
-    public ById(String id) {
-      super(
-        "id",
-        Require.argument("Id", id).nonNull("Cannot find elements when id is null."),
-        "#%s");
-
-      this.id = id;
-    }
-
-    @Override
-    public String toString() {
-      return "By.id: " + id;
-    }
-  }
-
-  public static class ByLinkText extends BaseW3CLocator {
-
-    private final String linkText;
-
-    public ByLinkText(String linkText) {
-      super(
-        "link text",
-        Require.argument("Link text", linkText)
-          .nonNull("Cannot find elements when the link text is null."));
-
-      this.linkText = linkText;
-    }
-
-    @Override
-    public String toString() {
-      return "By.linkText: " + linkText;
-    }
-  }
-
-  public static class ByPartialLinkText extends BaseW3CLocator {
-
-    private final String partialLinkText;
-
-    public ByPartialLinkText(String partialLinkText) {
-      super(
-        "partial link text",
-        Require.argument("Partial link text", partialLinkText)
-          .nonNull("Cannot find elements when the link text is null."));
-
-      this.partialLinkText = partialLinkText;
-    }
-
-    @Override
-    public String toString() {
-      return "By.partialLinkText: " + partialLinkText;
-    }
-  }
-
-  public static class ByName extends PreW3CLocator {
-    private final String name;
-
-    public ByName(String name) {
-      super(
-        "name",
-        Require.argument("Name", name).nonNull("Cannot find elements when name text is null."),
-        String.format("*[name='%s']", name.replace("'", "\\'")));
-
-      this.name = name;
-    }
-
-    @Override
-    public String toString() {
-      return "By.name: " + name;
-    }
-  }
-
-  public static class ByTagName extends BaseW3CLocator {
-
-    private final String tagName;
-
-    public ByTagName(String tagName) {
-      super(
-        "tag name",
-        Require.argument("Tag name", tagName)
-          .nonNull("Cannot find elements when the tag name is null."));
-
-      if (tagName.isEmpty()) {
-        throw new InvalidSelectorException("Tag name must not be blank");
-      }
-
-      this.tagName = tagName;
-    }
-
-    @Override
-    public String toString() {
-      return "By.tagName: " + tagName;
-    }
-  }
-
-  public static class ByXPath extends BaseW3CLocator {
-
-    private final String xpathExpression;
-
-    public ByXPath(String xpathExpression) {
-      super(
-        "xpath",
-        Require.argument("XPath", xpathExpression)
-          .nonNull("Cannot find elements when the XPath is null."));
-
-      this.xpathExpression = xpathExpression;
-    }
-
-    @Override
-    public String toString() {
-      return "By.xpath: " + xpathExpression;
-    }
-  }
-
-  public static class ByClassName extends PreW3CLocator {
-
-    private final String className;
-
-    public ByClassName(String className) {
-      super(
-        "class name",
-        Require.argument("Class name", className)
-          .nonNull("Cannot find elements when the class name expression is null."),
-      ".%s");
-
-      if (className.matches(".*\\s.*")) {
-        throw new InvalidSelectorException("Compound class names not permitted");
-      }
-
-      this.className = className;
-    }
-
-    @Override
-    public String toString() {
-      return "By.className: " + className;
-    }
-  }
-
-  public static class ByCssSelector extends BaseW3CLocator {
-    private final String cssSelector;
-
-    public ByCssSelector(String cssSelector) {
-      super(
-        "css selector",
-        Require.argument("CSS selector", cssSelector)
-          .nonNull("Cannot find elements when the selector is null"));
-
-      this.cssSelector = cssSelector;
-    }
-
-    @Override
-    public String toString() {
-      return "By.cssSelector: " + cssSelector;
-    }
-  }
-
   public interface Remotable {
+
     Parameters getRemoteParameters();
 
     class Parameters {
+
       private final String using;
       private final Object value;
 
@@ -386,11 +231,173 @@ public abstract class By {
     }
   }
 
+  public static class ById extends PreW3CLocator {
+
+    private final String id;
+
+    ById(String id) {
+      super(
+        "id",
+        Require.argument("Id", id).nonNull("Cannot find elements when id is null."),
+        "#%s");
+
+      this.id = id;
+    }
+
+    @Override
+    public String toString() {
+      return "By.id: " + id;
+    }
+  }
+
+  public static class ByLinkText extends BaseW3CLocator {
+
+    private final String linkText;
+
+    ByLinkText(String linkText) {
+      super(
+        "link text",
+        Require.argument("Link text", linkText)
+          .nonNull("Cannot find elements when the link text is null."));
+
+      this.linkText = linkText;
+    }
+
+    @Override
+    public String toString() {
+      return "By.linkText: " + linkText;
+    }
+  }
+
+  public static class ByPartialLinkText extends BaseW3CLocator {
+
+    private final String partialLinkText;
+
+    ByPartialLinkText(String partialLinkText) {
+      super(
+        "partial link text",
+        Require.argument("Partial link text", partialLinkText)
+          .nonNull("Cannot find elements when the link text is null."));
+
+      this.partialLinkText = partialLinkText;
+    }
+
+    @Override
+    public String toString() {
+      return "By.partialLinkText: " + partialLinkText;
+    }
+  }
+
+  public static class ByName extends PreW3CLocator {
+
+    private final String name;
+
+    ByName(String name) {
+      super(
+        "name",
+        Require.argument("Name", name).nonNull("Cannot find elements when name text is null."),
+        String.format("*[name='%s']", name.replace("'", "\\'")));
+
+      this.name = name;
+    }
+
+    @Override
+    public String toString() {
+      return "By.name: " + name;
+    }
+  }
+
+  public static class ByTagName extends BaseW3CLocator {
+
+    private final String tagName;
+
+    ByTagName(String tagName) {
+      super(
+        "tag name",
+        Require.argument("Tag name", tagName)
+          .nonNull("Cannot find elements when the tag name is null."));
+
+      if (tagName.isEmpty()) {
+        throw new InvalidSelectorException("Tag name must not be blank");
+      }
+
+      this.tagName = tagName;
+    }
+
+    @Override
+    public String toString() {
+      return "By.tagName: " + tagName;
+    }
+  }
+
+  public static class ByXPath extends BaseW3CLocator {
+
+    private final String xpathExpression;
+
+    ByXPath(String xpathExpression) {
+      super(
+        "xpath",
+        Require.argument("XPath", xpathExpression)
+          .nonNull("Cannot find elements when the XPath is null."));
+
+      this.xpathExpression = xpathExpression;
+    }
+
+    @Override
+    public String toString() {
+      return "By.xpath: " + xpathExpression;
+    }
+  }
+
+  public static class ByClassName extends PreW3CLocator {
+
+    private final String className;
+
+    public ByClassName(String className) {
+      super(
+        "class name",
+        Require.argument("Class name", className)
+          .nonNull("Cannot find elements when the class name expression is null."),
+        ".%s");
+
+      if (className.matches(".*\\s.*")) {
+        throw new InvalidSelectorException("Compound class names not permitted");
+      }
+
+      this.className = className;
+    }
+
+    @Override
+    public String toString() {
+      return "By.className: " + className;
+    }
+  }
+
+  public static class ByCssSelector extends BaseW3CLocator {
+
+    private final String cssSelector;
+
+    public ByCssSelector(String cssSelector) {
+      super(
+        "css selector",
+        Require.argument("CSS selector", cssSelector)
+          .nonNull("Cannot find elements when the selector is null"));
+
+      this.cssSelector = cssSelector;
+    }
+
+    @Override
+    public String toString() {
+      return "By.cssSelector: " + cssSelector;
+    }
+  }
+
   private abstract static class BaseW3CLocator extends By implements Remotable {
+
     private final Parameters params;
 
-    protected BaseW3CLocator(String using, String value) {
-      this.params = new Parameters(using, value);
+    BaseW3CLocator(String using, String value) {
+      params = new Parameters(using, value);
     }
 
     @Override
@@ -416,12 +423,13 @@ public abstract class By {
   }
 
   private abstract static class PreW3CLocator extends By implements Remotable {
+
     private final Parameters remoteParams;
     private final ByCssSelector fallback;
 
     private PreW3CLocator(String using, String value, String formatString) {
-      this.remoteParams = new Remotable.Parameters(using, value);
-      this.fallback = new ByCssSelector(String.format(formatString, cssEscape(value)));
+      remoteParams = new Remotable.Parameters(using, value);
+      fallback = new ByCssSelector(String.format(formatString, cssEscape(value)));
     }
 
     @Override
@@ -446,7 +454,7 @@ public abstract class By {
     private String cssEscape(String using) {
       using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
       if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
-        using = "\\" + (30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+        using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
       }
       return using;
     }

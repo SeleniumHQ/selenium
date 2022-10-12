@@ -48,8 +48,8 @@ class JsonInputIterator implements Iterator<JsonInput> {
 
   public Stream<JsonInput> asStream() {
     Spliterator<JsonInput> spliterator = Spliterators.spliteratorUnknownSize(
-        this,
-        ORDERED & IMMUTABLE);
+      this,
+      ORDERED & IMMUTABLE);
 
     return StreamSupport.stream(spliterator, false);
   }

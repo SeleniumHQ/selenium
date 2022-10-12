@@ -17,9 +17,17 @@
 
 package org.openqa.selenium.remote;
 
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -38,14 +46,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 @Tag("UnitTests")
 class ShadowDomTest {
 
@@ -62,13 +62,14 @@ class ShadowDomTest {
 
     Function<HttpRequest, HttpResponse> handler = req -> {
       HttpResponse res = cannedResponses.entrySet().stream()
-        .filter(e -> e.getKey().getMethod() == req.getMethod() && e.getKey().getUri().equals(req.getUri()))
+        .filter(e -> e.getKey().getMethod() == req.getMethod() && e.getKey().getUri()
+          .equals(req.getUri()))
         .map(Map.Entry::getValue)
         .findFirst()
         .orElse(new HttpResponse()
-          .setStatus(HTTP_NOT_FOUND)
-          .setContent(Contents.asJson(
-            Map.of("value", Map.of("error", "unknown command", "message", req.getUri())))));
+                  .setStatus(HTTP_NOT_FOUND)
+                  .setContent(Contents.asJson(
+                    Map.of("value", Map.of("error", "unknown command", "message", req.getUri())))));
 
       return res.setHeader("Content-Type", JSON_UTF_8);
     };
@@ -89,7 +90,9 @@ class ShadowDomTest {
 
   @Test
   void shouldThrowAnExceptionIfTheShadowRootCannotBeFound() {
-    HttpRequest expected = new HttpRequest(GET, String.format("/session/%s/element/%s/shadow", id, elementId));
+    HttpRequest
+      expected =
+      new HttpRequest(GET, String.format("/session/%s/element/%s/shadow", id, elementId));
 
     cannedResponses.put(
       expected,
@@ -103,7 +106,9 @@ class ShadowDomTest {
 
   @Test
   void shouldGetShadowRoot() {
-    HttpRequest expected = new HttpRequest(GET, String.format("/session/%s/element/%s/shadow", id, elementId));
+    HttpRequest
+      expected =
+      new HttpRequest(GET, String.format("/session/%s/element/%s/shadow", id, elementId));
     UUID shadowId = UUID.randomUUID();
 
     cannedResponses.put(
@@ -122,7 +127,9 @@ class ShadowDomTest {
     String shadowId = UUID.randomUUID().toString();
     UUID elementId = UUID.randomUUID();
 
-    HttpRequest expected = new HttpRequest(POST, String.format("/session/%s/shadow/%s/element", id, shadowId));
+    HttpRequest
+      expected =
+      new HttpRequest(POST, String.format("/session/%s/shadow/%s/element", id, shadowId));
     cannedResponses.put(
       expected,
       new HttpResponse()
@@ -142,7 +149,9 @@ class ShadowDomTest {
     String shadowId = UUID.randomUUID().toString();
     UUID elementId = UUID.randomUUID();
 
-    HttpRequest expected = new HttpRequest(POST, String.format("/session/%s/shadow/%s/elements", id, shadowId));
+    HttpRequest
+      expected =
+      new HttpRequest(POST, String.format("/session/%s/shadow/%s/elements", id, shadowId));
     cannedResponses.put(
       expected,
       new HttpResponse()
@@ -162,7 +171,9 @@ class ShadowDomTest {
   void failingToFindAnElementFromAShadowRootThrowsAnException() {
     String shadowId = UUID.randomUUID().toString();
 
-    HttpRequest expected = new HttpRequest(POST, String.format("/session/%s/shadow/%s/element", id, shadowId));
+    HttpRequest
+      expected =
+      new HttpRequest(POST, String.format("/session/%s/shadow/%s/element", id, shadowId));
     cannedResponses.put(
       expected,
       new HttpResponse()
@@ -188,7 +199,9 @@ class ShadowDomTest {
         .setContent(Contents.asJson(
           singletonMap("value", singletonMap("shadow-6066-11e4-a52e-4f735466cecf", shadowId)))));
 
-    HttpRequest shadow = new HttpRequest(GET, String.format("/session/%s/element/%s/shadow", id, elementId));
+    HttpRequest
+      shadow =
+      new HttpRequest(GET, String.format("/session/%s/element/%s/shadow", id, elementId));
     cannedResponses.put(
       shadow,
       new HttpResponse()
@@ -197,7 +210,9 @@ class ShadowDomTest {
     );
 
     ShadowRoot shadowContext = (ShadowRoot) element.getShadowRoot();
-    ShadowRoot executeContext = (ShadowRoot)((JavascriptExecutor)driver).executeScript("return Arguments[0].shadowRoot");
+    ShadowRoot
+      executeContext =
+      (ShadowRoot) ((JavascriptExecutor) driver).executeScript("return Arguments[0].shadowRoot");
     assertThat(shadowContext.getId()).isEqualTo(executeContext.getId());
   }
 }

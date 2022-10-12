@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 public class JavascriptException extends WebDriverException {
+
   public JavascriptException(String message) {
     super(message);
   }

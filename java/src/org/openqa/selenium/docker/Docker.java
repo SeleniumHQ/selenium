@@ -72,8 +72,9 @@ public class Docker {
     }
 
     return Optional.of(getDocker()
-      .map(protocol -> protocol.inspectContainer(id))
-      .orElseThrow(() -> new DockerException("Unable to inspect container: " + id)));
+                         .map(protocol -> protocol.inspectContainer(id))
+                         .orElseThrow(
+                           () -> new DockerException("Unable to inspect container: " + id)));
   }
 
   private Optional<DockerProtocol> getDocker() {

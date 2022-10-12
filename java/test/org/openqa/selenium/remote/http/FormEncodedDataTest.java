@@ -17,21 +17,6 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.net.MediaType;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +24,20 @@ import static org.assertj.core.api.Fail.fail;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.net.MediaType;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Tag("UnitTests")
 class FormEncodedDataTest {
@@ -57,7 +56,7 @@ class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", singletonList("value")));
+    assertThat(data.get()).isEqualTo(Map.of("key", singletonList("value")));
   }
 
   @Test
@@ -67,7 +66,7 @@ class FormEncodedDataTest {
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
     assertThat(data.get()).isEqualTo(
-      ImmutableMap.of("key", singletonList("value"), "foo", singletonList("bar")));
+      Map.of("key", singletonList("value"), "foo", singletonList("bar")));
   }
 
   @Test
@@ -76,7 +75,7 @@ class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", singletonList("")));
+    assertThat(data.get()).isEqualTo(Map.of("key", singletonList("")));
   }
 
   @Test
@@ -85,7 +84,7 @@ class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("%foo%", singletonList("value")));
+    assertThat(data.get()).isEqualTo(Map.of("%foo%", singletonList("value")));
   }
 
   @Test
@@ -94,7 +93,7 @@ class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("key", singletonList("%bar%")));
+    assertThat(data.get()).isEqualTo(Map.of("key", singletonList("%bar%")));
   }
 
   @Test
@@ -103,7 +102,7 @@ class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("foo", Arrays.asList("bar", "baz")));
+    assertThat(data.get()).isEqualTo(Map.of("foo", Arrays.asList("bar", "baz")));
   }
 
   @Test
@@ -114,7 +113,7 @@ class FormEncodedDataTest {
 
     Optional<Map<String, List<String>>> data = FormEncodedData.getData(request);
 
-    assertThat(data.get()).isEqualTo(ImmutableMap.of("param", singletonList("")));
+    assertThat(data.get()).isEqualTo(Map.of("param", singletonList("")));
   }
 
   private HttpRequest createRequest(String key, String value, String... others) {
@@ -134,15 +133,11 @@ class FormEncodedDataTest {
       if (!isFirst) {
         content.append("&");
       }
-      try {
-        content.append(URLEncoder.encode(iterator.next(), UTF_8.toString()));
+      content.append(URLEncoder.encode(iterator.next(), UTF_8));
 
-        String next = iterator.next();
-        if (next != null) {
-          content.append("=").append(URLEncoder.encode(next, UTF_8.toString()));
-        }
-      } catch (UnsupportedEncodingException e) {
-        fail(e.getMessage());
+      String next = iterator.next();
+      if (next != null) {
+        content.append("=").append(URLEncoder.encode(next, UTF_8));
       }
       if (isFirst) {
         isFirst = false;

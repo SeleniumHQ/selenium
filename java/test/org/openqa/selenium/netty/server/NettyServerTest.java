@@ -17,7 +17,17 @@
 
 package org.openqa.selenium.netty.server;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
@@ -31,15 +41,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class NettyServerTest {
 
@@ -60,7 +61,7 @@ class NettyServerTest {
     Server<?> server = new NettyServer(
       new BaseServerOptions(
         new MapConfig(
-          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
+          Map.of("server", Map.of("port", PortProber.findFreePort())))),
       req -> {
         count.incrementAndGet();
         return new HttpResponse().setContent(utf8String("Count is " + count.get()));
@@ -84,26 +85,26 @@ class NettyServerTest {
     Server<?> server = new NettyServer(
       new BaseServerOptions(
         new MapConfig(
-          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))),
+          Map.of("server", Map.of("port", PortProber.findFreePort())))),
       req -> new HttpResponse().setContent(utf8String("Count is "))
     ).start();
 
     URL url = server.getUrl();
     HttpClient client = HttpClient.Factory.createDefault().createClient(url);
     HttpRequest request = new HttpRequest(DELETE, "/session");
-    String exampleUrl = "http://www.example.com";
+    final String exampleUrl = "http://www.example.com";
     request.setHeader("Origin", exampleUrl);
     request.setHeader("Accept", "*/*");
     HttpResponse response = client.execute(request);
 
     assertNull(response.getHeader("Access-Control-Allow-Origin"),
-      "Access-Control-Allow-Origin should be null");
+               "Access-Control-Allow-Origin should be null");
   }
 
   @Test
   void shouldAllowCORS() {
     Config cfg = new CompoundConfig(
-      new MapConfig(ImmutableMap.of("server", ImmutableMap.of("allow-cors", "true"))));
+      new MapConfig(Map.of("server", Map.of("allow-cors", "true"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
     assertTrue(options.getAllowCORS(), "Allow CORS should be enabled");
 
@@ -120,13 +121,13 @@ class NettyServerTest {
     HttpResponse response = client.execute(request);
 
     assertEquals("*", response.getHeader("Access-Control-Allow-Origin"),
-      "Access-Control-Allow-Origin should be equal to origin in request header");
+                 "Access-Control-Allow-Origin should be equal to origin in request header");
   }
 
   @Test
   void shouldNotBindToHost() {
     Config cfg = new CompoundConfig(
-      new MapConfig(ImmutableMap.of("server", ImmutableMap.of(
+      new MapConfig(Map.of("server", Map.of(
         "bind-host", "false", "host", "anyRandomHost"))));
     BaseServerOptions options = new BaseServerOptions(cfg);
     assertFalse(options.getBindHost(), "Bind to host should be disabled");
@@ -142,7 +143,7 @@ class NettyServerTest {
   private void outputHeaders(HttpResponse res) {
     res.getHeaderNames()
       .forEach(name ->
-        res.getHeaders(name)
-          .forEach(value -> System.out.printf("%s -> %s\n", name, value)));
+                 res.getHeaders(name)
+                   .forEach(value -> System.out.printf("%s -> %s\n", name, value)));
   }
 }

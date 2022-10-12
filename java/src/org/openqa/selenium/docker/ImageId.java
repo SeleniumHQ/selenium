@@ -29,6 +29,10 @@ public class ImageId {
     this.id = Require.nonNull("Image id", id);
   }
 
+  private static ImageId fromJson(String raw) {
+    return new ImageId(raw);
+  }
+
   @Override
   public String toString() {
     return id;
@@ -50,9 +54,5 @@ public class ImageId {
 
   private String toJson() {
     return id;
-  }
-
-  private static ImageId fromJson(String raw) {
-    return new ImageId(raw);
   }
 }

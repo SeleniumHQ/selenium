@@ -26,11 +26,11 @@ import java.util.Optional;
 
 public class Log {
 
+  private static final Json JSON = new Json();
+
   private Log() {
     // A utility class for Log events that returns the event and adds a consumer to map the event response
   }
-
-  private static final Json JSON = new Json();
 
   public static Event<LogEntry> entryAdded() {
     return new Event<>(

@@ -28,6 +28,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 public class TestType extends InternalSelenseTestBase {
+
   @Test
   void testType() throws Exception {
     selenium.open("test_type_page1.html");

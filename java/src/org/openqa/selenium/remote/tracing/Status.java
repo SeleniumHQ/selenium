@@ -21,9 +21,6 @@ import org.openqa.selenium.internal.Require;
 
 public class Status {
 
-  private final Kind kind;
-  private final String description;
-
   public static final Status OK = new Status(Kind.OK, "");
   public static final Status ABORTED = new Status(Kind.ABORTED, "");
   public static final Status CANCELLED = new Status(Kind.CANCELLED, "");
@@ -39,6 +36,8 @@ public class Status {
   public static final Status INTERNAL = new Status(Kind.INTERNAL, "");
   public static final Status UNAVAILABLE = new Status(Kind.UNAVAILABLE, "");
   public static final Status UNAUTHENTICATED = new Status(Kind.UNAUTHENTICATED, "");
+  private final Kind kind;
+  private final String description;
 
 
   private Status(Kind kind, String description) {

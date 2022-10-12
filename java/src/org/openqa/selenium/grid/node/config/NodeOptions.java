@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.node.config;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableMap;
+
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
@@ -318,7 +318,7 @@ public class NodeOptions {
         the "display-name" key again.
        */
 
-      if (drivers.size() == 0) {
+      if (drivers.isEmpty()) {
         throw new ConfigException("No driver configs were found!");
       }
 
@@ -433,7 +433,7 @@ public class NodeOptions {
           sessionFactories.putAll(capabilities, entry.getValue());
         });
 
-    if (sessionFactories.build().size() == 0) {
+    if (sessionFactories.build().isEmpty()) {
       String logMessage = "No drivers have been configured or have been found on PATH";
       LOG.warning(logMessage);
       throw new ConfigException(logMessage);
@@ -469,14 +469,15 @@ public class NodeOptions {
       })
       .collect(Collectors.toList());
 
-    Optional<Map.Entry<WebDriverInfo, Collection<SessionFactory>>> first = allDrivers.entrySet().stream()
-      .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
-      .findFirst();
+    Optional<Map.Entry<WebDriverInfo, Collection<SessionFactory>>>
+      first =
+      allDrivers.entrySet().stream()
+        .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
+        .findFirst();
 
     if (!first.isPresent()) {
       throw new ConfigException("No drivers were found for %s", drivers.toString());
     }
-
 
     allDrivers.entrySet().stream()
       .filter(entry -> drivers.contains(entry.getKey().getDisplayName().toLowerCase()))
@@ -493,7 +494,7 @@ public class NodeOptions {
     int maxSessions, Function<Capabilities, Collection<SessionFactory>> factoryFactory) {
 
     if (!config.getBool(NODE_SECTION, "detect-drivers").orElse(DEFAULT_DETECT_DRIVERS)) {
-      return ImmutableMap.of();
+      return Map.of();
     }
 
     // We don't expect duplicates, but they're fine

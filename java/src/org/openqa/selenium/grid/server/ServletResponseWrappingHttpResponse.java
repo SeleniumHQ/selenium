@@ -83,6 +83,11 @@ class ServletResponseWrappingHttpResponse extends HttpResponse {
   }
 
   @Override
+  public Supplier<InputStream> getContent() {
+    throw new UnsupportedOperationException("getContent");
+  }
+
+  @Override
   public ServletResponseWrappingHttpResponse setContent(Supplier<InputStream> supplier) {
     byte[] bytes = Contents.bytes(supplier);
     resp.setContentLength(bytes.length);
@@ -94,10 +99,5 @@ class ServletResponseWrappingHttpResponse extends HttpResponse {
       throw new UncheckedIOException(e);
     }
     return this;
-  }
-
-  @Override
-  public Supplier<InputStream> getContent() {
-    throw new UnsupportedOperationException("getContent");
   }
 }

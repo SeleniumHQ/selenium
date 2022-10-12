@@ -47,23 +47,23 @@ public class Utils {
   }
 
   public static NetworkConnection getNetworkConnection(WebDriver driver) {
-	    return convert(driver, NetworkConnection.class, CapabilityType.SUPPORTS_NETWORK_CONNECTION,
-	        RemoteNetworkConnection.class);
+    return convert(driver, NetworkConnection.class, CapabilityType.SUPPORTS_NETWORK_CONNECTION,
+                   RemoteNetworkConnection.class);
   }
 
   static LocationContext getLocationContext(WebDriver driver) {
     return convert(driver, LocationContext.class, CapabilityType.SUPPORTS_LOCATION_CONTEXT,
-        RemoteLocationContext.class);
+                   RemoteLocationContext.class);
   }
 
   static WebStorage getWebStorage(WebDriver driver) {
     return convert(driver, WebStorage.class, CapabilityType.SUPPORTS_WEB_STORAGE,
-        RemoteWebStorage.class);
+                   RemoteWebStorage.class);
   }
 
   private static <T> T convert(
-      WebDriver driver, Class<T> interfaceClazz, String capability,
-      Class<? extends T> remoteImplementationClazz) {
+    WebDriver driver, Class<T> interfaceClazz, String capability,
+    Class<? extends T> remoteImplementationClazz) {
     if (interfaceClazz.isInstance(driver)) {
       return interfaceClazz.cast(driver);
     }
@@ -73,8 +73,8 @@ public class Utils {
         && ((HasCapabilities) driver).getCapabilities().is(capability)) {
       try {
         return remoteImplementationClazz
-            .getConstructor(ExecuteMethod.class)
-            .newInstance((ExecuteMethod) driver);
+          .getConstructor(ExecuteMethod.class)
+          .newInstance(driver);
       } catch (InvocationTargetException e) {
         Throwable cause = e.getCause();
         throw cause instanceof RuntimeException ?
@@ -86,7 +86,7 @@ public class Utils {
     }
 
     throw new UnsupportedCommandException(
-        "driver (" + driver.getClass().getName() + ") does not support "
-        + interfaceClazz.getName());
+      "driver (" + driver.getClass().getName() + ") does not support "
+      + interfaceClazz.getName());
   }
 }

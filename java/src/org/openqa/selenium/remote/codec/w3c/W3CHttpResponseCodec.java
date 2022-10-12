@@ -33,10 +33,10 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
+import org.openqa.selenium.remote.JsonToWebElementConverter;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.codec.AbstractHttpResponseCodec;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.JsonToWebElementConverter;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -92,7 +92,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
         response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
         response.setValue(content);
       } else if (HTTP_GATEWAY_TIMEOUT == encodedResponse.getStatus() ||
-        HTTP_BAD_GATEWAY == encodedResponse.getStatus()) {
+                 HTTP_BAD_GATEWAY == encodedResponse.getStatus()) {
         response.setStatus(ErrorCodes.UNHANDLED_ERROR);
         response.setValue(content);
       } else {
@@ -168,10 +168,10 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     if (value instanceof WebDriverException) {
       HashMap<Object, Object> exception = new HashMap<>();
       exception.put(
-          "error",
-          response.getState() != null ?
-          response.getState() :
-          errorCodes.toState(response.getStatus()));
+        "error",
+        response.getState() != null ?
+        response.getState() :
+        errorCodes.toState(response.getStatus()));
       exception.put("message", ((WebDriverException) value).getMessage());
       exception.put("stacktrace", Throwables.getStackTraceAsString((WebDriverException) value));
       if (value instanceof UnhandledAlertException) {

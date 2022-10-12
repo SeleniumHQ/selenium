@@ -17,12 +17,13 @@
 
 package org.openqa.selenium.grid.graphql;
 
-import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingEnvironment;
 import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Slot;
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.internal.Require;
+
+import graphql.schema.DataFetcher;
+import graphql.schema.DataFetchingEnvironment;
 
 import java.util.Set;
 
@@ -59,7 +60,7 @@ public class SessionData implements DataFetcher {
         currentSession.slot);
     } else {
       throw new SessionNotFoundException("No ongoing session found with the requested session id.",
-        sessionId);
+                                         sessionId);
     }
   }
 
@@ -68,7 +69,7 @@ public class SessionData implements DataFetcher {
       for (Slot slot : status.getSlots()) {
         org.openqa.selenium.grid.data.Session session = slot.getSession();
 
-        if (session!=null && sessionId.equals(session.getId().toString())) {
+        if (session != null && sessionId.equals(session.getId().toString())) {
           return new SessionInSlot(session, status, slot);
         }
       }
@@ -77,6 +78,7 @@ public class SessionData implements DataFetcher {
   }
 
   private static class SessionInSlot {
+
     private final org.openqa.selenium.grid.data.Session session;
     private final NodeStatus node;
     private final Slot slot;

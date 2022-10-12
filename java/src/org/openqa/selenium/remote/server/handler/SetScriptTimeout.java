@@ -37,7 +37,8 @@ public class SetScriptTimeout extends WebDriverHandler<Void> {
     try {
       millis = ((Number) allParameters.get("ms")).longValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) timeout value passed: " + allParameters.get("ms"), ex);
+      throw new WebDriverException(
+        "Illegal (non-numeric) timeout value passed: " + allParameters.get("ms"), ex);
     }
   }
 

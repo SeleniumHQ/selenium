@@ -21,12 +21,12 @@ import org.openqa.selenium.internal.Require;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 public class Urls {
@@ -43,11 +43,7 @@ public class Urls {
    * @see URLEncoder#encode(java.lang.String, java.lang.String)
    */
   public static String urlEncode(String value) {
-    try {
-      return URLEncoder.encode(value, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new UncheckedIOException(e);
-    }
+    return URLEncoder.encode(value, StandardCharsets.UTF_8);
   }
 
   public static URL fromUri(URI uri) {

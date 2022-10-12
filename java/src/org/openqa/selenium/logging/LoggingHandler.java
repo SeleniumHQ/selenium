@@ -34,10 +34,11 @@ import java.util.logging.LogRecord;
 public class LoggingHandler extends Handler {
 
   private static final int MAX_RECORDS = 1000;
-  private ArrayDeque<LogEntry> records = new ArrayDeque<>();
   private static final LoggingHandler INSTANCE = new LoggingHandler();
+  private ArrayDeque<LogEntry> records = new ArrayDeque<>();
 
-  private LoggingHandler() {}
+  private LoggingHandler() {
+  }
 
   public static LoggingHandler getInstance() {
     return INSTANCE;
@@ -51,16 +52,17 @@ public class LoggingHandler extends Handler {
   }
 
   @Override
-  public synchronized  void publish(LogRecord logRecord) {
+  public synchronized void publish(LogRecord logRecord) {
     if (isLoggable(logRecord)) {
       if (records.size() > MAX_RECORDS) {
         records.remove();
       }
       records.add(new LogEntry(logRecord.getLevel(),
-          logRecord.getMillis(),
-          logRecord.getLoggerName() + " "
-              + logRecord.getSourceClassName() + "." + logRecord.getSourceMethodName()
-              + " " + logRecord.getMessage()));
+                               logRecord.getMillis(),
+                               logRecord.getLoggerName() + " "
+                               + logRecord.getSourceClassName() + "."
+                               + logRecord.getSourceMethodName()
+                               + " " + logRecord.getMessage()));
     }
   }
 

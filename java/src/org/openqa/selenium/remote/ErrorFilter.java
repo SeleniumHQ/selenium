@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.remote;
 
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpResponse;
-
-import static org.openqa.selenium.remote.http.Contents.asJson;
 
 public class ErrorFilter implements Filter {
 

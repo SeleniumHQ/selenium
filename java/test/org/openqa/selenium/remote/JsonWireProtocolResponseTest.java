@@ -20,10 +20,8 @@ package org.openqa.selenium.remote;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -39,17 +37,17 @@ class JsonWireProtocolResponseTest {
   void successfulResponseGetsParsedProperly() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
-        ImmutableMap.of(
-            "status", 0,
-            "value", caps.asMap(),
-            "sessionId", "cheese is opaque");
+      Map.of(
+        "status", 0,
+        "value", caps.asMap(),
+        "sessionId", "cheese is opaque");
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
-        0,
-        200,
-        payload);
+      0,
+      200,
+      payload);
 
     ProtocolHandshake.Result result =
-        new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
+      new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
     assertThat(result).isNotNull();
     assertThat(result.getDialect()).isEqualTo(Dialect.OSS);
@@ -65,17 +63,17 @@ class JsonWireProtocolResponseTest {
   void shouldIgnoreAw3CProtocolReply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, Map<String, Object>> payload =
-        ImmutableMap.of(
-            "value", ImmutableMap.of(
-                "capabilities", caps.asMap(),
-                "sessionId", "cheese is opaque"));
+      Map.of(
+        "value", Map.of(
+          "capabilities", caps.asMap(),
+          "sessionId", "cheese is opaque"));
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
-        0,
-        200,
-        payload);
+      0,
+      200,
+      payload);
 
     ProtocolHandshake.Result result =
-        new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
+      new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
     assertThat(result).isNull();
   }
@@ -84,16 +82,16 @@ class JsonWireProtocolResponseTest {
   void shouldIgnoreAGeckodriver013Reply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
-        ImmutableMap.of(
-            "value", caps.asMap(),
-            "sessionId", "cheese is opaque");
+      Map.of(
+        "value", caps.asMap(),
+        "sessionId", "cheese is opaque");
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
-        0,
-        200,
-        payload);
+      0,
+      200,
+      payload);
 
     ProtocolHandshake.Result result =
-        new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
+      new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse);
 
     assertThat(result).isNull();
   }
@@ -103,17 +101,17 @@ class JsonWireProtocolResponseTest {
     WebDriverException exception = new SessionNotCreatedException("me no likey");
     Json json = new Json();
 
-    Map<String, Object> payload = ImmutableMap.of(
-        "value", json.toType(json.toJson(exception), Json.MAP_TYPE),
-        "status", ErrorCodes.SESSION_NOT_CREATED);
+    Map<String, Object> payload = Map.of(
+      "value", json.toType(json.toJson(exception), Json.MAP_TYPE),
+      "status", ErrorCodes.SESSION_NOT_CREATED);
 
     InitialHandshakeResponse initialResponse = new InitialHandshakeResponse(
-        0,
-        500,
-        payload);
+      0,
+      500,
+      payload);
 
     assertThatExceptionOfType(SessionNotCreatedException.class)
-        .isThrownBy(() -> new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse))
-        .withMessageContaining("me no likey");
+      .isThrownBy(() -> new JsonWireProtocolResponse().getResponseFunction().apply(initialResponse))
+      .withMessageContaining("me no likey");
   }
 }

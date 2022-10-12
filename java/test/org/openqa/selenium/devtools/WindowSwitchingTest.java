@@ -49,7 +49,9 @@ class WindowSwitchingTest extends DevToolsTestBase {
     driver.switchTo().window(newWindowHandle);
     driver.get("https://www.selenium.dev/documentation/webdriver/browser_manipulation/");
 
-    List<TargetInfo> updatedTargets = this.devTools.send(this.devTools.getDomains().target().getTargets());
+    List<TargetInfo>
+      updatedTargets =
+      this.devTools.send(this.devTools.getDomains().target().getTargets());
 
     assertThat(updatedTargets).isNotEqualTo(originalTargets);
   }

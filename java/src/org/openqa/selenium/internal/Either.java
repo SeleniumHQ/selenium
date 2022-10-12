@@ -23,6 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class Either<A, B> implements Iterable<B> {
+
   private final A left;
   private final B right;
 

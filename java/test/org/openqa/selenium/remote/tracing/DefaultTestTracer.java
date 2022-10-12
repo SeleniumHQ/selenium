@@ -17,10 +17,11 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
+
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
-import org.openqa.selenium.remote.tracing.opentelemetry.OpenTelemetryTracer;
 
 public class DefaultTestTracer {
 

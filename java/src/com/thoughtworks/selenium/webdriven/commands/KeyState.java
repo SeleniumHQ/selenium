@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.webdriven.commands;
 
 public class KeyState {
+
   public boolean metaKeyDown;
   public boolean altKeyDown;
   public boolean controlKeyDown;

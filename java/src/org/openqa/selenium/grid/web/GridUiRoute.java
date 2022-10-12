@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.web;
 
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static org.openqa.selenium.remote.http.Route.get;
+
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -25,9 +28,6 @@ import org.openqa.selenium.remote.http.Route;
 
 import java.net.URL;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
-import static org.openqa.selenium.remote.http.Route.get;
 
 public class GridUiRoute implements Routable {
 

@@ -42,6 +42,24 @@ class InstanceCoercer extends TypeCoercer<Object> {
     this.coercer = Require.nonNull("Coercer", coercer);
   }
 
+  private static Class<?> getClss(Type type) {
+    Class<?> target = null;
+
+    if (type instanceof Class) {
+      target = (Class<?>) type;
+    } else if (type instanceof ParameterizedType) {
+      Type rawType = ((ParameterizedType) type).getRawType();
+      if (rawType instanceof Class) {
+        target = (Class<?>) rawType;
+      }
+    }
+
+    if (target == null) {
+      throw new JsonException("Cannot determine base class");
+    }
+    return target;
+  }
+
   @Override
   public boolean test(Class aClass) {
     try {
@@ -100,51 +118,52 @@ class InstanceCoercer extends TypeCoercer<Object> {
 
   private Map<String, TypeAndWriter> getFieldWriters(Constructor<?> constructor) {
     List<Field> fields = new LinkedList<>();
-    for (Class<?> current = constructor.getDeclaringClass(); current != Object.class; current = current.getSuperclass()) {
+    for (Class<?> current = constructor.getDeclaringClass(); current != Object.class;
+         current = current.getSuperclass()) {
       fields.addAll(Arrays.asList(current.getDeclaredFields()));
     }
 
     return fields.stream()
-        .filter(field -> !Modifier.isTransient(field.getModifiers()))
-        .filter(field -> !Modifier.isStatic(field.getModifiers()))
-        .peek(field -> field.setAccessible(true))
-        .collect(
-            Collectors.toMap(
-                Field::getName,
-                field -> {
-                  Type type = field.getGenericType();
-                  BiConsumer<Object, Object> writer =
-                      (instance, value) -> {
-                        try {
-                          field.set(instance, value);
-                        } catch (IllegalAccessException e) {
-                          throw new JsonException(e);
-                        }
-                      };
-                  return new TypeAndWriter(type, writer);
-                }));
+      .filter(field -> !Modifier.isTransient(field.getModifiers()))
+      .filter(field -> !Modifier.isStatic(field.getModifiers()))
+      .peek(field -> field.setAccessible(true))
+      .collect(
+        Collectors.toMap(
+          Field::getName,
+          field -> {
+            Type type = field.getGenericType();
+            BiConsumer<Object, Object> writer =
+              (instance, value) -> {
+                try {
+                  field.set(instance, value);
+                } catch (IllegalAccessException e) {
+                  throw new JsonException(e);
+                }
+              };
+            return new TypeAndWriter(type, writer);
+          }));
   }
 
   private Map<String, TypeAndWriter> getBeanWriters(Constructor<?> constructor) {
     return Stream.of(
-            SimplePropertyDescriptor.getPropertyDescriptors(constructor.getDeclaringClass()))
-        .filter(desc -> desc.getWriteMethod() != null)
-        .collect(
-            Collectors.toMap(
-                SimplePropertyDescriptor::getName,
-                desc -> {
-                  Type type = desc.getWriteMethod().getGenericParameterTypes()[0];
-                  BiConsumer<Object, Object>writer = (instance, value) -> {
-                      Method method = desc.getWriteMethod();
-                      method.setAccessible(true);
-                      try {
-                        method.invoke(instance, value);
-                      } catch (ReflectiveOperationException e) {
-                        throw new JsonException(e);
-                      }
-                    };
-                  return new TypeAndWriter(type, writer);
-                }));
+        SimplePropertyDescriptor.getPropertyDescriptors(constructor.getDeclaringClass()))
+      .filter(desc -> desc.getWriteMethod() != null)
+      .collect(
+        Collectors.toMap(
+          SimplePropertyDescriptor::getName,
+          desc -> {
+            Type type = desc.getWriteMethod().getGenericParameterTypes()[0];
+            BiConsumer<Object, Object> writer = (instance, value) -> {
+              Method method = desc.getWriteMethod();
+              method.setAccessible(true);
+              try {
+                method.invoke(instance, value);
+              } catch (ReflectiveOperationException e) {
+                throw new JsonException(e);
+              }
+            };
+            return new TypeAndWriter(type, writer);
+          }));
   }
 
   private Constructor<?> getConstructor(Type type) {
@@ -159,25 +178,8 @@ class InstanceCoercer extends TypeCoercer<Object> {
     }
   }
 
-  private static Class<?> getClss(Type type) {
-    Class<?> target = null;
-
-    if (type instanceof Class) {
-      target = (Class<?>) type;
-    } else if (type instanceof ParameterizedType) {
-      Type rawType = ((ParameterizedType) type).getRawType();
-      if (rawType instanceof Class) {
-        target = (Class<?>) rawType;
-      }
-    }
-
-    if (target == null) {
-      throw new JsonException("Cannot determine base class");
-    }
-    return target;
-  }
-
   private static class TypeAndWriter {
+
     private final Type type;
     private final BiConsumer<Object, Object> writer;
 

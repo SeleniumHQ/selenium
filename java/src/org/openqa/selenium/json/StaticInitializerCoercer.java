@@ -65,8 +65,8 @@ public class StaticInitializerCoercer extends TypeCoercer<Object> {
 
   private Stream<Method> getMethods(Class<?> aClass) {
     return Arrays.stream(aClass.getDeclaredMethods())
-        .filter(method -> Modifier.isStatic(method.getModifiers()))
-        .filter(method -> FACTORY_METHOD_NAME.equals(method.getName()))
-        .filter(method -> method.getParameterCount() == 1);
+      .filter(method -> Modifier.isStatic(method.getModifiers()))
+      .filter(method -> FACTORY_METHOD_NAME.equals(method.getName()))
+      .filter(method -> method.getParameterCount() == 1);
   }
 }

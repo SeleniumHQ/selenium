@@ -23,9 +23,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class StandardGridRoles {
-  private StandardGridRoles() {
-    // Constants
-  }
 
   public static final Role DISTRIBUTOR_ROLE = Role.of("grid-distributor");
   public static final Role EVENT_BUS_ROLE = Role.of("grid-event-bus");
@@ -34,7 +31,6 @@ public class StandardGridRoles {
   public static final Role ROUTER_ROLE = Role.of("grid-router");
   public static final Role SESSION_MAP_ROLE = Role.of("grid-session-map");
   public static final Role SESSION_QUEUE_ROLE = Role.of("grid-new-session-queue");
-
   public static final Set<Role> ALL_ROLES = Collections.unmodifiableSet(
     new TreeSet<>(
       Arrays.asList(
@@ -44,4 +40,8 @@ public class StandardGridRoles {
         ROUTER_ROLE,
         SESSION_MAP_ROLE,
         SESSION_QUEUE_ROLE)));
+
+  private StandardGridRoles() {
+    // Constants
+  }
 }

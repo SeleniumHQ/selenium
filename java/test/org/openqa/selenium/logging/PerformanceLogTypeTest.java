@@ -56,7 +56,7 @@ class PerformanceLogTypeTest extends JupiterTestBase {
   void performanceLogShouldBeDisabledByDefault() {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PERFORMANCE))
-        .describedAs("Performance log should not be enabled by default").isFalse();
+      .describedAs("Performance log should not be enabled by default").isFalse();
   }
 
   void createLocalDriverWithPerformanceLogType() {
@@ -71,7 +71,7 @@ class PerformanceLogTypeTest extends JupiterTestBase {
     createLocalDriverWithPerformanceLogType();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PERFORMANCE))
-        .describedAs("Profiler log should be enabled").isTrue();
+      .describedAs("Profiler log should be enabled").isTrue();
   }
 
   @Test

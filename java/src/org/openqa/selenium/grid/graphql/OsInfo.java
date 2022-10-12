@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.graphql;
 
 public class OsInfo {
+
   private final String arch;
   private final String name;
   private final String version;

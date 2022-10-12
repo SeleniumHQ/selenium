@@ -126,12 +126,12 @@ class ElementAttributeTest extends JupiterTestBase {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
     assertThatExceptionOfType(InvalidElementStateException.class)
-        .isThrownBy(() -> disabledTextElement1.sendKeys("foo"));
+      .isThrownBy(() -> disabledTextElement1.sendKeys("foo"));
     assertThat(disabledTextElement1.getText()).isEmpty();
 
     WebElement disabledTextElement2 = driver.findElement(By.id("disabledTextElement2"));
     assertThatExceptionOfType(InvalidElementStateException.class)
-        .isThrownBy(() -> disabledTextElement2.sendKeys("bar"));
+      .isThrownBy(() -> disabledTextElement2.sendKeys("bar"));
     assertThat(disabledTextElement2.getText()).isEmpty();
   }
 
@@ -288,11 +288,11 @@ class ElementAttributeTest extends JupiterTestBase {
     WebElement mouseclickDiv = driver.findElement(By.id("mouseclick"));
 
     String onClickValue = mouseclickDiv.getAttribute("onclick");
-    String expectedOnClickValue = "displayMessage('mouse click');";
+    final String expectedOnClickValue = "displayMessage('mouse click');";
     assertThat(onClickValue).as("Javascript code").isIn(
-        "javascript:" + expectedOnClickValue, // Non-IE
-        "function anonymous()\n{\n" + expectedOnClickValue + "\n}", // IE
-        "function onclick()\n{\n" + expectedOnClickValue + "\n}"); // IE
+      "javascript:" + expectedOnClickValue, // Non-IE
+      "function anonymous()\n{\n" + expectedOnClickValue + "\n}", // IE
+      "function onclick()\n{\n" + expectedOnClickValue + "\n}"); // IE
 
     WebElement mousedownDiv = driver.findElement(By.id("mousedown"));
     assertThat(mousedownDiv.getAttribute("onclick")).isNull();
@@ -417,7 +417,7 @@ class ElementAttributeTest extends JupiterTestBase {
   private void checkEnumeratedAttribute(String name, String... values) {
     asList(values).forEach(value -> {
       driver.get(appServer.create(new Page().withBody(
-          String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
+        String.format("<div id=\"attr\" %s=\"%s\">", name, value))));
       assertThat(driver.findElement(By.id("attr")).getAttribute(name)).isEqualTo(value);
     });
 

@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.server.Session;
 import java.util.Map;
 
 public class GetCssProperty extends WebElementHandler<String> {
+
   private volatile String propertyName;
 
   public GetCssProperty(Session session) {

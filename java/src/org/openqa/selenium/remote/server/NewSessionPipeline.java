@@ -18,7 +18,6 @@
 package org.openqa.selenium.remote.server;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -41,9 +40,9 @@ public class NewSessionPipeline {
   private final List<Function<Capabilities, Capabilities>> mutators;
 
   private NewSessionPipeline(
-      List<SessionFactory> factories,
-      SessionFactory fallback,
-      List<Function<Capabilities, Capabilities>> mutators) {
+    List<SessionFactory> factories,
+    SessionFactory fallback,
+    List<Function<Capabilities, Capabilities>> mutators) {
     this.factories = factories;
     this.fallback = fallback;
     this.mutators = mutators;
@@ -55,39 +54,41 @@ public class NewSessionPipeline {
 
   public ActiveSession createNewSession(NewSessionPayload payload) {
     return payload.stream()
-        .map(caps -> {
-          for (Function<Capabilities, Capabilities> mutator : mutators) {
-            caps = mutator.apply(caps);
-          }
-          return caps;
-        })
-        .map(caps -> factories.stream()
-            .filter(factory -> factory.test(caps))
-            .map(factory -> factory.apply(
-                new CreateSessionRequest(
-                    payload.getDownstreamDialects(),
-                    caps,
-                    ImmutableMap.of())))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .findFirst())
+      .map(caps -> {
+        for (Function<Capabilities, Capabilities> mutator : mutators) {
+          caps = mutator.apply(caps);
+        }
+        return caps;
+      })
+      .map(caps -> factories.stream()
+        .filter(factory -> factory.test(caps))
+        .map(factory -> factory.apply(
+          new CreateSessionRequest(
+            payload.getDownstreamDialects(),
+            caps,
+            Map.of())))
         .filter(Optional::isPresent)
         .map(Optional::get)
-        .findFirst()
-        .orElseGet(
-            () -> fallback.apply(
-                new CreateSessionRequest(
-                    payload.getDownstreamDialects(),
-                    new ImmutableCapabilities(),
-                    ImmutableMap.of()))
-                .orElseThrow(
-                    () -> new SessionNotCreatedException(
-                        "Unable to create session from " + payload))
-        );
+        .findFirst())
+      .filter(Optional::isPresent)
+      .map(Optional::get)
+      .findFirst()
+      .orElseGet(
+        () -> fallback.apply(
+            new CreateSessionRequest(
+              payload.getDownstreamDialects(),
+              new ImmutableCapabilities(),
+              Map.of()))
+          .orElseThrow(
+            () -> new SessionNotCreatedException(
+              "Unable to create session from " + payload))
+      );
   }
 
   public static class Builder {
-    private List<SessionFactory> factories = new LinkedList<>();
+
+    private final List<SessionFactory> factories = new LinkedList<>();
+    private final List<Function<Capabilities, Capabilities>> mutators = new LinkedList<>();
     private SessionFactory fallback = new SessionFactory() {
       @Override
       public boolean test(Capabilities capabilities) {
@@ -99,7 +100,6 @@ public class NewSessionPipeline {
         return Optional.empty();
       }
     };
-    private List<Function<Capabilities, Capabilities>> mutators = new LinkedList<>();
 
     private Builder() {
       // Private class
@@ -116,7 +116,7 @@ public class NewSessionPipeline {
     }
 
     public Builder addCapabilitiesMutator(
-        Function<Capabilities, Capabilities> mutator) {
+      Function<Capabilities, Capabilities> mutator) {
       mutators.add(Require.nonNull("Mutator", mutator));
       return this;
     }

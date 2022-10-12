@@ -42,8 +42,8 @@ public class ContainerLogs {
   @Override
   public String toString() {
     return "ContainerInfo{" +
-      "containerLogs=" + logLines.toString() +
-      ", id=" + id +
-      '}';
+           "containerLogs=" + logLines.toString() +
+           ", id=" + id +
+           '}';
   }
 }

@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.remote;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -49,10 +53,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.json.Json.LIST_OF_MAPS_TYPE;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class NewSessionPayload implements Closeable {
 
@@ -106,7 +106,7 @@ public class NewSessionPayload implements Closeable {
   public static NewSessionPayload create(Capabilities caps) {
     // We need to convert the capabilities into a new session payload. At this point we're dealing
     // with references, so I'm Just Sure This Will Be Fine.
-    return create(ImmutableMap.of("desiredCapabilities", caps.asMap()));
+    return create(Map.of("desiredCapabilities", caps.asMap()));
   }
 
   public static NewSessionPayload create(Map<String, ?> source) {
@@ -121,12 +121,12 @@ public class NewSessionPayload implements Closeable {
   private void validate() throws IOException {
     Map<String, Object> alwaysMatch = getAlwaysMatch();
     if (alwaysMatch == null) {
-      alwaysMatch = ImmutableMap.of();
+      alwaysMatch = Map.of();
     }
     Map<String, Object> always = alwaysMatch;
     Collection<Map<String, Object>> firsts = getFirstMatches();
     if (firsts == null) {
-      firsts = ImmutableList.of(ImmutableMap.of());
+      firsts = ImmutableList.of(Map.of());
     }
 
     if (firsts.isEmpty()) {
@@ -166,10 +166,11 @@ public class NewSessionPayload implements Closeable {
             "Illegal key values seen in w3c capabilities: " + illegalKeys);
         }
       })
-      .forEach(map -> {});
+      .forEach(map -> {
+      });
   }
 
-  public void writeTo(Appendable appendable) throws IOException {
+  void writeTo(Appendable appendable) throws IOException {
     try (JsonOutput json = new Json().newOutput(appendable)) {
       json.beginObject();
 
@@ -338,11 +339,11 @@ public class NewSessionPayload implements Closeable {
       fromW3c = Stream.of();  // No W3C capabilities.
     } else {
       if (alwaysMatch == null) {
-        alwaysMatch = ImmutableMap.of();
+        alwaysMatch = Map.of();
       }
       Map<String, Object> always = alwaysMatch; // Keep the compiler happy.
       if (firsts == null) {
-        firsts = ImmutableList.of(ImmutableMap.of());
+        firsts = ImmutableList.of(Map.of());
       }
 
       fromW3c = firsts.stream()

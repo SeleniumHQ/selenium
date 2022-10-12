@@ -24,32 +24,6 @@ import java.util.List;
  * Utility class for concurrency tests.
  */
 public class ParallelTestRunner {
-  public interface Worker {
-    void run();
-  }
-
-  private static class WorkerThread extends Thread {  // Thread safety reviewed
-    private final Worker _worker;
-    private volatile Throwable _throwable;
-
-    private WorkerThread(String name, Worker worker) {
-      super(name);
-      _worker = worker;
-    }
-
-    @Override
-    public void run() {
-      try {
-        _worker.run();
-      } catch (Throwable t) {
-        _throwable = t;
-      }
-    }
-
-    public Throwable getThrowable() {
-      return _throwable;
-    }
-  }
 
   private final List<Worker> _workers;
 
@@ -97,6 +71,35 @@ public class ParallelTestRunner {
   private void interrupt(List<WorkerThread> threads) {
     for (WorkerThread thread : threads) {
       thread.interrupt();
+    }
+  }
+
+  public interface Worker {
+
+    void run();
+  }
+
+  private static class WorkerThread extends Thread {  // Thread safety reviewed
+
+    private final Worker _worker;
+    private volatile Throwable _throwable;
+
+    private WorkerThread(String name, Worker worker) {
+      super(name);
+      _worker = worker;
+    }
+
+    @Override
+    public void run() {
+      try {
+        _worker.run();
+      } catch (Throwable t) {
+        _throwable = t;
+      }
+    }
+
+    public Throwable getThrowable() {
+      return _throwable;
     }
   }
 }

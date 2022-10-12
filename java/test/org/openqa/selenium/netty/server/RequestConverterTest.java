@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.netty.server;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.http.HttpRequest;
+
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -24,11 +30,6 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.remote.http.HttpRequest;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class RequestConverterTest {
 

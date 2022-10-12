@@ -29,6 +29,10 @@ public class InProcessTestEnvironment implements TestEnvironment {
     appServer.start();
   }
 
+  public static void main(String[] args) {
+    new InProcessTestEnvironment();
+  }
+
   @Override
   public AppServer getAppServer() {
     return appServer;
@@ -37,9 +41,5 @@ public class InProcessTestEnvironment implements TestEnvironment {
   @Override
   public void stop() {
     appServer.stop();
-  }
-
-  public static void main(String[] args) {
-    new InProcessTestEnvironment();
   }
 }

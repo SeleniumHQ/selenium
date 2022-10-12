@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.grid.sessionqueue.local;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
@@ -68,10 +72,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
 
 /**
  * An in-memory implementation of the list of new session requests.
@@ -197,9 +197,11 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         }
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-        result = Either.left(new SessionNotCreatedException("Interrupted when creating the session", e));
+        result =
+          Either.left(new SessionNotCreatedException("Interrupted when creating the session", e));
       } catch (RuntimeException e) {
-        result = Either.left(new SessionNotCreatedException("An error occurred creating the session", e));
+        result =
+          Either.left(new SessionNotCreatedException("An error occurred creating the session", e));
       }
 
       Lock writeLock = this.lock.writeLock();
@@ -216,8 +218,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         res.setContent(Contents.bytes(result.right().getDownstreamEncodedResponse()));
       } else {
         res.setStatus(HTTP_INTERNAL_ERROR)
-          .setContent(Contents.asJson(ImmutableMap.of(
-            "value", ImmutableMap.of("error", "session not created",
+          .setContent(Contents.asJson(Map.of(
+            "value",Map.of("error", "session not created",
                                      "message", result.left().getMessage(),
                                      "stacktrace", result.left().getStackTrace()))));
       }
@@ -249,7 +251,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Require.nonNull("New session request", request);
 
     boolean added;
-    TraceContext context = contexts.getOrDefault(request.getRequestId(), tracer.getCurrentContext());
+    TraceContext
+      context =
+      contexts.getOrDefault(request.getRequestId(), tracer.getCurrentContext());
     try (Span ignored = context.createSpan("sessionqueue.retry")) {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
@@ -305,9 +309,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     writeLock.lock();
     try {
       Optional<SessionRequest> maybeRequest =
-          queue.stream()
-              .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
-              .findFirst();
+        queue.stream()
+          .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
+          .findFirst();
 
       maybeRequest.ifPresent(req -> this.remove(req.getRequestId()));
 
@@ -318,7 +322,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
-  public void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result) {
+  public void complete(RequestId reqId,
+                       Either<SessionNotCreatedException, CreateSessionResponse> result) {
     Require.nonNull("New session request", reqId);
     Require.nonNull("Result", result);
     TraceContext context = contexts.getOrDefault(reqId, tracer.getCurrentContext());
@@ -376,7 +381,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     try {
       return queue.stream()
         .map(req ->
-          new SessionRequestCapability(req.getRequestId(), req.getDesiredCapabilities()))
+               new SessionRequestCapability(req.getRequestId(), req.getDesiredCapabilities()))
         .collect(Collectors.toList());
     } finally {
       readLock.unlock();
@@ -414,7 +419,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       this.result = Either.left(new SessionNotCreatedException("Session not created"));
     }
 
-    public synchronized void setResult(Either<SessionNotCreatedException, CreateSessionResponse> result) {
+    public synchronized void setResult(
+      Either<SessionNotCreatedException, CreateSessionResponse> result) {
       if (complete) {
         return;
       }

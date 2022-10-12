@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.devtools.idealized;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.logging.Level.WARNING;
+
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
@@ -50,23 +54,17 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.logging.Level.WARNING;
-
 public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
   private static final Logger LOG = Logger.getLogger(Network.class.getName());
-
-  private final Map<Predicate<URI>, Supplier<Credentials>> authHandlers = new LinkedHashMap<>();
-  private final Filter defaultFilter = next -> next::execute;
-  private Filter filter = defaultFilter;
+  private static final Filter defaultFilter = next -> next;
   protected final DevTools devTools;
-
+  private final Map<Predicate<URI>, Supplier<Credentials>> authHandlers = new LinkedHashMap<>();
   private final AtomicBoolean networkInterceptorClosed = new AtomicBoolean();
+  private Filter filter = defaultFilter;
 
-  public Network(DevTools devtools) {
-    this.devTools = Require.nonNull("DevTools", devtools);
+  protected Network(DevTools devtools) {
+    devTools = Require.nonNull("DevTools", devtools);
   }
 
   public void disable() {
@@ -77,43 +75,6 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     filter = defaultFilter;
   }
 
-  public static class UserAgent {
-
-    private final String userAgent;
-    private final Optional<String> acceptLanguage;
-    private final Optional<String> platform;
-
-    public UserAgent(String userAgent) {
-      this(userAgent, Optional.empty(), Optional.empty());
-    }
-
-    private UserAgent(String userAgent, Optional<String> acceptLanguage, Optional<String> platform) {
-      this.userAgent = userAgent;
-      this.acceptLanguage = acceptLanguage;
-      this.platform = platform;
-    }
-
-    public String userAgent() {
-      return userAgent;
-    }
-
-    public UserAgent acceptLanguage(String acceptLanguage) {
-      return new UserAgent(this.userAgent, Optional.of(acceptLanguage), this.platform);
-    }
-
-    public Optional<String> acceptLanguage() {
-      return acceptLanguage;
-    }
-
-    public UserAgent platform(String platform) {
-      return new UserAgent(this.userAgent, this.acceptLanguage, Optional.of(platform));
-    }
-
-    public Optional<String> platform() {
-      return platform;
-    }
-  }
-
   public void setUserAgent(String userAgent) {
     devTools.send(setUserAgentOverride(new UserAgent(userAgent)));
   }
@@ -122,7 +83,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     devTools.send(setUserAgentOverride(userAgent));
   }
 
-  public void addAuthHandler(Predicate<URI> whenThisMatches, Supplier<Credentials> useTheseCredentials) {
+  public void addAuthHandler(Predicate<URI> whenThisMatches,
+                             Supplier<Credentials> useTheseCredentials) {
     Require.nonNull("URI predicate", whenThisMatches);
     Require.nonNull("Credentials", useTheseCredentials);
 
@@ -131,7 +93,6 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     prepareToInterceptTraffic();
   }
 
-  @SuppressWarnings("SuspiciousMethodCalls")
   public void resetNetworkFilter() {
     filter = defaultFilter;
   }
@@ -147,7 +108,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     prepareToInterceptTraffic();
   }
 
-  public void prepareToInterceptTraffic() {
+  private void prepareToInterceptTraffic() {
     devTools.send(disableNetworkCaching());
 
     devTools.addListener(
@@ -161,7 +122,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
           if (authCredentials.isPresent()) {
             Credentials credentials = authCredentials.get();
             if (!(credentials instanceof UsernameAndPassword)) {
-              throw new DevToolsException("DevTools can only support username and password authentication");
+              throw new DevToolsException(
+                "DevTools can only support username and password authentication");
             }
 
             UsernameAndPassword uap = (UsernameAndPassword) credentials;
@@ -181,60 +143,61 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
       requestPausedEvent(),
       pausedRequest -> {
         try {
-        String id = getRequestId(pausedRequest);
-        Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
+          String id = getRequestId(pausedRequest);
+          Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
 
-        if (message.isRight()) {
-          HttpResponse res = message.right();
-          CompletableFuture<HttpResponse> future = responses.remove(id);
+          if (message.isRight()) {
+            HttpResponse res = message.right();
+            CompletableFuture<HttpResponse> future = responses.remove(id);
 
-          if (future == null) {
+            if (future == null) {
+              devTools.send(continueWithoutModification(pausedRequest));
+              return;
+            }
+
+            future.complete(res);
+            return;
+          }
+
+          HttpResponse forBrowser = filter.andFinally(req -> {
+            // Convert the selenium request to a CDP one and fulfill.
+
+            CompletableFuture<HttpResponse> res = new CompletableFuture<>();
+            responses.put(id, res);
+
+            devTools.send(continueRequest(pausedRequest, req));
+
+            // Wait for the CDP response and send that back.
+            try {
+              return res.get();
+            } catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+              throw new WebDriverException(e);
+            } catch (ExecutionException e) {
+              if (!networkInterceptorClosed.get()) {
+                LOG.log(WARNING, e, () -> "Unable to process request");
+              }
+              return new HttpResponse();
+            }
+          }).execute(message.left());
+
+          if ("Continue".equals(forBrowser.getHeader("Selenium-Interceptor"))) {
             devTools.send(continueWithoutModification(pausedRequest));
             return;
           }
 
-          future.complete(res);
-          return;
-        }
-
-        HttpResponse forBrowser = filter.andFinally(req -> {
-          // Convert the selenium request to a CDP one and fulfill.
-
-          CompletableFuture<HttpResponse> res = new CompletableFuture<>();
-          responses.put(id, res);
-
-          devTools.send(continueRequest(pausedRequest, req));
-
-          // Wait for the CDP response and send that back.
-          try {
-            return res.get();
-          } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new WebDriverException(e);
-          } catch (ExecutionException e) {
-            if (!networkInterceptorClosed.get()) {
-              LOG.log(WARNING, e, () -> "Unable to process request");
-            }
-            return new HttpResponse();
-          }
-        }).execute(message.left());
-
-        if ("Continue".equals(forBrowser.getHeader("Selenium-Interceptor"))) {
-          devTools.send(continueWithoutModification(pausedRequest));
-          return;
-        }
-
-        devTools.send(fulfillRequest(pausedRequest, forBrowser));
-      } catch (TimeoutException e) {
+          devTools.send(fulfillRequest(pausedRequest, forBrowser));
+        } catch (TimeoutException e) {
           if (!networkInterceptorClosed.get()) {
             throw new WebDriverException(e);
           }
-    }});
+        }
+      });
 
     devTools.send(enableFetchForAllPatterns());
   }
 
-  protected Optional<Credentials> getAuthCredentials(URI uri) {
+  private Optional<Credentials> getAuthCredentials(URI uri) {
     Require.nonNull("URI", uri);
 
     return authHandlers.entrySet().stream()
@@ -244,7 +207,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
       .findFirst();
   }
 
-  protected HttpMethod convertFromCdpHttpMethod(String method) {
+  private HttpMethod convertFromCdpHttpMethod(String method) {
     Require.nonNull("HTTP Method", method);
     try {
       return HttpMethod.valueOf(method.toUpperCase());
@@ -309,7 +272,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
 
   protected abstract String getUriFrom(AUTHREQUIRED authRequired);
 
-  protected abstract Command<Void> continueWithAuth(AUTHREQUIRED authRequired, UsernameAndPassword credentials);
+  protected abstract Command<Void> continueWithAuth(AUTHREQUIRED authRequired,
+                                                    UsernameAndPassword credentials);
 
   protected abstract Command<Void> cancelAuth(AUTHREQUIRED authrequired);
 
@@ -324,4 +288,42 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   protected abstract Command<Void> continueRequest(REQUESTPAUSED pausedReq, HttpRequest req);
 
   protected abstract Command<Void> fulfillRequest(REQUESTPAUSED pausedReq, HttpResponse res);
+
+  public static class UserAgent {
+
+    private final String userAgent;
+    private final Optional<String> acceptLanguage;
+    private final Optional<String> platform;
+
+    public UserAgent(String userAgent) {
+      this(userAgent, Optional.empty(), Optional.empty());
+    }
+
+    private UserAgent(String userAgent, Optional<String> acceptLanguage,
+                      Optional<String> platform) {
+      this.userAgent = userAgent;
+      this.acceptLanguage = acceptLanguage;
+      this.platform = platform;
+    }
+
+    public String userAgent() {
+      return userAgent;
+    }
+
+    public UserAgent acceptLanguage(String acceptLanguage) {
+      return new UserAgent(userAgent, Optional.of(acceptLanguage), platform);
+    }
+
+    public Optional<String> acceptLanguage() {
+      return acceptLanguage;
+    }
+
+    public UserAgent platform(String platform) {
+      return new UserAgent(userAgent, acceptLanguage, Optional.of(platform));
+    }
+
+    public Optional<String> platform() {
+      return platform;
+    }
+  }
 }

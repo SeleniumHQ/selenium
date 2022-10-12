@@ -34,6 +34,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class SessionLogsToFileRepository {
+
   private static final Logger LOG = Logger.getLogger(SessionLogsToFileRepository.class.getName());
   private final Map<SessionId, LogFile> sessionToLogFileMap;
 
@@ -64,11 +65,11 @@ public class SessionLogsToFileRepository {
    * clear the records after writing to file.
    *
    * @param sessionId session-id to which the log records belong
-   * @param records logRecords that need to be stored
+   * @param records   logRecords that need to be stored
    * @throws IOException file i/o exception can occur because of a temp file created
    */
   public synchronized void flushRecordsToLogFile(SessionId sessionId,
-      List<LogRecord> records) throws IOException {
+                                                 List<LogRecord> records) throws IOException {
     LogFile logFile = sessionToLogFileMap.get(sessionId);
 
     if (logFile == null) {
@@ -103,7 +104,7 @@ public class SessionLogsToFileRepository {
       ObjectInputStream logObjInStream = logFile.getLogReader();
       LogRecord tmpLogRecord;
       while (null != (tmpLogRecord = (LogRecord) logObjInStream
-          .readObject())) {
+        .readObject())) {
         logRecords.add(tmpLogRecord);
       }
     } catch (IOException | ClassNotFoundException ex) {
@@ -128,6 +129,7 @@ public class SessionLogsToFileRepository {
   }
 
   static class LogFile {
+
     private final String logName;
     private ObjectOutputStream logWriter;
     private ObjectInputStream logReader;

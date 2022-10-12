@@ -17,16 +17,18 @@
 
 package org.openqa.selenium.grid.node.k8s;
 
-import com.beust.jcommander.Parameter;
+import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
+
 import com.google.auto.service.AutoService;
+
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
 
 import java.util.Collections;
 import java.util.Set;
-
-import static org.openqa.selenium.grid.config.StandardGridRoles.NODE_ROLE;
 
 @AutoService(HasRoles.class)
 public class OneShotFlags implements HasRoles {

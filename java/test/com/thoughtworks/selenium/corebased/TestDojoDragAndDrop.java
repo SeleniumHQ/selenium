@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestDojoDragAndDrop extends InternalSelenseTestBase {
+
   @Test
   void testDojoDragAndDrop() {
     selenium.open("dojo-0.4.0-mini/tests/dnd/test_simple.html");

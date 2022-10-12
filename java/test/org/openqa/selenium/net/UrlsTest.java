@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.net;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class UrlsTest {
 

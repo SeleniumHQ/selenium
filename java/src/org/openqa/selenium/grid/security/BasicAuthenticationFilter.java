@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.security;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Filter;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -25,8 +27,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.net.HttpURLConnection;
 import java.util.Base64;
 import java.util.logging.Logger;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class BasicAuthenticationFilter implements Filter {
 

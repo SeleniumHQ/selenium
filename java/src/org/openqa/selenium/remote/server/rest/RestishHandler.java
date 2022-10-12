@@ -22,6 +22,8 @@ import java.util.Map;
 public interface RestishHandler<T> {
 
   T handle() throws Exception;
-  default void setJsonParameters(Map<String, Object> allParameters) throws Exception {}
+
+  default void setJsonParameters(Map<String, Object> allParameters) throws Exception {
+  }
 
 }

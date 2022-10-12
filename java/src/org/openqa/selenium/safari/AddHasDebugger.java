@@ -18,7 +18,8 @@
 package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
+
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
 import org.openqa.selenium.remote.AugmenterProvider;
@@ -34,7 +35,7 @@ public class AddHasDebugger implements AugmenterProvider<HasDebugger>, Additiona
 
   public static final String ATTACH_DEBUGGER = "attachDebugger";
 
-  private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
+  private static final Map<String, CommandInfo> COMMANDS =Map.of(
     ATTACH_DEBUGGER, new CommandInfo("/session/:sessionId/apple/attach_debugger", HttpMethod.POST));
 
   @Override

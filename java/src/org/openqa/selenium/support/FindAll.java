@@ -44,9 +44,11 @@ import java.lang.reflect.Field;
 @Target({ElementType.FIELD, ElementType.TYPE})
 @PageFactoryFinder(FindAll.FindByBuilder.class)
 public @interface FindAll {
+
   FindBy[] value();
 
   class FindByBuilder extends AbstractFindByBuilder {
+
     @Override
     public By buildIt(Object annotation, Field field) {
       FindAll findBys = (FindAll) annotation;

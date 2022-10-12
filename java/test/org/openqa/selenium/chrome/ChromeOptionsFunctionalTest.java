@@ -20,13 +20,10 @@ package org.openqa.selenium.chrome;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
 import org.openqa.selenium.testing.TestUtilities;
@@ -41,7 +38,7 @@ class ChromeOptionsFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canStartChromeWithCustomOptions() {
+  void canStartChromeWithCustomOptions() {
     ChromeOptions options = new ChromeOptions();
     if (TestUtilities.isOnTravis()) {
       options.setHeadless(true);
@@ -50,7 +47,9 @@ class ChromeOptionsFunctionalTest extends JupiterTestBase {
     localDriver = new ChromeDriver(options);
 
     localDriver.get(pages.clickJacker);
-    Object userAgent = ((ChromeDriver) localDriver).executeScript("return window.navigator.userAgent");
+    Object
+      userAgent =
+      ((ChromeDriver) localDriver).executeScript("return window.navigator.userAgent");
     assertThat(userAgent).isEqualTo("foo;bar");
   }
 
@@ -65,7 +64,7 @@ class ChromeOptionsFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canSetAcceptInsecureCerts() {
+  void canSetAcceptInsecureCerts() {
     ChromeOptions options = new ChromeOptions();
     if (TestUtilities.isOnTravis()) {
       options.setHeadless(true);
@@ -73,12 +72,13 @@ class ChromeOptionsFunctionalTest extends JupiterTestBase {
     options.setAcceptInsecureCerts(true);
     localDriver = new ChromeDriver(options);
 
-    assertThat(((ChromeDriver) localDriver).getCapabilities().getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
+    assertThat(((ChromeDriver) localDriver).getCapabilities()
+                 .getCapability(ACCEPT_INSECURE_CERTS)).isEqualTo(true);
   }
 
   @Test
   @NoDriverBeforeTest
-  public void canAddExtensionFromFile() {
+  void canAddExtensionFromFile() {
     ChromeOptions options = new ChromeOptions();
     if (TestUtilities.isOnTravis()) {
       options.setHeadless(true);
@@ -96,7 +96,7 @@ class ChromeOptionsFunctionalTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canAddExtensionFromStringEncodedInBase64() throws IOException {
+  void canAddExtensionFromStringEncodedInBase64() throws IOException {
     ChromeOptions options = new ChromeOptions();
     if (TestUtilities.isOnTravis()) {
       options.setHeadless(true);

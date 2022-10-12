@@ -24,8 +24,8 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.time.Duration;
@@ -40,7 +40,7 @@ class InternetExplorerDriverServiceTest {
     Duration customTimeout = Duration.ofSeconds(60);
 
     InternetExplorerDriverService.Builder builderMock =
-        spy(InternetExplorerDriverService.Builder.class);
+      spy(InternetExplorerDriverService.Builder.class);
     doReturn(exe).when(builderMock).findDefaultExecutable();
     builderMock.build();
 

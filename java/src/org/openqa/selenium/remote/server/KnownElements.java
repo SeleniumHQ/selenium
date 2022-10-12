@@ -59,7 +59,7 @@ public class KnownElements {
         return element;
       } else {
         try {
-        return method.invoke(element, objects);
+          return method.invoke(element, objects);
         } catch (InvocationTargetException e) {
           throw e.getTargetException();
         }
@@ -68,17 +68,18 @@ public class KnownElements {
 
     Class<?>[] proxyThese;
     if (element instanceof Locatable) {
-      proxyThese = new Class[] {WebElement.class, ProxiedElement.class, Locatable.class};
+      proxyThese = new Class[]{WebElement.class, ProxiedElement.class, Locatable.class};
     } else {
-      proxyThese = new Class[] {WebElement.class, ProxiedElement.class};
+      proxyThese = new Class[]{WebElement.class, ProxiedElement.class};
     }
 
     return (WebElement) Proxy.newProxyInstance(element.getClass().getClassLoader(),
-        proxyThese,
-        handler);
+                                               proxyThese,
+                                               handler);
   }
 
   public interface ProxiedElement extends WrapsElement {
+
     String getId();
   }
 }

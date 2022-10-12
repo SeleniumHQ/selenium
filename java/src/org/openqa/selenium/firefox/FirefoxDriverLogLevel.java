@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
 import java.util.Map;
@@ -28,7 +27,7 @@ import java.util.logging.Level;
  */
 public enum FirefoxDriverLogLevel {
   TRACE,
-  DEBUG ,
+  DEBUG,
   CONFIG,
   INFO,
   WARN,
@@ -36,23 +35,16 @@ public enum FirefoxDriverLogLevel {
   FATAL;
 
   private static final Map<Level, FirefoxDriverLogLevel> logLevelToGeckoLevelMap
-      = new ImmutableMap.Builder<Level, FirefoxDriverLogLevel>()
-      .put(Level.ALL, TRACE)
-      .put(Level.FINEST, TRACE)
-      .put(Level.FINER, TRACE)
-      .put(Level.FINE, DEBUG)
-      .put(Level.CONFIG, CONFIG)
-      .put(Level.INFO, INFO)
-      .put(Level.WARNING, WARN)
-      .put(Level.SEVERE, ERROR)
-      .put(Level.OFF, FATAL)
-      .build();
-
-
-  @Override
-  public String toString() {
-    return super.toString().toLowerCase();
-  }
+    = Map.of(
+    Level.ALL, TRACE,
+    Level.FINEST, TRACE,
+    Level.FINER, TRACE,
+    Level.FINE, DEBUG,
+    Level.CONFIG, CONFIG,
+    Level.INFO, INFO,
+    Level.WARNING, WARN,
+    Level.SEVERE, ERROR,
+    Level.OFF, FATAL);
 
   public static FirefoxDriverLogLevel fromString(String text) {
     if (text != null) {
@@ -69,11 +61,16 @@ public enum FirefoxDriverLogLevel {
     return logLevelToGeckoLevelMap.getOrDefault(level, DEBUG);
   }
 
-  Map<String, String> toJson() {
-    return Collections.singletonMap("level", toString());
-  }
-
   static FirefoxDriverLogLevel fromJson(Map<String, String> json) {
     return fromString(json.get("level"));
+  }
+
+  @Override
+  public String toString() {
+    return super.toString().toLowerCase();
+  }
+
+  Map<String, String> toJson() {
+    return Collections.singletonMap("level", toString());
   }
 }

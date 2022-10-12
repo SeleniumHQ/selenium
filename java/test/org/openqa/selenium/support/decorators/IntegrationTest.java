@@ -23,8 +23,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -33,29 +33,6 @@ import java.lang.reflect.Method;
 
 @Tag("UnitTests")
 class IntegrationTest {
-
-  static class CountCalls extends WebDriverDecorator<WebDriver> {
-
-    int counterBefore = 0;
-    int counterAfter = 0;
-    int counterCall = 0;
-
-    @Override
-    public void beforeCall(Decorated<?> target, Method method, Object[] args) {
-      counterBefore++;
-    }
-
-    @Override
-    public void afterCall(Decorated<?> target, Method method, Object[] args, Object result) {
-      counterAfter++;
-    }
-
-    @Override
-    public Object call(Decorated<?> target, Method method, Object[] args) throws Throwable {
-      counterCall++;
-      return super.call(target, method, args);
-    }
-  }
 
   @Test
   void canDecorateWebDriverMethods() {
@@ -82,5 +59,28 @@ class IntegrationTest {
 
     assertThat(decorator.counterBefore).isEqualTo(2);
     assertThat(decorator.counterAfter).isEqualTo(2);
+  }
+
+  static class CountCalls extends WebDriverDecorator<WebDriver> {
+
+    int counterBefore = 0;
+    int counterAfter = 0;
+    int counterCall = 0;
+
+    @Override
+    public void beforeCall(Decorated<?> target, Method method, Object[] args) {
+      counterBefore++;
+    }
+
+    @Override
+    public void afterCall(Decorated<?> target, Method method, Object[] args, Object result) {
+      counterAfter++;
+    }
+
+    @Override
+    public Object call(Decorated<?> target, Method method, Object[] args) throws Throwable {
+      counterCall++;
+      return super.call(target, method, args);
+    }
   }
 }

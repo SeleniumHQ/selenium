@@ -16,6 +16,8 @@
 // under the License.
 package org.openqa.selenium.net;
 
+import static java.util.Collections.list;
+
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -28,13 +30,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.util.Collections.list;
-
 public class NetworkInterface {
 
   private final String name;
-  private java.net.NetworkInterface networkInterface;
   private final Iterable<InetAddress> inetAddresses;
+  private java.net.NetworkInterface networkInterface;
   private Boolean isLoopback;
 
   public NetworkInterface(java.net.NetworkInterface networkInterface) {
@@ -51,6 +51,10 @@ public class NetworkInterface {
   NetworkInterface(String name, InetAddress... inetAddresses) {
     this(name, Arrays.asList(inetAddresses));
     this.isLoopback = isLoopBackFromINetAddresses(this.inetAddresses);
+  }
+
+  static boolean isIpv6(InetAddress address) {
+    return address instanceof Inet6Address;
   }
 
   public boolean isIp4AddressBindingOnly() {
@@ -100,10 +104,6 @@ public class NetworkInterface {
     return lastFound;
   }
 
-  static boolean isIpv6(InetAddress address) {
-    return address instanceof Inet6Address;
-  }
-
   public InetAddress getIp4NonLoopBackOnly() {
     for (InetAddress inetAddress : inetAddresses) {
       if (!inetAddress.isLoopbackAddress() && !isIpv6(inetAddress)) {
@@ -133,10 +133,10 @@ public class NetworkInterface {
   @Override
   public String toString() {
     return new StringJoiner(", ", NetworkInterface.class.getSimpleName() + "[", "]")
-        .add("name='" + name + "'")
-        .add("networkInterface=" + networkInterface)
-        .add("inetAddresses=" + inetAddresses)
-        .add("isLoopback=" + isLoopback)
-        .toString();
+      .add("name='" + name + "'")
+      .add("networkInterface=" + networkInterface)
+      .add("inetAddresses=" + inetAddresses)
+      .add("isLoopback=" + isLoopback)
+      .toString();
   }
 }

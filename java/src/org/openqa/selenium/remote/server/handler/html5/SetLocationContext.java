@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import java.util.Map;
 
 public class SetLocationContext extends WebDriverHandler<Void> {
+
   private volatile Location location;
 
   public SetLocationContext(Session session) {
@@ -41,21 +42,24 @@ public class SetLocationContext extends WebDriverHandler<Void> {
     try {
       latitude = ((Number) locationMap.get("latitude")).doubleValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-double) latitude location passed: " + locationMap.get("latitude"), ex);
+      throw new WebDriverException(
+        "Illegal (non-double) latitude location passed: " + locationMap.get("latitude"), ex);
     }
 
     double longitude;
     try {
       longitude = ((Number) locationMap.get("longitude")).doubleValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-double) longitude location passed: " + locationMap.get("longitude"), ex);
+      throw new WebDriverException(
+        "Illegal (non-double) longitude location passed: " + locationMap.get("longitude"), ex);
     }
 
     double altitude;
     try {
       altitude = ((Number) locationMap.get("altitude")).doubleValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-double) altitude location passed: " + locationMap.get("altitude"), ex);
+      throw new WebDriverException(
+        "Illegal (non-double) altitude location passed: " + locationMap.get("altitude"), ex);
     }
 
     location = new Location(latitude, longitude, altitude);

@@ -17,9 +17,15 @@
 
 package org.openqa.selenium.grid.router;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,12 +70,6 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 class NewSessionCreationTest {
 
@@ -118,7 +118,7 @@ class NewSessionCreationTest {
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
 
     server = new NettyServer(
-      new BaseServerOptions(new MapConfig(ImmutableMap.of())),
+      new BaseServerOptions(new MapConfig(Map.of())),
       router,
       new ProxyWebsocketsIntoGrid(clientFactory, sessions))
       .start();
@@ -144,8 +144,8 @@ class NewSessionCreationTest {
         new HttpRequest(POST, "/session")
           .addHeader("Content-Type", JSON_UTF_8)
           .addHeader("Origin", "localhost")
-          .setContent(Contents.asJson(ImmutableMap.of(
-            "capabilities", ImmutableMap.of(
+          .setContent(Contents.asJson(Map.of(
+            "capabilities", Map.of(
               "alwaysMatch", Browser.detect().getCapabilities())))));
 
       assertThat(res.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
@@ -154,8 +154,8 @@ class NewSessionCreationTest {
       res = client.execute(
         new HttpRequest(POST, "/session")
           .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(Contents.asJson(ImmutableMap.of(
-            "capabilities", ImmutableMap.of(
+          .setContent(Contents.asJson(Map.of(
+            "capabilities", Map.of(
               "alwaysMatch", Browser.detect().getCapabilities())))));
 
       assertThat(res.isSuccessful()).isTrue();
@@ -221,17 +221,16 @@ class NewSessionCreationTest {
 
     server = new NettyServer(
       new BaseServerOptions(
-        new MapConfig(ImmutableMap.of())),
+        new MapConfig(Map.of())),
       handler);
 
     server.start();
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
+      Map.of(
+        "capabilities", Map.of(
           "alwaysMatch", capabilities))));
-
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse httpResponse = client.execute(request);
@@ -257,12 +256,12 @@ class NewSessionCreationTest {
     handler.addHandler(queue);
 
     TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) ->
-      new Session(
-        id,
-        nodeUri,
-        new ImmutableCapabilities(),
-        caps,
-        Instant.now())
+                                                                 new Session(
+                                                                   id,
+                                                                   nodeUri,
+                                                                   new ImmutableCapabilities(),
+                                                                   caps,
+                                                                   Instant.now())
     );
 
     LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
@@ -289,17 +288,16 @@ class NewSessionCreationTest {
 
     server = new NettyServer(
       new BaseServerOptions(
-        new MapConfig(ImmutableMap.of())),
+        new MapConfig(Map.of())),
       handler);
 
     server.start();
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
+      Map.of(
+        "capabilities", Map.of(
           "alwaysMatch", new ImmutableCapabilities("browserName", "burger")))));
-
 
     HttpClient client = clientFactory.createClient(server.getUrl());
     HttpResponse httpResponse = client.execute(request);

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.chrome;
 
+
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -89,7 +90,8 @@ public class ChromeDriver extends ChromiumDriver {
   }
 
   private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public ChromeDriverCommandExecutor(DriverService service) {
+
+    ChromeDriverCommandExecutor(DriverService service) {
       super(service, getExtraCommands());
     }
 

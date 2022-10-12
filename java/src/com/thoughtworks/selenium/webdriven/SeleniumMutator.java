@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
  * Add a function backed by the closure-based implementation of Selenium Core.
  */
 public class SeleniumMutator implements ScriptMutator {
+
   private final Pattern pattern;
   private final String method;
   private final String atom;
@@ -42,6 +43,6 @@ public class SeleniumMutator implements ScriptMutator {
 
     // Alias the raw atom and set "this" to be the pre-declared selenium object.
     appendTo.append(String.format("%s = function() { return (%s).apply(null, arguments);};",
-        method, atom));
+                                  method, atom));
   }
 }

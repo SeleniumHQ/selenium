@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.remote;
 
-import com.google.common.collect.ImmutableMap;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Beta;
@@ -40,16 +40,14 @@ import java.util.logging.Logger;
 
 @Beta
 public class RemoteLogs implements Logs {
-  private static final String LEVEL = "level";
-  private static final String TIMESTAMP= "timestamp";
-  private static final String MESSAGE = "message";
-
-  private static final Logger logger = Logger.getLogger(RemoteLogs.class.getName());
-
-  protected ExecuteMethod executeMethod;
 
   public static final String TYPE_KEY = "type";
+  private static final String LEVEL = "level";
+  private static final String TIMESTAMP = "timestamp";
+  private static final String MESSAGE = "message";
+  private static final Logger logger = Logger.getLogger(RemoteLogs.class.getName());
   private final LocalLogs localLogs;
+  protected ExecuteMethod executeMethod;
 
   public RemoteLogs(ExecuteMethod executeMethod, LocalLogs localLogs) {
     this.executeMethod = executeMethod;
@@ -66,7 +64,7 @@ public class RemoteLogs implements Logs {
         // An exception may be thrown if the WebDriver server does not recognize profiler logs.
         // In this case, the user should be able to see the local profiler logs.
         logger.log(Level.WARNING,
-            "Remote profiler logs are not available and have been omitted.", e);
+                   "Remote profiler logs are not available and have been omitted.", e);
       }
 
       return LogCombiner.combine(remoteEntries, getLocalEntries(logType));
@@ -78,18 +76,17 @@ public class RemoteLogs implements Logs {
   }
 
   private LogEntries getRemoteEntries(String logType) {
-    Object raw = executeMethod.execute(DriverCommand.GET_LOG, ImmutableMap.of(TYPE_KEY, logType));
+    Object raw = executeMethod.execute(DriverCommand.GET_LOG, Map.of(TYPE_KEY, logType));
     if (!(raw instanceof List)) {
       throw new UnsupportedCommandException("malformed response to remote logs command");
     }
-    @SuppressWarnings("unchecked")
     List<Map<String, Object>> rawList = (List<Map<String, Object>>) raw;
     List<LogEntry> remoteEntries = new ArrayList<>(rawList.size());
 
     for (Map<String, Object> obj : rawList) {
-      remoteEntries.add(new LogEntry(LogLevelMapping.toLevel((String)obj.get(LEVEL)),
-          (Long) obj.get(TIMESTAMP),
-          (String) obj.get(MESSAGE)));
+      remoteEntries.add(new LogEntry(LogLevelMapping.toLevel((String) obj.get(LEVEL)),
+                                     (Long) obj.get(TIMESTAMP),
+                                     (String) obj.get(MESSAGE)));
     }
     return new LogEntries(remoteEntries);
   }
@@ -105,7 +102,6 @@ public class RemoteLogs implements Logs {
   @Override
   public Set<String> getAvailableLogTypes() {
     Object raw = executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null);
-    @SuppressWarnings("unchecked")
     List<String> rawList = (List<String>) raw;
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
     for (String logType : rawList) {

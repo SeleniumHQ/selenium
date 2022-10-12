@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import java.util.Map;
 
 public class GetLocalStorageItem extends WebDriverHandler<String> {
+
   private volatile String key;
 
   public GetLocalStorageItem(Session session) {
@@ -38,7 +39,7 @@ public class GetLocalStorageItem extends WebDriverHandler<String> {
   @Override
   public String call() {
     return Utils.getWebStorage(getUnwrappedDriver())
-        .getLocalStorage().getItem(key);
+      .getLocalStorage().getItem(key);
   }
 
   @Override

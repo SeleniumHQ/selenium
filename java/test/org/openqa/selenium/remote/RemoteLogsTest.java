@@ -23,11 +23,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableMap;
+
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.WebDriverException;
@@ -44,6 +44,7 @@ import java.util.logging.Level;
 
 @Tag("UnitTests")
 class RemoteLogsTest {
+
   @Mock
   private ExecuteMethod executeMethod;
 
@@ -65,10 +66,10 @@ class RemoteLogsTest {
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
 
     when(
-        executeMethod.execute(
-            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
-        .thenReturn(singletonList(
-            ImmutableMap.of("level", Level.INFO.getName(), "timestamp", 1L, "message", "world")));
+      executeMethod.execute(
+        DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
+      .thenReturn(singletonList(
+        Map.of("level", Level.INFO.getName(), "timestamp", 1L, "message", "world")));
 
     LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
     List<LogEntry> allLogEntries = logEntries.getAll();
@@ -84,10 +85,10 @@ class RemoteLogsTest {
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
 
     when(
-        executeMethod.execute(
-            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
-        .thenThrow(
-            new WebDriverException("IGNORE THIS LOG MESSAGE AND STACKTRACE; IT IS EXPECTED."));
+      executeMethod.execute(
+        DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.PROFILER)))
+      .thenThrow(
+        new WebDriverException("IGNORE THIS LOG MESSAGE AND STACKTRACE; IT IS EXPECTED."));
 
     LogEntries logEntries = remoteLogs.get(LogType.PROFILER);
     List<LogEntry> allLogEntries = logEntries.getAll();
@@ -112,10 +113,10 @@ class RemoteLogsTest {
   @Test
   void canGetServerLogs() {
     when(
-        executeMethod.execute(
-            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.SERVER)))
-        .thenReturn(singletonList(
-            ImmutableMap.of("level", Level.INFO.getName(), "timestamp", 0L, "message", "world")));
+      executeMethod.execute(
+        DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.SERVER)))
+      .thenReturn(singletonList(
+        Map.of("level", Level.INFO.getName(), "timestamp", 0L, "message", "world")));
 
     LogEntries logEntries = remoteLogs.get(LogType.SERVER);
     assertThat(logEntries.getAll()).hasSize(1);
@@ -128,15 +129,15 @@ class RemoteLogsTest {
   @Test
   void throwsOnBogusRemoteLogsResponse() {
     when(
-        executeMethod.execute(
-            DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
-        .thenReturn(ImmutableMap.of(
-            "error", "unknown method",
-            "message", "Command not found: POST /session/11037/log",
-            "stacktrace", ""));
+      executeMethod.execute(
+        DriverCommand.GET_LOG, Map.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
+      .thenReturn(Map.of(
+        "error", "unknown method",
+        "message", "Command not found: POST /session/11037/log",
+        "stacktrace", ""));
 
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> remoteLogs.get(LogType.BROWSER));
+      .isThrownBy(() -> remoteLogs.get(LogType.BROWSER));
 
     verifyNoMoreInteractions(localLogs);
   }
@@ -148,7 +149,7 @@ class RemoteLogsTest {
     remoteAvailableLogTypes.add(LogType.SERVER);
 
     when(executeMethod.execute(DriverCommand.GET_AVAILABLE_LOG_TYPES, null))
-        .thenReturn(remoteAvailableLogTypes);
+      .thenReturn(remoteAvailableLogTypes);
 
     Set<String> localAvailableLogTypes = new HashSet<>();
     localAvailableLogTypes.add(LogType.PROFILER);

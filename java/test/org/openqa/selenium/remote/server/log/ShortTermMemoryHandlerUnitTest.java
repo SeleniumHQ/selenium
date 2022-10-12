@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.remote.server.log;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * {@link org.openqa.selenium.remote.server.log.ShortTermMemoryHandler} unit test class.
@@ -194,7 +194,7 @@ class ShortTermMemoryHandlerUnitTest {
     handler.publish(firstLogRecord);
     handler.publish(secondLogRecord);
     assertEquals("[FORMATTED] First log message\n" +
-        "[FORMATTED] Second log message\n", handler.formattedRecords());
+                 "[FORMATTED] Second log message\n", handler.formattedRecords());
 
   }
 

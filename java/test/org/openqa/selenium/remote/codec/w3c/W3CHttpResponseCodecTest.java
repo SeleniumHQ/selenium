@@ -26,10 +26,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.ErrorCodes.METHOD_NOT_ALLOWED;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
@@ -61,12 +59,12 @@ class W3CHttpResponseCodecTest {
 
   @Test
   void shouldBeAbleToHandleGatewayTimeoutError() {
-    String responseString = "<html>\r\n" +
-      "<body>\r\n" +
-      "<h1>504 Gateway Time-out</h1>\r\n" +
-      "The server didn't respond in time.\r\n" +
-      "</body>\r\n" +
-      "</html>";
+    final String responseString = "<html>\r\n" +
+                                  "<body>\r\n" +
+                                  "<h1>504 Gateway Time-out</h1>\r\n" +
+                                  "The server didn't respond in time.\r\n" +
+                                  "</body>\r\n" +
+                                  "</html>";
 
     byte[] contents = responseString.getBytes(UTF_8);
 
@@ -86,13 +84,13 @@ class W3CHttpResponseCodecTest {
 
   @Test
   void shouldBeAbleToHandleBadGatewayError() {
-    String responseString = "<html>\r\n" +
-      "<head><title>502 Bad Gateway</title></head>\r\n" +
-      "<body>\r\n" +
-      "<center><h1>502 Bad Gateway</h1></center>\r\n" +
-      "<hr><center>nginx</center>\r\n" +
-      "</body>\r\n" +
-      "</html>";
+    final String responseString = "<html>\r\n" +
+                                  "<head><title>502 Bad Gateway</title></head>\r\n" +
+                                  "<body>\r\n" +
+                                  "<center><h1>502 Bad Gateway</h1></center>\r\n" +
+                                  "<hr><center>nginx</center>\r\n" +
+                                  "</body>\r\n" +
+                                  "</html>";
 
     byte[] contents = responseString.getBytes(UTF_8);
 
@@ -149,12 +147,12 @@ class W3CHttpResponseCodecTest {
 
   @Test
   void shouldPopulateTheAlertTextIfThrowingAnUnhandledAlertException() {
-    Map<String, Map<String, Serializable>> data = ImmutableMap.of(
-        "value", ImmutableMap.of(
-            "error", "unexpected alert open",
-            "message", "Modal dialog present",
-            "stacktrace", "",
-            "data", ImmutableMap.of("text", "cheese")));
+    Map<String, Map<String, Serializable>> data = Map.of(
+      "value", Map.of(
+        "error", "unexpected alert open",
+        "message", "Modal dialog present",
+        "stacktrace", "",
+        "data", Map.of("text", "cheese")));
 
     HttpResponse response = createValidResponse(500, data);
     Response decoded = new W3CHttpResponseCodec().decode(response);

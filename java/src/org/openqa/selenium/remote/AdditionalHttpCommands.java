@@ -26,6 +26,7 @@ import java.util.Map;
  */
 @FunctionalInterface
 public interface AdditionalHttpCommands {
+
   /**
    * @return Additional commands to add to the {@link CommandExecutor}.
    */

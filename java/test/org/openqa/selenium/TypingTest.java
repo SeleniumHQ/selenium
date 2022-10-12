@@ -17,12 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-
 import static com.google.common.base.Joiner.on;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -31,6 +25,12 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 class TypingTest extends JupiterTestBase {
 
@@ -373,8 +373,8 @@ class TypingTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     String allPrintable =
-        "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFGHIJKLMNO" +
-        "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+      "!\"#$%&'()*+,-./0123456789:;<=>?@ ABCDEFGHIJKLMNO" +
+      "PQRSTUVWXYZ [\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
     element.sendKeys(allPrintable);
 
     assertThat(element.getAttribute("value")).isEqualTo(allPrintable);
@@ -612,7 +612,7 @@ class TypingTest extends JupiterTestBase {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> email.sendKeys((CharSequence[]) null));
+      .isThrownBy(() -> email.sendKeys((CharSequence[]) null));
   }
 
   @Test
@@ -626,9 +626,9 @@ class TypingTest extends JupiterTestBase {
 
     input.sendKeys("b");
     assertThat(getValueText(log)).isEqualTo(on('\n').join(
-        "keydown (target)",
-        "keyup (target)",
-        "keyup (body)"));
+      "keydown (target)",
+      "keyup (target)",
+      "keyup (body)"));
 
     input.sendKeys("a");
 
@@ -636,11 +636,11 @@ class TypingTest extends JupiterTestBase {
     // is removed from the DOM in response to the keypress (note, this is a product of how events
     // are generated and does not match actual user behavior).
     String expected = String.join("\n",
-        "keydown (target)",
-        "keyup (target)",
-        "keyup (body)",
-        "keydown (target)",
-        "a pressed; removing");
+                                  "keydown (target)",
+                                  "keyup (target)",
+                                  "keyup (body)",
+                                  "keydown (target)",
+                                  "a pressed; removing");
     assertThat(getValueText(log)).isIn(expected, expected + "\nkeyup (body)");
   }
 

@@ -17,12 +17,13 @@
 
 package com.thoughtworks.selenium;
 
-import com.thoughtworks.selenium.Wait.WaitTimedOutException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import com.thoughtworks.selenium.Wait.WaitTimedOutException;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class WaitTest {
 
@@ -37,7 +38,7 @@ public class WaitTest {
 
   @Test
   void testUntil() {
-    finished = now + 500l;
+    finished = now + 500L;
     new Wait() {
       @Override
       public boolean until() {
@@ -50,7 +51,7 @@ public class WaitTest {
 
   @Test
   void testUntilWithWaitTakingString() {
-    finished = now + 500l;
+    finished = now + 500L;
     new Wait("a message to be shown if wait times out") {
       @Override
       public boolean until() {
@@ -63,7 +64,7 @@ public class WaitTest {
 
   @Test
   void testTimedOut() {
-    finished = now + 5000l;
+    finished = now + 5000L;
     try {
       new Wait() {
         @Override

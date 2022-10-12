@@ -23,6 +23,7 @@ import java.util.Objects;
  * Similar to Point - implement locally to avoid depending on GWT.
  */
 public class Dimension {
+
   public final int width;
   public final int height;
 

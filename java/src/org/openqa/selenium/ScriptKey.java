@@ -29,6 +29,10 @@ public class ScriptKey {
     this.identifier = Require.nonNull("Script ID", identifier);
   }
 
+  private static ScriptKey fromJson(String identifier) {
+    return new ScriptKey(identifier);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof ScriptKey)) {
@@ -45,9 +49,5 @@ public class ScriptKey {
 
   private String toJson() {
     return identifier;
-  }
-
-  private static ScriptKey fromJson(String identifier) {
-    return new ScriptKey(identifier);
   }
 }

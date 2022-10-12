@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestOpen extends InternalSelenseTestBase {
+
   @Test
   void testOpen() {
     selenium.open("test_open.html");
@@ -40,7 +41,7 @@ public class TestOpen extends InternalSelenseTestBase {
     verifyFalse(selenium.isTextPresent("regexp:ThXXXXXXXXXis is a test of"));
   }
 
-@Test
+  @Test
   void testCanOpenSlowLoadingPage() {
     selenium.open("test_page.slow.html");
     verifyTrue(selenium.getLocation().matches("^.*/test_page\\.slow\\.html$"));

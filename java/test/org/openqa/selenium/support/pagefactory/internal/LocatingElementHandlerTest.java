@@ -46,8 +46,8 @@ class LocatingElementHandlerTest {
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
     WebElement proxy =
-        (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {WebElement.class}, handler);
+      (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(),
+                                          new Class[]{WebElement.class}, handler);
 
     proxy.sendKeys("Fishy");
     proxy.submit();
@@ -84,8 +84,8 @@ class LocatingElementHandlerTest {
 
     LocatingElementHandler handler = new LocatingElementHandler(locator);
     WebElement proxy =
-        (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(),
-            new Class[] {WebElement.class}, handler);
+      (WebElement) Proxy.newProxyInstance(getClass().getClassLoader(),
+                                          new Class[]{WebElement.class}, handler);
 
     proxy.isEnabled();
     proxy.sendKeys("Cheese");
@@ -111,12 +111,10 @@ class LocatingElementHandlerTest {
 
   public static class Page {
 
-    @SuppressWarnings("unused")
-    private WebElement q;
-
     @FindBy(how = How.XPATH, using = "//input[@name='q']")
     protected WebElement query;
-
+    @SuppressWarnings("unused")
+    private WebElement q;
     @SuppressWarnings("unused")
     @FindBy(how = How.XPATH, using = "//input[@name='q']")
     @CacheLookup
@@ -129,6 +127,7 @@ class LocatingElementHandlerTest {
   }
 
   public static class ChildPage extends Page {
+
     public void doChildQuery() {
       query.getAttribute("value");
     }

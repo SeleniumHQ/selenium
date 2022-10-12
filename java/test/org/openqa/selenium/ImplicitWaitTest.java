@@ -19,8 +19,8 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.AfterEach;
@@ -73,7 +73,7 @@ class ImplicitWaitTest extends JupiterTestBase {
     driver.get(pages.dynamicPage);
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.id("box0")));
+      .isThrownBy(() -> driver.findElement(By.id("box0")));
   }
 
   @Test
@@ -82,7 +82,7 @@ class ImplicitWaitTest extends JupiterTestBase {
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(3000));
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.id("box0")));
+      .isThrownBy(() -> driver.findElement(By.id("box0")));
   }
 
   @Test
@@ -152,7 +152,7 @@ class ImplicitWaitTest extends JupiterTestBase {
 
     Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(1));
     wait.until(ExpectedConditions.numberOfWindowsToBe(2));
-    String handle = (String)driver.getWindowHandles().toArray()[1];
+    String handle = (String) driver.getWindowHandles().toArray()[1];
 
     WebDriver newWindow = driver.switchTo().window(handle);
 

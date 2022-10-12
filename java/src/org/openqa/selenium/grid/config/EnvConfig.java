@@ -17,17 +17,17 @@
 
 package org.openqa.selenium.grid.config;
 
+import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
+import static java.util.Comparator.naturalOrder;
+
 import com.google.common.collect.ImmutableList;
+
+import org.openqa.selenium.internal.Require;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
-
-import static com.google.common.collect.ImmutableSortedSet.toImmutableSortedSet;
-import static java.util.Comparator.naturalOrder;
-
-import org.openqa.selenium.internal.Require;
 
 /**
  * Exposes environment variables as config settings by mapping

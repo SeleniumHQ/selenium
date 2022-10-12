@@ -34,21 +34,14 @@ import java.util.Set;
 @Beta
 public class ImageSummary {
 
-  public static final Type LIST_OF_STRING = new TypeToken<List<String>>() {}.getType();
+  public static final Type LIST_OF_STRING = new TypeToken<List<String>>() {
+  }.getType();
   private final ImageId id;
   private final Set<String> repoTags;
 
   public ImageSummary(ImageId id, Collection<String> repoTags) {
     this.id = Require.nonNull("Image id", id);
     this.repoTags = ImmutableSet.copyOf(Require.nonNull("Repo tags", repoTags));
-  }
-
-  public ImageId getId() {
-    return id;
-  }
-
-  public Set<String> getRepoTags() {
-    return repoTags;
   }
 
   static ImageSummary fromJson(JsonInput input) {
@@ -80,5 +73,13 @@ public class ImageSummary {
     input.endObject();
 
     return new ImageSummary(id, repoTags);
+  }
+
+  public ImageId getId() {
+    return id;
+  }
+
+  public Set<String> getRepoTags() {
+    return repoTags;
   }
 }

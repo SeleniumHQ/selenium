@@ -19,14 +19,15 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test WebDriver's Dimensions class.
  */
 @Tag("UnitTests")
 class DimensionTest {
+
   @Test
   void testSimpleAssignment() {
     Dimension d1 = new Dimension(100, 200);

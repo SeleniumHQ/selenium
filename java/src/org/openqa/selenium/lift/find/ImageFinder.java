@@ -22,6 +22,14 @@ package org.openqa.selenium.lift.find;
  */
 public class ImageFinder extends HtmlTagFinder {
 
+  public static HtmlTagFinder image() {
+    return new ImageFinder();
+  }
+
+  public static HtmlTagFinder images() {
+    return new ImageFinder();
+  }
+
   @Override
   protected String tagDescription() {
     return "image";
@@ -30,13 +38,5 @@ public class ImageFinder extends HtmlTagFinder {
   @Override
   protected String tagName() {
     return "img";
-  }
-
-  public static HtmlTagFinder image() {
-    return new ImageFinder();
-  }
-
-  public static HtmlTagFinder images() {
-    return new ImageFinder();
   }
 }

@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestFocusOnBlur extends InternalSelenseTestBase {
+
   @Test
   void testFocusOnBlur() {
     selenium.open("test_focus_on_blur.html");

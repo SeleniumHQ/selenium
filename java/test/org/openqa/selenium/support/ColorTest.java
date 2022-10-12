@@ -19,11 +19,12 @@ package org.openqa.selenium.support;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 @Tag("UnitTests")
 class ColorTest {
+
   @Test
   void rgbToRgb() {
     String rgb = "rgb(1, 2, 3)";

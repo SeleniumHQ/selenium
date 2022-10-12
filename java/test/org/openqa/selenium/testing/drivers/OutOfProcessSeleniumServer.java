@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.build.BazelBuild;
 import org.openqa.selenium.build.DevMode;
@@ -32,8 +34,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 class OutOfProcessSeleniumServer {
 

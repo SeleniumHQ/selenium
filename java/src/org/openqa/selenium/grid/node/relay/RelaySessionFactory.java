@@ -17,6 +17,18 @@
 
 package org.openqa.selenium.grid.node.relay;
 
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.DOWNSTREAM_DIALECT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.DRIVER_RESPONSE;
+import static org.openqa.selenium.remote.tracing.AttributeKey.DRIVER_URL;
+import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_EVENT;
+import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_MESSAGE;
+import static org.openqa.selenium.remote.tracing.AttributeKey.LOGGER_CLASS;
+import static org.openqa.selenium.remote.tracing.AttributeKey.UPSTREAM_DIALECT;
+import static org.openqa.selenium.remote.tracing.EventAttribute.setValue;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -57,18 +69,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES_EVENT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.DOWNSTREAM_DIALECT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.DRIVER_RESPONSE;
-import static org.openqa.selenium.remote.tracing.AttributeKey.DRIVER_URL;
-import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_EVENT;
-import static org.openqa.selenium.remote.tracing.AttributeKey.EXCEPTION_MESSAGE;
-import static org.openqa.selenium.remote.tracing.AttributeKey.LOGGER_CLASS;
-import static org.openqa.selenium.remote.tracing.AttributeKey.UPSTREAM_DIALECT;
-import static org.openqa.selenium.remote.tracing.EventAttribute.setValue;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class RelaySessionFactory implements SessionFactory {
 

@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.safari;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.openqa.selenium.Platform.MAC;
+import static org.openqa.selenium.remote.Browser.SAFARI;
+
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -31,10 +35,6 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static org.openqa.selenium.Platform.MAC;
-import static org.openqa.selenium.remote.Browser.SAFARI;
 
 public class SafariDriverService extends DriverService {
 
@@ -55,11 +55,11 @@ public class SafariDriverService extends DriverService {
   }
 
   public SafariDriverService(
-      File executable,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, timeout, args, environment);
   }
 
@@ -78,7 +78,7 @@ public class SafariDriverService extends DriverService {
 
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
-      SafariDriverService, SafariDriverService.Builder> {
+    SafariDriverService, SafariDriverService.Builder> {
 
     @Override
     public int score(Capabilities capabilities) {
@@ -135,11 +135,11 @@ public class SafariDriverService extends DriverService {
 
     @Override
     protected SafariDriverService createDriverService(
-        File exe,
-        int port,
-        Duration timeout,
-        List<String> args,
-        Map<String, String> environment) {
+      File exe,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) {
       try {
         return new SafariDriverService(exe, port, timeout, args, environment);
       } catch (IOException e) {

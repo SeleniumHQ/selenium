@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.devtools.v104;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
 
@@ -48,8 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
 
 public class V104Network extends Network<AuthRequired, RequestPaused> {
 

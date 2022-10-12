@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 @Disabled("selenium.getValue is not a function. Needs to be added to selenium JS emulation")
 public class TestJavascriptParameters extends InternalSelenseTestBase {
+
   @Test
   void testJavascriptParameters() {
     selenium.open("test_store_value.html");
@@ -36,7 +37,7 @@ public class TestJavascriptParameters extends InternalSelenseTestBase {
     verifyEquals(selenium.getValue("theText"), selenium.getEval("10 + 10 + 10 + 10 + 10"));
     // Check a complex expression
     selenium.type("theText", selenium
-        .getEval("\n function square(n) {\n return n * n;\n };\n '25 * 25 = ' + square(25);\n "));
+      .getEval("\n function square(n) {\n return n * n;\n };\n '25 * 25 = ' + square(25);\n "));
     verifyTrue(selenium.getValue("theText").matches("^25 [\\s\\S]* 25 = 625$"));
     // Demonstrate interaction between variable substitution and javascript
     String var1 = "the value";
@@ -45,8 +46,9 @@ public class TestJavascriptParameters extends InternalSelenseTestBase {
     selenium.type("theText", selenium.getEval("'" + var1 + "'.toUpperCase()"));
     verifyEquals(selenium.getValue("theText"), "THE VALUE");
     verifyEquals(selenium.getExpression(selenium.getEval("'" + var1 + "'.toUpperCase()")),
-        "THE VALUE");
+                 "THE VALUE");
     verifyTrue(Pattern.compile("TH[Ee] VALUE")
-        .matcher(selenium.getExpression(selenium.getEval("selenium.getValue('theText')"))).find());
+                 .matcher(selenium.getExpression(selenium.getEval("selenium.getValue('theText')")))
+                 .find());
   }
 }

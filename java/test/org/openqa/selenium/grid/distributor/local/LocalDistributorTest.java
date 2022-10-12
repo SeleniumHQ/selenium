@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.grid.distributor.local;
 
+import static java.util.Collections.newSetFromMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -72,14 +80,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.Collections.newSetFromMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class LocalDistributorTest {
 
   private final Secret registrationSecret = new Secret("bavarian smoked");
@@ -107,7 +107,7 @@ class LocalDistributorTest {
 
   @Test
   void testAddNodeToDistributor() {
-    NewSessionQueue queue  = new LocalNewSessionQueue(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
@@ -139,7 +139,7 @@ class LocalDistributorTest {
 
   @Test
   void testRemoveNodeFromDistributor() {
-    NewSessionQueue queue  = new LocalNewSessionQueue(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
@@ -172,7 +172,7 @@ class LocalDistributorTest {
 
   @Test
   void testAddSameNodeTwice() {
-    NewSessionQueue queue  = new LocalNewSessionQueue(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
@@ -200,18 +200,18 @@ class LocalDistributorTest {
 
   @Test
   void shouldBeAbleToAddMultipleSessionsConcurrently() throws Exception {
-    NewSessionQueue queue  = new LocalNewSessionQueue(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
       registrationSecret);
 
-
     // Add one node to ensure that everything is created in that.
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
 
     class VerifyingHandler extends Session implements HttpHandler {
+
       private VerifyingHandler(SessionId id, Capabilities capabilities) {
         super(id, uri, new ImmutableCapabilities(), capabilities, Instant.now());
       }
@@ -250,13 +250,13 @@ class LocalDistributorTest {
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     SessionRequest sessionRequest =
-        new SessionRequest(
-            new RequestId(UUID.randomUUID()),
-            Instant.now(),
-            Set.of(W3C),
-            Set.of(new ImmutableCapabilities("browserName", "cheese")),
-            Map.of(),
-            Map.of());
+      new SessionRequest(
+        new RequestId(UUID.randomUUID()),
+        Instant.now(),
+        Set.of(W3C),
+        Set.of(new ImmutableCapabilities("browserName", "cheese")),
+        Map.of(),
+        Map.of());
 
     List<Callable<SessionId>> callables = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
@@ -288,7 +288,7 @@ class LocalDistributorTest {
 
   @Test
   void testDrainNodeFromDistributor() {
-    NewSessionQueue queue  = new LocalNewSessionQueue(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
@@ -328,7 +328,7 @@ class LocalDistributorTest {
   void testDrainNodeFromNode() {
     assertThat(localNode.isDraining()).isFalse();
 
-    NewSessionQueue queue  = new LocalNewSessionQueue(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
@@ -353,7 +353,7 @@ class LocalDistributorTest {
 
   @Test
   void slowStartingNodesShouldNotCauseReservationsToBeSerialized() {
-    NewSessionQueue queue  = new LocalNewSessionQueue(
+    NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
@@ -429,7 +429,8 @@ class LocalDistributorTest {
   private class Handler extends Session implements HttpHandler {
 
     private Handler(Capabilities capabilities) {
-      super(new SessionId(UUID.randomUUID()), uri, new ImmutableCapabilities(), capabilities, Instant.now());
+      super(new SessionId(UUID.randomUUID()), uri, new ImmutableCapabilities(), capabilities,
+            Instant.now());
     }
 
     @Override

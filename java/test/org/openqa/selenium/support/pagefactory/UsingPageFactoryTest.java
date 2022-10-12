@@ -45,7 +45,7 @@ class UsingPageFactoryTest extends JupiterTestBase {
     PageFactory.initElements(driver, page);
 
     String tagName = (String) ((JavascriptExecutor) driver).executeScript(
-        "return arguments[0].tagName", page.formElement);
+      "return arguments[0].tagName", page.formElement);
 
     assertThat(tagName).isEqualToIgnoringCase("form");
   }
@@ -80,17 +80,18 @@ class UsingPageFactoryTest extends JupiterTestBase {
     assertThat(seen).isEqualTo(expected);
   }
 
-
-  class PublicPage {
-    public WebElement element;
-  }
-
   public static class Page {
+
     @FindBy(name = "someForm")
     WebElement formElement;
 
     @FindBy(tagName = "div")
     @CacheLookup
     List<WebElement> divs;
+  }
+
+  class PublicPage {
+
+    public WebElement element;
   }
 }

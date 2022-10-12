@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.grid.data;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.grid.data.Availability.UP;
+
+
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.json.Json;
@@ -29,9 +33,6 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.grid.data.Availability.UP;
 
 class NodeStatusTest {
 
@@ -57,7 +58,7 @@ class NodeStatusTest {
       UP,
       Duration.ofSeconds(10),
       "4.0.0",
-      ImmutableMap.of(
+     Map.of(
         "name", "Max OS X",
         "arch", "x86_64",
         "version", "10.15.7"));

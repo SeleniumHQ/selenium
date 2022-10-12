@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Open extends SeleneseCommand<Void> {
+
   private final URL baseUrl;
 
   public Open(String baseUrl) {

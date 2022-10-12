@@ -43,6 +43,23 @@ import java.util.stream.Collectors;
 
 class WebDriverFixture {
 
+  public static final Function<Command, Response> nullResponder = cmd -> null;
+  public static final Function<Command, Response> exceptionResponder = cmd -> {
+    throw new InternalError("BOOM!!!");
+  };
+  public static final Function<Command, Response> webDriverExceptionResponder = cmd -> {
+    throw new WebDriverException("BOOM!!!");
+  };
+  public static final Function<Command, Response> nullValueResponder = valueResponder(null);
+  public static final Function<Command, Response> echoCapabilities = cmd -> {
+    Response response = new Response();
+    response.setValue(
+      ((Capabilities) cmd.getParameters().get("desiredCapabilities")).asMap()
+        .entrySet().stream()
+        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toString())));
+    response.setSessionId(UUID.randomUUID().toString());
+    return response;
+  };
   public final CommandExecutor executor;
   public final RemoteWebDriver driver;
   private final SessionId sessionId;
@@ -71,6 +88,26 @@ class WebDriverFixture {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  public static Function<Command, Response> valueResponder(Object value) {
+    return cmd -> {
+      Response response = new Response();
+      response.setValue(value);
+      response.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
+      return response;
+    };
+  }
+
+  public static Function<Command, Response> errorResponder(String state, Object value) {
+    return cmd -> {
+      Response response = new Response();
+      response.setState(state);
+      response.setStatus(new ErrorCodes().toStatus(state, Optional.of(400)));
+      response.setValue(value);
+      response.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
+      return response;
+    };
   }
 
   public void verifyNoCommands() {
@@ -134,46 +171,4 @@ class WebDriverFixture {
     }
     return true;
   }
-
-  public static final Function<Command, Response> nullResponder = cmd -> null;
-
-  public static final Function<Command, Response> exceptionResponder = cmd -> {
-    throw new InternalError("BOOM!!!");
-  };
-
-  public static final Function<Command, Response> webDriverExceptionResponder = cmd -> {
-    throw new WebDriverException("BOOM!!!");
-  };
-
-  public static final Function<Command, Response> nullValueResponder = valueResponder(null);
-
-  public static Function<Command, Response> valueResponder(Object value) {
-    return cmd -> {
-      Response response = new Response();
-      response.setValue(value);
-      response.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
-      return response;
-    };
-  }
-
-  public static Function<Command, Response> errorResponder(String state, Object value) {
-    return cmd -> {
-      Response response = new Response();
-      response.setState(state);
-      response.setStatus(new ErrorCodes().toStatus(state, Optional.of(400)));
-      response.setValue(value);
-      response.setSessionId(cmd.getSessionId() != null ? cmd.getSessionId().toString() : null);
-      return response;
-    };
-  }
-
-  public static final Function<Command, Response> echoCapabilities = cmd -> {
-    Response response = new Response();
-    response.setValue(
-      ((Capabilities) cmd.getParameters().get("desiredCapabilities")).asMap()
-        .entrySet().stream()
-        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toString())));
-    response.setSessionId(UUID.randomUUID().toString());
-    return response;
-  };
 }

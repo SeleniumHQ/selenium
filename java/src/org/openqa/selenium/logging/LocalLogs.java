@@ -41,6 +41,9 @@ public abstract class LocalLogs implements Logs {
     }
   };
 
+  protected LocalLogs() {
+  }
+
   /**
    * Logger which doesn't do anything.
    *
@@ -55,23 +58,21 @@ public abstract class LocalLogs implements Logs {
   }
 
   public static LocalLogs getHandlerBasedLoggerInstance(LoggingHandler loggingHandler,
-      Set<String> logTypesToInclude) {
+                                                        Set<String> logTypesToInclude) {
     return new HandlerBasedLocalLogs(loggingHandler, logTypesToInclude);
   }
 
   /**
    * See documentation of CompositeLocalLogs about the difference between the first
    * LocalLogs instance and the second one.
+   *
    * @param predefinedTypeLogger LocalLogs which pre-defines the log types it stores.
-   * @param allTypesLogger LocalLogs which can store log entries for all log types.
+   * @param allTypesLogger       LocalLogs which can store log entries for all log types.
    * @return A LocalLogs instance.
    */
   public static LocalLogs getCombinedLogsHolder(LocalLogs predefinedTypeLogger,
                                                 LocalLogs allTypesLogger) {
     return new CompositeLocalLogs(predefinedTypeLogger, allTypesLogger);
-  }
-
-  protected LocalLogs() {
   }
 
   @Override

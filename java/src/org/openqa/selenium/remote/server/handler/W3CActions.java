@@ -52,7 +52,7 @@ public class W3CActions extends WebDriverHandler<Void> {
     Response response = executor.execute(command);
 
     new ErrorHandler(true)
-        .throwIfResponseFailed(response, System.currentTimeMillis() - start);
+      .throwIfResponseFailed(response, System.currentTimeMillis() - start);
 
     return null;
   }

@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.server.handler;
 
+
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.logging.SessionLogs;
@@ -40,7 +41,7 @@ public class GetSessionLogsHandler implements RestishHandler<Map<String, Session
     ImmutableMap.Builder<String, SessionLogs> builder = ImmutableMap.builder();
     for (SessionId sessionId : LoggingManager.perSessionLogHandler().getLoggedSessions()) {
       builder.put(sessionId.toString(),
-          LoggingManager.perSessionLogHandler().getAllLogsForSession(sessionId));
+                  LoggingManager.perSessionLogHandler().getAllLogsForSession(sessionId));
     }
     return builder.build();
   }

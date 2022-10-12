@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.remote.server.log;
 
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 class LoggingManagerUnitTest {
 

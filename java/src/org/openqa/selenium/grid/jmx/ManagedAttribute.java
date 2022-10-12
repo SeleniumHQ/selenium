@@ -25,9 +25,14 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ManagedAttribute {
+
   String name() default "";
+
   String description() default "";
+
   String getter() default "";
+
   String setter() default "";
+
   String units() default "";
 }

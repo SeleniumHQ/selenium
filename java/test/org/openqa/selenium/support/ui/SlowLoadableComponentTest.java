@@ -20,8 +20,8 @@ package org.openqa.selenium.support.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -36,9 +36,9 @@ class SlowLoadableComponentTest {
 
   @Test
   void testShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded() {
-    int numberOfTimesThroughLoop = 1;
+    final int numberOfTimesThroughLoop = 1;
     SlowLoading slowLoading = new SlowLoading(
-        Clock.systemDefaultZone(), 1, numberOfTimesThroughLoop).get();
+      Clock.systemDefaultZone(), 1, numberOfTimesThroughLoop).get();
 
     assertThat(slowLoading.getLoopCount()).isEqualTo(numberOfTimesThroughLoop);
   }
@@ -63,7 +63,7 @@ class SlowLoadableComponentTest {
 
   private static class DetonatingSlowLoader extends SlowLoadableComponent<DetonatingSlowLoader> {
 
-    public DetonatingSlowLoader() {
+    DetonatingSlowLoader() {
       super(Clock.systemDefaultZone(), 1);
     }
 
@@ -80,10 +80,10 @@ class SlowLoadableComponentTest {
 
   private static class SlowLoading extends SlowLoadableComponent<SlowLoading> {
 
-    private int counts;
+    private final int counts;
     private long loopCount;
 
-    public SlowLoading(Clock clock, int timeOutInSeconds, int counts) {
+    SlowLoading(Clock clock, int timeOutInSeconds, int counts) {
       super(clock, timeOutInSeconds);
       this.counts = counts;
     }
@@ -102,7 +102,7 @@ class SlowLoadableComponentTest {
       loopCount++;
     }
 
-    public long getLoopCount() {
+    long getLoopCount() {
       return loopCount;
     }
   }
@@ -111,7 +111,7 @@ class SlowLoadableComponentTest {
 
     private boolean loadAlreadyCalled;
 
-    public OnlyOneLoad(Clock clock, int timeOutInSeconds, int counts) {
+    OnlyOneLoad(Clock clock, int timeOutInSeconds, int counts) {
       super(clock, timeOutInSeconds, counts);
     }
 
@@ -128,7 +128,7 @@ class SlowLoadableComponentTest {
 
     private final TickingClock clock;
 
-    public BasicSlowLoader(TickingClock clock, int timeOutInSeconds) {
+    BasicSlowLoader(TickingClock clock, int timeOutInSeconds) {
       super(clock, timeOutInSeconds);
       this.clock = clock;
     }
@@ -149,7 +149,7 @@ class SlowLoadableComponentTest {
 
   private static class HasError extends SlowLoadableComponent<HasError> {
 
-    public HasError() {
+    HasError() {
       super(new TickingClock(), 1000);
     }
 

@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.virtualauthenticator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.assertj.core.api.Fail.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,18 +37,13 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-import static org.assertj.core.api.Fail.fail;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 class VirtualAuthenticatorTest extends JupiterTestBase {
 
   /**
    * A pkcs#8 encoded encrypted RSA private key as a base64url string.
    */
-  private final static String base64EncodedPK =
+  private final static String
+    base64EncodedPK =
     "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDbBOu5Lhs4vpowbCnmCyLUpIE7JM9sm9QXzye2G+jr+Kr"
     + "MsinWohEce47BFPJlTaDzHSvOW2eeunBO89ZcvvVc8RLz4qyQ8rO98xS1jtgqi1NcBPETDrtzthODu/gd0sjB2Tk3TLuB"
     + "GVoPXt54a+Oo4JbBJ6h3s0+5eAfGplCbSNq6hN3Jh9YOTw5ZA6GCEy5l8zBaOgjXytd2v2OdSVoEDNiNQRkjJd2rmS2oi"
@@ -243,8 +244,8 @@ class VirtualAuthenticatorTest extends JupiterTestBase {
        */
       String base64EncodedPK =
         "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQg8_zMDQDYAxlU-Q"
-          + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
-          + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
+        + "hk1Dwkf0v18GZca1DMF3SaJ9HPdmShRANCAASNYX5lyVCOZLzFZzrIKmeZ2jwU"
+        + "RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB";
 
       PKCS8EncodedKeySpec privateKey =
         new PKCS8EncodedKeySpec(Base64.getUrlDecoder().decode(base64EncodedPK));

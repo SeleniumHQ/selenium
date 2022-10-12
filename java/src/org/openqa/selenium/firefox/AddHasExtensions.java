@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.internal.Require;
@@ -42,17 +44,16 @@ import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-
 @AutoService({AdditionalHttpCommands.class, AugmenterProvider.class})
 public class AddHasExtensions implements AugmenterProvider<HasExtensions>, AdditionalHttpCommands {
 
-  public static final String INSTALL_EXTENSION = "installExtension";
-  public static final String UNINSTALL_EXTENSION = "uninstallExtension";
+  private static final String INSTALL_EXTENSION = "installExtension";
+  private static final String UNINSTALL_EXTENSION = "uninstallExtension";
 
-  private static final Map<String, CommandInfo> COMMANDS = ImmutableMap.of(
+  private static final Map<String, CommandInfo> COMMANDS = Map.of(
     INSTALL_EXTENSION, new CommandInfo("/session/:sessionId/moz/addon/install", HttpMethod.POST),
-    UNINSTALL_EXTENSION, new CommandInfo("/session/:sessionId/moz/addon/uninstall", HttpMethod.POST));
+    UNINSTALL_EXTENSION,
+    new CommandInfo("/session/:sessionId/moz/addon/uninstall", HttpMethod.POST));
 
   @Override
   public Map<String, CommandInfo> getAdditionalCommands() {
@@ -86,8 +87,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
         try {
           if (Files.isDirectory(path)) {
             encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(zipDirectory(path)));
-          }
-          else {
+          } else {
             encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(path));
           }
         } catch (IOException e) {
@@ -96,15 +96,16 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
 
         return (String) executeMethod.execute(
           INSTALL_EXTENSION,
-          ImmutableMap.of("addon", encoded, "temporary", temporary));
+          Map.of("addon", encoded, "temporary", temporary));
       }
 
       private Path zipDirectory(Path path) throws IOException {
-        Path extZip = Paths.get(path.getFileName().toString()+".zip");
+        Path extZip = Paths.get(path.getFileName().toString() + ".zip");
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(extZip.toFile()))) {
           Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
             @Override
-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+              throws IOException {
               zos.putNextEntry(new ZipEntry(path.relativize(file).toString()));
               Files.copy(file, zos);
               zos.closeEntry();
@@ -119,7 +120,7 @@ public class AddHasExtensions implements AugmenterProvider<HasExtensions>, Addit
       public void uninstallExtension(String extensionId) {
         Require.nonNull("Extension ID", extensionId);
 
-        executeMethod.execute(UNINSTALL_EXTENSION, ImmutableMap.of("id", extensionId));
+        executeMethod.execute(UNINSTALL_EXTENSION, Map.of("id", extensionId));
       }
     };
   }

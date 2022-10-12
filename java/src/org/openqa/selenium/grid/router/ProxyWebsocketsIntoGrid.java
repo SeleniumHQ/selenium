@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.router;
 
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
@@ -37,8 +39,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 public class ProxyWebsocketsIntoGrid implements BiFunction<String, Consumer<Message>,
   Optional<Consumer<Message>>> {
@@ -65,8 +65,12 @@ public class ProxyWebsocketsIntoGrid implements BiFunction<String, Consumer<Mess
     try {
       Session session = sessions.get(sessionId.get());
 
-      HttpClient client = clientFactory.createClient(ClientConfig.defaultConfig().baseUri(session.getUri()));
-      WebSocket upstream = client.openSocket(new HttpRequest(GET, uri), new ForwardingListener(downstream));
+      HttpClient
+        client =
+        clientFactory.createClient(ClientConfig.defaultConfig().baseUri(session.getUri()));
+      WebSocket
+        upstream =
+        client.openSocket(new HttpRequest(GET, uri), new ForwardingListener(downstream));
 
       return Optional.of(upstream::send);
 
@@ -77,6 +81,7 @@ public class ProxyWebsocketsIntoGrid implements BiFunction<String, Consumer<Mess
   }
 
   private static class ForwardingListener implements WebSocket.Listener {
+
     private final Consumer<Message> downstream;
 
     public ForwardingListener(Consumer<Message> downstream) {

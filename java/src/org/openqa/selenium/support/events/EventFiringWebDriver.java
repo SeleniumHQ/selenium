@@ -59,55 +59,56 @@ import java.util.stream.Collectors;
 /**
  * A wrapper around an arbitrary {@link WebDriver} instance which supports registering of a
  * {@link WebDriverEventListener}, e&#46;g&#46; for logging purposes.
+ *
  * @deprecated Use {@link EventFiringDecorator} and {@link WebDriverListener} instead
  */
 @Deprecated
 public class EventFiringWebDriver implements
-  WebDriver,
-  JavascriptExecutor,
-  TakesScreenshot,
-  WrapsDriver,
-  Interactive,
-  HasCapabilities {
+                                  WebDriver,
+                                  JavascriptExecutor,
+                                  TakesScreenshot,
+                                  WrapsDriver,
+                                  Interactive,
+                                  HasCapabilities {
 
   private final WebDriver driver;
 
   private final List<WebDriverEventListener> eventListeners =
-      new ArrayList<>();
+    new ArrayList<>();
   private final WebDriverEventListener dispatcher = (WebDriverEventListener) Proxy
-      .newProxyInstance(
-          WebDriverEventListener.class.getClassLoader(),
-          new Class[] {WebDriverEventListener.class},
-          (proxy, method, args) -> {
-            try {
-            for (WebDriverEventListener eventListener : eventListeners) {
-              method.invoke(eventListener, args);
-            }
-            return null;
-            } catch (InvocationTargetException e) {
-              throw e.getTargetException();
-            }
+    .newProxyInstance(
+      WebDriverEventListener.class.getClassLoader(),
+      new Class[]{WebDriverEventListener.class},
+      (proxy, method, args) -> {
+        try {
+          for (WebDriverEventListener eventListener : eventListeners) {
+            method.invoke(eventListener, args);
           }
-      );
+          return null;
+        } catch (InvocationTargetException e) {
+          throw e.getTargetException();
+        }
+      }
+    );
 
-  public EventFiringWebDriver(final WebDriver driver) {
+  public EventFiringWebDriver(WebDriver driver) {
     Class<?>[] allInterfaces = extractInterfaces(driver);
 
     this.driver = (WebDriver) Proxy.newProxyInstance(
-        WebDriverEventListener.class.getClassLoader(),
-        allInterfaces,
-        (proxy, method, args) -> {
-          if ("getWrappedDriver".equals(method.getName())) {
-            return driver;
-          }
-
-          try {
-            return method.invoke(driver, args);
-          } catch (InvocationTargetException e) {
-            dispatcher.onException(e.getTargetException(), driver);
-            throw e.getTargetException();
-          }
+      WebDriverEventListener.class.getClassLoader(),
+      allInterfaces,
+      (proxy, method, args) -> {
+        if ("getWrappedDriver".equals(method.getName())) {
+          return driver;
         }
+
+        try {
+          return method.invoke(driver, args);
+        } catch (InvocationTargetException e) {
+          dispatcher.onException(e.getTargetException(), driver);
+          throw e.getTargetException();
+        }
+      }
     );
   }
 
@@ -231,7 +232,7 @@ public class EventFiringWebDriver implements
       return wrapResult(result);
     }
     throw new UnsupportedOperationException(
-        "Underlying driver instance does not support executing javascript");
+      "Underlying driver instance does not support executing javascript");
   }
 
   @Override
@@ -244,7 +245,7 @@ public class EventFiringWebDriver implements
       return result;
     }
     throw new UnsupportedOperationException(
-        "Underlying driver instance does not support executing javascript");
+      "Underlying driver instance does not support executing javascript");
   }
 
   private Object[] unpackWrappedArgs(Object... args) {
@@ -287,25 +288,25 @@ public class EventFiringWebDriver implements
     }
     if (result instanceof Map) {
       return ((Map<?, ?>) result).entrySet().stream().collect(
-          HashMap::new,
-          (m, e) -> m.put(e.getKey(), e.getValue()),
-          Map::putAll);
+        HashMap::new,
+        (m, e) -> m.put(e.getKey(), e.getValue()),
+        Map::putAll);
     }
 
     return result;
   }
 
-   @Override
-   public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
-     if (driver instanceof TakesScreenshot) {
-        dispatcher.beforeGetScreenshotAs(target);
-        X screenshot = ((TakesScreenshot) driver).getScreenshotAs(target);
-        dispatcher.afterGetScreenshotAs(target, screenshot);
-        return screenshot;
-     }
+  @Override
+  public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+    if (driver instanceof TakesScreenshot) {
+      dispatcher.beforeGetScreenshotAs(target);
+      X screenshot = ((TakesScreenshot) driver).getScreenshotAs(target);
+      dispatcher.afterGetScreenshotAs(target, screenshot);
+      return screenshot;
+    }
 
     throw new UnsupportedOperationException(
-        "Underlying driver instance does not support taking screenshots");
+      "Underlying driver instance does not support taking screenshots");
   }
 
   @Override
@@ -355,7 +356,7 @@ public class EventFiringWebDriver implements
       return ((HasCapabilities) driver).getCapabilities();
     }
     throw new UnsupportedOperationException(
-        "Underlying driver does not implement getting capabilities yet.");
+      "Underlying driver does not implement getting capabilities yet.");
   }
 
 
@@ -365,23 +366,23 @@ public class EventFiringWebDriver implements
     private final WebElement element;
     private final WebElement underlyingElement;
 
-    private EventFiringWebElement(final WebElement element) {
+    private EventFiringWebElement(WebElement element) {
       this.element = (WebElement) Proxy.newProxyInstance(
-          WebDriverEventListener.class.getClassLoader(),
-          extractInterfaces(element),
-          (proxy, method, args) -> {
-            if (method.getName().equals("getWrappedElement")) {
-              return element;
-            }
-            try {
-              return method.invoke(element, args);
-            } catch (InvocationTargetException e) {
-              dispatcher.onException(e.getTargetException(), driver);
-              throw e.getTargetException();
-            }
+        WebDriverEventListener.class.getClassLoader(),
+        extractInterfaces(element),
+        (proxy, method, args) -> {
+          if (method.getName().equals("getWrappedElement")) {
+            return element;
           }
+          try {
+            return method.invoke(element, args);
+          } catch (InvocationTargetException e) {
+            dispatcher.onException(e.getTargetException(), driver);
+            throw e.getTargetException();
+          }
+        }
       );
-      this.underlyingElement = element;
+      underlyingElement = element;
     }
 
     @Override
@@ -577,7 +578,7 @@ public class EventFiringWebDriver implements
 
   private class EventFiringOptions implements Options {
 
-    private Options options;
+    private final Options options;
 
     private EventFiringOptions(Options options) {
       this.options = options;
@@ -692,7 +693,7 @@ public class EventFiringWebDriver implements
 
   private class EventFiringTargetLocator implements TargetLocator {
 
-    private TargetLocator targetLocator;
+    private final TargetLocator targetLocator;
 
     private EventFiringTargetLocator(TargetLocator targetLocator) {
       this.targetLocator = targetLocator;
@@ -746,26 +747,17 @@ public class EventFiringWebDriver implements
 
     @Override
     public Alert alert() {
-      return new EventFiringAlert(this.targetLocator.alert());
+      return new EventFiringAlert(targetLocator.alert());
     }
   }
 
   @Beta
   private class EventFiringWindow implements Window {
+
     private final Window window;
 
     EventFiringWindow(Window window) {
       this.window = window;
-    }
-
-    @Override
-    public void setSize(Dimension targetSize) {
-      window.setSize(targetSize);
-    }
-
-    @Override
-    public void setPosition(Point targetLocation) {
-      window.setPosition(targetLocation);
     }
 
     @Override
@@ -774,8 +766,18 @@ public class EventFiringWebDriver implements
     }
 
     @Override
+    public void setSize(Dimension targetSize) {
+      window.setSize(targetSize);
+    }
+
+    @Override
     public Point getPosition() {
       return window.getPosition();
+    }
+
+    @Override
+    public void setPosition(Point targetLocation) {
+      window.setPosition(targetLocation);
     }
 
     @Override
@@ -795,6 +797,7 @@ public class EventFiringWebDriver implements
   }
 
   private class EventFiringAlert implements Alert {
+
     private final Alert alert;
 
     private EventFiringAlert(Alert alert) {

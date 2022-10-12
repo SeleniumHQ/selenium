@@ -34,6 +34,7 @@ import java.lang.reflect.Field;
  * @see <a href="https://github.com/SeleniumHQ/selenium/wiki/PageObjects">Page Objects Wiki</a>
  */
 public class PageFactory {
+
   /**
    * Instantiate an instance of the given class, and set a lazy proxy for each of the WebElement and
    * List&lt;WebElement&gt; fields that have been declared, assuming that the field
@@ -71,8 +72,8 @@ public class PageFactory {
    * instantiated Page Object.
    *
    * @param searchContext The driver that will be used to look up the elements
-   * @param page   The object with WebElement and List&lt;WebElement&gt; fields that
-   *               should be proxied.
+   * @param page          The object with WebElement and List&lt;WebElement&gt; fields that
+   *                      should be proxied.
    */
   public static void initElements(SearchContext searchContext, Object page) {
     initElements(new DefaultElementLocatorFactory(searchContext), page);

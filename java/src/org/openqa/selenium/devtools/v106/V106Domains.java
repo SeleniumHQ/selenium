@@ -24,11 +24,6 @@ import org.openqa.selenium.devtools.idealized.Javascript;
 import org.openqa.selenium.devtools.idealized.Network;
 import org.openqa.selenium.devtools.idealized.log.Log;
 import org.openqa.selenium.devtools.idealized.target.Target;
-import org.openqa.selenium.devtools.v106.V106Events;
-import org.openqa.selenium.devtools.v106.V106Javascript;
-import org.openqa.selenium.devtools.v106.V106Log;
-import org.openqa.selenium.devtools.v106.V106Network;
-import org.openqa.selenium.devtools.v106.V106Target;
 import org.openqa.selenium.internal.Require;
 
 public class V106Domains implements Domains {

@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestEval extends InternalSelenseTestBase {
+
   @Test
   void testEval() {
     selenium.open("test_open.html");

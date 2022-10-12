@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools;
 
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.internal.Require;
 
 import java.util.Collection;
@@ -32,16 +33,19 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class CdpVersionFinder {
+
   private static final Logger LOG = Logger.getLogger(CdpVersionFinder.class.getName());
-  private final int fudgeFactor;
-  private final Set<CdpInfo> infos;
   private static final Pattern MAJOR_VERSION_EXTRACTOR = Pattern.compile(".*/(\\d+)\\..*");
   private static final Pattern BROWSER_NAME_VERSION = Pattern.compile("(\\d+)\\..*");
+  private final int fudgeFactor;
+  private final Set<CdpInfo> infos;
 
   public CdpVersionFinder() {
     this(
       5,
-      StreamSupport.stream(ServiceLoader.load(CdpInfo.class, CdpVersionFinder.class.getClassLoader()).spliterator(), false).collect(Collectors.toSet()));
+      StreamSupport.stream(
+        ServiceLoader.load(CdpInfo.class, CdpVersionFinder.class.getClassLoader()).spliterator(),
+        false).collect(Collectors.toSet()));
   }
 
   public CdpVersionFinder(int versionFudgeFactor, Collection<CdpInfo> infos) {
@@ -145,7 +149,8 @@ public class CdpVersionFinder {
     if (nearestMatch == null) {
       LOG.info(String.format("Unable to find CDP implementation matching %d.", version));
     } else {
-      LOG.info(String.format("Found CDP implementation for version %d of %d", version, nearestMatch.getMajorVersion()));
+      LOG.info(String.format("Found CDP implementation for version %d of %d", version,
+                             nearestMatch.getMajorVersion()));
     }
 
     return Optional.ofNullable(nearestMatch);

@@ -52,7 +52,7 @@ class StaleElementReferenceTest extends JupiterTestBase {
     WebElement heading = driver.findElement(By.xpath("//h1"));
     driver.get(pages.simpleTestPage);
     assertThatExceptionOfType(StaleElementReferenceException.class)
-        .isThrownBy(() -> heading.getAttribute("class"));
+      .isThrownBy(() -> heading.getAttribute("class"));
   }
 
   @Test

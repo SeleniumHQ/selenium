@@ -18,4 +18,5 @@
 package org.openqa.selenium.remote.http;
 
 public interface Message {
+
 }

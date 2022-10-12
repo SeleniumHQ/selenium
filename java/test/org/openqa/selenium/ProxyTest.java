@@ -28,8 +28,8 @@ import static org.openqa.selenium.Proxy.ProxyType.UNSPECIFIED;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Proxy.ProxyType;
 import org.openqa.selenium.json.Json;
 
@@ -108,14 +108,14 @@ class ProxyTest {
     Proxy proxy = new Proxy();
 
     proxy.
-        setHttpProxy("http.proxy:1234").
-        setFtpProxy("ftp.proxy").
-        setSslProxy("ssl.proxy").
-        setNoProxy("localhost,127.0.0.*").
-        setSocksProxy("socks.proxy:65555").
-        setSocksVersion(5).
-        setSocksUsername("test1").
-        setSocksPassword("test2");
+      setHttpProxy("http.proxy:1234").
+      setFtpProxy("ftp.proxy").
+      setSslProxy("ssl.proxy").
+      setNoProxy("localhost,127.0.0.*").
+      setSocksProxy("socks.proxy:65555").
+      setSocksVersion(5).
+      setSocksUsername("test1").
+      setSocksPassword("test2");
 
     assertThat(proxy.getProxyType()).isEqualTo(MANUAL);
     assertThat(proxy.getFtpProxy()).isEqualTo("ftp.proxy");

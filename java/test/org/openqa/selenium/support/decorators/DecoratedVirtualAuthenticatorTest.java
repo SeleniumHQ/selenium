@@ -26,8 +26,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.virtualauthenticator.Credential;
 import org.openqa.selenium.virtualauthenticator.HasVirtualAuthenticator;
@@ -40,25 +40,6 @@ import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedVirtualAuthenticatorTest {
-
-  private static class Fixture {
-
-    WebDriver originalDriver;
-    WebDriver decoratedDriver;
-    VirtualAuthenticator original;
-    VirtualAuthenticator decorated;
-
-    public Fixture() {
-      original = mock(VirtualAuthenticator.class);
-      originalDriver = mock(
-        WebDriver.class, withSettings().extraInterfaces(HasVirtualAuthenticator.class));
-      when(((HasVirtualAuthenticator) originalDriver).addVirtualAuthenticator(any()))
-        .thenReturn(original);
-      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
-      decorated = ((HasVirtualAuthenticator) decoratedDriver)
-        .addVirtualAuthenticator(new VirtualAuthenticatorOptions());
-    }
-  }
 
   private void verifyFunction(Consumer<VirtualAuthenticator> f) {
     Fixture fixture = new Fixture();
@@ -109,5 +90,24 @@ class DecoratedVirtualAuthenticatorTest {
   @Test
   void setUserVerified() {
     verifyFunction($ -> $.setUserVerified(true));
+  }
+
+  private static class Fixture {
+
+    WebDriver originalDriver;
+    WebDriver decoratedDriver;
+    VirtualAuthenticator original;
+    VirtualAuthenticator decorated;
+
+    public Fixture() {
+      original = mock(VirtualAuthenticator.class);
+      originalDriver = mock(
+        WebDriver.class, withSettings().extraInterfaces(HasVirtualAuthenticator.class));
+      when(((HasVirtualAuthenticator) originalDriver).addVirtualAuthenticator(any()))
+        .thenReturn(original);
+      decoratedDriver = new WebDriverDecorator().decorate(originalDriver);
+      decorated = ((HasVirtualAuthenticator) decoratedDriver)
+        .addVirtualAuthenticator(new VirtualAuthenticatorOptions());
+    }
   }
 }

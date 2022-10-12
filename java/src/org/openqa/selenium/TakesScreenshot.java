@@ -30,6 +30,7 @@ package org.openqa.selenium;
  * @see OutputType
  */
 public interface TakesScreenshot {
+
   /**
    * Capture the screenshot and store it in the specified location.
    * <p>
@@ -51,12 +52,12 @@ public interface TakesScreenshot {
    *   <li>The visible portion of the HTML element</li>
    * </ul>
    *
-   * @param <X> Return type for getScreenshotAs.
+   * @param <X>    Return type for getScreenshotAs.
    * @param target target type, @see OutputType
    * @return Object in which is stored information about the screenshot.
-   * @throws WebDriverException on failure.
+   * @throws WebDriverException            on failure.
    * @throws UnsupportedOperationException if the underlying implementation does not support
-   * screenshot capturing.
+   *                                       screenshot capturing.
    */
   <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException;
 }

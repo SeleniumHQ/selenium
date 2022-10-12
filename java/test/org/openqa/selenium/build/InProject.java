@@ -30,13 +30,14 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public class InProject {
+
   /**
    * Locates a file in the current project
    *
    * @param paths path to file to locate from root of project
    * @return file being sought, if it exists
    * @throws org.openqa.selenium.WebDriverException wrapped FileNotFoundException if file could not
-   *         be found
+   *                                                be found
    */
   public static Path locate(String... paths) {
     return Stream.of(paths)
@@ -78,7 +79,8 @@ public class InProject {
     }
 
     if (dir == null) {
-      throw new IllegalStateException(String.format("Unable to find root of project in %s when looking", pwd));
+      throw new IllegalStateException(
+        String.format("Unable to find root of project in %s when looking", pwd));
     }
 
     return dir.normalize();

@@ -22,6 +22,8 @@ package org.openqa.selenium.interactions;
  * and used by the W3C WebDriver spec.
  */
 public interface InputSource {
+
   SourceType getInputType();
+
   String getName();
 }

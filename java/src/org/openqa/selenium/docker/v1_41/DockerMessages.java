@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import org.openqa.selenium.docker.DockerException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
@@ -25,8 +27,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 class DockerMessages {
 
@@ -37,7 +37,8 @@ class DockerMessages {
     // Utility method
   }
 
-  public static HttpResponse throwIfNecessary(HttpResponse response, String message, Object... args) {
+  public static HttpResponse throwIfNecessary(HttpResponse response, String message,
+                                              Object... args) {
     Require.nonNull("Response", response);
 
     if (response.isSuccessful()) {

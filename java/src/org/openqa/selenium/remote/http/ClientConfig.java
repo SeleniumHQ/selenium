@@ -178,12 +178,12 @@ public class ClientConfig {
   @Override
   public String toString() {
     return "ClientConfig{" +
-      "baseUri=" + baseUri +
-      ", connectionTimeout=" + connectionTimeout +
-      ", readTimeout=" + readTimeout +
-      ", filters=" + filters +
-      ", proxy=" + proxy +
-      ", credentials=" + credentials +
-      '}';
+           "baseUri=" + baseUri +
+           ", connectionTimeout=" + connectionTimeout +
+           ", readTimeout=" + readTimeout +
+           ", filters=" + filters +
+           ", proxy=" + proxy +
+           ", credentials=" + credentials +
+           '}';
   }
 }

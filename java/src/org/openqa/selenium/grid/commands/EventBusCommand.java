@@ -17,8 +17,13 @@
 
 package org.openqa.selenium.grid.commands;
 
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+
 import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.BuildInfo;
@@ -47,14 +52,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-
 @AutoService(CliCommand.class)
 public class EventBusCommand extends TemplateGridCommand {
+
   private static final Logger LOG = Logger.getLogger(EventBusCommand.class.getName());
 
   @Override
@@ -89,12 +89,12 @@ public class EventBusCommand extends TemplateGridCommand {
 
   @Override
   protected Config getDefaultConfig() {
-    return new MapConfig(ImmutableMap.of(
-      "events", ImmutableMap.of(
+    return new MapConfig(Map.of(
+      "events", Map.of(
         "bind", true,
         "publish", "tcp://*:4442",
         "subscribe", "tcp://*:4443"),
-      "server", ImmutableMap.of(
+      "server", Map.of(
         "port", 5557)));
   }
 
@@ -150,10 +150,10 @@ public class EventBusCommand extends TemplateGridCommand {
 
   private HttpResponse httpResponse(boolean ready, String message) {
     return new HttpResponse()
-        .addHeader("Content-Type", JSON_UTF_8)
-        .setContent(asJson(ImmutableMap.of(
-          "value", ImmutableMap.of(
-            "ready", ready,
-            "message", message))));
+      .addHeader("Content-Type", JSON_UTF_8)
+      .setContent(asJson(Map.of(
+        "value", Map.of(
+          "ready", ready,
+          "message", message))));
   }
 }

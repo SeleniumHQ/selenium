@@ -32,8 +32,8 @@ import static org.openqa.selenium.json.JsonType.START_MAP;
 import static org.openqa.selenium.json.JsonType.STRING;
 import static org.openqa.selenium.json.PropertySetting.BY_NAME;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -300,10 +300,6 @@ class JsonInputTest {
       this.message = message;
     }
 
-    public String getMessage() {
-      return message;
-    }
-
     private static HasFromJsonWithJsonInputParameter fromJson(JsonInput input) {
       input.beginObject();
       input.nextName();
@@ -311,6 +307,10 @@ class JsonInputTest {
       input.endObject();
 
       return new HasFromJsonWithJsonInputParameter(message);
+    }
+
+    public String getMessage() {
+      return message;
     }
   }
 }

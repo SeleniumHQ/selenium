@@ -23,8 +23,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.remote.ErrorCodes.UNKNOWN_COMMAND;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -40,7 +38,7 @@ public class NoHandler implements HttpHandler {
 
   private final Json json;
 
-  public NoHandler(Json json) {
+  NoHandler(Json json) {
     this.json = Require.nonNull("Json converter", json);
   }
 
@@ -50,7 +48,7 @@ public class NoHandler implements HttpHandler {
     Map<String, Object> responseMap = new HashMap<>();
     responseMap.put("sessionId", null);
     responseMap.put("status", UNKNOWN_COMMAND);
-    responseMap.put("value", ImmutableMap.of(
+    responseMap.put("value", Map.of(
       "error", "unknown command",
       "message", String.format(
         "Unable to find command matching %s to %s",

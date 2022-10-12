@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerLogs;
 import org.openqa.selenium.internal.Require;
@@ -28,10 +32,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class GetContainerLogs {
 

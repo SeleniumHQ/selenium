@@ -20,8 +20,8 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.interactions.PointerInput.Kind;
@@ -45,14 +45,14 @@ class PointerInputTest {
 
     PointerInput pointerInput = new PointerInput(Kind.MOUSE, null);
     Interaction move = pointerInput.createPointerMove(
-        Duration.ofMillis(100), Origin.fromElement(element), 0, 0);
+      Duration.ofMillis(100), Origin.fromElement(element), 0, 0);
     Sequence sequence = new Sequence(move.getSource(), 0).addAction(move);
 
     String rawJson = new Json().toJson(sequence);
     ActionSequenceJson json = new Json().toType(
-        rawJson,
-        ActionSequenceJson.class,
-        PropertySetting.BY_FIELD);
+      rawJson,
+      ActionSequenceJson.class,
+      PropertySetting.BY_FIELD);
 
     assertThat(json.actions).hasSize(1);
     ActionJson firstAction = json.actions.get(0);
@@ -62,7 +62,9 @@ class PointerInputTest {
   @Test
   void acceptsPointerEventProperties() {
     PointerInput pen = new PointerInput(PointerInput.Kind.PEN, "my pen");
-    Interaction pointerDown = pen.createPointerDown(0, PointerInput.eventProperties().setHeight(12).setTiltX(30));
+    Interaction
+      pointerDown =
+      pen.createPointerDown(0, PointerInput.eventProperties().setHeight(12).setTiltX(30));
 
     Map<String, Object> encode = ((Encodable) pointerDown).encode();
 
@@ -70,10 +72,12 @@ class PointerInputTest {
   }
 
   private static class ActionSequenceJson {
+
     List<ActionJson> actions;
   }
 
   private static class ActionJson {
+
     Map<String, String> origin;
   }
 }

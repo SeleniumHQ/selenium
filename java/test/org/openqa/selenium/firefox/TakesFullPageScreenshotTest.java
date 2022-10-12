@@ -17,14 +17,18 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import com.google.common.collect.Sets;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
@@ -33,9 +37,7 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import javax.imageio.ImageIO;
 
 /**
  * Test screenshot feature.
@@ -51,7 +53,6 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
  * - scan screenshot for actual colors * compare
  *
  * @see org.openqa.selenium.TakesScreenshotTest
- *
  */
 
 // TODO(user): verify expected behaviour after frame switching
@@ -108,13 +109,13 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
     BufferedImage screenshot = getImage();
 
     Set<String> actualColors = scanActualColors(screenshot,
-                                                /* stepX in pixels */ 5,
-                                                /* stepY in pixels */ 5);
+      /* stepX in pixels */ 5,
+      /* stepY in pixels */ 5);
 
     Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                         /* color step */ 1000,
-                                                         /* grid X size */ 6,
-                                                         /* grid Y size */ 6);
+      /* color step */ 1000,
+      /* grid X size */ 6,
+      /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
   }
@@ -126,13 +127,13 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
     BufferedImage screenshot = getImage();
 
     Set<String> actualColors = scanActualColors(screenshot,
-                                               /* stepX in pixels */ 5,
-                                               /* stepY in pixels */ 50);
+      /* stepX in pixels */ 5,
+      /* stepY in pixels */ 50);
 
     Set<String> expectedColors = generateExpectedColors( /* initial color */ 0x0F0F0F,
-                                                    /* color step*/ 1000,
-                                                    /* grid X size */ 6,
-                                                    /* grid Y size */ 6);
+      /* color step*/ 1000,
+      /* grid X size */ 6,
+      /* grid Y size */ 6);
 
     compareColors(expectedColors, actualColors);
   }
@@ -176,8 +177,8 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
       for (int j = 1; j < nY; j++) {
         int color = initialColor + (cnt * stepColor);
         String hex =
-            String.format("#%02x%02x%02x", ((color & 0xFF0000) >> 16), ((color & 0x00FF00) >> 8),
-                          ((color & 0x0000FF)));
+          String.format("#%02x%02x%02x", ((color & 0xFF0000) >> 16), ((color & 0x00FF00) >> 8),
+                        ((color & 0x0000FF)));
         colors.add(hex);
         cnt++;
       }
@@ -207,9 +208,9 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
       for (int i = 0; i < width; i = i + stepX) {
         for (int j = 0; j < height; j = j + stepY) {
           String hex = String.format("#%02x%02x%02x",
-                              (raster.getSample(i, j, 0)),
-                              (raster.getSample(i, j, 1)),
-                              (raster.getSample(i, j, 2)));
+                                     (raster.getSample(i, j, 0)),
+                                     (raster.getSample(i, j, 1)),
+                                     (raster.getSample(i, j, 2)));
           colors.add(hex);
         }
       }
@@ -237,12 +238,12 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
     cleanActualColors.remove("#000000");
     cleanActualColors.remove("#ffffff");
 
-    if (! expectedColors.containsAll(cleanActualColors)) {
+    if (!expectedColors.containsAll(cleanActualColors)) {
       fail("There are unexpected colors on the screenshot: " +
            Sets.difference(cleanActualColors, expectedColors));
     }
 
-    if (! cleanActualColors.containsAll(expectedColors)) {
+    if (!cleanActualColors.containsAll(expectedColors)) {
       fail("There are expected colors not present on the screenshot: " +
            Sets.difference(expectedColors, cleanActualColors));
     }
@@ -264,7 +265,7 @@ class TakesFullPageScreenshotTest extends JupiterTestBase {
   @SuppressWarnings("unused")
   private void saveImageToTmpFile(String methodName, BufferedImage im) {
 
-    File outputfile = new File( methodName + "_image.png");
+    File outputfile = new File(methodName + "_image.png");
     try {
       ImageIO.write(im, "png", outputfile);
     } catch (IOException e) {

@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableSet;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
@@ -28,11 +30,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.unmodifiableSet;
-
 public class DistributorStatus {
 
-  private static final Type NODE_STATUSES_TYPE = new TypeToken<Set<NodeStatus>>() {}.getType();
+  private static final Type NODE_STATUSES_TYPE = new TypeToken<Set<NodeStatus>>() {
+  }.getType();
 
   private final Set<NodeStatus> allNodes;
 
@@ -40,11 +41,27 @@ public class DistributorStatus {
     this.allNodes = unmodifiableSet(new HashSet<>(Require.nonNull("nodes", allNodes)));
   }
 
+  private static DistributorStatus fromJson(JsonInput input) {
+    Set<NodeStatus> nodes = null;
+
+    input.beginObject();
+    while (input.hasNext()) {
+      if ("nodes".equals(input.nextName())) {
+        nodes = input.read(NODE_STATUSES_TYPE);
+      } else {
+        input.skipValue();
+      }
+    }
+    input.endObject();
+
+    return new DistributorStatus(nodes);
+  }
+
   public boolean hasCapacity() {
     return getNodes().stream()
-        .map(node -> node.getAvailability().equals(Availability.UP) && node.hasCapacity())
-        .reduce(Boolean::logicalOr)
-        .orElse(false);
+      .map(node -> node.getAvailability().equals(Availability.UP) && node.hasCapacity())
+      .reduce(Boolean::logicalOr)
+      .orElse(false);
   }
 
   public Set<NodeStatus> getNodes() {
@@ -53,24 +70,5 @@ public class DistributorStatus {
 
   private Map<String, Object> toJson() {
     return Collections.singletonMap("nodes", getNodes());
-  }
-
-  private static DistributorStatus fromJson(JsonInput input) {
-    Set<NodeStatus> nodes = null;
-
-    input.beginObject();
-    while (input.hasNext()) {
-      switch (input.nextName()) {
-        case "nodes":
-          nodes = input.read(NODE_STATUSES_TYPE);
-          break;
-
-        default:
-          input.skipValue();
-      }
-    }
-    input.endObject();
-
-    return new DistributorStatus(nodes);
   }
 }

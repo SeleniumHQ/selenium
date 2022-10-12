@@ -23,6 +23,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class WindowMaximize extends SeleneseCommand<Void> {
+
   private final JavascriptLibrary js;
 
   public WindowMaximize(JavascriptLibrary js) {
@@ -32,8 +33,8 @@ public class WindowMaximize extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     js.executeScript(
-        driver,
-        "if (window.screen) { window.moveTo(0, 0); window.resizeTo(window.screen.availWidth, window.screen.availHeight);};");
+      driver,
+      "if (window.screen) { window.moveTo(0, 0); window.resizeTo(window.screen.availWidth, window.screen.availHeight);};");
 
     return null;
   }

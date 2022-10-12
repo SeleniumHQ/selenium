@@ -67,32 +67,6 @@ public enum Architecture {
   }
 
   /**
-   * Heuristic for comparing two architectures.  If architectures are found to be in the same
-   * "architecture family" (e.g. i386, i686, x86 and ia32 are considered related), they will match.
-   *
-   * @param compareWith the architecture to compare with
-   * @return true if architectures belong to the same architecture family, false otherwise
-   */
-  public boolean is(Architecture compareWith) {
-    return this.equals(compareWith);
-  }
-
-  /**
-   * Gets the data model of the architecture.  The data model tells you how big memory addresses are
-   * on the given microprocessor architecture.
-   *
-   * @return 32- or 64-bit depending on architecture
-   */
-  public int getDataModel() {
-    return 64;
-  }
-
-  @Override
-  public String toString() {
-    return name().toLowerCase();
-  }
-
-  /**
    * Gets current architecture.
    *
    * @return current architecture
@@ -132,6 +106,32 @@ public enum Architecture {
     }
 
     throw new UnsupportedOperationException("Unknown architecture: " + arch);
+  }
+
+  /**
+   * Heuristic for comparing two architectures.  If architectures are found to be in the same
+   * "architecture family" (e.g. i386, i686, x86 and ia32 are considered related), they will match.
+   *
+   * @param compareWith the architecture to compare with
+   * @return true if architectures belong to the same architecture family, false otherwise
+   */
+  public boolean is(Architecture compareWith) {
+    return this.equals(compareWith);
+  }
+
+  /**
+   * Gets the data model of the architecture.  The data model tells you how big memory addresses are
+   * on the given microprocessor architecture.
+   *
+   * @return 32- or 64-bit depending on architecture
+   */
+  public int getDataModel() {
+    return 64;
+  }
+
+  @Override
+  public String toString() {
+    return name().toLowerCase();
   }
 
 }

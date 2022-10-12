@@ -17,8 +17,12 @@
 
 package org.openqa.selenium.support.locators;
 
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
+
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.SearchContext;
@@ -29,9 +33,6 @@ import org.openqa.selenium.json.JsonException;
 
 import java.util.List;
 import java.util.Map;
-
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.support.locators.RelativeLocatorScript.FIND_ELEMENTS;
 
 /**
  * Used for finding elements by their location on a page, rather than their
@@ -79,7 +80,53 @@ public class RelativeLocator {
     return new RelativeBy(by);
   }
 
+  private static Object asAtomLocatorParameter(Object object) {
+    if (object instanceof WebElement) {
+      return object;
+    }
+
+    if (!(object instanceof By)) {
+      throw new IllegalArgumentException(
+        "Expected locator to be either an element or a By: " + object);
+    }
+
+    assertLocatorCanBeSerialized(object);
+
+    Map<String, Object> raw = JSON.toType(JSON.toJson(object), MAP_TYPE);
+
+    if (!(raw.get("using") instanceof String)) {
+      throw new JsonException(
+        "Expected JSON encoded form of locator to have a 'using' field. " + raw);
+    }
+    if (!raw.containsKey("value")) {
+      throw new JsonException(
+        "Expected JSON encoded form of locator to have a 'value' field: " + raw);
+    }
+
+    return Map.of((String) raw.get("using"), raw.get("value"));
+  }
+
+  private static void assertLocatorCanBeSerialized(Object locator) {
+    Require.nonNull("Locator", locator);
+
+    Class<?> clazz = locator.getClass();
+
+    while (!clazz.equals(Object.class)) {
+      try {
+        clazz.getDeclaredMethod("toJson");
+        return;
+      } catch (NoSuchMethodException e) {
+        // Do nothing. Continue with the loop
+      }
+      clazz = clazz.getSuperclass();
+    }
+
+    throw new IllegalArgumentException(
+      "Locator must be serializable to JSON using a `toJson` method. " + locator);
+  }
+
   public static class RelativeBy extends By implements By.Remotable {
+
     private final Object root;
     private final List<Map<String, Object>> filters;
 
@@ -97,10 +144,11 @@ public class RelativeLocator {
             "Root locators as find element payload must only have a single key: " + rootLocator);
         }
       } else if (!(rootLocator instanceof WebElement)) {
-        throw new IllegalArgumentException("Root locator must be an element or a locator: " + rootLocator);
+        throw new IllegalArgumentException(
+          "Root locator must be an element or a locator: " + rootLocator);
       }
 
-      this.root = Require.nonNull("Root locator", rootLocator);
+      root = Require.nonNull("Root locator", rootLocator);
       this.filters = ImmutableList.copyOf(Require.nonNull("Filters", filters));
     }
 
@@ -142,7 +190,7 @@ public class RelativeLocator {
       return simpleDirection("right", element);
     }
 
-    public RelativeBy toRightOf(By locator) {
+    RelativeBy toRightOf(By locator) {
       Require.nonNull("Locator", locator);
       assertLocatorCanBeSerialized(locator);
       return simpleDirection("right", locator);
@@ -153,14 +201,14 @@ public class RelativeLocator {
       return near(element, CLOSE_IN_PIXELS);
     }
 
-    public RelativeBy near(WebElement element, int atMostDistanceInPixels) {
+    RelativeBy near(WebElement element, int atMostDistanceInPixels) {
       Require.nonNull("Element to search near", element);
       Require.positive("Distance", atMostDistanceInPixels);
 
       return near((Object) element, atMostDistanceInPixels);
     }
 
-    public RelativeBy near(By locator) {
+    RelativeBy near(By locator) {
       Require.nonNull("Locator", locator);
       return near((Object) locator, CLOSE_IN_PIXELS);
     }
@@ -178,7 +226,7 @@ public class RelativeLocator {
 
       return new RelativeBy(
         root,
-        amend(ImmutableMap.of(
+        amend(Map.of(
           "kind", "near",
           "args", ImmutableList.of(asAtomLocatorParameter(locator), atMostDistanceInPixels))));
     }
@@ -187,8 +235,9 @@ public class RelativeLocator {
     public List<WebElement> findElements(SearchContext context) {
       JavascriptExecutor js = getJavascriptExecutor(context);
 
-      @SuppressWarnings("unchecked")
-      List<WebElement> elements = (List<WebElement>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
+      List<WebElement>
+        elements =
+        (List<WebElement>) js.executeScript(FIND_ELEMENTS, asAtomLocatorParameter(this));
       return elements;
     }
 
@@ -198,7 +247,7 @@ public class RelativeLocator {
 
       return new RelativeBy(
         root,
-        amend(ImmutableMap.of(
+        amend(Map.of(
           "kind", direction,
           "args", ImmutableList.of(asAtomLocatorParameter(locator)))));
     }
@@ -214,55 +263,13 @@ public class RelativeLocator {
     public Parameters getRemoteParameters() {
       return new Parameters(
         "relative",
-        ImmutableMap.of("root", root, "filters", filters));
+        Map.of("root", root, "filters", filters));
     }
 
     private Map<String, Object> toJson() {
-      return ImmutableMap.of(
+      return Map.of(
         "using", "relative",
-        "value", ImmutableMap.of("root", root, "filters", filters));
+        "value", Map.of("root", root, "filters", filters));
     }
-  }
-
-  private static Object asAtomLocatorParameter(Object object) {
-    if (object instanceof WebElement) {
-      return object;
-    }
-
-    if (!(object instanceof By)) {
-      throw new IllegalArgumentException("Expected locator to be either an element or a By: " + object);
-    }
-
-    assertLocatorCanBeSerialized(object);
-
-    Map<String, Object> raw = JSON.toType(JSON.toJson(object), MAP_TYPE);
-
-    if (!(raw.get("using") instanceof String)) {
-      throw new JsonException("Expected JSON encoded form of locator to have a 'using' field. " + raw);
-    }
-    if (!raw.containsKey("value")) {
-      throw new JsonException("Expected JSON encoded form of locator to have a 'value' field: " + raw);
-    }
-
-    return ImmutableMap.of((String) raw.get("using"), raw.get("value"));
-  }
-
-  private static void assertLocatorCanBeSerialized(Object locator) {
-    Require.nonNull("Locator", locator);
-
-    Class<?> clazz = locator.getClass();
-
-    while (!clazz.equals(Object.class)) {
-      try {
-        clazz.getDeclaredMethod("toJson");
-        return;
-      } catch (NoSuchMethodException e) {
-        // Do nothing. Continue with the loop
-      }
-      clazz = clazz.getSuperclass();
-    }
-
-    throw new IllegalArgumentException(
-      "Locator must be serializable to JSON using a `toJson` method. " + locator);
   }
 }

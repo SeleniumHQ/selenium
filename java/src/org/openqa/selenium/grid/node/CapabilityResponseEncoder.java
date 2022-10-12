@@ -37,9 +37,9 @@ public class CapabilityResponseEncoder {
 
   private static final Json JSON = new Json();
   private static final ResponseEncoder<Session, Map<String, Object>, byte[]> JWP_ENCODER =
-      new Encoder(Dialect.OSS);
+    new Encoder(Dialect.OSS);
   private static final ResponseEncoder<Session, Map<String, Object>, byte[]> W3C_ENCODER =
-      new Encoder(Dialect.W3C);
+    new Encoder(Dialect.W3C);
 
   private CapabilityResponseEncoder() {
     // Utility class
@@ -59,16 +59,17 @@ public class CapabilityResponseEncoder {
   }
 
   public interface ResponseEncoder<T, U, R> extends Function<T, R>, BiFunction<T, U, R> {
+
     @Override
     default <V> ResponseEncoder<T, U, V> andThen(Function<? super R, ? extends V> after) {
       return new ResponseEncoder<T, U, V>() {
         @Override
-        public V apply(final T t, final U u) {
+        public V apply(T t, U u) {
           return after.apply(ResponseEncoder.this.apply(t, u));
         }
 
         @Override
-        public V apply(final T t) {
+        public V apply(T t) {
           return after.apply(ResponseEncoder.this.apply(t));
         }
       };
@@ -83,27 +84,14 @@ public class CapabilityResponseEncoder {
       this.dialect = Require.nonNull("Dialect", dialect);
     }
 
-    @Override
-    public byte[] apply(Session session, Map<String, Object> metadata) {
-      Require.nonNull("Session", session);
-      Require.nonNull("Metadata", metadata);
-
-      return encodeAsResponse(dialect, session.getId(), session.getCapabilities(), metadata);
-    }
-
-    @Override
-    public byte[] apply(Session session) {
-      return apply(session, ImmutableMap.of());
-    }
-
     /**
      * Create a UTF-8 encoded response for a given dialect for use with the New Session command.
      */
     private static byte[] encodeAsResponse(
-        Dialect dialect,
-        SessionId id,
-        Capabilities capabilities,
-        Map<String, Object> metadata) {
+      Dialect dialect,
+      SessionId id,
+      Capabilities capabilities,
+      Map<String, Object> metadata) {
 
       Map<String, Object> toEncode;
 
@@ -124,28 +112,41 @@ public class CapabilityResponseEncoder {
     }
 
     private static Map<String, Object> encodeW3C(
-        SessionId id,
-        Capabilities capabilities,
-        Map<String, Object> metadata) {
+      SessionId id,
+      Capabilities capabilities,
+      Map<String, Object> metadata) {
       return ImmutableMap.<String, Object>builder()
-          .putAll(metadata)
-          .put("value", ImmutableMap.of(
-              "sessionId", id,
-              "capabilities", capabilities))
-          .build();
+        .putAll(metadata)
+        .put("value", Map.of(
+          "sessionId", id,
+          "capabilities", capabilities))
+        .build();
     }
 
     private static Map<String, Object> encodeJsonWireProtocol(
-        SessionId id,
-        Capabilities capabilities,
-        Map<String, Object> metadata) {
+      SessionId id,
+      Capabilities capabilities,
+      Map<String, Object> metadata) {
       return ImmutableMap.<String, Object>builder()
-          .putAll(metadata)
-          .put("status", ErrorCodes.SUCCESS)
-          .put("sessionId", id)
-          .put("value", capabilities)
-          .build();
+        .putAll(metadata)
+        .put("status", ErrorCodes.SUCCESS)
+        .put("sessionId", id)
+        .put("value", capabilities)
+        .build();
 
+    }
+
+    @Override
+    public byte[] apply(Session session, Map<String, Object> metadata) {
+      Require.nonNull("Session", session);
+      Require.nonNull("Metadata", metadata);
+
+      return encodeAsResponse(dialect, session.getId(), session.getCapabilities(), metadata);
+    }
+
+    @Override
+    public byte[] apply(Session session) {
+      return apply(session, Map.of());
     }
 
   }

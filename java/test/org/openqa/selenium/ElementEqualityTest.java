@@ -78,7 +78,7 @@ class ElementEqualityTest extends JupiterTestBase {
 
     driver.switchTo().defaultContent();
     WebElement element = (WebElement) ((JavascriptExecutor) driver).executeScript(
-        "return frames[0].document.getElementById('oneline');");
+      "return frames[0].document.getElementById('oneline');");
 
     driver.switchTo().frame("inner");
 

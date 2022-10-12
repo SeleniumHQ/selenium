@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.remote;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.remote.ErrorCodes.SUCCESS_STRING;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -34,13 +39,6 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.remote.ErrorCodes.SUCCESS_STRING;
-
-import com.google.common.collect.ImmutableMap;
-
 class RemotableByTest {
 
   private final SessionId id = new SessionId(UUID.randomUUID());
@@ -57,7 +55,7 @@ class RemotableByTest {
     driver.findElement(By.cssSelector("#foo"));
 
     assertThat(parameters.get())
-      .isEqualTo(ImmutableMap.of("using", "css selector", "value", "#foo"));
+      .isEqualTo(Map.of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -79,7 +77,7 @@ class RemotableByTest {
     });
 
     assertThat(parameters.get())
-      .isEqualTo(ImmutableMap.of("using", "css selector", "value", "#foo"));
+      .isEqualTo(Map.of("using", "css selector", "value", "#foo"));
   }
 
   @Test
@@ -94,6 +92,7 @@ class RemotableByTest {
     );
 
     class CustomBy extends By implements By.Remotable {
+
       @Override
       public Parameters getRemoteParameters() {
         return new Parameters("magic", "abracadabra");
@@ -108,7 +107,7 @@ class RemotableByTest {
     driver.findElement(new CustomBy());
 
     assertThat(parameters.get())
-      .isEqualTo(ImmutableMap.of("using", "magic", "value", "abracadabra"));
+      .isEqualTo(Map.of("using", "magic", "value", "abracadabra"));
   }
 
   @Test
@@ -124,6 +123,7 @@ class RemotableByTest {
     );
 
     class CustomBy extends By implements By.Remotable {
+
       @Override
       public Parameters getRemoteParameters() {
         return new Parameters("magic", "abracadabra");
@@ -138,7 +138,7 @@ class RemotableByTest {
     driver.findElement(new CustomBy());
 
     assertThat(parameters.get())
-      .isEqualTo(ImmutableMap.of("using", "css selector", "value", "not-magic"));
+      .isEqualTo(Map.of("using", "css selector", "value", "not-magic"));
   }
 
   @Test
@@ -168,9 +168,10 @@ class RemotableByTest {
     );
 
     class CustomBy extends By implements By.Remotable {
+
       private final String arg;
 
-      public CustomBy(String arg) {
+      private CustomBy(String arg) {
         this.arg = arg;
       }
 
@@ -185,12 +186,13 @@ class RemotableByTest {
       }
     }
 
-    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> driver.findElement(new CustomBy("one")));
+    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(
+      () -> driver.findElement(new CustomBy("one")));
     driver.findElement(new CustomBy("two"));
     driver.findElement(new CustomBy("three"));
 
     assertThat(parameters.get())
-      .isEqualTo(ImmutableMap.of("using", "css selector", "value", "three"));
+      .isEqualTo(Map.of("using", "css selector", "value", "three"));
   }
 
   private Response createResponse(Object value) {

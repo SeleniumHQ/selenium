@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.server.Session;
 import java.util.Map;
 
 public abstract class WebElementHandler<T> extends WebDriverHandler<T> {
+
   private volatile String elementId;
 
   protected WebElementHandler(Session session) {

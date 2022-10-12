@@ -83,7 +83,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

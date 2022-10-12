@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.bidi;
 
-import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.internal.Require;
 
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Map;
 import java.util.function.Consumer;
-
-import org.openqa.selenium.internal.Require;
 
 public class BiDi implements Closeable {
 
@@ -34,7 +33,7 @@ public class BiDi implements Closeable {
 
   public BiDi(Connection connection) {
     this.connection = Require.nonNull("WebSocket connection", connection);
-    this.status =
+    status =
       send(new Command<>("session.status", Collections.emptyMap(), BiDiSessionStatus.class));
   }
 
@@ -45,7 +44,7 @@ public class BiDi implements Closeable {
     connection.close();
   }
 
-  public void disconnectSession() {
+  private void disconnectSession() {
     // TODO: Identify how to close a BiDi session.
     // Seems like https://w3c.github.io/webdriver-bidi/#issue-9f7aff26 needs to be fleshed out.
   }
@@ -60,7 +59,7 @@ public class BiDi implements Closeable {
     Require.nonNull("Handler to call", handler);
 
     send(new Command<>("session.subscribe",
-                       ImmutableMap.of("events", Collections.singletonList(event.getMethod()))));
+                       Map.of("events", Collections.singletonList(event.getMethod()))));
 
     connection.addListener(event, handler);
   }
@@ -69,12 +68,12 @@ public class BiDi implements Closeable {
     Require.nonNull("Event to listen for", event);
 
     send(new Command<>("session.unsubscribe",
-                       ImmutableMap.of("events", Collections.singletonList(event.getMethod()))));
+                       Map.of("events", Collections.singletonList(event.getMethod()))));
 
     connection.clearListener(event);
   }
 
-  public void clearListeners() {
+  private void clearListeners() {
     connection.clearListeners();
   }
 

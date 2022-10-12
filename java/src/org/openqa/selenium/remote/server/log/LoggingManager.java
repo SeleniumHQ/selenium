@@ -32,11 +32,12 @@ import java.util.logging.SimpleFormatter;
  */
 public class LoggingManager {
 
-  private static PerSessionLogHandler perSessionLogHandler =
-    new PerSessionLogHandler(4000, new TerseFormatter(LoggingOptions.DEFAULT_LOG_TIMESTAMP_FORMAT), false);
+  private static final PerSessionLogHandler perSessionLogHandler =
+    new PerSessionLogHandler(4000, new TerseFormatter(LoggingOptions.DEFAULT_LOG_TIMESTAMP_FORMAT),
+                             false);
 
-  public static synchronized void configureLogging(boolean debugMode) {
-    final Logger currentLogger;
+  static synchronized void configureLogging(boolean debugMode) {
+    Logger currentLogger;
 
     currentLogger = Logger.getLogger("");
     overrideSimpleFormatterWithTerseOneForConsoleHandler(currentLogger, debugMode);
@@ -52,17 +53,17 @@ public class LoggingManager {
     return perSessionLogHandler;
   }
 
-  public static void overrideSimpleFormatterWithTerseOneForConsoleHandler(
+  private static void overrideSimpleFormatterWithTerseOneForConsoleHandler(
     Logger logger,
     boolean debugMode) {
     for (Handler handler : logger.getHandlers()) {
       if (handler instanceof ConsoleHandler) {
-        final Formatter formatter;
+        Formatter formatter;
 
         formatter = handler.getFormatter();
         if (formatter instanceof SimpleFormatter) {
-          final StdOutHandler stdOutHandler;
-          final Level originalLevel;
+          StdOutHandler stdOutHandler;
+          Level originalLevel;
 
           /*
            * DGF - Nobody likes the SimpleFormatter; surely they wanted our terse formatter instead.
@@ -75,7 +76,8 @@ public class LoggingManager {
            * Furthermore, we all want DEBUG/INFO on stdout and WARN/ERROR on stderr
            */
           stdOutHandler = new StdOutHandler();
-          stdOutHandler.setFormatter(new TerseFormatter(LoggingOptions.DEFAULT_LOG_TIMESTAMP_FORMAT));
+          stdOutHandler.setFormatter(
+            new TerseFormatter(LoggingOptions.DEFAULT_LOG_TIMESTAMP_FORMAT));
           stdOutHandler.setFilter(new MaxLevelFilter(Level.INFO));
           stdOutHandler.setLevel(originalLevel);
           logger.addHandler(stdOutHandler);

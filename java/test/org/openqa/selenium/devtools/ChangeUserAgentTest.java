@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.devtools;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -26,8 +28,6 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class ChangeUserAgentTest extends DevToolsTestBase {
 
@@ -46,7 +46,9 @@ class ChangeUserAgentTest extends DevToolsTestBase {
       .containsEntry("User-Agent", "Camembert 1.0")
       .containsEntry("Accept-Language", "da, en-gb;q=0.9, *;q=0.8");
 
-    Object platform = ((JavascriptExecutor) driver).executeScript("return window.navigator.platform");
+    Object
+      platform =
+      ((JavascriptExecutor) driver).executeScript("return window.navigator.platform");
     assertThat(platform).isEqualTo("FreeBSD");
   }
 

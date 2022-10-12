@@ -20,6 +20,7 @@ package org.openqa.selenium.firefox;
 import org.openqa.selenium.WebDriverException;
 
 public class UnableToCreateProfileException extends WebDriverException {
+
   public UnableToCreateProfileException(Throwable e) {
     super(e);
   }

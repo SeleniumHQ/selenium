@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.netty.server;
 
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.remote.http.Message;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.AttributeKey;
-
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.http.Message;
 
 import java.util.function.Consumer;
 

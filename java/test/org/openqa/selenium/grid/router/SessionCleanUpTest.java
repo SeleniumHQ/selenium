@@ -17,7 +17,15 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.jupiter.api.AfterEach;
@@ -87,20 +95,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 class SessionCleanUpTest {
 
-  public static final Json JSON = new Json();
-  int publish;
-  int subscribe;
+  private static final Json JSON = new Json();
+  private int publish;
+  private int subscribe;
   private Tracer tracer;
   private EventBus bus;
   private HttpClient.Factory clientFactory;
@@ -166,7 +165,7 @@ class SessionCleanUpTest {
 
     server = new NettyServer(
       new BaseServerOptions(
-        new MapConfig(ImmutableMap.of())),
+        new MapConfig(Map.of())),
       handler);
 
     server.start();
@@ -202,7 +201,7 @@ class SessionCleanUpTest {
         additionalConfig,
         new TomlConfig(new StringReader(String.join("\n", rawConfig))),
         new MapConfig(
-          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))));
+          Map.of("server", Map.of("port", PortProber.findFreePort())))));
 
     Server<?> nodeServer = new NodeServer().asServer(nodeConfig).start();
 
@@ -210,8 +209,8 @@ class SessionCleanUpTest {
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
+      Map.of(
+        "capabilities", Map.of(
           "alwaysMatch", capabilities))));
 
     HttpClient client = clientFactory.createClient(server.getUrl());
@@ -290,8 +289,8 @@ class SessionCleanUpTest {
         Instant.now(),
         ImmutableSet.of(W3C),
         ImmutableSet.of(capabilities),
-        ImmutableMap.of(),
-        ImmutableMap.of()));
+        Map.of(),
+        Map.of()));
     assertThat(result.isRight()).isTrue();
 
     SessionId id = result.right().getSession().getId();
@@ -315,8 +314,8 @@ class SessionCleanUpTest {
         Instant.now(),
         ImmutableSet.of(W3C),
         ImmutableSet.of(capabilities),
-        ImmutableMap.of(),
-        ImmutableMap.of()));
+        Map.of(),
+        Map.of()));
     assertThat(sessionResponse.isLeft()).isTrue();
     assertThat(distributor.getStatus().getNodes().isEmpty()).isTrue();
 

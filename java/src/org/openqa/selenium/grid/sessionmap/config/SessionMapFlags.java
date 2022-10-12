@@ -45,8 +45,8 @@ public class SessionMapFlags implements HasRoles {
   private Integer sessionServerPort;
 
   @Parameter(
-      names = "--sessions-host",
-      description = "Host on which the session map server is listening.")
+    names = "--sessions-host",
+    description = "Host on which the session map server is listening.")
   @ConfigValue(section = "sessions", name = "hostname", example = "\"localhost\"")
   private String sessionServerHost;
 

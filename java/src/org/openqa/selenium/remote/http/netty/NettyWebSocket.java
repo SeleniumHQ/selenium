@@ -59,7 +59,10 @@ class NettyWebSocket implements WebSocket {
       URL origUrl = new URL(request.getUrl());
       String wsScheme = "https".equalsIgnoreCase(origUrl.getProtocol()) ? "wss" : "ws";
 
-      URI wsUri = new URI(wsScheme, null, origUrl.getHost(), origUrl.getPort(), origUrl.getPath(), null, null);
+      URI
+        wsUri =
+        new URI(wsScheme, null, origUrl.getHost(), origUrl.getPort(), origUrl.getPath(), null,
+                null);
       ListenableFuture<org.asynchttpclient.netty.ws.NettyWebSocket> future =
         client.prepareGet(wsUri.toString()).execute(
           new WebSocketUpgradeHandler.Builder().addWebSocketListener(new WebSocketListener() {
@@ -68,7 +71,8 @@ class NettyWebSocket implements WebSocket {
             }
 
             @Override
-            public void onClose(org.asynchttpclient.ws.WebSocket websocket, int code, String reason) {
+            public void onClose(org.asynchttpclient.ws.WebSocket websocket, int code,
+                                String reason) {
               listener.onClose(code, reason);
             }
 
@@ -99,7 +103,8 @@ class NettyWebSocket implements WebSocket {
         .get();
 
       if (socket == null) {
-        throw new ConnectionFailedException("Unable to establish websocket connection to " + request.getUrl());
+        throw new ConnectionFailedException(
+          "Unable to establish websocket connection to " + request.getUrl());
       }
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
@@ -110,7 +115,8 @@ class NettyWebSocket implements WebSocket {
     }
   }
 
-  static BiFunction<HttpRequest, Listener, WebSocket> create(ClientConfig config, AsyncHttpClient client) {
+  static BiFunction<HttpRequest, Listener, WebSocket> create(ClientConfig config,
+                                                             AsyncHttpClient client) {
     Filter filter = config.filter();
 
     Function<HttpRequest, HttpRequest> filterRequest = req -> {

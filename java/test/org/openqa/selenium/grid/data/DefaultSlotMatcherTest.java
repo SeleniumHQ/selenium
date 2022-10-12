@@ -17,13 +17,13 @@
 
 package org.openqa.selenium.grid.data;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.CapabilityType;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class DefaultSlotMatcherTest {
 

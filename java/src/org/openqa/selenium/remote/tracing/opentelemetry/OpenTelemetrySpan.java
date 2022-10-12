@@ -17,29 +17,51 @@
 
 package org.openqa.selenium.remote.tracing.opentelemetry;
 
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Primitives;
-import io.opentelemetry.api.common.Attributes;
-import io.opentelemetry.api.common.AttributesBuilder;
-import io.opentelemetry.context.Scope;
-import io.opentelemetry.context.Context;
-import io.opentelemetry.api.trace.SpanContext;
-import io.opentelemetry.api.trace.StatusCode;
-import io.opentelemetry.api.trace.Tracer;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.tracing.EventAttributeValue;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
+
+import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributesBuilder;
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.StatusCode;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.context.Context;
+import io.opentelemetry.context.Scope;
 
 import java.util.Map;
 import java.util.Objects;
 
 class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, Span {
 
+  private static final Map<Status.Kind, StatusCode> statuses
+    = new ImmutableMap.Builder<Status.Kind, StatusCode>()
+    .put(Status.Kind.ABORTED, StatusCode.ERROR)
+    .put(Status.Kind.CANCELLED, StatusCode.ERROR)
+    .put(Status.Kind.NOT_FOUND, StatusCode.ERROR)
+    .put(Status.Kind.OK, StatusCode.OK)
+    .put(Status.Kind.RESOURCE_EXHAUSTED, StatusCode.ERROR)
+    .put(Status.Kind.UNKNOWN, StatusCode.ERROR)
+    .put(Status.Kind.INVALID_ARGUMENT, StatusCode.ERROR)
+    .put(Status.Kind.DEADLINE_EXCEEDED, StatusCode.ERROR)
+    .put(Status.Kind.ALREADY_EXISTS, StatusCode.ERROR)
+    .put(Status.Kind.PERMISSION_DENIED, StatusCode.ERROR)
+    .put(Status.Kind.OUT_OF_RANGE, StatusCode.ERROR)
+    .put(Status.Kind.UNIMPLEMENTED, StatusCode.ERROR)
+    .put(Status.Kind.INTERNAL, StatusCode.ERROR)
+    .put(Status.Kind.UNAVAILABLE, StatusCode.ERROR)
+    .put(Status.Kind.UNAUTHENTICATED, StatusCode.ERROR)
+    .build();
   private final io.opentelemetry.api.trace.Span span;
   private final Scope scope;
 
-  public OpenTelemetrySpan(Tracer tracer, Context context, io.opentelemetry.api.trace.Span span, Scope scope) {
+  OpenTelemetrySpan(Tracer tracer, Context context, io.opentelemetry.api.trace.Span span,
+                    Scope scope) {
     super(tracer, context);
     this.span = Require.nonNull("Span", span);
     this.scope = Require.nonNull("Scope", scope);
@@ -94,70 +116,51 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     AttributesBuilder otAttributes = Attributes.builder();
 
     attributeMap.forEach(
-        (key, value) -> {
-          Require.nonNull("Event Attribute Value", value);
-          switch (value.getAttributeType()) {
-            case BOOLEAN:
-              otAttributes.put(key, value.getBooleanValue());
-              break;
+      (key, value) -> {
+        Require.nonNull("Event Attribute Value", value);
+        switch (value.getAttributeType()) {
+          case BOOLEAN:
+            otAttributes.put(key, value.getBooleanValue());
+            break;
 
-            case BOOLEAN_ARRAY:
-              otAttributes.put(key, value.getBooleanArrayValue());
-              break;
+          case BOOLEAN_ARRAY:
+            otAttributes.put(key, value.getBooleanArrayValue());
+            break;
 
-            case DOUBLE:
-              otAttributes.put(key, value.getNumberValue().doubleValue());
-              break;
+          case DOUBLE:
+            otAttributes.put(key, value.getNumberValue().doubleValue());
+            break;
 
-            case DOUBLE_ARRAY:
-              otAttributes.put(key, value.getDoubleArrayValue());
-              break;
+          case DOUBLE_ARRAY:
+            otAttributes.put(key, value.getDoubleArrayValue());
+            break;
 
-            case LONG:
-              otAttributes.put(key, value.getNumberValue().longValue());
-              break;
+          case LONG:
+            otAttributes.put(key, value.getNumberValue().longValue());
+            break;
 
-            case LONG_ARRAY:
-              otAttributes.put(key, value.getLongArrayValue());
-              break;
+          case LONG_ARRAY:
+            otAttributes.put(key, value.getLongArrayValue());
+            break;
 
-            case STRING:
-              otAttributes.put(key, value.getStringValue());
-              break;
+          case STRING:
+            otAttributes.put(key, value.getStringValue());
+            break;
 
-            case STRING_ARRAY:
-              otAttributes.put(key, value.getStringArrayValue());
-              break;
+          case STRING_ARRAY:
+            otAttributes.put(key, value.getStringArrayValue());
+            break;
 
-            default:
-              throw new IllegalArgumentException(
-                  "Unrecognized event attribute value type: " + value.getAttributeType());
-          }
+          default:
+            throw new IllegalArgumentException(
+              "Unrecognized event attribute value type: " + value.getAttributeType());
         }
+      }
     );
 
     span.addEvent(name, otAttributes.build());
     return this;
   }
-
-  private static final Map<Status.Kind, StatusCode> statuses
-      = new ImmutableMap.Builder<Status.Kind, StatusCode>()
-      .put(Status.Kind.ABORTED, StatusCode.ERROR)
-      .put(Status.Kind.CANCELLED, StatusCode.ERROR)
-      .put(Status.Kind.NOT_FOUND, StatusCode.ERROR)
-      .put(Status.Kind.OK, StatusCode.OK)
-      .put(Status.Kind.RESOURCE_EXHAUSTED, StatusCode.ERROR)
-      .put(Status.Kind.UNKNOWN, StatusCode.ERROR)
-      .put(Status.Kind.INVALID_ARGUMENT, StatusCode.ERROR)
-      .put(Status.Kind.DEADLINE_EXCEEDED, StatusCode.ERROR)
-      .put(Status.Kind.ALREADY_EXISTS, StatusCode.ERROR)
-      .put(Status.Kind.PERMISSION_DENIED, StatusCode.ERROR)
-      .put(Status.Kind.OUT_OF_RANGE, StatusCode.ERROR)
-      .put(Status.Kind.UNIMPLEMENTED, StatusCode.ERROR)
-      .put(Status.Kind.INTERNAL, StatusCode.ERROR)
-      .put(Status.Kind.UNAVAILABLE, StatusCode.ERROR)
-      .put(Status.Kind.UNAUTHENTICATED, StatusCode.ERROR)
-      .build();
 
   @Override
   public Span setStatus(Status status) {
@@ -187,10 +190,10 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     SpanContext context = span.getSpanContext();
 
     return "OpenTelemetrySpan{traceId=" +
-      context.getTraceId() +
-      ",spanId=" +
-      context.getSpanId() +
-      "}";
+           context.getTraceId() +
+           ",spanId=" +
+           context.getSpanId() +
+           "}";
   }
 
   @Override
@@ -204,11 +207,11 @@ class OpenTelemetrySpan extends OpenTelemetryContext implements AutoCloseable, S
     }
 
     OpenTelemetrySpan that = (OpenTelemetrySpan) o;
-    SpanContext thisContext = this.span.getSpanContext();
+    SpanContext thisContext = span.getSpanContext();
     SpanContext thatContext = that.span.getSpanContext();
 
     return Objects.equals(thisContext.getSpanId(), thatContext.getSpanId()) &&
-      Objects.equals(thisContext.getTraceId(), thatContext.getTraceId());
+           Objects.equals(thisContext.getTraceId(), thatContext.getTraceId());
   }
 
   @Override

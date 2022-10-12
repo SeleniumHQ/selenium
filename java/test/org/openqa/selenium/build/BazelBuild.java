@@ -28,6 +28,7 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 public class BazelBuild {
+
   private static final Logger log = Logger.getLogger(BazelBuild.class.getName());
 
   public static File findBinRoot(File dir) {

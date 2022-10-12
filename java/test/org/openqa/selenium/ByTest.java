@@ -17,13 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.json.Json;
-
-import java.util.List;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -39,6 +32,13 @@ import static org.openqa.selenium.By.ByPartialLinkText;
 import static org.openqa.selenium.By.ByTagName;
 import static org.openqa.selenium.By.ByXPath;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.json.Json;
+
+import java.util.List;
+import java.util.Map;
 
 @Tag("UnitTests")
 class ByTest {

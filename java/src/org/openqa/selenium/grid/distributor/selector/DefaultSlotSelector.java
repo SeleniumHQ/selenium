@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.grid.distributor.selector;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import org.openqa.selenium.Capabilities;
@@ -27,8 +29,6 @@ import org.openqa.selenium.grid.data.SlotId;
 
 import java.util.Comparator;
 import java.util.Set;
-
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
 
 public class DefaultSlotSelector implements SlotSelector {
 
@@ -49,7 +49,7 @@ public class DefaultSlotSelector implements SlotSelector {
       .filter(node -> node.hasCapacity(capabilities))
       .sorted(
         Comparator.comparingLong(this::getNumberOfSupportedBrowsers)
-        // Now sort by node which has the lowest load (natural ordering)
+          // Now sort by node which has the lowest load (natural ordering)
           .thenComparingDouble(NodeStatus::getLoad)
           // Then last session created (oldest first), so natural ordering again
           .thenComparingLong(NodeStatus::getLastSessionCreated)

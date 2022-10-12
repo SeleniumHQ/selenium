@@ -17,8 +17,13 @@
 
 package org.openqa.selenium.edge;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.remote.Browser.EDGE;
+
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.remote.CapabilityType;
@@ -36,11 +41,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.remote.Browser.EDGE;
-
 @Tag("UnitTests")
 class EdgeOptionsTest {
 
@@ -49,8 +49,8 @@ class EdgeOptionsTest {
     EdgeOptions options = new EdgeOptions();
     checkCommonStructure(options);
     assertThat(options.asMap()).extracting(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
-        .containsEntry("args", Collections.emptyList())
-        .containsEntry("extensions", Collections.emptyList());
+      .containsEntry("args", Collections.emptyList())
+      .containsEntry("extensions", Collections.emptyList());
   }
 
   @Test
@@ -59,8 +59,8 @@ class EdgeOptionsTest {
     options.addArguments("--arg1", "--arg2");
     checkCommonStructure(options);
     assertThat(options.asMap()).extracting(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
-        .containsEntry("args", Arrays.asList("--arg1", "--arg2"))
-        .containsEntry("extensions", Collections.emptyList());
+      .containsEntry("args", Arrays.asList("--arg1", "--arg2"))
+      .containsEntry("extensions", Collections.emptyList());
   }
 
   @Test
@@ -72,9 +72,9 @@ class EdgeOptionsTest {
     options.addExtensions(ext1, ext2);
     checkCommonStructure(options);
     assertThat(options.asMap()).extracting(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
-        .containsEntry("args", Collections.emptyList())
-        .containsEntry("extensions", Stream.of("ext1 content", "ext2 content")
-            .map(s -> Base64.getEncoder().encodeToString(s.getBytes())).collect(Collectors.toList()));
+      .containsEntry("args", Collections.emptyList())
+      .containsEntry("extensions", Stream.of("ext1 content", "ext2 content")
+        .map(s -> Base64.getEncoder().encodeToString(s.getBytes())).collect(Collectors.toList()));
   }
 
   @Test
@@ -82,17 +82,18 @@ class EdgeOptionsTest {
     EdgeOptions options = new EdgeOptions();
     Map<String, Object> before = options.asMap();
     EdgeOptions merged = options.merge(
-        new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, PageLoadStrategy.NONE));
+      new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, PageLoadStrategy.NONE));
     // TODO: assertThat(merged).isNotSameAs(options);
     // TODO: assertThat(options.asMap()).isEqualTo(before);
-    assertThat(merged.getCapability(CapabilityType.PAGE_LOAD_STRATEGY)).isEqualTo(PageLoadStrategy.NONE);
+    assertThat(merged.getCapability(CapabilityType.PAGE_LOAD_STRATEGY)).isEqualTo(
+      PageLoadStrategy.NONE);
   }
 
   private void checkCommonStructure(EdgeOptions options) {
     assertThat(options.asMap())
-        .containsEntry(CapabilityType.BROWSER_NAME, EDGE.browserName())
-        .extracting(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
-        .containsOnlyKeys("args", "extensions");
+      .containsEntry(CapabilityType.BROWSER_NAME, EDGE.browserName())
+      .extracting(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .containsOnlyKeys("args", "extensions");
   }
 
   private File createTempFile(Path tmpDir, String content) {

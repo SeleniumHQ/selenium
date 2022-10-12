@@ -20,8 +20,6 @@ package org.openqa.selenium.grid.router;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -69,7 +67,7 @@ class DistributedCdpTest {
         "driver-implementation = " + browser.displayName())));
 
     Server<?> server = new NettyServer(
-      new BaseServerOptions(new MapConfig(ImmutableMap.of())),
+      new BaseServerOptions(new MapConfig(Map.of())),
       req -> new HttpResponse().setContent(Contents.utf8String(
         "<script>document.write(navigator.userAgent);</script><body><h1 id=header>Cheese</h1>")))
       .start();
@@ -98,8 +96,9 @@ class DistributedCdpTest {
       }
 
       MutableCapabilities newCaps = new MutableCapabilities(caps);
-      @SuppressWarnings("unchecked")
-      Map<String, Object> rawOptions = (Map<String, Object>) newCaps.getCapability(ChromeOptions.CAPABILITY);
+      Map<String, Object>
+        rawOptions =
+        (Map<String, Object>) newCaps.getCapability(ChromeOptions.CAPABILITY);
       HashMap<String, Object> googOptions = new HashMap<>(rawOptions);
       googOptions.put("binary", binary);
       newCaps.setCapability(ChromeOptions.CAPABILITY, googOptions);

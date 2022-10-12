@@ -86,7 +86,7 @@ public interface WebDriver extends SearchContext {
    * for more details.
    *
    * @return The title of the current page, with leading and trailing whitespace stripped, or null
-   *         if one is not already set
+   * if one is not already set
    */
   String getTitle();
 
@@ -195,7 +195,7 @@ public interface WebDriver extends SearchContext {
    * URL.
    *
    * @return A {@link org.openqa.selenium.WebDriver.Navigation} that allows the selection of what to
-   *         do next
+   * do next
    */
   Navigation navigate();
 
@@ -300,6 +300,9 @@ public interface WebDriver extends SearchContext {
   interface Timeouts {
 
     /**
+     * @param time The amount of time to wait.
+     * @param unit The unit of measure for {@code time}.
+     * @return A self reference.
      * @deprecated Use {@link #implicitlyWait(Duration)}
      *
      * Specifies the amount of time the driver should wait when searching for an element if it is
@@ -315,10 +318,6 @@ public interface WebDriver extends SearchContext {
      * <p>
      * If the timeout is negative, not null, or greater than 2e16 - 1, an error code with invalid
      * argument will be returned.
-     *
-     * @param time The amount of time to wait.
-     * @param unit The unit of measure for {@code time}.
-     * @return A self reference.
      */
     @Deprecated
     Timeouts implicitlyWait(long time, TimeUnit unit);
@@ -357,38 +356,20 @@ public interface WebDriver extends SearchContext {
     }
 
     /**
-     * @deprecated Use {@link #setScriptTimeout(Duration)}
-     *
-     * Sets the amount of time to wait for an asynchronous script to finish execution before
-     * throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
-     * error code with invalid argument will be returned.
-     *
      * @param time The timeout value.
      * @param unit The unit of time.
      * @return A self reference.
      * @see JavascriptExecutor#executeAsyncScript(String, Object...)
      * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
      * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
-     */
-    @Deprecated
-    Timeouts setScriptTimeout(long time, TimeUnit unit);
-
-    /**
+     * @deprecated Use {@link #setScriptTimeout(Duration)}
+     *
      * Sets the amount of time to wait for an asynchronous script to finish execution before
      * throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
      * error code with invalid argument will be returned.
-     *
-     * @param duration The timeout value.
-     * @deprecated Use {@link #scriptTimeout(Duration)}
-     * @return A self reference.
-     * @see JavascriptExecutor#executeAsyncScript(String, Object...)
-     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
      */
     @Deprecated
-    default Timeouts setScriptTimeout(Duration duration) {
-      return setScriptTimeout(duration.toMillis(), TimeUnit.MILLISECONDS);
-    }
+    Timeouts setScriptTimeout(long time, TimeUnit unit);
 
     /**
      * Sets the amount of time to wait for an asynchronous script to finish execution before
@@ -416,6 +397,23 @@ public interface WebDriver extends SearchContext {
      */
     default Duration getScriptTimeout() {
       throw new UnsupportedCommandException();
+    }
+
+    /**
+     * Sets the amount of time to wait for an asynchronous script to finish execution before
+     * throwing an error. If the timeout is negative, not null, or greater than 2e16 - 1, an
+     * error code with invalid argument will be returned.
+     *
+     * @param duration The timeout value.
+     * @return A self reference.
+     * @see JavascriptExecutor#executeAsyncScript(String, Object...)
+     * @see <a href="https://www.w3.org/TR/webdriver/#set-timeouts">W3C WebDriver</a>
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-timeouts-configuration">W3C WebDriver</a>
+     * @deprecated Use {@link #scriptTimeout(Duration)}
+     */
+    @Deprecated
+    default Timeouts setScriptTimeout(Duration duration) {
+      return setScriptTimeout(duration.toMillis(), TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -465,6 +463,7 @@ public interface WebDriver extends SearchContext {
    * Used to locate a given frame or window.
    */
   interface TargetLocator {
+
     /**
      * Select a frame by its (zero-based) index. Selecting a frame by index is equivalent to the
      * JS expression window.frames[index] where "window" is the DOM window represented by the
@@ -485,7 +484,7 @@ public interface WebDriver extends SearchContext {
      * precedence over those matched by ID.
      *
      * @param nameOrId the name of the frame window, the id of the &lt;frame&gt; or &lt;iframe&gt;
-     *        element, or the (zero-based) index
+     *                 element, or the (zero-based) index
      * @return This driver focused on the given frame
      * @throws NoSuchFrameException If the frame cannot be found
      */
@@ -499,7 +498,7 @@ public interface WebDriver extends SearchContext {
      *
      * @param frameElement The frame element to switch to.
      * @return This driver focused on the given frame.
-     * @throws NoSuchFrameException If the given element is neither an IFRAME nor a FRAME element.
+     * @throws NoSuchFrameException           If the given element is neither an IFRAME nor a FRAME element.
      * @throws StaleElementReferenceException If the WebElement has gone stale.
      * @see WebDriver#findElement(By)
      */
@@ -523,7 +522,7 @@ public interface WebDriver extends SearchContext {
      * for more details.
      *
      * @param nameOrHandle The name of the window or the handle as returned by
-     *        {@link WebDriver#getWindowHandle()}
+     *                     {@link WebDriver#getWindowHandle()}
      * @return This driver focused on the given window
      * @throws NoSuchWindowException If the window cannot be found
      */
@@ -564,7 +563,7 @@ public interface WebDriver extends SearchContext {
      * for more details.
      *
      * @return The WebElement with focus, or the body element if no element with focus can be
-     *         detected.
+     * detected.
      */
     WebElement activeElement();
 
@@ -578,6 +577,7 @@ public interface WebDriver extends SearchContext {
   }
 
   interface Navigation {
+
     /**
      * Move back a single "item" in the browser's history.
      * <p>

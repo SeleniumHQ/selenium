@@ -22,5 +22,6 @@ package org.openqa.selenium;
  */
 @FunctionalInterface
 public interface WrapsElement {
+
   WebElement getWrappedElement();
 }

@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 public interface Decorated<T> {
 
   T getOriginal();
+
   WebDriverDecorator getDecorator();
 
   void beforeCall(Method method, Object[] args);

@@ -50,12 +50,16 @@ public class Scroll extends WebElementHandler<Void> {
     try {
       xOffset = ((Number) allParameters.get(XOFFSET)).intValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) x offset value for touch scroll passed: " + allParameters.get(XOFFSET), ex);
+      throw new WebDriverException(
+        "Illegal (non-numeric) x offset value for touch scroll passed: " + allParameters.get(
+          XOFFSET), ex);
     }
     try {
       yOffset = ((Number) allParameters.get(YOFFSET)).intValue();
     } catch (ClassCastException ex) {
-      throw new WebDriverException("Illegal (non-numeric) y offset value for touch scroll passed: " + allParameters.get(YOFFSET), ex);
+      throw new WebDriverException(
+        "Illegal (non-numeric) y offset value for touch scroll passed: " + allParameters.get(
+          YOFFSET), ex);
     }
   }
 

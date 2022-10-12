@@ -19,7 +19,6 @@ package org.openqa.selenium.interactions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementLocationToBe;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
@@ -30,7 +29,6 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -39,8 +37,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.Browser;
 
 @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
 class DragAndDropTest extends JupiterTestBase {
@@ -49,7 +45,7 @@ class DragAndDropTest extends JupiterTestBase {
     try {
       Thread.sleep(ms);
     } catch (InterruptedException e) {
-      throw new RuntimeException("Interrupted: " + e.toString());
+      throw new RuntimeException("Interrupted: " + e);
     }
   }
 
@@ -81,7 +77,7 @@ class DragAndDropTest extends JupiterTestBase {
   @Test
   void testDragAndDropToElementInIframe() {
     driver.get(pages.iframePage);
-    final WebElement iframe = driver.findElement(By.tagName("iframe"));
+    WebElement iframe = driver.findElement(By.tagName("iframe"));
     ((JavascriptExecutor) driver).executeScript("arguments[0].src = arguments[1]", iframe,
                                                 pages.dragAndDropPage);
     driver.switchTo().frame(0);
@@ -96,7 +92,7 @@ class DragAndDropTest extends JupiterTestBase {
   void testDragAndDropElementWithOffsetInIframeAtBottom() {
     driver.get(appServer.whereIs("iframeAtBottom.html"));
 
-    final WebElement iframe = driver.findElement(By.tagName("iframe"));
+    WebElement iframe = driver.findElement(By.tagName("iframe"));
     driver.switchTo().frame(iframe);
 
     WebElement img1 = driver.findElement(By.id("test1"));
@@ -165,7 +161,7 @@ class DragAndDropTest extends JupiterTestBase {
     driver.get(pages.dragAndDropPage);
     WebElement img = driver.findElement(By.id("test3"));
     Point expectedLocation = img.getLocation();
-    expectedLocation= drag(img, expectedLocation, 100, 100);
+    expectedLocation = drag(img, expectedLocation, 100, 100);
     assertThat(img.getLocation()).isEqualTo(expectedLocation);
   }
 

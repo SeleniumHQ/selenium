@@ -38,7 +38,7 @@ public class LocalFileDetector implements FileDetector {
 
     // If empty string, no file is meant to be sent
     if (filepath.isEmpty()) {
-        return null;
+      return null;
     }
 
     File file = new File(filepath);

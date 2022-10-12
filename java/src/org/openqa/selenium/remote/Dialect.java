@@ -17,12 +17,12 @@
 
 package org.openqa.selenium.remote;
 
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
 import org.openqa.selenium.remote.codec.jwp.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.util.ServiceLoader;
 
@@ -70,12 +70,8 @@ public enum Dialect {
     }
   };
 
-  public abstract CommandCodec<HttpRequest> getCommandCodec();
-  public abstract ResponseCodec<HttpResponse> getResponseCodec();
-  public abstract String getEncodedElementKey();
-  public abstract String getShadowRootElementKey();
-
-  private static CommandCodec<HttpRequest> bindAdditionalCommands(CommandCodec<HttpRequest> toCodec) {
+  private static CommandCodec<HttpRequest> bindAdditionalCommands(
+    CommandCodec<HttpRequest> toCodec) {
     ServiceLoader.load(AdditionalHttpCommands.class).forEach(cmds -> {
       cmds.getAdditionalCommands().forEach((name, info) -> {
         if (!toCodec.isSupported(name)) {
@@ -86,4 +82,12 @@ public enum Dialect {
 
     return toCodec;
   }
+
+  public abstract CommandCodec<HttpRequest> getCommandCodec();
+
+  public abstract ResponseCodec<HttpResponse> getResponseCodec();
+
+  public abstract String getEncodedElementKey();
+
+  public abstract String getShadowRootElementKey();
 }

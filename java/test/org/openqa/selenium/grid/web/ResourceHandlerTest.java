@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.grid.web;
 
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -30,12 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 class ResourceHandlerTest {
 
@@ -94,7 +94,9 @@ class ResourceHandlerTest {
     Files.createDirectories(contents.getParent());
     Files.write(contents, "delicious".getBytes(UTF_8));
 
-    HttpHandler handler = Route.prefix("/peas").to(Route.combine(new ResourceHandler(new PathResource(base))));
+    HttpHandler
+      handler =
+      Route.prefix("/peas").to(Route.combine(new ResourceHandler(new PathResource(base))));
 
     // Check redirect works as expected
     HttpResponse res = handler.execute(new HttpRequest(GET, "/peas/cheese"));

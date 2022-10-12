@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.firefox;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -38,10 +40,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @Tag("UnitTests")
 class FirefoxProfileTest {
+
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
   private static final String EXT_RESOURCE_PATH =
     "java/test/org/openqa/selenium/firefox/webextensions-selenium-example.xpi";
@@ -138,7 +139,9 @@ class FirefoxProfileTest {
   void shouldInstallWebExtensionFromZip() {
     profile.addExtension(InProject.locate(EXT_PATH).toFile());
     File profileDir = profile.layoutOnDisk();
-    File extensionFile = new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
+    File
+      extensionFile =
+      new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
     assertThat(extensionFile).exists().isFile();
   }
 
@@ -148,7 +151,9 @@ class FirefoxProfileTest {
     File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
     profile.addExtension(unzippedExtension);
     File profileDir = profile.layoutOnDisk();
-    File extensionDir = new File(profileDir, "extensions/webextensions-selenium-example@example.com");
+    File
+      extensionDir =
+      new File(profileDir, "extensions/webextensions-selenium-example@example.com");
     assertThat(extensionDir).exists();
   }
 
@@ -156,7 +161,9 @@ class FirefoxProfileTest {
   void shouldInstallExtensionUsingClasspath() {
     profile.addExtension(FirefoxProfileTest.class, EXT_RESOURCE_PATH);
     File profileDir = profile.layoutOnDisk();
-    File extensionDir = new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
+    File
+      extensionDir =
+      new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
     assertThat(extensionDir).exists();
   }
 
@@ -229,7 +236,9 @@ class FirefoxProfileTest {
 
   @Test
   void backslashedCharsArePreservedWhenConvertingToAndFromJson() throws IOException {
-    String dir = "c:\\aaa\\bbb\\ccc\\ddd\\eee\\fff\\ggg\\hhh\\iii\\jjj\\kkk\\lll\\mmm\\nnn\\ooo\\ppp\\qqq\\rrr\\sss\\ttt\\uuu\\vvv\\www\\xxx\\yyy\\zzz";
+    String
+      dir =
+      "c:\\aaa\\bbb\\ccc\\ddd\\eee\\fff\\ggg\\hhh\\iii\\jjj\\kkk\\lll\\mmm\\nnn\\ooo\\ppp\\qqq\\rrr\\sss\\ttt\\uuu\\vvv\\www\\xxx\\yyy\\zzz";
     profile.setPreference("browser.download.dir", dir);
 
     String json = profile.toJson();
@@ -241,7 +250,8 @@ class FirefoxProfileTest {
 
   private void assertPreferenceValueEquals(String key, Object value) throws Exception {
     List<String> props = readGeneratedProperties(profile);
-    assertThat(props.stream().anyMatch(line -> line.contains(key) && line.contains(", " + value + ")"))).isTrue();
+    assertThat(props.stream().anyMatch(
+      line -> line.contains(key) && line.contains(", " + value + ")"))).isTrue();
   }
 
   private Preferences parseUserPrefs(FirefoxProfile profile) throws IOException {

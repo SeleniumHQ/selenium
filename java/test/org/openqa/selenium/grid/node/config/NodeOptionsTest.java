@@ -17,7 +17,13 @@
 
 package org.openqa.selenium.grid.node.config;
 
-import com.google.common.collect.ImmutableMap;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptySet;
+import static java.util.Collections.singletonMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import org.assertj.core.api.Condition;
 import org.junit.jupiter.api.Test;
@@ -50,21 +56,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.emptySet;
-import static java.util.Collections.singletonMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
-@SuppressWarnings("DuplicatedCode")
 class NodeOptionsTest {
 
-  @SuppressWarnings("ReturnValueIgnored")
   @Test
   void canConfigureNodeWithDriverDetection() {
-    assumeFalse(Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")), "We don't have driver servers in PATH when we run unit tests");
+    assumeFalse(Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")),
+                "We don't have driver servers in PATH when we run unit tests");
     assumeTrue(new ChromeDriverInfo().isAvailable(), "ChromeDriver needs to be available");
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
@@ -89,7 +86,7 @@ class NodeOptionsTest {
   void shouldDetectCorrectDriversOnWindows() {
     assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
     assumeFalse(Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")),
-      "We don't have driver servers in PATH when we run unit tests");
+                "We don't have driver servers in PATH when we run unit tests");
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
@@ -117,7 +114,7 @@ class NodeOptionsTest {
   void shouldDetectCorrectDriversOnMac() {
     assumeTrue(Platform.getCurrent().is(Platform.MAC));
     assumeFalse(Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")),
-      "We don't have driver servers in PATH when we run unit tests");
+                "We don't have driver servers in PATH when we run unit tests");
 
     Config config = new MapConfig(singletonMap("node", singletonMap("detect-drivers", "true")));
 
@@ -162,8 +159,8 @@ class NodeOptionsTest {
 
     assertThat(reported)
       .filteredOn(capabilities ->
-        capabilities.getCapability("se:vncEnabled") != null &&
-          capabilities.getCapability("se:noVncPort") != null)
+                    capabilities.getCapability("se:vncEnabled") != null &&
+                    capabilities.getCapability("se:noVncPort") != null)
       .hasSize(reported.size());
   }
 
@@ -182,8 +179,8 @@ class NodeOptionsTest {
 
     assertThat(reported)
       .filteredOn(capabilities ->
-        capabilities.getCapability("se:vncEnabled") == null &&
-          capabilities.getCapability("se:noVncPort") == null)
+                    capabilities.getCapability("se:vncEnabled") == null &&
+                    capabilities.getCapability("se:noVncPort") == null)
       .hasSize(reported.size());
   }
 
@@ -203,10 +200,10 @@ class NodeOptionsTest {
   void shouldThrowConfigExceptionIfDetectDriversIsFalseAndSpecificDriverIsAdded() {
     Config config = new MapConfig(
       singletonMap("node",
-        ImmutableMap.of(
-          "detect-drivers", "false",
-          "driver-implementation", "[chrome]"
-        )));
+                   Map.of(
+                     "detect-drivers", "false",
+                     "driver-implementation", "[chrome]"
+                   )));
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
@@ -242,16 +239,18 @@ class NodeOptionsTest {
 
     Config config = new TomlConfig(new StringReader(String.format(
       "[node]\n" +
-        "detect-drivers = false\n" +
-        "driver-factories = [" +
-        "  \"%s\",\n" +
-        "  \"%s\"\n" +
-        "]",
+      "detect-drivers = false\n" +
+      "driver-factories = [" +
+      "  \"%s\",\n" +
+      "  \"%s\"\n" +
+      "]",
       HelperFactory.class.getName(),
       capsString.toString().replace("\"", "\\\""))));
 
     NodeOptions options = new NodeOptions(config);
-    Map<Capabilities, Collection<SessionFactory>> factories = options.getSessionFactories(info -> emptySet());
+    Map<Capabilities, Collection<SessionFactory>>
+      factories =
+      options.getSessionFactories(info -> emptySet());
 
     Collection<SessionFactory> sessionFactories = factories.get(caps);
     assertThat(sessionFactories).size().isEqualTo(1);
@@ -260,8 +259,10 @@ class NodeOptionsTest {
 
   @Test
   void driversCanBeConfigured() {
-    String chromeLocation = "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta";
-    String firefoxLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin";
+    final String
+      chromeLocation =
+      "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta";
+    final String firefoxLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin";
     ChromeOptions chromeOptions = new ChromeOptions();
     chromeOptions.setBinary(chromeLocation);
     FirefoxOptions firefoxOptions = new FirefoxOptions();
@@ -293,7 +294,6 @@ class NodeOptionsTest {
 
     assertThat(reported).is(supporting("chrome"));
     assertThat(reported).is(supporting("firefox"));
-    //noinspection unchecked
     assertThat(reported)
       .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
       .anyMatch(
@@ -304,7 +304,6 @@ class NodeOptionsTest {
       .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY))
       .hasSize(1);
 
-    //noinspection unchecked
     assertThat(reported)
       .filteredOn(capabilities -> capabilities.asMap().containsKey(FirefoxOptions.FIREFOX_OPTIONS))
       .anyMatch(
@@ -318,10 +317,12 @@ class NodeOptionsTest {
 
   @Test
   void driversCanBeConfiguredWithASpecificWebDriverBinary() {
-    String chLocation = "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta";
-    String ffLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin";
-    String chromeDriverLocation = "/path/to/chromedriver_beta/chromedriver";
-    String geckoDriverLocation = "/path/to/geckodriver_nightly/geckodriver";
+    final String
+      chLocation =
+      "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta";
+    final String ffLocation = "/Applications/Firefox Nightly.app/Contents/MacOS/firefox-bin";
+    final String chromeDriverLocation = "/path/to/chromedriver_beta/chromedriver";
+    final String geckoDriverLocation = "/path/to/geckodriver_nightly/geckodriver";
     ChromeOptions chromeOptions = new ChromeOptions();
     chromeOptions.setBinary(chLocation);
     FirefoxOptions firefoxOptions = new FirefoxOptions();
@@ -379,7 +380,7 @@ class NodeOptionsTest {
       "display-name = \"Firefox Nightly\"",
       "max-sessions = 2",
       "cheese = \"sabana\"",
-    };
+      };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     List<Capabilities> reported = new ArrayList<>();
@@ -389,7 +390,7 @@ class NodeOptionsTest {
         return Collections.singleton(HelperFactory.create(config, caps));
       });
       fail("Should have not executed 'getSessionFactories' successfully because driver config " +
-        "needs the stereotype field");
+           "needs the stereotype field");
     } catch (ConfigException e) {
       // Fall through
     }
@@ -408,7 +409,7 @@ class NodeOptionsTest {
       "[[node.driver-configuration]]",
       "display-name = \"Firefox Nightly\"",
       "stereotype = '{\"browserName\": \"firefox\"}'",
-    };
+      };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     List<Capabilities> reported = new ArrayList<>();
@@ -429,8 +430,8 @@ class NodeOptionsTest {
     int overriddenMaxSessions = maxRecommendedSessions + 10;
     Config config = new MapConfig(
       singletonMap("node",
-        ImmutableMap
-          .of("max-sessions", overriddenMaxSessions)));
+                   ImmutableMap
+                     .of("max-sessions", overriddenMaxSessions)));
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
@@ -453,9 +454,9 @@ class NodeOptionsTest {
     int overriddenMaxSessions = maxRecommendedSessions + 10;
     Config config = new MapConfig(
       singletonMap("node",
-        ImmutableMap
-          .of("max-sessions", overriddenMaxSessions,
-            "override-max-sessions", true)));
+                   ImmutableMap
+                     .of("max-sessions", overriddenMaxSessions,
+                         "override-max-sessions", true)));
     List<Capabilities> reported = new ArrayList<>();
     try {
       new NodeOptions(config).getSessionFactories(caps -> {
@@ -476,7 +477,7 @@ class NodeOptionsTest {
     String[] rawConfig = new String[]{
       "[node]",
       "hub = \"cheese.com\"",
-    };
+      };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
 
     NodeOptions nodeOptions = new NodeOptions(config);
@@ -489,7 +490,7 @@ class NodeOptionsTest {
     String[] rawConfig = new String[]{
       "[node]",
       "hub = \"http://0.0.0.0:4444\"",
-    };
+      };
     Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
     String nonLoopbackAddress = new NetworkUtils().getNonLoopbackAddressOfThisMachine();
     String nonLoopbackAddressUrl = String.format("http://%s:4444", nonLoopbackAddress);

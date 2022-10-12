@@ -23,7 +23,6 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.idealized.Javascript;
 import org.openqa.selenium.devtools.v105.page.Page;
 import org.openqa.selenium.devtools.v105.page.model.ScriptIdentifier;
-import org.openqa.selenium.devtools.v105.runtime.Runtime;
 import org.openqa.selenium.devtools.v105.runtime.model.BindingCalled;
 
 import java.util.Optional;

@@ -24,8 +24,17 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.JupiterTestBase;
 
 class ElementSelectingTest extends JupiterTestBase {
+
   private static final boolean UNSELECTED = false;
   private static final boolean SELECTED = true;
+
+  private static String selectedToString(boolean isSelected) {
+    return isSelected ? "[selected]" : "[not selected]";
+  }
+
+  private static String describe(WebElement element) {
+    return element.getAttribute("id");
+  }
 
   @Test
   void testShouldBeAbleToSelectAnEnabledUnselectedCheckbox() {
@@ -160,7 +169,6 @@ class ElementSelectingTest extends JupiterTestBase {
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedRadioButton());
   }
 
-
   private void assertNotSelected(WebElement element) {
     assertSelected(element, UNSELECTED);
   }
@@ -172,9 +180,9 @@ class ElementSelectingTest extends JupiterTestBase {
   private void assertSelected(WebElement element, boolean isSelected) {
     wait.until(ExpectedConditions.elementSelectionStateToBe(element, isSelected));
     assertThat(element.isSelected())
-        .describedAs("Expected element %s to be %s",
-                     describe(element), selectedToString(isSelected), selectedToString(!isSelected))
-        .isEqualTo(isSelected);
+      .describedAs("Expected element %s to be %s",
+                   describe(element), selectedToString(isSelected), selectedToString(!isSelected))
+      .isEqualTo(isSelected);
   }
 
   private void assertCannotSelect(WebElement element) {
@@ -196,14 +204,6 @@ class ElementSelectingTest extends JupiterTestBase {
     assertSelected(element, currentSelectedStatus);
   }
 
-  private static String selectedToString(boolean isSelected) {
-    return isSelected ? "[selected]" : "[not selected]";
-  }
-
-  private static String describe(WebElement element) {
-    return element.getAttribute("id");
-  }
-
   private void assertCanToggle(WebElement element) {
     final boolean originalState = element.isSelected();
 
@@ -217,9 +217,9 @@ class ElementSelectingTest extends JupiterTestBase {
     element.click();
     boolean isNowSelected = element.isSelected();
     assertThat(isNowSelected)
-        .describedAs("Expected element %s to have been toggled to %s",
-                     describe(element), selectedToString(!originalState))
-        .isEqualTo(!(originalState));
+      .describedAs("Expected element %s to have been toggled to %s",
+                   describe(element), selectedToString(!originalState))
+      .isEqualTo(!(originalState));
     assertSelected(element, !originalState);
   }
 

@@ -40,6 +40,7 @@ public interface DriverProvider {
    * The provider "promises" that created driver instances will have (at least) this set of
    * capabilities. The grid uses this information to match the capabilities requested by the client
    * against the capabilities provided by all registered providers to pick the "best" one.
+   *
    * @return capabilities provided
    */
   Capabilities getProvidedCapabilities();

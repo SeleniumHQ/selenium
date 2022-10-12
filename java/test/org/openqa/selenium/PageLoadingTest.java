@@ -17,20 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.time.Duration;
-import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -48,6 +34,20 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
+
+import java.time.Duration;
+import java.util.Set;
 
 class PageLoadingTest extends JupiterTestBase {
 
@@ -196,21 +196,21 @@ class PageLoadingTest extends JupiterTestBase {
   @NotYetImplemented(FIREFOX)
   public void testShouldReturnWhenGettingAUrlThatDoesNotResolve() {
     assertThatCode(
-        () -> driver.get("http://www.thisurldoesnotexist.comx/"))
-        .doesNotThrowAnyException();
+      () -> driver.get("http://www.thisurldoesnotexist.comx/"))
+      .doesNotThrowAnyException();
   }
 
   @Test
   void testShouldThrowIfUrlIsMalformed() {
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> driver.get("www.test.com"));
+      .isThrownBy(() -> driver.get("www.test.com"));
   }
 
   @Test
   @NotYetImplemented(value = SAFARI)
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(() -> driver.get("http://localhost:3001bla"));
+      .isThrownBy(() -> driver.get("http://localhost:3001bla"));
   }
 
   @Test
@@ -251,7 +251,7 @@ class PageLoadingTest extends JupiterTestBase {
   public void testShouldDoNothingIfThereIsNothingToGoBackTo() {
     Set<String> currentWindowHandles = driver.getWindowHandles();
     ((JavascriptExecutor) driver).executeScript(
-        "window.open('" + pages.formPage + "', 'newWindow')");
+      "window.open('" + pages.formPage + "', 'newWindow')");
     wait.until(newWindowIsOpened(currentWindowHandles));
     driver.switchTo().window("newWindow");
     wait.until(titleIs("We Leave From Here"));
@@ -306,7 +306,7 @@ class PageLoadingTest extends JupiterTestBase {
   @NotYetImplemented(value = SAFARI, reason = "does not support insecure SSL")
   public void testShouldBeAbleToAccessPagesWithAnInsecureSslCertificate() {
     createNewDriver(new ImmutableCapabilities(
-        CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.TRUE));
+      CapabilityType.ACCEPT_INSECURE_CERTS, Boolean.TRUE));
     driver.get(appServer.whereIsSecure("simpleTest.html"));
 
     shortWait.until(titleIs("Hello WebDriver"));
@@ -446,8 +446,8 @@ class PageLoadingTest extends JupiterTestBase {
     }
 
     new WebDriverWait(driver, Duration.ofSeconds(30))
-        .ignoring(StaleElementReferenceException.class)
-        .until(elementTextToEqual(By.tagName("body"), "Slept for 11s"));
+      .ignoring(StaleElementReferenceException.class)
+      .until(elementTextToEqual(By.tagName("body"), "Slept for 11s"));
   }
 
   /**
@@ -470,7 +470,7 @@ class PageLoadingTest extends JupiterTestBase {
     long start = System.currentTimeMillis();
     try {
       driver.get(appServer.whereIs(
-          "sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
+        "sleep?time=" + (webDriverPageLoadTimeout + pageLoadTimeBuffer)));
       fail("I should have timed out after " + webDriverPageLoadTimeout + " seconds");
     } catch (RuntimeException e) {
       long end = System.currentTimeMillis();

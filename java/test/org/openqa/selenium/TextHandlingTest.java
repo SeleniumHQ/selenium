@@ -50,9 +50,9 @@ class TextHandlingTest extends JupiterTestBase {
     String text = driver.findElement(By.id("multiline")).getText();
 
     assertThat(text).contains(
-        "A div containing",
-        "More than one line of text",
-        "and block level elements");
+      "A div containing",
+      "More than one line of text",
+      "and block level elements");
   }
 
   @Test
@@ -72,9 +72,9 @@ class TextHandlingTest extends JupiterTestBase {
     String text = driver.findElement(By.id("multiline")).getText();
 
     assertThat(text)
-        .startsWith("A div containing" + NEW_LINE)
-        .contains("More than one line of text" + NEW_LINE)
-        .endsWith("and block level elements");
+      .startsWith("A div containing" + NEW_LINE)
+      .contains("More than one line of text" + NEW_LINE)
+      .endsWith("and block level elements");
   }
 
   @Test
@@ -147,7 +147,7 @@ class TextHandlingTest extends JupiterTestBase {
     String text = driver.findElement(By.id("inline")).getText();
 
     assertThat(text)
-        .isEqualTo("This line has text within elements that are meant to be displayed inline");
+      .isEqualTo("This line has text within elements that are meant to be displayed inline");
   }
 
   @Test
@@ -192,7 +192,7 @@ class TextHandlingTest extends JupiterTestBase {
 
     wait.until(WaitingConditions.elementValueToEqual(textarea, ""));
 
-    String expectedText = "i like cheese" + NEW_LINE + NEW_LINE + "it's really nice";
+    final String expectedText = "i like cheese" + NEW_LINE + NEW_LINE + "it's really nice";
 
     textarea.sendKeys(expectedText);
 
@@ -204,7 +204,7 @@ class TextHandlingTest extends JupiterTestBase {
   void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("working"));
-    String expectedValue = "10/03/2007 to 30/07/1993";
+    final String expectedValue = "10/03/2007 to 30/07/1993";
     input.sendKeys(expectedValue);
     String seenValue = input.getAttribute("value");
 
@@ -260,8 +260,8 @@ class TextHandlingTest extends JupiterTestBase {
     String text = driver.findElement(By.id("nestedblocks")).getText();
 
     assertThat(text)
-        .isEqualTo("Cheese" + NEW_LINE + "Some text" + NEW_LINE + "Some more text" + NEW_LINE
-                   + "and also" + NEW_LINE + "Brie");
+      .isEqualTo("Cheese" + NEW_LINE + "Some text" + NEW_LINE + "Some more text" + NEW_LINE
+                 + "and also" + NEW_LINE + "Brie");
   }
 
   @Test
@@ -348,7 +348,8 @@ class TextHandlingTest extends JupiterTestBase {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
     String oldText = area.getAttribute("value");
-    ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", area, "New Text");
+    ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", area,
+                                                "New Text");
     assertThat(area.getText()).isEqualTo(oldText);
   }
 
@@ -363,7 +364,7 @@ class TextHandlingTest extends JupiterTestBase {
   void testShouldGetTextWhichIsAValidComplexJSONObject() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("complexJsonText"));
-    assertThat(element.getText()).isEqualTo("{a=\"\\\\b\\\\\\\"\'\\\'\"}");
+    assertThat(element.getText()).isEqualTo("{a=\"\\\\b\\\\\\\"'\\'\"}");
   }
 
   @Test
@@ -373,8 +374,9 @@ class TextHandlingTest extends JupiterTestBase {
     driver.get(pages.unicodeLtrPage);
     WebElement element = driver.findElement(By.id("EH")).findElement(By.tagName("nobr"));
     String text = element.getText();
-    String expected = "Some notes";
-    assertThat(text.codePointAt(0)).describedAs("RTL mark should not be present").isNotEqualTo(8206);
+    final String expected = "Some notes";
+    assertThat(text.codePointAt(0)).describedAs("RTL mark should not be present")
+      .isNotEqualTo(8206);
     // Note: If this assertion fails but the content of the strings *looks* the same
     // it may be because of hidden unicode LTR character being included in the string.
     // That's the reason for the previous assert.
@@ -393,9 +395,9 @@ class TextHandlingTest extends JupiterTestBase {
   @Test
   void canHandleTextThatLooksLikeANumber() {
     driver.get(appServer.create(new Page()
-        .withBody("<div id='point'>12.345</div>",
-                  "<div id='comma'>12,345</div>",
-                  "<div id='space'>12 345</div>")));
+                                  .withBody("<div id='point'>12.345</div>",
+                                            "<div id='comma'>12,345</div>",
+                                            "<div id='space'>12 345</div>")));
 
     assertThat(driver.findElement(By.id("point")).getText()).isEqualTo("12.345");
     assertThat(driver.findElement(By.id("comma")).getText()).isEqualTo("12,345");
@@ -408,11 +410,11 @@ class TextHandlingTest extends JupiterTestBase {
   public void canHandleTextTransformProperty() {
     driver.get(pages.simpleTestPage);
     assertThat(driver.findElement(By.id("capitalized")).getText())
-        .isEqualTo(isFirefox(driver) ? "Hello, World! Bla-bla-BLA" : "Hello, World! Bla-Bla-BLA");
+      .isEqualTo(isFirefox(driver) ? "Hello, World! Bla-bla-BLA" : "Hello, World! Bla-Bla-BLA");
     assertThat(driver.findElement(By.id("lowercased")).getText())
-        .isEqualTo("hello, world! bla-bla-bla");
+      .isEqualTo("hello, world! bla-bla-bla");
     assertThat(driver.findElement(By.id("uppercased")).getText())
-        .isEqualTo("HELLO, WORLD! BLA-BLA-BLA");
+      .isEqualTo("HELLO, WORLD! BLA-BLA-BLA");
   }
 
 }

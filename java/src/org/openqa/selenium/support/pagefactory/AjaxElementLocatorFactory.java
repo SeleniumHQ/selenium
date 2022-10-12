@@ -22,6 +22,7 @@ import org.openqa.selenium.SearchContext;
 import java.lang.reflect.Field;
 
 public class AjaxElementLocatorFactory implements ElementLocatorFactory {
+
   private final SearchContext searchContext;
   private final int timeOutInSeconds;
 

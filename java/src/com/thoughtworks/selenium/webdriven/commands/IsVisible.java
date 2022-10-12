@@ -23,6 +23,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class IsVisible extends SeleneseCommand<Boolean> {
+
   private final ElementFinder finder;
 
   public IsVisible(ElementFinder finder) {

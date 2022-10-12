@@ -26,6 +26,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.function.BiFunction;
 
 public class InstantCoercer extends TypeCoercer<Instant> {
+
   @Override
   public boolean test(Class<?> aClass) {
     return Instant.class.isAssignableFrom(aClass);

@@ -70,25 +70,26 @@ public class DistributorOptions {
 
     try {
       return new URI(
-          "http",
-          null,
-          hostname.get(),
-          port.get(),
-          null,
-          null,
-          null);
+        "http",
+        null,
+        hostname.get(),
+        port.get(),
+        null,
+        null,
+        null);
     } catch (URISyntaxException e) {
       throw new ConfigException(
-          "Distributor uri configured through host (%s) and port (%d) is not a valid URI",
-          hostname.get(),
-          port.get());
+        "Distributor uri configured through host (%s) and port (%d) is not a valid URI",
+        hostname.get(),
+        port.get());
     }
   }
 
   public Duration getHealthCheckInterval() {
     // If the user sets 0s or less, we default to 10s.
     int seconds = Math.max(
-      config.getInt(DISTRIBUTOR_SECTION, "healthcheck-interval").orElse(DEFAULT_HEALTHCHECK_INTERVAL),
+      config.getInt(DISTRIBUTOR_SECTION, "healthcheck-interval")
+        .orElse(DEFAULT_HEALTHCHECK_INTERVAL),
       10);
     return Duration.ofSeconds(seconds);
   }
@@ -119,6 +120,6 @@ public class DistributorOptions {
 
   public boolean shouldRejectUnsupportedCaps() {
     return config.getBool(DISTRIBUTOR_SECTION,
-      "reject-unsupported-caps").orElse(DEFAULT_REJECT_UNSUPPORTED_CAPS);
+                          "reject-unsupported-caps").orElse(DEFAULT_REJECT_UNSUPPORTED_CAPS);
   }
 }

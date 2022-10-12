@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableMap;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import static java.util.Collections.unmodifiableMap;
 
 public class NewSessionResponse {
 
@@ -34,32 +34,12 @@ public class NewSessionResponse {
 
   public NewSessionResponse(
     RequestId requestId,
-     Session session,
-     byte[] downstreamEncodedResponse) {
+    Session session,
+    byte[] downstreamEncodedResponse) {
     this.requestId = Require.nonNull("Request Id", requestId);
     this.session = Require.nonNull("Session", session);
     this.downstreamEncodedResponse = Require.nonNull
-        ("Downstream encoded response", downstreamEncodedResponse);
-  }
-
-  public RequestId getRequestId() {
-    return requestId;
-  }
-
-  public Session getSession() {
-    return session;
-  }
-
-  public byte[] getDownstreamEncodedResponse() {
-    return downstreamEncodedResponse;
-  }
-
-  private Map<String, Object> toJson() {
-    Map<String, Object> toReturn = new LinkedHashMap<>();
-    toReturn.put("requestId", requestId);
-    toReturn.put("session", session);
-    toReturn.put("downstreamEncodedResponse", Base64.getEncoder().encodeToString(downstreamEncodedResponse));
-    return unmodifiableMap(toReturn);
+      ("Downstream encoded response", downstreamEncodedResponse);
   }
 
   private static NewSessionResponse fromJson(JsonInput input) {
@@ -90,6 +70,27 @@ public class NewSessionResponse {
     input.endObject();
 
     return new NewSessionResponse(requestId, session, downstreamResponse);
+  }
+
+  public RequestId getRequestId() {
+    return requestId;
+  }
+
+  public Session getSession() {
+    return session;
+  }
+
+  public byte[] getDownstreamEncodedResponse() {
+    return downstreamEncodedResponse;
+  }
+
+  private Map<String, Object> toJson() {
+    Map<String, Object> toReturn = new LinkedHashMap<>();
+    toReturn.put("requestId", requestId);
+    toReturn.put("session", session);
+    toReturn.put("downstreamEncodedResponse",
+                 Base64.getEncoder().encodeToString(downstreamEncodedResponse));
+    return unmodifiableMap(toReturn);
   }
 
 }

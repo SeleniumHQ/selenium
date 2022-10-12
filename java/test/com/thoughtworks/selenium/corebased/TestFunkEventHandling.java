@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestFunkEventHandling extends InternalSelenseTestBase {
+
   @Test
   void testFunkEventHandling() throws Exception {
     selenium.open("test_funky_event_handling.html");

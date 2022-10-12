@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.grid.web;
 
-import com.google.common.collect.ImmutableMap;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.Filter;
@@ -28,9 +31,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.util.Collection;
 import java.util.Set;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-
 public class CheckOriginHeader implements Filter {
 
   private final Set<String> allowedHosts;
@@ -39,7 +39,8 @@ public class CheckOriginHeader implements Filter {
   public CheckOriginHeader(Collection<String> allowedOriginHosts, Set<String> skipChecksOn) {
     Require.nonNull("Allowed origins list", allowedOriginHosts);
     allowedHosts = ImmutableSet.copyOf(allowedOriginHosts);
-    this.skipChecksOn = ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
+    this.skipChecksOn =
+      ImmutableSet.copyOf(Require.nonNull("URLs where checks are skipped", skipChecksOn));
   }
 
   @Override
@@ -56,8 +57,8 @@ public class CheckOriginHeader implements Filter {
         return new HttpResponse()
           .setStatus(HTTP_INTERNAL_ERROR)
           .addHeader("Content-Type", JSON_UTF_8)
-          .setContent(Contents.asJson(ImmutableMap.of(
-            "value", ImmutableMap.of(
+          .setContent(Contents.asJson(Map.of(
+            "value", Map.of(
               "error", "unknown error",
               "message", "Origin not allowed: " + origin,
               "stacktrace", ""))));

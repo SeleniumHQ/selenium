@@ -30,6 +30,7 @@ import java.util.function.Function;
 class NumberCoercer<T extends Number> extends TypeCoercer<T> {
 
   private static final Map<Class<?>, Class<?>> PRIMITIVE_NUMBER_TYPES;
+
   static {
     Map<Class<?>, Class<?>> builder = new HashMap<>();
     builder.put(byte.class, Byte.class);

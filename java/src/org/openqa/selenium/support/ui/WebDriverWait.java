@@ -31,6 +31,7 @@ import java.time.Duration;
  * A specialization of {@link FluentWait} that uses WebDriver instances.
  */
 public class WebDriverWait extends FluentWait<WebDriver> {
+
   private final WebDriver driver;
 
   /**
@@ -38,17 +39,17 @@ public class WebDriverWait extends FluentWait<WebDriver> {
    * the 'until' condition, and immediately propagate all others.  You can add more to the ignore
    * list by calling ignoring(exceptions to add).
    *
-   * @param driver The WebDriver instance to pass to the expected conditions
+   * @param driver  The WebDriver instance to pass to the expected conditions
    * @param timeout The timeout when an expectation is called
    * @see WebDriverWait#ignoring(java.lang.Class)
    */
   public WebDriverWait(WebDriver driver, Duration timeout) {
     this(
-        driver,
-        timeout,
-        Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT),
-        Clock.systemDefaultZone(),
-        Sleeper.SYSTEM_SLEEPER);
+      driver,
+      timeout,
+      Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT),
+      Clock.systemDefaultZone(),
+      Sleeper.SYSTEM_SLEEPER);
   }
 
   /**
@@ -56,9 +57,9 @@ public class WebDriverWait extends FluentWait<WebDriver> {
    * the 'until' condition, and immediately propagate all others.  You can add more to the ignore
    * list by calling ignoring(exceptions to add).
    *
-   * @param driver The WebDriver instance to pass to the expected conditions
+   * @param driver  The WebDriver instance to pass to the expected conditions
    * @param timeout The timeout in seconds when an expectation is called
-   * @param sleep The duration in milliseconds to sleep between polls.
+   * @param sleep   The duration in milliseconds to sleep between polls.
    * @see WebDriverWait#ignoring(java.lang.Class)
    */
   public WebDriverWait(WebDriver driver, Duration timeout, Duration sleep) {
@@ -66,14 +67,14 @@ public class WebDriverWait extends FluentWait<WebDriver> {
   }
 
   /**
-   * @param driver the WebDriver instance to pass to the expected conditions
-   * @param clock used when measuring the timeout
+   * @param driver  the WebDriver instance to pass to the expected conditions
+   * @param clock   used when measuring the timeout
    * @param sleeper used to make the current thread go to sleep
    * @param timeout the timeout when an expectation is called
-   * @param sleep the timeout used whilst sleeping
+   * @param sleep   the timeout used whilst sleeping
    */
   public WebDriverWait(
-      WebDriver driver, Duration timeout, Duration sleep, Clock clock, Sleeper sleeper) {
+    WebDriver driver, Duration timeout, Duration sleep, Clock clock, Sleeper sleeper) {
     super(driver, clock, sleeper);
     withTimeout(timeout);
     pollingEvery(sleep);

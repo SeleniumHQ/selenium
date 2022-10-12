@@ -17,18 +17,18 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.UncheckedIOException;
 
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 public class SleepingHandler implements HttpHandler {
 
   private static final String RESPONSE_STRING_FORMAT =
-      "<html><head><title>Done</title></head><body>Slept for %ss</body></html>";
+    "<html><head><title>Done</title></head><body>Slept for %ss</body></html>";
 
   @Override
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
@@ -39,9 +39,9 @@ public class SleepingHandler implements HttpHandler {
 
     return new HttpResponse()
       .setHeader("Content-Type", "text/html")
-      //Dont Cache Anything  at the browser
-      .setHeader("Cache-Control","no-cache")
-      .setHeader("Pragma","no-cache")
+      //Don't Cache Anything  at the browser
+      .setHeader("Cache-Control", "no-cache")
+      .setHeader("Pragma", "no-cache")
       .setHeader("Expires", "0")
       .setContent(utf8String(String.format(RESPONSE_STRING_FORMAT, duration)));
   }
@@ -50,8 +50,8 @@ public class SleepingHandler implements HttpHandler {
     long start = System.currentTimeMillis();
     try {
       Thread.sleep(timeout);
-      while ( (System.currentTimeMillis() - start) < timeout) {
-        Thread.sleep( 20);
+      while ((System.currentTimeMillis() - start) < timeout) {
+        Thread.sleep(20);
       }
     } catch (InterruptedException ignore) {
     }

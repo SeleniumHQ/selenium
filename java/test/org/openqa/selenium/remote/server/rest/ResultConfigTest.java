@@ -33,22 +33,23 @@ import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 class ResultConfigTest {
-  private Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
+
   private static final SessionId dummySessionId = new SessionId("Test");
+  private final Logger logger = Logger.getLogger(ResultConfigTest.class.getName());
 
   @Test
   void testShouldNotAllowNullToBeUsedAsTheUrl() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new ResultConfig(null, () -> () -> null, null, logger));
+      .isThrownBy(() -> new ResultConfig(null, () -> () -> null, null, logger));
   }
 
   @Test
   void testShouldNotAllowNullToBeUsedForTheHandler() {
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> new ResultConfig("/cheese", (Supplier<RestishHandler<?>>) null, null, logger));
+      .isThrownBy(
+        () -> new ResultConfig("/cheese", (Supplier<RestishHandler<?>>) null, null, logger));
   }
 
-  @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
   @Test
   void testShouldGracefullyHandleNullInputs() {
     ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, logger
@@ -56,16 +57,15 @@ class ResultConfigTest {
     assertNull(config.getRootExceptionCause(null));
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   void testCanPeelNestedExceptions() {
     RuntimeException runtime = new RuntimeException("root of all evils");
     InvocationTargetException invocation = new InvocationTargetException(runtime,
-        "Got Runtime Exception");
+                                                                         "Got Runtime Exception");
     WebDriverException webdriverException = new WebDriverException("Invocation problems",
-        invocation);
+                                                                   invocation);
     ExecutionException execution = new ExecutionException("General WebDriver error",
-        webdriverException);
+                                                          webdriverException);
 
     ResultConfig config = new ResultConfig("/foo/:bar", () -> () -> null, null, logger
     );
@@ -73,7 +73,6 @@ class ResultConfigTest {
     assertEquals(toClient, runtime);
   }
 
-  @SuppressWarnings({"ThrowableInstanceNeverThrown"})
   @Test
   void testDoesNotPeelTooManyLayersFromNestedExceptions() {
     RuntimeException runtime = new RuntimeException("root of all evils");

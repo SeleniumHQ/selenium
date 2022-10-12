@@ -32,18 +32,18 @@ import java.util.stream.Collectors;
 public class GetAllSessions implements RestishHandler<List<GetAllSessions.SessionInfo>> {
 
   private final Response response = new Response();
-  private volatile DriverSessions allSessions;
+  private final DriverSessions allSessions;
 
   public GetAllSessions(DriverSessions allSession) {
-    this.allSessions = allSession;
+    allSessions = allSession;
   }
 
   @Override
   public List<SessionInfo> handle() {
     Set<SessionId> sessions = allSessions.getSessions();
     List<SessionInfo> sessionInfo =
-        sessions.stream().map(id -> new SessionInfo(id, allSessions.get(id).getCapabilities()))
-            .collect(Collectors.toList());
+      sessions.stream().map(id -> new SessionInfo(id, allSessions.get(id).getCapabilities()))
+        .collect(Collectors.toList());
     return ImmutableList.copyOf(sessionInfo);
   }
 

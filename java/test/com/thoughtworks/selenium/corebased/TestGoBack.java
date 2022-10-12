@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestGoBack extends InternalSelenseTestBase {
+
   @Test
   void testGoBack() {
     selenium.open("test_click_page1.html");

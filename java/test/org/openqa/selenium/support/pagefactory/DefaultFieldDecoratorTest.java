@@ -18,32 +18,32 @@
 package org.openqa.selenium.support.pagefactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.util.List;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.By;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
-import org.openqa.selenium.support.PageFactory;
+
+import java.util.List;
 
 @Tag("UnitTests")
 class DefaultFieldDecoratorTest {
 
   // Unused fields are used by tests. Do not remove!
-  @SuppressWarnings("unused") private WebElement element1;
-  @SuppressWarnings("unused") private WebElement element2;
-  @SuppressWarnings("unused") private List<WebElement> list1;
-  @SuppressWarnings("unused") private List<Object> list2;
-  @SuppressWarnings("unused") private Integer num;
+  @SuppressWarnings("unused")
+  private WebElement element1;
+  @SuppressWarnings("unused")
+  private WebElement element2;
+  @SuppressWarnings("unused")
+  private List<WebElement> list1;
+  @SuppressWarnings("unused")
+  private List<Object> list2;
+  @SuppressWarnings("unused")
+  private Integer num;
 
   @SuppressWarnings("unused")
   @FindBy(tagName = "div")
@@ -75,7 +75,7 @@ class DefaultFieldDecoratorTest {
 
   private FieldDecorator createDecoratorWithDefaultLocator() {
     return new DefaultFieldDecorator(
-        new DefaultElementLocatorFactory(null));
+      new DefaultElementLocatorFactory(null));
   }
 
   @Test
@@ -145,7 +145,7 @@ class DefaultFieldDecoratorTest {
   }
 
   private interface AllElement extends WebElement, WrapsElement,
-    org.openqa.selenium.interactions.Locatable {
+                                       org.openqa.selenium.interactions.Locatable {
     // Place holder
   }
 

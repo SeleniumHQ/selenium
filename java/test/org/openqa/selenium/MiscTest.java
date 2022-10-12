@@ -80,7 +80,7 @@ class MiscTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = ALL, reason = "issue 2282")
-  public void testStimulatesStrangeOnloadInteractionInFirefox()  {
+  public void testStimulatesStrangeOnloadInteractionInFirefox() {
     driver.get(pages.documentWrite);
 
     // If this command succeeds, then all is well.

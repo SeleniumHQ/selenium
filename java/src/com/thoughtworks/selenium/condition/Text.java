@@ -21,6 +21,7 @@ package com.thoughtworks.selenium.condition;
  * Checks whether text exists either anywhere on the page, or inside a given locator.
  */
 public class Text extends Condition {
+
   private final String locator;
   private final String expectedText;
 
@@ -37,7 +38,7 @@ public class Text extends Condition {
    * Look for text inside a given locator.
    *
    * @param expectedText text we're looking for
-   * @param locator Selenium locator
+   * @param locator      Selenium locator
    */
   public Text(String expectedText, String locator) {
     super("Expecting text " + expectedText + (null == locator ? "" : " in " + locator));

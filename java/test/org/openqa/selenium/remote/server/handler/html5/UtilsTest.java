@@ -25,8 +25,6 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.ImmutableMap;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.UnsupportedCommandException;
@@ -42,6 +40,8 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
+
+import java.util.Map;
 
 /**
  * Tests for the {@link Utils} class.
@@ -89,7 +89,7 @@ class UtilsTest {
     CapableDriver driver = mock(CapableDriver.class);
     when(driver.getCapabilities()).thenReturn(caps);
     when(driver.execute(DriverCommand.GET_APP_CACHE_STATUS, null))
-        .thenReturn(AppCacheStatus.CHECKING.name());
+      .thenReturn(AppCacheStatus.CHECKING.name());
 
     ApplicationCache cache = Utils.getApplicationCache(driver);
     assertEquals(AppCacheStatus.CHECKING, cache.getStatus());
@@ -103,7 +103,7 @@ class UtilsTest {
     CapableDriver driver = mock(CapableDriver.class);
     when(driver.getCapabilities()).thenReturn(caps);
     when(driver.execute(DriverCommand.GET_LOCATION, null)).thenReturn(
-        ImmutableMap.of("latitude", 1.2, "longitude", 3.4, "altitude", 5.6));
+      Map.of("latitude", 1.2, "longitude", 3.4, "altitude", 5.6));
 
     LocationContext context = Utils.getLocationContext(driver);
     Location location = context.location();
@@ -114,7 +114,7 @@ class UtilsTest {
     reset(driver);
     location = new Location(7, 8, 9);
     context.setLocation(location);
-    verify(driver).execute(DriverCommand.SET_LOCATION, ImmutableMap.of("location", location));
+    verify(driver).execute(DriverCommand.SET_LOCATION, Map.of("location", location));
   }
 
   @Test
@@ -133,15 +133,17 @@ class UtilsTest {
     localStorage.setItem("foo", "bar");
     sessionStorage.setItem("bim", "baz");
 
-    verify(driver).execute(DriverCommand.SET_LOCAL_STORAGE_ITEM, ImmutableMap.of(
-        "key", "foo", "value", "bar"));
-    verify(driver).execute(DriverCommand.SET_SESSION_STORAGE_ITEM, ImmutableMap.of(
-        "key", "bim", "value", "baz"));
+    verify(driver).execute(DriverCommand.SET_LOCAL_STORAGE_ITEM, Map.of(
+      "key", "foo", "value", "bar"));
+    verify(driver).execute(DriverCommand.SET_SESSION_STORAGE_ITEM, Map.of(
+      "key", "bim", "value", "baz"));
   }
 
   interface CapableDriver extends WebDriver, ExecuteMethod, HasCapabilities {
+
   }
 
   interface Html5Driver extends WebDriver, ApplicationCache, LocationContext, WebStorage {
+
   }
 }

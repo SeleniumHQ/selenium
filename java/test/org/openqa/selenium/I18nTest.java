@@ -17,18 +17,18 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.TestUtilities;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.environment.GlobalTestEnvironment;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.TestUtilities;
 
 class I18nTest extends JupiterTestBase {
 
@@ -85,7 +85,8 @@ class I18nTest extends JupiterTestBase {
   @Ignore(value = EDGE, reason = "EdgeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse(TestUtilities.isInternetExplorer(driver) &&
-      TestUtilities.getIEVersion(driver) < 10, "IE: versions less thank 10 have issue 5069");
+                TestUtilities.getIEVersion(driver) < 10,
+                "IE: versions less thank 10 have issue 5069");
     driver.get(pages.chinesePage);
 
     String input = "";
@@ -118,7 +119,8 @@ class I18nTest extends JupiterTestBase {
   @Ignore(CHROME)
   @Ignore(EDGE)
   public void testShouldBeAbleToInputJapanese() {
-    assumeTrue(TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX), "IME is supported on Linux only.");
+    assumeTrue(TestUtilities.getEffectivePlatform(driver).is(Platform.LINUX),
+               "IME is supported on Linux only.");
 
     driver.get(pages.formPage);
 

@@ -23,4 +23,5 @@ package org.openqa.selenium;
  * authentication.
  */
 public interface Credentials {
+
 }

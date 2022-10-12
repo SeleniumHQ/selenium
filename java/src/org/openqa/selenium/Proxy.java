@@ -35,22 +35,6 @@ import java.util.stream.Collectors;
  */
 public class Proxy {
 
-  public enum ProxyType {
-    // Keep these in sync with the Firefox preferences numbers:
-    // http://kb.mozillazine.org/Network.proxy.type
-
-    DIRECT,      // Direct connection, no proxy (default on Windows)
-    MANUAL,      // Manual proxy settings (e.g. for httpProxy)
-    PAC,         // Proxy auto-configuration from URL
-
-    RESERVED_1,  // Never used (but reserved in Firefox)
-
-    AUTODETECT,  // Proxy auto-detection (presumably with WPAD)
-    SYSTEM,      // Use system settings (default on Linux)
-
-    UNSPECIFIED
-  }
-
   private static final String PROXY_TYPE = "proxyType";
   private static final String FTP_PROXY = "ftpProxy";
   private static final String HTTP_PROXY = "httpProxy";
@@ -62,7 +46,6 @@ public class Proxy {
   private static final String SOCKS_PASSWORD = "socksPassword";
   private static final String PROXY_AUTOCONFIG_URL = "proxyAutoconfigUrl";
   private static final String AUTODETECT = "autodetect";
-
   private ProxyType proxyType = ProxyType.UNSPECIFIED;
   private boolean autodetect = false;
   private String ftpProxy;
@@ -74,14 +57,14 @@ public class Proxy {
   private String socksUsername;
   private String socksPassword;
   private String proxyAutoconfigUrl;
-
   public Proxy() {
     // Empty default constructor
   }
 
   public Proxy(Map<String, ?> raw) {
     Map<String, Consumer<Object>> setters = new HashMap<>();
-    setters.put(PROXY_TYPE, value -> setProxyType(ProxyType.valueOf(((String) value).toUpperCase())));
+    setters.put(PROXY_TYPE,
+                value -> setProxyType(ProxyType.valueOf(((String) value).toUpperCase())));
     setters.put(FTP_PROXY, value -> setFtpProxy((String) value));
     setters.put(HTTP_PROXY, value -> setHttpProxy((String) value));
     setters.put(NO_PROXY, rawData -> {
@@ -107,6 +90,20 @@ public class Proxy {
         setters.get(key).accept(value);
       }
     });
+  }
+
+  @SuppressWarnings({"unchecked"})
+  public static Proxy extractFrom(Capabilities capabilities) {
+    Object rawProxy = capabilities.getCapability("proxy");
+    Proxy proxy = null;
+    if (rawProxy != null) {
+      if (rawProxy instanceof Proxy) {
+        proxy = (Proxy) rawProxy;
+      } else if (rawProxy instanceof Map) {
+        proxy = new Proxy((Map<String, ?>) rawProxy);
+      }
+    }
+    return proxy;
   }
 
   public Map<String, Object> toJson() {
@@ -409,20 +406,6 @@ public class Proxy {
     }
   }
 
-  @SuppressWarnings({"unchecked"})
-  public static Proxy extractFrom(Capabilities capabilities) {
-    Object rawProxy = capabilities.getCapability("proxy");
-    Proxy proxy = null;
-    if (rawProxy != null) {
-      if (rawProxy instanceof Proxy) {
-        proxy = (Proxy) rawProxy;
-      } else if (rawProxy instanceof Map) {
-        proxy = new Proxy((Map<String, ?>) rawProxy);
-      }
-    }
-    return proxy;
-  }
-
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder("Proxy(");
@@ -493,5 +476,21 @@ public class Proxy {
       getSocksUsername(),
       getSocksPassword(),
       getProxyAutoconfigUrl());
+  }
+
+  public enum ProxyType {
+    // Keep these in sync with the Firefox preferences numbers:
+    // http://kb.mozillazine.org/Network.proxy.type
+
+    DIRECT,      // Direct connection, no proxy (default on Windows)
+    MANUAL,      // Manual proxy settings (e.g. for httpProxy)
+    PAC,         // Proxy auto-configuration from URL
+
+    RESERVED_1,  // Never used (but reserved in Firefox)
+
+    AUTODETECT,  // Proxy auto-detection (presumably with WPAD)
+    SYSTEM,      // Use system settings (default on Linux)
+
+    UNSPECIFIED
   }
 }

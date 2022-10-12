@@ -17,15 +17,15 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.UrlPath;
 
 import java.io.UncheckedIOException;
-
-import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 public class RedirectHandler implements HttpHandler {
 

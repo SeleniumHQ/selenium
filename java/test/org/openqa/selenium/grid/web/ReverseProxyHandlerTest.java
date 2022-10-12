@@ -17,9 +17,16 @@
 
 package org.openqa.selenium.grid.web;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+
 import com.google.common.io.ByteStreams;
+
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpServer;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,17 +47,12 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-
 
 class ReverseProxyHandlerTest {
 
+  private final Tracer tracer = DefaultTestTracer.createTracer();
+  private final HttpClient.Factory factory = HttpClient.Factory.createDefault();
   private Server server;
-  private Tracer tracer = DefaultTestTracer.createTracer();
-  private HttpClient.Factory factory = HttpClient.Factory.createDefault();
 
   @BeforeEach
   public void startServer() throws IOException {
@@ -74,11 +76,12 @@ class ReverseProxyHandlerTest {
   }
 
   private static class Server {
+
     private final URL url;
     private final HttpServer server;
     private HttpRequest lastRequest;
 
-    public Server() throws IOException {
+    Server() throws IOException {
       int port = PortProber.findFreePort();
       String address = new NetworkUtils().getPrivateLocalAddress();
       url = new URL("http", address, port, "/ok");
@@ -86,8 +89,8 @@ class ReverseProxyHandlerTest {
       server = HttpServer.create(new InetSocketAddress(address, port), 0);
       server.createContext("/ok", ex -> {
         lastRequest = new HttpRequest(
-            HttpMethod.valueOf(ex.getRequestMethod()),
-            ex.getRequestURI().getPath());
+          HttpMethod.valueOf(ex.getRequestMethod()),
+          ex.getRequestURI().getPath());
         Headers headers = ex.getRequestHeaders();
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
           for (String value : entry.getValue()) {

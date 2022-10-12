@@ -19,15 +19,16 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.OutputType.BASE64;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
 @Tag("UnitTests")
 class OutputTypeTest {
+
   private static final String TEST_BASE64 = "ABADABAD";
-  private static final byte[] TEST_BYTES = new byte[] {0, 16, 3, 0, 16, 3};
+  private static final byte[] TEST_BYTES = new byte[]{0, 16, 3, 0, 16, 3};
 
   @Test
   void testBase64() {
@@ -37,7 +38,7 @@ class OutputTypeTest {
   @Test
   void testBytes() {
     byte[] bytes = OutputType.BYTES
-        .convertFromBase64Png(TEST_BASE64);
+      .convertFromBase64Png(TEST_BASE64);
     assertThat(bytes.length).isEqualTo(TEST_BYTES.length);
     for (int i = 0; i < TEST_BYTES.length; i++) {
       assertThat(TEST_BYTES[i]).as("index " + i).isEqualTo(bytes[i]);

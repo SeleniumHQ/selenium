@@ -57,7 +57,8 @@ public interface CommandCodec<T> {
 
   /**
    * Allow commands to have aliases.
-   * @param commandName The command being added.
+   *
+   * @param commandName  The command being added.
    * @param isAnAliasFor The command name that this is an alias for.
    */
   void alias(String commandName, String isAnAliasFor);

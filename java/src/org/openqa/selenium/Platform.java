@@ -49,6 +49,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows XP";
@@ -63,6 +64,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows Vista";
@@ -74,6 +76,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 7";
@@ -88,6 +91,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 8";
@@ -99,6 +103,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 8.1";
@@ -110,6 +115,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 10";
@@ -121,6 +127,7 @@ public enum Platform {
     public Platform family() {
       return WINDOWS;
     }
+
     @Override
     public String toString() {
       return "Windows 11";
@@ -139,6 +146,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.6";
@@ -150,6 +158,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.8";
@@ -161,6 +170,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.9";
@@ -172,6 +182,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.10";
@@ -183,6 +194,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "OS X 10.11";
@@ -194,6 +206,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "macOS 10.12";
@@ -205,6 +218,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "macOS 10.13";
@@ -216,6 +230,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "macOS 10.14";
@@ -227,6 +242,7 @@ public enum Platform {
     public Platform family() {
       return MAC;
     }
+
     @Override
     public String toString() {
       return "macOS 10.15";
@@ -283,7 +299,9 @@ public enum Platform {
 
   IOS("iOS") {
     @Override
-    public Platform family() { return null; }
+    public Platform family() {
+      return null;
+    }
   },
 
   /**
@@ -357,7 +375,7 @@ public enum Platform {
    * most likely operating system.  If unable to determine the operating system, it will default to
    * UNIX.
    *
-   * @param osName the operating system name to determine the platform of
+   * @param osName    the operating system name to determine the platform of
    * @param osVersion the operating system version to determine the platform of
    * @return the most likely platform based on given operating system name and version
    */
@@ -369,11 +387,11 @@ public enum Platform {
     }
     // Windows 8 can't be detected by osName alone
     if (osVersion.equals("6.2") && osName.startsWith("windows nt")) {
-        return WIN8;
+      return WIN8;
     }
     // Windows 8 can't be detected by osName alone
     if (osVersion.equals("6.3") && osName.startsWith("windows nt")) {
-        return WIN8_1;
+      return WIN8_1;
     }
     Platform mostLikely = UNIX;
     String previousMatch = null;
@@ -425,7 +443,7 @@ public enum Platform {
    * is null, the newer match is always better.
    *
    * @param previous the previous match
-   * @param matcher the newer match
+   * @param matcher  the newer match
    * @return true if newer match is better, false otherwise
    */
   private static boolean isBetterMatch(String previous, String matcher) {
@@ -446,12 +464,12 @@ public enum Platform {
    */
   public boolean is(Platform compareWith) {
     return
-        // Any platform is itself
-        this == compareWith ||
-        // Any platform is also ANY platform
-        compareWith == ANY ||
-        // And any Platform which is not a platform type belongs to the same family
-        (this.family() != null && this.family().is(compareWith));
+      // Any platform is itself
+      this == compareWith ||
+      // Any platform is also ANY platform
+      compareWith == ANY ||
+      // And any Platform which is not a platform type belongs to the same family
+      (this.family() != null && this.family().is(compareWith));
   }
 
   /**
@@ -459,7 +477,7 @@ public enum Platform {
    * the LINUX if a part of the UNIX family, the XP is a part of the WINDOWS family.
    *
    * @return the family platform for the current one, or {@code null} if this {@code Platform}
-   *         represents a platform family (such as Windows, or MacOS)
+   * represents a platform family (such as Windows, or MacOS)
    */
   public abstract Platform family();
 

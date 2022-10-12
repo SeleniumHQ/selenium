@@ -27,7 +27,6 @@ import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -117,6 +116,7 @@ class NodeTest {
     uri = new URI("http://localhost:1234");
 
     class Handler extends Session implements HttpHandler {
+
       private Handler(Capabilities capabilities) {
         super(new SessionId(UUID.randomUUID()), uri, stereotype, capabilities, Instant.now());
       }
@@ -128,19 +128,19 @@ class NodeTest {
     }
 
     local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
-        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
-        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
-        .maximumConcurrentSessions(2)
-        .build();
+      .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+      .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+      .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+      .maximumConcurrentSessions(2)
+      .build();
 
     node = new RemoteNode(
-        tracer,
-        new PassthroughHttpClient.Factory(local),
-        new NodeId(UUID.randomUUID()),
-        uri,
-        registrationSecret,
-        ImmutableSet.of(caps));
+      tracer,
+      new PassthroughHttpClient.Factory(local),
+      new NodeId(UUID.randomUUID()),
+      uri,
+      registrationSecret,
+      ImmutableSet.of(caps));
   }
 
   @Test
@@ -163,7 +163,9 @@ class NodeTest {
 
   @Test
   void shouldCreateASessionIfTheCorrectCapabilitiesArePassedToIt() {
-    Either<WebDriverException, CreateSessionResponse> response = node.newSession(createSessionRequest(caps));
+    Either<WebDriverException, CreateSessionResponse>
+      response =
+      node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
 
     CreateSessionResponse sessionResponse = response.right();
@@ -197,7 +199,9 @@ class NodeTest {
       ImmutableSet.of(caps));
 
     ImmutableCapabilities wrongCaps = new ImmutableCapabilities("browserName", "burger");
-    Either<WebDriverException, CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(wrongCaps));
+    Either<WebDriverException, CreateSessionResponse>
+      sessionResponse =
+      node.newSession(createSessionRequest(wrongCaps));
 
     assertThatEither(sessionResponse).isLeft();
     assertThat(sessionResponse.left()).isInstanceOf(RetrySessionRequestException.class);
@@ -206,8 +210,9 @@ class NodeTest {
   @Test
   void shouldOnlyCreateAsManySessionsAsFactories() {
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
-        .build();
+      .add(caps,
+           new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
+      .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
       node.newSession(createSessionRequest(caps));
@@ -223,7 +228,9 @@ class NodeTest {
 
   @Test
   void willRefuseToCreateMoreSessionsThanTheMaxSessionCount() {
-    Either<WebDriverException, CreateSessionResponse> response = node.newSession(createSessionRequest(caps));
+    Either<WebDriverException, CreateSessionResponse>
+      response =
+      node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
 
     response = node.newSession(createSessionRequest(caps));
@@ -237,7 +244,9 @@ class NodeTest {
   void stoppingASessionReducesTheNumberOfCurrentlyActiveSessions() {
     assertThat(local.getCurrentSessionCount()).isZero();
 
-    Either<WebDriverException, CreateSessionResponse> response = local.newSession(createSessionRequest(caps));
+    Either<WebDriverException, CreateSessionResponse>
+      response =
+      local.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
     Session session = response.right().getSession();
 
@@ -250,35 +259,37 @@ class NodeTest {
 
   @Test
   void sessionsThatAreStoppedWillNotBeReturned() {
-    Either<WebDriverException, CreateSessionResponse> response = node.newSession(createSessionRequest(caps));
+    Either<WebDriverException, CreateSessionResponse>
+      response =
+      node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
     Session expected = response.right().getSession();
 
     node.stop(expected.getId());
 
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> local.getSession(expected.getId()));
+      .isThrownBy(() -> local.getSession(expected.getId()));
 
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> node.getSession(expected.getId()));
+      .isThrownBy(() -> node.getSession(expected.getId()));
   }
 
   @Test
   void stoppingASessionThatDoesNotExistWillThrowAnException() {
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> local.stop(new SessionId(UUID.randomUUID())));
+      .isThrownBy(() -> local.stop(new SessionId(UUID.randomUUID())));
 
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> node.stop(new SessionId(UUID.randomUUID())));
+      .isThrownBy(() -> node.stop(new SessionId(UUID.randomUUID())));
   }
 
   @Test
   void attemptingToGetASessionThatDoesNotExistWillCauseAnExceptionToBeThrown() {
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> local.getSession(new SessionId(UUID.randomUUID())));
+      .isThrownBy(() -> local.getSession(new SessionId(UUID.randomUUID())));
 
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> node.getSession(new SessionId(UUID.randomUUID())));
+      .isThrownBy(() -> node.getSession(new SessionId(UUID.randomUUID())));
   }
 
   @Test
@@ -299,15 +310,15 @@ class NodeTest {
     }
 
     Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, c) -> new Recording()))
-        .build();
+      .add(caps, new TestSessionFactory((id, c) -> new Recording()))
+      .build();
     Node remote = new RemoteNode(
-        tracer,
-        new PassthroughHttpClient.Factory(local),
-        new NodeId(UUID.randomUUID()),
-        uri,
-        registrationSecret,
-        ImmutableSet.of(caps));
+      tracer,
+      new PassthroughHttpClient.Factory(local),
+      new NodeId(UUID.randomUUID()),
+      uri,
+      registrationSecret,
+      ImmutableSet.of(caps));
 
     Either<WebDriverException, CreateSessionResponse> response =
       remote.newSession(createSessionRequest(caps));
@@ -343,11 +354,12 @@ class NodeTest {
 
     Clock clock = new MyClock(now);
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
-        .sessionTimeout(Duration.ofMinutes(3))
-        .advanced()
-        .clock(clock)
-        .build();
+      .add(caps,
+           new TestSessionFactory((id, c) -> new Session(id, uri, stereotype, c, Instant.now())))
+      .sessionTimeout(Duration.ofMinutes(3))
+      .advanced()
+      .clock(clock)
+      .build();
     Either<WebDriverException, CreateSessionResponse> response =
       node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
@@ -356,16 +368,16 @@ class NodeTest {
     now.set(now.get().plus(Duration.ofMinutes(5)));
 
     assertThatExceptionOfType(NoSuchSessionException.class)
-        .isThrownBy(() -> node.getSession(session.getId()));
+      .isThrownBy(() -> node.getSession(session.getId()));
   }
 
   @Test
   void shouldNotPropagateExceptionsWhenSessionCreationFails() {
     Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, c) -> {
-          throw new SessionNotCreatedException("eeek");
-        }))
-        .build();
+      .add(caps, new TestSessionFactory((id, c) -> {
+        throw new SessionNotCreatedException("eeek");
+      }))
+      .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
       local.newSession(createSessionRequest(caps));
@@ -377,8 +389,9 @@ class NodeTest {
   void eachSessionShouldReportTheNodesUrl() throws URISyntaxException {
     URI sessionUri = new URI("http://cheese:42/peas");
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, c) -> new Session(id, sessionUri, stereotype, c, Instant.now())))
-        .build();
+      .add(caps, new TestSessionFactory(
+        (id, c) -> new Session(id, sessionUri, stereotype, c, Instant.now())))
+      .build();
 
     Either<WebDriverException, CreateSessionResponse> response =
       node.newSession(createSessionRequest(caps));
@@ -421,24 +434,18 @@ class NodeTest {
     try (JsonInput input = new Json().newInput(Contents.reader(res))) {
       input.beginObject();
       while (input.hasNext()) {
-        switch (input.nextName()) {
-          case "value":
-            input.beginObject();
-            while (input.hasNext()) {
-              switch (input.nextName()) {
-                case "node":
-                  seen = input.read(NodeStatus.class);
-                  break;
-                default:
-                  input.skipValue();
-              }
+        if ("value".equals(input.nextName())) {
+          input.beginObject();
+          while (input.hasNext()) {
+            if ("node".equals(input.nextName())) {
+              seen = input.read(NodeStatus.class);
+            } else {
+              input.skipValue();
             }
-            input.endObject();
-            break;
-
-          default:
-            input.skipValue();
-            break;
+          }
+          input.endObject();
+        } else {
+          input.skipValue();
         }
       }
     }
@@ -455,9 +462,9 @@ class NodeTest {
     assertThat(res.getStatus()).isEqualTo(404);
     Map<String, Object> content = new Json().toType(string(res), MAP_TYPE);
     assertThat(content).containsOnlyKeys("value")
-        .extracting("value").asInstanceOf(MAP)
-        .containsEntry("error", "unknown command")
-        .containsEntry("message", "Unable to find handler for (GET) /foo");
+      .extracting("value").asInstanceOf(MAP)
+      .containsEntry("error", "unknown command")
+      .containsEntry("message", "Unable to find handler for (GET) /foo");
   }
 
   @Test
@@ -468,7 +475,7 @@ class NodeTest {
     Session session = response.right().getSession();
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/file", session.getId()));
-    String hello = "Hello, world!";
+    final String hello = "Hello, world!";
     String zip = Zip.zip(createTmpFile(hello));
     String payload = new Json().toJson(Collections.singletonMap("file", zip));
     req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
@@ -490,7 +497,9 @@ class NodeTest {
     assertThat(local.isDraining()).isTrue();
     assertThat(node.isDraining()).isTrue();
 
-    Either<WebDriverException, CreateSessionResponse> sessionResponse = node.newSession(createSessionRequest(caps));
+    Either<WebDriverException, CreateSessionResponse>
+      sessionResponse =
+      node.newSession(createSessionRequest(caps));
     assertThatEither(sessionResponse).isLeft();
   }
 
@@ -513,7 +522,9 @@ class NodeTest {
     assertThat(local.isDraining()).isTrue();
     assertThat(node.isDraining()).isTrue();
 
-    Either<WebDriverException, CreateSessionResponse> thirdResponse = node.newSession(createSessionRequest(caps));
+    Either<WebDriverException, CreateSessionResponse>
+      thirdResponse =
+      node.newSession(createSessionRequest(caps));
     assertThatEither(thirdResponse).isLeft();
 
     assertThat(firstSession).isNotNull();
@@ -593,16 +604,16 @@ class NodeTest {
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
     return new CreateSessionRequest(
-            ImmutableSet.copyOf(Dialect.values()),
-            caps,
-            ImmutableMap.of());
+      ImmutableSet.copyOf(Dialect.values()),
+      caps,
+      Map.of());
   }
 
   private static class MyClock extends Clock {
 
     private final AtomicReference<Instant> now;
 
-    public MyClock(AtomicReference<Instant> now) {
+    MyClock(AtomicReference<Instant> now) {
       this.now = now;
     }
 

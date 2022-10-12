@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 // TODO(simon): The verifications should not be commented out
 public class TestGet extends InternalSelenseTestBase {
+
   @Test
   void testGet() {
     // test API getters
@@ -33,11 +34,11 @@ public class TestGet extends InternalSelenseTestBase {
     // Firefox lowercases the property names of the style.
     // IE omits the trailing semicolon.
     verifyTrue(Pattern.compile("(width|WIDTH): 644px; (height|HEIGHT): 41px(;?)")
-        .matcher(selenium.getAttribute("//img[@alt='banner']@style")).find());
+                 .matcher(selenium.getAttribute("//img[@alt='banner']@style")).find());
     // This asserts on the current behavior of selArrayToString(). Commas and
     // backslashes are escaped in array values. Backslash-craziness!!
     verifyTrue(join(selenium.getSelectOptions("selectWithFunkyValues"), ',').matches(
-        "^foo[\\s\\S]*$"));
+      "^foo[\\s\\S]*$"));
     // verifyTrue(join(selenium.getSelectOptions("selectWithFunkyValues"),
     // ',').matches("^javascript\\{ \\[ 'foo', '\\\\,\\\\\\\\\\\\\\\\bar\\\\\\\\\\\\\\\\\\\\,', '[\\s\\S]*baz[\\s\\S]*' \\]\\.join\\(','\\) \\}$"));
     // verifyEquals(join(selenium.getSelectOptions("selectWithFunkyValues"), ','),

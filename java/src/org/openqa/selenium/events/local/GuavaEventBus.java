@@ -39,6 +39,10 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
     guavaBus = new EventBus();
   }
 
+  public static GuavaEventBus create(Config config) {
+    return new GuavaEventBus();
+  }
+
   @Override
   public boolean isReady() {
     return true;
@@ -62,10 +66,6 @@ public class GuavaEventBus implements org.openqa.selenium.events.EventBus {
   public void close() {
     allListeners.forEach(guavaBus::unregister);
     allListeners.clear();
-  }
-
-  public static GuavaEventBus create(Config config) {
-    return new GuavaEventBus();
   }
 
   private static class Listener {

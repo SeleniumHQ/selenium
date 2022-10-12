@@ -21,7 +21,7 @@ package org.openqa.selenium.lift;
 public class Matchers {
 
   public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> attribute(
-      java.lang.String attributeName, org.hamcrest.Matcher<java.lang.String> valueMatcher) {
+    java.lang.String attributeName, org.hamcrest.Matcher<java.lang.String> valueMatcher) {
     return org.openqa.selenium.lift.match.AttributeMatcher.attribute(attributeName, valueMatcher);
   }
 
@@ -34,7 +34,7 @@ public class Matchers {
   }
 
   public static org.hamcrest.Matcher<org.openqa.selenium.WebElement> text(
-      org.hamcrest.Matcher<java.lang.String> textMatcher) {
+    org.hamcrest.Matcher<java.lang.String> textMatcher) {
     return org.openqa.selenium.lift.match.TextMatcher.text(textMatcher);
   }
 

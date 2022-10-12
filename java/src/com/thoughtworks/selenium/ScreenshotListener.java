@@ -26,10 +26,10 @@ import java.io.File;
 
 public class ScreenshotListener implements IResultListener {
 
-  File outputDirectory;
-  Selenium selenium;
+  private File outputDirectory;
+  private final Selenium selenium;
 
-  public ScreenshotListener(File outputDirectory, Selenium selenium) {
+  ScreenshotListener(File outputDirectory, Selenium selenium) {
     this.outputDirectory = outputDirectory;
     this.selenium = selenium;
   }
@@ -51,8 +51,8 @@ public class ScreenshotListener implements IResultListener {
       }
       selenium.captureScreenshot(outFile.getAbsolutePath());
       Reporter.log("<a href='" +
-          outFile.getName() +
-          "'>screenshot</a>");
+                   outFile.getName() +
+                   "'>screenshot</a>");
     } catch (Exception e) {
       e.printStackTrace();
       Reporter.log("Couldn't create screenshot");
@@ -80,7 +80,6 @@ public class ScreenshotListener implements IResultListener {
   @Override
   public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
   }
-
 
 
   @Override

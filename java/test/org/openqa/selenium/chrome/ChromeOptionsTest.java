@@ -17,8 +17,17 @@
 
 package org.openqa.selenium.chrome;
 
-import org.junit.jupiter.api.Test;
+import static java.util.stream.Collectors.toSet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
+import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
+import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
+
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
@@ -32,15 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import static java.util.stream.Collectors.toSet;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
-import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
-import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
 @Tag("UnitTests")
 class ChromeOptionsTest {

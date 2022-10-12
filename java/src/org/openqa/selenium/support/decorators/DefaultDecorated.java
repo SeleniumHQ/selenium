@@ -54,7 +54,8 @@ public class DefaultDecorated<T> implements Decorated<T> {
   }
 
   @Override
-  public Object onError(Method method, InvocationTargetException e, Object[] args) throws Throwable {
+  public Object onError(Method method, InvocationTargetException e, Object[] args)
+    throws Throwable {
     return getDecorator().onError(this, method, args, e);
   }
 
@@ -65,7 +66,9 @@ public class DefaultDecorated<T> implements Decorated<T> {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
+    if (this == o) {
+      return true;
+    }
 
     if (o instanceof Decorated) {
       Decorated<?> that = (Decorated<?>) o;

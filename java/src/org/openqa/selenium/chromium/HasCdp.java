@@ -32,11 +32,11 @@ public interface HasCdp {
    * command and command args should follow
    * <a href="https://chromedevtools.github.io/devtools-protocol/">chrome
    * devtools protocol domains/commands</a>.
-   *
+   * <p>
    * It is strongly encouraged to use {@link org.openqa.selenium.devtools.DevTools} API instead of this
    *
    * @param commandName the command to execute with Chrome Dev Tools.
-   * @param parameters any information needed to execute the Dev Tools command.
+   * @param parameters  any information needed to execute the Dev Tools command.
    * @return the name and value of the response.
    */
   Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters);

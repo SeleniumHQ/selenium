@@ -27,6 +27,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import java.util.Set;
 
 class SessionStorageTest extends JupiterTestBase {
+
   @BeforeEach
   public void checkHasWebStorage() {
     assumeTrue(driver instanceof WebStorage);

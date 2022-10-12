@@ -34,13 +34,14 @@ class Responses {
 
   private static final ErrorCodes ERROR_CODES = new ErrorCodes();
 
-  private Responses() {}  // Utility class.
+  private Responses() {
+  }  // Utility class.
 
   /**
    * Creates a response object for a successful command execution.
    *
    * @param sessionId ID of the session that executed the command.
-   * @param value the command result value.
+   * @param value     the command result value.
    * @return the new response object.
    */
   public static Response success(SessionId sessionId, Object value) {
@@ -56,7 +57,7 @@ class Responses {
    * Creates a response object for a failed command execution.
    *
    * @param sessionId ID of the session that executed the command.
-   * @param reason the failure reason.
+   * @param reason    the failure reason.
    * @return the new response object.
    */
   public static Response failure(SessionId sessionId, Throwable reason) {
@@ -71,13 +72,13 @@ class Responses {
   /**
    * Creates a response object for a failed command execution.
    *
-   * @param sessionId ID of the session that executed the command.
-   * @param reason the failure reason.
+   * @param sessionId  ID of the session that executed the command.
+   * @param reason     the failure reason.
    * @param screenshot a base64 png screenshot to include with the failure.
    * @return the new response object.
    */
   public static Response failure(
-      SessionId sessionId, Throwable reason, Optional<String> screenshot) {
+    SessionId sessionId, Throwable reason, Optional<String> screenshot) {
     Response response = new Response();
     response.setSessionId(sessionId != null ? sessionId.toString() : null);
     response.setStatus(ERROR_CODES.toStatusCode(reason));

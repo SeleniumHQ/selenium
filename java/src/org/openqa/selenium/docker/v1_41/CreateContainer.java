@@ -17,6 +17,12 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerConfig;
 import org.openqa.selenium.docker.ContainerId;
@@ -35,13 +41,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 class CreateContainer {
+
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(CreateContainer.class.getName());
   private final DockerProtocol protocol;

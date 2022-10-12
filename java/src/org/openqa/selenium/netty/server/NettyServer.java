@@ -115,7 +115,8 @@ public class NettyServer implements Server<NettyServer> {
     try {
       externalUrl = options.getExternalUri().toURL();
     } catch (MalformedURLException e) {
-      throw new UncheckedIOException("Server URI is not a valid URL: " + options.getExternalUri(), e);
+      throw new UncheckedIOException("Server URI is not a valid URL: " + options.getExternalUri(),
+                                     e);
     }
   }
 

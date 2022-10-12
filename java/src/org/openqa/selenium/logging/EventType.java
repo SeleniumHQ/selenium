@@ -21,6 +21,7 @@ import org.openqa.selenium.WebDriver;
 
 @FunctionalInterface
 public interface EventType<X> {
+
   void consume(X event);
 
   default void initializeListener(WebDriver webDriver) {

@@ -90,7 +90,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldNotBeAbleToLocateByIdASingleElementThatDoesNotExist() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.id("nonExistentButton")));
+      .isThrownBy(() -> driver.findElement(By.id("nonExistentButton")));
   }
 
   @Test
@@ -104,7 +104,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.id("")));
+      .isThrownBy(() -> driver.findElement(By.id("")));
   }
 
   @Test
@@ -112,14 +112,14 @@ class ElementFindingTest extends JupiterTestBase {
   public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.id("")));
+      .isThrownBy(() -> driver.findElements(By.id("")));
   }
 
   @Test
   void testFindingASingleElementByIdWithSpaceShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.id("nonexistent button")));
+      .isThrownBy(() -> driver.findElement(By.id("nonexistent button")));
   }
 
   @Test
@@ -158,7 +158,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldNotBeAbleToLocateByNameASingleElementThatDoesNotExist() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.name("nonExistentButton")));
+      .isThrownBy(() -> driver.findElement(By.name("nonExistentButton")));
   }
 
   @Test
@@ -172,7 +172,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByEmptyNameShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.name("")));
+      .isThrownBy(() -> driver.findElement(By.name("")));
   }
 
   @Test
@@ -186,7 +186,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.name("nonexistent button")));
+      .isThrownBy(() -> driver.findElement(By.name("nonexistent button")));
   }
 
   @Test
@@ -218,7 +218,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldNotBeAbleToLocateByTagNameASingleElementThatDoesNotExist() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.tagName("nonExistentButton")));
+      .isThrownBy(() -> driver.findElement(By.tagName("nonExistentButton")));
   }
 
   @Test
@@ -232,21 +232,21 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.tagName("")));
+      .isThrownBy(() -> driver.findElement(By.tagName("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.tagName("")));
+      .isThrownBy(() -> driver.findElements(By.tagName("")));
   }
 
   @Test
   void testFindingASingleElementByTagNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.tagName("nonexistent button")));
+      .isThrownBy(() -> driver.findElement(By.tagName("nonexistent button")));
   }
 
   @Test
@@ -314,35 +314,35 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldNotFindElementByClassWhenTheNameQueriedIsShorterThanCandidateName() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.className("nameB")));
+      .isThrownBy(() -> driver.findElement(By.className("nameB")));
   }
 
   @Test
   void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.className("")));
+      .isThrownBy(() -> driver.findElement(By.className("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.className("")));
+      .isThrownBy(() -> driver.findElements(By.className("")));
   }
 
   @Test
   void testFindingASingleElementByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.className("a b")));
+      .isThrownBy(() -> driver.findElement(By.className("a b")));
   }
 
   @Test
   void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.className("a b")));
+      .isThrownBy(() -> driver.findElements(By.className("a b")));
   }
 
   @Test
@@ -399,7 +399,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldBeAbleToFindAnElementByXPathWithMultipleAttributes() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(
-        By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']"));
+      By.xpath("//form[@name='optional']/input[@type='submit' and @value='Click!']"));
     assertThat(element.getTagName()).isEqualToIgnoringCase("input");
     assertThat(element.getAttribute("value")).isEqualTo("Click!");
   }
@@ -434,21 +434,21 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldThrowAnExceptionWhenThereIsNoLinkToClick() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.xpath("//a[@id='Not here']")));
+      .isThrownBy(() -> driver.findElement(By.xpath("//a[@id='Not here']")));
   }
 
   @Test
   void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
-        .isThrownBy(() -> driver.findElement(By.xpath("this][isnot][valid")));
+      .isThrownBy(() -> driver.findElement(By.xpath("this][isnot][valid")));
   }
 
   @Test
   void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
-        .isThrownBy(() -> driver.findElements(By.xpath("this][isnot][valid")));
+      .isThrownBy(() -> driver.findElements(By.xpath("this][isnot][valid")));
   }
 
   @Test
@@ -456,7 +456,7 @@ class ElementFindingTest extends JupiterTestBase {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
     assertThatExceptionOfType(InvalidSelectorException.class)
-        .isThrownBy(() -> body.findElement(By.xpath("this][isnot][valid")));
+      .isThrownBy(() -> body.findElement(By.xpath("this][isnot][valid")));
   }
 
   @Test
@@ -464,21 +464,21 @@ class ElementFindingTest extends JupiterTestBase {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
     assertThatExceptionOfType(InvalidSelectorException.class)
-        .isThrownBy(() -> body.findElements(By.xpath("this][isnot][valid")));
+      .isThrownBy(() -> body.findElements(By.xpath("this][isnot][valid")));
   }
 
   @Test
   void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
-        .isThrownBy(() -> driver.findElement(By.xpath("count(//input)")));
+      .isThrownBy(() -> driver.findElement(By.xpath("count(//input)")));
   }
 
   @Test
   void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     driver.get(pages.formPage);
     assertThatExceptionOfType(InvalidSelectorException.class)
-        .isThrownBy(() -> driver.findElements(By.xpath("count(//input)")));
+      .isThrownBy(() -> driver.findElements(By.xpath("count(//input)")));
   }
 
   @Test
@@ -487,7 +487,7 @@ class ElementFindingTest extends JupiterTestBase {
 
     WebElement body = driver.findElement(By.tagName("body"));
     assertThatExceptionOfType(InvalidSelectorException.class)
-        .isThrownBy(() -> body.findElement(By.xpath("count(//input)")));
+      .isThrownBy(() -> body.findElement(By.xpath("count(//input)")));
   }
 
   @Test
@@ -495,7 +495,7 @@ class ElementFindingTest extends JupiterTestBase {
     driver.get(pages.formPage);
     WebElement body = driver.findElement(By.tagName("body"));
     assertThatExceptionOfType(InvalidSelectorException.class)
-        .isThrownBy(() -> body.findElements(By.xpath("count(//input)")));
+      .isThrownBy(() -> body.findElements(By.xpath("count(//input)")));
   }
 
   // By.cssSelector positive
@@ -559,7 +559,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldNotFindElementByCssSelectorWhenThereIsNoSuchElement() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.cssSelector(".there-is-no-such-class")));
+      .isThrownBy(() -> driver.findElement(By.cssSelector(".there-is-no-such-class")));
   }
 
   @Test
@@ -573,28 +573,28 @@ class ElementFindingTest extends JupiterTestBase {
   void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.cssSelector("")));
+      .isThrownBy(() -> driver.findElement(By.cssSelector("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.cssSelector("")));
+      .isThrownBy(() -> driver.findElements(By.cssSelector("")));
   }
 
   @Test
   void testFindingASingleElementByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.cssSelector("//a/b/c[@id='1']")));
+      .isThrownBy(() -> driver.findElement(By.cssSelector("//a/b/c[@id='1']")));
   }
 
   @Test
   void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElements(By.cssSelector("//a/b/c[@id='1']")));
+      .isThrownBy(() -> driver.findElements(By.cssSelector("//a/b/c[@id='1']")));
   }
 
   // By.linkText positive
@@ -660,7 +660,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldNotBeAbleToLocateByLinkTextASingleElementThatDoesNotExist() {
     driver.get(pages.xhtmlTestPage);
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.linkText("Not here either")));
+      .isThrownBy(() -> driver.findElement(By.linkText("Not here either")));
   }
 
   @Test
@@ -740,7 +740,7 @@ class ElementFindingTest extends JupiterTestBase {
   void testShouldNotBeAbleToFindAnElementOnABlankPage() {
     driver.get("about:blank");
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.tagName("a")));
+      .isThrownBy(() -> driver.findElement(By.tagName("a")));
   }
 
   @NeedsFreshDriver
@@ -749,7 +749,7 @@ class ElementFindingTest extends JupiterTestBase {
   public void testShouldNotBeAbleToLocateASingleElementOnABlankPage() {
     // Note we're on the default start page for the browser at this point.
     assertThatExceptionOfType(NoSuchElementException.class)
-        .isThrownBy(() -> driver.findElement(By.id("nonExistentButton")));
+      .isThrownBy(() -> driver.findElement(By.id("nonExistentButton")));
   }
 
   @SwitchToTopAfterTest
@@ -777,8 +777,7 @@ class ElementFindingTest extends JupiterTestBase {
 
     driver.switchTo().defaultContent();
     WebElement element = (WebElement) ((JavascriptExecutor) driver).executeScript(
-        "return frames[0].document.getElementById('oneline');");
-
+      "return frames[0].document.getElementById('oneline');");
 
     driver.switchTo().frame("inner");
 

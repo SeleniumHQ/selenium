@@ -17,8 +17,22 @@
 
 package org.openqa.selenium.grid.web;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
+import static org.openqa.selenium.remote.http.Contents.bytes;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.KIND;
+
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 
@@ -53,21 +67,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID_EVENT;
-import static org.openqa.selenium.remote.http.Contents.bytes;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.KIND;
 
 public class ProtocolConverter implements HttpHandler {
 
@@ -104,14 +103,15 @@ public class ProtocolConverter implements HttpHandler {
     this.client = Require.nonNull("HTTP client", client);
 
     this.downstream = getCommandCodec(Require.nonNull("Downstream dialect", downstream));
-    this.downstreamResponse = getResponseCodec(downstream);
+    downstreamResponse = getResponseCodec(downstream);
 
     this.upstream = getCommandCodec(Require.nonNull("Upstream dialect", upstream));
-    this.upstreamResponse = getResponseCodec(upstream);
+    upstreamResponse = getResponseCodec(upstream);
 
     converter = new JsonToWebElementConverter(null);
 
-    newSessionConverter = downstream == W3C ? this::createW3CNewSessionResponse : this::createJwpNewSessionResponse;
+    newSessionConverter =
+      downstream == W3C ? this::createW3CNewSessionResponse : this::createJwpNewSessionResponse;
   }
 
   @Override
@@ -130,22 +130,23 @@ public class ProtocolConverter implements HttpHandler {
       String commandName = command.getName();
       span.setAttribute("command.name", commandName);
       attributeMap.put("command.name", EventAttribute.setValue(commandName));
-      attributeMap.put("downstream.command.parameters", EventAttribute.setValue(command.getParameters().toString()));
+      attributeMap.put("downstream.command.parameters",
+                       EventAttribute.setValue(command.getParameters().toString()));
 
       // Massage the webelements
-      @SuppressWarnings("unchecked")
       Map<String, ?> parameters = (Map<String, ?>) converter.apply(command.getParameters());
       command = new Command(
         command.getSessionId(),
         command.getName(),
         parameters);
 
-      attributeMap.put("upstream.command.parameters", EventAttribute.setValue(command.getParameters().toString()));
+      attributeMap.put("upstream.command.parameters",
+                       EventAttribute.setValue(command.getParameters().toString()));
       HttpRequest request = upstream.encode(command);
 
       HttpTracing.inject(tracer, span, request);
       HttpResponse res = makeRequest(request);
-      if(!res.isSuccessful()) {
+      if (!res.isSuccessful()) {
         span.setAttribute("error", true);
         span.setStatus(Status.UNKNOWN);
       }
@@ -208,8 +209,8 @@ public class ProtocolConverter implements HttpHandler {
     Require.state("Session id", value.get("sessionId")).nonNull();
     Require.state("Response payload", value.get("value")).instanceOf(Map.class);
 
-    return createResponse(ImmutableMap.of(
-      "value", ImmutableMap.of(
+    return createResponse(Map.of(
+      "value", Map.of(
         "sessionId", value.get("sessionId"),
         "capabilities", value.get("value"))));
   }
@@ -221,7 +222,7 @@ public class ProtocolConverter implements HttpHandler {
     Require.state("Session id", value.get("sessionId")).nonNull();
     Require.state("Response payload", value.get("capabilities")).instanceOf(Map.class);
 
-    return createResponse(ImmutableMap.of(
+    return createResponse(Map.of(
       "status", 0,
       "sessionId", value.get("sessionId"),
       "value", value.get("capabilities")));

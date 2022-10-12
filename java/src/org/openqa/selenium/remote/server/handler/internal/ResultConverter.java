@@ -18,7 +18,7 @@
 package org.openqa.selenium.remote.server.handler.internal;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableMap;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -33,6 +33,7 @@ import java.util.Map;
  * Converts an object to be sent as JSON according to the wire protocol.
  */
 public class ResultConverter implements Function<Object, Object> {
+
   private final KnownElements knownElements;
 
   public ResultConverter(KnownElements knownElements) {
@@ -43,7 +44,7 @@ public class ResultConverter implements Function<Object, Object> {
   public Object apply(Object result) {
     if (result instanceof WebElement) {
       String elementId = knownElements.add((WebElement) result);
-      return ImmutableMap.of("ELEMENT", elementId);
+      return Map.of("ELEMENT", elementId);
     }
 
     if (result instanceof List) {

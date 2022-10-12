@@ -16,6 +16,7 @@
 // under the License.
 package org.openqa.selenium.edge;
 
+
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -42,7 +43,7 @@ public class EdgeDriver extends ChromiumDriver {
     this(new EdgeOptions());
   }
 
-  public EdgeDriver(EdgeOptions options) {
+  EdgeDriver(EdgeOptions options) {
     this(new EdgeDriverService.Builder().build(), options);
   }
 
@@ -50,8 +51,9 @@ public class EdgeDriver extends ChromiumDriver {
     this(service, new EdgeOptions());
   }
 
-  public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
-    super(new EdgeDriverCommandExecutor(service), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
+  private EdgeDriver(EdgeDriverService service, EdgeOptions options) {
+    super(new EdgeDriverCommandExecutor(service), Require.nonNull("Driver options", options),
+          EdgeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
@@ -62,7 +64,8 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   private static class EdgeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public EdgeDriverCommandExecutor(DriverService service) {
+
+    EdgeDriverCommandExecutor(DriverService service) {
       super(service, getExtraCommands());
     }
 

@@ -17,13 +17,25 @@
 
 package org.openqa.selenium.grid.node.local;
 
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static org.openqa.selenium.grid.data.Availability.DOWN;
+import static org.openqa.selenium.grid.data.Availability.DRAINING;
+import static org.openqa.selenium.grid.data.Availability.UP;
+import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
+import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
+import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
+import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -95,18 +107,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static com.google.common.collect.ImmutableSet.toImmutableSet;
-import static org.openqa.selenium.grid.data.Availability.DOWN;
-import static org.openqa.selenium.grid.data.Availability.DRAINING;
-import static org.openqa.selenium.grid.data.Availability.UP;
-import static org.openqa.selenium.grid.node.CapabilityResponseEncoder.getEncoder;
-import static org.openqa.selenium.remote.HttpSessionId.getSessionId;
-import static org.openqa.selenium.remote.RemoteTags.CAPABILITIES;
-import static org.openqa.selenium.remote.RemoteTags.SESSION_ID;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
-
 @ManagedService(objectName = "org.seleniumhq.grid:type=Node,name=LocalNode",
   description = "Node running the webdriver sessions.")
 public class LocalNode extends Node {
@@ -146,16 +146,16 @@ public class LocalNode extends Node {
 
     this.bus = Require.nonNull("Event bus", bus);
 
-    this.externalUri = Require.nonNull("Remote node URI", uri);
+    externalUri = Require.nonNull("Remote node URI", uri);
     this.gridUri = Require.nonNull("Grid URI", gridUri);
     this.maxSessionCount = Math.min(
       Require.positive("Max session count", maxSessionCount), factories.size());
     this.heartbeatPeriod = heartbeatPeriod;
     this.factories = ImmutableList.copyOf(factories);
     Require.nonNull("Registration secret", registrationSecret);
-    this.configuredSessionCount = drainAfterSessionCount;
-    this.drainAfterSessions.set(this.configuredSessionCount > 0);
-    this.sessionCount.set(drainAfterSessionCount);
+    configuredSessionCount = drainAfterSessionCount;
+    drainAfterSessions.set(configuredSessionCount > 0);
+    sessionCount.set(drainAfterSessionCount);
     this.cdpEnabled = cdpEnabled;
 
     this.healthCheck = healthCheck == null ?
@@ -166,7 +166,7 @@ public class LocalNode extends Node {
                            String.format("%s is %s", uri, status.getAvailability()));
                        } : healthCheck;
 
-    this.tempFileSystems = CacheBuilder.newBuilder()
+    tempFileSystems = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, TemporaryFilesystem>) notification -> {
@@ -176,7 +176,7 @@ public class LocalNode extends Node {
       })
       .build();
 
-    this.currentSessions = CacheBuilder.newBuilder()
+    currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
@@ -191,13 +191,13 @@ public class LocalNode extends Node {
           // Attempt to stop the session
           slot.stop();
           // Invalidate temp file system
-          this.tempFileSystems.invalidate(id);
+          tempFileSystems.invalidate(id);
           // Decrement pending sessions if Node is draining
-          if (this.isDraining()) {
+          if (isDraining()) {
             int done = pendingSessions.decrementAndGet();
             if (done <= 0) {
               LOG.info("Node draining complete!");
-              bus.fire(new NodeDrainComplete(this.getId()));
+              bus.fire(new NodeDrainComplete(getId()));
             }
           }
         } else {
@@ -295,12 +295,12 @@ public class LocalNode extends Node {
 
   @ManagedAttribute(name = "RemoteNodeUri")
   public URI getExternalUri() {
-    return this.getUri();
+    return getUri();
   }
 
   @ManagedAttribute(name = "GridUri")
   public URI getGridUri() {
-    return this.gridUri;
+    return gridUri;
   }
 
   @ManagedAttribute(name = "NodeId")
@@ -314,7 +314,8 @@ public class LocalNode extends Node {
   }
 
   @Override
-  public Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest) {
+  public Either<WebDriverException, CreateSessionResponse> newSession(
+    CreateSessionRequest sessionRequest) {
     Require.nonNull("Session request", sessionRequest);
 
     try (Span span = tracer.getCurrentContext().createSpan("node.new_session")) {
@@ -322,9 +323,9 @@ public class LocalNode extends Node {
       attributeMap
         .put(AttributeKey.LOGGER_CLASS.getKey(), EventAttribute.setValue(getClass().getName()));
       attributeMap.put("session.request.capabilities",
-        EventAttribute.setValue(sessionRequest.getDesiredCapabilities().toString()));
+                       EventAttribute.setValue(sessionRequest.getDesiredCapabilities().toString()));
       attributeMap.put("session.request.downstreamdialect",
-        EventAttribute.setValue(sessionRequest.getDownstreamDialects().toString()));
+                       EventAttribute.setValue(sessionRequest.getDownstreamDialects().toString()));
 
       int currentSessionCount = getCurrentSessionCount();
       span.setAttribute("current.session.count", currentSessionCount);
@@ -338,7 +339,8 @@ public class LocalNode extends Node {
         return Either.left(new RetrySessionRequestException("Max session count reached."));
       }
       if (isDraining()) {
-        span.setStatus(Status.UNAVAILABLE.withDescription("The node is draining. Cannot accept new sessions."));
+        span.setStatus(
+          Status.UNAVAILABLE.withDescription("The node is draining. Cannot accept new sessions."));
         return Either.left(
           new RetrySessionRequestException("The node is draining. Cannot accept new sessions."));
       }
@@ -392,7 +394,7 @@ public class LocalNode extends Node {
           slotToUse.isSupportingCdp(),
           sessionRequest.getDesiredCapabilities());
 
-        String sessionCreatedMessage = "Session created by the Node";
+        final String sessionCreatedMessage = "Session created by the Node";
         LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, caps));
 
         return Either.right(new CreateSessionResponse(
@@ -434,7 +436,7 @@ public class LocalNode extends Node {
   public TemporaryFilesystem getTemporaryFilesystem(SessionId id) throws IOException {
     try {
       return tempFileSystems.get(id, () -> TemporaryFilesystem.getTmpFsBasedOn(
-          TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
+        TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
     } catch (ExecutionException e) {
       throw new IOException(e);
     }
@@ -483,15 +485,15 @@ public class LocalNode extends Node {
     File[] allFiles = tempDir.listFiles();
     if (allFiles == null) {
       throw new WebDriverException(
-          String.format("Cannot access temporary directory for uploaded files %s", tempDir));
+        String.format("Cannot access temporary directory for uploaded files %s", tempDir));
     }
     if (allFiles.length != 1) {
       throw new WebDriverException(
-          String.format("Expected there to be only 1 file. There were: %s", allFiles.length));
+        String.format("Expected there to be only 1 file. There were: %s", allFiles.length));
     }
 
-    ImmutableMap<String, Object> result = ImmutableMap.of(
-        "value", allFiles[0].getAbsolutePath());
+    ImmutableMap<String, Object> result = Map.of(
+      "value", allFiles[0].getAbsolutePath());
 
     return new HttpResponse().setContent(asJson(result));
   }
@@ -630,21 +632,21 @@ public class LocalNode extends Node {
   }
 
   private void checkSessionCount() {
-    if (this.drainAfterSessions.get()) {
-      int remainingSessions = this.sessionCount.decrementAndGet();
+    if (drainAfterSessions.get()) {
+      int remainingSessions = sessionCount.decrementAndGet();
       LOG.log(
         Debug.getDebugLogLevel(),
         String.format("%s remaining sessions before draining Node", remainingSessions));
       if (remainingSessions <= 0) {
         LOG.info(String.format("Draining Node, configured sessions value (%s) has been reached.",
-                               this.configuredSessionCount));
+                               configuredSessionCount));
         drain();
       }
     }
   }
 
   private Map<String, Object> toJson() {
-    return ImmutableMap.of(
+    return Map.of(
       "id", getId(),
       "uri", externalUri,
       "maxSessions", maxSessionCount,
@@ -681,7 +683,7 @@ public class LocalNode extends Node {
       this.uri = Require.nonNull("Remote node URI", uri);
       this.gridUri = Require.nonNull("Grid URI", gridUri);
       this.registrationSecret = Require.nonNull("Registration secret", registrationSecret);
-      this.factories = ImmutableList.builder();
+      factories = ImmutableList.builder();
     }
 
     public Builder add(Capabilities stereotype, SessionFactory factory) {
@@ -694,16 +696,16 @@ public class LocalNode extends Node {
     }
 
     public Builder maximumConcurrentSessions(int maxCount) {
-      this.maxSessions = Require.positive("Max session count", maxCount);
+      maxSessions = Require.positive("Max session count", maxCount);
       return this;
     }
 
-    public Builder drainAfterSessionCount(int sessionCount) {
-      this.drainAfterSessionCount = sessionCount;
+    Builder drainAfterSessionCount(int sessionCount) {
+      drainAfterSessionCount = sessionCount;
       return this;
     }
 
-    public Builder enableCdp(boolean cdpEnabled) {
+    Builder enableCdp(boolean cdpEnabled) {
       this.cdpEnabled = cdpEnabled;
       return this;
     }

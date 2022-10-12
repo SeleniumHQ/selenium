@@ -31,12 +31,12 @@ import java.util.logging.Level;
  * Represents the logging preferences.
  *
  * Sample usage:
- *  DesiredCapabilities caps = DesiredCapabilities.firefox();
- *  LoggingPreferences logs = new LoggingPreferences();
- *  logs.enable(LogType.DRIVER, Level.INFO);
- *  caps.setCapability(CapabilityType.LOGGING_PREFS, logs);
+ * DesiredCapabilities caps = DesiredCapabilities.firefox();
+ * LoggingPreferences logs = new LoggingPreferences();
+ * logs.enable(LogType.DRIVER, Level.INFO);
+ * caps.setCapability(CapabilityType.LOGGING_PREFS, logs);
  *
- *  WebDriver driver = new FirefoxDriver(caps);
+ * WebDriver driver = new FirefoxDriver(caps);
  */
 public class LoggingPreferences implements Serializable {
 
@@ -47,8 +47,9 @@ public class LoggingPreferences implements Serializable {
 
   /**
    * Enables logging for the given log type at the specified level and above.
+   *
    * @param logType String the logType. Can be any of {@link LogType}.
-   * @param level {@link Level} the level.
+   * @param level   {@link Level} the level.
    */
   public void enable(String logType, Level level) {
     prefs.put(logType, level);
@@ -64,7 +65,7 @@ public class LoggingPreferences implements Serializable {
   /**
    * @param logType The log type.
    * @return the {@link Level} for the given {@link LogType} if enabled.
-   *     Otherwise returns {@link Level#OFF}.
+   * Otherwise returns {@link Level#OFF}.
    */
   public Level getLevel(String logType) {
     return prefs.get(logType) == null ? Level.OFF : prefs.get(logType);

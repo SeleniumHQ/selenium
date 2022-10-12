@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
+
 import com.google.common.base.Splitter;
+
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -36,25 +40,21 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
-
 class CookieHandler implements HttpHandler {
 
   private static final String EPOCH_START = RFC_1123_DATE_TIME.format(
     ZonedDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneId.of("UTC")));
   private static final String RESPONSE_STRING =
-      "<html><head><title>Done</title></head><body>%s : %s</body></html>";
+    "<html><head><title>Done</title></head><body>%s : %s</body></html>";
 
   @Override
   public HttpResponse execute(HttpRequest request) throws UncheckedIOException {
     HttpResponse response = new HttpResponse();
     response.setHeader("Content-Type", "text/html");
     //Dont Cache Anything  at the browser
-    response.setHeader("Cache-Control","no-cache");
-    response.setHeader("Pragma","no-cache");
-    response.setHeader ("Expires", EPOCH_START);
-
+    response.setHeader("Cache-Control", "no-cache");
+    response.setHeader("Pragma", "no-cache");
+    response.setHeader("Expires", EPOCH_START);
 
     String action = request.getQueryParameter("action");
 
@@ -69,28 +69,36 @@ class CookieHandler implements HttpHandler {
 
       append(cookie, request.getQueryParameter("domain"), str -> "Domain=" + str);
       append(cookie, request.getQueryParameter("path"), str -> "Path=" + str);
-      append(cookie, request.getQueryParameter("expiry"), str -> "Max-Age=" + Integer.parseInt(str));
-      append(cookie, request.getQueryParameter( "secure"), str -> "Secure");
-      append(cookie, request.getQueryParameter( "httpOnly"), str -> "HttpOnly");
+      append(cookie, request.getQueryParameter("expiry"),
+             str -> "Max-Age=" + Integer.parseInt(str));
+      append(cookie, request.getQueryParameter("secure"), str -> "Secure");
+      append(cookie, request.getQueryParameter("httpOnly"), str -> "HttpOnly");
 
       response.addHeader("Set-Cookie", cookie.toString());
 
-      response.setContent(Contents.string(String.format(RESPONSE_STRING, "Cookie added", name), UTF_8));
+      response.setContent(
+        Contents.string(String.format(RESPONSE_STRING, "Cookie added", name), UTF_8));
     } else if ("delete".equals(action)) {
       String name = request.getQueryParameter("name");
       for (Cookie cookie : getCookies(request)) {
         if (!cookie.getName().equals(name)) {
-          addCookie(response, new Cookie.Builder(name, "").path("/").expiresOn(new Date(0)).build());
+          addCookie(response,
+                    new Cookie.Builder(name, "").path("/").expiresOn(new Date(0)).build());
         }
       }
-      response.setContent(Contents.string(String.format(RESPONSE_STRING, "Cookie deleted", name), UTF_8));
+      response.setContent(
+        Contents.string(String.format(RESPONSE_STRING, "Cookie deleted", name), UTF_8));
     } else if ("deleteAll".equals(action)) {
       for (Cookie cookie : getCookies(request)) {
-        addCookie(response, new Cookie.Builder(cookie.getName(), "").path("/").expiresOn(new Date(0)).build());
+        addCookie(response,
+                  new Cookie.Builder(cookie.getName(), "").path("/").expiresOn(new Date(0))
+                    .build());
       }
-      response.setContent(Contents.string(String.format(RESPONSE_STRING, "All cookies deleted", ""), UTF_8));
+      response.setContent(
+        Contents.string(String.format(RESPONSE_STRING, "All cookies deleted", ""), UTF_8));
     } else {
-      response.setContent(Contents.string(String.format(RESPONSE_STRING, "Unrecognized action", action), UTF_8));
+      response.setContent(
+        Contents.string(String.format(RESPONSE_STRING, "Unrecognized action", action), UTF_8));
     }
 
     return response;
@@ -144,13 +152,17 @@ class CookieHandler implements HttpHandler {
       return new Cookie(split[0], split[1]);
     }
 
-    List<String> keysAndValues = Splitter.on(";").trimResults().omitEmptyStrings().splitToList(split[1]);
+    List<String>
+      keysAndValues =
+      Splitter.on(";").trimResults().omitEmptyStrings().splitToList(split[1]);
     Cookie.Builder builder = new Cookie.Builder(split[0], keysAndValues.get(0));
 
     keysAndValues.stream()
       .skip(1)
       .forEach(keyAndValue -> {
-        List<String> parts = Splitter.on("=").limit(2).trimResults().omitEmptyStrings().splitToList(keyAndValue);
+        List<String>
+          parts =
+          Splitter.on("=").limit(2).trimResults().omitEmptyStrings().splitToList(keyAndValue);
         String key = parts.get(0).toLowerCase();
         switch (key) {
           case "domain":

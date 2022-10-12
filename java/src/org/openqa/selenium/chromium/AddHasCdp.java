@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.AdditionalHttpCommands;
@@ -28,11 +29,9 @@ import org.openqa.selenium.remote.ExecuteMethod;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static org.openqa.selenium.chromium.ChromiumDriver.IS_CHROMIUM_BROWSER;
-
 public abstract class AddHasCdp implements AugmenterProvider<HasCdp>, AdditionalHttpCommands {
 
-  public static final String EXECUTE_CDP = "executeCdpCommand";
+  protected static final String EXECUTE_CDP = "executeCdpCommand";
 
   @Override
   public abstract Map<String, CommandInfo> getAdditionalCommands();
@@ -51,14 +50,15 @@ public abstract class AddHasCdp implements AugmenterProvider<HasCdp>, Additional
   public HasCdp getImplementation(Capabilities capabilities, ExecuteMethod executeMethod) {
     return new HasCdp() {
       @Override
-      public Map<String, Object> executeCdpCommand(String commandName, Map<String, Object> parameters) {
+      public Map<String, Object> executeCdpCommand(String commandName,
+                                                   Map<String, Object> parameters) {
         Require.nonNull("Command name", commandName);
         Require.nonNull("Parameters", parameters);
 
         Map<String, Object> toReturn = (Map<String, Object>) executeMethod.execute(
-          EXECUTE_CDP, ImmutableMap.of("cmd", commandName, "params", parameters));
+          EXECUTE_CDP, Map.of("cmd", commandName, "params", parameters));
 
-        return ImmutableMap.copyOf(toReturn);
+        return Map.copyOf(toReturn);
       }
     };
   }

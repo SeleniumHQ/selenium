@@ -90,6 +90,7 @@ public class FirefoxDriver extends RemoteWebDriver
   protected FirefoxBinary binary;
   private DevTools devTools;
   private BiDi biDi;
+
   public FirefoxDriver() {
     this(new FirefoxOptions());
   }
@@ -110,7 +111,8 @@ public class FirefoxDriver extends RemoteWebDriver
     super(executor, checkCapabilitiesAndProxy(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
-    fullPageScreenshot = new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
+    fullPageScreenshot =
+      new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
     context = new AddHasContext().getImplementation(getCapabilities(), getExecuteMethod());
 
     Capabilities capabilities = super.getCapabilities();
@@ -118,9 +120,11 @@ public class FirefoxDriver extends RemoteWebDriver
     Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", capabilities)
       .flatMap(reported -> CdpEndpointFinder.getCdpEndPoint(clientFactory, reported));
 
-    Optional<String> webSocketUrl = Optional.ofNullable((String) capabilities.getCapability("webSocketUrl"));
+    Optional<String>
+      webSocketUrl =
+      Optional.ofNullable((String) capabilities.getCapability("webSocketUrl"));
 
-    this.biDiUri = webSocketUrl.map(uri -> {
+    biDiUri = webSocketUrl.map(uri -> {
       try {
         return new URI(uri);
       } catch (URISyntaxException e) {
@@ -206,7 +210,7 @@ public class FirefoxDriver extends RemoteWebDriver
   /**
    * Capture the full page screenshot and store it in the specified location.
    *
-   * @param <X> Return type for getFullPageScreenshotAs.
+   * @param <X>        Return type for getFullPageScreenshotAs.
    * @param outputType target type, @see OutputType
    * @return Object in which is stored information about the screenshot.
    * @throws WebDriverException on failure.
@@ -240,7 +244,8 @@ public class FirefoxDriver extends RemoteWebDriver
     }
 
     URI wsUri = cdpUri.orElseThrow(() ->
-      new DevToolsException("This version of Firefox or geckodriver does not support CDP"));
+                                     new DevToolsException(
+                                       "This version of Firefox or geckodriver does not support CDP"));
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
@@ -298,36 +303,36 @@ public class FirefoxDriver extends RemoteWebDriver
       .orElseThrow(() -> new DevToolsException("Unable to initialize Bidi connection"));
   }
 
-  public static final class SystemProperty {
+  static final class SystemProperty {
 
     /**
      * System property that defines the location of the Firefox executable file.
      */
-    public static final String BROWSER_BINARY = "webdriver.firefox.bin";
+    static final String BROWSER_BINARY = "webdriver.firefox.bin";
 
     /**
      * System property that defines the location of the file where Firefox log should be stored.
      */
-    public static final String BROWSER_LOGFILE = "webdriver.firefox.logfile";
+    static final String BROWSER_LOGFILE = "webdriver.firefox.logfile";
 
     /**
      * System property that defines the profile that should be used as a template.
      * When the driver starts, it will make a copy of the profile it is using,
      * rather than using that profile directly.
      */
-    public static final String BROWSER_PROFILE = "webdriver.firefox.profile";
+    static final String BROWSER_PROFILE = "webdriver.firefox.profile";
   }
 
   public static final class Capability {
 
-    public static final String BINARY = "firefox_binary";
-    public static final String PROFILE = "firefox_profile";
-    public static final String MARIONETTE = "marionette";
+    static final String BINARY = "firefox_binary";
+    static final String PROFILE = "firefox_profile";
+    static final String MARIONETTE = "marionette";
   }
 
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
 
-    public FirefoxDriverCommandExecutor(DriverService service) {
+    FirefoxDriverCommandExecutor(DriverService service) {
       super(service, getExtraCommands());
     }
 

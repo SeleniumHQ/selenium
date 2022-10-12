@@ -17,15 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.Random;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
@@ -38,6 +29,15 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+
+import java.util.Random;
 
 class FrameSwitchingTest extends JupiterTestBase {
 
@@ -496,7 +496,9 @@ class FrameSwitchingTest extends JupiterTestBase {
         input.sendKeys("rand" + random.nextInt());
         submit.click();
       } finally {
-        String url = (String) ((JavascriptExecutor) driver).executeScript("return window.location.href");
+        String
+          url =
+          (String) ((JavascriptExecutor) driver).executeScript("return window.location.href");
         // IE6 and Chrome add "?"-symbol to the end of the URL
         if (url.endsWith("?")) {
           url = url.substring(0, url.length() - 1);

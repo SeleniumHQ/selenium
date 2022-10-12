@@ -24,6 +24,7 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 
 public class GetElementPositionLeft extends SeleneseCommand<Number> {
+
   private final ElementFinder finder;
 
   public GetElementPositionLeft(ElementFinder finder) {

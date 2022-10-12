@@ -17,6 +17,8 @@
 
 package org.openqa.testing;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -29,14 +31,12 @@ import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 class FakeHttpServletResponse extends HeaderContainer
-    implements HttpServletResponse {
+  implements HttpServletResponse {
 
   private final StringWriter stringWriter = new StringWriter();
   private final ServletOutputStream servletOutputStream =
-      new StringServletOutputStream(stringWriter);
+    new StringServletOutputStream(stringWriter);
   private final Writer writer = new OutputStreamWriter(servletOutputStream, UTF_8);
   private final PrintWriter printWriter = new PrintWriter(writer);
   private int status = HttpServletResponse.SC_OK;
@@ -44,6 +44,11 @@ class FakeHttpServletResponse extends HeaderContainer
   @Override
   public int getStatus() {
     return status;
+  }
+
+  @Override
+  public void setStatus(int i) {
+    this.status = i;
   }
 
   public String getBody() {
@@ -55,16 +60,16 @@ class FakeHttpServletResponse extends HeaderContainer
     return getHeaders().get(name);
   }
 
-  @Override
-  public Collection<String> getHeaderNames() {
-    return getHeaders().keySet();
-  }
-
   /////////////////////////////////////////////////////////////////////////////
   //
   //  HttpServletResponse methods.
   //
   /////////////////////////////////////////////////////////////////////////////
+
+  @Override
+  public Collection<String> getHeaderNames() {
+    return getHeaders().keySet();
+  }
 
   @Override
   public void addCookie(Cookie cookie) {
@@ -108,11 +113,6 @@ class FakeHttpServletResponse extends HeaderContainer
   }
 
   @Override
-  public void setStatus(int i) {
-    this.status = i;
-  }
-
-  @Override
   public void setStatus(int i, String s) {
     throw new UnsupportedOperationException();
   }
@@ -123,8 +123,19 @@ class FakeHttpServletResponse extends HeaderContainer
   }
 
   @Override
+  public void setCharacterEncoding(String s) {
+    String type = getHeader("content-type");
+    setHeader("content-type", type + "; charset=" + s);
+  }
+
+  @Override
   public String getContentType() {
     return getHeader("Content-Type");
+  }
+
+  @Override
+  public void setContentType(String type) {
+    setHeader("content-type", type);
   }
 
   @Override
@@ -138,12 +149,6 @@ class FakeHttpServletResponse extends HeaderContainer
   }
 
   @Override
-  public void setCharacterEncoding(String s) {
-    String type = getHeader("content-type");
-    setHeader("content-type", type + "; charset=" + s);
-  }
-
-  @Override
   public void setContentLength(int i) {
     setIntHeader("content-length", i);
   }
@@ -154,17 +159,12 @@ class FakeHttpServletResponse extends HeaderContainer
   }
 
   @Override
-  public void setContentType(String type) {
-    setHeader("content-type", type);
-  }
-
-  @Override
-  public void setBufferSize(int i) {
+  public int getBufferSize() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public int getBufferSize() {
+  public void setBufferSize(int i) {
     throw new UnsupportedOperationException();
   }
 
@@ -189,12 +189,12 @@ class FakeHttpServletResponse extends HeaderContainer
   }
 
   @Override
-  public void setLocale(Locale locale) {
+  public Locale getLocale() {
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public Locale getLocale() {
+  public void setLocale(Locale locale) {
     throw new UnsupportedOperationException();
   }
 

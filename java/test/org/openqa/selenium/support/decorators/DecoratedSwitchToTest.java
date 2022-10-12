@@ -24,8 +24,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -36,22 +36,6 @@ import java.util.function.Function;
 
 @Tag("UnitTests")
 class DecoratedSwitchToTest {
-
-  private static class Fixture {
-
-    WebDriver originalDriver;
-    WebDriver decoratedDriver;
-    WebDriver.TargetLocator original;
-    WebDriver.TargetLocator decorated;
-
-    public Fixture() {
-      original = mock(WebDriver.TargetLocator.class);
-      originalDriver = mock(WebDriver.class);
-      when(originalDriver.switchTo()).thenReturn(original);
-      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
-      decorated = decoratedDriver.switchTo();
-    }
-  }
 
   private void verifyDecoratingFunction(Function<WebDriver.TargetLocator, WebDriver> f) {
     Fixture fixture = new Fixture();
@@ -130,5 +114,21 @@ class DecoratedSwitchToTest {
   void alert() {
     Alert alert = mock(Alert.class);
     verifyDecoratingFunction(WebDriver.TargetLocator::alert, alert, Alert::dismiss);
+  }
+
+  private static class Fixture {
+
+    WebDriver originalDriver;
+    WebDriver decoratedDriver;
+    WebDriver.TargetLocator original;
+    WebDriver.TargetLocator decorated;
+
+    public Fixture() {
+      original = mock(WebDriver.TargetLocator.class);
+      originalDriver = mock(WebDriver.class);
+      when(originalDriver.switchTo()).thenReturn(original);
+      decoratedDriver = new WebDriverDecorator<>().decorate(originalDriver);
+      decorated = decoratedDriver.switchTo();
+    }
   }
 }

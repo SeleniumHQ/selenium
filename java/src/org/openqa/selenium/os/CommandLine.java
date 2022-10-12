@@ -37,6 +37,23 @@ public class CommandLine {
   }
 
   /**
+   * @return The platform specific env property name which contains the library path.
+   */
+  public static String getLibraryPathPropertyName() {
+    Platform current = Platform.getCurrent();
+
+    if (current.is(WINDOWS)) {
+      return "PATH";
+
+    } else if (current.is(MAC)) {
+      return "DYLD_LIBRARY_PATH";
+
+    } else {
+      return "LD_LIBRARY_PATH";
+    }
+  }
+
+  /**
    * Adds the specified environment variables.
    *
    * @param environment the variables to add
@@ -71,23 +88,6 @@ public class CommandLine {
       String existing = System.getenv(getLibraryPathPropertyName());
       String ldPath = existing != null ? existing + File.pathSeparator + extraPath : extraPath;
       setEnvironmentVariable(getLibraryPathPropertyName(), ldPath);
-    }
-  }
-
-  /**
-   * @return The platform specific env property name which contains the library path.
-   */
-  public static String getLibraryPathPropertyName() {
-    Platform current = Platform.getCurrent();
-
-    if (current.is(WINDOWS)) {
-      return "PATH";
-
-    } else if (current.is(MAC)) {
-      return "DYLD_LIBRARY_PATH";
-
-    } else {
-      return "LD_LIBRARY_PATH";
     }
   }
 

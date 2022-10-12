@@ -29,13 +29,21 @@ package com.thoughtworks.selenium;
  *     }
  * };}</pre>
  *
- *
  * @author Dan Fabulich
- *
  * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
  */
 @Deprecated
 public abstract class Wait {
+
+  /**
+   * The amount of time to wait before giving up; the default is 30 seconds
+   */
+  public static final long DEFAULT_TIMEOUT = 30000L;
+  /**
+   * The interval to pause between checking; the default is 500 milliseconds
+   */
+  public static final long DEFAULT_INTERVAL = 500L;
+
   public Wait() {
   }
 
@@ -43,14 +51,10 @@ public abstract class Wait {
     wait(messageToShowIfTimeout, DEFAULT_TIMEOUT, DEFAULT_INTERVAL);
   }
 
-  /** @return true when it's time to stop waiting */
+  /**
+   * @return true when it's time to stop waiting
+   */
   public abstract boolean until();
-
-  /** The amount of time to wait before giving up; the default is 30 seconds */
-  public static final long DEFAULT_TIMEOUT = 30000L;
-
-  /** The interval to pause between checking; the default is 500 milliseconds */
-  public static final long DEFAULT_INTERVAL = 500L;
 
   /**
    * Wait until the "until" condition returns true or time runs out.
@@ -66,7 +70,7 @@ public abstract class Wait {
   /**
    * Wait until the "until" condition returns true or time runs out.
    *
-   * @param message the failure message
+   * @param message               the failure message
    * @param timeoutInMilliseconds the amount of time to wait before giving up
    * @throws WaitTimedOutException if "until" doesn't return true until the timeout
    * @see #until()
@@ -78,8 +82,8 @@ public abstract class Wait {
   /**
    * Wait until the "until" condition returns true or time runs out.
    *
-   * @param message the failure message
-   * @param timeoutInMilliseconds the amount of time to wait before giving up
+   * @param message                the failure message
+   * @param timeoutInMilliseconds  the amount of time to wait before giving up
    * @param intervalInMilliseconds the interval to pause between checking "until"
    * @throws WaitTimedOutException if "until" doesn't return true until the timeout
    * @see #until()
@@ -88,7 +92,9 @@ public abstract class Wait {
     long start = System.currentTimeMillis();
     long end = start + timeoutInMilliseconds;
     while (System.currentTimeMillis() < end) {
-      if (until()) return;
+      if (until()) {
+        return;
+      }
       try {
         Thread.sleep(intervalInMilliseconds);
       } catch (InterruptedException e) {

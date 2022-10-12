@@ -25,8 +25,6 @@ import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
@@ -200,7 +198,7 @@ class CorrectEventFiringTest extends JupiterTestBase {
     String text = driver.findElement(By.id("result")).getText();
 
     int lastIndex = -1;
-    for (String event : new String[] {"mousedown", "focus", "mouseup", "click"}) {
+    for (String event : new String[]{"mousedown", "focus", "mouseup", "click"}) {
       int index = text.indexOf(event);
 
       assertThat(index).as(event + " did not fire at all").isNotEqualTo(-1);
@@ -274,7 +272,9 @@ class CorrectEventFiringTest extends JupiterTestBase {
   public void testShouldEmitOnClickEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
     // Intentionally not looking up the select tag. See selenium r7937 for details.
-    List<WebElement> allOptions = driver.findElements(By.xpath("//select[@id='selector2']//option"));
+    List<WebElement>
+      allOptions =
+      driver.findElements(By.xpath("//select[@id='selector2']//option"));
 
     WebElement foo = allOptions.get(0);
     WebElement bar = allOptions.get(1);
@@ -432,7 +432,8 @@ class CorrectEventFiringTest extends JupiterTestBase {
     assertEventNotFired("blur", driver);
     // Click on child. It is not focusable, so focus should stay on the parent.
     driver.findElement(By.id("hideOnBlurChild")).click();
-    assertThat(parent.isDisplayed()).as("#hideOnBlur should still be displayed after click").isTrue();
+    assertThat(parent.isDisplayed()).as("#hideOnBlur should still be displayed after click")
+      .isTrue();
     assertEventNotFired("blur", driver);
     // Click elsewhere, and let the element disappear.
     driver.findElement(By.id("result")).click();
@@ -503,7 +504,9 @@ class CorrectEventFiringTest extends JupiterTestBase {
   void testClickEventsShouldBubble() {
     driver.get(pages.clicksPage);
     driver.findElement(By.id("bubblesFrom")).click();
-    boolean eventBubbled = (Boolean)((JavascriptExecutor)driver).executeScript("return !!window.bubbledClick;");
+    boolean
+      eventBubbled =
+      (Boolean) ((JavascriptExecutor) driver).executeScript("return !!window.bubbledClick;");
     assertThat(eventBubbled).as("Event bubbled").isTrue();
   }
 
@@ -514,7 +517,7 @@ class CorrectEventFiringTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("under"));
     // TODO: change to ElementClickInterceptedException
     assertThatExceptionOfType(WebDriverException.class)
-        .isThrownBy(element::click);
+      .isThrownBy(element::click);
   }
 
   @Test
@@ -524,7 +527,7 @@ class CorrectEventFiringTest extends JupiterTestBase {
     driver.get(appServer.whereIs("click_tests/disappearing_element.html"));
     driver.findElement(By.id("over")).click();
     assertThat(driver.findElement(By.id("log")).getText())
-        .startsWith("Log:\n"
+      .startsWith("Log:\n"
                   + "mousedown in over (handled by over)\n"
                   + "mousedown in over (handled by body)\n"
                   + "mouseup in under (handled by under)\n"

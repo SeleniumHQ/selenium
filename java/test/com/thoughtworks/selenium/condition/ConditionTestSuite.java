@@ -21,9 +21,10 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @SelectClasses({
-    ConditionTest.class,
-    JUnit4AndTestNgConditionRunnerTest.class
+  ConditionTest.class,
+  JUnit4AndTestNgConditionRunnerTest.class
 })
 @Suite
 public class ConditionTestSuite {
+
 }

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -30,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FindChildElements extends WebElementHandler<Set<Map<String, String>>> {
+
   private volatile By by;
 
   public FindChildElements(Session session) {
@@ -46,8 +46,8 @@ public class FindChildElements extends WebElementHandler<Set<Map<String, String>
   public Set<Map<String, String>> call() {
     List<WebElement> elements = getElement().findElements(by);
     return elements.stream()
-        .map(element -> ImmutableMap.of("ELEMENT", getKnownElements().add(element)))
-        .collect(Collectors.toCollection(LinkedHashSet::new));
+      .map(element -> Map.of("ELEMENT", getKnownElements().add(element)))
+      .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
   @Override

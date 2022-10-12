@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.server;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.web.CheckContentTypeHeader;
 import org.openqa.selenium.grid.web.CheckOriginHeader;
@@ -67,7 +68,9 @@ public class NetworkOptions {
     Optional<List<String>> allowedOrigins = config.getAll(NETWORK_SECTION, "allowed_origins");
 
     if (checkOrigin || allowedOrigins.isPresent()) {
-      toReturn = toReturn.andThen(new CheckOriginHeader(allowedOrigins.orElse(ImmutableList.of()), SKIP_CHECKS_ON));
+      toReturn =
+        toReturn.andThen(
+          new CheckOriginHeader(allowedOrigins.orElse(ImmutableList.of()), SKIP_CHECKS_ON));
     }
 
     return toReturn;

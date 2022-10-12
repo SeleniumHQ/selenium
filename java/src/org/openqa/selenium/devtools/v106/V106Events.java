@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools.v106;
 
 import com.google.common.collect.ImmutableList;
+
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
@@ -25,7 +26,6 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.devtools.idealized.Events;
 import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
-import org.openqa.selenium.devtools.v106.runtime.Runtime;
 import org.openqa.selenium.devtools.v106.runtime.model.ConsoleAPICalled;
 import org.openqa.selenium.devtools.v106.runtime.model.ExceptionDetails;
 import org.openqa.selenium.devtools.v106.runtime.model.ExceptionThrown;

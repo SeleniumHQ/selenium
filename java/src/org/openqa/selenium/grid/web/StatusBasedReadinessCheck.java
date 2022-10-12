@@ -17,7 +17,13 @@
 
 package org.openqa.selenium.grid.web;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.util.logging.Level.WARNING;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import com.google.common.net.MediaType;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
@@ -29,11 +35,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static java.util.logging.Level.WARNING;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 /**
  * An {@link HttpHandler} that obeys the contracted required by a Kubernetes
@@ -71,7 +72,8 @@ public class StatusBasedReadinessCheck implements HttpHandler {
       return new HttpResponse()
         .setStatus(HTTP_INTERNAL_ERROR)
         .setHeader("Content-Type", MediaType.PLAIN_TEXT_UTF_8.toString())
-        .setContent(Contents.utf8String("Unable to determine status of server from " + valueWrapped));
+        .setContent(
+          Contents.utf8String("Unable to determine status of server from " + valueWrapped));
     } catch (Exception e) {
       LOG.log(WARNING, "Unable to read status", e);
       return new HttpResponse()

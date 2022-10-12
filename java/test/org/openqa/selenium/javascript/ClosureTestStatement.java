@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.javascript;
 
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
+
 import com.google.common.base.Stopwatch;
+
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -29,9 +33,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
 class ClosureTestStatement {
 
@@ -83,7 +84,8 @@ class ClosureTestStatement {
     while (!getBoolean(executor, Query.IS_FINISHED)) {
       long elapsedTime = stopwatch.elapsed(TimeUnit.SECONDS);
       if (timeoutSeconds > 0 && elapsedTime > timeoutSeconds) {
-        throw new JavaScriptAssertionError("Tests timed out after " + elapsedTime + " s. \nCaptured Errors: " +
+        throw new JavaScriptAssertionError(
+          "Tests timed out after " + elapsedTime + " s. \nCaptured Errors: " +
           ((JavascriptExecutor) driver).executeScript("return window.errors;")
           + "\nPageSource: " + driver.getPageSource() + "\nScreenshot: " +
           ((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64));

@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 import org.junit.jupiter.api.Test;
@@ -99,7 +99,7 @@ class FormHandlingTest extends JupiterTestBase {
   void testSendKeysKeepsCapitalization() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
-                                                 .id("keyUpArea"));
+                                               .id("keyUpArea"));
     String cheesey = "BrIe And CheDdar";
     textarea.sendKeys(cheesey);
     assertThat(textarea.getAttribute("value")).isEqualTo(cheesey);
@@ -130,7 +130,9 @@ class FormHandlingTest extends JupiterTestBase {
   @Test
   void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
-    WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
+    WebElement
+      element =
+      driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
     String originalValue = element.getAttribute("value");
     assertThat(originalValue).isEqualTo("change");
 
@@ -159,7 +161,7 @@ class FormHandlingTest extends JupiterTestBase {
 
   @Test
   void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
-      throws IOException {
+    throws IOException {
     driver.get(pages.xhtmlFormPage);
     WebElement uploadElement = driver.findElement(By.id("file"));
     assertThat(uploadElement.getAttribute("value")).isEmpty();
@@ -292,9 +294,9 @@ class FormHandlingTest extends JupiterTestBase {
   void canSubmitFormWithSubmitButtonNameEqualToSubmit() {
     String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
     driver.get(appServer.create(new Page().withBody(
-        String.format("<form action='%s'>", blank),
-        "  <input type='submit' name='submit' value='Submit'>",
-        "</form>")));
+      String.format("<form action='%s'>", blank),
+      "  <input type='submit' name='submit' value='Submit'>",
+      "</form>")));
 
     driver.findElement(By.name("submit")).submit();
     wait.until(titleIs("Submitted Successfully!"));
@@ -309,6 +311,6 @@ class FormHandlingTest extends JupiterTestBase {
 
     wait.until(titleIs("Submitted Successfully!"));
 
-    assertThat(driver.getCurrentUrl()).contains("name="+name);
+    assertThat(driver.getCurrentUrl()).contains("name=" + name);
   }
 }

@@ -22,24 +22,6 @@ import org.openqa.selenium.net.NetworkUtils;
 
 public interface AppServer {
 
-  String getHostName();
-
-  String getAlternateHostName();
-
-  String whereIs(String relativeUrl);
-
-  String whereElseIs(String relativeUrl);
-
-  String whereIsSecure(String relativeUrl);
-
-  String whereIsWithCredentials(String relativeUrl, String user, String password);
-
-  String create(Page page);
-
-  void start();
-
-  void stop();
-
   static String detectHostname() {
     String hostnameFromProperty = System.getenv("HOSTNAME");
     return hostnameFromProperty == null ? "localhost" : hostnameFromProperty;
@@ -58,5 +40,23 @@ public interface AppServer {
       return networkUtils.getPrivateLocalAddress();
     }
   }
+
+  String getHostName();
+
+  String getAlternateHostName();
+
+  String whereIs(String relativeUrl);
+
+  String whereElseIs(String relativeUrl);
+
+  String whereIsSecure(String relativeUrl);
+
+  String whereIsWithCredentials(String relativeUrl, String user, String password);
+
+  String create(Page page);
+
+  void start();
+
+  void stop();
 
 }

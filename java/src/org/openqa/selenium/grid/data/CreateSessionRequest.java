@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.internal.Require;
@@ -29,10 +33,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
 public class CreateSessionRequest {
 
   private final Set<Dialect> downstreamDialects;
@@ -40,25 +40,13 @@ public class CreateSessionRequest {
   private final Map<String, Object> metadata;
 
   public CreateSessionRequest(
-      Set<Dialect> downstreamDialects,
-      Capabilities capabilities,
-      Map<String, Object> metadata) {
+    Set<Dialect> downstreamDialects,
+    Capabilities capabilities,
+    Map<String, Object> metadata) {
     this.downstreamDialects = unmodifiableSet(new HashSet<>(
-        Require.nonNull("Downstream dialects", downstreamDialects)));
+      Require.nonNull("Downstream dialects", downstreamDialects)));
     this.capabilities = ImmutableCapabilities.copyOf(Require.nonNull("Capabilities", capabilities));
     this.metadata = unmodifiableMap(new HashMap<>(Require.nonNull("Metadata", metadata)));
-  }
-
-  public Set<Dialect> getDownstreamDialects() {
-    return downstreamDialects;
-  }
-
-  public Capabilities getDesiredCapabilities() {
-    return capabilities;
-  }
-
-  public Map<String, Object> getMetadata() {
-    return metadata;
   }
 
   private static CreateSessionRequest fromJson(JsonInput input) {
@@ -74,7 +62,8 @@ public class CreateSessionRequest {
           break;
 
         case "downstreamDialects":
-          downstreamDialects = input.read(new TypeToken<Set<Dialect>>(){}.getType());
+          downstreamDialects = input.read(new TypeToken<Set<Dialect>>() {
+          }.getType());
           break;
 
         case "metadata":
@@ -88,6 +77,18 @@ public class CreateSessionRequest {
     input.endObject();
 
     return new CreateSessionRequest(downstreamDialects, capabilities, metadata);
+  }
+
+  public Set<Dialect> getDownstreamDialects() {
+    return downstreamDialects;
+  }
+
+  public Capabilities getDesiredCapabilities() {
+    return capabilities;
+  }
+
+  public Map<String, Object> getMetadata() {
+    return metadata;
   }
 
   public String toString() {

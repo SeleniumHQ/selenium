@@ -40,13 +40,13 @@ public class ClassPathResource implements Resource {
         JarURLConnection juc = (JarURLConnection) resourceUrl.openConnection();
         JarFile jarFile = juc.getJarFile();
 
-
         this.delegate = new JarFileResource(jarFile, juc.getEntryName(), stripPrefix);
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
     } else {
-      throw new IllegalArgumentException("Unable to handle scheme of type " + resourceUrl.getProtocol());
+      throw new IllegalArgumentException(
+        "Unable to handle scheme of type " + resourceUrl.getProtocol());
     }
   }
 

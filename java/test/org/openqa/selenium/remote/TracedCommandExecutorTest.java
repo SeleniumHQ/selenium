@@ -22,22 +22,23 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.TraceContext;
 import org.openqa.selenium.remote.tracing.Tracer;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Tag("UnitTests")
 class TracedCommandExecutorTest {
+
   @Mock
   private CommandExecutor commandExecutor;
   @Mock

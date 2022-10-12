@@ -29,7 +29,8 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 class StaticResources {
-  private static Logger log = Logger.getLogger(StaticResources.class.getName());
+
+  private static final Logger log = Logger.getLogger(StaticResources.class.getName());
 
   static void ensureAvailable() {
     if (!isInDevMode()) {
@@ -67,7 +68,7 @@ class StaticResources {
          "org/openqa/selenium/firefox/webdriver_prefs.json");
     bazel.build("third_party/js/selenium:webdriver_xpi");
     copy("third_party/js/selenium/webdriver.xpi",
-        "org/openqa/selenium/firefox/xpi/webdriver.xpi");
+         "org/openqa/selenium/firefox/xpi/webdriver.xpi");
   }
 
   private static void copy(String copyFrom, String copyTo) {

@@ -46,24 +46,12 @@ public class SimplePropertyDescriptor {
     this.write = write;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public Function<Object, Object> getReadMethod() {
-    return read;
-  }
-
-  public Method getWriteMethod() {
-    return write;
-  }
-
   public static SimplePropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) {
     Map<String, SimplePropertyDescriptor> properties = new HashMap<>();
 
     properties.put(
-        "class",
-        new SimplePropertyDescriptor("class", GET_CLASS_NAME, null));
+      "class",
+      new SimplePropertyDescriptor("class", GET_CLASS_NAME, null));
 
     for (Method m : clazz.getMethods()) {
       if (Class.class.equals(m.getDeclaringClass()) ||
@@ -110,14 +98,17 @@ public class SimplePropertyDescriptor {
       }
 
       if (readMethod != null || writeMethod != null) {
-        SimplePropertyDescriptor descriptor = properties.getOrDefault(propertyName, new SimplePropertyDescriptor(propertyName, null, null));
+        SimplePropertyDescriptor
+          descriptor =
+          properties.getOrDefault(propertyName,
+                                  new SimplePropertyDescriptor(propertyName, null, null));
 
         properties.put(
+          propertyName,
+          new SimplePropertyDescriptor(
             propertyName,
-            new SimplePropertyDescriptor(
-                propertyName,
-                read != null ? read : descriptor.getReadMethod(),
-                writeMethod != null ? writeMethod : descriptor.getWriteMethod()));
+            read != null ? read : descriptor.getReadMethod(),
+            writeMethod != null ? writeMethod : descriptor.getWriteMethod()));
       }
     }
 
@@ -139,5 +130,17 @@ public class SimplePropertyDescriptor {
     }
 
     return Character.isUpperCase(methodName.charAt(prefix.length()));
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public Function<Object, Object> getReadMethod() {
+    return read;
+  }
+
+  public Method getWriteMethod() {
+    return write;
   }
 }

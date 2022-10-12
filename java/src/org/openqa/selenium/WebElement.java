@@ -29,6 +29,7 @@ import java.util.List;
  * future calls to this instance will fail.
  */
 public interface WebElement extends SearchContext, TakesScreenshot {
+
   /**
    * Click this element. If this causes a new page to load, you
    * should discard all references to this element and any further
@@ -48,7 +49,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * for more details.
    *
    * @throws StaleElementReferenceException If the element no
-   *     longer exists as initially defined
+   *                                        longer exists as initially defined
    */
   void click();
 
@@ -68,7 +69,6 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * for more details.
    *
    * @param keysToSend character sequence to send to the element
-   *
    * @throws IllegalArgumentException if keysToSend is null
    */
   void sendKeys(CharSequence... keysToSend);

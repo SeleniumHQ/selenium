@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.javascript;
 
+import static java.util.stream.Collectors.toList;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
@@ -38,9 +41,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
-import static java.util.stream.Collectors.toList;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 /**
  * JUnit5 test base for Closure-based JavaScript tests.

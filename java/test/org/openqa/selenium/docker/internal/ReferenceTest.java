@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.docker.internal;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class ReferenceTest {
 
@@ -62,7 +62,8 @@ class ReferenceTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldEvaluateValidInputsAsReferences(String input, Reference expected, String familiarName) {
+  void shouldEvaluateValidInputsAsReferences(String input, Reference expected,
+                                             String familiarName) {
     Reference seen = Reference.parse(input);
     assertThat(seen).describedAs("%s -> %s", input, expected).isEqualTo(expected);
   }

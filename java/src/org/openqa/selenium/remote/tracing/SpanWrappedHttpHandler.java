@@ -17,6 +17,14 @@
 
 package org.openqa.selenium.remote.tracing;
 
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.KIND;
+
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -30,14 +38,6 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-import static org.openqa.selenium.remote.tracing.Tags.KIND;
-
 public class SpanWrappedHttpHandler implements HttpHandler {
 
   private static final Logger LOG = Logger.getLogger(SpanWrappedHttpHandler.class.getName());
@@ -45,7 +45,8 @@ public class SpanWrappedHttpHandler implements HttpHandler {
   private final Function<HttpRequest, String> namer;
   private final HttpHandler delegate;
 
-  public SpanWrappedHttpHandler(Tracer tracer, Function<HttpRequest, String> namer, HttpHandler delegate) {
+  public SpanWrappedHttpHandler(Tracer tracer, Function<HttpRequest, String> namer,
+                                HttpHandler delegate) {
     this.tracer = Require.nonNull("Tracer", tracer);
     this.namer = Require.nonNull("Naming function", namer);
     this.delegate = Require.nonNull("Actual handler", delegate);
@@ -63,7 +64,9 @@ public class SpanWrappedHttpHandler implements HttpHandler {
       return delegate.execute(req);
     }
 
-    String name = Require.state("Operation name", namer.apply(req)).nonNull("must be set for %s", req);
+    String
+      name =
+      Require.state("Operation name", namer.apply(req)).nonNull("must be set for %s", req);
 
     TraceContext before = tracer.getCurrentContext();
     Span span = newSpanAsChildOf(tracer, req, name);
@@ -73,7 +76,8 @@ public class SpanWrappedHttpHandler implements HttpHandler {
 
       req.setAttribute("selenium.tracing.span", span);
 
-      if (!(after.getClass().getName().equals("org.openqa.selenium.remote.tracing.empty.NullContext"))) {
+      if (!(after.getClass().getName()
+              .equals("org.openqa.selenium.remote.tracing.empty.NullContext"))) {
         LOG.fine(String.format("Wrapping request. Before %s and after %s", before, after));
       }
 

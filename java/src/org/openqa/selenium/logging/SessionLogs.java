@@ -32,10 +32,29 @@ import java.util.Set;
  */
 @Beta
 public class SessionLogs {
+
   private final Map<String, LogEntries> logTypeToEntriesMap;
 
   public SessionLogs() {
     this.logTypeToEntriesMap = new HashMap<>();
+  }
+
+  public static SessionLogs fromJSON(Map<String, Object> rawSessionLogs) {
+    SessionLogs sessionLogs = new SessionLogs();
+    for (Map.Entry<String, Object> entry : rawSessionLogs.entrySet()) {
+      String logType = entry.getKey();
+      Collection<?> rawLogEntries = (Collection<?>) entry.getValue();
+      List<LogEntry> logEntries = new ArrayList<>();
+      for (Object o : rawLogEntries) {
+        @SuppressWarnings("unchecked") Map<String, Object> rawEntry = (Map<String, Object>) o;
+        logEntries.add(new LogEntry(
+          LogLevelMapping.toLevel(String.valueOf(rawEntry.get("level"))),
+          ((Number) rawEntry.get("timestamp")).longValue(),
+          String.valueOf(rawEntry.get("message"))));
+      }
+      sessionLogs.addLog(logType, new LogEntries(logEntries));
+    }
+    return sessionLogs;
   }
 
   public LogEntries getLogs(String logType) {
@@ -55,24 +74,6 @@ public class SessionLogs {
 
   public Map<String, LogEntries> getAll() {
     return Collections.unmodifiableMap(logTypeToEntriesMap);
-  }
-
-  public static SessionLogs fromJSON(Map<String, Object> rawSessionLogs) {
-    SessionLogs sessionLogs = new SessionLogs();
-    for (Map.Entry<String, Object> entry : rawSessionLogs.entrySet()) {
-      String logType = entry.getKey();
-      Collection<?> rawLogEntries = (Collection<?>) entry.getValue();
-      List<LogEntry> logEntries = new ArrayList<>();
-      for (Object o : rawLogEntries) {
-        @SuppressWarnings("unchecked") Map<String, Object> rawEntry = (Map<String, Object>) o;
-        logEntries.add(new LogEntry(
-            LogLevelMapping.toLevel(String.valueOf(rawEntry.get("level"))),
-            ((Number) rawEntry.get("timestamp")).longValue(),
-            String.valueOf(rawEntry.get("message"))));
-      }
-      sessionLogs.addLog(logType, new LogEntries(logEntries));
-    }
-    return sessionLogs;
   }
 
   @Beta

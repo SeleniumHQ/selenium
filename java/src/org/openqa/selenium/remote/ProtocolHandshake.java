@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.remote;
 
+import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
+import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.remote.CapabilityType.PROXY;
+import static org.openqa.selenium.remote.http.Contents.string;
+
 import com.google.common.io.CountingOutputStream;
 import com.google.common.io.FileBackedOutputStream;
 
@@ -47,13 +54,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.remote.http.Contents.string;
 
 public class ProtocolHandshake {
 
@@ -89,7 +89,9 @@ public class ProtocolHandshake {
     }
   }
 
-  public Either<SessionNotCreatedException, Result> createSession(HttpHandler client, NewSessionPayload payload) throws IOException {
+  public Either<SessionNotCreatedException, Result> createSession(HttpHandler client,
+                                                                  NewSessionPayload payload)
+    throws IOException {
     int threshold = (int) Math.min(Runtime.getRuntime().freeMemory() / 10, Integer.MAX_VALUE);
     FileBackedOutputStream os = new FileBackedOutputStream(threshold);
 
@@ -106,7 +108,9 @@ public class ProtocolHandshake {
     }
   }
 
-  private Either<SessionNotCreatedException, Result> createSession(HttpHandler client, InputStream newSessionBlob, long size) {
+  private Either<SessionNotCreatedException, Result> createSession(HttpHandler client,
+                                                                   InputStream newSessionBlob,
+                                                                   long size) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
 
@@ -146,14 +150,15 @@ public class ProtocolHandshake {
     }
 
     return Stream.of(
-      new W3CHandshakeResponse().getResponseFunction(),
-      new JsonWireProtocolResponse().getResponseFunction())
+        new W3CHandshakeResponse().getResponseFunction(),
+        new JsonWireProtocolResponse().getResponseFunction())
       .map(func -> func.apply(initialResponse))
       .filter(Objects::nonNull)
       .findFirst()
       .<Either<SessionNotCreatedException, Result>>map(Either::right)
       .orElseGet(() -> Either.left(
-        new SessionNotCreatedException("Handshake response does not match any supported protocol")));
+        new SessionNotCreatedException(
+          "Handshake response does not match any supported protocol")));
   }
 
   public static class Result {

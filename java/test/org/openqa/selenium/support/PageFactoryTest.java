@@ -22,8 +22,8 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
@@ -155,7 +155,7 @@ class PageFactoryTest {
     GrottyPage page = new GrottyPage();
 
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> PageFactory.initElements((WebDriver) null, page));
+      .isThrownBy(() -> PageFactory.initElements((WebDriver) null, page));
   }
 
   @Test
@@ -163,23 +163,26 @@ class PageFactoryTest {
     GrottyPage2 page = new GrottyPage2();
 
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> PageFactory.initElements((WebDriver) null, page));
+      .isThrownBy(() -> PageFactory.initElements((WebDriver) null, page));
   }
 
   @Test
   void shouldNotThrowANoSuchElementExceptionWhenUsedWithAFluentWait() {
     WebDriver driver = mock(WebDriver.class);
-    when(driver.findElement(ArgumentMatchers.any())).thenThrow(new NoSuchElementException("because"));
+    when(driver.findElement(ArgumentMatchers.any())).thenThrow(
+      new NoSuchElementException("because"));
 
     TickingClock clock = new TickingClock();
-    Wait<WebDriver> wait = new WebDriverWait(driver, Duration.ofSeconds(1), Duration.ofMillis(1001), clock, clock);
+    Wait<WebDriver>
+      wait =
+      new WebDriverWait(driver, Duration.ofSeconds(1), Duration.ofMillis(1001), clock, clock);
 
     PublicPage page = new PublicPage();
     PageFactory.initElements(driver, page);
     WebElement element = page.q;
 
     assertThatExceptionOfType(TimeoutException.class)
-        .isThrownBy(() -> wait.until(ExpectedConditions.visibilityOf(element)));
+      .isThrownBy(() -> wait.until(ExpectedConditions.visibilityOf(element)));
   }
 
   public static class PublicPage {
@@ -190,7 +193,7 @@ class PageFactoryTest {
     @FindBy(name = "q")
     public List<WebElement> list;
 
-    public WebElement rendered;
+    WebElement rendered;
   }
 
   public static class ChildPage extends PublicPage {
@@ -209,7 +212,7 @@ class PageFactoryTest {
 
   public static class PrivatePage {
 
-    private WebElement allMine = null;
+    private final WebElement allMine = null;
 
     @FindBy(name = "q")
     private List<WebElement> list = null;
@@ -223,27 +226,27 @@ class PageFactoryTest {
     }
   }
 
-  public static class GrottyPage {
+  private static class GrottyPage {
 
     @FindBy(how = How.XPATH, using = "//body", id = "cheese")
     private WebElement one;
   }
 
-  public static class GrottyPage2 {
+  private static class GrottyPage2 {
 
     @FindBy(xpath = "//body", id = "cheese")
     private WebElement two;
   }
 
-  public static class UnmarkedListPage {
+  private static class UnmarkedListPage {
+
     private List<WebElement> elements;
     private List<Object> objects;
-    @SuppressWarnings("rawtypes")
     private List untyped;  // This list deliberately left untyped
   }
 
   public static class NonWebElementsPage {
 
-    public Integer num;
+    Integer num;
   }
 }

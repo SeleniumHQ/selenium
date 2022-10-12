@@ -25,6 +25,14 @@ public class TableCellFinder extends HtmlTagFinder {
   private TableCellFinder() {
   }
 
+  public static HtmlTagFinder cell() {
+    return new TableCellFinder();
+  }
+
+  public static HtmlTagFinder cells() {
+    return cell();
+  }
+
   @Override
   protected String tagName() {
     return "td";
@@ -33,13 +41,5 @@ public class TableCellFinder extends HtmlTagFinder {
   @Override
   protected String tagDescription() {
     return "table cell";
-  }
-
-  public static HtmlTagFinder cell() {
-    return new TableCellFinder();
-  }
-
-  public static HtmlTagFinder cells() {
-    return cell();
   }
 }

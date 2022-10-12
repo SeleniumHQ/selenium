@@ -17,8 +17,20 @@
 
 package org.openqa.selenium.grid.router;
 
-import com.google.common.collect.ImmutableMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
+
 import com.google.common.collect.ImmutableSet;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -60,21 +72,13 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 class EndToEndTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private final Json json = new Json();
+  private Server<?> server;
+  private TearDownFixture fixtures;
+  private HttpClient client;
 
   public static Stream<Arguments> data() {
     StringBuilder rawCaps = new StringBuilder();
@@ -86,38 +90,19 @@ class EndToEndTest {
       new TomlConfig(
         new StringReader(
           "[node]\n" +
-            "detect-drivers = false\n" +
-            "driver-factories = [\n" +
-            String.format("\"%s\",", TestSessionFactoryFactory.class.getName()) + "\n" +
-            String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
-            "]\n" +
-            "[sessionqueue]\n" +
-            "session-request-timeout = 5"));
+          "detect-drivers = false\n" +
+          "driver-factories = [\n" +
+          String.format("\"%s\",", TestSessionFactoryFactory.class.getName()) + "\n" +
+          String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
+          "]\n" +
+          "[sessionqueue]\n" +
+          "session-request-timeout = 5"));
 
     Supplier<Deployment> s1 = () -> DeploymentTypes.DISTRIBUTED.start(CAPS, additionalConfig);
     Supplier<Deployment> s2 = () -> DeploymentTypes.HUB_AND_NODE.start(CAPS, additionalConfig);
     Supplier<Deployment> s3 = () -> DeploymentTypes.STANDALONE.start(CAPS, additionalConfig);
 
     return ImmutableSet.of(s1, s2, s3).stream().map(Arguments::of);
-  }
-
-  private Server<?> server;
-  private TearDownFixture fixtures;
-
-  private HttpClient client;
-
-  public void setFields(Supplier<Deployment> values) {
-    Deployment data = values.get();
-    this.server = data.getServer();
-    this.fixtures = data;
-    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
-    this.client = clientFactory.createClient(server.getUrl());
-  }
-
-  @AfterEach
-  public void stopServers() {
-    Safely.safelyCall(() -> client.close());
-    Safely.safelyCall(() -> fixtures.tearDown());
   }
 
   private static void waitUntilReady(Server<?> server, Duration duration) {
@@ -136,33 +121,18 @@ class EndToEndTest {
     }
   }
 
-  // Hahahaha. Java naming.
-  public static class TestSessionFactoryFactory {
-    public static SessionFactory create(Config config, Capabilities stereotype) {
-      BaseServerOptions serverOptions = new BaseServerOptions(config);
-      String hostname = serverOptions.getHostname().orElse("localhost");
-      int port = serverOptions.getPort();
-      URI serverUri;
-      try {
-        serverUri = new URI("http", null, hostname, port, null, null, null);
-      } catch (URISyntaxException e) {
-        throw new RuntimeException(e);
-      }
-
-      return new TestSessionFactory(stereotype, (id, caps) -> new SpoofSession(serverUri, caps));
-    }
+  public void setFields(Supplier<Deployment> values) {
+    Deployment data = values.get();
+    this.server = data.getServer();
+    this.fixtures = data;
+    HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
+    this.client = clientFactory.createClient(server.getUrl());
   }
 
-  private static class SpoofSession extends Session implements HttpHandler {
-
-    private SpoofSession(URI serverUri, Capabilities capabilities) {
-      super(new SessionId(UUID.randomUUID()), serverUri, new ImmutableCapabilities(), capabilities, Instant.now());
-    }
-
-    @Override
-    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
-      return new HttpResponse();
-    }
+  @AfterEach
+  public void stopServers() {
+    Safely.safelyCall(() -> client.close());
+    Safely.safelyCall(() -> fixtures.tearDown());
   }
 
   @ParameterizedTest
@@ -219,9 +189,9 @@ class EndToEndTest {
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-          "alwaysMatch", ImmutableMap.of("browserName", "cheese")))));
+     Map.of(
+        "capabilities",Map.of(
+          "alwaysMatch",Map.of("browserName", "cheese")))));
 
     HttpResponse response = client.execute(request);
 
@@ -262,8 +232,8 @@ class EndToEndTest {
 
     HttpRequest request = new HttpRequest(POST, "/session");
     request.setContent(asJson(
-      ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of(
+     Map.of(
+        "desiredCapabilities",Map.of(
           "browserName", "cheese"))));
 
     HttpResponse response = client.execute(request);
@@ -299,6 +269,37 @@ class EndToEndTest {
 
       assertThat(response.getHeader("Content-Type")).isEqualTo("application/json; charset=utf-8");
       assertThat(response.getHeader("Cache-Control")).isEqualTo("no-cache");
+    }
+  }
+
+  // Hahahaha. Java naming.
+  public static class TestSessionFactoryFactory {
+
+    public static SessionFactory create(Config config, Capabilities stereotype) {
+      BaseServerOptions serverOptions = new BaseServerOptions(config);
+      String hostname = serverOptions.getHostname().orElse("localhost");
+      int port = serverOptions.getPort();
+      URI serverUri;
+      try {
+        serverUri = new URI("http", null, hostname, port, null, null, null);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
+      }
+
+      return new TestSessionFactory(stereotype, (id, caps) -> new SpoofSession(serverUri, caps));
+    }
+  }
+
+  private static class SpoofSession extends Session implements HttpHandler {
+
+    private SpoofSession(URI serverUri, Capabilities capabilities) {
+      super(new SessionId(UUID.randomUUID()), serverUri, new ImmutableCapabilities(), capabilities,
+            Instant.now());
+    }
+
+    @Override
+    public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
+      return new HttpResponse();
     }
   }
 }

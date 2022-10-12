@@ -17,7 +17,12 @@
 
 package org.openqa.selenium.remote.http;
 
-import com.google.common.collect.ImmutableMap;
+import static java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.remote.http.Contents.asJson;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,17 +35,10 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.net.HttpURLConnection.HTTP_CLIENT_TIMEOUT;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.http.Contents.asJson;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class RetryRequestTest {
 
-  private HttpClient client;
   private static final String REQUEST_PATH = "http://%s:%s/hello";
+  private HttpClient client;
 
   @BeforeEach
   public void setUp() throws MalformedURLException {
@@ -104,7 +102,7 @@ class RetryRequestTest {
       count.incrementAndGet();
       return new HttpResponse()
         .setStatus(500)
-        .setContent(asJson(ImmutableMap.of("error", "non-transient")));
+        .setContent(asJson(Map.of("error", "non-transient")));
     });
     server.start();
 
@@ -128,7 +126,7 @@ class RetryRequestTest {
       if (count.get() <= 2) {
         return new HttpResponse()
           .setStatus(503)
-          .setContent(asJson(ImmutableMap.of("error", "server down")));
+          .setContent(asJson(Map.of("error", "server down")));
       } else {
         return new HttpResponse();
       }

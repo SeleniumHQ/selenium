@@ -50,7 +50,7 @@ import javax.servlet.http.HttpUpgradeHandler;
 import javax.servlet.http.Part;
 
 public class FakeHttpServletRequest extends HeaderContainer
-    implements HttpServletRequest {
+  implements HttpServletRequest {
 
   private final UrlInfo requestUrl;
   private final Map<String, Object> attributes;
@@ -76,7 +76,7 @@ public class FakeHttpServletRequest extends HeaderContainer
   public void setBody(final String data) {
     this.inputStream = new ServletInputStream() {
       private final ByteArrayInputStream delegate =
-          new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
+        new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
 
       @Override
       public void close() throws IOException {
@@ -237,7 +237,7 @@ public class FakeHttpServletRequest extends HeaderContainer
 
   @Override
   public void setCharacterEncoding(String s) {
-  throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException();
   }
 
   @Override

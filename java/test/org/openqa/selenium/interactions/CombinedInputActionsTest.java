@@ -17,22 +17,6 @@
 
 package org.openqa.selenium.interactions;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WaitingConditions;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
@@ -48,6 +32,22 @@ import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WaitingConditions;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
+
+import java.util.List;
 
 /**
  * Tests combined input actions.
@@ -138,7 +138,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Ignore(value = FIREFOX, travis = true)
   public void testControlClickingOnMultiSelectionList() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC),
-      "FIXME: macs don't have CONTROL key");
+                "FIXME: macs don't have CONTROL key");
     driver.get(pages.formSelectionPage);
 
     List<WebElement> options = driver.findElements(By.tagName("option"));
@@ -307,7 +307,7 @@ class CombinedInputActionsTest extends JupiterTestBase {
     // Everything within 5 pixels range is OK
     final int ALLOWED_DEVIATION = 5;
     return Math.abs(expectedX - actualX) < ALLOWED_DEVIATION &&
-      Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
+           Math.abs(expectedY - actualY) < ALLOWED_DEVIATION;
   }
 
   /**
@@ -333,10 +333,12 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/646")
   @NotYetImplemented(CHROME)
   public void testChordControlCutAndPaste() {
-    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
+    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC),
+                "FIXME: macs don't have CONTROL key");
     assumeFalse(isNativeEventsEnabled(driver) &&
-      getEffectivePlatform(driver).is(Platform.WINDOWS) &&
-      isInternetExplorer(driver), "Windows: native events library  does not support storing modifiers state yet");
+                getEffectivePlatform(driver).is(Platform.WINDOWS) &&
+                isInternetExplorer(driver),
+                "Windows: native events library  does not support storing modifiers state yet");
 
     driver.get(pages.javascriptPage);
 

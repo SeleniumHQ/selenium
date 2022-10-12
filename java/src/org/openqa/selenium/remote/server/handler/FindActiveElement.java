@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.remote.server.handler;
 
-import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.server.Session;
@@ -35,7 +34,7 @@ public class FindActiveElement extends WebDriverHandler<Map<String, String>> {
 
     WebElement element = getDriver().switchTo().activeElement();
     String elementId = getKnownElements().add(element);
-    return ImmutableMap.of("ELEMENT", elementId);
+    return Map.of("ELEMENT", elementId);
   }
 
   @Override

@@ -73,7 +73,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    * Setting this capability will make your tests unstable and hard to debug.
    */
   public static final String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS =
-      "ignoreProtectedModeSettings";
+    "ignoreProtectedModeSettings";
 
   /**
    * Capability that defines to use persistent hovering or not.
@@ -187,16 +187,16 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   @Override
   public void setFileDetector(FileDetector detector) {
     throw new WebDriverException(
-        "Setting the file detector only works on remote webdriver instances obtained " +
-        "via RemoteWebDriver");
+      "Setting the file detector only works on remote webdriver instances obtained " +
+      "via RemoteWebDriver");
   }
 
   protected void assertOnWindows() {
     Platform current = Platform.getCurrent();
     if (!current.is(Platform.WINDOWS)) {
       throw new WebDriverException(
-          String.format(
-              "You appear to be running %s. The IE driver only runs on Windows.", current));
+        String.format(
+          "You appear to be running %s. The IE driver only runs on Windows.", current));
     }
   }
 

@@ -17,8 +17,14 @@
 
 package org.openqa.selenium.safari;
 
-import org.junit.jupiter.api.Test;
+import static java.util.stream.Collectors.toSet;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.remote.Browser.SAFARI;
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
+
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.CapabilityType;
@@ -26,12 +32,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import static java.util.stream.Collectors.toSet;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.remote.Browser.SAFARI;
-import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
 @Tag("UnitTests")
 class SafariOptionsTest {
@@ -89,7 +89,7 @@ class SafariOptionsTest {
   void optionsAsMapShouldBeImmutable() {
     Map<String, Object> options = new SafariOptions().asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
-        .isThrownBy(() -> options.put("browserType", "chrome"));
+      .isThrownBy(() -> options.put("browserType", "chrome"));
   }
 
   @Test

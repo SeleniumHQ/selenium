@@ -20,12 +20,10 @@ package org.openqa.selenium.safari;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
@@ -37,7 +35,7 @@ class CleanSessionTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void shouldClearCookiesWhenStartingWithACleanSession() {
+  void shouldClearCookiesWhenStartingWithACleanSession() {
     SafariDriver firstDriver = new SafariDriver();
     firstDriver.get(pages.alertsPage);
 
@@ -82,9 +80,9 @@ class CleanSessionTest extends JupiterTestBase {
     executor.executeScript("setTimeout = function() {}");
 
     long result = (Long) executor.executeAsyncScript(
-        "var callback = arguments[arguments.length - 1];" +
-        "window.constructor.prototype.setTimeout.call(window, function() {" +
-            "callback(123);\n}, 0);");
+      "var callback = arguments[arguments.length - 1];" +
+      "window.constructor.prototype.setTimeout.call(window, function() {" +
+      "callback(123);\n}, 0);");
 
     assertThat(result).isEqualTo(123L);
   }
@@ -97,7 +95,7 @@ class CleanSessionTest extends JupiterTestBase {
     executor.executeScript("window.postMessage('hi', '*');");
 
     long numMessages = (Long) executor.executeScript(
-        "return window.messages.length;");
+      "return window.messages.length;");
 
     assertThat(numMessages).isEqualTo(1L);
   }

@@ -23,24 +23,23 @@ import org.openqa.selenium.WebElement;
 
 /**
  * Hamcrest matcher for displayed status of {@link WebElement}s.
- *
  */
 public class DisplayedMatcher extends TypeSafeMatcher<WebElement> {
 
-	private DisplayedMatcher() {
-	}
+  private DisplayedMatcher() {
+  }
 
-	@Override
-	public void describeTo(Description description) {
-		description.appendText("displayed");
-	}
+  public static Matcher<WebElement> displayed() {
+    return new DisplayedMatcher();
+  }
 
-	@Override
-	public boolean matchesSafely(WebElement item) {
-		return item.isDisplayed();
-	}
+  @Override
+  public void describeTo(Description description) {
+    description.appendText("displayed");
+  }
 
-	public static Matcher<WebElement> displayed() {
-		return new DisplayedMatcher();
-	}
+  @Override
+  public boolean matchesSafely(WebElement item) {
+    return item.isDisplayed();
+  }
 }

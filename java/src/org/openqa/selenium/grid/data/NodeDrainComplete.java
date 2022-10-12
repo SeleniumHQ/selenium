@@ -25,6 +25,7 @@ import org.openqa.selenium.internal.Require;
 import java.util.function.Consumer;
 
 public class NodeDrainComplete extends Event {
+
   private static final EventName NODE_DRAIN_COMPLETE = new EventName("node-drain-complete");
 
   public NodeDrainComplete(NodeId id) {

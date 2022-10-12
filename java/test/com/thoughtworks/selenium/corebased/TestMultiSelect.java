@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestMultiSelect extends InternalSelenseTestBase {
+
   @Test
   void testMultiSelect() {
     selenium.open("test_multiselect.html");
@@ -31,7 +32,7 @@ public class TestMultiSelect extends InternalSelenseTestBase {
     selenium.addSelection("theSelect", "Third Option");
     selenium.addSelection("theSelect", "value=");
     verifyEquals(join(selenium.getSelectedLabels("theSelect"), ','),
-        "Third Option,Fifth Option,Empty Value Option");
+                 "Third Option,Fifth Option,Empty Value Option");
     selenium.removeSelection("theSelect", "id=o7");
     verifyEquals(join(selenium.getSelectedLabels("theSelect"), ','), "Third Option,Fifth Option");
     selenium.removeSelection("theSelect", "label=Fifth Option");

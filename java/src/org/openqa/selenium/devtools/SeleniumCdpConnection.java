@@ -47,7 +47,8 @@ public class SeleniumCdpConnection extends Connection {
     return create(HttpClient.Factory.createDefault(), capabilities);
   }
 
-  public static Optional<Connection> create(HttpClient.Factory clientFactory, Capabilities capabilities) {
+  public static Optional<Connection> create(HttpClient.Factory clientFactory,
+                                            Capabilities capabilities) {
     Require.nonNull("HTTP client factory", clientFactory);
     Require.nonNull("Capabilities", capabilities);
 

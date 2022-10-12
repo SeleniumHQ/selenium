@@ -35,7 +35,8 @@ public class WaitForCondition extends SeleneseCommand<Void> {
   }
 
   @Override
-  protected Void handleSeleneseCommand(final WebDriver driver, String script, final String timeout) {
+  protected Void handleSeleneseCommand(final WebDriver driver, String script,
+                                       final String timeout) {
     StringBuilder builder = new StringBuilder();
     mutator.mutate(script, builder);
     final String modified = builder.toString();

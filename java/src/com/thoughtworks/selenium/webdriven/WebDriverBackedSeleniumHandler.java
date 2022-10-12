@@ -17,10 +17,19 @@
 
 package com.thoughtworks.selenium.webdriven;
 
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.logging.Level.WARNING;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
+
 import com.thoughtworks.selenium.CommandProcessor;
 import com.thoughtworks.selenium.SeleniumException;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -49,13 +58,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.logging.Level.WARNING;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 /**
  * An implementation of the original selenium rc server endpoint, using a webdriver-backed selenium
  * in order to get things working.
@@ -66,11 +68,11 @@ public class WebDriverBackedSeleniumHandler implements Routable {
   private static final Map<SessionId, CommandProcessor> PROCESSORS = new ConcurrentHashMap<>();
   private static final Logger LOG = Logger.getLogger(WebDriverBackedSelenium.class.getName());
 
-  private NewSessionPipeline pipeline;
-  private ActiveSessions sessions;
-  private ActiveSessionListener listener;
+  private final NewSessionPipeline pipeline;
+  private final ActiveSessions sessions;
+  private final ActiveSessionListener listener;
 
-  public WebDriverBackedSeleniumHandler(Tracer tracer, ActiveSessions sessions) {
+  WebDriverBackedSeleniumHandler(Tracer tracer, ActiveSessions sessions) {
     this.sessions = sessions == null ? new ActiveSessions(5, MINUTES) : sessions;
     listener = new ActiveSessionListener() {
       @Override
@@ -80,7 +82,7 @@ public class WebDriverBackedSeleniumHandler implements Routable {
     };
     this.sessions.addListener(listener);
 
-    this.pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory(tracer)).create();
+    pipeline = NewSessionPipeline.builder().add(new ActiveSessionFactory(tracer)).create();
   }
 
   @Override
@@ -157,14 +159,14 @@ public class WebDriverBackedSeleniumHandler implements Routable {
       if (!"webdriver.remote.sessionid".equals(split.get(0))) {
         LOG.warning("Unable to find existing webdriver session. Wrong parameter name: " + options);
         return sendError(
-            HTTP_OK,
-            "Unable to find existing webdriver session. Wrong parameter name: " + options);
+          HTTP_OK,
+          "Unable to find existing webdriver session. Wrong parameter name: " + options);
       }
       if (split.size() != 2) {
         LOG.warning("Attempted to find webdriver id, but none specified. Bailing");
         return sendError(
-            HTTP_OK,
-            "Unable to find existing webdriver session. No ID specified");
+          HTTP_OK,
+          "Unable to find existing webdriver session. No ID specified");
       }
       sessionId = new SessionId(split.get(1));
     }
@@ -216,7 +218,7 @@ public class WebDriverBackedSeleniumHandler implements Routable {
       } catch (Exception e) {
         LOG.log(WARNING, "Unable to start session", e);
         return sendError(
-            HTTP_OK,
+          HTTP_OK,
           "Unable to start session. Cause can be found in logs. Message is: " + e.getMessage());
       }
     }
@@ -234,16 +236,16 @@ public class WebDriverBackedSeleniumHandler implements Routable {
 
   private HttpResponse sendResponse(String result) {
     return new HttpResponse()
-        .setStatus(HTTP_OK)
-        .setHeader("", "")
-        .setContent(utf8String("OK".concat(result == null ? "" : "," + result)));
+      .setStatus(HTTP_OK)
+      .setHeader("", "")
+      .setContent(utf8String("OK".concat(result == null ? "" : "," + result)));
   }
 
   private HttpResponse sendError(int statusCode, String result) {
     return new HttpResponse()
-        .setStatus(statusCode)
-        .setHeader("", "")
-        .setContent(utf8String("ERROR".concat(result == null ? "" : ": " + result)));
+      .setStatus(statusCode)
+      .setHeader("", "")
+      .setContent(utf8String("ERROR".concat(result == null ? "" : ": " + result)));
   }
 
   private String[] deserializeArgs(Optional<Map<String, List<String>>> params, HttpRequest req) {
@@ -260,7 +262,8 @@ public class WebDriverBackedSeleniumHandler implements Routable {
     return args.toArray(new String[0]);
   }
 
-  private String getValue(String key, Optional<Map<String, List<String>>> params, HttpRequest request) {
+  private String getValue(String key, Optional<Map<String, List<String>>> params,
+                          HttpRequest request) {
     return params.map(data -> {
       List<String> values = data.getOrDefault(key, new ArrayList<>());
       if (values.isEmpty()) {

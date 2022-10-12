@@ -25,33 +25,29 @@ public class Quotes {
    * For example,
    *
    * <p>
-   *   {@code foo} will be converted to {@code "foo"},
+   * {@code foo} will be converted to {@code "foo"},
    * </p>
    * <p>
-   *   {@code f"oo} will be converted to {@code 'f"oo'},
+   * {@code f"oo} will be converted to {@code 'f"oo'},
    * </p>
    * <p>
-   *   {@code foo'"bar} will be converted to {@code concat("foo'", '"', "bar")}
+   * {@code foo'"bar} will be converted to {@code concat("foo'", '"', "bar")}
    * </p>
    *
    * @param toEscape a text to escape quotes in, e.g. {@code "f'oo"}
    * @return the same text with escaped quoted, e.g. {@code "\"f'oo\""}
    */
-  @SuppressWarnings("JavaDoc")
   public static String escape(String toEscape) {
     if (toEscape.contains("\"") && toEscape.contains("'")) {
-      boolean quoteIsLast = false;
-      if (toEscape.lastIndexOf("\"") == toEscape.length() - 1) {
-        quoteIsLast = true;
-      }
+      boolean quoteIsLast = toEscape.lastIndexOf("\"") == toEscape.length() - 1;
       String[] substringsWithoutQuotes = toEscape.split("\"");
 
       StringBuilder quoted = new StringBuilder("concat(");
       for (int i = 0; i < substringsWithoutQuotes.length; i++) {
         quoted.append("\"").append(substringsWithoutQuotes[i]).append("\"");
         quoted
-            .append(((i == substringsWithoutQuotes.length - 1) ? (quoteIsLast ? ", '\"')" : ")")
-                                                           : ", '\"', "));
+          .append(((i == substringsWithoutQuotes.length - 1) ? (quoteIsLast ? ", '\"')" : ")")
+                                                             : ", '\"', "));
       }
       return quoted.toString();
     }

@@ -23,8 +23,9 @@ import java.util.Set;
 
 /**
  * LocalLogs instance that extracts entries from a logging handler.
-  */
+ */
 class HandlerBasedLocalLogs extends LocalLogs {
+
   private final LoggingHandler loggingHandler;
   private final Set<String> logTypesToInclude;
 

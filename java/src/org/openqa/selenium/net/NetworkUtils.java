@@ -49,6 +49,46 @@ public class NetworkUtils {
     this(new DefaultNetworkInterfaceProvider());
   }
 
+  public static String getNetWorkDiags() {
+    StringBuilder result = new StringBuilder();
+    DefaultNetworkInterfaceProvider defaultNetworkInterfaceProvider =
+      new DefaultNetworkInterfaceProvider();
+    for (NetworkInterface networkInterface : defaultNetworkInterfaceProvider
+      .getNetworkInterfaces()) {
+      dumpToConsole(result, networkInterface);
+
+    }
+    NetworkInterface byName = defaultNetworkInterfaceProvider.getLoInterface();
+    if (byName != null) {
+      result.append("Loopback interface LO:\n");
+      dumpToConsole(result, byName);
+    }
+    return result.toString();
+  }
+
+  private static void dumpToConsole(StringBuilder result, NetworkInterface inNetworkInterface) {
+    if (inNetworkInterface == null) {
+      return;
+    }
+    result.append(inNetworkInterface.getName());
+    result.append("\n");
+    dumpAddresses(result, inNetworkInterface.getInetAddresses());
+  }
+
+  private static void dumpAddresses(StringBuilder result, Iterable<InetAddress> inetAddresses) {
+    for (InetAddress address : inetAddresses) {
+      result.append("   address.getHostName() = ");
+      result.append(address.getHostName());
+      result.append("\n");
+      result.append("   address.getHostAddress() = ");
+      result.append(address.getHostAddress());
+      result.append("\n");
+      result.append("   address.isLoopbackAddress() = ");
+      result.append(address.isLoopbackAddress());
+      result.append("\n");
+    }
+  }
+
   /**
    * Makes a best-effort attempt to figure out an externally addressable name for this host, falling
    * back to a local connection only. This may be a hostname, an IPv4 address, an IPv6 address, or
@@ -84,7 +124,8 @@ public class NetworkUtils {
    */
   public String getNonLoopbackAddressOfThisMachine() {
     InetAddress ip4NonLoopbackAddressOfThisMachine = getIp4NonLoopbackAddressOfThisMachine();
-    if (!Objects.equals(cachedIp4NonLoopbackAddressOfThisMachine, ip4NonLoopbackAddressOfThisMachine)) {
+    if (!Objects.equals(cachedIp4NonLoopbackAddressOfThisMachine,
+                        ip4NonLoopbackAddressOfThisMachine)) {
       cachedIp4NonLoopbackAddressOfThisMachine = ip4NonLoopbackAddressOfThisMachine;
       cachedIp4NonLoopbackAddressHostName = ip4NonLoopbackAddressOfThisMachine.getHostAddress();
     }
@@ -135,15 +176,14 @@ public class NetworkUtils {
     }
 
     throw new WebDriverException(
-        "Unable to resolve local loopback address, please file an issue with the full message of this error:\n"
-            +
-            getNetWorkDiags() + "\n==== End of error message");
+      "Unable to resolve local loopback address, please file an issue with the full message of this error:\n"
+      +
+      getNetWorkDiags() + "\n==== End of error message");
   }
-
 
   private InetAddress grabFirstNetworkAddress() {
     NetworkInterface firstInterface =
-        networkInterfaceProvider.getNetworkInterfaces().iterator().next();
+      networkInterfaceProvider.getNetworkInterfaces().iterator().next();
     InetAddress firstAddress = null;
     if (firstInterface != null) {
       firstAddress = firstInterface.getInetAddresses().iterator().next();
@@ -181,7 +221,7 @@ public class NetworkUtils {
     for (NetworkInterface iface : networkInterfaceProvider.getNetworkInterfaces()) {
       for (InetAddress addr : iface.getInetAddresses()) {
         // filter out Inet6 Addr Entries
-        if (addr.isLoopbackAddress() && !isIpv6(addr))  {
+        if (addr.isLoopbackAddress() && !isIpv6(addr)) {
           localAddresses.add(addr);
         }
       }
@@ -208,46 +248,6 @@ public class NetworkUtils {
     return localAddresses;
   }
 
-  public static String getNetWorkDiags() {
-    StringBuilder result = new StringBuilder();
-    DefaultNetworkInterfaceProvider defaultNetworkInterfaceProvider =
-        new DefaultNetworkInterfaceProvider();
-    for (NetworkInterface networkInterface : defaultNetworkInterfaceProvider
-        .getNetworkInterfaces()) {
-      dumpToConsole(result, networkInterface);
-
-    }
-    NetworkInterface byName = defaultNetworkInterfaceProvider.getLoInterface();
-    if (byName != null) {
-      result.append("Loopback interface LO:\n");
-      dumpToConsole(result, byName);
-    }
-    return result.toString();
-  }
-
-  private static void dumpToConsole(StringBuilder result, NetworkInterface inNetworkInterface) {
-    if (inNetworkInterface == null) {
-      return;
-    }
-    result.append(inNetworkInterface.getName());
-    result.append("\n");
-    dumpAddresses(result, inNetworkInterface.getInetAddresses());
-  }
-
-  private static void dumpAddresses(StringBuilder result, Iterable<InetAddress> inetAddresses) {
-    for (InetAddress address : inetAddresses) {
-      result.append("   address.getHostName() = ");
-      result.append(address.getHostName());
-      result.append("\n");
-      result.append("   address.getHostAddress() = ");
-      result.append(address.getHostAddress());
-      result.append("\n");
-      result.append("   address.isLoopbackAddress() = ");
-      result.append(address.isLoopbackAddress());
-      result.append("\n");
-    }
-  }
-
   private synchronized void determineHostnameAndAddress() {
     if (hostname != null) {
       return;
@@ -271,7 +271,8 @@ public class NetworkUtils {
           process.waitFor(2, TimeUnit.SECONDS);
         }
         if (process.exitValue() == 0) {
-          try (InputStreamReader isr = new InputStreamReader(process.getInputStream(), Charset.defaultCharset());
+          try (InputStreamReader isr = new InputStreamReader(process.getInputStream(),
+                                                             Charset.defaultCharset());
                BufferedReader reader = new BufferedReader(isr)) {
             host = reader.readLine();
           }

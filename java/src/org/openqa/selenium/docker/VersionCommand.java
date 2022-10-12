@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.docker;
 
-import com.google.common.collect.ImmutableMap;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
 import org.openqa.selenium.docker.v1_41.V141Docker;
 import org.openqa.selenium.internal.Require;
@@ -33,23 +34,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class VersionCommand {
 
   private static final Json JSON = new Json();
   // Insertion order matters, and is preserved by ImmutableMap.
   private static final Map<Version, Function<HttpHandler, DockerProtocol>>
-    SUPPORTED_VERSIONS = ImmutableMap.of(new Version("1.40"), V141Docker::new);
+    SUPPORTED_VERSIONS = Map.of(new Version("1.40"), V141Docker::new);
 
   private final HttpHandler handler;
 
-  public VersionCommand(HttpHandler handler) {
+  VersionCommand(HttpHandler handler) {
     this.handler = Require.nonNull("HTTP client", handler);
   }
 
-  public Optional<DockerProtocol> getDockerProtocol() {
+  Optional<DockerProtocol> getDockerProtocol() {
     try {
       HttpResponse res = handler.execute(new HttpRequest(GET, "/version"));
 

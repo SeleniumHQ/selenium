@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider {
+
   // Cache the list of interfaces between instances. This is mostly used
   // to get the loopback interface, so it's ok even though interfaces may go
   // up and down during the test.
@@ -36,11 +37,6 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
   // significant when running the tests.
   private final List<NetworkInterface> cachedInterfaces;
 
-
-  @Override
-  public Iterable<NetworkInterface> getNetworkInterfaces() {
-    return cachedInterfaces;
-  }
 
   public DefaultNetworkInterfaceProvider() {
     Enumeration<java.net.NetworkInterface> interfaces;
@@ -95,6 +91,11 @@ public class DefaultNetworkInterfaceProvider implements NetworkInterfaceProvider
       }
     }
     this.cachedInterfaces = Collections.unmodifiableList(result);
+  }
+
+  @Override
+  public Iterable<NetworkInterface> getNetworkInterfaces() {
+    return cachedInterfaces;
   }
 
   private String getLocalInterfaceName() {

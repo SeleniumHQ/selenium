@@ -67,19 +67,17 @@ import java.util.function.Supplier;
  */
 public class FluentWait<T> implements Wait<T> {
 
-  protected static final long DEFAULT_SLEEP_TIMEOUT = 500;
+  static final long DEFAULT_SLEEP_TIMEOUT = 500;
 
   private static final Duration DEFAULT_WAIT_DURATION = Duration.ofMillis(DEFAULT_SLEEP_TIMEOUT);
 
   private final T input;
   private final java.time.Clock clock;
   private final Sleeper sleeper;
-
+  private final List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
   private Duration timeout = DEFAULT_WAIT_DURATION;
   private Duration interval = DEFAULT_WAIT_DURATION;
   private Supplier<String> messageSupplier = () -> null;
-
-  private List<Class<? extends Throwable>> ignoredExceptions = new ArrayList<>();
 
   /**
    * @param input The input value to pass to the evaluated conditions.
@@ -117,8 +115,8 @@ public class FluentWait<T> implements Wait<T> {
    * @param message to be appended to default.
    * @return A self reference.
    */
-  public FluentWait<T> withMessage(final String message) {
-    this.messageSupplier = () -> message;
+  public FluentWait<T> withMessage(String message) {
+    messageSupplier = () -> message;
     return this;
   }
 
@@ -156,7 +154,7 @@ public class FluentWait<T> implements Wait<T> {
    * @param <K>   an Exception that extends Throwable
    * @return A self reference.
    */
-  public <K extends Throwable> FluentWait<T> ignoreAll(Collection<Class<? extends K>> types) {
+  private <K extends Throwable> FluentWait<T> ignoreAll(Collection<Class<? extends K>> types) {
     ignoredExceptions.addAll(types);
     return this;
   }
@@ -167,7 +165,7 @@ public class FluentWait<T> implements Wait<T> {
    * @see #ignoreAll(Collection)
    */
   public FluentWait<T> ignoring(Class<? extends Throwable> exceptionType) {
-    return this.ignoreAll(ImmutableList.<Class<? extends Throwable>>of(exceptionType));
+    return ignoreAll(ImmutableList.<Class<? extends Throwable>>of(exceptionType));
   }
 
   /**
@@ -179,7 +177,7 @@ public class FluentWait<T> implements Wait<T> {
   public FluentWait<T> ignoring(Class<? extends Throwable> firstType,
                                 Class<? extends Throwable> secondType) {
 
-    return this.ignoreAll(ImmutableList.of(firstType, secondType));
+    return ignoreAll(ImmutableList.of(firstType, secondType));
   }
 
   /**
@@ -225,9 +223,9 @@ public class FluentWait<T> implements Wait<T> {
                          messageSupplier.get() : null;
 
         String timeoutMessage = String.format(
-            "Expected condition failed: %s (tried for %d second(s) with %d milliseconds interval)",
-            message == null ? "waiting for " + isTrue : message,
-            timeout.getSeconds(), interval.toMillis());
+          "Expected condition failed: %s (tried for %d second(s) with %d milliseconds interval)",
+          message == null ? "waiting for " + isTrue : message,
+          timeout.getSeconds(), interval.toMillis());
         throw timeoutException(timeoutMessage, lastException);
       }
 

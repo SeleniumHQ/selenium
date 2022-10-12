@@ -17,20 +17,22 @@
 
 package org.openqa.selenium.grid.config;
 
-import com.beust.jcommander.Parameter;
-import com.google.common.collect.ImmutableMap;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+
 import com.google.common.collect.ImmutableSet;
+
+import com.beust.jcommander.Parameter;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AnnotatedConfigTest {
 
@@ -87,7 +89,7 @@ class AnnotatedConfigTest {
       class WithBadAnnotation {
 
         @ConfigValue(section = "bad", name = "map", example = "")
-        private final Map<String, String> cheeses = ImmutableMap.of("peas", "sausage");
+        private final Map<String, String> cheeses =Map.of("peas", "sausage");
       }
 
       new AnnotatedConfig(new WithBadAnnotation());

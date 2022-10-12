@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.docker.ContainerInfo;
 import org.openqa.selenium.internal.Require;
@@ -32,12 +37,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class InspectContainer {
+
   private static final Logger LOG = Logger.getLogger(InspectContainer.class.getName());
   private static final Json JSON = new Json();
   private final HttpHandler client;

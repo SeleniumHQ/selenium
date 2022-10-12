@@ -43,7 +43,8 @@ class BoundZmqEventBus implements EventBus {
   private final ZMQ.Socket xsub;
   private final ExecutorService executor;
 
-  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection, Secret secret) {
+  BoundZmqEventBus(ZContext context, String publishConnection, String subscribeConnection,
+                   Secret secret) {
     String address = new NetworkUtils().getHostAddress();
     Addresses xpubAddr = deriveAddresses(address, publishConnection);
     Addresses xsubAddr = deriveAddresses(address, subscribeConnection);
@@ -119,7 +120,7 @@ class BoundZmqEventBus implements EventBus {
 
     boolean isAddressIPv6 = false;
     try {
-      if (InetAddress.getByName(host) instanceof Inet6Address ) {
+      if (InetAddress.getByName(host) instanceof Inet6Address) {
         isAddressIPv6 = true;
         if (!host.startsWith("[")) {
           host = String.format("[%s]", host);
@@ -130,16 +131,18 @@ class BoundZmqEventBus implements EventBus {
     }
 
     return new Addresses(
-        connection,
-        String.format("tcp://%s:%d", host, port),
-        isAddressIPv6
+      connection,
+      String.format("tcp://%s:%d", host, port),
+      isAddressIPv6
     );
   }
 
   private static class Addresses {
+
     String bindTo;
     String advertise;
     boolean isIPv6;
+
     Addresses(String bindTo, String advertise, boolean isIPv6) {
       this.bindTo = bindTo;
       this.advertise = advertise;

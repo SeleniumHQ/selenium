@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 @Disabled("getPrompt not implemented")
 public class TestPrompt extends InternalSelenseTestBase {
+
   @Test
   void testPrompt() throws Exception {
     selenium.open("test_prompt.html");
@@ -32,10 +33,14 @@ public class TestPrompt extends InternalSelenseTestBase {
     selenium.answerOnNextPrompt("no");
     selenium.click("promptAndLeave");
     verifyTrue(selenium.isPromptPresent());
-    for (int second = 0;; second++) {
-      if (second >= 60) fail("timeout");
+    for (int second = 0; ; second++) {
+      if (second >= 60) {
+        fail("timeout");
+      }
       try {
-        if (selenium.isPromptPresent()) break;
+        if (selenium.isPromptPresent()) {
+          break;
+        }
       } catch (Exception e) {
       }
       Thread.sleep(1000);

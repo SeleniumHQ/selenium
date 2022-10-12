@@ -45,7 +45,9 @@ class AddToSessionQueue implements HttpHandler {
     try (Span span = newSpanAsChildOf(tracer, req, "sessionqueue.add")) {
       HTTP_REQUEST.accept(span, req);
 
-      HttpResponse response = newSessionQueue.addToQueue(Contents.fromJson(req, SessionRequest.class));
+      HttpResponse
+        response =
+        newSessionQueue.addToQueue(Contents.fromJson(req, SessionRequest.class));
 
       HTTP_RESPONSE.accept(span, response);
 

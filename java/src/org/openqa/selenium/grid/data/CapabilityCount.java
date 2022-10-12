@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.data;
 
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collector.Characteristics.UNORDERED;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.json.JsonInput;
 
@@ -26,35 +29,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collector;
 
-import static java.util.Collections.unmodifiableMap;
-import static java.util.stream.Collector.Characteristics.UNORDERED;
-
 public class CapabilityCount {
 
   private final Map<Capabilities, Integer> counts;
 
   public CapabilityCount(Map<Capabilities, Integer> counts) {
     this.counts = unmodifiableMap(new HashMap<>(counts));
-  }
-
-  public Map<Capabilities, Integer> getCounts() {
-    return counts;
-  }
-
-  private Object toJson() {
-    return counts.entrySet().stream()
-      .map(entry -> {
-        Map<Object, Object> toReturn = new HashMap<>();
-        toReturn.put("capabilities", entry.getKey());
-        toReturn.put("count", entry.getValue());
-        return toReturn;
-      })
-      .collect(Collector.of(
-        ArrayList::new,
-        ArrayList::add,
-        (l, r) -> { l.addAll(r); return l; },
-        Collections::unmodifiableList,
-        UNORDERED));
   }
 
   private static CapabilityCount fromJson(JsonInput input) {
@@ -87,6 +67,29 @@ public class CapabilityCount {
     input.endArray();
 
     return new CapabilityCount(toReturn);
+  }
+
+  public Map<Capabilities, Integer> getCounts() {
+    return counts;
+  }
+
+  private Object toJson() {
+    return counts.entrySet().stream()
+      .map(entry -> {
+        Map<Object, Object> toReturn = new HashMap<>();
+        toReturn.put("capabilities", entry.getKey());
+        toReturn.put("count", entry.getValue());
+        return toReturn;
+      })
+      .collect(Collector.of(
+        ArrayList::new,
+        ArrayList::add,
+        (l, r) -> {
+          l.addAll(r);
+          return l;
+        },
+        Collections::unmodifiableList,
+        UNORDERED));
   }
 
 }

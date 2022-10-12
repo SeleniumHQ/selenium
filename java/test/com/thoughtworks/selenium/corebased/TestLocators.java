@@ -22,6 +22,7 @@ import com.thoughtworks.selenium.InternalSelenseTestBase;
 import org.junit.jupiter.api.Test;
 
 public class TestLocators extends InternalSelenseTestBase {
+
   @Test
   void testLocators() {
     selenium.open("test_locators.html");
@@ -48,9 +49,9 @@ public class TestLocators extends InternalSelenseTestBase {
     // DOM Traversal location
     verifyEquals(selenium.getText("dom=document.links[1]"), "this is the second element");
     verifyEquals(selenium.getText("dom=function foo() {return document.links[1];}; foo();"),
-        "this is the second element");
+                 "this is the second element");
     verifyEquals(selenium.getText("dom=function foo() {\nreturn document.links[1];};\nfoo();"),
-        "this is the second element");
+                 "this is the second element");
     verifyEquals(selenium.getAttribute("dom=document.links[1]@class"), "a2");
     verifyFalse(selenium.isElementPresent("dom=document.links[9]"));
     verifyFalse(selenium.isElementPresent("dom=foo"));

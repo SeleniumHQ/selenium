@@ -65,7 +65,7 @@ public interface TouchScreen {
   /**
    * Creates a scroll gesture that starts on a particular screen location.
    *
-   * @param where the location where the scroll starts, usually a {@link org.openqa.selenium.WebElement}.
+   * @param where   the location where the scroll starts, usually a {@link org.openqa.selenium.WebElement}.
    * @param xOffset The x offset to scroll
    * @param yOffset The y offset to scroll
    */
@@ -104,10 +104,10 @@ public interface TouchScreen {
   /**
    * Allows the execution of flick gestures starting in a location's element.
    *
-   * @param where The coordinate of the element to flick on
+   * @param where   The coordinate of the element to flick on
    * @param xOffset The x offset relative to the viewport
    * @param yOffset The y offset relative to the viewport
-   * @param speed speed in pixels/second
+   * @param speed   speed in pixels/second
    */
   void flick(Coordinates where, int xOffset, int yOffset, int speed);
 }

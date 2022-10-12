@@ -17,26 +17,6 @@
 
 package org.openqa.selenium.remote.codec.w3c;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
-
-import org.openqa.selenium.InvalidSelectorException;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.PointerInput;
-import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
-import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
-
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
 import static org.openqa.selenium.remote.DriverCommand.ACTIONS;
 import static org.openqa.selenium.remote.DriverCommand.CLEAR_ACTIONS_STATE;
@@ -92,6 +72,26 @@ import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.io.Resources;
+
+import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.interactions.PointerInput;
+import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
+import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 /**
  * A command codec that adheres to the W3C's WebDriver wire protocol.
@@ -103,7 +103,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
   private final PointerInput mouse = new PointerInput(PointerInput.Kind.MOUSE, "mouse");
 
   public W3CHttpCommandCodec() {
-    String sessionId = "/session/:sessionId";
+    final String sessionId = "/session/:sessionId";
 
     alias(GET_ELEMENT_ATTRIBUTE, EXECUTE_SCRIPT);
     alias(GET_ELEMENT_LOCATION, GET_ELEMENT_RECT);
@@ -129,7 +129,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     alias(GET_SESSION_STORAGE_ITEM, EXECUTE_SCRIPT);
     alias(GET_SESSION_STORAGE_SIZE, EXECUTE_SCRIPT);
 
-    String window = sessionId + "/window";
+    final String window = sessionId + "/window";
     defineCommand(MAXIMIZE_CURRENT_WINDOW, post(window + "/maximize"));
     defineCommand(MINIMIZE_CURRENT_WINDOW, post(window + "/minimize"));
     defineCommand(GET_CURRENT_WINDOW_SIZE, get(window + "/rect"));
@@ -139,7 +139,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(GET_CURRENT_WINDOW_HANDLE, get(window));
     defineCommand(GET_WINDOW_HANDLES, get(window + "/handles"));
 
-    String alert = sessionId + "/alert";
+    final String alert = sessionId + "/alert";
     defineCommand(ACCEPT_ALERT, post(alert + "/accept"));
     defineCommand(DISMISS_ALERT, post(alert + "/dismiss"));
     defineCommand(GET_ALERT_TEXT, get(alert + "/text"));
@@ -154,7 +154,7 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     defineCommand(ACTIONS, post(sessionId + "/actions"));
     defineCommand(CLEAR_ACTIONS_STATE, delete(sessionId + "/actions"));
 
-    String elementId = sessionId + "/element/:id";
+    final String elementId = sessionId + "/element/:id";
     defineCommand(GET_ELEMENT_DOM_PROPERTY, get(elementId + "/property/:name"));
     defineCommand(GET_ELEMENT_DOM_ATTRIBUTE, get(elementId + "/attribute/:name"));
     defineCommand(GET_ELEMENT_ARIA_ROLE, get(elementId + "/computedrole"));
@@ -228,8 +228,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
                         parameters.get("key"), parameters.get("value"));
 
       case REMOVE_LOCAL_STORAGE_ITEM:
-        return toScript("var item = localStorage.getItem(arguments[0]); localStorage.removeItem(arguments[0]); return item",
-                        parameters.get("key"));
+        return toScript(
+          "var item = localStorage.getItem(arguments[0]); localStorage.removeItem(arguments[0]); return item",
+          parameters.get("key"));
 
       case GET_LOCAL_STORAGE_ITEM:
         return toScript("return localStorage.getItem(arguments[0])", parameters.get("key"));
@@ -248,8 +249,9 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
                         parameters.get("key"), parameters.get("value"));
 
       case REMOVE_SESSION_STORAGE_ITEM:
-        return toScript("var item = sessionStorage.getItem(arguments[0]); sessionStorage.removeItem(arguments[0]); return item",
-                        parameters.get("key"));
+        return toScript(
+          "var item = sessionStorage.getItem(arguments[0]); sessionStorage.removeItem(arguments[0]); return item",
+          parameters.get("key"));
 
       case GET_SESSION_STORAGE_ITEM:
         return toScript("return sessionStorage.getItem(arguments[0])", parameters.get("key"));
@@ -265,23 +267,22 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
         Object rawValue = parameters.get("value");
         Stream<CharSequence> source;
         if (rawValue instanceof Collection) {
-          //noinspection unchecked
           source = ((Collection<CharSequence>) rawValue).stream();
         } else {
           source = Stream.of((CharSequence[]) rawValue);
         }
 
         String text = source
-            .collect(Collectors.joining());
+          .collect(Collectors.joining());
         return ImmutableMap.<String, Object>builder()
-            .putAll(
-                parameters.entrySet().stream()
-                    .filter(e -> !"text".equals(e.getKey()))
-                    .filter(e -> !"value".equals(e.getKey()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
-            .put("text", text)
-            .put("value", stringToUtf8Array(text))
-            .build();
+          .putAll(
+            parameters.entrySet().stream()
+              .filter(e -> !"text".equals(e.getKey()))
+              .filter(e -> !"value".equals(e.getKey()))
+              .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+          .put("text", text)
+          .put("value", stringToUtf8Array(text))
+          .build();
 
       case SET_ALERT_VALUE:
         return ImmutableMap.<String, Object>builder()
@@ -355,21 +356,21 @@ public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
     script = script.replaceAll("\"", "\\\"");
 
     List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
-        Collectors.toList());
+      Collectors.toList());
 
-    return ImmutableMap.of(
+    return Map.of(
       "script", script,
       "args", convertedArgs);
   }
 
   private Map<String, String> asElement(Object id) {
-    return ImmutableMap.of("element-6066-11e4-a52e-4f735466cecf", (String) id);
+    return Map.of("element-6066-11e4-a52e-4f735466cecf", (String) id);
   }
 
   private String cssEscape(String using) {
     using = using.replaceAll("([\\s'\"\\\\#.:;,!?+<>=~*^$|%&@`{}\\-\\/\\[\\]\\(\\)])", "\\\\$1");
     if (using.length() > 0 && Character.isDigit(using.charAt(0))) {
-      using = "\\" + (30 + Integer.parseInt(using.substring(0,1))) + " " + using.substring(1);
+      using = "\\" + (30 + Integer.parseInt(using.substring(0, 1))) + " " + using.substring(1);
     }
     return using;
   }

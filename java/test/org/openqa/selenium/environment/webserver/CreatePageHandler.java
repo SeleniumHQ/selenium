@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.environment.webserver;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -29,8 +31,6 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Simple API to create pages on server.

@@ -61,8 +61,8 @@ public class HttpRequest extends HttpMessage<HttpRequest> {
    */
   public HttpRequest addQueryParameter(String name, String value) {
     queryParameters.put(
-        Require.nonNull("Name", name),
-        Require.nonNull("Value", value));
+      Require.nonNull("Name", name),
+      Require.nonNull("Value", value));
     return this;
   }
 

@@ -55,10 +55,10 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
   // associated till the session gets created.
   private final Map<ThreadKey, List<LogRecord>> perThreadTempRecords;
   private final Formatter formatter;
-  private Map<ThreadKey, SessionId> threadToSessionMap;
-  private Map<SessionId, ThreadKey> sessionToThreadMap;
-  private SessionLogsToFileRepository logFileRepository;
-  private int capacity;
+  private final Map<ThreadKey, SessionId> threadToSessionMap;
+  private final Map<SessionId, ThreadKey> sessionToThreadMap;
+  private final SessionLogsToFileRepository logFileRepository;
+  private final int capacity;
   private boolean storeLogsOnSessionQuit = false;
 
   private Level serverLogLevel = Level.INFO;
@@ -66,23 +66,23 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
   /**
    * New handler keeping track of log records per session.
    *
-   * @param capacity     The capacity
-   * @param formatter    Formatter to use when retrieving log messages.
+   * @param capacity          The capacity
+   * @param formatter         Formatter to use when retrieving log messages.
    * @param captureLogsOnQuit Whether to enable log capture on quit.
    */
-  public PerSessionLogHandler(
+  PerSessionLogHandler(
     int capacity,
     Formatter formatter,
     boolean captureLogsOnQuit) {
     this.capacity = capacity;
     this.formatter = formatter;
-    this.storeLogsOnSessionQuit = captureLogsOnQuit;
-    this.perSessionRecords = new HashMap<>();
-    this.perThreadTempRecords = new HashMap<>();
-    this.threadToSessionMap = new HashMap<>();
-    this.sessionToThreadMap = new HashMap<>();
-    this.logFileRepository = new SessionLogsToFileRepository();
-    this.perSessionDriverEntries = new HashMap<>();
+    storeLogsOnSessionQuit = captureLogsOnQuit;
+    perSessionRecords = new HashMap<>();
+    perThreadTempRecords = new HashMap<>();
+    threadToSessionMap = new HashMap<>();
+    sessionToThreadMap = new HashMap<>();
+    logFileRepository = new SessionLogsToFileRepository();
+    perSessionDriverEntries = new HashMap<>();
   }
 
 
@@ -168,7 +168,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
    * @return String RC logs for the sessionId
    * @throws IOException when the elves go bad
    */
-  public synchronized String getLog(SessionId sessionId) throws IOException {
+  synchronized String getLog(SessionId sessionId) throws IOException {
     // TODO(chandra): Provide option to clear logs after getLog()
     String logs = formattedRecords(sessionId);
     logs = "\n<RC_Logs RC_Session_ID=" + sessionId + ">\n" + logs
@@ -220,8 +220,9 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
   public synchronized LogEntries getSessionLog(SessionId sessionId) throws IOException {
     List<LogEntry> entries = new ArrayList<>();
     for (LogRecord record : records(sessionId)) {
-      if (record.getLevel().intValue() >= serverLogLevel.intValue())
+      if (record.getLevel().intValue() >= serverLogLevel.intValue()) {
         entries.add(new LogEntry(record.getLevel(), record.getMillis(), record.getMessage()));
+      }
     }
     return new LogEntries(entries);
   }
@@ -229,9 +230,9 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
   /**
    * Fetches and stores available logs from the given session and driver.
    *
-   *  @param sessionId The id of the session.
-   *  @param driver The driver to get the logs from.
-   *  @throws IOException If there was a problem reading from file.
+   * @param sessionId The id of the session.
+   * @param driver    The driver to get the logs from.
+   * @throws IOException If there was a problem reading from file.
    */
   public synchronized void fetchAndStoreLogsFromDriver(SessionId sessionId, WebDriver driver)
     throws IOException {
@@ -314,7 +315,7 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
   }
 
   private String formattedRecords(SessionId sessionId) throws IOException {
-    final StringWriter writer;
+    StringWriter writer;
 
     writer = new StringWriter();
     for (LogRecord record : records(sessionId)) {
@@ -329,8 +330,8 @@ public class PerSessionLogHandler extends java.util.logging.Handler {
     private final Long id;
 
     ThreadKey() {
-      this.name = Thread.currentThread().toString();
-      this.id = Thread.currentThread().getId();
+      name = Thread.currentThread().toString();
+      id = Thread.currentThread().getId();
     }
 
     @Override

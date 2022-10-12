@@ -17,16 +17,17 @@
 
 package org.openqa.selenium.docker.v1_41;
 
+import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import org.openqa.selenium.docker.ContainerId;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import static org.openqa.selenium.docker.v1_41.V141Docker.DOCKER_API_VERSION;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 class IsContainerPresent {
+
   private final HttpHandler client;
 
   public IsContainerPresent(HttpHandler client) {

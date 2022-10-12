@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.grid.distributor;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.util.Collections.singletonMap;
+
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.SessionRequest;
@@ -30,9 +33,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import java.io.UncheckedIOException;
 import java.util.Map;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.util.Collections.singletonMap;
-
 class CreateSession implements HttpHandler {
 
   private final Distributor distributor;
@@ -45,7 +45,9 @@ class CreateSession implements HttpHandler {
   public HttpResponse execute(HttpRequest req) throws UncheckedIOException {
     SessionRequest request = Contents.fromJson(req, SessionRequest.class);
 
-    Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(request);
+    Either<SessionNotCreatedException, CreateSessionResponse>
+      result =
+      distributor.newSession(request);
 
     HttpResponse res = new HttpResponse();
     Map<String, Object> value;

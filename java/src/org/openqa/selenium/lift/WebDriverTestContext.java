@@ -39,11 +39,11 @@ import java.util.Collection;
  */
 public class WebDriverTestContext implements TestContext {
 
-  private WebDriver driver;
   private final Clock clock;
   private final Sleeper sleeper;
+  private final WebDriver driver;
 
-  public WebDriverTestContext(WebDriver driver) {
+  WebDriverTestContext(WebDriver driver) {
     this(driver, Clock.systemDefaultZone(), Sleeper.SYSTEM_SLEEPER);
   }
 
@@ -70,20 +70,20 @@ public class WebDriverTestContext implements TestContext {
 
   @Override
   public void assertPresenceOf(
-      Matcher<Integer> cardinalityConstraint,
-      Finder<WebElement, WebDriver> finder) {
+    Matcher<Integer> cardinalityConstraint,
+    Finder<WebElement, WebDriver> finder) {
     Collection<WebElement> foundElements = finder.findFrom(driver);
     if (!cardinalityConstraint.matches(foundElements.size())) {
       Description description = new StringDescription();
       description.appendText("\nExpected: ")
-          .appendDescriptionOf(cardinalityConstraint)
-          .appendText(" ")
-          .appendDescriptionOf(finder)
-          .appendText("\n     got: ")
-          .appendValue(foundElements.size())
-          .appendText(" ")
-          .appendDescriptionOf(finder)
-          .appendText("\n");
+        .appendDescriptionOf(cardinalityConstraint)
+        .appendText(" ")
+        .appendDescriptionOf(finder)
+        .appendText("\n     got: ")
+        .appendValue(foundElements.size())
+        .appendText(" ")
+        .appendDescriptionOf(finder)
+        .appendText("\n");
 
       failWith(description.toString());
     }
@@ -131,26 +131,26 @@ public class WebDriverTestContext implements TestContext {
   }
 
   @Override
-  public void waitFor(final Finder<WebElement, WebDriver> finder, final long timeoutMillis) {
-    final ExpectedCondition<Boolean> elementsDisplayedPredicate = driver ->
-        finder.findFrom(driver).stream().anyMatch(WebElement::isDisplayed);
+  public void waitFor(Finder<WebElement, WebDriver> finder, long timeoutMillis) {
+    ExpectedCondition<Boolean> elementsDisplayedPredicate = driver ->
+      finder.findFrom(driver).stream().anyMatch(WebElement::isDisplayed);
 
     final long defaultSleepTimeoutMillis = 500;
-    final long sleepTimeout = (timeoutMillis > defaultSleepTimeoutMillis)
-        ? defaultSleepTimeoutMillis : timeoutMillis / 2;
+    long sleepTimeout = (timeoutMillis > defaultSleepTimeoutMillis)
+                        ? defaultSleepTimeoutMillis : timeoutMillis / 2;
 
     Wait<WebDriver> wait =
-        new WebDriverWait(
-            driver,
-            Duration.ofMillis(timeoutMillis),
-            Duration.ofMillis(sleepTimeout),
-            clock,
-            sleeper) {
-          @Override
-          protected RuntimeException timeoutException(String message, Throwable lastException) {
-            throw new AssertionError("Element was not rendered within " + timeoutMillis + "ms");
-          }
-        };
+      new WebDriverWait(
+        driver,
+        Duration.ofMillis(timeoutMillis),
+        Duration.ofMillis(sleepTimeout),
+        clock,
+        sleeper) {
+        @Override
+        protected RuntimeException timeoutException(String message, Throwable lastException) {
+          throw new AssertionError("Element was not rendered within " + timeoutMillis + "ms");
+        }
+      };
     wait.until(elementsDisplayedPredicate);
   }
 }

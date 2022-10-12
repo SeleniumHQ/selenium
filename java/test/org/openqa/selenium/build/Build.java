@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class Build {
+
   private static final Logger log = Logger.getLogger(Build.class.getName());
 
   private final List<String> targets = new ArrayList<>();
@@ -89,6 +90,7 @@ public class Build {
   }
 
   private static class BuildWatcher extends Thread {
+
     private final Process buildProcess;
 
     private BuildWatcher(Process buildProcess) {
@@ -99,9 +101,9 @@ public class Build {
     @Override
     public void run() {
       try (BufferedReader buildOutput = new BufferedReader(
-          new InputStreamReader(buildProcess.getInputStream(), Charset.defaultCharset()), 8192)) {
+        new InputStreamReader(buildProcess.getInputStream(), Charset.defaultCharset()), 8192)) {
         for (String s = buildOutput.readLine(); s != null && !interrupted(); s =
-            buildOutput.readLine()) {
+          buildOutput.readLine()) {
           try {
             System.out.println(">>> " + s);
           } catch (Throwable ignored) {

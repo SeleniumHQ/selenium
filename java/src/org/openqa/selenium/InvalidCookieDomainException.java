@@ -23,6 +23,7 @@ package org.openqa.selenium;
  * @see org.openqa.selenium.WebDriver.Options#addCookie(Cookie)
  */
 public class InvalidCookieDomainException extends WebDriverException {
+
   public InvalidCookieDomainException() {
   }
 

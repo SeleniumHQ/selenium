@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.sessionqueue;
 
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.RequestId;
 import org.openqa.selenium.internal.Either;
@@ -30,11 +34,8 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.UncheckedIOException;
 
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-
 class SessionCreated implements HttpHandler {
+
   private final Tracer tracer;
   private final NewSessionQueue queue;
   private final RequestId requestId;

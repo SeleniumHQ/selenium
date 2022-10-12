@@ -20,13 +20,6 @@ package org.openqa.selenium.bidi;
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.devtools.CdpEndpointFinder;
-import org.openqa.selenium.devtools.CdpInfo;
-import org.openqa.selenium.devtools.CdpVersionFinder;
-import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.devtools.SeleniumCdpConnection;
-import org.openqa.selenium.devtools.noop.NoOpCdpInfo;
 import org.openqa.selenium.remote.AugmenterProvider;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -36,7 +29,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
 @AutoService(AugmenterProvider.class)
 public class BiDiProvider implements AugmenterProvider<HasBiDi> {

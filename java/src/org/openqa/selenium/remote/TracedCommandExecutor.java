@@ -45,7 +45,8 @@ public class TracedCommandExecutor implements CommandExecutor {
       Map<String, ?> parameters = command.getParameters();
       if (parameters != null && parameters.size() > 0) {
         for (Map.Entry<String, ?> parameter : parameters.entrySet()) {
-          commandSpan.setAttribute("parameter." + parameter.getKey(), Objects.toString(parameter.getValue(), "null"));
+          commandSpan.setAttribute("parameter." + parameter.getKey(),
+                                   Objects.toString(parameter.getValue(), "null"));
         }
       }
       return delegate.execute(command);

@@ -30,6 +30,7 @@ import java.io.UncheckedIOException;
  * read characters in the input buffer.
  */
 class Input {
+
   public static final char EOF = (char) -1;
   // the number of chars to buffer
   private static final int BUFFER_SIZE = 4096;

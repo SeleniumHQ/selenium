@@ -29,6 +29,10 @@ public class ContainerId {
     this.id = Require.nonNull("Container id", id);
   }
 
+  private static ContainerId fromJson(String raw) {
+    return new ContainerId(raw);
+  }
+
   @Override
   public String toString() {
     return id;
@@ -50,9 +54,5 @@ public class ContainerId {
 
   private String toJson() {
     return id;
-  }
-
-  private static ContainerId fromJson(String raw) {
-    return new ContainerId(raw);
   }
 }

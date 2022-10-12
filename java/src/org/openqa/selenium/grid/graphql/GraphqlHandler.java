@@ -17,17 +17,20 @@
 
 package org.openqa.selenium.grid.graphql;
 
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static org.openqa.selenium.json.Json.JSON_UTF_8;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
+import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
+import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
+import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import graphql.ExecutionInput;
-import graphql.ExecutionResult;
-import graphql.GraphQL;
-import graphql.execution.preparsed.PreparsedDocumentEntry;
-import graphql.schema.GraphQLSchema;
-import graphql.schema.idl.RuntimeWiring;
-import graphql.schema.idl.SchemaGenerator;
-import graphql.schema.idl.SchemaParser;
-import graphql.schema.idl.TypeDefinitionRegistry;
+
 import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.internal.Require;
@@ -43,6 +46,16 @@ import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import graphql.ExecutionInput;
+import graphql.ExecutionResult;
+import graphql.GraphQL;
+import graphql.execution.preparsed.PreparsedDocumentEntry;
+import graphql.schema.GraphQLSchema;
+import graphql.schema.idl.RuntimeWiring;
+import graphql.schema.idl.SchemaGenerator;
+import graphql.schema.idl.SchemaParser;
+import graphql.schema.idl.TypeDefinitionRegistry;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -51,20 +64,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static org.openqa.selenium.json.Json.JSON_UTF_8;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-import static org.openqa.selenium.remote.http.HttpMethod.OPTIONS;
-import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_REQUEST_EVENT;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE;
-import static org.openqa.selenium.remote.tracing.Tags.HTTP_RESPONSE_EVENT;
-
 public class GraphqlHandler implements HttpHandler {
 
-  public static final String GRID_SCHEMA = "/org/openqa/selenium/grid/graphql/selenium-grid-schema.graphqls";
+  public static final String
+    GRID_SCHEMA =
+    "/org/openqa/selenium/grid/graphql/selenium-grid-schema.graphqls";
   public static final Json JSON = new Json();
   private final Tracer tracer;
   private final Distributor distributor;
@@ -116,7 +120,7 @@ public class GraphqlHandler implements HttpHandler {
 
       Map<String, EventAttributeValue> attributeMap = new HashMap<>();
       attributeMap.put(AttributeKey.LOGGER_CLASS.getKey(),
-        EventAttribute.setValue(getClass().getName()));
+                       EventAttribute.setValue(getClass().getName()));
 
       HTTP_REQUEST.accept(span, req);
       HTTP_REQUEST_EVENT.accept(attributeMap, req);
@@ -141,8 +145,8 @@ public class GraphqlHandler implements HttpHandler {
       String query = (String) inputs.get("query");
       @SuppressWarnings("unchecked")
       Map<String, Object> variables = inputs.get("variables") instanceof Map ?
-        (Map<String, Object>) inputs.get("variables") :
-        new HashMap<>();
+                                      (Map<String, Object>) inputs.get("variables") :
+                                      new HashMap<>();
 
       ExecutionInput executionInput = ExecutionInput.newExecutionInput(query)
         .variables(variables)
@@ -169,7 +173,7 @@ public class GraphqlHandler implements HttpHandler {
       HTTP_RESPONSE_EVENT.accept(attributeMap, response);
 
       attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
-        EventAttribute.setValue("Error while executing the query"));
+                       EventAttribute.setValue("Error while executing the query"));
       span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
 
       span.setAttribute(AttributeKey.ERROR.getKey(), true);

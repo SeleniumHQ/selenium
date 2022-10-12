@@ -18,7 +18,6 @@
 package org.openqa.selenium.bidi;
 
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -26,9 +25,9 @@ import java.util.function.Function;
 public class Event<X> {
 
   private final String method;
-  private final Function<Map<String,Object>, X> mapper;
+  private final Function<Map<String, Object>, X> mapper;
 
-  public Event(String method, Function<Map<String,Object>, X> mapper) {
+  public Event(String method, Function<Map<String, Object>, X> mapper) {
     this.method = Require.nonNull("Event method", method);
     this.mapper = Require.nonNull("Result mapper", mapper);
   }
@@ -37,7 +36,7 @@ public class Event<X> {
     return method;
   }
 
-  public Function<Map<String,Object>, X> getMapper() {
+  public Function<Map<String, Object>, X> getMapper() {
     return mapper;
   }
 

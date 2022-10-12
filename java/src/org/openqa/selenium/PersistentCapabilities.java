@@ -80,7 +80,8 @@ public class PersistentCapabilities implements Capabilities {
 
   @Override
   public Set<String> getCapabilityNames() {
-    return Stream.concat(caps.getCapabilityNames().stream(), overrides.getCapabilityNames().stream())
+    return Stream.concat(caps.getCapabilityNames().stream(),
+                         overrides.getCapabilityNames().stream())
       .collect(toUnmodifiableSet());
   }
 
@@ -88,7 +89,8 @@ public class PersistentCapabilities implements Capabilities {
   private <T, K, U> Collector<T, ?, Map<K, U>> toUnmodifiableMap(
     Function<? super T, ? extends K> keyMapper,
     Function<? super T, ? extends U> valueMapper) {
-    return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper), Collections::unmodifiableMap);
+    return Collectors.collectingAndThen(Collectors.toMap(keyMapper, valueMapper),
+                                        Collections::unmodifiableMap);
   }
 
   // Needed, since we're dependent on Java 8 as a minimum version

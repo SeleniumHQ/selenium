@@ -88,8 +88,11 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       Object rawOptions = source.getCapability(FIREFOX_OPTIONS);
       if (rawOptions != null) {
         // If `source` contains the keys we care about, then make sure they're good.
-        Require.stateCondition(rawOptions instanceof Map, "Expected options to be a map: %s", rawOptions);
-        @SuppressWarnings("unchecked") Map<String, Object> sourceOptions = (Map<String, Object>) rawOptions;
+        Require.stateCondition(rawOptions instanceof Map, "Expected options to be a map: %s",
+                               rawOptions);
+        @SuppressWarnings("unchecked") Map<String, Object>
+          sourceOptions =
+          (Map<String, Object>) rawOptions;
         Map<String, Object> options = new TreeMap<>();
         for (Keys key : Keys.values()) {
           key.amend(sourceOptions, options);
@@ -372,7 +375,8 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     Require.nonNull("Capabilities to merge", capabilities);
     FirefoxOptions newInstance = new FirefoxOptions();
     getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
-    capabilities.getCapabilityNames().forEach(name -> newInstance.setCapability(name, capabilities.getCapability(name)));
+    capabilities.getCapabilityNames()
+      .forEach(name -> newInstance.setCapability(name, capabilities.getCapability(name)));
     newInstance.mirror(this);
     if (capabilities instanceof FirefoxOptions) {
       newInstance.mirror((FirefoxOptions) capabilities);
@@ -413,11 +417,13 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         Object rawFirst = first.getOrDefault(key(), new ArrayList<>());
-        Require.stateCondition(rawFirst instanceof List, "Args are of unexpected type: %s", rawFirst);
+        Require.stateCondition(rawFirst instanceof List, "Args are of unexpected type: %s",
+                               rawFirst);
         @SuppressWarnings("unchecked") List<String> firstList = (List<String>) rawFirst;
 
         Object rawSecond = second.getOrDefault(key(), new ArrayList<>());
-        Require.stateCondition(rawSecond instanceof List, "Args are of unexpected type: %s", rawSecond);
+        Require.stateCondition(rawSecond instanceof List, "Args are of unexpected type: %s",
+                               rawSecond);
         @SuppressWarnings("unchecked") List<String> secondList = (List<String>) rawSecond;
 
         List<String> args = new ArrayList<>(firstList);
@@ -474,12 +480,18 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         Object rawFirst = first.getOrDefault(key(), new TreeMap<>());
-        Require.stateCondition(rawFirst instanceof Map, "Env vars are of unexpected type: %s", rawFirst);
-        @SuppressWarnings("unchecked") Map<String, String> firstPrefs = (Map<String, String>) rawFirst;
+        Require.stateCondition(rawFirst instanceof Map, "Env vars are of unexpected type: %s",
+                               rawFirst);
+        @SuppressWarnings("unchecked") Map<String, String>
+          firstPrefs =
+          (Map<String, String>) rawFirst;
 
         Object rawSecond = second.getOrDefault(key(), new TreeMap<>());
-        Require.stateCondition(rawSecond instanceof Map, "Env vars are of unexpected type: %s", rawSecond);
-        @SuppressWarnings("unchecked") Map<String, String> secondPrefs = (Map<String, String>) rawSecond;
+        Require.stateCondition(rawSecond instanceof Map, "Env vars are of unexpected type: %s",
+                               rawSecond);
+        @SuppressWarnings("unchecked") Map<String, String>
+          secondPrefs =
+          (Map<String, String>) rawSecond;
 
         Map<String, String> value = new TreeMap<>(firstPrefs);
         value.putAll(secondPrefs);
@@ -531,12 +543,18 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
       @Override
       public Object mirror(Map<String, Object> first, Map<String, Object> second) {
         Object rawFirst = first.getOrDefault(key(), new TreeMap<>());
-        Require.stateCondition(rawFirst instanceof Map, "Prefs are of unexpected type: " + rawFirst);
-        @SuppressWarnings("unchecked") Map<String, Object> firstPrefs = (Map<String, Object>) rawFirst;
+        Require.stateCondition(rawFirst instanceof Map,
+                               "Prefs are of unexpected type: " + rawFirst);
+        @SuppressWarnings("unchecked") Map<String, Object>
+          firstPrefs =
+          (Map<String, Object>) rawFirst;
 
         Object rawSecond = second.getOrDefault(key(), new TreeMap<>());
-        Require.stateCondition(rawSecond instanceof Map, "Prefs are of unexpected type: " + rawSecond);
-        @SuppressWarnings("unchecked") Map<String, Object> secondPrefs = (Map<String, Object>) rawSecond;
+        Require.stateCondition(rawSecond instanceof Map,
+                               "Prefs are of unexpected type: " + rawSecond);
+        @SuppressWarnings("unchecked") Map<String, Object>
+          secondPrefs =
+          (Map<String, Object>) rawSecond;
 
         Map<String, Object> value = new TreeMap<>(firstPrefs);
         value.putAll(secondPrefs);

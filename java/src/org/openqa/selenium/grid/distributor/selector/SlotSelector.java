@@ -23,10 +23,12 @@ import org.openqa.selenium.grid.data.SlotId;
 
 import java.util.Set;
 
-/** Used to determine which {@link org.openqa.selenium.grid.node.Node} to
+/**
+ * Used to determine which {@link org.openqa.selenium.grid.node.Node} to
  * send a particular New Session request to.
  */
 @FunctionalInterface
 public interface SlotSelector {
+
   Set<SlotId> selectSlot(Capabilities capabilities, Set<NodeStatus> nodes);
 }

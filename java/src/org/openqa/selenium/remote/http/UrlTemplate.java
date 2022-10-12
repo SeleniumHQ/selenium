@@ -54,7 +54,8 @@ public class UrlTemplate {
         names.add(groupNameMatcher.group(1));
       }
 
-      fragments.add(new Matches(Pattern.compile(Matcher.quoteReplacement(toCompile)), names.build()));
+      fragments.add(
+        new Matches(Pattern.compile(Matcher.quoteReplacement(toCompile)), names.build()));
     }
     this.template = fragments.build();
   }
@@ -87,25 +88,6 @@ public class UrlTemplate {
     return new Match(matchAgainst, params.build());
   }
 
-  @SuppressWarnings("InnerClassMayBeStatic")
-  public class Match {
-    private final String url;
-    private final Map<String, String> parameters;
-
-    private Match(String url, Map<String, String> parameters) {
-      this.url = url;
-      this.parameters = ImmutableMap.copyOf(parameters);
-    }
-
-    public String getUrl() {
-      return url;
-    }
-
-    public Map<String, String> getParameters() {
-      return parameters;
-    }
-  }
-
   private static class Matches {
 
     private final Pattern pattern;
@@ -118,6 +100,25 @@ public class UrlTemplate {
 
     public Matcher matcher(String fragment) {
       return pattern.matcher(fragment);
+    }
+  }
+
+  public class Match {
+
+    private final String url;
+    private final Map<String, String> parameters;
+
+    private Match(String url, Map<String, String> parameters) {
+      this.url = url;
+      this.parameters = Map.copyOf(parameters);
+    }
+
+    public String getUrl() {
+      return url;
+    }
+
+    public Map<String, String> getParameters() {
+      return parameters;
     }
   }
 }

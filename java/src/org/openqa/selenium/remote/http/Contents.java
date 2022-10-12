@@ -127,7 +127,7 @@ public class Contents {
 
   public static <T> T fromJson(HttpMessage<?> message, Type typeOfT) {
     try (Reader reader = reader(message);
-        JsonInput input = JSON.newInput(reader)) {
+         JsonInput input = JSON.newInput(reader)) {
       return input.read(typeOfT);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
@@ -140,9 +140,9 @@ public class Contents {
 
   private static final class MemoizedSupplier implements Supplier<InputStream> {
 
+    private final Supplier<InputStream> delegate;
     private volatile boolean initialized;
     private volatile FileBackedOutputStream fos;
-    private Supplier<InputStream> delegate;
 
     private MemoizedSupplier(Supplier<InputStream> delegate) {
       this.delegate = delegate;
@@ -154,14 +154,14 @@ public class Contents {
         synchronized (this) {
           if (!initialized) {
             try (InputStream is = delegate.get()) {
-              this.fos = new FileBackedOutputStream(3 * 1024 * 1024, true);
+              fos = new FileBackedOutputStream(3 * 1024 * 1024, true);
               ByteStreams.copy(is, fos);
               initialized = true;
             } catch (IOException e) {
               throw new UncheckedIOException(e);
             } finally {
               try {
-                this.fos.close();
+                fos.close();
               } catch (IOException ignore) {
               }
             }

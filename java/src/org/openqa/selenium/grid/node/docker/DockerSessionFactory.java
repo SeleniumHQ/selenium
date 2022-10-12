@@ -17,6 +17,13 @@
 
 package org.openqa.selenium.grid.node.docker;
 
+import static java.util.Optional.ofNullable;
+import static org.openqa.selenium.docker.ContainerConfig.image;
+import static org.openqa.selenium.remote.Dialect.W3C;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -79,13 +86,6 @@ import java.util.Optional;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.util.Optional.ofNullable;
-import static org.openqa.selenium.docker.ContainerConfig.image;
-import static org.openqa.selenium.remote.Dialect.W3C;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 public class DockerSessionFactory implements SessionFactory {
 
@@ -195,8 +195,8 @@ public class DockerSessionFactory implements SessionFactory {
       LOG.info(String.format("Server is ready (container id: %s)", container.getId()));
 
       Command command = new Command(
-          null,
-          DriverCommand.NEW_SESSION(sessionRequest.getDesiredCapabilities()));
+        null,
+        DriverCommand.NEW_SESSION(sessionRequest.getDesiredCapabilities()));
       ProtocolHandshake.Result result;
       Response response;
       try {
@@ -357,7 +357,7 @@ public class DockerSessionFactory implements SessionFactory {
   }
 
   private Map<String, String> getVideoContainerEnvVars(Capabilities sessionRequestCapabilities,
-    String containerIp) {
+                                                       String containerIp) {
     Map<String, String> envVars = new HashMap<>();
     envVars.put("DISPLAY_CONTAINER_NAME", containerIp);
     Optional<Dimension> screenResolution =
@@ -373,7 +373,7 @@ public class DockerSessionFactory implements SessionFactory {
     Optional<Object> timeZone =
       ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
     if (timeZone.isPresent()) {
-      String tz =  timeZone.get().toString();
+      String tz = timeZone.get().toString();
       if (Arrays.asList(TimeZone.getAvailableIDs()).contains(tz)) {
         return TimeZone.getTimeZone(tz);
       }
@@ -395,7 +395,7 @@ public class DockerSessionFactory implements SessionFactory {
         return new Dimension(screenWidth, screenHeight);
       } else {
         LOG.warning("One of the values provided for screenResolution is negative, " +
-          "defaults will be used. Received value: " + screenResolution);
+                    "defaults will be used. Received value: " + screenResolution);
       }
     } catch (Exception e) {
       LOG.warning("Values provided for screenResolution are not valid integers or " +
@@ -425,8 +425,8 @@ public class DockerSessionFactory implements SessionFactory {
 
   private void waitForServerToStart(HttpClient client, Duration duration) {
     Wait<Object> wait = new FluentWait<>(new Object())
-        .withTimeout(duration)
-        .ignoring(UncheckedIOException.class);
+      .withTimeout(duration)
+      .ignoring(UncheckedIOException.class);
 
     wait.until(obj -> {
       HttpResponse response = client.execute(new HttpRequest(GET, "/status"));

@@ -30,6 +30,10 @@ public class RequestId {
     this.uuid = Require.nonNull("Request id", uuid);
   }
 
+  private static RequestId fromJson(UUID id) {
+    return new RequestId(id);
+  }
+
   public UUID toUuid() {
     return uuid;
   }
@@ -56,10 +60,6 @@ public class RequestId {
 
   private Object toJson() {
     return uuid;
-  }
-
-  private static RequestId fromJson(UUID id) {
-    return new RequestId(id);
   }
 
 }

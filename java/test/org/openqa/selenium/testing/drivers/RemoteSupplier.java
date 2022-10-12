@@ -29,11 +29,11 @@ import java.util.function.Supplier;
 
 class RemoteSupplier implements Supplier<WebDriver> {
 
-  private static OutOfProcessSeleniumServer server = new OutOfProcessSeleniumServer();
+  private static final OutOfProcessSeleniumServer server = new OutOfProcessSeleniumServer();
   private static volatile boolean started;
-  private Capabilities desiredCapabilities;
+  private final Capabilities desiredCapabilities;
 
-  public RemoteSupplier(Capabilities desiredCapabilities) {
+  RemoteSupplier(Capabilities desiredCapabilities) {
     this.desiredCapabilities = desiredCapabilities;
   }
 

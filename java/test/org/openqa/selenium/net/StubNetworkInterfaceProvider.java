@@ -30,6 +30,7 @@ import java.util.Arrays;
  * localhost/127.0.0.1
  */
 class StubNetworkInterfaceProvider {
+
   private StubNetworkInterfaceProvider() {
   }
 
@@ -68,24 +69,23 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            newInterface("wlan0", inetAddress("chunky.local", "169.254.8.180")),
-            newInterface("eth0",
-                inetAddress("fe80:0:0:0:21e:33ff:fe24:6295%2"),
-                inetAddress("192.168.1.13")),
-            newInterface("lo",
-                inetAddress("localhost", "0:0:0:0:0:0:0:1%1"),
-                inetAddress("localhost", "127.0.0.3")));
+          newInterface("wlan0", inetAddress("chunky.local", "169.254.8.180")),
+          newInterface("eth0",
+                       inetAddress("fe80:0:0:0:21e:33ff:fe24:6295%2"),
+                       inetAddress("192.168.1.13")),
+          newInterface("lo",
+                       inetAddress("localhost", "0:0:0:0:0:0:0:1%1"),
+                       inetAddress("localhost", "127.0.0.3")));
       }
 
       @Override
       public NetworkInterface getLoInterface() {
         return newInterface("lo",
-            inetAddress("localhost", "0:0:0:0:0:0:0:1%1"),
-            inetAddress("localhost", "127.0.0.3")); // Just for fun set to .3
+                            inetAddress("localhost", "0:0:0:0:0:0:0:1%1"),
+                            inetAddress("localhost", "127.0.0.3")); // Just for fun set to .3
       }
     };
   }
-
 
 
   public static NetworkInterfaceProvider getWindowsXpWithIp4Only() {
@@ -93,8 +93,8 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            newInterface("lo", inetAddress("localXhost", "127.0.0.4")),
-            newInterface("eth0", inetAddress("myip4.mydomain.com", "169.254.8.182")));
+          newInterface("lo", inetAddress("localXhost", "127.0.0.4")),
+          newInterface("eth0", inetAddress("myip4.mydomain.com", "169.254.8.182")));
       }
 
       @Override
@@ -112,15 +112,16 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            newInterface("eth2", inetAddress("woz-woz23", "157.120.190.200")),
-            newInterface("eth0", inetAddress("woz-woz23-eth0", "10.10.8.101")),
-            newInterface("lo", inetAddress("localhost.localdomain", "127.0.0.2")));
+          newInterface("eth2", inetAddress("woz-woz23", "157.120.190.200")),
+          newInterface("eth0", inetAddress("woz-woz23-eth0", "10.10.8.101")),
+          newInterface("lo", inetAddress("localhost.localdomain", "127.0.0.2")));
       }
 
       @Override
       public NetworkInterface getLoInterface() {
         return newInterface("lo",
-            inetAddress("localhost.localdomain", "127.0.0.2")); // Just for fun set to .2
+                            inetAddress("localhost.localdomain",
+                                        "127.0.0.2")); // Just for fun set to .2
       }
     };
   }
@@ -132,15 +133,15 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            newInterface("bge1", inetAddress("woz-woz01-adm", "10.100.8.99")),
-            newInterface("bge1", inetAddress("157.120.190.198")),
-            newInterface("lo", inetAddress("localhost", "127.0.0.1")));
+          newInterface("bge1", inetAddress("woz-woz01-adm", "10.100.8.99")),
+          newInterface("bge1", inetAddress("157.120.190.198")),
+          newInterface("lo", inetAddress("localhost", "127.0.0.1")));
       }
 
       @Override
       public NetworkInterface getLoInterface() {
         return newInterface("lo",
-            inetAddress("localhost", "127.0.0.1")); // Just for fun set to .2
+                            inetAddress("localhost", "127.0.0.1")); // Just for fun set to .2
       }
     };
   }
@@ -152,19 +153,20 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            newInterface("eth0",
-                inetAddress("fe80:0:0:1:215:41ff:fe3a:1882%2", "e80:0:0:1:215:41ff:fe3a:1882%2"),
-                inetAddress("157.120.171.97")),
-            newInterface("lo",
-                inetAddress("p6-localhost", "0:0:0:0:0:0:0:1%1"),
-                inetAddress("playwoz", "127.0.0.1")));
+          newInterface("eth0",
+                       inetAddress("fe80:0:0:1:215:41ff:fe3a:1882%2",
+                                   "e80:0:0:1:215:41ff:fe3a:1882%2"),
+                       inetAddress("157.120.171.97")),
+          newInterface("lo",
+                       inetAddress("p6-localhost", "0:0:0:0:0:0:0:1%1"),
+                       inetAddress("playwoz", "127.0.0.1")));
       }
 
       @Override
       public NetworkInterface getLoInterface() {
         return newInterface("lo",
-            inetAddress("p6-localhost", "0:0:0:0:0:0:0:1%1"),
-            inetAddress("playwoz", "127.0.0.1"));
+                            inetAddress("p6-localhost", "0:0:0:0:0:0:0:1%1"),
+                            inetAddress("playwoz", "127.0.0.1"));
       }
     };
   }
@@ -174,19 +176,19 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            newInterface("vmnet8", inetAddress("192.168.4.1")),
-            newInterface("vmnet1", inetAddress("192.168.166.1")),
-            newInterface("en1",
-                inetAddress("somehost.subd.test.com", "172.12.8.7"),
-                inetAddress("2620:0:1042:13:3bb0:35fe:fe7c:629c"),
-                inetAddress("fe80:0:0:0:3bb0:35fe:fe7c:629c%6")),
-            newInterface("en0",
-                inetAddress("someotherhost.subd.test.com", "172.12.8.9"),
-                inetAddress("fe80:0:0:0:6e6d:63ff:fe8c:bd10%4")),
-            newInterface("lo0",
-                inetAddress("localhost", "127.0.0.1"),
-                inetAddress("somemachine.local", "fe80:0:0:0:0:0:0:1%1"),
-                inetAddress("localhost", "0:0:0:0:0:0:0:1")));
+          newInterface("vmnet8", inetAddress("192.168.4.1")),
+          newInterface("vmnet1", inetAddress("192.168.166.1")),
+          newInterface("en1",
+                       inetAddress("somehost.subd.test.com", "172.12.8.7"),
+                       inetAddress("2620:0:1042:13:3bb0:35fe:fe7c:629c"),
+                       inetAddress("fe80:0:0:0:3bb0:35fe:fe7c:629c%6")),
+          newInterface("en0",
+                       inetAddress("someotherhost.subd.test.com", "172.12.8.9"),
+                       inetAddress("fe80:0:0:0:6e6d:63ff:fe8c:bd10%4")),
+          newInterface("lo0",
+                       inetAddress("localhost", "127.0.0.1"),
+                       inetAddress("somemachine.local", "fe80:0:0:0:0:0:0:1%1"),
+                       inetAddress("localhost", "0:0:0:0:0:0:0:1")));
       }
 
       @Override
@@ -205,11 +207,11 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            newInterface("lo0", inetAddress("localhost.apache.org", "127.0.0.1")),
-            newInterface("bge1", inetAddress("192.168.0.4", "192.168.0.4")),
-            newInterface("nfe1",
-                inetAddress("minotaur-2.apache.org", "140.211.11.10"),
-                inetAddress("minotaur.apache.org", "140.211.11.9")));
+          newInterface("lo0", inetAddress("localhost.apache.org", "127.0.0.1")),
+          newInterface("bge1", inetAddress("192.168.0.4", "192.168.0.4")),
+          newInterface("nfe1",
+                       inetAddress("minotaur-2.apache.org", "140.211.11.10"),
+                       inetAddress("minotaur.apache.org", "140.211.11.9")));
       }
 
       // This method should only return an interface if it's named exactly "lo"
@@ -227,36 +229,37 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            getLoInterface(),
-            newInterface("net0"),
-            newInterface("net1"),
-            newInterface("ppp0"),
-            newInterface("eth0"),
-            newInterface("eth1"),
-            newInterface("ppp1"),
-            newInterface("net2"),
-            newInterface("eth2"),
-            newInterface("net3", inetAddress("fe80:0:0:0:0:100:7", "fe80:0:0:0:0:10::")),
-            newInterface("eth3",
-                inetAddress("woz134.wozms", "fe80:0:0:0:4d74::"),
-                inetAddress("woz134", "10.0.0.108")),
-            newInterface("net3", inetAddress("fe80:0:0:0:0:100:7", "fe80:0:0:0:0:10::")),
-            newInterface("net5", inetAddress("fe80:0:0:0:0:5efe", "fe80:0:0:0:0:5e::")),
-            newInterface("eth4"),
-            newInterface("net6"),
-            newInterface("net7"),
-            newInterface("eth5"),
-            newInterface("eth6"),
-            newInterface("eth7"),
-            newInterface("eth8"),
-            newInterface("eth9")
-            );
+          getLoInterface(),
+          newInterface("net0"),
+          newInterface("net1"),
+          newInterface("ppp0"),
+          newInterface("eth0"),
+          newInterface("eth1"),
+          newInterface("ppp1"),
+          newInterface("net2"),
+          newInterface("eth2"),
+          newInterface("net3", inetAddress("fe80:0:0:0:0:100:7", "fe80:0:0:0:0:10::")),
+          newInterface("eth3",
+                       inetAddress("woz134.wozms", "fe80:0:0:0:4d74::"),
+                       inetAddress("woz134", "10.0.0.108")),
+          newInterface("net3", inetAddress("fe80:0:0:0:0:100:7", "fe80:0:0:0:0:10::")),
+          newInterface("net5", inetAddress("fe80:0:0:0:0:5efe", "fe80:0:0:0:0:5e::")),
+          newInterface("eth4"),
+          newInterface("net6"),
+          newInterface("net7"),
+          newInterface("eth5"),
+          newInterface("eth6"),
+          newInterface("eth7"),
+          newInterface("eth8"),
+          newInterface("eth9")
+        );
       }
 
       @Override
       public NetworkInterface getLoInterface() {
         return newInterface("lo", inetAddress("0:0:0:0:0:0:0:1"),
-            inetAddress("hn127.0.0.1", "127.0.0.1")); // Hostname was originally without "hn" prefix
+                            inetAddress("hn127.0.0.1",
+                                        "127.0.0.1")); // Hostname was originally without "hn" prefix
       }
 
     };
@@ -269,42 +272,43 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            getLoInterface(),
-            newInterface("net0"),
-            newInterface("net1"),
-            newInterface("net2"),
-            newInterface("net3"),
-            newInterface("ppp0"),
-            newInterface("eth0"),
-            newInterface("eth1"),
-            newInterface("eth2"),
-            newInterface("ppp1"),
-            newInterface("net3",
-                inetAddress("fe80:0:0:0:acc5:fca8:4900:3d5e%11"),
-                inetAddress("192.168.1.102")),
-            newInterface("net4", inetAddress("fe80:0:0:0:0:5efe:c0a8:166%12")),
-            newInterface("net5",
-                inetAddress("bruckner", "2001:0:5ef5:79fd:145f:2f8:adef:9d07"),
-                inetAddress("bruckner", "fe80:0:0:0:145f:2f8:adef:9d07%13")),
-            newInterface("eth4", inetAddress("fe80:0:0:0:e565:922d:d0ed:88ed%14")),
-            newInterface("net6"),
-            newInterface("eth5"),
-            newInterface("eth6"),
-            newInterface("eth7"),
-            newInterface("eth8"),
-            newInterface("eth9"),
-            newInterface("eth10"),
-            newInterface("eth11"),
-            newInterface("net7")
-            );
+          getLoInterface(),
+          newInterface("net0"),
+          newInterface("net1"),
+          newInterface("net2"),
+          newInterface("net3"),
+          newInterface("ppp0"),
+          newInterface("eth0"),
+          newInterface("eth1"),
+          newInterface("eth2"),
+          newInterface("ppp1"),
+          newInterface("net3",
+                       inetAddress("fe80:0:0:0:acc5:fca8:4900:3d5e%11"),
+                       inetAddress("192.168.1.102")),
+          newInterface("net4", inetAddress("fe80:0:0:0:0:5efe:c0a8:166%12")),
+          newInterface("net5",
+                       inetAddress("bruckner", "2001:0:5ef5:79fd:145f:2f8:adef:9d07"),
+                       inetAddress("bruckner", "fe80:0:0:0:145f:2f8:adef:9d07%13")),
+          newInterface("eth4", inetAddress("fe80:0:0:0:e565:922d:d0ed:88ed%14")),
+          newInterface("net6"),
+          newInterface("eth5"),
+          newInterface("eth6"),
+          newInterface("eth7"),
+          newInterface("eth8"),
+          newInterface("eth9"),
+          newInterface("eth10"),
+          newInterface("eth11"),
+          newInterface("net7")
+        );
       }
 
       // This method should only return an interface if it's named exactly "lo"
       @Override
       public NetworkInterface getLoInterface() {
         return newInterface("lo", inetAddress("0:0:0:0:0:0:0:1", "0:0:0:0:0:0:0:1"),
-            inetAddress("hnx127.0.0.1", "127.0.0.1")); // Hostname was originally without
-                                                                 // "hnx" prefix
+                            inetAddress("hnx127.0.0.1",
+                                        "127.0.0.1")); // Hostname was originally without
+        // "hnx" prefix
       }
 
     };
@@ -316,17 +320,17 @@ class StubNetworkInterfaceProvider {
       @Override
       public Iterable<NetworkInterface> getNetworkInterfaces() {
         return Arrays.asList(
-            newInterface("wlan0", inetAddress("192.168.37.21", "192.168.37.21")),
-            getLoInterface()
-            );
+          newInterface("wlan0", inetAddress("192.168.37.21", "192.168.37.21")),
+          getLoInterface()
+        );
       }
 
       // This method should only return an interface if it's named exactly "lo"
       @Override
       public NetworkInterface getLoInterface() {
         return newInterface("lo",
-            inetAddress("127.0.0.2", "127.0.0.2"),
-            inetAddress("localhost.localdomain", "127.0.0.1"));
+                            inetAddress("127.0.0.2", "127.0.0.2"),
+                            inetAddress("localhost.localdomain", "127.0.0.1"));
       }
 
     };

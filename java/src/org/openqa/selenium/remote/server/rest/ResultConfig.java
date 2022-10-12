@@ -48,19 +48,14 @@ import java.util.logging.Logger;
 
 public class ResultConfig {
 
-  interface HandlerFactory {
-    RestishHandler<?> createHandler(SessionId sessionId);
-  }
-
   private final String commandName;
   private final HandlerFactory handlerFactory;
   private final DriverSessions sessions;
   private final Logger log;
-
   public ResultConfig(
-      String commandName, Supplier<RestishHandler<?>> factory,
-      DriverSessions sessions,
-      Logger log) {
+    String commandName, Supplier<RestishHandler<?>> factory,
+    DriverSessions sessions,
+    Logger log) {
     if (commandName == null || factory == null) {
       throw new IllegalArgumentException("You must specify the handler and the command name");
     }
@@ -72,9 +67,9 @@ public class ResultConfig {
   }
 
   public ResultConfig(
-      String commandName, RequiresAllSessions factory,
-      DriverSessions sessions,
-      Logger log) {
+    String commandName, RequiresAllSessions factory,
+    DriverSessions sessions,
+    Logger log) {
     if (commandName == null || factory == null) {
       throw new IllegalArgumentException("You must specify the handler and the command name");
     }
@@ -86,9 +81,9 @@ public class ResultConfig {
   }
 
   public ResultConfig(
-      String commandName, RequiresSession factory,
-      DriverSessions sessions,
-      Logger log) {
+    String commandName, RequiresSession factory,
+    DriverSessions sessions,
+    Logger log) {
     if (commandName == null || factory == null) {
       throw new IllegalArgumentException("You must specify the handler and the command name");
     }
@@ -118,7 +113,9 @@ public class ResultConfig {
 
       throwUpIfSessionTerminated(sessionId);
 
-      Consumer<String> logger = DriverCommand.STATUS.equals(command.getName()) ? log::fine : log::info;
+      Consumer<String>
+        logger =
+        DriverCommand.STATUS.equals(command.getName()) ? log::fine : log::info;
 
       logger.accept(String.format("Executing: %s)", handler));
 
@@ -163,7 +160,9 @@ public class ResultConfig {
   }
 
   private void throwUpIfSessionTerminated(SessionId sessId) throws NoSuchSessionException {
-    if (sessId == null) return;
+    if (sessId == null) {
+      return;
+    }
     Session session = sessions.get(sessId);
     final boolean isTerminated = session == null;
     if (isTerminated) {
@@ -186,7 +185,7 @@ public class ResultConfig {
     // This is a safety measure to make sure this loop is never endless
     List<Throwable> chain = new ArrayList<>(10);
     for (Throwable current = toReturn; current != null && chain.size() < 10; current =
-        current.getCause()) {
+      current.getCause()) {
       chain.add(current);
     }
 
@@ -228,5 +227,10 @@ public class ResultConfig {
   @Override
   public int hashCode() {
     return commandName.hashCode();
+  }
+
+  interface HandlerFactory {
+
+    RestishHandler<?> createHandler(SessionId sessionId);
   }
 }

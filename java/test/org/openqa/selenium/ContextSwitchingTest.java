@@ -34,18 +34,18 @@ class ContextSwitchingTest extends JupiterTestBase {
   @Test
   void testShouldNotBeAbleToSwitchContext() {
     assertThatExceptionOfType(UnsupportedCommandException.class)
-        .isThrownBy(() -> ((ContextAware) driver.switchTo()).context("WEBVIEW"));
+      .isThrownBy(() -> ((ContextAware) driver.switchTo()).context("WEBVIEW"));
   }
 
   @Test
   void testShouldNotBeAbleToGetContextHandle() {
     assertThatExceptionOfType(UnsupportedCommandException.class)
-        .isThrownBy(() -> ((ContextAware) driver.switchTo()).getContext());
+      .isThrownBy(() -> ((ContextAware) driver.switchTo()).getContext());
   }
 
   @Test
   void testShouldNotBeAbleToGetContextHandles() {
     assertThatExceptionOfType(UnsupportedCommandException.class)
-        .isThrownBy(() -> ((ContextAware) driver.switchTo()).getContextHandles());
+      .isThrownBy(() -> ((ContextAware) driver.switchTo()).getContextHandles());
   }
 }

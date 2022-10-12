@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class LocatingElementHandler implements InvocationHandler {
+
   private final ElementLocator locator;
 
   public LocatingElementHandler(ElementLocator locator) {
@@ -39,7 +40,7 @@ public class LocatingElementHandler implements InvocationHandler {
       element = locator.findElement();
     } catch (NoSuchElementException e) {
       if ("toString".equals(method.getName())) {
-        return "Proxy element for: " + locator.toString();
+        return "Proxy element for: " + locator;
       }
       throw e;
     }

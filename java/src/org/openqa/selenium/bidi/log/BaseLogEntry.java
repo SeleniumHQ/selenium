@@ -25,6 +25,16 @@ public class BaseLogEntry {
   private final long timestamp;
   private final StackTrace stackTrace;
 
+  public BaseLogEntry(LogLevel level,
+                      String text,
+                      long timestamp,
+                      StackTrace stackTrace) {
+    this.level = level;
+    this.text = text;
+    this.timestamp = timestamp;
+    this.stackTrace = stackTrace;
+  }
+
   public LogLevel getLevel() {
     return level;
   }
@@ -39,16 +49,6 @@ public class BaseLogEntry {
 
   public StackTrace getStackTrace() {
     return stackTrace;
-  }
-
-  public BaseLogEntry(LogLevel level,
-                      String text,
-                      long timestamp,
-                      StackTrace stackTrace) {
-    this.level = level;
-    this.text = text;
-    this.timestamp = timestamp;
-    this.stackTrace = stackTrace;
   }
 
   enum LogLevel {

@@ -58,7 +58,7 @@ class HeaderContainer {
     String value = getHeader(name);
     try {
       return value == null ? -1 :
-          DateFormat.getDateInstance().parse(value).getTime();
+             DateFormat.getDateInstance().parse(value).getTime();
     } catch (ParseException e) {
       throw new RuntimeException(e);
     }

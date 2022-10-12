@@ -39,22 +39,6 @@ public class StackFrame {
     this.columnNumber = columnNumber;
   }
 
-  public String getUrl() {
-    return url;
-  }
-
-  public String getFunctionName() {
-    return functionName;
-  }
-
-  public int getLineNumber() {
-    return lineNumber;
-  }
-
-  public int getColumnNumber() {
-    return columnNumber;
-  }
-
   public static StackFrame fromJson(JsonInput input) {
     String url = null;
     String functionName = null;
@@ -89,6 +73,22 @@ public class StackFrame {
     input.endObject();
 
     return new StackFrame(url, functionName, lineNumber, columnNumber);
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public String getFunctionName() {
+    return functionName;
+  }
+
+  public int getLineNumber() {
+    return lineNumber;
+  }
+
+  public int getColumnNumber() {
+    return columnNumber;
   }
 
   private Map<String, Object> toJson() {

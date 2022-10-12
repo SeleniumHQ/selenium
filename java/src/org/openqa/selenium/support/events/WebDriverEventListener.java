@@ -62,7 +62,7 @@ public interface WebDriverEventListener {
    * Called before {@link org.openqa.selenium.WebDriver#get get(String url)} respectively
    * {@link org.openqa.selenium.WebDriver.Navigation#to navigate().to(String url)}.
    *
-   * @param url URL
+   * @param url    URL
    * @param driver WebDriver
    */
   void beforeNavigateTo(String url, WebDriver driver);
@@ -72,7 +72,7 @@ public interface WebDriverEventListener {
    * {@link org.openqa.selenium.WebDriver.Navigation#to navigate().to(String url)}. Not called, if an
    * exception is thrown.
    *
-   * @param url URL
+   * @param url    URL
    * @param driver WebDriver
    */
   void afterNavigateTo(String url, WebDriver driver);
@@ -128,8 +128,8 @@ public interface WebDriverEventListener {
    * WebElement.findElement(...)}, or {@link WebElement#findElement WebElement.findElements(...)}.
    *
    * @param element will be <code>null</code>, if a find method of <code>WebDriver</code> is called.
-   * @param by locator being used
-   * @param driver WebDriver
+   * @param by      locator being used
+   * @param driver  WebDriver
    */
   void beforeFindBy(By by, WebElement element, WebDriver driver);
 
@@ -139,15 +139,15 @@ public interface WebDriverEventListener {
    * WebElement.findElement(...)}, or {@link WebElement#findElement WebElement.findElements(...)}.
    *
    * @param element will be <code>null</code>, if a find method of <code>WebDriver</code> is called.
-   * @param by locator being used
-   * @param driver WebDriver
+   * @param by      locator being used
+   * @param driver  WebDriver
    */
   void afterFindBy(By by, WebElement element, WebDriver driver);
 
   /**
    * Called before {@link WebElement#click WebElement.click()}.
    *
-   * @param driver WebDriver
+   * @param driver  WebDriver
    * @param element the WebElement being used for the action
    */
   void beforeClickOn(WebElement element, WebDriver driver);
@@ -156,7 +156,7 @@ public interface WebDriverEventListener {
    * Called after {@link WebElement#click WebElement.click()}. Not called, if an exception is
    * thrown.
    *
-   * @param driver WebDriver
+   * @param driver  WebDriver
    * @param element the WebElement being used for the action
    */
   void afterClickOn(WebElement element, WebDriver driver);
@@ -165,7 +165,7 @@ public interface WebDriverEventListener {
    * Called before {@link WebElement#clear WebElement.clear()}, {@link WebElement#sendKeys
    * WebElement.sendKeys(...)}.
    *
-   * @param driver WebDriver
+   * @param driver  WebDriver
    * @param element the WebElement being used for the action
    */
   void beforeChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
@@ -174,7 +174,7 @@ public interface WebDriverEventListener {
    * Called after {@link WebElement#clear WebElement.clear()}, {@link WebElement#sendKeys
    * WebElement.sendKeys(...)}}. Not called, if an exception is thrown.
    *
-   * @param driver WebDriver
+   * @param driver  WebDriver
    * @param element the WebElement being used for the action
    */
   void afterChangeValueOf(WebElement element, WebDriver driver, CharSequence[] keysToSend);
@@ -208,7 +208,7 @@ public interface WebDriverEventListener {
    *                   {@link org.openqa.selenium.WebDriver#getWindowHandle()}
    *                   or <code>null</code> if switching to a new window created by
    *                   {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
-   * @param driver WebDriver
+   * @param driver     WebDriver
    */
   void beforeSwitchToWindow(String windowName, WebDriver driver);
 
@@ -219,14 +219,14 @@ public interface WebDriverEventListener {
    *                   {@link org.openqa.selenium.WebDriver#getWindowHandle()}
    *                   or <code>null</code> if switching to a new window created by
    *                   {@link org.openqa.selenium.WebDriver.TargetLocator#newWindow(WindowType)}
-   * @param driver WebDriver
+   * @param driver     WebDriver
    */
   void afterSwitchToWindow(String windowName, WebDriver driver);
 
   /**
    * Called whenever an exception would be thrown.
    *
-   * @param driver WebDriver
+   * @param driver    WebDriver
    * @param throwable the exception that will be thrown
    */
   void onException(Throwable throwable, WebDriver driver);
@@ -235,7 +235,7 @@ public interface WebDriverEventListener {
    * Called before {@link org.openqa.selenium.TakesScreenshot#getScreenshotAs(OutputType)}
    * allows the implementation to determine which type of output will be generated
    *
-   * @param <X> Return type for getScreenshotAs.
+   * @param <X>    Return type for getScreenshotAs.
    * @param target target type, @see OutputType
    */
   <X> void beforeGetScreenshotAs(OutputType<X> target);
@@ -245,8 +245,8 @@ public interface WebDriverEventListener {
    * allows the implementation to determine which type of output was generated
    * and to access the output itself
    *
-   * @param <X> Return type for getScreenshotAs.
-   * @param target target type, @see OutputType
+   * @param <X>        Return type for getScreenshotAs.
+   * @param target     target type, @see OutputType
    * @param screenshot screenshot output of the specified type
    */
   <X> void afterGetScreenshotAs(OutputType<X> target, X screenshot);
@@ -255,7 +255,7 @@ public interface WebDriverEventListener {
    * Called before {@link WebElement#getText()} method is being called
    *
    * @param element - {@link WebElement} against which call is being made
-   * @param driver - instance of {@link WebDriver}
+   * @param driver  - instance of {@link WebDriver}
    */
   void beforeGetText(WebElement element, WebDriver driver);
 
@@ -263,7 +263,7 @@ public interface WebDriverEventListener {
    * Called right after {@link WebElement#getText()} method is being called
    *
    * @param element - {@link WebElement} against which call is being made
-   * @param driver - instance of {@link WebDriver}
+   * @param driver  - instance of {@link WebDriver}
    * @param text    - {@link String} object extracted from respective {@link WebElement}
    */
   void afterGetText(WebElement element, WebDriver driver, String text);

@@ -35,6 +35,6 @@ public class NodeRestartedEvent extends Event {
   public static EventListener<NodeStatus> listener(Consumer<NodeStatus> handler) {
     Require.nonNull("Handler", handler);
 
-    return new EventListener<>(NODE_RESTARTED_EVENT, NodeStatus.class , handler);
+    return new EventListener<>(NODE_RESTARTED_EVENT, NodeStatus.class, handler);
   }
 }

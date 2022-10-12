@@ -18,6 +18,7 @@
 package org.openqa.selenium;
 
 public class RetrySessionRequestException extends SessionNotCreatedException {
+
   public RetrySessionRequestException(String msg) {
     super(msg);
   }

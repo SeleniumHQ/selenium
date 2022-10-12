@@ -19,5 +19,6 @@ package org.openqa.selenium;
 import org.openqa.selenium.print.PrintOptions;
 
 public interface PrintsPage {
+
   Pdf print(PrintOptions printOptions) throws WebDriverException;
 }

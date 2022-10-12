@@ -23,6 +23,7 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class AddLocationStrategy extends SeleneseCommand<Void> {
+
   private final ElementFinder elementFinder;
 
   public AddLocationStrategy(ElementFinder elementFinder) {
@@ -31,12 +32,12 @@ public class AddLocationStrategy extends SeleneseCommand<Void> {
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String strategyName,
-      final String functionDefinition) {
+                                       final String functionDefinition) {
     String strategy =
-        String
-            .format(
-                "return (function(locator, inWindow, inDocument) { %s }).call(null, arguments[0], window, document)",
-                functionDefinition);
+      String
+        .format(
+          "return (function(locator, inWindow, inDocument) { %s }).call(null, arguments[0], window, document)",
+          functionDefinition);
 
     elementFinder.add(strategyName, strategy);
 

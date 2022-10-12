@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid.router;
 
+import static org.openqa.selenium.remote.http.Route.combine;
+import static org.openqa.selenium.remote.http.Route.get;
+import static org.openqa.selenium.remote.http.Route.matching;
+
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.grid.distributor.Distributor;
@@ -30,10 +34,6 @@ import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
-
-import static org.openqa.selenium.remote.http.Route.combine;
-import static org.openqa.selenium.remote.http.Route.get;
-import static org.openqa.selenium.remote.http.Route.matching;
 
 /**
  * A simple router that is aware of the selenium-protocol.

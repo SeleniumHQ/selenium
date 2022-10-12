@@ -17,13 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.interactions.Locatable;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.NoDriverAfterTest;
-import org.openqa.selenium.testing.NotYetImplemented;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -31,6 +24,13 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.interactions.Locatable;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 class JavascriptEnabledDriverTest extends JupiterTestBase {
 
@@ -160,15 +160,15 @@ class JavascriptEnabledDriverTest extends JupiterTestBase {
     input.sendKeys("test");
     moveFocus();
     assertThat(driver.findElement(By.id("result")).getText().trim())
-        .isIn("focus change blur", "focus blur change");
+      .isIn("focus change blur", "focus blur change");
 
     input.sendKeys(Keys.BACK_SPACE, "t");
     moveFocus();
 
     // I weep.
     assertThat(driver.findElement(By.id("result")).getText().trim())
-        .isIn("focus change blur focus blur", "focus blur change focus blur",
-              "focus blur change focus blur change", "focus change blur focus change blur");
+      .isIn("focus change blur focus blur", "focus blur change focus blur",
+            "focus blur change focus blur change", "focus change blur focus change blur");
   }
 
   /**

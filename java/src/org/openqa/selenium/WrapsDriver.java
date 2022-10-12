@@ -23,6 +23,7 @@ package org.openqa.selenium;
  */
 @FunctionalInterface
 public interface WrapsDriver {
+
   /**
    * @return The driver that contains this element.
    */

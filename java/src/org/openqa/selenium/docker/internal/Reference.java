@@ -18,7 +18,7 @@
 package org.openqa.selenium.docker.internal;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableMap;
+
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.docker.DockerException;
@@ -28,6 +28,7 @@ import java.util.Objects;
 
 @Beta
 public class Reference {
+
   private static final String DEFAULT_DOMAIN = "docker.io";
   private static final String LEGACY_DEFAULT_DOMAIN = "index.docker.io";
   private static final String DEFAULT_REPO = "library";
@@ -99,7 +100,7 @@ public class Reference {
     if (DEFAULT_DOMAIN.equals(domain) && !remainder.contains("/")) {
       remainder = String.format("%s/%s", DEFAULT_REPO, remainder);
     }
-    return ImmutableMap.of("domain", domain, "remainder", remainder);
+    return Map.of("domain", domain, "remainder", remainder);
   }
 
   public String getDomain() {
@@ -145,11 +146,11 @@ public class Reference {
   @Override
   public String toString() {
     return "Reference{" +
-      "domain='" + domain + '\'' +
-      ", name='" + name + '\'' +
-      ", tag='" + tag + '\'' +
-      ", digest='" + digest + '\'' +
-      '}';
+           "domain='" + domain + '\'' +
+           ", name='" + name + '\'' +
+           ", tag='" + tag + '\'' +
+           ", digest='" + digest + '\'' +
+           '}';
   }
 
   @Override

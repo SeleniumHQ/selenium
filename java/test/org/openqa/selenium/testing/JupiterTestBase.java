@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.testing;
 
+import static org.assertj.core.api.Assumptions.assumeThat;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,8 +33,6 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-
-import static org.assertj.core.api.Assumptions.assumeThat;
 
 public abstract class JupiterTestBase {
 

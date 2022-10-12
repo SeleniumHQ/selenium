@@ -23,6 +23,7 @@ import org.openqa.selenium.remote.server.handler.WebDriverHandler;
 import java.util.Map;
 
 public class SetLocalStorageItem extends WebDriverHandler<Void> {
+
   private volatile String key;
   private volatile String value;
 

@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.grid.session.remote;
 
+import static org.openqa.selenium.remote.Dialect.OSS;
+
 import com.google.common.base.StandardSystemProperty;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -52,8 +55,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.remote.Dialect.OSS;
-
 /**
  * Abstract class designed to do things like protocol conversion.
  */
@@ -70,11 +71,11 @@ public abstract class RemoteSession implements ActiveSession {
   private final WebDriver driver;
 
   protected RemoteSession(
-      Dialect downstream,
-      Dialect upstream,
-      HttpHandler codec,
-      SessionId id,
-      Map<String, Object> capabilities) {
+    Dialect downstream,
+    Dialect upstream,
+    HttpHandler codec,
+    SessionId id,
+    Map<String, Object> capabilities) {
     this.downstream = Require.nonNull("Downstream dialect", downstream);
     this.upstream = Require.nonNull("Upstream dialect", upstream);
     this.codec = Require.nonNull("Codec", codec);
@@ -87,8 +88,8 @@ public abstract class RemoteSession implements ActiveSession {
 
     CommandExecutor executor = new ActiveSessionCommandExecutor(this);
     this.driver = new Augmenter().augment(new RemoteWebDriver(
-        executor,
-        new ImmutableCapabilities(getCapabilities())));
+      executor,
+      new ImmutableCapabilities(getCapabilities())));
   }
 
   @Override
@@ -129,17 +130,17 @@ public abstract class RemoteSession implements ActiveSession {
   public abstract static class Factory<X> implements SessionFactory {
 
     protected Optional<ActiveSession> performHandshake(
-        Tracer tracer,
-        X additionalData,
-        URL url,
-        Set<Dialect> downstreamDialects,
-        Capabilities capabilities) {
+      Tracer tracer,
+      X additionalData,
+      URL url,
+      Set<Dialect> downstreamDialects,
+      Capabilities capabilities) {
       try {
         HttpClient client = HttpClient.Factory.createDefault().createClient(url);
 
         Command command = new Command(
-            null,
-            DriverCommand.NEW_SESSION(capabilities));
+          null,
+          DriverCommand.NEW_SESSION(capabilities));
 
         ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
 
@@ -157,12 +158,12 @@ public abstract class RemoteSession implements ActiveSession {
         Response response = result.createResponse();
         //noinspection unchecked
         Optional<ActiveSession> activeSession = Optional.of(newActiveSession(
-            additionalData,
-            downstream,
-            upstream,
-            codec,
-            new SessionId(response.getSessionId()),
-            (Map<String, Object>) response.getValue()));
+          additionalData,
+          downstream,
+          upstream,
+          codec,
+          new SessionId(response.getSessionId()),
+          (Map<String, Object>) response.getValue()));
         activeSession.ifPresent(session -> LOG.info("Started new session " + session));
         return activeSession;
       } catch (IOException | IllegalStateException | NullPointerException e) {
@@ -172,11 +173,11 @@ public abstract class RemoteSession implements ActiveSession {
     }
 
     protected abstract ActiveSession newActiveSession(
-        X additionalData,
-        Dialect downstream,
-        Dialect upstream,
-        HttpHandler codec,
-        SessionId id,
-        Map<String, Object> capabilities);
+      X additionalData,
+      Dialect downstream,
+      Dialect upstream,
+      HttpHandler codec,
+      SessionId id,
+      Map<String, Object> capabilities);
   }
 }

@@ -22,6 +22,7 @@ package org.openqa.selenium;
  * they possess. This can be used for run-time detection of features.
  */
 public interface HasCapabilities {
+
   /**
    * @return The capabilities of the current driver.
    */

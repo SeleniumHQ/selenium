@@ -17,6 +17,90 @@
 
 package org.openqa.selenium.remote.server;
 
+import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
+import static org.openqa.selenium.remote.DriverCommand.ACTIONS;
+import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_LOCAL_STORAGE;
+import static org.openqa.selenium.remote.DriverCommand.CLEAR_SESSION_STORAGE;
+import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.CLOSE;
+import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
+import static org.openqa.selenium.remote.DriverCommand.DELETE_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
+import static org.openqa.selenium.remote.DriverCommand.ELEMENT_EQUALS;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
+import static org.openqa.selenium.remote.DriverCommand.FULLSCREEN_CURRENT_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.GET;
+import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
+import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
+import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE_STATUS;
+import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
+import static org.openqa.selenium.remote.DriverCommand.GET_CAPABILITIES;
+import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
+import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
+import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
+import static org.openqa.selenium.remote.DriverCommand.GET_NETWORK_CONNECTION;
+import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
+import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ORIENTATION;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_LOGS;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_KEYS;
+import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
+import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
+import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
+import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
+import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
+import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
+import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.QUIT;
+import static org.openqa.selenium.remote.DriverCommand.REFRESH;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
+import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
+import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
+import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
+import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
+import static org.openqa.selenium.remote.DriverCommand.SET_NETWORK_CONNECTION;
+import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ORIENTATION;
+import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
+import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
+import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
+import static org.openqa.selenium.remote.DriverCommand.STATUS;
+import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
+import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
+import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
+
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandCodec;
@@ -138,90 +222,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.remote.DriverCommand.ACCEPT_ALERT;
-import static org.openqa.selenium.remote.DriverCommand.ACTIONS;
-import static org.openqa.selenium.remote.DriverCommand.ADD_COOKIE;
-import static org.openqa.selenium.remote.DriverCommand.CLEAR_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.CLEAR_LOCAL_STORAGE;
-import static org.openqa.selenium.remote.DriverCommand.CLEAR_SESSION_STORAGE;
-import static org.openqa.selenium.remote.DriverCommand.CLICK_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.CLOSE;
-import static org.openqa.selenium.remote.DriverCommand.DELETE_ALL_COOKIES;
-import static org.openqa.selenium.remote.DriverCommand.DELETE_COOKIE;
-import static org.openqa.selenium.remote.DriverCommand.DISMISS_ALERT;
-import static org.openqa.selenium.remote.DriverCommand.ELEMENT_EQUALS;
-import static org.openqa.selenium.remote.DriverCommand.EXECUTE_ASYNC_SCRIPT;
-import static org.openqa.selenium.remote.DriverCommand.EXECUTE_SCRIPT;
-import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.FIND_CHILD_ELEMENTS;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.FIND_ELEMENTS;
-import static org.openqa.selenium.remote.DriverCommand.FULLSCREEN_CURRENT_WINDOW;
-import static org.openqa.selenium.remote.DriverCommand.GET;
-import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
-import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
-import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
-import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE_STATUS;
-import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
-import static org.openqa.selenium.remote.DriverCommand.GET_CAPABILITIES;
-import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
-import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_URL;
-import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_HANDLE;
-import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_POSITION;
-import static org.openqa.selenium.remote.DriverCommand.GET_CURRENT_WINDOW_SIZE;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_ATTRIBUTE;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_LOCATION_ONCE_SCROLLED_INTO_VIEW;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_RECT;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_SIZE;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TAG_NAME;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_TEXT;
-import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_PROPERTY;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_SIZE;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
-import static org.openqa.selenium.remote.DriverCommand.GET_NETWORK_CONNECTION;
-import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
-import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ORIENTATION;
-import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_LOGS;
-import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_KEYS;
-import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_SIZE;
-import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
-import static org.openqa.selenium.remote.DriverCommand.GET_WINDOW_HANDLES;
-import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
-import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
-import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
-import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_DISPLAYED;
-import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
-import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_SELECTED;
-import static org.openqa.selenium.remote.DriverCommand.MAXIMIZE_CURRENT_WINDOW;
-import static org.openqa.selenium.remote.DriverCommand.QUIT;
-import static org.openqa.selenium.remote.DriverCommand.REFRESH;
-import static org.openqa.selenium.remote.DriverCommand.REMOVE_LOCAL_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.REMOVE_SESSION_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.SCREENSHOT;
-import static org.openqa.selenium.remote.DriverCommand.SEND_KEYS_TO_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
-import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
-import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
-import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
-import static org.openqa.selenium.remote.DriverCommand.SET_NETWORK_CONNECTION;
-import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ORIENTATION;
-import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
-import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
-import static org.openqa.selenium.remote.DriverCommand.STATUS;
-import static org.openqa.selenium.remote.DriverCommand.SUBMIT_ELEMENT;
-import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_FRAME;
-import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
-import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
-import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
-
 public class JsonHttpCommandHandler {
 
   private static final String SEND_KEYS_TO_ACTIVE_ELEMENT = "sendKeysToActiveElement";
@@ -259,22 +259,22 @@ public class JsonHttpCommandHandler {
   }
 
   public void addNewMapping(
-      String commandName,
-      Supplier<RestishHandler<?>> factory) {
+    String commandName,
+    Supplier<RestishHandler<?>> factory) {
     ResultConfig config = new ResultConfig(commandName, factory, sessions, log);
     configs.put(commandName, config);
   }
 
   public void addNewMapping(
-      String commandName,
-      RequiresAllSessions factory) {
+    String commandName,
+    RequiresAllSessions factory) {
     ResultConfig config = new ResultConfig(commandName, factory, sessions, log);
     configs.put(commandName, config);
   }
 
   public void addNewMapping(
-      String commandName,
-      RequiresSession factory) {
+    String commandName,
+    RequiresSession factory) {
     ResultConfig config = new ResultConfig(commandName, factory, sessions, log);
     configs.put(commandName, config);
   }
@@ -411,7 +411,7 @@ public class JsonHttpCommandHandler {
     addNewMapping(SET_SCRIPT_TIMEOUT, SetScriptTimeout::new);
 
     addNewMapping(GET_LOCATION, GetLocationContext::new);
-    addNewMapping(SET_LOCATION,  SetLocationContext::new);
+    addNewMapping(SET_LOCATION, SetLocationContext::new);
 
     addNewMapping(GET_APP_CACHE_STATUS, GetAppCacheStatus::new);
 

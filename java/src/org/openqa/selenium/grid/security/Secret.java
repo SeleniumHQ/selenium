@@ -37,6 +37,10 @@ public class Secret {
     return first.matches(second);
   }
 
+  private static Secret fromJson(String secret) {
+    return new Secret(secret);
+  }
+
   public boolean matches(Secret other) {
     if (other == null) {
       return false;
@@ -66,9 +70,5 @@ public class Secret {
 
   private String toJson() {
     return secret;
-  }
-
-  private static Secret fromJson(String secret) {
-    return new Secret(secret);
   }
 }

@@ -17,6 +17,15 @@
 
 package org.openqa.selenium.remote.internal;
 
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.net.Urls.fromUri;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -45,18 +54,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.StreamSupport;
 
-import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.net.Urls.fromUri;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-
 public abstract class HttpClientTestBase {
-
-  protected abstract HttpClient.Factory createFactory();
 
   static HttpHandler delegate;
   static AppServer server;
@@ -71,6 +69,8 @@ public abstract class HttpClientTestBase {
   public static void tearDown() {
     server.stop();
   }
+
+  protected abstract HttpClient.Factory createFactory();
 
   @Test
   void responseShouldCaptureASingleHeader() {
@@ -161,7 +161,7 @@ public abstract class HttpClientTestBase {
 
       URI uri = URI.create(server.whereIs("/"));
       HttpRequest request =
-          new HttpRequest(GET, String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
+        new HttpRequest(GET, String.format("http://%s:%s/hello", uri.getHost(), uri.getPort()));
 
       HttpResponse response = client.execute(request);
 
@@ -225,14 +225,18 @@ public abstract class HttpClientTestBase {
 
   private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler) {
     delegate = handler;
-    try (HttpClient client = createFactory().createClient(fromUri(URI.create(server.whereIs("/"))))) {
+    try (HttpClient client = createFactory().createClient(
+      fromUri(URI.create(server.whereIs("/"))))) {
       return client.execute(request);
     }
   }
 
-  private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler, ClientConfig config) {
+  private HttpResponse executeWithinServer(HttpRequest request, HttpHandler handler,
+                                           ClientConfig config) {
     delegate = handler;
-    HttpClient client = createFactory().createClient(config.baseUri(URI.create(server.whereIs("/"))));
+    HttpClient
+      client =
+      createFactory().createClient(config.baseUri(URI.create(server.whereIs("/"))));
     return client.execute(request);
   }
 }

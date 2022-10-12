@@ -32,7 +32,6 @@ public interface HasCasting {
    * Returns the list of cast sinks (Cast devices) available to the Chrome media router.
    *
    * @return array of ID / Name pairs of available cast sink targets
-   *
    */
   List<Map<String, String>> getCastSinks();
 
@@ -58,7 +57,6 @@ public interface HasCasting {
   void startTabMirroring(String deviceName);
 
   /**
-   *
    * @return an error message if there is any issue in a Cast session.
    */
   String getCastIssueMessage();
