@@ -56,7 +56,7 @@ public interface OutputType<T> {
   OutputType<byte[]> BYTES = new OutputType<byte[]>() {
     @Override
     public byte[] convertFromBase64Png(String base64Png) {
-      return Base64.getMimeDecoder().decode(base64Png);
+      return Base64.getDecoder().decode(base64Png);
     }
 
     @Override

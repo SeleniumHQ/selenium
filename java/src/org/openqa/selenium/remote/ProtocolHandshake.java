@@ -68,7 +68,7 @@ public class ProtocolHandshake {
 
       if (result.isRight()) {
         Result toReturn = result.right();
-        LOG.info(String.format("Detected upstream dialect: %s", toReturn.dialect));
+        LOG.log(Level.FINE, "Detected upstream dialect: {0}", toReturn.dialect);
 
         List<String> invalid = desired.asMap().keySet()
           .stream()
