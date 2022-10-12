@@ -38,8 +38,7 @@ namespace OpenQA.Selenium.Firefox
         private string sourceProfileDir;
         private bool deleteSource;
         private bool deleteOnClean = true;
-        private Preferences profilePreferences;
-        private Dictionary<string, FirefoxExtension> extensions = new Dictionary<string, FirefoxExtension>();
+        private Preferences profilePreferences = new Preferences();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirefoxProfile"/> class.
@@ -69,7 +68,6 @@ namespace OpenQA.Selenium.Firefox
         {
             this.sourceProfileDir = profileDirectory;
             this.deleteSource = deleteSourceOnClean;
-            this.ReadDefaultPreferences();
             this.profilePreferences.AppendPreferences(this.ReadExistingPreferences());
         }
 
@@ -109,15 +107,6 @@ namespace OpenQA.Selenium.Firefox
             }
 
             return new FirefoxProfile(destinationDirectory, true);
-        }
-
-        /// <summary>
-        /// Adds a Firefox Extension to this profile
-        /// </summary>
-        /// <param name="extensionToInstall">The path to the new extension</param>
-        public void AddExtension(string extensionToInstall)
-        {
-            this.extensions.Add(Path.GetFileNameWithoutExtension(extensionToInstall), new FirefoxExtension(extensionToInstall));
         }
 
         /// <summary>
@@ -165,9 +154,7 @@ namespace OpenQA.Selenium.Firefox
                 Directory.CreateDirectory(this.profileDir);
             }
 
-            this.InstallExtensions();
             this.DeleteLockFiles();
-            this.DeleteExtensionsCache();
             this.UpdateUserPreferences();
         }
 
@@ -238,33 +225,6 @@ namespace OpenQA.Selenium.Firefox
         }
 
         /// <summary>
-        /// Installs all extensions in the profile in the directory on disk.
-        /// </summary>
-        private void InstallExtensions()
-        {
-            foreach (string extensionKey in this.extensions.Keys)
-            {
-                this.extensions[extensionKey].Install(this.profileDir);
-            }
-        }
-
-        /// <summary>
-        /// Deletes the cache of extensions for this profile, if the cache exists.
-        /// </summary>
-        /// <remarks>If the extensions cache does not exist for this profile, the
-        /// <see cref="DeleteExtensionsCache"/> method performs no operations, but
-        /// succeeds.</remarks>
-        private void DeleteExtensionsCache()
-        {
-            DirectoryInfo ex = new DirectoryInfo(Path.Combine(this.profileDir, "extensions"));
-            string cacheFile = Path.Combine(ex.Parent.FullName, "extensions.cache");
-            if (File.Exists(cacheFile))
-            {
-                File.Delete(cacheFile);
-            }
-        }
-
-        /// <summary>
         /// Writes the user preferences to the profile.
         /// </summary>
         private void UpdateUserPreferences()
@@ -293,21 +253,6 @@ namespace OpenQA.Selenium.Firefox
             }
 
             this.profilePreferences.WriteToFile(userPrefs);
-        }
-
-        private void ReadDefaultPreferences()
-        {
-            using (Stream defaultPrefsStream = ResourceUtilities.GetResourceStream("webdriver_prefs.json", "webdriver_prefs.json"))
-            {
-                using (StreamReader reader = new StreamReader(defaultPrefsStream))
-                {
-                    string defaultPreferences = reader.ReadToEnd();
-                    Dictionary<string, object> deserializedPreferences = JsonConvert.DeserializeObject<Dictionary<string, object>>(defaultPreferences, new ResponseValueJsonConverter());
-                    Dictionary<string, object> immutableDefaultPreferences = deserializedPreferences["frozen"] as Dictionary<string, object>;
-                    Dictionary<string, object> editableDefaultPreferences = deserializedPreferences["mutable"] as Dictionary<string, object>;
-                    this.profilePreferences = new Preferences(immutableDefaultPreferences, editableDefaultPreferences);
-                }
-            }
         }
 
         /// <summary>

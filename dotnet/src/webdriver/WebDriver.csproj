@@ -96,6 +96,7 @@
     <Compile Remove="Internal\IFindsByTagName.cs" />
     <Compile Remove="Internal\IFindsByXPath.cs" />
     <Compile Remove="Interactions\TouchActions.cs" />
+    <Compile Remove="Firefox\FirefoxExtension.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -113,10 +114,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">
-    <EmbeddedResource Include="$(ProjectDir)..\..\..\third_party\js\selenium\webdriver.json">
-      <Visible>False</Visible>
-      <LogicalName>webdriver_prefs.json</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)..\..\..\bazel-bin\javascript\webdriver\atoms\get-attribute.js">
       <Visible>False</Visible>
       <LogicalName>get-attribute.js</LogicalName>
@@ -136,10 +133,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' != 'WINDOWS_NT'">
-    <EmbeddedResource Include="$(ProjectDir)../../../third_party/js/selenium/webdriver.json">
-      <Visible>False</Visible>
-      <LogicalName>webdriver_prefs.json</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="$(ProjectDir)../../../bazel-bin/javascript/webdriver/atoms/get-attribute.js">
       <Visible>False</Visible>
       <LogicalName>get-attribute.js</LogicalName>

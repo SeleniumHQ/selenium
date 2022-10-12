@@ -29,24 +29,13 @@ namespace OpenQA.Selenium.Firefox
     internal class Preferences
     {
         private Dictionary<string, string> preferences = new Dictionary<string, string>();
-        private Dictionary<string, string> immutablePreferences = new Dictionary<string, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Preferences"/> class.
         /// </summary>
-        /// <param name="defaultImmutablePreferences">A set of preferences that cannot be modified once set.</param>
         /// <param name="defaultPreferences">A set of default preferences.</param>
-        public Preferences(Dictionary<string, object> defaultImmutablePreferences, Dictionary<string, object> defaultPreferences)
+        public Preferences(Dictionary<string, object> defaultPreferences = null)
         {
-            if (defaultImmutablePreferences != null)
-            {
-                foreach (KeyValuePair<string, object> pref in defaultImmutablePreferences)
-                {
-                    this.SetPreferenceValue(pref.Key, pref.Value);
-                    this.immutablePreferences.Add(pref.Key, pref.Value.ToString());
-                }
-            }
-
             if (defaultPreferences != null)
             {
                 foreach (KeyValuePair<string, object> pref in defaultPreferences)
@@ -120,10 +109,7 @@ namespace OpenQA.Selenium.Firefox
             // exist.
             foreach (KeyValuePair<string, string> preferenceToAdd in preferencesToAdd)
             {
-                if (this.IsSettablePreference(preferenceToAdd.Key))
-                {
-                    this.preferences[preferenceToAdd.Key] = preferenceToAdd.Value;
-                }
+                this.preferences[preferenceToAdd.Key] = preferenceToAdd.Value;
             }
         }
 
@@ -150,19 +136,8 @@ namespace OpenQA.Selenium.Firefox
             return value.StartsWith("\"", StringComparison.OrdinalIgnoreCase) && value.EndsWith("\"", StringComparison.OrdinalIgnoreCase);
         }
 
-        private bool IsSettablePreference(string preferenceName)
-        {
-            return !this.immutablePreferences.ContainsKey(preferenceName);
-        }
-
         private void SetPreferenceValue(string key, object value)
         {
-            if (!this.IsSettablePreference(key))
-            {
-                string message = string.Format(CultureInfo.InvariantCulture, "Preference {0} may not be overridden: frozen value={1}, requested value={2}", key, this.immutablePreferences[key], value.ToString());
-                throw new ArgumentException(message);
-            }
-
             string stringValue = value as string;
             if (stringValue != null)
             {

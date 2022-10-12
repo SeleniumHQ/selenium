@@ -51,8 +51,6 @@ namespace OpenQA.Selenium.Firefox
         private const string BrowserNameValue = "firefox";
 
         private const string IsMarionetteCapability = "marionette";
-        private const string FirefoxLegacyProfileCapability = "firefox_profile";
-        private const string FirefoxLegacyBinaryCapability = "firefox_binary";
         private const string FirefoxProfileCapability = "profile";
         private const string FirefoxBinaryCapability = "binary";
         private const string FirefoxArgumentsCapability = "args";
@@ -87,8 +85,6 @@ namespace OpenQA.Selenium.Firefox
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxPrefsCapability, "SetPreference method");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxEnvCapability, "SetEnvironmentVariable method");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxLogCapability, "LogLevel property");
-            this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyProfileCapability, "Profile property");
-            this.AddKnownCapabilityName(FirefoxOptions.FirefoxLegacyBinaryCapability, "BrowserExecutableLocation property");
             this.AddKnownCapabilityName(FirefoxOptions.FirefoxEnableDevToolsProtocolCapability, "EnableDevToolsProtocol property");
         }
 
