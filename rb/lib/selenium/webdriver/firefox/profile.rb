@@ -77,6 +77,7 @@ module Selenium
           delete_lock_files(profile_dir)
           update_user_prefs_in(profile_dir)
 
+          WebDriver.logger.debug("storing Firefox Profile in: #{profile_dir}")
           profile_dir
         end
 

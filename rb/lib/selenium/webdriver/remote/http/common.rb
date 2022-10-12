@@ -49,7 +49,8 @@ module Selenium
               payload                   = JSON.generate(command_hash)
               headers['Content-Length'] = payload.bytesize.to_s if %i[post put].include?(verb)
 
-              WebDriver.logger.info("   >>> #{url} | #{payload}")
+              payload_log = payload.size > 2048 ? "#{payload[0, 2048]}<snip>" : payload
+              WebDriver.logger.info("   >>> #{url} | #{payload_log}")
               WebDriver.logger.debug("     > #{headers.inspect}")
             elsif verb == :post
               payload = '{}'
