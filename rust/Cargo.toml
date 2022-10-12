@@ -22,3 +22,10 @@ infer = "0.9.0"
 [dev-dependencies]
 assert_cmd = "2.0.4"
 rstest = "0.15.0"
+
+[profile.release]
+opt-level = 'z'     # Optimize for size
+lto = true          # Enable Link Time Optimization
+codegen-units = 1   # Reduce number of codegen units to increase optimizations
+panic = 'abort'     # Abort on panic
+strip = true        # Strip symbols from binary*
