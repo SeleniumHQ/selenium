@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetAllButtons extends SeleneseCommand<String[]> {
-
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     List<WebElement> allInputs = driver.findElements(By.xpath("//input"));
@@ -35,9 +34,8 @@ public class GetAllButtons extends SeleneseCommand<String[]> {
 
     for (WebElement input : allInputs) {
       String type = input.getAttribute("type").toLowerCase();
-      if ("button".equals(type) || "submit".equals(type) || "reset".equals(type)) {
+      if ("button".equals(type) || "submit".equals(type) || "reset".equals(type))
         ids.add(input.getAttribute("id"));
-      }
     }
 
     return ids.toArray(new String[ids.size()]);

@@ -24,7 +24,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 public class CaptureScreenshotToString extends SeleneseCommand<String> {
-
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String locator, String value) {
     if (driver instanceof TakesScreenshot) {

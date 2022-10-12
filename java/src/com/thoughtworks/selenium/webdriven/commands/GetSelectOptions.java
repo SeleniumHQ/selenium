@@ -28,7 +28,6 @@ import java.util.List;
 
 
 public class GetSelectOptions extends SeleneseCommand<String[]> {
-
   private final JavascriptLibrary library;
   private final ElementFinder finder;
 

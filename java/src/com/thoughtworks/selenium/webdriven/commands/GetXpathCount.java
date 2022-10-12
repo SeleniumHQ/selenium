@@ -23,7 +23,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class GetXpathCount extends SeleneseCommand<Number> {
-
   @Override
   protected Number handleSeleneseCommand(WebDriver driver, String xpath, String ignored) {
     return driver.findElements(By.xpath(xpath)).size();

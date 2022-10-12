@@ -23,15 +23,14 @@ import java.util.regex.Pattern;
  * Prepend a variable declaration to a script.
  */
 public class VariableDeclaration implements ScriptMutator {
-
   private final Pattern pattern;
   private final String declaration;
 
   public VariableDeclaration(String raw, String declaration) {
     this.declaration = declaration;
     raw = raw.replace(".", "\\s*\\.\\s*")
-      .replace("(", "\\(")
-      .replace(")", "\\)");
+        .replace("(", "\\(")
+        .replace(")", "\\)");
 
     pattern = Pattern.compile(".*" + raw + ".*");
   }

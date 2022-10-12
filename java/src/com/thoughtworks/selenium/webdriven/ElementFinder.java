@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class ElementFinder {
-
   private static final Logger log = Logger.getLogger(ElementFinder.class.getName());
 
   private final String findElement;
@@ -51,15 +50,15 @@ public class ElementFinder {
     findElement = "return (" + rawScript + ")(arguments[0]);";
 
     String linkTextLocator =
-      "return (" + library.getSeleniumScript("linkLocator.js") +
-      ").call(null, arguments[0], document)";
+        "return (" + library.getSeleniumScript("linkLocator.js") +
+            ").call(null, arguments[0], document)";
     add("link", linkTextLocator);
 
-    sizzle = new JavascriptLibrary().readScriptImpl(JavascriptLibrary.PREFIX + "sizzle.js") +
-             "var results = []; " +
-             "try { Sizzle(arguments[0], document, results);} " +
-             "catch (ignored) {} " +
-             "return results.length ? results[0] : null;";
+    sizzle = new JavascriptLibrary().readScriptImpl(JavascriptLibrary.PREFIX  + "sizzle.js") +
+        "var results = []; " +
+        "try { Sizzle(arguments[0], document, results);} " +
+        "catch (ignored) {} " +
+        "return results.length ? results[0] : null;";
     add("sizzle", sizzle);
   }
 
@@ -73,7 +72,7 @@ public class ElementFinder {
 
       try {
         toReturn =
-          (WebElement) ((JavascriptExecutor) driver).executeScript(strategy, actualLocator);
+            (WebElement) ((JavascriptExecutor) driver).executeScript(strategy, actualLocator);
 
         if (toReturn == null) {
           throw new SeleniumException("Element " + locator + " not found");
@@ -105,6 +104,7 @@ public class ElementFinder {
     if (index == -1) {
       return null;
     }
+
 
     String key = locator.substring(0, index);
     return additionalLocators.get(key);
@@ -148,12 +148,11 @@ public class ElementFinder {
     WebElement toReturn = (WebElement) ((JavascriptExecutor) driver).executeScript(sizzle, locator);
     if (toReturn != null) {
       log.warning("You are using a Sizzle locator as a CSS Selector. " +
-                  "Please use the Sizzle library directly via the JavascriptExecutor or a plain CSS "
-                  +
-                  "selector. Your locator was: " + locator);
+          "Please use the Sizzle library directly via the JavascriptExecutor or a plain CSS " +
+          "selector. Your locator was: " + locator);
       return toReturn;
     }
     throw new NoSuchElementException("Cannot locate element even after falling back to Sizzle: " +
-                                     locator);
+        locator);
   }
 }

@@ -23,7 +23,6 @@ import com.thoughtworks.selenium.webdriven.Windows;
 import org.openqa.selenium.WebDriver;
 
 public class SelectFrame extends SeleneseCommand<Void> {
-
   private final Windows windows;
 
   public SelectFrame(Windows windows) {

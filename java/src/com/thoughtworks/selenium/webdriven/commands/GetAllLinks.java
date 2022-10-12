@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetAllLinks extends SeleneseCommand<String[]> {
-
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String locator, String value) {
     List<WebElement> allLinks = driver.findElements(By.xpath("//a"));

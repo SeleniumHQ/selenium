@@ -23,7 +23,6 @@ import com.thoughtworks.selenium.webdriven.Windows;
 import org.openqa.selenium.WebDriver;
 
 public class DeselectPopUp extends SeleneseCommand<Void> {
-
   private final Windows windows;
 
   public DeselectPopUp(Windows windows) {

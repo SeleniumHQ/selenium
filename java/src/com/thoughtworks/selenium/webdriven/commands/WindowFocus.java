@@ -23,7 +23,6 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class WindowFocus extends SeleneseCommand<Void> {
-
   private final JavascriptLibrary js;
 
   public WindowFocus(JavascriptLibrary js) {

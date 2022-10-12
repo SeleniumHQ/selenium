@@ -29,7 +29,6 @@ import org.openqa.selenium.WebElement;
 import java.util.logging.Logger;
 
 public class Type extends SeleneseCommand<Void> {
-
   private static final Logger log = Logger.getLogger(Type.class.getName());
 
   private final AlertOverride alertOverride;
@@ -39,7 +38,7 @@ public class Type extends SeleneseCommand<Void> {
   private final String type;
 
   public Type(AlertOverride alertOverride, JavascriptLibrary js, ElementFinder finder,
-              KeyState state) {
+      KeyState state) {
     this.alertOverride = alertOverride;
     this.js = js;
     this.finder = finder;
@@ -51,10 +50,9 @@ public class Type extends SeleneseCommand<Void> {
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     alertOverride.replaceAlertMethod(driver);
 
-    if (state.controlKeyDown || state.altKeyDown || state.metaKeyDown) {
+    if (state.controlKeyDown || state.altKeyDown || state.metaKeyDown)
       throw new SeleniumException(
-        "type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
-    }
+          "type not supported immediately after call to controlKeyDown() or altKeyDown() or metaKeyDown()");
 
     String valueToUse = state.shiftKeyDown ? value.toUpperCase() : value;
 
@@ -62,14 +60,14 @@ public class Type extends SeleneseCommand<Void> {
 
     String tagName = element.getTagName();
     String elementType = element.getAttribute("type");
-    if ("input".equalsIgnoreCase(tagName) &&
-        elementType != null && "file".equalsIgnoreCase(elementType)) {
+    if ("input".equals(tagName.toLowerCase()) &&
+        elementType != null && "file".equals(elementType.toLowerCase())) {
       log.warning("You should be using attachFile to set the value of a file input element");
       element.sendKeys(valueToUse);
       return null;
     }
 
-    if (!"input".equalsIgnoreCase(tagName)) {
+    if (!"input".equals(tagName.toLowerCase())) {
       if (driver instanceof JavascriptExecutor) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].value = '';", element);
       }

@@ -25,7 +25,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class GetElementIndex extends SeleneseCommand<Number> {
-
   private final ElementFinder finder;
   private final JavascriptLibrary js;
 
@@ -39,20 +38,19 @@ public class GetElementIndex extends SeleneseCommand<Number> {
     WebElement element = finder.findElement(driver, locator);
 
     String script =
-      "var _isCommentOrEmptyTextNode = function(node) {\n" +
-      "    return node.nodeType == 8 || ((node.nodeType == 3) && !(/[^\\t\\n\\r ]/.test(node.data)));\n"
-      +
-      "};\n" +
-      "    var element = arguments[0];\n" +
-      "    var previousSibling;\n" +
-      "    var index = 0;\n" +
-      "    while ((previousSibling = element.previousSibling) != null) {\n" +
-      "        if (!_isCommentOrEmptyTextNode(previousSibling)) {\n" +
-      "            index++;\n" +
-      "        }\n" +
-      "        element = previousSibling;\n" +
-      "    }\n" +
-      "    return index;";
+        "var _isCommentOrEmptyTextNode = function(node) {\n" +
+        "    return node.nodeType == 8 || ((node.nodeType == 3) && !(/[^\\t\\n\\r ]/.test(node.data)));\n" +
+        "};\n" +
+        "    var element = arguments[0];\n" +
+        "    var previousSibling;\n" +
+        "    var index = 0;\n" +
+        "    while ((previousSibling = element.previousSibling) != null) {\n" +
+        "        if (!_isCommentOrEmptyTextNode(previousSibling)) {\n" +
+        "            index++;\n" +
+        "        }\n" +
+        "        element = previousSibling;\n" +
+        "    }\n" +
+        "    return index;";
 
     return (Long) js.executeScript(driver, script, element);
   }

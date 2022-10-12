@@ -24,7 +24,6 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
 public class GetElementWidth extends SeleneseCommand<Number> {
-
   private final ElementFinder finder;
 
   public GetElementWidth(ElementFinder finder) {

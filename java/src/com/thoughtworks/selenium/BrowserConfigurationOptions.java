@@ -28,25 +28,27 @@ import java.util.stream.Collectors;
  * set within will override any command-line parameters set for the same option.
  *
  * @author jbevan, chandrap
+ *
  */
 public class BrowserConfigurationOptions {
-
   public static final String PROXY_CONFIG = "proxy";
-  static final String PROFILE_NAME = "profile";
-  static final String SINGLE_WINDOW = "singleWindow";
-  static final String MULTI_WINDOW = "multiWindow";
-  static final String BROWSER_EXECUTABLE_PATH = "executablePath";
-  static final String TIMEOUT_IN_SECONDS = "timeoutInSeconds";
-  static final String BROWSER_MODE = "mode";
-  static final int DEFAULT_TIMEOUT_IN_SECONDS = 30 * 60; // identical to
-  private static final String COMMAND_LINE_FLAGS = "commandLineFlags";
-  // RemoteControlConfiguration;
-  private final Map<String, String> options = new HashMap<>();
+  public static final String PROFILE_NAME = "profile";
+  public static final String SINGLE_WINDOW = "singleWindow";
+  public static final String MULTI_WINDOW = "multiWindow";
+  public static final String BROWSER_EXECUTABLE_PATH = "executablePath";
+  public static final String TIMEOUT_IN_SECONDS = "timeoutInSeconds";
+  public static final String BROWSER_MODE = "mode";
+  public static final String COMMAND_LINE_FLAGS = "commandLineFlags";
+
+  public static final int DEFAULT_TIMEOUT_IN_SECONDS = 30 * 60; // identical to
+                                                                // RemoteControlConfiguration;
+
+  private Map<String, String> options = new HashMap<>();
 
   /**
    * Instantiate a blank BrowserConfigurationOptions instance.
    */
-  BrowserConfigurationOptions() {
+  public BrowserConfigurationOptions() {
   }
 
   /**
@@ -69,10 +71,6 @@ public class BrowserConfigurationOptions {
       .collect(Collectors.joining(";"));
   }
 
-  String getProfile() {
-    return options.get(PROFILE_NAME);
-  }
-
   /**
    * Sets the name of the profile, which must exist in the -profilesLocation directory, to use for
    * this browser session.
@@ -85,12 +83,17 @@ public class BrowserConfigurationOptions {
     return this;
   }
 
+  protected String getProfile() {
+    return options.get(PROFILE_NAME);
+  }
+
+
   /**
    * Returns true if the {@code SINGLE_WINDOW} field is set.
    *
    * @return true if {@code SINGLE_WINDOW} is set.
    */
-  boolean isSingleWindow() {
+  protected boolean isSingleWindow() {
     return isSet(SINGLE_WINDOW);
   }
 
@@ -99,7 +102,7 @@ public class BrowserConfigurationOptions {
    *
    * @return true if {@code MULTI_WINDOW} is set.
    */
-  boolean isMultiWindow() {
+  protected boolean isMultiWindow() {
     return isSet(MULTI_WINDOW);
   }
 
@@ -108,7 +111,7 @@ public class BrowserConfigurationOptions {
    *
    * @return this / self
    */
-  BrowserConfigurationOptions setSingleWindow() {
+  public BrowserConfigurationOptions setSingleWindow() {
     synchronized (options) {
       options.put(SINGLE_WINDOW, "true"); // "true" string used for serialization
       options.remove(MULTI_WINDOW);
@@ -121,7 +124,7 @@ public class BrowserConfigurationOptions {
    *
    * @return this / self
    */
-  BrowserConfigurationOptions setMultiWindow() {
+  public BrowserConfigurationOptions setMultiWindow() {
     synchronized (options) {
       options.put(MULTI_WINDOW, "true"); // "true" string used for serialization
       options.remove(SINGLE_WINDOW);
@@ -129,7 +132,7 @@ public class BrowserConfigurationOptions {
     return this;
   }
 
-  String getBrowserExecutablePath() {
+  protected String getBrowserExecutablePath() {
     return options.get(BROWSER_EXECUTABLE_PATH);
   }
 
@@ -140,17 +143,9 @@ public class BrowserConfigurationOptions {
    * @param executablePath the full path for the browser executable.
    * @return this / self
    */
-  BrowserConfigurationOptions setBrowserExecutablePath(String executablePath) {
+  public BrowserConfigurationOptions setBrowserExecutablePath(String executablePath) {
     put(BROWSER_EXECUTABLE_PATH, executablePath);
     return this;
-  }
-
-  int getTimeoutInSeconds() {
-    String value = options.get(TIMEOUT_IN_SECONDS);
-    if (value == null) {
-      return DEFAULT_TIMEOUT_IN_SECONDS;
-    }
-    return Integer.parseInt(value);
   }
 
   /**
@@ -159,36 +154,38 @@ public class BrowserConfigurationOptions {
    * @param timeout the timeout for all commands
    * @return this BrowserConfigurationOptions instance.
    */
-  BrowserConfigurationOptions setTimeoutInSeconds(int timeout) {
+  public BrowserConfigurationOptions setTimeoutInSeconds(int timeout) {
     put(TIMEOUT_IN_SECONDS, String.valueOf(timeout));
     return this;
   }
 
-  String getBrowserMode() {
-    return options.get(BROWSER_MODE);
+  protected int getTimeoutInSeconds() {
+    String value = options.get(TIMEOUT_IN_SECONDS);
+    if (value == null) return DEFAULT_TIMEOUT_IN_SECONDS;
+    return Integer.parseInt(value);
   }
 
   /**
    * Sets the "mode" for the browser.
-   * <p>
+   *
    * Historically, the 'browser' argument for getNewBrowserSession implied the mode for the browser.
    * For example, *iehta indicated HTA mode for IE, whereas *iexplore indicated the default user
    * mode. Using this method allows a browser mode to be specified independently of the base
    * browser, eg. "HTA" or "PROXY".
-   * <p>
+   *
    * Note that absolutely no publication nor synchronization of these hard-coded strings such as
    * "HTA" has yet been done. Use at your own risk until this is rectified.
    *
    * @param mode - examples "HTA" or "PROXY"
    * @return this / self
    */
-  BrowserConfigurationOptions setBrowserMode(String mode) {
+  public BrowserConfigurationOptions setBrowserMode(String mode) {
     put(BROWSER_MODE, mode);
     return this;
   }
 
-  public String getCommandLineFlags() {
-    return get(COMMAND_LINE_FLAGS);
+  protected String getBrowserMode() {
+    return options.get(BROWSER_MODE);
   }
 
   public BrowserConfigurationOptions setCommandLineFlags(String cmdLineFlags) {
@@ -196,7 +193,11 @@ public class BrowserConfigurationOptions {
     return this;
   }
 
-  boolean canUse(String value) {
+  public String getCommandLineFlags() {
+    return get(COMMAND_LINE_FLAGS);
+  }
+
+  protected boolean canUse(String value) {
     return (value != null && !"".equals(value));
   }
 
@@ -206,7 +207,7 @@ public class BrowserConfigurationOptions {
     }
   }
 
-  boolean isSet(String key) {
+  public boolean isSet(String key) {
     boolean result = false;
     synchronized (options) {
       result = (null != options.get(key));
@@ -223,7 +224,7 @@ public class BrowserConfigurationOptions {
    * Sets the given key to the given value unless the value is null. In that case, no entry for the
    * key is made.
    *
-   * @param key   the name of the key
+   * @param key the name of the key
    * @param value the value for the key
    * @return this / self
    */

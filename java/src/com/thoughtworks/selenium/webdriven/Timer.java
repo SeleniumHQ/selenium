@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.SeleniumException;
 import org.openqa.selenium.WebDriver;
 
 public class Timer {
-
   private volatile long timeout;
   private boolean stopped;
 

@@ -22,8 +22,7 @@ package com.thoughtworks.selenium.condition;
  * Selenium tests. A "Not" is the inverse of any other Condition.
  */
 public class Not extends Condition {
-
-  private final Condition positiveCondition;
+  private Condition positiveCondition;
 
   public Not(Condition positiveCondition) {
     super("NOT of (" + positiveCondition.getMessage() + ")");

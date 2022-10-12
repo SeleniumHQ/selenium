@@ -24,12 +24,11 @@ import java.util.regex.Pattern;
  * function.
  */
 public class FunctionDeclaration implements ScriptMutator {
-
   private final Pattern pattern;
   private final String function;
 
   /**
-   * @param raw    The original function (eg: "selenium.isElementPresent")
+   * @param raw The original function (eg: "selenium.isElementPresent")
    * @param result The body of the function implementation.
    */
   public FunctionDeclaration(String raw, String result) {

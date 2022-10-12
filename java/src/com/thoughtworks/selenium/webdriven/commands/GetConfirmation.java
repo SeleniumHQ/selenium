@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class GetConfirmation extends SeleneseCommand<String> {
-
   private final AlertOverride alertOverride;
 
   public GetConfirmation(AlertOverride alertOverride) {

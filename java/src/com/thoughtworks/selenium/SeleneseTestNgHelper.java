@@ -27,6 +27,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
+import org.testng.internal.IResultListener;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -34,36 +35,6 @@ import java.lang.reflect.Method;
 public class SeleneseTestNgHelper extends SeleneseTestBase {
 
   private Selenium staticSelenium;
-
-  // @Override static method of super class (which assumes JUnit conventions)
-  public static void assertEquals(Object actual, Object expected) {
-    SeleneseTestBase.assertEquals(expected, actual);
-  }
-
-  // @Override static method of super class (which assumes JUnit conventions)
-  public static void assertEquals(String actual, String expected) {
-    SeleneseTestBase.assertEquals(expected, actual);
-  }
-
-  // @Override static method of super class (which assumes JUnit conventions)
-  public static void assertEquals(String actual, String[] expected) {
-    SeleneseTestBase.assertEquals(expected, new String[]{actual});
-  }
-
-  // @Override static method of super class (which assumes JUnit conventions)
-  public static void assertEquals(String[] actual, String[] expected) {
-    SeleneseTestBase.assertEquals(expected, actual);
-  }
-
-  // @Override static method of super class (which assumes JUnit conventions)
-  public static boolean seleniumEquals(Object actual, Object expected) {
-    return SeleneseTestBase.seleniumEquals(expected, actual);
-  }
-
-  // @Override static method of super class (which assumes JUnit conventions)
-  public static boolean seleniumEquals(String actual, String expected) {
-    return SeleneseTestBase.seleniumEquals(expected, actual);
-  }
 
   @BeforeTest
   @Override
@@ -89,23 +60,23 @@ public class SeleneseTestNgHelper extends SeleneseTestBase {
   @BeforeMethod
   public void setTestContext(Method method) {
     selenium.setContext(
-      method.getDeclaringClass().getSimpleName() + "." + method.getName());
+        method.getDeclaringClass().getSimpleName() + "." + method.getName());
 
   }
 
   @BeforeSuite
   @Parameters({"selenium.host", "selenium.port"})
   public void attachScreenshotListener(@Optional("localhost") String host,
-                                       @Optional("4444") String port, ITestContext context) {
+      @Optional("4444") String port, ITestContext context) {
     if (!"localhost".equals(host)) {
       return;
     }
     Selenium screenshotTaker = new DefaultSelenium(host, Integer.parseInt(port),
-                                                   "", "");
+        "", "");
     TestRunner tr = (TestRunner) context;
     File outputDirectory = new File(context.getOutputDirectory());
-    tr.addListener(new ScreenshotListener(outputDirectory,
-                                          screenshotTaker));
+    tr.addListener((IResultListener) new ScreenshotListener(outputDirectory,
+        screenshotTaker));
   }
 
   @AfterMethod
@@ -125,6 +96,36 @@ public class SeleneseTestNgHelper extends SeleneseTestBase {
   @Override
   public void tearDown() throws Exception {
     super.tearDown();
+  }
+
+  // @Override static method of super class (which assumes JUnit conventions)
+  public static void assertEquals(Object actual, Object expected) {
+    SeleneseTestBase.assertEquals(expected, actual);
+  }
+
+  // @Override static method of super class (which assumes JUnit conventions)
+  public static void assertEquals(String actual, String expected) {
+    SeleneseTestBase.assertEquals(expected, actual);
+  }
+
+  // @Override static method of super class (which assumes JUnit conventions)
+  public static void assertEquals(String actual, String[] expected) {
+    SeleneseTestBase.assertEquals(expected, new String[] {actual});
+  }
+
+  // @Override static method of super class (which assumes JUnit conventions)
+  public static void assertEquals(String[] actual, String[] expected) {
+    SeleneseTestBase.assertEquals(expected, actual);
+  }
+
+  // @Override static method of super class (which assumes JUnit conventions)
+  public static boolean seleniumEquals(Object actual, Object expected) {
+    return SeleneseTestBase.seleniumEquals(expected, actual);
+  }
+
+  // @Override static method of super class (which assumes JUnit conventions)
+  public static boolean seleniumEquals(String actual, String expected) {
+    return SeleneseTestBase.seleniumEquals(expected, actual);
   }
 
   @Override

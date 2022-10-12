@@ -45,9 +45,9 @@ import java.util.List;
 @Deprecated
 public class HttpCommandProcessor implements CommandProcessor {
 
+  private String pathToServlet;
   private final String browserStartCommand;
   private final String browserURL;
-  private String pathToServlet;
   private String sessionId;
   private String extensionJs;
   private String rcServerLocation;
@@ -56,15 +56,15 @@ public class HttpCommandProcessor implements CommandProcessor {
    * Specifies a server host/port, a command to launch the browser, and a starting URL for the
    * browser.
    *
-   * @param serverHost          - the host name on which the Selenium Server resides
-   * @param serverPort          - the port on which the Selenium Server is listening
+   * @param serverHost - the host name on which the Selenium Server resides
+   * @param serverPort - the port on which the Selenium Server is listening
    * @param browserStartCommand - the command string used to launch the browser, e.g. "*firefox" or
-   *                            "c:\\program files\\internet explorer\\iexplore.exe"
-   * @param browserURL          - the starting URL including just a domain name. We'll start the browser
-   *                            pointing at the Selenium resources on this URL,
+   *        "c:\\program files\\internet explorer\\iexplore.exe"
+   * @param browserURL - the starting URL including just a domain name. We'll start the browser
+   *        pointing at the Selenium resources on this URL,
    */
   public HttpCommandProcessor(String serverHost, int serverPort, String browserStartCommand,
-                              String browserURL) {
+      String browserURL) {
     rcServerLocation = serverHost + ":" + serverPort;
     this.pathToServlet = "http://" + rcServerLocation + "/selenium-server/driver/";
     this.browserStartCommand = browserStartCommand;
@@ -76,49 +76,18 @@ public class HttpCommandProcessor implements CommandProcessor {
    * Specifies the URL to the CommandBridge servlet, a command to launch the browser, and a starting
    * URL for the browser.
    *
-   * @param pathToServlet       - the URL of the Selenium Server Driver, e.g.
-   *                            "http://localhost:4444/selenium-server/driver/" (don't forget the final slash!)
+   * @param pathToServlet - the URL of the Selenium Server Driver, e.g.
+   *        "http://localhost:4444/selenium-server/driver/" (don't forget the final slash!)
    * @param browserStartCommand - the command string used to launch the browser, e.g. "*firefox" or
-   *                            "c:\\program files\\internet explorer\\iexplore.exe"
-   * @param browserURL          - the starting URL including just a domain name. We'll start the browser
-   *                            pointing at the Selenium resources on this URL,
+   *        "c:\\program files\\internet explorer\\iexplore.exe"
+   * @param browserURL - the starting URL including just a domain name. We'll start the browser
+   *        pointing at the Selenium resources on this URL,
    */
   public HttpCommandProcessor(String pathToServlet, String browserStartCommand, String browserURL) {
     this.pathToServlet = pathToServlet;
     this.browserStartCommand = browserStartCommand;
     this.browserURL = browserURL;
     this.extensionJs = "";
-  }
-
-  /**
-   * Convert backslash-escaped comma-delimited string into String array. As described in SRC-CDP
-   * spec section 5.2.1.2, these strings are comma-delimited, but commas can be escaped with a
-   * backslash "\". Backslashes can also be escaped as a double-backslash.
-   *
-   * @param input the unparsed string, e.g. "veni\, vidi\, vici,c:\\foo\\bar,c:\\I came\, I
-   *              \\saw\\\, I conquered"
-   * @return the string array resulting from parsing this string
-   */
-  public static String[] parseCSV(String input) {
-    List<String> output = new ArrayList<>();
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < input.length(); i++) {
-      char c = input.charAt(i);
-      switch (c) {
-        case ',':
-          output.add(sb.toString());
-          sb = new StringBuilder();
-          continue;
-        case '\\':
-          i++;
-          c = input.charAt(i);
-          // fall through to:
-        default:
-          sb.append(c);
-      }
-    }
-    output.add(sb.toString());
-    return output.toArray(new String[0]);
   }
 
   @Override
@@ -143,9 +112,7 @@ public class HttpCommandProcessor implements CommandProcessor {
     throw new SeleniumException(message);
   }
 
-  /**
-   * Sends the specified command string to the bridge servlet
-   *
+  /** Sends the specified command string to the bridge servlet
    * @param command command to execute
    * @return response from the command execution
    */
@@ -158,7 +125,7 @@ public class HttpCommandProcessor implements CommandProcessor {
       }
       e.printStackTrace();
       throw new UnsupportedOperationException("Catch body broken: IOException from " + command +
-                                              " -> " + e, e);
+          " -> " + e, e);
     }
   }
 
@@ -273,15 +240,15 @@ public class HttpCommandProcessor implements CommandProcessor {
   @Override
   public void start() {
     String result = getString("getNewBrowserSession",
-                              new String[]{browserStartCommand, browserURL, extensionJs});
+        new String[] {browserStartCommand, browserURL, extensionJs});
     setSessionInProgress(result);
   }
 
   @Override
   public void start(String optionsString) {
     String result = getString("getNewBrowserSession",
-                              new String[]{browserStartCommand, browserURL,
-                                           extensionJs, optionsString});
+        new String[] {browserStartCommand, browserURL,
+            extensionJs, optionsString});
     setSessionInProgress(result);
   }
 
@@ -326,6 +293,37 @@ public class HttpCommandProcessor implements CommandProcessor {
   public String[] getStringArray(String commandName, String[] args) {
     String result = getString(commandName, args);
     return parseCSV(result);
+  }
+
+  /**
+   * Convert backslash-escaped comma-delimited string into String array. As described in SRC-CDP
+   * spec section 5.2.1.2, these strings are comma-delimited, but commas can be escaped with a
+   * backslash "\". Backslashes can also be escaped as a double-backslash.
+   *
+   * @param input the unparsed string, e.g. "veni\, vidi\, vici,c:\\foo\\bar,c:\\I came\, I
+   *        \\saw\\\, I conquered"
+   * @return the string array resulting from parsing this string
+   */
+  public static String[] parseCSV(String input) {
+    List<String> output = new ArrayList<>();
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < input.length(); i++) {
+      char c = input.charAt(i);
+      switch (c) {
+        case ',':
+          output.add(sb.toString());
+          sb = new StringBuilder();
+          continue;
+        case '\\':
+          i++;
+          c = input.charAt(i);
+          // fall through to:
+        default:
+          sb.append(c);
+      }
+    }
+    output.add(sb.toString());
+    return output.toArray(new String[0]);
   }
 
   @Override
@@ -387,7 +385,7 @@ public class HttpCommandProcessor implements CommandProcessor {
         continue;
       }
       throw new RuntimeException("result was neither 'true' nor 'false': " +
-                                 Arrays.toString(result));
+          Arrays.toString(result));
     }
     return b;
   }

@@ -27,7 +27,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 public class GetText extends SeleneseCommand<String> {
-
   private final JavascriptLibrary library;
   private final ElementFinder finder;
 
@@ -42,7 +41,7 @@ public class GetText extends SeleneseCommand<String> {
 
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
-        "return (" + getText + ")(arguments[0]);", locator);
+          "return (" + getText + ")(arguments[0]);", locator);
     } catch (WebDriverException e) {
       // TODO(simon): remove fall back for IE driver
       WebElement element = finder.findElement(driver, locator);

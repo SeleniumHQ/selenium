@@ -35,7 +35,7 @@ public class SeleniumSelect {
   private final WebDriver driver;
   private final WebElement select;
 
-  SeleniumSelect(
+  public SeleniumSelect(
     JavascriptLibrary library,
     ElementFinder finder,
     WebDriver driver,
@@ -46,7 +46,7 @@ public class SeleniumSelect {
       "return (" + library.getSeleniumScript("findOption.js") + ").apply(null, arguments)";
 
     select = finder.findElement(driver, locator);
-    if (!"select".equalsIgnoreCase(select.getTagName())) {
+    if (!"select".equals(select.getTagName().toLowerCase())) {
       throw new SeleniumException("Element is not a select element: " + locator);
     }
   }
@@ -66,7 +66,7 @@ public class SeleniumSelect {
     }
   }
 
-  void addSelection(String optionLocator) {
+  public void addSelection(String optionLocator) {
     assertSupportsMultipleSelections();
 
     WebElement option = findOption(optionLocator);
@@ -75,7 +75,7 @@ public class SeleniumSelect {
     }
   }
 
-  void removeSelection(String optionLocator) {
+  public void removeSelection(String optionLocator) {
     assertSupportsMultipleSelections();
 
     WebElement option = findOption(optionLocator);
@@ -84,7 +84,7 @@ public class SeleniumSelect {
     }
   }
 
-  List<WebElement> getSelectedOptions() {
+  public List<WebElement> getSelectedOptions() {
     List<WebElement> toReturn = new ArrayList<>();
 
     for (WebElement option : select.findElements(By.tagName("option"))) {
@@ -96,15 +96,15 @@ public class SeleniumSelect {
     return toReturn;
   }
 
-  private WebElement findOption(String optionLocator) {
+  public WebElement findOption(String optionLocator) {
     return (WebElement) ((JavascriptExecutor) driver)
-      .executeScript(findOption, select, optionLocator);
+        .executeScript(findOption, select, optionLocator);
   }
 
   private void assertSupportsMultipleSelections() {
     if (!isMultiple()) {
       throw new SeleniumException(
-        "You may only add a selection to a select that supports multiple selections");
+          "You may only add a selection to a select that supports multiple selections");
     }
   }
 
@@ -113,7 +113,7 @@ public class SeleniumSelect {
     return "true".equals(multipleValue) || "multiple".equals(multipleValue);
   }
 
-  List<WebElement> getAllOptions() {
+  public List<WebElement> getAllOptions() {
     return select.findElements(By.tagName("option"));
   }
 }

@@ -24,7 +24,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class RunScript extends SeleneseCommand<Void> {
-
   private final ScriptMutator mutator;
 
   public RunScript(ScriptMutator mutator) {
@@ -33,7 +32,7 @@ public class RunScript extends SeleneseCommand<Void> {
 
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator,
-                                       String value) {
+      String value) {
     StringBuilder builder = new StringBuilder();
     mutator.mutate(locator, builder);
 

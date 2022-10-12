@@ -21,7 +21,6 @@ package com.thoughtworks.selenium.condition;
  * Checks whether a given locator exists on the page.
  */
 public class Presence extends Condition {
-
   private final String locator;
 
   /**

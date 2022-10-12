@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class ControlKeyDown extends SeleneseCommand<Void> {
-
   private final KeyState keyState;
 
   public ControlKeyDown(KeyState keyState) {

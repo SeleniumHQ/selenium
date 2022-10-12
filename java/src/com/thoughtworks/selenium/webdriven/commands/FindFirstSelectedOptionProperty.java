@@ -34,7 +34,7 @@ public class FindFirstSelectedOptionProperty extends SeleneseCommand<String> {
   private final String property;
 
   public FindFirstSelectedOptionProperty(JavascriptLibrary library, ElementFinder finder,
-                                         String property) {
+      String property) {
     this.library = library;
     this.finder = finder;
     this.property = property;

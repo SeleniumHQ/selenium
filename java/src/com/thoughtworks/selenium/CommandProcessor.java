@@ -22,6 +22,7 @@ package com.thoughtworks.selenium;
  * Provides a <code>doCommand</code> method, which sends the command to the browser to be performed.
  * </p>
  *
+ *
  * @author Paul Hammant
  * @version $Revision$
  * @deprecated The RC interface will be removed in Selenium 3.0. Please migrate to using WebDriver.
@@ -40,10 +41,10 @@ public interface CommandProcessor {
    * Send the specified remote command to the browser to be performed
    *
    * @param command - the remote command verb
-   * @param args    - the arguments to the remote command (depends on the verb)
+   * @param args - the arguments to the remote command (depends on the verb)
    * @return - the command result, defined by the remote JavaScript. "getX" style commands may
-   * return data from the browser; other "doX" style commands may just return "OK" or an
-   * error message.
+   *         return data from the browser; other "doX" style commands may just return "OK" or an
+   *         error message.
    */
   String doCommand(String command, String[] args);
 
@@ -54,28 +55,20 @@ public interface CommandProcessor {
    */
   void setExtensionJs(String extensionJs);
 
-  /**
-   * Starts a new Selenium testing session
-   */
+  /** Starts a new Selenium testing session */
   void start();
 
-  /**
-   * Starts a new Selenium testing session with a String, representing a configuration
-   *
+  /** Starts a new Selenium testing session with a String, representing a configuration
    * @param optionsString option string
    */
   void start(String optionsString);
 
-  /**
-   * Starts a new Selenium testing session with a configuration options object
-   *
+  /** Starts a new Selenium testing session with a configuration options object
    * @param optionsObject options object
    */
   void start(Object optionsObject);
 
-  /**
-   * Ends the current Selenium testing session (normally killing the browser)
-   */
+  /** Ends the current Selenium testing session (normally killing the browser) */
   void stop();
 
   String getString(String string, String[] strings);

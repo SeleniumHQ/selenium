@@ -31,21 +31,22 @@ public abstract class Condition {
 
   private final String message;
 
+  public abstract boolean isTrue(ConditionRunner.Context runner);
+
   /**
    * Creates an instance of Condition with is canonical name as message
    */
-  protected Condition() {
-    message = getClass().getCanonicalName();
+  public Condition() {
+    this.message = getClass().getCanonicalName();
   }
 
   /**
    * Creates an instance of Condition with the given {@code message} and {@code args}, which are in
    * the {@link String#format(String, Object...)} model.
-   *
    * @param message message
-   * @param args    args
+   * @param args args
    */
-  protected Condition(String message, Object[] args) {
+  public Condition(String message, Object[] args) {
     if (null == message) {
       throw new NullPointerException("Condition names must not be null");
     }
@@ -53,32 +54,29 @@ public abstract class Condition {
   }
 
   // drop these for var-args in another year.
-  protected Condition(String message) {
+  public Condition(String message) {
     this(message, new Object[0]);
   }
 
-  protected Condition(String message, Object arg) {
-    this(message, new Object[]{arg});
+  public Condition(String message, Object arg) {
+    this(message, new Object[] {arg});
   }
 
-  protected Condition(String message, Object arg0, Object arg1) {
-    this(message, new Object[]{arg0, arg1});
+  public Condition(String message, Object arg0, Object arg1) {
+    this(message, new Object[] {arg0, arg1});
   }
 
-  protected Condition(String message, Object arg0, Object arg1, Object arg2) {
-    this(message, new Object[]{arg0, arg1, arg2});
+  public Condition(String message, Object arg0, Object arg1, Object arg2) {
+    this(message, new Object[] {arg0, arg1, arg2});
   }
 
-  protected Condition(String message, Object arg0, Object arg1, Object arg2, Object arg3) {
-    this(message, new Object[]{arg0, arg1, arg2, arg3});
+  public Condition(String message, Object arg0, Object arg1, Object arg2, Object arg3) {
+    this(message, new Object[] {arg0, arg1, arg2, arg3});
   }
 
-  protected Condition(String message, Object arg0, Object arg1, Object arg2, Object arg3,
-                      Object arg4) {
-    this(message, new Object[]{arg0, arg1, arg2, arg3, arg4});
+  public Condition(String message, Object arg0, Object arg1, Object arg2, Object arg3, Object arg4) {
+    this(message, new Object[] {arg0, arg1, arg2, arg3, arg4});
   }
-
-  public abstract boolean isTrue(ConditionRunner.Context runner);
 
   public String getMessage() {
     return toString();
@@ -86,6 +84,6 @@ public abstract class Condition {
 
   @Override
   public String toString() {
-    return "Condition \"" + message + "\"";
+    return "Condition \"" + this.message + "\"";
   }
 }

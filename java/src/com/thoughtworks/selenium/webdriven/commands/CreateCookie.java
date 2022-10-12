@@ -30,19 +30,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CreateCookie extends SeleneseCommand<Void> {
-
+  private final Pattern NAME_VALUE_PAIR_PATTERN =
+      Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^\\[\\]\\(\\),\"\\/\\?@:;]*)");
   private static final Pattern MAX_AGE_PATTERN = Pattern.compile("max_age=(\\d+)");
   private static final Pattern PATH_PATTERN = Pattern.compile("path=([^\\s,]+)[,]?");
-  private final Pattern NAME_VALUE_PAIR_PATTERN =
-    Pattern.compile("([^\\s=\\[\\]\\(\\),\"\\/\\?@:;]+)=([^\\[\\]\\(\\),\"\\/\\?@:;]*)");
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String nameValuePair,
-                                       String optionsString) {
+  protected Void handleSeleneseCommand(WebDriver driver, String nameValuePair, String optionsString) {
     Matcher nameValuePairMatcher = NAME_VALUE_PAIR_PATTERN.matcher(nameValuePair);
-    if (!nameValuePairMatcher.find()) {
+    if (!nameValuePairMatcher.find())
       throw new SeleniumException("Invalid parameter: " + nameValuePair);
-    }
 
     String name = nameValuePairMatcher.group(1);
     String value = nameValuePairMatcher.group(2);
@@ -52,7 +49,7 @@ public class CreateCookie extends SeleneseCommand<Void> {
 
     if (maxAgeMatcher.find()) {
       maxAge =
-        new Date(System.currentTimeMillis() + Integer.parseInt(maxAgeMatcher.group(1)) * 1000L);
+          new Date(System.currentTimeMillis() + Integer.parseInt(maxAgeMatcher.group(1)) * 1000);
     }
 
     String path = null;

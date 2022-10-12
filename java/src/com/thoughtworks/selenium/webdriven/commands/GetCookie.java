@@ -23,7 +23,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 
 public class GetCookie extends SeleneseCommand<String> {
-
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     StringBuilder builder = new StringBuilder();

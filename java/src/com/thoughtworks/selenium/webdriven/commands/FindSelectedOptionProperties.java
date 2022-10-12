@@ -28,12 +28,12 @@ import java.util.List;
 
 public class FindSelectedOptionProperties extends SeleneseCommand<String[]> {
 
+  private JavascriptLibrary library;
   private final ElementFinder finder;
   private final String property;
-  private final JavascriptLibrary library;
 
   public FindSelectedOptionProperties(JavascriptLibrary library, ElementFinder finder,
-                                      String property) {
+      String property) {
     this.library = library;
     this.finder = finder;
     this.property = property;

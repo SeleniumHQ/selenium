@@ -23,7 +23,6 @@ import java.util.function.Supplier;
 
 // Visibility set to package level deliberately
 class ExplodingSupplier implements Supplier<WebDriver> {
-
   @Override
   public WebDriver get() {
     throw new UnsupportedOperationException("Cowardly refusing to create a new WebDriver");

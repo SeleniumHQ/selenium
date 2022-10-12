@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class IsCookiePresent extends SeleneseCommand<Boolean> {
-
   @Override
   protected Boolean handleSeleneseCommand(WebDriver driver, String name, String ignored) {
     return driver.manage().getCookieNamed(name) != null;

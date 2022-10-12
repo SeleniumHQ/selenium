@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.webdriven.ScriptMutator;
 import java.util.regex.Pattern;
 
 public class MethodDeclaration implements ScriptMutator {
-
   private final Pattern pattern;
   private final String function;
 

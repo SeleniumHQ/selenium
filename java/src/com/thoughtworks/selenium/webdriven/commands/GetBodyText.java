@@ -23,7 +23,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class GetBodyText extends SeleneseCommand<String> {
-
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     return driver.findElement(By.xpath("//body")).getText();

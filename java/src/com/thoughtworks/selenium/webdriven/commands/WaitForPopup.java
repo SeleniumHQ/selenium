@@ -25,7 +25,6 @@ import com.thoughtworks.selenium.webdriven.Windows;
 import org.openqa.selenium.WebDriver;
 
 public class WaitForPopup extends SeleneseCommand<Void> {
-
   private final Windows windows;
   private final Runnable sleepUntil;
 

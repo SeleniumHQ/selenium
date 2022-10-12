@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetAllFields extends SeleneseCommand<String[]> {
-
   @Override
   protected String[] handleSeleneseCommand(WebDriver driver, String locator, String value) {
     List<WebElement> allInputs = driver.findElements(By.xpath("//input"));
@@ -35,9 +34,8 @@ public class GetAllFields extends SeleneseCommand<String[]> {
 
     for (WebElement input : allInputs) {
       String type = input.getAttribute("type").toLowerCase();
-      if ("text".equals(type)) {
+      if ("text".equals(type))
         ids.add(input.getAttribute("id"));
-      }
     }
 
     return ids.toArray(new String[ids.size()]);

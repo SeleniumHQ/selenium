@@ -24,12 +24,11 @@ import java.util.Arrays;
 /**
  * The default implementation of the RemoteCommand interface
  *
+ * @see com.thoughtworks.selenium.RemoteCommand
  * @author Paul Hammant
  * @version $Revision$
- * @see com.thoughtworks.selenium.RemoteCommand
  */
 public class DefaultRemoteCommand implements RemoteCommand {
-
   // as we have beginning and ending pipes, we will have 1 more entry than we need
   private static final int NUMARGSINCLUDINGBOUNDARIES = 4;
   private static final int FIRSTINDEX = 1;
@@ -51,31 +50,11 @@ public class DefaultRemoteCommand implements RemoteCommand {
     }
   }
 
-  /**
-   * Factory method to create a RemoteCommand from a wiki-style input string
-   *
-   * @param inputLine wiki-style input string
-   * @return RemoteCommand
-   */
-  public static RemoteCommand parse(String inputLine) {
-    if (null == inputLine) {
-      throw new NullPointerException("inputLine can't be null");
-    }
-    String[] values = inputLine.split("\\|");
-    if (values.length != NUMARGSINCLUDINGBOUNDARIES) {
-      throw new IllegalStateException("Cannot parse invalid line: " + inputLine + values.length);
-    }
-    return new DefaultRemoteCommand(values[FIRSTINDEX], new String[]{values[SECONDINDEX],
-                                                                     values[THIRDINDEX]});
-  }
-
   @Override
   public String getCommandURLString() {
     StringBuilder sb = new StringBuilder("cmd=");
     sb.append(Urls.urlEncode(command));
-    if (args == null) {
-      return sb.toString();
-    }
+    if (args == null) return sb.toString();
     for (int i = 0; i < args.length; i++) {
       sb.append('&');
       sb.append(i + 1);
@@ -88,6 +67,20 @@ public class DefaultRemoteCommand implements RemoteCommand {
   @Override
   public String toString() {
     return getCommandURLString();
+  }
+
+  /** Factory method to create a RemoteCommand from a wiki-style input string
+   * @param inputLine wiki-style input string
+   * @return RemoteCommand
+   */
+  public static RemoteCommand parse(String inputLine) {
+    if (null == inputLine) throw new NullPointerException("inputLine can't be null");
+    String[] values = inputLine.split("\\|");
+    if (values.length != NUMARGSINCLUDINGBOUNDARIES) {
+      throw new IllegalStateException("Cannot parse invalid line: " + inputLine + values.length);
+    }
+    return new DefaultRemoteCommand(values[FIRSTINDEX], new String[] {values[SECONDINDEX],
+        values[THIRDINDEX]});
   }
 
 }

@@ -23,7 +23,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 
 public class KeyPressNative extends SeleneseCommand<Void> {
-
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String keyCode, String ignored) {
     System.out.println(keyCode);

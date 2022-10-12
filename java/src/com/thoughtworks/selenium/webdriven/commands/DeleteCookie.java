@@ -23,7 +23,6 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 
 public class DeleteCookie extends SeleneseCommand<Void> {
-
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String name, String ignored) {
     Cookie cookie = driver.manage().getCookieNamed(name);

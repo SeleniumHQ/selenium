@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class Close extends SeleneseCommand<Void> {
-
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     driver.close();

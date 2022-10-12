@@ -24,7 +24,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class Click extends SeleneseCommand<Void> {
-
   private final AlertOverride alertOverride;
   private final ElementFinder finder;
 

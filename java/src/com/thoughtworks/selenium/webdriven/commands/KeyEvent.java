@@ -24,14 +24,13 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class KeyEvent extends SeleneseCommand<Void> {
-
   private final ElementFinder elementFinder;
   private final JavascriptLibrary js;
   private final KeyState state;
   private final String eventName;
 
   public KeyEvent(ElementFinder elementFinder, JavascriptLibrary js, KeyState state,
-                  String eventName) {
+      String eventName) {
     this.elementFinder = elementFinder;
     this.js = js;
     this.state = state;
@@ -41,8 +40,7 @@ public class KeyEvent extends SeleneseCommand<Void> {
   @Override
   protected Void handleSeleneseCommand(WebDriver driver, String locator, String value) {
     js.callEmbeddedSelenium(driver, eventName, elementFinder.findElement(driver, locator),
-                            value, state.controlKeyDown, state.altKeyDown, state.shiftKeyDown,
-                            state.metaKeyDown);
+        value, state.controlKeyDown, state.altKeyDown, state.shiftKeyDown, state.metaKeyDown);
 
     return null;
   }

@@ -25,7 +25,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class FireEvent extends SeleneseCommand<Void> {
-
   private final ElementFinder elementFinder;
   private final JavascriptLibrary js;
   private final String fire;

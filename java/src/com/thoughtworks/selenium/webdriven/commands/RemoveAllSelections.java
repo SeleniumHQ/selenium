@@ -27,7 +27,6 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public class RemoveAllSelections extends SeleneseCommand<Void> {
-
   private final ElementFinder finder;
 
   public RemoveAllSelections(ElementFinder finder) {
@@ -51,9 +50,8 @@ public class RemoveAllSelections extends SeleneseCommand<Void> {
 
   private void removeAllSelections(List<WebElement> options) {
     for (WebElement option : options) {
-      if (option.isSelected()) {
+      if (option.isSelected())
         option.click();
-      }
     }
   }
 }

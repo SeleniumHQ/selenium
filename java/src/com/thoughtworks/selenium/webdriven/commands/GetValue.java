@@ -24,7 +24,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class GetValue extends SeleneseCommand<String> {
-
   private final ElementFinder finder;
 
   public GetValue(ElementFinder finder) {
@@ -39,7 +38,8 @@ public class GetValue extends SeleneseCommand<String> {
     // the "checked" attribute if the checkbox or the radio button is not-checked, "true" otherwise.
     if (element.getTagName().equals("input")
         && (element.getAttribute("type").equals("checkbox")
-            || element.getAttribute("type").equals("radio"))) {
+            || element.getAttribute("type").equals("radio")))
+    {
       if (element.getAttribute("checked") == null) {
         return "off";
       }

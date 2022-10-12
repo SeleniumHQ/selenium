@@ -24,7 +24,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 public class IsEditable extends SeleneseCommand<Boolean> {
-
   private final ElementFinder finder;
 
   public IsEditable(ElementFinder finder) {

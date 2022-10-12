@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class GetExpression extends SeleneseCommand<String> {
-
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String locator, String value) {
     return locator;

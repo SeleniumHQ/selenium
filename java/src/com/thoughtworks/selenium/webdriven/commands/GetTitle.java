@@ -22,7 +22,6 @@ import com.thoughtworks.selenium.webdriven.SeleneseCommand;
 import org.openqa.selenium.WebDriver;
 
 public class GetTitle extends SeleneseCommand<String> {
-
   @Override
   protected String handleSeleneseCommand(WebDriver driver, String ignored, String alsoIgnored) {
     return driver.getTitle();

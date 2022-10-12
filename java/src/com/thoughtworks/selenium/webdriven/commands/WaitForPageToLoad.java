@@ -29,9 +29,8 @@ import org.openqa.selenium.WebDriverException;
 import java.util.logging.Logger;
 
 public class WaitForPageToLoad extends SeleneseCommand<Void> {
-
+  private Logger log = Logger.getLogger(WaitForPageToLoad.class.getName());
   private final Runnable sleepUntil;
-  private final Logger log = Logger.getLogger(WaitForPageToLoad.class.getName());
   private int timeToWait = 250;
 
   public WaitForPageToLoad(Runnable sleepUntil) {
@@ -48,7 +47,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
   }
 
   @Override
-  protected Void handleSeleneseCommand(WebDriver driver, String timeout, String ignored) {
+  protected Void handleSeleneseCommand(final WebDriver driver, String timeout, String ignored) {
     // Wait until things look like they've been stable for "timeToWait"
     if (!(driver instanceof JavascriptExecutor)) {
       // Assume that we Do The Right Thing
@@ -65,13 +64,13 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     Object result;
     try {
       result = ((JavascriptExecutor) driver).executeScript(
-        "return !!document['readyState'];");
+          "return !!document['readyState'];");
     } catch (WebDriverException e) {
       // Page might still be loading. Give it a chance to get some content.
       hesitate(500);
       try {
         result = ((JavascriptExecutor) driver).executeScript(
-          "return !!document['readyState'];");
+            "return !!document['readyState'];");
       } catch (WebDriverException e2) {
         log.warning("Cannot determine whether page supports ready state. Abandoning wait.");
         return null;
@@ -81,7 +80,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     log.fine("Does browser support readyState: " + result);
 
     Wait wait = (result != null && (Boolean) result) ?
-                getReadyStateUsingWait(driver) : getLengthCheckingWait(driver);
+        getReadyStateUsingWait(driver) : getLengthCheckingWait(driver);
 
     wait.wait(String.format("Failed to load page within %s ms", timeout), timeoutInMillis);
 
@@ -98,13 +97,13 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     }
   }
 
-  private Wait getReadyStateUsingWait(WebDriver driver) {
+  private Wait getReadyStateUsingWait(final WebDriver driver) {
     return new Wait() {
       @Override
       public boolean until() {
         try {
           Object result = ((JavascriptExecutor) driver).executeScript(
-            "return 'complete' == document.readyState;");
+              "return 'complete' == document.readyState;");
 
           if (result instanceof Boolean && (Boolean) result) {
             return true;
@@ -117,7 +116,7 @@ public class WaitForPageToLoad extends SeleneseCommand<Void> {
     };
   }
 
-  private Wait getLengthCheckingWait(WebDriver driver) {
+  public Wait getLengthCheckingWait(final WebDriver driver) {
     return new Wait() {
       private int length;
       private long seenAt;
