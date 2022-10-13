@@ -1,0 +1,63 @@
+name: build-selenium-manager
+
+on: workflow_dispatch
+
+jobs:
+  windows:
+    name: "[Windows] Build selenium-manager"
+    runs-on: windows-latest
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@master
+      - name: "Build release"
+        run: |
+          cd rust
+          cargo build --release
+      - name: "Upload binary"
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-manager_windows-x64
+          path: rust/target/release/selenium-manager.exe
+          retention-days: 6
+
+  linux:
+    name: "[Linux] Build selenium-manager"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@master
+      - name: "Build release"
+        run: |
+          cd rust
+          cargo build --release
+      - name: "Tar binary (to keep executable permission)"
+        run: |
+          cd rust/target/release
+          tar -cvf ../../../selenium-manager.tar selenium-manager
+      - name: "Upload binary"
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-manager_linux-x64
+          path: selenium-manager.tar
+          retention-days: 6
+
+  macos:
+    name: "[macOS] Build selenium-manager"
+    runs-on: macos-latest
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@master
+      - name: "Build release"
+        run: |
+          cd rust
+          cargo build --release
+      - name: "Tar binary (to keep executable permission)"
+        run: |
+          cd rust/target/release
+          tar -cvf ../../../selenium-manager.tar selenium-manager
+      - name: "Upload binary"
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-manager_macos-x64
+          path: selenium-manager.tar
+          retention-days: 6

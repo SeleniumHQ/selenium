@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -121,7 +122,7 @@ public class CdpVersionFinder {
 
     for (CdpInfo info : infos) {
       if (info.getMajorVersion() == version) {
-        LOG.info(String.format("Found exact CDP implementation for version %d", version));
+        LOG.log(Level.FINE, "Found exact CDP implementation for version {0}", version);
         return Optional.of(info);
       }
 
@@ -137,15 +138,12 @@ public class CdpVersionFinder {
       }
     }
 
-    LOG.warning(String.format(
-      "Unable to find an exact match for CDP version %d, so returning the closest version found: %s",
-      version,
-      nearestMatch == null ? "a no-op implementation" : nearestMatch.getMajorVersion()));
-
     if (nearestMatch == null) {
-      LOG.info(String.format("Unable to find CDP implementation matching %d.", version));
+      LOG.log(Level.WARNING, "Unable to find CDP implementation matching {0}", version);
     } else {
-      LOG.info(String.format("Found CDP implementation for version %d of %d", version, nearestMatch.getMajorVersion()));
+      LOG.log(Level.WARNING,
+              "Unable to find an exact match for CDP version {0}, so returning the closest version found: {1}",
+              new Object[]{version, nearestMatch.getMajorVersion()});
     }
 
     return Optional.ofNullable(nearestMatch);

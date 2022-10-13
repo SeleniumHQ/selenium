@@ -921,7 +921,7 @@ class WebDriver(BaseWebDriver):
 
                 driver.get_screenshot_as_file('/Screenshots/foo.png')
         """
-        if not filename.lower().endswith(".png"):
+        if not str(filename).lower().endswith(".png"):
             warnings.warn(
                 "name used for saved screenshot does not match file " "type. It should end with a `.png` extension",
                 UserWarning,

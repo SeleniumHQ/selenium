@@ -26,11 +26,11 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class VersionTest {
+class VersionTest {
 
   public static Stream<Arguments> data() {
-    return Arrays.asList(new Object[][]{
-      // Version 1, Version 2, do they match?, is v1 less then v2?, is v1 greater than v2?
+    return Arrays.stream(new Object[][]{
+      // Version 1, Version 2, do they match?, is v1 less than v2?, is v1 greater than v2?
       {"1", "1", true, false, false},
       {"1.0", "1", true, false, false},
       {"1", "1.0", true, false, false},
@@ -38,24 +38,24 @@ public class VersionTest {
       {"1", "2", false, true, false},
       {"1.2", "1.50", false, true, false},
       {"2.2", "1.2", false, false, true}
-    }).stream().map(Arguments::of);
+    }).map(Arguments::of);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldMatch(Version first, Version second, boolean match, boolean lessThan, boolean greaterThan) {
+  void shouldMatch(Version first, Version second, boolean match, boolean lessThan, boolean greaterThan) {
     assertThat(first.equalTo(second)).describedAs("%s == %s", first, second).isEqualTo(match);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldImplementLessThan(Version first, Version second, boolean match, boolean lessThan, boolean greaterThan) {
+  void shouldImplementLessThan(Version first, Version second, boolean match, boolean lessThan, boolean greaterThan) {
     assertThat(first.isLessThan(second)).describedAs("%s < %s", first, second).isEqualTo(lessThan);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldImplementGreaterThan(Version first, Version second, boolean match, boolean lessThan, boolean greaterThan) {
+  void shouldImplementGreaterThan(Version first, Version second, boolean match, boolean lessThan, boolean greaterThan) {
     assertThat(first.isGreaterThan(second)).describedAs("%s > %s", first, second).isEqualTo(greaterThan);
   }
 }

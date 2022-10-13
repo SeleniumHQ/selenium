@@ -28,10 +28,10 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.List;
 
-public class ElementEqualityTest extends JupiterTestBase {
+class ElementEqualityTest extends JupiterTestBase {
 
   @Test
-  public void testSameElementLookedUpDifferentWaysShouldBeEqual() {
+  void testSameElementLookedUpDifferentWaysShouldBeEqual() {
     driver.get(pages.simpleTestPage);
 
     WebElement body = driver.findElement(By.tagName("body"));
@@ -41,7 +41,7 @@ public class ElementEqualityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testDifferentElementsShouldNotBeEqual() {
+  void testDifferentElementsShouldNotBeEqual() {
     driver.get(pages.simpleTestPage);
 
     List<WebElement> ps = driver.findElements(By.tagName("p"));
@@ -50,7 +50,7 @@ public class ElementEqualityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode() {
+  void testSameElementLookedUpDifferentWaysUsingFindElementShouldHaveSameHashCode() {
     driver.get(pages.simpleTestPage);
     WebElement body = driver.findElement(By.tagName("body"));
     WebElement xbody = driver.findElement(By.xpath("//body"));
@@ -59,7 +59,7 @@ public class ElementEqualityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode() {
+  void testSameElementLookedUpDifferentWaysUsingFindElementsShouldHaveSameHashCode() {
     driver.get(pages.simpleTestPage);
     List<WebElement> body = driver.findElements(By.tagName("body"));
     List<WebElement> xbody = driver.findElements(By.xpath("//body"));

@@ -43,7 +43,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 @Tag("UnitTests")
-public class RemoteLogsTest {
+class RemoteLogsTest {
   @Mock
   private ExecuteMethod executeMethod;
 
@@ -59,7 +59,7 @@ public class RemoteLogsTest {
   }
 
   @Test
-  public void canGetProfilerLogs() {
+  void canGetProfilerLogs() {
     List<LogEntry> entries = new ArrayList<>();
     entries.add(new LogEntry(Level.INFO, 0, "hello"));
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
@@ -78,7 +78,7 @@ public class RemoteLogsTest {
   }
 
   @Test
-  public void canGetLocalProfilerLogsIfNoRemoteProfilerLogSupport() {
+  void canGetLocalProfilerLogsIfNoRemoteProfilerLogSupport() {
     List<LogEntry> entries = new ArrayList<>();
     entries.add(new LogEntry(Level.INFO, 0, "hello"));
     when(localLogs.get(LogType.PROFILER)).thenReturn(new LogEntries(entries));
@@ -96,7 +96,7 @@ public class RemoteLogsTest {
   }
 
   @Test
-  public void canGetClientLogs() {
+  void canGetClientLogs() {
     List<LogEntry> entries = new ArrayList<>();
     entries.add(new LogEntry(Level.SEVERE, 0, "hello"));
     when(localLogs.get(LogType.CLIENT)).thenReturn(new LogEntries(entries));
@@ -110,7 +110,7 @@ public class RemoteLogsTest {
   }
 
   @Test
-  public void canGetServerLogs() {
+  void canGetServerLogs() {
     when(
         executeMethod.execute(
             DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.SERVER)))
@@ -126,7 +126,7 @@ public class RemoteLogsTest {
   }
 
   @Test
-  public void throwsOnBogusRemoteLogsResponse() {
+  void throwsOnBogusRemoteLogsResponse() {
     when(
         executeMethod.execute(
             DriverCommand.GET_LOG, ImmutableMap.of(RemoteLogs.TYPE_KEY, LogType.BROWSER)))
@@ -142,7 +142,7 @@ public class RemoteLogsTest {
   }
 
   @Test
-  public void canGetAvailableLogTypes() {
+  void canGetAvailableLogTypes() {
     List<String> remoteAvailableLogTypes = new ArrayList<>();
     remoteAvailableLogTypes.add(LogType.PROFILER);
     remoteAvailableLogTypes.add(LogType.SERVER);

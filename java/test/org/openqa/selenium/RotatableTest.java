@@ -26,7 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-public class RotatableTest extends JupiterTestBase {
+class RotatableTest extends JupiterTestBase {
 
   private Rotatable rotatable;
 
@@ -37,19 +37,19 @@ public class RotatableTest extends JupiterTestBase {
   }
 
   @Test
-  public void testRotateToLandscapeMode() {
+  void testRotateToLandscapeMode() {
     rotatable.rotate(ScreenOrientation.LANDSCAPE);
     assertThat(rotatable.getOrientation()).isEqualTo(LANDSCAPE);
   }
 
   @Test
-  public void testRotateToPortrait() {
+  void testRotateToPortrait() {
     rotatable.rotate(ScreenOrientation.PORTRAIT);
     assertThat(rotatable.getOrientation()).isEqualTo(PORTRAIT);
   }
 
   @Test
-  public void testGetOrientationReturnsInitialValue() {
+  void testGetOrientationReturnsInitialValue() {
     assertThat(rotatable.getOrientation()).isNotNull();
   }
 

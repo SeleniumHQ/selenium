@@ -26,10 +26,10 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
 @Tag("UnitTests")
-public class UrlPathTest {
+class UrlPathTest {
 
   @Test
-  public void shouldAssumeARegularHttpRequestHasNoPrefix() {
+  void shouldAssumeARegularHttpRequestHasNoPrefix() {
     HttpRequest req = new HttpRequest(GET, "/cheese");
 
     String absolute = UrlPath.relativeToServer(req, "/cake");
@@ -40,7 +40,7 @@ public class UrlPathTest {
   }
 
   @Test
-  public void shouldRedirectARequestWithAPrefixAttribute() {
+  void shouldRedirectARequestWithAPrefixAttribute() {
     HttpRequest req = new HttpRequest(GET, "/cake");
     req.setAttribute(ROUTE_PREFIX_KEY, singletonList("/cheese"));
 

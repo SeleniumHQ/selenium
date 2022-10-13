@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 @Disabled("Not implemented")
 public class TestUIElementLocators extends InternalSelenseTestBase {
   @Test
-  public void testUIElementLocators() {
+  void testUIElementLocators() {
     selenium.addScript(getUiMap(), "uimap");
     selenium.open("test_locators.html");
     verifyEquals(selenium.getText("ui=pageset1::linksWithId()"), "this is the first element");

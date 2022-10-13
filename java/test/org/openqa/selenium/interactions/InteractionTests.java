@@ -25,5 +25,5 @@ import org.junit.platform.suite.api.Suite;
   CompositeActionTest.class,
   DragAndDropTest.class})
 @Suite
-public class InteractionTests {
+class InteractionTests {
 }

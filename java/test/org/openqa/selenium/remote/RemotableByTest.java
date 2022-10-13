@@ -41,13 +41,13 @@ import static org.openqa.selenium.remote.ErrorCodes.SUCCESS_STRING;
 
 import com.google.common.collect.ImmutableMap;
 
-public class RemotableByTest {
+class RemotableByTest {
 
   private final SessionId id = new SessionId(UUID.randomUUID());
   private final ErrorCodes errorCodes = new ErrorCodes();
 
   @Test
-  public void shouldCallW3CLocatorWithW3CParameters() {
+  void shouldCallW3CLocatorWithW3CParameters() {
     AtomicReference<Map<?, ?>> parameters = new AtomicReference<>();
 
     WebDriver driver = createDriver(cmd -> {
@@ -61,7 +61,7 @@ public class RemotableByTest {
   }
 
   @Test
-  public void shouldCallDownToSearchContextForNonRemotableLocators() {
+  void shouldCallDownToSearchContextForNonRemotableLocators() {
     AtomicReference<Map<?, ?>> parameters = new AtomicReference<>();
 
     WebDriver driver = createDriver(
@@ -83,7 +83,7 @@ public class RemotableByTest {
   }
 
   @Test
-  public void shouldAttemptToUseRemotableParametersIfPresent() {
+  void shouldAttemptToUseRemotableParametersIfPresent() {
     AtomicReference<Map<?, ?>> parameters = new AtomicReference<>();
 
     WebDriver driver = createDriver(
@@ -112,7 +112,7 @@ public class RemotableByTest {
   }
 
   @Test
-  public void shouldFallBackToCallingSearchContextIfRemotableSearchReturnsInvalidArgument() {
+  void shouldFallBackToCallingSearchContextIfRemotableSearchReturnsInvalidArgument() {
     AtomicReference<Map<?, ?>> parameters = new AtomicReference<>();
 
     WebDriver driver = createDriver(
@@ -142,7 +142,7 @@ public class RemotableByTest {
   }
 
   @Test
-  public void shouldUseMechanismUsedForFirstSuccessfulSearchInLaterCalls() {
+  void shouldUseMechanismUsedForFirstSuccessfulSearchInLaterCalls() {
     AtomicReference<Map<?, ?>> parameters = new AtomicReference<>();
 
     // The remote driver attempts to find remotable elements by going straight

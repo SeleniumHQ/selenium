@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public class OutOfProcessSeleniumServer {
+class OutOfProcessSeleniumServer {
 
   private static final Logger log = Logger.getLogger(OutOfProcessSeleniumServer.class.getName());
 

@@ -71,7 +71,7 @@ import static org.mockito.Mockito.when;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class CustomLocatorHandlerTest {
+class CustomLocatorHandlerTest {
 
   private final Secret registrationSecret = new Secret("cheese");
   private LocalNode.Builder nodeBuilder;
@@ -90,7 +90,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldRequireInputToHaveAUsingParameter() {
+  void shouldRequireInputToHaveAUsingParameter() {
     Node node = nodeBuilder.build();
 
     HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
@@ -104,7 +104,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldRequireInputToHaveAValueParameter() {
+  void shouldRequireInputToHaveAValueParameter() {
     Node node = nodeBuilder.build();
 
     HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
@@ -118,7 +118,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldNotRejectRequestWithAnUnknownLocatorMechanism() {
+  void shouldNotRejectRequestWithAnUnknownLocatorMechanism() {
     Node node = nodeBuilder.build();
 
     HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
@@ -135,7 +135,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldCallTheGivenLocatorForALocator() {
+  void shouldCallTheGivenLocatorForALocator() {
     Capabilities caps = new ImmutableCapabilities("browserName", "cheesefox");
     Node node = nodeBuilder.add(
       caps,
@@ -172,7 +172,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToUseNodeAsWebDriver() {
+  void shouldBeAbleToUseNodeAsWebDriver() {
     String elementId = UUID.randomUUID().toString();
 
     Node node = Mockito.mock(Node.class);
@@ -211,7 +211,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToRootASearchWithinAnElement() {
+  void shouldBeAbleToRootASearchWithinAnElement() {
     String elementId = UUID.randomUUID().toString();
 
     Node node = Mockito.mock(Node.class);
@@ -250,7 +250,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldFallbackToUseById() {
+  void shouldFallbackToUseById() {
     String elementId = UUID.randomUUID().toString();
 
     Node node = Mockito.mock(Node.class);

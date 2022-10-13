@@ -39,12 +39,12 @@ import java.time.Duration;
 import java.util.List;
 
 @Tag("UnitTests")
-public class PageFactoryTest {
+class PageFactoryTest {
 
   private SearchContext searchContext;
 
   @Test
-  public void shouldProxyElementsInAnInstantiatedPage() {
+  void shouldProxyElementsInAnInstantiatedPage() {
     PublicPage page = new PublicPage();
 
     assertThat(page.q).isNull();
@@ -57,7 +57,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldInsertProxiesForPublicWebElements() {
+  void shouldInsertProxiesForPublicWebElements() {
     PublicPage page = PageFactory.initElements(searchContext, PublicPage.class);
 
     assertThat(page.q).isNotNull();
@@ -65,7 +65,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldProxyElementsFromParentClassesToo() {
+  void shouldProxyElementsFromParentClassesToo() {
     ChildPage page = new ChildPage();
 
     PageFactory.initElements(searchContext, page);
@@ -76,14 +76,14 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldProxyRenderedWebElementFields() {
+  void shouldProxyRenderedWebElementFields() {
     PublicPage page = PageFactory.initElements(searchContext, PublicPage.class);
 
     assertThat(page.rendered).isNotNull();
   }
 
   @Test
-  public void shouldProxyPrivateElements() {
+  void shouldProxyPrivateElements() {
     PrivatePage page = new PrivatePage();
 
     PageFactory.initElements(searchContext, page);
@@ -93,7 +93,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
+  void shouldUseAConstructorThatTakesAWebDriverAsAnArgument() {
     WebDriver driver = mock(WebDriver.class);
 
     ConstructedPage page = PageFactory.initElements(driver, ConstructedPage.class);
@@ -102,7 +102,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldNotDecorateFieldsWhenTheFieldDecoratorReturnsNull() {
+  void shouldNotDecorateFieldsWhenTheFieldDecoratorReturnsNull() {
     PublicPage page = new PublicPage();
     // Assign not-null values
     WebElement q = mock(WebElement.class);
@@ -114,7 +114,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void triesToDecorateNonWebElements() {
+  void triesToDecorateNonWebElements() {
     NonWebElementsPage page = new NonWebElementsPage();
     // Assign not-null values
 
@@ -124,7 +124,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldNotDecorateListsOfWebElementsThatAreNotAnnotated() {
+  void shouldNotDecorateListsOfWebElementsThatAreNotAnnotated() {
     UnmarkedListPage page = new UnmarkedListPage();
 
     PageFactory.initElements(searchContext, page);
@@ -133,7 +133,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldNotDecorateListsThatAreTypedButNotWebElementLists() {
+  void shouldNotDecorateListsThatAreTypedButNotWebElementLists() {
     UnmarkedListPage page = new UnmarkedListPage();
 
     PageFactory.initElements(searchContext, page);
@@ -142,7 +142,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldNotDecorateUnTypedLists() {
+  void shouldNotDecorateUnTypedLists() {
     UnmarkedListPage page = new UnmarkedListPage();
 
     PageFactory.initElements(searchContext, page);
@@ -151,7 +151,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldComplainWhenMoreThanOneFindByAttributeIsSet() {
+  void shouldComplainWhenMoreThanOneFindByAttributeIsSet() {
     GrottyPage page = new GrottyPage();
 
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -159,7 +159,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldComplainWhenMoreThanOneFindByShortFormAttributeIsSet() {
+  void shouldComplainWhenMoreThanOneFindByShortFormAttributeIsSet() {
     GrottyPage2 page = new GrottyPage2();
 
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -167,7 +167,7 @@ public class PageFactoryTest {
   }
 
   @Test
-  public void shouldNotThrowANoSuchElementExceptionWhenUsedWithAFluentWait() {
+  void shouldNotThrowANoSuchElementExceptionWhenUsedWithAFluentWait() {
     WebDriver driver = mock(WebDriver.class);
     when(driver.findElement(ArgumentMatchers.any())).thenThrow(new NoSuchElementException("because"));
 

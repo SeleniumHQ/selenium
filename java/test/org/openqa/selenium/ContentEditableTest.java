@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-public class ContentEditableTest extends JupiterTestBase {
+class ContentEditableTest extends JupiterTestBase {
 
   @AfterEach
   public void switchToDefaultContent() {
@@ -73,7 +73,7 @@ public class ContentEditableTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
+  void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable-blank"));
 
@@ -96,7 +96,7 @@ public class ContentEditableTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToTypeIntoTinyMCE() {
+  void testShouldBeAbleToTypeIntoTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");
 

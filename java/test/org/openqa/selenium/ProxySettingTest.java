@@ -58,7 +58,7 @@ import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class ProxySettingTest extends JupiterTestBase {
+class ProxySettingTest extends JupiterTestBase {
 
   private final List<TearDownFixture> tearDowns = new ArrayList<>();
 

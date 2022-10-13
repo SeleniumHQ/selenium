@@ -63,6 +63,11 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isSupportingBiDi() {
+    return false;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
       SafariTechPreviewDriverService.createDefaultService();

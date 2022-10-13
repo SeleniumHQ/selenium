@@ -53,19 +53,18 @@ class Service(ABC):
     def __init__(
         self,
         executable: str,
-        start_error_message: str,
         port: int = 0,
         log_file: SubprocessStdAlias = DEVNULL,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
+        start_error_message: typing.Optional[str] = None,
     ) -> None:
         self.path = executable
         self.port = port or utils.free_port()
         self.log_file = open(os.devnull, "wb") if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL else log_file
-        self.start_error_message = start_error_message
+        self.start_error_message = start_error_message or ""
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.creation_flags = 0
         self.env = env or os.environ
-        self.process: typing.Optional[subprocess.Popen] = None
 
     @property
     def service_url(self) -> str:
@@ -99,6 +98,7 @@ class Service(ABC):
                 stdin=PIPE,
                 creationflags=self.creation_flags,
             )
+            log.debug(f"Started executable: `{self.path}` in a child process with pid: {self.process.pid}")
         except TypeError:
             raise
         except OSError as err:
@@ -160,7 +160,8 @@ class Service(ABC):
         if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
             with contextlib.suppress(Exception):
                 # Todo: Be explicit in what we are catching here.
-                self.log_file.close()
+                if hasattr(self.log_file, "close"):
+                    self.log_file.close()  # type: ignore
 
         if self.process is not None:
             with contextlib.suppress(TypeError):
@@ -176,7 +177,7 @@ class Service(ABC):
             stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stderr
             for stream in stdin, stdout, stderr:
                 with contextlib.suppress(AttributeError):
-                    stream.close()
+                    stream.close()  # type: ignore
             self.process.terminate()
             self.process.wait(60)
             # Todo: only SIGKILL if necessary; the process may be cleanly exited by now.

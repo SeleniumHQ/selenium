@@ -62,7 +62,7 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 /**
  * Tests operations that involve pen input device.
  */
-public class PenPointerTest extends JupiterTestBase {
+class PenPointerTest extends JupiterTestBase {
   private final PointerInput defaultPen = new PointerInput(PointerInput.Kind.PEN, "default pen");
 
   private Actions setDefaultPen(WebDriver driver) {
@@ -165,7 +165,7 @@ public class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
-  public void testMoveAndClick() {
+  void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
     WebElement toClick = driver.findElement(By.id("clickField"));
@@ -179,7 +179,7 @@ public class PenPointerTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCannotMoveToANullLocator() {
+  void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> setDefaultPen(driver).moveToElement(null).build());
@@ -195,7 +195,7 @@ public class PenPointerTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testShouldClickElementInIFrame() {
+  void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
     driver.switchTo().frame("source");
     WebElement element = driver.findElement(By.id("otherframe"));
@@ -215,7 +215,7 @@ public class PenPointerTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("menu1"));
 
     final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEqualTo("");
+    assertThat(item.getText()).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
 
@@ -237,7 +237,7 @@ public class PenPointerTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("menu1"));
 
     final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEqualTo("");
+    assertThat(item.getText()).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
 

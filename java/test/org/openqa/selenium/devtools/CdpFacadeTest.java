@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-public class CdpFacadeTest extends DevToolsTestBase {
+class CdpFacadeTest extends DevToolsTestBase {
 
   private static NettyAppServer server;
 

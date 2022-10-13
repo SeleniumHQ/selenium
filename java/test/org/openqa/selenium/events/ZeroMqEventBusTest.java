@@ -30,10 +30,10 @@ import java.util.concurrent.TimeoutException;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ZeroMqEventBusTest {
+class ZeroMqEventBusTest {
 
   @Test
-  public void shouldEnsureMessagesRequireSecret() throws InterruptedException, ExecutionException, TimeoutException {
+  void shouldEnsureMessagesRequireSecret() throws InterruptedException, ExecutionException, TimeoutException {
     String publish = "inproc://zmqebt-publish";
     String subscribe = "inproc://zmqebt-subscribe";
 

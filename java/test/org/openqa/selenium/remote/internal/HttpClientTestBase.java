@@ -54,7 +54,7 @@ import static org.openqa.selenium.net.Urls.fromUri;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-abstract public class HttpClientTestBase {
+public abstract class HttpClientTestBase {
 
   protected abstract HttpClient.Factory createFactory();
 
@@ -73,7 +73,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void responseShouldCaptureASingleHeader() {
+  void responseShouldCaptureASingleHeader() {
     HashMultimap<String, String> headers = HashMultimap.create();
     headers.put("Cake", "Delicious");
 
@@ -90,7 +90,7 @@ abstract public class HttpClientTestBase {
    * this hard (notably when a legal value may contain a comma).
    */
   @Test
-  public void responseShouldKeepMultipleHeadersSeparate() {
+  void responseShouldKeepMultipleHeadersSeparate() {
     HashMultimap<String, String> headers = HashMultimap.create();
     headers.put("Cheese", "Cheddar");
     headers.put("Cheese", "Brie, Gouda");
@@ -106,7 +106,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldAddUrlParameters() {
+  void shouldAddUrlParameters() {
     HttpRequest request = new HttpRequest(GET, "/query");
     String value = request.getQueryParameter("cheese");
     assertThat(value).isNull();
@@ -117,7 +117,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldSendSimpleQueryParameters() {
+  void shouldSendSimpleQueryParameters() {
     HttpRequest request = new HttpRequest(GET, "/query");
     request.addQueryParameter("cheese", "cheddar");
 
@@ -128,7 +128,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldEncodeParameterNamesAndValues() {
+  void shouldEncodeParameterNamesAndValues() {
     HttpRequest request = new HttpRequest(GET, "/query");
     request.addQueryParameter("cheese type", "tasty cheese");
 
@@ -139,7 +139,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void canAddMoreThanOneQueryParameter() {
+  void canAddMoreThanOneQueryParameter() {
     HttpRequest request = new HttpRequest(GET, "/query");
     request.addQueryParameter("cheese", "cheddar");
     request.addQueryParameter("cheese", "gouda");
@@ -153,7 +153,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldAllowUrlsWithSchemesToBeUsed() throws Exception {
+  void shouldAllowUrlsWithSchemesToBeUsed() throws Exception {
     delegate = req -> new HttpResponse().setContent(Contents.utf8String("Hello, World!"));
 
     // This is a terrible choice of URL
@@ -170,7 +170,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldIncludeAUserAgentHeader() {
+  void shouldIncludeAUserAgentHeader() {
     HttpResponse response = executeWithinServer(
       new HttpRequest(GET, "/foo"),
       req -> new HttpResponse().setContent(Contents.utf8String(req.getHeader("user-agent"))));
@@ -186,7 +186,7 @@ abstract public class HttpClientTestBase {
   }
 
   @Test
-  public void shouldAllowConfigurationOfRequestTimeout() {
+  void shouldAllowConfigurationOfRequestTimeout() {
     assertThatExceptionOfType(TimeoutException.class)
       .isThrownBy(() -> executeWithinServer(
         new HttpRequest(GET, "/foo"),

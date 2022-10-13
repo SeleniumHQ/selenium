@@ -29,31 +29,31 @@ import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
-public class ElementDomPropertyTest extends JupiterTestBase {
+class ElementDomPropertyTest extends JupiterTestBase {
 
   @Test
-  public void testShouldReturnNullWhenGettingTheValueOfAPropertyThatDoesNotExist() {
+  void testShouldReturnNullWhenGettingTheValueOfAPropertyThatDoesNotExist() {
     driver.get(pages.simpleTestPage);
     WebElement head = driver.findElement(By.xpath("/html"));
     assertThat(head.getDomProperty("cheese")).isNull();
   }
 
   @Test
-  public void testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag() {
+  void testShouldReturnAnAbsoluteUrlWhenGettingSrcAttributeOfAValidImgTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validImgTag"));
     assertThat(img.getDomProperty("src")).isEqualTo(appServer.whereIs("icon.gif"));
   }
 
   @Test
-  public void testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag() {
+  void testShouldReturnAnAbsoluteUrlWhenGettingHrefAttributeOfAValidAnchorTag() {
     driver.get(pages.simpleTestPage);
     WebElement img = driver.findElement(By.id("validAnchorTag"));
     assertThat(img.getDomProperty("href")).isEqualTo(appServer.whereIs("icon.gif"));
   }
 
   @Test
-  public void testShouldReturnTheValueOfTheIndexAttributeEvenIfItIsMissing() {
+  void testShouldReturnTheValueOfTheIndexAttributeEvenIfItIsMissing() {
     driver.get(pages.formPage);
     WebElement multiSelect = driver.findElement(By.id("multi"));
     List<WebElement> options = multiSelect.findElements(By.tagName("option"));
@@ -61,7 +61,7 @@ public class ElementDomPropertyTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnTheValueOfCheckedForACheckboxOnlyIfItIsChecked() {
+  void testShouldReturnTheValueOfCheckedForACheckboxOnlyIfItIsChecked() {
     driver.get(pages.formPage);
     WebElement checkbox = driver.findElement(By.xpath("//input[@id='checky']"));
     assertThat(checkbox.getDomProperty("checked")).isEqualTo("false");
@@ -70,7 +70,7 @@ public class ElementDomPropertyTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected() {
+  void testShouldReturnTheValueOfSelectedForOptionsOnlyIfTheyAreSelected() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.xpath("//select[@name='selectomatic']"));
     List<WebElement> options = selectBox.findElements(By.tagName("option"));
@@ -95,28 +95,28 @@ public class ElementDomPropertyTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldReturnTheContentsOfATextAreaAsItsValue() {
+  void testShouldReturnTheContentsOfATextAreaAsItsValue() {
     driver.get(pages.formPage);
     WebElement withText = driver.findElement(By.id("withText"));
     assertThat(withText.getDomProperty("value")).isEqualTo("Example text");
   }
 
   @Test
-  public void testShouldReturnInnerHtml() {
+  void testShouldReturnInnerHtml() {
     driver.get(pages.simpleTestPage);
     WebElement wrapping = driver.findElement(By.id("wrappingtext"));
     assertThat(wrapping.getDomProperty("innerHTML")).contains("<tbody>");
   }
 
   @Test
-  public void testShouldReturnHiddenTextForTextContentProperty() {
+  void testShouldReturnHiddenTextForTextContentProperty() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("hiddenline"));
     assertThat(element.getDomProperty("textContent")).isEqualTo("A hidden line of text");
   }
 
   @Test
-  public void testShouldGetNumericProperty() {
+  void testShouldGetNumericProperty() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("withText"));
     assertThat(element.getDomProperty("rows")).isEqualTo("5");
@@ -131,7 +131,7 @@ public class ElementDomPropertyTest extends JupiterTestBase {
   }
 
   @Test
-  public void testPropertyNamesAreCaseSensitive() {
+  void testPropertyNamesAreCaseSensitive() {
     driver.get(pages.tables);
     WebElement th1 = driver.findElement(By.id("th1"));
     assertThat(th1.getDomProperty("colspan")).isNull();
@@ -140,55 +140,55 @@ public class ElementDomPropertyTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCanRetrieveTheCurrentValueOfATextFormField_textInput() {
+  void testCanRetrieveTheCurrentValueOfATextFormField_textInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
-    assertThat(element.getDomProperty("value")).isEqualTo("");
+    assertThat(element.getDomProperty("value")).isEmpty();
     element.sendKeys("hello world");
     shortWait.until(ExpectedConditions.domPropertyToBe(element, "value", "hello world"));
   }
 
   @Test
-  public void testCanRetrieveTheCurrentValueOfATextFormField_emailInput() {
+  void testCanRetrieveTheCurrentValueOfATextFormField_emailInput() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("email"));
-    assertThat(element.getDomProperty("value")).isEqualTo("");
+    assertThat(element.getDomProperty("value")).isEmpty();
     element.sendKeys("hello@example.com");
     shortWait.until(ExpectedConditions.domPropertyToBe(element, "value", "hello@example.com"));
   }
 
   @Test
-  public void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
+  void testCanRetrieveTheCurrentValueOfATextFormField_textArea() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("emptyTextArea"));
-    assertThat(element.getDomProperty("value")).isEqualTo("");
+    assertThat(element.getDomProperty("value")).isEmpty();
     element.sendKeys("hello world");
     shortWait.until(ExpectedConditions.domPropertyToBe(element, "value", "hello world"));
   }
 
   @Test
-  public void testMultiplePropertyShouldBeTrueWhenSelectHasMultipleWithValueAsBlank() {
+  void testMultiplePropertyShouldBeTrueWhenSelectHasMultipleWithValueAsBlank() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithEmptyStringMultiple"));
     assertThat(element.getDomProperty("multiple")).isEqualTo("true");
   }
 
   @Test
-  public void testMultiplePropertyShouldBeTrueWhenSelectHasMultipleWithoutAValue() {
+  void testMultiplePropertyShouldBeTrueWhenSelectHasMultipleWithoutAValue() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithMultipleWithoutValue"));
     assertThat(element.getDomProperty("multiple")).isEqualTo("true");
   }
 
   @Test
-  public void testMultiplePropertyShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse() {
+  void testMultiplePropertyShouldBeTrueWhenSelectHasMultipleWithValueAsSomethingElse() {
     driver.get(pages.selectPage);
     WebElement element = driver.findElement(By.id("selectWithRandomMultipleValue"));
     assertThat(element.getDomProperty("multiple")).isEqualTo("true");
   }
 
   @Test
-  public void testGetValueOfUserDefinedProperty() {
+  void testGetValueOfUserDefinedProperty() {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));
     assertThat(element.getDomProperty("dynamicProperty")).isEqualTo("sampleValue");

@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Tag;
 import java.io.StringReader;
 
 @Tag("UnitTests")
-public class LinuxEphemeralPortRangeDetectorTest {
+class LinuxEphemeralPortRangeDetectorTest {
 
   @Test
-  public void decodeEphemeralPorts() {
+  void decodeEphemeralPorts() {
     String range ="1234 65533";
     EphemeralPortRangeDetector ephemeralEphemeralPortDetector =
         new LinuxEphemeralPortRangeDetector(new StringReader(range));
@@ -37,7 +37,7 @@ public class LinuxEphemeralPortRangeDetectorTest {
   }
 
   @Test
-  public void decodeEphemeralPortsWithWhitespaces() {
+  void decodeEphemeralPortsWithWhitespaces() {
     String range ="1234         65533";
     EphemeralPortRangeDetector ephemeralEphemeralPortDetector =
       new LinuxEphemeralPortRangeDetector(new StringReader(range));
@@ -46,7 +46,7 @@ public class LinuxEphemeralPortRangeDetectorTest {
   }
 
   @Test
-  public void currentValues() {
+  void currentValues() {
     LinuxEphemeralPortRangeDetector detector = LinuxEphemeralPortRangeDetector.getInstance();
     assertThat( detector.getLowestEphemeralPort()).isGreaterThan(1024);
     assertThat( detector.getHighestEphemeralPort()).isLessThan(65536);

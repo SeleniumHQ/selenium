@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestLargeHtml extends InternalSelenseTestBase {
   @Test
-  public void testLargeHtml() {
+  void testLargeHtml() {
     selenium.open("test_large_html.html");
     String source = selenium.getHtmlSource().trim();
     String expectedEndsWith = "</html>";

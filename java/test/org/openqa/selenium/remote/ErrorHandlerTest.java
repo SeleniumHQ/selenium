@@ -50,7 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Tag("UnitTests")
-public class ErrorHandlerTest {
+class ErrorHandlerTest {
   private ErrorHandler handler;
 
   private static void assertStackTracesEqual(StackTraceElement[] expected, StackTraceElement[] actual) {
@@ -76,13 +76,13 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldNotThrowIfResponseWasASuccess() {
+  void testShouldNotThrowIfResponseWasASuccess() {
     handler.throwIfResponseFailed(createResponse(ErrorCodes.SUCCESS), 100);
     // All is well if this doesn't throw.
   }
 
   @Test
-  public void testThrowsCorrectExceptionTypes() {
+  void testThrowsCorrectExceptionTypes() {
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class);
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_FRAME, NoSuchFrameException.class);
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_ELEMENT, NoSuchElementException.class);
@@ -105,7 +105,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldThrowAVanillaWebDriverExceptionIfServerDoesNotProvideAValue() {
+  void testShouldThrowAVanillaWebDriverExceptionIfServerDoesNotProvideAValue() {
     Response response = createResponse(ErrorCodes.UNHANDLED_ERROR);
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(response, 123))
@@ -114,7 +114,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldNotSetCauseIfResponseValueIsJustAString() {
+  void testShouldNotSetCauseIfResponseValueIsJustAString() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"), 123))
@@ -125,7 +125,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testCauseShouldBeAnUnknownServerExceptionIfServerOnlyReturnsAMessage() {
+  void testCauseShouldBeAnUnknownServerExceptionIfServerOnlyReturnsAMessage() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR, ImmutableMap.of("message", "boom")), 123))
@@ -135,7 +135,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testCauseShouldUseTheNamedClassIfAvailableOnTheClassPath() {
+  void testCauseShouldUseTheNamedClassIfAvailableOnTheClassPath() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR,
@@ -146,7 +146,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testCauseStackTraceShouldBeEmptyIfTheServerDidNotProvideThatInformation() {
+  void testCauseStackTraceShouldBeEmptyIfTheServerDidNotProvideThatInformation() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR,
@@ -160,7 +160,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldBeAbleToRebuildASerializedException() {
+  void testShouldBeAbleToRebuildASerializedException() {
     RuntimeException serverError = new RuntimeException("foo bar baz!\nCommand duration or timeout: 123 milliseconds");
 
     assertThatExceptionOfType(WebDriverException.class)
@@ -175,7 +175,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldIncludeScreenshotIfProvided() {
+  void testShouldIncludeScreenshotIfProvided() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
     data.put("screen", "screenGrabText");
@@ -199,7 +199,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified() {
+  void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
     data.remove("class");
@@ -219,7 +219,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
+  void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
         "stackTrace", Collections.singletonList(
@@ -249,7 +249,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldNotBuildWebDriverExceptionIfClassAndStackTraceIsNull() {
+  void testShouldNotBuildWebDriverExceptionIfClassAndStackTraceIsNull() {
     Map<String, Object> data = new HashMap<>();
     data.put("message", "some error message");
     data.put("class", null);
@@ -264,7 +264,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldNotBuildWebDriverExceptionIfClassNullAndStackTraceNotNull() {
+  void testShouldNotBuildWebDriverExceptionIfClassNullAndStackTraceNotNull() {
     Map<String, Object> data = new HashMap<>();
     data.put("message", "some error message");
     data.put("class", null);
@@ -283,7 +283,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldNotBuildWebDriverExceptionIfClassNotNullAndStackTraceNull() {
+  void testShouldNotBuildWebDriverExceptionIfClassNotNullAndStackTraceNull() {
     Map<String, Object> data = new HashMap<>();
     data.put("message", "some error message");
     data.put("class", "a");
@@ -298,7 +298,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testToleratesNonNumericLineNumber() {
+  void testToleratesNonNumericLineNumber() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
         "stackTrace", Collections.singletonList(
@@ -328,7 +328,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testToleratesNumericLineNumberAsString() {
+  void testToleratesNumericLineNumberAsString() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
         "stackTrace", Collections.singletonList(
@@ -359,7 +359,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed() {
+  void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
 
     handler.setIncludeServerErrors(false);
@@ -373,7 +373,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled() {
+  void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
     data.put("screen", "screenGrabText");
@@ -393,7 +393,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testStatusCodesRaisedBackToStatusMatches() {
+  void testStatusCodesRaisedBackToStatusMatches() {
     Map<Integer, Class<?>> exceptions = new HashMap<>();
     exceptions.put(ErrorCodes.NO_SUCH_SESSION, NoSuchSessionException.class);
     exceptions.put(ErrorCodes.NO_SUCH_ELEMENT, NoSuchElementException.class);

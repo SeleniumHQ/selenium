@@ -35,7 +35,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Base64;
 
-public class ChromeOptionsFunctionalTest extends JupiterTestBase {
+class ChromeOptionsFunctionalTest extends JupiterTestBase {
 
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.crx";
 
@@ -55,7 +55,7 @@ public class ChromeOptionsFunctionalTest extends JupiterTestBase {
   }
 
   @Test
-  public void optionsStayEqualAfterSerialization() {
+  void optionsStayEqualAfterSerialization() {
     ChromeOptions options1 = new ChromeOptions();
     ChromeOptions options2 = new ChromeOptions();
     assertThat(options2).isEqualTo(options1);

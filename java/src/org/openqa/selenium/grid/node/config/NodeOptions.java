@@ -550,6 +550,11 @@ public class NodeOptions {
       }
 
       @Override
+      public boolean isSupportingBiDi() {
+        return  detectedDriver.isSupportingBiDi();
+      }
+
+      @Override
       public boolean isAvailable() {
         return detectedDriver.isAvailable();
       }

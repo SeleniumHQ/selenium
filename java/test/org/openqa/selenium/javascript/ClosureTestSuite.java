@@ -23,7 +23,7 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-public class ClosureTestSuite extends JavaScriptTestSuite {
+class ClosureTestSuite extends JavaScriptTestSuite {
 
   public ClosureTestSuite() throws IOException {
     super();

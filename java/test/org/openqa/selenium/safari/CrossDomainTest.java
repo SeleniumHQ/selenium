@@ -34,7 +34,7 @@ import org.openqa.selenium.testing.Pages;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-public class CrossDomainTest extends JupiterTestBase {
+class CrossDomainTest extends JupiterTestBase {
 
   private static AppServer otherServer;
   private static Pages otherPages;
@@ -53,7 +53,7 @@ public class CrossDomainTest extends JupiterTestBase {
   }
 
   @Test
-  public void canNavigateBetweenDomains() {
+  void canNavigateBetweenDomains() {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl()).isEqualTo(pages.iframePage);
     WebElement body1 = driver.findElement(By.tagName("body"));
@@ -67,7 +67,7 @@ public class CrossDomainTest extends JupiterTestBase {
   }
 
   @Test
-  public void canSwitchToAFrameFromAnotherDomain() {
+  void canSwitchToAFrameFromAnotherDomain() {
     setupCrossDomainFrameTest();
 
     assertThat(getPageUrl()).isEqualTo(otherPages.iframePage);
@@ -76,7 +76,7 @@ public class CrossDomainTest extends JupiterTestBase {
   }
 
   @Test
-  public void cannotCrossDomainsWithExecuteScript() {
+  void cannotCrossDomainsWithExecuteScript() {
     setupCrossDomainFrameTest();
 
     assertThatExceptionOfType(WebDriverException.class)

@@ -39,7 +39,7 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class GridSupplier implements Supplier<WebDriver> {
+class GridSupplier implements Supplier<WebDriver> {
 
   private static OutOfProcessSeleniumServer hub;
   private static OutOfProcessSeleniumServer node;

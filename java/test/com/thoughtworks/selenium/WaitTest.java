@@ -36,7 +36,7 @@ public class WaitTest {
   }
 
   @Test
-  public void testUntil() {
+  void testUntil() {
     finished = now + 500l;
     new Wait() {
       @Override
@@ -49,7 +49,7 @@ public class WaitTest {
   }
 
   @Test
-  public void testUntilWithWaitTakingString() {
+  void testUntilWithWaitTakingString() {
     finished = now + 500l;
     new Wait("a message to be shown if wait times out") {
       @Override
@@ -62,7 +62,7 @@ public class WaitTest {
   }
 
   @Test
-  public void testTimedOut() {
+  void testTimedOut() {
     finished = now + 5000l;
     try {
       new Wait() {

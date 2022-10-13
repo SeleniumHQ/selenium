@@ -2,6 +2,7 @@ load("@bazel_skylib//rules:write_file.bzl", "write_file")
 load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin")
 load("@npm//react-scripts:index.bzl", "react_scripts", "react_scripts_test")
 load("//common:defs.bzl", "zip_file")
+load("//java:defs.bzl", "merge_jars")
 
 _RUNTIME_DEPS = [
     "chdir.cjs",
@@ -64,16 +65,19 @@ react_scripts(
 )
 
 zip_file(
-    name = "react_zip",
-    srcs = [
-        ":build",
-    ],
+    name = "react-zip",
+    srcs = [":build"],
     extension = "jar",
+)
+
+merge_jars(
+    name = "add-missing-dirs",
+    inputs = [":react-zip"],
 )
 
 java_import(
     name = "react_jar",
-    jars = ["react_zip"],
+    jars = [":add-missing-dirs"],
     visibility = [
         "//java/src/org/openqa/selenium/grid:__pkg__",
     ],

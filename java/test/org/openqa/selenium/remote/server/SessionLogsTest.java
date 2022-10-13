@@ -56,7 +56,7 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 @Ignore(CHROME)
 @Ignore(EDGE)
 @Ignore(SAFARI)
-public class SessionLogsTest extends JupiterTestBase {
+class SessionLogsTest extends JupiterTestBase {
 
   private static OutOfProcessSeleniumServer server;
   private RemoteWebDriver localDriver;
@@ -88,7 +88,7 @@ public class SessionLogsTest extends JupiterTestBase {
   }
 
   @Test
-  public void sessionLogsShouldContainAllAvailableLogTypes() throws Exception {
+  void sessionLogsShouldContainAllAvailableLogTypes() throws Exception {
     startDriver();
     Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
     stopDriver();

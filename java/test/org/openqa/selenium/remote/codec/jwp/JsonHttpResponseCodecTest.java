@@ -44,12 +44,12 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 @Tag("UnitTests")
-public class JsonHttpResponseCodecTest {
+class JsonHttpResponseCodecTest {
 
   private final JsonHttpResponseCodec codec = new JsonHttpResponseCodec();
 
   @Test
-  public void convertsResponses_success() {
+  void convertsResponses_success() {
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
     response.setValue(ImmutableMap.of("color", "red"));
@@ -67,7 +67,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void convertsResponses_failure() {
+  void convertsResponses_failure() {
     Response response = new Response();
     response.setStatus(ErrorCodes.NO_SUCH_ELEMENT);
     response.setValue(ImmutableMap.of("color", "red"));
@@ -85,7 +85,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void roundTrip() {
+  void roundTrip() {
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
     response.setValue(ImmutableMap.of("color", "red"));
@@ -99,18 +99,18 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeNonJsonResponse_200() {
+  void decodeNonJsonResponse_200() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
     response.setContent(utf8String("{\"foobar\"}"));
 
     Response decoded = codec.decode(response);
-    assertThat(decoded.getStatus().longValue()).isEqualTo(0);
+    assertThat(decoded.getStatus().longValue()).isZero();
     assertThat(decoded.getValue()).isEqualTo("{\"foobar\"}");
   }
 
   @Test
-  public void decodeNonJsonResponse_204() {
+  void decodeNonJsonResponse_204() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_NO_CONTENT);
 
@@ -120,7 +120,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeNonJsonResponse_4xx() {
+  void decodeNonJsonResponse_4xx() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_BAD_REQUEST);
     response.setContent(utf8String("{\"foobar\"}"));
@@ -131,7 +131,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeNonJsonResponse_5xx() {
+  void decodeNonJsonResponse_5xx() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_INTERNAL_ERROR);
     response.setContent(utf8String("{\"foobar\"}"));
@@ -142,7 +142,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeJsonResponseMissingContentType() {
+  void decodeJsonResponseMissingContentType() {
     Response response = new Response();
     response.setStatus(ErrorCodes.SUCCESS);
     response.setValue(ImmutableMap.of("color", "red"));
@@ -158,7 +158,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeUtf16EncodedResponse() {
+  void decodeUtf16EncodedResponse() {
     HttpResponse httpResponse = new HttpResponse();
     httpResponse.setStatus(200);
     httpResponse.setHeader(CONTENT_TYPE, JSON_UTF_8.withCharset(UTF_16).toString());
@@ -169,7 +169,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void decodeJsonResponseWithTrailingNullBytes() {
+  void decodeJsonResponseWithTrailingNullBytes() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
     response.setContent(utf8String("{\"status\":0,\"value\":\"foo\"}\0\0"));
@@ -180,7 +180,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void shouldConvertElementReferenceToRemoteWebElement() {
+  void shouldConvertElementReferenceToRemoteWebElement() {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
     response.setContent(asJson(ImmutableMap.of(
@@ -192,7 +192,7 @@ public class JsonHttpResponseCodecTest {
   }
 
   @Test
-  public void shouldAttemptToConvertAnExceptionIntoAnActualExceptionInstance() {
+  void shouldAttemptToConvertAnExceptionIntoAnActualExceptionInstance() {
     Response response = new Response();
     response.setStatus(ErrorCodes.ASYNC_SCRIPT_TIMEOUT);
     WebDriverException exception = new ScriptTimeoutException("I timed out");
