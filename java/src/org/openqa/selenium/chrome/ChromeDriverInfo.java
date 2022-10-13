@@ -57,6 +57,11 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
   }
 
   @Override
+  public boolean isSupportingBiDi() {
+    return false;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
       ChromeDriverService.createDefaultService();

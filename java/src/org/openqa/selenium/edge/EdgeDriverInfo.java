@@ -58,6 +58,11 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
   }
 
   @Override
+  public boolean isSupportingBiDi() {
+    return false;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
       EdgeDriverService.createDefaultService();
