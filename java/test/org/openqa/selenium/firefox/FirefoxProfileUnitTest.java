@@ -20,16 +20,13 @@ package org.openqa.selenium.firefox;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.io.Zip;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +38,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("UnitTests")
-public class FirefoxProfileTest {
+public class FirefoxProfileUnitTest {
   private static final String EXT_PATH = "common/extensions/webextensions-selenium-example.xpi";
   private static final String EXT_RESOURCE_PATH =
     "java/test/org/openqa/selenium/firefox/webextensions-selenium-example.xpi";
@@ -129,38 +126,6 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void shouldAllowSettingFrozenPreferences() throws Exception {
-    profile.setPreference("network.http.phishy-userpass-length", 1024);
-    assertPreferenceValueEquals("network.http.phishy-userpass-length", 1024);
-  }
-
-  @Test
-  public void shouldInstallWebExtensionFromZip() {
-    profile.addExtension(InProject.locate(EXT_PATH).toFile());
-    File profileDir = profile.layoutOnDisk();
-    File extensionFile = new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
-    assertThat(extensionFile).exists().isFile();
-  }
-
-  @Test
-  public void shouldInstallWebExtensionFromDirectory() throws IOException {
-    File extension = InProject.locate(EXT_PATH).toFile();
-    File unzippedExtension = Zip.unzipToTempDir(new FileInputStream(extension), "unzip", "stream");
-    profile.addExtension(unzippedExtension);
-    File profileDir = profile.layoutOnDisk();
-    File extensionDir = new File(profileDir, "extensions/webextensions-selenium-example@example.com");
-    assertThat(extensionDir).exists();
-  }
-
-  @Test
-  public void shouldInstallExtensionUsingClasspath() {
-    profile.addExtension(FirefoxProfileTest.class, EXT_RESOURCE_PATH);
-    File profileDir = profile.layoutOnDisk();
-    File extensionDir = new File(profileDir, "extensions/webextensions-selenium-example@example.com.xpi");
-    assertThat(extensionDir).exists();
-  }
-
-  @Test
   public void convertingToJsonShouldNotPolluteTempDir() throws IOException {
     File sysTemp = new File(System.getProperty("java.io.tmpdir"));
     Set<String> before = Arrays.stream(sysTemp.list())
@@ -208,7 +173,7 @@ public class FirefoxProfileTest {
   }
 
   @Test
-  public void layoutOnDiskSetsUserPreferences() throws IOException {
+  public void layoutOnDiskSetsUserPreferences() {
     profile.setPreference("browser.startup.homepage", "http://www.example.com");
     Preferences parsedPrefs = parseUserPrefs(profile);
     assertThat(parsedPrefs.getPreference("browser.startup.homepage"))
@@ -244,10 +209,9 @@ public class FirefoxProfileTest {
     assertThat(props.stream().anyMatch(line -> line.contains(key) && line.contains(", " + value + ")"))).isTrue();
   }
 
-  private Preferences parseUserPrefs(FirefoxProfile profile) throws IOException {
+  private Preferences parseUserPrefs(FirefoxProfile profile) {
     File directory = profile.layoutOnDisk();
     File userPrefs = new File(directory, "user.js");
-    FileReader reader = new FileReader(userPrefs);
-    return new Preferences(new StringReader("{\"mutable\": {}, \"frozen\": {}}"), reader);
+    return new Preferences(userPrefs);
   }
 }

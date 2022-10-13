@@ -27,22 +27,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FirefoxProfile {
 
-  private static final String ACCEPT_UNTRUSTED_CERTS_PREF = "webdriver_accept_untrusted_certs";
-  private static final String ASSUME_UNTRUSTED_ISSUER_PREF = "webdriver_assume_untrusted_issuer";
   private final Preferences additionalPrefs;
-  private final Map<String, Extension> extensions = new HashMap<>();
   private final File model;
-  private boolean loadNoFocusLib;
-  private boolean acceptUntrustedCerts;
-  private boolean untrustedCertIssuer;
 
   public FirefoxProfile() {
     this(null);
@@ -62,19 +53,9 @@ public class FirefoxProfile {
 
     File prefsInModel = new File(model, "user.js");
     if (prefsInModel.exists()) {
-      StringReader reader = new StringReader("{\"frozen\": {}, \"mutable\": {}}");
-      Preferences existingPrefs = new Preferences(reader, prefsInModel);
+      Preferences existingPrefs = new Preferences(prefsInModel);
       existingPrefs.addTo(this.additionalPrefs);
-      acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF, true);
-      untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF, true);
-    } else {
-      acceptUntrustedCerts = true;
-      untrustedCertIssuer = true;
     }
-
-    // This is not entirely correct but this is not stored in the profile
-    // so for now will always be set to false.
-    loadNoFocusLib = false;
   }
 
   public static FirefoxProfile fromJson(String json) throws IOException {
@@ -144,43 +125,6 @@ public class FirefoxProfile {
     }
   }
 
-  public boolean containsWebDriverExtension() {
-    return extensions.containsKey("webdriver");
-  }
-
-  public void addExtension(Class<?> loadResourcesUsing, String loadFrom) {
-    // Is loadFrom a file?
-    File file = new File(loadFrom);
-    if (file.exists()) {
-      addExtension(file);
-      return;
-    }
-
-    addExtension(loadFrom, new ClasspathExtension(loadResourcesUsing, loadFrom));
-  }
-
-  /**
-   * Attempt to add an extension to install into this instance.
-   *
-   * @param extensionToInstall File pointing to the extension
-   */
-  public void addExtension(File extensionToInstall) {
-    addExtension(extensionToInstall.getName(), new FileExtension(extensionToInstall));
-  }
-
-  public void addExtension(String key, Extension extension) {
-    String name = deriveExtensionName(key);
-    extensions.put(name, extension);
-  }
-
-  private String deriveExtensionName(String originalName) {
-    String[] pieces = originalName.replace('\\', '/').split("/");
-
-    String name = pieces[pieces.length - 1];
-    name = name.replaceAll("\\..*?$", "");
-    return name;
-  }
-
   public void setPreference(String key, Object value) {
     additionalPrefs.setPreference(key, value);
   }
@@ -189,14 +133,12 @@ public class FirefoxProfile {
     return additionalPrefs;
   }
 
+  public void setStartupUrl(String startupUrl) {
+    setPreference("browser.startup.homepage", startupUrl);
+  }
+
   public void updateUserPrefs(File userPrefs) {
     Preferences prefs = new Preferences();
-
-    // Allow users to override these settings
-    prefs.setPreference("browser.startup.homepage", "about:blank");
-    // The user must be able to override this setting (to 1) in order to
-    // to change homepage on Firefox 3.0
-    prefs.setPreference("browser.startup.page", 0);
 
     if (userPrefs.exists()) {
       prefs = new Preferences(userPrefs);
@@ -207,18 +149,7 @@ public class FirefoxProfile {
 
     additionalPrefs.addTo(prefs);
 
-    // Should we accept untrusted certificates or not?
-    prefs.setPreference(ACCEPT_UNTRUSTED_CERTS_PREF, acceptUntrustedCerts);
-
-    prefs.setPreference(ASSUME_UNTRUSTED_ISSUER_PREF, untrustedCertIssuer);
-
-    // If the user sets the home page, we should also start up there
-    Object homePage = prefs.getPreference("browser.startup.homepage");
-    if (homePage instanceof String) {
-      prefs.setPreference("startup.homepage_welcome_url", "");
-    }
-
-    if (!"about:blank".equals(prefs.getPreference("browser.startup.homepage"))) {
+    if (prefs.getPreference("browser.startup.homepage") != null) {
       prefs.setPreference("browser.startup.page", 1);
     }
 
@@ -236,61 +167,6 @@ public class FirefoxProfile {
 
     macAndLinuxLockFile.delete();
     windowsLockFile.delete();
-  }
-
-  public void deleteExtensionsCacheIfItExists(File profileDir) {
-    File cacheFile = new File(profileDir, "extensions.cache");
-    if (cacheFile.exists()) {
-      cacheFile.delete();
-    }
-  }
-
-  /**
-   * Returns whether the no focus library should be loaded for Firefox profiles launched on Linux,
-   * even if native events are disabled.
-   *
-   * @return Whether the no focus library should always be loaded for Firefox on Linux.
-   */
-  public boolean shouldLoadNoFocusLib() {
-    return loadNoFocusLib;
-  }
-
-  /**
-   * Sets whether the no focus library should always be loaded on Linux.
-   *
-   * @param loadNoFocusLib Whether to always load the no focus library.
-   */
-  public void setAlwaysLoadNoFocusLib(boolean loadNoFocusLib) {
-    this.loadNoFocusLib = loadNoFocusLib;
-  }
-
-  /**
-   * Sets whether Firefox should accept SSL certificates which have expired, signed by an unknown
-   * authority or are generally untrusted. This is set to true by default.
-   *
-   * @param acceptUntrustedSsl Whether untrusted SSL certificates should be accepted.
-   */
-
-  public void setAcceptUntrustedCertificates(boolean acceptUntrustedSsl) {
-    this.acceptUntrustedCerts = acceptUntrustedSsl;
-  }
-
-  /**
-   * By default, when accepting untrusted SSL certificates, assume that these certificates will come
-   * from an untrusted issuer or will be self signed. Due to limitation within Firefox, it is easy
-   * to find out if the certificate has expired or does not match the host it was served for, but
-   * hard to find out if the issuer of the certificate is untrusted.
-   * <p>
-   * By default, it is assumed that the certificates were not be issued from a trusted CA.
-   * <p>
-   * If you are receive an "untrusted site" prompt on Firefox when using a certificate that was
-   * issued by valid issuer, but has expired or is being served served for a different host (e.g.
-   * production certificate served in a testing environment) set this to false.
-   *
-   * @param untrustedIssuer whether to assume untrusted issuer or not.
-   */
-  public void setAssumeUntrustedCertificateIssuer(boolean untrustedIssuer) {
-    this.untrustedCertIssuer = untrustedIssuer;
   }
 
   public void clean(File profileDir) {
@@ -311,13 +187,6 @@ public class FirefoxProfile {
   }
 
   /**
-   * @deprecated This method will not be replaced as no default preferences are loaded anymore.
-   */
-  public void checkForChangesInFrozenPreferences() {
-    additionalPrefs.checkForChangesInFrozenPreferences();
-  }
-
-  /**
    * Call this to cause the current profile to be written to disk. The profile directory is
    * returned. Note that this profile directory is a temporary one and will be deleted when the JVM
    * exists (at the latest)
@@ -334,9 +203,7 @@ public class FirefoxProfile {
       File userPrefs = new File(profileDir, "user.js");
 
       copyModel(model, profileDir);
-      installExtensions(profileDir);
       deleteLockFiles(profileDir);
-      deleteExtensionsCacheIfItExists(profileDir);
       updateUserPrefs(userPrefs);
       return profileDir;
     } catch (IOException e) {
@@ -350,13 +217,5 @@ public class FirefoxProfile {
     }
 
     FileHandler.copy(sourceDir, profileDir);
-  }
-
-  protected void installExtensions(File parentDir) throws IOException {
-    File extensionsDir = new File(parentDir, "extensions");
-
-    for (Extension extension : extensions.values()) {
-      extension.writeTo(extensionsDir);
-    }
   }
 }
