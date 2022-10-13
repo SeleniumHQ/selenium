@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestCssLocators extends InternalSelenseTestBase {
   @Test
-  public void testCssLocators() {
+  void testCssLocators() {
 
     // Unimplemented features:
     // namespace

@@ -88,6 +88,7 @@ public class FirefoxDriver extends RemoteWebDriver
   private final Optional<URI> cdpUri;
   private final Optional<URI> biDiUri;
   protected FirefoxBinary binary;
+  private Connection connection;
   private DevTools devTools;
   private BiDi biDi;
   public FirefoxDriver() {
@@ -246,7 +247,7 @@ public class FirefoxDriver extends RemoteWebDriver
     ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
-    Connection connection = new Connection(wsClient, wsUri.toString());
+    connection = new Connection(wsClient, wsUri.toString());
     CdpInfo cdpInfo = new CdpVersionFinder().match("85.0").orElseGet(NoOpCdpInfo::new);
     devTools = new DevTools(cdpInfo::getDomains, connection);
 
@@ -296,6 +297,14 @@ public class FirefoxDriver extends RemoteWebDriver
 
     return maybeGetBiDi()
       .orElseThrow(() -> new DevToolsException("Unable to initialize Bidi connection"));
+  }
+
+  @Override
+  public void quit() {
+    if (connection != null) {
+      connection.close();
+    }
+    super.quit();
   }
 
   public static final class SystemProperty {

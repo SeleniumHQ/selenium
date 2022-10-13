@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 @Disabled("getPrompt not implemented")
 public class TestPrompt extends InternalSelenseTestBase {
   @Test
-  public void testPrompt() throws Exception {
+  void testPrompt() throws Exception {
     selenium.open("test_prompt.html");
     verifyFalse(selenium.isPromptPresent());
     assertFalse(selenium.isPromptPresent());

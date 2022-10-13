@@ -53,10 +53,10 @@ import java.util.Map;
  * This test has been broken out to make this behaviour clearer, and to allow for this comment.
  */
 @Tag("UnitTests")
-public class SyntheticNewSessionPayloadTest {
+class SyntheticNewSessionPayloadTest {
 
   @Test
-  public void shouldDoNothingIfOssAndW3CPayloadsAreBothEmpty() {
+  void shouldDoNothingIfOssAndW3CPayloadsAreBothEmpty() {
     Map<String, Object> empty = ImmutableMap.of(
         "desiredCapabilities", emptyMap(),
         "capabilities", ImmutableMap.of(
@@ -69,7 +69,7 @@ public class SyntheticNewSessionPayloadTest {
   }
 
   @Test
-  public void shouldDoNothingIfCapabilitiesArePresentButLeftEmpty() {
+  void shouldDoNothingIfCapabilitiesArePresentButLeftEmpty() {
     Map<String, Object> empty = ImmutableMap.of(
         "desiredCapabilities", emptyMap(),
         "capabilities", emptyMap());
@@ -80,7 +80,7 @@ public class SyntheticNewSessionPayloadTest {
   }
 
   @Test
-  public void shouldDoNothingIfOssPayloadMatchesAlwaysMatchAndThereAreNoFirstMatches() {
+  void shouldDoNothingIfOssPayloadMatchesAlwaysMatchAndThereAreNoFirstMatches() {
     Map<String, String> identicalCaps = ImmutableMap.of("browserName", "cheese");
 
     Map<String, Object> payload= ImmutableMap.of(
@@ -94,7 +94,7 @@ public class SyntheticNewSessionPayloadTest {
   }
 
   @Test
-  public void shouldDoNothingIfOssPayloadMatchesAFirstMatchAndThereIsNoAlwaysMatch() {
+  void shouldDoNothingIfOssPayloadMatchesAFirstMatchAndThereIsNoAlwaysMatch() {
     Map<String, String> identicalCaps = ImmutableMap.of("browserName", "cheese");
 
     Map<String, Object> payload= ImmutableMap.of(
@@ -108,7 +108,7 @@ public class SyntheticNewSessionPayloadTest {
   }
 
   @Test
-  public void shouldDoNothingIfOssPayloadMatchesAValidMergedW3CPayload() {
+  void shouldDoNothingIfOssPayloadMatchesAValidMergedW3CPayload() {
     Map<String, String> caps = ImmutableMap.of(
         "browserName", "cheese",
         "se:cake", "more cheese");
@@ -125,7 +125,7 @@ public class SyntheticNewSessionPayloadTest {
   }
 
   @Test
-  public void shouldExpandAllW3CMatchesToFirstMatchesAndRemoveAlwaysMatchIfSynthesizingAPayload() {
+  void shouldExpandAllW3CMatchesToFirstMatchesAndRemoveAlwaysMatchIfSynthesizingAPayload() {
     Map<String, Object> payload = ImmutableMap.of(
       // OSS capabilities request a chrome webdriver
       "desiredCapabilities", ImmutableMap.of("browserName", "chrome"),
@@ -147,7 +147,7 @@ public class SyntheticNewSessionPayloadTest {
   }
 
   @Test
-  public void ossPayloadWillBeFirstW3CPayload() {
+  void ossPayloadWillBeFirstW3CPayload() {
     // This is one of the common cases --- asking for marionette to be false. There's no way to
     // encode this legally into the w3c payload (as it doesn't start with "se:"), yet it's a use-
     // case that needs to be properly supported.

@@ -77,7 +77,7 @@ import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class RouterTest {
+class RouterTest {
 
   private Tracer tracer;
   private EventBus bus;
@@ -148,13 +148,13 @@ public class RouterTest {
   }
 
   @Test
-  public void shouldListAnEmptyDistributorAsMeaningTheGridIsNotReady() {
+  void shouldListAnEmptyDistributorAsMeaningTheGridIsNotReady() {
     Map<String, Object> status = getStatus(router);
     assertFalse((Boolean) status.get("ready"));
   }
 
   @Test
-  public void addingANodeThatIsDownMeansTheGridIsNotReady() throws URISyntaxException {
+  void addingANodeThatIsDownMeansTheGridIsNotReady() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "amsterdam");
     URI uri = new URI("https://example.com");
 
@@ -171,7 +171,7 @@ public class RouterTest {
   }
 
   @Test
-  public void aNodeThatIsUpAndHasSpareSessionsMeansTheGridIsReady() throws URISyntaxException {
+  void aNodeThatIsUpAndHasSpareSessionsMeansTheGridIsReady() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
     URI uri = new URI("https://example.com");
 
@@ -182,7 +182,7 @@ public class RouterTest {
   }
 
   @Test
-  public void shouldListAllNodesTheDistributorIsAwareOf() throws URISyntaxException {
+  void shouldListAllNodesTheDistributorIsAwareOf() throws URISyntaxException {
     Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
     Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");
     URI firstNodeUri = new URI("https://example1.com");
@@ -226,7 +226,7 @@ public class RouterTest {
   }
 
   @Test
-  public void ifNodesHaveSpareSlotsButAlreadyHaveMaxSessionsGridIsNotReady()
+  void ifNodesHaveSpareSlotsButAlreadyHaveMaxSessionsGridIsNotReady()
     throws URISyntaxException {
     Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
     Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");

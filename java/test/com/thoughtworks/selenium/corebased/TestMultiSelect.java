@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestMultiSelect extends InternalSelenseTestBase {
   @Test
-  public void testMultiSelect() {
+  void testMultiSelect() {
     selenium.open("test_multiselect.html");
     assertEquals(join(selenium.getSelectedLabels("theSelect"), ','), "Second Option");
     selenium.select("theSelect", "index=4");

@@ -27,7 +27,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.time.Duration;
 
-public class AppCacheTest extends JupiterTestBase {
+class AppCacheTest extends JupiterTestBase {
 
   @BeforeEach
   public void checkIsApplicationCache() {
@@ -35,7 +35,7 @@ public class AppCacheTest extends JupiterTestBase {
   }
 
   @Test
-  public void testAppCacheStatus() {
+  void testAppCacheStatus() {
     driver.get(pages.html5Page);
     driver.manage().timeouts().implicitlyWait(Duration.ofMillis(2000));
 
@@ -47,7 +47,7 @@ public class AppCacheTest extends JupiterTestBase {
   }
 
   @Test
-  public void testBrowserLoadsFromCacheWhenOffline() {
+  void testBrowserLoadsFromCacheWhenOffline() {
     driver.get(pages.html5Page);
     driver.get(pages.formPage);
   }

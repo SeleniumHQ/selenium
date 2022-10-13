@@ -27,7 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Supplier;
 
-public class RemoteSupplier implements Supplier<WebDriver> {
+class RemoteSupplier implements Supplier<WebDriver> {
 
   private static OutOfProcessSeleniumServer server = new OutOfProcessSeleniumServer();
   private static volatile boolean started;

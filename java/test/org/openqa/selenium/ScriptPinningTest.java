@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-public class ScriptPinningTest extends JupiterTestBase {
+class ScriptPinningTest extends JupiterTestBase {
 
   private JavascriptExecutor executor;
 
@@ -42,7 +42,7 @@ public class ScriptPinningTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowAScriptToBePinned() {
+  void shouldAllowAScriptToBePinned() {
     ScriptKey hello = executor.pin("return 'I like cheese'");
 
     Object value = executor.executeScript(hello);
@@ -51,7 +51,7 @@ public class ScriptPinningTest extends JupiterTestBase {
   }
 
   @Test
-  public void pinnedScriptsShouldBeAbleToTakeArguments() {
+  void pinnedScriptsShouldBeAbleToTakeArguments() {
     ScriptKey hello = executor.pin("return arguments[0]");
 
     Object value = executor.executeScript(hello, "cheese");
@@ -60,7 +60,7 @@ public class ScriptPinningTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldBeAbleToListAllPinnedScripts() {
+  void shouldBeAbleToListAllPinnedScripts() {
     Set<ScriptKey> expected = ImmutableSet.of(
       executor.pin("return arguments[0];"),
       executor.pin("return 'cheese';"),
@@ -72,7 +72,7 @@ public class ScriptPinningTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldAllowAPinnedScriptToBeUnpinned() {
+  void shouldAllowAPinnedScriptToBeUnpinned() {
     ScriptKey cheese = executor.pin("return 'brie'");
     executor.unpin(cheese);
 
@@ -80,7 +80,7 @@ public class ScriptPinningTest extends JupiterTestBase {
   }
 
   @Test
-  public void callingAnUnpinnedScriptIsAnError() {
+  void callingAnUnpinnedScriptIsAnError() {
     ScriptKey cheese = executor.pin("return 'brie'");
     executor.unpin(cheese);
 

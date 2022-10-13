@@ -31,7 +31,7 @@ public class I18nTest extends InternalSelenseTestBase {
   }
 
   @Test
-  public void testRomance() {
+  void testRomance() {
     String expected =
       "\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2";
     String id = "romance";
@@ -39,35 +39,35 @@ public class I18nTest extends InternalSelenseTestBase {
   }
 
   @Test
-  public void testKorean() {
+  void testKorean() {
     String expected = "\uC5F4\uC5D0";
     String id = "korean";
     verifyText(expected, id);
   }
 
   @Test
-  public void testChinese() {
+  void testChinese() {
     String expected = "\u4E2D\u6587";
     String id = "chinese";
     verifyText(expected, id);
   }
 
   @Test
-  public void testJapanese() {
+  void testJapanese() {
     String expected = "\u307E\u3077";
     String id = "japanese";
     verifyText(expected, id);
   }
 
   @Test
-  public void testDangerous() {
+  void testDangerous() {
     String expected = "&%?\\+|,%*";
     String id = "dangerous";
     verifyText(expected, id);
   }
 
   @Test
-  public void testDangerousLabels() {
+  void testDangerousLabels() {
     String[] labels = selenium.getSelectOptions("dangerous-labels");
     Assertions.assertEquals(3, labels.length, "Wrong number of labels");
     Assertions.assertEquals("veni, vidi, vici", labels[0], "mangled label");

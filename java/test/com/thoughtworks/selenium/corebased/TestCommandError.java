@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestCommandError extends InternalSelenseTestBase {
   @Test
-  public void testCommandError() {
+  void testCommandError() {
     selenium.open("test_verifications.html");
     try {
       selenium.click("notALink");

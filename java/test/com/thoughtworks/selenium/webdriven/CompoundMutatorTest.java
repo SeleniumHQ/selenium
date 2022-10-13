@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CompoundMutatorTest {
+class CompoundMutatorTest {
   private ScriptMutator mutator;
 
   @BeforeEach
@@ -31,7 +31,7 @@ public class CompoundMutatorTest {
   }
 
   @Test
-  public void testLeavesAPlainScriptIntact() {
+  void testLeavesAPlainScriptIntact() {
     StringBuilder builder = new StringBuilder();
 
     mutator.mutate("return document", builder);
@@ -40,7 +40,7 @@ public class CompoundMutatorTest {
   }
 
   @Test
-  public void testEscapesNewLines() {
+  void testEscapesNewLines() {
     StringBuilder builder = new StringBuilder();
 
     mutator.mutate("return\ndocument", builder);
@@ -49,7 +49,7 @@ public class CompoundMutatorTest {
   }
 
   @Test
-  public void testEscapesSingleQuotes() {
+  void testEscapesSingleQuotes() {
     StringBuilder builder = new StringBuilder();
 
     mutator.mutate("return 'document'", builder);
@@ -58,7 +58,7 @@ public class CompoundMutatorTest {
   }
 
   @Test
-  public void testReplacesReferencesViaSeleniumToDocument() {
+  void testReplacesReferencesViaSeleniumToDocument() {
     StringBuilder builder = new StringBuilder();
 
     mutator.mutate("return selenium.browserbot.getDocument()", builder);
@@ -70,7 +70,7 @@ public class CompoundMutatorTest {
   }
 
   @Test
-  public void testShouldWrapJavascriptInAnEvalStatement() {
+  void testShouldWrapJavascriptInAnEvalStatement() {
     StringBuilder builder = new StringBuilder();
 
     mutator.mutate("return selenium.browserbot.getDocument()", builder);

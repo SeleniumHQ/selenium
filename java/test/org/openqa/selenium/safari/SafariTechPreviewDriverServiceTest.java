@@ -31,10 +31,10 @@ import java.io.File;
 import java.time.Duration;
 
 @Tag("UnitTests")
-public class SafariTechPreviewDriverServiceTest {
+class SafariTechPreviewDriverServiceTest {
 
   @Test
-  public void builderPassesTimeoutToDriverService() {
+  void builderPassesTimeoutToDriverService() {
     File exe = new File("someFile");
     Duration defaultTimeout = Duration.ofSeconds(20);
     Duration customTimeout = Duration.ofSeconds(60);

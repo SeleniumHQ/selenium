@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class WebSocketServingTest {
+class WebSocketServingTest {
 
   private Server<?> server;
 
@@ -62,7 +62,7 @@ public class WebSocketServingTest {
   }
 
   @Test
-  public void clientShouldThrowAnExceptionIfUnableToConnectToAWebSocketEndPoint() {
+  void clientShouldThrowAnExceptionIfUnableToConnectToAWebSocketEndPoint() {
     assertThrows(ConnectionFailedException.class, () -> {
       server = new NettyServer(defaultOptions(), req -> new HttpResponse()).start();
 
@@ -74,7 +74,7 @@ public class WebSocketServingTest {
   }
 
   @Test
-  public void shouldUseUriToChooseWhichWebSocketHandlerToUse() throws InterruptedException {
+  void shouldUseUriToChooseWhichWebSocketHandlerToUse() throws InterruptedException {
     AtomicBoolean foo = new AtomicBoolean(false);
     AtomicBoolean bar = new AtomicBoolean(false);
 
@@ -115,7 +115,7 @@ public class WebSocketServingTest {
   }
 
   @Test
-  public void shouldStillBeAbleToServeHttpTraffic() {
+  void shouldStillBeAbleToServeHttpTraffic() {
     server = new NettyServer(
       defaultOptions(),
       req -> new HttpResponse().setContent(utf8String("Brie!")),
@@ -133,7 +133,7 @@ public class WebSocketServingTest {
   }
 
   @Test
-  public void shouldPropagateCloseMessage() throws InterruptedException {
+  void shouldPropagateCloseMessage() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
 
     server = new NettyServer(
@@ -150,7 +150,7 @@ public class WebSocketServingTest {
   }
 
   @Test
-  public void webSocketHandlersShouldBeAbleToFireMoreThanOneMessage() {
+  void webSocketHandlersShouldBeAbleToFireMoreThanOneMessage() {
     server = new NettyServer(
       defaultOptions(),
       req -> new HttpResponse(),

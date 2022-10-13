@@ -55,7 +55,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class ProxyCdpTest {
+class ProxyCdpTest {
 
   private final HttpHandler nullHandler = req -> new HttpResponse();
   private final Config emptyConfig = new MapConfig(Collections.emptyMap());
@@ -82,7 +82,7 @@ public class ProxyCdpTest {
   }
 
   @Test
-  public void shouldForwardTextMessageToServer() throws URISyntaxException, InterruptedException {
+  void shouldForwardTextMessageToServer() throws URISyntaxException, InterruptedException {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     // Create a backend server which will capture any incoming text message
@@ -106,7 +106,7 @@ public class ProxyCdpTest {
   }
 
   @Test
-  public void shouldForwardTextMessageFromServerToLocalEnd() throws URISyntaxException, InterruptedException {
+  void shouldForwardTextMessageFromServerToLocalEnd() throws URISyntaxException, InterruptedException {
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago", emptyConfig);
@@ -135,7 +135,7 @@ public class ProxyCdpTest {
   }
 
   @Test
-  public void shouldBeAbleToSendMessagesOverSecureWebSocket()
+  void shouldBeAbleToSendMessagesOverSecureWebSocket()
       throws URISyntaxException, InterruptedException {
 
     Config secureConfig = new MapConfig(ImmutableMap.of(

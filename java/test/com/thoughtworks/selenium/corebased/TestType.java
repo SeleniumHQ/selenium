@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 
 public class TestType extends InternalSelenseTestBase {
   @Test
-  public void testType() throws Exception {
+  void testType() throws Exception {
     selenium.open("test_type_page1.html");
     verifyEquals(selenium.getValue("username"), "");
     selenium.shiftKeyDown();

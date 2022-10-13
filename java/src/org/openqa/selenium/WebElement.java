@@ -24,7 +24,7 @@ import java.util.List;
  * page will be performed through this interface.
  * <p>
  * All method calls will do a freshness check to ensure that the element reference is still valid.
- * This essentially determines whether or not the element is still attached to the DOM. If this test
+ * This essentially determines whether the element is still attached to the DOM. If this test
  * fails, then an {@link org.openqa.selenium.StaleElementReferenceException} is thrown, and all
  * future calls to this instance will fail.
  */
@@ -41,8 +41,8 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * that themselves.
    * <p>
    * There are some preconditions for an element to be clicked. The
-   * element must be visible and it must have a height and width
-   * greater then 0.
+   * element must be visible, and it must have a height and width
+   * greater than 0.
    * <p>
    * See <a href="https://w3c.github.io/webdriver/#element-click">W3C WebDriver specification</a>
    * for more details.
@@ -193,7 +193,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
   }
 
   /**
-   * Determine whether or not this element is selected or not. This operation only applies to input
+   * Determine whether this element is selected or not. This operation only applies to input
    * elements such as checkboxes, options in a select and radio buttons.
    * For more information on which elements this method supports,
    * refer to the <a href="https://w3c.github.io/webdriver/webdriver-spec.html#is-element-selected">specification</a>.
@@ -280,7 +280,7 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * Is this element displayed or not? This method avoids the problem of having to parse an
    * element's "style" attribute.
    *
-   * @return Whether or not the element is displayed
+   * @return Whether the element is displayed
    */
   boolean isDisplayed();
 
@@ -316,11 +316,11 @@ public interface WebElement extends SearchContext, TakesScreenshot {
    * Get the value of a given CSS property.
    * Color values could be returned as rgba or rgb strings.
    * This depends on whether the browser omits the implicit opacity value or not.
-   *
+   * <p>
    * For example if the "background-color" property is set as "green" in the
    * HTML source, the returned value could be "rgba(0, 255, 0, 1)" if implicit opacity value is
    * preserved or "rgb(0, 255, 0)" if it is omitted.
-   *
+   * <p>
    * Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
    * margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,
    * in accordance with the

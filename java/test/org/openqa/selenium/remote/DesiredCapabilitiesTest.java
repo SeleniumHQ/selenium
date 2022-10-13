@@ -34,10 +34,10 @@ import java.util.logging.Level;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("UnitTests")
-public class DesiredCapabilitiesTest {
+class DesiredCapabilitiesTest {
 
   @Test
-  public void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {
+  void testAddingTheSameCapabilityToAMapTwiceShouldResultInOneEntry() {
     Map<org.openqa.selenium.Capabilities, Class<? extends WebDriver>> capabilitiesToDriver =
         new ConcurrentHashMap<>();
 
@@ -48,7 +48,7 @@ public class DesiredCapabilitiesTest {
   }
 
   @Test
-  public void testAugmentingCapabilitiesReturnsNewCapabilities() {
+  void testAugmentingCapabilitiesReturnsNewCapabilities() {
     DesiredCapabilities origCapabilities = new DesiredCapabilities();
     origCapabilities.setCapability("BrowserName", "firefox");
 
@@ -61,7 +61,7 @@ public class DesiredCapabilitiesTest {
   }
 
   @Test
-  public void testCopyConstructorWithNullArgument() {
+  void testCopyConstructorWithNullArgument() {
     DesiredCapabilities origCapabilities = new DesiredCapabilities((Capabilities) null);
 
     origCapabilities.setCapability("BrowserName", "firefox");
@@ -69,7 +69,7 @@ public class DesiredCapabilitiesTest {
   }
 
   @Test
-  public void testCopyConstructorDoesNotAliasToArgument() {
+  void testCopyConstructorDoesNotAliasToArgument() {
     DesiredCapabilities origCapabilities = new DesiredCapabilities();
     origCapabilities.setCapability("BrowserName", "firefox");
 
@@ -81,7 +81,7 @@ public class DesiredCapabilitiesTest {
   }
 
   @Test
-  public void testExtractDebugLogLevelFromCapabilityMap() {
+  void testExtractDebugLogLevelFromCapabilityMap() {
     Map<String, Object> capabilitiesMap
         = ImmutableMap.of(CapabilityType.LOGGING_PREFS, ImmutableMap.of("browser", "DEBUG"));
 
@@ -92,7 +92,7 @@ public class DesiredCapabilitiesTest {
   }
 
   @Test
-  public void shouldAutomaticallyConvertPlatformFromStringToEnum() {
+  void shouldAutomaticallyConvertPlatformFromStringToEnum() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.PLATFORM_NAME, "Windows Server 2008");
     assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo(Platform.VISTA);
@@ -101,14 +101,14 @@ public class DesiredCapabilitiesTest {
   }
 
   @Test
-  public void shouldNotAutomaticallyConvertPlatformIfItNotConvertible() {
+  void shouldNotAutomaticallyConvertPlatformIfItNotConvertible() {
     DesiredCapabilities caps = new DesiredCapabilities();
     caps.setCapability(CapabilityType.PLATFORM_NAME, "FreeBSD");
     assertThat(caps.getCapability(CapabilityType.PLATFORM_NAME)).isEqualTo("FreeBSD");
   }
 
   @Test
-  public void shouldNotAutomaticallyConvertPlatformIfItNotConvertibleInConstructor() {
+  void shouldNotAutomaticallyConvertPlatformIfItNotConvertibleInConstructor() {
     Map<String, Object> capabilitiesMap = ImmutableMap.of(CapabilityType.PLATFORM_NAME, "FreeBSD");
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
@@ -116,7 +116,7 @@ public class DesiredCapabilitiesTest {
   }
 
   @Test
-  public void shouldShortenLongValues() {
+  void shouldShortenLongValues() {
     Map<String, Object> capabilitiesMap = ImmutableMap.of("key", createString(1025));
 
     DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
@@ -125,7 +125,7 @@ public class DesiredCapabilitiesTest {
   }
 
   @Test
-  public void shouldShortenLongEnclosedValues() {
+  void shouldShortenLongEnclosedValues() {
     Map<String, Object> capabilitiesMap
         = ImmutableMap.of("key", ImmutableMap.of("subkey", createString(1025)));
 
@@ -135,7 +135,7 @@ public class DesiredCapabilitiesTest {
   }
 
   @Test
-  public void canCompareCapabilities() {
+  void canCompareCapabilities() {
     DesiredCapabilities caps1 = new DesiredCapabilities();
     DesiredCapabilities caps2 = new DesiredCapabilities();
     assertThat(caps2).isEqualTo(caps1);

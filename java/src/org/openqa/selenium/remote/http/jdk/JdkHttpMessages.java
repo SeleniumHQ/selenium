@@ -24,10 +24,10 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -37,6 +37,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 class JdkHttpMessages {
 
   private final ClientConfig config;
+  private static final List<String> IGNORE_HEADERS =
+    List.of("content-length", "connection", "host");
 
   public JdkHttpMessages(ClientConfig config) {
     this.config = Objects.requireNonNull(config, "Client config");
@@ -83,9 +85,8 @@ class JdkHttpMessages {
     }
 
     for (String name : req.getHeaderNames()) {
-      // Avoid explicitly setting content-length
-      // This prevents the IllegalArgumentException that states 'restricted header name: "Content-Length"'
-      if (name.equalsIgnoreCase("content-length")) {
+      // This prevents the IllegalArgumentException that states 'restricted header name: ...'
+      if (IGNORE_HEADERS.contains(name.toLowerCase())) {
         continue;
       }
       for (String value : req.getHeaders(name)) {

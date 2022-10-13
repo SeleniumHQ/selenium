@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestElementOrder extends InternalSelenseTestBase {
   @Test
-  public void testElementOrder() {
+  void testElementOrder() {
     selenium.open("test_element_order.html");
     assertTrue(selenium.isOrdered("s1.1", "d1.1"));
     assertFalse(selenium.isOrdered("s1.1", "s1.1"));

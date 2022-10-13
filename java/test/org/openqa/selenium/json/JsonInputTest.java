@@ -47,10 +47,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Tag("UnitTests")
-public class JsonInputTest {
+class JsonInputTest {
 
   @Test
-  public void shouldParseBooleanValues() {
+  void shouldParseBooleanValues() {
     JsonInput input = newInput("true");
     assertThat(input.peek()).isEqualTo(BOOLEAN);
     assertThat(input.nextBoolean()).isTrue();
@@ -61,35 +61,35 @@ public class JsonInputTest {
   }
 
   @Test
-  public void shouldParseNonDecimalNumbersAsLongs() {
+  void shouldParseNonDecimalNumbersAsLongs() {
     JsonInput input = newInput("42");
     assertThat(input.peek()).isEqualTo(NUMBER);
     assertThat(input.nextNumber()).isEqualTo(42L);
   }
 
   @Test
-  public void shouldParseDecimalNumbersAsDoubles() {
+  void shouldParseDecimalNumbersAsDoubles() {
     JsonInput input = newInput("42.0");
     assertThat(input.peek()).isEqualTo(NUMBER);
     assertThat((Double) input.nextNumber()).isEqualTo(42.0d);
   }
 
   @Test
-  public void shouldHandleNullValues() {
+  void shouldHandleNullValues() {
     JsonInput input = newInput("null");
     assertThat(input.peek()).isEqualTo(NULL);
     assertThat(input.nextNull()).isNull();
   }
 
   @Test
-  public void shouldBeAbleToReadAString() {
+  void shouldBeAbleToReadAString() {
     JsonInput input = newInput("\"cheese\"");
     assertThat(input.peek()).isEqualTo(STRING);
     assertThat(input.nextString()).isEqualTo("cheese");
   }
 
   @Test
-  public void shouldBeAbleToHandleAnUnterminatedString() {
+  void shouldBeAbleToHandleAnUnterminatedString() {
     JsonInput input = newInput("\"cheese");
     assertThat(input.peek()).isEqualTo(STRING);
     assertThatExceptionOfType(JsonException.class)
@@ -98,14 +98,14 @@ public class JsonInputTest {
   }
 
   @Test
-  public void shouldBeAbleToReadTheEmptyString() {
+  void shouldBeAbleToReadTheEmptyString() {
     JsonInput input = newInput("\"\"");
     assertThat(input.peek()).isEqualTo(STRING);
-    assertThat(input.nextString()).isEqualTo("");
+    assertThat(input.nextString()).isEmpty();
   }
 
   @Test
-  public void anEmptyArrayHasNoContents() {
+  void anEmptyArrayHasNoContents() {
     JsonInput input = newInput("[]");
     assertThat(input.peek()).isEqualTo(START_COLLECTION);
     input.beginArray();
@@ -115,7 +115,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void anArrayWithASingleElementHasNextButOnlyOneValue() {
+  void anArrayWithASingleElementHasNextButOnlyOneValue() {
     JsonInput input = newInput("[ \"peas\"]");
     input.beginArray();
     assertThat(input.nextString()).isEqualTo("peas");
@@ -123,7 +123,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void anArrayWithMultipleElementsReturnsTrueFromHasNextMoreThanOnce() {
+  void anArrayWithMultipleElementsReturnsTrueFromHasNextMoreThanOnce() {
     JsonInput input = newInput("[\"brie\", \"cheddar\"]");
     input.beginArray();
     assertThat(input.hasNext()).isTrue();
@@ -135,14 +135,14 @@ public class JsonInputTest {
   }
 
   @Test
-  public void callingHasNextWhenNotInAnArrayOrMapIsAnError() {
+  void callingHasNextWhenNotInAnArrayOrMapIsAnError() {
     JsonInput input = newInput("\"cheese\"");
     assertThatExceptionOfType(JsonException.class)
       .isThrownBy(input::hasNext);
   }
 
   @Test
-  public void anEmptyMapHasNoContents() {
+  void anEmptyMapHasNoContents() {
     JsonInput input = newInput("{      }");
     assertThat(input.peek()).isEqualTo(START_MAP);
     input.beginObject();
@@ -152,7 +152,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void canReadAMapWithASingleEntry() {
+  void canReadAMapWithASingleEntry() {
     JsonInput input = newInput("{\"cheese\": \"feta\"}");
     input.beginObject();
     assertThat(input.hasNext()).isTrue();
@@ -165,7 +165,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void canReadAMapWithManyEntries() {
+  void canReadAMapWithManyEntries() {
     JsonInput input = newInput(
       "{"
       + "\"cheese\": \"stilton\","
@@ -193,7 +193,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void nestedMapIsFine() {
+  void nestedMapIsFine() {
     JsonInput input = newInput("{\"map\": {\"child\": [\"hello\",\"world\"]}}");
 
     input.beginObject();
@@ -216,7 +216,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void shouldDecodeUnicodeEscapesProperly() {
+  void shouldDecodeUnicodeEscapesProperly() {
     String raw = "{\"text\": \"\\u003Chtml\"}";
 
     try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
@@ -227,7 +227,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void shouldCallFromJsonWithJsonInputParameter() {
+  void shouldCallFromJsonWithJsonInputParameter() {
     String raw = "{\"message\": \"Cheese!\"}";
 
     try (JsonInput in = new JsonInput(new StringReader(raw), new JsonTypeCoercer(), BY_NAME)) {
@@ -238,7 +238,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void shouldBeAbleToReadDataLongerThanReadBuffer() {
+  void shouldBeAbleToReadDataLongerThanReadBuffer() {
     char[] chars = new char[]{'c', 'h', 'e', 's'};
     Random r = new Random();
     String raw = Stream.generate(() -> "" + chars[r.nextInt(4)])
@@ -249,7 +249,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void shouldBeAbleToReadNonWellFormedDataLongerThanReadBuffer() {
+  void shouldBeAbleToReadNonWellFormedDataLongerThanReadBuffer() {
     char[] chars = new char[]{'c', 'h', 'e', 's'};
     Random r = new Random();
     String raw = Stream.generate(() -> "" + chars[r.nextInt(4)])
@@ -264,7 +264,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void nullInputsShouldCoerceAsNullValues() throws IOException {
+  void nullInputsShouldCoerceAsNullValues() throws IOException {
     try (InputStream is = new ByteArrayInputStream(new byte[0]);
          Reader reader = new InputStreamReader(is, UTF_8);
          JsonInput input = new Json().newInput(reader)) {
@@ -276,7 +276,7 @@ public class JsonInputTest {
   }
 
   @Test
-  public void emptyStringsWithNoJsonValuesComeBackAsNull() throws IOException {
+  void emptyStringsWithNoJsonValuesComeBackAsNull() throws IOException {
     try (InputStream is = new ByteArrayInputStream("     ".getBytes(UTF_8));
          Reader reader = new InputStreamReader(is, UTF_8);
          JsonInput input = new Json().newInput(reader)) {

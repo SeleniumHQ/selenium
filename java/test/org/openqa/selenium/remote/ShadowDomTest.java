@@ -47,7 +47,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 @Tag("UnitTests")
-public class ShadowDomTest {
+class ShadowDomTest {
 
   private final SessionId id = new SessionId(UUID.randomUUID());
   private final UUID elementId = UUID.randomUUID();
@@ -88,7 +88,7 @@ public class ShadowDomTest {
   }
 
   @Test
-  public void shouldThrowAnExceptionIfTheShadowRootCannotBeFound() {
+  void shouldThrowAnExceptionIfTheShadowRootCannotBeFound() {
     HttpRequest expected = new HttpRequest(GET, String.format("/session/%s/element/%s/shadow", id, elementId));
 
     cannedResponses.put(
@@ -102,7 +102,7 @@ public class ShadowDomTest {
   }
 
   @Test
-  public void shouldGetShadowRoot() {
+  void shouldGetShadowRoot() {
     HttpRequest expected = new HttpRequest(GET, String.format("/session/%s/element/%s/shadow", id, elementId));
     UUID shadowId = UUID.randomUUID();
 
@@ -118,7 +118,7 @@ public class ShadowDomTest {
   }
 
   @Test
-  public void shouldBeAbleToFindAnElementFromAShadowRoot() {
+  void shouldBeAbleToFindAnElementFromAShadowRoot() {
     String shadowId = UUID.randomUUID().toString();
     UUID elementId = UUID.randomUUID();
 
@@ -138,7 +138,7 @@ public class ShadowDomTest {
   }
 
   @Test
-  public void shouldBeAbleToFindElementsFromAShadowRoot() {
+  void shouldBeAbleToFindElementsFromAShadowRoot() {
     String shadowId = UUID.randomUUID().toString();
     UUID elementId = UUID.randomUUID();
 
@@ -159,7 +159,7 @@ public class ShadowDomTest {
   }
 
   @Test
-  public void failingToFindAnElementFromAShadowRootThrowsAnException() {
+  void failingToFindAnElementFromAShadowRootThrowsAnException() {
     String shadowId = UUID.randomUUID().toString();
 
     HttpRequest expected = new HttpRequest(POST, String.format("/session/%s/shadow/%s/element", id, shadowId));
@@ -177,7 +177,7 @@ public class ShadowDomTest {
   }
 
   @Test
-  public void shouldBeAbleToGetShadowRootFromExecuteScript() {
+  void shouldBeAbleToGetShadowRootFromExecuteScript() {
     String shadowId = UUID.randomUUID().toString();
 
     HttpRequest execute = new HttpRequest(POST, String.format("/session/%s/execute/sync", id));

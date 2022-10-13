@@ -59,7 +59,7 @@ import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.grid.data.Availability.UP;
 
-public class DefaultSlotSelectorTest {
+class DefaultSlotSelectorTest {
 
   private final Random random = new Random();
   private final DefaultSlotSelector selector = new DefaultSlotSelector();
@@ -75,7 +75,7 @@ public class DefaultSlotSelectorTest {
   }
 
   @Test
-  public void numberOfSupportedBrowsersByNodeIsCorrect() {
+  void numberOfSupportedBrowsersByNodeIsCorrect() {
     NodeStatus nodeStatus = createNode("edge", "firefox", "chrome");
     long supportedBrowsersByNode = selector.getNumberOfSupportedBrowsers(nodeStatus);
     assertThat(supportedBrowsersByNode).isEqualTo(3);
@@ -88,7 +88,7 @@ public class DefaultSlotSelectorTest {
   }
 
   @Test
-  public void nodesAreOrderedNodesByNumberOfSupportedBrowsers() {
+  void nodesAreOrderedNodesByNumberOfSupportedBrowsers() {
     Set<NodeStatus> nodes = new HashSet<>();
 
     Capabilities caps = new ImmutableCapabilities("browserName", "chrome");
@@ -112,7 +112,7 @@ public class DefaultSlotSelectorTest {
   }
 
   @Test
-  public void theMostLightlyLoadedNodeIsSelectedFirst() {
+  void theMostLightlyLoadedNodeIsSelectedFirst() {
     // Create enough hosts so that we avoid the scheduler returning hosts in:
     // * insertion order
     // * reverse insertion order
@@ -132,7 +132,7 @@ public class DefaultSlotSelectorTest {
   }
 
   @Test
-  public void theNodeWhichHasExceededMaxSessionsIsNotSelected() {
+  void theNodeWhichHasExceededMaxSessionsIsNotSelected() {
     Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
 
     NodeStatus lightLoad =
@@ -163,7 +163,7 @@ public class DefaultSlotSelectorTest {
   }
 
   @Test
-  public void nodesAreOrderedByNumberOfSupportedBrowsersAndLoad() {
+  void nodesAreOrderedByNumberOfSupportedBrowsersAndLoad() {
     Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
     Capabilities firefox = new ImmutableCapabilities("browserName", "firefox");
     Capabilities safari = new ImmutableCapabilities("browserName", "safari");

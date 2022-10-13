@@ -32,14 +32,14 @@ import org.openqa.selenium.testing.JupiterTestBase;
 /**
  * Tests operations that involve scroll wheel.
  */
-public class DefaultWheelTest extends JupiterTestBase {
+class DefaultWheelTest extends JupiterTestBase {
 
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
 
   @Test
-  public void shouldScrollToElement() {
+  void shouldScrollToElement() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement iframe = driver.findElement(By.tagName("iframe"));
 
@@ -51,7 +51,7 @@ public class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldScrollFromElementByGivenAmount() {
+  void shouldScrollFromElementByGivenAmount() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement iframe = driver.findElement(By.tagName("iframe"));
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(iframe);
@@ -64,7 +64,7 @@ public class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldScrollFromElementByGivenAmountWithOffset() {
+  void shouldScrollFromElementByGivenAmountWithOffset() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement footer = driver.findElement(By.tagName("footer"));
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromElement(footer, 0, -50);
@@ -78,7 +78,7 @@ public class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  public void throwErrorWhenElementOriginIsOutOfViewport() {
+  void throwErrorWhenElementOriginIsOutOfViewport() {
     assertThrows(MoveTargetOutOfBoundsException.class, () -> {
       driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
       WebElement footer = driver.findElement(By.tagName("footer"));
@@ -89,7 +89,7 @@ public class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldScrollFromViewportByGivenAmount() {
+  void shouldScrollFromViewportByGivenAmount() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html"));
     WebElement footer = driver.findElement(By.tagName("footer"));
     int deltaY = footer.getRect().y;
@@ -100,7 +100,7 @@ public class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldScrollFromViewportByGivenAmountFromOrigin() {
+  void shouldScrollFromViewportByGivenAmountFromOrigin() {
     driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
     WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(10, 10);
 
@@ -113,7 +113,7 @@ public class DefaultWheelTest extends JupiterTestBase {
   }
 
   @Test
-  public void throwErrorWhenOriginOffsetIsOutOfViewport() {
+  void throwErrorWhenOriginOffsetIsOutOfViewport() {
     assertThrows(MoveTargetOutOfBoundsException.class, () -> {
       driver.get(appServer.whereIs("scrolling_tests/frame_with_nested_scrolling_frame.html"));
       WheelInput.ScrollOrigin scrollOrigin = WheelInput.ScrollOrigin.fromViewport(-10, -10);

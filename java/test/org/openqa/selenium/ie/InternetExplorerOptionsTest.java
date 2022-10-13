@@ -36,10 +36,10 @@ import static org.openqa.selenium.ie.InternetExplorerDriver.INTRODUCE_FLAKINESS_
 import static org.openqa.selenium.ie.InternetExplorerOptions.IE_OPTIONS;
 
 @Tag("UnitTests")
-public class InternetExplorerOptionsTest {
+class InternetExplorerOptionsTest {
 
   @Test
-  public void shouldAllowACapabilityToBeSet() {
+  void shouldAllowACapabilityToBeSet() {
     InternetExplorerOptions options = new InternetExplorerOptions();
     options.setCapability("cheese", "cake");
 
@@ -47,7 +47,7 @@ public class InternetExplorerOptionsTest {
   }
 
   @Test
-  public void shouldMirrorCapabilitiesForIeProperly() {
+  void shouldMirrorCapabilitiesForIeProperly() {
     String expected = "http://cheese.example.com";
     InternetExplorerOptions options = new InternetExplorerOptions()
       .withInitialBrowserUrl(expected);
@@ -60,7 +60,7 @@ public class InternetExplorerOptionsTest {
   }
 
   @Test
-  public void shouldMirrorCapabilitiesFromPassedInIeOptions() {
+  void shouldMirrorCapabilitiesFromPassedInIeOptions() {
     InternetExplorerOptions toMirror = new InternetExplorerOptions()
       .introduceFlakinessByIgnoringSecurityDomains();
 
@@ -74,7 +74,7 @@ public class InternetExplorerOptionsTest {
   }
 
   @Test
-  public void shouldPopulateIeOptionsFromExistingCapabilitiesWhichLackThem() {
+  void shouldPopulateIeOptionsFromExistingCapabilitiesWhichLackThem() {
     Capabilities caps = new ImmutableCapabilities(
         INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
 
@@ -85,7 +85,7 @@ public class InternetExplorerOptionsTest {
   }
 
   @Test
-  public void shouldSurviveASerializationRoundTrip() {
+  void shouldSurviveASerializationRoundTrip() {
     InternetExplorerOptions options = new InternetExplorerOptions()
         .withInitialBrowserUrl("http://www.cheese.com")
         .addCommandSwitches("--cake");
@@ -101,7 +101,7 @@ public class InternetExplorerOptionsTest {
   }
 
   @Test
-  public void shouldSetIeOptionsCapabilityWhenConstructedFromExistingCapabilities() {
+  void shouldSetIeOptionsCapabilityWhenConstructedFromExistingCapabilities() {
     InternetExplorerOptions expected = new InternetExplorerOptions();
     expected.setCapability("requireWindowFocus", true);
 
@@ -114,7 +114,7 @@ public class InternetExplorerOptionsTest {
   }
 
   @Test
-  public void mergingOptionsMergesArguments() {
+  void mergingOptionsMergesArguments() {
     InternetExplorerOptions one = new InternetExplorerOptions()
       .useCreateProcessApiToLaunchIe()
       .addCommandSwitches("-private");

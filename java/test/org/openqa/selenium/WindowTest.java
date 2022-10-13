@@ -33,18 +33,18 @@ import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.function.Consumer;
 
-public class WindowTest extends JupiterTestBase {
+class WindowTest extends JupiterTestBase {
 
   @Test
-  public void testGetsTheSizeOfTheCurrentWindow() {
+  void testGetsTheSizeOfTheCurrentWindow() {
     Dimension size = driver.manage().window().getSize();
 
-    assertThat(size.width).isGreaterThan(0);
-    assertThat(size.height).isGreaterThan(0);
+    assertThat(size.width).isPositive();
+    assertThat(size.height).isPositive();
   }
 
   @Test
-  public void testSetsTheSizeOfTheCurrentWindow() {
+  void testSetsTheSizeOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
@@ -54,7 +54,7 @@ public class WindowTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testSetsTheSizeOfTheCurrentWindowFromFrame() {
+  void testSetsTheSizeOfTheCurrentWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
@@ -66,7 +66,7 @@ public class WindowTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testSetsTheSizeOfTheCurrentWindowFromIframe() {
+  void testSetsTheSizeOfTheCurrentWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
@@ -77,7 +77,7 @@ public class WindowTest extends JupiterTestBase {
   }
 
   @Test
-  public void testGetsThePositionOfTheCurrentWindow() {
+  void testGetsThePositionOfTheCurrentWindow() {
     // Window position is undefined on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
@@ -91,7 +91,7 @@ public class WindowTest extends JupiterTestBase {
   }
 
   @Test
-  public void testSetsThePositionOfTheCurrentWindow() {
+  void testSetsThePositionOfTheCurrentWindow() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
