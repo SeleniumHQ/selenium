@@ -19,17 +19,19 @@ $ cargo run -- --help
 selenium-manager 1.0.0-M1
 Automated driver management for Selenium
 
-Usage: selenium-manager [OPTIONS] --browser <BROWSER>
+Usage: selenium-manager [OPTIONS]
 Options:
   -b, --browser <BROWSER>
-          Browser type (e.g., chrome, firefox, edge)
-  -D, --driver-version <DRIVER_VERSION>
+          Browser name (chrome, firefox, or edge) [default: ]
+  -d, --driver <DRIVER>
+          Driver name (chromedriver, geckodriver, or msedgedriver) [default: ]
+  -v, --driver-version <DRIVER_VERSION>
           Driver version (e.g., 106.0.5249.61, 0.31.0, etc.) [default: ]
   -B, --browser-version <BROWSER_VERSION>
           Major browser version (e.g., 105, 106, etc.) [default: ]
-  -d, --debug
+  -D, --debug
           Display DEBUG messages
-  -t, --trace
+  -T, --trace
           Display TRACE messages
   -c, --clear-cache
           Clear driver cache
