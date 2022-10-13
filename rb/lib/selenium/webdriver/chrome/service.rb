@@ -26,7 +26,7 @@ module Selenium
         MISSING_TEXT = <<~ERROR
           Unable to find chromedriver. Please download the server from
           https://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
-          More info at https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver.
+          More info at https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/?language=ruby.
         ERROR
         SHUTDOWN_SUPPORTED = true
 
