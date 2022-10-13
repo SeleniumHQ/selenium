@@ -1,5 +1,5 @@
 {
-  "checksum": "cc945fa5e2e86802cfd4b19657cc9464373e4b0e3c8d7f49588a6f275e14f839",
+  "checksum": "cbdd307f41fcf4c246a8beaad469ba65c9ec0b569596d9b50893c87cdd650d9c",
   "crates": {
     "adler 1.0.2": {
       "name": "adler",
@@ -921,13 +921,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap 4.0.11": {
+    "clap 4.0.14": {
       "name": "clap",
-      "version": "4.0.11",
+      "version": "4.0.14",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap/4.0.11/download",
-          "sha256": "4ed45cc2c62a3eff523e718d8576ba762c83a3146151093283ac62ae11933a73"
+          "url": "https://crates.io/api/v1/crates/clap/4.0.14/download",
+          "sha256": "6ea54a38e4bce14ff6931c72e5b3c43da7051df056913d4e7e1fcdb1c03df69d"
         }
       },
       "targets": [
@@ -1004,23 +1004,23 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "clap_derive 4.0.10",
+              "id": "clap_derive 4.0.13",
               "target": "clap_derive"
             }
           ],
           "selects": {}
         },
-        "version": "4.0.11"
+        "version": "4.0.14"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap_derive 4.0.10": {
+    "clap_derive 4.0.13": {
       "name": "clap_derive",
-      "version": "4.0.10",
+      "version": "4.0.13",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap_derive/4.0.10/download",
-          "sha256": "db342ce9fda24fb191e2ed4e102055a4d381c1086a06630174cd8da8d5d917ce"
+          "url": "https://crates.io/api/v1/crates/clap_derive/4.0.13/download",
+          "sha256": "c42f169caba89a7d512b5418b09864543eeb4d497416c917d7137863bd2076ad"
         }
       },
       "targets": [
@@ -1071,7 +1071,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "4.0.10"
+        "version": "4.0.13"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -6793,7 +6793,7 @@
         "deps": {
           "common": [
             {
-              "id": "clap 4.0.11",
+              "id": "clap 4.0.14",
               "target": "clap"
             },
             {
@@ -10672,7 +10672,7 @@
   "binary_crates": [
     "assert_cmd 2.0.4",
     "cc 1.0.73",
-    "clap 4.0.11",
+    "clap 4.0.14",
     "wait-timeout 0.2.0"
   ],
   "workspace_members": {
