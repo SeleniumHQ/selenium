@@ -32,7 +32,7 @@ import org.openqa.selenium.json.Json;
 import java.io.IOException;
 import java.util.Map;
 
-public class CompiledAtomsNotLeakingTest {
+class CompiledAtomsNotLeakingTest {
 
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/execute_script.js";
 
@@ -65,9 +65,11 @@ public class CompiledAtomsNotLeakingTest {
     });
   }
 
-  /** https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1333 */
+  /**
+   * <a href="https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1333"></a>
+   */
   @Test
-  public void fragmentWillNotLeakVariablesToEnclosingScopes() {
+  void fragmentWillNotLeakVariablesToEnclosingScopes() {
     ContextFactory.getGlobal().call(context -> {
       eval(context, "(" + fragment + ")()", RESOURCE_PATH);
       assertThat(eval(context, "_")).isEqualTo(1234);
@@ -91,7 +93,7 @@ public class CompiledAtomsNotLeakingTest {
   }
 
   @Test
-  public void nestedFragmentsShouldNotLeakVariables() {
+  void nestedFragmentsShouldNotLeakVariables() {
     ContextFactory.getGlobal().call(context -> {
       // executeScript atom recursing on itself to execute "return 1+2".
       // Should result in {status:0,value:{status:0,value:3}}

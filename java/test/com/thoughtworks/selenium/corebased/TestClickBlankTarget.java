@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 @Disabled("Switching to the null window appears to fail")
 public class TestClickBlankTarget extends InternalSelenseTestBase {
   @Test
-  public void testClickBlankTarget() {
+  void testClickBlankTarget() {
     selenium.open("Frames.html");
     selenium.selectFrame("bottomFrame");
     selenium.click("changeBlank");

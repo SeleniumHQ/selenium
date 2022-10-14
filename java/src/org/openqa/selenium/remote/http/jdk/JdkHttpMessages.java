@@ -19,13 +19,15 @@ package org.openqa.selenium.remote.http.jdk;
 
 import org.openqa.selenium.remote.http.AddSeleniumUserAgent;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -35,6 +37,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 class JdkHttpMessages {
 
   private final ClientConfig config;
+  private static final List<String> IGNORE_HEADERS =
+    List.of("content-length", "connection", "host");
 
   public JdkHttpMessages(ClientConfig config) {
     this.config = Objects.requireNonNull(config, "Client config");
@@ -68,11 +72,12 @@ class JdkHttpMessages {
         break;
 
       case POST:
-          builder = builder.POST(BodyPublishers.ofInputStream(req.getContent()));
-          break;
+        // Copy the content into a byte array to avoid reading the content inputstream multiple times.
+        builder = builder.POST(BodyPublishers.ofByteArray(Contents.bytes(req.getContent())));
+        break;
 
       case PUT:
-        builder = builder.PUT(BodyPublishers.ofInputStream(req.getContent()));
+        builder = builder.PUT(BodyPublishers.ofByteArray(Contents.bytes(req.getContent())));
         break;
 
       default:
@@ -80,6 +85,10 @@ class JdkHttpMessages {
     }
 
     for (String name : req.getHeaderNames()) {
+      // This prevents the IllegalArgumentException that states 'restricted header name: ...'
+      if (IGNORE_HEADERS.contains(name.toLowerCase())) {
+        continue;
+      }
       for (String value : req.getHeaders(name)) {
         builder = builder.header(name, value);
       }
@@ -106,12 +115,17 @@ class JdkHttpMessages {
     return rawUrl;
   }
 
-  public HttpResponse createResponse(java.net.http.HttpResponse<InputStream> response) {
+  public URI getRawUri(HttpRequest req) {
+    String rawUrl = getRawUrl(config.baseUri(), req.getUri());
+    return URI.create(rawUrl);
+  }
+
+  public HttpResponse createResponse(java.net.http.HttpResponse<byte[]> response) {
     HttpResponse res = new HttpResponse();
     res.setStatus(response.statusCode());
     response.headers().map()
       .forEach((name, values) -> values.stream().filter(Objects::nonNull).forEach(value -> res.addHeader(name, value)));
-    res.setContent(response::body);
+    res.setContent(() -> new ByteArrayInputStream(response.body()));
 
     return res;
   }

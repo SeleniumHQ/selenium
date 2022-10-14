@@ -27,13 +27,12 @@ import java.util.Collections;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-public class BiDiSessionTest {
+class BiDiSessionTest {
 
   private FirefoxDriver driver;
 
-  @Disabled
   @Test
-  public void shouldBeAbleToCreateABiDiSession() {
+  void shouldBeAbleToCreateABiDiSession() {
     FirefoxOptions options = new FirefoxOptions();
     // Enable BiDi
     options.setCapability("webSocketUrl", true);

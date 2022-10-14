@@ -17,7 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-
 require_relative 'spec_helper'
 
 module Selenium

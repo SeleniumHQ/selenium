@@ -28,7 +28,7 @@ import java.util.ServiceLoader;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class DefaultDriverSupplier implements Supplier<WebDriver> {
+class DefaultDriverSupplier implements Supplier<WebDriver> {
 
   private final Capabilities capabilities;
 

@@ -42,7 +42,7 @@ public class MockBrowserTest {
   }
 
   @Test
-  public void testMock() {
+  void testMock() {
     sel.open("/");
     sel.click("foo");
     assertEquals(sel.getTitle(), "x", "Incorrect title");

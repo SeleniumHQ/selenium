@@ -29,7 +29,7 @@ import org.openqa.selenium.testing.Ignore;
 
 import java.util.List;
 
-public class WindowSwitchingTest extends DevToolsTestBase {
+class WindowSwitchingTest extends DevToolsTestBase {
 
   @Test
   @Ignore(FIREFOX)

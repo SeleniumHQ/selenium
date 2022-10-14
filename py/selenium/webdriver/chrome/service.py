@@ -14,35 +14,37 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
-from typing import List
 from selenium.webdriver.chromium import service
-
 
 DEFAULT_EXECUTABLE_PATH = "chromedriver"
 
 
 class Service(service.ChromiumService):
+    """A Service class that is responsible for the starting and stopping
+    of `chromedriver`.
+
+    :param executable_path: install path of the chromedriver executable, defaults to `chromedriver`.
+    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
+    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
+    :param log_path: (Optional) String to be passed to the executable as `--log-path`.
+    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
-    Object that manages the starting and stopping of the ChromeDriver
-    """
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
-                 port: int = 0, service_args: List[str] = None,
-                 log_path: str = None, env: dict = None):
-        """
-        Creates a new instance of the Service
-
-        :Args:
-         - executable_path : Path to the ChromeDriver
-         - port : Port the service is running on
-         - service_args : List of args to pass to the chromedriver service
-         - log_path : Path for the chromedriver service to log to"""
-
+    def __init__(
+        self,
+        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        port: int = 0,
+        service_args: typing.Optional[typing.List[str]] = None,
+        log_path: typing.Optional[str] = None,
+        env: typing.Optional[typing.Mapping[str, str]] = None,
+    ) -> None:
         super().__init__(
-            executable_path,
-            port,
-            service_args,
-            log_path,
-            env,
-            "Please see https://chromedriver.chromium.org/home")
+            executable_path=executable_path,
+            port=port,
+            service_args=service_args,
+            log_path=log_path,
+            env=env,
+            start_error_message="Please see https://chromedriver.chromium.org/home",
+        )

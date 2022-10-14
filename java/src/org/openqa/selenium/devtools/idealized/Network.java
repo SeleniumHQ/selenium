@@ -18,6 +18,7 @@
 package org.openqa.selenium.devtools.idealized;
 
 import org.openqa.selenium.Credentials;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.Command;
@@ -44,6 +45,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -60,6 +62,8 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
   private final Filter defaultFilter = next -> next::execute;
   private Filter filter = defaultFilter;
   protected final DevTools devTools;
+
+  private final AtomicBoolean networkInterceptorClosed = new AtomicBoolean();
 
   public Network(DevTools devtools) {
     this.devTools = Require.nonNull("DevTools", devtools);
@@ -132,6 +136,10 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     filter = defaultFilter;
   }
 
+  public void markNetworkInterceptorClosed() {
+    networkInterceptorClosed.set(true);
+  }
+
   public void interceptTrafficWith(Filter filter) {
     Require.nonNull("HTTP filter", filter);
 
@@ -172,6 +180,7 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
     devTools.addListener(
       requestPausedEvent(),
       pausedRequest -> {
+        try {
         String id = getRequestId(pausedRequest);
         Either<HttpRequest, HttpResponse> message = createSeMessages(pausedRequest);
 
@@ -203,7 +212,9 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
             Thread.currentThread().interrupt();
             throw new WebDriverException(e);
           } catch (ExecutionException e) {
-            LOG.log(WARNING, e, () -> "Unable to process request");
+            if (!networkInterceptorClosed.get()) {
+              LOG.log(WARNING, e, () -> "Unable to process request");
+            }
             return new HttpResponse();
           }
         }).execute(message.left());
@@ -214,7 +225,11 @@ public abstract class Network<AUTHREQUIRED, REQUESTPAUSED> {
         }
 
         devTools.send(fulfillRequest(pausedRequest, forBrowser));
-      });
+      } catch (TimeoutException e) {
+          if (!networkInterceptorClosed.get()) {
+            throw new WebDriverException(e);
+          }
+    }});
 
     devTools.send(enableFetchForAllPatterns());
   }

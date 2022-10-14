@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 public class RealDealIntegrationTest extends InternalSelenseTestBase {
 
   @Test
-  public void testWithJavaScript() {
+  void testWithJavaScript() {
     selenium
         .setContext("A real test, using the real Selenium on the browser side served by Jetty, driven from Java");
     selenium.setBrowserLogLevel(SeleniumLogLevels.DEBUG);
@@ -41,12 +41,12 @@ public class RealDealIntegrationTest extends InternalSelenseTestBase {
   }
 
   @Test
-  public void testAgain() {
+  void testAgain() {
     testWithJavaScript();
   }
 
   @Test
-  public void testFailure() {
+  void testFailure() {
     selenium
         .setContext("A real negative test, using the real Selenium on the browser side served by Jetty, driven from Java");
     selenium.open("test_click_page1.html");

@@ -49,14 +49,14 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class CreateSessionTest {
+class CreateSessionTest {
 
   private final Json json = new Json();
   private final Capabilities stereotype = new ImmutableCapabilities("cheese", "brie");
   private final Secret registrationSecret = new Secret("tunworth");
 
   @Test
-  public void shouldAcceptAW3CPayload() throws URISyntaxException {
+  void shouldAcceptAW3CPayload() throws URISyntaxException {
     String payload = json.toJson(ImmutableMap.of(
         "capabilities", ImmutableMap.of(
             "alwaysMatch", ImmutableMap.of("cheese", "brie"))));
@@ -101,17 +101,17 @@ public class CreateSessionTest {
   }
 
   @Test
-  public void shouldOnlyAcceptAJWPPayloadIfConfiguredTo() {
+  void shouldOnlyAcceptAJWPPayloadIfConfiguredTo() {
     // TODO: implement shouldOnlyAcceptAJWPPayloadIfConfiguredTo test
   }
 
   @Test
-  public void ifOnlyW3CPayloadSentAndRemoteEndIsJWPOnlyFailSessionCreationIfJWPNotConfigured() {
+  void ifOnlyW3CPayloadSentAndRemoteEndIsJWPOnlyFailSessionCreationIfJWPNotConfigured() {
     // TODO: implement ifOnlyW3CPayloadSentAndRemoteEndIsJWPOnlyFailSessionCreationIfJWPNotConfigured test
   }
 
   @Test
-  public void ifOnlyJWPPayloadSentResponseShouldBeJWPOnlyIfJWPConfigured()
+  void ifOnlyJWPPayloadSentResponseShouldBeJWPOnlyIfJWPConfigured()
       throws URISyntaxException {
     String payload = json.toJson(ImmutableMap.of(
         "desiredCapabilities", ImmutableMap.of("cheese", "brie")));
@@ -156,7 +156,7 @@ public class CreateSessionTest {
   }
 
   @Test
-  public void shouldPreferUsingTheW3CProtocol() throws URISyntaxException {
+  void shouldPreferUsingTheW3CProtocol() throws URISyntaxException {
     String payload = json.toJson(ImmutableMap.of(
       "desiredCapabilities", ImmutableMap.of(
         "cheese", "brie"),
@@ -203,12 +203,12 @@ public class CreateSessionTest {
   }
 
   @Test
-  public void sessionDataShouldBeCorrectRegardlessOfPayloadProtocol() {
+  void sessionDataShouldBeCorrectRegardlessOfPayloadProtocol() {
     // TODO: implement sessionDataShouldBeCorrectRegardlessOfPayloadProtocol test
   }
 
   @Test
-  public void shouldSupportProtocolConversion() {
+  void shouldSupportProtocolConversion() {
     // TODO: implement shouldSupportProtocolConversion test
   }
 }

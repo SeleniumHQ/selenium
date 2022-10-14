@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestEvilClosingWindow extends InternalSelenseTestBase {
   @Test
-  public void testEvilClosingWindow() {
+  void testEvilClosingWindow() {
     selenium.open("test_select_window.html");
     selenium.click("popupPage");
     selenium.waitForPopUp("myPopupWindow", "5000");

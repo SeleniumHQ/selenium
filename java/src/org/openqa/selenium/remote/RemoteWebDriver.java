@@ -472,9 +472,6 @@ public class RemoteWebDriver implements WebDriver,
           "You must be using an underlying instance of WebDriver that supports executing javascript");
     }
 
-    // Escape the quote marks
-    script = script.replaceAll("\"", "\\\"");
-
     List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
         Collectors.toList());
 
@@ -487,9 +484,6 @@ public class RemoteWebDriver implements WebDriver,
       throw new UnsupportedOperationException("You must be using an underlying instance of " +
           "WebDriver that supports executing javascript");
     }
-
-    // Escape the quote marks
-    script = script.replaceAll("\"", "\\\"");
 
     List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
         Collectors.toList());

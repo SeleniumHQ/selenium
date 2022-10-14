@@ -26,13 +26,13 @@ def print_options():
 
 
 def test_set_orientation(print_options):
-    print_options.orientation = 'portrait'
-    assert print_options.orientation == 'portrait'
+    print_options.orientation = "portrait"
+    assert print_options.orientation == "portrait"
 
 
 def test_raises_exception_if_orientation_is_invalid(print_options):
     with pytest.raises(ValueError):
-        print_options.orientation = 'foobar'
+        print_options.orientation = "foobar"
 
 
 def test_set_scale(print_options):
@@ -86,17 +86,17 @@ def test_set_shrink_to_fit(print_options):
 
 def test_raises_exception_if_set_shrink_to_fit_non_bool(print_options):
     with pytest.raises(ValueError):
-        print_options.shrink_to_fit = 'True'
+        print_options.shrink_to_fit = "True"
 
 
 def test_set_page_ranges(print_options):
-    print_options.page_ranges = ['1-2']
-    assert print_options.page_ranges == ['1-2']
+    print_options.page_ranges = ["1-2"]
+    assert print_options.page_ranges == ["1-2"]
 
 
 def test_raises_exception_if_page_ranges_not_list(print_options):
     with pytest.raises(ValueError):
-        print_options.page_ranges = 'foobar'
+        print_options.page_ranges = "foobar"
 
 
 def test_margin_height(print_options):

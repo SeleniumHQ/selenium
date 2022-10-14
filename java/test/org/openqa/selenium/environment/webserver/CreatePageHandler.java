@@ -38,7 +38,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * {"content" : "... code of the page..."}
  * Response body contains the address of the created page.
  */
-public class CreatePageHandler implements HttpHandler {
+class CreatePageHandler implements HttpHandler {
 
   private final Path tempPageDir;
   private final String hostname;

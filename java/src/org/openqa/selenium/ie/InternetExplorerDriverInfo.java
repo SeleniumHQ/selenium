@@ -55,6 +55,11 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isSupportingBiDi() {
+    return false;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
       InternetExplorerDriverService.createDefaultService();

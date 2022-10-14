@@ -27,7 +27,7 @@ def test_should_implement_repr_for_web_driver(driver):
 
 
 def test_should_implement_repr_for_web_element(driver, pages):
-    pages.load('simpleTest.html')
+    pages.load("simpleTest.html")
     elem = driver.find_element(By.ID, "validImgTag")
     elem_repr = repr(elem)
     assert type(elem).__name__ in elem_repr

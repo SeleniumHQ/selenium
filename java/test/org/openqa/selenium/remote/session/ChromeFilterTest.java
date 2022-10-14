@@ -27,17 +27,17 @@ import org.openqa.selenium.edge.EdgeOptions;
 import java.util.Map;
 
 @Tag("UnitTests")
-public class ChromeFilterTest {
+class ChromeFilterTest {
 
   @Test
-  public void shouldNotFilterOutChromeCapabilities() {
+  void shouldNotFilterOutChromeCapabilities() {
     Map<String, Object> original = new ChromeOptions().asMap();
     Map<String, Object> filtered = new ChromeFilter().apply(original);
     assertThat(filtered).isEqualTo(original);
   }
 
   @Test
-  public void shouldFilterOutNonChromeCapabilities() {
+  void shouldFilterOutNonChromeCapabilities() {
     Map<String, Object> original = new EdgeOptions().asMap();
     Map<String, Object> filtered = new ChromeFilter().apply(original);
     assertThat(filtered).isNull();

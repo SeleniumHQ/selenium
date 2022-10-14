@@ -36,7 +36,7 @@ import org.openqa.selenium.testing.NoDriverBeforeTest;
 import java.time.Duration;
 
 @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-public class UnexpectedAlertBehaviorTest extends JupiterTestBase {
+class UnexpectedAlertBehaviorTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
@@ -111,5 +111,4 @@ public class UnexpectedAlertBehaviorTest extends JupiterTestBase {
               .ignoring(UnhandledAlertException.class);
     wait1.until(elementTextToEqual(By.id("text"), expectedAlertText));
   }
-
 }

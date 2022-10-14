@@ -14,12 +14,13 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import Union
 import warnings
+from typing import Union
+
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.options import ArgOptions
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.common.options import ArgOptions
 
 
 class Log:
@@ -67,7 +68,7 @@ class Options(ArgOptions):
 
     @binary_location.setter  # noqa
     def binary_location(self, value: str) -> None:
-        """ Sets the location of the browser binary by string """
+        """Sets the location of the browser binary by string"""
         self.binary = value
 
     @property
@@ -85,11 +86,7 @@ class Options(ArgOptions):
         :Returns: The Firefox profile to use.
         """
         if self._profile:
-            warnings.warn(
-                "Getting a profile has been deprecated.",
-                DeprecationWarning,
-                stacklevel=2
-            )
+            warnings.warn("Getting a profile has been deprecated.", DeprecationWarning, stacklevel=2)
         return self._profile
 
     @profile.setter
@@ -101,7 +98,7 @@ class Options(ArgOptions):
         warnings.warn(
             "Setting a profile has been deprecated. Please use the set_preference and install_addons methods",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         if not isinstance(new_profile, FirefoxProfile):
             new_profile = FirefoxProfile(new_profile)
@@ -112,7 +109,7 @@ class Options(ArgOptions):
         """
         :Returns: True if the headless argument is set, else False
         """
-        return '-headless' in self._arguments
+        return "-headless" in self._arguments
 
     @headless.setter
     def headless(self, value: bool) -> None:
@@ -123,9 +120,9 @@ class Options(ArgOptions):
           value: boolean value indicating to set the headless option
         """
         if value:
-            self._arguments.append('-headless')
-        elif '-headless' in self._arguments:
-            self._arguments.remove('-headless')
+            self._arguments.append("-headless")
+        elif "-headless" in self._arguments:
+            self._arguments.remove("-headless")
 
     def enable_mobile(self, android_package: str = "org.mozilla.firefox", android_activity=None, device_serial=None):
         super().enable_mobile(android_package, android_activity, device_serial)

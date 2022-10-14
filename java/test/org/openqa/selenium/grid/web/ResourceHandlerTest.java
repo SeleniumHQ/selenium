@@ -37,7 +37,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class ResourceHandlerTest {
+class ResourceHandlerTest {
 
   @TempDir
   File folder;
@@ -49,7 +49,7 @@ public class ResourceHandlerTest {
   }
 
   @Test
-  public void shouldLoadContent() throws IOException {
+  void shouldLoadContent() throws IOException {
     Files.write(base.resolve("content.txt"), "I like cheese".getBytes(UTF_8));
 
     HttpHandler handler = new ResourceHandler(new PathResource(base));
@@ -59,7 +59,7 @@ public class ResourceHandlerTest {
   }
 
   @Test
-  public void shouldRedirectIfDirectoryButPathDoesNotEndInASlash() throws IOException {
+  void shouldRedirectIfDirectoryButPathDoesNotEndInASlash() throws IOException {
     Path dir = base.resolve("cheese");
 
     Files.createDirectories(dir);
@@ -72,7 +72,7 @@ public class ResourceHandlerTest {
   }
 
   @Test
-  public void shouldLoadAnIndexPage() throws IOException {
+  void shouldLoadAnIndexPage() throws IOException {
     Path subdir = base.resolve("subdir");
     Files.createDirectories(subdir);
 
@@ -88,7 +88,7 @@ public class ResourceHandlerTest {
   }
 
   @Test
-  public void canBeNestedWithinARoute() throws IOException {
+  void canBeNestedWithinARoute() throws IOException {
     Path contents = base.resolve("cheese").resolve("cake.txt");
 
     Files.createDirectories(contents.getParent());
@@ -108,7 +108,7 @@ public class ResourceHandlerTest {
   }
 
   @Test
-  public void shouldRedirectToIndexPageIfOneExists() throws IOException {
+  void shouldRedirectToIndexPageIfOneExists() throws IOException {
     Path index = base.resolve("index.html");
     Files.write(index, "Cheese".getBytes(UTF_8));
 

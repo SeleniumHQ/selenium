@@ -15,15 +15,18 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from typing import Union, List
+from typing import List
+from typing import Union
+
 from selenium.webdriver.remote.command import Command
+
 from . import interaction
 from .key_actions import KeyActions
 from .key_input import KeyInput
 from .pointer_actions import PointerActions
 from .pointer_input import PointerInput
-from .wheel_input import WheelInput
 from .wheel_actions import WheelActions
+from .wheel_input import WheelInput
 
 
 class ActionBuilder:
@@ -82,14 +85,14 @@ class ActionBuilder:
         enc = {"actions": []}
         for device in self.devices:
             encoded = device.encode()
-            if encoded['actions']:
+            if encoded["actions"]:
                 enc["actions"].append(encoded)
                 device.actions = []
         self.driver.execute(Command.W3C_ACTIONS, enc)
 
     def clear_actions(self) -> None:
         """
-            Clears actions that are already stored on the remote end
+        Clears actions that are already stored on the remote end
         """
         self.driver.execute(Command.W3C_CLEAR_ACTIONS)
 

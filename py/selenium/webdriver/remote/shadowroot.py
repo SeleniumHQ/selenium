@@ -17,8 +17,8 @@
 
 from hashlib import md5 as md5_hash
 
-from .command import Command
 from ..common.by import By
+from .command import Command
 
 
 class ShadowRoot:
@@ -51,9 +51,7 @@ class ShadowRoot:
             by = By.CSS_SELECTOR
             value = '[name="%s"]' % value
 
-        return self._execute(
-            Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value}
-        )["value"]
+        return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
 
     def find_elements(self, by: str = By.ID, value: str = None):
         if by == By.ID:
@@ -66,9 +64,7 @@ class ShadowRoot:
             by = By.CSS_SELECTOR
             value = '[name="%s"]' % value
 
-        return self._execute(
-            Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by, "value": value}
-        )["value"]
+        return self._execute(Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
 
     # Private Methods
     def _execute(self, command, params=None):

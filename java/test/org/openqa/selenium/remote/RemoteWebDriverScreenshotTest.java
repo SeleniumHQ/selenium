@@ -31,7 +31,7 @@ import static org.openqa.selenium.OutputType.BASE64;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 
 @Ignore(HTMLUNIT)
-public class RemoteWebDriverScreenshotTest extends JupiterTestBase {
+class RemoteWebDriverScreenshotTest extends JupiterTestBase {
 
   @Test
   @Ignore
@@ -46,11 +46,11 @@ public class RemoteWebDriverScreenshotTest extends JupiterTestBase {
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> driver.findElement(By.id("doesnayexist")))
         .satisfies(e -> assertThat(
-            ((ScreenshotException) e.getCause()).getBase64EncodedScreenshot().length()).isGreaterThan(0));
+            ((ScreenshotException) e.getCause()).getBase64EncodedScreenshot().length()).isPositive());
   }
 
   @Test
-  public void testCanAugmentWebDriverInstanceIfNecessary() {
+  void testCanAugmentWebDriverInstanceIfNecessary() {
     if (!(driver instanceof RemoteWebDriver)) {
       System.out.println("Skipping test: driver is not a remote webdriver");
       return;
@@ -60,7 +60,7 @@ public class RemoteWebDriverScreenshotTest extends JupiterTestBase {
     WebDriver toUse = new Augmenter().augment(driver);
     String screenshot = ((TakesScreenshot) toUse).getScreenshotAs(BASE64);
 
-    assertThat(screenshot.length()).isGreaterThan(0);
+    assertThat(screenshot.length()).isPositive();
   }
 
 }

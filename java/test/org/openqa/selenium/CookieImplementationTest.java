@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.Random;
 import java.util.Set;
 
-public class CookieImplementationTest extends JupiterTestBase {
+class CookieImplementationTest extends JupiterTestBase {
 
   private DomainHelper domainHelper;
   private String cookiePage;
@@ -203,10 +203,7 @@ public class CookieImplementationTest extends JupiterTestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3153")
-  @NotYetImplemented(value = EDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3153")
   @Ignore(SAFARI)
-  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/1104")
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
@@ -270,7 +267,7 @@ public class CookieImplementationTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() {
+  void testShouldBeAbleToIncludeLeadingPeriodInDomainName() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
@@ -424,7 +421,6 @@ public class CookieImplementationTest extends JupiterTestBase {
 
   @Test
   @Ignore(SAFARI)
-  @NotYetImplemented(CHROME)
   public void canHandleHttpOnlyCookie() {
     Cookie addedCookie =
       new Cookie.Builder("fish", "cod")
@@ -517,7 +513,7 @@ public class CookieImplementationTest extends JupiterTestBase {
     assertThat(driver.manage().getCookies()).isEmpty();
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertThat(documentCookie).isEqualTo("");
+      assertThat(documentCookie).isEmpty();
     }
   }
 

@@ -78,7 +78,7 @@ import static org.openqa.selenium.testing.Safely.safelyCall;
  * <p>Note: depending on the condition under test, the various pages may or may
  * not be served by the same server.
  */
-public class ReferrerTest {
+class ReferrerTest {
 
   @RegisterExtension
   static SeleniumExtension seleniumExtension = new SeleniumExtension();
@@ -128,7 +128,7 @@ public class ReferrerTest {
    * does not have a proxy configured.
    */
   @Test
-  public void basicHistoryNavigationWithoutAProxy() {
+  void basicHistoryNavigationWithoutAProxy() {
     String page1Url = server1.whereIs(PAGE_1 + "?next=" + encode(server1.whereIs(PAGE_2)));
     String page2Url = server1.whereIs(PAGE_2 + "?next=" + encode(server1.whereIs(PAGE_3)));
 
@@ -145,7 +145,7 @@ public class ReferrerTest {
    * configured to use a proxy that permits direct access to that domain.
    */
   @Test
-  public void basicHistoryNavigationWithADirectProxy() {
+  void basicHistoryNavigationWithADirectProxy() {
     proxyServer.setPacFileContents("function FindProxyForURL(url, host) { return 'DIRECT'; }");
     WebDriver driver = createDriver(proxyServer.whereIs("/pac.js"));
 

@@ -22,7 +22,7 @@ from selenium.webdriver import Firefox
 
 @pytest.fixture
 def capabilities():
-    capabilities = {'marionette': True}
+    capabilities = {"marionette": True}
     return capabilities
 
 
@@ -33,7 +33,7 @@ def driver_class():
 
 @pytest.fixture
 def driver_kwargs(capabilities):
-    return {'capabilities': capabilities}
+    return {"capabilities": capabilities}
 
 
 @pytest.fixture

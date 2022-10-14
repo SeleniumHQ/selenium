@@ -40,7 +40,7 @@ import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.os.CommandLine.getLibraryPathPropertyName;
 import static org.openqa.selenium.testing.TestUtilities.isOnTravis;
 
-public class CommandLineTest {
+class CommandLineTest {
 
   // ping can be found on every platform we support.
   private final static String testExecutable = findExecutable(
@@ -50,7 +50,7 @@ public class CommandLineTest {
   private final OsProcess process = spyProcess(commandLine);
 
   @Test
-  public void testSetEnvironmentVariableDelegatesToProcess() {
+  void testSetEnvironmentVariableDelegatesToProcess() {
     String key = "foo";
     String value = "bar";
     commandLine.setEnvironmentVariable(key, value);
@@ -59,7 +59,7 @@ public class CommandLineTest {
   }
 
   @Test
-  public void testSetEnvironmentVariablesDelegatesToProcess() {
+  void testSetEnvironmentVariablesDelegatesToProcess() {
     Map<String, String> env = new HashMap<>();
     env.put("k1", "v1");
     env.put("k2", "v2");
@@ -70,13 +70,13 @@ public class CommandLineTest {
   }
 
   @Test
-  public void testSetDynamicLibraryPathWithNullValueIgnores() {
+  void testSetDynamicLibraryPathWithNullValueIgnores() {
     commandLine.setDynamicLibraryPath(null);
     verifyNoInteractions(process);
   }
 
   @Test
-  public void testSetDynamicLibraryPathWithNonNullValueSets() {
+  void testSetDynamicLibraryPathWithNonNullValueSets() {
     String value = "Bar";
     commandLine.setDynamicLibraryPath(value);
     verify(process).setEnvironmentVariable(getLibraryPathPropertyName(), value);
@@ -84,7 +84,7 @@ public class CommandLineTest {
   }
 
   @Test
-  public void executeWaitsForProcessFinish() throws InterruptedException {
+  void executeWaitsForProcessFinish() throws InterruptedException {
     commandLine.execute();
     verify(process).executeAsync();
     verify(process).waitFor();
@@ -92,7 +92,7 @@ public class CommandLineTest {
   }
 
   @Test
-  public void testDestroy() {
+  void testDestroy() {
     commandLine.executeAsync();
     verify(process).executeAsync();
     assertThat(commandLine.isRunning()).isTrue();
@@ -104,14 +104,14 @@ public class CommandLineTest {
   }
 
   @Test
-  public void canHandleOutput() {
+  void canHandleOutput() {
     CommandLine commandLine = new CommandLine(testExecutable, "ping");
     commandLine.execute();
     assertThat(commandLine.getStdOut()).isNotEmpty().contains("ping");
   }
 
   @Test
-  public void canCopyOutput() {
+  void canCopyOutput() {
     CommandLine commandLine = new CommandLine(testExecutable, "I", "love", "cheese");
 
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -122,24 +122,24 @@ public class CommandLineTest {
   }
 
   @Test
-  public void canDetectSuccess() {
+  void canDetectSuccess() {
     assumeThat(isOnTravis()).as("Operation not permitted on travis").isFalse();
     CommandLine commandLine = new CommandLine(
       testExecutable, (Platform.getCurrent().is(WINDOWS) ? "-n" : "-c"), "3", "localhost");
     commandLine.execute();
-    assertThat(commandLine.getExitCode()).isEqualTo(0);
+    assertThat(commandLine.getExitCode()).isZero();
     assertThat(commandLine.isSuccessful()).isTrue();
   }
 
   @Test
-  public void canDetectFailure() {
+  void canDetectFailure() {
     commandLine.execute();
     assertThat(commandLine.getExitCode()).isNotEqualTo(0);
     assertThat(commandLine.isSuccessful()).isFalse();
   }
 
   @Test
-  public void canUpdateLibraryPath() {
+  void canUpdateLibraryPath() {
     assumeTrue(Platform.getCurrent().is(WINDOWS));
     commandLine.updateDynamicLibraryPath("C:\\My\\Tools");
     verify(process).setEnvironmentVariable(

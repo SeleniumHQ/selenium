@@ -44,7 +44,7 @@ import java.util.stream.StreamSupport;
 @Ignore(IE)
 @Ignore(SAFARI)
 @Ignore(FIREFOX)
-public class PerformanceLoggingTest extends JupiterTestBase {
+class PerformanceLoggingTest extends JupiterTestBase {
 
   private WebDriver loggingDriver;
 
@@ -57,15 +57,15 @@ public class PerformanceLoggingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testDisabledProfilingDoesNotLog() {
+  void testDisabledProfilingDoesNotLog() {
     driver.get(pages.simpleTestPage);
     assertThat(getProfilerEntries(driver).getAll())
         .describedAs("Profiler should not log when disabled")
-        .hasSize(0);
+        .isEmpty();
   }
 
   @Test
-  public void testLogsSingleHttpCommand() {
+  void testLogsSingleHttpCommand() {
     startLoggingDriver();
     List<LogEntry> entries = getProfilerEntriesOfType(getProfilerEntries(loggingDriver),
                                                       EventType.HTTP_COMMAND);
@@ -107,7 +107,7 @@ public class PerformanceLoggingTest extends JupiterTestBase {
     loggingDriver.findElement(By.id("submitButton")).click();
     assertThat(
         getProfilerEntriesOfType(getProfilerEntries(loggingDriver), EventType.YIELD_TO_PAGE_LOAD).size())
-        .isGreaterThan(0);
+        .isPositive();
   }
 
   private void startLoggingDriver() {

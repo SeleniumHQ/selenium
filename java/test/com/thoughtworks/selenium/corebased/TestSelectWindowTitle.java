@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 public class TestSelectWindowTitle extends InternalSelenseTestBase {
   @Test
-  public void testSelectWindowTitle() {
+  void testSelectWindowTitle() {
     selenium.open("test_select_window.html");
     selenium.click("popupPage");
     selenium.waitForPopUp("myPopupWindow", "5000");

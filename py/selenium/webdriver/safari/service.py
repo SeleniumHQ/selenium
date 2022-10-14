@@ -16,29 +16,46 @@
 # under the License.
 
 import os
-from selenium.webdriver.common import service, utils
-from subprocess import PIPE
+import subprocess
+import typing
 
+from selenium.webdriver.common import service
 
-DEFAULT_EXECUTABLE_PATH = "/usr/bin/safaridriver"
+DEFAULT_EXECUTABLE_PATH: str = "/usr/bin/safaridriver"
 
 
 class Service(service.Service):
+    """A Service class that is responsible for the starting and stopping
+    of `safaridriver`  This is only supported on MAC OSX.
+
+    :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
+    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
+    :param quiet: Suppress driver stdout & stderr, redirects to os.devnull if enabled.
+    :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
+    :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     """
-    Object that manages the starting and stopping of the SafariDriver
-    """
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
-                 port=0, quiet=False, service_args=None):
-        """
-        Creates a new instance of the Service
+    def __init__(
+        self,
+        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        port: int = 0,
+        quiet: bool = False,
+        service_args: typing.Optional[typing.List[str]] = None,
+        env: typing.Optional[typing.Mapping[str, str]] = None,
+    ):
+        self._check_executable(executable_path)
+        self.service_args = service_args or []
+        self.quiet = quiet
+        log_file = subprocess.PIPE if not self.quiet else open(os.devnull, "w", encoding="utf-8")
+        super().__init__(
+            executable=executable_path,
+            port=port,
+            log_file=log_file,  # type: ignore
+            env=env,
+        )
 
-        :Args:
-         - executable_path : Path to the SafariDriver
-         - port : Port the service is running on
-         - quiet : Suppress driver stdout and stderr
-         - service_args : List of args to pass to the safaridriver service """
-
+    @staticmethod
+    def _check_executable(executable_path) -> None:
         if not os.path.exists(executable_path):
             if "Safari Technology Preview" in executable_path:
                 message = "Safari Technology Preview does not seem to be installed. You can download it at https://developer.apple.com/safari/download/."
@@ -46,23 +63,12 @@ class Service(service.Service):
                 message = "SafariDriver was not found; are you running Safari 10 or later? You can download Safari at https://developer.apple.com/safari/download/."
             raise Exception(message)
 
-        if port == 0:
-            port = utils.free_port()
-
-        self.service_args = service_args or []
-
-        self.quiet = quiet
-        log = PIPE
-        if quiet:
-            log = open(os.devnull, 'w')
-        super().__init__(executable_path, port, log)
-
-    def command_line_args(self):
-        return ["-p", "%s" % self.port] + self.service_args
+    def command_line_args(self) -> typing.List[str]:
+        return ["-p", f"{self.port}"] + self.service_args
 
     @property
-    def service_url(self):
+    def service_url(self) -> str:
         """
         Gets the url of the SafariDriver Service
         """
-        return "http://localhost:%d" % self.port
+        return f"http://localhost:{self.port}"

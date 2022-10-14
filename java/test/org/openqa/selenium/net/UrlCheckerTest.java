@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-public class UrlCheckerTest {
+class UrlCheckerTest {
 
   private final UrlChecker urlChecker = new UrlChecker();
   private final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -62,7 +62,7 @@ public class UrlCheckerTest {
   }
 
   @Test
-  public void testWaitUntilAvailableIsTimely() throws Exception {
+  void testWaitUntilAvailableIsTimely() throws Exception {
     long delay = 200L;
 
     executorService.submit(() -> {
@@ -78,7 +78,7 @@ public class UrlCheckerTest {
   }
 
   @Test
-  public void testWaitUntilUnavailableIsTimely() throws Exception {
+  void testWaitUntilUnavailableIsTimely() throws Exception {
     long delay = 200L;
     server.start();
     urlChecker.waitUntilAvailable(10, TimeUnit.SECONDS, url);

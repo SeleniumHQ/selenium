@@ -31,7 +31,7 @@ using Newtonsoft.Json.Linq;
 namespace OpenQA.Selenium.DevTools
 {
     /// <summary>
-    /// Represents a WebSocket connection to a running DevTools instance that can be used to send 
+    /// Represents a WebSocket connection to a running DevTools instance that can be used to send
     /// commands and recieve events.
     ///</summary>
     public class DevToolsSession : IDevToolsSession

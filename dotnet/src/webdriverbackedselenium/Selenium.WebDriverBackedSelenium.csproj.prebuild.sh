@@ -49,8 +49,8 @@ fi
 
 if [[ ! -f "$1../../../bazel-bin/javascript/selenium-atoms/isVisible.js" ]]
 then
-  echo "Building isVisble atom"
-  bazel build //javascript/selenium-atoms:isVisble
+  echo "Building isVisible atom"
+  bazel build //javascript/selenium-atoms:isVisible
 fi
 
 if [[ ! -f "$1../../../bazel-bin/javascript/selenium-atoms/type.js" ]]

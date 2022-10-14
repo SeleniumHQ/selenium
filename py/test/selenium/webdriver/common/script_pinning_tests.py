@@ -29,7 +29,7 @@ def test_should_allow_script_pinning(driver, pages):
 
     result = driver.execute_script(script_key)
 
-    assert result == 'i like cheese'
+    assert result == "i like cheese"
 
 
 def test_should_allow_pinned_scripts_to_take_arguments(driver, pages):

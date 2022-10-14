@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Tag("UnitTests")
-public class ByAllTest {
+class ByAllTest {
 
   private WebDriver driver;
 
@@ -48,20 +48,20 @@ public class ByAllTest {
   }
 
   @Test
-  public void findElementZeroBy() {
+  void findElementZeroBy() {
     ByAll by = new ByAll();
     assertThatExceptionOfType(NoSuchElementException.class)
         .isThrownBy(() -> by.findElement(driver));
   }
 
   @Test
-  public void findElementsZeroBy() {
+  void findElementsZeroBy() {
     ByAll by = new ByAll();
     assertThat(by.findElements(driver).isEmpty()).isTrue();
   }
 
   @Test
-  public void findElementOneBy() {
+  void findElementOneBy() {
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final List<WebElement> elems12 = new ArrayList<>();
@@ -75,7 +75,7 @@ public class ByAllTest {
   }
 
   @Test
-  public void findElementsOneBy() {
+  void findElementsOneBy() {
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final List<WebElement> elems12 = new ArrayList<>();
@@ -89,7 +89,7 @@ public class ByAllTest {
   }
 
   @Test
-  public void findElementOneByEmpty() {
+  void findElementOneByEmpty() {
     final List<WebElement> elems = new ArrayList<>();
 
     when(driver.findElements(By.name("cheese"))).thenReturn(elems);
@@ -100,7 +100,7 @@ public class ByAllTest {
   }
 
   @Test
-  public void findElementsOneByEmpty() {
+  void findElementsOneByEmpty() {
     when(driver.findElements(By.name("cheese"))).thenReturn(new ArrayList<>());
 
     ByAll by = new ByAll(By.name("cheese"));
@@ -108,7 +108,7 @@ public class ByAllTest {
   }
 
   @Test
-  public void findFourElementBy() {
+  void findFourElementBy() {
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final WebElement elem3 = mock(WebElement.class, "webElement3");
@@ -131,7 +131,7 @@ public class ByAllTest {
   }
 
   @Test
-  public void findFourElementByInReverseOrder() {
+  void findFourElementByInReverseOrder() {
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final WebElement elem3 = mock(WebElement.class, "webElement3");
@@ -154,7 +154,7 @@ public class ByAllTest {
   }
 
   @Test
-  public void findFourElementsByAny() {
+  void findFourElementsByAny() {
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final WebElement elem3 = mock(WebElement.class, "webElement3");
@@ -180,7 +180,7 @@ public class ByAllTest {
   }
 
   @Test
-  public void findFourElementsByAnyInReverseOrder() {
+  void findFourElementsByAnyInReverseOrder() {
     final WebElement elem1 = mock(WebElement.class, "webElement1");
     final WebElement elem2 = mock(WebElement.class, "webElement2");
     final WebElement elem3 = mock(WebElement.class, "webElement3");
@@ -206,7 +206,7 @@ public class ByAllTest {
   }
 
   @Test
-  public void testEquals() {
+  void testEquals() {
     assertThat(new ByAll(By.id("cheese"), By.name("photo")))
         .isEqualTo(new ByAll(By.id("cheese"), By.name("photo")));
   }

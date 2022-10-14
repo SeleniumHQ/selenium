@@ -67,6 +67,11 @@ public class GeckoDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isSupportingBiDi() {
+    return true;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
       GeckoDriverService.createDefaultService();

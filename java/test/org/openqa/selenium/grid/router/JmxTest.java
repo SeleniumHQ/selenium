@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -63,7 +64,7 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JmxTest {
+class JmxTest {
 
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
 
@@ -71,7 +72,7 @@ public class JmxTest {
   private final MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
 
   @Test
-  public void shouldBeAbleToRegisterBaseServerConfig() {
+  void shouldBeAbleToRegisterBaseServerConfig() {
     try {
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=Config,name=BaseServerConfig");
       new JMXHelper().unregister(name);
@@ -100,7 +101,7 @@ public class JmxTest {
   }
 
   @Test
-  public void shouldBeAbleToRegisterNode() throws URISyntaxException {
+  void shouldBeAbleToRegisterNode() throws URISyntaxException {
     try {
       URI nodeUri = new URI("https://example.com:1234");
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=Node,name=LocalNode");
@@ -162,7 +163,7 @@ public class JmxTest {
   }
 
   @Test
-  public void shouldBeAbleToRegisterSessionQueuerServerConfig() {
+  void shouldBeAbleToRegisterSessionQueuerServerConfig() {
     try {
       ObjectName name = new ObjectName(
         "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig");
@@ -195,7 +196,7 @@ public class JmxTest {
   }
 
   @Test
-  public void shouldBeAbleToRegisterSessionQueue() {
+  void shouldBeAbleToRegisterSessionQueue() {
     try {
       ObjectName name = new ObjectName("org.seleniumhq.grid:type=SessionQueue,name=LocalSessionQueue");
 
@@ -230,7 +231,7 @@ public class JmxTest {
   }
 
   @Test
-  public void shouldBeAbleToMonitorHub() throws Exception {
+  void shouldBeAbleToMonitorHub() throws Exception {
     ObjectName name = new ObjectName("org.seleniumhq.grid:type=Distributor,name=LocalDistributor");
 
     new JMXHelper().unregister(name);

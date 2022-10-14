@@ -33,10 +33,10 @@ import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
 
-public class VisibilityTest extends JupiterTestBase {
+class VisibilityTest extends JupiterTestBase {
 
   @Test
-  public void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
+  void testShouldAllowTheUserToTellIfAnElementIsDisplayedOrNot() {
     driver.get(pages.javascriptPage);
 
     assertThat(driver.findElement(By.id("displayed")).isDisplayed()).isTrue();
@@ -46,7 +46,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testVisibilityShouldTakeIntoAccountParentVisibility() {
+  void testVisibilityShouldTakeIntoAccountParentVisibility() {
     driver.get(pages.javascriptPage);
 
     WebElement childDiv = driver.findElement(By.id("hiddenchild"));
@@ -57,7 +57,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldCountElementsAsVisibleIfStylePropertyHasBeenSet() {
+  void testShouldCountElementsAsVisibleIfStylePropertyHasBeenSet() {
     driver.get(pages.javascriptPage);
 
     WebElement shown = driver.findElement(By.id("visibleSubElement"));
@@ -82,7 +82,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testHiddenInputElementsAreNeverVisible() {
+  void testHiddenInputElementsAreNeverVisible() {
     driver.get(pages.javascriptPage);
 
     WebElement shown = driver.findElement(By.name("hidden"));
@@ -91,7 +91,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
+  void testShouldNotBeAbleToClickOnAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
@@ -99,7 +99,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldNotBeAbleToTypeToAnElementThatIsNotDisplayed() {
+  void testShouldNotBeAbleToTypeToAnElementThatIsNotDisplayed() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("unclickable"));
 
@@ -116,13 +116,13 @@ public class VisibilityTest extends JupiterTestBase {
     WebElement element = driver.findElement(By.id("zero"));
     Dimension size = element.getSize();
 
-    assertThat(size.width).isEqualTo(0);
-    assertThat(size.height).isEqualTo(0);
+    assertThat(size.width).isZero();
+    assertThat(size.height).isZero();
     assertThat(element.isDisplayed()).isTrue();
   }
 
   @Test
-  public void parentNodeVisibleWhenAllChildrenAreAbsolutelyPositionedAndOverflowIsHidden() {
+  void parentNodeVisibleWhenAllChildrenAreAbsolutelyPositionedAndOverflowIsHidden() {
     String url = appServer.whereIs("visibility-css.html");
     driver.get(url);
 
@@ -165,7 +165,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testElementScrollableByOverflowXIsVisible() {
+  void testElementScrollableByOverflowXIsVisible() {
     String[] pages = new String[]{
         "overflow/x_scroll_y_hidden.html",
         "overflow/x_scroll_y_scroll.html",
@@ -182,7 +182,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testElementScrollableByOverflowYIsVisible() {
+  void testElementScrollableByOverflowYIsVisible() {
     String[] pages = new String[]{
         "overflow/x_hidden_y_scroll.html",
         "overflow/x_scroll_y_scroll.html",
@@ -199,7 +199,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testElementScrollableByOverflowXAndYIsVisible() {
+  void testElementScrollableByOverflowXAndYIsVisible() {
     String[] pages = new String[]{
         "overflow/x_scroll_y_scroll.html",
         "overflow/x_scroll_y_auto.html",
@@ -214,7 +214,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
+  void tooSmallAWindowWithOverflowHiddenIsNotAProblem() {
     // Browser window cannot be resized on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
@@ -236,7 +236,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldShowElementNotVisibleWithHiddenAttribute() {
+  void shouldShowElementNotVisibleWithHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
     WebElement element = driver.findElement(By.id("singleHidden"));
@@ -244,7 +244,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute() {
+  void testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
 
@@ -253,10 +253,10 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   /**
-   * See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1610
+   * See <a href="https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/1610"></a>
    */
   @Test
-  public void testShouldBeAbleToClickOnElementsWithOpacityZero() {
+  void testShouldBeAbleToClickOnElementsWithOpacityZero() {
     driver.get(pages.clickJacker);
 
     WebElement element = driver.findElement(By.id("clickJacker"));
@@ -267,7 +267,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
+  void testShouldBeAbleToSelectOptionsFromAnInvisibleSelect() {
     driver.get(pages.formPage);
 
     WebElement select = driver.findElement(By.id("invisi_select"));
@@ -285,7 +285,7 @@ public class VisibilityTest extends JupiterTestBase {
   }
 
   @Test
-  public void testCorrectlyDetectMapElementsAreShown() {
+  void testCorrectlyDetectMapElementsAreShown() {
     driver.get(pages.mapVisibilityPage);
 
     final WebElement area = driver.findElement(By.id("mtgt_unnamed_0"));

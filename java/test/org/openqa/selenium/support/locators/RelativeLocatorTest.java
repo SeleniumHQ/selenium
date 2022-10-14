@@ -33,10 +33,10 @@ import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.support.locators.RelativeLocator.with;
 
 
-public class RelativeLocatorTest extends JupiterTestBase {
+class RelativeLocatorTest extends JupiterTestBase {
 
   @Test
-  public void shouldBeAbleToFindElementsAboveAnotherWithTagName() {
+  void shouldBeAbleToFindElementsAboveAnotherWithTagName() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     WebElement lowest = driver.findElement(By.id("below"));
@@ -48,7 +48,7 @@ public class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldBeAbleToFindElementsAboveAnotherWithXpath() {
+  void shouldBeAbleToFindElementsAboveAnotherWithXpath() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     WebElement lowest = driver.findElement(By.id("seventh"));
@@ -61,7 +61,7 @@ public class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldBeAbleToFindElementsAboveAnotherWithCssSelector() {
+  void shouldBeAbleToFindElementsAboveAnotherWithCssSelector() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     WebElement lowest = driver.findElement(By.id("below"));
@@ -74,7 +74,7 @@ public class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldBeAbleToCombineFilters() {
+  void shouldBeAbleToCombineFilters() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     List<WebElement> seen = driver.findElements(with(tagName("td")).above(By.id("center")).toRightOf(By.id("second")));
@@ -85,7 +85,7 @@ public class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldBeAbleToCombineFiltersWithXpath() {
+  void shouldBeAbleToCombineFiltersWithXpath() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     List<WebElement> seen = driver.findElements(with(xpath("//td[1]")).below(By.id("second")).above(By.id("seventh")));
@@ -97,7 +97,7 @@ public class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void shouldBeAbleToCombineFiltersWithCssSelector() {
+  void shouldBeAbleToCombineFiltersWithCssSelector() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
 
@@ -109,7 +109,7 @@ public class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void exerciseNearLocatorWithTagName() {
+  void exerciseNearLocatorWithTagName() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     List<WebElement> seen = driver.findElements(with(tagName("td")).near(By.id("center")));
@@ -128,7 +128,7 @@ public class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void exerciseNearLocatorWithXpath() {
+  void exerciseNearLocatorWithXpath() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     List<WebElement> seen = driver.findElements(with(xpath("//td")).near(By.id("center")));
@@ -148,7 +148,7 @@ public class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void exerciseNearLocatorWithCssSelector() {
+  void exerciseNearLocatorWithCssSelector() {
     driver.get(appServer.whereIs("relative_locators.html"));
 
     List<WebElement> seen = driver.findElements(with(cssSelector("td")).near(By.id("center")));
@@ -167,7 +167,7 @@ public class RelativeLocatorTest extends JupiterTestBase {
   }
 
   @Test
-  public void ensureNoRepeatedElements() {
+  void ensureNoRepeatedElements() {
     String url = appServer.create(new Page()
       .withTitle("Repeated Elements")
       .withStyles(" .c {\n" +

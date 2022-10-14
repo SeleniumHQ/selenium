@@ -20,11 +20,11 @@ The ActionChains implementation,
 """
 import warnings
 
-from .actions.wheel_input import ScrollOrigin
-
-from .utils import keys_to_typing
-from .actions.action_builder import ActionBuilder
 from selenium.webdriver.remote.webelement import WebElement
+
+from .actions.action_builder import ActionBuilder
+from .actions.wheel_input import ScrollOrigin
+from .utils import keys_to_typing
 
 
 class ActionChains:
@@ -263,15 +263,13 @@ class ActionChains:
          - yoffset: Y offset to move to.
         """
 
-        self.w3c_actions.pointer_action.move_to(to_element,
-                                                int(xoffset),
-                                                int(yoffset))
+        self.w3c_actions.pointer_action.move_to(to_element, int(xoffset), int(yoffset))
         self.w3c_actions.key_action.pause()
 
         return self
 
     def pause(self, seconds):
-        """ Pause all inputs for the specified duration in seconds """
+        """Pause all inputs for the specified duration in seconds"""
 
         self.w3c_actions.pointer_action.pause(seconds)
         self.w3c_actions.key_action.pause(seconds)
@@ -363,14 +361,15 @@ class ActionChains:
         """
 
         if not isinstance(scroll_origin, ScrollOrigin):
-            raise TypeError('Expected object of type ScrollOrigin, got: '
-                            '{}'.format(type(scroll_origin)))
+            raise TypeError("Expected object of type ScrollOrigin, got: " "{}".format(type(scroll_origin)))
 
-        self.w3c_actions.wheel_action.scroll(origin=scroll_origin.origin,
-                                             x=scroll_origin.x_offset,
-                                             y=scroll_origin.y_offset,
-                                             delta_x=delta_x,
-                                             delta_y=delta_y)
+        self.w3c_actions.wheel_action.scroll(
+            origin=scroll_origin.origin,
+            x=scroll_origin.x_offset,
+            y=scroll_origin.y_offset,
+            delta_x=delta_x,
+            delta_y=delta_y,
+        )
         return self
 
     def scroll(self, x: int, y: int, delta_x: int, delta_y: int, duration: int = 0, origin: str = "viewport"):
@@ -386,11 +385,12 @@ class ActionChains:
         warnings.warn(
             "scroll() has been deprecated, please use scroll_to_element(), scroll_by_amount() or scroll_from_origin().",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
 
-        self.w3c_actions.wheel_action.scroll(x=x, y=y, delta_x=delta_x, delta_y=delta_y,
-                                             duration=duration, origin=origin)
+        self.w3c_actions.wheel_action.scroll(
+            x=x, y=y, delta_x=delta_x, delta_y=delta_y, duration=duration, origin=origin
+        )
         return self
 
     # Context manager so ActionChains can be used in a 'with .. as' statements.

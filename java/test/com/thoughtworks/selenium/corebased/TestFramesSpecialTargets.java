@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 @Disabled("Unable to find changeSpan")
 public class TestFramesSpecialTargets extends InternalSelenseTestBase {
   @Test
-  public void testFramesSpecialTargets() {
+  void testFramesSpecialTargets() {
     selenium.openWindow("Frames.html", "SpecialTargets");
     selenium.waitForPopUp("SpecialTargets", "10000");
     selenium.selectWindow("SpecialTargets");

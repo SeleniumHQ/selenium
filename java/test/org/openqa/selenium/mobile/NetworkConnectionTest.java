@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 
-public class NetworkConnectionTest extends JupiterTestBase {
+class NetworkConnectionTest extends JupiterTestBase {
 
   private NetworkConnection networkConnectionDriver;
 

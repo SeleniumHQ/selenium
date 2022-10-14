@@ -16,12 +16,13 @@
 # under the License.
 
 
-from selenium.webdriver.remote.webdriver import WebElement
 from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webdriver import WebElement
 
 
 def test_web_element_not_subclassed():
     """A registered subtype of WebElement should work with isinstance checks."""
+
     class MyWebElement:
         def __init__(self, parent, id, _w3c=True):
             self.parent = parent
@@ -29,18 +30,19 @@ def test_web_element_not_subclassed():
             self._w3c = _w3c
 
     # Test that non registered class instance is not instance of Remote WebElement
-    my_web_element = MyWebElement('parent', '1')
+    my_web_element = MyWebElement("parent", "1")
     assert not isinstance(my_web_element, WebElement)
 
     # Register the class as a subtype of WebElement
     WebElement.register(MyWebElement)
-    my_registered_web_element = MyWebElement('parent', '2')
+    my_registered_web_element = MyWebElement("parent", "2")
 
     assert isinstance(my_registered_web_element, WebElement)
 
 
 def test_webdriver_not_subclassed():
     """A registered subtype of WebDriver should work with isinstance checks."""
+
     class MyWebDriver:
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)

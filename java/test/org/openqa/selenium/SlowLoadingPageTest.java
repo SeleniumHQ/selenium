@@ -25,11 +25,11 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-public class SlowLoadingPageTest extends JupiterTestBase {
+class SlowLoadingPageTest extends JupiterTestBase {
   private static final long LOAD_TIME_IN_SECONDS = 3;
 
   @Test
-  public void testShouldBlockUntilPageLoads() {
+  void testShouldBlockUntilPageLoads() {
     long start = System.currentTimeMillis();
     driver.get(pages.sleepingPage + "?time=" + LOAD_TIME_IN_SECONDS);
     long now = System.currentTimeMillis();
@@ -37,7 +37,7 @@ public class SlowLoadingPageTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBlockUntilIFramesAreLoaded() {
+  void testShouldBlockUntilIFramesAreLoaded() {
     long start = System.currentTimeMillis();
     driver.get(pages.slowIframes);
     long now = System.currentTimeMillis();

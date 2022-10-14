@@ -24,24 +24,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
 @Tag("UnitTests")
-public class QuotesTest {
+class QuotesTest {
   @Test
-  public void shouldConvertAnUnquotedStringIntoOneWithQuotes() {
+  void shouldConvertAnUnquotedStringIntoOneWithQuotes() {
     assertThat(escape("foo")).isEqualTo("\"foo\"");
   }
 
   @Test
-  public void shouldConvertAStringWithATickIntoOneWithQuotes() {
+  void shouldConvertAStringWithATickIntoOneWithQuotes() {
     assertThat(escape("f'oo")).isEqualTo("\"f'oo\"");
   }
 
   @Test
-  public void shouldConvertAStringWithAQuotIntoOneWithTicks() {
+  void shouldConvertAStringWithAQuotIntoOneWithTicks() {
     assertThat(escape("f\"oo")).isEqualTo("'f\"oo'");
   }
 
   @Test
-  public void shouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes() {
+  void shouldProvideConcatenatedStringsWhenStringToEscapeContainsTicksAndQuotes() {
     assertThat(escape("f\"o'o")).isEqualTo("concat(\"f\", '\"', \"o'o\")");
   }
 
@@ -50,7 +50,7 @@ public class QuotesTest {
    * string contains a tick and and ends with a quote.
    */
   @Test
-  public void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
+  void shouldProvideConcatenatedStringsWhenStringEndsWithQuote() {
     assertThat(escape(
         "Bar \"Rock'n'Roll\"")).isEqualTo("concat(\"Bar \", '\"', \"Rock'n'Roll\", '\"')");
   }

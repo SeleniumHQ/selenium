@@ -29,10 +29,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class BasicAuthenticationFilterTest {
+class BasicAuthenticationFilterTest {
 
   @Test
-  public void shouldAskAnUnauthenticatedRequestToAuthenticate() {
+  void shouldAskAnUnauthenticatedRequestToAuthenticate() {
     HttpHandler handler = new BasicAuthenticationFilter("cheese", "cheddar").apply(req -> new HttpResponse());
 
     HttpResponse res = handler.execute(new HttpRequest(GET, "/"));
@@ -43,7 +43,7 @@ public class BasicAuthenticationFilterTest {
   }
 
   @Test
-  public void shouldAllowAuthenticatedTrafficThrough() {
+  void shouldAllowAuthenticatedTrafficThrough() {
     HttpHandler handler = new BasicAuthenticationFilter("cheese", "cheddar").apply(req -> new HttpResponse());
 
     HttpResponse res = handler.execute(

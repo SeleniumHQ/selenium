@@ -58,10 +58,10 @@ import java.util.List;
 import java.util.Map;
 
 @Tag("UnitTests")
-public class EventFiringWebDriverTest {
+class EventFiringWebDriverTest {
 
   @Test
-  public void alertEvents() {
+  void alertEvents() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final Alert mockedAlert = mock(Alert.class);
     final WebDriver.TargetLocator mockedTargetLocator = mock(WebDriver.TargetLocator.class);
@@ -89,7 +89,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void navigationEvents() {
+  void navigationEvents() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final Navigation mockedNavigation = mock(Navigation.class);
 
@@ -129,7 +129,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void clickEvent() {
+  void clickEvent() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final WebElement mockedElement = mock(WebElement.class);
 
@@ -152,7 +152,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void windowEvent() {
+  void windowEvent() {
     String windowName = "Window name";
     WebDriver mockedDriver = mock(WebDriver.class);
     TargetLocator mockedTargetLocator = mock(TargetLocator.class);
@@ -172,7 +172,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void changeValueEvent() {
+  void changeValueEvent() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final WebElement mockedElement = mock(WebElement.class);
 
@@ -202,7 +202,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void findByEvent() {
+  void findByEvent() {
     final WebDriver mockedDriver = mock(WebDriver.class);
     final WebElement mockedElement = mock(WebElement.class);
     final WebElement mockedChildElement = mock(WebElement.class);
@@ -236,7 +236,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldCallListenersWhenAnExceptionIsThrown() {
+  void shouldCallListenersWhenAnExceptionIsThrown() {
     final WebDriver mockedDriver = mock(WebDriver.class);
 
     final NoSuchElementException exception = new NoSuchElementException("argh");
@@ -258,7 +258,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldUnpackElementArgsWhenCallingScripts() {
+  void shouldUnpackElementArgsWhenCallingScripts() {
     final WebDriver mockedDriver = mock(WebDriver.class,
                                         withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement stubbedElement = mock(WebElement.class);
@@ -274,7 +274,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldWrapElementFoundWhenCallingScripts() {
+  void shouldWrapElementFoundWhenCallingScripts() {
     final WebDriver mockedDriver = mock(WebDriver.class,
                                         withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement stubbedElement = mock(WebElement.class);
@@ -291,7 +291,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void testShouldUnpackListOfElementArgsWhenCallingScripts() {
+  void testShouldUnpackListOfElementArgsWhenCallingScripts() {
     final WebDriver mockedDriver = mock(WebDriver.class,
                                         withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement mockElement = mock(WebElement.class);
@@ -313,7 +313,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldWrapMultipleElementsFoundWhenCallingScripts() {
+  void shouldWrapMultipleElementsFoundWhenCallingScripts() {
     final WebDriver mockedDriver = mock(WebDriver.class,
                                         withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement stubbedElement1 = mock(WebElement.class);
@@ -334,7 +334,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldWrapMapsWithNullValues() {
+  void shouldWrapMapsWithNullValues() {
     Map<String, Object> map = new HashMap<>();
     map.put("a", null);
     final WebDriver mockedDriver = mock(WebDriver.class,
@@ -350,7 +350,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void testShouldUnpackMapOfElementArgsWhenCallingScripts() {
+  void testShouldUnpackMapOfElementArgsWhenCallingScripts() {
     final WebDriver mockedDriver = mock(WebDriver.class,
                                         withSettings().extraInterfaces(JavascriptExecutor.class));
     final WebElement mockElement = mock(WebElement.class);
@@ -376,13 +376,13 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldBeAbleToWrapSubclassesOfSomethingImplementingTheWebDriverInterface() {
+  void shouldBeAbleToWrapSubclassesOfSomethingImplementingTheWebDriverInterface() {
     new EventFiringWebDriver(new ChildDriver());
     // We should get this far
   }
 
   @Test
-  public void shouldBeAbleToAccessWrappedInstanceFromEventCalls() {
+  void shouldBeAbleToAccessWrappedInstanceFromEventCalls() {
     final WebDriver stub = mock(WebDriver.class);
     EventFiringWebDriver driver = new EventFiringWebDriver(stub);
     WebDriver wrapped = driver.getWrappedDriver();
@@ -403,7 +403,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldBeAbleToAccessWrappedElementInstanceFromEventCalls() {
+  void shouldBeAbleToAccessWrappedElementInstanceFromEventCalls() {
     final WebElement stubElement = mock(WebElement.class);
 
     final WebDriver stubDriver = mock(WebDriver.class);
@@ -424,7 +424,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldReturnLocatorFromToStringMethod() {
+  void shouldReturnLocatorFromToStringMethod() {
     final WebElement stubElement = mock(WebElement.class);
     when(stubElement.toString()).thenReturn("cheese");
 
@@ -440,7 +440,7 @@ public class EventFiringWebDriverTest {
   private static class ChildDriver extends StubDriver {}
 
   @Test
-  public void getScreenshotAs() {
+  void getScreenshotAs() {
     final String DATA = "data";
     WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(TakesScreenshot.class));
     WebDriverEventListener listener = mock(WebDriverEventListener.class);
@@ -459,7 +459,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldFireEventsAroundGetText() {
+  void shouldFireEventsAroundGetText() {
     final String SAMPLE = "Sample text";
     final WebDriver mockedDriver = mock(WebDriver.class);
     final WebElement mockedElement = mock(WebElement.class);
@@ -485,7 +485,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldReturnCapabilitiesWhenUnderlyingDriverImplementsInterface() {
+  void shouldReturnCapabilitiesWhenUnderlyingDriverImplementsInterface() {
     WebDriver mockedDriver = mock(WebDriver.class, withSettings().extraInterfaces(HasCapabilities.class));
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
 
@@ -496,7 +496,7 @@ public class EventFiringWebDriverTest {
   }
 
   @Test
-  public void shouldThrowExceptionWhenUnderlyingDriverDoesNotImplementInterface() {
+  void shouldThrowExceptionWhenUnderlyingDriverDoesNotImplementInterface() {
     WebDriver mockedDriver = mock(WebDriver.class);
     EventFiringWebDriver testedDriver = new EventFiringWebDriver(mockedDriver);
 

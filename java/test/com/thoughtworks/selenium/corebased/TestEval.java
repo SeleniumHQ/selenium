@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestEval extends InternalSelenseTestBase {
   @Test
-  public void testEval() {
+  void testEval() {
     selenium.open("test_open.html");
     assertEquals(selenium.getEval("window.document.title"), "Open Test");
   }

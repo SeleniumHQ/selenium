@@ -18,9 +18,9 @@
 
 from typing import TYPE_CHECKING
 
-
 if TYPE_CHECKING:
     import sys
+
     if sys.version_info >= (3, 8):
         from typing import TypedDict
     else:
@@ -33,11 +33,11 @@ if TYPE_CHECKING:
 
 else:
     from typing import Dict
+
     JSONTimeouts = Dict[str, int]
 
 
 class Timeouts:
-
     def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
         """
         Create a new Timeout object.
@@ -99,8 +99,7 @@ class Timeouts:
     def _convert(self, timeout: float) -> int:
         if isinstance(timeout, (int, float)):
             return int(float(timeout) * 1000)
-        else:
-            raise TypeError("Timeouts can only be an int or a float")
+        raise TypeError("Timeouts can only be an int or a float")
 
     def _to_json(self) -> JSONTimeouts:
         timeouts: JSONTimeouts = {}

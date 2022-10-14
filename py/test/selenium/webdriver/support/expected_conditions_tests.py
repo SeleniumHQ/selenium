@@ -18,30 +18,28 @@
 import pytest
 
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 def test_any_of_true(driver, pages):
     pages.load("simpleTest.html")
-    WebDriverWait(driver, 0.1).until(EC.any_of(
-        EC.title_is("Nope"), EC.title_is("Hello WebDriver")))
+    WebDriverWait(driver, 0.1).until(EC.any_of(EC.title_is("Nope"), EC.title_is("Hello WebDriver")))
 
 
 def test_any_of_false(driver, pages):
     pages.load("simpleTest.html")
     with pytest.raises(TimeoutException):
-        WebDriverWait(driver, 0.1).until(EC.any_of(
-            EC.title_is("Nope"), EC.title_is("Still Nope")))
+        WebDriverWait(driver, 0.1).until(EC.any_of(EC.title_is("Nope"), EC.title_is("Still Nope")))
 
 
 def test_all_of_true(driver, pages):
     pages.load("simpleTest.html")
-    results = WebDriverWait(driver, 0.1).until(EC.all_of(
-        EC.title_is("Hello WebDriver"),
-        EC.visibility_of_element_located((By.ID, "oneline"))))
+    results = WebDriverWait(driver, 0.1).until(
+        EC.all_of(EC.title_is("Hello WebDriver"), EC.visibility_of_element_located((By.ID, "oneline")))
+    )
     assert results[0] is True
     assert isinstance(results[1], WebElement)
 
@@ -49,35 +47,30 @@ def test_all_of_true(driver, pages):
 def test_all_of_false(driver, pages):
     pages.load("simpleTest.html")
     with pytest.raises(TimeoutException):
-        WebDriverWait(driver, 0.1).until(EC.all_of(
-            EC.title_is("Nope"), EC.title_is("Still Nope")))
+        WebDriverWait(driver, 0.1).until(EC.all_of(EC.title_is("Nope"), EC.title_is("Still Nope")))
 
 
 def test_none_of_true(driver, pages):
     pages.load("simpleTest.html")
-    WebDriverWait(driver, 0.1).until(EC.none_of(
-        EC.title_is("Nope"), EC.title_is("Still Nope")))
+    WebDriverWait(driver, 0.1).until(EC.none_of(EC.title_is("Nope"), EC.title_is("Still Nope")))
 
 
 def test_none_of_false(driver, pages):
     pages.load("simpleTest.html")
     with pytest.raises(TimeoutException):
-        WebDriverWait(driver, 0.1).until(EC.none_of(
-            EC.title_is("Nope"), EC.title_is("Hello WebDriver")))
+        WebDriverWait(driver, 0.1).until(EC.none_of(EC.title_is("Nope"), EC.title_is("Hello WebDriver")))
 
 
 def test_clickable_locator_true(driver, pages):
     pages.load("simpleTest.html")
-    WebDriverWait(driver, 0.1).until(
-        EC.element_to_be_clickable((By.ID, "multilinelink")))
+    WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.ID, "multilinelink")))
 
 
 def test_clickable_locator_false(driver, pages):
     pages.load("simpleTest.html")
     with pytest.raises(TimeoutException):
         # text element, should not be clickable
-        WebDriverWait(driver, 0.1).until(
-            EC.element_to_be_clickable((By.ID, "hiddenline")))
+        WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable((By.ID, "hiddenline")))
 
 
 def test_clickable_element_true(driver, pages):
