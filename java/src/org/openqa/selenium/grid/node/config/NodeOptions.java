@@ -71,6 +71,7 @@ public class NodeOptions {
   public static final int DEFAULT_SESSION_TIMEOUT = 300;
   public static final int DEFAULT_DRAIN_AFTER_SESSION_COUNT = 0;
   public static final boolean DEFAULT_ENABLE_CDP = true;
+  public static final boolean DEFAULT_ENABLE_BIDI = true;
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
@@ -236,6 +237,10 @@ public class NodeOptions {
 
   public boolean isCdpEnabled() {
     return config.getBool(NODE_SECTION, "enable-cdp").orElse(DEFAULT_ENABLE_CDP);
+  }
+
+  public boolean isBiDiEnabled() {
+    return config.getBool(NODE_SECTION, "enable-bidi").orElse(DEFAULT_ENABLE_BIDI);
   }
 
   public int getDrainAfterSessionCount() {
