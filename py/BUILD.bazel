@@ -46,6 +46,24 @@ TEST_DEPS = [
 ]
 
 copy_file(
+    name = "manager-macos",
+    src = "//common/manager:macos/selenium-manager",
+    out = "selenium/webdriver/common/macos/selenium-manager",
+)
+
+copy_file(
+    name = "manager-linux",
+    src = "//common/manager:linux/selenium-manager",
+    out = "selenium/webdriver/common/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-windows",
+    src = "//common/manager:windows/selenium-manager.exe",
+    out = "selenium/webdriver/common/windows/selenium-manager.exe",
+)
+
+copy_file(
     name = "get-attribute",
     src = "//javascript/webdriver/atoms:get-attribute.js",
     out = "selenium/webdriver/remote/getAttribute.js",
@@ -106,6 +124,9 @@ py_library(
         ":get-attribute",
         ":is-displayed",
         ":mutation-listener",
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
