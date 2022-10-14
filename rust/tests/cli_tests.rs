@@ -10,7 +10,7 @@ use rstest::rstest;
 #[case("edge", "105", "105.0")]
 #[case("edge", "106", "106.0")]
 #[case("firefox", "", "")]
-#[case("firefox", "105", "0.31.0")]
+#[case("firefox", "105", "0.32.0")]
 fn ok_test(#[case] browser: String, #[case] browser_version: String, #[case] driver_version: String) {
     println!("CLI test browser={} -- browser_version={} -- driver_version={}", browser, browser_version, driver_version);
 
