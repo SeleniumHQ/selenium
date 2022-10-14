@@ -30,12 +30,16 @@ mod metadata;
 {usage-heading} {usage}
 {all-args}")]
 struct Cli {
-    /// Browser type (e.g., chrome, firefox, edge)
-    #[clap(short, long, value_parser)]
+    /// Browser name (chrome, firefox, or edge)
+    #[clap(short, long, value_parser, default_value = "")]
     browser: String,
 
+    /// Driver name (chromedriver, geckodriver, or msedgedriver)
+    #[clap(short, long, value_parser, default_value = "")]
+    driver: String,
+
     /// Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
-    #[clap(short = 'D', long, value_parser, default_value = "")]
+    #[clap(short = 'v', long, value_parser, default_value = "")]
     driver_version: String,
 
     /// Major browser version (e.g., 105, 106, etc.)
@@ -43,11 +47,11 @@ struct Cli {
     browser_version: String,
 
     /// Display DEBUG messages
-    #[clap(short, long)]
+    #[clap(short = 'D', long)]
     debug: bool,
 
     /// Display TRACE messages
-    #[clap(short, long)]
+    #[clap(short = 'T', long)]
     trace: bool,
 
     /// Clear driver cache
@@ -59,16 +63,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     setup_logging(&cli);
     let browser_name: String = cli.browser;
+    let driver_name: String = cli.driver;
     let os = OS;
     let arch = ARCH;
-    let browser_manager: Box<dyn BrowserManager> = if browser_name.eq_ignore_ascii_case("chrome") {
+    let browser_manager: Box<dyn BrowserManager> = if browser_name.eq_ignore_ascii_case("chrome")
+        || driver_name.eq_ignore_ascii_case("chromedriver") {
         ChromeManager::new()
-    } else if browser_name.eq_ignore_ascii_case("firefox") {
+    } else if browser_name.eq_ignore_ascii_case("firefox")
+        || driver_name.eq_ignore_ascii_case("geckodriver") {
         FirefoxManager::new()
-    } else if browser_name.eq_ignore_ascii_case("edge") {
+    } else if browser_name.eq_ignore_ascii_case("edge")
+        || driver_name.eq_ignore_ascii_case("msedgedriver") {
         EdgeManager::new()
     } else {
-        return Err(format!("Browser {} not supported", browser_name))?;
+        return Err(format!("Invalid browser/driver name"))?;
     };
 
     if cli.clear_cache {
@@ -79,23 +87,23 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut browser_version = cli.browser_version;
 
     if !driver_version.is_empty() && !browser_version.is_empty() {
-      log::warn!("Ignoring --browser-version (since --driver-version is also used)");
+        log::warn!("Ignoring --browser-version (since --driver-version is also used)");
     }
 
     if driver_version.is_empty() {
-      if browser_version.is_empty() {
-        match browser_manager.get_browser_version(os) {
-          Some(version) => {
-            browser_version = version;
-            log::debug!("Detected browser: {} {}", browser_name, browser_version);
-          }
-          None => {
-            log::warn!("The version of {} cannot be detected. Trying with latest driver version", browser_name);
-          }
+        if browser_version.is_empty() {
+            match browser_manager.get_browser_version(os) {
+                Some(version) => {
+                    browser_version = version;
+                    log::debug!("Detected browser: {} {}", browser_name, browser_version);
+                }
+                None => {
+                    log::warn!("The version of {} cannot be detected. Trying with latest driver version", browser_name);
+                }
+            }
         }
-      }
-      driver_version = browser_manager.get_driver_version(&browser_version, os)?;
-      log::debug!("Required driver: {} {}", browser_manager.get_driver_name(), driver_version);
+        driver_version = browser_manager.get_driver_version(&browser_version, os)?;
+        log::debug!("Required driver: {} {}", browser_manager.get_driver_name(), driver_version);
     }
 
     let driver_path = browser_manager.get_driver_path_in_cache(&driver_version, os, arch);
