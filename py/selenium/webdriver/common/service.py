@@ -89,6 +89,7 @@ class Service(ABC):
         try:
             cmd = [self.path]
             cmd.extend(self.command_line_args())
+            preexec_fn = os.setpgrp if system() != 'Windows' else None
             self.process = subprocess.Popen(
                 cmd,
                 env=self.env,
@@ -96,6 +97,7 @@ class Service(ABC):
                 stdout=self.log_file,
                 stderr=self.log_file,
                 stdin=PIPE,
+                preexec_fn=preexec_fn,
                 creationflags=self.creation_flags,
             )
             log.debug(f"Started executable: `{self.path}` in a child process with pid: {self.process.pid}")
