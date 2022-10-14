@@ -18,10 +18,13 @@
 package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
 import org.openqa.selenium.events.local.GuavaEventBus;
@@ -50,17 +53,32 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-class ProxyCdpTest {
+class ProxyWebsocketTest {
 
   private final HttpHandler nullHandler = req -> new HttpResponse();
   private final Config emptyConfig = new MapConfig(Collections.emptyMap());
   private Server<?> proxyServer;
   private SessionMap sessions;
+
+  private String protocol;
+
+  public static Stream<Arguments> data() {
+    Supplier<String> s1 = () -> "cdp";
+    Supplier<String> s2 = () -> "bidi";
+
+    return ImmutableSet.of(s1, s2).stream().map(Arguments::of);
+  }
+
+  public void setFields(Supplier<String> values) {
+    this.protocol = values.get();
+  }
 
   @BeforeEach
   public void setUp() {
@@ -81,8 +99,12 @@ class ProxyCdpTest {
     proxyServer.stop();
   }
 
-  @Test
-  void shouldForwardTextMessageToServer() throws URISyntaxException, InterruptedException {
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldForwardTextMessageToServer(Supplier<String> values)
+    throws URISyntaxException, InterruptedException {
+    setFields(values);
+
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     // Create a backend server which will capture any incoming text message
@@ -96,7 +118,7 @@ class ProxyCdpTest {
 
     // Now! Send a message. We expect it to eventually show up in the backend
     try (WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener(){})) {
+      .openSocket(new HttpRequest(GET, String.format("/session/%s/" + protocol, id)), new WebSocket.Listener(){})) {
 
       socket.sendText("Cheese!");
 
@@ -105,8 +127,11 @@ class ProxyCdpTest {
     }
   }
 
-  @Test
-  void shouldForwardTextMessageFromServerToLocalEnd() throws URISyntaxException, InterruptedException {
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldForwardTextMessageFromServerToLocalEnd(Supplier<String> values)
+    throws URISyntaxException, InterruptedException {
+    setFields(values);
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
 
     Server<?> backend = createBackendServer(new CountDownLatch(1), new AtomicReference<>(), "Asiago", emptyConfig);
@@ -119,7 +144,7 @@ class ProxyCdpTest {
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
     try(WebSocket socket = clientFactory.createClient(proxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
+      .openSocket(new HttpRequest(GET, String.format("/session/%s/" + protocol, id)), new WebSocket.Listener() {
         @Override
         public void onText(CharSequence data) {
           text.set(data.toString());
@@ -134,10 +159,11 @@ class ProxyCdpTest {
     }
   }
 
-  @Test
-  void shouldBeAbleToSendMessagesOverSecureWebSocket()
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldBeAbleToSendMessagesOverSecureWebSocket(Supplier<String> values)
       throws URISyntaxException, InterruptedException {
-
+    setFields(values);
     Config secureConfig = new MapConfig(ImmutableMap.of(
       "server", ImmutableMap.of(
         "https-self-signed", true)));
@@ -158,7 +184,7 @@ class ProxyCdpTest {
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<String> text = new AtomicReference<>();
     try (WebSocket socket = clientFactory.createClient(secureProxyServer.getUrl())
-      .openSocket(new HttpRequest(GET, String.format("/session/%s/cdp", id)), new WebSocket.Listener() {
+      .openSocket(new HttpRequest(GET, String.format("/session/%s/" + protocol, id)), new WebSocket.Listener() {
         @Override
         public void onText(CharSequence data) {
           text.set(data.toString());
