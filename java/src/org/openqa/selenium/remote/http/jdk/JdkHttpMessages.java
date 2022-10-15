@@ -83,11 +83,16 @@ class JdkHttpMessages {
     }
 
     for (String name : req.getHeaderNames()) {
-      // Avoid explicitly setting content-length
-      // This prevents the IllegalArgumentException that states 'restricted header name: "Content-Length"'
-      if (name.equalsIgnoreCase("content-length")) {
+      // Avoid explicitly setting "connection", "content-length", "host"
+      // This prevents the IllegalArgumentException that states 'restricted header name: "{header name}"'
+      if (name.equalsIgnoreCase("connection")) {
+        continue;
+      } else if (name.equalsIgnoreCase("content-length")) {
+        continue;
+      } else if (name.equalsIgnoreCase("host")) {
         continue;
       }
+
       for (String value : req.getHeaders(name)) {
         builder = builder.header(name, value);
       }
