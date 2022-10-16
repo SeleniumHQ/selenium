@@ -136,7 +136,7 @@ def test_element_located_selection_state_to_be(driver, pages):
     WebDriverWait(driver, 0.1).until(EC.element_located_selection_state_to_be(selected_locator_test, True))
     WebDriverWait(driver, 0.1).until(EC.element_located_selection_state_to_be(selected_web_element_test, True))
     WebDriverWait(driver, 0.1).until(EC.element_located_selection_state_to_be(unselected_locator_test, False))
-    WebDriverWait(driver, 0.1).until(EC.element_located_selection_state_to_be(unselected_web_element_test, True))
+    WebDriverWait(driver, 0.1).until(EC.element_located_selection_state_to_be(unselected_web_element_test, False))
 
 
 def test_element_attribute_to_include(driver, pages):
