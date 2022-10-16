@@ -112,10 +112,8 @@ def test_text_to_be_present_in_element_value(driver, pages):
     pages.load("inputs.html")
     locator_test = (By.XPATH, "/html/body/form/input[1]")  # parameter is locator
     web_element_test = driver.find_element(*locator_test)  # parameter is WebElement
-    WebDriverWait(driver, 0.1).until(EC.text_to_be_present_in_element_value(locator_test,
-                                                                            "input with no type"))
-    WebDriverWait(driver, 0.1).until(EC.text_to_be_present_in_element_value(web_element_test,
-                                                                            "input with no type"))
+    WebDriverWait(driver, 0.1).until(EC.text_to_be_present_in_element_value(locator_test, "input with no type"))
+    WebDriverWait(driver, 0.1).until(EC.text_to_be_present_in_element_value(web_element_test, "input with no type"))
 
 
 def test_element_located_to_be_selected(driver, pages):
