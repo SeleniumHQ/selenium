@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.config.Config;
@@ -114,13 +113,13 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   public LocalNewSessionQueue(
     Tracer tracer,
     SlotMatcher slotMatcher,
-    Duration retryPeriod,
+    Duration requestTimeoutCheck,
     Duration requestTimeout,
     Secret registrationSecret) {
     super(tracer, registrationSecret);
 
     this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
-    Require.nonNegative("Retry period", retryPeriod);
+    Require.nonNegative("Retry period", requestTimeoutCheck);
 
     this.requestTimeout = Require.positive("Request timeout", requestTimeout);
 
@@ -130,8 +129,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
     service.scheduleAtFixedRate(
       GuardedRunnable.guard(this::timeoutSessions),
-      retryPeriod.toMillis(),
-      retryPeriod.toMillis(),
+      requestTimeoutCheck.toMillis(),
+      requestTimeoutCheck.toMillis(),
       MILLISECONDS);
 
     new JMXHelper().register(this);
@@ -148,7 +147,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     return new LocalNewSessionQueue(
       tracer,
       slotMatcher,
-      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      newSessionQueueOptions.getSessionRequestTimeoutPeriod(),
       newSessionQueueOptions.getSessionRequestTimeout(),
       secretOptions.getRegistrationSecret());
   }

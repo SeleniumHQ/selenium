@@ -65,7 +65,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -149,7 +148,7 @@ public class Standalone extends TemplateGridServerCommand {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       distributorOptions.getSlotMatcher(),
-      newSessionRequestOptions.getSessionRequestRetryInterval(),
+      newSessionRequestOptions.getSessionRequestTimeoutPeriod(),
       newSessionRequestOptions.getSessionRequestTimeout(),
       registrationSecret);
     combinedHandler.addHandler(queue);
