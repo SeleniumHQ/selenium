@@ -48,9 +48,10 @@ import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
@@ -59,6 +60,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 public class RemoteNewSessionQueue extends NewSessionQueue {
 
   private static final Type QUEUE_CONTENTS_TYPE = new TypeToken<List<SessionRequestCapability>>() {}.getType();
+  private static final Type SESSION_REQUEST_TYPE = new TypeToken<List<SessionRequest>>() {}.getType();
   private static final Json JSON = new Json();
   private final HttpClient client;
   private final Filter addSecret;
@@ -128,17 +130,19 @@ public class RemoteNewSessionQueue extends NewSessionQueue {
   }
 
   @Override
-  public Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes) {
+  public List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes) {
     Require.nonNull("Stereotypes", stereotypes);
 
+    Map<String, Long> stereotypeJson = new HashMap<>();
+    stereotypes.forEach((k,v) -> stereotypeJson.put(JSON.toJson(k), v));
+
     HttpRequest upstream = new HttpRequest(POST, "/se/grid/newsessionqueue/session/next")
-      .setContent(Contents.asJson(stereotypes));
+      .setContent(Contents.asJson(stereotypeJson));
+
     HttpTracing.inject(tracer, tracer.getCurrentContext(), upstream);
     HttpResponse response = client.with(addSecret).execute(upstream);
 
-    SessionRequest value = Values.get(response, SessionRequest.class);
-
-    return Optional.ofNullable(value);
+    return Values.get(response, SESSION_REQUEST_TYPE);
   }
 
   @Override

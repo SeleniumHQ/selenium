@@ -105,7 +105,7 @@ public abstract class NewSessionQueue implements HasReadyState, Routable {
 
   public abstract Optional<SessionRequest> remove(RequestId reqId);
 
-  public abstract Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes);
+  public abstract List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes);
 
   public abstract void complete(RequestId reqId, Either<SessionNotCreatedException, CreateSessionResponse> result);
 

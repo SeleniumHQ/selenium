@@ -51,6 +51,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -520,10 +521,57 @@ class LocalNewSessionQueueTest {
       Map.of(),
       Map.of()));
 
-    Optional<SessionRequest> returned = queue.getNextAvailable(
-      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+    Map<Capabilities, Long> stereotypes = new HashMap<>();
+    stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
 
-    assertThat(returned).isEqualTo(Optional.of(expected));
+    List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
+
+    assertThat(returned.get(0)).isEqualTo(expected);
+  }
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldBeAbleToReturnTheNextAvailableBatchThatMatchesStereotypes(Supplier<TestData> supplier) {
+    setup(supplier);
+
+    SessionRequest firstSessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
+      Map.of(),
+      Map.of());
+
+    SessionRequest secondSessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "smoked")),
+      Map.of(),
+      Map.of());
+
+    SessionRequest thirdSessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "smoked")),
+      Map.of(),
+      Map.of());
+
+    localQueue.injectIntoQueue(firstSessionRequest);
+    localQueue.injectIntoQueue(secondSessionRequest);
+    localQueue.injectIntoQueue(thirdSessionRequest);
+
+    Map<Capabilities, Long> stereotypes = new HashMap<>();
+    stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 2L);
+    stereotypes.put(new ImmutableCapabilities("browserName", "peas"), 2L);
+
+    List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
+
+    assertThat(returned.size()).isEqualTo(3);
+    assertTrue(returned.contains(firstSessionRequest));
+    assertTrue(returned.contains(secondSessionRequest));
+    assertTrue(returned.contains(thirdSessionRequest));
   }
 
   @ParameterizedTest
@@ -551,10 +599,12 @@ class LocalNewSessionQueueTest {
       Map.of());
     localQueue.injectIntoQueue(expected);
 
-    Optional<SessionRequest> returned = queue.getNextAvailable(
-      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+    Map<Capabilities, Long> stereotypes = new HashMap<>();
+    stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
 
-    assertThat(returned).isEqualTo(Optional.of(expected));
+    List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
+
+    assertThat(returned.get(0)).isEqualTo(expected);
   }
 
   static class TestData {
