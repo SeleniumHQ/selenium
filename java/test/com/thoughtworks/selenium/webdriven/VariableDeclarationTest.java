@@ -35,7 +35,7 @@ public class VariableDeclarationTest {
   }
 
   @Test
-  public void testShouldLeaveThingsWellAloneIfNotNeeded() {
+  void testShouldLeaveThingsWellAloneIfNotNeeded() {
     StringBuilder builder = new StringBuilder();
     declaration.mutate("I like cheese", builder);
 
@@ -44,7 +44,7 @@ public class VariableDeclarationTest {
   }
 
   @Test
-  public void testShouldAddDeclarationIfNecessary() {
+  void testShouldAddDeclarationIfNecessary() {
     StringBuilder builder = new StringBuilder();
     declaration.mutate("selenium.browserbot.findElement", builder);
 
@@ -52,7 +52,7 @@ public class VariableDeclarationTest {
   }
 
   @Test
-  public void testReplacementStillHappensWithStrangeSpacing() {
+  void testReplacementStillHappensWithStrangeSpacing() {
     StringBuilder builder = new StringBuilder();
     declaration.mutate("selenium   \n\n\n .browserbot .findCheese", builder);
 

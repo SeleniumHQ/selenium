@@ -27,26 +27,26 @@ class ElementScrollBehavior(Enum):
 
 class Options(ArgOptions):
 
-    KEY = 'se:ieOptions'
-    SWITCHES = 'ie.browserCommandLineSwitches'
+    KEY = "se:ieOptions"
+    SWITCHES = "ie.browserCommandLineSwitches"
 
-    BROWSER_ATTACH_TIMEOUT = 'browserAttachTimeout'
-    ELEMENT_SCROLL_BEHAVIOR = 'elementScrollBehavior'
-    ENSURE_CLEAN_SESSION = 'ie.ensureCleanSession'
-    FILE_UPLOAD_DIALOG_TIMEOUT = 'ie.fileUploadDialogTimeout'
-    FORCE_CREATE_PROCESS_API = 'ie.forceCreateProcessApi'
-    FORCE_SHELL_WINDOWS_API = 'ie.forceShellWindowsApi'
-    FULL_PAGE_SCREENSHOT = 'ie.enableFullPageScreenshot'
-    IGNORE_PROTECTED_MODE_SETTINGS = 'ignoreProtectedModeSettings'
-    IGNORE_ZOOM_LEVEL = 'ignoreZoomSetting'
-    INITIAL_BROWSER_URL = 'initialBrowserUrl'
-    NATIVE_EVENTS = 'nativeEvents'
-    PERSISTENT_HOVER = 'enablePersistentHover'
-    REQUIRE_WINDOW_FOCUS = 'requireWindowFocus'
-    USE_PER_PROCESS_PROXY = 'ie.usePerProcessProxy'
-    USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING = 'ie.useLegacyFileUploadDialogHandling'
-    ATTACH_TO_EDGE_CHROME = 'ie.edgechromium'
-    EDGE_EXECUTABLE_PATH = 'ie.edgepath'
+    BROWSER_ATTACH_TIMEOUT = "browserAttachTimeout"
+    ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior"
+    ENSURE_CLEAN_SESSION = "ie.ensureCleanSession"
+    FILE_UPLOAD_DIALOG_TIMEOUT = "ie.fileUploadDialogTimeout"
+    FORCE_CREATE_PROCESS_API = "ie.forceCreateProcessApi"
+    FORCE_SHELL_WINDOWS_API = "ie.forceShellWindowsApi"
+    FULL_PAGE_SCREENSHOT = "ie.enableFullPageScreenshot"
+    IGNORE_PROTECTED_MODE_SETTINGS = "ignoreProtectedModeSettings"
+    IGNORE_ZOOM_LEVEL = "ignoreZoomSetting"
+    INITIAL_BROWSER_URL = "initialBrowserUrl"
+    NATIVE_EVENTS = "nativeEvents"
+    PERSISTENT_HOVER = "enablePersistentHover"
+    REQUIRE_WINDOW_FOCUS = "requireWindowFocus"
+    USE_PER_PROCESS_PROXY = "ie.usePerProcessProxy"
+    USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING = "ie.useLegacyFileUploadDialogHandling"
+    ATTACH_TO_EDGE_CHROME = "ie.edgechromium"
+    EDGE_EXECUTABLE_PATH = "ie.edgepath"
 
     def __init__(self):
         super().__init__()
@@ -55,7 +55,7 @@ class Options(ArgOptions):
 
     @property
     def options(self) -> dict:
-        """:Returns: A dictionary of browser options """
+        """:Returns: A dictionary of browser options"""
         return self._options
 
     @property
@@ -75,12 +75,12 @@ class Options(ArgOptions):
 
         """
         if not isinstance(value, int):
-            raise ValueError('Browser Attach Timeout must be an integer.')
+            raise ValueError("Browser Attach Timeout must be an integer.")
         self._options[self.BROWSER_ATTACH_TIMEOUT] = value
 
     @property
     def element_scroll_behavior(self) -> ElementScrollBehavior:
-        """:Returns: The options Element Scroll Behavior value """
+        """:Returns: The options Element Scroll Behavior value"""
         return self._options.get(self.ELEMENT_SCROLL_BEHAVIOR)
 
     @element_scroll_behavior.setter
@@ -93,12 +93,12 @@ class Options(ArgOptions):
 
         """
         if value not in [ElementScrollBehavior.TOP, ElementScrollBehavior.BOTTOM]:
-            raise ValueError('Element Scroll Behavior out of range.')
+            raise ValueError("Element Scroll Behavior out of range.")
         self._options[self.ELEMENT_SCROLL_BEHAVIOR] = value
 
     @property
     def ensure_clean_session(self) -> bool:
-        """:Returns: The options Ensure Clean Session value """
+        """:Returns: The options Ensure Clean Session value"""
         return self._options.get(self.ENSURE_CLEAN_SESSION)
 
     @ensure_clean_session.setter
@@ -114,7 +114,7 @@ class Options(ArgOptions):
 
     @property
     def file_upload_dialog_timeout(self) -> int:
-        """:Returns: The options File Upload Dialog Timeout in milliseconds """
+        """:Returns: The options File Upload Dialog Timeout in milliseconds"""
         return self._options.get(self.FILE_UPLOAD_DIALOG_TIMEOUT)
 
     @file_upload_dialog_timeout.setter
@@ -127,12 +127,12 @@ class Options(ArgOptions):
 
         """
         if not isinstance(value, int):
-            raise ValueError('File Upload Dialog Timeout must be an integer.')
+            raise ValueError("File Upload Dialog Timeout must be an integer.")
         self._options[self.FILE_UPLOAD_DIALOG_TIMEOUT] = value
 
     @property
     def force_create_process_api(self) -> bool:
-        """:Returns: The options Force Create Process Api value """
+        """:Returns: The options Force Create Process Api value"""
         return self._options.get(self.FORCE_CREATE_PROCESS_API)
 
     @force_create_process_api.setter
@@ -148,7 +148,7 @@ class Options(ArgOptions):
 
     @property
     def force_shell_windows_api(self) -> bool:
-        """:Returns: The options Force Shell Windows Api value """
+        """:Returns: The options Force Shell Windows Api value"""
         return self._options.get(self.FORCE_SHELL_WINDOWS_API)
 
     @force_shell_windows_api.setter
@@ -164,7 +164,7 @@ class Options(ArgOptions):
 
     @property
     def full_page_screenshot(self) -> bool:
-        """:Returns: The options Full Page Screenshot value """
+        """:Returns: The options Full Page Screenshot value"""
         return self._options.get(self.FULL_PAGE_SCREENSHOT)
 
     @full_page_screenshot.setter
@@ -180,7 +180,7 @@ class Options(ArgOptions):
 
     @property
     def ignore_protected_mode_settings(self) -> bool:
-        """:Returns: The options Ignore Protected Mode Settings value """
+        """:Returns: The options Ignore Protected Mode Settings value"""
         return self._options.get(self.IGNORE_PROTECTED_MODE_SETTINGS)
 
     @ignore_protected_mode_settings.setter
@@ -196,7 +196,7 @@ class Options(ArgOptions):
 
     @property
     def ignore_zoom_level(self) -> bool:
-        """:Returns: The options Ignore Zoom Level value """
+        """:Returns: The options Ignore Zoom Level value"""
         return self._options.get(self.IGNORE_ZOOM_LEVEL)
 
     @ignore_zoom_level.setter
@@ -212,7 +212,7 @@ class Options(ArgOptions):
 
     @property
     def initial_browser_url(self) -> str:
-        """:Returns: The options Initial Browser Url value """
+        """:Returns: The options Initial Browser Url value"""
         return self._options.get(self.INITIAL_BROWSER_URL)
 
     @initial_browser_url.setter
@@ -228,7 +228,7 @@ class Options(ArgOptions):
 
     @property
     def native_events(self) -> bool:
-        """:Returns: The options Native Events value """
+        """:Returns: The options Native Events value"""
         return self._options.get(self.NATIVE_EVENTS)
 
     @native_events.setter
@@ -244,7 +244,7 @@ class Options(ArgOptions):
 
     @property
     def persistent_hover(self) -> bool:
-        """:Returns: The options Persistent Hover value """
+        """:Returns: The options Persistent Hover value"""
         return self._options.get(self.PERSISTENT_HOVER)
 
     @persistent_hover.setter
@@ -260,7 +260,7 @@ class Options(ArgOptions):
 
     @property
     def require_window_focus(self: bool):
-        """:Returns: The options Require Window Focus value """
+        """:Returns: The options Require Window Focus value"""
         return self._options.get(self.REQUIRE_WINDOW_FOCUS)
 
     @require_window_focus.setter
@@ -276,7 +276,7 @@ class Options(ArgOptions):
 
     @property
     def use_per_process_proxy(self) -> bool:
-        """:Returns: The options User Per Process Proxy value """
+        """:Returns: The options User Per Process Proxy value"""
         return self._options.get(self.USE_PER_PROCESS_PROXY)
 
     @use_per_process_proxy.setter
@@ -292,7 +292,7 @@ class Options(ArgOptions):
 
     @property
     def use_legacy_file_upload_dialog_handling(self) -> bool:
-        """:Returns: The options Use Legacy File Upload Dialog Handling value """
+        """:Returns: The options Use Legacy File Upload Dialog Handling value"""
         return self._options.get(self.USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING)
 
     @use_legacy_file_upload_dialog_handling.setter
@@ -308,7 +308,7 @@ class Options(ArgOptions):
 
     @property
     def attach_to_edge_chrome(self) -> bool:
-        """:Returns: The options Attach to Edge Chrome value """
+        """:Returns: The options Attach to Edge Chrome value"""
         return self._options.get(self.ATTACH_TO_EDGE_CHROME)
 
     @attach_to_edge_chrome.setter
@@ -324,7 +324,7 @@ class Options(ArgOptions):
 
     @property
     def edge_executable_path(self) -> str:
-        """:Returns: The options Edge Executable Path value """
+        """:Returns: The options Edge Executable Path value"""
         return self._options.get(self.EDGE_EXECUTABLE_PATH)
 
     @edge_executable_path.setter
@@ -340,7 +340,7 @@ class Options(ArgOptions):
 
     @property
     def additional_options(self) -> dict:
-        """:Returns: The additional options """
+        """:Returns: The additional options"""
         return self._additional
 
     def add_additional_option(self, name: str, value):
@@ -360,7 +360,7 @@ class Options(ArgOptions):
 
         opts = self._options.copy()
         if len(self._arguments) > 0:
-            opts[self.SWITCHES] = ' '.join(self._arguments)
+            opts[self.SWITCHES] = " ".join(self._arguments)
 
         if len(self._additional) > 0:
             opts.update(self._additional)

@@ -28,7 +28,7 @@ import org.openqa.selenium.testing.JupiterTestBase;
 public class ScriptMutatorTest extends JupiterTestBase {
 
   @Test
-  public void testShouldBeAbleToUseTheBrowserbot() {
+  void testShouldBeAbleToUseTheBrowserbot() {
     String url = pages.tables;
     Selenium selenium = new WebDriverBackedSelenium(driver, url);
     selenium.open(pages.tables);

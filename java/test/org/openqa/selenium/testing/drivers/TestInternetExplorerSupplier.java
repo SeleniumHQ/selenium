@@ -22,7 +22,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.function.Supplier;
 
-public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
+class TestInternetExplorerSupplier implements Supplier<WebDriver> {
   private Capabilities caps;
 
   public TestInternetExplorerSupplier(Capabilities caps) {

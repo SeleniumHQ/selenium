@@ -49,7 +49,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StressTest {
+class StressTest {
 
   private final ExecutorService executor =
     Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
@@ -94,7 +94,7 @@ public class StressTest {
   }
 
   @Test
-  public void multipleSimultaneousSessions() throws Exception {
+  void multipleSimultaneousSessions() throws Exception {
     assertThat(server.isStarted()).isTrue();
 
     CompletableFuture<?>[] futures = new CompletableFuture<?>[10];

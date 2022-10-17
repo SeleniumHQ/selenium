@@ -8,6 +8,7 @@ namespace OpenQA.Selenium
     public abstract class DriverTestFixture
     {
         public string alertsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("alerts.html");
+        public string blankPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("blank.html");
         public string macbethPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("macbeth.html");
         public string macbethTitle = "Macbeth: Entire Play";
 

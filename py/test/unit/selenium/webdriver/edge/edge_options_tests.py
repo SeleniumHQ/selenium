@@ -27,28 +27,29 @@ def options():
 
 def test_raises_exception_with_invalid_page_load_strategy(options):
     with pytest.raises(ValueError):
-        options.page_load_strategy = 'never'
+        options.page_load_strategy = "never"
 
 
 def test_set_page_load_strategy(options):
-    options.page_load_strategy = 'normal'
+    options.page_load_strategy = "normal"
     caps = options.to_capabilities()
-    assert caps['pageLoadStrategy'] == 'normal'
+    assert caps["pageLoadStrategy"] == "normal"
 
 
 def test_get_page_load_strategy(options):
-    options._caps['pageLoadStrategy'] = 'normal'
-    assert options.page_load_strategy == 'normal'
+    options._caps["pageLoadStrategy"] = "normal"
+    assert options.page_load_strategy == "normal"
 
 
 def test_creates_capabilities(options):
-    options.page_load_strategy = 'eager'
+    options.page_load_strategy = "eager"
     caps = options.to_capabilities()
-    assert caps['pageLoadStrategy'] == 'eager'
+    assert caps["pageLoadStrategy"] == "eager"
 
 
 def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
+
     caps = DesiredCapabilities.EDGE.copy()
     caps.update({"pageLoadStrategy": "normal"})
     assert options._caps == caps
@@ -56,6 +57,7 @@ def test_starts_with_default_capabilities(options):
 
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
+
     assert isinstance(options, BaseOptions)
 
 
@@ -63,4 +65,4 @@ def test_use_webview():
     options = Options()
     options.use_webview = True
     caps = options.to_capabilities()
-    assert caps['browserName'] == "webview2"
+    assert caps["browserName"] == "webview2"

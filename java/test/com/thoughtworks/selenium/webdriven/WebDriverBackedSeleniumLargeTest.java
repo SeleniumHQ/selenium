@@ -40,7 +40,7 @@ public class WebDriverBackedSeleniumLargeTest extends JupiterTestBase {
   }
 
   @Test
-  public void canUseTheOriginalWaitClassWithAWebDriverBackedInstance() {
+  void canUseTheOriginalWaitClassWithAWebDriverBackedInstance() {
     selenium.open(pages.dynamicPage);
 
     Wait waiter = new Wait() {
@@ -65,7 +65,7 @@ public class WebDriverBackedSeleniumLargeTest extends JupiterTestBase {
 
   @NoDriverAfterTest
   @Test
-  public void testCallingStopThenSleepDoesNotCauseAnExceptionToBeThrown() {
+  void testCallingStopThenSleepDoesNotCauseAnExceptionToBeThrown() {
     // Stop selenium
     selenium.stop();
 
@@ -87,7 +87,7 @@ public class WebDriverBackedSeleniumLargeTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldBeAbleToInvokeSeleniumCoreElementLocatorsWithGetEval() {
+  void testShouldBeAbleToInvokeSeleniumCoreElementLocatorsWithGetEval() {
     selenium.open(pages.simpleTestPage);
     String tagName = selenium.getEval(
         "var el = selenium.browserbot.findElement('id=oneline');" +

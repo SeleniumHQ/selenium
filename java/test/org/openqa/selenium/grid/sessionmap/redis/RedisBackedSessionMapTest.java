@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-public class RedisBackedSessionMapTest {
+class RedisBackedSessionMapTest {
 
   private RedisServer server;
   private EventBus bus;
@@ -67,14 +67,14 @@ public class RedisBackedSessionMapTest {
   }
 
   @Test
-  public void shouldThrowANoSuchSessionExceptionIfTheSessionDoesNotExist() {
+  void shouldThrowANoSuchSessionExceptionIfTheSessionDoesNotExist() {
     assertThrows(NoSuchSessionException.class, () -> {
       sessions.get(new SessionId(UUID.randomUUID()));
     });
   }
 
   @Test
-  public void canGetTheUriOfASessionWithoutNeedingUrl() throws URISyntaxException {
+  void canGetTheUriOfASessionWithoutNeedingUrl() throws URISyntaxException {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
@@ -89,7 +89,7 @@ public class RedisBackedSessionMapTest {
   }
 
   @Test
-  public void canCreateARedisBackedSessionMap() throws URISyntaxException {
+  void canCreateARedisBackedSessionMap() throws URISyntaxException {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
@@ -104,7 +104,7 @@ public class RedisBackedSessionMapTest {
   }
 
   @Test
-  public void shouldBeAbleToRemoveSessions() throws URISyntaxException {
+  void shouldBeAbleToRemoveSessions() throws URISyntaxException {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),

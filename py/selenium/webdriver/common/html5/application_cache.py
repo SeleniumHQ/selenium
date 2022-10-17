@@ -41,8 +41,11 @@ class ApplicationCache:
         :Args:
          - driver: The WebDriver instance which performs user actions.
         """
-        warnings.warn("Application Cache is being removed from all major browsers. This feature will be removed in future versions",
-                      DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            "Application Cache is being removed from all major browsers. This feature will be removed in future versions",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.driver = driver
 
     @property
@@ -50,4 +53,4 @@ class ApplicationCache:
         """
         Returns a current status of application cache.
         """
-        return self.driver.execute(Command.GET_APP_CACHE_STATUS)['value']
+        return self.driver.execute(Command.GET_APP_CACHE_STATUS)["value"]

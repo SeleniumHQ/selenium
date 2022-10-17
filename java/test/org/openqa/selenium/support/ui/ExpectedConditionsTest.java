@@ -78,7 +78,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 @Tag("UnitTests")
-public class ExpectedConditionsTest {
+class ExpectedConditionsTest {
 
   @Mock
   private WebDriver mockDriver;
@@ -113,7 +113,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForUrlToBeOpened_urlToBe() {
+  void waitingForUrlToBeOpened_urlToBe() {
     final String url = "http://some_url";
     when(mockDriver.getCurrentUrl()).thenReturn(url);
 
@@ -121,7 +121,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForUrlToBeOpened_urlContains() {
+  void waitingForUrlToBeOpened_urlContains() {
     final String url = "http://some_url";
     when(mockDriver.getCurrentUrl()).thenReturn(url);
 
@@ -129,7 +129,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForUrlToBeOpened_urlMatches() {
+  void waitingForUrlToBeOpened_urlMatches() {
     final String url = "http://some-dynamic:4000/url";
     when(mockDriver.getCurrentUrl()).thenReturn(url);
 
@@ -137,7 +137,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void negative_waitingForUrlToBeOpened_urlToBe() {
+  void negative_waitingForUrlToBeOpened_urlToBe() {
     final String url = "http://some_url";
     when(mockDriver.getCurrentUrl()).thenReturn(url);
 
@@ -146,7 +146,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void negative_waitingForUrlToBeOpened_urlContains() {
+  void negative_waitingForUrlToBeOpened_urlContains() {
     final String url = "http://some_url";
     when(mockDriver.getCurrentUrl()).thenReturn(url);
 
@@ -155,7 +155,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void negative_waitingForUrlToBeOpened_urlMatches() {
+  void negative_waitingForUrlToBeOpened_urlMatches() {
     final String url = "http://some-dynamic:4000/url";
     when(mockDriver.getCurrentUrl()).thenReturn(url);
 
@@ -164,7 +164,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfElement_elementAlreadyVisible() {
+  void waitingForVisibilityOfElement_elementAlreadyVisible() {
     when(mockElement.isDisplayed()).thenReturn(true);
 
     assertThat(wait.until(visibilityOf(mockElement))).isSameAs(mockElement);
@@ -172,7 +172,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfElement_elementBecomesVisible() throws InterruptedException {
+  void waitingForVisibilityOfElement_elementBecomesVisible() throws InterruptedException {
     when(mockElement.isDisplayed()).thenReturn(false, false, true);
 
     assertThat(wait.until(visibilityOf(mockElement))).isSameAs(mockElement);
@@ -180,7 +180,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfElement_elementNeverBecomesVisible()
+  void waitingForVisibilityOfElement_elementNeverBecomesVisible()
     throws InterruptedException {
     Mockito.reset(mockClock);
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(500), EPOCH.plusMillis(3000));
@@ -192,7 +192,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfElementInverse_elementNotVisible() {
+  void waitingForVisibilityOfElementInverse_elementNotVisible() {
     when(mockElement.isDisplayed()).thenReturn(false);
 
     assertThat(wait.until(not(visibilityOf(mockElement)))).isTrue();
@@ -200,14 +200,14 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void booleanExpectationsCanBeNegated() {
+  void booleanExpectationsCanBeNegated() {
     ExpectedCondition<Boolean> expectation = not(obj -> false);
 
     assertThat(expectation.apply(mockDriver)).isTrue();
   }
 
   @Test
-  public void waitingForVisibilityOfElementInverse_elementStaysVisible()
+  void waitingForVisibilityOfElementInverse_elementStaysVisible()
     throws InterruptedException {
     Mockito.reset(mockClock);
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(500), EPOCH.plusMillis(3000));
@@ -219,14 +219,14 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void invertingAConditionThatReturnsFalse() {
+  void invertingAConditionThatReturnsFalse() {
     ExpectedCondition<Boolean> expectation = not(obj -> false);
 
     assertThat(expectation.apply(mockDriver)).isTrue();
   }
 
   @Test
-  public void invertingAConditionThatReturnsNull() {
+  void invertingAConditionThatReturnsNull() {
     when(mockCondition.apply(mockDriver)).thenReturn(null);
 
     assertThat(wait.until(not(mockCondition))).isTrue();
@@ -234,28 +234,28 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void invertingAConditionThatAlwaysReturnsTrueTimesout() {
+  void invertingAConditionThatAlwaysReturnsTrueTimesout() {
     ExpectedCondition<Boolean> expectation = not(obj -> true);
 
     assertThat(expectation.apply(mockDriver)).isFalse();
   }
 
   @Test
-  public void doubleNegatives_conditionThatReturnsFalseTimesOut() {
+  void doubleNegatives_conditionThatReturnsFalseTimesOut() {
     ExpectedCondition<Boolean> expectation = not(not(obj -> false));
 
     assertThat(expectation.apply(mockDriver)).isFalse();
   }
 
   @Test
-  public void doubleNegatives_conditionThatReturnsNull() {
+  void doubleNegatives_conditionThatReturnsNull() {
     ExpectedCondition<Boolean> expectation = not(not(obj -> null));
 
     assertThat(expectation.apply(mockDriver)).isFalse();
   }
 
   @Test
-  public void waitingForVisibilityOfAllElementsLocatedByReturnsListOfElements() {
+  void waitingForVisibilityOfAllElementsLocatedByReturnsListOfElements() {
     List<WebElement> webElements = singletonList(mockElement);
     String testSelector = "testSelector";
 
@@ -268,7 +268,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfAllElementsLocatedByThrowsTimeoutExceptionWhenElementNotDisplayed() {
+  void waitingForVisibilityOfAllElementsLocatedByThrowsTimeoutExceptionWhenElementNotDisplayed() {
     List<WebElement> webElements = singletonList(mockElement);
     String testSelector = "testSelector";
 
@@ -280,7 +280,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfAllElementsLocatedByThrowsStaleExceptionWhenElementIsStale() {
+  void waitingForVisibilityOfAllElementsLocatedByThrowsStaleExceptionWhenElementIsStale() {
     List<WebElement> webElements = singletonList(mockElement);
     String testSelector = "testSelector";
 
@@ -292,7 +292,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfAllElementsLocatedByThrowsTimeoutExceptionWhenNoElementsFound() {
+  void waitingForVisibilityOfAllElementsLocatedByThrowsTimeoutExceptionWhenNoElementsFound() {
     List<WebElement> webElements = new ArrayList<>();
     String testSelector = "testSelector";
 
@@ -303,7 +303,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfAllElementsReturnsListOfElements() {
+  void waitingForVisibilityOfAllElementsReturnsListOfElements() {
     List<WebElement> webElements = singletonList(mockElement);
     when(mockElement.isDisplayed()).thenReturn(true);
 
@@ -312,7 +312,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfAllElementsThrowsTimeoutExceptionWhenElementNotDisplayed() {
+  void waitingForVisibilityOfAllElementsThrowsTimeoutExceptionWhenElementNotDisplayed() {
     List<WebElement> webElements = singletonList(mockElement);
     when(mockElement.isDisplayed()).thenReturn(false);
 
@@ -321,7 +321,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfAllElementsThrowsStaleElementReferenceExceptionWhenElementIsStale() {
+  void waitingForVisibilityOfAllElementsThrowsStaleElementReferenceExceptionWhenElementIsStale() {
     List<WebElement> webElements = singletonList(mockElement);
 
     when(mockElement.isDisplayed()).thenThrow(new StaleElementReferenceException("Stale element"));
@@ -331,7 +331,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfAllElementsThrowsTimeoutExceptionWhenNoElementsFound() {
+  void waitingForVisibilityOfAllElementsThrowsTimeoutExceptionWhenNoElementsFound() {
     List<WebElement> webElements = new ArrayList<>();
 
     assertThatExceptionOfType(TimeoutException.class)
@@ -339,7 +339,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfReturnsElement() {
+  void waitingForVisibilityOfReturnsElement() {
     when(mockElement.isDisplayed()).thenReturn(true);
 
     WebElement returnedElement = wait.until(visibilityOf(mockElement));
@@ -347,7 +347,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfThrowsTimeoutExceptionWhenElementNotDisplayed() {
+  void waitingForVisibilityOfThrowsTimeoutExceptionWhenElementNotDisplayed() {
 
     when(mockElement.isDisplayed()).thenReturn(false);
 
@@ -356,7 +356,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfThrowsStaleElementReferenceExceptionWhenElementIsStale() {
+  void waitingForVisibilityOfThrowsStaleElementReferenceExceptionWhenElementIsStale() {
 
     when(mockElement.isDisplayed()).thenThrow(new StaleElementReferenceException("Stale element"));
 
@@ -365,7 +365,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForTextToBePresentInElementLocatedReturnsElement() {
+  void waitingForTextToBePresentInElementLocatedReturnsElement() {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
     when(mockElement.getText()).thenReturn("testText");
@@ -376,7 +376,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForTextToBePresentInElementLocatedReturnsElementWhenTextContainsSaidText() {
+  void waitingForTextToBePresentInElementLocatedReturnsElementWhenTextContainsSaidText() {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
     when(mockElement.getText()).thenReturn("testText");
@@ -386,7 +386,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForHtmlAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeIsEqualToSaidText() {
+  void waitingForHtmlAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeIsEqualToSaidText() {
     String testSelector = "testSelector";
     String attributeName = "attributeName";
     String attributeValue = "attributeValue";
@@ -399,7 +399,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForCssAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeIsEqualToSaidText() {
+  void waitingForCssAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeIsEqualToSaidText() {
     String testSelector = "testSelector";
     String attributeName = "attributeName";
     String attributeValue = "attributeValue";
@@ -412,7 +412,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForCssAttributeToBeEqualForElementLocatedThrowsTimeoutExceptionWhenAttributeIsNotEqual() {
+  void waitingForCssAttributeToBeEqualForElementLocatedThrowsTimeoutExceptionWhenAttributeIsNotEqual() {
     String testSelector = "testSelector";
     String attributeName = "attributeName";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
@@ -424,7 +424,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForHtmlAttributeToBeEqualForWebElementReturnsTrueWhenAttributeIsEqualToSaidText() {
+  void waitingForHtmlAttributeToBeEqualForWebElementReturnsTrueWhenAttributeIsEqualToSaidText() {
     String attributeName = "attributeName";
     String attributeValue = "attributeValue";
     when(mockElement.getAttribute(attributeName)).thenReturn(attributeValue);
@@ -434,7 +434,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForCssAttributeToBeEqualForWebElementReturnsTrueWhenAttributeIsEqualToSaidText() {
+  void waitingForCssAttributeToBeEqualForWebElementReturnsTrueWhenAttributeIsEqualToSaidText() {
     String attributeName = "attributeName";
     String attributeValue = "attributeValue";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
@@ -444,7 +444,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForCssAttributeToBeEqualForWebElementThrowsTimeoutExceptionWhenAttributeIsNotEqual() {
+  void waitingForCssAttributeToBeEqualForWebElementThrowsTimeoutExceptionWhenAttributeIsNotEqual() {
     String attributeName = "attributeName";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
@@ -454,7 +454,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForHtmlAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeContainsEqualToSaidText() {
+  void waitingForHtmlAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeContainsEqualToSaidText() {
     String testSelector = "testSelector";
     String attributeName = "attributeName";
     String attributeValue = "test attributeValue test";
@@ -467,7 +467,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForCssAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeContainsEqualToSaidText() {
+  void waitingForCssAttributeToBeEqualForElementLocatedReturnsTrueWhenAttributeContainsEqualToSaidText() {
     String testSelector = "testSelector";
     String attributeName = "attributeName";
     String attributeValue = "test attributeValue test";
@@ -480,7 +480,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForCssAttributeToBeEqualForElementLocatedThrowsTimeoutExceptionWhenAttributeContainsNotEqual() {
+  void waitingForCssAttributeToBeEqualForElementLocatedThrowsTimeoutExceptionWhenAttributeContainsNotEqual() {
     By parent = By.cssSelector("parent");
     String attributeName = "attributeName";
     when(mockDriver.findElement(parent)).thenReturn(mockElement);
@@ -492,7 +492,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForHtmlAttributeToBeEqualForWebElementReturnsTrueWhenAttributeContainsEqualToSaidText() {
+  void waitingForHtmlAttributeToBeEqualForWebElementReturnsTrueWhenAttributeContainsEqualToSaidText() {
     String attributeName = "attributeName";
     String attributeValue = "test attributeValue test";
     when(mockElement.getAttribute(attributeName)).thenReturn(attributeValue);
@@ -502,7 +502,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForCssAttributeToBeEqualForWebElementReturnsTrueWhenAttributeContainsEqualToSaidText() {
+  void waitingForCssAttributeToBeEqualForWebElementReturnsTrueWhenAttributeContainsEqualToSaidText() {
     String attributeName = "attributeName";
     String attributeValue = "test attributeValue test";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
@@ -512,7 +512,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForCssAttributeToBeEqualForWebElementThrowsTimeoutExceptionWhenAttributeContainsNotEqual() {
+  void waitingForCssAttributeToBeEqualForWebElementThrowsTimeoutExceptionWhenAttributeContainsNotEqual() {
     String attributeName = "attributeName";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
@@ -522,7 +522,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForTextToBeEqualForElementLocatedReturnsTrueWhenTextIsEqualToSaidText() {
+  void waitingForTextToBeEqualForElementLocatedReturnsTrueWhenTextIsEqualToSaidText() {
     String testSelector = "testSelector";
     String testText = "test text";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
@@ -532,7 +532,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyCss() {
+  void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyCss() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("test1");
@@ -541,7 +541,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyHtml() {
+  void waitingForAttributeToBeNotEmptyForElementLocatedReturnsTrueWhenAttributeIsNotEmptyHtml() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn("test1");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
@@ -550,7 +550,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForTextToBeEqualForElementLocatedThrowsTimeoutExceptionWhenTextIsNotEqual() {
+  void waitingForTextToBeEqualForElementLocatedThrowsTimeoutExceptionWhenTextIsNotEqual() {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
     when(mockElement.getText()).thenReturn("");
@@ -560,7 +560,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAttributeToBeNotEmptyForElementLocatedThrowsTimeoutExceptionWhenAttributeIsEmpty() {
+  void waitingForAttributeToBeNotEmptyForElementLocatedThrowsTimeoutExceptionWhenAttributeIsEmpty() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
@@ -570,7 +570,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForOneOfExpectedConditionsToHavePositiveResultWhenAllFailed() {
+  void waitingForOneOfExpectedConditionsToHavePositiveResultWhenAllFailed() {
     String attributeName = "test";
     when(mockElement.getText()).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
@@ -582,7 +582,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitForOneOfExpectedConditionsToHavePositiveResultWhenFirstPositive() {
+  void waitForOneOfExpectedConditionsToHavePositiveResultWhenFirstPositive() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
@@ -593,7 +593,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitForOneOfExpectedConditionsToHavePositiveResultWhenAllPositive() {
+  void waitForOneOfExpectedConditionsToHavePositiveResultWhenAllPositive() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
@@ -604,7 +604,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitForOneOfExpectedConditionsToHavePositiveResultWhenSecondPositive() {
+  void waitForOneOfExpectedConditionsToHavePositiveResultWhenSecondPositive() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
@@ -615,7 +615,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitForOneOfExpectedConditionsToHavePositiveResultWhenOneThrows() {
+  void waitForOneOfExpectedConditionsToHavePositiveResultWhenOneThrows() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenReturn(attributeName);
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
@@ -626,7 +626,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitForOneOfExpectedConditionsToHavePositiveResultWhenAllThrow() {
+  void waitForOneOfExpectedConditionsToHavePositiveResultWhenAllThrow() {
     String attributeName = "test";
     when(mockElement.getAttribute(attributeName)).thenThrow(new NoSuchElementException(""));
     when(mockElement.getCssValue(attributeName)).thenThrow(new NoSuchElementException(""));
@@ -639,7 +639,7 @@ public class ExpectedConditionsTest {
 
 
   @Test
-  public void waitingForAllExpectedConditionsToHavePositiveResultWhenAllFailed() {
+  void waitingForAllExpectedConditionsToHavePositiveResultWhenAllFailed() {
     String attributeName = "test";
     when(mockElement.getText()).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn("");
@@ -651,7 +651,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAllExpectedConditionsToHavePositiveResultWhenFirstFailed() {
+  void waitingForAllExpectedConditionsToHavePositiveResultWhenFirstFailed() {
     String attributeName = "test";
     when(mockElement.getText()).thenReturn("");
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
@@ -662,7 +662,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAllExpectedConditionsToHavePositiveResultWhenSecondFailed() {
+  void waitingForAllExpectedConditionsToHavePositiveResultWhenSecondFailed() {
     String attributeName = "test";
     when(mockElement.getText()).thenReturn(attributeName);
     when(mockElement.getCssValue(attributeName)).thenReturn("");
@@ -673,7 +673,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAllExpectedConditionsToHavePositiveResultWhenAllPositive() {
+  void waitingForAllExpectedConditionsToHavePositiveResultWhenAllPositive() {
     String attributeName = "test";
     when(mockElement.getText()).thenReturn(attributeName);
     when(mockElement.getCssValue(attributeName)).thenReturn(attributeName);
@@ -683,7 +683,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForTextMatchingPatternWhenTextExists() {
+  void waitingForTextMatchingPatternWhenTextExists() {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
     when(mockElement.getText()).thenReturn("123");
@@ -691,7 +691,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForTextMatchingPatternWhenTextDoesntExist() {
+  void waitingForTextMatchingPatternWhenTextDoesntExist() {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
     when(mockElement.getText()).thenReturn("test");
@@ -700,7 +700,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForSpecificNumberOfElementsMoreThanSpecifiedWhenNumberIsEqual() {
+  void waitingForSpecificNumberOfElementsMoreThanSpecifiedWhenNumberIsEqual() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector))).thenReturn(singletonList(mockElement));
     assertThatExceptionOfType(TimeoutException.class)
@@ -708,7 +708,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForSpecificNumberOfElementsMoreThanSpecifiedPositive() {
+  void waitingForSpecificNumberOfElementsMoreThanSpecifiedPositive() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement, mockElement));
@@ -717,7 +717,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForSpecificNumberOfElementsLessThanSpecifiedWhenNumberIsEqual() {
+  void waitingForSpecificNumberOfElementsLessThanSpecifiedWhenNumberIsEqual() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement, mockElement));
@@ -726,7 +726,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForSpecificNumberOfElementsLessThanSpecifiedPositive() {
+  void waitingForSpecificNumberOfElementsLessThanSpecifiedPositive() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(singletonList(mockElement));
@@ -735,7 +735,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForSpecificNumberOfElementsPositive() {
+  void waitingForSpecificNumberOfElementsPositive() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(Arrays.asList(mockElement, mockElement));
@@ -744,7 +744,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForSpecificNumberOfElementsWhenNumberIsLess() {
+  void waitingForSpecificNumberOfElementsWhenNumberIsLess() {
     String testSelector = "testSelector";
     when(mockDriver.findElements(By.cssSelector(testSelector)))
       .thenReturn(singletonList(mockElement));
@@ -753,7 +753,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForVisibilityOfNestedElementWhenElementIsVisible() {
+  void waitingForVisibilityOfNestedElementWhenElementIsVisible() {
     String testSelector = "testSelector";
     when(mockElement.findElements(By.cssSelector(testSelector)))
         .thenReturn(singletonList(mockNestedElement));
@@ -763,14 +763,14 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForPresenceOfNestedElementWhenElementPresents() {
+  void waitingForPresenceOfNestedElementWhenElementPresents() {
     String testSelector = "testSelector";
     when(mockElement.findElement(By.cssSelector(testSelector))).thenReturn(mockNestedElement);
     wait.until(presenceOfNestedElementLocatedBy(mockElement, By.cssSelector(testSelector)));
   }
 
   @Test
-  public void waitingForVisibilityOfNestedElementByLocatorWhenElementIsVisible() {
+  void waitingForVisibilityOfNestedElementByLocatorWhenElementIsVisible() {
     String testSelector = "testSelector";
     String testNestedSelector = "testNestedSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
@@ -785,7 +785,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForPresenceOfNestedElementByLocatorWhenElementPresents() {
+  void waitingForPresenceOfNestedElementByLocatorWhenElementPresents() {
     String testSelector = "testSelector";
     String testNestedSelector = "testNestedSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
@@ -795,7 +795,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForPresenceOfNestedElementsWhenElementsPresent() {
+  void waitingForPresenceOfNestedElementsWhenElementsPresent() {
     By parent = By.cssSelector("parent");
     By child = By.cssSelector("child");
 
@@ -809,27 +809,27 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForAllElementsInvisibility() {
+  void waitingForAllElementsInvisibility() {
     when(mockElement.isDisplayed()).thenReturn(false);
     assertThat(wait.until(invisibilityOfAllElements(singletonList(mockElement)))).isTrue();
   }
 
   @Test
-  public void waitingForAllElementsInvisibilityWhenElementsAreVisible() {
+  void waitingForAllElementsInvisibilityWhenElementsAreVisible() {
     when(mockElement.isDisplayed()).thenReturn(true);
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(() -> wait.until(invisibilityOfAllElements(singletonList(mockElement))));
   }
 
   @Test
-  public void waitingForElementInvisibilityWhenElementIsVisible() {
+  void waitingForElementInvisibilityWhenElementIsVisible() {
     when(mockElement.isDisplayed()).thenReturn(true);
     assertThatExceptionOfType(TimeoutException.class)
         .isThrownBy(() -> wait.until(invisibilityOf(mockElement)));
   }
 
   @Test
-  public void waitingForTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenTextNotPresent() {
+  void waitingForTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenTextNotPresent() {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
     when(mockElement.getText()).thenReturn("testText");
@@ -839,7 +839,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingForTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenElementIsStale() {
+  void waitingForTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenElementIsStale() {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenReturn(mockElement);
     when(mockElement.getText()).thenThrow(new StaleElementReferenceException("Stale element"));
@@ -849,7 +849,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenNoElementFound() {
+  void waitingTextToBePresentInElementLocatedThrowsTimeoutExceptionWhenNoElementFound() {
     String testSelector = "testSelector";
     when(mockDriver.findElement(By.cssSelector(testSelector))).thenThrow(
       new NoSuchElementException("Element not found"));
@@ -859,21 +859,21 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingElementSelectionStateToBeTrueReturnsTrue() {
+  void waitingElementSelectionStateToBeTrueReturnsTrue() {
     when(mockElement.isSelected()).thenReturn(true);
 
     assertThat(wait.until(elementSelectionStateToBe(mockElement, true))).isTrue();
   }
 
   @Test
-  public void waitingElementSelectionStateToBeFalseReturnsTrue() {
+  void waitingElementSelectionStateToBeFalseReturnsTrue() {
     when(mockElement.isSelected()).thenReturn(false);
 
     assertThat(wait.until(elementSelectionStateToBe(mockElement, false))).isTrue();
   }
 
   @Test
-  public void waitingElementSelectionStateToBeThrowsTimeoutExceptionWhenStateDontMatch() {
+  void waitingElementSelectionStateToBeThrowsTimeoutExceptionWhenStateDontMatch() {
     when(mockClock.instant()).thenReturn(Instant.now(), Instant.now().plusMillis(2000));
     when(mockElement.isSelected()).thenReturn(true);
 
@@ -882,7 +882,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingElementSelectionStateToBeThrowsStaleExceptionWhenElementIsStale() {
+  void waitingElementSelectionStateToBeThrowsStaleExceptionWhenElementIsStale() {
     when(mockElement.isSelected()).thenThrow(new StaleElementReferenceException("Stale element"));
 
     assertThatExceptionOfType(StaleElementReferenceException.class)
@@ -890,7 +890,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingNumberOfWindowsToBeTwoWhenThereAreTwoWindowsOpen() {
+  void waitingNumberOfWindowsToBeTwoWhenThereAreTwoWindowsOpen() {
     Set<String> twoWindowHandles = Sets.newHashSet("w1", "w2");
     when(mockDriver.getWindowHandles()).thenReturn(twoWindowHandles);
 
@@ -898,7 +898,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingNumberOfWindowsToBeTwoThrowsTimeoutExceptionWhenThereAreThreeWindowsOpen() {
+  void waitingNumberOfWindowsToBeTwoThrowsTimeoutExceptionWhenThereAreThreeWindowsOpen() {
     Set<String> threeWindowHandles = Sets.newHashSet("w1", "w2", "w3");
     when(mockDriver.getWindowHandles()).thenReturn(threeWindowHandles);
 
@@ -907,7 +907,7 @@ public class ExpectedConditionsTest {
   }
 
   @Test
-  public void waitingNumberOfWindowsToBeThrowsTimeoutExceptionWhenGetWindowHandlesThrowsWebDriverException() {
+  void waitingNumberOfWindowsToBeThrowsTimeoutExceptionWhenGetWindowHandlesThrowsWebDriverException() {
     when(mockDriver.getWindowHandles()).thenThrow(WebDriverException.class);
 
     assertThatExceptionOfType(TimeoutException.class)

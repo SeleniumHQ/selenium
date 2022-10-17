@@ -35,7 +35,7 @@ import static org.mockito.Mockito.mock;
  * @author rchatley (Robert Chatley)
  */
 @SuppressWarnings("unchecked")
-public class HamcrestWebdriverTestCaseTest {
+class HamcrestWebdriverTestCaseTest {
 
   final String text = "abcde";
   final String url = "http://www.example.com";
@@ -53,7 +53,7 @@ public class HamcrestWebdriverTestCaseTest {
   }
 
   @Test
-  public void delegatesAllCallsToItsTestContext() {
+  void delegatesAllCallsToItsTestContext() {
 
     final TestContext testContext = mock(TestContext.class);
     testcase.setContext(testContext);
@@ -74,7 +74,7 @@ public class HamcrestWebdriverTestCaseTest {
   }
 
   @Test
-  public void providesSyntacticSugarMethodNamedInto() {
+  void providesSyntacticSugarMethodNamedInto() {
     Finder<WebElement, WebDriver> result = testcase.into(something);
     assertThat(result).isEqualTo(something);
   }

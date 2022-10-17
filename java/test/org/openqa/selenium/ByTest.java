@@ -41,10 +41,10 @@ import static org.openqa.selenium.By.ByXPath;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 @Tag("UnitTests")
-public class ByTest {
+class ByTest {
 
   @Test
-  public void shouldUseFindsByNameToLocateElementsByName() {
+  void shouldUseFindsByNameToLocateElementsByName() {
     final SearchContext driver = mock(SearchContext.class);
 
     By.cssSelector("cheese").findElement(driver);
@@ -56,7 +56,7 @@ public class ByTest {
   }
 
   @Test
-  public void shouldUseXpathLocateElementsByXpath() {
+  void shouldUseXpathLocateElementsByXpath() {
     SearchContext driver = mock(SearchContext.class);
 
     By.xpath(".//*[@name = 'cheese']").findElement(driver);
@@ -68,7 +68,7 @@ public class ByTest {
   }
 
   @Test
-  public void searchesByTagNameIfSupported() {
+  void searchesByTagNameIfSupported() {
     SearchContext context = mock(SearchContext.class);
 
     By.tagName("foo").findElement(context);
@@ -80,7 +80,7 @@ public class ByTest {
   }
 
   @Test
-  public void innerClassesArePublicSoThatTheyCanBeReusedElsewhere() {
+  void innerClassesArePublicSoThatTheyCanBeReusedElsewhere() {
     assertThat(new ByXPath("a")).hasToString("By.xpath: a");
     assertThat(new ById("a")).hasToString("By.id: a");
     assertThat(new ByClassName("a")).hasToString("By.className: a");
@@ -93,7 +93,7 @@ public class ByTest {
 
   // See https://github.com/SeleniumHQ/selenium-google-code-issue-archive/issues/2917
   @Test
-  public void testHashCodeDoesNotFallIntoEndlessRecursion() {
+  void testHashCodeDoesNotFallIntoEndlessRecursion() {
     By locator = new By() {
       @Override
       public List<WebElement> findElements(SearchContext context) {
@@ -104,13 +104,13 @@ public class ByTest {
   }
 
   @Test
-  public void ensureMultipleClassNamesAreNotAccepted() {
+  void ensureMultipleClassNamesAreNotAccepted() {
     assertThatExceptionOfType(InvalidSelectorException.class)
       .isThrownBy(() -> By.className("one two"));
   }
 
   @Test
-  public void ensureIdIsSerializedProperly() {
+  void ensureIdIsSerializedProperly() {
     // Although it's not legal, make sure we handle the case where people use spaces.
     By by = By.id("one two");
 

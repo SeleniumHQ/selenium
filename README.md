@@ -122,7 +122,7 @@ bazel test //java/... --test_size_filters=small,medium,large --test_tag_filters=
 ```
 
 The `test_size_filters` argument takes small, medium, large. Small are akin to unit tests,
-medium is akin to integration tests, and large is akin to end to end tests.
+medium is akin to integration tests, and large is akin to end-to-end tests.
 
 The `test_tag_filters` allow us to pass in browser names and a few different tags that we can
 find in the code base.

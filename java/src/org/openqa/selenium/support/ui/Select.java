@@ -45,8 +45,12 @@ public class Select implements ISelect, WrapsElement {
   public Select(WebElement element) {
     String tagName = element.getTagName();
 
-    if (null == tagName || !"select".equals(tagName.toLowerCase())) {
+    if (!"select".equalsIgnoreCase(tagName)) {
       throw new UnexpectedTagNameException("select", tagName);
+    }
+
+    if (!element.isEnabled()) {
+      throw new UnsupportedOperationException("Select element is disabled and may not be used.");
     }
 
     this.element = element;
@@ -109,8 +113,6 @@ public class Select implements ISelect, WrapsElement {
    */
   @Override
   public void selectByVisibleText(String text) {
-    assertSelectIsEnabled();
-
     // try to find the option via XPATH ...
     List<WebElement> options =
       element.findElements(By.xpath(".//option[normalize-space(.) = " + Quotes.escape(text) + "]"));
@@ -175,7 +177,6 @@ public class Select implements ISelect, WrapsElement {
    */
   @Override
   public void selectByIndex(int index) {
-    assertSelectIsEnabled();
     setSelectedByIndex(index, true);
   }
 
@@ -190,7 +191,6 @@ public class Select implements ISelect, WrapsElement {
    */
   @Override
   public void selectByValue(String value) {
-    assertSelectIsEnabled();
     for (WebElement option : findOptionsByValue(value)) {
       setSelected(option, true);
       if (!isMultiple()) {
@@ -324,12 +324,6 @@ public class Select implements ISelect, WrapsElement {
   private void assertOptionIsEnabled(WebElement option, boolean select) {
     if (select && !option.isEnabled()) {
       throw new UnsupportedOperationException("You may not select a disabled option");
-    }
-  }
-
-  private void assertSelectIsEnabled() {
-    if (!element.isEnabled()) {
-      throw new UnsupportedOperationException("You may not select an option in disabled select");
     }
   }
 

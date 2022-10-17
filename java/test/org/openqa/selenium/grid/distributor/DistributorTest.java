@@ -99,7 +99,7 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-public class DistributorTest {
+class DistributorTest {
 
   private static final Logger LOG = Logger.getLogger("Distributor Test");
   private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
@@ -149,7 +149,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void creatingANewSessionWithoutANodeEndsInFailure() {
+  void creatingANewSessionWithoutANodeEndsInFailure() {
     local = new LocalDistributor(
       tracer,
       bus,
@@ -167,7 +167,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldStartHeartBeatOnNodeStart() {
+  void shouldStartHeartBeatOnNodeStart() {
     EventBus bus = new GuavaEventBus();
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
@@ -199,7 +199,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToAddANodeAndCreateASession() {
+  void shouldBeAbleToAddANodeAndCreateASession() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -241,7 +241,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void creatingASessionAddsItToTheSessionMap() {
+  void creatingASessionAddsItToTheSessionMap() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -285,7 +285,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToRemoveANode() throws MalformedURLException {
+  void shouldBeAbleToRemoveANode() throws MalformedURLException {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -326,7 +326,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void testDrainingNodeDoesNotAcceptNewSessions() {
+  void testDrainingNodeDoesNotAcceptNewSessions() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -362,7 +362,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void testDrainedNodeShutsDownOnceEmpty() throws InterruptedException {
+  void testDrainedNodeShutsDownOnceEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -398,7 +398,7 @@ public class DistributorTest {
 
     latch.await(5, TimeUnit.SECONDS);
 
-    assertThat(latch.getCount()).isEqualTo(0);
+    assertThat(latch.getCount()).isZero();
 
     assertThat(distributor.getStatus().getNodes()).isEmpty();
 
@@ -408,7 +408,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void drainedNodeDoesNotShutDownIfNotEmpty() throws InterruptedException {
+  void drainedNodeDoesNotShutDownIfNotEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -454,7 +454,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void drainedNodeShutsDownAfterSessionsFinish() throws InterruptedException {
+  void drainedNodeShutsDownAfterSessionsFinish() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -506,12 +506,12 @@ public class DistributorTest {
 
     waitTillNodesAreRemoved(distributor);
 
-    assertThat(latch.getCount()).isEqualTo(0);
+    assertThat(latch.getCount()).isZero();
     assertThat(distributor.getStatus().getNodes()).isEmpty();
   }
 
   @Test
-  public void registeringTheSameNodeMultipleTimesOnlyCountsTheFirstTime() {
+  void registeringTheSameNodeMultipleTimesOnlyCountsTheFirstTime() {
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -540,7 +540,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void theMostLightlyLoadedNodeIsSelectedFirst() {
+  void theMostLightlyLoadedNodeIsSelectedFirst() {
     // Create enough hosts so that we avoid the scheduler returning hosts in:
     // * insertion order
     // * reverse insertion order
@@ -593,7 +593,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldUseLastSessionCreatedTimeAsTieBreaker() {
+  void shouldUseLastSessionCreatedTimeAsTieBreaker() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -670,7 +670,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldIncludeHostsThatAreUpInHostList() {
+  void shouldIncludeHostsThatAreUpInHostList() {
     CombinedHandler handler = new CombinedHandler();
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -730,7 +730,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
+  void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -770,7 +770,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldReleaseSlotOnceSessionEnds() {
+  void shouldReleaseSlotOnceSessionEnds() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -828,7 +828,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldNotStartASessionIfTheCapabilitiesAreNotSupported() {
+  void shouldNotStartASessionIfTheCapabilitiesAreNotSupported() {
     CombinedHandler handler = new CombinedHandler();
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -866,7 +866,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
+  void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
@@ -904,7 +904,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldReturnNodesThatWereDownToPoolOfNodesOnceTheyMarkTheirHealthCheckPasses() {
+  void shouldReturnNodesThatWereDownToPoolOfNodesOnceTheyMarkTheirHealthCheckPasses() {
     CombinedHandler handler = new CombinedHandler();
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -959,7 +959,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldNotRemoveNodeWhoseHealthCheckPassesBeforeThreshold()
+  void shouldNotRemoveNodeWhoseHealthCheckPassesBeforeThreshold()
     throws InterruptedException {
     CombinedHandler handler = new CombinedHandler();
 
@@ -1035,7 +1035,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldPrioritizeHostsWithTheMostSlotsAvailableForASessionType() {
+  void shouldPrioritizeHostsWithTheMostSlotsAvailableForASessionType() {
     // Consider the case where you have 1 Windows machine and 5 linux machines. All of these hosts
     // can run Chrome and Firefox sessions, but only one can run Edge sessions. Ideally, the machine
     // able to run Edge would be sorted last.
@@ -1149,7 +1149,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldFallbackToSecondAvailableCapabilitiesIfFirstNotAvailable() {
+  void shouldFallbackToSecondAvailableCapabilitiesIfFirstNotAvailable() {
     CombinedHandler handler = new CombinedHandler();
 
     Node firstNode = createNode(new ImmutableCapabilities("browserName", "not cheese"), 1, 1);
@@ -1196,7 +1196,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldFallbackToSecondAvailableCapabilitiesIfFirstThrowsOnCreation() {
+  void shouldFallbackToSecondAvailableCapabilitiesIfFirstThrowsOnCreation() {
     CombinedHandler handler = new CombinedHandler();
     Node brokenNode = createBrokenNode(new ImmutableCapabilities("browserName", "not cheese"));
     Node node = createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0);

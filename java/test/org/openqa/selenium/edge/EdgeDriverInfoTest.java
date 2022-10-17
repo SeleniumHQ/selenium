@@ -31,28 +31,28 @@ import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 @Tag("UnitTests")
-public class EdgeDriverInfoTest {
+class EdgeDriverInfoTest {
 
   @Test
-  public void canonicalCapabilitiesContainProperBrowserName() {
+  void canonicalCapabilitiesContainProperBrowserName() {
     Capabilities caps = new EdgeDriverInfo().getCanonicalCapabilities();
     assertThat(caps.getBrowserName()).isEqualTo(EDGE.browserName());
   }
 
   @Test
-  public void isSupportingCapabilitiesWithProperBrowserNameOnly() {
+  void isSupportingCapabilitiesWithProperBrowserNameOnly() {
     assertThat(new EdgeDriverInfo()).is(supporting(
         new ImmutableCapabilities(CapabilityType.BROWSER_NAME, EDGE.browserName())));
   }
 
   @Test
-  public void isNotSupportingFirefox() {
+  void isNotSupportingFirefox() {
     assertThat(new EdgeDriverInfo()).isNot(supporting(
         new ImmutableCapabilities(CapabilityType.BROWSER_NAME, FIREFOX.browserName())));
   }
 
   @Test
-  public void canDetectBrowserByVendorSpecificCapability() {
+  void canDetectBrowserByVendorSpecificCapability() {
     assertThat(new EdgeDriverInfo()).is(supporting(
         new ImmutableCapabilities(EdgeOptions.CAPABILITY, Collections.emptyMap())));
     assertThat(new EdgeDriverInfo()).is(supporting(

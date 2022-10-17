@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 @Tag("UnitTests")
-public class CdpVersionFinderTest {
+class CdpVersionFinderTest {
 
   private Map<String, Object> chrome85;
   private Map<String, Object> edge84;
@@ -62,7 +62,7 @@ public class CdpVersionFinderTest {
   }
 
   @Test
-  public void shouldReturnAnExactMatchIfFound() {
+  void shouldReturnAnExactMatchIfFound() {
     CdpInfo v84 = new CdpInfo(84, dt -> null){};
     CdpInfo v85 = new CdpInfo(85, dt -> null){};
 
@@ -76,7 +76,7 @@ public class CdpVersionFinderTest {
   }
 
   @Test
-  public void shouldReturnThePreviousLowestMatchIfNoExactMatchFoundWithinFuzzFactor() {
+  void shouldReturnThePreviousLowestMatchIfNoExactMatchFoundWithinFuzzFactor() {
     CdpInfo v84 = new CdpInfo(84, dt -> null){};
 
     CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v84));
@@ -86,7 +86,7 @@ public class CdpVersionFinderTest {
   }
 
   @Test
-  public void shouldReturnEmptyIfNothingIsFoundThatMatches() {
+  void shouldReturnEmptyIfNothingIsFoundThatMatches() {
     CdpInfo v90 = new CdpInfo(90, dt -> null){};
 
     CdpVersionFinder finder = new CdpVersionFinder(5, ImmutableList.of(v90));
@@ -96,7 +96,7 @@ public class CdpVersionFinderTest {
   }
 
   @Test
-  public void canUseBrowserVersionIfNecessary() {
+  void canUseBrowserVersionIfNecessary() {
     String chromeVersion = "85.0.4183.69";
     String edgeVersion = "84.0.522.59";
 

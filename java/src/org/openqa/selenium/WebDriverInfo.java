@@ -56,6 +56,11 @@ public interface WebDriverInfo {
   boolean isSupportingCdp();
 
   /**
+   * @return Whether the driver has enabled the CDP interface.
+   */
+  boolean isSupportingBiDi();
+
+  /**
    * Often, a {@link WebDriver} instance needs one or more supporting files or executables to be
    * present (such as a vendor-provided executable which speaks the WebDriver Protocol). This means
    * that even though the driver classes might be present in Java, it would make no sense to attempt

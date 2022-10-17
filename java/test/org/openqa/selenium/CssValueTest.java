@@ -23,10 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-public class CssValueTest extends JupiterTestBase {
+class CssValueTest extends JupiterTestBase {
 
   @Test
-  public void testShouldPickUpStyleOfAnElement() {
+  void testShouldPickUpStyleOfAnElement() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("green-parent"));
@@ -41,7 +41,7 @@ public class CssValueTest extends JupiterTestBase {
   }
 
   @Test
-  public void testGetCssValueShouldReturnStandardizedColour() {
+  void testGetCssValueShouldReturnStandardizedColour() {
     driver.get(pages.colorPage);
 
     WebElement element = driver.findElement(By.id("namedColor"));
@@ -54,7 +54,7 @@ public class CssValueTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldAllowInheritedStylesToBeUsed() {
+  void testShouldAllowInheritedStylesToBeUsed() {
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("green-item"));

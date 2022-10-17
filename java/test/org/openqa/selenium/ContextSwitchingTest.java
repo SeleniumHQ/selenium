@@ -24,7 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-public class ContextSwitchingTest extends JupiterTestBase {
+class ContextSwitchingTest extends JupiterTestBase {
 
   @BeforeEach
   public void assumeBrowserIsContextAware() {
@@ -32,19 +32,19 @@ public class ContextSwitchingTest extends JupiterTestBase {
   }
 
   @Test
-  public void testShouldNotBeAbleToSwitchContext() {
+  void testShouldNotBeAbleToSwitchContext() {
     assertThatExceptionOfType(UnsupportedCommandException.class)
         .isThrownBy(() -> ((ContextAware) driver.switchTo()).context("WEBVIEW"));
   }
 
   @Test
-  public void testShouldNotBeAbleToGetContextHandle() {
+  void testShouldNotBeAbleToGetContextHandle() {
     assertThatExceptionOfType(UnsupportedCommandException.class)
         .isThrownBy(() -> ((ContextAware) driver.switchTo()).getContext());
   }
 
   @Test
-  public void testShouldNotBeAbleToGetContextHandles() {
+  void testShouldNotBeAbleToGetContextHandles() {
     assertThatExceptionOfType(UnsupportedCommandException.class)
         .isThrownBy(() -> ((ContextAware) driver.switchTo()).getContextHandles());
   }

@@ -50,6 +50,7 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
   Optional<Consumer<Message>>> {
 
   private static final UrlTemplate CDP_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/cdp");
+  private static final UrlTemplate BIDI_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/bidi");
   private static final UrlTemplate FWD_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/fwd");
   private static final UrlTemplate VNC_TEMPLATE = new UrlTemplate("/session/{sessionId}/se/vnc");
   private static final Logger LOG = Logger.getLogger(ProxyNodeWebsockets.class.getName());
@@ -70,13 +71,14 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
   public Optional<Consumer<Message>> apply(String uri, Consumer<Message> downstream) {
     UrlTemplate.Match fwdMatch = FWD_TEMPLATE.match(uri);
     UrlTemplate.Match cdpMatch = CDP_TEMPLATE.match(uri);
+    UrlTemplate.Match bidiMatch = BIDI_TEMPLATE.match(uri);
     UrlTemplate.Match vncMatch = VNC_TEMPLATE.match(uri);
 
     if (cdpMatch == null && vncMatch == null && fwdMatch == null) {
       return Optional.empty();
     }
 
-    String sessionId = Stream.of(fwdMatch, cdpMatch, vncMatch)
+    String sessionId = Stream.of(fwdMatch, cdpMatch, bidiMatch, vncMatch)
       .filter(Objects::nonNull)
       .findFirst()
       .get()
@@ -94,6 +96,10 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
     Session session = node.getSession(id);
     Capabilities caps = session.getCapabilities();
     LOG.fine("Scanning for endpoint: " + caps);
+
+    if (bidiMatch != null) {
+      return findBiDiEndpoint(downstream, caps);
+    }
 
     if (vncMatch != null) {
       return findVncEndpoint(downstream, caps);
@@ -123,6 +129,16 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
       }
     }
     return Optional.empty();
+  }
+
+  private Optional<Consumer<Message>> findBiDiEndpoint(Consumer<Message> downstream, Capabilities caps) {
+    try {
+      URI uri = new URI(String.valueOf(caps.getCapability("webSocketUrl")));
+      return Optional.of(uri).map(bidi -> createWsEndPoint(bidi, downstream));
+    } catch (URISyntaxException e) {
+      LOG.warning("Unable to create URI from: " + caps.getCapability(""));
+      return Optional.empty();
+    }
   }
 
   private Optional<Consumer<Message>> findForwardCdpEndpoint(Consumer<Message> downstream,

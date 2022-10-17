@@ -165,6 +165,7 @@ def test_should_return_value_of_class_attribute_of_an_element(driver, pages):
     classname = heading.get_attribute("class")
     assert "header" == classname
 
+
 # Disabled due to issues with Frames
 # def test_should_return_value_of_class_attribute_of_an_element_after_switching_iframe(driver, pages):
 #    pages.load("iframes.html")
@@ -275,7 +276,7 @@ def test_should_return_true_for_present_boolean_attributes(driver, pages):
 def test_should_get_unicode_chars_from_attribute(driver, pages):
     pages.load("formPage.html")
     title = driver.find_element(By.ID, "vsearchGadget").get_attribute("title")
-    assert 'Hvad s\xf8ger du?' == title
+    assert "Hvad s\xf8ger du?" == title
 
 
 @pytest.mark.xfail_chrome

@@ -26,13 +26,13 @@ def options():
 
 
 def test_add_arguments(options):
-    options.add_argument('foo')
-    assert 'foo' in options._arguments
+    options.add_argument("foo")
+    assert "foo" in options._arguments
 
 
 def test_get_arguments(options):
-    options._arguments = ['foo']
-    assert 'foo' in options.arguments
+    options._arguments = ["foo"]
+    assert "foo" in options.arguments
 
 
 def test_enables_mobile(options):
@@ -48,15 +48,12 @@ def test_enable_mobile_errors_without_package(options):
 
 
 def test_enable_mobile_with_activity(options):
-    options.enable_mobile(android_package="sausages",
-                          android_activity="eating")
+    options.enable_mobile(android_package="sausages", android_activity="eating")
     assert options.mobile_options["androidActivity"] == "eating"
 
 
 def test_enable_mobile_with_device_serial(options):
-    options.enable_mobile(android_package="cheese",
-                          android_activity="crackers",
-                          device_serial="1234")
+    options.enable_mobile(android_package="cheese", android_activity="crackers", device_serial="1234")
     options.mobile_options["androidDeviceSerial"] == "1234"
 
 

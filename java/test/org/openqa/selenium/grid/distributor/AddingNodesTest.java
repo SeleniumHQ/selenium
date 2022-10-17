@@ -80,7 +80,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-public class AddingNodesTest {
+class AddingNodesTest {
 
   private static final Capabilities CAPS = new ImmutableCapabilities("cheese", "gouda");
   private static final Secret registrationSecret = new Secret("caerphilly");
@@ -119,7 +119,7 @@ public class AddingNodesTest {
   }
 
   @Test
-  public void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
+  void shouldBeAbleToRegisterALocalNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = LocalNode
       .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
@@ -153,7 +153,7 @@ public class AddingNodesTest {
   }
 
   @Test
-  public void shouldBeAbleToRegisterACustomNode() throws URISyntaxException {
+  void shouldBeAbleToRegisterACustomNode() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = new CustomNode(
         bus,
@@ -186,7 +186,7 @@ public class AddingNodesTest {
   }
 
   @Test
-  public void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
+  void shouldBeAbleToRegisterNodesByListeningForEvents() throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = LocalNode
       .builder(tracer, bus, externalUrl.toURI(), externalUrl.toURI(), registrationSecret)
@@ -220,7 +220,7 @@ public class AddingNodesTest {
   }
 
   @Test
-  public void shouldKeepOnlyOneNodeWhenTwoRegistrationsHaveTheSameUriByListeningForEvents()
+  void shouldKeepOnlyOneNodeWhenTwoRegistrationsHaveTheSameUriByListeningForEvents()
     throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node firstNode = LocalNode
@@ -266,7 +266,7 @@ public class AddingNodesTest {
   }
 
   @Test
-  public void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
+  void distributorShouldUpdateStateOfExistingNodeWhenNodePublishesStateChange()
       throws URISyntaxException {
     URI sessionUri = new URI("http://example:1234");
     Node node = LocalNode

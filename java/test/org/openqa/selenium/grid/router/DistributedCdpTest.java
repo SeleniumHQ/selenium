@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class DistributedCdpTest {
+class DistributedCdpTest {
 
   @BeforeAll
   public static void ensureBrowserIsCdpEnabled() {
@@ -59,7 +59,7 @@ public class DistributedCdpTest {
   }
 
   @Test
-  public void ensureBasicFunctionality() {
+  void ensureBasicFunctionality() {
     Browser browser = Browser.detect();
 
     Deployment deployment = DeploymentTypes.DISTRIBUTED.start(

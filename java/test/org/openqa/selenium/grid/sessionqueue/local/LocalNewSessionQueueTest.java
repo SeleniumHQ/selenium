@@ -51,6 +51,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +84,7 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
 @Timeout(60)
-public class LocalNewSessionQueueTest {
+class LocalNewSessionQueueTest {
 
   private static final Json JSON = new Json();
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
@@ -163,7 +164,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToAddToQueueAndGetValidResponse(Supplier<TestData> supplier) {
+  void shouldBeAbleToAddToQueueAndGetValidResponse(Supplier<TestData> supplier) {
     setup(supplier);
 
     AtomicBoolean isPresent = new AtomicBoolean(false);
@@ -196,12 +197,12 @@ public class LocalNewSessionQueueTest {
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
 
     assertThat(isPresent.get()).isTrue();
-    assertEquals(httpResponse.getStatus(), HTTP_OK);
+    assertEquals(HTTP_OK, httpResponse.getStatus());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToAddToQueueAndGetErrorResponse(Supplier<TestData> supplier) {
+  void shouldBeAbleToAddToQueueAndGetErrorResponse(Supplier<TestData> supplier) {
     setup(supplier);
 
     new Thread(() -> {
@@ -212,12 +213,12 @@ public class LocalNewSessionQueueTest {
 
     HttpResponse httpResponse = queue.addToQueue(sessionRequest);
 
-    assertEquals(httpResponse.getStatus(), HTTP_INTERNAL_ERROR);
+    assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToRemoveFromQueue(Supplier<TestData> supplier) {
+  void shouldBeAbleToRemoveFromQueue(Supplier<TestData> supplier) {
     setup(supplier);
 
     Optional<SessionRequest> httpRequest = queue.remove(new RequestId(UUID.randomUUID()));
@@ -227,7 +228,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeClearQueue(Supplier<TestData> supplier) {
+  void shouldBeClearQueue(Supplier<TestData> supplier) {
     setup(supplier);
 
     RequestId requestId = new RequestId(UUID.randomUUID());
@@ -235,13 +236,13 @@ public class LocalNewSessionQueueTest {
 
     int count = queue.clearQueue();
 
-    assertEquals(count, 1);
+    assertEquals(1, count);
     assertFalse(queue.remove(requestId).isPresent());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToGetQueueContents(Supplier<TestData> supplier) {
+  void shouldBeAbleToGetQueueContents(Supplier<TestData> supplier) {
     setup(supplier);
 
     localQueue.injectIntoQueue(sessionRequest);
@@ -258,7 +259,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void queueCountShouldBeReturnedWhenQueueIsCleared(Supplier<TestData> supplier) {
+  void queueCountShouldBeReturnedWhenQueueIsCleared(Supplier<TestData> supplier) {
     setup(supplier);
 
     RequestId requestId = sessionRequest.getRequestId();
@@ -269,13 +270,13 @@ public class LocalNewSessionQueueTest {
 
     int count = queue.clearQueue();
 
-    assertEquals(count, 1);
+    assertEquals(1, count);
     assertFalse(queue.remove(requestId).isPresent());
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void removingARequestIdThatDoesNotExistInTheQueueShouldNotBeAnError(Supplier<TestData> supplier) {
+  void removingARequestIdThatDoesNotExistInTheQueueShouldNotBeAnError(Supplier<TestData> supplier) {
     setup(supplier);
 
     localQueue.injectIntoQueue(sessionRequest);
@@ -286,7 +287,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToAddAgainToQueue(Supplier<TestData> supplier) {
+  void shouldBeAbleToAddAgainToQueue(Supplier<TestData> supplier) {
     setup(supplier);
 
     localQueue.injectIntoQueue(sessionRequest);
@@ -300,7 +301,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToRetryRequest(Supplier<TestData> supplier) {
+  void shouldBeAbleToRetryRequest(Supplier<TestData> supplier) {
     setup(supplier);
 
     AtomicBoolean isPresent = new AtomicBoolean(false);
@@ -358,13 +359,13 @@ public class LocalNewSessionQueueTest {
 
     assertThat(isPresent.get()).isTrue();
     assertThat(retrySuccess.get()).isTrue();
-    assertEquals(httpResponse.getStatus(), HTTP_OK);
+    assertEquals(HTTP_OK, httpResponse.getStatus());
   }
 
   @ParameterizedTest
   @MethodSource("data")
   @Timeout(5)
-  public void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime(Supplier<TestData> supplier) {
+  void shouldBeAbleToHandleMultipleSessionRequestsAtTheSameTime(Supplier<TestData> supplier) {
     setup(supplier);
 
     AtomicBoolean processQueue = new AtomicBoolean(true);
@@ -425,8 +426,8 @@ public class LocalNewSessionQueueTest {
       String firstResponseContents = Contents.string(firstResponse);
       String secondResponseContents = Contents.string(secondResponse);
 
-      assertEquals(firstResponse.getStatus(), HTTP_OK);
-      assertEquals(secondResponse.getStatus(), HTTP_OK);
+      assertEquals(HTTP_OK, firstResponse.getStatus());
+      assertEquals(HTTP_OK, secondResponse.getStatus());
 
       assertNotEquals(firstResponseContents, secondResponseContents);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -440,7 +441,7 @@ public class LocalNewSessionQueueTest {
   @ParameterizedTest
   @MethodSource("data")
   @Timeout(5)
-  public void shouldBeAbleToTimeoutARequestOnRetry(Supplier<TestData> supplier) {
+  void shouldBeAbleToTimeoutARequestOnRetry(Supplier<TestData> supplier) {
     setup(supplier);
 
     final SessionRequest request = new SessionRequest(
@@ -459,7 +460,7 @@ public class LocalNewSessionQueueTest {
   @ParameterizedTest
   @MethodSource("data")
   @Timeout(5)
-  public void shouldBeAbleToClearQueueAndRejectMultipleRequests(Supplier<TestData> supplier) {
+  void shouldBeAbleToClearQueueAndRejectMultipleRequests(Supplier<TestData> supplier) {
     setup(supplier);
 
     ExecutorService executor = Executors.newFixedThreadPool(2);
@@ -488,8 +489,8 @@ public class LocalNewSessionQueueTest {
       HttpResponse firstResponse = firstRequest.get(30, SECONDS);
       HttpResponse secondResponse = secondRequest.get(30, SECONDS);
 
-      assertEquals(firstResponse.getStatus(), HTTP_INTERNAL_ERROR);
-      assertEquals(secondResponse.getStatus(), HTTP_INTERNAL_ERROR);
+      assertEquals(HTTP_INTERNAL_ERROR, firstResponse.getStatus());
+      assertEquals(HTTP_INTERNAL_ERROR, secondResponse.getStatus());
 
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
       fail("Could not create session");
@@ -500,7 +501,7 @@ public class LocalNewSessionQueueTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldBeAbleToReturnTheNextAvailableEntryThatMatchesAStereotype(Supplier<TestData> supplier) {
+  void shouldBeAbleToReturnTheNextAvailableEntryThatMatchesAStereotype(Supplier<TestData> supplier) {
     setup(supplier);
 
     SessionRequest expected = new SessionRequest(
@@ -520,15 +521,62 @@ public class LocalNewSessionQueueTest {
       Map.of(),
       Map.of()));
 
-    Optional<SessionRequest> returned = queue.getNextAvailable(
-      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+    Map<Capabilities, Long> stereotypes = new HashMap<>();
+    stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
 
-    assertThat(returned).isEqualTo(Optional.of(expected));
+    List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
+
+    assertThat(returned.get(0)).isEqualTo(expected);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldNotReturnANextAvailableEntryThatDoesNotMatchTheStereotypes(Supplier<TestData> supplier) {
+  void shouldBeAbleToReturnTheNextAvailableBatchThatMatchesStereotypes(Supplier<TestData> supplier) {
+    setup(supplier);
+
+    SessionRequest firstSessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "cheese", "se:kind", "smoked")),
+      Map.of(),
+      Map.of());
+
+    SessionRequest secondSessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "smoked")),
+      Map.of(),
+      Map.of());
+
+    SessionRequest thirdSessionRequest = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(new ImmutableCapabilities("browserName", "peas", "se:kind", "smoked")),
+      Map.of(),
+      Map.of());
+
+    localQueue.injectIntoQueue(firstSessionRequest);
+    localQueue.injectIntoQueue(secondSessionRequest);
+    localQueue.injectIntoQueue(thirdSessionRequest);
+
+    Map<Capabilities, Long> stereotypes = new HashMap<>();
+    stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 2L);
+    stereotypes.put(new ImmutableCapabilities("browserName", "peas"), 2L);
+
+    List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
+
+    assertThat(returned.size()).isEqualTo(3);
+    assertTrue(returned.contains(firstSessionRequest));
+    assertTrue(returned.contains(secondSessionRequest));
+    assertTrue(returned.contains(thirdSessionRequest));
+  }
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldNotReturnANextAvailableEntryThatDoesNotMatchTheStereotypes(Supplier<TestData> supplier) {
     setup(supplier);
 
     // Note that this is basically the same test as getting the entry
@@ -551,10 +599,12 @@ public class LocalNewSessionQueueTest {
       Map.of());
     localQueue.injectIntoQueue(expected);
 
-    Optional<SessionRequest> returned = queue.getNextAvailable(
-      Set.of(new ImmutableCapabilities("browserName", "cheese")));
+    Map<Capabilities, Long> stereotypes = new HashMap<>();
+    stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
 
-    assertThat(returned).isEqualTo(Optional.of(expected));
+    List<SessionRequest> returned = queue.getNextAvailable(stereotypes);
+
+    assertThat(returned.get(0)).isEqualTo(expected);
   }
 
   static class TestData {

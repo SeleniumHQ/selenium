@@ -31,12 +31,12 @@ import java.io.IOException;
 /**
  * Sanity tests against the //javascript/webdriver/atoms:inputs target.
  */
-public class InputAtomsTest {
+class InputAtomsTest {
 
   private static final String RESOURCE_PATH = "/org/openqa/selenium/atoms/atoms_inputs.js";
 
   @Test
-  public void exportsTheExpectedNames() throws IOException {
+  void exportsTheExpectedNames() throws IOException {
     final String source = JavaScriptLoader.loadResource(RESOURCE_PATH);
     ContextFactory.getGlobal().call(new ContextAction<Object>() {
       private ScriptableObject global;
@@ -45,7 +45,7 @@ public class InputAtomsTest {
       public Object run(Context context) {
         global = context.initStandardObjects();
 
-        // Check assumptions abut the global context, which the atoms assumes is a DOM window.
+        // Check assumptions abut the global context, which the atoms assume is a DOM window.
         assertThat(eval(context, "this.window=this;")).isEqualTo(global);
         assertThat(eval(context, "this")).isEqualTo(global);
         assertThat(eval(context, "window")).isEqualTo(global);

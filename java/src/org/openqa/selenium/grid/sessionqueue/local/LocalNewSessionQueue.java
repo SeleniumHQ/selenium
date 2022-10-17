@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.config.Config;
@@ -295,23 +296,33 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
-  public Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes) {
+  public List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes) {
     Require.nonNull("Stereotypes", stereotypes);
 
     Predicate<Capabilities> matchesStereotype =
-      caps -> stereotypes.stream().anyMatch(stereotype -> slotMatcher.matches(stereotype, caps));
+      caps -> stereotypes.entrySet()
+        .stream()
+        .filter(entry -> entry.getValue() > 0)
+        .anyMatch(entry -> {
+          boolean matches = slotMatcher.matches(entry.getKey(), caps);
+          if (matches) {
+            Long value = entry.getValue();
+            entry.setValue(value - 1);
+          }
+          return matches;
+        });
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<SessionRequest> maybeRequest =
-          queue.stream()
-              .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
-              .findFirst();
+      List<SessionRequest> availableRequests = queue.stream()
+        .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
+        .limit(10) // TODO: Batch size should be configurable via a flag
+        .collect(Collectors.toList());
 
-      maybeRequest.ifPresent(req -> this.remove(req.getRequestId()));
+      availableRequests.forEach(req -> this.remove(req.getRequestId()));
 
-      return maybeRequest;
+      return availableRequests;
     } finally {
       writeLock.unlock();
     }

@@ -32,36 +32,36 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DockerOptionsTest {
+class DockerOptionsTest {
 
   public static Stream<Arguments> data() {
-    return asList(new Object[][]{
+    return Arrays.stream(new Object[][]{
       {
-        configuredDeviceMapping(asList("/dev/kvm:/dev/kvm")),
-        asList(device("/dev/kvm", "/dev/kvm"))
+        configuredDeviceMapping(List.of("/dev/kvm:/dev/kvm")),
+        List.of(device("/dev/kvm", "/dev/kvm"))
       },
       {
-        configuredDeviceMapping(asList("/dev/sda2:/dev/sda2")),
-        asList(device("/dev/sda2", "/dev/sda2"))
+        configuredDeviceMapping(List.of("/dev/sda2:/dev/sda2")),
+        List.of(device("/dev/sda2", "/dev/sda2"))
       },
       {
-        configuredDeviceMapping(asList("/dev/sda:/dev/xvdc:r")),
-        asList(device("/dev/sda", "/dev/xvdc", "r"))
+        configuredDeviceMapping(List.of("/dev/sda:/dev/xvdc:r")),
+        List.of(device("/dev/sda", "/dev/xvdc", "r"))
       },
       {
         configuredDeviceMapping(asList("/dev/kvm:/dev/kvm", "/dev/bus/usb:/dev/bus/usb:r")),
         asList(device("/dev/kvm", "/dev/kvm"), device("/dev/bus/usb", "/dev/bus/usb", "r"))
       },
       {
-        configuredDeviceMapping(asList(" /dev/kvm:/dev/kvm ")),
-        asList(device("/dev/kvm", "/dev/kvm"))
+        configuredDeviceMapping(List.of(" /dev/kvm:/dev/kvm ")),
+        List.of(device("/dev/kvm", "/dev/kvm"))
       }
-    }).stream().map(Arguments::of);
+    }).map(Arguments::of);
   }
 
   @ParameterizedTest
   @MethodSource("data")
-  public void shouldReturnOnlyExpectedDeviceMappings(Config config, List<Device> devicesExpected) {
+  void shouldReturnOnlyExpectedDeviceMappings(Config config, List<Device> devicesExpected) {
     List<Device> returnedDevices = new DockerOptions(config).getDevicesMapping();
     assertThat(devicesExpected.equals(returnedDevices))
       .describedAs("Expected %s but was %s", devicesExpected, returnedDevices).isTrue();

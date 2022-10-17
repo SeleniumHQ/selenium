@@ -29,14 +29,14 @@ import java.io.OutputStream;
 import java.util.Random;
 
 @Tag("UnitTests")
-public class FileHandlerTest {
+class FileHandlerTest {
 
   @Test
-  public void testFileCopy() throws IOException {
+  void testFileCopy() throws IOException {
     File newFile = File.createTempFile("testFileCopy", "dst");
     File tmpFile = writeTestFile(File.createTempFile("FileUtilTest", "src"));
-    assertThat(newFile.length()).isEqualTo(0);
-    assertThat(tmpFile.length()).isGreaterThan(0);
+    assertThat(newFile.length()).isZero();
+    assertThat(tmpFile.length()).isPositive();
 
     try {
       // Copy it.

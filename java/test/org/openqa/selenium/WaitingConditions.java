@@ -29,8 +29,8 @@ public class WaitingConditions {
 
   private static abstract class ElementTextComparator implements ExpectedCondition<String> {
     private String lastText = "";
-    private WebElement element;
-    private String expectedValue;
+    private final WebElement element;
+    private final String expectedValue;
 
     ElementTextComparator(WebElement element, String expectedValue) {
       this.element = element;

@@ -34,12 +34,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class WebElementToJsonConverterTest {
+class WebElementToJsonConverterTest {
 
   private static final WebElementToJsonConverter CONVERTER = new WebElementToJsonConverter();
 
   @Test
-  public void returnsPrimitivesAsIs() {
+  void returnsPrimitivesAsIs() {
     assertThat(CONVERTER.apply(null)).isNull();
     assertThat(CONVERTER.apply("abc")).isEqualTo("abc");
     assertThat(CONVERTER.apply(Boolean.TRUE)).isEqualTo(Boolean.TRUE);
@@ -48,7 +48,7 @@ public class WebElementToJsonConverterTest {
   }
 
   @Test
-  public void convertsRemoteWebElementToWireProtocolMap() {
+  void convertsRemoteWebElementToWireProtocolMap() {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 
@@ -57,7 +57,7 @@ public class WebElementToJsonConverterTest {
   }
 
   @Test
-  public void unwrapsWrappedElements() {
+  void unwrapsWrappedElements() {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 
@@ -66,7 +66,7 @@ public class WebElementToJsonConverterTest {
   }
 
   @Test
-  public void unwrapsWrappedElements_multipleLevelsOfWrapping() {
+  void unwrapsWrappedElements_multipleLevelsOfWrapping() {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 
@@ -80,7 +80,7 @@ public class WebElementToJsonConverterTest {
   }
 
   @Test
-  public void convertsSimpleCollections() {
+  void convertsSimpleCollections() {
     Object converted = CONVERTER.apply(asList(null, "abc", true, 123, Math.PI));
     assertThat(converted).isInstanceOf(Collection.class);
 
@@ -89,7 +89,7 @@ public class WebElementToJsonConverterTest {
   }
 
   @Test
-  public void convertsNestedCollections_simpleValues() {
+  void convertsNestedCollections_simpleValues() {
     List<?> innerList = asList(123, "abc");
     List<Object> outerList = asList("apples", "oranges", innerList);
 
@@ -107,20 +107,20 @@ public class WebElementToJsonConverterTest {
   }
 
   @Test
-  public void requiresMapsToHaveStringKeys() {
+  void requiresMapsToHaveStringKeys() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> CONVERTER.apply(ImmutableMap.of(new Object(), "bunny")));
   }
 
   @Test
-  public void requiresNestedMapsToHaveStringKeys() {
+  void requiresNestedMapsToHaveStringKeys() {
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> CONVERTER.apply(
             ImmutableMap.of("one", ImmutableMap.of("two", ImmutableMap.of(3, "not good")))));
   }
 
   @Test
-  public void convertsASimpleMap() {
+  void convertsASimpleMap() {
     Object converted = CONVERTER.apply(ImmutableMap.of(
         "one", 1,
         "fruit", "apples",
@@ -137,7 +137,7 @@ public class WebElementToJsonConverterTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void convertsANestedMap() {
+  void convertsANestedMap() {
     Object converted = CONVERTER.apply(ImmutableMap.of(
         "one", 1,
         "fruit", "apples",
@@ -159,7 +159,7 @@ public class WebElementToJsonConverterTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void convertsAListWithAWebElement() {
+  void convertsAListWithAWebElement() {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 
@@ -177,7 +177,7 @@ public class WebElementToJsonConverterTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void convertsAMapWithAWebElement() {
+  void convertsAMapWithAWebElement() {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 
@@ -190,7 +190,7 @@ public class WebElementToJsonConverterTest {
   }
 
   @Test
-  public void convertsAnArray() {
+  void convertsAnArray() {
     Object value = CONVERTER.apply(new Object[] {
         "abc123", true, 123, Math.PI
     });
@@ -201,7 +201,7 @@ public class WebElementToJsonConverterTest {
   }
 
   @Test
-  public void convertsAnArrayWithAWebElement() {
+  void convertsAnArrayWithAWebElement() {
     RemoteWebElement element = new RemoteWebElement();
     element.setId("abc123");
 

@@ -28,37 +28,42 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 
 def test_converts_oss_capabilities_to_w3c(mocker):
-    mock = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
-    oss_caps = {'platform': 'WINDOWS', 'version': '11', 'acceptSslCerts': True}
-    w3c_caps = {'platformName': 'windows', 'browserVersion': '11', 'acceptInsecureCerts': True}
+    mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.execute")
+    oss_caps = {"platform": "WINDOWS", "version": "11", "acceptSslCerts": True}
+    w3c_caps = {"platformName": "windows", "browserVersion": "11", "acceptInsecureCerts": True}
     WebDriver(desired_capabilities=deepcopy(oss_caps))
-    expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps}}
+    expected_params = {"capabilities": {"firstMatch": [{}], "alwaysMatch": w3c_caps}}
     mock.assert_called_with(Command.NEW_SESSION, expected_params)
 
 
-@pytest.mark.parametrize("oss_name, val, w3c_name", (
-    ('acceptSslCerts', True, 'acceptInsecureCerts'),
-    ("version", '11', "browserVersion"),
-    ("platform", 'windows', 'platformName')))
+@pytest.mark.parametrize(
+    "oss_name, val, w3c_name",
+    (
+        ("acceptSslCerts", True, "acceptInsecureCerts"),
+        ("version", "11", "browserVersion"),
+        ("platform", "windows", "platformName"),
+    ),
+)
 def test_non_compliant_w3c_caps_is_deprecated(oss_name, val, w3c_name):
     from selenium.webdriver.remote.webdriver import _make_w3c_caps
+
     msg = f"{oss_name} is not a w3c capability.  use `{w3c_name}` instead.  This will no longer be converted in 4.7.0"
     with pytest.warns(DeprecationWarning, match=msg):
         _ = _make_w3c_caps({oss_name: val})
 
 
 def test_converts_proxy_type_value_to_lowercase_for_w3c(mocker):
-    mock = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
-    oss_caps = {'proxy': {'proxyType': 'MANUAL', 'httpProxy': 'foo'}}
-    w3c_caps = {'proxy': {'proxyType': 'manual', 'httpProxy': 'foo'}}
+    mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.execute")
+    oss_caps = {"proxy": {"proxyType": "MANUAL", "httpProxy": "foo"}}
+    w3c_caps = {"proxy": {"proxyType": "manual", "httpProxy": "foo"}}
     WebDriver(desired_capabilities=deepcopy(oss_caps))
-    expected_params = {'capabilities': {'firstMatch': [{}], 'alwaysMatch': w3c_caps}}
+    expected_params = {"capabilities": {"firstMatch": [{}], "alwaysMatch": w3c_caps}}
     mock.assert_called_with(Command.NEW_SESSION, expected_params)
 
 
 def test_works_as_context_manager(mocker):
-    mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.execute')
-    quit_ = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.quit')
+    mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.execute")
+    quit_ = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.quit")
 
     with WebDriver() as driver:
         assert isinstance(driver, WebDriver)
@@ -66,14 +71,14 @@ def test_works_as_context_manager(mocker):
     assert quit_.call_count == 1
 
 
-@pytest.mark.parametrize('browser_name', ['firefox', 'chrome', 'ie'])
+@pytest.mark.parametrize("browser_name", ["firefox", "chrome", "ie"])
 def test_accepts_firefox_options_to_remote_driver(mocker, browser_name):
-    options = import_module(f'selenium.webdriver.{browser_name}.options')
-    caps_name = browser_name.upper() if browser_name != 'ie' else 'INTERNETEXPLORER'
-    mock = mocker.patch('selenium.webdriver.remote.webdriver.WebDriver.start_session')
+    options = import_module(f"selenium.webdriver.{browser_name}.options")
+    caps_name = browser_name.upper() if browser_name != "ie" else "INTERNETEXPLORER"
+    mock = mocker.patch("selenium.webdriver.remote.webdriver.WebDriver.start_session")
 
     opts = options.Options()
-    opts.add_argument('foo')
+    opts.add_argument("foo")
     expected_caps = getattr(DesiredCapabilities, caps_name)
     caps = expected_caps.copy()
     expected_caps.update(opts.to_capabilities())
@@ -100,7 +105,7 @@ def test_always_match_if_2_of_the_same_options():
             "firstMatch": [
                 {"goog:chromeOptions": {"args": ["foo"], "extensions": []}},
                 {"goog:chromeOptions": {"args": ["bar"], "extensions": []}},
-            ]
+            ],
         }
     }
     result = webdriver.create_matches([co1, co2])
@@ -115,14 +120,14 @@ def test_first_match_when_2_different_option_types():
         "capabilities": {
             "alwaysMatch": {"pageLoadStrategy": "normal"},
             "firstMatch": [
-                {"browserName": "chrome",
-                 "goog:chromeOptions": {"extensions": [], "args": []}},
-                {"browserName": "firefox",
-                 "acceptInsecureCerts": True,
-                 "moz:debuggerAddress": True,
-                 "moz:firefoxOptions": {"args": ["foo"]}
-                 }
-            ]
+                {"browserName": "chrome", "goog:chromeOptions": {"extensions": [], "args": []}},
+                {
+                    "browserName": "firefox",
+                    "acceptInsecureCerts": True,
+                    "moz:debuggerAddress": True,
+                    "moz:firefoxOptions": {"args": ["foo"]},
+                },
+            ],
         }
     }
 

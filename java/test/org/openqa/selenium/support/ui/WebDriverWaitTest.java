@@ -49,7 +49,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
 @Tag("UnitTests")
-public class WebDriverWaitTest {
+class WebDriverWaitTest {
 
   @Mock private WebDriver mockDriver;
   @Mock private WebElement mockElement;
@@ -60,7 +60,7 @@ public class WebDriverWaitTest {
   }
 
   @Test
-  public void shouldIncludeRemoteInfoForWrappedDriverTimeout() throws IOException {
+  void shouldIncludeRemoteInfoForWrappedDriverTimeout() throws IOException {
     Capabilities caps = new MutableCapabilities();
     Response response = new Response(new SessionId("foo"));
     response.setValue(caps.asMap());
@@ -82,7 +82,7 @@ public class WebDriverWaitTest {
   }
 
   @Test
-  public void shouldThrowAnExceptionIfTheTimerRunsOut() {
+  void shouldThrowAnExceptionIfTheTimerRunsOut() {
     TickingClock clock = new TickingClock();
     WebDriverWait wait =
         new WebDriverWait(mockDriver, Duration.ofSeconds(1), Duration.ofMillis(200), clock, clock);
@@ -92,7 +92,7 @@ public class WebDriverWaitTest {
   }
 
   @Test
-  public void shouldThrowAnExceptionFromCorrectThreadIfTheTimerRunsOut() {
+  void shouldThrowAnExceptionFromCorrectThreadIfTheTimerRunsOut() {
     WebDriverWait wait = new WebDriverWait(mockDriver, Duration.ofSeconds(1));
     assertThatExceptionOfType(TimeoutException.class)
       .isThrownBy(() -> wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(".doesntexist"))))
@@ -101,7 +101,7 @@ public class WebDriverWaitTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void shouldSilentlyCaptureNoSuchElementExceptions() {
+  void shouldSilentlyCaptureNoSuchElementExceptions() {
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     when(condition.apply(mockDriver))
         .thenThrow(new NoSuchElementException("foo"))
@@ -115,7 +115,7 @@ public class WebDriverWaitTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void shouldSilentlyCaptureNoSuchFrameExceptions() {
+  void shouldSilentlyCaptureNoSuchFrameExceptions() {
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     when(condition.apply(mockDriver))
         .thenThrow(new NoSuchFrameException("foo"))
@@ -129,7 +129,7 @@ public class WebDriverWaitTest {
 
   @SuppressWarnings("unchecked")
   @Test
-  public void shouldSilentlyCaptureNoSuchWindowExceptions() {
+  void shouldSilentlyCaptureNoSuchWindowExceptions() {
 
     final ExpectedCondition<WebElement> condition = mock(ExpectedCondition.class);
     when(condition.apply(mockDriver))

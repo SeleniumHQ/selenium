@@ -11,9 +11,9 @@ package(default_visibility = ["//:__subpackages__"])
 
 CDP_VERSIONS = [
     "v85",
-    "v102",
-    "v103",
     "v104",
+    "v105",
+    "v106",
 ]
 
 copy_file(
@@ -285,6 +285,9 @@ ruby_test(
         "--force-color",
         "rb/spec",
     ],
+    data = [
+        "//common/extensions",
+    ],
     includes = ["rb/lib"],
     main = "@bundle//:bin/rspec",
     rubyopt = ["-w"],
@@ -294,6 +297,7 @@ ruby_test(
     ],
     deps = [
         ":bidi",
+        ":devtools",
         ":firefox",
         ":specs",
     ],
@@ -310,6 +314,9 @@ ruby_test(
         "documentation",
         "--force-color",
         "rb/spec",
+    ],
+    data = [
+        "//common/extensions",
     ],
     includes = ["rb/lib"],
     main = "@bundle//:bin/rspec",
@@ -488,6 +495,7 @@ ruby_test(
     ],
     deps = [
         ":bidi",
+        ":devtools",
         ":firefox",
         ":remote",
         ":specs",

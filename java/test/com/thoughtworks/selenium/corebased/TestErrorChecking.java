@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestErrorChecking extends InternalSelenseTestBase {
   @Test
-  public void testErrorChecking() {
+  void testErrorChecking() {
     selenium.open("test_click_page1.html");
     // These tests should all fail, as they are checking the error checking commands.
     try {

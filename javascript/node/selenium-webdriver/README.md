@@ -13,19 +13,19 @@ Selenium may be installed via npm with
 You will need to download additional components to work with each of the major
 browsers. The drivers for Chrome, Firefox, and Microsoft's IE and Edge web
 browsers are all standalone executables that should be placed on your system
-[PATH]. Apple's safaridriver is shipped with Safari 10 for OS X El Capitan and
-macOS Sierra. You will need to enable Remote Automation in the Develop menu of
-Safari 10 before testing.
+[PATH]. Apple's safaridriver (v10 and above) can be found at the 
+following path – /usr/bin/safaridriver. To enable automation on safari, 
+you need to run command `safaridriver --enable`.
 
 
-| Browser           | Component                          |
-| ----------------- | ---------------------------------- |
-| Chrome            | [chromedriver(.exe)][chrome]       |
-| Internet Explorer | [IEDriverServer.exe][release]      |
-| Edge              | [MicrosoftWebDriver.msi][edge]     |
-| Firefox           | [geckodriver(.exe)][geckodriver]   |
-| Opera             | [operadriver(.exe)][operadriver]   |
-| Safari            | [safaridriver]                     |
+| Browser            | Component                           |
+|:-------------------|:------------------------------------|
+| Chrome             | [chromedriver(.exe)][chrome]        |
+| Internet Explorer  | [IEDriverServer.exe][release]       |
+| Edge               | [MicrosoftWebDriver.msi][edge]      |
+| Firefox            | [geckodriver(.exe)][geckodriver]    |
+| Opera              | [operadriver(.exe)][operadriver]    |
+| Safari             | [safaridriver]                      |
 
 ## Usage
 
@@ -38,7 +38,7 @@ const {Builder, Browser, By, Key, until} = require('selenium-webdriver');
 (async function example() {
   let driver = await new Builder().forBrowser(Browser.FIREFOX).build();
   try {
-    await driver.get('http://www.google.com/ncr');
+    await driver.get('https://www.google.com/ncr');
     await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
     await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
   } finally {
@@ -92,7 +92,7 @@ To use the Selenium Server, you will need to install the
 download the latest server from [Selenium][release]. Once downloaded, run the
 server with
 
-    java -jar selenium-server-standalone-2.45.0.jar
+    java -jar selenium-server-4.4.0.jar standalone
 
 You may configure your tests to run against a remote server through the Builder
 API:
@@ -135,17 +135,17 @@ will also have "best effort" support. Releases older than the latest LTS,
 _semver-major_ releases, and all unstable release branches (e.g. "v.Next")
 are considered strictly unsupported.
 
-For example, suppose the current LTS and stable releases are v6.9.5 and v7.5.0,
+For example, suppose the current LTS and stable releases are v14.20.0 and v18.8.0,
 respectively. Then a Selenium release would have the following support levels:
 
-| Version | Support       |
-| ------- | ------------- |
-| <= 6.8  | _unsupported_ |
-| 6.9     | supported     |
-| 7.0-4   | best effort   |
-| 7.5     | supported     |
-| >= 7.5  | best effort   |
-| v.Next  | _unsupported_ |
+|  Version   |     Support     |
+|:----------:|:---------------:|
+|  <= 14.19  |  _unsupported_  |
+|  14.20.0   |    supported    |
+|   18.0-7   |   best effort   |
+|   18.8.0   |    supported    |
+| >= 18.8.0  |   best effort   |
+|   v.Next   |  _unsupported_  |
 
 ### Support Level Definitions
 
@@ -165,13 +165,13 @@ respectively. Then a Selenium release would have the following support levels:
 If Node releases a new [LTS] each October and a new major version every 6
 months, the support window for selenium-webdriver will be roughly:
 
-| Date      | LTS  | Stable |
-| --------- | ---: | -----: |
-| (current) |  8.9 |    9.0 |
-| 2018-04   |  8.x |   10.0 |
-| 2018-10   | 10.x |   11.0 |
-| 2019-04   | 10.x |   12.0 |
-| 2019-10   | 12.x |   13.0 |
+|  Release  |      Status      | END-OF-LIFE  |
+|:---------:|:----------------:|:------------:|
+|   v14.x   | Maintenance LTS  |  2023-04-30  |
+|   v16.x   |    Active LTS    |  2023-09-11  |
+|   v18.x   |     Current      |  2025-04-30  |
+|   v19.x   |     Pending      |  2023-06-01  |
+|    v20    |     Pending      |  2026-04-30  |
 
 ## Issues
 

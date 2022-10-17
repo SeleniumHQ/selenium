@@ -33,10 +33,10 @@ import java.util.List;
 import java.util.Map;
 
 @Tag("UnitTests")
-public class WheelInputTest {
+class WheelInputTest {
 
   @Test
-  public void shouldEncodeWrappedElementInScrollOrigin() {
+  void shouldEncodeWrappedElementInScrollOrigin() {
     RemoteWebElement innerElement = new RemoteWebElement();
     innerElement.setId("12345");
     WebElement element = new WrappedWebElement(innerElement);
@@ -63,7 +63,7 @@ public class WheelInputTest {
   }
 
   @Test
-  public void shouldEncodeWheelInput() {
+  void shouldEncodeWheelInput() {
     WheelInput wheelInput = new WheelInput("test-wheel");
     Map<String, Object> encodedResult = wheelInput.encode();
 
@@ -73,7 +73,7 @@ public class WheelInputTest {
   }
 
   @Test
-  public void shouldEncodeScrollInteractionWithViewPortOrigin() {
+  void shouldEncodeScrollInteractionWithViewPortOrigin() {
     WheelInput wheelInput = new WheelInput("test-wheel");
     WheelInput.ScrollInteraction interaction = new WheelInput.ScrollInteraction(
       wheelInput,
@@ -96,7 +96,7 @@ public class WheelInputTest {
   }
 
   @Test
-  public void shouldEncodeScrollInteractionWithElementOrigin() {
+  void shouldEncodeScrollInteractionWithElementOrigin() {
     RemoteWebElement innerElement = new RemoteWebElement();
     innerElement.setId("12345");
 

@@ -38,10 +38,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Tag("UnitTests")
-public class ProxyTest {
+class ProxyTest {
 
   @Test
-  public void testNotInitializedProxy() {
+  void testNotInitializedProxy() {
     Proxy proxy = new Proxy();
 
     assertThat(proxy.getProxyType()).isEqualTo(UNSPECIFIED);
@@ -59,7 +59,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void testCanNotChangeAlreadyInitializedProxyType() {
+  void testCanNotChangeAlreadyInitializedProxyType() {
     final Proxy proxy = new Proxy();
     proxy.setProxyType(DIRECT);
 
@@ -104,7 +104,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void testManualProxy() {
+  void testManualProxy() {
     Proxy proxy = new Proxy();
 
     proxy.
@@ -132,7 +132,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void testPACProxy() {
+  void testPACProxy() {
     Proxy proxy = new Proxy();
     proxy.setProxyAutoconfigUrl("http://aaa/bbb.pac");
 
@@ -151,7 +151,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void testAutodetectProxy() {
+  void testAutodetectProxy() {
     Proxy proxy = new Proxy();
     proxy.setAutodetect(true);
 
@@ -171,7 +171,7 @@ public class ProxyTest {
 
 
   @Test
-  public void manualProxyFromMap() {
+  void manualProxyFromMap() {
     Map<String, Object> proxyData = new HashMap<>();
     proxyData.put("proxyType", "manual");
     proxyData.put("httpProxy", "http.proxy:1234");
@@ -200,7 +200,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void longSocksVersionFromMap() {
+  void longSocksVersionFromMap() {
     Map<String, Object> proxyData = new HashMap<>();
     long l = 5;
     proxyData.put("proxyType", "manual");
@@ -219,7 +219,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void manualProxyToJson() {
+  void manualProxyToJson() {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.MANUAL);
     proxy.setHttpProxy("http.proxy:1234");
@@ -246,7 +246,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void pacProxyFromMap() {
+  void pacProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "PAC");
     proxyData.put("proxyAutoconfigUrl", "http://aaa/bbb.pac");
@@ -268,7 +268,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void pacProxyToJson() {
+  void pacProxyToJson() {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.PAC);
     proxy.setProxyAutoconfigUrl("http://aaa/bbb.pac");
@@ -281,7 +281,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void autodetectProxyFromMap() {
+  void autodetectProxyFromMap() {
     Map<String, Object> proxyData = new HashMap<>();
     proxyData.put("proxyType", "AUTODETECT");
     proxyData.put("autodetect", true);
@@ -303,7 +303,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void autodetectProxyToJson() {
+  void autodetectProxyToJson() {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.AUTODETECT);
     proxy.setAutodetect(true);
@@ -316,7 +316,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void systemProxyFromMap() {
+  void systemProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "system");
 
@@ -337,7 +337,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void systemProxyToJson() {
+  void systemProxyToJson() {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.SYSTEM);
 
@@ -348,7 +348,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void directProxyFromMap() {
+  void directProxyFromMap() {
     Map<String, String> proxyData = new HashMap<>();
     proxyData.put("proxyType", "DIRECT");
 
@@ -369,7 +369,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void directProxyToJson() {
+  void directProxyToJson() {
     Proxy proxy = new Proxy();
     proxy.setProxyType(ProxyType.DIRECT);
 
@@ -380,7 +380,7 @@ public class ProxyTest {
   }
 
   @Test
-  public void constructingWithNullKeysWorksAsExpected() {
+  void constructingWithNullKeysWorksAsExpected() {
     Map<String, String> rawProxy = new HashMap<>();
     rawProxy.put("ftpProxy", null);
     rawProxy.put("httpProxy", "http://www.example.com");

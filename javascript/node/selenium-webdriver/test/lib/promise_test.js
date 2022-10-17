@@ -64,9 +64,14 @@ describe('promise', function () {
     const x = new Promise(v, v)
     const p = createRejectedPromise('reject')
     const q = Promise.resolve('resolved')
+    const t = { then() {} }
+    const f = () => {}
+    f.then = () => {}
     assert.equal(true, promise.isPromise(x))
     assert.equal(true, promise.isPromise(p))
     assert.equal(true, promise.isPromise(q))
+    assert.equal(true, promise.isPromise(t))
+    assert.equal(true, promise.isPromise(f))
     assert.equal(false, promise.isPromise(0))
     assert.equal(false, promise.isPromise(false))
     assert.equal(false, promise.isPromise(true))

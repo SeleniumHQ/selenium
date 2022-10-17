@@ -27,13 +27,17 @@ const { Context } = require('../firefox')
 const { Pages, suite } = require('../lib/test')
 const { locate } = require('../lib/test/resources')
 
-const WEBEXTENSION_EXTENSION_XPI = locate(
-  'common/extensions/webextensions-selenium-example.xpi'
+const EXT_XPI = locate('common/extensions/webextensions-selenium-example.xpi')
+const EXT_UNSIGNED_ZIP = locate(
+  'common/extensions/webextensions-selenium-example-unsigned.zip'
 )
-const WEBEXTENSION_EXTENSION_ZIP = locate(
+const EXT_SIGNED_ZIP = locate(
   'common/extensions/webextensions-selenium-example.zip'
 )
-const WEBEXTENSION_EXTENSION_DIR = locate(
+const EXT_UNSIGNED_DIR = locate(
+  'common/extensions/webextensions-selenium-example'
+)
+const EXT_SIGNED_DIR = locate(
   'common/extensions/webextensions-selenium-example'
 )
 
@@ -63,7 +67,7 @@ suite(
           await io.mkdir(extensionsDir)
           await io.write(
             path.join(extensionsDir, WEBEXTENSION_EXTENSION_ID),
-            await io.read(WEBEXTENSION_EXTENSION_XPI)
+            await io.read(EXT_XPI)
           )
         })
 
@@ -155,7 +159,7 @@ suite(
         describe('addExtensions', function () {
           it('can add extension to brand new profile', async function () {
             let options = new firefox.Options()
-            options.addExtensions(WEBEXTENSION_EXTENSION_XPI)
+            options.addExtensions(EXT_XPI)
 
             driver = env.builder().setFirefoxOptions(options).build()
 
@@ -165,7 +169,7 @@ suite(
 
           it('can add extension to custom profile', async function () {
             let options = new firefox.Options()
-              .addExtensions(WEBEXTENSION_EXTENSION_XPI)
+              .addExtensions(EXT_XPI)
               .setProfile(profileWithUserPrefs)
 
             driver = env.builder().setFirefoxOptions(options).build()
@@ -177,7 +181,7 @@ suite(
 
           it('can addExtensions and setPreference', async function () {
             let options = new firefox.Options()
-              .addExtensions(WEBEXTENSION_EXTENSION_XPI)
+              .addExtensions(EXT_XPI)
               .setPreference('general.useragent.override', 'foo;bar')
 
             driver = env.builder().setFirefoxOptions(options).build()
@@ -189,7 +193,7 @@ suite(
 
           it('can load .zip webextensions', async function () {
             let options = new firefox.Options()
-            options.addExtensions(WEBEXTENSION_EXTENSION_ZIP)
+            options.addExtensions(EXT_XPI)
 
             driver = env.builder().setFirefoxOptions(options).build()
 
@@ -230,32 +234,73 @@ suite(
           driver = env.builder().build()
         })
 
-        it('addons can be installed and uninstalled at runtime', async function () {
-          await driver.get(Pages.echoPage)
+        it('installs and uninstalls by xpi file', async function () {
+          await driver.get(Pages.blankPage)
           await verifyWebExtensionNotInstalled()
 
-          let id = await driver.installAddon(WEBEXTENSION_EXTENSION_XPI)
-          await driver.sleep(1000) // Give extension time to install (yuck).
+          let id = await driver.installAddon(EXT_XPI)
 
-          await driver.get(Pages.echoPage)
+          await driver.navigate().refresh()
           await verifyWebExtensionWasInstalled()
 
           await driver.uninstallAddon(id)
-          await driver.get(Pages.echoPage)
+          await driver.navigate().refresh()
           await verifyWebExtensionNotInstalled()
         })
 
-        it('unpacked addons can be installed and uninstalled at runtime', async function () {
-          await driver.get(Pages.echoPage)
+        it('installs and uninstalls by unsigned zip file', async function () {
+          await driver.get(Pages.blankPage)
           await verifyWebExtensionNotInstalled()
 
-          let id = await driver.installAddon(WEBEXTENSION_EXTENSION_DIR, true)
+          let id = await driver.installAddon(EXT_UNSIGNED_ZIP, true)
 
-          await driver.get(Pages.echoPage)
+          await driver.navigate().refresh()
           await verifyWebExtensionWasInstalled()
 
           await driver.uninstallAddon(id)
-          await driver.get(Pages.echoPage)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('installs and uninstalls by signed zip file', async function () {
+          await driver.get(Pages.blankPage)
+          await verifyWebExtensionNotInstalled()
+
+          let id = await driver.installAddon(EXT_SIGNED_ZIP)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallAddon(id)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('installs and uninstalls by unsigned directory', async function () {
+          await driver.get(Pages.blankPage)
+          await verifyWebExtensionNotInstalled()
+
+          let id = await driver.installAddon(EXT_UNSIGNED_DIR, true)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallAddon(id)
+          await driver.navigate().refresh()
+          await verifyWebExtensionNotInstalled()
+        })
+
+        it('installs and uninstalls by signed directory', async function () {
+          await driver.get(Pages.blankPage)
+          await verifyWebExtensionNotInstalled()
+
+          let id = await driver.installAddon(EXT_SIGNED_DIR, true)
+
+          await driver.navigate().refresh()
+          await verifyWebExtensionWasInstalled()
+
+          await driver.uninstallAddon(id)
+          await driver.navigate().refresh()
           await verifyWebExtensionNotInstalled()
         })
       })

@@ -102,6 +102,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -758,7 +759,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         // starting the session, we just put the request back on the queue.
         // This does mean, however, that under high contention, we might end
         // up starving a session request.
-        Set<Capabilities> stereotypes =
+        Map<Capabilities, Long> stereotypes =
           getAvailableNodes()
             .stream()
             .filter(NodeStatus::hasCapacity)
@@ -768,15 +769,15 @@ public class LocalDistributor extends Distributor implements Closeable {
                   .getSlots()
                   .stream()
                   .map(Slot::getStereotype)
-                  .collect(Collectors.toSet()))
+                  .collect(Collectors.toList()))
             .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
+            .collect(Collectors.groupingBy(ImmutableCapabilities::new, Collectors.counting()));
 
         if (!stereotypes.isEmpty()) {
-          Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
-          maybeRequest.ifPresent(
+          List<SessionRequest> matchingRequests = sessionQueue.getNextAvailable(stereotypes);
+          matchingRequests.forEach(
             req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
-          loop = maybeRequest.isPresent();
+          loop = !matchingRequests.isEmpty();
         } else {
           loop = false;
         }
