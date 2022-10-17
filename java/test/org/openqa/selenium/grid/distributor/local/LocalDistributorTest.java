@@ -83,6 +83,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 class LocalDistributorTest {
 
   private final Secret registrationSecret = new Secret("bavarian smoked");
+  private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private Tracer tracer;
   private EventBus bus;
   private URI uri;
@@ -123,7 +124,8 @@ class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
@@ -155,7 +157,8 @@ class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
 
     //Check the size
@@ -188,7 +191,8 @@ class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
@@ -244,7 +248,8 @@ class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -304,7 +309,8 @@ class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
     assertThat(localNode.isDraining()).isFalse();
 
@@ -344,7 +350,8 @@ class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
 
     localNode.drain();
@@ -370,7 +377,8 @@ class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
 

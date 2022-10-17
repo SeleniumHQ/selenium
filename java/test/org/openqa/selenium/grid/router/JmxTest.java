@@ -266,7 +266,8 @@ class JmxTest {
       secret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      Runtime.getRuntime().availableProcessors());
 
     distributor.add(localNode);
 
