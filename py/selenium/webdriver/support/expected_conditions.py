@@ -215,13 +215,15 @@ def visibility_of_all_elements_located(locator):
 def text_to_be_present_in_element(locator, text_):
     """An expectation for checking if the given text is present in the
     specified element.
-
-    locator, text
+    locator( or WebElement), text
     """
 
     def _predicate(driver):
         try:
-            element_text = driver.find_element(*locator).text
+            if isinstance(locator, WebElement):
+                element_text = locator.text
+            else:
+                element_text = driver.find_element(*locator).text
             return text_ in element_text
         except StaleElementReferenceException:
             return False
@@ -230,15 +232,17 @@ def text_to_be_present_in_element(locator, text_):
 
 
 def text_to_be_present_in_element_value(locator, text_):
-    """An expectation for checking if the given text is present in the
-    element's value.
-
-    locator, text
+    """
+    An expectation for checking if the given text is present in the element's value.
+    locator or WebElement, text
     """
 
     def _predicate(driver):
         try:
-            element_text = driver.find_element(*locator).get_attribute("value")
+            if isinstance(locator, WebElement):
+                element_text = locator.get_attribute("value")
+            else:
+                element_text = driver.find_element(*locator).get_attribute("value")
             return text_ in element_text
         except StaleElementReferenceException:
             return False
@@ -247,17 +251,19 @@ def text_to_be_present_in_element_value(locator, text_):
 
 
 def text_to_be_present_in_element_attribute(locator, attribute_, text_):
-    """An expectation for checking if the given text is present in the
-    element's attribute.
-
-    locator, attribute, text
+    """
+    An expectation for checking if the given text is present in the element's attribute.
+    locator( or WebElement), attribute, text
     """
 
     def _predicate(driver):
         try:
-            element_text = driver.find_element(*locator).get_attribute(attribute_)
-            if element_text is None:
+            if not element_attribute_to_include(locator, attribute_)(driver):
                 return False
+            if isinstance(locator, WebElement):
+                element_text = locator.get_attribute(attribute_)
+            else:
+                element_text = driver.find_element(*locator).get_attribute(attribute_)
             return text_ in element_text
         except StaleElementReferenceException:
             return False
@@ -372,11 +378,11 @@ def element_to_be_selected(element):
 
 def element_located_to_be_selected(locator):
     """An expectation for the element to be located is selected.
-
-    locator is a tuple of (by, path)
-    """
+    locator is a tuple of (by, path), or WebElement"""
 
     def _predicate(driver):
+        if isinstance(locator, WebElement):
+            return locator.is_selected()
         return driver.find_element(*locator).is_selected()
 
     return _predicate
@@ -397,13 +403,16 @@ def element_selection_state_to_be(element, is_selected):
 def element_located_selection_state_to_be(locator, is_selected):
     """An expectation to locate an element and check if the selection state
     specified is in that state.
-
-    locator is a tuple of (by, path) is_selected is a boolean
+    locator is a tuple of (by, path), or WebElement
+    is_selected is a boolean
     """
 
     def _predicate(driver):
         try:
-            element = driver.find_element(*locator)
+            if isinstance(locator, WebElement):
+                element = locator
+            else:
+                element = driver.find_element(*locator)
             return element.is_selected() == is_selected
         except StaleElementReferenceException:
             return False
@@ -446,13 +455,15 @@ def alert_is_present():
 def element_attribute_to_include(locator, attribute_):
     """An expectation for checking if the given attribute is included in the
     specified element.
-
-    locator, attribute
+    locator( or WebElement), attribute
     """
 
     def _predicate(driver):
         try:
-            element_attribute = driver.find_element(*locator).get_attribute(attribute_)
+            if isinstance(locator, WebElement):
+                element_attribute = locator.get_attribute(attribute_)
+            else:
+                element_attribute = driver.find_element(*locator).get_attribute(attribute_)
             return element_attribute is not None
         except StaleElementReferenceException:
             return False
