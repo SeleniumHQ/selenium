@@ -149,7 +149,6 @@ Webdriver.safari
   :toctree: webdriver_safari
 
   selenium.webdriver.safari.options
-  selenium.webdriver.safari.permissions
   selenium.webdriver.safari.remote_connection
   selenium.webdriver.safari.service
   selenium.webdriver.safari.webdriver
