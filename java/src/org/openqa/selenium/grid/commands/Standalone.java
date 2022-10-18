@@ -150,7 +150,8 @@ public class Standalone extends TemplateGridServerCommand {
       distributorOptions.getSlotMatcher(),
       newSessionRequestOptions.getSessionRequestTimeoutPeriod(),
       newSessionRequestOptions.getSessionRequestTimeout(),
-      registrationSecret);
+      registrationSecret,
+      newSessionRequestOptions.getBatchSize());
     combinedHandler.addHandler(queue);
 
     Distributor distributor = new LocalDistributor(

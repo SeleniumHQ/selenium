@@ -113,7 +113,8 @@ class LocalDistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -146,7 +147,8 @@ class LocalDistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -180,7 +182,8 @@ class LocalDistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -209,7 +212,8 @@ class LocalDistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
 
     // Add one node to ensure that everything is created in that.
@@ -298,7 +302,8 @@ class LocalDistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -339,7 +344,8 @@ class LocalDistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -365,7 +371,8 @@ class LocalDistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,

@@ -128,7 +128,8 @@ class RouterTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     distributor = new LocalDistributor(

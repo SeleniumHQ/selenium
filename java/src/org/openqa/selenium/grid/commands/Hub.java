@@ -151,7 +151,8 @@ public class Hub extends TemplateGridServerCommand {
       distributorOptions.getSlotMatcher(),
       newSessionRequestOptions.getSessionRequestTimeoutPeriod(),
       newSessionRequestOptions.getSessionRequestTimeout(),
-      secret);
+      secret,
+      newSessionRequestOptions.getBatchSize());
     handler.addHandler(queue);
 
     Distributor distributor = new LocalDistributor(

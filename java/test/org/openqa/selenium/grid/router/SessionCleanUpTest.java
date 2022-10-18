@@ -145,7 +145,8 @@ class SessionCleanUpTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(10),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     LocalDistributor distributor = new LocalDistributor(
@@ -255,7 +256,8 @@ class SessionCleanUpTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     URI uri = new URI("http://localhost:" + PortProber.findFreePort());
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)

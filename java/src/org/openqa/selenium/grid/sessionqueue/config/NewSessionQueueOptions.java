@@ -37,6 +37,7 @@ public class NewSessionQueueOptions {
   static final int DEFAULT_REQUEST_TIMEOUT = 300;
   static final int DEFAULT_REQUEST_TIMEOUT_PERIOD = 10;
   static final int DEFAULT_RETRY_INTERVAL = 15;
+  static final int DEFAULT_BATCH_SIZE = 10;
 
   private final Config config;
 
@@ -114,6 +115,16 @@ public class NewSessionQueueOptions {
         .orElse(DEFAULT_RETRY_INTERVAL),
       DEFAULT_RETRY_INTERVAL);
     return Duration.ofMillis(interval);
+  }
+
+  public int getBatchSize() {
+    // If the user sets 0 or less, we default to 10.
+    int batchSize = Math.max(
+      config.getInt(SESSION_QUEUE_SECTION, "sessionqueue-batch-size")
+        .orElse(DEFAULT_BATCH_SIZE),
+      1);
+
+    return batchSize;
   }
 
   @ManagedAttribute(name = "RequestTimeoutSeconds")

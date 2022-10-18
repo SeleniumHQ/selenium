@@ -210,7 +210,8 @@ class JmxTest {
         new DefaultSlotMatcher(),
         Duration.ofSeconds(2),
         Duration.ofSeconds(2),
-        new Secret(""));
+        new Secret(""),
+        5);
 
       assertThat(sessionQueue).isNotNull();
       MBeanInfo info = beanServer.getMBeanInfo(name);
@@ -255,7 +256,8 @@ class JmxTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      secret);
+      secret,
+      5);
 
     Distributor distributor = new LocalDistributor(
       tracer,

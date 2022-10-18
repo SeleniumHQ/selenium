@@ -126,7 +126,8 @@ class LocalNewSessionQueueTest {
         new DefaultSlotMatcher(),
         Duration.ofSeconds(1),
         Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
-        REGISTRATION_SECRET);
+        REGISTRATION_SECRET,
+        5);
       return new TestData(local, local);
     });
 
@@ -136,7 +137,8 @@ class LocalNewSessionQueueTest {
         new DefaultSlotMatcher(),
         Duration.ofSeconds(1),
         Duration.ofSeconds(Debug.isDebugging() ? 9999 : 5),
-        REGISTRATION_SECRET);
+        REGISTRATION_SECRET,
+        5);
 
       HttpClient client = new PassthroughHttpClient(local);
       return new TestData(local, new RemoteNewSessionQueue(tracer, client, REGISTRATION_SECRET));

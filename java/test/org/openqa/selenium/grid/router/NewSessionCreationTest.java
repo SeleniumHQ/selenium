@@ -101,7 +101,8 @@ class NewSessionCreationTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(60),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -178,7 +179,8 @@ class NewSessionCreationTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(10),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     AtomicInteger count = new AtomicInteger();
@@ -256,7 +258,8 @@ class NewSessionCreationTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
       Duration.ofSeconds(60),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) ->

@@ -136,7 +136,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
@@ -206,7 +207,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -248,7 +250,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -292,7 +295,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -333,7 +337,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -369,7 +374,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -415,7 +421,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -461,7 +468,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -551,7 +559,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     Node lightest = createNode(caps, 10, 0);
     Node medium = createNode(caps, 10, 4);
@@ -600,7 +609,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Node leastRecent = createNode(caps, 5, 0);
 
     CombinedHandler handler = new CombinedHandler();
@@ -679,7 +689,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(sessions);
 
     URI uri = createUri();
@@ -737,7 +748,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, c) -> new Session(
@@ -777,7 +789,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, c) -> new Session(
@@ -837,7 +850,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(sessions);
 
     Distributor distributor = new LocalDistributor(
@@ -873,7 +887,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> {
@@ -915,7 +930,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     URI uri = createUri();
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
@@ -973,7 +989,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     URI uri = createUri();
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
@@ -1050,7 +1067,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,

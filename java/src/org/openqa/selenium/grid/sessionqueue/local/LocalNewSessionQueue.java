@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.config.Config;
@@ -99,6 +100,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   private static final String NAME = "Local New Session Queue";
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
+  private final int batchSize;
   private final Map<RequestId, Data> requests;
   private final Map<RequestId, TraceContext> contexts;
   private final Deque<SessionRequest> queue;
@@ -115,7 +117,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     SlotMatcher slotMatcher,
     Duration requestTimeoutCheck,
     Duration requestTimeout,
-    Secret registrationSecret) {
+    Secret registrationSecret,
+    int batchSize) {
     super(tracer, registrationSecret);
 
     this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
@@ -126,6 +129,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     this.requests = new ConcurrentHashMap<>();
     this.queue = new ConcurrentLinkedDeque<>();
     this.contexts = new ConcurrentHashMap<>();
+
+    this.batchSize = Require.positive("Batch size", batchSize);
 
     service.scheduleAtFixedRate(
       GuardedRunnable.guard(this::timeoutSessions),
@@ -149,7 +154,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       slotMatcher,
       newSessionQueueOptions.getSessionRequestTimeoutPeriod(),
       newSessionQueueOptions.getSessionRequestTimeout(),
-      secretOptions.getRegistrationSecret());
+      secretOptions.getRegistrationSecret(),
+      newSessionQueueOptions.getBatchSize());
   }
 
   private void timeoutSessions() {
@@ -316,7 +322,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     try {
       List<SessionRequest> availableRequests = queue.stream()
         .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
-        .limit(10) // TODO: Batch size should be configurable via a flag
+        .limit(batchSize)
         .collect(Collectors.toList());
 
       availableRequests.forEach(req -> this.remove(req.getRequestId()));

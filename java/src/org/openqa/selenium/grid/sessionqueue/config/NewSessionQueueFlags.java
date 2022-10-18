@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_BATCH_SIZE;
 import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_REQUEST_TIMEOUT;
 import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_REQUEST_TIMEOUT_PERIOD;
 import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_RETRY_INTERVAL;
@@ -76,6 +77,12 @@ public class NewSessionQueueFlags implements HasRoles {
                   + "request will be retried after the given interval.")
   @ConfigValue(section = SESSION_QUEUE_SECTION, name = "session-retry-interval", example = "15")
   private int sessionRetryInterval = DEFAULT_RETRY_INTERVAL;
+
+  @Parameter(
+    names = {"--sessionqueue-batch-size"},
+    description = "Maximum batch size that can consumed from queue based on the available slots.")
+  @ConfigValue(section = SESSION_QUEUE_SECTION, name = "sessionqueue-batch-size", example = "20")
+  private int batchSize = DEFAULT_BATCH_SIZE;
 
   @Override
   public Set<Role> getRoles() {
