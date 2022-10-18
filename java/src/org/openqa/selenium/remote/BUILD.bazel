@@ -53,6 +53,7 @@ java_library(
         "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/io",
         "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/manager",
         "//java/src/org/openqa/selenium/os",
         "//java/src/org/openqa/selenium/remote/http/netty",
         "//java/src/org/openqa/selenium/remote/tracing",
