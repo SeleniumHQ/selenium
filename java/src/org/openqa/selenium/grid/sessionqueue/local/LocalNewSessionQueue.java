@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.config.Config;
@@ -99,6 +100,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   private static final String NAME = "Local New Session Queue";
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
+  private final int batchSize;
   private final Map<RequestId, Data> requests;
   private final Map<RequestId, TraceContext> contexts;
   private final Deque<SessionRequest> queue;
@@ -113,13 +115,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   public LocalNewSessionQueue(
     Tracer tracer,
     SlotMatcher slotMatcher,
-    Duration retryPeriod,
+    Duration requestTimeoutCheck,
     Duration requestTimeout,
-    Secret registrationSecret) {
+    Secret registrationSecret,
+    int batchSize) {
     super(tracer, registrationSecret);
 
     this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
-    Require.nonNegative("Retry period", retryPeriod);
+    Require.nonNegative("Retry period", requestTimeoutCheck);
 
     this.requestTimeout = Require.positive("Request timeout", requestTimeout);
 
@@ -127,10 +130,12 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     this.queue = new ConcurrentLinkedDeque<>();
     this.contexts = new ConcurrentHashMap<>();
 
+    this.batchSize = Require.positive("Batch size", batchSize);
+
     service.scheduleAtFixedRate(
       GuardedRunnable.guard(this::timeoutSessions),
-      retryPeriod.toMillis(),
-      retryPeriod.toMillis(),
+      requestTimeoutCheck.toMillis(),
+      requestTimeoutCheck.toMillis(),
       MILLISECONDS);
 
     new JMXHelper().register(this);
@@ -147,9 +152,10 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     return new LocalNewSessionQueue(
       tracer,
       slotMatcher,
-      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      newSessionQueueOptions.getSessionRequestTimeoutPeriod(),
       newSessionQueueOptions.getSessionRequestTimeout(),
-      secretOptions.getRegistrationSecret());
+      secretOptions.getRegistrationSecret(),
+      newSessionQueueOptions.getBatchSize());
   }
 
   private void timeoutSessions() {
@@ -295,23 +301,33 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
-  public Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes) {
+  public List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes) {
     Require.nonNull("Stereotypes", stereotypes);
 
     Predicate<Capabilities> matchesStereotype =
-      caps -> stereotypes.stream().anyMatch(stereotype -> slotMatcher.matches(stereotype, caps));
+      caps -> stereotypes.entrySet()
+        .stream()
+        .filter(entry -> entry.getValue() > 0)
+        .anyMatch(entry -> {
+          boolean matches = slotMatcher.matches(entry.getKey(), caps);
+          if (matches) {
+            Long value = entry.getValue();
+            entry.setValue(value - 1);
+          }
+          return matches;
+        });
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<SessionRequest> maybeRequest =
-          queue.stream()
-              .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
-              .findFirst();
+      List<SessionRequest> availableRequests = queue.stream()
+        .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
+        .limit(batchSize)
+        .collect(Collectors.toList());
 
-      maybeRequest.ifPresent(req -> this.remove(req.getRequestId()));
+      availableRequests.forEach(req -> this.remove(req.getRequestId()));
 
-      return maybeRequest;
+      return availableRequests;
     } finally {
       writeLock.unlock();
     }

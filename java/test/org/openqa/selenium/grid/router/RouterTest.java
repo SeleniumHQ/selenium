@@ -128,7 +128,8 @@ class RouterTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     distributor = new LocalDistributor(
@@ -141,7 +142,8 @@ class RouterTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      Runtime.getRuntime().availableProcessors());
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, queue, distributor);
