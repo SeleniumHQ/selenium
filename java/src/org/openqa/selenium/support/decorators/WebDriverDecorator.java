@@ -31,9 +31,11 @@ import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.virtualauthenticator.VirtualAuthenticator;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -183,6 +185,8 @@ public class WebDriverDecorator<T extends WebDriver> {
 
   private final Class<T> targetWebDriverClass;
 
+  private final Object[] targetWebDriverConstructorArgs;
+
   private Decorated<T> decorated;
 
   @SuppressWarnings("unchecked")
@@ -191,7 +195,12 @@ public class WebDriverDecorator<T extends WebDriver> {
   }
 
   public WebDriverDecorator(Class<T> targetClass) {
+    this(targetClass, new Object[0]);
+  }
+
+  public WebDriverDecorator(Class<T> targetClass, Object[] targetConstructorArgs) {
     this.targetWebDriverClass = targetClass;
+    this.targetWebDriverConstructorArgs = targetConstructorArgs;
   }
 
   public final T decorate(T original) {
@@ -293,6 +302,7 @@ public class WebDriverDecorator<T extends WebDriver> {
     return toDecorate;
   }
 
+  @SuppressWarnings("unchecked")
   protected final <Z> Z createProxy(final Decorated<Z> decorated, Class<Z> clazz) {
     Set<Class<?>> decoratedInterfaces = extractInterfaces(decorated);
     Set<Class<?>> originalInterfaces = extractInterfaces(decorated.getOriginal());
@@ -336,9 +346,22 @@ public class WebDriverDecorator<T extends WebDriver> {
       .getLoaded()
       .asSubclass(clazz);
 
+    if (clazz.isInterface() || this.targetWebDriverConstructorArgs.length == 0) {
+      try {
+        return proxy.newInstance();
+      } catch (ReflectiveOperationException e) {
+        throw new IllegalStateException("Unable to create new proxy", e);
+      }
+    }
+
     try {
-      return proxy.newInstance();
-    } catch (ReflectiveOperationException e) {
+      Constructor<?> dstConstructor = proxy
+        .getConstructor(Arrays.stream(targetWebDriverConstructorArgs)
+          .map(Object::getClass)
+          .toArray(Class<?>[]::new)
+        );
+      return (Z) dstConstructor.newInstance(targetWebDriverConstructorArgs);
+    } catch (SecurityException | ReflectiveOperationException e) {
       throw new IllegalStateException("Unable to create new proxy", e);
     }
   }
