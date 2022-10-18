@@ -186,6 +186,7 @@ public class WebDriverDecorator<T extends WebDriver> {
   private final Class<T> targetWebDriverClass;
 
   private final Object[] targetWebDriverConstructorArgs;
+  private final Class<?>[] targetWebDriverConstructorArgTypes;
 
   private Decorated<T> decorated;
 
@@ -195,12 +196,21 @@ public class WebDriverDecorator<T extends WebDriver> {
   }
 
   public WebDriverDecorator(Class<T> targetClass) {
-    this(targetClass, new Object[0]);
+    this(targetClass, new Object[0], new Class[0]);
   }
 
-  public WebDriverDecorator(Class<T> targetClass, Object[] targetConstructorArgs) {
+  public WebDriverDecorator(Class<T> targetClass, Object[] targetConstructorArgs, Class<?>[] targetConstructorArgTypes) {
     this.targetWebDriverClass = targetClass;
+    if (targetConstructorArgs.length != targetConstructorArgTypes.length) {
+      throw new IllegalArgumentException(
+        String.format(
+          "Constructor arguments array length %d must be equal to the types array length %d",
+          targetConstructorArgs.length, targetConstructorArgTypes.length
+        )
+      );
+    }
     this.targetWebDriverConstructorArgs = targetConstructorArgs;
+    this.targetWebDriverConstructorArgTypes = targetConstructorArgTypes;
   }
 
   public final T decorate(T original) {
@@ -346,7 +356,10 @@ public class WebDriverDecorator<T extends WebDriver> {
       .getLoaded()
       .asSubclass(clazz);
 
-    if (clazz.isInterface() || this.targetWebDriverConstructorArgs.length == 0) {
+    if (clazz.isInterface()
+        || this.targetWebDriverConstructorArgs.length == 0
+        || this.targetWebDriverConstructorArgTypes.length == 0
+        ) {
       try {
         return proxy.newInstance();
       } catch (ReflectiveOperationException e) {
@@ -355,12 +368,9 @@ public class WebDriverDecorator<T extends WebDriver> {
     }
 
     try {
-      Constructor<?> dstConstructor = proxy
-        .getConstructor(Arrays.stream(targetWebDriverConstructorArgs)
-          .map(Object::getClass)
-          .toArray(Class<?>[]::new)
-        );
-      return (Z) dstConstructor.newInstance(targetWebDriverConstructorArgs);
+      return (Z) proxy
+        .getConstructor(targetWebDriverConstructorArgTypes)
+        .newInstance(targetWebDriverConstructorArgs);
     } catch (SecurityException | ReflectiveOperationException e) {
       throw new IllegalStateException("Unable to create new proxy", e);
     }

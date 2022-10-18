@@ -162,7 +162,6 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
   private final List<WebDriverListener> listeners;
 
   public EventFiringDecorator(WebDriverListener... listeners) {
-    super();
     this.listeners = Arrays.asList(listeners);
   }
 
@@ -171,8 +170,12 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     this.listeners = Arrays.asList(listeners);
   }
 
-  public EventFiringDecorator(Class<T> targetClass, Object[] targetConstructorArgs, WebDriverListener... listeners) {
-    super(targetClass, targetConstructorArgs);
+  public EventFiringDecorator(
+    Class<T> targetClass,
+    Object[] targetConstructorArgs,
+    Class<?>[] targetConstructorArgTypes,
+    WebDriverListener... listeners) {
+    super(targetClass, targetConstructorArgs, targetConstructorArgTypes);
     this.listeners = Arrays.asList(listeners);
   }
 
