@@ -28,6 +28,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -416,8 +417,23 @@ public class EventFiringWebDriver implements
     }
 
     @Override
+    public String getDomProperty(String name) {
+      return element.getDomProperty(name);
+    }
+
+    @Override
     public String getAttribute(String name) {
       return element.getAttribute(name);
+    }
+
+    @Override
+    public String getAriaRole() {
+      return element.getAriaRole();
+    }
+
+    @Override
+    public String getAccessibleName() {
+      return element.getAccessibleName();
     }
 
     @Override
@@ -441,6 +457,11 @@ public class EventFiringWebDriver implements
       String text = element.getText();
       dispatcher.afterGetText(element, driver, text);
       return text;
+    }
+
+    @Override
+    public SearchContext getShadowRoot() {
+      return element.getShadowRoot();
     }
 
     @Override
