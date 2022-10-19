@@ -356,17 +356,6 @@ public class WebDriverDecorator<T extends WebDriver> {
       .getLoaded()
       .asSubclass(clazz);
 
-    if (clazz.isInterface()
-        || this.targetWebDriverConstructorArgs.length == 0
-        || this.targetWebDriverConstructorArgTypes.length == 0
-        ) {
-      try {
-        return proxy.newInstance();
-      } catch (ReflectiveOperationException e) {
-        throw new IllegalStateException("Unable to create new proxy", e);
-      }
-    }
-
     try {
       return (Z) proxy
         .getConstructor(targetWebDriverConstructorArgTypes)
