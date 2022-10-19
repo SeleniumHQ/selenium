@@ -37,7 +37,7 @@ public class NewSessionQueueOptions {
   static final int DEFAULT_REQUEST_TIMEOUT = 300;
   static final int DEFAULT_REQUEST_TIMEOUT_PERIOD = 10;
   static final int DEFAULT_RETRY_INTERVAL = 15;
-  static final int DEFAULT_BATCH_SIZE = 10;
+  static final int DEFAULT_BATCH_SIZE = Runtime.getRuntime().availableProcessors() * 3;
 
   private final Config config;
 
