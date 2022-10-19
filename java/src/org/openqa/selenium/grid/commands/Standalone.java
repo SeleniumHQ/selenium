@@ -66,6 +66,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -147,9 +148,10 @@ public class Standalone extends TemplateGridServerCommand {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       distributorOptions.getSlotMatcher(),
-      newSessionRequestOptions.getSessionRequestRetryInterval(),
+      newSessionRequestOptions.getSessionRequestTimeoutPeriod(),
       newSessionRequestOptions.getSessionRequestTimeout(),
-      registrationSecret);
+      registrationSecret,
+      newSessionRequestOptions.getBatchSize());
     combinedHandler.addHandler(queue);
 
     Distributor distributor = new LocalDistributor(
@@ -162,7 +164,8 @@ public class Standalone extends TemplateGridServerCommand {
       registrationSecret,
       distributorOptions.getHealthCheckInterval(),
       distributorOptions.shouldRejectUnsupportedCaps(),
-      newSessionRequestOptions.getSessionRequestRetryInterval());
+      newSessionRequestOptions.getSessionRequestRetryInterval(),
+      distributorOptions.getNewSessionThreadPoolSize());
     combinedHandler.addHandler(distributor);
 
     Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
@@ -231,6 +234,13 @@ public class Standalone extends TemplateGridServerCommand {
   @Override
   protected void execute(Config config) {
     Require.nonNull("Config", config);
+
+    config.get("server", "max-threads")
+      .ifPresent(value -> LOG.log(Level.WARNING,
+                                  () ->
+                                    "Support for max-threads flag is deprecated. " +
+                                    "The intent of the flag is to set the thread pool size in the Distributor. " +
+                                    "Please use newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config).start();
 

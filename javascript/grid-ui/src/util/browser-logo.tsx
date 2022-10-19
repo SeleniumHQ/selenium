@@ -9,11 +9,12 @@ import safariTechnologyPreviewLogo
 import unknownBrowserLogo from '../assets/browsers/unknown.svg'
 
 const browserLogo = (browser: string): string => {
-  if (browser.length === 0) {
+  const browserName = browser ?? ''
+  if (browserName.length === 0) {
     return unknownBrowserLogo
   }
 
-  switch (browser.toLowerCase()) {
+  switch (browserName.toLowerCase()) {
     case 'chrome':
       return chromeLogo
     case 'microsoftedge':

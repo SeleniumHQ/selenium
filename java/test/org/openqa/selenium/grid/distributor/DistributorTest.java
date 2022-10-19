@@ -102,6 +102,7 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 class DistributorTest {
 
   private static final Logger LOG = Logger.getLogger("Distributor Test");
+  private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private final Secret registrationSecret = new Secret("hellim");
   private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
   private Tracer tracer;
@@ -135,7 +136,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
@@ -159,7 +161,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
@@ -204,7 +207,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -221,7 +225,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -245,7 +250,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -263,7 +269,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -288,7 +295,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -306,7 +314,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     Distributor distributor = new RemoteDistributor(
       tracer,
       new PassthroughHttpClient.Factory(local),
@@ -328,7 +337,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -345,7 +355,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     distributor.drain(node.getId());
 
@@ -363,7 +374,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -383,7 +395,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -408,7 +421,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -428,7 +442,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -453,7 +468,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -476,7 +492,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -519,7 +536,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     local.add(node);
     local.add(node);
@@ -541,7 +559,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     Node lightest = createNode(caps, 10, 0);
     Node medium = createNode(caps, 10, 4);
@@ -563,7 +582,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5))
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize)
       .add(heavy)
       .add(medium)
       .add(lightest)
@@ -589,7 +609,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Node leastRecent = createNode(caps, 5, 0);
 
     CombinedHandler handler = new CombinedHandler();
@@ -606,7 +627,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5))
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize)
       .add(leastRecent);
     waitToHaveCapacity(distributor);
 
@@ -667,7 +689,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(sessions);
 
     URI uri = createUri();
@@ -690,7 +713,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
     waitForAllNodesToMeetCondition(distributor, 1, DOWN);
@@ -724,7 +748,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, c) -> new Session(
@@ -740,7 +765,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     waitToHaveCapacity(distributor);
@@ -763,7 +789,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, c) -> new Session(
@@ -780,7 +807,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -822,7 +850,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(sessions);
 
     Distributor distributor = new LocalDistributor(
@@ -835,7 +864,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -857,7 +887,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> {
@@ -875,7 +906,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -898,7 +930,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     URI uri = createUri();
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
@@ -920,7 +953,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
     distributor.add(node);
     waitForAllNodesToMeetCondition(distributor, 1, DOWN);
@@ -955,7 +989,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     URI uri = createUri();
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
@@ -984,7 +1019,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -1031,7 +1067,8 @@ class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,
@@ -1043,7 +1080,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     //Create all three Capability types
     Capabilities edge = new ImmutableCapabilities("browserName", "edge");
@@ -1148,7 +1186,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     local.add(firstNode);
     local.add(secondNode);
@@ -1191,7 +1230,8 @@ class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     local.add(brokenNode);
     local.add(node);
     waitForAllNodesToHaveCapacity(local, 2);

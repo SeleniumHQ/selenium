@@ -73,6 +73,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 class NewSessionCreationTest {
 
+  private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private Tracer tracer;
   private EventBus bus;
   private HttpClient.Factory clientFactory;
@@ -100,7 +101,8 @@ class NewSessionCreationTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(60),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -112,7 +114,8 @@ class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
@@ -176,7 +179,8 @@ class NewSessionCreationTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(10),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     AtomicInteger count = new AtomicInteger();
@@ -211,7 +215,8 @@ class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
 
     distributor.add(localNode);
@@ -253,7 +258,8 @@ class NewSessionCreationTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
       Duration.ofSeconds(60),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) ->
@@ -279,7 +285,8 @@ class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       true,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
 
     distributor.add(localNode);
