@@ -8,10 +8,10 @@ genrule(
     name = "executable-grid",
     srcs = [
         "zip-preamble.sh",
-        ":add-build-info",
+        ":selenium_server_deploy.jar",
     ],
     outs = ["selenium"],
-    cmd = "cat $(location :zip-preamble.sh) $(location :add-build-info) > $@",
+    cmd = "cat $(location :zip-preamble.sh) $(location :selenium_server_deploy.jar) > $@",
     executable = True,
     visibility = [
         "//:__pkg__",
@@ -137,6 +137,10 @@ merge_jars(
 
 java_binary(
     name = "selenium_server",
+    deploy_manifest_lines = [
+        "Name: Build-Info",
+        "Selenium-Version: %s" % SE_VERSION,
+    ],
     main_class = "org.openqa.selenium.grid.Bootstrap",
     visibility = [
         "//:__pkg__",
