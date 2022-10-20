@@ -10,7 +10,7 @@ def selenium_java_deps():
     maven_install(
         artifacts = [
             "com.beust:jcommander:1.82",
-            "com.github.javaparser:javaparser-core:3.24.4",
+            "com.github.javaparser:javaparser-core:3.24.7",
             maven.artifact(
                 group = "com.github.spotbugs",
                 artifact = "spotbugs",
@@ -26,7 +26,7 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service-annotations:1.0.1",
             "com.graphql-java:graphql-java:19.2",
             "com.graphql-java:java-dataloader:3.2.0",
-            "io.grpc:grpc-context:1.50.0",
+            "io.grpc:grpc-context:1.50.2",
             "io.lettuce:lettuce-core:6.2.1.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
@@ -88,8 +88,8 @@ def selenium_java_deps():
             "org.hamcrest:hamcrest:2.2",
             "org.hsqldb:hsqldb:2.7.0",
             "org.mockito:mockito-core:4.8.0",
-            "org.slf4j:slf4j-api:1.7.36",
-            "org.slf4j:slf4j-jdk14:1.7.36",
+            "org.slf4j:slf4j-api:2.0.3",
+            "org.slf4j:slf4j-jdk14:2.0.3",
             "org.testng:testng:7.6.1",
             "org.zeromq:jeromq:0.5.2",
             "xyz.rogfam:littleproxy:2.0.13",
