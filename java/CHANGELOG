@@ -1,3 +1,9 @@
+v4.5.2
+======
+* Supported CDP versions: 85, 104, 105, 106
+* Add support for basic auth in JDK client (Related to #11068)
+* [grid] Adjusting PortProber for Docker execution
+
 v4.5.1
 ======
 * Supported CDP versions: 85, 104, 105, 106
@@ -20,6 +26,7 @@ v4.5.1
 * [grid] Add batch size flag for session queue
 * Make sure `EventFiringWebElement` implements all `WebElement` methods (#11144)
 * [bidi] Make BaseLogEntry.LogLevel enum public (#11147)
+* [grid] Removing default value for `max-threads` to avoid noisy warnings due to deprecation
 
 v4.5.0
 ======
