@@ -35,6 +35,7 @@ public class PortProber {
   public static final int START_OF_USER_PORTS = 1024;
   private static final Random random = new Random();
   private static final EphemeralPortRangeDetector ephemeralRangeDetector;
+  private static final boolean inDocker = Boolean.parseBoolean(System.getenv("SE_DOCKER"));
 
   static {
     final Platform current = Platform.getCurrent();
@@ -64,12 +65,12 @@ public class PortProber {
   }
 
   /**
-   * Returns a port that is within a probable free range. <p/> Based on the ports in
-   * http://en.wikipedia.org/wiki/Ephemeral_ports, this method stays away from all well-known
-   * ephemeral port ranges, since they can arbitrarily race with the operating system in
-   * allocations. Due to the port-greedy nature of selenium this happens fairly frequently.
-   * Staying within the known safe range increases the probability tests will run green quite
-   * significantly.
+   * Returns a port that is within a probable free-range. <p/> Based on the ports in
+   * <a href="http://en.wikipedia.org/wiki/Ephemeral_ports">...</a>, this method stays away
+   * from all well-known ephemeral port ranges, since they can arbitrarily race with the
+   * operating system in allocations. Due to the port-greedy nature of selenium this
+   * happens fairly frequently. Staying within the known safe range increases the probability
+   * tests will run green quite significantly.
    *
    * @return a random port number
    */
@@ -125,7 +126,12 @@ public class PortProber {
   }
 
   static int checkPortIsFree(int port) {
-    if (isFree("localhost", port) && isFree("0.0.0.0", port) && isFree("::1", port)) {
+    boolean localhostIsFree = isFree("localhost", port);
+    // We cannot check against all interfaces if the Grid is running inside Docker.
+    if (inDocker && localhostIsFree) {
+      return port;
+    }
+    if (localhostIsFree && isFree("0.0.0.0", port) && isFree("::1", port)) {
       return port;
     }
     return -1;
