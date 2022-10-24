@@ -56,14 +56,14 @@ public final class Require {
 
   public static <T> T nonNull(String argName, T arg) {
     if (arg == null) {
-      throw new NullPointerException(String.format(MUST_BE_SET, argName));
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
     }
     return arg;
   }
 
   public static <T> T nonNull(String argName, T arg, String message, Object... args) {
     if (arg == null) {
-      throw new NullPointerException(
+      throw new IllegalArgumentException(
         String.join(" ", argName, String.format(message, args)));
     }
     return arg;
@@ -86,7 +86,7 @@ public final class Require {
 
   public static Duration nonNegative(Duration arg) {
     if (arg == null) {
-      throw new NullPointerException(String.format(MUST_BE_SET, "Duration"));
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, "Duration"));
     }
     if (arg.isNegative()) {
       throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, "Duration"));
@@ -96,7 +96,7 @@ public final class Require {
 
   public static Duration positive(String argName, Duration arg) {
     if (arg == null) {
-      throw new NullPointerException(String.format(MUST_BE_SET, argName));
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
     }
     if (arg.isNegative() || arg.isZero()) {
       throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, argName));
@@ -106,7 +106,7 @@ public final class Require {
 
   public static Duration positive(Duration arg) {
     if (arg == null) {
-      throw new NullPointerException(String.format(MUST_BE_SET, "Duration"));
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, "Duration"));
     }
     if (arg.isNegative() || arg.isZero()) {
       throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, "Duration"));
@@ -116,7 +116,7 @@ public final class Require {
 
   public static int nonNegative(String argName, Integer number) {
     if (number == null) {
-      throw new NullPointerException(String.format(MUST_BE_SET, argName));
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
     }
     if (number < 0) {
       throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, argName));
@@ -126,11 +126,11 @@ public final class Require {
 
   public static int positive(String argName, Integer number, String message) {
     if (number == null) {
-      throw new NullPointerException(String.format(MUST_BE_SET, argName));
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
     }
     if (number <= 0) {
       if (message == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, argName));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
       } else {
         throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, message));
       }
@@ -139,9 +139,12 @@ public final class Require {
   }
 
   public static double positive(String argName, Double number, String message) {
+    if (number == null) {
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
+    }
     if (number <= 0) {
       if (message == null) {
-        throw new NullPointerException(String.format(MUST_BE_POSITIVE, argName));
+        throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, argName));
       } else {
         throw new IllegalArgumentException(message);
       }
@@ -195,7 +198,7 @@ public final class Require {
 
     public T nonNull() {
       if (arg == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, argName));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
       }
       return arg;
     }
@@ -209,7 +212,7 @@ public final class Require {
 
     public T equalTo(Object other) {
       if (arg == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, argName));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
       }
       if (!Objects.equals(arg, other)) {
         throw new IllegalArgumentException(String.format(MUST_BE_EQUAL, argName, other));
@@ -219,7 +222,7 @@ public final class Require {
 
     public T instanceOf(Class<?> cls) {
       if (arg == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, argName));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
       }
       if (!cls.isInstance(arg)) {
         throw new IllegalArgumentException(argName + " must be an instance of " + cls);
@@ -240,7 +243,7 @@ public final class Require {
 
     public int greaterThan(int max, String message) {
       if (number == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, argName));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
       }
       if (number <= max) {
         throw new IllegalArgumentException(message);
@@ -261,7 +264,7 @@ public final class Require {
 
     public File isFile() {
       if (file == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, argName));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
       }
       if (!file.exists()) {
         throw new IllegalArgumentException(
@@ -276,7 +279,7 @@ public final class Require {
 
     public File isDirectory() {
       if (file == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, argName));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
       }
       if (!file.exists()) {
         throw new IllegalArgumentException(
@@ -316,7 +319,7 @@ public final class Require {
 
     public T instanceOf(Class<?> cls) {
       if (state == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, name));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
       }
       if (!cls.isInstance(state)) {
         throw new IllegalStateException(name + " must be an instance of " + cls);
@@ -337,7 +340,7 @@ public final class Require {
 
     public File isFile() {
       if (file == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, name));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
       }
       if (!file.exists()) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, file.getAbsolutePath()));
@@ -350,7 +353,7 @@ public final class Require {
 
     public File isDirectory() {
       if (file == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, name));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
       }
       if (!file.exists()) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, file.getAbsolutePath()));
@@ -374,7 +377,7 @@ public final class Require {
 
     public Path isFile() {
       if (path == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, name));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
       }
       if (!Files.exists(path)) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, path));
@@ -387,7 +390,7 @@ public final class Require {
 
     public Path isDirectory() {
       if (path == null) {
-        throw new NullPointerException(String.format(MUST_BE_SET, name));
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
       }
       if (!Files.exists(path)) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, path));
