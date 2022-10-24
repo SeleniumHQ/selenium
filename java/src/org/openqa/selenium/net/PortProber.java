@@ -124,12 +124,7 @@ public class PortProber {
   }
 
   static int checkPortIsFree(int port) {
-    boolean localhostIsFree = isFree("localhost", port);
-    // We cannot check against all interfaces if the Grid is running inside Docker.
-    if (current.is(Platform.LINUX) && localhostIsFree) {
-      return port;
-    }
-    if (localhostIsFree && isFree("0.0.0.0", port) && isFree("::1", port)) {
+    if (isFree("localhost", port) && isFree("0.0.0.0", port)) {
       return port;
     }
     return -1;
