@@ -1,12 +1,13 @@
 package org.openqa.selenium.net;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Platform;
 
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("UnitTests")
 public class PortProberTest {
@@ -31,9 +32,11 @@ public class PortProberTest {
 
     @Test
     void checkPortIsFree_checksIpv6Localhost() throws Exception {
-        try (ServerSocket socket = new ServerSocket()) {
-            socket.bind(new InetSocketAddress("::1", TEST_PORT));
-            assertThat(PortProber.checkPortIsFree(TEST_PORT)).isEqualTo(-1);
+        if (!Platform.getCurrent().is(Platform.LINUX)) {
+            try (ServerSocket socket = new ServerSocket()) {
+                socket.bind(new InetSocketAddress("::1", TEST_PORT));
+                assertThat(PortProber.checkPortIsFree(TEST_PORT)).isEqualTo(-1);
+            }
         }
     }
 
