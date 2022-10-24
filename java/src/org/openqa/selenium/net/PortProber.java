@@ -35,11 +35,9 @@ public class PortProber {
   public static final int START_OF_USER_PORTS = 1024;
   private static final Random random = new Random();
   private static final EphemeralPortRangeDetector ephemeralRangeDetector;
-  private static final boolean inDocker = Boolean.parseBoolean(System.getenv("SE_DOCKER"));
+  private static final Platform current = Platform.getCurrent();
 
   static {
-    final Platform current = Platform.getCurrent();
-
     if (current.is(Platform.LINUX)) {
        ephemeralRangeDetector = LinuxEphemeralPortRangeDetector.getInstance();
      } else if (current.is(Platform.XP)) {
@@ -128,7 +126,7 @@ public class PortProber {
   static int checkPortIsFree(int port) {
     boolean localhostIsFree = isFree("localhost", port);
     // We cannot check against all interfaces if the Grid is running inside Docker.
-    if (inDocker && localhostIsFree) {
+    if (current.is(Platform.LINUX) && localhostIsFree) {
       return port;
     }
     if (localhostIsFree && isFree("0.0.0.0", port) && isFree("::1", port)) {
