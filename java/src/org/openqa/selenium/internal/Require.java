@@ -75,8 +75,7 @@ public final class Require {
 
   public static Duration nonNegative(String argName, Duration arg) {
     if (arg == null) {
-      throw new IllegalArgumentException(String.format(
-        , argName));
+      throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
     }
     if (arg.isNegative()) {
       throw new IllegalArgumentException(String.format(MUST_BE_NON_NEGATIVE, argName));
@@ -130,9 +129,9 @@ public final class Require {
     }
     if (number <= 0) {
       if (message == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
+        throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, argName));
       } else {
-        throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, message));
+        throw new IllegalArgumentException(message);
       }
     }
     return number;
@@ -319,7 +318,7 @@ public final class Require {
 
     public T instanceOf(Class<?> cls) {
       if (state == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
+        throw new IllegalStateException(String.format(MUST_BE_SET, name));
       }
       if (!cls.isInstance(state)) {
         throw new IllegalStateException(name + " must be an instance of " + cls);
@@ -340,7 +339,7 @@ public final class Require {
 
     public File isFile() {
       if (file == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
+        throw new IllegalStateException(String.format(MUST_BE_SET, name));
       }
       if (!file.exists()) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, file.getAbsolutePath()));
@@ -353,7 +352,7 @@ public final class Require {
 
     public File isDirectory() {
       if (file == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
+        throw new IllegalStateException(String.format(MUST_BE_SET, name));
       }
       if (!file.exists()) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, file.getAbsolutePath()));
@@ -377,7 +376,7 @@ public final class Require {
 
     public Path isFile() {
       if (path == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
+        throw new IllegalStateException(String.format(MUST_BE_SET, name));
       }
       if (!Files.exists(path)) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, path));
@@ -390,7 +389,7 @@ public final class Require {
 
     public Path isDirectory() {
       if (path == null) {
-        throw new IllegalArgumentException(String.format(MUST_BE_SET, name));
+        throw new IllegalStateException(String.format(MUST_BE_SET, name));
       }
       if (!Files.exists(path)) {
         throw new IllegalStateException(String.format(MUST_EXIST, name, path));
