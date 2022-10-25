@@ -15,37 +15,36 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from selenium.webdriver.chromium.options import ChromiumOptions
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.common.options import BaseOptions
 
 
-class Options(BaseOptions):
+class Options(ChromiumOptions):
+    KEY = "ms:edgeOptions"
 
     def __init__(self):
-        super(Options, self).__init__()
-        self._page_load_strategy = "normal"
+        super().__init__()
+        self._use_webview = False
 
     @property
-    def page_load_strategy(self):
-        return self._page_load_strategy
+    def use_webview(self) -> bool:
+        return self._use_webview
 
-    @page_load_strategy.setter
-    def page_load_strategy(self, value):
-        if value not in ['normal', 'eager', 'none']:
-            raise ValueError("Page Load Strategy should be 'normal', 'eager' or 'none'.")
-        self._page_load_strategy = value
+    @use_webview.setter
+    def use_webview(self, value: bool) -> None:
+        self._use_webview = bool(value)
 
-    def to_capabilities(self):
+    def to_capabilities(self) -> dict:
         """
         Creates a capabilities with all the options that have been set and
-
         :Returns: A dictionary with everything
         """
-        caps = self._caps
-        caps['pageLoadStrategy'] = self._page_load_strategy
+        caps = super().to_capabilities()
+        if self._use_webview:
+            caps["browserName"] = "webview2"
 
         return caps
 
     @property
-    def default_capabilities(self):
+    def default_capabilities(self) -> dict:
         return DesiredCapabilities.EDGE.copy()

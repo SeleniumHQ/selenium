@@ -18,14 +18,21 @@
 # under the License.
 
 require 'uri'
-
-require 'selenium/webdriver/remote/bridge'
-require 'selenium/webdriver/remote/driver'
-require 'selenium/webdriver/remote/response'
 require 'selenium/webdriver/remote/server_error'
-require 'selenium/webdriver/remote/http/common'
-require 'selenium/webdriver/remote/http/default'
 
-require 'selenium/webdriver/remote/bridge'
-require 'selenium/webdriver/remote/capabilities'
-require 'selenium/webdriver/remote/commands'
+module Selenium
+  module WebDriver
+    module Remote
+      autoload :Bridge,       'selenium/webdriver/remote/bridge'
+      autoload :Driver,       'selenium/webdriver/remote/driver'
+      autoload :Response,     'selenium/webdriver/remote/response'
+      autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
+      autoload :COMMANDS,     'selenium/webdriver/remote/commands'
+
+      module Http
+        autoload :Common,  'selenium/webdriver/remote/http/common'
+        autoload :Default, 'selenium/webdriver/remote/http/default'
+      end
+    end
+  end
+end

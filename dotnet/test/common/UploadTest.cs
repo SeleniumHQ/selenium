@@ -27,7 +27,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Frame switching causes browser hang")]
         public void ShouldAllowFileUploading()
         {
             driver.Url = uploadPage;
@@ -39,13 +38,12 @@ namespace OpenQA.Selenium
             IWebElement body = null;
             WaitFor(() => {
                 body = driver.FindElement(By.CssSelector("body"));
-                return LoremIpsumText == body.Text;
+                return body.Text.Contains(LoremIpsumText);
             }, "Page source is: " + driver.PageSource);
             Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not support clearing file upload elements")]
         public void CleanFileInput()
         {
             driver.Url = uploadPage;
@@ -66,8 +64,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Frame switching causes browser hang")]
-        [IgnoreBrowser(Browser.Safari, "Safari driver hangs attempting to send keys to hidden file input")]
         public void UploadingWithHiddenFileInput()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("upload_invisible.html");
@@ -82,7 +78,7 @@ namespace OpenQA.Selenium
             WaitFor(() =>
             {
                 body = driver.FindElement(By.XPath("//body"));
-                return LoremIpsumText == body.Text;
+                return body.Text.Contains(LoremIpsumText);
             }, "Page source is: " + driver.PageSource);
             Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
 
@@ -92,8 +88,6 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Frame switching causes browser hang")]
-        [IgnoreBrowser(Browser.Safari, "Attempting to upload with transparent element hangs Safari browser.")]
         public void ShouldAllowFileUploadingUsingTransparentUploadElement()
         {
             driver.Url = transparentUploadPage;
@@ -105,7 +99,7 @@ namespace OpenQA.Selenium
             IWebElement body = null;
             WaitFor(() => {
                 body = driver.FindElement(By.XPath("//body"));
-                return LoremIpsumText == body.Text;
+                return body.Text.Contains(LoremIpsumText);
             }, "Page source is: " + driver.PageSource);
             Assert.That(body.Text, Is.EqualTo(LoremIpsumText), "Page source is: " + driver.PageSource);
             driver.Url = "about:blank";

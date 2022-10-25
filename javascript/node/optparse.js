@@ -115,7 +115,7 @@ var HELP_TEXT_POSITION = MAX_HELP_POSITION + IDENTATION.length;
 
 /**
  * Formats a help message for the given parser.
- * @param {string} usage The usage string. All occurences of "$0" will be
+ * @param {string} usage The usage string. All occurrences of "$0" will be
  *     replaced with the name of the current program.
  * @param {!Object.<!Option>} options The options to format.
  * @return {string} The formatted help message.
@@ -266,7 +266,7 @@ function OptionParser() {
   var extraArgs = [];
 
   /**
-   * Sets the usage string. All occurences of "$0" will be replaced with the
+   * Sets the usage string. All occurrences of "$0" will be replaced with the
    * current executable's name.
    * @param {string} usageStr The new usage string.
    * @return {!OptionParser} A self reference.
@@ -297,7 +297,7 @@ function OptionParser() {
    *     option. If this function has a "default" property, it will be used as
    *     the default value for the option if it was not provided on the command
    *     line. If not specified, the default value will be undefined. The
-   *     default value may be overrideden using the "default" property in the
+   *     default value may be overridden using the "default" property in the
    *     option spec.
    * @param {Object=} opt_spec The option spec.
    * @return {!OptionParser} A self reference.
@@ -349,7 +349,7 @@ function OptionParser() {
 
   /**
    * Defines a path option. Each path will be resolved relative to the
-   * current workin directory, if not absolute.
+   * current working directory, if not absolute.
    * @param {string} name The name of the option.
    * @param {Object=} opt_spec The option spec.
    * @return {!OptionParser} A self reference.

@@ -1,0 +1,25 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite")
+
+java_selenium_test_suite(
+    name = "LargeTests",
+    size = "large",
+    srcs = glob(["*Test.java"]),
+    browsers = ["chrome"],
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    tags = [
+        "selenium-remote",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support/locators",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)

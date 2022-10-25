@@ -89,6 +89,7 @@ bot.storage.Storage = function(storageMap) {
   /**
    * Member variable to access the assigned HTML5 storage object.
    * @private {Storage}
+   * @const
    */
   this.storageMap_ = storageMap;
 };
@@ -131,7 +132,7 @@ bot.storage.Storage.prototype.getItem = function(key) {
 /**
  * Returns an array of keys of all keys of the Storage object.
  *
- * @return {Array.<string>} The array of stored keys..
+ * @return {!Array.<string>} The array of stored keys..
  */
 bot.storage.Storage.prototype.keySet = function() {
   var keys = [];

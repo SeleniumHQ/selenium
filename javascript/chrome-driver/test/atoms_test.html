@@ -93,15 +93,46 @@ limitations under the License.
       assertEquals(0, computeY('c5', 'e5'));
     }
 
-    function testGetLocationInView() {
+    function testGetLocationInViewNoSroll() {
+      var elem = frames[0].document.getElementById('elem0');
+      var coord = webdriver.chrome.getLocationInView(
+          elem, false, new goog.math.Rect(0,0,4,4));
+      var tolerance = 1;
+      assertRoughlyEquals(108, coord.x, tolerance);
+      assertRoughlyEquals(108, coord.y, tolerance);
+      assertEquals(0, frames[0].document.documentElement.scrollLeft);
+      assertEquals(0, frames[0].document.documentElement.scrollTop);
+    }
+
+    function testGetLocationInViewScrolling() {
       var elem = frames[0].document.getElementById('elem');
       var coord = webdriver.chrome.getLocationInView(
           elem, false, new goog.math.Rect(0,0,4,4));
       var tolerance = 1;
       assertRoughlyEquals(280, coord.x, tolerance);
       assertRoughlyEquals(280, coord.y, tolerance);
-      assertEquals(408, frames[0].document.body.scrollLeft);
-      assertEquals(408, frames[0].document.body.scrollTop);
+      assertEquals(408, frames[0].document.documentElement.scrollLeft);
+      assertEquals(408, frames[0].document.documentElement.scrollTop);
+    }
+
+    function testGetLocationInViewDocumentElement() {
+      var elem = document.documentElement;
+      var coord = webdriver.chrome.getLocationInView(
+          elem, false, new goog.math.Rect(0,0,4,4));
+      assertEquals(0, coord.x);
+      assertEquals(0, coord.y);
+      assertEquals(0, document.documentElement.scrollLeft);
+      assertEquals(0, document.documentElement.scrollTop);
+    }
+
+    function testGetLocationInViewFrameDocumentElement() {
+      var elem = frames[0].document.documentElement;
+      var coord = webdriver.chrome.getLocationInView(
+          elem, false, new goog.math.Rect(0,0,4,4));
+      assertEquals(0, coord.x);
+      assertEquals(0, coord.y);
+      assertEquals(0, frames[0].document.documentElement.scrollLeft);
+      assertEquals(0, frames[0].document.documentElement.scrollTop);
     }
 
     function testGetFirstClientRect() {

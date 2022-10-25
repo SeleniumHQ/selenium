@@ -44,7 +44,7 @@ try {
  *
  * @return {!Window} The window for command execution.
  */
-bot.getWindow = function() {
+bot.getWindow = function () {
   return bot.window_;
 };
 
@@ -54,7 +54,7 @@ bot.getWindow = function() {
  *
  * @param {!Window} win The window for command execution.
  */
-bot.setWindow = function(win) {
+bot.setWindow = function (win) {
   bot.window_ = win;
 };
 
@@ -65,6 +65,6 @@ bot.setWindow = function(win) {
  *
  * @return {!Document} The current window's document.
  */
-bot.getDocument = function() {
+bot.getDocument = function () {
   return bot.window_.document;
 };

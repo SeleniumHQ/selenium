@@ -1,1 +1,12 @@
-exports_files(["WebDriver.snk"])
+load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
+
+exports_files([
+    "WebDriver.snk",
+    "AssemblyInfo.cs.template",
+])
+
+string_flag(
+    name = "nuget-api-key",
+    build_setting_default = "",
+    visibility = ["//dotnet:__subpackages__"],
+)

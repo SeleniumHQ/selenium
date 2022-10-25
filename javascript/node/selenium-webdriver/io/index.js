@@ -15,13 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-var fs = require('fs'),
-    path = require('path'),
-    rimraf = require('rimraf'),
-    tmp = require('tmp');
-
+const fs = require('fs')
+const path = require('path')
+const tmp = require('tmp')
 
 /**
  * @param {!Function} fn .
@@ -33,22 +31,16 @@ function checkedCall(fn) {
     try {
       fn((err, value) => {
         if (err) {
-          reject(err);
+          reject(err)
         } else {
-          resolve(value);
+          resolve(value)
         }
-      });
+      })
     } catch (e) {
-      reject(e);
+      reject(e)
     }
-  });
+  })
 }
-
-
-
-// PUBLIC API
-
-
 
 /**
  * Recursively removes a directory and all of its contents. This is equivalent
@@ -57,27 +49,18 @@ function checkedCall(fn) {
  * @return {!Promise} A promise to be resolved when the operation has
  *     completed.
  */
-exports.rmDir = function(dirPath) {
-  return new Promise(function(fulfill, reject) {
-    var numAttempts = 0;
-    attemptRm();
-    function attemptRm() {
-      numAttempts += 1;
-      rimraf(dirPath, function(err) {
-        if (err) {
-          if (err.code && err.code === 'ENOTEMPTY' && numAttempts < 2) {
-            attemptRm();
-            return;
-          }
-          reject(err);
-        } else {
-          fulfill();
-        }
-      });
-    }
-  });
-};
-
+function rmDir(dirPath) {
+  return new Promise(function (fulfill, reject) {
+    fs.rm(dirPath, { recursive: true, maxRetries: 2 }, function (err) {
+      if (err && err.code === 'ENOENT') {
+        fulfill()
+      } else if (err) {
+        reject(err)
+      }
+      fulfill()
+    })
+  })
+}
 
 /**
  * Copies one file to another.
@@ -85,19 +68,18 @@ exports.rmDir = function(dirPath) {
  * @param {string} dst The destination file.
  * @return {!Promise<string>} A promise for the copied file's path.
  */
-exports.copy = function(src, dst) {
-  return new Promise(function(fulfill, reject) {
-    var rs = fs.createReadStream(src);
-    rs.on('error', reject);
+function copy(src, dst) {
+  return new Promise(function (fulfill, reject) {
+    const rs = fs.createReadStream(src)
+    rs.on('error', reject)
 
-    var ws = fs.createWriteStream(dst);
-    ws.on('error', reject);
-    ws.on('close', () => fulfill(dst));
+    const ws = fs.createWriteStream(dst)
+    ws.on('error', reject)
+    ws.on('close', () => fulfill(dst))
 
-    rs.pipe(ws);
-  });
-};
-
+    rs.pipe(ws)
+  })
+}
 
 /**
  * Recursively copies the contents of one directory to another.
@@ -109,73 +91,69 @@ exports.copy = function(src, dst) {
  * @return {!Promise<string>} A promise for the destination
  *     directory's path once all files have been copied.
  */
-exports.copyDir = function(src, dst, opt_exclude) {
-  var predicate = opt_exclude;
+function copyDir(src, dst, opt_exclude) {
+  let predicate = opt_exclude
   if (opt_exclude && typeof opt_exclude !== 'function') {
-    predicate = function(p) {
-      return !opt_exclude.test(p);
-    };
+    predicate = function (p) {
+      return !opt_exclude.test(p)
+    }
   }
 
-  // TODO(jleyba): Make this function completely async.
   if (!fs.existsSync(dst)) {
-    fs.mkdirSync(dst);
+    fs.mkdirSync(dst)
   }
 
-  var files = fs.readdirSync(src);
-  files = files.map(function(file) {
-    return path.join(src, file);
-  });
+  let files = fs.readdirSync(src)
+  files = files.map(function (file) {
+    return path.join(src, file)
+  })
 
   if (predicate) {
-    files = files.filter(/** @type {function(string): boolean} */(predicate));
+    files = files.filter(/** @type {function(string): boolean} */ (predicate))
   }
 
-  var results = [];
-  files.forEach(function(file) {
-    var stats = fs.statSync(file);
-    var target = path.join(dst, path.basename(file));
+  const results = []
+  files.forEach(function (file) {
+    const stats = fs.statSync(file)
+    const target = path.join(dst, path.basename(file))
 
     if (stats.isDirectory()) {
       if (!fs.existsSync(target)) {
-        fs.mkdirSync(target, stats.mode);
+        fs.mkdirSync(target, stats.mode)
       }
-      results.push(exports.copyDir(file, target, predicate));
+      results.push(copyDir(file, target, predicate))
     } else {
-      results.push(exports.copy(file, target));
+      results.push(copy(file, target))
     }
-  });
+  })
 
-  return Promise.all(results).then(() => dst);
-};
-
+  return Promise.all(results).then(() => dst)
+}
 
 /**
  * Tests if a file path exists.
  * @param {string} aPath The path to test.
  * @return {!Promise<boolean>} A promise for whether the file exists.
  */
-exports.exists = function(aPath) {
-  return new Promise(function(fulfill, reject) {
-    let type = typeof aPath;
+function exists(aPath) {
+  return new Promise(function (fulfill, reject) {
+    let type = typeof aPath
     if (type !== 'string') {
-      reject(TypeError(`expected string path, but got ${type}`));
+      reject(TypeError(`expected string path, but got ${type}`))
     } else {
-      fs.exists(aPath, fulfill);
+      fulfill(fs.existsSync(aPath))
     }
-  });
-};
-
+  })
+}
 
 /**
  * Calls `stat(2)`.
  * @param {string} aPath The path to stat.
  * @return {!Promise<!fs.Stats>} A promise for the file stats.
  */
-exports.stat = function stat(aPath) {
-  return checkedCall(callback => fs.stat(aPath, callback));
-};
-
+function stat(aPath) {
+  return checkedCall((callback) => fs.stat(aPath, callback))
+}
 
 /**
  * Deletes a name from the filesystem and possibly the file it refers to. Has
@@ -183,47 +161,42 @@ exports.stat = function stat(aPath) {
  * @param {string} aPath The path to remove.
  * @return {!Promise} A promise for when the file has been removed.
  */
-exports.unlink = function(aPath) {
-  return new Promise(function(fulfill, reject) {
-    fs.exists(aPath, function(exists) {
-      if (exists) {
-        fs.unlink(aPath, function(err) {
-          err && reject(err) || fulfill();
-        });
-      } else {
-        fulfill();
-      }
-    });
-  });
-};
-
+function unlink(aPath) {
+  return new Promise(function (fulfill, reject) {
+    const exists = fs.existsSync(aPath)
+    if (exists) {
+      fs.unlink(aPath, function (err) {
+        ;(err && reject(err)) || fulfill()
+      })
+    } else {
+      fulfill()
+    }
+  })
+}
 
 /**
  * @return {!Promise<string>} A promise for the path to a temporary directory.
  * @see https://www.npmjs.org/package/tmp
  */
-exports.tmpDir = function() {
-  return checkedCall(tmp.dir);
-};
-
+function tmpDir() {
+  return checkedCall((callback) => tmp.dir({ unsafeCleanup: true }, callback))
+}
 
 /**
  * @param {{postfix: string}=} opt_options Temporary file options.
  * @return {!Promise<string>} A promise for the path to a temporary file.
  * @see https://www.npmjs.org/package/tmp
  */
-exports.tmpFile = function(opt_options) {
-  return checkedCall(callback => {
-    // |tmp.file| checks arguments length to detect options rather than doing a
-    // truthy check, so we must only pass options if there are some to pass.
-    if (opt_options) {
-      tmp.file(opt_options, callback);
-    } else {
-      tmp.file(callback);
-    }
-  });
-};
-
+function tmpFile(opt_options) {
+  return checkedCall((callback) => {
+    /**  check fixed in v > 0.2.1 if
+     * (typeof options === 'function') {
+     *     return [{}, options];
+     * }
+     */
+    tmp.file(opt_options, callback)
+  })
+}
 
 /**
  * Searches the {@code PATH} environment variable for the given file.
@@ -234,26 +207,25 @@ exports.tmpFile = function(opt_options) {
  * @return {?string} Path to the located file, or {@code null} if it could
  *     not be found.
  */
-exports.findInPath = function(file, opt_checkCwd) {
-  let dirs = [];
+function findInPath(file, opt_checkCwd) {
+  const dirs = []
   if (opt_checkCwd) {
-    dirs.push(process.cwd());
+    dirs.push(process.cwd())
   }
-  dirs.push.apply(dirs, process.env['PATH'].split(path.delimiter));
+  dirs.push.apply(dirs, process.env['PATH'].split(path.delimiter))
 
-  let foundInDir = dirs.find(dir => {
-    let tmp = path.join(dir, file);
+  let foundInDir = dirs.find((dir) => {
+    let tmp = path.join(dir, file)
     try {
-      let stats = fs.statSync(tmp);
-      return stats.isFile() && !stats.isDirectory();
+      let stats = fs.statSync(tmp)
+      return stats.isFile() && !stats.isDirectory()
     } catch (ex) {
-      return false;
+      return false
     }
-  });
+  })
 
-  return foundInDir ? path.join(foundInDir, file) : null;
-};
-
+  return foundInDir ? path.join(foundInDir, file) : null
+}
 
 /**
  * Reads the contents of the given file.
@@ -262,10 +234,9 @@ exports.findInPath = function(file, opt_checkCwd) {
  * @return {!Promise<!Buffer>} A promise that will resolve with a buffer of the
  *     file contents.
  */
-exports.read = function(aPath) {
-  return checkedCall(callback => fs.readFile(aPath, callback));
-};
-
+function read(aPath) {
+  return checkedCall((callback) => fs.readFile(aPath, callback))
+}
 
 /**
  * Writes to a file.
@@ -275,10 +246,9 @@ exports.read = function(aPath) {
  * @return {!Promise} A promise that will resolve when the operation has
  *     completed.
  */
-exports.write = function(aPath, data) {
-  return checkedCall(callback => fs.writeFile(aPath, data, callback));
-};
-
+function write(aPath, data) {
+  return checkedCall((callback) => fs.writeFile(aPath, data, callback))
+}
 
 /**
  * Creates a directory.
@@ -287,18 +257,17 @@ exports.write = function(aPath, data) {
  * @return {!Promise<string>} A promise that will resolve with the path of the
  *     created directory.
  */
-exports.mkdir = function(aPath) {
-  return checkedCall(callback => {
-    fs.mkdir(aPath, undefined, err => {
+function mkdir(aPath) {
+  return checkedCall((callback) => {
+    fs.mkdir(aPath, undefined, (err) => {
       if (err && err.code !== 'EEXIST') {
-        callback(err);
+        callback(err)
       } else {
-        callback(null, aPath);
+        callback(null, aPath)
       }
-    });
-  });
-};
-
+    })
+  })
+}
 
 /**
  * Recursively creates a directory and any ancestors that do not yet exist.
@@ -307,30 +276,32 @@ exports.mkdir = function(aPath) {
  * @return {!Promise<string>} A promise that will resolve with the path of the
  *     created directory.
  */
-exports.mkdirp = function mkdirp(dir) {
-  return checkedCall(callback => {
-    fs.mkdir(dir, undefined, err => {
+function mkdirp(dir) {
+  return checkedCall((callback) => {
+    fs.mkdir(dir, undefined, (err) => {
       if (!err) {
-        callback(null, dir);
-        return;
+        callback(null, dir)
+        return
       }
 
       switch (err.code) {
         case 'EEXIST':
-          callback(null, dir);
-          return;
+          callback(null, dir)
+          return
         case 'ENOENT':
           return mkdirp(path.dirname(dir))
-              .then(() => mkdirp(dir))
-              .then(() => callback(null, dir), err => callback(err));
+            .then(() => mkdirp(dir))
+            .then(
+              () => callback(null, dir),
+              (err) => callback(err)
+            )
         default:
-          callback(err);
-          return;
+          callback(err)
+          return
       }
-    });
-  });
-};
-
+    })
+  })
+}
 
 /**
  * Recursively walks a directory, returning a promise that will resolve with
@@ -341,19 +312,40 @@ exports.mkdirp = function mkdirp(dir) {
  *     resolve with a list of entries seen. For each entry, the recorded path
  *     will be relative to `rootPath`.
  */
-exports.walkDir = function(rootPath) {
-  let seen = [];
+function walkDir(rootPath) {
+  const seen = []
   return (function walk(dir) {
-    return checkedCall(callback => fs.readdir(dir, callback))
-        .then(files => Promise.all(files.map(file => {
-          file = path.join(dir, file);
-          return checkedCall(cb => fs.stat(file, cb)).then(stats => {
+    return checkedCall((callback) => fs.readdir(dir, callback)).then((files) =>
+      Promise.all(
+        files.map((file) => {
+          file = path.join(dir, file)
+          return checkedCall((cb) => fs.stat(file, cb)).then((stats) => {
             seen.push({
               path: path.relative(rootPath, file),
-              dir: stats.isDirectory()
-            });
-            return stats.isDirectory() && walk(file);
-          });
-        })));
-  })(rootPath).then(() => seen);
-};
+              dir: stats.isDirectory(),
+            })
+            return stats.isDirectory() && walk(file)
+          })
+        })
+      )
+    )
+  })(rootPath).then(() => seen)
+}
+
+// PUBLIC API
+module.exports = {
+  walkDir,
+  rmDir,
+  mkdirp,
+  mkdir,
+  write,
+  read,
+  findInPath,
+  tmpFile,
+  tmpDir,
+  unlink,
+  copy,
+  copyDir,
+  exists,
+  stat,
+}

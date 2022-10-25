@@ -26,13 +26,13 @@ def options():
 
 
 def test_set_binary_location(options):
-    options.binary_location = '/foo/bar'
-    assert options._binary_location == '/foo/bar'
+    options.binary_location = "/foo/bar"
+    assert options._binary_location == "/foo/bar"
 
 
 def test_get_binary_location(options):
-    options._binary_location = '/foo/bar'
-    assert options.binary_location == '/foo/bar'
+    options._binary_location = "/foo/bar"
+    assert options.binary_location == "/foo/bar"
 
 
 def test_set_overlay_scrollbars_enabled(options):
@@ -46,22 +46,26 @@ def test_get_overlay_scrollbars_enabled(options):
 
 
 def test_creates_capabilities(options):
-    options._arguments = ['foo']
-    options._binary_location = '/bar'
+    options._arguments = ["foo"]
+    options._binary_location = "/bar"
     options._overlay_scrollbars_enabled = True
     caps = options.to_capabilities()
     opts = caps.get(Options.KEY)
     assert opts
-    assert 'foo' in opts['args']
-    assert opts['binary'] == '/bar'
-    assert opts['useOverlayScrollbars'] is True
+    assert "foo" in opts["args"]
+    assert opts["binary"] == "/bar"
+    assert opts["useOverlayScrollbars"] is True
 
 
 def test_starts_with_default_capabilities(options):
     from selenium.webdriver import DesiredCapabilities
-    assert options._caps == DesiredCapabilities.WEBKITGTK
+
+    caps = DesiredCapabilities.WEBKITGTK.copy()
+    caps.update({"pageLoadStrategy": "normal"})
+    assert options._caps == caps
 
 
 def test_is_a_baseoptions(options):
     from selenium.webdriver.common.options import BaseOptions
+
     assert isinstance(options, BaseOptions)

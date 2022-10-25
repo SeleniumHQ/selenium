@@ -242,7 +242,7 @@ int VariantUtilities::ConvertVariantToJsonValue(IElementManager* element_manager
       }
       *value = result_array;
     } else if (VariantIsObject(variant_value)) {
-      Json::Value result_object;
+      Json::Value result_object(Json::objectValue);
       CComVariant json_serialized;
       if (ExecuteToJsonMethod(variant_value, &json_serialized)) {
         ConvertVariantToJsonValue(element_manager, json_serialized, &result_object);

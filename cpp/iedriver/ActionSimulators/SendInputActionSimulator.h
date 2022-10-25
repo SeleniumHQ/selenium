@@ -40,8 +40,10 @@ class SendInputActionSimulator : public ActionSimulator {
                                  unsigned long input_flags);
 
   bool WaitForInputEventProcessing(int input_count);
-  bool SetFocusToBrowser(BrowserHandle browser_wrapper);
-  void SendInputToBrowser(BrowserHandle browser_wrapper, std::vector<INPUT> inputs, int start_index, int input_count);
+  void SendInputToBrowser(BrowserHandle browser_wrapper,
+                          std::vector<INPUT> inputs,
+                          int start_index,
+                          int input_count);
 };
 
 } // namespace webdriver

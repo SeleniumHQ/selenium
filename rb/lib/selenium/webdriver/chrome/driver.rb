@@ -27,75 +27,44 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasNetworkConditions
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::HasLocation
-        include DriverExtensions::TakesScreenshot
-        include DriverExtensions::DownloadsFiles
-
-        def initialize(opts = {})
-          opts[:desired_capabilities] = create_capabilities(opts)
-
-          opts[:url] ||= service_url(opts)
-
-          listener = opts.delete(:listener)
-          desired_capabilities = opts.delete(:desired_capabilities)
-
-          @bridge = Remote::Bridge.new(opts)
-          @bridge.extend Bridge
-          @bridge.create_session(desired_capabilities)
-
-          super(@bridge, listener: listener)
-        end
+        EXTENSIONS = [DriverExtensions::HasCDP,
+                      DriverExtensions::HasBiDi,
+                      DriverExtensions::HasCasting,
+                      DriverExtensions::HasNetworkConditions,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::HasLaunching,
+                      DriverExtensions::HasLocation,
+                      DriverExtensions::HasPermissions,
+                      DriverExtensions::DownloadsFiles,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasAuthentication,
+                      DriverExtensions::HasLogs,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasPinnedScripts,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :chrome
         end
 
-        def quit
-          super
-        ensure
-          @service&.stop
-        end
-
-        def execute_cdp(cmd, **params)
-          @bridge.send_command(cmd: cmd, params: params)
-        end
-
         private
 
-        def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.chrome }
-          options = opts.delete(:options) { Options.new }
+        def devtools_url
+          uri = URI(devtools_address)
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
 
-          profile = opts.delete(:profile)
-          if profile
-            profile = profile.as_json
-
-            if options.args.none?(&/user-data-dir/.method(:match?))
-              options.add_argument("--user-data-dir=#{profile['directory']}")
-            end
-
-            if profile['extensions']
-              WebDriver.logger.deprecate 'Using Selenium::WebDriver::Chrome::Profile#extensions',
-                                         'Selenium::WebDriver::Chrome::Options#add_extension'
-              profile['extensions'].each do |extension|
-                options.add_encoded_extension(extension)
-              end
-            end
-          end
-
-          detach = opts.delete(:detach)
-          options.add_option(:detach, true) if detach
-
-          options = options.as_json
-          caps.merge!(options) unless options[Options::KEY].empty?
-
-          caps[:proxy] = opts.delete(:proxy) if opts.key?(:proxy)
-          caps[:proxy] ||= opts.delete('proxy') if opts.key?('proxy')
-
-          caps
+          JSON.parse(response)['webSocketDebuggerUrl']
         end
+
+        def devtools_version
+          Integer(capabilities.browser_version.split('.').first)
+        end
+
+        def devtools_address
+          "http://#{capabilities['goog:chromeOptions']['debuggerAddress']}"
+        end
+
       end # Driver
     end # Chrome
   end # WebDriver

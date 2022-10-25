@@ -19,6 +19,9 @@ namespace OpenQA.Selenium.Firefox
 
         public static FirefoxOptions DefaultOptions
         {
+            // The below path to the Firefox Nightly Channel executable is obviously hard-coded.
+            // On non-Windows OSes, and for custom install locations, you will need to add a
+            // property to the below options: BrowserExecutableLocation = <path to Firefox.exe>
             get { return new FirefoxOptions() { BrowserExecutableLocation = @"C:\Program Files\Firefox Nightly\firefox.exe", AcceptInsecureCertificates = true }; }
         }
     }

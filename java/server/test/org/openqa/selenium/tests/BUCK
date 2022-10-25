@@ -1,8 +1,0 @@
-zip_file(
-    name = "tests",
-    out = "tests-sources.jar",
-    srcs = glob(["**/*.gif", "**/*.html", "**/*.js"]),
-    visibility = [
-        "//java/server/test/org/openqa/selenium:tests",
-    ],
-)

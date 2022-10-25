@@ -20,40 +20,21 @@
 module Selenium
   module WebDriver
     module Safari
-      class Options
-        attr_accessor :automatic_inspection, :automatic_profiling
+      class Options < WebDriver::Options
+        attr_accessor :options
 
-        #
-        # Create a new Options instance for W3C-capable versions of Safari.
-        #
-        # @example
-        #   options = Selenium::WebDriver::Safari::Options.new(automatic_inspection: true)
-        #   driver = Selenium::WebDriver.for :safari, options: options
-        #
-        # @param [Hash] opts the pre-defined options to create the Safari::Options with
-        # @option opts [Boolean] :automatic_inspection Preloads Web Inspector and JavaScript debugger. Default is false
-        # @option opts [Boolean] :automatic_profiling Preloads Web Inspector and starts a timeline recording. Default is false
-        #
         # @see https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
-        #
+        CAPABILITIES = {automatic_inspection: 'safari:automaticInspection',
+                        automatic_profiling: 'safari:automaticProfiling'}.freeze
+        BROWSER = 'safari'
 
-        def initialize(**opts)
-          @automatic_inspection = opts.delete(:automatic_inspection) || false
-          @automatic_profiling = opts.delete(:automatic_profiling) || false
+        def add_option(name, value = nil)
+          key = name.is_a?(Hash) ? name.keys.first : name
+          raise ArgumentError, 'Safari does not support options that are not namespaced' unless key.to_s.include?(':')
+
+          super
         end
 
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          opts = {}
-
-          opts['safari:automaticInspection'] = true if @automatic_inspection
-          opts['safari:automaticProfiling'] = true if @automatic_profiling
-
-          opts
-        end
       end # Options
     end # Safari
   end # WebDriver

@@ -189,7 +189,7 @@ namespace OpenQA.Selenium
             string jsonValue = JsonConvert.SerializeObject(proxy);
             JObject json = JObject.Parse(jsonValue);
 
-            Assert.That(json.ContainsKey("proxyType"), Is.True);
+            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
             Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String));
             Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("manual"));
 
@@ -262,9 +262,9 @@ namespace OpenQA.Selenium
             JObject json = JObject.Parse(jsonValue);
 
 
-            Assert.That(json.ContainsKey("proxyType"), Is.True);
-            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("pac"));
+            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
+            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String), "proxyType is not a string - JSON = {0}", jsonValue);
+            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("pac"), "proxyType not 'pac' - JSON = {0}", jsonValue);
 
             Assert.That(json.ContainsKey("proxyAutoconfigUrl"), Is.True);
             Assert.That(json["proxyAutoconfigUrl"].Type, Is.EqualTo(JTokenType.String));
@@ -302,13 +302,15 @@ namespace OpenQA.Selenium
             proxy.Kind = ProxyKind.AutoDetect;
             proxy.IsAutoDetect = true;
 
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+
             string jsonValue = JsonConvert.SerializeObject(proxy);
             JObject json = JObject.Parse(jsonValue);
 
-            Assert.That(json.ContainsKey("proxyType"), Is.True);
-            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("autodetect"));
-            Assert.That(json.Count, Is.EqualTo(1));
+            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
+            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String), "proxyType is not a string - JSON = {0}", jsonValue);
+            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("autodetect"), "proxyType not 'autodetect' - JSON = {0}", jsonValue);
+            Assert.That(json.Count, Is.EqualTo(1), "more than one object in serialization - JSON = {0}", jsonValue);
         }
 
         [Test]
@@ -342,10 +344,10 @@ namespace OpenQA.Selenium
             string jsonValue = JsonConvert.SerializeObject(proxy);
             JObject json = JObject.Parse(jsonValue);
 
-            Assert.That(json.ContainsKey("proxyType"), Is.True);
-            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("system"));
-            Assert.That(json.Count, Is.EqualTo(1));
+            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
+            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String), "proxyType is not a string - JSON = {0}", jsonValue);
+            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("system"), "proxyType not 'system' - JSON = {0}", jsonValue);
+            Assert.That(json.Count, Is.EqualTo(1), "more than one object in serialization - JSON = {0}", jsonValue);
         }
 
         [Test]
@@ -379,10 +381,10 @@ namespace OpenQA.Selenium
             string jsonValue = JsonConvert.SerializeObject(proxy);
             JObject json = JObject.Parse(jsonValue);
 
-            Assert.That(json.ContainsKey("proxyType"), Is.True);
-            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String));
-            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("direct"));
-            Assert.That(json.Count, Is.EqualTo(1));
+            Assert.That(json.ContainsKey("proxyType"), Is.True, "proxyType not set - JSON = {0}", jsonValue);
+            Assert.That(json["proxyType"].Type, Is.EqualTo(JTokenType.String), "proxyType is not a string - JSON = {0}", jsonValue);
+            Assert.That(json["proxyType"].Value<string>(), Is.EqualTo("direct"), "proxyType not 'direct' - JSON = {0}", jsonValue);
+            Assert.That(json.Count, Is.EqualTo(1), "more than one object in serialization - JSON = {0}", jsonValue);
         }
 
         [Test]

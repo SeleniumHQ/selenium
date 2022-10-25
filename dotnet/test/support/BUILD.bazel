@@ -1,0 +1,41 @@
+load("//dotnet:defs.bzl", "nunit_test")
+
+nunit_test(
+    name = "support",
+    size = "enormous",
+    srcs = glob([
+        "*.cs",
+        "Events/*.cs",
+        "Extensions/*.cs",
+        "UI/*.cs",
+    ]),
+    out = "WebDriver.Support.Tests.dll",
+    args = [
+        "--workers=1",
+        "--params=ConfigFile=$(location //dotnet/test/common:appconfig.json)",
+        "--params=ActiveDriverConfig={}".format(config_setting),
+        "--params=ActiveWebsiteConfig=HostsFileRedirect",
+    ],
+    data = [
+        "//common/src/web",
+        "//dotnet/test/common:appconfig.json",
+        "//java/test/org/openqa/selenium/environment:appserver_deploy.jar",
+    ],
+    is_windows = select({
+        "@bazel_tools//src/conditions:host_windows": True,
+        "//conditions:default": False,
+    }),
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    target_frameworks = ["netcoreapp3.1"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//dotnet/src/support:netstandard2.1",
+        "//dotnet/src/webdriver:netstandard2.1",
+        "//dotnet/test/common:firefox",
+        "@json.net//:Newtonsoft.Json",
+        "@moq//:Moq",
+    ],
+)

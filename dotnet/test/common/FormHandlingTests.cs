@@ -60,11 +60,28 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
-        public void ShouldNotBeAbleToSubmitAFormThatDoesNotExist()
+        public void ShouldSubmitAFormWithIdSubmit()
         {
             driver.Url = formsPage;
-            Assert.That(() => driver.FindElement(By.Name("SearchableText")).Submit(), Throws.InstanceOf<NoSuchElementException>());
+            driver.FindElement(By.Id("submit")).Submit();
+            WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
+            Assert.AreEqual(driver.Title, "We Arrive Here");
+        }
+
+        [Test]
+        public void ShouldSubmitAFormWithNameSubmit()
+        {
+            driver.Url = formsPage;
+            driver.FindElement(By.Name("submit")).Submit();
+            WaitFor(TitleToBe("We Arrive Here"), "Browser title is not 'We Arrive Here'");
+            Assert.AreEqual(driver.Title, "We Arrive Here");
+        }
+
+        [Test]
+        public void ShouldNotBeAbleToSubmitAnInputOutsideAForm()
+        {
+            driver.Url = formsPage;
+            Assert.That(() => driver.FindElement(By.Name("SearchableText")).Submit(), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
@@ -88,6 +105,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox)]
         public void ShouldSubmitAFormUsingTheNewlineLiteral()
         {
             driver.Url = formsPage;
@@ -145,8 +163,9 @@ namespace OpenQA.Selenium
 
             uploadElement.SendKeys(inputFile.FullName);
 
-            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.GetAttribute("value"));
-            Assert.AreEqual(inputFile.Name, outputFile.Name);
+            string uploadElementValue = uploadElement.GetAttribute("value");
+            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
+            Assert.That(inputFile.Name, Is.EqualTo(outputFile.Name));
             inputFile.Delete();
         }
 
@@ -173,7 +192,8 @@ namespace OpenQA.Selenium
 
             uploadElement.SendKeys(inputFile.FullName);
 
-            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElement.GetAttribute("value"));
+            string uploadElementValue = uploadElement.GetAttribute("value");
+            System.IO.FileInfo outputFile = new System.IO.FileInfo(uploadElementValue.Replace('\\', System.IO.Path.DirectorySeparatorChar));
             Assert.AreEqual(inputFile.Name, outputFile.Name);
             inputFile.Delete();
         }
@@ -252,8 +272,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Untested")]
-        [IgnoreBrowser(Browser.Safari, "Driver does not handle alerts triggered by user JavaScript code; hangs browser.")]
         public void HandleFormWithJavascriptAction()
         {
             string url = EnvironmentManager.Instance.UrlBuilder.WhereIs("form_handling_js_submit.html");
@@ -311,7 +329,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void CanSubmitFormWithSubmitButtonIdEqualToSubmit()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -326,7 +343,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
         public void CanSubmitFormWithSubmitButtonNameEqualToSubmit()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()

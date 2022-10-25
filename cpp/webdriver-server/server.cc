@@ -15,6 +15,7 @@
 // limitations under the License.
 
 #include "server.h"
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <sstream>
@@ -302,8 +303,12 @@ std::string Server::ReadRequestBody(struct mg_connection* conn,
     if (request_info->http_headers[header_index].name == NULL) {
       break;
     }
-    if (strcmp(request_info->http_headers[header_index].name,
-               "Content-Length") == 0) {
+    std::string header_name(request_info->http_headers[header_index].name);
+    std::transform(header_name.begin(),
+                   header_name.end(),
+                   header_name.begin(),
+                   ::tolower);
+    if (header_name.compare("content-length") == 0) {
       content_length = atoi(request_info->http_headers[header_index].value);
       break;
     }

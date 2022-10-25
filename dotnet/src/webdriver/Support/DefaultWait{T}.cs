@@ -58,12 +58,12 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (input == null)
             {
-                throw new ArgumentNullException("input", "input cannot be null");
+                throw new ArgumentNullException(nameof(input), "input cannot be null");
             }
 
             if (clock == null)
             {
-                throw new ArgumentNullException("clock", "clock cannot be null");
+                throw new ArgumentNullException(nameof(clock), "clock cannot be null");
             }
 
             this.input = input;
@@ -111,14 +111,14 @@ namespace OpenQA.Selenium.Support.UI
         {
             if (exceptionTypes == null)
             {
-                throw new ArgumentNullException("exceptionTypes", "exceptionTypes cannot be null");
+                throw new ArgumentNullException(nameof(exceptionTypes), "exceptionTypes cannot be null");
             }
 
             foreach (Type exceptionType in exceptionTypes)
             {
                 if (!typeof(Exception).IsAssignableFrom(exceptionType))
                 {
-                    throw new ArgumentException("All types to be ignored must derive from System.Exception", "exceptionTypes");
+                    throw new ArgumentException("All types to be ignored must derive from System.Exception", nameof(exceptionTypes));
                 }
             }
 
@@ -141,21 +141,43 @@ namespace OpenQA.Selenium.Support.UI
         /// <returns>The delegate's return value.</returns>
         public virtual TResult Until<TResult>(Func<T, TResult> condition)
         {
+            return Until(condition, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Repeatedly applies this instance's input value to the given function until one of the following
+        /// occurs:
+        /// <para>
+        /// <list type="bullet">
+        /// <item>the function returns neither null nor false</item>
+        /// <item>the function throws an exception that is not in the list of ignored exception types</item>
+        /// <item>the timeout expires</item>
+        /// </list>
+        /// </para>
+        /// </summary>
+        /// <typeparam name="TResult">The delegate's expected return type.</typeparam>
+        /// <param name="condition">A delegate taking an object of type T as its parameter, and returning a TResult.</param>
+        /// <param name="token">A cancellation token that can be used to cancel the wait.</param>
+        /// <returns>The delegate's return value.</returns>
+        public virtual TResult Until<TResult>(Func<T, TResult> condition, CancellationToken token)
+        {
             if (condition == null)
             {
-                throw new ArgumentNullException("condition", "condition cannot be null");
+                throw new ArgumentNullException(nameof(condition), "condition cannot be null");
             }
 
             var resultType = typeof(TResult);
             if ((resultType.IsValueType && resultType != typeof(bool)) || !typeof(object).IsAssignableFrom(resultType))
             {
-                throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + resultType.ToString(), "condition");
+                throw new ArgumentException("Can only wait on an object or boolean response, tried to use type: " + resultType.ToString(), nameof(condition));
             }
 
             Exception lastException = null;
             var endTime = this.clock.LaterBy(this.timeout);
             while (true)
             {
+                token.ThrowIfCancellationRequested();
+
                 try
                 {
                     var result = condition(this.input);

@@ -1,11 +1,11 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library")
-load("//javascript:fragment.bzl", "closure_fragment")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_deps", "closure_js_library")
+load("//javascript:defs.bzl", "closure_fragment", "closure_test_suite")
 
 package_group(
     name = "webdriver_backed_selenium_implementations",
     packages = [
         "//dotnet/src/webdriverbackedselenium",
-        "//java/client/src/com/thoughtworks/selenium/webdriven",
+        "//java/src/com/thoughtworks/selenium/webdriven",
     ],
 )
 
@@ -17,7 +17,6 @@ closure_js_library(
         "JSC_IMPLICITLY_NULLABLE_JSDOC",
         "JSC_MISSING_JSDOC",
         "JSC_MISSING_PARAMETER_JSDOC",
-        "JSC_MISSING_REQUIRE_STRICT_WARNING",
         "JSC_MISSING_RETURN_JSDOC",
         "JSC_MUST_BE_PRIVATE",
         "JSC_PREFER_BACKTICKS_TO_AT_SIGN_CODE",
@@ -25,6 +24,7 @@ closure_js_library(
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
         "JSC_UNUSED_LOCAL_ASSIGNMENT",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         "//javascript/atoms:action",
@@ -149,4 +149,26 @@ closure_fragment(
     module = "core.events",
     visibility = [":webdriver_backed_selenium_implementations"],
     deps = [":deps"],
+)
+
+filegroup(
+    name = "files",
+    srcs = glob([
+        "**/*.html",
+        "**/*.js",
+    ]),
+)
+
+closure_js_deps(
+    name = "jsdeps",
+    testonly = 1,
+    deps = [":deps"],
+)
+
+closure_test_suite(
+    name = "test",
+    data = [
+        ":files",
+        ":jsdeps",
+    ],
 )

@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+Copyright 2011 Software Freedom Conservancy
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Test javascript evaluation of parameters*</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="3">Test javascript evaluation of parameters<br>
+      </td>
+    </tr>
+
+    <tr>
+      <td>open</td>
+      <td>../tests/html/test_store_value.html</td>
+      <td/>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>javascript{[1,2,3,4,5].join(':')}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>1:2:3:4:5</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>javascript{'the' + 'Text'}</td>
+      <td>javascript{10 * 5}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>javascript{10 + 10 + 10 + 10 + 10}</td>
+    </tr>
+
+    <!-- Check a complex expression -->
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>javascript{
+              function square(n) {
+                  return n * n;
+              };
+              '25 * 25 = ' + square(25);
+          }
+      </td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>25 * 25 = 625</td>
+    </tr>
+
+    <!-- Demonstrate interaction between variable substitution and javascript -->
+    <tr>
+      <td>store</td>
+      <td>the value</td>
+      <td>var1</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>javascript{'${var1}'.toUpperCase()}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>${VAR1}</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>theText</td>
+      <td>javascript{storedVars['var1'].toUpperCase()}</td>
+    </tr>
+    <tr>
+      <td>verifyValue</td>
+      <td>theText</td>
+      <td>THE VALUE</td>
+    </tr>
+    <tr>
+      <td>verifyExpression</td>
+      <td>javascript{storedVars['var1'].toUpperCase()}</td>
+      <td>THE VALUE</td>
+    </tr>
+    <tr>
+      <td>verifyExpression</td>
+      <td>javascript{selenium.getValue('theText')}</td>
+      <td>regexp:TH[Ee] VALUE</td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

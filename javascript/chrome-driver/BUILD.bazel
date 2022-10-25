@@ -1,5 +1,5 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_library")
-load("//javascript:fragment.bzl", "closure_fragment")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_deps", "closure_js_library")
+load("//javascript:defs.bzl", "closure_fragment", "closure_lang_file", "closure_test_suite")
 
 closure_js_library(
     name = "lib",
@@ -10,6 +10,7 @@ closure_js_library(
         "JSC_PREFER_BACKTICKS_TO_AT_SIGN_CODE",
         "JSC_STRICT_INEXISTENT_PROPERTY",
         "JSC_UNKNOWN_EXPR_TYPE",
+        "JSC_USE_OF_GOOG_PROVIDE",
     ],
     deps = [
         "//javascript/atoms:dom",
@@ -19,7 +20,15 @@ closure_js_library(
 )
 
 closure_fragment(
-    name = "get_location_in_view",
+    name = "get-location",
+    browsers = ["chrome"],
+    function = "goog.style.getPageOffset",
+    module = "goog.style",
+    deps = ["@io_bazel_rules_closure//closure/library"],
+)
+
+closure_fragment(
+    name = "get-location-in-view",
     browsers = ["chrome"],
     function = "webdriver.chrome.getLocationInView",
     module = "webdriver.chrome",
@@ -27,7 +36,7 @@ closure_fragment(
 )
 
 closure_fragment(
-    name = "get_first_client_rect",
+    name = "get-first-client-rect",
     browsers = ["chrome"],
     function = "webdriver.chrome.getFirstClientRect",
     module = "webdriver.chrome",
@@ -35,7 +44,7 @@ closure_fragment(
 )
 
 closure_fragment(
-    name = "is_element_clickable",
+    name = "is-element-clickable",
     browsers = ["chrome"],
     function = "webdriver.chrome.isElementClickable",
     module = "webdriver.chrome",
@@ -43,7 +52,7 @@ closure_fragment(
 )
 
 closure_fragment(
-    name = "get_page_zoom",
+    name = "get-page-zoom",
     browsers = ["chrome"],
     function = "webdriver.chrome.getPageZoom",
     module = "webdriver.chrome",
@@ -51,7 +60,7 @@ closure_fragment(
 )
 
 closure_fragment(
-    name = "is_element_displayed",
+    name = "is-element-displayed",
     browsers = ["chrome"],
     function = "webdriver.chrome.isElementDisplayed",
     module = "webdriver.chrome",
@@ -59,9 +68,100 @@ closure_fragment(
 )
 
 closure_fragment(
-    name = "find_element",
+    name = "find-element",
     browsers = ["chrome"],
     function = "webdriver.chrome.findElement",
     module = "webdriver.chrome",
     deps = [":lib"],
+)
+
+ATOMS = [
+    ":find-element-chrome",
+    ":get-first-client-rect-chrome",
+    ":get-location-chrome",
+    ":get-location-in-view-chrome",
+    ":get-page-zoom-chrome",
+    ":is-element-clickable-chrome",
+    ":is-element-displayed-chrome",
+    "//javascript/atoms/fragments:clear-chrome",
+    "//javascript/atoms/fragments:click-chrome",
+    "//javascript/atoms/fragments:execute-async-script-chrome",
+    "//javascript/atoms/fragments:execute-script-chrome",
+    "//javascript/atoms/fragments:execute-sql-chrome",
+    "//javascript/atoms/fragments:find-elements-chrome",
+    "//javascript/atoms/fragments:get-effective-style-chrome",
+    "//javascript/atoms/fragments:get-size-chrome",
+    "//javascript/atoms/fragments:is-displayed-chrome",
+    "//javascript/atoms/fragments:is-enabled-chrome",
+    "//javascript/atoms/fragments:submit-chrome",
+    "//javascript/webdriver/atoms:clear-local-storage-chrome",
+    "//javascript/webdriver/atoms:clear-session-storage-chrome",
+    "//javascript/webdriver/atoms:get-appcache-status-chrome",
+    "//javascript/webdriver/atoms:get-attribute-chrome",
+    "//javascript/webdriver/atoms:get-local-storage-item-chrome",
+    "//javascript/webdriver/atoms:get-local-storage-key-chrome",
+    "//javascript/webdriver/atoms:get-local-storage-keys-chrome",
+    "//javascript/webdriver/atoms:get-local-storage-size-chrome",
+    "//javascript/webdriver/atoms:get-session-storage-item-chrome",
+    "//javascript/webdriver/atoms:get-session-storage-key-chrome",
+    "//javascript/webdriver/atoms:get-session-storage-keys-chrome",
+    "//javascript/webdriver/atoms:get-session-storage-size-chrome",
+    "//javascript/webdriver/atoms:get-text-chrome",
+    "//javascript/webdriver/atoms:is-selected-chrome",
+    "//javascript/webdriver/atoms:remove-local-storage-item-chrome",
+    "//javascript/webdriver/atoms:remove-session-storage-item-chrome",
+    "//javascript/webdriver/atoms:set-local-storage-item-chrome",
+    "//javascript/webdriver/atoms:set-session-storage-item-chrome",
+]
+
+closure_lang_file(
+    name = "header",
+    out = "atoms.h",
+    lang = "hdecl",
+    utf8 = True,
+    deps = ATOMS,
+)
+
+closure_lang_file(
+    name = "source",
+    out = "atoms.cc",
+    lang = "cc",
+    utf8 = True,
+    deps = ATOMS,
+)
+
+closure_js_library(
+    name = "all_js_for_testing",
+    testonly = 1,
+    srcs = glob(["**/*.js"]),
+    visibility = ["//javascript:__pkg__"],
+    deps = ["@io_bazel_rules_closure//closure/library"],
+)
+
+filegroup(
+    name = "all_files",
+    testonly = 1,
+    srcs = glob(
+        ["**/*"],
+        exclude = [
+            "build.desc",
+        ],
+    ),
+)
+
+closure_js_deps(
+    name = "deps",
+    testonly = 1,
+    deps = [
+        ":lib",
+        "//javascript/webdriver/atoms:all_js_for_testing",
+    ],
+)
+
+closure_test_suite(
+    name = "test",
+    data = [
+        ":all_files",
+        ":deps",
+    ],
 )

@@ -30,7 +30,7 @@ module Selenium
           @path = path
           @app  = TestApp.new(path)
 
-          @host = ENV['localhost'] || 'localhost'
+          @host = ENV.fetch('localhost', 'localhost')
           @port = Integer(port || PortProber.above(8180))
         end
 
@@ -110,15 +110,42 @@ module Selenium
               req = Rack::Request.new(env)
               body = case req['upload']
                      when Array
-                       req['upload'].map { |upload| upload[:tempfile].read }.join("\n")
+                       req.params['upload'].map { |upload| upload[:tempfile].read }.join("\n")
                      when Hash
-                       req['upload'][:tempfile].read
+                       req.params['upload'][:tempfile].read
                      end
 
               [200, {'Content-Type' => 'text/html'}, [body]]
+            when '/sleep'
+              time = Rack::Request.new(env).params['time']
+              sleep Integer(time)
+              [200, {'Content-Type' => 'text/html'}, ["Slept for #{time}"]]
+            when '/basicAuth'
+              authorize(env)
             else
               @static.call env
             end
+          end
+
+          private
+
+          def authorize(env)
+            if authorized?(env)
+              status = 200
+              header = {'Content-Type' => 'text/html'}
+              body = '<h1>authorized</h1>'
+            else
+              status = 401
+              header = {'WWW-Authenticate' => 'Basic realm="basic-auth-test"'}
+              body = 'Login please'
+            end
+
+            [status, header, [body]]
+          end
+
+          def authorized?(env)
+            auth = Rack::Auth::Basic::Request.new(env)
+            auth.provided? && auth.basic? && auth.credentials && auth.credentials == BASIC_AUTH_CREDENTIALS
           end
         end
       end # RackServer

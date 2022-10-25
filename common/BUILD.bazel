@@ -1,0 +1,111 @@
+load("@bazel_skylib//rules:common_settings.bzl", "bool_flag")
+
+package(default_visibility = ["//visibility:public"])
+
+bool_flag(
+    name = "pin_browsers",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "use_pinned_browser",
+    flag_values = {
+        ":pin_browsers": "true",
+    },
+)
+
+bool_flag(
+    name = "headless",
+    build_setting_default = False,
+)
+
+config_setting(
+    name = "use_headless_browser",
+    flag_values = {
+        ":headless": "true",
+    },
+)
+
+config_setting(
+    name = "linux",
+    constraint_values = ["@platforms//os:linux"],
+)
+
+config_setting(
+    name = "macos",
+    constraint_values = ["@platforms//os:macos"],
+)
+
+config_setting(
+    name = "windows",
+    constraint_values = ["@platforms//os:windows"],
+)
+
+# Are we creating a stamped build?
+config_setting(
+    name = "stamp",
+    values = {"stamp": "true"},
+)
+
+alias(
+    name = "chromedriver",
+    actual = "@local_drivers//:chromedriver",
+)
+
+config_setting(
+    name = "use_local_chromedriver",
+    flag_values = {
+        "@local_drivers//:use_chromedriver": "true",
+        ":pin_browsers": "false",
+    },
+)
+
+alias(
+    name = "geckodriver",
+    actual = "@local_drivers//:geckodriver",
+)
+
+config_setting(
+    name = "use_local_geckodriver",
+    flag_values = {
+        "@local_drivers//:use_geckodriver": "true",
+        ":pin_browsers": "false",
+    },
+)
+
+alias(
+    name = "msedgedriver",
+    actual = "@local_drivers//:msedgedriver",
+)
+
+config_setting(
+    name = "use_local_msedgedriver",
+    flag_values = {
+        "@local_drivers//:use_msedgedriver": "true",
+        ":pin_browsers": "false",
+    },
+)
+
+[
+    [
+        config_setting(
+            name = "use_pinned_%s_%s" % (platform, browser),
+            constraint_values = [
+                "@platforms//os:%s" % platform,
+            ],
+            flag_values = {
+                ":pin_browsers": "true",
+            },
+        )
+        for platform in [
+            "linux",
+            "macos",
+            "windows",
+        ]
+    ]
+    for browser in [
+        "chrome",
+        "edge",
+        "firefox",
+    ]
+]

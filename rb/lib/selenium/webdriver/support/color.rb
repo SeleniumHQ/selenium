@@ -72,7 +72,7 @@ module Selenium
           end
         end
 
-        def self.from_hsl(h, s, l, a) # rubocop:disable Naming/UncommunicativeMethodParamName
+        def self.from_hsl(h, s, l, a) # rubocop:disable Naming/MethodParameterName
           h = Float(h) / 360
           s = Float(s) / 100
           l = Float(l) / 100
@@ -83,12 +83,12 @@ module Selenium
             g = r
             b = r
           else
-            luminocity2 = l < 0.5 ? l * (1 + s) : l + s - l * s
-            luminocity1 = 2 * l - luminocity2
+            luminocity2 = l < 0.5 ? l * (1 + s) : l + s - (l * s)
+            luminocity1 = (2 * l) - luminocity2
 
-            r = hue_to_rgb(luminocity1, luminocity2, h + 1.0 / 3.0)
+            r = hue_to_rgb(luminocity1, luminocity2, h + (1.0 / 3.0))
             g = hue_to_rgb(luminocity1, luminocity2, h)
-            b = hue_to_rgb(luminocity1, luminocity2, h - 1.0 / 3.0)
+            b = hue_to_rgb(luminocity1, luminocity2, h - (1.0 / 3.0))
           end
 
           new (r * 255).round, (g * 255).round, (b * 255).round, a
@@ -99,11 +99,11 @@ module Selenium
           hue -= 1 if hue > 1.0
 
           if hue < 1.0 / 6.0
-            (lum1 + (lum2 - lum1) * 6.0 * hue)
+            (lum1 + ((lum2 - lum1) * 6.0 * hue))
           elsif hue < 1.0 / 2.0
             lum2
           elsif hue < 2.0 / 3.0
-            lum1 + (lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0
+            lum1 + ((lum2 - lum1) * ((2.0 / 3.0) - hue) * 6.0)
           else
             lum1
           end
@@ -125,7 +125,7 @@ module Selenium
         alias_method :eql?, :==
 
         def hash
-          [red, green, blue, alpha].hash ^ self.class.hash
+          [red, green, blue, alpha, self.class].hash
         end
 
         def rgb
@@ -138,7 +138,7 @@ module Selenium
         end
 
         def hex
-          format '#%02x%02x%02x', red, green, blue
+          format '#%<red>02x%<green>02x%<blue>02x', red: red, green: green, blue: blue
         end
       end # Color
     end # Support

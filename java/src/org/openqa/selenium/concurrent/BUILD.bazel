@@ -1,0 +1,13 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "concurrent",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/src/org/openqa/selenium/remote:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+    ],
+)

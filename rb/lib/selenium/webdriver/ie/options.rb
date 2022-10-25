@@ -20,7 +20,7 @@
 module Selenium
   module WebDriver
     module IE
-      class Options < WebDriver::Common::Options
+      class Options < WebDriver::Options
         KEY = 'se:ieOptions'
         SCROLL_TOP = 0
         SCROLL_BOTTOM = 1
@@ -39,32 +39,25 @@ module Selenium
           persistent_hover: 'enablePersistentHover',
           require_window_focus: 'requireWindowFocus',
           use_per_process_proxy: 'ie.usePerProcessProxy',
-          validate_cookie_document_type: 'ie.validateCookieDocumentType'
+          use_legacy_file_upload_dialog_handling: 'ie.useLegacyFileUploadDialogHandling',
+          attach_to_edge_chrome: 'ie.edgechromium',
+          edge_executable_path: 'ie.edgepath'
         }.freeze
+        BROWSER = 'internet explorer'
 
-        CAPABILITIES.each_key do |key|
-          define_method key do
-            @options[key]
-          end
-
-          define_method "#{key}=" do |value|
-            @options[key] = value
-          end
-        end
-
-        attr_reader :args, :options
+        attr_reader :args
 
         #
         # Create a new Options instance
         #
         # @example
         #   options = Selenium::WebDriver::IE::Options.new(args: ['--host=127.0.0.1'])
-        #   driver = Selenium::WebDriver.for(:ie, options: options)
+        #   driver = Selenium::WebDriver.for(:ie, capabilities: options)
         #
         # @example
         #   options = Selenium::WebDriver::IE::Options.new
         #   options.element_scroll_behavior = Selenium::WebDriver::IE::Options::SCROLL_BOTTOM
-        #   driver = Selenium::WebDriver.for(:ie, options: options)
+        #   driver = Selenium::WebDriver.for(:ie, capabilities: options)
         #
         # @param [Hash] opts the pre-defined options
         # @option opts [Array<String>] args
@@ -86,8 +79,9 @@ module Selenium
         #
 
         def initialize(**opts)
-          @args = Set.new(opts.delete(:args) || [])
-          @options = opts
+          @args = (opts.delete(:args) || []).to_set
+          super(**opts)
+
           @options[:native_events] = true if @options[:native_events].nil?
         end
 
@@ -101,36 +95,11 @@ module Selenium
           @args << arg
         end
 
-        #
-        # Add a new option not yet handled by these bindings.
-        #
-        # @example
-        #   options = Selenium::WebDriver::IE::Options.new
-        #   options.add_option(:foo, 'bar')
-        #
-        # @param [String, Symbol] name Name of the option
-        # @param [Boolean, String, Integer] value Value of the option
-        #
+        private
 
-        def add_option(name, value)
-          @options[name] = value
-        end
-
-        #
-        # @api private
-        #
-
-        def as_json(*)
-          opts = {}
-
-          CAPABILITIES.each do |capability_alias, capability_name|
-            capability_value = @options.delete(capability_alias)
-            opts[capability_name] = capability_value unless capability_value.nil?
-          end
-          opts['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
-          opts.merge!(@options)
-
-          {KEY => generate_as_json(opts)}
+        def process_browser_options(browser_options)
+          options = browser_options[KEY]
+          options['ie.browserCommandLineSwitches'] = @args.to_a.join(' ') if @args.any?
         end
       end # Options
     end # IE

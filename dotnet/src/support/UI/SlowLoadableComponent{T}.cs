@@ -1,4 +1,4 @@
-﻿// <copyright file="SlowLoadableComponent{T}.cs" company="WebDriver Committers">
+// <copyright file="SlowLoadableComponent{T}.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -70,6 +70,22 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         /// <summary>
+        /// Gets the timeout interval before which this component must be considered loaded.
+        /// </summary>
+        protected TimeSpan Timeout
+        {
+            get { return this.timeout; }
+        }
+
+        /// <summary>
+        /// Gets the clock object providing timing for monitoring the load status of this component.
+        /// </summary>
+        protected IClock Clock
+        {
+            get { return this.clock; }
+        }
+
+        /// <summary>
         /// Ensures that the component is currently loaded.
         /// </summary>
         /// <returns>The loaded component.</returns>
@@ -104,8 +120,12 @@ namespace OpenQA.Selenium.Support.UI
             }
             else
             {
-                string timeoutMessage = string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds.", this.timeout.TotalSeconds);
-                throw new WebDriverTimeoutException(timeoutMessage);
+                if (string.IsNullOrEmpty(UnableToLoadMessage))
+                {
+                    this.UnableToLoadMessage = string.Format(CultureInfo.InvariantCulture, "Timed out after {0} seconds.", this.timeout.TotalSeconds);
+                }
+
+                throw new WebDriverTimeoutException(this.UnableToLoadMessage);
             }
         }
 
@@ -121,7 +141,10 @@ namespace OpenQA.Selenium.Support.UI
             // no-op by default
         }
 
-        private void Wait()
+        /// <summary>
+        /// Waits between polls of the load status of this component.
+        /// </summary>
+        protected virtual void Wait()
         {
             Thread.Sleep(this.sleepInterval);
         }

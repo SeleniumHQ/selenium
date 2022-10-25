@@ -1,0 +1,75 @@
+﻿namespace {{rootNamespace}}.{{domain.Name}}
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// Represents an adapter for the {{domain.Name}} domain to simplify the command interface.
+    /// </summary>
+    public class {{dehumanize domain.Name}}Adapter
+    {
+        private readonly IDevToolsSession m_session;
+        private readonly string m_domainName = "{{dehumanize domain.Name}}";
+        private Dictionary<string, DevToolsEventData> m_eventMap = new Dictionary<string, DevToolsEventData>();
+
+        public {{dehumanize domain.Name}}Adapter(IDevToolsSession session)
+        {
+            m_session = session ?? throw new ArgumentNullException(nameof(session));
+            m_session.DevToolsEventReceived += OnDevToolsEventReceived;
+    {{#each domain.Events}}
+            m_eventMap["{{Name}}"] = new DevToolsEventData(typeof({{dehumanize Name}}EventArgs), On{{dehumanize Name}});
+    {{/each}}
+        }
+
+        /// <summary>
+        /// Gets the DevToolsSession associated with the adapter.
+        /// </summary>
+        public IDevToolsSession Session
+        {
+            get { return m_session; }
+        }
+
+    {{#each domain.Events}}
+        /// <summary>
+        /// {{xml-code-comment Description 2}}
+        /// </summary>
+        public event EventHandler<{{dehumanize Name}}EventArgs> {{dehumanize Name}};
+    {{/each}}
+
+    {{#each domain.Commands}}
+        /// <summary>
+        /// {{xml-code-comment Description 2}}
+        /// </summary>
+        public async Task<{{dehumanize Name}}CommandResponse> {{dehumanize Name}}({{dehumanize Name}}CommandSettings command{{#if NoParameters}} = null{{/if}}, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        {
+            return await m_session.SendCommand<{{dehumanize Name}}CommandSettings, {{dehumanize Name}}CommandResponse>(command{{#if NoParameters}} ?? new {{dehumanize Name}}CommandSettings(){{/if}}, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+        }
+    {{/each}}
+
+        private void OnDevToolsEventReceived(object sender, DevToolsEventReceivedEventArgs e)
+        {
+            if (e.DomainName == m_domainName)
+            {
+                if (m_eventMap.ContainsKey(e.EventName))
+                {
+                    var eventData = m_eventMap[e.EventName];
+                    var eventArgs = e.EventData.ToObject(eventData.EventArgsType);
+                    eventData.EventInvoker(eventArgs);
+                }
+            }
+        }
+
+    {{#each domain.Events}}
+        private void On{{dehumanize Name}}(object rawEventArgs)
+        {
+            {{dehumanize Name}}EventArgs e = rawEventArgs as {{dehumanize Name}}EventArgs;
+            if (e != null && {{dehumanize Name}} != null)
+            {
+                {{dehumanize Name}}(this, e);
+            }
+        }
+    {{/each}}
+    }
+}

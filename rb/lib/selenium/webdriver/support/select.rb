@@ -26,12 +26,15 @@ module Selenium
         #
 
         def initialize(element)
-          tag_name = element.tag_name
+          unless element.enabled?
+            raise Error::UnsupportedOperationError, 'Select element is disabled and may not be used.'
+          end
 
+          tag_name = element.tag_name
           raise ArgumentError, "unexpected tag name #{tag_name.inspect}" unless tag_name.casecmp('select').zero?
 
           @element = element
-          @multi = ![nil, 'false'].include?(element.attribute(:multiple))
+          @multi = ![nil, 'false'].include?(element.dom_attribute(:multiple))
         end
 
         #
@@ -215,6 +218,8 @@ module Selenium
         end
 
         def select_option(option)
+          raise Error::UnsupportedOperationError, 'You may not select a disabled option' unless option.enabled?
+
           option.click unless option.selected?
         end
 
@@ -258,7 +263,7 @@ module Selenium
         end
 
         def find_by_index(index)
-          options.select { |option| option.attribute(:index) == index.to_s }
+          options.select { |option| option.property(:index) == index }
         end
 
         def find_by_value(value)

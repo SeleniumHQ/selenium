@@ -1,0 +1,87 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite", "java_test_suite")
+
+SMALL_TESTS = [
+    "ArchitectureTest.java",
+    "ByTest.java",
+    "CookieTest.java",
+    "DimensionTest.java",
+    "CapabilitiesTest.java",
+    "KeysTest.java",
+    "OutputTypeTest.java",
+    "PersistentCapabilitiesTest.java",
+    "PlatformTest.java",
+    "PointTest.java",
+    "ProxyTest.java",
+    "RequireTest.java",
+    "WebDriverExceptionTest.java",
+    "print/PrintOptionsTest.java",
+    "print/PageMarginTest.java",
+    "print/PageSizeTest.java",
+]
+
+java_test_suite(
+    name = "SmallTests",
+    size = "small",
+    srcs = SMALL_TESTS,
+    deps = [
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        artifact("org.assertj:assertj-core"),
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)
+
+java_library(
+    name = "helpers",
+    srcs = [
+        "ParallelTestRunner.java",
+        "StubDriver.java",
+        "WaitingConditions.java",
+        "WrappedWebElement.java",
+    ],
+    visibility = ["//java/test:__subpackages__"],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/support",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+    ] + JUNIT5_DEPS,
+)
+
+java_selenium_test_suite(
+    name = "LargeTests",
+    size = "large",
+    srcs = glob(
+        ["*Test.java"],
+        exclude = SMALL_TESTS,
+    ),
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    deps = [
+        ":helpers",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/jre/server",
+        "//java/src/org/openqa/selenium/netty/server",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/build",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("com.google.guava:guava"),
+        artifact("io.netty:netty-codec-haproxy"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("javax.servlet:javax.servlet-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("xyz.rogfam:littleproxy"),
+    ] + JUNIT5_DEPS,
+)

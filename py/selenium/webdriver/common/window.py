@@ -19,11 +19,9 @@
 The WindowTypes implementation.
 """
 
-from __future__ import unicode_literals
 
-
-class WindowTypes(object):
+class WindowTypes:
     """Set of supported window types."""
 
-    TAB = 'tab'
-    WINDOW = 'window'
+    TAB = "tab"
+    WINDOW = "window"

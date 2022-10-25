@@ -1,0 +1,35 @@
+﻿namespace {{rootNamespace}}
+{
+    using System;
+    
+    public class DevToolsSessionDomains : OpenQA.Selenium.DevTools.DevToolsSessionDomains
+    {
+{{#each domains}}
+        private Lazy<{{dehumanize Name}}.{{dehumanize Name}}Adapter> m_{{dehumanize Name}};
+{{/each}}
+
+        public DevToolsSessionDomains(IDevToolsSession session) : base()
+        {
+{{#each domains}}
+            m_{{dehumanize Name}} = new Lazy<{{dehumanize Name}}.{{dehumanize Name}}Adapter>(() => new {{dehumanize Name}}.{{dehumanize Name}}Adapter(session));
+{{/each}}
+        }
+
+{{#each domains}}
+        /// <summary>
+        /// Gets the adapter for the {{Name}} domain.
+        /// </summary>
+        public {{dehumanize Name}}.{{dehumanize Name}}Adapter {{dehumanize Name}}
+        {
+            get { return m_{{dehumanize Name}}.Value; }
+        }
+        
+{{/each}}
+        protected override void PopulateCommandResponseTypeMap()
+        {
+{{#each commands}}
+            ResponseTypeMap.AddCommandResponseType(typeof({{FullTypeName}}), typeof({{FullResponseTypeName}}));
+{{/each}}
+        }
+    }
+}

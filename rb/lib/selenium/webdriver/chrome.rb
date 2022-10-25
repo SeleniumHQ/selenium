@@ -19,25 +19,14 @@
 
 require 'net/http'
 
-require 'selenium/webdriver/chrome/bridge'
-require 'selenium/webdriver/chrome/driver'
-require 'selenium/webdriver/chrome/profile'
-require 'selenium/webdriver/chrome/options'
-
 module Selenium
   module WebDriver
     module Chrome
-      def self.driver_path=(path)
-        WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome#driver_path=',
-                                   'Selenium::WebDriver::Chrome::Service#driver_path='
-        Selenium::WebDriver::Chrome::Service.driver_path = path
-      end
-
-      def self.driver_path
-        WebDriver.logger.deprecate 'Selenium::WebDriver::Chrome#driver_path',
-                                   'Selenium::WebDriver::Chrome::Service#driver_path'
-        Selenium::WebDriver::Chrome::Service.driver_path
-      end
+      autoload :Features, 'selenium/webdriver/chrome/features'
+      autoload :Driver, 'selenium/webdriver/chrome/driver'
+      autoload :Profile, 'selenium/webdriver/chrome/profile'
+      autoload :Options, 'selenium/webdriver/chrome/options'
+      autoload :Service, 'selenium/webdriver/chrome/service'
 
       def self.path=(path)
         Platform.assert_executable path
@@ -50,5 +39,3 @@ module Selenium
     end # Chrome
   end # WebDriver
 end # Selenium
-
-require 'selenium/webdriver/chrome/service'

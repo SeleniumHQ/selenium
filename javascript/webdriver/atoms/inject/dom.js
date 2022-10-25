@@ -30,7 +30,7 @@ goog.require('webdriver.atoms.inject');
 
 
 /**
- * Gets the visisble text for the given element.
+ * Gets the visible text for the given element.
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to query.
  * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
@@ -143,7 +143,7 @@ webdriver.atoms.inject.dom.isEnabled = function(element, opt_window) {
  * @param {{bot.inject.ELEMENT_KEY: string}} element The element to check.
  * @param {{WINDOW: string}=} opt_window The optional window
  *     containing the element.
- * @return {string} true if the element is visisble, false otherwise.
+ * @return {string} true if the element is visible, false otherwise.
  *     The result is wrapped in a JSON string as defined by the wire
  *     protocol.
  */

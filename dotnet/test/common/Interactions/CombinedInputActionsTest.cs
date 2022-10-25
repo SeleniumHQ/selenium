@@ -4,6 +4,7 @@ using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -13,7 +14,7 @@ namespace OpenQA.Selenium.Interactions
         [SetUp]
         public void Setup()
         {
-            new Actions(driver).SendKeys(Keys.Null).Perform();
+            // new Actions(driver).SendKeys(Keys.Null).Perform();
             IActionExecutor actionExecutor = driver as IActionExecutor;
             if (actionExecutor != null)
             {
@@ -24,7 +25,7 @@ namespace OpenQA.Selenium.Interactions
         [TearDown]
         public void ReleaseModifierKeys()
         {
-            new Actions(driver).SendKeys(Keys.Null).Perform();
+            // new Actions(driver).SendKeys(Keys.Null).Perform();
             IActionExecutor actionExecutor = driver as IActionExecutor;
             if (actionExecutor != null)
             {
@@ -80,18 +81,23 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.IE, "IE reports [0,0] as location for <option> elements")]
-        [IgnoreBrowser(Browser.Safari, "Control + click in macOS results in context menu, not multiselect.")]
         public void ControlClickingOnMultiSelectionList()
         {
+            string controlModifier = Keys.Control;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                controlModifier = Keys.Command;
+            }
+
             driver.Url = formSelectionPage;
 
             ReadOnlyCollection<IWebElement> options = driver.FindElements(By.TagName("option"));
 
             Actions actionBuider = new Actions(driver);
             IAction selectThreeOptions = actionBuider.Click(options[1])
-                .KeyDown(Keys.Control)
+                .KeyDown(controlModifier)
                 .Click(options[3])
-                .KeyUp(Keys.Control).Build();
+                .KeyUp(controlModifier).Build();
 
             selectThreeOptions.Perform();
 
@@ -105,6 +111,12 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         public void ControlClickingOnCustomMultiSelectionList()
         {
+            string controlModifier = Keys.Control;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                controlModifier = Keys.Command;
+            }
+
             driver.Url = selectableItemsPage;
 
             IWebElement reportingElement = driver.FindElement(By.Id("infodiv"));
@@ -113,11 +125,11 @@ namespace OpenQA.Selenium.Interactions
 
             ReadOnlyCollection<IWebElement> listItems = driver.FindElements(By.TagName("li"));
 
-            IAction selectThreeItems = new Actions(driver).KeyDown(Keys.Control)
+            IAction selectThreeItems = new Actions(driver).KeyDown(controlModifier)
                 .Click(listItems[1])
                 .Click(listItems[3])
                 .Click(listItems[5])
-                .KeyUp(Keys.Control).Build();
+                .KeyUp(controlModifier).Build();
 
             selectThreeItems.Perform();
 
@@ -182,9 +194,10 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement element = driver.FindElement(By.Id("eventish"));
             Point location = element.Location;
+            Size size = element.Size;
 
             new Actions(driver)
-                .MoveToElement(element, 20, 10)
+                .MoveToElement(element, 20 - size.Width / 2, 10 - size.Height / 2)
                 .Click()
                 .Perform();
 
@@ -232,17 +245,11 @@ namespace OpenQA.Selenium.Interactions
         [Test]
         public void ChordControlCutAndPaste()
         {
-            // FIXME: macs don't have CONRTROL key
-            //if (getEffectivePlatform().is(Platform.MAC)) {
-            //  return;
-            //}
-
-            //if (getEffectivePlatform().is(Platform.WINDOWS) &&
-            //    (isInternetExplorer(driver) || isFirefox(driver))) {
-            //  System.out.println("Skipping testChordControlCutAndPaste on Windows: native events library" +
-            //      " does not support storing modifiers state yet.");
-            //  return;
-            //}
+            string controlModifier = Keys.Control;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                controlModifier = Keys.Command;
+            }
 
             driver.Url = javascriptPage;
 
@@ -259,7 +266,7 @@ namespace OpenQA.Selenium.Interactions
 
             //TODO: Figure out why calling sendKey(Key.CONTROL + "a") and then
             //sendKeys("x") does not work on Linux.
-            new Actions(driver).KeyDown(Keys.Control)
+            new Actions(driver).KeyDown(controlModifier)
                 .SendKeys("a" + "x")
                 .Perform();
 
@@ -268,7 +275,7 @@ namespace OpenQA.Selenium.Interactions
 
             Assert.AreEqual(string.Empty, element.GetAttribute("value"));
 
-            new Actions(driver).KeyDown(Keys.Control)
+            new Actions(driver).KeyDown(controlModifier)
                 .SendKeys("v")
                 .SendKeys("v")
                 .Perform();
@@ -280,7 +287,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [NeedsFreshDriver(IsCreatedBeforeTest = true)]
-        [IgnoreBrowser(Browser.Opera)]
         public void CombiningShiftAndClickResultsInANewWindow()
         {
             driver.Url = linkedImage;
@@ -311,7 +317,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void HoldingDownShiftKeyWhileClicking()
         {
             driver.Url = clickEventPage;
@@ -369,6 +374,14 @@ namespace OpenQA.Selenium.Interactions
 
             IWebElement result = driver.FindElement(By.Id("result"));
             WaitFor(() => { return result.Text.Contains("item 1"); }, "Result element does not contain text 'item 1'");
+        }
+
+        [Test]
+        public void PerformsPause()
+        {
+            DateTime start = DateTime.Now;
+            new Actions(driver).Pause(TimeSpan.FromMilliseconds(1200)).Build().Perform();
+            Assert.IsTrue(DateTime.Now - start > TimeSpan.FromMilliseconds(1200));
         }
 
         private bool FuzzyPositionMatching(int expectedX, int expectedY, string locationTuple)

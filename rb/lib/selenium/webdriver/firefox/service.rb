@@ -20,10 +20,6 @@
 module Selenium
   module WebDriver
     module Firefox
-      #
-      # @api private
-      #
-
       class Service < WebDriver::Service
         DEFAULT_PORT = 4444
         EXECUTABLE = 'geckodriver'
@@ -36,7 +32,7 @@ module Selenium
 
         private
 
-        # Note: This processing is deprecated
+        # NOTE: This processing is deprecated
         def extract_service_args(driver_opts)
           driver_args = super
           driver_opts = driver_opts.dup

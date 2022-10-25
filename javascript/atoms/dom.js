@@ -469,14 +469,6 @@ bot.dom.isShown_ = function(elem, ignoreOpacity, parentsDisplayedFn) {
     return true;
   }
 
-  // Child of DETAILS element is not shown unless the DETAILS element is open
-  // or the child is a SUMMARY element.
-  var parent = bot.dom.getParentElement(elem);
-  if (parent && bot.dom.isElement(parent, goog.dom.TagName.DETAILS) &&
-      !parent.open && !bot.dom.isElement(elem, goog.dom.TagName.SUMMARY)) {
-    return false;
-  }
-
   // Option or optgroup is shown iff enclosing select is shown (ignoring the
   // select's opacity).
   if (bot.dom.isElement(elem, goog.dom.TagName.OPTION) ||
@@ -582,7 +574,7 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
   /**
    * Determines whether an element or its parents have `display: none` set
    * @param {!Node} e the element
-   * @return {boolean}
+   * @return {!boolean}
    */
   function displayed(e) {
     if (bot.dom.isElement(e)) {
@@ -610,7 +602,14 @@ bot.dom.isShown = function(elem, opt_ignoreOpacity) {
       return true;
     }
 
-    return parent && displayed(parent);
+    // Child of DETAILS element is not shown unless the DETAILS element is open
+    // or the child is a SUMMARY element.
+    if (parent && bot.dom.isElement(parent, goog.dom.TagName.DETAILS) &&
+        !parent.open && !bot.dom.isElement(e, goog.dom.TagName.SUMMARY)) {
+      return false;
+    }
+
+    return !!parent && displayed(parent);
   }
 
   return bot.dom.isShown_(elem, !!opt_ignoreOpacity, displayed);
@@ -1176,7 +1175,9 @@ bot.dom.appendVisibleTextLinesFromTextNode_ = function(textNode, lines,
   }
 
   if (textTransform == 'capitalize') {
-    text = text.replace(/(^|\s)(\S)/g, function() {
+    // the unicode regex ending with /gu does not work in IE
+    var re = goog.userAgent.IE ? /(^|\s|\b)(\S)/g : /(^|[^\d\p{L}\p{S}])([\p{Ll}|\p{S}])/gu;
+    text = text.replace(re, function() {
       return arguments[1] + arguments[2].toUpperCase();
     });
   } else if (textTransform == 'uppercase') {

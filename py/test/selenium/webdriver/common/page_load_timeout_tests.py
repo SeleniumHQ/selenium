@@ -18,6 +18,7 @@
 import pytest
 
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 
 
 @pytest.fixture(autouse=True)
@@ -26,15 +27,15 @@ def reset_timeouts(driver):
     driver.set_page_load_timeout(300)
 
 
-def testShouldTimeoutOnPageLoadTakingTooLong(driver, pages):
+def test_should_timeout_on_page_load_taking_too_long(driver, pages):
     driver.set_page_load_timeout(0.01)
     with pytest.raises(TimeoutException):
         pages.load("simpleTest.html")
 
 
-@pytest.mark.xfail_chrome
-def testClickShouldTimeout(driver, pages):
+@pytest.mark.xfail_safari
+def test_click_should_timeout(driver, pages):
     pages.load("simpleTest.html")
     driver.set_page_load_timeout(0.01)
     with pytest.raises(TimeoutException):
-        driver.find_element_by_id("multilinelink").click()
+        driver.find_element(By.ID, "multilinelink").click()

@@ -75,7 +75,7 @@ module Selenium
         expect(new_pos.y).to eq(target_y)
       end
 
-      it 'gets the rect of the current window', only: {browser: %i[edge edge_chrome firefox ie chrome safari safari_preview]} do
+      it 'gets the rect of the current window' do
         rect = window.rect
 
         expect(rect).to be_a(Rectangle)
@@ -86,7 +86,7 @@ module Selenium
         expect(rect.height).to be >= 0
       end
 
-      it 'sets the rect of the current window', only: {browser: %i[edge_chrome firefox ie chrome safari safari_preview]} do
+      it 'sets the rect of the current window' do
         rect = window.rect
 
         target_x = rect.x + 10
@@ -105,7 +105,7 @@ module Selenium
         expect(new_rect.height).to eq(target_height)
       end
 
-      it 'can maximize the current window', except: {window_manager: false, browser: %i[ie firefox safari]} do
+      it 'can maximize the current window' do
         window.size = old_size = Dimension.new(700, 700)
 
         window.maximize
@@ -116,11 +116,7 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-      # https://github.com/mozilla/geckodriver/issues/1281
-      it 'can make window full screen', only: {window_manager: true, browser: %i[chrome edge_chrome ie firefox safari_preview]},
-                                        exclude: [{driver: :remote, browser: :firefox, platform: :linux},
-                                                  {browser: %i[chrome edge_chrome]}] do
+      it 'can make window full screen' do
         window.size = old_size = Dimension.new(700, 700)
 
         window.full_screen
@@ -131,10 +127,7 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      # Edge: Not Yet - https://dev.windows.com/en-us/microsoft-edge/platform/status/webdriver/details/
-      # https://github.com/mozilla/geckodriver/issues/1281
-      it 'can minimize the window', only: {window_manager: true, browser: %i[edge edge_chrome ie firefox safari safari_preview]},
-                                    exclude: {driver: :remote, browser: :firefox, platform: :linux} do
+      it 'can minimize the window' do
         window.minimize
         expect(driver.execute_script('return document.hidden;')).to be true
       end

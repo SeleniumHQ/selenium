@@ -1,0 +1,222 @@
+load("@io_bazel_rules_docker//contrib:passwd.bzl", "passwd_entry", "passwd_file")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_layer", "container_push")
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+package(default_visibility = ["//deploys/k8s:__pkg__"])
+
+REGISTRY = "localhost:5000"
+
+# Create a passwd file with a root and selenium user and uid.
+passwd_entry(
+    name = "root_user",
+    gid = 0,
+    uid = 0,
+    username = "root",
+)
+
+passwd_entry(
+    name = "seluser",
+    home = "/home/seluser",
+    info = "Selenium User",
+    uid = 1002,
+    username = "seluser",
+)
+
+passwd_file(
+    name = "passwd",
+    entries = [
+        ":root_user",
+        ":seluser",
+    ],
+)
+
+pkg_tar(
+    name = "passwd-tar",
+    srcs = [":passwd"],
+    mode = "0o644",
+    package_dir = "etc",
+)
+
+ENTRY_POINT = [
+    "java",
+    "-jar",
+    "/opt/selenium/bin/selenium",
+]
+
+container_layer(
+    name = "passwd-layer",
+    tars = [":passwd-tar"],
+)
+
+container_image(
+    name = "grid-base",
+    base = "@java_image_base//image",
+    directory = "/app",
+    layers = [
+        ":grid-binary",
+        ":passwd-layer",
+    ],
+    user = "seluser",
+    workdir = "/app",
+)
+
+container_push(
+    name = "push-distributor",
+    format = "Docker",
+    image = ":distributor-image",
+    registry = REGISTRY,
+    repository = "selenium/distributor",
+)
+
+container_image(
+    name = "distributor-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["distributor"],
+    ports = [
+        "5553/tcp",  # Web
+    ],
+)
+
+container_push(
+    name = "push-event-bus",
+    format = "Docker",
+    image = ":event-bus-image",
+    registry = REGISTRY,
+    repository = "selenium/event-bus",
+)
+
+container_image(
+    name = "event-bus-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["event-bus"],
+    ports = [
+        "5557/tcp",  # Web
+        "4442/tcp",  # ZeroMQ
+        "4443/tcp",
+    ],
+)
+
+container_push(
+    name = "push-router",
+    format = "Docker",
+    image = ":router-image",
+    registry = REGISTRY,
+    repository = "selenium/router",
+)
+
+container_image(
+    name = "router-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["router"],
+    ports = [
+        "4444/tcp",
+    ],
+)
+
+container_push(
+    name = "push-session-map",
+    format = "Docker",
+    image = ":session-map-image",
+    registry = REGISTRY,
+    repository = "selenium/session-map",
+)
+
+container_image(
+    name = "session-map-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["sessions"],
+    ports = [
+        "5556/tcp",  # Web
+        "4442/tcp",  # ZeroMQ
+        "4443/tcp",
+    ],
+)
+
+container_image(
+    name = "session-queue-image",
+    base = ":grid-base",
+    entrypoint = ENTRY_POINT + ["sessionqueue"],
+    ports = [
+        "5559/tcp",  # Web
+        "4442/tcp",  # ZeroMQ
+        "4443/tcp",
+    ],
+)
+
+container_layer(
+    name = "grid-binary",
+    directory = "/opt/selenium/bin",
+    files = [
+        "//java/src/org/openqa/selenium/grid:executable-grid",
+    ],
+)
+
+container_layer(
+    name = "one-shot",
+    directory = "/opt/selenium",
+    files = [
+        "//java/src/org/openqa/selenium/grid/node/k8s",
+    ],
+)
+
+container_layer(
+    name = "start-scripts",
+    directory = "/opt/selenium/bin",
+    files = [
+        ":selenium.sh",
+    ],
+)
+
+container_image(
+    name = "chrome-node",
+    base = "@chrome_standalone//image",
+    entrypoint = [
+        "/opt/selenium/bin/selenium.sh",
+        "node",
+    ],
+    layers = [
+        ":grid-binary",
+        ":one-shot",
+        ":start-scripts",
+    ],
+    ports = [
+        "5555",  # Selenium
+        "5900",  # vnc,
+    ],
+    user = "seluser",
+)
+
+container_push(
+    name = "push-chrome-node",
+    format = "Docker",
+    image = ":chrome-node",
+    registry = REGISTRY,
+    repository = "selenium/chrome-node",
+)
+
+container_image(
+    name = "firefox-node",
+    base = "@firefox_standalone//image",
+    entrypoint = [
+        "/opt/selenium/bin/selenium.sh",
+        "node",
+    ],
+    layers = [
+        ":grid-binary",
+        ":one-shot",
+        ":start-scripts",
+    ],
+    ports = [
+        "5555",  # Selenium
+        "5900",  # vnc,
+    ],
+    user = "seluser",
+)
+
+container_push(
+    name = "push-firefox-node",
+    format = "Docker",
+    image = ":firefox-node",
+    registry = REGISTRY,
+    repository = "selenium/firefox-node",
+)

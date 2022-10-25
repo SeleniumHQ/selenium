@@ -21,22 +21,21 @@
 
 goog.provide('webdriver.ie');
 
-goog.require('bot.dom');
-goog.require('bot.Error');
 goog.require('bot.ErrorCode');
+goog.require('bot.dom');
 goog.require('bot.locators');
 goog.require('bot.userAgent');
-goog.require('goog.dom.TagName');
+goog.require('goog.math.Coordinate');
 goog.require('goog.style');
 
 
 /**
- * Find the first element in the DOM matching the mechanism and critera.
+ * Find the first element in the DOM matching the mechanism and criteria.
  *
  * @param {!string} mechanism The mechanism to search by.
  * @param {!string} criteria The criteria to search for.
- * @param {(Document|Element)=} opt_root The node from which to start the
- *     search. If not specified, will use {@code document} as the root.
+ * @param {?(Document|Element)=} opt_root The node from which to start the
+ *     search. If not specified, will use `document` as the root.
  * @return {!Object} An object containing the status of the find and
  *     the result (success will be the first matching element found in
  *     the DOM, failure will be the associated error message).
@@ -57,19 +56,19 @@ webdriver.ie.findElement = function(mechanism, criteria, opt_root) {
            };
   }
   if (retval == null) {
-    return { 'status': bot.ErrorCode.NO_SUCH_ELEMENT, 'value': retval }
+    return { 'status': bot.ErrorCode.NO_SUCH_ELEMENT, 'value': retval };
   }
   return { 'status': bot.ErrorCode.SUCCESS, 'value': retval };
 };
 
 
 /**
- * Find all elements in the DOM matching the mechanism and critera.
+ * Find all elements in the DOM matching the mechanism and criteria.
  *
  * @param {!string} mechanism The mechanism to search by.
  * @param {!string} criteria The criteria to search for.
- * @param {(Document|Element)=} opt_root The node from which to start the
- *     search. If not specified, will use {@code document} as the root.
+ * @param {?(Document|Element)=} opt_root The node from which to start the
+ *     search. If not specified, will use `document` as the root.
  * @return {!Object} An object containing the status of the find and
  *     the result (success will be the elements, failure will be the
  *     associated error message).
@@ -122,6 +121,18 @@ webdriver.ie.findElements = function(mechanism, criteria, opt_root) {
 webdriver.ie.isOffsetInParentOverflow = function (element, x, y) {
   var offsetPoint = new goog.math.Coordinate(x, y);
   return bot.dom.getOverflowState(element, offsetPoint);
+};
+
+/**
+ * Checks whether the element is entirely scrolled into the parent's overflow
+ * region.
+ *
+ * @param {!Element} element The element to check.
+ * @return {bot.dom.OverflowState} Whether the coordinates specified, relative to the element,
+ *     are scrolled in the parent overflow.
+ */
+webdriver.ie.isElementInParentOverflow = function (element) {
+  return bot.dom.getOverflowState(element);
 };
 
 /**

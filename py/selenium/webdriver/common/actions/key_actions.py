@@ -14,18 +14,18 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from .interaction import Interaction, KEY
-from .key_input import KeyInput
 from ..utils import keys_to_typing
+from .interaction import KEY
+from .interaction import Interaction
+from .key_input import KeyInput
 
 
 class KeyActions(Interaction):
-
     def __init__(self, source=None):
-        if source is None:
+        if not source:
             source = KeyInput(KEY)
         self.source = source
-        super(KeyActions, self).__init__(source)
+        super().__init__(source)
 
     def key_down(self, letter):
         return self._key_action("create_key_down", letter)

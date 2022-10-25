@@ -1,28 +1,30 @@
-dist: trusty
-sudo: required
+dist: xenial
+services:
+  - xvfb
 env:
   global:
-    - DISPLAY=:99.0
     - PYTEST_ADDOPTS="--verbose --instafail"
-    - FF_ESR_BINARY=$HOME/firefox-52.9.0esr/firefox/firefox-bin
     - FF_NIGHTLY_BINARY=$HOME/firefox-latest-nightly/firefox/firefox-bin
 git:
   depth: 10
+addons:
+  sonarcloud:
+    organization: "seleniumhq"
 
 _bindings:
   java: &java
     language: java
-    jdk: oraclejdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /java/
   python: &python
     language: python
     python: "2.7"
-    jdk: oraclejdk8
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /python/
   ruby: &ruby
     language: ruby
-    rvm: 2.4
-    jdk: oraclejdk8
+    rvm: 2.5
+    jdk: openjdk11
     if: env(BUILD_ONLY) IS NOT present || env(BUILD_ONLY) =~ /ruby/
   node: &node
     language: node_js
@@ -33,9 +35,6 @@ _browsers:
   firefox: &firefox-latest
     addons:
       firefox: latest
-  firefox-esr: &firefox-esr
-    addons:
-      firefox: "52.9.0esr"
   firefox-nightly: &firefox-nightly
     addons:
       firefox: latest-nightly
@@ -47,38 +46,14 @@ _browsers:
 
 cache:
   directories:
-    - buck-out
+    - $HOME/.cache/bazel-repo
+    - $HOME/.cache/bazel-disk
     - build
 
 matrix:
   exclude:
-    - env: BUCK="//javascript/atoms:atoms //javascript/webdriver:all_js //javascript/ie-driver:atoms //javascript/chrome-driver:atoms //javascript/android-atoms:atoms ios_driver"
+    - env: BZL="test --test_tag_filters=htmlunit //java/..."
       <<: *java
-    - env: CHROME=1 BUCK="test chrome-test"
-      <<: *java
-      <<: *chrome
-    - env: TOXENV=flake8
-      <<: *python
-    - env: TOXENV=docs
-      <<: *python
-    - env: CHROME=1 TOXENV=py27-chrome
-      <<: *python
-      <<: *chrome
-    - env: TOXENV=py27-firefox
-      <<: *python
-      <<: *firefox-esr
-    - env: TOXENV=py27-remote
-      <<: *python
-      <<: *firefox-esr
-    - env: MARIONETTE=1 TOXENV=py27-marionette
-      <<: *python
-      <<: *firefox-nightly
-    - env: TASK=//rb:ff-esr-test
-      <<: *ruby
-      <<: *firefox-esr
-    - env: TASK=//rb:remote-ff-esr-test
-      <<: *ruby
-      <<: *firefox-esr
     - env: CHROME=1 SELENIUM_BROWSER=chrome NPM=test
       <<: *node
       <<: *chrome
@@ -86,59 +61,33 @@ matrix:
     - env: MARIONETTE=1 SELENIUM_BROWSER=firefox NPM=test
       <<: *node
       <<: *firefox-latest
-    - env: BUCK="build selenium-server-standalone java-small-tests chrome-test firefox-test legacy-firefox-test grid-test htmlunit-test ie-test opera-test java-small-tests //java/client/test/org/openqa/selenium/testing/drivers/..."
-      <<: *java
-    - env: BUCK="test //java/client/test/org/openqa/selenium/atoms:test"
-      <<: *java
-    - env: CHROME=1 TASK="calcdeps" BUCK="test //javascript/atoms:atoms-chrome //javascript/selenium-atoms:selenium-atoms-chrome //javascript/selenium-core:selenium-core-chrome //javascript/webdriver:webdriver-chrome"
-      <<: *java
-      <<: *chrome
-    - env: MARIONETTE=1 MOZ_HEADLESS=1 TASK="calcdeps" BUCK="test //javascript/atoms:atoms-firefox //javascript/webdriver:webdriver-firefox //javascript/selenium-atoms:selenium-atoms-firefox //javascript/selenium-core:selenium-core-firefox"
+    - env: MARIONETTE=1 MOZ_HEADLESS=1 BZL="test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/..."
       <<: *java
       <<: *firefox-latest
-    - env: BUCK="test legacy-firefox-test"
-      <<: *java
-      <<: *firefox-esr
-    - env: MARIONETTE=1 BUCK="test firefox-test"
-      <<: *java
-      <<: *firefox-nightly
-    - env: MARIONETTE=1 BUCK="test --labels small --always-exclude //java/..."
-      <<: *java
-    - env: BUCK="test internal-grid-test"
-      <<: *java
-    - env: MARIONETTE=1 BUCK="test grid-test"
-      <<: *java
-      <<: *firefox-nightly
-    - env: CHROME=1 BUCK="test chrome-test"
+    - env: CHROME=1 BZL="test --test_tag_filters=chrome //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...  //javascript/chrome-driver/..."
       <<: *java
       <<: *chrome
-    - env: BUCK="test htmlunit-test"
-      <<: *java
-    - env: TASK=javadocs
-      <<: *java
-    - env: TOXENV=py27-unit
-      <<: *python
     - env: TOXENV=flake8
       <<: *python
-      python: 3.6
+      python: 3.7
     - env: TOXENV=docs
       <<: *python
-      python: 3.6
-    - env: TOXENV=py36-unit
+      python: 3.7
+    - env: BZL="test //py:unit"
       <<: *python
-      python: 3.6
-    - env: CHROME=1 TOXENV=py36-chrome
+      python: 3.7
+    - env: CHROME=1 BZL="test //py:test-chrome"
       <<: *python
       <<: *chrome
-      python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-remote
+      python: 3.7
+    - env: MARIONETTE=1 BZL="test --jobs 1 //py:test-remote"
       <<: *python
       <<: *firefox-nightly
-      python: 3.6
-    - env: MARIONETTE=1 TOXENV=py36-marionette
+      python: 3.7
+    - env: MARIONETTE=1 BZL="test //py:test-firefox"
       <<: *python
       <<: *firefox-nightly
-      python: 3.6
+      python: 3.7
     - env: TASK=//rb:unit-test
       <<: *ruby
     - env: TASK=//rb:unit-test
@@ -162,7 +111,7 @@ matrix:
       <<: *ruby
 install: ./scripts/travis/install.sh
 before_script: ./scripts/travis/before_script.sh
-script: travis_wait ./scripts/travis/script.sh
+script: travis_wait 60 ./scripts/travis/script.sh
 
 notifications:
   email: false

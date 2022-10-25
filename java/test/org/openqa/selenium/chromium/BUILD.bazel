@@ -1,0 +1,23 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite")
+
+LARGE_TESTS = [
+    "LoggingTest.java",
+]
+
+java_selenium_test_suite(
+    name = "large-tests",
+    size = "large",
+    srcs = LARGE_TESTS,
+    browsers = [
+        "chrome",
+        "edge",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/chromium",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)

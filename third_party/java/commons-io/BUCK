@@ -1,9 +1,0 @@
-prebuilt_jar(
-    name = "commons-io",
-    maven_coords = "commons-io:commons-io:jar:2.6",
-    binary_jar = "commons-io-2.6.jar",
-    source_jar = "commons-io-2.6-sources.jar",
-    visibility = [
-        "//third_party/java/htmlunit:htmlunit",
-    ],
-)

@@ -25,35 +25,22 @@ module Selenium
 
         PORT = 4444
 
-        attr_accessor :context, :http, :file_detector
+        attr_accessor :http, :file_detector
         attr_reader :capabilities
 
         #
         # Initializes the bridge with the given server URL
-        # @param [Hash] opts options for the driver
-        # @option opts [String] :url url for the remote server
-        # @option opts [Object] :http_client an HTTP client instance that implements the same protocol as Http::Default
-        # @option opts [Capabilities] :desired_capabilities an instance of Remote::Capabilities describing the capabilities you want
+        # @param [String, URI] url url for the remote server
+        # @param [Object] http_client an HTTP client instance that implements the same protocol as Http::Default
         # @api private
         #
 
-        def initialize(opts = {})
-          opts = opts.dup
-
-          http_client = opts.delete(:http_client) { Http::Default.new }
-          url = opts.delete(:url) { "http://#{Platform.localhost}:#{PORT}/wd/hub" }
-          opts.delete(:options)
-
-          unless opts.empty?
-            raise ArgumentError, "unknown option#{'s' if opts.size != 1}: #{opts.inspect}"
-          end
-
+        def initialize(url:, http_client: nil)
           uri = url.is_a?(URI) ? url : URI.parse(url)
-          uri.path += '/' unless %r{\/$}.match?(uri.path)
+          uri.path += '/' unless uri.path.end_with?('/')
 
-          http_client.server_url = uri
-
-          @http = http_client
+          @http = http_client || Http::Default.new
+          @http.server_url = uri
           @file_detector = nil
         end
 
@@ -61,8 +48,8 @@ module Selenium
         # Creates session.
         #
 
-        def create_session(desired_capabilities, options = nil)
-          response = execute(:new_session, {}, merged_capabilities(desired_capabilities, options))
+        def create_session(capabilities)
+          response = execute(:new_session, {}, prepare_capabilities_payload(capabilities))
 
           @session_id = response['sessionId']
           capabilities = response['capabilities']
@@ -70,6 +57,17 @@ module Selenium
           raise Error::WebDriverError, 'no sessionId in returned payload' unless @session_id
 
           @capabilities = Capabilities.json_create(capabilities)
+
+          case @capabilities[:browser_name]
+          when 'chrome'
+            extend(WebDriver::Chrome::Features)
+          when 'firefox'
+            extend(WebDriver::Firefox::Features)
+          when 'msedge'
+            extend(WebDriver::Edge::Features)
+          when 'Safari', 'Safari Technology Preview'
+            extend(WebDriver::Safari::Features)
+          end
         end
 
         #
@@ -83,7 +81,7 @@ module Selenium
         def browser
           @browser ||= begin
             name = @capabilities.browser_name
-            name ? name.tr(' ', '_').to_sym : 'unknown'
+            name ? name.tr(' ', '_').downcase.to_sym : 'unknown'
           end
         end
 
@@ -95,17 +93,16 @@ module Selenium
           execute :get, {}, {url: url}
         end
 
-        def implicit_wait_timeout=(milliseconds)
-          timeout('implicit', milliseconds)
+        #
+        # timeouts
+        #
+
+        def timeouts
+          execute :get_timeouts, {}
         end
 
-        def script_timeout=(milliseconds)
-          timeout('script', milliseconds)
-        end
-
-        def timeout(type, milliseconds)
-          type = 'pageLoad' if type == 'page load'
-          execute :set_timeout, {}, {type => milliseconds}
+        def timeouts=(timeouts)
+          execute :set_timeout, {}, timeouts
         end
 
         #
@@ -121,7 +118,7 @@ module Selenium
         end
 
         def alert=(keys)
-          execute :send_alert_text, {}, {value: keys.split(//), text: keys}
+          execute :send_alert_text, {}, {value: keys.chars, text: keys}
         end
 
         def alert_text
@@ -149,9 +146,7 @@ module Selenium
         end
 
         def page_source
-          execute_script('var source = document.documentElement.outerHTML;' \
-                            'if (!source) { source = new XMLSerializer().serializeToString(document); }' \
-                            'return source;')
+          execute :get_page_source
         end
 
         #
@@ -220,7 +215,10 @@ module Selenium
         end
 
         def window_size(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before getting its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before getting its size'
+          end
 
           data = execute :get_window_rect
           Dimension.new data['width'], data['height']
@@ -231,7 +229,10 @@ module Selenium
         end
 
         def maximize_window(handle = :current)
-          raise Error::UnsupportedOperationError, 'Switch to desired window before changing its size' unless handle == :current
+          unless handle == :current
+            raise Error::UnsupportedOperationError,
+                  'Switch to desired window before changing its size'
+          end
 
           execute :maximize_window
         end
@@ -262,6 +263,10 @@ module Selenium
 
         def screenshot
           execute :take_screenshot
+        end
+
+        def element_screenshot(element)
+          execute :take_element_screenshot, id: element
         end
 
         #
@@ -316,22 +321,6 @@ module Selenium
           execute_script('return sessionStorage.length')
         end
 
-        def location
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting location'
-        end
-
-        def set_location(_lat, _lon, _alt)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting location'
-        end
-
-        def network_connection
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support getting network connection'
-        end
-
-        def network_connection=(_type)
-          raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting network connection'
-        end
-
         #
         # javascript execution
         #
@@ -378,11 +367,8 @@ module Selenium
         # actions
         #
 
-        def action(async = false)
-          ActionBuilder.new self,
-                            Interactions.pointer(:mouse, name: 'mouse'),
-                            Interactions.key('keyboard'),
-                            async
+        def action(deprecated_async = nil, async: false, devices: [], duration: 250)
+          ActionBuilder.new self, nil, nil, deprecated_async, async: async, devices: devices, duration: duration
         end
         alias_method :actions, :action
 
@@ -402,6 +388,10 @@ module Selenium
           execute :release_actions
         end
 
+        def print_page(options = {})
+          execute :print_page, {}, {options: options}
+        end
+
         def click_element(element)
           execute :element_click, id: element
         end
@@ -409,7 +399,7 @@ module Selenium
         def send_keys_to_element(element, keys)
           # TODO: rework file detectors before Selenium 4.0
           if @file_detector
-            local_files = keys.first.split("\n").map { |key| @file_detector.call(Array(key)) }.compact
+            local_files = keys.first&.split("\n")&.map { |key| @file_detector.call(Array(key)) }&.compact
             if local_files.any?
               keys = local_files.map { |local_file| upload(local_file) }
               keys = Array(keys.join("\n"))
@@ -417,8 +407,8 @@ module Selenium
           end
 
           # Keep .split(//) for backward compatibility for now
-          text = keys.join('')
-          execute :element_send_keys, {id: element}, {value: text.split(//), text: text}
+          text = keys.join
+          execute :element_send_keys, {id: element}, {value: text.chars, text: text}
         end
 
         def upload(local_file)
@@ -435,18 +425,19 @@ module Selenium
         end
 
         def submit_element(element)
-          form = find_element_by('xpath', "./ancestor-or-self::form", element)
-          execute_script("var e = arguments[0].ownerDocument.createEvent('Event');" \
-                            "e.initEvent('submit', true, true);" \
-                            'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }', form.as_json)
-        end
+          script = "var form = arguments[0];\n" \
+                   "while (form.nodeName != \"FORM\" && form.parentNode) {\n  " \
+                   "form = form.parentNode;\n" \
+                   "}\n" \
+                   "if (!form) { throw Error('Unable to find containing form element'); }\n" \
+                   "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" \
+                   "var e = form.ownerDocument.createEvent('Event');\n" \
+                   "e.initEvent('submit', true, true);\n" \
+                   "if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n"
 
-        def screen_orientation=(orientation)
-          execute :set_screen_orientation, {}, {orientation: orientation}
-        end
-
-        def screen_orientation
-          execute :get_screen_orientation
+          execute_script(script, Element::ELEMENT_KEY => element)
+        rescue Error::JavascriptError
+          raise Error::UnsupportedOperationError, "To submit an element, it must be nested inside a form element"
         end
 
         #
@@ -462,8 +453,20 @@ module Selenium
           execute_atom :getAttribute, element, name
         end
 
+        def element_dom_attribute(element, name)
+          execute :get_element_attribute, id: element, name: name
+        end
+
         def element_property(element, name)
-          execute :get_element_property, id: element.ref, name: name
+          execute :get_element_property, id: element, name: name
+        end
+
+        def element_aria_role(element)
+          execute :get_element_aria_role, id: element
+        end
+
+        def element_aria_label(element)
+          execute :get_element_aria_label, id: element
         end
 
         def element_value(element)
@@ -524,27 +527,78 @@ module Selenium
 
         alias_method :switch_to_active_element, :active_element
 
-        def find_element_by(how, what, parent = nil)
-          how, what = convert_locators(how, what)
+        def find_element_by(how, what, parent_ref = [])
+          how, what = convert_locator(how, what)
 
-          id = if parent
-                 execute :find_child_element, {id: parent}, {using: how, value: what}
+          return execute_atom(:findElements, Support::RelativeLocator.new(what).as_json).first if how == 'relative'
+
+          parent_type, parent_id = parent_ref
+          id = case parent_type
+               when :element
+                 execute :find_child_element, {id: parent_id}, {using: how, value: what.to_s}
+               when :shadow_root
+                 execute :find_shadow_child_element, {id: parent_id}, {using: how, value: what.to_s}
                else
-                 execute :find_element, {}, {using: how, value: what}
+                 execute :find_element, {}, {using: how, value: what.to_s}
                end
+
           Element.new self, element_id_from(id)
         end
 
-        def find_elements_by(how, what, parent = nil)
-          how, what = convert_locators(how, what)
+        def find_elements_by(how, what, parent_ref = [])
+          how, what = convert_locator(how, what)
 
-          ids = if parent
-                  execute :find_child_elements, {id: parent}, {using: how, value: what}
+          return execute_atom :findElements, Support::RelativeLocator.new(what).as_json if how == 'relative'
+
+          parent_type, parent_id = parent_ref
+          ids = case parent_type
+                when :element
+                  execute :find_child_elements, {id: parent_id}, {using: how, value: what.to_s}
+                when :shadow_root
+                  execute :find_shadow_child_elements, {id: parent_id}, {using: how, value: what.to_s}
                 else
-                  execute :find_elements, {}, {using: how, value: what}
+                  execute :find_elements, {}, {using: how, value: what.to_s}
                 end
 
           ids.map { |id| Element.new self, element_id_from(id) }
+        end
+
+        def shadow_root(element)
+          id = execute :get_element_shadow_root, id: element
+          ShadowRoot.new self, shadow_root_id_from(id)
+        end
+
+        #
+        # virtual-authenticator
+        #
+
+        def add_virtual_authenticator(options)
+          authenticator_id = execute :add_virtual_authenticator, {}, options.as_json
+          VirtualAuthenticator.new(self, authenticator_id, options)
+        end
+
+        def remove_virtual_authenticator(id)
+          execute :remove_virtual_authenticator, {authenticatorId: id}
+        end
+
+        def add_credential(credential, id)
+          execute :add_credential, {authenticatorId: id}, credential
+        end
+
+        def credentials(authenticator_id)
+          execute :get_credentials, {authenticatorId: authenticator_id}
+        end
+
+        def remove_credential(credential_id, authenticator_id)
+          execute :remove_credential, {credentialId: credential_id, authenticatorId: authenticator_id}
+        end
+
+        def remove_all_credentials(authenticator_id)
+          execute :remove_all_credentials, {authenticatorId: authenticator_id}
+        end
+
+        def user_verified(verified, authenticator_id)
+          execute :set_user_verified, {authenticatorId: authenticator_id}, {isUserVerified: verified}
         end
 
         private
@@ -579,16 +633,6 @@ module Selenium
           COMMANDS[command]
         end
 
-        def merged_capabilities(capabilities, options = nil)
-          capabilities.merge!(options.as_json) if options
-
-          {
-            capabilities: {
-              firstMatch: [capabilities]
-            }
-          }
-        end
-
         def unwrap_script_result(arg)
           case arg
           when Array
@@ -597,6 +641,9 @@ module Selenium
             element_id = element_id_from(arg)
             return Element.new(self, element_id) if element_id
 
+            shadow_root_id = shadow_root_id_from(arg)
+            return ShadowRoot.new self, shadow_root_id if shadow_root_id
+
             arg.each { |k, v| arg[k] = unwrap_script_result(v) }
           else
             arg
@@ -604,34 +651,51 @@ module Selenium
         end
 
         def element_id_from(id)
-          id['ELEMENT'] || id['element-6066-11e4-a52e-4f735466cecf']
+          id['ELEMENT'] || id[Element::ELEMENT_KEY]
         end
 
-        def convert_locators(how, what)
+        def shadow_root_id_from(id)
+          id[ShadowRoot::ROOT_KEY]
+        end
+
+        def prepare_capabilities_payload(capabilities)
+          capabilities = {alwaysMatch: capabilities} if !capabilities['alwaysMatch'] && !capabilities['firstMatch']
+          {capabilities: capabilities}
+        end
+
+        def convert_locator(how, what)
+          how = SearchContext::FINDERS[how.to_sym] || how
+
           case how
           when 'class name'
             how = 'css selector'
-            what = ".#{escape_css(what)}"
+            what = ".#{escape_css(what.to_s)}"
           when 'id'
             how = 'css selector'
-            what = "##{escape_css(what)}"
+            what = "##{escape_css(what.to_s)}"
           when 'name'
             how = 'css selector'
-            what = "*[name='#{escape_css(what)}']"
-          when 'tag name'
-            how = 'css selector'
+            what = "*[name='#{escape_css(what.to_s)}']"
           end
+
+          if what.is_a?(Hash)
+            what = what.each_with_object({}) do |(h, w), hash|
+              h, w = convert_locator(h.to_s, w)
+              hash[h] = w
+            end
+          end
+
           [how, what]
         end
 
-        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]\(\)])/.freeze
+        ESCAPE_CSS_REGEXP = /(['"\\#.:;,!?+<>=~*^$|%&@`{}\-\[\]()])/.freeze
         UNICODE_CODE_POINT = 30
 
         # Escapes invalid characters in CSS selector.
         # @see https://mathiasbynens.be/notes/css-escapes
         def escape_css(string)
           string = string.gsub(ESCAPE_CSS_REGEXP) { |match| "\\#{match}" }
-          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..-1]}" if !string.empty? && string[0].match?(/[[:digit:]]/)
+          string = "\\#{UNICODE_CODE_POINT + Integer(string[0])} #{string[1..]}" if string[0]&.match?(/[[:digit:]]/)
 
           string
         end

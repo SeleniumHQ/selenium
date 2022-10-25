@@ -12,8 +12,8 @@ namespace OpenQA.Selenium
         [SetUp]
         public void GetBrowserWindowSize()
         {
+            driver.Manage().Window.Position = new Point(50, 50);
             this.originalWindowSize = driver.Manage().Window.Size;
-
         }
 
         [TearDown]
@@ -23,7 +23,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToGetTheSizeOfTheCurrentWindow()
         {
             Size size = driver.Manage().Window.Size;
@@ -32,7 +31,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToSetTheSizeOfTheCurrentWindow()
         {
             IWindow window = driver.Manage().Window;
@@ -48,7 +46,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToSetTheSizeOfTheCurrentWindowFromFrame()
         {
             IWindow window = driver.Manage().Window;
@@ -74,7 +71,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToSetTheSizeOfTheCurrentWindowFromIFrame()
         {
             IWindow window = driver.Manage().Window;
@@ -100,7 +96,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToGetThePositionOfTheCurrentWindow()
         {
             Point position = driver.Manage().Window.Position;
@@ -109,7 +104,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToSetThePositionOfTheCurrentWindow()
         {
             IWindow window = driver.Manage().Window;
@@ -126,10 +120,9 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToMaximizeTheCurrentWindow()
         {
-            Size targetSize = new Size(640, 275);
+            Size targetSize = new Size(640, 400);
 
             ChangeSizeTo(targetSize);
 
@@ -141,11 +134,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToMaximizeTheWindowFromFrame()
         {
             driver.Url = framesetPage;
-            ChangeSizeTo(new Size(640, 275));
+            ChangeSizeTo(new Size(640, 400));
 
             driver.SwitchTo().Frame("fourth");
             try
@@ -159,11 +151,10 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToMaximizeTheWindowFromIframe()
         {
             driver.Url = iframePage;
-            ChangeSizeTo(new Size(640, 275));
+            ChangeSizeTo(new Size(640, 400));
 
             driver.SwitchTo().Frame("iframe1-name");
             try
@@ -181,17 +172,17 @@ namespace OpenQA.Selenium
         //------------------------------------------------------------------
 
         [Test]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Edge driver does not implement the full screen command")]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToFullScreenTheCurrentWindow()
         {
-            Size targetSize = new Size(640, 275);
+            IWindow window = driver.Manage().Window;
+            Size origSize = window.Size;
+
+            Size targetSize = new Size(640, 400);
 
             ChangeSizeTo(targetSize);
 
             FullScreen();
 
-            IWindow window = driver.Manage().Window;
             Size windowSize = window.Size;
             Point windowPosition = window.Position;
             Assert.That(windowSize.Height, Is.GreaterThan(targetSize.Height));
@@ -201,10 +192,9 @@ namespace OpenQA.Selenium
         [Test]
         [IgnoreBrowser(Browser.Chrome, "Chrome window size does not report zero when minimized.")]
         [IgnoreBrowser(Browser.Edge, "Edge window size does not report zero when minimized.")]
-        [IgnoreBrowser(Browser.Opera, "Not implemented in driver")]
         public void ShouldBeAbleToMinimizeTheCurrentWindow()
         {
-            Size targetSize = new Size(640, 275);
+            Size targetSize = new Size(640, 400);
 
             ChangeSizeTo(targetSize);
 
@@ -248,7 +238,7 @@ namespace OpenQA.Selenium
         {
             IWindow window = driver.Manage().Window;
             window.Size = targetSize;
-            WaitFor(WindowHeightToBeEqualTo(targetSize.Height), "Window height was not " + targetSize.Height.ToString());
+            WaitFor(WindowHeightToBeEqualTo(targetSize.Height), "Window height was " + window.Size.Height + " not " + targetSize.Height.ToString());
             WaitFor(WindowWidthToBeEqualTo(targetSize.Width), "Window width was not " + targetSize.Width.ToString());
         }
 

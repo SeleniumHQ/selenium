@@ -31,10 +31,10 @@ goog.require('bot.html5');
  * method. These parameters mean retrieval of any cached position with high
  * accuracy within a timeout interval of 5s.
  * @const
- * @type {GeolocationPositionOptions}
+ * @type {!GeolocationPositionOptions}
  * @see http://dev.w3.org/geo/api/spec-source.html#position-options
  */
-bot.geolocation.DEFAULT_OPTIONS = /** @type {GeolocationPositionOptions} */ ({
+bot.geolocation.DEFAULT_OPTIONS = /** @type {!GeolocationPositionOptions} */ ({
   enableHighAccuracy: true,
   maximumAge: Infinity,
   timeout: 5000
@@ -49,9 +49,9 @@ bot.geolocation.DEFAULT_OPTIONS = /** @type {GeolocationPositionOptions} */ ({
  *
  * @param {function(?GeolocationPosition)} successCallback The callback method
  *     which is invoked on success.
- * @param {function(GeolocationPositionError)=} opt_errorCallback The callback
+ * @param {function(?GeolocationPositionError)=} opt_errorCallback The callback
  *     method which is invoked on error.
- * @param {GeolocationPositionOptions=} opt_options The optional parameters to
+ * @param {?GeolocationPositionOptions=} opt_options The optional parameters to
  *     navigator.geolocation.getCurrentPosition; defaults to
  *     bot.geolocation.DEFAULT_OPTIONS.
  */

@@ -1,0 +1,63 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "clock",
+    srcs = [
+        "Sleeper.java",
+    ],
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__subpackages__",
+        "//java/test/org/openqa/selenium/support:__subpackages__",
+    ],
+    deps = [
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+java_library(
+    name = "components",
+    srcs = [
+        "LoadableComponent.java",
+        "SlowLoadableComponent.java",
+    ],
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__subpackages__",
+    ],
+)
+
+java_library(
+    name = "elements",
+    srcs = [
+        "ISelect.java",
+        "Quotes.java",
+        "Select.java",
+        "UnexpectedTagNameException.java",
+    ],
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+    ],
+)
+
+java_library(
+    name = "wait",
+    srcs = [
+        "ExpectedCondition.java",
+        "ExpectedConditions.java",
+        "FluentWait.java",
+        "Wait.java",
+        "WebDriverWait.java",
+    ],
+    visibility = [
+        "//java/src/org/openqa/selenium/support:__subpackages__",
+    ],
+    deps = [
+        ":clock",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote",
+        artifact("com.google.guava:guava"),
+    ],
+)

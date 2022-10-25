@@ -68,7 +68,8 @@ void CreateNewWindowCommandHandler::ExecuteInternal(
   if (window_type == WINDOW_WINDOW_TYPE) {
     BrowserHandle tmp_browser;
     executor.GetManagedBrowser(new_window_handle, &tmp_browser);
-    tmp_browser->NavigateToUrl("about:blank");
+    std::string error_message = "";
+    tmp_browser->NavigateToUrl("about:blank", &error_message);
   }
   Json::Value result;
   result["handle"] = new_window_handle;

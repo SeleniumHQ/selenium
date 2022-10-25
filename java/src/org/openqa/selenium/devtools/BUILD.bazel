@@ -1,0 +1,97 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "java_binary", "java_library")
+
+GENERATOR_SOURCES = [
+    "CdpClientGenerator.java",
+]
+
+PROTOTYPE_SOURCES = [
+    "Command.java",
+    "ConverterFunctions.java",
+    "DevToolsException.java",
+    "Event.java",
+]
+
+java_library(
+    name = "devtools-prototypes",
+    srcs = PROTOTYPE_SOURCES,
+    visibility = [
+        "//java/src/org/openqa/selenium/devtools:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/json",
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+copy_file(
+    name = "mutation-listener",
+    src = "//javascript/cdp-support:mutation-listener.js",
+    out = "mutation-listener.js",
+)
+
+AUGMENTER_SRCS = [
+    "DevToolsProvider.java",
+]
+
+java_library(
+    name = "augmenter",
+    srcs = AUGMENTER_SRCS,
+    visibility = [
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+    ],
+    deps = [
+        ":devtools",
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote:api",
+    ],
+)
+
+java_library(
+    name = "devtools",
+    srcs = glob(
+        [
+            "*.java",
+            "events/*.java",
+            "idealized/**/*.java",
+            "noop/*.java",
+        ],
+        exclude = AUGMENTER_SRCS + GENERATOR_SOURCES + PROTOTYPE_SOURCES,
+    ),
+    resources = [
+        ":mutation-listener",
+    ],
+    visibility = [
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+    ],
+    exports = [
+        ":devtools-prototypes",
+    ],
+    deps = [
+        ":devtools-prototypes",
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("com.google.guava:guava"),
+    ],
+)
+
+java_binary(
+    name = "cdp-client-generator",
+    srcs = GENERATOR_SOURCES,
+    main_class = "org.openqa.selenium.devtools.CdpClientGenerator",
+    visibility = [
+        "//java/src/org/openqa/selenium/devtools:__subpackages__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/devtools:devtools-prototypes",
+        "//java/src/org/openqa/selenium/json",
+        artifact("com.github.javaparser:javaparser-core"),
+        artifact("com.google.guava:guava"),
+    ],
+)

@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="maven">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo1.maven.org/maven2" />
+      <root url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/maven.google.com" />
+      <root url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo.spring.io/libs-snapshot" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo1.maven.org/maven2" />
+      <root url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/maven.google.com" />
+      <root url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo.spring.io/libs-snapshot" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/maven.google.com" recursive="true" />
+    <jarDirectory url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo1.maven.org/maven2" recursive="true" />
+    <jarDirectory url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/maven.google.com" recursive="true" type="SOURCES" />
+    <jarDirectory url="file://$PROJECT_DIR$/bazel-bin/external/maven/v1/https/repo1.maven.org/maven2" recursive="true" type="SOURCES" />
+  </library>
+</component>

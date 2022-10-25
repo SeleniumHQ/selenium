@@ -87,11 +87,14 @@ void GoToUrlCommandHandler::ExecuteInternal(
     if (browser_wrapper->IsCrossZoneUrl(url)) {
       browser_wrapper->InitiateBrowserReattach();
     }
-    status_code = browser_wrapper->NavigateToUrl(url);
+    std::string error_message = "";
+    status_code = browser_wrapper->NavigateToUrl(url, &error_message);
     if (status_code != WD_SUCCESS) {
       response->SetErrorResponse(ERROR_UNKNOWN_ERROR, "Failed to navigate to "
           + url
-          + ". This usually means that a call to the COM method IWebBrowser2::Navigate2() failed.");
+          + ". This usually means that a call to the COM method "
+          + "IWebBrowser2::Navigate2() failed. The error returned is: "
+          + error_message);
       return;
     }
     browser_wrapper->SetFocusedFrameByElement(NULL);

@@ -1,0 +1,52 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library", "java_selenium_test_suite")
+
+java_selenium_test_suite(
+    name = "large-tests",
+    size = "large",
+    srcs = glob(["*Test.java"]),
+    browsers = [
+        "chrome",
+        "firefox",
+        "edge",
+    ],
+    tags = [
+        "selenium-remote",
+    ],
+    deps = [
+        ":test-lib",
+        "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)
+
+java_library(
+    name = "test-lib",
+    testonly = True,
+    srcs = glob(
+        ["*.java"],
+        exclude = [
+            "*Tests.java",
+            "*Test.java",
+        ],
+    ),
+    deps = [
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.hamcrest:hamcrest"),
+    ] + JUNIT5_DEPS,
+)

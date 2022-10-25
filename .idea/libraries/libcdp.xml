@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="libcdp">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v92/libcdp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v91/libcdp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v90/libcdp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v89/libcdp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v88/libcdp.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v85/libcdp.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v92/libcdp-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v91/libcdp-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v90/libcdp-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v89/libcdp-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v88/libcdp-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bazel-bin/java/src/org/openqa/selenium/devtools/v85/libcdp-src.jar!/" />
+    </SOURCES>
+  </library>
+</component>

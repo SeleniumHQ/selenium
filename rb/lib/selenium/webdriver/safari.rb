@@ -17,20 +17,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/safari/bridge'
-require 'selenium/webdriver/safari/driver'
-require 'selenium/webdriver/safari/options'
-
 module Selenium
   module WebDriver
     module Safari
+      autoload :Features, 'selenium/webdriver/safari/features'
+      autoload :Driver, 'selenium/webdriver/safari/driver'
+      autoload :Options, 'selenium/webdriver/safari/options'
+      autoload :Service, 'selenium/webdriver/safari/service'
+
       class << self
+        attr_accessor :use_technology_preview
+
         def technology_preview
           "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
         end
 
         def technology_preview!
           Service.driver_path = technology_preview
+          @use_technology_preview = true
+        end
+
+        def technology_preview?
+          use_technology_preview
         end
 
         def path=(path)
@@ -45,21 +53,7 @@ module Selenium
 
           raise Error::WebDriverError, 'Unable to find Safari'
         end
-
-        def driver_path=(path)
-          WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path=',
-                                     'Selenium::WebDriver::Safari::Service#driver_path='
-          Selenium::WebDriver::Safari::Service.driver_path = path
-        end
-
-        def driver_path
-          WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path',
-                                     'Selenium::WebDriver::Safari::Service#driver_path'
-          Selenium::WebDriver::Safari::Service.driver_path
-        end
       end
     end # Safari
   end # WebDriver
 end # Selenium
-
-require 'selenium/webdriver/safari/service'

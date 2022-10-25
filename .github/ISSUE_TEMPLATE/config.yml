@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Selenium Community Support and Questions
+    url: https://www.selenium.dev/support/
+    about: Useful links to ask questions and join the different Selenium chat rooms.
+  - name: 📖 Selenium Documentation
+    url: https://www.selenium.dev/documentation/
+    about: Issues while running tests? Please check the Selenium documentation before filling out an issue.

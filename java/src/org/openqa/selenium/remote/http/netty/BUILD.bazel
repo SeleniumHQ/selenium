@@ -1,0 +1,31 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "netty",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/remote:__pkg__",
+        "//java/test/org/openqa/selenium/remote/http:__subpackages__",
+    ],
+    deps = [
+        "//java:auto-service",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/remote/http",
+        artifact("com.google.guava:guava"),
+        #        artifact("com.typesafe.netty:netty-reactive-streams"),
+        artifact("org.asynchttpclient:async-http-client"),
+        artifact("io.netty:netty-buffer"),
+        artifact("io.netty:netty-codec-http"),
+        artifact("io.netty:netty-transport"),
+        artifact("io.netty:netty-transport-classes-epoll"),
+        artifact("io.netty:netty-transport-classes-kqueue"),
+        artifact("io.netty:netty-transport-native-epoll"),
+        artifact("io.netty:netty-transport-native-epoll-linux-x86_64"),
+        artifact("io.netty:netty-transport-native-kqueue"),
+        artifact("io.netty:netty-transport-native-kqueue-osx-aarch_64"),
+        artifact("io.netty:netty-transport-native-kqueue-osx-x86_64"),
+        artifact("io.netty:netty-transport-native-unix-common"),
+        artifact("io.netty:netty-common"),
+    ],
+)

@@ -20,18 +20,32 @@
 module Selenium
   module WebDriver
     module Firefox
-      class Options < WebDriver::Common::Options
-        attr_reader :args, :prefs, :options, :profile
-        attr_accessor :binary, :log_level
+      class Options < WebDriver::Options
+        attr_accessor :debugger_address
 
         KEY = 'moz:firefoxOptions'
+
+        # see: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
+        CAPABILITIES = {binary: 'binary',
+                        args: 'args',
+                        log: 'log',
+                        prefs: 'prefs',
+                        env: 'env',
+                        android_package: 'androidPackage',
+                        android_activity: 'androidActivity',
+                        android_device_serial: 'androidDeviceSerial',
+                        android_intent_arguments: 'androidIntentArguments'}.freeze
+        BROWSER = 'firefox'
+
+        # NOTE: special handling of 'profile' to validate when set instead of when used
+        attr_reader :profile
 
         #
         # Create a new Options instance, only for W3C-capable versions of Firefox.
         #
         # @example
         #   options = Selenium::WebDriver::Firefox::Options.new(args: ['--host=127.0.0.1'])
-        #   driver = Selenium::WebDriver.for :firefox, options: options
+        #   driver = Selenium::WebDriver.for :firefox, capabilities: options
         #
         # @param [Hash] opts the pre-defined options to create the Firefox::Options with
         # @option opts [String] :binary Path to the Firefox executable to use
@@ -42,13 +56,18 @@ module Selenium
         # @option opts [Hash] :options A hash for raw options
         #
 
-        def initialize(**opts)
-          @args = Set.new(opts.delete(:args) || [])
-          @binary = opts.delete(:binary)
-          @profile = process_profile(opts.delete(:profile))
-          @log_level = opts.delete(:log_level)
-          @prefs = opts.delete(:prefs) || {}
-          @options = opts.delete(:options) || {}
+        def initialize(log_level: nil, **opts)
+          @debugger_address = opts.delete(:debugger_address) { true }
+          opts[:accept_insecure_certs] = true unless opts.key?(:accept_insecure_certs)
+
+          super(**opts)
+
+          @options[:args] ||= []
+          @options[:prefs] ||= {}
+          @options[:env] ||= {}
+          @options[:log] ||= {level: log_level} if log_level
+
+          process_profile(@options.delete(:profile))
         end
 
         #
@@ -62,22 +81,7 @@ module Selenium
         #
 
         def add_argument(arg)
-          @args << arg
-        end
-
-        #
-        # Add a new option not yet handled by these bindings.
-        #
-        # @example
-        #   options = Selenium::WebDriver::Firefox::Options.new
-        #   options.add_option(:foo, 'bar')
-        #
-        # @param [String, Symbol] name Name of the option
-        # @param [Boolean, String, Integer] value Value of the option
-        #
-
-        def add_option(name, value)
-          @options[name] = value
+          @options[:args] << arg
         end
 
         #
@@ -92,7 +96,7 @@ module Selenium
         #
 
         def add_preference(name, value)
-          prefs[name] = value
+          @options[:prefs][name] = value
         end
 
         #
@@ -123,38 +127,58 @@ module Selenium
         #
 
         def profile=(profile)
-          @profile = process_profile(profile)
+          process_profile(profile)
+        end
+
+        def log_level
+          @options.dig(:log, :level)
+        end
+
+        def log_level=(level)
+          @options[:log] = {level: level}
         end
 
         #
-        # @api private
+        # Enables mobile browser use on Android.
+        #
+        # @see https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions#android
+        #
+        # @param [String] package The package name of the Chrome or WebView app.
+        # @param [String] serial_number The serial number of the device on which to launch the application.
+        #   If not specified and multiple devices are attached, an error will be returned.
+        # @param [String] activity The fully qualified class name of the activity to be launched.
+        # @param [Array] intent_arguments Arguments to launch the intent with.
         #
 
-        def as_json(*)
-          opts = @options
-
-          opts[:profile] = @profile.encoded if @profile
-          opts[:args] = @args.to_a if @args.any?
-          opts[:binary] = @binary if @binary
-          opts[:prefs] = @prefs unless @prefs.empty?
-          opts[:log] = {level: @log_level} if @log_level
-
-          {KEY => generate_as_json(opts)}
+        def enable_android(package: 'org.mozilla.firefox', serial_number: nil, activity: nil, intent_arguments: nil)
+          @options[:android_package] = package
+          @options[:android_activity] = activity unless activity.nil?
+          @options[:android_device_serial] = serial_number unless serial_number.nil?
+          @options[:android_intent_arguments] = intent_arguments unless intent_arguments.nil?
         end
 
         private
 
-        def process_profile(profile)
-          return unless profile
+        def process_browser_options(browser_options)
+          browser_options['moz:debuggerAddress'] = true if @debugger_address
+          options = browser_options[KEY]
+          options['binary'] ||= Firefox.path if Firefox.path
+          options['profile'] = @profile if @profile
+        end
 
-          case profile
-          when Profile
-            profile
-          when String
-            Profile.from_name(profile)
-          else
-            raise Error::WebDriverError, "don't know how to handle profile: #{profile.inspect}"
-          end
+        def process_profile(profile)
+          @profile = case profile
+                     when nil
+                       nil
+                     when Profile
+                       profile
+                     else
+                       Profile.from_name(profile)
+                     end
+        end
+
+        def camelize?(key)
+          key != "prefs"
         end
       end # Options
     end # Firefox

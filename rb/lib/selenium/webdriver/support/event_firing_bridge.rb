@@ -76,7 +76,7 @@ module Selenium
             @delegate.find_element_by how, what, parent
           end
 
-          Element.new self, e.ref
+          Element.new self, e.ref.last
         end
 
         def find_elements_by(how, what, parent = nil)
@@ -84,7 +84,7 @@ module Selenium
             @delegate.find_elements_by(how, what, parent)
           end
 
-          es.map { |e| Element.new self, e.ref }
+          es.map { |e| Element.new self, e.ref.last }
         end
 
         def execute_script(script, *args)
@@ -109,7 +109,7 @@ module Selenium
         end
 
         def driver
-          @driver ||= Driver.new(self)
+          @driver ||= Driver.new(bridge: self)
         end
 
         def dispatch(name, *args)
@@ -120,7 +120,7 @@ module Selenium
           returned
         end
 
-        def method_missing(meth, *args, &blk) # rubocop:disable Style/MethodMissingSuper, Style/MissingRespondToMissing
+        def method_missing(meth, *args, &blk) # rubocop:disable Style/MissingRespondToMissing
           @delegate.__send__(meth, *args, &blk)
         end
       end # EventFiringBridge

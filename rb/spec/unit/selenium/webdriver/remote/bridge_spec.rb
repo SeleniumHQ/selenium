@@ -31,47 +31,85 @@ module Selenium
 
         describe '#create_session' do
           let(:http) { WebDriver::Remote::Http::Default.new }
+          let(:bridge) { Bridge.new(http_client: http, url: 'http://localhost') }
 
           it 'sends plain capabilities' do
             payload = JSON.generate(
               capabilities: {
-                firstMatch: [{
+                alwaysMatch: {
                   browserName: 'internet explorer',
                   platformName: 'windows'
-                }]
+                }
               }
             )
 
-            expect(http).to receive(:request)
+            allow(http).to receive(:request)
               .with(any_args, payload)
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
-            Bridge.new(http_client: http).create_session(Capabilities.ie)
+            bridge.create_session(Capabilities.ie)
+            expect(http).to have_received(:request).with(any_args, payload)
           end
 
           it 'passes options as capabilities' do
             payload = JSON.generate(
               capabilities: {
-                firstMatch: [{
+                alwaysMatch: {
+                  'browserName' => 'chrome',
                   'goog:chromeOptions' => {
                     args: %w[foo bar]
                   }
-                }]
+                }
               }
             )
 
-            expect(http).to receive(:request)
+            allow(http).to receive(:request)
               .with(any_args, payload)
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
-            Bridge.new(http_client: http).create_session({}, Chrome::Options.new(args: %w[foo bar]))
+            bridge.create_session(Chrome::Options.new(args: %w[foo bar]).as_json)
+            expect(http).to have_received(:request).with(any_args, payload)
+          end
+
+          it 'uses alwaysMatch when passed' do
+            payload = JSON.generate(
+              capabilities: {
+                alwaysMatch: {
+                  browserName: 'chrome'
+                }
+              }
+            )
+
+            allow(http).to receive(:request)
+              .with(any_args, payload)
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+
+            bridge.create_session(Capabilities.always_match(Capabilities.chrome).as_json)
+            expect(http).to have_received(:request).with(any_args, payload)
+          end
+
+          it 'uses firstMatch when passed' do
+            payload = JSON.generate(
+              capabilities: {
+                firstMatch: [
+                  {browserName: 'chrome'},
+                  {browserName: 'firefox'}
+                ]
+              }
+            )
+
+            allow(http).to receive(:request)
+              .with(any_args, payload)
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+
+            bridge.create_session(Capabilities.first_match(Capabilities.chrome, Capabilities.firefox).as_json)
+            expect(http).to have_received(:request).with(any_args, payload)
           end
 
           it 'supports responses with "value" -> "capabilities" capabilities' do
             allow(http).to receive(:request)
               .and_return('value' => {'sessionId' => '', 'capabilities' => {'browserName' => 'firefox'}})
 
-            bridge = Bridge.new(http_client: http)
             bridge.create_session(Capabilities.new)
             expect(bridge.capabilities[:browser_name]).to eq('firefox')
           end
@@ -79,13 +117,13 @@ module Selenium
 
         describe '#upload' do
           it 'raises WebDriverError if uploading non-files' do
-            expect { Bridge.new({}).upload('NotAFile') }.to raise_error(Error::WebDriverError)
+            expect { Bridge.new(url: 'http://localhost').upload('NotAFile') }.to raise_error(Error::WebDriverError)
           end
         end
 
         describe '#quit' do
           it 'respects quit_errors' do
-            bridge = Bridge.new({})
+            bridge = Bridge.new(url: 'http://localhost')
             allow(bridge).to receive(:execute).with(:delete_session).and_raise(IOError)
             expect { bridge.quit }.not_to raise_error
           end

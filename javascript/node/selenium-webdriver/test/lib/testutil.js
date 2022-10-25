@@ -15,59 +15,58 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
-const sinon = require('sinon');
-
+const assert = require('assert')
+const sinon = require('sinon')
 
 class StubError extends Error {
   constructor(opt_msg) {
-    super(opt_msg);
-    this.name = this.constructor.name;
+    super(opt_msg)
+    this.name = this.constructor.name
   }
 }
-exports.StubError = StubError;
+exports.StubError = StubError
 
-exports.throwStubError = function() {
-  throw new StubError;
-};
+exports.throwStubError = function () {
+  throw new StubError()
+}
 
-exports.assertIsStubError = function(value) {
-  assert.ok(value instanceof StubError, value + ' is not a ' + StubError.name);
-};
+exports.assertIsStubError = function (value) {
+  assert.ok(value instanceof StubError, value + ' is not a ' + StubError.name)
+}
 
-exports.assertIsInstance = function(ctor, value) {
-  assert.ok(value instanceof ctor, 'Not a ' + ctor.name + ': ' + value);
-};
+exports.assertIsInstance = function (ctor, value) {
+  assert.ok(value instanceof ctor, 'Not a ' + ctor.name + ': ' + value)
+}
 
 function callbackPair(cb, eb) {
   if (cb && eb) {
-    throw new TypeError('can only specify one of callback or errback');
+    throw new TypeError('can only specify one of callback or errback')
   }
 
-  let callback = cb ? sinon.spy(cb) : sinon.spy();
-  let errback = eb ? sinon.spy(eb) : sinon.spy();
+  let callback = cb ? sinon.spy(cb) : sinon.spy()
+  let errback = eb ? sinon.spy(eb) : sinon.spy()
 
   function assertCallback() {
-    assert.ok(callback.called, 'callback not called');
-    assert.ok(!errback.called, 'errback called');
+    assert.ok(callback.called, 'callback not called')
+    assert.ok(!errback.called, 'errback called')
     if (callback.threw()) {
-      throw callback.exceptions[0];
+      throw callback.exceptions[0]
     }
   }
 
   function assertErrback() {
-    assert.ok(!callback.called, 'callback called');
-    assert.ok(errback.called, 'errback not called');
+    assert.ok(!callback.called, 'callback called')
+    assert.ok(errback.called, 'errback not called')
     if (errback.threw()) {
-      throw errback.exceptions[0];
+      throw errback.exceptions[0]
     }
   }
 
   function assertNeither() {
-    assert.ok(!callback.called, 'callback called');
-    assert.ok(!errback.called, 'errback called');
+    assert.ok(!callback.called, 'callback called')
+    assert.ok(!errback.called, 'errback called')
   }
 
   return {
@@ -75,16 +74,15 @@ function callbackPair(cb, eb) {
     errback,
     assertCallback,
     assertErrback,
-    assertNeither
-  };
+    assertNeither,
+  }
 }
-exports.callbackPair = callbackPair;
+exports.callbackPair = callbackPair
 
-
-exports.callbackHelper = function(cb) {
-  let pair = callbackPair(cb);
-  let wrapped = pair.callback.bind(null);
-  wrapped.assertCalled = () => pair.assertCallback();
-  wrapped.assertNotCalled = () => pair.assertNeither();
-  return wrapped;
-};
+exports.callbackHelper = function (cb) {
+  let pair = callbackPair(cb)
+  let wrapped = pair.callback.bind(null)
+  wrapped.assertCalled = () => pair.assertCallback()
+  wrapped.assertNotCalled = () => pair.assertNeither()
+  return wrapped
+}

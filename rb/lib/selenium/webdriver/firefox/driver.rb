@@ -27,44 +27,35 @@ module Selenium
       #
 
       class Driver < WebDriver::Driver
-        include DriverExtensions::HasAddons
-        include DriverExtensions::HasWebStorage
-        include DriverExtensions::TakesScreenshot
-
-        def initialize(opts = {})
-          opts[:desired_capabilities] = create_capabilities(opts)
-
-          opts[:url] ||= service_url(opts)
-
-          listener = opts.delete(:listener)
-          desired_capabilities = opts.delete(:desired_capabilities)
-
-          @bridge = Remote::Bridge.new(opts)
-          @bridge.extend Bridge
-          @bridge.create_session(desired_capabilities)
-
-          super(@bridge, listener: listener)
-        end
+        EXTENSIONS = [DriverExtensions::HasAddons,
+                      DriverExtensions::FullPageScreenshot,
+                      DriverExtensions::HasContext,
+                      DriverExtensions::HasBiDi,
+                      DriverExtensions::HasDevTools,
+                      DriverExtensions::HasLogEvents,
+                      DriverExtensions::HasNetworkInterception,
+                      DriverExtensions::HasWebStorage,
+                      DriverExtensions::PrintsPage].freeze
 
         def browser
           :firefox
         end
 
-        def quit
-          super
-        ensure
-          @service&.stop
-        end
-
         private
 
-        def create_capabilities(opts)
-          caps = opts.delete(:desired_capabilities) { Remote::Capabilities.firefox }
-          options = opts.delete(:options) { Options.new }
-          options = options.as_json
-          caps.merge!(options) unless options.empty?
+        def devtools_url
+          if capabilities['moz:debuggerAddress'].nil?
+            raise(Error::WebDriverError, "DevTools is not supported by this version of Firefox; use v85 or higher")
+          end
 
-          caps
+          uri = URI("http://#{capabilities['moz:debuggerAddress']}")
+          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
+
+          JSON.parse(response)['webSocketDebuggerUrl']
+        end
+
+        def devtools_version
+          Firefox::DEVTOOLS_VERSION
         end
       end # Driver
     end # Firefox

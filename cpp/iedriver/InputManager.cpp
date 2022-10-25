@@ -209,7 +209,7 @@ int InputManager::GetTicks(const Json::Value& sequences, Json::Value* ticks) {
           // sequences. This is deliberately in violation of the W3C spec.
           // This allows us to better synchronize mixed keyboard and mouse
           // action sequences.
-          action["duration"] = 0;
+          action["duration"] = 10;
         }
       }
       (*ticks)[action_index].append(action);
@@ -405,7 +405,7 @@ int InputManager::PointerMoveTo(BrowserHandle browser_wrapper,
           LOG(WARN) << "No offset was specified, and the center point of the element could not be scrolled into view.";
           return status_code;
         } else {
-          LOG(WARN) << "Element::CalculateClickPoint() returned an error code indicating the element is not reachable.";
+          LOG(WARN) << "Element::GetStaticClickLocation() returned an error code indicating the element is not reachable.";
           return status_code;
         }
       }

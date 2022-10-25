@@ -34,7 +34,7 @@ module Selenium
         end
 
         def create_driver!(**opts, &block)
-          GlobalTestEnv.create_driver!(opts, &block)
+          GlobalTestEnv.create_driver!(**opts, &block)
         end
 
         def ensure_single_window
@@ -79,6 +79,14 @@ module Selenium
         def wait_for_element(locator)
           wait = Wait.new(timeout: 25, ignore: Error::NoSuchElementError)
           wait.until { driver.find_element(locator) }
+        end
+
+        def wait_for_new_url(old_url)
+          wait = Wait.new(timeout: 5)
+          wait.until do
+            url = driver.current_url
+            !(url.empty? || url.include?(old_url))
+          end
         end
 
         def wait(timeout = 10)

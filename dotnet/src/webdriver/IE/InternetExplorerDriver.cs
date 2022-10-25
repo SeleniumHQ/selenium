@@ -61,7 +61,7 @@ namespace OpenQA.Selenium.IE
     /// }
     /// </code>
     /// </example>
-    public class InternetExplorerDriver : RemoteWebDriver
+    public class InternetExplorerDriver : WebDriver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InternetExplorerDriver"/> class.
@@ -166,7 +166,7 @@ namespace OpenQA.Selenium.IE
         {
             if (options == null)
             {
-                throw new ArgumentNullException("options", "options must not be null");
+                throw new ArgumentNullException(nameof(options), "options must not be null");
             }
 
             return options.ToCapabilities();

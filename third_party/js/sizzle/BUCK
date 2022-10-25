@@ -1,9 +1,0 @@
-export_file(
-    name = "sizzle",
-    src = "sizzle.js",
-    out = "sizzle.js",
-    visibility = [
-        "//java/client/src/com/thoughtworks/selenium/webdriven:sizzle",
-        "//javascript/selenium-core:sizzle.js",
-    ],
-)

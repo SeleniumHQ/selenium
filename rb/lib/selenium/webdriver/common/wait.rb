@@ -55,7 +55,7 @@ module Selenium
           begin
             result = yield
             return result if result
-          rescue *@ignored => last_error
+          rescue *@ignored => last_error # rubocop:disable Naming/RescuedExceptionsVariableName
             # swallowed
           end
 

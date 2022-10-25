@@ -8,6 +8,7 @@ namespace OpenQA.Selenium
     public abstract class DriverTestFixture
     {
         public string alertsPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("alerts.html");
+        public string blankPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("blank.html");
         public string macbethPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("macbeth.html");
         public string macbethTitle = "Macbeth: Entire Play";
 
@@ -80,6 +81,9 @@ namespace OpenQA.Selenium
         public string missedJsReferencePage = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");
         public string authenticationPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("basicAuth");
         public string html5Page = EnvironmentManager.Instance.UrlBuilder.WhereIs("html5Page.html");
+        public string shadowRootPage = EnvironmentManager.Instance.UrlBuilder.WhereIs("shadowRootPage.html");
+        public string scrollFrameOutOfViewport = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html");
+        public string scrollFrameInViewport = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/frame_with_nested_scrolling_frame.html");
 
         protected IWebDriver driver;
 

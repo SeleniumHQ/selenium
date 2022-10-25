@@ -28,8 +28,7 @@ module Selenium
         class Default < Common
           attr_writer :proxy
 
-          attr_accessor :open_timeout
-          attr_accessor :read_timeout
+          attr_accessor :open_timeout, :read_timeout
 
           # Initializes object.
           # Warning: Setting {#open_timeout} to non-nil values will cause a separate thread to spawn.
@@ -39,6 +38,7 @@ module Selenium
           def initialize(open_timeout: nil, read_timeout: nil)
             @open_timeout = open_timeout
             @read_timeout = read_timeout
+            super()
           end
 
           def close
@@ -55,8 +55,7 @@ module Selenium
                 http.verify_mode = OpenSSL::SSL::VERIFY_NONE
               end
 
-              # Defaulting open_timeout to nil to be consistent with Ruby 2.2 and earlier.
-              http.open_timeout = open_timeout
+              http.open_timeout = open_timeout if open_timeout
               http.read_timeout = read_timeout if read_timeout
 
               start(http)
@@ -76,9 +75,10 @@ module Selenium
             begin
               request = new_request_for(verb, url, headers, payload)
               response = response_for(request)
-            rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE
-              # a retry is sometimes needed on Windows XP where we may quickly
-              # run out of ephemeral ports
+            rescue Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EADDRINUSE, Errno::EADDRNOTAVAIL
+              # a retry is sometimes needed:
+              #   on Windows XP where we may quickly run out of ephemeral ports
+              #   when the port becomes temporarily unavailable
               #
               # A more robust solution is bumping the MaxUserPort setting
               # as described here:
@@ -89,15 +89,8 @@ module Selenium
               retries += 1
               sleep 2
               retry
-            rescue Errno::EADDRNOTAVAIL => ex
-              # a retry is sometimes needed when the port becomes temporarily unavailable
-              raise if retries >= MAX_RETRIES
-
-              retries += 1
-              sleep 2
-              retry
-            rescue Errno::ECONNREFUSED => ex
-              raise ex.class, "using proxy: #{proxy.http}" if use_proxy?
+            rescue Errno::ECONNREFUSED => e
+              raise e.class, "using proxy: #{proxy.http}" if use_proxy?
 
               raise
             end
@@ -128,12 +121,14 @@ module Selenium
           def new_http_client
             if use_proxy?
               url = @proxy.http
-              raise Error::WebDriverError, "expected HTTP proxy, got #{@proxy.inspect}" unless proxy.respond_to?(:http) && url
+              unless proxy.respond_to?(:http) && url
+                raise Error::WebDriverError,
+                      "expected HTTP proxy, got #{@proxy.inspect}"
+              end
 
               proxy = URI.parse(url)
 
-              clazz = Net::HTTP::Proxy(proxy.host, proxy.port, proxy.user, proxy.password)
-              clazz.new(server_url.host, server_url.port)
+              Net::HTTP.new(server_url.host, server_url.port, proxy.host, proxy.port, proxy.user, proxy.password)
             else
               Net::HTTP.new server_url.host, server_url.port
             end
@@ -141,8 +136,8 @@ module Selenium
 
           def proxy
             @proxy ||= begin
-              proxy = ENV['http_proxy'] || ENV['HTTP_PROXY']
-              no_proxy = ENV['no_proxy'] || ENV['NO_PROXY']
+              proxy = ENV.fetch('http_proxy', nil) || ENV.fetch('HTTP_PROXY', nil)
+              no_proxy = ENV.fetch('no_proxy', nil) || ENV.fetch('NO_PROXY', nil)
 
               if proxy
                 proxy = "http://#{proxy}" unless proxy.start_with?('http://')

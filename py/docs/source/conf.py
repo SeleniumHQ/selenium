@@ -15,9 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-from __future__ import unicode_literals
 
-import sys, os, os.path
+import sys
+import os
+import os.path
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -55,7 +56,7 @@ copyright = '2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
 # built documents.
 #
 # The short X.Y version.
-version = '3.141'
+version = '4.5'
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -185,8 +186,8 @@ htmlhelp_basename = 'Seleniumdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'Selenium.tex', 'Selenium Documentation',
-   'plightbo, simon.m.stewart, hbchai, jrhuggins, et al.', 'manual'),
+    ('index', 'Selenium.tex', 'Selenium Documentation',
+     'plightbo, simon.m.stewart, hbchai, jrhuggins, et al.', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

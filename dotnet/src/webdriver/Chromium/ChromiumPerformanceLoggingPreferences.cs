@@ -1,4 +1,4 @@
-// <copyright file="ChromePerformanceLoggingPreferences.cs" company="WebDriver Committers">
+// <copyright file="ChromiumPerformanceLoggingPreferences.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -100,7 +100,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (string.IsNullOrEmpty(category))
             {
-                throw new ArgumentException("category must not be null or empty", "category");
+                throw new ArgumentException("category must not be null or empty", nameof(category));
             }
 
             this.AddTracingCategories(category);
@@ -123,7 +123,7 @@ namespace OpenQA.Selenium.Chromium
         {
             if (categoriesToAdd == null)
             {
-                throw new ArgumentNullException("categoriesToAdd", "categoriesToAdd must not be null");
+                throw new ArgumentNullException(nameof(categoriesToAdd), "categoriesToAdd must not be null");
             }
 
             // Adding a tracing category automatically turns timeline events off.

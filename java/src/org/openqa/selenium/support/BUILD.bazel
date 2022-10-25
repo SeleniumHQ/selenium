@@ -1,0 +1,57 @@
+load("//java:defs.bzl", "java_export", "java_library")
+load("//java:version.bzl", "SE_VERSION")
+
+java_export(
+    name = "support",
+    srcs = [
+        "Color.java",
+        "Colors.java",
+        "ThreadGuard.java",
+    ],
+    maven_coordinates = "org.seleniumhq.selenium:selenium-support:%s" % SE_VERSION,
+    opens_to = [
+        "org.openqa.selenium.json",
+    ],
+    pom_template = "//java/src/org/openqa/selenium:template-pom",
+    visibility = ["//visibility:public"],
+    exports = [
+        ":page-factory",
+        "//java/src/org/openqa/selenium/support/events",
+        "//java/src/org/openqa/selenium/support/locators",
+        "//java/src/org/openqa/selenium/support/ui:clock",
+        "//java/src/org/openqa/selenium/support/ui:components",
+        "//java/src/org/openqa/selenium/support/ui:elements",
+        "//java/src/org/openqa/selenium/support/ui:wait",
+    ],
+    deps = [
+        ":page-factory",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/support/events",
+        "//java/src/org/openqa/selenium/support/ui:clock",
+        "//java/src/org/openqa/selenium/support/ui:components",
+        "//java/src/org/openqa/selenium/support/ui:elements",
+        "//java/src/org/openqa/selenium/support/ui:wait",
+    ],
+)
+
+java_library(
+    name = "page-factory",
+    srcs = [
+        "AbstractFindByBuilder.java",
+        "ByIdOrName.java",
+        "CacheLookup.java",
+        "FindAll.java",
+        "FindBy.java",
+        "FindBys.java",
+        "How.java",
+        "PageFactory.java",
+        "PageFactoryFinder.java",
+    ] + glob([
+        "pagefactory/*.java",
+        "pagefactory/internal/*.java",
+    ]),
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/support/ui:components",
+    ],
+)

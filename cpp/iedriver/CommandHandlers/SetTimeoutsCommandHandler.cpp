@@ -38,13 +38,6 @@ void SetTimeoutsCommandHandler::ExecuteInternal(
   for (; timeout_parameter_iterator != command_parameters.end(); ++timeout_parameter_iterator) {
     std::string timeout_type = timeout_parameter_iterator->first;
     Json::Value timeout_value = timeout_parameter_iterator->second;
-    if (timeout_type != IMPLICIT_WAIT_TIMEOUT_NAME &&
-        timeout_type != SCRIPT_TIMEOUT_NAME &&
-        timeout_type != PAGE_LOAD_TIMEOUT_NAME) {
-      response->SetErrorResponse(ERROR_INVALID_ARGUMENT,
-                                 "Invalid timeout type specified: " + timeout_type);
-      return;
-    }
     if (timeout_type == SCRIPT_TIMEOUT_NAME && timeout_value.isNull()) {
       // Special case for the script timeout, which is nullable.
       mutable_executor.set_async_script_timeout(-1);

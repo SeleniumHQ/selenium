@@ -1,0 +1,19 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
+
+java_test_suite(
+    name = "medium-tests",
+    size = "medium",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/events",
+        "//java/src/org/openqa/selenium/events/local",
+        "//java/src/org/openqa/selenium/events/zeromq",
+        "//java/src/org/openqa/selenium/grid/security",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.zeromq:jeromq"),
+    ] + JUNIT5_DEPS,
+)

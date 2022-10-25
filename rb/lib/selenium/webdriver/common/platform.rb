@@ -57,6 +57,8 @@ module Selenium
           :jenkins
         elsif ENV['APPVEYOR']
           :appveyor
+        elsif ENV['GITHUB_ACTIONS']
+          :github
         end
       end
 
@@ -95,12 +97,14 @@ module Selenium
       def wsl?
         return false unless linux?
 
-        File.read('/proc/version').include?('Microsoft')
+        File.read('/proc/version').downcase.include?('microsoft')
+      rescue Errno::EACCES
+        # the file cannot be accessed on Linux on DeX
+        false
       end
 
       def cygwin?
-        RUBY_PLATFORM =~ /cygwin/
-        !Regexp.last_match.nil?
+        RUBY_PLATFORM.include?('cygwin')
       end
 
       def null_device
@@ -172,9 +176,9 @@ module Selenium
 
       def find_in_program_files(*binary_names)
         paths = [
-          ENV['PROGRAMFILES'] || '\\Program Files',
-          ENV['ProgramFiles(x86)'] || '\\Program Files (x86)',
-          ENV['ProgramW6432'] || '\\Program Files'
+          ENV.fetch('PROGRAMFILES', '\\Program Files'),
+          ENV.fetch('ProgramFiles(x86)', '\\Program Files (x86)'),
+          ENV.fetch('ProgramW6432', '\\Program Files')
         ]
 
         paths.each do |root|

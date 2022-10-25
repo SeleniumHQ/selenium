@@ -23,77 +23,65 @@ module Selenium
   module WebDriver
     module Interactions
       describe InputDevice do
-        subject(:input) { described_class.new }
+        let(:device_class) do
+          Class.new(InputDevice) do
+            def type
+              :none
+            end
+          end
+        end
+        let(:device) { device_class.new }
+        let(:action) { Pause.new(device) }
 
-        let(:device) { described_class.new }
-        let(:action) { instance_double(Pause) }
+        describe '#name' do
+          it 'returns provided name' do
+            device = device_class.new('name')
+            expect(device.name).to eq 'name'
+          end
 
-        it 'should provide access to name' do
-          expect(input).to respond_to(:name)
+          it 'returns a random UUID if no name is provided' do
+            allow(SecureRandom).to receive(:uuid).and_return(:id)
+
+            expect(device.name).to eq(:id)
+          end
         end
 
-        it 'should provide access to actions' do
-          expect(input).to respond_to(:actions)
+        describe '#actions' do
+          it 'returns empty array by default' do
+            expect(device.actions).to eq []
+          end
         end
 
-        it 'should assign a random UUID if no name is provided' do
-          allow(SecureRandom).to receive(:uuid).and_return(:id)
-
-          expect(InputDevice.new.name).to eq(:id)
-        end
-
-        context 'when adding an action' do
-          it 'should raise a TypeError if the action is not a descendant of Interaction' do
+        describe '#add_action' do
+          it 'raises a TypeError if the action is not a an Interaction' do
             expect { device.add_action('action') }.to raise_error(TypeError)
           end
 
-          it 'should add action to actions array' do
-            allow(action).to receive(:class).and_return(KeyInput::TypingInteraction)
-
+          it 'adds action to actions array' do
             expect { device.add_action(action) }.to change(device, :actions).from([]).to([action])
           end
-        end # when adding an action
-
-        it 'should clear actions' do
-          expect(device.actions).to receive(:clear)
-
-          device.clear_actions
         end
 
-        context 'when creating a pause' do
-          it 'should create a pause action' do
-            expect(Pause).to receive(:new).with(device, 5).and_return(:pause)
-            allow(device).to receive(:add_action)
+        describe '#clear_actions' do
+          it 'empties the actions array' do
+            device.add_action(action)
 
-            device.create_pause(5)
+            device.clear_actions
+            expect(device.actions).to be_empty
           end
+        end
 
-          it 'should add a pause action' do
-            allow(Pause).to receive(:new).with(device, 5).and_return(:pause)
-            expect(device).to receive(:add_action).with(:pause)
+        describe '#create_pause' do
+          it 'adds pause action with provided duration to actions array' do
+            allow(Pause).to receive(:new).and_return(action)
+            allow(device).to receive(:add_action).and_call_original
 
-            device.create_pause(5)
+            expect { device.create_pause(5) }.to change(device, :actions).from([]).to([action])
+            expect(Pause).to have_received(:new).with(device, 5)
+            expect(device).to have_received(:add_action).with(action)
           end
-        end # when creating a pause
-
-        context 'when checking for all pauses' do
-          let(:typing) { instance_double(KeyInput::TypingInteraction, type: :not_pause) }
-
-          it 'should return true when all actions are pauses' do
-            allow(device).to receive(:type).and_return(:none)
-            2.times { device.create_pause }
-            expect(device.no_actions?).to be true
-          end
-
-          it 'should return true when not all actions are pauses' do
-            allow(device).to receive(:type).and_return(:none)
-            allow(typing).to receive(:class).and_return(KeyInput::TypingInteraction)
-            device.create_pause
-            device.add_action(typing)
-            expect(device.no_actions?).to be false
-          end
-        end # when checking for all pauses
-      end # InputDevice
+        end
+      end
     end # Interactions
   end # WebDriver
 end # Selenium

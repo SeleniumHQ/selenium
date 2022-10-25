@@ -16,13 +16,12 @@
 
 #include "SendInputActionSimulator.h"
 
-#include <UIAutomation.h>
-
 #include "errorcodes.h"
 #include "logging.h"
 
 #include "../DocumentHost.h"
 #include "../HookProcessor.h"
+#include "../messages.h"
 
 #define WAIT_TIME_IN_MILLISECONDS_PER_INPUT_EVENT 100
 
@@ -128,7 +127,7 @@ void SendInputActionSimulator::SendInputToBrowser(BrowserHandle browser_wrapper,
                                                   int start_index,
                                                   int input_count) {
   if (input_count > 0) {
-    bool focus_set = this->SetFocusToBrowser(browser_wrapper);
+    bool focus_set = browser_wrapper->SetFocusToBrowser();
     if (!focus_set) {
       LOG(WARN) << "Focus not set to browser window";
     }
@@ -207,81 +206,6 @@ bool SendInputActionSimulator::WaitForInputEventProcessing(int input_count) {
              << " timed out after " << total_timeout_in_milliseconds
              << " milliseconds";
   return inputs_processed;
-}
-
-bool SendInputActionSimulator::SetFocusToBrowser(BrowserHandle browser_wrapper) {
-  LOG(TRACE) << "Entering InputManager::SetFocusToBrowser";
-
-  HWND top_level_window_handle = browser_wrapper->GetTopLevelWindowHandle();
-  HWND foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
-  if (foreground_window != top_level_window_handle) {
-    LOG(TRACE) << "Top-level IE window is " << top_level_window_handle
-               << " foreground window is " << foreground_window;
-    CComPtr<IUIAutomation> ui_automation;
-    HRESULT hr = ::CoCreateInstance(CLSID_CUIAutomation,
-                                    NULL,
-                                    CLSCTX_INPROC_SERVER,
-                                    IID_IUIAutomation,
-                                    reinterpret_cast<void**>(&ui_automation));
-    if (SUCCEEDED(hr)) {
-      LOG(TRACE) << "Using UI Automation to set window focus";
-      CComPtr<IUIAutomationElement> parent_window;
-      hr = ui_automation->ElementFromHandle(top_level_window_handle,
-                                            &parent_window);
-      if (SUCCEEDED(hr)) {
-        CComPtr<IUIAutomationWindowPattern> window_pattern;
-        hr = parent_window->GetCurrentPatternAs(UIA_WindowPatternId,
-                                                IID_PPV_ARGS(&window_pattern));
-        if (SUCCEEDED(hr)) {
-          BOOL is_topmost;
-          hr = window_pattern->get_CurrentIsTopmost(&is_topmost);
-          WindowVisualState visual_state;
-          hr = window_pattern->get_CurrentWindowVisualState(&visual_state);
-          if (visual_state == WindowVisualState::WindowVisualState_Maximized ||
-              visual_state == WindowVisualState::WindowVisualState_Normal) {
-            parent_window->SetFocus();
-            window_pattern->SetWindowVisualState(visual_state);
-          }
-        }
-      }
-    }
-  }
-
-  foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
-  if (foreground_window != top_level_window_handle) {
-    LOG(TRACE) << "Top-level IE window is " << top_level_window_handle
-               << " foreground window is " << foreground_window;
-    LOG(TRACE) << "Window still not in foreground; "
-               << "attempting to use SetForegroundWindow API";
-    UINT_PTR lock_timeout = 0;
-    DWORD process_id = 0;
-    DWORD thread_id = ::GetWindowThreadProcessId(browser_wrapper->GetContentWindowHandle(),
-                                                 &process_id);
-    DWORD current_thread_id = ::GetCurrentThreadId();
-    DWORD current_process_id = ::GetCurrentProcessId();
-    if (current_thread_id != thread_id) {
-      ::AttachThreadInput(current_thread_id, thread_id, TRUE);
-      ::SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT,
-                             0,
-                             &lock_timeout,
-                             0);
-      ::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT,
-                             0,
-                             0,
-                             SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
-      ::AllowSetForegroundWindow(current_process_id);
-    }
-    ::SetForegroundWindow(top_level_window_handle);
-    if (current_thread_id != thread_id) {
-      ::SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT,
-                             0,
-                             reinterpret_cast<void*>(lock_timeout),
-                             SPIF_SENDWININICHANGE | SPIF_UPDATEINIFILE);
-      ::AttachThreadInput(current_thread_id, thread_id, FALSE);
-    }
-  }
-  foreground_window = ::GetAncestor(::GetForegroundWindow(), GA_ROOT);
-  return foreground_window == top_level_window_handle;
 }
 
 } // namespace webdriver

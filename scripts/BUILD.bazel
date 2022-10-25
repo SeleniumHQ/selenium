@@ -1,0 +1,9 @@
+load("@py_dev_requirements//:requirements.bzl", "requirement")
+
+py_binary(
+    name = "pinned_browsers",
+    srcs = ["pinned_browsers.py"],
+    deps = [
+        requirement("urllib3"),
+    ],
+)

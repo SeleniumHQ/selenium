@@ -25,11 +25,26 @@ Webdriver.common
    selenium.webdriver.common.by
    selenium.webdriver.common.desired_capabilities
    selenium.webdriver.common.keys
-   selenium.webdriver.common.touch_actions
-   selenium.webdriver.common.utils
+   selenium.webdriver.common.log
+   selenium.webdriver.common.print_page_options
    selenium.webdriver.common.proxy
+   selenium.webdriver.common.utils
    selenium.webdriver.common.service
+   selenium.webdriver.common.options
+   selenium.webdriver.common.timeouts
+   selenium.webdriver.common.window
+   selenium.webdriver.common.actions.action_builder
+   selenium.webdriver.common.actions.input_device
+   selenium.webdriver.common.actions.interaction
+   selenium.webdriver.common.actions.key_actions
+   selenium.webdriver.common.actions.key_input
+   selenium.webdriver.common.actions.mouse_button
+   selenium.webdriver.common.actions.pointer_input
+   selenium.webdriver.common.actions.pointer_actions
+   selenium.webdriver.common.actions.wheel_input
+   selenium.webdriver.common.actions.wheel_actions
    selenium.webdriver.common.html5.application_cache
+   selenium.webdriver.common.virtual_authenticator
 
 Webdriver.support
 -----------------
@@ -42,17 +57,9 @@ Webdriver.support
    selenium.webdriver.support.color
    selenium.webdriver.support.event_firing_webdriver
    selenium.webdriver.support.expected_conditions
+   selenium.webdriver.support.relative_locator
    selenium.webdriver.support.select
    selenium.webdriver.support.wait
-
-Webdriver.android
------------------
-
-.. currentmodule:: selenium.webdriver.android
-.. autosummary::
-   :toctree: webdriver_android
-
-   selenium.webdriver.android.webdriver
 
 Webdriver.chrome
 ----------------
@@ -65,6 +72,29 @@ Webdriver.chrome
    selenium.webdriver.chrome.service
    selenium.webdriver.chrome.webdriver
 
+Webdriver.chromium
+------------------
+
+.. currentmodule:: selenium.webdriver.chromium
+.. autosummary::
+   :toctree: webdriver_chromium
+
+   selenium.webdriver.chromium.options
+   selenium.webdriver.chromium.service
+   selenium.webdriver.chromium.remote_connection
+   selenium.webdriver.chromium.webdriver
+
+Webdriver.edge
+--------------
+
+.. currentmodule:: selenium.webdriver.edge
+.. autosummary::
+   :toctree: webdriver_edge
+
+   selenium.webdriver.edge.options
+   selenium.webdriver.edge.service
+   selenium.webdriver.edge.webdriver
+
 Webdriver.firefox
 -----------------
 
@@ -73,10 +103,12 @@ Webdriver.firefox
    :toctree: webdriver_firefox
 
    selenium.webdriver.firefox.extension_connection
+   selenium.webdriver.firefox.remote_connection
    selenium.webdriver.firefox.firefox_binary
    selenium.webdriver.firefox.options
    selenium.webdriver.firefox.firefox_profile
    selenium.webdriver.firefox.webdriver
+   selenium.webdriver.firefox.service
 
 Webdriver.ie
 ------------
@@ -85,26 +117,9 @@ Webdriver.ie
 .. autosummary::
    :toctree: webdriver_ie
 
+   selenium.webdriver.ie.service
+   selenium.webdriver.ie.options
    selenium.webdriver.ie.webdriver
-
-Webdriver.opera
----------------
-
-.. currentmodule:: selenium.webdriver.opera
-.. autosummary::
-   :toctree: webdriver_opera
-
-   selenium.webdriver.opera.webdriver
-
-Webdriver.phantomjs
--------------------
-
-.. currentmodule:: selenium.webdriver.phantomjs
-.. autosummary::
-   :toctree: webdriver_phantomjs
-
-   selenium.webdriver.phantomjs.service
-   selenium.webdriver.phantomjs.webdriver
 
 Webdriver.remote
 ----------------
@@ -114,12 +129,17 @@ Webdriver.remote
    :toctree: webdriver_remote
 
    selenium.webdriver.remote.command
+   selenium.webdriver.remote.bidi_connection
    selenium.webdriver.remote.errorhandler
    selenium.webdriver.remote.mobile
    selenium.webdriver.remote.remote_connection
+   selenium.webdriver.remote.shadowroot
    selenium.webdriver.remote.utils
    selenium.webdriver.remote.webdriver
    selenium.webdriver.remote.webelement
+   selenium.webdriver.remote.file_detector
+   selenium.webdriver.remote.script_key
+   selenium.webdriver.remote.switch_to
 
 Webdriver.safari
 ----------------
@@ -128,6 +148,8 @@ Webdriver.safari
 .. autosummary::
   :toctree: webdriver_safari
 
+  selenium.webdriver.safari.options
+  selenium.webdriver.safari.remote_connection
   selenium.webdriver.safari.service
   selenium.webdriver.safari.webdriver
 

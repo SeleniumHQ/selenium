@@ -20,10 +20,6 @@
 module Selenium
   module WebDriver
     module Safari
-      #
-      # @api private
-      #
-
       class Service < WebDriver::Service
         DEFAULT_PORT = 7050
         EXECUTABLE = 'safaridriver'

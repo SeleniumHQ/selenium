@@ -17,30 +17,27 @@
 
 import pytest
 
-try:
-    basestring
-except NameError:  # Python 3.x
-    basestring = str
-
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.firefox.options import Log, Options
+from selenium.webdriver.firefox.options import Log
+from selenium.webdriver.firefox.options import Options
 
 
 @pytest.fixture
 def driver_kwargs(driver_kwargs):
-    driver_kwargs['options'] = Options()
+    driver_kwargs["options"] = Options()
     return driver_kwargs
 
 
-class TestIntegration(object):
+class TestIntegration:
     def test_we_can_pass_options(self, driver, pages):
         pages.load("formPage.html")
-        driver.find_element_by_id("cheese")
+        driver.find_element(By.ID, "cheese")
 
 
-class TestUnit(object):
+class TestUnit:
     def test_ctor(self):
         opts = Options()
         assert opts._binary is None
@@ -100,14 +97,16 @@ class TestUnit(object):
 
     def test_to_capabilities(self):
         opts = Options()
-        assert opts.to_capabilities() == DesiredCapabilities.FIREFOX
+        firefox_caps = DesiredCapabilities.FIREFOX.copy()
+        firefox_caps.update({"pageLoadStrategy": "normal"})
+        assert opts.to_capabilities() == firefox_caps
 
         profile = FirefoxProfile()
         opts.profile = profile
         caps = opts.to_capabilities()
         assert "moz:firefoxOptions" in caps
         assert "profile" in caps["moz:firefoxOptions"]
-        assert isinstance(caps["moz:firefoxOptions"]["profile"], basestring)
+        assert isinstance(caps["moz:firefoxOptions"]["profile"], str)
         assert caps["moz:firefoxOptions"]["profile"] == profile.encoded
 
         opts.add_argument("--foo")
@@ -121,7 +120,7 @@ class TestUnit(object):
         caps = opts.to_capabilities()
         assert "moz:firefoxOptions" in caps
         assert "binary" in caps["moz:firefoxOptions"]
-        assert isinstance(caps["moz:firefoxOptions"]["binary"], basestring)
+        assert isinstance(caps["moz:firefoxOptions"]["binary"], str)
         assert caps["moz:firefoxOptions"]["binary"] == binary._start_cmd
 
         opts.set_preference("spam", "ham")

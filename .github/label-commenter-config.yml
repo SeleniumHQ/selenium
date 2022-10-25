@@ -1,0 +1,131 @@
+# Configuration for Label Commenter - https://github.com/peaceiris/actions-label-commenter
+labels:
+  - name: needs-triaging
+    labeled:
+      issue:
+        body: |
+          @{{ issue.user.login }}, thank you for creating this issue. We will troubleshoot it as soon as we can.
+
+          ---
+          <details>
+            <summary>Info for maintainers</summary>
+            <div>
+              <br>
+              <p>
+                Triage this issue by using labels.
+              </p>
+              <p>
+                If information is missing, add a helpful comment and then <code>I-issue-template</code> label.
+              </p>
+              <p>
+                If the issue is a question, add the <code>I-question</code> label.
+              </p>
+              <p>
+                If the issue is valid but there is no time to troubleshoot it, consider adding the <code>help wanted</code> label.
+              </p>
+              <p>
+                If the issue requires changes or fixes from an external project (e.g., ChromeDriver, GeckoDriver, MSEdgeDriver, W3C),
+               add the applicable <code>G-*</code> label, and it will provide the correct link and auto-close the
+               issue.
+              </p>
+              <p>
+                After troubleshooting the issue, please add the <code>R-awaiting answer</code> label.
+              </p>
+              <p>
+                Thank you!
+              </p>
+            </div>
+          </details>
+  - name: G-w3c
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require a change to the
+          [WebDriver W3C Specification](https://w3c.github.io/webdriver/) for Selenium to be able to support it.
+
+          Please [create an issue](https://github.com/w3c/webdriver/issues/new) with the WebDriver project.
+
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+        action: close
+  - name: G-chromedriver
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require fixes in [ChromeDriver](https://chromedriver.chromium.org/home).
+
+          You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
+
+          If it is something new, please [create an issue](https://bugs.chromium.org/p/chromedriver/issues/list) with the ChromeDriver team.
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+
+        action: close
+  - name: G-geckodriver
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require fixes in [GeckoDriver](https://firefox-source-docs.mozilla.org/testing/geckodriver/).
+
+          You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
+
+          If it is something new, please [create an Issue](https://github.com/mozilla/geckodriver/issues/new) with the GeckoDriver team.
+
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+        action: close
+  - name: G-msedgedriver
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require fixes in [MSEdgeDriver](https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/)
+          or in the IE Mode in Edge.
+
+          You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
+
+          If it is something new, please [create an Issue](https://github.com/MicrosoftEdge/EdgeWebDriver/issues/new) with the MSEdgeDriver team.
+
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+        action: close
+  - name: G-safaridriver
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          This issue has been determined to require fixes in [SafariDriver](https://developer.apple.com/documentation/webkit/about_webdriver_for_safari).
+
+          You can see if the feature is passing in the [Web Platform Tests](https://wpt.fyi/results/webdriver/tests).
+
+          If it is something new, please [create an Issue](https://developer.apple.com/bug-reporting/) with the Safari team.
+
+          Feel free to comment the issues that you raise back in this issue. Thank you.
+        action: close
+  - name: I-issue-template
+    labeled:
+      issue:
+        body: |
+          Hi, @{{ issue.user.login }}.
+          Please follow the issue template, we need more information to reproduce the issue.
+
+          Either a complete code snippet and URL/HTML (if more than one file is needed, provide a GitHub repo and instructions to run the code), the specific versions used, or a more detailed description to help us understand the issue.
+
+          Note: If you cannot share your code and URL/HTML, any complete code snippet and URL/HTML that reproduces the issue is good enough.
+
+          Reply to this issue when all information is provided, thank you.
+  - name: I-question
+    labeled:
+      issue:
+        body: |
+          💬 Please ask questions at:
+          * 📫 The [Selenium user group](https://groups.google.com/forum/#!forum/selenium-users)
+          * 📮 [StackOverflow](https://stackoverflow.com/questions/tagged/selenium)
+          * 🗣 Our [IRC/Slack/Matrix channels](https://www.selenium.dev/support/) where the community can help you as well
+        action: close
+  - name: help wanted
+    labeled:
+      issue:
+        body: |
+          This issue is looking for contributors.
+
+          Please comment below or reach out to us through our [IRC/Slack/Matrix channels](https://www.selenium.dev/support/) if you are interested.

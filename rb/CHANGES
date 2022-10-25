@@ -1,3 +1,430 @@
+4.5.0 (Unreleased)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.105.0 (supports CDP v85, v103, v104, v105)
+  * Released selenium-devtools 0.106.0 (supports CDP v85, v104, v105, v106)
+  * Add HasBiDi support to Chrome
+
+Ruby:
+  * Fix bug in Platform code
+  * Update Select class to error when elements are disabled (#10812)
+
+Firefox:
+  * Add support for installing unsigned add-ons (#10265, thanks TamsilAmani!)
+  * Change accept_insecure_certificates to true by default (to match other bindings)
+  * Set debugger_address option to true by default
+
+Server:
+  * Add support for initializing server class with arguments and log level
+
+4.4.0 (2022-08-09)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.103.1 to fix websocket dependency requirement
+  * Released selenium-devtools 0.104.0 (supports CDP v85, v102, v103, v104)
+  * Have network interceptor ignore cancelled requests (#10856)
+  * Improve websocket message handling
+
+Chromium:
+  * Prevent users from setting w3c: false and warn for true (thanks Tamsil Amani!)
+
+Ruby:
+  * Implement Virtual Authenticator (#10903, #10541) (thanks Tamsil Amani!)
+
+4.3.0 (2022-06-23)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.103.0 (supports CDP v85, v101, v102, v103)
+
+Ruby:
+  * Allow specifying which button is clicked in pointer action class methods
+  * Remove deprecated `Persistent` http class
+  * Remove deprecated HasRemoteStatus module
+  * Remove deprecated `Manager#new_window` and `Manager#logs`
+  * `ActionBuilder#move_to` no longer attempts to move to top left corner of element
+  * Remove deprecated support for sending Service parameters directly to Driver constructor
+  * Remove deprecated setters and getters for driver path on Browser modules
+  * Remove deprecated support for passing in options argument to Options class
+  * Allow `:options` parameter to take `Options` instance argument like other languages
+  * Remove deprecated support for `:desired_capabilities` & `:options` with `Hash` argument
+
+4.2.1 (2022-05-31)
+=========================
+
+Ruby
+  * Fix bug in setting default duration in Actions constructor
+
+4.2.0 (2022-05-27)
+=========================
+
+BiDi:
+  * Released selenium-devtools 0.97.0 (supports CDP v85, v95, v96, v97)
+  * Released selenium-devtools 0.98.0 (supports CDP v85, v96, v97, v98)
+  * Released selenium-devtools 0.99.0 (supports CDP v85, v97, v98, v99)
+  * Released selenium-devtools 0.100.0 (supports CDP v85, v98, v99, v100)
+  * Released selenium-devtools 0.101.0 (supports CDP v85, v99, v100, v101)
+  * Released selenium-devtools 0.102.0 (supports CDP v85, v100, v101, v102)
+  * Implement simple BiDi connection
+  * Fix bug in initial BiDi implementation (thanks Boris Petrov!)
+  * Fix bug with mutating headers in request interception (#10574)
+  * Fix bug with empty response headers (thanks Viren Negi!)
+
+Firefox:
+  * Add support to Firefox Options for environment capability
+  * Use addon parameter instead of path parameter to avoid using file detector
+  * Restore #from_name method to Firefox profile (#10146)
+
+Chromium:
+  * Add support for casting desktop
+
+Ruby:
+  * Updated minimum required Ruby version to 2.7
+  * Fix bug by not attempting to stop service process when it's not started (#10015)
+  * Fix bug to not stop service process when it's not started (thanks Atsushi Tatsuma!)
+  * Use driver endpoint to get page source instead of JavaScript
+  * Add zenkaku_hankaku key support
+  * Fix download support of Selenium Server
+  * Do not convert Tag Name to CSS Selector
+
+ActionBuilder:
+  * Raise error if input device not found
+  * Move `TypingInteraction` from `Interactions::KeyInput` to `Interactions` module
+  * Throw better errors for `PointerInput` methods
+  * Allow each action interaction class to validate its own source
+  * Set all Interactions classes to private
+  * Allow device names to use a default id if one is not specified
+  * Deprecate default mouse and keyboard values in constructor, favoring devices parameter
+  * Add support for pointer event properties
+  * Implement scroll wheel support
+  * Deprecate ordered pair parameters for pause method in favor of keywords
+  * Deprecate move to element with offset changing origin to top left of element
+
+4.1.0 (2021-11-22)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.95.0 (supports CDP v85, v93, v94, v95)
+  * Released selenium-devtools 0.96.0 (supports CDP v85, v94, v95, v96)
+  * Added support for secure websockets (#10017)
+
+Ruby:
+  * Execute Script supports ShadowRoots (#10019)
+  * Fixed bug preventing zipping temp files on Windows (#9987)
+  * Sang Pumpkin Carol (thanks Jari!)
+
+4.0.3 (2021-10-20)
+=========================
+
+Firefox:
+  * Fixed bug avoiding camel casing prefs (#9944 thanks @glaszig)
+
+Ruby:
+  * Fixed bug in Select class for finding by index (#9945)
+
+Remote:
+  * Fixed bug preventing sending keys with an empty value
+
+4.0.2 (2021-10-19)
+=========================
+
+Server:
+  * Fixed bug in new download code.
+
+4.0.1 (2021-10-19)
+=========================
+
+Server:
+  * Fixed download by pointing to new storage location.
+    - Only supports Selenium 4 versions
+  * Added default value for Server::get and Server::download to use the latest server version
+
+4.0.0 (2021-10-13)
+=========================
+
+Ruby:
+  * Updated minimum required Ruby version to 2.6
+  * Updated minimum required rexml gem version due to vulnerability
+
+Chrome:
+  * Added default values for Network Conditions so no longer need to specify everything
+
+Firefox:
+  * Fixed bug where Firefox prefs were converting snake case to camel case
+
+4.0.0.rc3 (2021-10-08)
+=========================
+
+Ruby:
+  * Added support for getting timeout values from the driver
+
+4.0.0.rc2 (2021-09-30)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.93.0 (2021-09-01)
+    - adds CDP version 93
+    - removes CDP version 91
+  * Released selenium-devtools 0.94.0 (2021-09-22)
+    - adds CDP version 94
+    - removes CDP version 92
+  * Added support for mutating responses in network interception
+
+Ruby:
+  * Implemented Options#add_option to work for vendor extension capabilities
+  * Fixed bug for requiring uri (#9825 thanks @flanger001)
+  * Moved New Window functionality to TargetLocator#new_window to be used with Driver#switch_to
+  * Deprecated using Manager#new_window
+  * Changed order of logging output (#9850)
+  * Added support for web_socket_url capability
+
+Chromium:
+  * Implemented casting functionality
+  * Implemented ability to launch chromium app
+  * Implemented support for specifying permissions
+  * Added support for Chrome-specific Android functionality with #enable_android
+
+Firefox:
+  * Implemented context functionality
+  * Added support for Firefox-specific Android functionality with #enable_android
+
+Remote:
+  * Added support for file detector to install Firefox addons from client machine
+
+4.0.0.rc1 (2021-09-01)
+=========================
+
+DevTools:
+  * Released selenium-devtools 0.92.0 (2021-08-21) which:
+    - adds CDP versions 92
+    - removes CDP versions 88, 89, 90
+
+IE:
+  * Added options for running Microsoft Edge in IE mode with IE Driver
+
+Remote:
+  * Added default file detector for remote driver
+
+Ruby:
+  * Fixed bug for getting valid capability that has not been set
+  * Fixed bug preventing loading of ServerError class
+
+4.0.0.beta4 (2021-06-07)
+=========================
+
+Chrome:
+  * Fixed bug with camel casing of localState object
+
+Firefox:
+  * Added support for Full Page Screenshots
+
+Remote:
+  * Added support for #execute_cdp on Chrome and Edge
+
+Ruby:
+  * Changed capabilities to use alwaysMatch instead of firstMatch by default
+  * Fixed bug preventing Options classes from handling Proxy instances
+
+4.0.0.beta3 (2021-04-13)
+=========================
+
+Chrome:
+  * Fixed a regression with prefs hash keys being converted to camelCase.
+  * Fixed an issue when passing Profile object to Options would fail.
+
+DevTools:
+  * Released selenium-devtools 0.91.0 which:
+    - adds CDP versions 90 and 91
+    - removes CDP versions 86 and 87
+
+Remote:
+  * Added support for setting alwaysMatch/firstMatch capabilities per W3C
+    WebDriver specification. It's done using the following methods where
+    `caps` is either a Ruby hash with desired capabilities or an instance
+    of Remote::Capabilities:
+      * Selenium::WebDriver::Remote::Capabilities.always_match(caps)
+      * Selenium::WebDriver::Remote::Capabilities.first_match(caps)
+  * Added support for Driver#save_print_page.
+  * Fixed an issue with Driver#print_page.
+  * Added support for setting timeouts capabilities in Remote::Capabilities
+    per W3C WebDriver specification.
+  * Added support for Element#aria_role which returns WAI-ARIA role of the element.
+  * Added support for Element#accessible name which returns WAI-ARIA label of the element.
+  * Added support for using DevTools version provided by Grid instead of
+    calculating it manually
+
+Ruby:
+  * Remove JRuby-specific socket poller. Note that this requires JRuby 9.2.8.0+.
+
+4.0.0.beta2 (2021-03-16)
+=========================
+
+DevTools:
+  * Separated out DevTools methods into selenium-devtools gem to better manage versioning
+  * Updated supported versions to 85-89
+  * Add support for intercepting browser requests
+
+Firefox:
+  * Add support for using DevTools commands with Firefox Nightly
+
+Remote:
+  * Provide access to browser specific driver extensions as appropriate for designated browser
+  * Add support for using DevTools commands via Grid
+
+Ruby:
+  * Spec Guard implementation moved into lib directory for other projects to use
+  * Implemented `Element#dom_attribute` to obtain attribute value as defined by w3c specification
+  * Implemented `Options#eq?`
+  * Allow Options subclass instances to be created from class methods in superclass
+
+Safari:
+  * Fix bug that prevented usage of Safari Technology Preview
+
+4.0.0.beta1 (2021-02-15)
+=========================
+
+DevTools:
+  * Updated supported versions to 85-88
+
+Edge:
+  * Removed support for legacy Edge HTML
+
+Firefox:
+  * Fixed support for default profile settings
+  * Added support for Devtools for Firefox v87+
+
+Safari:
+  * Removed default platformName specification so it works with Grid
+
+Ruby:
+  * Added support for httpOnly attribute in Cookies
+  * Implemented `#print_page` method (thanks @raju249)
+  * Fixed support for missing libraries in Ruby 3.0 (thanks @znz)
+  * Deprecated `HTTP::Persistent` class
+  * Fixed support for accessors in options classes
+  * Added support for status endpoint for all browsers
+  * Fix support for Browser, Driver, and Performance Logging in Chrome and Edge
+
+4.0.0.alpha7 (2020-11-10)
+=========================
+
+Chrome:
+  * Fixed a link to download ChromeDriver when it's not found (thanks @masakazutakewaka).
+  * Fixed an issue when passing instance of Profile to an Options in capabilities
+    (thanks @masakazutakewaka).
+
+DevTools:
+  * Added support for multiple version of CDP. Currently supported versions are
+    84-87. The proper version is automatically selected when the browser is started
+    based on its version. The implementation is Chromium-based and is confirmed
+    to work in Chrome and Edge at least.
+  * Added support for basic authentication (see HasAuthentication).
+  * Added support for listening to JavaScript console messages (see HasLogEvents).
+  * Added support for listening to JavaScript exceptions (see HasLogEvents).
+  * Added support for listening to DOM mutations (see HasLogEvents).
+
+Edge:
+  * Switched default Edge implementation to Chromium-based. To use older versions
+    of Edge, pass :edge_html when initializing the driver.
+
+Firefox:
+  * Fixed an issue whereby using the new capabilities structure in local drivers
+    would cause the W3C check to complain that `browser_name` was an invalid
+    capability key name (thanks @luke-hill)
+
+Ruby:
+  * Added support for taking screenshots of individual elements using Element#screenshot
+    (thanks @johndouthat).
+  * Fixed deprecation message of using Net::HTTP::Proxy (thanks @masakazutakewaka).
+  * Fixed false negative detection of Linux on WSL2 (thanks @snsten).
+  * Support ChildProcess 4.x versions (thanks @boutil).
+
+Safari:
+  * Fixed browser name in capabilities for Safari Technology Preview.
+
+4.0.0.alpha6 (2020-05-28)
+=========================
+
+Chrome:
+  * Added DevTools classes and methods generated from the CDP specification.
+    It currently supports commands and events and provides Rubyish API:
+      driver.devtools.page.navigate(url: 'http://google.com')
+      driver.devtools.console.clear_messages
+      driver.devtools.page.enable
+      driver.devtools.page.on(:load_event_fired) do |params|
+        puts("Page loaded in #{params['timestamp']}")
+      end
+    Check https://chromedevtools.github.io/devtools-protocol/ for more information
+    about possible commands and events. Please note that this API is considered
+    to be experimental and may change any time before stable 4.0 release.
+  * Fixed an issue when passing :prompt_for_download (or similar snake_cased
+    symbols) in Options#prefs would be ignored by Chrome because Selenium
+    would internally convert it to camelCased format (:promptForDownload).
+    Now :prefs are left intact.
+
+Edge:
+  * Fixed an issue when Driver#execute_cdp would not work for Chromium-based
+    Edge browser.
+
+Ruby:
+  * Deprecated passing :desired_capabilities and :options to driver initialization
+    in favor of :capabilities. They now can be combined in an array to make
+    custom capabilities requirements:
+      caps = Selenium::WebDriver::Remote::Capabilities.chrome
+      opts = Selenium::WebDriver::Chrome::Options.new
+      Selenium::WebDriver.for(:remote, capabilities: :chrome)
+      Selenium::WebDriver.for(:remote, capabilities: caps)
+      Selenium::WebDriver.for(:remote, capabilities: opts)
+      Selenium::WebDriver.for(:remote, capabilities: [caps, opts])
+  * Deprecated passing Hash to :capabilities in favor of Remote::Capabilities object.
+  * Updated minimum require Ruby version to 2.5.
+  * Improved keyword arguments handling to avoid warnings in Ruby 2.7.
+
+4.0.0.alpha5 (2020-03-18)
+=========================
+
+The release is just to synchronize version with other bindings and does not
+include any changes.
+
+4.0.0.alpha4 (2020-01-09)
+=========================
+
+Ruby:
+  * Added initial support for relative locators, which allow to find elements
+    above/below/left/right/near another element. For example, you can find all
+    the cells in a table to the right of your starting cell:
+      start_cell = driver.find_element(css: 'td')
+      right_cells = driver.find_elements(relative: {tag_name: 'td', right: start_cell})
+    The documentation is still lacking so refer to examples in df6be2e962.
+  * Added ability to silence certain logger messages by using it's identifiers:
+      Selenium::WebDriver.logger.ignore(:driver_path)
+  * Added new dependency: websocket. It's used for communicating with Chrome DevTools.
+  * Loosened childprocess dependency to allow using version 2.0+.
+  * Loosened rubyzip dependency to allow using version 2.0+.
+  * Fixed Errno::EACCES error on Linux DeX and similar distributes
+
+Chrome:
+  * Added initial support for communicating with Chrome DevTools. The implementation
+    is very basic and lacks CDP domains, events and types - those will be added
+    in future releases. Still, it allows to execute simple commands to DevTools:
+      driver.devtools.send('Page.navigate', {url: 'https://google.com'})
+
+4.0.0.alpha3 (2019-07-08)
+=========================
+
+Ruby:
+  * All documented driver capabilities supported in respective browser Options class by constructor and accessor
+  * Driver constructor :options and :desired_capabilities generate the same capabilities for local and remote execution
+  * Deprecated :options as keyword for initializing browser Options classes
+
+Chrome:
+  * Add support for browser logging with latest versions of chromedriver
+
+Edge:
+  * Add support for Chromium based implementation
+
 4.0.0.alpha2 (2019-05-02)
 =========================
 
@@ -33,6 +460,31 @@ Firefox:
   * Fixed an issue when passing :profile string to Firefox::Options.new would
     result in NoMethodError. Now it will find a profile with such name on your
     system and use it accordingly (issue #7119)
+
+3.142.7 (2019-12-27)
+====================
+
+Ruby:
+  * Fix keyword argument deprecations in Ruby 2.7 (thanks @connorshea)
+
+3.142.6 (2019-10-04)
+====================
+
+Ruby:
+  * Loosen ChildProcess dependency so that 3.0+ can be used (thanks @jaredbeck)
+
+3.142.5 (2019-10-01)
+====================
+
+Ruby:
+  * Loosen RubyZip dependency so that 1.3+ can be used (thanks @vtamara)
+
+3.142.4 (2019-09-02)
+====================
+
+Chrome:
+  * Added support for new command for getting logs in ChromeDriver 76+
+    with W3C mode on
 
 3.142.3 (2019-05-21)
 ====================
@@ -591,11 +1043,11 @@ Ruby:
   * Fix bug in auto detection of drivers which allowed selection of non-executable binaries
 
 W3C:
-  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney) 
-  * Implement element #property method (thanks lmtierney) 
+  * Implement #cookie_named and #delete_all_cookies methods (thanks lmtierney)
+  * Implement element #property method (thanks lmtierney)
 
 Chrome:
-  * Fix bug in switches (thanks danvine) 
+  * Fix bug in switches (thanks danvine)
 
 3.0.1 (2016-11-06)
 ===================
@@ -617,7 +1069,7 @@ Ruby:
   * Add support for latest driver options
   * Add support for :port parameter for launching driver
   * Add support for :service_args parameter for driver command line switches
-  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto ) 
+  * Improve reliability by increasing service shutdown timeout (#2815; thanks John Barbuto )
 
 Firefox:
   * Add support for :firefox_options in geckodriver

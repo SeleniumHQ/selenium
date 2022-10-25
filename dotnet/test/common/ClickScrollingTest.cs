@@ -23,10 +23,12 @@ namespace OpenQA.Selenium
 
             driver.FindElement(By.PartialLinkText("last speech")).Click();
 
-            long yOffset = (long)((IJavaScriptExecutor)driver).ExecuteScript(scrollScript);
+            // Sometimes JS is returning a double
+            object result = ((IJavaScriptExecutor)driver).ExecuteScript(scrollScript);
+            var yOffset = Convert.ChangeType(result, typeof(long));
 
             //Focusing on to click, but not actually following,
-            //the link will scroll it in to view, which is a few pixels further than 0 
+            //the link will scroll it in to view, which is a few pixels further than 0
             Assert.That(yOffset, Is.GreaterThan(300), "Did not scroll");
         }
 
@@ -52,6 +54,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
         public void ShouldBeAbleToClickOnAnElementHiddenByDoubleOverflow()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_double_overflow_auto.html");
@@ -70,18 +73,15 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.IE, "Issue #716")]
-        [IgnoreBrowser(Browser.Firefox, "Issue #716")]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
         public void ShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_partially_hidden_element.html");
-
             driver.FindElement(By.Id("btn")).Click();
             WaitFor(TitleToBe("Clicked Successfully!"), "Browser title was not 'Clicked Successfully'");
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldNotScrollOverflowElementsWhichAreVisible()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll2.html");
@@ -94,14 +94,13 @@ namespace OpenQA.Selenium
 
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Webkit-based browsers apparently scroll anyway.")]
-        [IgnoreBrowser(Browser.Edge, "Webkit-based browsers apparently scroll anyway.")]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scroll3.html");
-            driver.FindElement(By.Id("button1")).Click();
-            long scrollTop = GetScrollTop();
             driver.FindElement(By.Id("button2")).Click();
+            long scrollTop = GetScrollTop();
+            driver.FindElement(By.Id("button1")).Click();
             Assert.AreEqual(scrollTop, GetScrollTop());
         }
 
@@ -123,7 +122,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
+        [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")]
         public void ShouldBeAbleToClickElementInAFrameThatIsOutOfView()
         {
             try
@@ -141,7 +140,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInAFrame()
         {
             try
@@ -159,24 +157,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [Ignore("All tested browses scroll non-scrollable frames")]
-        public void ShouldNotBeAbleToClickElementThatIsOutOfViewInANonScrollableFrame()
-        {
-            try
-            {
-                driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_non_scrolling_frame.html");
-                driver.SwitchTo().Frame("scrolling_frame");
-                IWebElement element = driver.FindElement(By.Name("scroll_checkbox"));
-                Assert.That(() => element.Click(), Throws.InstanceOf<WebDriverException>());
-            }
-            finally
-            {
-                driver.SwitchTo().DefaultContent();
-            }
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView()
         {
             try
@@ -194,7 +174,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame()
         {
             try
@@ -213,7 +193,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera fails.")]
+        [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
         public void ShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView()
         {
             try
@@ -241,6 +221,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "https://bugzilla.mozilla.org/show_bug.cgi?id=1314462")]
         public void ShouldBeAbleToClickElementInATallFrame()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("scrolling_tests/page_with_tall_frame.html");

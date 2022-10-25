@@ -25,13 +25,13 @@ namespace OpenQA.Selenium.Interactions
         {
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test1"));
-            Point expectedLocation = drag(img, img.Location, 150, 200);
+            Point expectedLocation = Drag(img, img.Location, 150, 200);
             Assert.AreEqual(expectedLocation, img.Location);
-            expectedLocation = drag(img, img.Location, -50, -25);
+            expectedLocation = Drag(img, img.Location, -50, -25);
             Assert.AreEqual(expectedLocation, img.Location);
-            expectedLocation = drag(img, img.Location, 0, 0);
+            expectedLocation = Drag(img, img.Location, 0, 0);
             Assert.AreEqual(expectedLocation, img.Location);
-            expectedLocation = drag(img, img.Location, 1, -1);
+            expectedLocation = Drag(img, img.Location, 1, -1);
             Assert.AreEqual(expectedLocation, img.Location);
         }
 
@@ -93,6 +93,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.Edge, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
         public void DragAndDropElementWithOffsetInScrolledDiv()
         {
             if (TestUtilities.IsFirefox(driver) && TestUtilities.IsNativeEventsEnabled(driver))
@@ -116,7 +117,7 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test3"));
             Point startLocation = img.Location;
-            Point expectedLocation = drag(img, startLocation, 100, 100);
+            Point expectedLocation = Drag(img, startLocation, 100, 100);
             Point endLocation = img.Location;
             Assert.AreEqual(expectedLocation, endLocation);
         }
@@ -127,7 +128,7 @@ namespace OpenQA.Selenium.Interactions
             driver.Url = dragAndDropPage;
             IWebElement img = driver.FindElement(By.Id("test1"));
 
-            // Dragging too far left and up does not move the element. It will be at 
+            // Dragging too far left and up does not move the element. It will be at
             // its original location after the drag.
             Point originalLocation = new Point(0, 0);
             Actions actionProvider = new Actions(driver);
@@ -140,6 +141,7 @@ namespace OpenQA.Selenium.Interactions
         [IgnoreBrowser(Browser.Edge, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
+        [IgnoreBrowser(Browser.Safari, "Moving outside of view port throws exception in spec-compliant driver")]
         public void ShouldAllowUsersToDragAndDropToElementsOffTheCurrentViewPort()
         {
             Size originalSize = driver.Manage().Window.Size;
@@ -151,7 +153,7 @@ namespace OpenQA.Selenium.Interactions
             {
                 driver.Url = dragAndDropPage;
                 IWebElement img = driver.FindElement(By.Id("test3"));
-                Point expectedLocation = drag(img, img.Location, 100, 100);
+                Point expectedLocation = Drag(img, img.Location, 100, 100);
                 Assert.AreEqual(expectedLocation, img.Location);
             }
             finally
@@ -197,7 +199,6 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Untested")]
         [IgnoreBrowser(Browser.Firefox, "Moving outside of view port throws exception in spec-compliant driver")]
         [IgnoreBrowser(Browser.IE, "Moving outside of view port throws exception in spec-compliant driver")]
         public void CanDragAnElementNotVisibleInTheCurrentViewportDueToAParentOverflow()
@@ -228,11 +229,13 @@ namespace OpenQA.Selenium.Interactions
             IWebElement img1 = driver.FindElement(By.Id("test1"));
             IWebElement img2 = driver.FindElement(By.Id("test2"));
             Actions actionProvider = new Actions(driver);
-            actionProvider.DragAndDropToOffset(img1, 100, 100).DragAndDrop(img2, img1).Perform();
+            actionProvider.DragAndDropToOffset(img1, 100, 100).Perform();
+            actionProvider.Reset();
+            actionProvider.DragAndDrop(img2, img1).Perform();
             Assert.AreEqual(img1.Location, img2.Location);
         }
 
-        private Point drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
+        private Point Drag(IWebElement elem, Point initialLocation, int moveRightBy, int moveDownBy)
         {
             Point expectedLocation = new Point(initialLocation.X, initialLocation.Y);
             expectedLocation.Offset(moveRightBy, moveDownBy);

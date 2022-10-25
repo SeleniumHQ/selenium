@@ -1,4 +1,4 @@
-// <copyright file="EdgeOptions.cs" company="Microsoft">
+// <copyright file="EdgeOptions.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -45,208 +45,62 @@ namespace OpenQA.Selenium.Edge
     /// </example>
     public class EdgeOptions : ChromiumOptions
     {
-        private const string BrowserNameValue = "MicrosoftEdge";
-        private const string UseInPrivateBrowsingCapability = "ms:inPrivate";
-        private const string ExtensionPathsCapability = "ms:extensionPaths";
-        private const string StartPageCapability = "ms:startPage";
-
-        private static readonly string[] ChromiumCapabilityNames = { "goog:chromeOptions", "se:forceAlwaysMatch", "args",
-            "binary", "extensions", "localState", "prefs", "detach", "debuggerAddress", "excludeSwitches", "minidumpPath",
-            "mobileEmulation", "perfLoggingPrefs", "windowTypes", "w3c"};
-
-        private bool useInPrivateBrowsing;
-        private string startPage;
-        private List<string> extensionPaths = new List<string>();
-        private bool isLegacy;
+        private const string DefaultBrowserNameValue = "MicrosoftEdge";
+        private const string WebViewBrowserNameValue = "webview2";
+        private const string EdgeOptionsCapabilityName = "edgeOptions";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EdgeOptions"/> class.
         /// </summary>
-        public EdgeOptions() : this(true)
+        public EdgeOptions() : base()
         {
+            this.BrowserName = DefaultBrowserNameValue;
         }
 
         /// <summary>
-        /// Create an EdgeOption for ChromiumEdge
+        /// Gets the vendor prefix to apply to Chromium-specific capability names.
         /// </summary>
-        /// <param name="isLegacy">Whether to use Legacy Mode. If so, remove all Chromium Capabilities</param>
-        public EdgeOptions(bool isLegacy) : base(BrowserNameValue)
+        protected override string VendorPrefix
         {
-            this.isLegacy = isLegacy;
-
-            if (this.isLegacy)
-            {
-                foreach (string capabilityName in ChromiumCapabilityNames)
-                {
-                    this.RemoveKnownCapabilityName(capabilityName);
-                }
-
-                this.AddKnownCapabilityName(UseInPrivateBrowsingCapability, "UseInPrivateBrowsing property");
-                this.AddKnownCapabilityName(StartPageCapability, "StartPage property");
-                this.AddKnownCapabilityName(ExtensionPathsCapability, "AddExtensionPaths method");
-            }
+            get { return "ms"; }
         }
 
         /// <summary>
-        /// Gets or sets the location of the Edge browser's binary executable file.
+        /// Gets the name of the capability used to store Chromium options in
+        /// an <see cref="ICapabilities"/> object.
         /// </summary>
-        public new string BinaryLocation
+        public override string CapabilityName
         {
-            get
-            {
-                if (this.isLegacy)
-                {
-                    throw new ArgumentException("BinaryLocation does not exist in Legacy Edge");
-                }
-
-                return base.BinaryLocation;
-            }
-            set
-            {
-                if (this.isLegacy)
-                {
-                    throw new ArgumentException("BinaryLocation does not exist in Legacy Edge");
-                }
-
-                base.BinaryLocation = value;
-            }
+            get { return string.Format(CultureInfo.InvariantCulture, "{0}:{1}", this.VendorPrefix, EdgeOptionsCapabilityName); }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the browser should be launched using
-        /// InPrivate browsing.
+        /// Gets or sets whether to create a WebView session used for launching an Edge (Chromium) WebView-based app on desktop.
         /// </summary>
-        public bool UseInPrivateBrowsing
+        public bool UseWebView
         {
-            get
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("UseInPrivateBrowsing property does not exist in Chromium Edge");
-                }
-
-                return this.useInPrivateBrowsing;
-            }
-            set
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("UseInPrivateBrowsing property does not exist in Chromium Edge");
-                }
-
-                this.useInPrivateBrowsing = value;
-            }
+            get { return this.BrowserName == WebViewBrowserNameValue; }
+            set { this.BrowserName = value ? WebViewBrowserNameValue : DefaultBrowserNameValue; }
         }
 
         /// <summary>
-        /// Gets or sets the URL of the page with which the browser will be navigated to on launch.
+        /// Provides a means to add additional capabilities not yet added as type safe options
+        /// for the Edge driver.
         /// </summary>
-        public string StartPage
+        /// <param name="optionName">The name of the capability to add.</param>
+        /// <param name="optionValue">The value of the capability to add.</param>
+        /// <exception cref="ArgumentException">
+        /// thrown when attempting to add a capability for which there is already a type safe option, or
+        /// when <paramref name="optionName"/> is <see langword="null"/> or the empty string.
+        /// </exception>
+        /// <remarks>Calling <see cref="AddAdditionalEdgeOption(string, object)"/>
+        /// where <paramref name="optionName"/> has already been added will overwrite the
+        /// existing value with the new value in <paramref name="optionValue"/>.
+        /// Calling this method adds capabilities to the Edge-specific options object passed to
+        /// webdriver executable (property name 'ms:edgeOptions').</remarks>
+        public void AddAdditionalEdgeOption(string optionName, object optionValue)
         {
-            get
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("StartPage property does not exist in Chromium Edge");
-                }
-
-                return this.startPage;
-            }
-            set
-            {
-                if (!this.isLegacy)
-                {
-                    throw new ArgumentException("StartPage property does not exist in Chromium Edge");
-                }
-
-                this.startPage = value;
-            }
-        }
-
-
-        /// <summary>
-        /// Adds a path to an extension that is to be used with the Edge driver.
-        /// </summary>
-        /// <param name="extensionPath">The full path and file name of the extension.</param>
-        public void AddExtensionPath(string extensionPath)
-        {
-            if (!this.isLegacy)
-            {
-                throw new ArgumentException("Property does not exist in Chromium Edge", "extensionPath");
-            }
-
-            if (string.IsNullOrEmpty(extensionPath))
-            {
-                throw new ArgumentException("extensionPath must not be null or empty", "extensionPath");
-            }
-
-            this.AddExtensionPaths(extensionPath);
-        }
-
-        /// <summary>
-        /// Adds a list of paths to an extensions that are to be used with the Edge driver.
-        /// </summary>
-        /// <param name="extensionPathsToAdd">An array of full paths with file names of extensions to add.</param>
-        public void AddExtensionPaths(params string[] extensionPathsToAdd)
-        {
-            if (!this.isLegacy)
-            {
-                throw new ArgumentException("Property does not exist in Chromium Edge", "extensionPathsToAdd");
-            }
-
-            this.AddExtensionPaths(new List<string>(extensionPathsToAdd));
-        }
-
-        /// <summary>
-        /// Adds a list of paths to an extensions that are to be used with the Edge driver.
-        /// </summary>
-        /// <param name="extensionPathsToAdd">An <see cref="IEnumerable{T}"/> of full paths with file names of extensions to add.</param>
-        public void AddExtensionPaths(IEnumerable<string> extensionPathsToAdd)
-        {
-            if (!this.isLegacy)
-            {
-                throw new ArgumentException("Property does not exist in Chromium Edge", "extensionPathsToAdd");
-            }
-
-            if (extensionPathsToAdd == null)
-            {
-                throw new ArgumentNullException("extensionPathsToAdd", "extensionPathsToAdd must not be null");
-            }
-
-            this.extensionPaths.AddRange(extensionPathsToAdd);
-        }
-
-        /// <summary>
-        /// Returns DesiredCapabilities for Edge with these options included as
-        /// capabilities. This copies the options. Further changes will not be
-        /// reflected in the returned capabilities.
-        /// </summary>
-        /// <returns>The DesiredCapabilities for Edge with these options.</returns>
-        public override ICapabilities ToCapabilities()
-        {
-            if (!this.isLegacy)
-            {
-                return base.ToCapabilities();
-            }
-
-            IWritableCapabilities capabilities = this.GenerateDesiredCapabilities(true);
-
-            if (this.useInPrivateBrowsing)
-            {
-                capabilities.SetCapability(UseInPrivateBrowsingCapability, true);
-            }
-
-            if (!string.IsNullOrEmpty(this.startPage))
-            {
-                capabilities.SetCapability(StartPageCapability, this.startPage);
-            }
-
-            if (this.extensionPaths.Count > 0)
-            {
-                capabilities.SetCapability(ExtensionPathsCapability, this.extensionPaths);
-            }
-
-            return capabilities.AsReadOnly();
+            this.AddAdditionalChromiumOption(optionName, optionValue);
         }
     }
 }

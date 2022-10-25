@@ -1,0 +1,103 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//common:defs.bzl", "copy_file")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
+
+LARGE_TESTS = [
+    "FirefoxDriverTest.java",
+    "MarionetteTest.java",
+    "TakesFullPageScreenshotTest.java",
+]
+
+REMOTE_TESTS = [
+    "RemoteFirefoxDriverTest.java",
+]
+
+java_test_suite(
+    name = "small-tests",
+    size = "small",
+    srcs = glob(
+        ["*.java"],
+        exclude = LARGE_TESTS + REMOTE_TESTS,
+    ),
+    data = [
+        ":webextensions_selenium_example",
+        "//common/extensions",
+    ],
+    tags = [
+        "requires-network",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/build",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)
+
+java_selenium_test_suite(
+    name = "large-tests",
+    size = "large",
+    srcs = LARGE_TESTS,
+    browsers = [
+        "firefox",
+    ],
+    data = [
+        "//common/extensions",
+    ],
+    resources = [
+        "//common/extensions",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium:helpers",
+        "//java/test/org/openqa/selenium/build",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)
+
+java_selenium_test_suite(
+    name = "remote-tests",
+    size = "large",
+    srcs = REMOTE_TESTS,
+    browsers = [
+        "firefox",
+    ],
+    data = [
+        "//common/extensions",
+    ],
+    resources = [
+        "//common/extensions",
+    ],
+    tags = [
+        "selenium-remote",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/test/org/openqa/selenium/build",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.assertj:assertj-core"),
+    ] + JUNIT5_DEPS,
+)
+
+copy_file(
+    name = "webextensions_selenium_example",
+    src = "//common/extensions:webextensions-selenium-example.xpi",
+    out = "webextensions-selenium-example.xpi",
+)

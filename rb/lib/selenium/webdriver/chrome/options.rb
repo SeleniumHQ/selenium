@@ -20,36 +20,74 @@
 module Selenium
   module WebDriver
     module Chrome
-      class Options < WebDriver::Common::Options
-        attr_reader :args, :prefs, :options, :emulation, :extensions, :encoded_extensions
-        attr_accessor :binary
+      class Options < WebDriver::Options
+        attr_accessor :profile, :logging_prefs
 
         KEY = 'goog:chromeOptions'
+        BROWSER = 'chrome'
 
-        #
+        # see: http://chromedriver.chromium.org/capabilities
+        CAPABILITIES = {args: 'args',
+                        binary: 'binary',
+                        local_state: 'localState',
+                        prefs: 'prefs',
+                        detach: 'detach',
+                        debugger_address: 'debuggerAddress',
+                        exclude_switches: 'excludeSwitches',
+                        minidump_path: 'minidumpPath',
+                        emulation: 'mobileEmulation',
+                        perf_logging_prefs: 'perfLoggingPrefs',
+                        window_types: 'windowTypes',
+                        android_package: 'androidPackage',
+                        android_activity: 'androidActivity',
+                        android_device_serial: 'androidDeviceSerial',
+                        android_use_running_app: 'androidUseRunningApp'}.freeze
+
+        # NOTE: special handling of 'extensions' to validate when set instead of when used
+        attr_reader :extensions
+
         # Create a new Options instance.
         #
         # @example
         #   options = Selenium::WebDriver::Chrome::Options.new(args: ['start-maximized', 'user-data-dir=/tmp/temp_profile'])
-        #   driver = Selenium::WebDriver.for(:chrome, options: options)
+        #   driver = Selenium::WebDriver.for(:chrome, capabilities: options)
         #
+        # @param [Profile] profile An instance of a Chrome::Profile Class
         # @param [Hash] opts the pre-defined options to create the Chrome::Options with
-        # @option opts [Array<String>] :args List of command-line arguments to use when starting Chrome
-        # @option opts [String] :binary Path to the Chrome executable to use
-        # @option opts [Hash] :prefs A hash with each entry consisting of the name of the preference and its value
-        # @option opts [Array<String>] :extensions A list of paths to (.crx) Chrome extensions to install on startup
-        # @option opts [Hash] :options A hash for raw options
-        # @option opts [Hash] :emulation A hash for raw emulation options
+        # @option opts [Array] encoded_extensions List of extensions that do not need to be Base64 encoded
+        # @option opts [Array<String>] args List of command-line arguments to use when starting Chrome
+        # @option opts [String] binary Path to the Chrome executable to use
+        # @option opts [Hash] prefs A hash with each entry consisting of the name of the preference and its value
+        # @option opts [Array<String>] extensions A list of paths to (.crx) Chrome extensions to install on startup
+        # @option opts [Hash] options A hash for raw options
+        # @option opts [Hash] emulation A hash for raw emulation options
+        # @option opts [Hash] local_state A hash for the Local State file in the user data folder
+        # @option opts [Boolean] detach whether browser is closed when the driver is sent the quit command
+        # @option opts [String] debugger_address address of a Chrome debugger server to connect to
+        # @option opts [Array<String>] exclude_switches command line switches to exclude
+        # @option opts [String] minidump_path Directory to store Chrome minidumps (linux only)
+        # @option opts [Hash] perf_logging_prefs A hash for performance logging preferences
+        # @option opts [Array<String>] window_types A list of window types to appear in the list of window handles
         #
 
-        def initialize(**opts)
-          @args = Set.new(opts.delete(:args) || [])
-          @binary = opts.delete(:binary) || Chrome.path
-          @prefs = opts.delete(:prefs) || {}
-          @extensions = opts.delete(:extensions) || []
-          @options = opts.delete(:options) || {}
-          @emulation = opts.delete(:emulation) || {}
-          @encoded_extensions = []
+        def initialize(profile: nil, **opts)
+          super(**opts)
+
+          @profile = profile
+
+          @options = {args: [],
+                      prefs: {},
+                      emulation: {},
+                      extensions: [],
+                      local_state: {},
+                      exclude_switches: [],
+                      perf_logging_prefs: {},
+                      window_types: []}.merge(@options)
+
+          @logging_prefs = options.delete(:logging_prefs) || {}
+          @encoded_extensions = @options.delete(:encoded_extensions) || []
+          @extensions = []
+          @options.delete(:extensions).each { |ext| validate_extension(ext) }
         end
 
         #
@@ -63,10 +101,22 @@ module Selenium
         #
 
         def add_extension(path)
-          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
-          raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
+          validate_extension(path)
+        end
 
-          @extensions << path
+        #
+        # Add an extension by local path.
+        #
+        # @example
+        #   extensions = ['/path/to/extension.crx', '/path/to/other.crx']
+        #   options = Selenium::WebDriver::Chrome::Options.new
+        #   options.extensions = extensions
+        #
+        # @param [Array<String>] extensions A list of paths to (.crx) Chrome extensions to install on startup
+        #
+
+        def extensions=(extensions)
+          extensions.each { |ext| validate_extension(ext) }
         end
 
         #
@@ -94,22 +144,7 @@ module Selenium
         #
 
         def add_argument(arg)
-          @args << arg
-        end
-
-        #
-        # Add a new option not yet handled by bindings.
-        #
-        # @example Leave Chrome open when chromedriver is killed
-        #   options = Selenium::WebDriver::Chrome::Options.new
-        #   options.add_option(:detach, true)
-        #
-        # @param [String, Symbol] name Name of the option
-        # @param [Boolean, String, Integer] value Value of the option
-        #
-
-        def add_option(name, value)
-          @options[name] = value
+          @options[:args] << arg
         end
 
         #
@@ -124,7 +159,7 @@ module Selenium
         #
 
         def add_preference(name, value)
-          prefs[name] = value
+          @options[:prefs][name] = value
         end
 
         #
@@ -140,7 +175,9 @@ module Selenium
         end
 
         #
-        # Add an emulation device name
+        # Add emulation device information
+        #
+        # see: http://chromedriver.chromium.org/mobile-emulation
         #
         # @example Start Chrome in mobile emulation mode by device name
         #   options = Selenium::WebDriver::Chrome::Options.new
@@ -150,35 +187,87 @@ module Selenium
         #   options = Selenium::WebDriver::Chrome::Options.new
         #   options.add_emulation(device_metrics: {width: 400, height: 800, pixelRatio: 1, touch: true})
         #
-        # @param [String] device_name Name of the device or a hash containing width, height, pixelRatio, touch
-        # @param [Hash] device_metrics Hash containing width, height, pixelRatio, touch
-        # @param [String] user_agent Full user agent
+        # @param [Hash] opts the pre-defined options for adding mobile emulation values
+        # @option opts [String] :device_name A valid device name from the Chrome DevTools Emulation panel
+        # @option opts [Hash] :device_metrics Hash containing width, height, pixelRatio, touch
+        # @option opts [String] :user_agent Full user agent
         #
 
-        def add_emulation(device_name: nil, device_metrics: nil, user_agent: nil)
-          @emulation[:deviceName] = device_name if device_name
-          @emulation[:deviceMetrics] = device_metrics if device_metrics
-          @emulation[:userAgent] = user_agent if user_agent
+        def add_emulation(**opts)
+          @options[:emulation] = opts
         end
 
         #
-        # @api private
+        # Enables mobile browser use on Android.
+        #
+        # @see https://chromedriver.chromium.org/getting-started/getting-started---android
+        #
+        # @param [String] package The package name of the Chrome or WebView app.
+        # @param [String] serial_number The device serial number on which to launch the Chrome or WebView app.
+        # @param [String] use_running_app When true uses an already-running Chrome or WebView app,
+        #   instead of launching the app with a clear data directory.
+        # @param [String] activity Name of the Activity hosting the WebView (Not available on Chrome Apps).
         #
 
-        def as_json(*)
-          extensions = @extensions.map do |crx_path|
-            File.open(crx_path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
+        def enable_android(package: 'com.android.chrome', serial_number: nil, use_running_app: nil, activity: nil)
+          @options[:android_package] = package
+          @options[:android_activity] = activity unless activity.nil?
+          @options[:android_device_serial] = serial_number unless serial_number.nil?
+          @options[:android_use_running_app] = use_running_app unless use_running_app.nil?
+        end
+
+        private
+
+        def enable_logging(browser_options)
+          browser_options['goog:loggingPrefs'] = @logging_prefs
+        end
+
+        def process_browser_options(browser_options)
+          enable_logging(browser_options) unless @logging_prefs.empty?
+
+          options = browser_options[self.class::KEY]
+          options['binary'] ||= binary_path if binary_path
+
+          check_w3c(options[:w3c]) if options.key?(:w3c)
+
+          if @profile
+            options['args'] ||= []
+            options['args'] << "--user-data-dir=#{@profile.directory}"
           end
-          extensions.concat(@encoded_extensions)
 
-          opts = @options
-          opts[:binary] = @binary if @binary
-          opts[:args] = @args.to_a if @args.any?
-          opts[:extensions] = extensions if extensions.any?
-          opts[:mobileEmulation] = @emulation unless @emulation.empty?
-          opts[:prefs] = @prefs unless @prefs.empty?
+          return if (@encoded_extensions + @extensions).empty?
 
-          {KEY => generate_as_json(opts)}
+          options['extensions'] = @encoded_extensions + @extensions.map { |ext| encode_extension(ext) }
+        end
+
+        def check_w3c(w3c)
+          if w3c
+            WebDriver.logger.warn("Setting 'w3c: true' is redundant and will no longer be allowed", id: :w3c)
+            return
+          end
+
+          raise Error::InvalidArgumentError,
+                "Setting 'w3c: false' is not allowed.\n" \
+                "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/"
+        end
+
+        def binary_path
+          Chrome.path
+        end
+
+        def encode_extension(path)
+          File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
+        end
+
+        def validate_extension(path)
+          raise Error::WebDriverError, "could not find extension at #{path.inspect}" unless File.file?(path)
+          raise Error::WebDriverError, "file was not an extension #{path.inspect}" unless File.extname(path) == '.crx'
+
+          @extensions << path
+        end
+
+        def camelize?(key)
+          !%w[localState prefs].include?(key)
         end
       end # Options
     end # Chrome

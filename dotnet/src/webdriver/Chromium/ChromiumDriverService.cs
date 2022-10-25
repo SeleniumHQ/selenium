@@ -1,4 +1,4 @@
-// <copyright file="ChromeDriverService.cs" company="WebDriver Committers">
+// <copyright file="ChromiumDriverService.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -35,6 +35,7 @@ namespace OpenQA.Selenium.Chromium
         private string portServerAddress = string.Empty;
         private string whitelistedIpAddresses = string.Empty;
         private int adbPort = -1;
+        private bool disableBuildCheck;
         private bool enableVerboseLogging;
         private bool enableAppendLog;
 
@@ -87,6 +88,17 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to skip version compatibility check
+        /// between the driver and the browser.
+        /// Defaults to <see langword="false"/>.
+        /// </summary>
+        public bool DisableBuildCheck
+        {
+            get { return this.disableBuildCheck; }
+            set { this.disableBuildCheck = value; }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether to enable verbose logging for the ChromeDriver executable.
         /// Defaults to <see langword="false"/>.
         /// </summary>
@@ -135,6 +147,11 @@ namespace OpenQA.Selenium.Chromium
                     argsBuilder.Append(" --silent");
                 }
 
+                if (this.disableBuildCheck)
+                {
+                    argsBuilder.Append(" --disable-build-check");
+                }
+
                 if (this.enableVerboseLogging)
                 {
                     argsBuilder.Append(" --verbose");
@@ -172,7 +189,7 @@ namespace OpenQA.Selenium.Chromium
         /// <summary>
         /// Returns the Chromium driver filename for the currently running platform
         /// </summary>
-        /// <param name="fileName">The name of the Chromium executable. Defaulit is "chromedriver".</param>
+        /// <param name="fileName">The name of the Chromium executable. Default is "chromedriver".</param>
         /// <returns>The file name of the Chromium driver service executable.</returns>
         protected static string ChromiumDriverServiceFileName(string fileName = DefaultChromeDriverServiceExecutableName)
         {

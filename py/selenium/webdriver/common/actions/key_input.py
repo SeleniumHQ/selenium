@@ -15,37 +15,35 @@
 # specific language governing permissions and limitations
 # under the License.
 from . import interaction
-
 from .input_device import InputDevice
-from .interaction import (Interaction,
-                          Pause)
+from .interaction import Interaction
+from .interaction import Pause
 
 
 class KeyInput(InputDevice):
-    def __init__(self, name):
-        super(KeyInput, self).__init__()
+    def __init__(self, name) -> None:
+        super().__init__()
         self.name = name
         self.type = interaction.KEY
 
-    def encode(self):
+    def encode(self) -> dict:
         return {"type": self.type, "id": self.name, "actions": [acts.encode() for acts in self.actions]}
 
-    def create_key_down(self, key):
+    def create_key_down(self, key) -> None:
         self.add_action(TypingInteraction(self, "keyDown", key))
 
-    def create_key_up(self, key):
+    def create_key_up(self, key) -> None:
         self.add_action(TypingInteraction(self, "keyUp", key))
 
-    def create_pause(self, pause_duration=0):
+    def create_pause(self, pause_duration=0) -> None:
         self.add_action(Pause(self, pause_duration))
 
 
 class TypingInteraction(Interaction):
-
-    def __init__(self, source, type_, key):
-        super(TypingInteraction, self).__init__(source)
+    def __init__(self, source, type_, key) -> None:
+        super().__init__(source)
         self.type = type_
         self.key = key
 
-    def encode(self):
+    def encode(self) -> dict:
         return {"type": self.type, "value": self.key}

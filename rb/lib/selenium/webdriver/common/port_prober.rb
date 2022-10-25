@@ -32,12 +32,10 @@ module Selenium
 
       def self.free?(port)
         Platform.interfaces.each do |host|
-          begin
-            TCPServer.new(host, port).close
-          rescue *IGNORED_ERRORS => ex
-            WebDriver.logger.debug("port prober could not bind to #{host}:#{port} (#{ex.message})")
-            # ignored - some machines appear unable to bind to some of their interfaces
-          end
+          TCPServer.new(host, port).close
+        rescue *IGNORED_ERRORS => e
+          WebDriver.logger.debug("port prober could not bind to #{host}:#{port} (#{e.message})")
+          # ignored - some machines appear unable to bind to some of their interfaces
         end
 
         true

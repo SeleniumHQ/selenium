@@ -19,10 +19,6 @@
 
 module Selenium
   module WebDriver
-    #
-    # @api beta This API may be changed or removed in a future release.
-    #
-
     class Window
       #
       # @api private
@@ -40,8 +36,8 @@ module Selenium
 
       def size=(dimension)
         unless dimension.respond_to?(:width) && dimension.respond_to?(:height)
-          raise ArgumentError, "expected #{dimension.inspect}:#{dimension.class}" \
-                               ' to respond to #width and #height'
+          raise ArgumentError, "expected #{dimension.inspect}:#{dimension.class} " \
+                               'to respond to #width and #height'
         end
 
         @bridge.resize_window dimension.width, dimension.height
@@ -65,8 +61,8 @@ module Selenium
 
       def position=(point)
         unless point.respond_to?(:x) && point.respond_to?(:y)
-          raise ArgumentError, "expected #{point.inspect}:#{point.class}" \
-                               ' to respond to #x and #y'
+          raise ArgumentError, "expected #{point.inspect}:#{point.class} " \
+                               'to respond to #x and #y'
         end
 
         @bridge.reposition_window point.x, point.y
@@ -90,8 +86,8 @@ module Selenium
 
       def rect=(rectangle)
         unless %w[x y width height].all? { |val| rectangle.respond_to? val }
-          raise ArgumentError, "expected #{rectangle.inspect}:#{rectangle.class}" \
-                               ' to respond to #x, #y, #width, and #height'
+          raise ArgumentError, "expected #{rectangle.inspect}:#{rectangle.class} " \
+                               'to respond to #x, #y, #width, and #height'
         end
 
         @bridge.set_window_rect(x: rectangle.x,

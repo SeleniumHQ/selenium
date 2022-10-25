@@ -1,0 +1,21 @@
+load("//java:defs.bzl", "java_library")
+
+java_library(
+    name = "remote",
+    srcs = glob(["*.java"]),
+    visibility = [
+        "//java/src/org/openqa/selenium/grid:__subpackages__",
+        "//java/test/org/openqa/selenium/grid/distributor:__pkg__",
+        "//java/test/org/openqa/selenium/grid/router:__pkg__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/grid/data",
+        "//java/src/org/openqa/selenium/grid/distributor",
+        "//java/src/org/openqa/selenium/grid/node",
+        "//java/src/org/openqa/selenium/grid/security",
+        "//java/src/org/openqa/selenium/grid/sessionmap",
+        "//java/src/org/openqa/selenium/grid/web",
+        "//java/src/org/openqa/selenium/remote",
+    ],
+)

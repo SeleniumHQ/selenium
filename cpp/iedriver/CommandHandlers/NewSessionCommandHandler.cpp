@@ -42,6 +42,7 @@ void NewSessionCommandHandler::ExecuteInternal(
 
   // Find W3C capabilities first.
   IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
+
   ParametersMap::const_iterator it = command_parameters.find("capabilities");
   if (it != command_parameters.end()) {
     LOG(DEBUG) << "Found W3C capabilities structure";
@@ -411,8 +412,24 @@ void NewSessionCommandHandler::SetBrowserFactorySettings(const IECommandExecutor
                                                            false);
     factory_settings.clear_cache_before_launch = ensure_clean_session.asBool();
 
+    // By default, we should not be attaching to edge_ie
+    factory_settings.attach_to_edge_ie = false;
+    Json::Value attach_to_edgechrome = this->GetCapability(capabilities,
+                                                           ATTACH_TO_EDGE_CHROME,
+                                                           Json::booleanValue,
+                                                           false);
+    factory_settings.attach_to_edge_ie = attach_to_edgechrome.asBool();
+
+    Json::Value edge_executable_path = this->GetCapability(capabilities,
+                                                           EDGE_EXECUTABLE_PATH,
+                                                           Json::stringValue,
+                                                           Json::Value(Json::stringValue));
+    factory_settings.edge_executable_path = edge_executable_path.asString();
+
     IECommandExecutor& mutable_executor = const_cast<IECommandExecutor&>(executor);
     mutable_executor.browser_factory()->Initialize(factory_settings);
+    mutable_executor.set_is_edge_mode(factory_settings.attach_to_edge_ie);
+    mutable_executor.set_edge_executable_path(factory_settings.edge_executable_path);
   }
 }
 
@@ -552,6 +569,8 @@ Json::Value NewSessionCommandHandler::CreateReturnedCapabilities(const IECommand
   ie_options[ELEMENT_SCROLL_BEHAVIOR_CAPABILITY] = executor.input_manager()->scroll_behavior();
   ie_options[REQUIRE_WINDOW_FOCUS_CAPABILITY] = executor.input_manager()->require_window_focus();
   ie_options[FILE_UPLOAD_DIALOG_TIMEOUT_CAPABILITY] = executor.file_upload_dialog_timeout();
+  ie_options[ATTACH_TO_EDGE_CHROME] = executor.is_edge_mode();
+  ie_options[EDGE_EXECUTABLE_PATH] = executor.edge_executable_path();
 
   if (executor.proxy_manager()->is_proxy_set()) {
     ie_options[USE_PER_PROCESS_PROXY_CAPABILITY] = executor.proxy_manager()->use_per_process_proxy();

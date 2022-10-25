@@ -27,13 +27,16 @@ module Selenium
           @create_driver_error = nil
           @create_driver_error_count = 0
 
-          @driver = (ENV['WD_SPEC_DRIVER'] || :chrome).to_sym
+          extract_browser_from_bazel_target_name
+
+          @driver = ENV.fetch('WD_SPEC_DRIVER', :chrome).to_sym
+          @driver_instance = nil
         end
 
         def print_env
           puts "\nRunning Ruby specs:\n\n"
 
-          env = current_env.merge(ruby: defined?(RUBY_DESCRIPTION) ? RUBY_DESCRIPTION : "ruby-#{RUBY_VERSION}")
+          env = current_env.merge(ruby: RUBY_DESCRIPTION)
 
           just = current_env.keys.map { |e| e.to_s.size }.max
           env.each do |key, value|
@@ -44,15 +47,11 @@ module Selenium
         end
 
         def browser
-          if driver == :remote
-            (ENV['WD_REMOTE_BROWSER'] || :chrome).to_sym
-          else
-            driver
-          end
+          driver == :remote ? ENV.fetch('WD_REMOTE_BROWSER', 'chrome').to_sym : driver
         end
 
         def driver_instance
-          @driver_instance ||= create_driver!
+          @driver_instance || create_driver!
         end
 
         def reset_driver!(time = 0)
@@ -61,8 +60,9 @@ module Selenium
           driver_instance
         end
 
+        # TODO: optimize since this approach is not assured on IE
         def ensure_single_window
-          driver_instance.window_handles[1..-1].each do |handle|
+          driver_instance.window_handles[1..].each do |handle|
             driver_instance.switch_to.window(handle)
             driver_instance.close
           end
@@ -78,19 +78,14 @@ module Selenium
         end
 
         def app_server
-          @app_server ||= begin
-            s = RackServer.new(root.join('common/src/web').to_s)
-            s.start
-
-            s
-          end
+          @app_server ||= RackServer.new(root.join('common/src/web').to_s).tap(&:start)
         end
 
         def remote_server
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
             port: PortProber.above(4444),
-            log: $DEBUG,
+            log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60
           )
@@ -107,13 +102,18 @@ module Selenium
         end
 
         def remote_server_jar
-          if ENV['DOWNLOAD_SERVER']
-            @remote_server_jar ||= "#{root.join('rb/selenium-server-standalone')}-#{Selenium::Server.latest}.jar"
-            @remote_server_jar = root.join("rb/#{Selenium::Server.download(:latest)}").to_s unless File.exist? @remote_server_jar
-          else
-            @remote_server_jar ||= root.join('buck-out/gen/java/server/src/org/openqa/grid/selenium/selenium.jar').to_s
-          end
-          @remote_server_jar
+          test_jar = "#{Pathname.new(Dir.pwd).join('rb')}/selenium_server_deploy.jar"
+          built_jar = root.join('bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
+          jar = if File.exist?(test_jar) && ENV['DOWNLOAD_SERVER'].nil?
+                  test_jar
+                elsif File.exist?(built_jar) && ENV['DOWNLOAD_SERVER'].nil?
+                  built_jar
+                else
+                  Selenium::Server.download
+                end
+
+          WebDriver.logger.info "Server Location: #{jar}"
+          jar.to_s
         end
 
         def quit
@@ -122,10 +122,6 @@ module Selenium
           @remote_server.stop if defined? @remote_server
 
           @driver_instance = @app_server = @remote_server = nil
-        end
-
-        def native_events?
-          @native_events ||= ENV['native'] == 'true'
         end
 
         def url_for(filename)
@@ -138,27 +134,14 @@ module Selenium
           @root ||= Pathname.new('../../../../../../../').realpath(__FILE__)
         end
 
-        def remote_capabilities
-          opt = {}
-          browser_name = case browser
-                         when :safari_preview
-                           opt["safari.options"] = {'technologyPreview' => true}
-                           :safari
-                         else
-                           browser
-                         end
-
-          WebDriver::Remote::Capabilities.send(browser_name, opt)
-        end
-
         def create_driver!(**opts, &block)
           check_for_previous_error
 
           method = "create_#{driver}_driver".to_sym
           instance = if private_methods.include?(method)
-                       send method, opts
+                       send method, **opts
                      else
-                       WebDriver::Driver.for(driver, opts)
+                       WebDriver::Driver.for(driver, **opts)
                      end
           @create_driver_error_count -= 1 unless @create_driver_error_count.zero?
           if block
@@ -168,12 +151,12 @@ module Selenium
               instance.quit
             end
           else
-            instance
+            @driver_instance = instance
           end
-        rescue => ex
-          @create_driver_error = ex
+        rescue StandardError => e
+          @create_driver_error = e
           @create_driver_error_count += 1
-          raise ex
+          raise e
         end
 
         private
@@ -184,7 +167,6 @@ module Selenium
             driver: driver,
             version: driver_instance.capabilities.version,
             platform: Platform.os,
-            native: native_events?,
             ci: Platform.ci
           }
         end
@@ -197,81 +179,93 @@ module Selenium
         def check_for_previous_error
           return unless @create_driver_error && @create_driver_error_count >= MAX_ERRORS
 
-          msg = "previous #{@create_driver_error_count} instantiations of driver #{driver.inspect} failed, not trying again"
-          msg += " (#{@create_driver_error.message})"
+          msg = "previous #{@create_driver_error_count} instantiations of driver #{driver.inspect} failed,"
+          msg += " not trying again (#{@create_driver_error.message})"
 
           raise DriverInstantiationError, msg, @create_driver_error.backtrace
         end
 
-        def create_remote_driver(opt = {})
-          opt[:desired_capabilities] ||= remote_capabilities
-          opt[:url] ||= ENV['WD_REMOTE_URL'] || remote_server.webdriver_url
-          opt[:http_client] ||= keep_alive_client || http_client
+        def create_remote_driver(**opts)
+          url = ENV.fetch('WD_REMOTE_URL', remote_server.webdriver_url)
+          options = opts.delete(:options) { WebDriver::Options.send(browser) }
+          method = "create_#{browser}_options".to_sym
+          options = send method, options if private_methods.include?(method)
 
-          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2536
-          # Current status can be found here (70% as of February 2019)
-          # https://chromium.googlesource.com/chromium/src/+/master/docs/chromedriver_status.md
-          # TODO: remove before Selenium 4 release
-          opt[:options] ||= WebDriver::Chrome::Options.new(options: {w3c: true}) if browser == :chrome
-
-          WebDriver::Driver.for(:remote, opt)
+          WebDriver::Driver.for(:remote, url: url, options: options, **opts)
         end
 
-        def create_firefox_driver(opt = {})
-          WebDriver::Firefox::Binary.path = ENV['FIREFOX_BINARY'] if ENV['FIREFOX_BINARY']
-          WebDriver::Driver.for :firefox, opt
+        def create_firefox_driver(**opts)
+          options = create_firefox_options(opts.delete(:options))
+          WebDriver::Driver.for(:firefox, options: options, **opts)
         end
 
-        def create_ie_driver(opt = {})
-          opt[:desired_capabilities] ||= WebDriver::Remote::Capabilities.ie
-          opt[:options] ||= WebDriver::IE::Options.new(require_window_focus: true)
-
-          WebDriver::Driver.for :ie, opt
+        def create_firefox_nightly_driver(**opts)
+          options = create_firefox_options(opts.delete(:options))
+          options.binary = ENV['FIREFOX_NIGHTLY_BINARY'] if ENV.key?('FIREFOX_NIGHTLY_BINARY')
+          WebDriver::Driver.for(:firefox, options: options, **opts)
         end
 
-        def create_chrome_driver(opt = {})
-          binary = ENV['CHROME_BINARY']
-          WebDriver::Chrome.path = binary if binary
+        def create_firefox_options(options)
+          options ||= WebDriver::Options.firefox
+          options.web_socket_url = true
+          options.add_argument('--headless') if ENV['HEADLESS']
+          options.binary ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
+          options
+        end
 
-          server = ENV['CHROMEDRIVER'] || ENV['chrome_server']
-          WebDriver::Chrome::Service.driver_path = server if server
+        def create_ie_driver(**opts)
+          options = opts.delete(:options) { WebDriver::Options.ie }
+          options.require_window_focus = true
+          WebDriver::Driver.for(:ie, options: options, **opts)
+        end
 
-          # https://bugs.chromium.org/p/chromedriver/issues/detail?id=2536
-          # Current status can be found here (70% as of February 2019)
-          # https://chromium.googlesource.com/chromium/src/+/master/docs/chromedriver_status.md
-          # TODO: remove before Selenium 4 release
-          if opt[:options]
-            opt[:options].add_option(:w3c, true)
+        def create_chrome_beta_driver(**opts)
+          options = create_chrome_options(opts.delete(:options))
+          options.web_socket_url = true
+          service_opts = {args: ['--disable-build-check']}
+          service_opts[:path] = ENV['CHROMEDRIVER_BINARY'] if ENV.key?('CHROMEDRIVER_BINARY')
+          service = WebDriver::Service.chrome(**service_opts)
+          WebDriver::Driver.for(:chrome, options: options, service: service, **opts)
+        end
+
+        def create_chrome_driver(**opts)
+          options = create_chrome_options(opts.delete(:options))
+          WebDriver::Driver.for(:chrome, options: options, **opts)
+        end
+
+        def create_chrome_options(options)
+          options ||= WebDriver::Options.chrome
+          options.headless! if ENV['HEADLESS']
+          options.binary ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
+          options
+        end
+
+        def create_safari_preview_driver(**opts)
+          WebDriver::Safari.technology_preview!
+          options = opts.delete(:options) { WebDriver::Options.safari }
+          WebDriver::Driver.for(:safari, options: options, **opts)
+        end
+
+        def create_edge_driver(**opts)
+          options = opts.delete(:options) { WebDriver::Options.edge }
+          options.headless! if ENV['HEADLESS']
+          options.binary = ENV.fetch('EDGE_BINARY', nil) if ENV.key?('EDGE_BINARY')
+          WebDriver::Driver.for(:edge, options: options, **opts)
+        end
+
+        def extract_browser_from_bazel_target_name
+          name = ENV.fetch('TEST_TARGET', nil)
+          return unless name
+
+          case name
+          when %r{//rb:remote-(.+)-test}
+            ENV['WD_REMOTE_BROWSER'] = Regexp.last_match(1).tr('-', '_')
+            ENV['WD_SPEC_DRIVER'] = 'remote'
+          when %r{//rb:(.+)-test}
+            ENV['WD_SPEC_DRIVER'] = Regexp.last_match(1).tr('-', '_')
           else
-            opt[:options] = WebDriver::Chrome::Options.new(options: {w3c: true})
+            raise "Don't know how to extract browser name from #{name}"
           end
-
-          WebDriver::Driver.for :chrome, opt
-        end
-
-        def create_safari_preview_driver(opt = {})
-          Safari.technology_preview!
-          WebDriver::Driver.for :safari, opt
-        end
-
-        def create_edge_chrome_driver(opt = {})
-          binary = ENV['EDGE_BINARY']
-          WebDriver::EdgeChrome.path = binary if binary
-
-          WebDriver::Driver.for :edge_chrome, opt
-        end
-
-        def keep_alive_client
-          require 'selenium/webdriver/remote/http/persistent'
-          STDERR.puts 'INFO: using net-http-persistent' # rubocop:disable Style/StderrPuts
-
-          Selenium::WebDriver::Remote::Http::Persistent.new
-        rescue LoadError
-          # net-http-persistent not available
-        end
-
-        def http_client
-          Selenium::WebDriver::Remote::Http::Default.new
         end
       end
     end # SpecSupport

@@ -1,0 +1,34 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite")
+
+java_selenium_test_suite(
+    name = "LargeTests",
+    size = "large",
+    srcs = glob(["*Test.java"]),
+    browsers = [
+        "firefox",
+    ],
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    tags = [
+        "rc",
+    ],
+    deps = [
+        "//java/src/com/thoughtworks/selenium",
+        "//java/src/com/thoughtworks/selenium/webdriven",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/jre/server",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/server",
+        "//java/test/org/openqa/selenium/environment",
+        "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
+        "//java/test/org/openqa/selenium/testing",
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.platform:junit-platform-suite-api"),
+        artifact("org.junit.platform:junit-platform-suite-engine"),
+        artifact("org.mockito:mockito-core"),
+    ] + JUNIT5_DEPS,
+)

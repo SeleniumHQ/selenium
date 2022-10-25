@@ -1,0 +1,22 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+
+exports_files(
+    srcs = [
+        "maven_upload.txt",
+    ],
+    visibility = [
+        "//visibility:public",
+    ],
+)
+
+java_binary(
+    name = "spotbugs_cli",
+    testonly = True,
+    main_class = "edu.umd.cs.findbugs.LaunchAppropriateUI",
+    visibility = [
+        "//visibility:public",
+    ],
+    runtime_deps = [
+        artifact("com.github.spotbugs:spotbugs"),
+    ],
+)

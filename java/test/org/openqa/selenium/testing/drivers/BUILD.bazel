@@ -1,0 +1,59 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_library")
+load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
+
+java_library(
+    name = "browser",
+    srcs = [
+        "Browser.java",
+    ],
+    visibility = [
+        "//java/test/org/openqa/selenium/testing:__pkg__",
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/edge",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/safari",
+    ],
+)
+
+java_library(
+    name = "drivers",
+    srcs = glob([
+        "*Driver.java",
+        "*Supplier.java",
+    ]) + [
+        "OutOfProcessSeleniumServer.java",
+        "WebDriverBuilder.java",
+    ],
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    visibility = ["//java/test:__subpackages__"],
+    exports = [
+        ":browser",
+    ],
+    runtime_deps = CDP_DEPS,
+    deps = [
+        ":browser",
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/edge",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/ie",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/safari",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/build",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.seleniumhq.selenium:htmlunit-driver"),
+    ] + JUNIT5_DEPS,
+)

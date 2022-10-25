@@ -1,0 +1,111 @@
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@build_bazel_rules_nodejs//:index.bzl", "copy_to_bin")
+load("@npm//react-scripts:index.bzl", "react_scripts", "react_scripts_test")
+load("//common:defs.bzl", "zip_file")
+load("//java:defs.bzl", "merge_jars")
+
+_RUNTIME_DEPS = [
+    "chdir.cjs",
+    ":copy_static_files",
+    "@npm//@apollo/client",
+    "@npm//@babel/preset-react",
+    "@npm//@emotion/react",
+    "@npm//@emotion/styled",
+    "@npm//@mui/icons-material",
+    "@npm//@mui/material",
+    "@npm//@novnc/novnc",
+    "@npm//graphql",
+    "@npm//graphql.macro",
+    "@npm//pretty-ms",
+    "@npm//react",
+    "@npm//react-dom",
+    "@npm//react-modal",
+    "@npm//react-router-dom",
+    "@npm//source-map-explorer",
+]
+
+_TESTS = [
+    "src/**/*.test.ts*",
+]
+
+copy_to_bin(
+    name = "copy_static_files",
+    srcs = glob(
+        [
+            "public/*",
+            "public/css/*",
+            "src/**/*",
+        ],
+        exclude = _TESTS,
+    ) + [
+        "package.json",
+        "tsconfig.json",
+    ],
+)
+
+# react-scripts can only work if the working directory is the root of the application.
+# So we'll need to chdir before it runs.
+write_file(
+    name = "write_chdir_script",
+    out = "chdir.cjs",
+    content = ["process.chdir(__dirname)"],
+)
+
+react_scripts(
+    # Note: this must be named "build" since react-scripts hard-codes that as the output dir
+    name = "build",
+    args = [
+        "--node_options=--require=./$(execpath chdir.cjs)",
+        "build",
+    ],
+    data = _RUNTIME_DEPS + [
+        "@npm//@types",
+    ],
+    output_dir = True,
+)
+
+zip_file(
+    name = "react-zip",
+    srcs = [":build"],
+    extension = "jar",
+)
+
+merge_jars(
+    name = "add-missing-dirs",
+    inputs = [":react-zip"],
+)
+
+java_import(
+    name = "react_jar",
+    jars = [":add-missing-dirs"],
+    visibility = [
+        "//java/src/org/openqa/selenium/grid:__pkg__",
+    ],
+)
+
+copy_to_bin(
+    name = "copy_test_files",
+    srcs = glob(_TESTS),
+)
+
+react_scripts_test(
+    name = "test",
+    args = [
+        "--node_options=--require=./$(rootpath chdir.cjs)",
+        "test",
+        "--watchAll=false",
+        "--no-cache",
+        "--no-watchman",
+        "--ci",
+    ],
+    data = _RUNTIME_DEPS + [
+        "copy_test_files",
+        "@npm//@testing-library/jest-dom",
+        "@npm//@testing-library/react",
+        "@npm//@testing-library/user-event",
+    ],
+    tags = [
+        "no-bazelci-windows",
+        "no-sandbox",
+    ],
+)

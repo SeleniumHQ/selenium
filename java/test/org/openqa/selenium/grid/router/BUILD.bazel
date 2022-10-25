@@ -1,0 +1,103 @@
+load("@rules_jvm_external//:defs.bzl", "artifact")
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_selenium_test_suite", "java_test_suite")
+load("//java/src/org/openqa/selenium/devtools:versions.bzl", "CDP_DEPS")
+
+LARGE_TESTS = [
+    "DistributedCdpTest.java",
+    "NewSessionCreationTest.java",
+    "RemoteWebDriverBiDiTest.java",
+    "StressTest.java",
+]
+
+java_library(
+    name = "support",
+    testonly = True,
+    srcs = [
+        "DeploymentTypes.java",
+    ],
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    runtime_deps = [
+        artifact("org.slf4j:slf4j-jdk14"),
+    ],
+    deps = [
+        "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/testing:test-base",
+    ],
+)
+
+java_selenium_test_suite(
+    name = "large-tests",
+    size = "large",
+    srcs = LARGE_TESTS,
+    browsers = [
+        "chrome",
+        "firefox",
+        "edge",
+    ],
+    javacopts = [
+        "--release",
+        "11",
+    ],
+    tags = [
+        "selenium-remote",
+    ],
+    deps = [
+        ":support",
+        "//java/src/org/openqa/selenium/chrome",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
+        "//java/test/org/openqa/selenium/testing:annotations",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/grid/distributor",
+        "//java/test/org/openqa/selenium/grid/testing",
+        artifact("com.google.guava:guava"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
+        artifact("org.assertj:assertj-core"),
+    ] + CDP_DEPS + JUNIT5_DEPS,
+)
+
+java_test_suite(
+    name = "medium-tests",
+    size = "medium",
+    srcs = glob(
+        ["*Test.java"],
+        exclude = LARGE_TESTS,
+    ),
+    tags = [
+        "requires-network",
+    ],
+    deps = [
+        ":support",
+        "//java/src/org/openqa/selenium/bidi",
+        "//java/src/org/openqa/selenium/firefox",
+        "//java/src/org/openqa/selenium/grid",
+        "//java/src/org/openqa/selenium/grid/config",
+        "//java/src/org/openqa/selenium/json",
+        "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/grid/testing",
+        "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
+        "//java/test/org/openqa/selenium/testing:test-base",
+        "//java/test/org/openqa/selenium/testing/drivers",
+        artifact("com.google.guava:guava"),
+        artifact("io.opentelemetry:opentelemetry-api"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
+        artifact("org.junit.jupiter:junit-jupiter-params"),
+        artifact("org.assertj:assertj-core"),
+        artifact("org.zeromq:jeromq"),
+    ] + JUNIT5_DEPS,
+)

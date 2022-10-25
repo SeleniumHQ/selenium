@@ -19,19 +19,13 @@
  * @fileoverview Defines a WebDriver client for Safari.
  */
 
-'use strict';
+'use strict'
 
-const command = require('./lib/command');
-const error = require('./lib/error');
-const http = require('./http');
-const io = require('./io');
-const portprober = require('./net/portprober');
-const promise = require('./lib/promise');
-const remote = require('./remote');
-const Symbols = require('./lib/symbols');
-const webdriver = require('./lib/webdriver');
-const {Browser, Capabilities, Capability} = require('./lib/capabilities');
-
+const http = require('./http')
+const io = require('./io')
+const remote = require('./remote')
+const webdriver = require('./lib/webdriver')
+const { Browser, Capabilities } = require('./lib/capabilities')
 
 /**
  * _Synchronously_ attempts to locate the IE driver executable on the current
@@ -41,24 +35,24 @@ const {Browser, Capabilities, Capability} = require('./lib/capabilities');
  */
 function locateSynchronously() {
   return process.platform === 'darwin'
-      ? io.findInPath('safaridriver', true) : null;
+    ? io.findInPath('safaridriver', true)
+    : null
 }
-
 
 /**
  * @return {string} .
  * @throws {Error}
  */
 function findSafariDriver() {
-  let exe = locateSynchronously();
+  let exe = locateSynchronously()
   if (!exe) {
     throw Error(
       `The safaridriver executable could not be found on the current PATH.
-      Please ensure you are using Safari 10.0 or above.`);
+      Please ensure you are using Safari 10.0 or above.`
+    )
   }
-  return exe;
+  return exe
 }
-
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -72,14 +66,13 @@ class ServiceBuilder extends remote.DriverService.Builder {
    *     the builder will attempt to locate the safaridriver on the system PATH.
    */
   constructor(opt_exe) {
-    super(opt_exe || findSafariDriver());
-    this.setLoopback(true);  // Required.
+    super(opt_exe || findSafariDriver())
+    this.setLoopback(true) // Required.
   }
 }
 
-
-const OPTIONS_CAPABILITY_KEY = 'safari.options';
-const TECHNOLOGY_PREVIEW_OPTIONS_KEY = 'technologyPreview';
+const OPTIONS_CAPABILITY_KEY = 'safari.options'
+const TECHNOLOGY_PREVIEW_OPTIONS_KEY = 'technologyPreview'
 
 /**
  * Configuration options specific to the {@link Driver SafariDriver}.
@@ -90,13 +83,13 @@ class Options extends Capabilities {
    *     capabilities to initialize this instance from.
    */
   constructor(other = undefined) {
-    super(other);
+    super(other)
 
     /** @private {!Object} */
-    this.options_ = this.get(OPTIONS_CAPABILITY_KEY) || {};
+    this.options_ = this.get(OPTIONS_CAPABILITY_KEY) || {}
 
-    this.set(OPTIONS_CAPABILITY_KEY, this.options_);
-    this.setBrowserName(Browser.SAFARI);
+    this.set(OPTIONS_CAPABILITY_KEY, this.options_)
+    this.setBrowserName(Browser.SAFARI)
   }
 
   /**
@@ -107,8 +100,8 @@ class Options extends Capabilities {
    * @return {!Options} A self reference.
    */
   setTechnologyPreview(useTechnologyPreview) {
-    this.options_[TECHNOLOGY_PREVIEW_OPTIONS_KEY] = !!useTechnologyPreview;
-    return this;
+    this.options_[TECHNOLOGY_PREVIEW_OPTIONS_KEY] = !!useTechnologyPreview
+    return this
   }
 }
 
@@ -118,21 +111,19 @@ class Options extends Capabilities {
  */
 function useTechnologyPreview(o) {
   if (o instanceof Capabilities) {
-    let options = o.get(OPTIONS_CAPABILITY_KEY);
-    return !!(options && options[TECHNOLOGY_PREVIEW_OPTIONS_KEY]);
+    let options = o.get(OPTIONS_CAPABILITY_KEY)
+    return !!(options && options[TECHNOLOGY_PREVIEW_OPTIONS_KEY])
   }
 
   if (o && typeof o === 'object') {
-    return !!o[TECHNOLOGY_PREVIEW_OPTIONS_KEY];
+    return !!o[TECHNOLOGY_PREVIEW_OPTIONS_KEY]
   }
 
-  return false;
+  return false
 }
 
-
 const SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE =
-    '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver';
-
+  '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
 
 /**
  * A WebDriver client for Safari. This class should never be instantiated
@@ -151,27 +142,27 @@ class Driver extends webdriver.WebDriver {
    * @return {!Driver} A new driver instance.
    */
   static createSession(options) {
-    let caps = options || new Options();
+    let caps = options || new Options()
 
-    let exe;
+    let exe
     if (useTechnologyPreview(caps.get(OPTIONS_CAPABILITY_KEY))) {
-      exe = SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE;
+      exe = SAFARIDRIVER_TECHNOLOGY_PREVIEW_EXE
     }
 
-    let service = new ServiceBuilder(exe).build();
+    let service = new ServiceBuilder(exe).build()
     let executor = new http.Executor(
-        service.start().then(url => new http.HttpClient(url)));
+      service.start().then((url) => new http.HttpClient(url))
+    )
 
-    return /** @type {!Driver} */(super.createSession(
-        executor, caps, () => service.kill()));
+    return /** @type {!Driver} */ (
+      super.createSession(executor, caps, () => service.kill())
+    )
   }
 }
 
-
 // Public API
 
-
-exports.Driver = Driver;
-exports.Options = Options;
-exports.ServiceBuilder = ServiceBuilder;
-exports.locateSynchronously = locateSynchronously;
+exports.Driver = Driver
+exports.Options = Options
+exports.ServiceBuilder = ServiceBuilder
+exports.locateSynchronously = locateSynchronously

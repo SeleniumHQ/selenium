@@ -23,18 +23,18 @@ module Selenium
       class Profile
         include ProfileHelper
 
-        VALID_PREFERENCE_TYPES   = [TrueClass, FalseClass, Integer, Float, String].freeze
-        WEBDRIVER_EXTENSION_PATH = File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/webdriver.xpi")
-        WEBDRIVER_PREFS          = {
-          native_events: 'webdriver_enable_native_events',
-          untrusted_certs: 'webdriver_accept_untrusted_certs',
-          untrusted_issuer: 'webdriver_assume_untrusted_issuer',
-          port: 'webdriver_firefox_port',
-          log_file: 'webdriver.log.file'
+        VALID_PREFERENCE_TYPES = [TrueClass, FalseClass, Integer, Float, String].freeze
+
+        DEFAULT_PREFERENCES = {
+          "browser.newtabpage.enabled" => false,
+          "browser.startup.homepage" => "about:blank",
+          "browser.usedOnWindows10.introURL" => "about:blank",
+          "network.captive-portal-service.enabled" => false,
+          "security.csp.enable" => false
         }.freeze
 
         attr_reader   :name, :log_file
-        attr_writer   :secure_ssl, :native_events, :load_no_focus_lib
+        attr_writer   :secure_ssl, :load_no_focus_lib
 
         class << self
           def ini
@@ -48,10 +48,8 @@ module Selenium
             raise Error::WebDriverError, "unable to find profile named: #{name.inspect}"
           end
 
-          def default_preferences
-            @default_preferences ||= JSON.parse(
-              File.read(File.expand_path("#{WebDriver.root}/selenium/webdriver/firefox/extension/prefs.json"))
-            ).freeze
+          def decoded(json)
+            JSON.parse(json)
           end
         end
 
@@ -70,14 +68,7 @@ module Selenium
         def initialize(model = nil)
           @model = verify_model(model)
 
-          model_prefs = read_model_prefs
-
-          if model_prefs.empty?
-            assign_default_preferences
-          else
-            assign_updated_preferences(model_prefs)
-          end
-
+          @additional_prefs = read_model_prefs
           @extensions = {}
         end
 
@@ -105,7 +96,7 @@ module Selenium
             raise TypeError, "expected one of #{VALID_PREFERENCE_TYPES.inspect}, got #{value.inspect}:#{value.class}"
           end
 
-          if value.is_a?(String) && stringified?(value)
+          if value.is_a?(String) && Util.stringified?(value)
             raise ArgumentError, "preference values must be plain strings: #{key.inspect} => #{value.inspect}"
           end
 
@@ -121,38 +112,12 @@ module Selenium
           self[WEBDRIVER_PREFS[:log_file]] = file
         end
 
-        def add_webdriver_extension
-          return if @extensions.key?(:webdriver)
-
-          add_extension(WEBDRIVER_EXTENSION_PATH, :webdriver)
-        end
-
         #
         # Add the extension (directory, .zip or .xpi) at the given path to the profile.
         #
 
         def add_extension(path, name = extension_name_for(path))
           @extensions[name] = Extension.new(path)
-        end
-
-        def native_events?
-          @native_events == true
-        end
-
-        def load_no_focus_lib?
-          @load_no_focus_lib == true
-        end
-
-        def secure_ssl?
-          @secure_ssl == true
-        end
-
-        def assume_untrusted_certificate_issuer?
-          @untrusted_issuer == true
-        end
-
-        def assume_untrusted_certificate_issuer=(bool)
-          @untrusted_issuer = bool
         end
 
         def proxy=(proxy)
@@ -178,29 +143,9 @@ module Selenium
           end
         end
 
-        def encoded
-          Zipper.zip(layout_on_disk)
-        end
+        alias_method :as_json, :encoded
 
         private
-
-        def assign_default_preferences
-          @native_events     = DEFAULT_ENABLE_NATIVE_EVENTS
-          @secure_ssl        = DEFAULT_SECURE_SSL
-          @untrusted_issuer  = DEFAULT_ASSUME_UNTRUSTED_ISSUER
-          @load_no_focus_lib = DEFAULT_LOAD_NO_FOCUS_LIB
-
-          @additional_prefs  = {}
-        end
-
-        def assign_updated_preferences(model_prefs)
-          @native_events     = model_prefs.delete(WEBDRIVER_PREFS[:native_events]) == 'true'
-          @secure_ssl        = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_certs]) != 'true'
-          @untrusted_issuer  = model_prefs.delete(WEBDRIVER_PREFS[:untrusted_issuer]) == 'true'
-          # not stored in profile atm, so will always be false.
-          @load_no_focus_lib = model_prefs.delete(WEBDRIVER_PREFS[:load_no_focus_lib]) == 'true'
-          @additional_prefs  = model_prefs
-        end
 
         def set_manual_proxy_preference(key, value)
           return unless value
@@ -243,17 +188,11 @@ module Selenium
         def update_user_prefs_in(directory)
           path = File.join(directory, 'user.js')
           prefs = read_user_prefs(path)
-
-          prefs.merge! self.class.default_preferences.fetch 'mutable'
-          prefs.merge! @additional_prefs
-          prefs.merge! self.class.default_preferences.fetch 'frozen'
-
-          prefs[WEBDRIVER_PREFS[:untrusted_certs]]  = !secure_ssl?
-          prefs[WEBDRIVER_PREFS[:native_events]]    = native_events?
-          prefs[WEBDRIVER_PREFS[:untrusted_issuer]] = assume_untrusted_certificate_issuer?
+          prefs.merge! self.class::DEFAULT_PREFERENCES
+          prefs.merge!(@additional_prefs)
 
           # If the user sets the home page, we should also start up there
-          prefs['startup.homepage_welcome_url'] = prefs['browser.startup.homepage']
+          prefs['startup.homepage_welcome_url'] ||= prefs['browser.startup.homepage']
 
           write_prefs prefs, path
         end
@@ -281,10 +220,6 @@ module Selenium
               file.puts %{user_pref("#{key}", #{value.to_json});}
             end
           end
-        end
-
-        def stringified?(str)
-          /^".*"$/.match?(str)
         end
       end # Profile
     end # Firefox

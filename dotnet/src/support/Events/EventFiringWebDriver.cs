@@ -427,7 +427,8 @@ namespace OpenQA.Selenium.Support.Events
         /// </para>
         /// <para>
         /// Arguments must be a number (which will be converted to a <see cref="long"/>),
-        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>.
+        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>,
+        /// or a <see cref="IWrapsElement"/>.
         /// An exception will be thrown if the arguments do not meet these criteria.
         /// The arguments will be made available to the JavaScript via the "arguments" magic
         /// variable, as if the function were called via "Function.apply"
@@ -446,6 +447,68 @@ namespace OpenQA.Selenium.Support.Events
             {
                 object[] unwrappedArgs = UnwrapElementArguments(args);
                 WebDriverScriptEventArgs e = new WebDriverScriptEventArgs(this.driver, script);
+                this.OnScriptExecuting(e);
+                scriptResult = javascriptDriver.ExecuteScript(script, unwrappedArgs);
+                this.OnScriptExecuted(e);
+            }
+            catch (Exception ex)
+            {
+                this.OnException(new WebDriverExceptionEventArgs(this.driver, ex));
+                throw;
+            }
+
+            return scriptResult;
+        }
+
+
+        /// <summary>
+        /// Executes JavaScript in the context of the currently selected frame or window.
+        /// </summary>
+        /// <param name="script">A <see cref="PinnedScript"/> object containing the code to execute.</param>
+        /// <param name="args">The arguments to the script.</param>
+        /// <returns>The value returned by the script.</returns>
+        /// <remarks>
+        /// <para>
+        /// The <see cref="ExecuteScript"/>method executes JavaScript in the context of
+        /// the currently selected frame or window. This means that "document" will refer
+        /// to the current document. If the script has a return value, then the following
+        /// steps will be taken:
+        /// </para>
+        /// <para>
+        /// <list type="bullet">
+        /// <item><description>For an HTML element, this method returns a <see cref="IWebElement"/></description></item>
+        /// <item><description>For a number, a <see cref="long"/> is returned</description></item>
+        /// <item><description>For a boolean, a <see cref="bool"/> is returned</description></item>
+        /// <item><description>For all other cases a <see cref="string"/> is returned.</description></item>
+        /// <item><description>For an array,we check the first element, and attempt to return a
+        /// <see cref="List{T}"/> of that type, following the rules above. Nested lists are not
+        /// supported.</description></item>
+        /// <item><description>If the value is null or there is no return value,
+        /// <see langword="null"/> is returned.</description></item>
+        /// </list>
+        /// </para>
+        /// <para>
+        /// Arguments must be a number (which will be converted to a <see cref="long"/>),
+        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>,
+        /// or a <see cref="IWrapsElement"/>.
+        /// An exception will be thrown if the arguments do not meet these criteria.
+        /// The arguments will be made available to the JavaScript via the "arguments" magic
+        /// variable, as if the function were called via "Function.apply"
+        /// </para>
+        /// </remarks>
+        public object ExecuteScript(PinnedScript script, params object[] args)
+        {
+            IJavaScriptExecutor javascriptDriver = this.driver as IJavaScriptExecutor;
+            if (javascriptDriver == null)
+            {
+                throw new NotSupportedException("Underlying driver instance does not support executing JavaScript");
+            }
+
+            object scriptResult = null;
+            try
+            {
+                object[] unwrappedArgs = UnwrapElementArguments(args);
+                WebDriverScriptEventArgs e = new WebDriverScriptEventArgs(this.driver, script.Source);
                 this.OnScriptExecuting(e);
                 scriptResult = javascriptDriver.ExecuteScript(script, unwrappedArgs);
                 this.OnScriptExecuted(e);
@@ -811,7 +874,7 @@ namespace OpenQA.Selenium.Support.Events
             {
                 if (url == null)
                 {
-                    throw new ArgumentNullException("url", "url cannot be null");
+                    throw new ArgumentNullException(nameof(url), "url cannot be null");
                 }
 
                 try
@@ -882,6 +945,11 @@ namespace OpenQA.Selenium.Support.Events
             public ILogs Logs
             {
                 get { return this.wrappedOptions.Logs; }
+            }
+
+            public INetwork Network
+            {
+                get { return this.wrappedOptions.Network; }
             }
 
             /// <summary>
@@ -1169,7 +1237,7 @@ namespace OpenQA.Selenium.Support.Events
         /// <summary>
         /// EventFiringWebElement allows you to have access to specific items that are found on the page
         /// </summary>
-        private class EventFiringWebElement : IWebElement, IWrapsElement, IWrapsDriver
+        private class EventFiringWebElement : ITakesScreenshot, IWebElement, IWrapsElement, IWrapsDriver
         {
             private IWebElement underlyingElement;
             private EventFiringWebDriver parentDriver;
@@ -1465,17 +1533,45 @@ namespace OpenQA.Selenium.Support.Events
             }
 
             /// <summary>
+            /// Gets the value of a declared HTML attribute of this element.
+            /// </summary>
+            /// <param name="attributeName">The name of the HTML attribute to get the value of.</param>
+            /// <returns>The HTML attribute's current value. Returns a <see langword="null"/> if the
+            /// value is not set or the declared attribute does not exist.</returns>
+            /// <remarks>
+            /// As opposed to the <see cref="GetAttribute(string)"/> method, this method
+            /// only returns attributes declared in the element's HTML markup. To access the value
+            /// of an IDL property of the element, either use the <see cref="GetAttribute(string)"/>
+            /// method or the <see cref="GetDomProperty(string)"/> method.
+            /// </remarks>
+            public string GetDomAttribute(string attributeName)
+            {
+                string attribute = string.Empty;
+                try
+                {
+                    attribute = this.underlyingElement.GetDomAttribute(attributeName);
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return attribute;
+            }
+
+            /// <summary>
             /// Gets the value of a JavaScript property of this element.
             /// </summary>
-            /// <param name="propertyName">The name JavaScript the JavaScript property to get the value of.</param>
+            /// <param name="propertyName">The name of the JavaScript property to get the value of.</param>
             /// <returns>The JavaScript property's current value. Returns a <see langword="null"/> if the
             /// value is not set or the property does not exist.</returns>
-            public string GetProperty(string propertyName)
+            public string GetDomProperty(string propertyName)
             {
                 string elementProperty = string.Empty;
                 try
                 {
-                    elementProperty = this.underlyingElement.GetProperty(propertyName);
+                    elementProperty = this.underlyingElement.GetDomProperty(propertyName);
                 }
                 catch (Exception ex)
                 {
@@ -1505,6 +1601,27 @@ namespace OpenQA.Selenium.Support.Events
                 }
 
                 return cssValue;
+            }
+
+            /// <summary>
+            /// Gets the representation of an element's shadow root for accessing the shadow DOM of a web component.
+            /// </summary>
+            /// <exception cref="NoSuchShadowRootException">Thrown when this element does not have a shadow root.</exception>
+            /// <returns>A shadow root representation.</returns>
+            public ISearchContext GetShadowRoot()
+            {
+                ISearchContext shadowRoot = null;
+                try
+                {
+                    shadowRoot = this.underlyingElement.GetShadowRoot();
+                }
+                catch (Exception ex)
+                {
+                    this.parentDriver.OnException(new WebDriverExceptionEventArgs(this.parentDriver, ex));
+                    throw;
+                }
+
+                return shadowRoot;
             }
 
             /// <summary>
@@ -1559,6 +1676,54 @@ namespace OpenQA.Selenium.Support.Events
                 }
 
                 return wrappedElementList.AsReadOnly();
+            }
+
+            /// <summary>
+            /// Gets a <see cref="Screenshot"/> object representing the image of the page on the screen.
+            /// </summary>
+            /// <returns>A <see cref="Screenshot"/> object containing the image.</returns>
+            public Screenshot GetScreenshot()
+            {
+                ITakesScreenshot screenshotDriver = this.underlyingElement as ITakesScreenshot;
+                if (this.underlyingElement == null)
+                {
+                    throw new NotSupportedException("Underlying element instance does not support taking screenshots");
+                }
+
+                Screenshot screen = null;
+                screen = screenshotDriver.GetScreenshot();
+                return screen;
+            }
+
+            /// <summary>
+            /// Determines whether the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>.
+            /// </summary>
+            /// <param name="obj">The <see cref="EventFiringWebElement"/> to compare to the current <see cref="EventFiringWebElement"/>.</param>
+            /// <returns><see langword="true"/> if the specified <see cref="EventFiringWebElement"/> is equal to the current <see cref="EventFiringWebElement"/>; otherwise, <see langword="false"/>.</returns>
+            public override bool Equals(object obj)
+            {
+                IWebElement other = obj as IWebElement;
+                if (other == null)
+                {
+                    return false;
+                }
+
+                IWrapsElement otherWrapper = other as IWrapsElement;
+                if (otherWrapper != null)
+                {
+                    other = otherWrapper.WrappedElement;
+                }
+
+                return underlyingElement.Equals(other);
+            }
+
+            /// <summary>
+            /// Return the hash code for this <see cref="EventFiringWebElement"/>.
+            /// </summary>
+            /// <returns>A 32-bit signed integer hash code.</returns>
+            public override int GetHashCode()
+            {
+                return this.underlyingElement.GetHashCode();
             }
         }
     }

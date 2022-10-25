@@ -28,15 +28,13 @@ module Selenium
 
       let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
 
-      # Safari is using GET instead of POST (W3C vs JWP)
-      # Server - https://github.com/SeleniumHQ/selenium/issues/1795
-      it 'should find the active element', except: {driver: :remote, browser: :edge} do
+      it 'should find the active element' do
         driver.navigate.to url_for('xhtmlTest.html')
         expect(driver.switch_to.active_element).to be_an_instance_of(WebDriver::Element)
       end
 
       # Doesn't switch to frame by id directly
-      it 'should switch to a frame directly', except: {browser: :safari} do
+      it 'should switch to a frame directly' do
         driver.navigate.to url_for('iframes.html')
         driver.switch_to.frame('iframe1')
 
@@ -68,6 +66,47 @@ module Selenium
         after do
           sleep 1 if ENV['TRAVIS']
           quit_driver
+        end
+
+        describe '#new_window' do
+          it 'should switch to a new window' do
+            original_window = driver.window_handle
+            driver.switch_to.new_window(:window)
+
+            expect(driver.window_handles.size).to eq 2
+            expect(driver.window_handle).not_to eq original_window
+          end
+
+          it 'should switch to a new tab' do
+            original_window = driver.window_handle
+            driver.switch_to.new_window(:tab)
+
+            expect(driver.window_handles.size).to eq 2
+            expect(driver.window_handle).not_to eq original_window
+          end
+
+          it 'should raise exception when the new window type is not recognized' do
+            expect {
+              driver.switch_to.new_window(:unknown)
+            }.to raise_error(ArgumentError)
+          end
+
+          it 'should switch to the new window then close it when given a block' do
+            original_window = driver.window_handle
+
+            driver.switch_to.new_window do
+              expect(driver.window_handles.size).to eq 2
+            end
+
+            expect(driver.window_handles.size).to eq 1
+            expect(driver.window_handle).to eq original_window
+          end
+
+          it 'should not error if switching to a new window with a block that closes window' do
+            expect {
+              driver.switch_to.new_window { driver.close }
+            }.not_to raise_exception
+          end
         end
 
         it 'should switch to a window and back when given a block' do
@@ -127,7 +166,8 @@ module Selenium
         end
       end
 
-      context 'with more than two windows', except: {browser: %i[safari safari_preview]} do
+      context 'with more than two windows', except: [{browser: %i[safari safari_preview]},
+                                                     {driver: :remote, browser: :ie}] do
         after do
           # We need to reset driver because browsers behave differently
           # when trying to open the same blank target in a new window.

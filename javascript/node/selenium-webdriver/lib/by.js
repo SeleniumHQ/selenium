@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
 /**
  * @fileoverview Factory methods for the supported locator strategies.
@@ -41,10 +41,8 @@
  *     {name: string}|
  *     {partialLinkText: string}|
  *     {tagName: string}|
- *     {xpath: string})}
+ *     {xpath: string})} ByHash
  */
-var ByHash;
-
 
 /**
  * Error thrown if an invalid character is encountered while escaping a CSS
@@ -53,11 +51,10 @@ var ByHash;
  */
 class InvalidCharacterError extends Error {
   constructor() {
-    super();
-    this.name = this.constructor.name;
+    super()
+    this.name = this.constructor.name
   }
 }
-
 
 /**
  * Escapes a CSS string.
@@ -69,45 +66,48 @@ class InvalidCharacterError extends Error {
  */
 function escapeCss(css) {
   if (typeof css !== 'string') {
-    throw new TypeError('input must be a string');
+    throw new TypeError('input must be a string')
   }
-  let ret = '';
-  const n = css.length;
-  for (let i = 0; i  < n; i++) {
-    const c = css.charCodeAt(i);
+  let ret = ''
+  const n = css.length
+  for (let i = 0; i < n; i++) {
+    const c = css.charCodeAt(i)
     if (c == 0x0) {
-      throw new InvalidCharacterError();
+      throw new InvalidCharacterError()
     }
 
-    if ((c >= 0x0001 && c <= 0x001F)
-        || c == 0x007F
-        || (i == 0 && c >= 0x0030 && c <= 0x0039)
-        || (i == 1 && c >= 0x0030 && c <= 0x0039
-            && css.charCodeAt(0) == 0x002D)) {
-      ret += '\\' + c.toString(16) + ' ';
-      continue;
+    if (
+      (c >= 0x0001 && c <= 0x001f) ||
+      c == 0x007f ||
+      (i == 0 && c >= 0x0030 && c <= 0x0039) ||
+      (i == 1 && c >= 0x0030 && c <= 0x0039 && css.charCodeAt(0) == 0x002d)
+    ) {
+      ret += '\\' + c.toString(16) + ' '
+      continue
     }
 
-    if (i == 0 && c == 0x002D && n == 1) {
-      ret += '\\' + css.charAt(i);
-      continue;
+    if (i == 0 && c == 0x002d && n == 1) {
+      ret += '\\' + css.charAt(i)
+      continue
     }
 
-    if (c >= 0x0080
-        || c == 0x002D                      // -
-        || c == 0x005F                      // _
-        || (c >= 0x0030 && c <= 0x0039)     // [0-9]
-        || (c >= 0x0041 && c <= 0x005A)     // [A-Z]
-        || (c >= 0x0061 && c <= 0x007A)) {  // [a-z]
-      ret += css.charAt(i);
-      continue;
+    if (
+      c >= 0x0080 ||
+      c == 0x002d || // -
+      c == 0x005f || // _
+      (c >= 0x0030 && c <= 0x0039) || // [0-9]
+      (c >= 0x0041 && c <= 0x005a) || // [A-Z]
+      (c >= 0x0061 && c <= 0x007a)
+    ) {
+      // [a-z]
+      ret += css.charAt(i)
+      continue
     }
 
-    ret += '\\' + css.charAt(i);
+    ret += '\\' + css.charAt(i)
   }
-  return ret;
+  return ret
 }
-
 
 /**
  * Describes a mechanism for locating an element on the page.
@@ -120,10 +120,10 @@ class By {
    */
   constructor(using, value) {
     /** @type {string} */
-    this.using = using;
+    this.using = using
 
     /** @type {string} */
-    this.value = value;
+    this.value = value
   }
 
   /**
@@ -135,10 +135,11 @@ class By {
    * @see http://www.w3.org/TR/CSS2/selector.html#class-html
    */
   static className(name) {
-    let names = name.split(/\s+/g)
-        .filter(s => s.length > 0)
-        .map(s => escapeCss(s));
-    return By.css('.' + names.join('.'));
+    let names = name
+      .split(/\s+/g)
+      .filter((s) => s.length > 0)
+      .map((s) => escapeCss(s))
+    return By.css('.' + names.join('.'))
   }
 
   /**
@@ -149,7 +150,7 @@ class By {
    * @see http://www.w3.org/TR/CSS2/selector.html
    */
   static css(selector) {
-    return new By('css selector', selector);
+    return new By('css selector', selector)
   }
 
   /**
@@ -160,7 +161,7 @@ class By {
    * @return {!By} The new locator.
    */
   static id(id) {
-    return By.css('*[id="' + escapeCss(id) + '"]');
+    return By.css('*[id="' + escapeCss(id) + '"]')
   }
 
   /**
@@ -172,7 +173,7 @@ class By {
    * @return {!By} The new locator.
    */
   static linkText(text) {
-    return new By('link text', text);
+    return new By('link text', text)
   }
 
   /**
@@ -188,11 +189,10 @@ class By {
    * @return {function(!./webdriver.WebDriver): !Promise}
    *     A new JavaScript-based locator function.
    */
-  static js(script, var_args) {
-    let args = Array.prototype.slice.call(arguments, 0);
-    return function(driver) {
-      return driver.executeScript.apply(driver, args);
-    };
+  static js(script, ...var_args) {
+    return function (driver) {
+      return driver.executeScript.call(driver, script, ...var_args)
+    }
   }
 
   /**
@@ -202,7 +202,7 @@ class By {
    * @return {!By} The new locator.
    */
   static name(name) {
-    return By.css('*[name="' + escapeCss(name) + '"]');
+    return By.css('*[name="' + escapeCss(name) + '"]')
   }
 
   /**
@@ -214,7 +214,7 @@ class By {
    * @return {!By} The new locator.
    */
   static partialLinkText(text) {
-    return new By('partial link text', text);
+    return new By('partial link text', text)
   }
 
   /**
@@ -222,10 +222,9 @@ class By {
    *
    * @param {string} name The tag name to search for.
    * @return {!By} The new locator.
-   * @deprecated Use {@link By.css() By.css(tagName)} instead.
    */
   static tagName(name) {
-    return By.css(name);
+    return new By('tag name', name)
   }
 
   /**
@@ -240,16 +239,154 @@ class By {
    * @see http://www.w3.org/TR/xpath/
    */
   static xpath(xpath) {
-    return new By('xpath', xpath);
+    return new By('xpath', xpath)
   }
 
   /** @override */
   toString() {
     // The static By.name() overrides this.constructor.name.  Shame...
-    return `By(${this.using}, ${this.value})`;
+    return `By(${this.using}, ${this.value})`
+  }
+
+  toObject() {
+    const tmp = {}
+    tmp[this.using] = this.value
+    return tmp
   }
 }
 
+/**
+ * Start Searching for relative objects using the value returned from
+ * `By.tagName()`.
+ *
+ * Note: this method will likely be removed in the future please use
+ * `locateWith`.
+ * @param {By} The value returned from calling By.tagName()
+ * @returns
+ */
+function withTagName(tagName) {
+  return new RelativeBy({ 'css selector': tagName })
+}
+
+/**
+ * Start searching for relative objects using search criteria with By.
+ * @param {string} A By map that shows how to find the initial element
+ * @returns {RelativeBy}
+ */
+function locateWith(by) {
+  return new RelativeBy(getLocator(by))
+}
+
+function getLocator(locatorOrElement) {
+  let toFind
+  if (locatorOrElement instanceof By) {
+    toFind = locatorOrElement.toObject()
+  } else {
+    toFind = locatorOrElement
+  }
+  return toFind
+}
+
+/**
+ * Describes a mechanism for locating an element relative to others
+ * on the page.
+ * @final
+ */
+class RelativeBy {
+  /**
+   * @param {By} findDetails
+   * @param {Array<Object>} filters
+   */
+  constructor(findDetails, filters = null) {
+    this.root = findDetails
+    this.filters = filters || []
+  }
+
+  /**
+   * Look for elements above the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  above(locatorOrElement) {
+    this.filters.push({
+      kind: 'above',
+      args: [getLocator(locatorOrElement)],
+    })
+    return this
+  }
+
+  /**
+   * Look for elements below the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  below(locatorOrElement) {
+    this.filters.push({
+      kind: 'below',
+      args: [getLocator(locatorOrElement)],
+    })
+    return this
+  }
+
+  /**
+   * Look for elements left the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  toLeftOf(locatorOrElement) {
+    this.filters.push({
+      kind: 'left',
+      args: [getLocator(locatorOrElement)],
+    })
+    return this
+  }
+
+  /**
+   * Look for elements right the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  toRightOf(locatorOrElement) {
+    this.filters.push({
+      kind: 'right',
+      args: [getLocator(locatorOrElement)],
+    })
+    return this
+  }
+
+  /**
+   * Look for elements near the root element passed in
+   * @param {string|WebElement} locatorOrElement
+   * @return {!RelativeBy} Return this object
+   */
+  near(locatorOrElement) {
+    this.filters.push({
+      kind: 'near',
+      args: [getLocator(locatorOrElement)],
+    })
+    return this
+  }
+
+  /**
+   * Returns a marshalled version of the {@link RelativeBy}
+   * @return {!Object} Object representation of a {@link WebElement}
+   *     that will be used in {@link #findElements}.
+   */
+  marshall() {
+    return {
+      relative: {
+        root: this.root,
+        filters: this.filters,
+      },
+    }
+  }
+
+  /** @override */
+  toString() {
+    // The static By.name() overrides this.constructor.name.  Shame...
+    return `RelativeBy(${JSON.stringify(this.marshall())})`
+  }
+}
 
 /**
  * Checks if a value is a valid locator.
@@ -260,29 +397,36 @@ class By {
  */
 function check(locator) {
   if (locator instanceof By || typeof locator === 'function') {
-    return locator;
+    return locator
   }
 
-  if (locator
-      && typeof locator === 'object'
-      && typeof locator.using === 'string'
-      && typeof locator.value === 'string') {
-    return new By(locator.using, locator.value);
+  if (
+    locator &&
+    typeof locator === 'object' &&
+    typeof locator.using === 'string' &&
+    typeof locator.value === 'string'
+  ) {
+    return new By(locator.using, locator.value)
   }
 
   for (let key in locator) {
-    if (locator.hasOwnProperty(key) && By.hasOwnProperty(key)) {
-      return By[key](locator[key]);
+    if (
+      Object.prototype.hasOwnProperty.call(locator, key) &&
+      Object.prototype.hasOwnProperty.call(By, key)
+    ) {
+      return By[key](locator[key])
     }
   }
-  throw new TypeError('Invalid locator');
+  throw new TypeError('Invalid locator')
 }
-
-
 
 // PUBLIC API
 
 module.exports = {
-  By: By,
+  By,
+  RelativeBy,
+  withTagName,
+  locateWith,
+  escapeCss,
   checkedLocator: check,
-};
+}

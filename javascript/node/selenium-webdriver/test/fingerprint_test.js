@@ -15,49 +15,50 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict';
+'use strict'
 
-const assert = require('assert');
+const assert = require('assert')
 
-const test = require('../lib/test');
-const Pages = test.Pages;
+const test = require('../lib/test')
+const Pages = test.Pages
 
+test.suite(
+  function (env) {
+    let driver
+    test.before(function () {
+      driver = env.builder().build()
+    })
 
-test.suite(function(env) {
-  var browsers = env.browsers;
+    test.after(function () {
+      driver.quit()
+    })
 
-  var driver;
-  test.before(function() {
-    driver = env.builder().build();
-  });
+    describe('fingerprinting', function () {
+      test.it('it should fingerprint the navigator object', async function () {
+        await driver.get(Pages.simpleTestPage)
 
-  test.after(function() {
-    driver.quit();
-  });
+        let wd = await driver.executeScript('return navigator.webdriver')
+        assert.strictEqual(wd, true)
+      })
 
-  describe('fingerprinting', function() {
-    test.it('it should fingerprint the navigator object', async function() {
-      await driver.get(Pages.simpleTestPage);
+      test.it('fingerprint must not be writable', async function () {
+        await driver.get(Pages.simpleTestPage)
 
-      let wd = await driver.executeScript('return navigator.webdriver');
-      assert.strictEqual(wd, true);
-    });
+        let wd = await driver.executeScript(
+          'navigator.webdriver = "ohai"; return navigator.webdriver'
+        )
+        assert.strictEqual(wd, true)
+      })
 
-    test.it('fingerprint must not be writable', async function() {
-      await driver.get(Pages.simpleTestPage);
+      test.it('leaves fingerprint on svg pages', async function () {
+        await driver.get(Pages.svgPage)
 
-      let wd = await driver.executeScript(
-          'navigator.webdriver = "ohai"; return navigator.webdriver');
-      assert.strictEqual(wd, true);
-    });
+        let wd = await driver.executeScript('return navigator.webdriver')
+        assert.strictEqual(wd, true)
+      })
+    })
 
-    test.it('leaves fingerprint on svg pages', async function() {
-      await driver.get(Pages.svgPage);
-
-      let wd = await driver.executeScript('return navigator.webdriver');
-      assert.strictEqual(wd, true);
-    });
-  });
-
-// Currently only implemented in legacy firefox.
-}, {browsers: ['legacy-firefox']});
+    // Currently only implemented in legacy firefox.
+  },
+  { browsers: ['legacy-firefox'] }
+)

@@ -10,7 +10,7 @@ Python language bindings for Selenium WebDriver.
 The `selenium` package is used to automate web browser interaction from Python.
 
 +-----------+--------------------------------------------------------------------------------------+
-| **Home**: | http://www.seleniumhq.org                                                            |
+| **Home**: | https://selenium.dev                                                                 |
 +-----------+--------------------------------------------------------------------------------------+
 | **Docs**: | `selenium package API <https://seleniumhq.github.io/selenium/docs/api/py/api.html>`_ |
 +-----------+--------------------------------------------------------------------------------------+
@@ -18,7 +18,7 @@ The `selenium` package is used to automate web browser interaction from Python.
 +-----------+--------------------------------------------------------------------------------------+
 | **PyPI**: | https://pypi.org/project/selenium/                                                   |
 +-----------+--------------------------------------------------------------------------------------+
-| **IRC**:  | **#selenium** channel on freenode                                                    |
+| **IRC**:  | **#selenium** channel on LiberaChat                                                  |
 +-----------+--------------------------------------------------------------------------------------+
 
 Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as well as the Remote protocol.
@@ -26,7 +26,7 @@ Several browsers/drivers are supported (Firefox, Chrome, Internet Explorer), as 
 Supported Python Versions
 =========================
 
-* Python 2.7, 3.4+
+* Python 3.7+
 
 Installing
 ==========
@@ -35,7 +35,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.0.0a1.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.5.0.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -52,7 +52,7 @@ Failure to observe this step will give you an error `selenium.common.exceptions.
 Other supported browsers will have their own drivers available. Links to some of the more popular browser drivers follow.
 
 +--------------+-----------------------------------------------------------------------+
-| **Chrome**:  | https://sites.google.com/a/chromium.org/chromedriver/downloads        |
+| **Chrome**:  | https://chromedriver.chromium.org/downloads                           |
 +--------------+-----------------------------------------------------------------------+
 | **Edge**:    | https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ |
 +--------------+-----------------------------------------------------------------------+
@@ -72,7 +72,7 @@ Example 0:
     from selenium import webdriver
 
     browser = webdriver.Firefox()
-    browser.get('http://seleniumhq.org/')
+    browser.get('http://selenium.dev/')
 
 Example 1:
 ==========
@@ -85,6 +85,7 @@ Example 1:
 .. code-block:: python
 
     from selenium import webdriver
+    from selenium.webdriver.common.by import By
     from selenium.webdriver.common.keys import Keys
 
     browser = webdriver.Firefox()
@@ -92,7 +93,7 @@ Example 1:
     browser.get('http://www.yahoo.com')
     assert 'Yahoo' in browser.title
 
-    elem = browser.find_element_by_name('p')  # Find the search box
+    elem = browser.find_element(By.NAME, 'p')  # Find the search box
     elem.send_keys('seleniumhq' + Keys.RETURN)
 
     browser.quit()
@@ -113,7 +114,7 @@ Selenium WebDriver is often used as a basis for testing web applications.  Here 
             self.browser = webdriver.Firefox()
             self.addCleanup(self.browser.quit)
 
-        def testPageTitle(self):
+        def test_page_title(self):
             self.browser.get('http://www.google.com')
             self.assertIn('Google', self.browser.title)
 
@@ -127,11 +128,11 @@ For normal WebDriver scripts (non-Remote), the Java server is not needed.
 
 However, to use Selenium Webdriver Remote or the legacy Selenium API (Selenium-RC), you need to also run the Selenium server.  The server requires a Java Runtime Environment (JRE).
 
-Download the server separately, from: http://selenium-release.storage.googleapis.com/4.0/selenium-server-standalone-4.0.0.jar
+Download the server separately, from: https://www.selenium.dev/downloads/
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-3.141.0.jar
+    java -jar selenium-server-4.5.0.jar
 
 Then run your Python client scripts.
 
@@ -140,6 +141,19 @@ Use The Source Luke!
 
 View source code online:
 
-+-----------+-------------------------------------------------------+
-| official: | https://github.com/SeleniumHQ/selenium/tree/master/py |
-+-----------+-------------------------------------------------------+
++-----------+------------------------------------------------------+
+| official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
++-----------+------------------------------------------------------+
+
+
+Contributing
+=============
+
+ - Create a branch for your work
+ - Ensure `tox` is installed (using a `virtualenv` is recommended)
+ - `python3.7 -m venv .venv && . .venv/bin/activate && pip install tox`
+ - After making changes, before committing execute `tox -e linting`
+ - If tox exits `0`, commit and push otherwise fix the newly introduced breakages.
+ - `flake8` requires manual fixes
+ - `black` will often rewrite the breakages automatically, however the files are unstaged and should staged again.
+ - `isort` will often rewrite the breakages automatically, however the files are unstaged and should staged again.

@@ -20,6 +20,12 @@
 module Selenium
   module WebDriver
     module Interactions
+      #
+      # Creates actions specific to Pointer Input devices
+      #
+      # @api private
+      #
+
       class PointerInput < InputDevice
         KIND = {mouse: :mouse, pen: :pen, touch: :touch}.freeze
 
@@ -28,17 +34,12 @@ module Selenium
         def initialize(kind, name: nil)
           super(name)
           @kind = assert_kind(kind)
-        end
-
-        def type
-          Interactions::POINTER
+          @type = Interactions::POINTER
         end
 
         def encode
-          return nil if no_actions?
-
-          output = {type: type, id: name, actions: @actions.map(&:encode)}
-          output[:parameters] = {pointerType: kind}
+          output = super
+          output[:parameters] = {pointerType: kind} if output
           output
         end
 
@@ -48,92 +49,22 @@ module Selenium
           KIND[pointer]
         end
 
-        def create_pointer_move(duration: 0, x: 0, y: 0, element: nil, origin: nil)
-          add_action(PointerMove.new(self, duration, x, y, element: element, origin: origin))
+        def create_pointer_move(duration: 0, x: 0, y: 0, origin: nil, **opts)
+          add_action(PointerMove.new(self, duration, x, y, origin: origin, **opts))
         end
 
-        def create_pointer_down(button)
-          add_action(PointerPress.new(self, :down, button))
+        def create_pointer_down(button, **opts)
+          add_action(PointerPress.new(self, :down, button, **opts))
         end
 
-        def create_pointer_up(button)
-          add_action(PointerPress.new(self, :up, button))
+        def create_pointer_up(button, **opts)
+          add_action(PointerPress.new(self, :up, button, **opts))
         end
 
         def create_pointer_cancel
           add_action(PointerCancel.new(self))
         end
       end # PointerInput
-
-      class PointerPress < Interaction
-        BUTTONS = {left: 0, middle: 1, right: 2}.freeze
-        DIRECTIONS = {down: :pointerDown, up: :pointerUp}.freeze
-
-        def initialize(source, direction, button)
-          super(source)
-          @direction = assert_direction(direction)
-          @button = assert_button(button)
-        end
-
-        def type
-          @direction
-        end
-
-        def assert_button(button)
-          if button.is_a? Symbol
-            raise TypeError, "#{button.inspect} is not a valid button!" unless BUTTONS.key? button
-
-            button = BUTTONS[button]
-          end
-          raise ArgumentError, 'Button number cannot be negative!' unless button >= 0
-
-          button
-        end
-
-        def assert_direction(direction)
-          raise TypeError, "#{direction.inspect} is not a valid button direction" unless DIRECTIONS.key? direction
-
-          DIRECTIONS[direction]
-        end
-
-        def encode
-          {type: type, button: @button}
-        end
-      end # PointerPress
-
-      class PointerMove < Interaction
-        VIEWPORT = :viewport
-        POINTER = :pointer
-        ORIGINS = [VIEWPORT, POINTER].freeze
-
-        def initialize(source, duration, x, y, element: nil, origin: nil)
-          super(source)
-          @duration = duration * 1000
-          @x_offset = x
-          @y_offset = y
-          @origin = element || origin
-        end
-
-        def type
-          :pointerMove
-        end
-
-        def encode
-          output = {type: type, duration: @duration.to_i, x: @x_offset, y: @y_offset}
-          output[:origin] = @origin
-          output
-        end
-      end # Move
-
-      class PointerCancel < Interaction
-        def type
-          :pointerCancel
-        end
-
-        def encode
-          {type: type}
-        end
-      end # Cancel
     end # Interactions
   end # WebDriver
 end # Selenium

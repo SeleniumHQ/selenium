@@ -60,10 +60,6 @@ module Selenium
           fullscreen_window: [:post, 'session/:session_id/window/fullscreen'],
           minimize_window: [:post, 'session/:session_id/window/minimize'],
           maximize_window: [:post, 'session/:session_id/window/maximize'],
-          set_window_size: [:post, 'session/:session_id/window/size'],
-          get_window_size: [:get, 'session/:session_id/window/size'],
-          set_window_position: [:post, 'session/:session_id/window/position'],
-          get_window_position: [:get, 'session/:session_id/window/position'],
           set_window_rect: [:post, 'session/:session_id/window/rect'],
           get_window_rect: [:get, 'session/:session_id/window/rect'],
           switch_to_frame: [:post, 'session/:session_id/frame'],
@@ -77,11 +73,16 @@ module Selenium
           find_elements: [:post, 'session/:session_id/elements'],
           find_child_element: [:post, 'session/:session_id/element/:id/element'],
           find_child_elements: [:post, 'session/:session_id/element/:id/elements'],
+          find_shadow_child_element: [:post, 'session/:session_id/shadow/:id/element'],
+          find_shadow_child_elements: [:post, 'session/:session_id/shadow/:id/elements'],
           get_active_element: [:get, 'session/:session_id/element/active'],
+          get_element_shadow_root: [:get, 'session/:session_id/element/:id/shadow'],
           is_element_selected: [:get, 'session/:session_id/element/:id/selected'],
           get_element_attribute: [:get, 'session/:session_id/element/:id/attribute/:name'],
           get_element_property: [:get, 'session/:session_id/element/:id/property/:name'],
           get_element_css_value: [:get, 'session/:session_id/element/:id/css/:property_name'],
+          get_element_aria_role: [:get, 'session/:session_id/element/:id/computedrole'],
+          get_element_aria_label: [:get, 'session/:session_id/element/:id/computedlabel'],
           get_element_text: [:get, 'session/:session_id/element/:id/text'],
           get_element_tag_name: [:get, 'session/:session_id/element/:id/name'],
           get_element_rect: [:get, 'session/:session_id/element/:id/rect'],
@@ -109,6 +110,7 @@ module Selenium
           # timeouts
           #
 
+          get_timeouts: [:get, 'session/:session_id/timeouts'],
           set_timeout: [:post, 'session/:session_id/timeouts'],
 
           #
@@ -117,13 +119,13 @@ module Selenium
 
           actions: [:post, 'session/:session_id/actions'],
           release_actions: [:delete, 'session/:session_id/actions'],
+          print_page: [:post, 'session/:session_id/print'],
 
           #
           # Element Operations
           #
 
           element_click: [:post, 'session/:session_id/element/:id/click'],
-          element_tap: [:post, 'session/:session_id/element/:id/tap'],
           element_clear: [:post, 'session/:session_id/element/:id/clear'],
           element_send_keys: [:post, 'session/:session_id/element/:id/value'],
 
@@ -147,7 +149,21 @@ module Selenium
           # server extensions
           #
 
-          upload_file: [:post, 'session/:session_id/se/file']
+          upload_file: [:post, 'session/:session_id/se/file'],
+
+          #
+          # virtual-authenticator
+          #
+
+          add_virtual_authenticator: [:post, 'session/:session_id/webauthn/authenticator'],
+          remove_virtual_authenticator: [:delete, 'session/:session_id/webauthn/authenticator/:authenticatorId'],
+          add_credential: [:post, 'session/:session_id/webauthn/authenticator/:authenticatorId/credential'],
+          get_credentials: [:get, 'session/:session_id/webauthn/authenticator/:authenticatorId/credentials'],
+          remove_credential: [:delete,
+                              'session/:session_id/webauthn/authenticator/:authenticatorId/credentials/:credentialId'],
+          remove_all_credentials: [:delete, 'session/:session_id/webauthn/authenticator/:authenticatorId/credentials'],
+          set_user_verified: [:post, 'session/:session_id/webauthn/authenticator/:authenticatorId/uv']
+
         }.freeze
 
       end # Bridge

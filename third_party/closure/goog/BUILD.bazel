@@ -1,0 +1,12 @@
+# Only present to allow us to provide the filegroup to the test webserver
+
+filegroup(
+    name = "goog",
+    srcs = glob([
+        "**/*.js",
+    ]),
+    visibility = [
+        "//dotnet/test:__subpackages__",
+        "//java/test/org/openqa/selenium/environment:__pkg__",
+    ],
+)

@@ -14,18 +14,20 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import pytest
 
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver import Chrome
 
 
 def test_network_conditions_emulation():
     driver = Chrome()
-    driver.set_network_conditions(
-        offline=False,
-        latency=56,  # additional latency (ms)
-        throughput=789)
+    driver.set_network_conditions(offline=False, latency=56, throughput=789)  # additional latency (ms)
     conditions = driver.get_network_conditions()
-    assert conditions['offline'] is False
-    assert conditions['latency'] == 56
-    assert conditions['download_throughput'] == 789
-    assert conditions['upload_throughput'] == 789
+    assert conditions["offline"] is False
+    assert conditions["latency"] == 56
+    assert conditions["download_throughput"] == 789
+    assert conditions["upload_throughput"] == 789
+    driver.delete_network_conditions()
+    with pytest.raises(WebDriverException):
+        driver.get_network_conditions()
