@@ -361,7 +361,7 @@ bazel run @maven//:outdated
    which is used to manage the Maven dependencies tree (see [rules_jvm_external](https://github.com/bazelbuild/rules_jvm_external) for further details). The command to carry out this step is the following:
 
 ```sh
-REPIN=1 bazel run @unpinned_maven//:pin
+RULES_JVM_EXTERNAL_REPIN=1 bazel run @unpinned_maven//:pin
 ```
 
 4. (Optional) If we use IntelliJ with the Bazel plugin, we need to synchronize

@@ -35,7 +35,9 @@ public class NewSessionQueueOptions {
 
   static final String SESSION_QUEUE_SECTION = "sessionqueue";
   static final int DEFAULT_REQUEST_TIMEOUT = 300;
+  static final int DEFAULT_REQUEST_TIMEOUT_PERIOD = 10;
   static final int DEFAULT_RETRY_INTERVAL = 15;
+  static final int DEFAULT_BATCH_SIZE = Runtime.getRuntime().availableProcessors() * 3;
 
   private final Config config;
 
@@ -96,13 +98,33 @@ public class NewSessionQueueOptions {
     return Duration.ofSeconds(timeout);
   }
 
+  public Duration getSessionRequestTimeoutPeriod() {
+    // If the user sets 0 or less, we default to 1s.
+    int timeout = Math.max(
+      config.getInt(SESSION_QUEUE_SECTION, "session-request-timeout-period")
+        .orElse(DEFAULT_REQUEST_TIMEOUT_PERIOD),
+      1);
+
+    return Duration.ofSeconds(timeout);
+  }
+
   public Duration getSessionRequestRetryInterval() {
-    // If the user sets 0 or less, we default to 0s.
+    // If the user sets 0 or less, we default to DEFAULT_RETRY_INTERVAL (in milliseconds).
     int interval = Math.max(
       config.getInt(SESSION_QUEUE_SECTION, "session-retry-interval")
         .orElse(DEFAULT_RETRY_INTERVAL),
-      0);
-    return Duration.ofSeconds(interval);
+      DEFAULT_RETRY_INTERVAL);
+    return Duration.ofMillis(interval);
+  }
+
+  public int getBatchSize() {
+    // If the user sets 0 or less, we default to 10.
+    int batchSize = Math.max(
+      config.getInt(SESSION_QUEUE_SECTION, "sessionqueue-batch-size")
+        .orElse(DEFAULT_BATCH_SIZE),
+      1);
+
+    return batchSize;
   }
 
   @ManagedAttribute(name = "RequestTimeoutSeconds")
@@ -110,9 +132,9 @@ public class NewSessionQueueOptions {
     return getSessionRequestTimeout().getSeconds();
   }
 
-  @ManagedAttribute(name = "RetryIntervalSeconds")
-  public long getRetryIntervalSeconds() {
-    return getSessionRequestRetryInterval().getSeconds();
+  @ManagedAttribute(name = "RetryIntervalMilliseconds")
+  public long getRetryIntervalMilliseconds() {
+    return getSessionRequestRetryInterval().toMillis();
   }
 
   public NewSessionQueue getSessionQueue(String implementation) {

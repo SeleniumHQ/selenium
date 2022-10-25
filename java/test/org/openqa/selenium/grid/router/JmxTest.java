@@ -44,6 +44,13 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import java.lang.management.ManagementFactory;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.logging.Logger;
+
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.IntrospectionException;
@@ -54,12 +61,6 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
-import java.lang.management.ManagementFactory;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -163,7 +164,7 @@ class JmxTest {
   }
 
   @Test
-  void shouldBeAbleToRegisterSessionQueuerServerConfig() {
+  void shouldBeAbleToRegisterSessionQueueServerConfig() {
     try {
       ObjectName name = new ObjectName(
         "org.seleniumhq.grid:type=Config,name=NewSessionQueueConfig");
@@ -182,9 +183,9 @@ class JmxTest {
       assertThat(Long.parseLong(requestTimeout))
         .isEqualTo(newSessionQueueOptions.getRequestTimeoutSeconds());
 
-      String retryInterval = (String) beanServer.getAttribute(name, "RetryIntervalSeconds");
+      String retryInterval = (String) beanServer.getAttribute(name, "RetryIntervalMilliseconds");
       assertThat(Long.parseLong(retryInterval))
-        .isEqualTo(newSessionQueueOptions.getRetryIntervalSeconds());
+        .isEqualTo(newSessionQueueOptions.getRetryIntervalMilliseconds());
     } catch (InstanceNotFoundException | IntrospectionException | ReflectionException
       | MalformedObjectNameException e) {
       fail("Could not find the registered MBean");
@@ -209,7 +210,8 @@ class JmxTest {
         new DefaultSlotMatcher(),
         Duration.ofSeconds(2),
         Duration.ofSeconds(2),
-        new Secret(""));
+        new Secret(""),
+        5);
 
       assertThat(sessionQueue).isNotNull();
       MBeanInfo info = beanServer.getMBeanInfo(name);
@@ -254,7 +256,8 @@ class JmxTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      secret);
+      secret,
+      5);
 
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -266,7 +269,8 @@ class JmxTest {
       secret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      Runtime.getRuntime().availableProcessors());
 
     distributor.add(localNode);
 

@@ -1,3 +1,38 @@
+v4.5.3
+======
+* Supported CDP versions: 85, 104, 105, 106
+* Removing check "::1" in PortProber (Fixes #11159)
+
+v4.5.2
+======
+* Supported CDP versions: 85, 104, 105, 106
+* Add support for basic auth in JDK client (Related to #11068)
+* [grid] Adjusting PortProber for Docker execution
+
+v4.5.1
+======
+* Supported CDP versions: 85, 104, 105, 106
+* Avoid throwing errors once NetworkInterceptor is closed (Fixes #11032)
+* Avoiding hiding "internal" package so that selenium-api exports it (Fixes #11069)
+* Close the CDP connection on quit for FF (#11109)
+* Removed the broken escape (#11110)
+* Use the correct base64 decoder (#11107)
+* Reduce noisy logs from CDP version finder and made dialect related log debug level (Related to #11088)
+* Respect the last flag for binary data (#11108)
+* Check that a port truly is free before using it (#11085)
+* Make public constant storing capability name for IE options (#11114)
+* [grid] Add BiDi endpoint to returned caps if available, adding `se:bidi`
+* Ignoring additional headers in the JDK 11 implementation
+* Pick random port outside of well-known ranges of ephemeral ports (#10990)
+* [grid] Consume in batches from the new session queue (#10987)
+* [grid] Deprecate max-threads flag. Add an alternate flag in the Distributor for new session thread
+  pool size. (#10995)
+* [grid] Restoring behavior for session creation interval.
+* [grid] Add batch size flag for session queue
+* Make sure `EventFiringWebElement` implements all `WebElement` methods (#11144)
+* [bidi] Make BaseLogEntry.LogLevel enum public (#11147)
+* [grid] Removing default value for `max-threads` to avoid noisy warnings due to deprecation
+
 v4.5.0
 ======
 * Supported CDP versions: 85, 104, 105, 106

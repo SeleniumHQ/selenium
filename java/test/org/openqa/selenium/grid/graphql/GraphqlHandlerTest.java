@@ -83,6 +83,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 class GraphqlHandlerTest {
 
   private static final Json JSON = new Json();
+  private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private final Secret registrationSecret = new Secret("stilton");
   private final URI publicUri = new URI("http://example.com/grid-o-matic");
   private final String version = "4.0.0";
@@ -121,7 +122,8 @@ class GraphqlHandlerTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     distributor = new LocalDistributor(
       tracer,
@@ -133,7 +135,8 @@ class GraphqlHandlerTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
   }
 
   @Test
@@ -300,7 +303,8 @@ class GraphqlHandlerTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -347,7 +351,8 @@ class GraphqlHandlerTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -414,7 +419,8 @@ class GraphqlHandlerTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -479,7 +485,8 @@ class GraphqlHandlerTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -550,7 +557,8 @@ class GraphqlHandlerTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());

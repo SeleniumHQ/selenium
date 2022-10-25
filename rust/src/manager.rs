@@ -114,3 +114,8 @@ pub fn get_major_version(full_version: &str) -> String {
     let version_vec: Vec<&str> = full_version.split('.').collect();
     version_vec.first().unwrap().to_string()
 }
+
+pub fn get_minor_version(full_version: &str) -> String {
+  let version_vec: Vec<&str> = full_version.split('.').collect();
+  version_vec.get(1).unwrap().to_string()
+}

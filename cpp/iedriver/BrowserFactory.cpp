@@ -406,11 +406,21 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
     this->edge_user_data_dir_ = temp_dir;
   }
 
+  // Prevent Edge from showing first run experience tab.
   executable_and_url.append(L" --no-first-run");
+
+  // Disable Edge prelaunch and other background processes on startup.
   executable_and_url.append(L" --no-service-autorun");
+
+  // Disable profile sync and implicit MS account sign-in.
   executable_and_url.append(L" --disable-sync");
   executable_and_url.append(L" --disable-features=msImplicitSignin");
+
+  // ALways allow popups for testing.
   executable_and_url.append(L" --disable-popup-blocking");
+
+  // Ensure IE Mode tabs have a chance to shut down cleanly before the Edge process exits.
+  executable_and_url.append(L" --enable-features=msIEModeAlwaysWaitForUnload");
 
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);
