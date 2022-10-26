@@ -65,7 +65,23 @@ namespace OpenQA.Selenium
             string executablePath = Path.Combine(servicePath, driverServiceExecutableName);
             if (!File.Exists(executablePath))
             {
-                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, driverServiceDownloadUrl));
+                try
+                {
+                    executablePath = SeleniumManager.DriverPath(driverServiceExecutableName);
+                }
+                catch (Exception e)
+                {
+                  // No-op; entirely a fall-back feature
+                }
+
+                if (File.Exists(executablePath))
+                {
+                    servicePath = Path.GetDirectoryName(executablePath);
+                }
+                else
+                {
+                    throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, driverServiceDownloadUrl));
+                }
             }
 
             this.driverServicePath = servicePath;
@@ -74,12 +90,12 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Occurs when the driver process is starting. 
+        /// Occurs when the driver process is starting.
         /// </summary>
         public event EventHandler<DriverProcessStartingEventArgs> DriverProcessStarting;
 
         /// <summary>
-        /// Occurs when the driver process has completely started. 
+        /// Occurs when the driver process has completely started.
         /// </summary>
         public event EventHandler<DriverProcessStartedEventArgs> DriverProcessStarted;
 
