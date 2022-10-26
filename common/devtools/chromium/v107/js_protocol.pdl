@@ -244,6 +244,40 @@ domain Debugger
       # Wasm bytecode.
       optional binary bytecode
 
+  experimental type WasmDisassemblyChunk extends object
+    properties
+      # The next chunk of disassembled lines.
+      array of string lines
+      # The bytecode offsets describing the start of each line.
+      array of integer bytecodeOffsets
+
+  experimental command disassembleWasmModule
+    parameters
+      # Id of the script to disassemble
+      Runtime.ScriptId scriptId
+    returns
+      # For large modules, return a stream from which additional chunks of
+      # disassembly can be read successively.
+      optional string streamId
+      # The total number of lines in the disassembly text.
+      integer totalNumberOfLines
+      # The offsets of all function bodies, in the format [start1, end1,
+      # start2, end2, ...] where all ends are exclusive.
+      array of integer functionBodyOffsets
+      # The first chunk of disassembly.
+      WasmDisassemblyChunk chunk
+
+  # Disassemble the next chunk of lines for the module corresponding to the
+  # stream. If disassembly is complete, this API will invalidate the streamId
+  # and return an empty chunk. Any subsequent calls for the now invalid stream
+  # will return errors.
+  experimental command nextWasmDisassemblyChunk
+    parameters
+      string streamId
+    returns
+      # The next chunk of disassembly.
+      WasmDisassemblyChunk chunk
+
   # This command is deprecated. Use getScriptSource instead.
   deprecated command getWasmBytecode
     parameters
@@ -441,6 +475,12 @@ domain Debugger
       Runtime.CallArgument newValue
 
   # Edits JavaScript source live.
+  #
+  # In general, functions that are currently on the stack can not be edited with
+  # a single exception: If the edited function is the top-most stack frame and
+  # that is the only activation of that function on the stack. In this case
+  # the live edit will be successful and a `Debugger.restartFrame` for the
+  # top-most function is automatically triggered.
   command setScriptSource
     parameters
       # Id of the script to edit.
@@ -450,16 +490,27 @@ domain Debugger
       #  If true the change will not actually be applied. Dry run may be used to get result
       # description without actually modifying the code.
       optional boolean dryRun
+      # If true, then `scriptSource` is allowed to change the function on top of the stack
+      # as long as the top-most stack frame is the only activation of that function.
+      experimental optional boolean allowTopFrameEditing
     returns
       # New stack trace in case editing has happened while VM was stopped.
-      optional array of CallFrame callFrames
+      deprecated optional array of CallFrame callFrames
       # Whether current call stack  was modified after applying the changes.
-      optional boolean stackChanged
+      deprecated optional boolean stackChanged
       # Async stack trace, if any.
-      optional Runtime.StackTrace asyncStackTrace
+      deprecated optional Runtime.StackTrace asyncStackTrace
       # Async stack trace, if any.
-      experimental optional Runtime.StackTraceId asyncStackTraceId
-      # Exception details if any.
+      deprecated optional Runtime.StackTraceId asyncStackTraceId
+      # Whether the operation was successful or not. Only `Ok` denotes a
+      # successful live edit while the other enum variants denote why
+      # the live edit failed.
+      experimental enum status
+        Ok
+        CompileError
+        BlockedByActiveGenerator
+        BlockedByActiveFunction
+      # Exception details if any. Only present when `status` is `CompileError`.
       optional Runtime.ExceptionDetails exceptionDetails
 
   # Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc).
