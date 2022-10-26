@@ -55,10 +55,8 @@ def test_valid_params(driver, pages):
 
 def test_session_id_is_not_preserved_after_page_is_printed(driver, pages):
     print_options = PrintOptions()
-    print_options.margin_bottom = print_options.margin_top = \
-        print_options.margin_left = print_options.margin_right = 0
-    assert 'sessionId' not in print_options.to_dict()
+    print_options.margin_bottom = print_options.margin_top = print_options.margin_left = print_options.margin_right = 0
+    assert "sessionId" not in print_options.to_dict()
     pages.load("printPage.html")
     driver.print_page(print_options=print_options)
-    assert 'sessionId' not in print_options.to_dict()
-
+    assert "sessionId" not in print_options.to_dict()
