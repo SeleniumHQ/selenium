@@ -121,7 +121,7 @@ public class PrintOptions {
     options.put("background", getBackground());
     final String[] effectivePageRanges = getPageRanges();
     if (effectivePageRanges != null) {
-      options.put("effectivePageRanges", effectivePageRanges);
+      options.put("pageRanges", effectivePageRanges);
     }
     options.put("margin", getPageMargin());
 
