@@ -110,9 +110,11 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
     if (msg instanceof HttpContent) {
       ByteBuf buf = ((HttpContent) msg).content().retain();
+      PipedOutputStream target = out;
+
       EXECUTOR.submit(() -> {
         try (InputStream inputStream = new ByteBufInputStream(buf)) {
-          ByteStreams.copy(inputStream, out);
+          ByteStreams.copy(inputStream, target);
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         } finally {
@@ -123,9 +125,11 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
     if (msg instanceof LastHttpContent) {
       LOG.fine("Closing input pipe.");
+      PipedOutputStream target = out;
+
       EXECUTOR.submit(() -> {
         try {
-          out.close();
+          target.close();
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         }
@@ -136,9 +140,11 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     LOG.fine("Closing input pipe, channel became inactive.");
+    PipedOutputStream target = out;
+
     SHUTDOWN_EXECUTOR.submit(() -> {
       try {
-        out.close();
+        target.close();
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
