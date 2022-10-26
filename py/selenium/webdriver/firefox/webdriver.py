@@ -336,7 +336,7 @@ class WebDriver(RemoteWebDriver):
         """
         return self.get_full_page_screenshot_as_file(filename)
 
-    def get_full_page_screenshot_as_png(self) -> str:
+    def get_full_page_screenshot_as_png(self) -> bytes:
         """
         Gets the full document screenshot of the current window as a binary data.
 

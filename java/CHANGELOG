@@ -1,3 +1,8 @@
+v4.5.3
+======
+* Supported CDP versions: 85, 104, 105, 106
+* Removing check "::1" in PortProber (Fixes #11159)
+
 v4.5.2
 ======
 * Supported CDP versions: 85, 104, 105, 106
