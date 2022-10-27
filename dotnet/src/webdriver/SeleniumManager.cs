@@ -79,26 +79,25 @@ namespace OpenQA.Selenium
                     try
                     {
                         string name = "selenium-manager-" + folder;
-                        Stream fileStream = ResourceUtilities.GetResourceStream(name, name);
-                        BinaryReader binReader = new BinaryReader(fileStream, Encoding.ASCII);
-                        byte[] fileBytes = binReader.ReadBytes((int)fileStream.Length);
-                        binReader.Close();
-                        fileStream.Close();
-
-                        string directoryName = string.Format(CultureInfo.InvariantCulture, "webdriver.{0}",
-                            Guid.NewGuid().ToString("N"));
-                        var path = Path.Combine(Path.GetTempPath(), directoryName + "/" + folder);
-                        Directory.CreateDirectory(path);
-                        var filePath = Path.Combine(path, "selenium-manager" + extension);
-
-                        using (BinaryWriter binWriter = new BinaryWriter(File.Open(filePath, FileMode.Create)))
+                        using (Stream fileStream = ResourceUtilities.GetResourceStream(name, name))
                         {
-                            binWriter.Flush();
-                            binWriter.Write(fileBytes);
-                            binWriter.Close();
-                        }
+                            using (BinaryReader binReader = new BinaryReader(fileStream, Encoding.ASCII))
+                            {
+                                byte[] fileBytes = binReader.ReadBytes((int)fileStream.Length);
+                                string directoryName = string.Format(CultureInfo.InvariantCulture, "webdriver.{0}",
+                                    Guid.NewGuid().ToString("N"));
+                                var path = Path.Combine(Path.GetTempPath(), directoryName + "/" + folder);
+                                Directory.CreateDirectory(path);
+                                var filePath = Path.Combine(path, "selenium-manager" + extension);
 
-                        binary = filePath;
+                                using (BinaryWriter binWriter = new BinaryWriter(File.Open(filePath, FileMode.Create)))
+                                {
+                                    binWriter.Flush();
+                                    binWriter.Write(fileBytes);
+                                }
+                                binary = filePath;
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {
