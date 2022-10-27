@@ -171,7 +171,7 @@ class Credential {
    * @param signCount initial value for a signature counter.
    * @returns A resident credential
    */
-  createResidentCredential(id, rpId, userHandle, privateKey, signCount) {
+  static createResidentCredential(id, rpId, userHandle, privateKey, signCount) {
     return new Credential(id, true, rpId, userHandle, privateKey, signCount)
   }
 
@@ -183,7 +183,7 @@ class Credential {
    * @param signCount initial value for a signature counter.
    * @returns A non-resident credential
    */
-  createNonResidentCredential(id, rpId, privateKey, signCount) {
+  static createNonResidentCredential(id, rpId, privateKey, signCount) {
     return new Credential(id, false, rpId, null, privateKey, signCount)
   }
 
