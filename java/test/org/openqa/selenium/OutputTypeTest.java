@@ -45,6 +45,17 @@ class OutputTypeTest {
   }
 
   @Test
+  void testBytesWorkaround() {
+    // https://github.com/SeleniumHQ/selenium/issues/11168
+    byte[] bytes = OutputType.BYTES
+      .convertFromBase64Png("ABA\r\nDA\nB\r\n\r\nAD\r\n");
+    assertThat(bytes).hasSameSizeAs(TEST_BYTES);
+    for (int i = 0; i < TEST_BYTES.length; i++) {
+      assertThat(TEST_BYTES[i]).as("index " + i).isEqualTo(bytes[i]);
+    }
+  }
+
+  @Test
   void testFiles() {
     File tmpFile = OutputType.FILE.convertFromBase64Png(TEST_BASE64);
     assertThat(tmpFile.exists()).isTrue();

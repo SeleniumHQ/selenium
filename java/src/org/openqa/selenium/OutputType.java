@@ -55,7 +55,13 @@ public interface OutputType<T> {
   OutputType<byte[]> BYTES = new OutputType<byte[]>() {
     @Override
     public byte[] convertFromBase64Png(String base64Png) {
-      return Base64.getDecoder().decode(base64Png);
+
+      // https://github.com/SeleniumHQ/selenium/issues/11168:
+      // Workaround for drivers non-compliant with RFC4648 (e.g. Appium).
+      // To be removed in future in order to meet W3C WebDriver spec requirements.
+      String rfc4648CompliantBase64Png = base64Png.replaceAll("\r?\n", "");
+
+      return Base64.getDecoder().decode(rfc4648CompliantBase64Png);
     }
 
     @Override
