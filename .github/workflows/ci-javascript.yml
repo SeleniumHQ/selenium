@@ -51,8 +51,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Firefox and GeckoDriver
@@ -98,8 +96,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Firefox and GeckoDriver

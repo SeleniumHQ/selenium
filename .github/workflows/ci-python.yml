@@ -98,8 +98,6 @@ jobs:
           key: ${{ runner.os }}-bazel-python-unit-tests-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
@@ -130,8 +128,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-chrome-tests-
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Set up Python 3.7
@@ -173,8 +169,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-firefox-tests-
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Set up Python 3.7
@@ -215,8 +209,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-firefox-tests-
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Set up Python 3.7
