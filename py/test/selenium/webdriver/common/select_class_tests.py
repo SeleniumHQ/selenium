@@ -59,7 +59,7 @@ def test_raises_exception_select_by_index_single_disabled(driver, pages):
 @pytest.mark.xfail_remote
 def test_select_disabled_by_index(driver, pages):
     pages.load("formPage.html")
-    sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
+    sel = Select(driver.find_element(By.NAME, disabledSelect["name"]))
     selected = sel.first_selected_option
     sel.select_by_index(1)
     assert selected == sel.first_selected_option
@@ -85,9 +85,9 @@ def test_raises_exception_select_by_value_single_disabled(driver, pages):
 @pytest.mark.xfail_remote
 def test_select_disabled_by_value(driver, pages):
     pages.load("formPage.html")
-    sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
+    sel = Select(driver.find_element(By.NAME, disabledSelect["name"]))
     selected = sel.first_selected_option
-    sel.select_by_value('bar')
+    sel.select_by_value("bar")
     assert selected == sel.first_selected_option
 
 
@@ -113,9 +113,9 @@ def test_raises_exception_select_by_text_single_disabled(driver, pages):
 @pytest.mark.xfail_remote
 def test_select_disabled_by_visible_text(driver, pages):
     pages.load("formPage.html")
-    sel = Select(driver.find_element(By.NAME, disabledSelect['name']))
+    sel = Select(driver.find_element(By.NAME, disabledSelect["name"]))
     selected = sel.first_selected_option
-    sel.select_by_visible_text('Bar')
+    sel.select_by_visible_text("Bar")
     assert selected == sel.first_selected_option
 
 
