@@ -10,7 +10,7 @@ filegroup(
         "//java/test/org/openqa/selenium/firefox:__pkg__",
         "//py:__pkg__",
         "//rb:__pkg__",
-
+        "//dotnet/src/webdriver:__pkg__",
     ],
 )
 
