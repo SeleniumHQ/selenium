@@ -55,16 +55,6 @@ def test_raises_exception_select_by_index_single_disabled(driver, pages):
         sel.select_by_index(1)
 
 
-@pytest.mark.xfail_firefox(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
-@pytest.mark.xfail_remote
-def test_select_disabled_by_index(driver, pages):
-    pages.load("formPage.html")
-    sel = Select(driver.find_element(By.NAME, disabledSelect["name"]))
-    selected = sel.first_selected_option
-    sel.select_by_index(1)
-    assert selected == sel.first_selected_option
-
-
 def test_select_by_value_single(driver, pages):
     pages.load("formPage.html")
     for select in [singleSelectValues1]:
@@ -79,16 +69,6 @@ def test_raises_exception_select_by_value_single_disabled(driver, pages):
     sel = Select(driver.find_element(By.NAME, disabledSingleSelect["name"]))
     with pytest.raises(NotImplementedError):
         sel.select_by_value(disabledSingleSelect["values"][1].lower())
-
-
-@pytest.mark.xfail_firefox(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
-@pytest.mark.xfail_remote
-def test_select_disabled_by_value(driver, pages):
-    pages.load("formPage.html")
-    sel = Select(driver.find_element(By.NAME, disabledSelect["name"]))
-    selected = sel.first_selected_option
-    sel.select_by_value("bar")
-    assert selected == sel.first_selected_option
 
 
 def test_select_by_visible_text_single(driver, pages):
@@ -107,16 +87,6 @@ def test_raises_exception_select_by_text_single_disabled(driver, pages):
     sel = Select(driver.find_element(By.NAME, disabledSingleSelect["name"]))
     with pytest.raises(NotImplementedError):
         sel.select_by_visible_text(disabledSingleSelect["values"][1])
-
-
-@pytest.mark.xfail_firefox(reason='https://bugzilla.mozilla.org/show_bug.cgi?id=1429403')
-@pytest.mark.xfail_remote
-def test_select_disabled_by_visible_text(driver, pages):
-    pages.load("formPage.html")
-    sel = Select(driver.find_element(By.NAME, disabledSelect["name"]))
-    selected = sel.first_selected_option
-    sel.select_by_visible_text("Bar")
-    assert selected == sel.first_selected_option
 
 
 def test_select_by_index_multiple(driver, pages):
