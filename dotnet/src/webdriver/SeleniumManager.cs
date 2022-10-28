@@ -69,41 +69,13 @@ namespace OpenQA.Selenium
             {
                 if (string.IsNullOrEmpty(binary))
                 {
-                    string folder = "windows";
-                    string extension = ".exe";
-
+                    // TODO Identify runtime platform
                     if (!Environment.OSVersion.Platform.ToString().StartsWith("Win"))
                     {
                         throw new WebDriverException("Selenium Manager only supports Windows in .NET at this time");
                     }
 
-                    try
-                    {
-                        string name = "selenium-manager-" + folder;
-                        using (Stream fileStream = ResourceUtilities.GetResourceStream(name, name))
-                        {
-                            using (BinaryReader binReader = new BinaryReader(fileStream, Encoding.ASCII))
-                            {
-                                byte[] fileBytes = binReader.ReadBytes((int)fileStream.Length);
-                                string directoryName = string.Format(CultureInfo.InvariantCulture, "webdriver.{0}",
-                                    Guid.NewGuid().ToString("N"));
-                                var path = Path.Combine(Path.GetTempPath(), directoryName + "/" + folder);
-                                Directory.CreateDirectory(path);
-                                var filePath = Path.Combine(path, "selenium-manager" + extension);
-
-                                using (BinaryWriter binWriter = new BinaryWriter(File.Open(filePath, FileMode.Create)))
-                                {
-                                    binWriter.Flush();
-                                    binWriter.Write(fileBytes);
-                                }
-                                binary = filePath;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new WebDriverException("Unable to obtain Selenium Manager", ex);
-                    }
+                    binary = "selenium-manager/windows/selenium-manager.exe";
                 }
 
                 return binary;
@@ -127,10 +99,12 @@ namespace OpenQA.Selenium
             process.StartInfo.RedirectStandardOutput = true;
 
             string output;
+
             try
             {
                 process.Start();
                 output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
             }
             catch (Exception ex)
             {
