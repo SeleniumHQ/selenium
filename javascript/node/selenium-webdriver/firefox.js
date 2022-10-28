@@ -127,6 +127,7 @@ const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
+const { driverLocation } = require('./common/seleniumManager')
 
 /**
  * Thrown when there an add-on is malformed.
@@ -459,15 +460,16 @@ function locateSynchronously() {
  */
 function findGeckoDriver() {
   let exe = locateSynchronously()
+
   if (!exe) {
-    throw Error(
-      'The ' +
-        GECKO_DRIVER_EXE +
-        ' executable could not be found on the current ' +
-        'PATH. Please download the latest version from ' +
-        'https://github.com/mozilla/geckodriver/releases/ ' +
-        'and ensure it can be found on your PATH.'
+    console.log(
+      `The ${GECKO_DRIVER_EXE} executable could not be found on the current PATH, trying Selenium Manager`
     )
+    exe = driverLocation(Browser.FIREFOX)
+  }
+
+  if (!exe) {
+    throw Error(`Unable to obtain driver using Selenium Manager`)
   }
   return exe
 }
