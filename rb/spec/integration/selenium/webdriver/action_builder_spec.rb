@@ -301,8 +301,9 @@ module Selenium
         end
       end
 
-      describe '#scroll_to', only: {browser: %i[chrome edge]} do
-        it 'scrolls to element' do
+      describe '#scroll_to', only: {browser: %i[chrome edge firefox]} do
+        it 'scrolls to element',
+           except: {browser: :firefox, reason: 'incorrect MoveTargetOutOfBoundsError'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
 
@@ -314,11 +315,13 @@ module Selenium
         end
       end
 
-      describe '#scroll_by', only: {browser: %i[chrome edge]} do
-        it 'scrolls by given amount' do
+      describe '#scroll_by', only: {browser: %i[chrome edge firefox]} do
+        it 'scrolls by given amount', except: {browser: :firefox,
+                                               platform: :macosx,
+                                               reason: 'scrolls insufficient number of pixels'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
-          delta_y = footer.rect.y
+          delta_y = footer.rect.y.round
 
           driver.action.scroll_by(0, delta_y).perform
           sleep 0.5
@@ -327,8 +330,9 @@ module Selenium
         end
       end
 
-      describe '#scroll_from', only: {browser: %i[chrome edge]} do
-        it 'scrolls from element by given amount' do
+      describe '#scroll_from', only: {browser: %i[chrome edge firefox]} do
+        it 'scrolls from element by given amount',
+           except: {browser: :firefox, reason: 'incorrect MoveTargetOutOfBoundsError'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
           scroll_origin = WheelActions::ScrollOrigin.element(iframe)
@@ -341,7 +345,8 @@ module Selenium
           expect(in_viewport?(checkbox)).to eq true
         end
 
-        it 'scrolls from element by given amount with offset' do
+        it 'scrolls from element by given amount with offset',
+           except: {browser: :firefox, reason: 'incorrect MoveTargetOutOfBoundsError'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
           scroll_origin = WheelActions::ScrollOrigin.element(footer, 0, -50)
