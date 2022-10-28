@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using OpenQA.Selenium.Internal;
 
@@ -48,7 +49,7 @@ namespace OpenQA.Selenium
 
             var arguments = "--driver " + driverName.Replace(".exe", "");
             var output = RunCommand(binaryFile, arguments);
-            return output.Replace("INFO\t", "").TrimEnd();
+            return output;
         }
 
         /// <summary>
@@ -60,13 +61,18 @@ namespace OpenQA.Selenium
             {
                 if (string.IsNullOrEmpty(binary))
                 {
-                    // TODO Identify runtime platform
-                    if (!Environment.OSVersion.Platform.ToString().StartsWith("Win"))
+                    if (Environment.OSVersion.Platform.ToString().StartsWith("Win"))
                     {
-                        throw new WebDriverException("Selenium Manager only supports Windows in .NET at this time");
+                        binary = "selenium-manager/windows/selenium-manager.exe";
                     }
-
-                    binary = "selenium-manager/windows/selenium-manager.exe";
+                    else if (Environment.OSVersion.Platform == PlatformID.Unix)
+                    {
+                        binary = "selenium-manager/linux/selenium-manager";
+                    }
+                    else if (Environment.OSVersion.Platform == PlatformID.MacOSX)
+                    {
+                        binary = "selenium-manager/macos/selenium-manager";
+                    }
                 }
 
                 return binary;
@@ -109,12 +115,14 @@ namespace OpenQA.Selenium
             {
                 throw new WebDriverException($"Error starting process: {fileName}", ex);
             }
-            
-            if (!output.StartsWith("INFO")) {
+
+            var match = Regex.Match(output, "INFO\t(.*)");
+
+            if (!match.Success) {
                 throw new WebDriverException($"Unexpected output from Selenium Manager.{Environment.NewLine}Output: {output}{Environment.NewLine}Error:{error}");
             }
 
-            return output;
+            return match.Groups[1].Value.Trim();
         }
     }
 }

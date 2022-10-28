@@ -242,8 +242,8 @@ copy_file(
 
 copy_file(
     name = "props",
-    src = "build/WebDriver.props",
-    out = "Selenium.WebDriver.props",
+    src = "build/WebDriver.targets",
+    out = "Selenium.WebDriver.targets",
 )
 
 copy_file(

@@ -2,19 +2,19 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-      <None Include="$(MSBuildThisFileDirectory)..\tools\linux\selenium-manager">
+      <None Include="$(MSBuildThisFileDirectory)..\tools\manager\linux\selenium-manager">
           <Link>selenium-manager\linux\%(Filename)%(Extension)</Link>
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
           <Visible>False</Visible>
       </None>
       
-      <None Include="$(MSBuildThisFileDirectory)..\tools\macos\selenium-manager">
+      <None Include="$(MSBuildThisFileDirectory)..\tools\manager\macos\selenium-manager">
           <Link>selenium-manager\macos\%(Filename)%(Extension)</Link>
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
           <Visible>False</Visible>
       </None>
 
-      <None Include="$(MSBuildThisFileDirectory)..\tools\windows\selenium-manager.exe">
+      <None Include="$(MSBuildThisFileDirectory)..\tools\manager\windows\selenium-manager.exe">
           <Link>selenium-manager\windows\%(Filename)%(Extension)</Link>
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
           <Visible>False</Visible>
