@@ -60,7 +60,7 @@ pub fn unzip(file: File, target: PathBuf) {
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i).unwrap();
-        if (file.name()).ends_with('/') {
+        if (file.name()).ends_with('/') || target.file_name().unwrap().to_str().unwrap() != file.name() {
             continue;
         } else {
             log::debug!("File extracted to {} ({} bytes)", target.display(), file.size());
