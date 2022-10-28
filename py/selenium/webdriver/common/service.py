@@ -91,12 +91,12 @@ class Service(ABC):
             self._start_process(self.path)
         except WebDriverException as err:
             if "executable needs to be in PATH" in err.msg:
-                logger.warning("driver not found in PATH, trying Selenium Manager")
+                logger.debug("driver not found in PATH, trying Selenium Manager")
                 browser = self.__class__.__module__.split(".")[-2]
                 try:
                     path = SeleniumManager.driver_location(browser)
                 except WebDriverException as new_err:
-                    logger.warning("Unable to obtain driver using Selenium Manager: " + new_err.msg)
+                    logger.debug("Unable to obtain driver using Selenium Manager: " + new_err.msg)
                     raise err
 
                 self._start_process(path)
