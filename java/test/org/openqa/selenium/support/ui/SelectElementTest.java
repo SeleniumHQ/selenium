@@ -44,13 +44,6 @@ class SelectElementTest extends JupiterTestBase {
   }
 
   @Test
-  void shouldThrowAnExceptionIfTheElementIsDisabled() {
-    WebElement selectElement = driver.findElement(By.name("no-select"));
-    assertThatExceptionOfType(UnsupportedOperationException.class)
-      .isThrownBy(() -> new Select(selectElement));
-  }
-
-  @Test
   void shouldIndicateThatASelectCanSupportMultipleOptions() {
     WebElement selectElement = driver.findElement(By.name("multi"));
     Select select = new Select(selectElement);
