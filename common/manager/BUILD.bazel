@@ -26,5 +26,6 @@ exports_files(
         "//java/test/org/openqa/selenium/firefox:__pkg__",
         "//py:__pkg__",
         "//rb:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__",
     ],
 )
