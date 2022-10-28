@@ -110,7 +110,7 @@ module Selenium
         end
 
         it 'allows options to be selected by visible text' do
-          option = instance_double(Element, selected?: false)
+          option = instance_double(Element, selected?: false, enabled?: true)
 
           expect(multi_select).to receive(:find_elements)
             .with(xpath: './/option[normalize-space(.) = "fish"]')
@@ -123,8 +123,8 @@ module Selenium
         end
 
         it 'allows options to be selected by index' do
-          first_option = instance_double(Element, selected?: true)
-          second_option = instance_double(Element, selected?: false)
+          first_option = instance_double(Element, selected?: true, enabled?: true)
+          second_option = instance_double(Element, selected?: false, enabled?: true)
 
           allow(first_option).to receive(:property).with(:index).and_return 0
           expect(first_option).not_to receive(:click)
@@ -143,7 +143,7 @@ module Selenium
         end
 
         it 'allows options to be selected by returned value' do
-          first_option = instance_double(Element, selected?: false)
+          first_option = instance_double(Element, selected?: false, enabled?: true)
           allow(multi_select).to receive(:find_elements)
             .with(xpath: './/option[@value = "b"]')
             .and_return([first_option])
@@ -224,7 +224,7 @@ module Selenium
         end
 
         it 'should fall back to slow lookups when "get by visible text fails" and there is a space' do
-          first_option = instance_double(Element, selected?: false, text: 'foo bar')
+          first_option = instance_double(Element, selected?: false, enabled?: true, text: 'foo bar')
 
           xpath1 = './/option[normalize-space(.) = "foo bar"]'
           xpath2 = './/option[contains(., "foo")]'
