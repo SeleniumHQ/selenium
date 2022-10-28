@@ -68,9 +68,10 @@ Fork the project [on Github](https://github.com/seleniumhq/selenium)
 and check out your copy locally.
 
 ```shell
-% git clone git@github.com:username/selenium.git
+% git clone --depth 1 git@github.com:username/selenium.git # shallow clone recommended
 % cd selenium
 % git remote add upstream git://github.com/seleniumhq/selenium.git
+% git remote update
 ```
 
 #### Dependencies
