@@ -126,19 +126,19 @@ namespace OpenQA.Selenium
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
 
+            string output;
             try
             {
                 process.Start();
+                output = process.StandardOutput.ReadToEnd();
             }
             catch (Exception ex)
             {
-                throw new WebDriverException("Error starting process: " + process, ex);
+                throw new WebDriverException($"Error starting process: {fileName} {arguments}", ex);
             }
 
-            String output = process.StandardOutput.ReadToEnd();
-
             if (!output.StartsWith("INFO")) {
-                throw new WebDriverException("Invalid response from process: " + process);
+                throw new WebDriverException($"Invalid response from process: {fileName} {arguments}");
             }
 
             return output;
