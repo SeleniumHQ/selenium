@@ -97,8 +97,7 @@ public class ProtocolHandshake {
          Writer writer = new OutputStreamWriter(counter, UTF_8)) {
       payload.writeTo(writer);
 
-      try (InputStream rawIn = os.asByteSource().openBufferedStream();
-           BufferedInputStream contentStream = new BufferedInputStream(rawIn)) {
+      try (InputStream contentStream = os.asByteSource().openBufferedStream()) {
         return createSession(client, contentStream, counter.getCount());
       }
     } finally {
@@ -113,6 +112,9 @@ public class ProtocolHandshake {
     HttpResponse response;
     long start = System.currentTimeMillis();
 
+    // Setting the CONTENT_LENGTH will allow a http client implementation not to read the data in
+    // memory. Usually the payload is small and buffering it to memory is okay, except for a new
+    // session e.g. with profiles.
     request.setHeader(CONTENT_LENGTH, String.valueOf(size));
     request.setHeader(CONTENT_TYPE, JSON_UTF_8);
     request.setContent(() -> newSessionBlob);
