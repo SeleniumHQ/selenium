@@ -295,9 +295,17 @@ function RunningSessions (props) {
                   {stableSort(rows, getComparator(order, orderBy))
                     .filter((session) => {
                       if (searchFilter === '') {
-                        // don't filter anything
+                        // don't filter anything on empty search field
                         return true
                       }
+
+                      if (!searchFilter.includes('=')) {
+                        // filter on the entire session if users don't use `=` symbol
+                        return JSON.stringify(session)
+                          .toLowerCase()
+                          .includes(searchFilter.toLowerCase())
+                      }
+
                       const [filterField, filterItem] = searchFilter.split('=')
                       if (filterField.startsWith('capabilities,')) {
                         const capabilityID = filterField.split(',')[1]

@@ -60,7 +60,7 @@ function RunningSessionsSearchBar ({
         margin='dense'
         type='text'
         value={searchFilter}
-        placeholder='id=session_id'
+        placeholder='search sessions...'
         onChange={(e) => {
           handleSearch(e.target.value)
         }}
@@ -110,9 +110,12 @@ function SearchBarHelpDialog ({
       </DialogTitle>
       <DialogContent
         dividers
-        sx={{ height: '400px' }}
+        sx={{ height: '500px' }}
       >
-        <p>Here are some helpful queries you can use to search in this field</p>
+        <p>
+          The search field will do a lazy search and look for all the sessions with a matching string
+          however if you want to do more complex searches you can use some of the queries below.
+        </p>
         <TableContainer>
           <Table sx={{ minWidth: 300 }} aria-label='search bar help table' size='small'>
             <TableHead>
