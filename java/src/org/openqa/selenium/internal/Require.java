@@ -138,6 +138,9 @@ public final class Require {
   }
 
   public static double positive(String argName, Double number, String message) {
+    if (number == null) {
+        throw new IllegalArgumentException(String.format(MUST_BE_SET, argName));
+    }
     if (number <= 0) {
       if (message == null) {
         throw new IllegalArgumentException(String.format(MUST_BE_POSITIVE, argName));

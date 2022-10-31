@@ -55,7 +55,7 @@ def release_version
 end
 
 def version
-  "#{release_version}.0"
+  "#{release_version}.3"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -96,12 +96,11 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 # Java targets required for release. These should all be java_export targets.
 # Generated from: bazel query 'kind(maven_publish, set(//java/... //third_party/...))' | sort
 JAVA_RELEASE_TARGETS = %w[
-  //java/src/com/thoughtworks/selenium/webdriven:webdriven.publish
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v104:v104.publish
   //java/src/org/openqa/selenium/devtools/v105:v105.publish
   //java/src/org/openqa/selenium/devtools/v106:v106.publish
+  //java/src/org/openqa/selenium/devtools/v107:v107.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -111,6 +110,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/ie:ie.publish
   //java/src/org/openqa/selenium/json:json.publish
   //java/src/org/openqa/selenium/lift:lift.publish
+  //java/src/org/openqa/selenium/manager:manager.publish
   //java/src/org/openqa/selenium/remote/http/jdk:jdk.publish
   //java/src/org/openqa/selenium/remote/http:http.publish
   //java/src/org/openqa/selenium/remote:remote.publish

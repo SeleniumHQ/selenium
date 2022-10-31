@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote.http.jdk;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Credentials;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UsernameAndPassword;
@@ -78,9 +79,23 @@ public class JdkHttpClient implements HttpClient {
       .followRedirects(ALWAYS);
 
     Credentials credentials = config.credentials();
-    if (credentials != null) {
+    String info = config.baseUri().getUserInfo();
+    if (info != null && !info.trim().isEmpty()) {
+      String[] parts = info.split(":", 2);
+      String username = parts[0];
+      String password = parts.length > 1 ? parts[1] : null;
+
+      Authenticator authenticator = new Authenticator() {
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+          return new PasswordAuthentication(username, password.toCharArray());
+        }
+      };
+      builder = builder.authenticator(authenticator);
+    } else if (credentials != null) {
       if (!(credentials instanceof UsernameAndPassword)) {
-        throw new IllegalArgumentException("Credentials must be a user name and password: " + credentials);
+        throw new IllegalArgumentException(
+          "Credentials must be a user name and password: " + credentials);
       }
       UsernameAndPassword uap = (UsernameAndPassword) credentials;
       Authenticator authenticator = new Authenticator() {

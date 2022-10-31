@@ -98,8 +98,6 @@ jobs:
           key: ${{ runner.os }}-bazel-python-unit-tests-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
@@ -130,20 +128,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-chrome-tests-
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Set up Python 3.7
         uses: actions/setup-python@v2
         with:
           python-version: 3.7.10
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: '11'
-      - name: Setup Chrome and ChromeDriver
-        uses: ./.github/actions/setup-chrome
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Start Fluxbox
@@ -173,8 +165,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-firefox-tests-
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Set up Python 3.7
@@ -185,8 +175,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
+        with:
+          browser: firefox
+          version: latest
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Start Fluxbox
@@ -215,8 +208,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-firefox-tests-
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Set up Python 3.7
@@ -227,8 +218,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
+        with:
+          browser: firefox
+          version: latest
       - name: Start Xvfb
         run: Xvfb :99 &
       - name: Start Fluxbox

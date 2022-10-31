@@ -29,6 +29,8 @@ module Selenium
           allow(Platform).to receive(:assert_executable).and_return(true)
         end
 
+        after { Chrome::Service.driver_path = nil }
+
         it 'uses default path and port' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 

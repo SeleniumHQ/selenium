@@ -70,7 +70,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
   protected void channelRead0(
     ChannelHandlerContext ctx,
     HttpObject msg) throws Exception {
-    LOG.fine("Incoming message: " + msg);
+    LOG.log(Debug.getDebugLogLevel(), "Incoming message: " + msg);
 
     if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
       LOG.log(Debug.getDebugLogLevel(), "Start of http request: " + msg);
@@ -84,7 +84,7 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       }
 
       if (nettyRequest.headers().contains("Sec-WebSocket-Version") &&
-        "upgrade".equals(nettyRequest.headers().get("Connection"))) {
+          "upgrade".equals(nettyRequest.headers().get("Connection"))) {
         // Pass this on to later in the pipeline.
         ReferenceCountUtil.retain(msg);
         ctx.fireChannelRead(msg);
@@ -110,9 +110,11 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
     if (msg instanceof HttpContent) {
       ByteBuf buf = ((HttpContent) msg).content().retain();
+      PipedOutputStream target = out;
+
       EXECUTOR.submit(() -> {
         try (InputStream inputStream = new ByteBufInputStream(buf)) {
-          ByteStreams.copy(inputStream, out);
+          ByteStreams.copy(inputStream, target);
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         } finally {
@@ -122,10 +124,12 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
     }
 
     if (msg instanceof LastHttpContent) {
-      LOG.fine("Closing input pipe.");
+      LOG.log(Debug.getDebugLogLevel(), "Closing input pipe.");
+      PipedOutputStream target = out;
+
       EXECUTOR.submit(() -> {
         try {
-          out.close();
+          target.close();
         } catch (IOException e) {
           throw new UncheckedIOException(e);
         }
@@ -135,15 +139,20 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    LOG.fine("Closing input pipe, channel became inactive.");
+    LOG.log(Debug.getDebugLogLevel(), "Closing input pipe, channel became inactive.");
+    closeInputPipe();
+    super.channelInactive(ctx);
+  }
+
+  public void closeInputPipe() {
+    PipedOutputStream target = out;
     SHUTDOWN_EXECUTOR.submit(() -> {
       try {
-        out.close();
+        target.close();
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }
     });
-    super.channelInactive(ctx);
   }
 
   private HttpRequest createRequest(

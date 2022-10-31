@@ -51,7 +51,7 @@ public class BaseLogEntry {
     this.stackTrace = stackTrace;
   }
 
-  enum LogLevel {
+  public enum LogLevel {
     DEBUG("debug"),
     ERROR("error"),
     INFO("info"),

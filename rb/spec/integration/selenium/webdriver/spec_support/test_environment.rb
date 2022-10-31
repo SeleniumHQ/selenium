@@ -208,6 +208,7 @@ module Selenium
         def create_firefox_options(options)
           options ||= WebDriver::Options.firefox
           options.web_socket_url = true
+          options.log_level = 'TRACE' if WebDriver.logger.level == :debug
           options.add_argument('--headless') if ENV['HEADLESS']
           options.binary ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           options

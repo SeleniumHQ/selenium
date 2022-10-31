@@ -11,15 +11,33 @@ package(default_visibility = ["//:__subpackages__"])
 
 CDP_VERSIONS = [
     "v85",
-    "v104",
     "v105",
     "v106",
+    "v107",
 ]
 
 copy_file(
     name = "find-elements",
     src = "//javascript/atoms/fragments:find-elements.js",
     out = "lib/selenium/webdriver/atoms/findElements.js",
+)
+
+copy_file(
+    name = "manager-linux",
+    src = "//common/manager:linux/selenium-manager",
+    out = "bin/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-windows",
+    src = "//common/manager:windows/selenium-manager.exe",
+    out = "bin/windows/selenium-manager.exe",
+)
+
+copy_file(
+    name = "manager-macos",
+    src = "//common/manager:macos/selenium-manager",
+    out = "bin/macos/selenium-manager",
 )
 
 copy_file(
@@ -118,6 +136,9 @@ ruby_library(
         ":find-elements",
         ":get-attribute",
         ":is-displayed",
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
         ":license",
     ],
     deps = [
