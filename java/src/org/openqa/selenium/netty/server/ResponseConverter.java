@@ -18,6 +18,9 @@
 package org.openqa.selenium.netty.server;
 
 import com.google.common.io.ByteStreams;
+
+import org.openqa.selenium.remote.http.HttpResponse;
+
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -29,7 +32,6 @@ import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.HttpChunkedInput;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.stream.ChunkedStream;
-import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.InputStream;
 
@@ -56,6 +58,13 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
     }
 
     HttpResponse seResponse = (HttpResponse) msg;
+    if (seResponse.getStatus() == 404) {
+      // In some cases the resource is not found, and if we have not read completely the input
+      // stream, a read/write lock will happen since the client gets a response and won't stream
+      // the remaining content. Closing the pipe avoids a lock and leaves the RequestConverter
+      // ready for upcoming requests.
+      ((RequestConverter) ctx.pipeline().context("se-request").handler()).closeInputPipe();
+    }
 
     // We may not know how large the response is, but figure it out if we can.
     byte[] ary = new byte[CHUNK_SIZE];
