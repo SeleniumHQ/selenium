@@ -24,19 +24,19 @@ module Selenium
     module Support
       describe Select do
         let(:select) do
-          select_element = instance_double(Element, tag_name: 'select', enabled?: true)
+          select_element = instance_double(Element, tag_name: 'select')
           allow(select_element).to receive(:dom_attribute).with(:multiple)
           select_element
         end
 
         let(:multi_select) do
-          select_element = instance_double(Element, tag_name: 'select', enabled?: true)
+          select_element = instance_double(Element, tag_name: 'select')
           allow(select_element).to receive(:dom_attribute).with(:multiple).and_return 'multiple'
           select_element
         end
 
         it 'raises ArgumentError if passed a non-select Element' do
-          link = instance_double(Element, tag_name: 'a', enabled?: true)
+          link = instance_double(Element, tag_name: 'a')
 
           expect {
             Select.new link
@@ -44,7 +44,7 @@ module Selenium
         end
 
         it 'indicates whether a select is multiple correctly' do
-          selects = Array.new(4) { instance_double(Element, tag_name: 'select', enabled?: true) }
+          selects = Array.new(4) { instance_double(Element, tag_name: 'select') }
 
           allow(selects[0]).to receive(:dom_attribute).with(:multiple).and_return('false')
           allow(selects[1]).to receive(:dom_attribute).with(:multiple).and_return(nil)
@@ -69,8 +69,8 @@ module Selenium
         end
 
         it 'returns all selected options' do
-          bad_option  = instance_double(Element, selected?: false, enabled?: true)
-          good_option = instance_double(Element, selected?: true, enabled?: true)
+          bad_option  = instance_double(Element, selected?: false)
+          good_option = instance_double(Element, selected?: true)
 
           expect(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
@@ -84,8 +84,8 @@ module Selenium
         end
 
         it 'returns the first selected option' do
-          first_option  = instance_double(Element, selected?: true, enabled?: true)
-          second_option = instance_double(Element, selected?: true, enabled?: true)
+          first_option  = instance_double(Element, selected?: true)
+          second_option = instance_double(Element, selected?: true)
 
           expect(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
@@ -97,7 +97,7 @@ module Selenium
         end
 
         it 'raises a NoSuchElementError if nothing is selected' do
-          option = instance_double(Element, selected?: false, enabled?: true)
+          option = instance_double(Element, selected?: false)
 
           expect(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
@@ -155,8 +155,8 @@ module Selenium
         end
 
         it 'can deselect all when select supports multiple selections' do
-          first_option = instance_double(Element, selected?: true, enabled?: true)
-          second_option = instance_double(Element, selected?: false, enabled?: true)
+          first_option = instance_double(Element, selected?: true)
+          second_option = instance_double(Element, selected?: false)
 
           expect(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
@@ -176,8 +176,8 @@ module Selenium
         end
 
         it 'can deselect options by visible text' do
-          first_option  = instance_double(Element, selected?: true, enabled?: true)
-          second_option = instance_double(Element, selected?: false, enabled?: true)
+          first_option  = instance_double(Element, selected?: true)
+          second_option = instance_double(Element, selected?: false)
 
           allow(multi_select).to receive(:find_elements)
             .with(xpath: './/option[normalize-space(.) = "b"]')
@@ -191,8 +191,8 @@ module Selenium
         end
 
         it 'can deselect options by index' do
-          first_option  = instance_double(Element, selected?: true, enabled?: true)
-          second_option = instance_double(Element, enabled?: true)
+          first_option  = instance_double(Element, selected?: true)
+          second_option = instance_double(Element)
 
           allow(multi_select).to receive(:find_elements)
             .with(tag_name: 'option')
@@ -209,8 +209,8 @@ module Selenium
         end
 
         it 'can deselect options by returned value' do
-          first_option = instance_double(Element, selected?: true, enabled?: true)
-          second_option = instance_double(Element, selected?: false, enabled?: true)
+          first_option = instance_double(Element, selected?: true)
+          second_option = instance_double(Element, selected?: false)
 
           allow(multi_select).to receive(:find_elements)
             .with(xpath: './/option[@value = "b"]')
@@ -224,7 +224,7 @@ module Selenium
         end
 
         it 'should fall back to slow lookups when "get by visible text fails" and there is a space' do
-          first_option = instance_double(Element, selected?: false, text: 'foo bar', enabled?: true)
+          first_option = instance_double(Element, selected?: false, enabled?: true, text: 'foo bar')
 
           xpath1 = './/option[normalize-space(.) = "foo bar"]'
           xpath2 = './/option[contains(., "foo")]'

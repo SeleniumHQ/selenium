@@ -1,8 +1,8 @@
 {
   "devDependencies": {
     "@babel/preset-react": "^7.18.6",
-    "@bazel/jasmine": "^5.7.0",
-    "@bazel/typescript": "^5.7.0",
+    "@bazel/jasmine": "^5.7.1",
+    "@bazel/typescript": "^5.7.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",

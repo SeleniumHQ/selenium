@@ -80,9 +80,7 @@ module Selenium
       end
 
       def launch
-        sm = ServiceManager.new(self)
-        sm.start
-        sm
+        ServiceManager.new(self).tap(&:start)
       end
 
       def shutdown_supported
@@ -100,6 +98,12 @@ module Selenium
       def binary_path(path = nil)
         path = path.call if path.is_a?(Proc)
         path ||= Platform.find_binary(self.class::EXECUTABLE)
+
+        begin
+          path ||= SeleniumManager.driver_path(self.class::EXECUTABLE)
+        rescue Error::WebDriverError => e
+          WebDriver.logger.debug("Unable obtain driver using Selenium Manager; #{e.message}")
+        end
 
         raise Error::WebDriverError, self.class::MISSING_TEXT unless path
 

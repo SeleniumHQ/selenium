@@ -26,13 +26,6 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        public void ThrowUnexpectedTagNameExceptionWhenNotEnabled()
-        {
-            webElement.SetupGet<bool>(_ => _.Enabled).Returns(false);
-            Assert.Throws<InvalidOperationException>(() => new SelectElement(webElement.Object));
-        }
-
-        [Test]
         public void CanCreateNewInstanceOfSelectWithNormalSelectElement()
         {
             webElement.SetupGet<string>(_ => _.TagName).Returns("select");

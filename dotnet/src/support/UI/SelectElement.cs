@@ -44,11 +44,6 @@ namespace OpenQA.Selenium.Support.UI
                 throw new ArgumentNullException(nameof(element), "element cannot be null");
             }
 
-            if (!element.Enabled)
-            {
-                throw new InvalidOperationException("Select element is disabled and may not be used.");
-            }
-
             string tagName = element.TagName;
 
             if (string.IsNullOrEmpty(tagName) || string.Compare(tagName, "select", StringComparison.OrdinalIgnoreCase) != 0)

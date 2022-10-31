@@ -208,7 +208,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: ${{ matrix.ruby }}
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:

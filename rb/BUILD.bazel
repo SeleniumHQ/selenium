@@ -23,6 +23,24 @@ copy_file(
 )
 
 copy_file(
+    name = "manager-linux",
+    src = "//common/manager:linux/selenium-manager",
+    out = "bin/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-windows",
+    src = "//common/manager:windows/selenium-manager.exe",
+    out = "bin/windows/selenium-manager.exe",
+)
+
+copy_file(
+    name = "manager-macos",
+    src = "//common/manager:macos/selenium-manager",
+    out = "bin/macos/selenium-manager",
+)
+
+copy_file(
     name = "get-attribute",
     src = "//javascript/webdriver/atoms:get-attribute.js",
     out = "lib/selenium/webdriver/atoms/getAttribute.js",
@@ -118,6 +136,9 @@ ruby_library(
         ":find-elements",
         ":get-attribute",
         ":is-displayed",
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
         ":license",
     ],
     deps = [
