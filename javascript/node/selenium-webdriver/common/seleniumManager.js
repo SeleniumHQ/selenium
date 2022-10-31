@@ -80,6 +80,10 @@ function driverLocation(browser) {
     )
   }
 
+  if (!result.startsWith('INFO\t')) {
+    throw new Error(`Unsuccessful command executed ${args}}`)
+  }
+
   return result.replace('INFO\t', '').trim()
 }
 

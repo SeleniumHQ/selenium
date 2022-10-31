@@ -163,12 +163,19 @@ class ServiceBuilder extends chromium.ServiceBuilder {
       console.log(
         ` The ChromeDriver could not be found on the current PATH, trying Selenium Manager`
       )
-      exe = driverLocation(Browser.CHROME)
+
+      try {
+        exe = driverLocation(Browser.CHROME)
+      } catch (e) {
+        throw Error(
+          `The ChromeDriver could not be found on the current PATH.
+        Please download the latest version of the ChromeDriver
+        from http://chromedriver.storage.googleapis.com/index.html
+        and ensure it can be found on your PATH.`
+        )
+      }
     }
 
-    if (!exe) {
-      throw Error(`Unable to obtain driver using Selenium Manager`)
-    }
     super(exe)
   }
 }
