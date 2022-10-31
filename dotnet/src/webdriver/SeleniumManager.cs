@@ -35,7 +35,8 @@ namespace OpenQA.Selenium
         private static string binary;
         private static readonly List<string> KnownDrivers = new List<string>() {
             "geckodriver.exe",
-            "chromedriver.exe"
+            "chromedriver.exe",
+            "msedgedriver.exe"
         };
 
         /// <summary>
