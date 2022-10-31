@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <SeleniumManagerInputDirectory Condition="$(SeleniumManagerInputDirectory) == ''">$(MSBuildThisFileDirectory)..\tools\manager</SeleniumManagerInputDirectory>
+    <SeleniumManagerInputDirectory Condition="$(SeleniumManagerInputDirectory) == ''">$(MSBuildThisFileDirectory)..\manager</SeleniumManagerInputDirectory>
   </PropertyGroup>
 
   <ItemGroup>
