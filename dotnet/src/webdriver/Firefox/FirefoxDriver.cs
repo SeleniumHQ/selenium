@@ -277,7 +277,7 @@ namespace OpenQA.Selenium.Firefox
             string addOnFileToInstall = Path.Combine(Path.GetTempPath(), "addon" + new Random().Next() + ".zip");
             ZipFile.CreateFromDirectory(addOnDirectoryToInstall, addOnFileToInstall);
 
-            return this.InstallAddOn(addOnFileToInstall, temporary);
+            return this.InstallAddOnFromFile(addOnFileToInstall, temporary);
         }
 
         /// <summary>
