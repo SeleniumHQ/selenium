@@ -51,3 +51,12 @@ def test_valid_params(driver, pages):
     base64code = driver.print_page(print_options)
 
     assert base64code[START_INDEX:END_INDEX] == PDF_MAGIC_NUMBER
+
+
+def test_session_id_is_not_preserved_after_page_is_printed(driver, pages):
+    print_options = PrintOptions()
+    print_options.margin_bottom = print_options.margin_top = print_options.margin_left = print_options.margin_right = 0
+    assert "sessionId" not in print_options.to_dict()
+    pages.load("printPage.html")
+    driver.print_page(print_options=print_options)
+    assert "sessionId" not in print_options.to_dict()

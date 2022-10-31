@@ -34,11 +34,6 @@ module Selenium
           it 'raises exception if not a select element' do
             expect { Select.new(driver.find_element(id: 'checky')) }.to raise_exception(ArgumentError)
           end
-
-          it 'raises exception if select is not enabled' do
-            no_select = driver.find_element(name: 'no-select')
-            expect { Select.new(no_select) }.to raise_exception(Error::UnsupportedOperationError)
-          end
         end
 
         describe '#multiple?' do

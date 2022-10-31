@@ -167,14 +167,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
         with:
+          browser: firefox
           version: ${{ matrix.version }}
         if: |
           matrix.browser == 'firefox'
-      - name: Setup Chrome and ChromeDriver
-        uses: ./.github/actions/setup-chrome
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
         with:
           version: ${{ matrix.version }}
         if: |
@@ -223,14 +224,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
         with:
+          browser: firefox
           version: ${{ matrix.version }}
         if: |
           matrix.browser == 'firefox'
-      - name: Setup Chrome and ChromeDriver
-        uses: ./.github/actions/setup-chrome
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
         with:
           version: ${{ matrix.version }}
         if: |
@@ -270,10 +272,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
         with:
+          browser: firefox
           version: latest
+        if: |
+          matrix.browser == 'firefox'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Start Fluxbox
