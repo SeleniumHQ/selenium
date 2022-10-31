@@ -14,6 +14,10 @@
     <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
   </PropertyGroup>
 
+  <!-- Normally it is implicitly used when installed via nuget package. -->
+  <Import Project="..\..\src\webdriver\build\Selenium.WebDriver.targets" />
+  <SeleniumManagerInputDirectory>..\..\..\common\manager</SeleniumManagerInputDirectory>
+
   <ItemGroup>
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />
