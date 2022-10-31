@@ -60,6 +60,13 @@ const PasswordDialog = (props) => {
     event.preventDefault()
   }
 
+  const handleKeyDown = (event: React.KeyboardEvent): void => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      onConfirm(values.password)
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -86,6 +93,9 @@ const PasswordDialog = (props) => {
             margin='dense'
             type={values.showPassword ? 'text' : 'password'}
             value={values.password}
+            inputProps={{
+              onKeyDown: handleKeyDown
+            }}
             fullWidth
             onChange={handleChange('password')}
             endAdornment={
