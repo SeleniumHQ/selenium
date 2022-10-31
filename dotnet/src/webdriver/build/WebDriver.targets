@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <ItemGroup>
-      <None Include="$(MSBuildThisFileDirectory)..\tools\manager\linux\selenium-manager">
-          <Link>selenium-manager\linux\%(Filename)%(Extension)</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-          <Visible>False</Visible>
-      </None>
-      
-      <None Include="$(MSBuildThisFileDirectory)..\tools\manager\macos\selenium-manager">
-          <Link>selenium-manager\macos\%(Filename)%(Extension)</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-          <Visible>False</Visible>
-      </None>
+  <PropertyGroup>
+    <SeleniumManagerInputDirectory Condition="$(SeleniumManagerInputDirectory) == ''">$(MSBuildThisFileDirectory)..\tools\manager</SeleniumManagerInputDirectory>
+  </PropertyGroup>
 
-      <None Include="$(MSBuildThisFileDirectory)..\tools\manager\windows\selenium-manager.exe">
-          <Link>selenium-manager\windows\%(Filename)%(Extension)</Link>
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-          <Visible>False</Visible>
-      </None>
+  <ItemGroup>
+    <None Include="$(SeleniumManagerInputDirectory)\linux\selenium-manager">
+      <Link>.selenium\manager\linux\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+    </None>
+    
+    <None Include="$(SeleniumManagerInputDirectory)\macos\selenium-manager">
+        <Link>.selenium\manager\macos\%(Filename)%(Extension)</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <Visible>False</Visible>
+    </None>
+
+    <None Include="$(SeleniumManagerInputDirectory)\windows\selenium-manager.exe">
+        <Link>.selenium\manager\windows\%(Filename)%(Extension)</Link>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <Visible>False</Visible>
+    </None>
   </ItemGroup>
 
 </Project>

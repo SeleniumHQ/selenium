@@ -63,15 +63,15 @@ namespace OpenQA.Selenium
                 {
                     if (Environment.OSVersion.Platform.ToString().StartsWith("Win"))
                     {
-                        binary = "selenium-manager/windows/selenium-manager.exe";
+                        binary = ".selenium/manager/windows/selenium-manager.exe";
                     }
                     else if (Environment.OSVersion.Platform == PlatformID.Unix)
                     {
-                        binary = "selenium-manager/linux/selenium-manager";
+                        binary = ".selenium/manager/linux/selenium-manager";
                     }
                     else if (Environment.OSVersion.Platform == PlatformID.MacOSX)
                     {
-                        binary = "selenium-manager/macos/selenium-manager";
+                        binary = ".selenium/manager/macos/selenium-manager";
                     }
                 }
 
