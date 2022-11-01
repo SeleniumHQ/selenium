@@ -22,7 +22,7 @@ def test_color_can_be_subclassed():
     class MyColor(Color):
         ...
 
-    assert type(MyColor.from_string("rgb(1, 2, 3)")) == MyColor
+    assert isinstance(MyColor.from_string("rgb(1, 2, 3)"), MyColor)
 
 
 def test_rgb_to_rgb():
