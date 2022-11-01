@@ -169,9 +169,14 @@ class Credential {
    * @param userHandle userHandle associated to the credential. Must be Base64 encoded string.
    * @param privateKey Base64 encoded PKCS
    * @param signCount initial value for a signature counter.
+   * @deprecated This method has been made static. Call it with class name. Example, Credential.createResidentCredential()
    * @returns A resident credential
    */
   createResidentCredential(id, rpId, userHandle, privateKey, signCount) {
+    return new Credential(id, true, rpId, userHandle, privateKey, signCount)
+  }
+
+  static createResidentCredential(id, rpId, userHandle, privateKey, signCount) {
     return new Credential(id, true, rpId, userHandle, privateKey, signCount)
   }
 
@@ -181,9 +186,14 @@ class Credential {
    * @param rpId Relying party identifier.
    * @param privateKey Base64 encoded PKCS
    * @param signCount initial value for a signature counter.
+   * @deprecated This method has been made static. Call it with class name. Example, Credential.createNonResidentCredential()
    * @returns A non-resident credential
    */
   createNonResidentCredential(id, rpId, privateKey, signCount) {
+    return new Credential(id, false, rpId, null, privateKey, signCount)
+  }
+
+  static createNonResidentCredential(id, rpId, privateKey, signCount) {
     return new Credential(id, false, rpId, null, privateKey, signCount)
   }
 

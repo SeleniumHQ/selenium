@@ -27,5 +27,6 @@ exports_files(
         "//py:__pkg__",
         "//rb:__pkg__",
         "//javascript/node/selenium-webdriver:__pkg__",
+        "//dotnet/src/webdriver:__pkg__",
     ],
 )

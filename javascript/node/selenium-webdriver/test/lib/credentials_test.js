@@ -51,14 +51,13 @@ describe('Credentials', function () {
 
   it('can testRkEnabledCredential', function () {
     const { _id, rpId, userHandle, privateKey, signCount } = data
-    const credential =
-      new virtualAuthenticatorCredential().createResidentCredential(
-        _id,
-        rpId,
-        userHandle,
-        privateKey,
-        signCount
-      )
+    const credential = virtualAuthenticatorCredential.createResidentCredential(
+      _id,
+      rpId,
+      userHandle,
+      privateKey,
+      signCount
+    )
 
     let testCredentialId = new Uint8Array([1, 2, 3, 4])
 
@@ -105,7 +104,7 @@ describe('Credentials', function () {
   it('can testRkDisabledCredential', function () {
     const { _id, rpId, privateKey, signCount } = data
     const credential =
-      new virtualAuthenticatorCredential().createNonResidentCredential(
+      virtualAuthenticatorCredential.createNonResidentCredential(
         _id,
         rpId,
         privateKey,
@@ -141,14 +140,13 @@ describe('Credentials', function () {
 
   it('can testToDict', function () {
     const { _id, rpId, userHandle, privateKey, signCount } = data
-    const credential =
-      new virtualAuthenticatorCredential().createResidentCredential(
-        _id,
-        rpId,
-        userHandle,
-        privateKey,
-        signCount
-      )
+    const credential = virtualAuthenticatorCredential.createResidentCredential(
+      _id,
+      rpId,
+      userHandle,
+      privateKey,
+      signCount
+    )
 
     let credential_dict = credential.toDict()
     assert.equal(
