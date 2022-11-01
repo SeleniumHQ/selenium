@@ -25,6 +25,7 @@ import net.bytebuddy.implementation.bind.annotation.This;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.WeakHashMap;
@@ -36,7 +37,7 @@ import java.util.stream.Stream;
 
 public class Interceptor {
   private static final Logger logger = Logger.getLogger(Interceptor.class.getName());
-  public static final WeakHashMap<Object, Collection<MethodCallListener>> LISTENERS = new WeakHashMap<>();
+  public static final Map<Object, Collection<MethodCallListener>> LISTENERS = new WeakHashMap<>();
   private static final Set<String> OBJECT_METHOD_NAMES = Stream.of(Object.class.getMethods())
     .map(Method::getName)
     .collect(Collectors.toSet());
@@ -56,7 +57,7 @@ public class Interceptor {
       return callable.call();
     }
 
-    listeners.forEach((listener) -> {
+    listeners.forEach(listener -> {
       try {
         listener.beforeCall(self, method, args);
       } catch (NotImplementedException e) {
@@ -99,7 +100,7 @@ public class Interceptor {
     }
 
     final Object endResult = result == noResult ? null : result;
-    listeners.forEach((listener) -> {
+    listeners.forEach(listener -> {
       try {
         listener.afterCall(self, method, args, endResult);
       } catch (NotImplementedException e) {

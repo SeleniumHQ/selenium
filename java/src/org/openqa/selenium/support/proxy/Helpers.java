@@ -27,6 +27,8 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class Helpers {
+  private Helpers() {}
+
   /**
    * Creates a transparent proxy instance for the given class.
    * It is possible to provide one or more method execution listeners
