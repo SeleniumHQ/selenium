@@ -66,11 +66,21 @@ public interface HttpClient extends Closeable, HttpHandler {
     /**
      * Use the {@code webdriver.http.factory} system property to determine which implementation of
      * {@link HttpClient.Factory} should be used.
-     *
      * {@see create}
      */
     static Factory createDefault() {
-      return create(System.getProperty("webdriver.http.factory", "netty"));
+      String httpFactory = "netty";
+      String javaVersion = System.getProperty("java.version");
+      if (!javaVersion.trim().isEmpty()) {
+        int dot = javaVersion.indexOf(".");
+        if (dot != -1) {
+          javaVersion = javaVersion.substring(0, dot);
+        }
+        if (Integer.parseInt(javaVersion) >= 11) {
+          httpFactory = "jdk-http-client";
+        }
+      }
+      return create(System.getProperty("webdriver.http.factory", httpFactory));
     }
 
     /**
