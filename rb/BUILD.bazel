@@ -85,6 +85,7 @@ ruby_gem(
         ":firefox",
         ":ie",
         ":safari",
+        ":remote",
     ],
 )
 
