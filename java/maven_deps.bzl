@@ -83,7 +83,15 @@ def selenium_java_deps():
             "net.sourceforge.htmlunit:htmlunit-core-js:2.65.0",
             "org.apache.commons:commons-exec:1.3",
             "org.assertj:assertj-core:3.23.1",
-            "org.asynchttpclient:async-http-client:2.12.3",
+            maven.artifact(
+                group = "org.asynchttpclient",
+                artifact = "async-http-client",
+                version = "2.12.3",
+                exclusions = [
+                    "io.netty:netty-transport-native-epoll",
+                    "io.netty:netty-transport-native-kqueue",
+                ],
+            ),
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
             "org.hsqldb:hsqldb:2.7.1",
@@ -116,4 +124,5 @@ def selenium_java_deps():
             "https://maven.google.com",
         ],
         maven_install_json = "@selenium//java:maven_install.json",
+        version_conflict_policy = "pinned",
     )
