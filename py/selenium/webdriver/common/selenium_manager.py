@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 class SeleniumManager:
     """
     Wrapper for getting information from the Selenium Manager binaries.
+    This implementation is still in beta, and may change.
     """
 
     @staticmethod
