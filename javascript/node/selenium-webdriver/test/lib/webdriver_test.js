@@ -228,7 +228,7 @@ describe('WebDriver', function () {
         .expect(CName.NEW_SESSION)
         .withParameters({
           capabilities: {
-            alwaysMatch: { browserName: 'firefox'},
+            alwaysMatch: { browserName: 'firefox' },
             firstMatch: [{}],
           },
         })
