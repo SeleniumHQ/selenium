@@ -317,7 +317,7 @@ module Selenium
 
       describe '#scroll_by', only: {browser: %i[chrome edge firefox]} do
         it 'scrolls by given amount', except: {browser: :firefox,
-                                               platform: %i[macosx, windows],
+                                               platform: %i[macosx windows],
                                                reason: 'scrolls insufficient number of pixels'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
