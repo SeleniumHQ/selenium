@@ -48,19 +48,24 @@ public interface HttpClient extends Closeable, HttpHandler {
      * @throws IllegalStateException if more than one implementation with the given name can be found
      */
     static Factory create(String name) {
-      ServiceLoader<HttpClient.Factory> loader = ServiceLoader.load(HttpClient.Factory.class, HttpClient.Factory.class.getClassLoader());
-      Set<Factory> factories = StreamSupport.stream(loader.spliterator(), true)
-          .filter(p -> p.getClass().isAnnotationPresent(HttpClientName.class))
-          .filter(p -> name.equals(p.getClass().getAnnotation(HttpClientName.class).value()))
-          .collect(Collectors.toSet());
-      if (factories.isEmpty()) {
-        throw new IllegalArgumentException("Unknown HttpClient factory " + name);
+      try {
+        Class<Factory> factory;
+        ClassLoader classLoader = (Factory.class.getClassLoader() == null) ?
+          ClassLoader.getSystemClassLoader() : Factory.class.getClassLoader();
+
+        if ("netty".equals(name)) {
+          factory =
+            (Class<Factory>) classLoader.loadClass(
+              "org.openqa.selenium.remote.http.netty.NettyClient$Factory");
+        } else {
+          factory =
+            (Class<Factory>) classLoader.loadClass(
+              "org.openqa.selenium.remote.http.jdk.JdkHttpClient$Factory");
+        }
+        return factory.newInstance();
+      } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        throw new RuntimeException(e);
       }
-      if (factories.size() > 1) {
-        throw new IllegalStateException(String.format(
-            "There are multiple HttpClient factories by name %s, check your classpath", name));
-      }
-      return factories.iterator().next();
     }
 
     /**
@@ -70,7 +75,18 @@ public interface HttpClient extends Closeable, HttpHandler {
      * {@see create}
      */
     static Factory createDefault() {
-      return create(System.getProperty("webdriver.http.factory", "netty"));
+      String httpFactory = "netty";
+      String javaVersion = System.getProperty("java.version");
+      if (!javaVersion.trim().isEmpty()) {
+        int dot = javaVersion.indexOf(".");
+        if (dot != -1) {
+          javaVersion = javaVersion.substring(0, dot);
+        }
+        if (Integer.parseInt(javaVersion) >= 11) {
+          httpFactory = "jdk-http-client";
+        }
+      }
+      return create(System.getProperty("webdriver.http.factory", httpFactory));
     }
 
     /**
