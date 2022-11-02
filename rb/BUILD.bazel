@@ -263,6 +263,7 @@ ruby_test(
         ":chrome",
         ":devtools",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -290,6 +291,7 @@ ruby_test(
         ":devtools",
         ":edge",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -320,6 +322,7 @@ ruby_test(
         ":devtools",
         ":firefox",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -350,6 +353,7 @@ ruby_test(
         ":devtools",
         ":firefox",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -376,6 +380,7 @@ ruby_test(
         ":bidi",
         ":safari",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -402,6 +407,7 @@ ruby_test(
         ":bidi",
         ":safari",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -432,6 +438,7 @@ ruby_test(
         ":ie",
         ":safari",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -640,6 +647,7 @@ ruby_binary(
         ":firefox",
         ":ie",
         ":safari",
+        ":remote",
         "@bundle//:pry",
     ],
 )
