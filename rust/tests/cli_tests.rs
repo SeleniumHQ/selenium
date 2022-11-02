@@ -1,6 +1,8 @@
-use std::str;
+// mod error_tests;
+
 use assert_cmd::Command;
 use rstest::rstest;
+use std::str;
 
 #[rstest]
 #[case("chrome", "", "")]
@@ -11,8 +13,15 @@ use rstest::rstest;
 #[case("edge", "106", "106.0")]
 #[case("firefox", "", "")]
 #[case("firefox", "105", "0.32.0")]
-fn ok_test(#[case] browser: String, #[case] browser_version: String, #[case] driver_version: String) {
-    println!("CLI test browser={} -- browser_version={} -- driver_version={}", browser, browser_version, driver_version);
+fn ok_test(
+    #[case] browser: String,
+    #[case] browser_version: String,
+    #[case] driver_version: String,
+) {
+    println!(
+        "CLI test browser={} -- browser_version={} -- driver_version={}",
+        browser, browser_version, driver_version
+    );
 
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
     cmd.args(["--browser", &browser, "--browser-version", &browser_version])
@@ -37,11 +46,26 @@ fn ok_test(#[case] browser: String, #[case] browser_version: String, #[case] dri
 #[case("wrong-browser", "", "", 1)]
 #[case("chrome", "wrong-version", "", 101)]
 #[case("chrome", "", "wrong-version", 101)]
-fn error_test(#[case] browser: String, #[case] browser_version: String, #[case] driver_version: String, #[case] error_code: i32) {
-  println!("CLI test browser={} -- browser_version={} -- driver_version={}", browser, browser_version, driver_version);
+fn error_test(
+    #[case] browser: String,
+    #[case] browser_version: String,
+    #[case] driver_version: String,
+    #[case] error_code: i32,
+) {
+    println!(
+        "CLI test browser={} -- browser_version={} -- driver_version={}",
+        browser, browser_version, driver_version
+    );
 
-  let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-  cmd.args(["--browser", &browser, "--browser-version", &browser_version, "--driver-version", &driver_version])
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    cmd.args([
+        "--browser",
+        &browser,
+        "--browser-version",
+        &browser_version,
+        "--driver-version",
+        &driver_version,
+    ])
     .assert()
     .failure()
     .code(error_code);

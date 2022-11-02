@@ -3,10 +3,12 @@ use std::path::PathBuf;
 
 use crate::downloads::read_content_from_link;
 use crate::files::compose_driver_path_in_cache;
-use crate::manager::{BrowserManager, detect_browser_version};
 use crate::manager::ARCH::{ARM64, X32};
 use crate::manager::OS::{MACOS, WINDOWS};
-use crate::metadata::{create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata};
+use crate::manager::{detect_browser_version, BrowserManager};
+use crate::metadata::{
+    create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
+};
 
 const BROWSER_NAME: &str = "edge";
 const DRIVER_NAME: &str = "msedgedriver";
@@ -35,13 +37,25 @@ impl BrowserManager for EdgeManager {
 
     fn get_browser_version(&self, os: &str) -> Option<String> {
         let (shell, flag, args) = if WINDOWS.is(os) {
-            ("cmd", "/C", vec!(r#"wmic datafile where name='%PROGRAMFILES(X86):\=\\%\\Microsoft\\Edge\\Application\\msedge.exe' get Version /value"#,
-                               r#"wmic datafile where name='%PROGRAMFILES:\=\\%\\Microsoft\\Edge\\Application\\msedge.exe' get Version /value"#,
-                               r#"REG QUERY HKCU\Software\Microsoft\Edge\BLBeacon /v version"#))
+            (
+                "cmd",
+                "/C",
+                vec![
+                    r#"wmic datafile where name='%PROGRAMFILES(X86):\=\\%\\Microsoft\\Edge\\Application\\msedge.exe' get Version /value"#,
+                    r#"wmic datafile where name='%PROGRAMFILES:\=\\%\\Microsoft\\Edge\\Application\\msedge.exe' get Version /value"#,
+                    r#"REG QUERY HKCU\Software\Microsoft\Edge\BLBeacon /v version"#,
+                ],
+            )
         } else if MACOS.is(os) {
-            ("sh", "-c", vec!(r#"/Applications/Microsoft\ Edge.app/Contents/MacOS/Microsoft\ Edge -version"#))
+            (
+                "sh",
+                "-c",
+                vec![
+                    r#"/Applications/Microsoft\ Edge.app/Contents/MacOS/Microsoft\ Edge -version"#,
+                ],
+            )
         } else {
-            ("sh", "-c", vec!("microsoft-edge --version"))
+            ("sh", "-c", vec!["microsoft-edge --version"])
         };
         detect_browser_version(self.browser_name, shell, flag, args)
     }
@@ -50,25 +64,43 @@ impl BrowserManager for EdgeManager {
         self.driver_name
     }
 
-    fn get_driver_version(&self, browser_version: &str, os: &str) -> Result<String, Box<dyn Error>> {
+    fn get_driver_version(
+        &self,
+        browser_version: &str,
+        os: &str,
+    ) -> Result<String, Box<dyn Error>> {
         let mut metadata = get_metadata();
 
-        match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version) {
+        match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
+        {
             Some(driver_version) => {
-                log::trace!("Driver TTL is valid. Getting {} version from metadata", &self.driver_name);
+                log::trace!(
+                    "Driver TTL is valid. Getting {} version from metadata",
+                    &self.driver_name
+                );
                 Ok(driver_version)
             }
             _ => {
                 let driver_url = if browser_version.is_empty() {
                     format!("{}{}", DRIVER_URL, LATEST_STABLE)
                 } else {
-                    format!("{}{}_{}_{}", DRIVER_URL, LATEST_RELEASE, browser_version, os.to_uppercase())
+                    format!(
+                        "{}{}_{}_{}",
+                        DRIVER_URL,
+                        LATEST_RELEASE,
+                        browser_version,
+                        os.to_uppercase()
+                    )
                 };
                 log::debug!("Reading {} version from {}", &self.driver_name, driver_url);
                 let driver_version = read_content_from_link(driver_url)?;
 
                 if !browser_version.is_empty() {
-                    metadata.drivers.push(create_driver_metadata(browser_version, self.driver_name, &driver_version));
+                    metadata.drivers.push(create_driver_metadata(
+                        browser_version,
+                        self.driver_name,
+                        &driver_version,
+                    ));
                     write_metadata(&metadata);
                 }
 
@@ -95,7 +127,10 @@ impl BrowserManager for EdgeManager {
         } else {
             "linux64"
         };
-        format!("{}{}/edgedriver_{}.zip", DRIVER_URL, driver_version, driver_label)
+        format!(
+            "{}{}/edgedriver_{}.zip",
+            DRIVER_URL, driver_version, driver_label
+        )
     }
 
     fn get_driver_path_in_cache(&self, driver_version: &str, os: &str, arch: &str) -> PathBuf {
