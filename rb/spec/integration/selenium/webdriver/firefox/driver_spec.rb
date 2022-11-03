@@ -110,7 +110,8 @@ module Selenium
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall signed directory' do
+          it 'install and uninstall signed directory', except: {platform: :windows,
+                                                                reason: 'signature must be different for windows'} do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed/", __dir__)
             id = driver.install_addon(ext)
 

@@ -121,8 +121,6 @@ ruby_library(
         "lib/selenium/webdriver/atoms.rb",
         "lib/selenium/webdriver/common/**/*.rb",
         "lib/selenium/webdriver/common.rb",
-        "lib/selenium/webdriver/remote/**/*.rb",
-        "lib/selenium/webdriver/remote.rb",
         "lib/selenium/webdriver/support/**/*.rb",
         "lib/selenium/webdriver/support.rb",
         "lib/selenium/webdriver/version.rb",
@@ -181,7 +179,7 @@ ruby_library(
     srcs = glob([
         "lib/selenium/webdriver/remote/**/*.rb",
         "lib/selenium/webdriver/remote.rb",
-    ]) + [":selenium-server-deploy"],
+    ]),
     deps = [":common"],
 )
 
@@ -265,6 +263,7 @@ ruby_test(
         ":chrome",
         ":devtools",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -292,6 +291,7 @@ ruby_test(
         ":devtools",
         ":edge",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -322,6 +322,7 @@ ruby_test(
         ":devtools",
         ":firefox",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -352,6 +353,7 @@ ruby_test(
         ":devtools",
         ":firefox",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -378,6 +380,7 @@ ruby_test(
         ":bidi",
         ":safari",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -404,6 +407,7 @@ ruby_test(
         ":bidi",
         ":safari",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -434,6 +438,7 @@ ruby_test(
         ":ie",
         ":safari",
         ":specs",
+        ":remote",
     ],
 )
 
@@ -443,7 +448,7 @@ ruby_test(
         "spec/integration/selenium/webdriver/*_spec.rb",
         "spec/integration/selenium/webdriver/chrome/**/*_spec.rb",
         "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-    ]),
+    ]) + [":selenium-server-deploy"],
     args = [
         "--format",
         "documentation",
@@ -472,7 +477,7 @@ ruby_test(
         "spec/integration/selenium/webdriver/*_spec.rb",
         "spec/integration/selenium/webdriver/edge/**/*_spec.rb",
         "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-    ]),
+    ]) + [":selenium-server-deploy"],
     args = [
         "--format",
         "documentation",
@@ -501,7 +506,7 @@ ruby_test(
         "spec/integration/selenium/webdriver/*_spec.rb",
         "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
         "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-    ]),
+    ]) + [":selenium-server-deploy"],
     args = [
         "--format",
         "documentation",
@@ -530,7 +535,7 @@ ruby_test(
         "spec/integration/selenium/webdriver/*_spec.rb",
         "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
         "spec/integration/selenium/webdriver/safari/**/*_spec.rb",
-    ]),
+    ]) + [":selenium-server-deploy"],
     args = [
         "--format",
         "documentation",
@@ -558,7 +563,7 @@ ruby_test(
         "spec/integration/selenium/webdriver/*_spec.rb",
         "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
         "spec/integration/selenium/webdriver/safari/**/*_spec.rb",
-    ]),
+    ]) + [":selenium-server-deploy"],
     args = [
         "--format",
         "documentation",
@@ -642,6 +647,7 @@ ruby_binary(
         ":firefox",
         ":ie",
         ":safari",
+        ":remote",
         "@bundle//:pry",
     ],
 )

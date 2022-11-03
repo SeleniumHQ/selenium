@@ -18,6 +18,7 @@ package org.openqa.selenium.manager;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
+import org.openqa.selenium.Beta;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
@@ -36,6 +37,8 @@ import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.Platform.WINDOWS;
 
 /**
+ * This implementation is still in beta, and may change.
+ *
  * The Selenium-Manager binaries are distributed in a JAR file (org.openqa.selenium:selenium-manager) for
  * the Java binding language. Since these binaries are compressed within these JAR, we need to serialize
  * the proper binary for the current platform (Windows, macOS, or Linux) as an executable file. To
@@ -43,6 +46,7 @@ import static org.openqa.selenium.Platform.WINDOWS;
  * reuse the resulting binary for all the calls to the Selenium Manager singleton during all the Java
  * process lifetime, deleting the binary (stored as a local temporal file) on runtime shutdown.
  */
+@Beta
 public class SeleniumManager {
 
     private static final Logger LOG = Logger.getLogger(SeleniumManager.class.getName());

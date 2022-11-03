@@ -38,7 +38,6 @@ Gem::Specification.new do |s|
     'Gemfile',
     'README.md',
     'selenium-webdriver.gemspec',
-    'selenium_server_deploy.jar',
     'lib/selenium-webdriver.rb',
     'lib/selenium/server.rb',
     'lib/selenium/webdriver.rb'
