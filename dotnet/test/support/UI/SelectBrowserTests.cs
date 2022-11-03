@@ -35,13 +35,6 @@ namespace OpenQA.Selenium.Support.UI
         }
 
         [Test]
-        public void ShouldThrowAnExceptionIfTheElementIsNotEnabled()
-        {
-            IWebElement element = driver.FindElement(By.Name("no-select"));
-            Assert.Throws<InvalidOperationException>(() => { SelectElement elementWrapper = new SelectElement(element); });
-        }
-
-        [Test]
         public void ShouldIndicateThatASelectCanSupportMultipleOptions()
         {
             IWebElement element = driver.FindElement(By.Name("multi"));

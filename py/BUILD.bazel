@@ -19,9 +19,9 @@ SE_VERSION = "4.5.0"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v104",
     "v105",
     "v106",
+    "v107",
 ]
 
 TEST_DEPS = [
@@ -44,6 +44,24 @@ TEST_DEPS = [
     requirement("sniffio"),
     requirement("zipp"),
 ]
+
+copy_file(
+    name = "manager-macos",
+    src = "//common/manager:macos/selenium-manager",
+    out = "selenium/webdriver/common/macos/selenium-manager",
+)
+
+copy_file(
+    name = "manager-linux",
+    src = "//common/manager:linux/selenium-manager",
+    out = "selenium/webdriver/common/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-windows",
+    src = "//common/manager:windows/selenium-manager.exe",
+    out = "selenium/webdriver/common/windows/selenium-manager.exe",
+)
 
 copy_file(
     name = "get-attribute",
@@ -106,6 +124,9 @@ py_library(
         ":get-attribute",
         ":is-displayed",
         ":mutation-listener",
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],

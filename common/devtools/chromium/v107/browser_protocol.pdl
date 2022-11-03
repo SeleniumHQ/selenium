@@ -168,6 +168,8 @@ experimental domain Accessibility
       optional array of AXProperty ignoredReasons
       # This `Node`'s role, whether explicit or implicit.
       optional AXValue role
+      # This `Node`'s Chrome raw role.
+      optional AXValue chromeRole
       # The accessible name for this `Node`.
       optional AXValue name
       # The accessible description for this `Node`.
@@ -479,6 +481,7 @@ experimental domain Audits
       ExcludeSameSiteStrict
       ExcludeInvalidSameParty
       ExcludeSamePartyCrossPartyContext
+      ExcludeDomainNonASCII
 
   type CookieWarningReason extends string
     enum
@@ -491,6 +494,7 @@ experimental domain Audits
       WarnSameSiteLaxCrossDowngradeStrict
       WarnSameSiteLaxCrossDowngradeLax
       WarnAttributeValueExceedsMaxSize
+      WarnDomainNonASCII
 
   type CookieOperation extends string
     enum
@@ -697,16 +701,23 @@ experimental domain Audits
   type AttributionReportingIssueType extends string
     enum
       PermissionPolicyDisabled
-      AttributionSourceUntrustworthyOrigin
-      AttributionUntrustworthyOrigin
+      PermissionPolicyNotDelegated
+      UntrustworthyReportingOrigin
+      InsecureContext
+      # TODO(apaseltiner): Rename this to InvalidRegisterSourceHeader
       InvalidHeader
+      InvalidRegisterTriggerHeader
+      InvalidEligibleHeader
+      TooManyConcurrentRequests
+      SourceAndTriggerHeaders
+      SourceIgnored
+      TriggerIgnored
 
   # Details for issues around "Attribution Reporting API" usage.
   # Explainer: https://github.com/WICG/attribution-reporting-api
   type AttributionReportingIssueDetails extends object
     properties
       AttributionReportingIssueType violationType
-      optional AffectedFrame frame
       optional AffectedRequest request
       optional DOM.BackendNodeId violatingNodeId
       optional string invalidParameter
@@ -754,6 +765,7 @@ experimental domain Audits
       DeprecationExample
       DocumentDomainSettingWithoutOriginAgentClusterHeader
       EventPath
+      ExpectCTHeader
       GeolocationInsecureOrigin
       GeolocationInsecureOriginDeprecatedNotRemoved
       GetUserMediaInsecureOrigin
@@ -764,17 +776,21 @@ experimental domain Audits
       LocalCSSFileExtensionRejected
       MediaSourceAbortRemove
       MediaSourceDurationTruncatingBuffered
+      NavigateEventRestoreScroll
+      NavigateEventTransitionWhile
       NoSysexWebMIDIWithoutPermission
       NotificationInsecureOrigin
       NotificationPermissionRequestedIframe
       ObsoleteWebRtcCipherSuite
       OpenWebDatabaseInsecureContext
+      OverflowVisibleOnReplacedElement
+      PersistentQuotaType
       PictureSourceSrc
       PrefixedCancelAnimationFrame
       PrefixedRequestAnimationFrame
       PrefixedStorageInfo
       PrefixedVideoDisplayingFullscreen
-      PrefixedVideoEnterFullscreen
+      PrefixedVideoEnterFullScreen
       PrefixedVideoExitFullScreen
       PrefixedVideoSupportsFullscreen
       RangeExpand
@@ -818,7 +834,7 @@ experimental domain Audits
   # all cases except for success.
   type FederatedAuthRequestIssueReason extends string
     enum
-      ApprovalDeclined
+      ShouldEmbargo
       TooManyRequests
       ManifestListHttpNotFound
       ManifestListNoResponse
@@ -831,7 +847,6 @@ experimental domain Audits
       ClientMetadataHttpNotFound
       ClientMetadataNoResponse
       ClientMetadataInvalidResponse
-      ClientMetadataMissingPrivacyPolicyUrl
       DisabledInSettings
       ErrorFetchingSignin
       InvalidSigninResponse
@@ -844,6 +859,7 @@ experimental domain Audits
       IdTokenInvalidRequest
       ErrorIdToken
       Canceled
+      RpPageNotVisible
 
   # This issue tracks client hints related issues. It's used to deprecate old
   # features, encourage the use of new ones, and provide general guidance.
@@ -1442,6 +1458,9 @@ experimental domain CSS
       # Cascade layer array. Contains the layer hierarchy that this rule belongs to starting
       # with the innermost layer and going outwards.
       experimental optional array of CSSLayer layers
+      # @scope CSS at-rule array.
+      # The array enumerates @scope at-rules starting with the innermost one, going outwards.
+      experimental optional array of CSSScope scopes
 
   # CSS coverage information.
   type RuleUsage extends object
@@ -1518,6 +1537,9 @@ experimental domain CSS
       optional boolean disabled
       # The entire property range in the enclosing style declaration (if available).
       optional SourceRange range
+      # Parsed longhand components of this property if it is a shorthand.
+      # This field will be empty if the given property is not a shorthand.
+      experimental optional array of CSSProperty longhandProperties
 
   # CSS media rule descriptor.
   type CSSMedia extends object
@@ -1585,6 +1607,17 @@ experimental domain CSS
       string text
       # Whether the supports condition is satisfied.
       boolean active
+      # The associated rule header range in the enclosing stylesheet (if
+      # available).
+      optional SourceRange range
+      # Identifier of the stylesheet containing this object (if exists).
+      optional StyleSheetId styleSheetId
+
+  # CSS Scope at-rule descriptor.
+  experimental type CSSScope extends object
+    properties
+      # Scope rule text.
+      string text
       # The associated rule header range in the enclosing stylesheet (if
       # available).
       optional SourceRange range
@@ -1795,6 +1828,8 @@ experimental domain CSS
       optional array of InheritedPseudoElementMatches inheritedPseudoElements
       # A list of CSS keyframed animations matching this node.
       optional array of CSSKeyframesRule cssKeyframesRules
+      # Id of the first parent element that does not have display: contents.
+      experimental optional DOM.NodeId parentLayoutNodeId
 
   # Returns all media queries parsed by the rendering engine.
   command getMediaQueries
@@ -1892,6 +1927,16 @@ experimental domain CSS
     returns
       # The resulting CSS Supports rule after modification.
       CSSSupports supports
+
+  # Modifies the expression of a scope at-rule.
+  experimental command setScopeText
+    parameters
+      StyleSheetId styleSheetId
+      SourceRange range
+      string text
+    returns
+      # The resulting CSS Scope rule after modification.
+      CSSScope scope
 
   # Modifies the rule selector.
   command setRuleSelector
@@ -2650,6 +2695,14 @@ domain DOM
       # Query selector result.
       array of NodeId nodeIds
 
+  # Returns NodeIds of current top layer elements.
+  # Top layer is rendered closest to the user within a viewport, therefore its elements always
+  # appear on top of all other content.
+  experimental command getTopLayerElements
+    returns
+      # NodeIds of top layer elements
+      array of NodeId nodeIds
+
   # Re-does the last undone action.
   experimental command redo
 
@@ -2872,7 +2925,7 @@ domain DOM
     parameters
       # Id of the node that has changed.
       NodeId parentNodeId
-      # If of the previous siblint.
+      # Id of the previous sibling.
       NodeId previousNodeId
       # Inserted node data.
       Node node
@@ -2909,6 +2962,9 @@ domain DOM
       NodeId parentId
       # The added pseudo element.
       Node pseudoElement
+
+  # Called when top layer elements are changed.
+  experimental event topLayerElementsUpdated
 
   # Called when a pseudo element is removed from an element.
   experimental event pseudoElementRemoved
@@ -4029,8 +4085,11 @@ experimental domain IndexedDB
   # Clears all entries from an object store.
   command clearObjectStore
     parameters
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
-      string securityOrigin
+      optional string securityOrigin
+      # Storage key.
+      optional string storageKey
       # Database name.
       string databaseName
       # Object store name.
@@ -4039,15 +4098,22 @@ experimental domain IndexedDB
   # Deletes a database.
   command deleteDatabase
     parameters
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
-      string securityOrigin
+      optional string securityOrigin
+      # Storage key.
+      optional string storageKey
       # Database name.
       string databaseName
 
   # Delete a range of entries from an object store
   command deleteObjectStoreEntries
     parameters
-      string securityOrigin
+      # At least and at most one of securityOrigin, storageKey must be specified.
+      # Security origin.
+      optional string securityOrigin
+      # Storage key.
+      optional string storageKey
       string databaseName
       string objectStoreName
       # Range of entry keys to delete
@@ -4062,8 +4128,11 @@ experimental domain IndexedDB
   # Requests data from object store or index.
   command requestData
     parameters
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
-      string securityOrigin
+      optional string securityOrigin
+      # Storage key.
+      optional string storageKey
       # Database name.
       string databaseName
       # Object store name.
@@ -4085,8 +4154,11 @@ experimental domain IndexedDB
   # Gets metadata of an object store
   command getMetadata
     parameters
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
-      string securityOrigin
+      optional string securityOrigin
+      # Storage key.
+      optional string storageKey
       # Database name.
       string databaseName
       # Object store name.
@@ -4102,8 +4174,11 @@ experimental domain IndexedDB
   # Requests database with given name in given frame.
   command requestDatabase
     parameters
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
-      string securityOrigin
+      optional string securityOrigin
+      # Storage key.
+      optional string storageKey
       # Database name.
       string databaseName
     returns
@@ -4113,8 +4188,11 @@ experimental domain IndexedDB
   # Requests database names for given security origin.
   command requestDatabaseNames
     parameters
+      # At least and at most one of securityOrigin, storageKey must be specified.
       # Security origin.
-      string securityOrigin
+      optional string securityOrigin
+      # Storage key.
+      optional string storageKey
     returns
       # Database names for origin.
       array of string databaseNames
@@ -4836,6 +4914,7 @@ domain Network
       TextTrack
       XHR
       Fetch
+      Prefetch
       EventSource
       WebSocket
       Manifest
@@ -5064,6 +5143,12 @@ domain Network
       array of SignedCertificateTimestamp signedCertificateTimestampList
       # Whether the request complied with Certificate Transparency policy
       CertificateTransparencyCompliance certificateTransparencyCompliance
+      # The signature algorithm used by the server in the TLS server signature,
+      # represented as a TLS SignatureScheme code point. Omitted if not
+      # applicable or not known.
+      optional integer serverSignatureAlgorithm
+      # Whether the connection used Encrypted ClientHello
+      boolean encryptedClientHello
 
   # Whether the request complied with Certificate Transparency policy.
   type CertificateTransparencyCompliance extends string
@@ -7046,6 +7131,7 @@ domain Page
       encrypted-media
       execution-while-out-of-viewport
       execution-while-not-rendered
+      federated-credentials
       focus-without-user-activation
       fullscreen
       frobulate
@@ -7069,9 +7155,11 @@ domain Page
       screen-wake-lock
       serial
       shared-autofill
-      storage-access-api
+      shared-storage
+      storage-access
       sync-xhr
       trust-token-redemption
+      unload
       usb
       vertical-scroll
       web-share
@@ -7087,6 +7175,8 @@ domain Page
       IframeAttribute
       # Inside fenced frame.
       InFencedFrameTree
+      # Inside an Isolated Application.
+      InIsolatedApp
 
   experimental type PermissionsPolicyBlockLocator extends object
     properties
@@ -7992,12 +8082,12 @@ domain Page
     parameters
       # Id of the frame containing input node.
       experimental FrameId frameId
-      # Input node id.
-      experimental DOM.BackendNodeId backendNodeId
       # Input mode.
       enum mode
         selectSingle
         selectMultiple
+      # Input node id. Only present for file choosers opened via an <input type="file"> element.
+      experimental optional DOM.BackendNodeId backendNodeId
 
   # Fired when frame has been attached to its parent.
   event frameAttached
@@ -8369,15 +8459,24 @@ domain Page
       TriggerBackgrounded
       EmbedderTriggeredAndSameOriginRedirected
       EmbedderTriggeredAndCrossOriginRedirected
-      EmbedderTriggeredAndDestroyed
+      MemoryLimitExceeded
+      # Prerenders can be cancelled when Chrome uses excessive memory. This is
+      # recorded when it fails to get the memory usage.
+      FailToGetMemoryUsage
+      DataSaverEnabled
+      HasEffectiveUrl
+      ActivatedBeforeStarted
 
   # Fired when a prerender attempt is completed.
-  event prerenderAttemptCompleted
+  experimental event prerenderAttemptCompleted
     parameters
       # The frame id of the frame initiating prerendering.
       FrameId initiatingFrameId
       string prerenderingUrl
       PrerenderFinalStatus finalStatus
+      # This is used to give users more information about the name of the API call
+      # that is incompatible with prerender and has caused the cancellation of the attempt
+      optional string disallowedApiMethod
 
   event loadEventFired
     parameters
@@ -8937,6 +9036,14 @@ experimental domain Storage
       # Comma separated list of StorageType to clear.
       string storageTypes
 
+  # Clears storage for storage key.
+  command clearDataForStorageKey
+    parameters
+      # Storage key.
+      string storageKey
+      # Comma separated list of StorageType to clear.
+      string storageTypes
+
   # Returns all browser cookies.
   command getCookies
     parameters
@@ -9001,6 +9108,12 @@ experimental domain Storage
       # Security origin.
       string origin
 
+  # Registers storage key to be notified when an update occurs to its IndexedDB.
+  command trackIndexedDBForStorageKey
+    parameters
+      # Storage key.
+      string storageKey
+
   # Unregisters origin from receiving notifications for cache storage.
   command untrackCacheStorageForOrigin
     parameters
@@ -9012,6 +9125,12 @@ experimental domain Storage
     parameters
       # Security origin.
       string origin
+
+  # Unregisters storage key from receiving notifications for IndexedDB.
+  command untrackIndexedDBForStorageKey
+    parameters
+      # Storage key.
+      string storageKey
 
   # Returns the number of stored Trust Tokens per issuer for the
   # current browsing context.
@@ -9060,6 +9179,8 @@ experimental domain Storage
     parameters
       # Origin to update.
       string origin
+      # Storage key to update.
+      string storageKey
       # Database to update.
       string databaseName
       # ObjectStore to update.
@@ -9070,6 +9191,8 @@ experimental domain Storage
     parameters
       # Origin to update.
       string origin
+      # Storage key to update.
+      string storageKey
 
   # One of the interest groups was accessed by the associated page.
   event interestGroupAccessed
@@ -9236,6 +9359,22 @@ domain Target
       experimental optional Page.FrameId openerFrameId
       experimental optional Browser.BrowserContextID browserContextId
 
+  # A filter used by target query/discovery/auto-attach operations.
+  experimental type FilterEntry extends object
+    properties
+      # If set, causes exclusion of mathcing targets from the list.
+      optional boolean exclude
+      # If not present, matches any type.
+      optional string type
+
+  # The entries in TargetFilter are matched sequentially against targets and
+  # the first entry that matches determines if the target is included or not,
+  # depending on the value of `exclude` field in the entry.
+  # If filter is not specified, the one assumed is
+  # [{type: "browser", exclude: true}, {type: "tab", exclude: true}, {}]
+  # (i.e. include everything but `browser` and `tab`).
+  experimental type TargetFilter extends array of FilterEntry
+
   experimental type RemoteLocation extends object
     properties
       string host
@@ -9299,7 +9438,6 @@ domain Target
       # An optional list of origins to grant unlimited cross-origin access to.
       # Parts of the URL other than those constituting origin are ignored.
       optional array of string originsWithUniversalNetworkAccess
-
     returns
       # The id of the context created.
       Browser.BrowserContextID browserContextId
@@ -9356,6 +9494,11 @@ domain Target
 
   # Retrieves a list of available targets.
   command getTargets
+    parameters
+      # Only targets matching filter will be reported. If filter is not specified
+      # and target discovery is currently enabled, a filter used for target discovery
+      # is used for consistency.
+      experimental optional TargetFilter filter
     returns
       # The list of targets.
       array of TargetInfo targetInfos
@@ -9387,6 +9530,8 @@ domain Target
       # We plan to make this the default, deprecate non-flattened mode,
       # and eventually retire it. See crbug.com/991325.
       optional boolean flatten
+      # Only targets matching filter will be attached.
+      experimental optional TargetFilter filter
 
   # Adds the specified target to the list of targets that will be monitored for any related target
   # creation (such as child frames, child workers and new versions of service worker) and reported
@@ -9399,6 +9544,8 @@ domain Target
       # Whether to pause new targets when attaching to them. Use `Runtime.runIfWaitingForDebugger`
       # to run paused targets.
       boolean waitForDebuggerOnStart
+      # Only targets matching filter will be attached.
+      experimental optional TargetFilter filter
 
   # Controls whether to discover available targets and notify via
   # `targetCreated/targetInfoChanged/targetDestroyed` events.
@@ -9406,6 +9553,9 @@ domain Target
     parameters
       # Whether to discover available targets.
       boolean discover
+      # Only targets matching filter will be attached. If `discover` is false,
+      # `filter` must be omitted or empty.
+      experimental optional TargetFilter filter
 
   # Enables target discovery for the specified locations, when `setDiscoverTargets` was set to
   # `true`.
@@ -9503,6 +9653,9 @@ experimental domain Tracing
         recordContinuously
         recordAsMuchAsPossible
         echoToConsole
+      # Size of the trace buffer in kilobytes. If not specified or zero is passed, a default value
+      # of 200 MB would be used.
+      optional number traceBufferSizeInKb
       # Turns on JavaScript stack sampling.
       optional boolean enableSampling
       # Turns on system tracing.

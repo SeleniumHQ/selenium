@@ -18,8 +18,10 @@
 package org.openqa.selenium.ie;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -62,8 +64,11 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      InternetExplorerDriverService.createDefaultService();
-      return true;
+      if (Platform.getCurrent().is(Platform.WINDOWS)) {
+        InternetExplorerDriverService.createDefaultService();
+        return true;
+      }
+      return false;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }

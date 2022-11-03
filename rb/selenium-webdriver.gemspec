@@ -41,8 +41,11 @@ Gem::Specification.new do |s|
     'lib/selenium-webdriver.rb',
     'lib/selenium/server.rb',
     'lib/selenium/webdriver.rb'
-  ] + Dir['lib/selenium/webdriver/**/*']
+  ]
+  s.files += Dir['bin/**/*']
+  s.files += Dir['lib/selenium/webdriver/**/*']
 
+  s.bindir = 'bin'
   s.require_paths = ['lib']
 
   s.add_runtime_dependency 'childprocess', ['>= 0.5', '< 5.0']

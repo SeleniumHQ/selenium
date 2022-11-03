@@ -190,7 +190,7 @@ suite(function (env) {
          */
         driver = await createRkDisabledCTAP2Authenticator(driver)
         let credential =
-          new virtualAuthenticatorCredential().createNonResidentCredential(
+          virtualAuthenticatorCredential.createNonResidentCredential(
             new Uint8Array([1, 2, 3, 4]),
             'localhost',
             Buffer.from(BASE64_ENCODED_PK, 'base64').toString('binary'),
@@ -223,7 +223,7 @@ suite(function (env) {
           'RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB'
 
         let credential =
-          new virtualAuthenticatorCredential().createNonResidentCredential(
+          virtualAuthenticatorCredential.createNonResidentCredential(
             new Uint8Array([1, 2, 3, 4]),
             'localhost',
             Buffer.from(base64EncodedPK, 'base64').toString('binary'),
@@ -248,7 +248,7 @@ suite(function (env) {
         driver = await createRkEnabledCTAP2Authenticator(driver)
 
         let credential =
-          new virtualAuthenticatorCredential().createResidentCredential(
+          virtualAuthenticatorCredential.createResidentCredential(
             new Uint8Array([1, 2, 3, 4]),
             'localhost',
             new Uint8Array([1]),
@@ -286,7 +286,7 @@ suite(function (env) {
           'RmgsJYxGP__fWN_S-j5sN4tT15XEpN_7QZnt14YvI6uvAgO0uJEboFaZlOEB'
 
         let credential =
-          new virtualAuthenticatorCredential().createResidentCredential(
+          virtualAuthenticatorCredential.createResidentCredential(
             new Uint8Array([1, 2, 3, 4]),
             'localhost',
             new Uint8Array([1]),

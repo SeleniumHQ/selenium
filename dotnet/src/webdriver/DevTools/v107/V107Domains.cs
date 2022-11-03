@@ -1,4 +1,4 @@
-// <copyright file="V104Domains.cs" company="WebDriver Committers">
+// <copyright file="V107Domains.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -19,16 +19,16 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace OpenQA.Selenium.DevTools.V104
+namespace OpenQA.Selenium.DevTools.V107
 {
     /// <summary>
-    /// Class containing the domain implementation for version 104 of the DevTools Protocol.
+    /// Class containing the domain implementation for version 107 of the DevTools Protocol.
     /// </summary>
-    public class V104Domains : DevToolsDomains
+    public class V107Domains : DevToolsDomains
     {
         private DevToolsSessionDomains domains;
 
-        public V104Domains(DevToolsSession session)
+        public V107Domains(DevToolsSession session)
         {
             this.domains = new DevToolsSessionDomains(session);
         }
@@ -36,7 +36,7 @@ namespace OpenQA.Selenium.DevTools.V104
         /// <summary>
         /// Gets the DevTools Protocol version for which this class is valid.
         /// </summary>
-        public static int DevToolsVersion => 104;
+        public static int DevToolsVersion => 107;
 
         /// <summary>
         /// Gets the version-specific domains for the DevTools session. This value must be cast to a version specific type to be at all useful.
@@ -46,21 +46,21 @@ namespace OpenQA.Selenium.DevTools.V104
         /// <summary>
         /// Gets the object used for manipulating network information in the browser.
         /// </summary>
-        public override DevTools.Network Network => new V104Network(domains.Network, domains.Fetch);
+        public override DevTools.Network Network => new V107Network(domains.Network, domains.Fetch);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's JavaScript execution.
         /// </summary>
-        public override JavaScript JavaScript => new V104JavaScript(domains.Runtime, domains.Page);
+        public override JavaScript JavaScript => new V107JavaScript(domains.Runtime, domains.Page);
 
         /// <summary>
         /// Gets the object used for manipulating DevTools Protocol targets.
         /// </summary>
-        public override DevTools.Target Target => new V104Target(domains.Target);
+        public override DevTools.Target Target => new V107Target(domains.Target);
 
         /// <summary>
         /// Gets the object used for manipulating the browser's logs.
         /// </summary>
-        public override DevTools.Log Log => new V104Log(domains.Log);
+        public override DevTools.Log Log => new V107Log(domains.Log);
     }
 }

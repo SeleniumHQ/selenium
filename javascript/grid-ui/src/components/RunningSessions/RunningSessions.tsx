@@ -46,6 +46,7 @@ import EnhancedTableToolbar from '../EnhancedTableToolbar'
 import prettyMilliseconds from 'pretty-ms'
 import BrowserLogo from '../common/BrowserLogo'
 import OsLogo from '../common/OsLogo'
+import RunningSessionsSearchBar from './RunningSessionsSearchBar'
 import { Size } from '../../models/size'
 import LiveView from '../LiveView/LiveView'
 import SessionData, { createSessionData } from '../../models/session-data'
@@ -174,6 +175,8 @@ function RunningSessions (props) {
   const [page, setPage] = useState(0)
   const [dense, setDense] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [searchFilter, setSearchFilter] = useState('')
+  const [searchBarHelpOpen, setSearchBarHelpOpen] = useState(false)
 
   const handleRequestSort = (event: React.MouseEvent<unknown>,
     property: keyof SessionData) => {
@@ -268,7 +271,14 @@ function RunningSessions (props) {
       {rows.length > 0 && (
         <div>
           <Paper sx={{ width: '100%', marginBottom: 2 }}>
-            <EnhancedTableToolbar title='Running' />
+            <EnhancedTableToolbar title='Running'>
+              <RunningSessionsSearchBar
+                searchFilter={searchFilter}
+                handleSearch={setSearchFilter}
+                searchBarHelpOpen={searchBarHelpOpen}
+                setSearchBarHelpOpen={setSearchBarHelpOpen}
+              />
+            </EnhancedTableToolbar>
             <TableContainer>
               <Table
                 sx={{ minWidth: '750px' }}
@@ -283,6 +293,26 @@ function RunningSessions (props) {
                 />
                 <TableBody>
                   {stableSort(rows, getComparator(order, orderBy))
+                    .filter((session) => {
+                      if (searchFilter === '') {
+                        // don't filter anything on empty search field
+                        return true
+                      }
+
+                      if (!searchFilter.includes('=')) {
+                        // filter on the entire session if users don't use `=` symbol
+                        return JSON.stringify(session)
+                          .toLowerCase()
+                          .includes(searchFilter.toLowerCase())
+                      }
+
+                      const [filterField, filterItem] = searchFilter.split('=')
+                      if (filterField.startsWith('capabilities,')) {
+                        const capabilityID = filterField.split(',')[1]
+                        return (JSON.parse(session.capabilities as string) as object)[capabilityID] === filterItem
+                      }
+                      return session[filterField] === filterItem
+                    })
                     .slice(page * rowsPerPage,
                       page * rowsPerPage + rowsPerPage)
                     .map((row, index) => {

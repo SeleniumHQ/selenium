@@ -39,8 +39,6 @@ jobs:
           key: ${{ runner.os }}-bazel-build-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-build-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -69,8 +67,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-small-tests-
             ${{ runner.os }}-bazel-build-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -104,8 +100,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-medium-tests-
             ${{ runner.os }}-bazel-build-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -133,8 +127,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-lint-
             ${{ runner.os }}-bazel-build-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -169,22 +161,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-${{ matrix.browser }}-tests-
             ${{ runner.os }}-bazel-build-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
         with:
+          browser: firefox
           version: ${{ matrix.version }}
         if: |
           matrix.browser == 'firefox'
-      - name: Setup Chrome and ChromeDriver
-        uses: ./.github/actions/setup-chrome
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
         with:
           version: ${{ matrix.version }}
         if: |
@@ -227,22 +218,21 @@ jobs:
             ${{ runner.os }}-bazel-${{ matrix.browser }}-server-tests-
             ${{ runner.os }}-bazel-${{ matrix.browser }}-tests-
             ${{ runner.os }}-bazel-build-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
         with:
+          browser: firefox
           version: ${{ matrix.version }}
         if: |
           matrix.browser == 'firefox'
-      - name: Setup Chrome and ChromeDriver
-        uses: ./.github/actions/setup-chrome
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
         with:
           version: ${{ matrix.version }}
         if: |
@@ -276,18 +266,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-firefox-tests-
             ${{ runner.os }}-bazel-build-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
         with:
+          browser: firefox
           version: latest
+        if: |
+          matrix.browser == 'firefox'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Start Fluxbox
@@ -317,8 +308,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-firefox-tests-
             ${{ runner.os }}-bazel-build-
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Java
         uses: actions/setup-java@v1
         with:

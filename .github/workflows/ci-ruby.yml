@@ -29,14 +29,18 @@ jobs:
       matrix:
         target: [ 'selenium-devtools', 'selenium-webdriver' ]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
         with:
           java-version: 11
-      - uses: ruby/setup-ruby@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - uses: actions/cache@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
         with:
           path: |
             ~/.cache/bazel-disk
@@ -44,8 +48,8 @@ jobs:
           key: ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-
-      - uses: ./.github/actions/setup-bazelisk
-      - uses: ./.github/actions/bazel
+      - name: Build Gems
+        uses: ./.github/actions/bazel
         with:
           command: build //rb:${{ matrix.target }}
 
@@ -58,14 +62,18 @@ jobs:
       matrix:
         target: [ 'chrome-test', 'remote-chrome-test' ]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
         with:
           java-version: 11
-      - uses: ruby/setup-ruby@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - uses: actions/cache@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
         with:
           path: |
             ~/.cache/bazel-disk
@@ -73,14 +81,16 @@ jobs:
           key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
-      - uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - uses: ./.github/actions/setup-chrome
-      - run: Xvfb :99 &
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Start Fluxbox
         run: fluxbox -display :99 &
-      - uses: ./.github/actions/bazel
+      - name: Run Chrome tests
+        uses: ./.github/actions/bazel
         with:
           command: test --test_output=all //rb:${{ matrix.target }}
           attempts: 3
@@ -96,14 +106,18 @@ jobs:
       matrix:
         target: [ 'firefox-test', 'remote-firefox-test' ]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
         with:
           java-version: 11
-      - uses: ruby/setup-ruby@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - uses: actions/cache@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
         with:
           path: |
             ~/.cache/bazel-disk
@@ -111,15 +125,19 @@ jobs:
           key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
-      - uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
-      - run: Xvfb :99 &
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
+        with:
+          browser: firefox
+          version: latest
+      - name: Start XVFB
+        run: Xvfb :99 &
       - name: Start Fluxbox
         run: fluxbox -display :99 &
-      - uses: ./.github/actions/bazel
+      - name: Run Firefox tests
+        uses: ./.github/actions/bazel
         with:
           command: test --test_output=all //rb:${{ matrix.target }}
           attempts: 3
@@ -131,11 +149,14 @@ jobs:
     needs: check_workflow
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: ruby/setup-ruby@v1
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - uses: actions/cache@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
         with:
           path: |
             ~/.cache/bazel-disk
@@ -143,8 +164,8 @@ jobs:
           key: ${{ runner.os }}-bazel-ruby-docs-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
-      - uses: ./.github/actions/setup-bazelisk
-      - uses: ./.github/actions/bazel
+      - name: Run docs tests
+        uses: ./.github/actions/bazel
         with:
           command: run //rb:docs
 
@@ -153,11 +174,14 @@ jobs:
     needs: check_workflow
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: ruby/setup-ruby@v1
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.7
-      - uses: actions/cache@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
         with:
           path: |
             ~/.cache/bazel-disk
@@ -165,8 +189,8 @@ jobs:
           key: ${{ runner.os }}-bazel-ruby-lint-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-lint-
-      - uses: ./.github/actions/setup-bazelisk
-      - uses: ./.github/actions/bazel
+      - name: Run lint tests
+        uses: ./.github/actions/bazel
         with:
           command: run //rb:lint
 
@@ -179,11 +203,14 @@ jobs:
       matrix:
         ruby: [ '2.7', '3.1' ]
     steps:
-      - uses: actions/checkout@v2
-      - uses: ruby/setup-ruby@v1
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - uses: actions/cache@v2
+      - name: Cache Bazel artifacts
+        uses: actions/cache@v2
         with:
           path: |
             ~/.cache/bazel-disk
@@ -191,7 +218,7 @@ jobs:
           key: ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-
-      - uses: ./.github/actions/setup-bazelisk
-      - uses: ./.github/actions/bazel
+      - name: Run unit tests
+        uses: ./.github/actions/bazel
         with:
           command: test --test_output=all //rb:unit-test

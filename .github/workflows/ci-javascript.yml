@@ -51,20 +51,19 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
         with:
+          browser: firefox
           version: ${{ matrix.version }}
         if: |
           matrix.browser == 'firefox'
-      - name: Setup Chrome and ChromeDriver
-        uses: ./.github/actions/setup-chrome
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
         with:
-          version: ${{ matrix.version }}
+          chrome-version: ${{ matrix.version }}
         if: |
           matrix.browser == 'chrome'
       - name: Start XVFB
@@ -98,13 +97,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - name: Setup Firefox and GeckoDriver
-        uses: ./.github/actions/setup-firefox
+      - name: Setup Firefox
+        uses: abhi1693/setup-browser@v0.3.4
         with:
+          browser: firefox
           version: ${{ matrix.version }}
       - name: Start XVFB
         run: Xvfb :99 &
