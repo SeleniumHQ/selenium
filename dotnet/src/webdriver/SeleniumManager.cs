@@ -19,16 +19,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
     /// <summary>
     /// Wrapper for the Selenium Manager binary.
+    /// This implementation is still in beta, and may change.
     /// </summary>
     public static class SeleniumManager
     {

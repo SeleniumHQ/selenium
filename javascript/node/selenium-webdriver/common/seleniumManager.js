@@ -18,6 +18,8 @@
  */
 
 /**
+ *  This implementation is still in beta, and may change.
+ *
  *  Wrapper for getting information from the Selenium Manager binaries
  */
 
