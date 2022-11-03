@@ -3,6 +3,14 @@ name = "selenium-manager"
 version = "1.0.0-M1"
 edition = "2021"
 
+[lib]
+name = "selenium"
+path = "src/lib.rs"
+
+[[bin]]
+name = "selenium-manager"
+path = "src/main.rs"
+
 [dependencies]
 clap = { version = "4.0.11", features = ["derive"] }
 log = "0.4.0"

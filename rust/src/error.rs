@@ -12,7 +12,6 @@
 //! assert!(ErrorCode::UnknownPath);
 //! ```
 
-
 use std::borrow::Cow;
 use std::error::Error;
 use std::fmt;
@@ -34,7 +33,6 @@ pub enum ErrorCode {
     InvalidSessionId,
     /// Unknown WebDriver command.
     UnknownPath,
-
 }
 
 /// implementation for webdriver that
@@ -57,7 +55,6 @@ impl fmt::Display for ErrorCode {
 
 impl Error for ErrorCode {}
 
-
 // This macro implements conversions between the error string literal and the
 // corresponding ErrorCode variant.
 macro_rules! define_error_strings {
@@ -76,7 +73,6 @@ macro_rules! define_error_strings {
     }
 }
 
-
 define_error_strings! {
     InvalidSessionId => "Invalid session id ",
     UnknownPath => "UnknownPath",
@@ -93,9 +89,7 @@ pub enum WebDriverError {
     Json(#[from] serde_json::Error),
     #[error("io error: {0}")]
     IoError(#[from] std::io::Error),
-    #[error(
-        "Custom Error Sample: to demo how to create one !!! Don't use this one "
-    )]
+    #[error("Custom Error Sample: to demo how to create one !!! Don't use this one ")]
     SampleCustomError(WebDriverErrorArgs),
 }
 
@@ -121,7 +115,6 @@ impl WebDriverErrorArgs {
     }
 }
 
-
 impl fmt::Display for WebDriverError {
     #[allow(deprecated)]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -134,14 +127,13 @@ impl fmt::Display for WebDriverError {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
-  use crate::error::ErrorCode;
+    use crate::error::ErrorCode;
 
-  #[test]
+    #[test]
     fn raise_cmd_error() {
-      print!(ErrorCode::UnknownPath);
-      assert!(ErrorCode::UnknownPath, ErrorCode::UnknownPath)
+        print!(ErrorCode::UnknownPath);
+        assert!(ErrorCode::UnknownPath, ErrorCode::UnknownPath)
     }
 }
