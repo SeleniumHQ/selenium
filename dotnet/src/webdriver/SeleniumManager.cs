@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-#if !NETFRAMEWORK
+#if !NET45 && !NET46 && !NET47
 using System.Runtime.InteropServices;
 #endif
 
@@ -70,7 +70,7 @@ namespace OpenQA.Selenium
             {
                 if (string.IsNullOrEmpty(binary))
                 {
-#if NETFRAMEWORK
+#if NET45 || NET46 || NET47
             binary = "selenium-manager/windows/selenium-manager.exe";
 #else
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
