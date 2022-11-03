@@ -20,6 +20,4 @@
 #![allow(rustdoc::missing_doc_code_examples, rustdoc::private_doc_tests)]
 pub use error::{ErrorCode, WebDriverError, WebDriverResult};
 
-
 mod error;
-

@@ -133,6 +133,10 @@ mod tests {
 
     #[test]
     fn raise_cmd_error() {
-      assert_eq!(ErrorCode::UnknownPath, ErrorCode::UnknownPath, "Error code does not match")
+        assert_eq!(
+            ErrorCode::UnknownPath,
+            ErrorCode::UnknownPath,
+            "Error code does not match"
+        )
     }
 }

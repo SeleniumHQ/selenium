@@ -8,9 +8,15 @@ use tempfile::{Builder, TempDir};
 use crate::files::parse_version;
 
 #[tokio::main]
-pub async fn download_driver_to_tmp_folder(url: String) -> Result<(TempDir, String), Box<dyn Error>> {
+pub async fn download_driver_to_tmp_folder(
+    url: String,
+) -> Result<(TempDir, String), Box<dyn Error>> {
     let tmp_dir = Builder::new().prefix("selenium-manager").tempdir()?;
-    log::trace!("Downloading {} to temporal folder {:?}", url, tmp_dir.path());
+    log::trace!(
+        "Downloading {} to temporal folder {:?}",
+        url,
+        tmp_dir.path()
+    );
 
     let response = reqwest::get(url).await?;
     let target_path;
@@ -42,5 +48,7 @@ pub async fn read_content_from_link(url: String) -> Result<String, Box<dyn Error
 
 #[tokio::main]
 pub async fn read_redirect_from_link(url: String) -> Result<String, Box<dyn Error>> {
-    Ok(parse_version(reqwest::get(&url).await?.url().path().to_string()))
+    Ok(parse_version(
+        reqwest::get(&url).await?.url().path().to_string(),
+    ))
 }
