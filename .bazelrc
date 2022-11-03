@@ -1,5 +1,9 @@
 try-import .bazelrc.local
 
+# Ensure Windows support is accurate.
+startup --windows_enable_symlinks
+build --enable_runfiles
+
 build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
 
@@ -47,6 +51,10 @@ build --test_env=PATH  # Remove once browser pinning works
 build --test_env=SELENIUM_BROWSER
 build --test_env=TRAVIS
 build --test_env=PYTHON_VERSION
+
+# Remove once rules_ruby support proper $LOAD_PATH expansion.
+
+build --test_env=RUBYOPT="-Irb/lib -w"
 
 test --test_timeout=1800
 
