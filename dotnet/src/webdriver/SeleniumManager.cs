@@ -20,6 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
+#if !NETFRAMEWORK
+using System.Runtime.InteropServices;
+#endif
+
 namespace OpenQA.Selenium
 {
     /// <summary>
@@ -30,9 +34,9 @@ namespace OpenQA.Selenium
     {
         private static string binary;
         private static readonly List<string> KnownDrivers = new List<string>() {
-            "geckodriver.exe",
-            "chromedriver.exe",
-            "msedgedriver.exe"
+            "geckodriver",
+            "chromedriver",
+            "msedgedriver"
         };
 
         /// <summary>
@@ -44,6 +48,7 @@ namespace OpenQA.Selenium
         /// </returns>
         public static string DriverPath(string driverName)
         {
+            driverName = driverName.Replace(".exe", "");
             if (!KnownDrivers.Contains(driverName))
             {
                 throw new WebDriverException("Unable to locate driver with name: " + driverName);
@@ -51,7 +56,7 @@ namespace OpenQA.Selenium
             var binaryFile = Binary;
             if (binaryFile == null) return null;
 
-            var arguments = "--driver " + driverName.Replace(".exe", "");
+            var arguments = "--driver " + driverName;
             var output = RunCommand(binaryFile, arguments);
             return output.Replace("INFO\t", "").TrimEnd();
         }
@@ -65,13 +70,26 @@ namespace OpenQA.Selenium
             {
                 if (string.IsNullOrEmpty(binary))
                 {
-                    // TODO Identify runtime platform
-                    if (!Environment.OSVersion.Platform.ToString().StartsWith("Win"))
-                    {
-                        throw new WebDriverException("Selenium Manager only supports Windows in .NET at this time");
-                    }
-
-                    binary = "selenium-manager/windows/selenium-manager.exe";
+#if NETFRAMEWORK
+            binary = "selenium-manager/windows/selenium-manager.exe";
+#else
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                binary = "selenium-manager/windows/selenium-manager.exe";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                binary = "selenium-manager/linux/selenium-manager";
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                binary = "selenium-manager/macos/selenium-manager";
+            }
+            else
+            {
+                throw new WebDriverException("Selenium Manager did not find supported operating system");
+            }
+#endif
                 }
 
                 return binary;
