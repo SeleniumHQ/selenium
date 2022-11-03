@@ -247,6 +247,18 @@ copy_file(
 )
 
 copy_file(
+    name = "manager-linux",
+    src = "//common/manager:linux/selenium-manager",
+    out = "manager/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-macos",
+    src = "//common/manager:macos/selenium-manager",
+    out = "manager/macos/selenium-manager",
+)
+
+copy_file(
     name = "manager-windows",
     src = "//common/manager:windows/selenium-manager.exe",
     out = "manager/windows/selenium-manager.exe",
@@ -266,6 +278,8 @@ nuget_package(
     deps = [
         ":logo",
         ":props",
+        ":manager-linux",
+        ":manager-macos",
         ":manager-windows",
         ":net45",
         ":net46",
