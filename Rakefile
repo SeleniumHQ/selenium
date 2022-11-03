@@ -439,13 +439,16 @@ namespace :copyright do
         'javascript/selenium-core/scripts/ui-map-sample.js',
         'javascript/selenium-core/scripts/user-extensions.js',
         'javascript/selenium-core/scripts/xmlextras.js',
-        'javascript/selenium-core/xpath/**/*.js'
+        'javascript/selenium-core/xpath/**/*.js',
+        'javascript/grid-ui/node_modules/**/*.js'
       )
     )
+    Copyright.new.update(FileList['javascript/**/*.tsx'])
     Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'])
     Copyright.new(comment_characters: '#', prefix: ["# frozen_string_literal: true\n", "\n"])
       .update(FileList['rb/**/*.rb'])
     Copyright.new.update(FileList['java/**/*.java'])
+    Copyright.new.update(FileList['rust/**/*.rs'])
   end
 end
 
