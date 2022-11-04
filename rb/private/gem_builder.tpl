@@ -12,13 +12,7 @@ def copy_srcs(from:, to:)
     Dir.glob('**/*').each do |src|
       dst = File.join(to, src)
       raise 'unable to find ' + src unless File.exist?(src)
-      if File.directory?(src)
-        FileUtils.mkdir_p(dst)
-      else
-        FileUtils.cp(src, dst)
-        # https://github.com/bazelbuild/bazel/issues/5588
-        File.chmod(0o644, dst)
-      end
+      File.directory?(src) ? FileUtils.mkdir_p(dst) : FileUtils.cp(src, dst)
     end
   end
 end
