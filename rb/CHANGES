@@ -1,3 +1,8 @@
+4.6.1 (2022-11-04)
+=========================
+Ruby:
+  * fix bug preventing selenium-manager from being executable by default
+
 4.6.0 (2022-11-04)
 =========================
 BiDi:
