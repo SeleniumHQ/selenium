@@ -970,17 +970,13 @@
 
 82
 83
-84
-85
-86</pre>
+84</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_launch'>launch</span>
-  <span class='id identifier rubyid_sm'>sm</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="ServiceManager.html" title="Selenium::WebDriver::ServiceManager (class)">ServiceManager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="ServiceManager.html#initialize-instance_method" title="Selenium::WebDriver::ServiceManager#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_sm'>sm</span><span class='period'>.</span><span class='id identifier rubyid_start'>start</span>
-  <span class='id identifier rubyid_sm'>sm</span>
+  <span class='const'><span class='object_link'><a href="ServiceManager.html" title="Selenium::WebDriver::ServiceManager (class)">ServiceManager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="ServiceManager.html#initialize-instance_method" title="Selenium::WebDriver::ServiceManager#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:start</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1002,12 +998,12 @@
       <pre class="lines">
 
 
-88
-89
-90</pre>
+86
+87
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 88</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shutdown_supported'>shutdown_supported</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>SHUTDOWN_SUPPORTED</span>
@@ -1022,9 +1018,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Sep 28 15:17:10 2022 by
+  Generated on Fri Nov  4 11:37:16 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.28 (ruby-3.1.1).
+  0.9.28 (ruby-3.1.2).
 </div>
 
     </div>
