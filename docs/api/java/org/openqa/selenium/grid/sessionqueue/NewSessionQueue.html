@@ -235,8 +235,8 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>abstract java.util.Optional&lt;<a href="../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNextAvailable(java.util.Set)">getNextAvailable</a></span>&#8203;(java.util.Set&lt;<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;stereotypes)</code></th>
+<td class="colFirst"><code>abstract java.util.List&lt;<a href="../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getNextAvailable(java.util.Map)">getNextAvailable</a></span>&#8203;(java.util.Map&lt;<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.lang.Long&gt;&nbsp;stereotypes)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
@@ -363,13 +363,13 @@ implements <a href="../../status/HasReadyState.html" title="interface in org.ope
 <pre class="methodSignature">public abstract&nbsp;java.util.Optional&lt;<a href="../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;&nbsp;remove&#8203;(<a href="../data/RequestId.html" title="class in org.openqa.selenium.grid.data">RequestId</a>&nbsp;reqId)</pre>
 </li>
 </ul>
-<a id="getNextAvailable(java.util.Set)">
+<a id="getNextAvailable(java.util.Map)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>getNextAvailable</h4>
-<pre class="methodSignature">public abstract&nbsp;java.util.Optional&lt;<a href="../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;&nbsp;getNextAvailable&#8203;(java.util.Set&lt;<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&gt;&nbsp;stereotypes)</pre>
+<pre class="methodSignature">public abstract&nbsp;java.util.List&lt;<a href="../data/SessionRequest.html" title="class in org.openqa.selenium.grid.data">SessionRequest</a>&gt;&nbsp;getNextAvailable&#8203;(java.util.Map&lt;<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>,&#8203;java.lang.Long&gt;&nbsp;stereotypes)</pre>
 </li>
 </ul>
 <a id="complete(org.openqa.selenium.grid.data.RequestId,org.openqa.selenium.internal.Either)">

@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -179,33 +179,43 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>long</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRequestTimeoutSeconds()">getRequestTimeoutSeconds</a></span>()</code></th>
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getBatchSize()">getBatchSize</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>long</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRetryIntervalSeconds()">getRetryIntervalSeconds</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRequestTimeoutSeconds()">getRequestTimeoutSeconds</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>long</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRetryIntervalMilliseconds()">getRetryIntervalMilliseconds</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="../NewSessionQueue.html" title="class in org.openqa.selenium.grid.sessionqueue">NewSessionQueue</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionQueue(java.lang.String)">getSessionQueue</a></span>&#8203;(java.lang.String&nbsp;implementation)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.net.URI</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionQueueUri()">getSessionQueueUri</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java.time.Duration</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionRequestRetryInterval()">getSessionRequestRetryInterval</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java.time.Duration</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionRequestTimeout()">getSessionRequestTimeout</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>java.time.Duration</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSessionRequestTimeoutPeriod()">getSessionRequestTimeoutPeriod</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -269,6 +279,15 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;java.time.Duration&nbsp;getSessionRequestTimeout()</pre>
 </li>
 </ul>
+<a id="getSessionRequestTimeoutPeriod()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSessionRequestTimeoutPeriod</h4>
+<pre class="methodSignature">public&nbsp;java.time.Duration&nbsp;getSessionRequestTimeoutPeriod()</pre>
+</li>
+</ul>
 <a id="getSessionRequestRetryInterval()">
 <!--   -->
 </a>
@@ -276,6 +295,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getSessionRequestRetryInterval</h4>
 <pre class="methodSignature">public&nbsp;java.time.Duration&nbsp;getSessionRequestRetryInterval()</pre>
+</li>
+</ul>
+<a id="getBatchSize()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getBatchSize</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getBatchSize()</pre>
 </li>
 </ul>
 <a id="getRequestTimeoutSeconds()">
@@ -287,13 +315,13 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public&nbsp;long&nbsp;getRequestTimeoutSeconds()</pre>
 </li>
 </ul>
-<a id="getRetryIntervalSeconds()">
+<a id="getRetryIntervalMilliseconds()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getRetryIntervalSeconds</h4>
-<pre class="methodSignature">public&nbsp;long&nbsp;getRetryIntervalSeconds()</pre>
+<h4>getRetryIntervalMilliseconds</h4>
+<pre class="methodSignature">public&nbsp;long&nbsp;getRetryIntervalMilliseconds()</pre>
 </li>
 </ul>
 <a id="getSessionQueue(java.lang.String)">

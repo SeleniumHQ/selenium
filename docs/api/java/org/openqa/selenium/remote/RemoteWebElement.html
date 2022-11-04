@@ -407,7 +407,7 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSelected()">isSelected</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Determine whether or not this element is selected or not.</div>
+<div class="block">Determine whether this element is selected or not.</div>
 </td>
 </tr>
 <tr id="i29" class="rowColor">
@@ -603,8 +603,8 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
  that themselves.
  <p>
  There are some preconditions for an element to be clicked. The
- element must be visible and it must have a height and width
- greater then 0.
+ element must be visible, and it must have a height and width
+ greater than 0.
  <p>
  See <a href="https://w3c.github.io/webdriver/#element-click">W3C WebDriver specification</a>
  for more details.</div>
@@ -843,7 +843,7 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <h4>isSelected</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isSelected()</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebElement.html#isSelected()">WebElement</a></code></span></div>
-<div class="block">Determine whether or not this element is selected or not. This operation only applies to input
+<div class="block">Determine whether this element is selected or not. This operation only applies to input
  elements such as checkboxes, options in a select and radio buttons.
  For more information on which elements this method supports,
  refer to the <a href="https://w3c.github.io/webdriver/webdriver-spec.html#is-element-selected">specification</a>.
@@ -910,11 +910,11 @@ implements <a href="../WebElement.html" title="interface in org.openqa.selenium"
 <div class="block">Get the value of a given CSS property.
  Color values could be returned as rgba or rgb strings.
  This depends on whether the browser omits the implicit opacity value or not.
-
+ <p>
  For example if the "background-color" property is set as "green" in the
  HTML source, the returned value could be "rgba(0, 255, 0, 1)" if implicit opacity value is
  preserved or "rgb(0, 255, 0)" if it is omitted.
-
+ <p>
  Note that shorthand CSS properties (e.g. background, font, border, border-top, margin,
  margin-top, padding, padding-top, list-style, outline, pause, cue) are not returned,
  in accordance with the
@@ -1120,7 +1120,7 @@ protected&nbsp;java.util.List&lt;<a href="../WebElement.html" title="interface i
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../WebElement.html#isDisplayed()">isDisplayed</a></code>&nbsp;in interface&nbsp;<code><a href="../WebElement.html" title="interface in org.openqa.selenium">WebElement</a></code></dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>Whether or not the element is displayed</dd>
+<dd>Whether the element is displayed</dd>
 </dl>
 </li>
 </ul>
