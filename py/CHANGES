@@ -1,3 +1,20 @@
+Selenium 4.6.0
+* Document firefox `service=` arg. closes #11067
+* Additional types and tidying safari service
+* Revert removal of default executable global for safari
+* Additional types; remove unused `permissions.py`
+* Remove `RemoteDriverServerException`
+* Remove unused `send_remote_shutdown_command` implementations in services
+* Update `log_path` docs for non chromium based services
+* Make `get_screenshot_as_file()` work with pathlib.Paths (#11095)
+* Remove `protocols.py`
+* fix typing in get_full_page_screenshot_as_png (#11163)
+* typo in error message (#11166)
+* Adding CDP files for v107 and removing v104
+* add initial support for selenium manager
+* Revert "[py] do not allow Select class to work with disabled selects"
+* #11093 - The SessionId shouldn't be added to params themself bu… (#11121)
+
 Selenium 4.5.0
 * Fix frame_to_be_available_and_switch_to_it() for string inputs (#10963)
 * Implicit non w3c capability conversion for `acceptSslCerts`, `platform` and `version` is now deprecated

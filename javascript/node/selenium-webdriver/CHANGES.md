@@ -1,3 +1,21 @@
+## v4.6.0
+
+#### :rocket: New Feature
+
+* [grid] Add ability to use Enter key to confirm (#11178)
+* [grid][ui] Add search field for running sessions (#11197)
+* Add support for selenium manager (#11189)
+
+#### :bug: Bug Fix
+
+* isPromise() thenable fix (#11048)
+* Fix: making methods static (#11182)
+
+#### :nail_care: Polish
+
+* fix a tiny typo in chromium.js (#11073)
+* Adding CDP files for v107 and removing v104
+
 ## v4.5.0
 
 #### :rocket: New Feature
