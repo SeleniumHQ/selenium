@@ -165,7 +165,7 @@ class Service(ABC):
             stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stderr
             for stream in stdin, stdout, stderr:
                 try:
-                    stream.close(). # type: ignore
+                    stream.close()  # type: ignore
                 except AttributeError:
                     pass
             self.process.terminate()
