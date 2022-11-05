@@ -192,7 +192,7 @@ build_bazel_rules_nodejs_dependencies()
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 
 node_repositories(
-    node_version = "16.18.1",
+    node_version = "16.17.1",
 )
 
 npm_install(
