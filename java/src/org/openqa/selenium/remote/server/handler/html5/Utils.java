@@ -23,12 +23,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.ExecuteMethod;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
-import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -38,11 +36,6 @@ import java.lang.reflect.InvocationTargetException;
  * does not support the corresponding HTML5 feature.
  */
 public class Utils {
-
-  public static NetworkConnection getNetworkConnection(WebDriver driver) {
-	    return convert(driver, NetworkConnection.class, CapabilityType.SUPPORTS_NETWORK_CONNECTION,
-	        RemoteNetworkConnection.class);
-  }
 
   static LocationContext getLocationContext(WebDriver driver) {
     return convert(driver, LocationContext.class, CapabilityType.SUPPORTS_LOCATION_CONTEXT,

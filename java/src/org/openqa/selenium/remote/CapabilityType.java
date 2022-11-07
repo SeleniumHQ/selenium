@@ -61,11 +61,6 @@ public interface CapabilityType {
    * @deprecated Non W3C compliant
    */
   @Deprecated
-  String SUPPORTS_NETWORK_CONNECTION = "networkConnectionEnabled";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   /**
    * @deprecated Non W3C compliant

@@ -121,8 +121,6 @@ import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Up;
-import org.openqa.selenium.remote.server.handler.mobile.GetNetworkConnection;
-import org.openqa.selenium.remote.server.handler.mobile.SetNetworkConnection;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
@@ -179,7 +177,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
-import static org.openqa.selenium.remote.DriverCommand.GET_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_LOGS;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_ITEM;
@@ -205,7 +202,6 @@ import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITI
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
-import static org.openqa.selenium.remote.DriverCommand.SET_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
@@ -443,9 +439,6 @@ public class JsonHttpCommandHandler {
     addNewMapping(GET_AVAILABLE_LOG_TYPES, GetAvailableLogTypesHandler::new);
     addNewMapping(GET_LOG, GetLogHandler::new);
     addNewMapping(GET_SESSION_LOGS, GetSessionLogsHandler::new);
-
-    addNewMapping(GET_NETWORK_CONNECTION, GetNetworkConnection::new);
-    addNewMapping(SET_NETWORK_CONNECTION, SetNetworkConnection::new);
 
     // Deprecated end points. Will be removed.
     addNewMapping("getWindowSize", GetWindowSize::new);

@@ -34,7 +34,6 @@ import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.remote.html5.AddWebStorage;
-import org.openqa.selenium.remote.mobile.AddNetworkConnection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -56,7 +55,6 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  * Enhance the interfaces implemented by an instance of the
  * {@link org.openqa.selenium.WebDriver} based on the returned
  * {@link org.openqa.selenium.Capabilities} of the driver.
- *
  * Note: this class is still experimental. Use at your own risk.
  */
 @Beta
@@ -67,7 +65,6 @@ public class Augmenter {
     Set<Augmentation<?>> augmentations = new HashSet<>();
     Stream.of(
         new AddLocationContext(),
-        new AddNetworkConnection(),
         new AddWebStorage()
     ).forEach(provider -> augmentations.add(createAugmentation(provider)));
 
@@ -95,6 +92,7 @@ public class Augmenter {
     this.augmentations = unmodifiableSet(toUse);
   }
 
+  @SuppressWarnings("unused")
   public <X> Augmenter addDriverAugmentation(AugmenterProvider<X> provider) {
     Require.nonNull("Interface provider", provider);
 
