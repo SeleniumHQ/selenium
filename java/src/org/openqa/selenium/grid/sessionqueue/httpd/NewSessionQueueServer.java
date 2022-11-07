@@ -31,6 +31,7 @@ import org.openqa.selenium.grid.sessionqueue.NewSessionQueue;
 import org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.Routable;
 import org.openqa.selenium.remote.http.Route;
 
 import java.util.Collections;
@@ -88,18 +89,18 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
 
     NewSessionQueue sessionQueue = queueOptions.getSessionQueue(LOCAL_NEW_SESSION_QUEUE);
 
-    return new Handlers(
-      Route.combine(
-        sessionQueue,
-        get("/status").to(() -> req ->
-          new HttpResponse()
-            .addHeader("Content-Type", JSON_UTF_8)
-            .setContent(asJson(
-              ImmutableMap.of("value", ImmutableMap.of(
-                "ready", true,
-                "message", "New Session Queue is ready."))))),
-        get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT))),
-      null);
+    Routable route = Route.combine(
+      sessionQueue,
+      get("/status").to(() -> req ->
+        new HttpResponse()
+          .addHeader("Content-Type", JSON_UTF_8)
+          .setContent(asJson(
+            ImmutableMap.of("value", ImmutableMap.of(
+              "ready", true,
+              "message", "New Session Queue is ready."))))),
+      get("/readyz").to(() -> req -> new HttpResponse().setStatus(HTTP_NO_CONTENT)));
+    route = Route.combine(route, considerUserDefinedRoutes(config, null));
+    return new Handlers(route, null);
   }
 
   @Override

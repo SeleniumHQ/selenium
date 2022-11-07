@@ -228,6 +228,8 @@ public class Standalone extends TemplateGridServerCommand {
         .start();
     }));
 
+    httpHandler = combine(httpHandler, considerUserDefinedRoutes(config, tracer));
+
     return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
   }
 

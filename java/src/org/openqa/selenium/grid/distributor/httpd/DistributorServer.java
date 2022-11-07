@@ -100,17 +100,17 @@ public class DistributorServer extends TemplateGridServerCommand {
         .setContent(Contents.utf8String("Distributor is " + ready));
     };
 
-    return new Handlers(
-      Route.combine(
-        distributor,
-        Route.matching(req -> GET.equals(req.getMethod()) && "/status".equals(req.getUri()))
-          .to(() -> req -> new HttpResponse()
-            .setContent(Contents.asJson(
-              ImmutableMap.of("value", ImmutableMap.of(
-                "ready", true,
-                "message", "Distributor is ready"))))),
-        get("/readyz").to(() -> readinessCheck)),
-      null);
+    Route route = Route.combine(
+      distributor,
+      Route.matching(req -> GET.equals(req.getMethod()) && "/status".equals(req.getUri()))
+        .to(() -> req -> new HttpResponse()
+          .setContent(Contents.asJson(
+            ImmutableMap.of("value", ImmutableMap.of(
+              "ready", true,
+              "message", "Distributor is ready"))))),
+      get("/readyz").to(() -> readinessCheck));
+    route = Route.combine(route, considerUserDefinedRoutes(config, null));
+    return new Handlers(route, null);
   }
 
   @Override

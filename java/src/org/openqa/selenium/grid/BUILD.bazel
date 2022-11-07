@@ -61,6 +61,7 @@ java_binary(
 BASE_COMMAND_SRCS = [
     "TemplateGridCommand.java",
     "TemplateGridServerCommand.java",
+    "UserDefinedRoute.java",
 ]
 
 java_library(
@@ -76,7 +77,7 @@ java_library(
         "//java/src/org/openqa/selenium/grid/log",
         "//java/src/org/openqa/selenium/grid/server",
         "//java/src/org/openqa/selenium/netty/server",
-        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/remote",
         artifact("com.beust:jcommander"),
         artifact("com.google.guava:guava"),
     ],

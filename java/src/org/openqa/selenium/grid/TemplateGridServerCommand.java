@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.grid;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.stream.StreamSupport;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MemoizedConfig;
@@ -30,6 +35,9 @@ import org.openqa.selenium.remote.http.Message;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
+import org.openqa.selenium.remote.tracing.Tracer;
 
 public abstract class TemplateGridServerCommand extends TemplateGridCommand {
 
@@ -56,5 +64,32 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
       this.httpHandler = Require.nonNull("HTTP handler", http);
       this.websocketHandler = websocketHandler == null ? (str, sink) -> Optional.empty() : websocketHandler;
     }
+  }
+
+  protected final Routable[] considerUserDefinedRoutes(Config config, Tracer tracer) {
+    Iterable<UserDefinedRoute> routes = ServiceLoader.load(UserDefinedRoute.class);
+    return StreamSupport.stream(routes.spliterator(), false)
+      .peek(each -> each.setConfig(config))
+      .peek(each -> each.setTracer(() -> Optional.ofNullable(tracer)))
+      .map(TemplateGridServerCommand::routes)
+      .flatMap(Collection::stream)
+      .toArray(Routable[]::new);
+  }
+
+  private static List<Routable> routes(UserDefinedRoute route) {
+    return Arrays.asList(
+        Route.get(url(route)).to(() -> route::get),
+        Route.post(url(route)).to(() -> route::post),
+        Route.delete(url(route)).to(() -> route::delete),
+        Route.options(url(route)).to(() -> route::options)
+    );
+  }
+
+  private static String url(UserDefinedRoute route) {
+    String url = route.url();
+    if (url.startsWith("/")) {
+      return "/admin" + url;
+    }
+    return "/admin/" + url;
   }
 }

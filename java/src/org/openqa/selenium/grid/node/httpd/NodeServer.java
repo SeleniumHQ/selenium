@@ -170,7 +170,7 @@ public class NodeServer extends TemplateGridServerCommand {
     Route httpHandler = Route.combine(
       node,
       get("/readyz").to(() -> readinessCheck));
-
+    httpHandler = Route.combine(httpHandler, considerUserDefinedRoutes(config, tracer));
     return new Handlers(httpHandler, new ProxyNodeWebsockets(clientFactory, node));
   }
 

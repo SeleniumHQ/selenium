@@ -186,6 +186,8 @@ public class RouterServer extends TemplateGridServerCommand {
       route,
       get("/readyz").to(() -> readinessCheck));
 
+    routeWithLiveness = Route.combine(routeWithLiveness, considerUserDefinedRoutes(config, tracer));
+
     return new Handlers(routeWithLiveness, new ProxyWebsocketsIntoGrid(clientFactory, sessions));
   }
 

@@ -203,6 +203,7 @@ public class Hub extends TemplateGridServerCommand {
     // Allow the liveness endpoint to be reached, since k8s doesn't make it easy to authenticate these checks
     httpHandler = combine(httpHandler, Route.get("/readyz").to(() -> readinessCheck));
 
+    httpHandler = combine(httpHandler, considerUserDefinedRoutes(config, tracer));
     return new Handlers(httpHandler, new ProxyWebsocketsIntoGrid(clientFactory, sessions));
   }
 
