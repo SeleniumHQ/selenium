@@ -32,7 +32,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.html5.AddApplicationCache;
 import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.remote.html5.AddWebStorage;
 import org.openqa.selenium.remote.mobile.AddNetworkConnection;
@@ -67,7 +66,6 @@ public class Augmenter {
   public Augmenter() {
     Set<Augmentation<?>> augmentations = new HashSet<>();
     Stream.of(
-        new AddApplicationCache(),
         new AddLocationContext(),
         new AddNetworkConnection(),
         new AddWebStorage()

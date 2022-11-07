@@ -21,13 +21,11 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.mobile.NetworkConnection;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.ExecuteMethod;
-import org.openqa.selenium.remote.html5.RemoteApplicationCache;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
@@ -40,11 +38,6 @@ import java.lang.reflect.InvocationTargetException;
  * does not support the corresponding HTML5 feature.
  */
 public class Utils {
-
-  static ApplicationCache getApplicationCache(WebDriver driver) {
-    return convert(driver, ApplicationCache.class, CapabilityType.SUPPORTS_APPLICATION_CACHE,
-                   RemoteApplicationCache.class);
-  }
 
   public static NetworkConnection getNetworkConnection(WebDriver driver) {
 	    return convert(driver, NetworkConnection.class, CapabilityType.SUPPORTS_NETWORK_CONNECTION,

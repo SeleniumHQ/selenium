@@ -17,22 +17,12 @@
 
 package org.openqa.selenium.remote.server.handler.html5;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.html5.AppCacheStatus;
-import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.LocalStorage;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
@@ -43,6 +33,14 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.ExecuteMethod;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 /**
  * Tests for the {@link Utils} class.
  */
@@ -51,7 +49,6 @@ class UtilsTest {
   @Test
   void returnsInputDriverIfRequestedFeatureIsImplementedDirectly() {
     WebDriver driver = mock(Html5Driver.class);
-    assertSame(driver, Utils.getApplicationCache(driver));
     assertSame(driver, Utils.getLocationContext(driver));
     assertSame(driver, Utils.getWebStorage(driver));
   }
@@ -59,13 +56,6 @@ class UtilsTest {
   @Test
   void throwsIfRequestedFeatureIsNotSupported() {
     WebDriver driver = mock(WebDriver.class);
-    try {
-      Utils.getApplicationCache(driver);
-      fail();
-    } catch (UnsupportedCommandException expected) {
-      // Do nothing.
-    }
-
     try {
       Utils.getLocationContext(driver);
       fail();
@@ -79,20 +69,6 @@ class UtilsTest {
     } catch (UnsupportedCommandException expected) {
       // Do nothing.
     }
-  }
-
-  @Test
-  void providesRemoteAccessToAppCache() {
-    DesiredCapabilities caps = new DesiredCapabilities();
-    caps.setCapability(CapabilityType.SUPPORTS_APPLICATION_CACHE, true);
-
-    CapableDriver driver = mock(CapableDriver.class);
-    when(driver.getCapabilities()).thenReturn(caps);
-    when(driver.execute(DriverCommand.GET_APP_CACHE_STATUS, null))
-        .thenReturn(AppCacheStatus.CHECKING.name());
-
-    ApplicationCache cache = Utils.getApplicationCache(driver);
-    assertEquals(AppCacheStatus.CHECKING, cache.getStatus());
   }
 
   @Test
@@ -142,6 +118,7 @@ class UtilsTest {
   interface CapableDriver extends WebDriver, ExecuteMethod, HasCapabilities {
   }
 
-  interface Html5Driver extends WebDriver, ApplicationCache, LocationContext, WebStorage {
+  interface Html5Driver extends WebDriver, LocationContext, WebStorage {
+
   }
 }
