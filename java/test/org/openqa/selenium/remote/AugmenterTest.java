@@ -30,7 +30,6 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.support.decorators.Decorated;
@@ -53,19 +52,6 @@ class AugmenterTest {
 
   private Augmenter getAugmenter() {
     return new Augmenter();
-  }
-
-  @Test
-  void shouldAugmentLocationContext() {
-    final Capabilities
-      caps =
-      new ImmutableCapabilities(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
-
-    WebDriver returned = getAugmenter().augment(driver);
-
-    assertThat(returned).isNotSameAs(driver);
-    assertThat(returned).isInstanceOf(LocationContext.class);
   }
 
   @Test
@@ -215,28 +201,6 @@ class AugmenterTest {
 
     int number = ((HasNumbers) returned).getNumbers(returned);
     assertThat(number).isEqualTo(42);
-  }
-
-  @Test
-  void shouldAugmentWebDriverDecorator() {
-    final Capabilities
-      caps =
-      new ImmutableCapabilities(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
-
-    WebDriver decorated = new ModifyTitleWebDriverDecorator().decorate(driver);
-
-    assertThat(decorated).isNotSameAs(driver);
-
-    WebDriver returned = getAugmenter().augment(decorated);
-
-    assertThat(returned).isNotSameAs(driver);
-    assertThat(returned).isNotSameAs(decorated);
-    assertThat(returned).isInstanceOf(LocationContext.class);
-
-    String title = returned.getTitle();
-
-    assertThat(title).isEqualTo("title");
   }
 
   @Test
@@ -399,7 +363,7 @@ class AugmenterTest {
     @Override
     public Object call(Decorated<?> target, Method method, Object[] args) throws Throwable {
       if (method.getDeclaringClass().equals(HasCapabilities.class)) {
-        return new ImmutableCapabilities(CapabilityType.SUPPORTS_LOCATION_CONTEXT, true);
+        return new ImmutableCapabilities("magic.numbers", true);
       }
 
       if (method.getName().equals("getTitle")) {

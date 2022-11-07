@@ -32,7 +32,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.remote.html5.AddWebStorage;
 
 import java.lang.reflect.Field;
@@ -64,7 +63,6 @@ public class Augmenter {
   public Augmenter() {
     Set<Augmentation<?>> augmentations = new HashSet<>();
     Stream.of(
-        new AddLocationContext(),
         new AddWebStorage()
     ).forEach(provider -> augmentations.add(createAugmentation(provider)));
 
@@ -140,7 +138,6 @@ public class Augmenter {
   /**
    * Enhance the interfaces implemented by this instance of WebDriver iff that instance is a
    * {@link org.openqa.selenium.remote.RemoteWebDriver}.
-   *
    * The WebDriver that is returned may well be a dynamic proxy. You cannot rely on the concrete
    * implementing class to remain constant.
    *

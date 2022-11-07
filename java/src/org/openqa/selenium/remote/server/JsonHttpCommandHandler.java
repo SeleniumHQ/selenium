@@ -98,14 +98,12 @@ import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageKeys;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageSize;
-import org.openqa.selenium.remote.server.handler.html5.GetLocationContext;
 import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageKeys;
 import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageSize;
 import org.openqa.selenium.remote.server.handler.html5.RemoveLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.RemoveSessionStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.SetLocalStorageItem;
-import org.openqa.selenium.remote.server.handler.html5.SetLocationContext;
 import org.openqa.selenium.remote.server.handler.html5.SetSessionStorageItem;
 import org.openqa.selenium.remote.server.handler.interactions.ClickInSession;
 import org.openqa.selenium.remote.server.handler.interactions.DoubleClickInSession;
@@ -175,7 +173,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_SIZE;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_LOGS;
@@ -201,7 +198,6 @@ import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
@@ -399,9 +395,6 @@ public class JsonHttpCommandHandler {
     addNewMapping(SET_TIMEOUT, ConfigureTimeout::new);
     addNewMapping(IMPLICITLY_WAIT, ImplicitlyWait::new);
     addNewMapping(SET_SCRIPT_TIMEOUT, SetScriptTimeout::new);
-
-    addNewMapping(GET_LOCATION, GetLocationContext::new);
-    addNewMapping(SET_LOCATION,  SetLocationContext::new);
 
     addNewMapping(GET_LOCAL_STORAGE_ITEM, GetLocalStorageItem::new);
     addNewMapping(REMOVE_LOCAL_STORAGE_ITEM, RemoveLocalStorageItem::new);
