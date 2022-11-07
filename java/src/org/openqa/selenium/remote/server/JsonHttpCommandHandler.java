@@ -95,7 +95,6 @@ import org.openqa.selenium.remote.server.handler.UploadFile;
 import org.openqa.selenium.remote.server.handler.W3CActions;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
-import org.openqa.selenium.remote.server.handler.html5.GetAppCacheStatus;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageKeys;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageSize;
@@ -160,7 +159,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
-import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE_STATUS;
 import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
 import static org.openqa.selenium.remote.DriverCommand.GET_CAPABILITIES;
 import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
@@ -408,8 +406,6 @@ public class JsonHttpCommandHandler {
 
     addNewMapping(GET_LOCATION, GetLocationContext::new);
     addNewMapping(SET_LOCATION,  SetLocationContext::new);
-
-    addNewMapping(GET_APP_CACHE_STATUS, GetAppCacheStatus::new);
 
     addNewMapping(GET_LOCAL_STORAGE_ITEM, GetLocalStorageItem::new);
     addNewMapping(REMOVE_LOCAL_STORAGE_ITEM, RemoveLocalStorageItem::new);
