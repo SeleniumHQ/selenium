@@ -19,15 +19,13 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Rotatable;
-import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -55,17 +53,6 @@ class AugmenterTest {
 
   private Augmenter getAugmenter() {
     return new Augmenter();
-  }
-
-  @Test
-  void shouldAugmentRotatable() {
-    final Capabilities caps = new ImmutableCapabilities(CapabilityType.ROTATABLE, true);
-    WebDriver driver = new RemoteWebDriver(new StubExecutor(caps), caps);
-
-    WebDriver returned = getAugmenter().augment(driver);
-
-    assertThat(returned).isNotSameAs(driver);
-    assertThat(returned).isInstanceOf(Rotatable.class);
   }
 
   @Test
@@ -299,39 +286,6 @@ class AugmenterTest {
   public interface FindByMagic {
 
     WebElement findByMagic(String magicWord);
-  }
-
-  @Test
-  void shouldBeAbleToAugmentMultipleTimes() {
-    Capabilities caps = new ImmutableCapabilities("rotatable", true, "magic.numbers", true);
-
-    StubExecutor stubExecutor = new StubExecutor(caps);
-    stubExecutor.expect(DriverCommand.GET_SCREEN_ORIENTATION,
-                        Collections.emptyMap(),
-                        ScreenOrientation.PORTRAIT.name());
-    RemoteWebDriver driver = new RemoteWebDriver(stubExecutor, caps);
-
-    WebDriver augmented = getAugmenter().augment(driver);
-
-    assertThat(driver).isNotSameAs(augmented);
-    assertThat(augmented).isInstanceOf(Rotatable.class);
-    assertThat(augmented).isNotInstanceOf(HasMagicNumbers.class);
-
-    WebDriver augmentedAgain = getAugmenter()
-      .addDriverAugmentation(
-        "magic.numbers",
-        HasMagicNumbers.class,
-        (c, exe) -> () -> 42)
-      .augment(augmented);
-
-    assertThat(augmented).isNotSameAs(augmentedAgain);
-    assertThat(augmentedAgain).isInstanceOf(Rotatable.class);
-    assertThat(augmentedAgain).isInstanceOf(HasMagicNumbers.class);
-
-    ((Rotatable) augmentedAgain).getOrientation();  // Should not throw.
-
-    assertThat(((HasCapabilities) augmentedAgain).getCapabilities())
-      .isSameAs(driver.getCapabilities());
   }
 
   protected static class StubExecutor implements CommandExecutor {
