@@ -76,11 +76,6 @@ public interface CapabilityType {
    * @deprecated Non W3C compliant
    */
   @Deprecated
-  String ROTATABLE = "rotatable";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
   String APPLICATION_NAME = "applicationName";
   /**
    * @deprecated Use {@link CapabilityType#ACCEPT_INSECURE_CERTS}

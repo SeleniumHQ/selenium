@@ -23,6 +23,7 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.MethodDelegation;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
@@ -69,7 +70,6 @@ public class Augmenter {
         new AddApplicationCache(),
         new AddLocationContext(),
         new AddNetworkConnection(),
-        new AddRotatable(),
         new AddWebStorage()
     ).forEach(provider -> augmentations.add(createAugmentation(provider)));
 
