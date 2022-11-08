@@ -18,8 +18,8 @@
 use std::fs;
 use std::fs::File;
 use std::io;
-use std::path::{Path, PathBuf};
 use std::path::MAIN_SEPARATOR;
+use std::path::{Path, PathBuf};
 
 use directories::BaseDirs;
 use flate2::read::GzDecoder;
@@ -51,14 +51,20 @@ pub fn uncompress(compressed_file: &String, target: PathBuf) {
     let file = File::open(compressed_file).unwrap();
     let kind = infer::get_from_path(compressed_file).unwrap().unwrap();
     let extension = kind.extension();
-    log::trace!("The detected extension of the compressed file is {}", extension);
+    log::trace!(
+        "The detected extension of the compressed file is {}",
+        extension
+    );
 
     if extension.eq_ignore_ascii_case(ZIP) {
         unzip(file, target);
     } else if extension.eq_ignore_ascii_case(GZ) {
         untargz(file, target);
     } else {
-        let error_msg = format!("Downloaded file cannot be uncompressed ({} extension)", extension);
+        let error_msg = format!(
+            "Downloaded file cannot be uncompressed ({} extension)",
+            extension
+        );
         log::error!("{}", error_msg);
         panic!("{}", error_msg);
     }
@@ -77,10 +83,16 @@ pub fn unzip(file: File, target: PathBuf) {
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i).unwrap();
-        if (file.name()).ends_with('/') || target.file_name().unwrap().to_str().unwrap() != file.name() {
+        if (file.name()).ends_with('/')
+            || target.file_name().unwrap().to_str().unwrap() != file.name()
+        {
             continue;
         } else {
-            log::debug!("File extracted to {} ({} bytes)", target.display(), file.size());
+            log::debug!(
+                "File extracted to {} ({} bytes)",
+                target.display(),
+                file.size()
+            );
             if let Some(p) = target.parent() {
                 create_path_if_not_exists(p);
             }
@@ -111,7 +123,12 @@ pub fn get_cache_folder() -> PathBuf {
     cache_path
 }
 
-pub fn compose_driver_path_in_cache(driver_name: &str, os: &str, arch_folder: &str, driver_version: &str) -> PathBuf {
+pub fn compose_driver_path_in_cache(
+    driver_name: &str,
+    os: &str,
+    arch_folder: &str,
+    driver_version: &str,
+) -> PathBuf {
     get_cache_folder()
         .join(driver_name)
         .join(arch_folder)
