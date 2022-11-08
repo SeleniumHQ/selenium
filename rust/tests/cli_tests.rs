@@ -16,6 +16,7 @@
 // under the License.
 
 use assert_cmd::Command;
+
 use rstest::rstest;
 use std::str;
 
@@ -58,9 +59,12 @@ fn ok_test(
 }
 
 #[rstest]
-#[case("wrong-browser", "", "", 1)]
-#[case("chrome", "wrong-version", "", 101)]
-#[case("chrome", "", "wrong-version", 101)]
+#[case("wrong-browser", "", "", exitcode::DATAERR)]
+#[case("chrome", "wrong-browser-version", "", exitcode::DATAERR)]
+#[case("chrome", "", "wrong-driver-version", exitcode::DATAERR)]
+#[case("firefox", "", "wrong-driver-version", exitcode::DATAERR)]
+#[case("edge", "wrong-browser-version", "", exitcode::DATAERR)]
+#[case("edge", "", "wrong-driver-version", exitcode::DATAERR)]
 fn error_test(
     #[case] browser: String,
     #[case] browser_version: String,

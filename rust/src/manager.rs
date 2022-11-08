@@ -35,7 +35,12 @@ pub trait BrowserManager {
     fn get_driver_version(&self, browser_version: &str, os: &str)
         -> Result<String, Box<dyn Error>>;
 
-    fn get_driver_url(&self, driver_version: &str, os: &str, arch: &str) -> String;
+    fn get_driver_url(
+        &self,
+        driver_version: &str,
+        os: &str,
+        arch: &str,
+    ) -> Result<String, Box<dyn Error>>;
 
     fn get_driver_path_in_cache(&self, driver_version: &str, os: &str, arch: &str) -> PathBuf;
 
@@ -45,11 +50,10 @@ pub trait BrowserManager {
         os: &str,
         arch: &str,
     ) -> Result<(), Box<dyn Error>> {
-        let driver_url = Self::get_driver_url(self, driver_version, os, arch);
+        let driver_url = Self::get_driver_url(self, driver_version, os, arch)?;
         let (_tmp_folder, driver_zip_file) = download_driver_to_tmp_folder(driver_url)?;
         let driver_path_in_cache = Self::get_driver_path_in_cache(self, driver_version, os, arch);
-        uncompress(&driver_zip_file, driver_path_in_cache);
-        Ok(())
+        uncompress(&driver_zip_file, driver_path_in_cache)
     }
 }
 
@@ -129,7 +133,7 @@ pub fn detect_browser_version(
                     Ok(out) => out,
                     Err(_e) => continue,
                 };
-                let full_browser_version = parse_version(output);
+                let full_browser_version = parse_version(output).unwrap_or_default();
                 if full_browser_version.is_empty() {
                     continue;
                 }
@@ -138,29 +142,34 @@ pub fn detect_browser_version(
                     browser_name,
                     full_browser_version
                 );
-                browser_version = get_major_version(&full_browser_version);
+                match get_major_version(&full_browser_version) {
+                    Ok(v) => browser_version = v,
+                    Err(_) => return None,
+                }
                 break;
             }
 
-            if browser_version.is_empty() {
-                None
-            } else {
-                metadata
-                    .browsers
-                    .push(create_browser_metadata(browser_name, &browser_version));
-                write_metadata(&metadata);
-                Some(browser_version)
-            }
+            metadata
+                .browsers
+                .push(create_browser_metadata(browser_name, &browser_version));
+            write_metadata(&metadata);
+            Some(browser_version)
         }
     }
 }
 
-pub fn get_major_version(full_version: &str) -> String {
-    let version_vec: Vec<&str> = full_version.split('.').collect();
-    version_vec.first().unwrap().to_string()
+pub fn get_major_version(full_version: &str) -> Result<String, Box<dyn Error>> {
+    get_index_version(full_version, 0)
 }
 
-pub fn get_minor_version(full_version: &str) -> String {
+pub fn get_minor_version(full_version: &str) -> Result<String, Box<dyn Error>> {
+    get_index_version(full_version, 1)
+}
+
+fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn Error>> {
     let version_vec: Vec<&str> = full_version.split('.').collect();
-    version_vec.get(1).unwrap().to_string()
+    Ok(version_vec
+        .get(index)
+        .ok_or(format!("Wrong version: {}", full_version))?
+        .to_string())
 }
