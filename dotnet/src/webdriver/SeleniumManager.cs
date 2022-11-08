@@ -77,7 +77,7 @@ namespace OpenQA.Selenium
             {
                 binary = "selenium-manager/windows/selenium-manager.exe";
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 binary = "selenium-manager/linux/selenium-manager";
             }

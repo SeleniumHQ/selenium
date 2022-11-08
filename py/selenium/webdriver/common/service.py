@@ -14,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import contextlib
 import errno
 import logging
 import os
@@ -143,14 +142,18 @@ class Service(ABC):
         Stops the service.
         """
         if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
-            with contextlib.suppress(Exception):
+            try:
                 # Todo: Be explicit in what we are catching here.
                 if hasattr(self.log_file, "close"):
                     self.log_file.close()  # type: ignore
+            except Exception:
+                pass
 
         if self.process is not None:
-            with contextlib.suppress(TypeError):
+            try:
                 self.send_remote_shutdown_command()
+            except TypeError:
+                pass
             self._terminate_process()
 
     def _terminate_process(self) -> None:
@@ -161,8 +164,10 @@ class Service(ABC):
         try:
             stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stderr
             for stream in stdin, stdout, stderr:
-                with contextlib.suppress(AttributeError):
+                try:
                     stream.close()  # type: ignore
+                except AttributeError:
+                    pass
             self.process.terminate()
             self.process.wait(60)
             # Todo: only SIGKILL if necessary; the process may be cleanly exited by now.
@@ -174,8 +179,12 @@ class Service(ABC):
         # `subprocess.Popen` doesn't send signal on `__del__`;
         # so we attempt to close the launched process when `__del__`
         # is triggered.
-        with contextlib.suppress(Exception):
+        # do not use globals here; interpreter shutdown may have already cleaned them up
+        # and they would be `None`. This goes for anything this method is referencing internally.
+        try:
             self.stop()
+        except Exception:
+            pass
 
     def _start_process(self, path: str) -> None:
         """

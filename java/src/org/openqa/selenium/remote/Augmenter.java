@@ -23,6 +23,7 @@ import net.bytebuddy.dynamic.DynamicType;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.MethodDelegation;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
@@ -31,10 +32,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.html5.AddApplicationCache;
-import org.openqa.selenium.remote.html5.AddLocationContext;
 import org.openqa.selenium.remote.html5.AddWebStorage;
-import org.openqa.selenium.remote.mobile.AddNetworkConnection;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -56,7 +54,6 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
  * Enhance the interfaces implemented by an instance of the
  * {@link org.openqa.selenium.WebDriver} based on the returned
  * {@link org.openqa.selenium.Capabilities} of the driver.
- *
  * Note: this class is still experimental. Use at your own risk.
  */
 @Beta
@@ -66,10 +63,6 @@ public class Augmenter {
   public Augmenter() {
     Set<Augmentation<?>> augmentations = new HashSet<>();
     Stream.of(
-        new AddApplicationCache(),
-        new AddLocationContext(),
-        new AddNetworkConnection(),
-        new AddRotatable(),
         new AddWebStorage()
     ).forEach(provider -> augmentations.add(createAugmentation(provider)));
 
@@ -97,6 +90,7 @@ public class Augmenter {
     this.augmentations = unmodifiableSet(toUse);
   }
 
+  @SuppressWarnings("unused")
   public <X> Augmenter addDriverAugmentation(AugmenterProvider<X> provider) {
     Require.nonNull("Interface provider", provider);
 
@@ -144,7 +138,6 @@ public class Augmenter {
   /**
    * Enhance the interfaces implemented by this instance of WebDriver iff that instance is a
    * {@link org.openqa.selenium.remote.RemoteWebDriver}.
-   *
    * The WebDriver that is returned may well be a dynamic proxy. You cannot rely on the concrete
    * implementing class to remain constant.
    *

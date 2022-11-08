@@ -130,12 +130,6 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   public static final String IE_USE_PER_PROCESS_PROXY = "ie.usePerProcessProxy";
 
   /**
-   * @deprecated Use {@link #IE_USE_PER_PROCESS_PROXY} (the one without the typo);
-   */
-  @Deprecated
-  public static final String IE_USE_PRE_PROCESS_PROXY = IE_USE_PER_PROCESS_PROXY;
-
-  /**
    * Capability that defines used IE CLI switches when {@link #FORCE_CREATE_PROCESS} is enabled.
    */
   public static final String IE_SWITCHES = "ie.browserCommandLineSwitches";
