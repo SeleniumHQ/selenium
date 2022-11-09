@@ -58,11 +58,6 @@ public interface CapabilityType {
   @Deprecated
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String APPLICATION_NAME = "applicationName";
-  /**
    * @deprecated Use {@link CapabilityType#ACCEPT_INSECURE_CERTS}
    */
   @Deprecated
@@ -77,11 +72,6 @@ public interface CapabilityType {
    */
   @Deprecated
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
   /**
    * @deprecated Non W3C compliant
    */
