@@ -39,6 +39,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
@@ -68,7 +69,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.cache/bazel
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
@@ -85,7 +86,7 @@ jobs:
       - name: Run Chrome tests
         uses: ./.github/actions/bazel
         with:
-          command: test --test_output=all //rb:${{ matrix.target }}
+          command: test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
           attempts: 3
         env:
           DISPLAY: :99
@@ -109,7 +110,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.cache/bazel
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
@@ -129,7 +130,7 @@ jobs:
       - name: Run Firefox tests
         uses: ./.github/actions/bazel
         with:
-          command: test --test_output=all //rb:${{ matrix.target }}
+          command: test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
           attempts: 3
         env:
           DISPLAY: :99
@@ -145,7 +146,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.cache/bazel
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-docs-${{ hashFiles('**/BUILD.bazel') }}
@@ -167,7 +168,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.cache/bazel
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-lint-${{ hashFiles('**/BUILD.bazel') }}
@@ -193,7 +194,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.cache/bazel
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-${{ hashFiles('**/BUILD.bazel') }}
@@ -204,4 +205,4 @@ jobs:
       - name: Run unit tests
         uses: ./.github/actions/bazel
         with:
-          command: test --test_output=all //rb:unit-test
+          command: test --cache_test_results=no --test_output=all //rb:unit-test
