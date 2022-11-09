@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.CharStreams;
 import com.google.common.io.Closeables;
@@ -38,6 +36,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 class Preferences {
 
@@ -202,10 +202,6 @@ class Preferences {
     // Assume we a string is stringified (i.e. wrapped in " ") when
     // the first character == " and the last character == "
     return value.startsWith("\"") && value.endsWith("\"");
-  }
-
-  void checkForChangesInFrozenPreferences() {
-    allPrefs.forEach((this::checkPreference));
   }
 
   private void checkPreference(String key, Object value) {
