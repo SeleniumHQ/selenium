@@ -52,7 +52,7 @@ module Selenium
         end
 
         def start
-          options = {%i(out err) => io}
+          options = {%i[out err] => io}
           options[:pgroup] = true unless Platform.windows? # NOTE: this is a bug only in Windows 7
 
           WebDriver.logger.debug("Starting process: #{@command} with #{options}")
