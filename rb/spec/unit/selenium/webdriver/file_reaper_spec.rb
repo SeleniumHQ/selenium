@@ -56,7 +56,7 @@ module Selenium
         expect(tmp_file).to exist
       end
 
-      unless Platform.jruby? || Platform.windows?
+      unless Platform.jruby? || Platform.windows? || Platform.truffleruby?
         it 'reaps files only for the current pid' do
           expect(tmp_file).to exist
 
