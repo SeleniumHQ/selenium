@@ -70,7 +70,7 @@ module Selenium
         poll_for_exit(timeout)
 
         WebDriver.logger.debug("  -> stopped #{@pid}")
-      rescue TimeoutError
+      rescue TimeoutError, Errno::EINVAL
         WebDriver.logger.debug("    -> sending KILL to process: #{@pid}")
         kill(@pid)
         wait
