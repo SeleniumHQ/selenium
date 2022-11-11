@@ -78,7 +78,7 @@ module Selenium
 
       def build_process(*command)
         WebDriver.logger.debug("Executing Process #{command}")
-        @process = Common::ChildProcess.build(*command)
+        @process = ChildProcess.build(*command)
         @process.io = WebDriver.logger.io if WebDriver.logger.debug?
 
         @process

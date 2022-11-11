@@ -19,96 +19,108 @@
 
 module Selenium
   module WebDriver
-    module Common
 
-      #
-      # @api private
-      #
+    #
+    # @api private
+    #
 
-      class ChildProcess
-        TimeoutError = Class.new(StandardError)
+    class ChildProcess
+      TimeoutError = Class.new(StandardError)
 
-        SIGTERM = 'TERM'
-        SIGKILL = 'KILL'
+      SIGTERM = 'TERM'
+      SIGKILL = 'KILL'
 
-        POLL_INTERVAL = 0.1
+      POLL_INTERVAL = 0.1
 
-        attr_accessor :detach
-        attr_writer :io
+      attr_accessor :detach
+      attr_writer :io
 
-        def self.build(*command)
-          new(*command)
-        end
+      def self.build(*command)
+        new(*command)
+      end
 
-        def initialize(*command)
-          @command = command
-          @detach = false
-          @pid = nil
-          @status = nil
-        end
+      def initialize(*command)
+        @command = command
+        @detach = false
+        @pid = nil
+        @status = nil
+      end
 
-        def io
-          @io ||= Platform.null_device
-        end
+      def io
+        @io ||= Platform.null_device
+      end
 
-        def start
-          options = {%i[out err] => io}
-          options[:pgroup] = true unless Platform.windows? # NOTE: this is a bug only in Windows 7
+      def start
+        options = {%i[out err] => io}
+        options[:pgroup] = true unless Platform.windows? # NOTE: this is a bug only in Windows 7
 
-          WebDriver.logger.debug("Starting process: #{@command} with #{options}")
-          @pid = Process.spawn(*@command, options)
-          WebDriver.logger.debug("  -> pid: #{@pid}")
+        WebDriver.logger.debug("Starting process: #{@command} with #{options}")
+        @pid = Process.spawn(*@command, options)
+        WebDriver.logger.debug("  -> pid: #{@pid}")
 
-          Process.detach(@pid) if detach
-        end
+        Process.detach(@pid) if detach
+      end
 
-        def stop(timeout = 3)
-          return unless @pid
-          return if exited?
+      def stop(timeout = 3)
+        return unless @pid
+        return if exited?
 
-          WebDriver.logger.debug("Sending TERM to process: #{@pid}")
-          Process.kill(SIGTERM, @pid)
-          poll_for_exit(timeout)
+        WebDriver.logger.debug("Sending TERM to process: #{@pid}")
+        terminate(@pid)
+        poll_for_exit(timeout)
 
-          WebDriver.logger.debug("  -> stopped #{@pid}")
-        rescue TimeoutError
-          WebDriver.logger.debug("    -> sending KILL to process: #{@pid}")
-          Process.kill(SIGKILL, @pid)
-          wait
-          WebDriver.logger.debug("      -> killed #{@pid}")
-        end
+        WebDriver.logger.debug("  -> stopped #{@pid}")
+      rescue TimeoutError
+        WebDriver.logger.debug("    -> sending KILL to process: #{@pid}")
+        kill(@pid)
+        wait
+        WebDriver.logger.debug("      -> killed #{@pid}")
+      end
 
-        def alive?
-          @pid && !exited?
-        end
+      def alive?
+        @pid && !exited?
+      end
 
-        def exited?
-          return unless @pid
+      def exited?
+        return unless @pid
 
-          WebDriver.logger.debug("Checking if #{@pid} is exited")
-          _, @status = Process.waitpid2(@pid, Process::WNOHANG | Process::WUNTRACED) if @status.nil?
-          return if @status.nil?
+        WebDriver.logger.debug("Checking if #{@pid} is exited:")
+        _, @status = Process.waitpid2(@pid, Process::WNOHANG | Process::WUNTRACED) if @status.nil?
+        return if @status.nil?
 
-          WebDriver.logger.debug("  -> exit code is #{@status.exitstatus}")
-          @status.exited?
-        end
+        exit_code = @status.exitstatus || @status.termsig
+        WebDriver.logger.debug("  -> exit code is #{exit_code.inspect}")
 
-        def poll_for_exit(timeout)
-          WebDriver.logger.debug("Polling #{timeout} seconds for exit of #{@pid}")
+        !!exit_code
+      end
 
-          end_time = Time.now + timeout
-          sleep POLL_INTERVAL until exited? || Time.now > end_time
+      def poll_for_exit(timeout)
+        WebDriver.logger.debug("Polling #{timeout} seconds for exit of #{@pid}")
 
-          raise TimeoutError, "  ->  #{@pid} still alive after #{timeout} seconds" unless exited?
-        end
+        end_time = Time.now + timeout
+        sleep POLL_INTERVAL until exited? || Time.now > end_time
 
-        def wait
-          return if exited?
+        raise TimeoutError, "  ->  #{@pid} still alive after #{timeout} seconds" unless exited?
+      end
 
-          _, @status = Process.waitpid2(@pid)
-        end
+      def wait
+        return if exited?
 
-      end # ChildProcess
-    end # Common
+        _, @status = Process.waitpid2(@pid)
+      end
+
+      private
+
+      def terminate(pid)
+        Process.kill(SIGTERM, pid)
+      end
+
+      def kill(pid)
+        Process.kill(SIGKILL, pid)
+      rescue Errno::ECHILD, Errno::ESRCH
+        # already dead
+      end
+
+    end # ChildProcess
   end # WebDriver
 end # Selenium

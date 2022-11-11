@@ -237,7 +237,7 @@ module Selenium
 
       begin
         @process.poll_for_exit(5)
-      rescue WebDriver::Common::ChildProcess::TimeoutError
+      rescue WebDriver::ChildProcess::TimeoutError
         @process.stop
       end
     rescue Errno::ECHILD
@@ -252,7 +252,7 @@ module Selenium
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
         args = ['-jar', @jar, @role, '--port', @port.to_s]
         server_command = ['java'] + properties + args + @additional_args
-        cp = WebDriver::Common::ChildProcess.build(*server_command)
+        cp = WebDriver::ChildProcess.build(*server_command)
         WebDriver.logger.debug("Executing Process #{server_command}")
 
         if @log.is_a?(String)
