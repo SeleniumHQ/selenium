@@ -86,7 +86,7 @@ module Selenium
         #
         #     <option value="foo">Bar</option>
         #
-        # When slecting by :value, selects all options that have a value matching the argument. That is, when given "foo" this
+        # When selecting by :value, selects all options that have a value matching the argument. That is, when given "foo" this
         # would select an option like:
         #
         #     <option value="foo">Bar</option>
