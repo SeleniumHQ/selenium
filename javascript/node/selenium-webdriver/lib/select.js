@@ -291,7 +291,7 @@ class Select {
   }
 
   /**
-   * Retruns a boolean value if the select tag is multiple
+   * Returns a boolean value if the select tag is multiple
    * @returns {Promise<boolean>}
    */
   async isMultiple() {
