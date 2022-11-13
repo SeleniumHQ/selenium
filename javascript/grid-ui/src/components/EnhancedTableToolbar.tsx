@@ -18,9 +18,19 @@
 import React from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+import Box from '@mui/material/Box'
 
-function EnhancedTableToolbar (props) {
-  const { title } = props
+interface EnhancedTableToolbarProps {
+  title: string
+  children?: JSX.Element
+}
+
+function EnhancedTableToolbar (props: EnhancedTableToolbarProps) {
+  const {
+    title,
+    children
+  } = props
+
   return (
     <Toolbar sx={{ paddingLeft: 2, paddingRight: 1 }}>
       <Typography
@@ -30,7 +40,21 @@ function EnhancedTableToolbar (props) {
         id='tableTitle'
         component='div'
       >
-        {title}
+        <Box
+          component='span'
+          display='flex'
+          alignItems='center'
+        >
+          <Box
+            component='span'
+            display='flex'
+            justifyContent='center'
+            flex={1}
+          >
+            {title}
+          </Box>
+          {children}
+        </Box>
       </Typography>
     </Toolbar>
   )

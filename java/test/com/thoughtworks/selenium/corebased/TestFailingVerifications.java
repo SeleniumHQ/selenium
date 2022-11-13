@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestFailingVerifications extends InternalSelenseTestBase {
   @Test
-  public void testFailingVerifications() {
+  void testFailingVerifications() {
     selenium.open("/test_verifications.html");
     try {
       assertTrue(selenium.getLocation().matches(

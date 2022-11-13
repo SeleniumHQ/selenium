@@ -51,7 +51,7 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.5'
+  '4.6'
 end
 
 def version
@@ -96,12 +96,11 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 # Java targets required for release. These should all be java_export targets.
 # Generated from: bazel query 'kind(maven_publish, set(//java/... //third_party/...))' | sort
 JAVA_RELEASE_TARGETS = %w[
-  //java/src/com/thoughtworks/selenium/webdriven:webdriven.publish
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v104:v104.publish
   //java/src/org/openqa/selenium/devtools/v105:v105.publish
   //java/src/org/openqa/selenium/devtools/v106:v106.publish
+  //java/src/org/openqa/selenium/devtools/v107:v107.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -111,6 +110,7 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/ie:ie.publish
   //java/src/org/openqa/selenium/json:json.publish
   //java/src/org/openqa/selenium/lift:lift.publish
+  //java/src/org/openqa/selenium/manager:manager.publish
   //java/src/org/openqa/selenium/remote/http/jdk:jdk.publish
   //java/src/org/openqa/selenium/remote/http:http.publish
   //java/src/org/openqa/selenium/remote:remote.publish
@@ -439,13 +439,16 @@ namespace :copyright do
         'javascript/selenium-core/scripts/ui-map-sample.js',
         'javascript/selenium-core/scripts/user-extensions.js',
         'javascript/selenium-core/scripts/xmlextras.js',
-        'javascript/selenium-core/xpath/**/*.js'
+        'javascript/selenium-core/xpath/**/*.js',
+        'javascript/grid-ui/node_modules/**/*.js'
       )
     )
+    Copyright.new.update(FileList['javascript/**/*.tsx'])
     Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'])
     Copyright.new(comment_characters: '#', prefix: ["# frozen_string_literal: true\n", "\n"])
       .update(FileList['rb/**/*.rb'])
     Copyright.new.update(FileList['java/**/*.java'])
+    Copyright.new.update(FileList['rust/**/*.rs'])
   end
 end
 

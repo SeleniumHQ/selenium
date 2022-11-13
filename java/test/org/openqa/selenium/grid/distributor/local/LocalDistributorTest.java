@@ -80,9 +80,10 @@ import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class LocalDistributorTest {
+class LocalDistributorTest {
 
   private final Secret registrationSecret = new Secret("bavarian smoked");
+  private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private Tracer tracer;
   private EventBus bus;
   private URI uri;
@@ -106,13 +107,14 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void testAddNodeToDistributor() {
+  void testAddNodeToDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -123,7 +125,8 @@ public class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
 
@@ -138,13 +141,14 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void testRemoveNodeFromDistributor() {
+  void testRemoveNodeFromDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -155,7 +159,8 @@ public class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
 
     //Check the size
@@ -167,17 +172,18 @@ public class LocalDistributorTest {
     distributor.remove(localNode.getId());
     DistributorStatus statusAfter = distributor.getStatus();
     final Set<NodeStatus> nodesAfter = statusAfter.getNodes();
-    assertThat(nodesAfter.size()).isEqualTo(0);
+    assertThat(nodesAfter.size()).isZero();
   }
 
   @Test
-  public void testAddSameNodeTwice() {
+  void testAddSameNodeTwice() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -188,7 +194,8 @@ public class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
     distributor.add(localNode);
     DistributorStatus status = distributor.getStatus();
@@ -199,13 +206,14 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToAddMultipleSessionsConcurrently() throws Exception {
+  void shouldBeAbleToAddMultipleSessionsConcurrently() throws Exception {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
 
     // Add one node to ensure that everything is created in that.
@@ -244,7 +252,8 @@ public class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     wait.until(obj -> distributor.getStatus().hasCapacity());
@@ -287,13 +296,14 @@ public class LocalDistributorTest {
 
 
   @Test
-  public void testDrainNodeFromDistributor() {
+  void testDrainNodeFromDistributor() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -304,7 +314,8 @@ public class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
     assertThat(localNode.isDraining()).isFalse();
 
@@ -321,11 +332,11 @@ public class LocalDistributorTest {
     //Recheck the status - there should still be no node, it is removed
     DistributorStatus statusAfter = distributor.getStatus();
     Set<NodeStatus> nodesAfter = statusAfter.getNodes();
-    assertThat(nodesAfter.size()).isEqualTo(0);
+    assertThat(nodesAfter.size()).isZero();
   }
 
   @Test
-  public void testDrainNodeFromNode() {
+  void testDrainNodeFromNode() {
     assertThat(localNode.isDraining()).isFalse();
 
     NewSessionQueue queue  = new LocalNewSessionQueue(
@@ -333,7 +344,8 @@ public class LocalDistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Distributor distributor = new LocalDistributor(
       tracer,
       bus,
@@ -344,7 +356,8 @@ public class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(localNode);
 
     localNode.drain();
@@ -352,13 +365,14 @@ public class LocalDistributorTest {
   }
 
   @Test
-  public void slowStartingNodesShouldNotCauseReservationsToBeSerialized() {
+  void slowStartingNodesShouldNotCauseReservationsToBeSerialized() {
     NewSessionQueue queue  = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,
@@ -370,7 +384,8 @@ public class LocalDistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     Capabilities caps = new ImmutableCapabilities("browserName", "cheese");
 

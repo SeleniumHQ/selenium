@@ -22,6 +22,7 @@ import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -121,6 +122,8 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final int configuredSessionCount;
   private final boolean cdpEnabled;
+
+  private final boolean bidiEnabled;
   private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
@@ -137,6 +140,7 @@ public class LocalNode extends Node {
     int maxSessionCount,
     int drainAfterSessionCount,
     boolean cdpEnabled,
+    boolean bidiEnabled,
     Ticker ticker,
     Duration sessionTimeout,
     Duration heartbeatPeriod,
@@ -157,6 +161,7 @@ public class LocalNode extends Node {
     this.drainAfterSessions.set(this.configuredSessionCount > 0);
     this.sessionCount.set(drainAfterSessionCount);
     this.cdpEnabled = cdpEnabled;
+    this.bidiEnabled = bidiEnabled;
 
     this.healthCheck = healthCheck == null ?
                        () -> {
@@ -179,31 +184,7 @@ public class LocalNode extends Node {
     this.currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
-      .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
-        if (notification.getKey() != null && notification.getValue() != null) {
-          SessionSlot slot = notification.getValue();
-          SessionId id = notification.getKey();
-          if (notification.wasEvicted()) {
-            // Session is timing out, stopping it by sending a DELETE
-            LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
-            slot.execute(new HttpRequest(DELETE, "/session/" + id));
-          }
-          // Attempt to stop the session
-          slot.stop();
-          // Invalidate temp file system
-          this.tempFileSystems.invalidate(id);
-          // Decrement pending sessions if Node is draining
-          if (this.isDraining()) {
-            int done = pendingSessions.decrementAndGet();
-            if (done <= 0) {
-              LOG.info("Node draining complete!");
-              bus.fire(new NodeDrainComplete(this.getId()));
-            }
-          }
-        } else {
-          LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
-        }
-      })
+      .removalListener(this::stopTimedOutSession)
       .build();
 
     ScheduledExecutorService sessionCleanupNodeService =
@@ -244,6 +225,36 @@ public class LocalNode extends Node {
 
     Runtime.getRuntime().addShutdownHook(new Thread(this::stopAllSessions));
     new JMXHelper().register(this);
+  }
+
+  private void stopTimedOutSession(RemovalNotification<SessionId, SessionSlot> notification) {
+    if (notification.getKey() != null && notification.getValue() != null) {
+      SessionSlot slot = notification.getValue();
+      SessionId id = notification.getKey();
+      if (notification.wasEvicted()) {
+        // Session is timing out, stopping it by sending a DELETE
+        LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
+        try {
+          slot.execute(new HttpRequest(DELETE, "/session/" + id));
+        } catch (Exception e) {
+          LOG.log(Level.WARNING, String.format("Exception while trying to stop session %s", id), e);
+        }
+      }
+      // Attempt to stop the session
+      slot.stop();
+      // Invalidate temp file system
+      this.tempFileSystems.invalidate(id);
+      // Decrement pending sessions if Node is draining
+      if (this.isDraining()) {
+        int done = pendingSessions.decrementAndGet();
+        if (done <= 0) {
+          LOG.info("Node draining complete!");
+          bus.fire(new NodeDrainComplete(this.getId()));
+        }
+      }
+    } else {
+      LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
+    }
   }
 
   public static Builder builder(
@@ -390,6 +401,7 @@ public class LocalNode extends Node {
           session,
           externalUri,
           slotToUse.isSupportingCdp(),
+          slotToUse.isSupportingBiDi(),
           sessionRequest.getDesiredCapabilities());
 
         String sessionCreatedMessage = "Session created by the Node";
@@ -427,6 +439,7 @@ public class LocalNode extends Node {
       slot.getSession(),
       externalUri,
       slot.isSupportingCdp(),
+      slot.isSupportingBiDi(),
       slot.getSession().getCapabilities());
   }
 
@@ -515,8 +528,11 @@ public class LocalNode extends Node {
     }
   }
 
-  private Session createExternalSession(ActiveSession other, URI externalUri,
-                                        boolean isSupportingCdp, Capabilities requestCapabilities) {
+  private Session createExternalSession(ActiveSession other,
+                                        URI externalUri,
+                                        boolean isSupportingCdp,
+                                        boolean isSupportingBiDi,
+                                        Capabilities requestCapabilities) {
     // We merge the session request capabilities and the session ones to keep the values sent
     // by the user in the session information
     Capabilities toUse = ImmutableCapabilities
@@ -535,6 +551,21 @@ public class LocalNode extends Node {
         }
       });
       toUse = new PersistentCapabilities(cdpFiltered).setCapability("se:cdpEnabled", false);
+      }
+
+      // Add se:bidi if necessary to send the bidi url back
+      if ((isSupportingBiDi || toUse.getCapability("se:bidi") != null) && bidiEnabled) {
+        String bidiPath = String.format("/session/%s/se/bidi", other.getId());
+        toUse = new PersistentCapabilities(toUse).setCapability("se:bidi", rewrite(bidiPath));
+      } else {
+        // Remove any se:bidi* from the response, BiDi is not supported nor enabled
+        MutableCapabilities bidiFiltered = new MutableCapabilities();
+        toUse.asMap().forEach((key, value) -> {
+          if (!key.startsWith("se:bidi")) {
+            bidiFiltered.setCapability(key, value);
+          }
+        });
+      toUse = new PersistentCapabilities(bidiFiltered).setCapability("se:bidiEnabled", false);
     }
 
     // If enabled, set the VNC endpoint for live view
@@ -665,6 +696,7 @@ public class LocalNode extends Node {
     private int maxSessions = NodeOptions.DEFAULT_MAX_SESSIONS;
     private int drainAfterSessionCount = NodeOptions.DEFAULT_DRAIN_AFTER_SESSION_COUNT;
     private boolean cdpEnabled = NodeOptions.DEFAULT_ENABLE_CDP;
+    private boolean bidiEnabled = NodeOptions.DEFAULT_ENABLE_BIDI;
     private Ticker ticker = Ticker.systemTicker();
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
@@ -708,6 +740,11 @@ public class LocalNode extends Node {
       return this;
     }
 
+    public Builder enableBiDi(boolean bidiEnabled) {
+      this.bidiEnabled = bidiEnabled;
+      return this;
+    }
+
     public Builder sessionTimeout(Duration timeout) {
       sessionTimeout = timeout;
       return this;
@@ -728,6 +765,7 @@ public class LocalNode extends Node {
         maxSessions,
         drainAfterSessionCount,
         cdpEnabled,
+        bidiEnabled,
         ticker,
         sessionTimeout,
         heartbeatPeriod,

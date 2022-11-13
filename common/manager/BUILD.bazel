@@ -1,0 +1,32 @@
+filegroup(
+    name = "manager",
+    srcs = glob([
+        "*",
+        "**/*",
+    ]),
+    visibility = [
+        "//java/test/org/openqa/selenium/chrome:__pkg__",
+        "//java/test/org/openqa/selenium/edge:__pkg__",
+        "//java/test/org/openqa/selenium/firefox:__pkg__",
+        "//py:__pkg__",
+        "//rb:__pkg__",
+    ],
+)
+
+exports_files(
+    [
+        "linux/selenium-manager",
+        "macos/selenium-manager",
+        "windows/selenium-manager.exe",
+    ],
+    visibility = [
+        "//java/src/org/openqa/selenium/manager:__pkg__",
+        "//java/test/org/openqa/selenium/chrome:__pkg__",
+        "//java/test/org/openqa/selenium/edge:__pkg__",
+        "//java/test/org/openqa/selenium/firefox:__pkg__",
+        "//py:__pkg__",
+        "//rb:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__",
+        "//dotnet/src/webdriver:__pkg__",
+    ],
+)

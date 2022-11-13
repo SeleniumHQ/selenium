@@ -1,3 +1,15 @@
+v4.6.0
+======
+* Adding CDP files for v107 and removing v104
+* Initial implementation of Selenium Manager
+* allow select list class to work with disabled select elements again
+* Bundle smg into nuget package and copy binaries to users output
+* fix bug preventing installing addon from directory
+
+v4.5.1
+======
+* Fix bug preventing automatic detection of protocol version
+
 v4.5.0
 ======
 * Add CDP support for v105, and remove v102

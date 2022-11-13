@@ -27,6 +27,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
@@ -49,6 +50,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
 /**
  * Manages the life and death of a native executable driver server.
@@ -62,6 +64,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class DriverService implements Closeable {
 
   private static final String NAME = "Driver Service Executor";
+  private static final Logger LOG = Logger.getLogger(DriverService.class.getName());
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
 
   private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
@@ -132,13 +135,23 @@ public class DriverService implements Closeable {
       String exeDownload) {
     String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
-    Require.state("The path to the driver executable", exePath).nonNull(
+
+    if (exePath == null) {
+      try {
+        exePath = SeleniumManager.getInstance().getDriverPath(exeName);
+        checkExecutable(new File(exePath));
+      } catch (Exception e) {
+        LOG.warning(String.format("Unable to obtain driver using Selenium Manager: %s", e.getMessage()));
+      }
+    }
+
+    String validPath = Require.state("The path to the driver executable", exePath).nonNull(
         "The path to the driver executable must be set by the %s system property;"
             + " for more information, see %s. "
             + "The latest version can be downloaded from %s",
             exeProperty, exeDocs, exeDownload);
 
-    File exe = new File(exePath);
+    File exe = new File(validPath);
     checkExecutable(exe);
     return exe;
   }

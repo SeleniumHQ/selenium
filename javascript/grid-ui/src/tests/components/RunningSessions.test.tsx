@@ -38,6 +38,34 @@ const sessionsInfo: SessionInfo[] = [
       stereotype: '{"browserName": "chrome"}',
       lastStarted: '18/02/2021 13:12:05'
     }
+  },
+  {
+    id: 'yhVTTv2iHuqMB3chxkfDBLqlzeyORnvf',
+    capabilities: '{ "browserName": "edge", "browserVersion": "96.0.1054.72", "platformName": "windows" }',
+    startTime: '18/02/2021 13:13:05',
+    uri: 'http://192.168.3.7:4444',
+    nodeId: 'h9x799f4-4397-4fbb-9344-1d5a3074695e',
+    nodeUri: 'http://192.168.1.3:5555',
+    sessionDurationMillis: '123456',
+    slot: {
+      id: '5070c2eb-8094-4692-8911-14c533619f7d',
+      stereotype: '{"browserName": "edge"}',
+      lastStarted: '18/02/2021 13:13:05'
+    }
+  },
+  {
+    id: 'p1s201AORfsFN11r1JB1Ycd9ygyRdCin',
+    capabilities: '{ "browserName": "firefox", "browserVersion": "103.0", "platformName": "windows", "se:random_cap": "test_func" }',
+    startTime: '18/02/2021 13:15:05',
+    uri: 'http://192.168.4.7:4444',
+    nodeId: 'h9x799f4-4397-4fbb-9344-1d5a3074695e',
+    nodeUri: 'http://192.168.1.3:5555',
+    sessionDurationMillis: '123456',
+    slot: {
+      id: 'ae48d687-610b-472d-9e0c-3ebc28ad7211',
+      stereotype: '{"browserName": "firefox"}',
+      lastStarted: '18/02/2021 13:15:05'
+    }
   }
 ]
 
@@ -64,11 +92,48 @@ it('renders basic session information', () => {
 })
 
 it('renders detailed session information', async () => {
-  render(<RunningSessions sessions={sessions} origin={origin}/>)
+  render(<RunningSessions sessions={sessions} origin={origin} />)
   const session = sessions[0]
   const sessionRow = screen.getByText(session.id).closest('tr')
   const user = userEvent.setup()
-  await user.click(within(sessionRow as HTMLElement).getByRole('button'))
+  await user.click(within(sessionRow as HTMLElement).getByTestId('InfoIcon'))
   const dialogPane = screen.getByText('Capabilities:').closest('div')
   expect(dialogPane).toHaveTextContent('Capabilities:' + session.capabilities)
+})
+
+it('search field works as expected for normal fields', async () => {
+  const { getByPlaceholderText, getByText, queryByText } = render(<RunningSessions sessions={sessions} origin={origin} />)
+  const user = userEvent.setup()
+  await user.type(getByPlaceholderText('search sessions...'), 'browserName=edge')
+  expect(queryByText(sessions[0].id)).not.toBeInTheDocument()
+  expect(getByText(sessions[1].id)).toBeInTheDocument()
+  expect(queryByText(sessions[2].id)).not.toBeInTheDocument()
+})
+
+it('search field works as expected for capabilities', async () => {
+  const { getByPlaceholderText, getByText, queryByText } = render(<RunningSessions sessions={sessions} origin={origin} />)
+  const user = userEvent.setup()
+  await user.type(getByPlaceholderText('search sessions...'), 'capabilities,se:random_cap=test_func')
+  expect(queryByText(sessions[0].id)).not.toBeInTheDocument()
+  expect(queryByText(sessions[1].id)).not.toBeInTheDocument()
+  expect(getByText(sessions[2].id)).toBeInTheDocument()
+})
+
+it('search field works for multiple results', async () => {
+  const { getByPlaceholderText, getByText, queryByText } = render(<RunningSessions sessions={sessions} origin={origin} />)
+  const user = userEvent.setup()
+  await user.type(getByPlaceholderText('search sessions...'), 'nodeId=h9x799f4-4397-4fbb-9344-1d5a3074695e')
+  expect(queryByText(sessions[0].id)).not.toBeInTheDocument()
+  expect(getByText(sessions[1].id)).toBeInTheDocument()
+  expect(getByText(sessions[2].id)).toBeInTheDocument()
+})
+
+it('search field works for lazy search', async () => {
+  const { getByPlaceholderText, getByText, queryByText } = render(<RunningSessions sessions={sessions} origin={origin} />)
+  const user = userEvent.setup()
+  await user.type(getByPlaceholderText('search sessions...'), 'browserName')
+  expect(getByPlaceholderText('search sessions...')).toHaveValue('browserName')
+  expect(queryByText(sessions[0].id)).toBeInTheDocument()
+  expect(getByText(sessions[1].id)).toBeInTheDocument()
+  expect(getByText(sessions[2].id)).toBeInTheDocument()
 })

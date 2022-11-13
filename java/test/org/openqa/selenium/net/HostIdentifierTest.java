@@ -22,10 +22,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
 @Tag("UnitTests")
-public class HostIdentifierTest {
+class HostIdentifierTest {
 
   @Test
-  public void itWorks() {
+  void itWorks() {
     assertThat(HostIdentifier.getHostName()).isNotEmpty();
     assertThat(HostIdentifier.getHostAddress()).isNotEmpty();
   }

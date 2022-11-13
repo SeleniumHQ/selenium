@@ -24,10 +24,11 @@ import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URLEncoder;
+import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -37,6 +38,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 class JdkHttpMessages {
 
   private final ClientConfig config;
+  private static final List<String> IGNORE_HEADERS =
+    List.of("content-length", "connection", "host");
 
   public JdkHttpMessages(ClientConfig config) {
     this.config = Objects.requireNonNull(config, "Client config");
@@ -70,12 +73,11 @@ class JdkHttpMessages {
         break;
 
       case POST:
-        // Copy the content into a byte array to avoid reading the content inputstream multiple times.
-        builder = builder.POST(BodyPublishers.ofByteArray(Contents.bytes(req.getContent())));
+        builder = builder.POST(notChunkingBodyPublisher(req));
         break;
 
       case PUT:
-        builder = builder.PUT(BodyPublishers.ofByteArray(Contents.bytes(req.getContent())));
+        builder = builder.PUT(notChunkingBodyPublisher(req));
         break;
 
       default:
@@ -83,9 +85,8 @@ class JdkHttpMessages {
     }
 
     for (String name : req.getHeaderNames()) {
-      // Avoid explicitly setting content-length
-      // This prevents the IllegalArgumentException that states 'restricted header name: "Content-Length"'
-      if (name.equalsIgnoreCase("content-length")) {
+      // This prevents the IllegalArgumentException that states 'restricted header name: ...'
+      if (IGNORE_HEADERS.contains(name.toLowerCase())) {
         continue;
       }
       for (String value : req.getHeaders(name)) {
@@ -100,6 +101,27 @@ class JdkHttpMessages {
     builder.timeout(config.readTimeout());
 
     return builder.build();
+  }
+
+  /**
+   * Some drivers do not support chunked transport, we ensure the http client is not using chunked
+   * transport. This is done by using a BodyPublisher with a known size, in best case without
+   * wasting memory by buffering the request.
+   *
+   * @return a BodyPublisher with a known size
+   */
+  private BodyPublisher notChunkingBodyPublisher(HttpRequest req) {
+    String length = req.getHeader("content-length");
+
+    if (length == null) {
+      // read the data into a byte array to know the length
+      return BodyPublishers.ofByteArray(Contents.bytes(req.getContent()));
+    }
+
+    // we know the length of the request and use it
+    BodyPublisher chunking = BodyPublishers.ofInputStream(req.getContent());
+
+    return BodyPublishers.fromPublisher(chunking, Long.parseLong(length));
   }
 
   private String getRawUrl(URI baseUrl, String uri) {

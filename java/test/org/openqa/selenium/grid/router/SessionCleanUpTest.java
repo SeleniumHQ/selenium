@@ -96,7 +96,7 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class SessionCleanUpTest {
+class SessionCleanUpTest {
 
   public static final Json JSON = new Json();
   int publish;
@@ -134,7 +134,7 @@ public class SessionCleanUpTest {
   }
 
   @Test
-  public void shouldRemoveSessionAfterNodeIsShutDownGracefully() {
+  void shouldRemoveSessionAfterNodeIsShutDownGracefully() {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     CombinedHandler handler = new CombinedHandler();
 
@@ -145,7 +145,8 @@ public class SessionCleanUpTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(10),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     LocalDistributor distributor = new LocalDistributor(
@@ -158,7 +159,8 @@ public class SessionCleanUpTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      Runtime.getRuntime().availableProcessors());
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
@@ -221,7 +223,7 @@ public class SessionCleanUpTest {
     Optional<Map<String, Object>> maybeResponse =
       Optional.ofNullable(Values.get(httpResponse, Map.class));
 
-    assertThat(maybeResponse.isPresent()).isTrue();
+    assertThat(maybeResponse).isPresent();
     String rawResponse = JSON.toJson(maybeResponse.get().get("sessionId"));
     SessionId id = JSON.toType(rawResponse, SessionId.class);
 
@@ -241,7 +243,7 @@ public class SessionCleanUpTest {
   }
 
   @Test
-  public void shouldRemoveSessionAfterNodeIsDown() throws URISyntaxException {
+  void shouldRemoveSessionAfterNodeIsDown() throws URISyntaxException {
     CombinedHandler handler = new CombinedHandler();
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
 
@@ -254,7 +256,8 @@ public class SessionCleanUpTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     URI uri = new URI("http://localhost:" + PortProber.findFreePort());
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
@@ -278,7 +281,8 @@ public class SessionCleanUpTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      Runtime.getRuntime().availableProcessors());
     handler.addHandler(distributor);
     distributor.add(node);
 

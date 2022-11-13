@@ -34,15 +34,6 @@ lint_setup({
 })
 
 http_archive(
-    name = "platforms",
-    sha256 = "079945598e4b6cc075846f7fd6a9d0857c33a7afc0de868c2ccb96405225135d",
-    urls = [
-        "https://github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
-        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
-    ],
-)
-
-http_archive(
     name = "bazel_skylib",
     sha256 = "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
     urls = [
@@ -100,9 +91,9 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
-RULES_JVM_EXTERNAL_TAG = "4.3"
+RULES_JVM_EXTERNAL_TAG = "4.5"
 
-RULES_JVM_EXTERNAL_SHA = "6274687f6fc5783b589f56a2f1ed60de3ce1f99bc4e8f9edef3de43bdf7c6e74"
+RULES_JVM_EXTERNAL_SHA = "b17d7388feb9bfa7f2fa09031b32707df529f26c91ab9e5d909eb1676badd9a6"
 
 http_archive(
     name = "rules_jvm_external",
@@ -111,8 +102,7 @@ http_archive(
     ],
     patches = [
         "//java:rules_jvm_external_javadoc.patch",
-        "//java:rules_jvm_external_missing_dirs.patch",
-        "//java:rules_jvm_external_visibility.patch",
+        "//java:add_missing_dirs.patch",
     ],
     sha256 = RULES_JVM_EXTERNAL_SHA,
     strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
@@ -164,9 +154,36 @@ load("//dotnet:workspace.bzl", "selenium_register_dotnet")
 selenium_register_dotnet()
 
 http_archive(
+    name = "rules_rust",
+    sha256 = "0cc7e6b39e492710b819e00d48f2210ae626b717a3ab96e048c43ab57e61d204",
+    urls = [
+        "https://github.com/bazelbuild/rules_rust/releases/download/0.10.0/rules_rust-v0.10.0.tar.gz",
+    ],
+)
+
+load("@rules_rust//rust:repositories.bzl", "rules_rust_dependencies", "rust_register_toolchains")
+
+rules_rust_dependencies()
+
+rust_register_toolchains()
+
+load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
+
+crates_repository(
+    name = "crates",
+    cargo_lockfile = "//rust:Cargo.lock",
+    lockfile = "//rust:Cargo.Bazel.lock",
+    manifests = ["//rust:Cargo.toml"],
+)
+
+load("@crates//:defs.bzl", "crate_repositories")
+
+crate_repositories()
+
+http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "b011d6206e4e76696eda8287618a2b6375ff862317847cdbe38f8d0cd206e9ce",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.6.0/rules_nodejs-5.6.0.tar.gz"],
+    sha256 = "5aae76dced38f784b58d9776e4ab12278bc156a9ed2b1d9fcd3e39921dc88fda",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.7.1/rules_nodejs-5.7.1.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
@@ -183,7 +200,7 @@ npm_install(
     name = "npm",
     package_json = "//:package.json",
     package_lock_json = "//:package-lock.json",
-    symlink_node_modules= False
+    symlink_node_modules = False,
 )
 
 http_archive(
@@ -209,10 +226,9 @@ rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
-    sha256 = "62eeb544ff1ef41d786e329e1536c1d541bb9bcad27ae984d57f18f314018e66",
+    sha256 = "451e08a4d78988c06fa3f9306ec813b836b1d076d0f055595444ba4ff22b867f",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.6.0/rules_pkg-0.6.0.tar.gz",
-        "https://github.com/bazelbuild/rules_pkg/releases/download/0.6.0/rules_pkg-0.6.0.tar.gz",
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.7.1/rules_pkg-0.7.1.tar.gz",
     ],
 )
 
@@ -307,25 +323,21 @@ load("//common:repositories.bzl", "pin_browsers")
 pin_browsers()
 
 http_archive(
-    name = "bazelruby_rules_ruby",
-    sha256 = "43e1dc0b747d51617dcbc02c15c4a1383cb572d58bef3accc10b9c8bd1e06b62",
-    strip_prefix = "rules_ruby-2caa1f20d5ba22080af653470037c72bf219af45",
-    url = "https://github.com/bazelruby/rules_ruby/archive/2caa1f20d5ba22080af653470037c72bf219af45.tar.gz",
+    name = "rules_ruby",
+    sha256 = "bb0bffb0285ff8fa9a967fc2580ddf3b511818a6baf269dcd6c5c6076c4921d8",
+    strip_prefix = "rules_ruby-c3cefa71d0111a04c9ce0672c65d376262d8d975",
+    url = "https://github.com/p0deje/rules_ruby/archive/c3cefa71d0111a04c9ce0672c65d376262d8d975.zip",
 )
 
 load(
-    "@bazelruby_rules_ruby//ruby:deps.bzl",
-    "rules_ruby_dependencies",
-    "rules_ruby_select_sdk",
+    "@rules_ruby//ruby:deps.bzl",
+    "rb_bundle",
+    "rb_download",
 )
 
-rules_ruby_dependencies()
+rb_download(version = "2.7.6")
 
-rules_ruby_select_sdk(version = "host")
-
-load("@bazelruby_rules_ruby//ruby:defs.bzl", "ruby_bundle")
-
-ruby_bundle(
+rb_bundle(
     name = "bundle",
     srcs = [
         "//:rb/lib/selenium/devtools/version.rb",

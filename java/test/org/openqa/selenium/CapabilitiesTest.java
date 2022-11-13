@@ -29,48 +29,48 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Tag("UnitTests")
-public class CapabilitiesTest {
+class CapabilitiesTest {
 
   @Test
-  public void canCreateEmptyCapabilities() {
+  void canCreateEmptyCapabilities() {
     Capabilities caps = new ImmutableCapabilities();
     assertThat(caps.asMap()).isEmpty();
   }
 
   @Test
-  public void canCreateSinglePairCapabilities() {
+  void canCreateSinglePairCapabilities() {
     Capabilities caps = new ImmutableCapabilities("c1", "v1");
     assertThat(caps.asMap()).isEqualTo(ImmutableMap.of("c1", "v1"));
   }
 
   @Test
-  public void canCreateTwoPairCapabilities() {
+  void canCreateTwoPairCapabilities() {
     Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2);
     assertThat(caps.asMap()).isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2));
   }
 
   @Test
-  public void canCreateThreePairCapabilities() {
+  void canCreateThreePairCapabilities() {
     Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true);
     assertThat(caps.asMap()).isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true));
   }
 
   @Test
-  public void canCreateFourPairCapabilities() {
+  void canCreateFourPairCapabilities() {
     Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4");
     assertThat(caps.asMap())
       .isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4"));
   }
 
   @Test
-  public void canCreateFivePairCapabilities() {
+  void canCreateFivePairCapabilities() {
     Capabilities caps = new ImmutableCapabilities("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5");
     assertThat(caps.asMap())
       .isEqualTo(ImmutableMap.of("c1", "v1", "c2", 2, "c3", true, "c4", "v4", "c5", "v5"));
   }
 
   @Test
-  public void canCompareCapabilities() {
+  void canCompareCapabilities() {
     MutableCapabilities caps1 = new MutableCapabilities();
     MutableCapabilities caps2 = new MutableCapabilities();
     assertThat(new ImmutableCapabilities(caps2)).isEqualTo(new ImmutableCapabilities(caps1));
@@ -83,7 +83,7 @@ public class CapabilitiesTest {
   }
 
   @Test
-  public void shouldCheckKeyType() {
+  void shouldCheckKeyType() {
     Map<Object, Object> map = new HashMap<>();
     map.put(new Object(), new Object());
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -91,7 +91,7 @@ public class CapabilitiesTest {
   }
 
   @Test
-  public void canMergeImmutableCapabilities() {
+  void canMergeImmutableCapabilities() {
     Map<String, Object> map1 = ImmutableMap.of("c1", "v1", "c2", "v2");
     Map<String, Object> map2 = ImmutableMap.of("c1", "new value", "c3", "v3");
     Capabilities caps1 = new ImmutableCapabilities(map1);
@@ -106,7 +106,7 @@ public class CapabilitiesTest {
   }
 
   @Test
-  public void canMergeMutableCapabilities() {
+  void canMergeMutableCapabilities() {
     Map<String, Object> map1 = ImmutableMap.of("c1", "v1", "c2", "v2");
     Map<String, Object> map2 = ImmutableMap.of("c1", "new value", "c3", "v3");
     Capabilities caps1 = new MutableCapabilities(map1);
@@ -121,7 +121,7 @@ public class CapabilitiesTest {
   }
 
   @Test
-  public void ensureHashCodesAreEqual() {
+  void ensureHashCodesAreEqual() {
     Capabilities one = new ImmutableCapabilities("key1", "value1", "key2", "value2");
     Capabilities two = new MutableCapabilities(ImmutableMap.of("key1", "value1", "key2", "value2"));
     Capabilities three = new PersistentCapabilities(new ImmutableCapabilities("key2", "value2"))

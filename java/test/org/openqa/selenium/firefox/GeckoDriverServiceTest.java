@@ -31,10 +31,10 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @Tag("UnitTests")
-public class GeckoDriverServiceTest {
+class GeckoDriverServiceTest {
 
   @Test
-  public void builderPassesTimeoutToDriverService() {
+  void builderPassesTimeoutToDriverService() {
     File exe = new File("someFile");
     Duration defaultTimeout = Duration.ofSeconds(20);
     Duration customTimeout = Duration.ofSeconds(60);

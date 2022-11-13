@@ -120,7 +120,6 @@ std::string BrowserFactory::browser_command_line_switches(void) {
 void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   LOG(TRACE) << "Entering BrowserFactory::Initialize";
   this->ignore_protected_mode_settings_ = settings.ignore_protected_mode_settings;
-  this->ignore_zoom_setting_ = settings.ignore_zoom_setting;
   this->browser_attach_timeout_ = settings.browser_attach_timeout;
   this->force_createprocess_api_ = settings.force_create_process_api;
   this->force_shell_windows_api_ = settings.force_shell_windows_api;
@@ -128,6 +127,7 @@ void BrowserFactory::Initialize(BrowserFactorySettings settings) {
   this->browser_command_line_switches_ = StringUtilities::ToWString(settings.browser_command_line_switches);
   this->initial_browser_url_ = StringUtilities::ToWString(settings.initial_browser_url);
   this->edge_ie_mode_ = settings.attach_to_edge_ie || this->ie_redirects_edge_;
+  this->ignore_zoom_setting_ = settings.ignore_zoom_setting || this->edge_ie_mode_;
   LOG(DEBUG) << "path before was " << settings.edge_executable_path << "\n";
   this->edge_executable_location_ = StringUtilities::ToWString(settings.edge_executable_path);
   LOG(DEBUG) << "path after was " << this->edge_executable_location_.c_str() << "\n";
@@ -406,11 +406,21 @@ void BrowserFactory::LaunchEdgeInIEMode(PROCESS_INFORMATION* proc_info,
     this->edge_user_data_dir_ = temp_dir;
   }
 
+  // Prevent Edge from showing first run experience tab.
   executable_and_url.append(L" --no-first-run");
+
+  // Disable Edge prelaunch and other background processes on startup.
   executable_and_url.append(L" --no-service-autorun");
+
+  // Disable profile sync and implicit MS account sign-in.
   executable_and_url.append(L" --disable-sync");
   executable_and_url.append(L" --disable-features=msImplicitSignin");
+
+  // ALways allow popups for testing.
   executable_and_url.append(L" --disable-popup-blocking");
+
+  // Ensure IE Mode tabs have a chance to shut down cleanly before the Edge process exits.
+  executable_and_url.append(L" --enable-features=msIEModeAlwaysWaitForUnload");
 
   executable_and_url.append(L" ");
   executable_and_url.append(this->initial_browser_url_);

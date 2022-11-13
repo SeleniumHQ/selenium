@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class IgnoreComparatorUnitTest {
+class IgnoreComparatorUnitTest {
 
   private static final Platform CURRENT_PLATFORM = Platform.MAC;
   private static final Platform OTHER_PLATFORM = Platform.WINDOWS;
@@ -45,20 +45,20 @@ public class IgnoreComparatorUnitTest {
   IgnoreComparator ignoreComparator = new IgnoreComparator();
 
   @Test
-  public void shouldNotIgnoreIfNothingBeingIgnored() {
+  void shouldNotIgnoreIfNothingBeingIgnored() {
     assertFalse(new IgnoreComparator().shouldIgnore((Ignore) null));
     assertFalse(new IgnoreComparator().shouldIgnore((IgnoreList) null));
   }
 
   @Test
-  public void shouldIgnoreOnlyDriverBeingIgnored() {
+  void shouldIgnoreOnlyDriverBeingIgnored() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
       Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
   @Test
-  public void shouldIgnoreDriverAll() {
+  void shouldIgnoreDriverAll() {
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
       Collections.singleton(Browser.ALL), CURRENT_PLATFORM_SET)));
   }
@@ -72,35 +72,35 @@ public class IgnoreComparatorUnitTest {
   }
 
   @Test
-  public void shouldNotIgnoreOtherBrowser() {
+  void shouldNotIgnoreOtherBrowser() {
     ignoreComparator.addDriver(SAFARI);
     assertFalse(ignoreComparator.shouldIgnore(ignoreForDriver(
       Collections.singleton(IE), CURRENT_PLATFORM_SET)));
   }
 
   @Test
-  public void shouldIgnoreEnabledNativeEventsIfIgnoringEnabled() {
+  void shouldIgnoreEnabledNativeEventsIfIgnoringEnabled() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
       Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
   @Test
-  public void shouldIgnoreDisabledNativeEventsIfIgnoringDisabled() {
+  void shouldIgnoreDisabledNativeEventsIfIgnoringDisabled() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
       Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
   @Test
-  public void shouldIgnoreEnabledNativeEventsIfIgnoringAll() {
+  void shouldIgnoreEnabledNativeEventsIfIgnoringAll() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
       Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
   @Test
-  public void shouldIgnoreDisabledNativeEventsIfIgnoringAll() {
+  void shouldIgnoreDisabledNativeEventsIfIgnoringAll() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
       Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));

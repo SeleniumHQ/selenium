@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JdbcBackedSessionMapTest {
+class JdbcBackedSessionMapTest {
   private static Connection connection;
   private static EventBus bus;
   private static final Tracer tracer = DefaultTestTracer.createTracer();
@@ -63,7 +63,7 @@ public class JdbcBackedSessionMapTest {
   }
 
   @Test
-  public void shouldThrowNoSuchSessionExceptionIfSessionDoesNotExists() {
+  void shouldThrowNoSuchSessionExceptionIfSessionDoesNotExists() {
     assertThrows(NoSuchSessionException.class, () -> {
       SessionMap sessions = getSessionMap();
 
@@ -72,14 +72,14 @@ public class JdbcBackedSessionMapTest {
   }
 
   @Test
-  public void shouldThrowIllegalArgumentExceptionIfConnectionObjectIsNull() {
+  void shouldThrowIllegalArgumentExceptionIfConnectionObjectIsNull() {
     assertThrows(IllegalArgumentException.class, () -> {
       SessionMap sessions = new JdbcBackedSessionMap(tracer, null, bus);
     });
   }
 
   @Test
-  public void shouldThrowNoSuchSessionExceptionIfTableDoesNotExist() throws SQLException {
+  void shouldThrowNoSuchSessionExceptionIfTableDoesNotExist() throws SQLException {
     assertThrows(JdbcException.class, () -> {
       Connection connection2 = DriverManager.getConnection("jdbc:hsqldb:mem:testdb2", "SA", "");
 
@@ -89,7 +89,7 @@ public class JdbcBackedSessionMapTest {
     });
   }
   @Test
-  public void canCreateAJdbcBackedSessionMap() throws URISyntaxException {
+  void canCreateAJdbcBackedSessionMap() throws URISyntaxException {
     SessionMap sessions = getSessionMap();
 
     Session expected = new Session(
@@ -108,7 +108,7 @@ public class JdbcBackedSessionMapTest {
   }
 
   @Test
-  public void shouldBeAbleToRemoveSessions() throws URISyntaxException {
+  void shouldBeAbleToRemoveSessions() throws URISyntaxException {
     SessionMap sessions = getSessionMap();
 
     Session expected = new Session(

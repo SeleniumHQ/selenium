@@ -41,7 +41,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class WebDriverFixture {
+class WebDriverFixture {
 
   public final CommandExecutor executor;
   public final RemoteWebDriver driver;

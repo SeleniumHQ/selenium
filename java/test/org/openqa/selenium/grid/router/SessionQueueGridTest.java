@@ -78,7 +78,7 @@ import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class SessionQueueGridTest {
+class SessionQueueGridTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
@@ -111,7 +111,8 @@ public class SessionQueueGridTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
       Duration.ofSeconds(60),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
@@ -139,7 +140,8 @@ public class SessionQueueGridTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      Runtime.getRuntime().availableProcessors());
     handler.addHandler(distributor);
 
     distributor.add(localNode);
@@ -151,7 +153,7 @@ public class SessionQueueGridTest {
   }
 
   @Test
-  public void shouldBeAbleToCreateMultipleSessions() {
+  void shouldBeAbleToCreateMultipleSessions() {
     ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(2);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -179,14 +181,14 @@ public class SessionQueueGridTest {
   }
 
   @Test
-  public void shouldBeAbleToRejectRequest() {
+  void shouldBeAbleToRejectRequest() {
     // Grid has no slots for the requested capabilities
     HttpResponse httpResponse = createSession(ImmutableMap.of("browserName", "burger"));
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @Test
-  public void shouldBeAbleToClearQueue() {
+  void shouldBeAbleToClearQueue() {
     ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(1);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();

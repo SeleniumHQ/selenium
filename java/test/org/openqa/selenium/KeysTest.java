@@ -27,42 +27,42 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 
 @Tag("UnitTests")
-public class KeysTest {
+class KeysTest {
 
   @Test
-  public void charAtPosition0ReturnsKeyCode() {
+  void charAtPosition0ReturnsKeyCode() {
     assertThat(Keys.LEFT.charAt(0)).isNotEqualTo(0);
   }
 
   @Test
-  public void charAtOtherPositionReturnsZero() {
+  void charAtOtherPositionReturnsZero() {
     assertThat(Keys.LEFT.charAt(10)).isEqualTo((char) 0);
   }
 
   @Test
-  public void lengthIsAlwaysOne() {
+  void lengthIsAlwaysOne() {
     assertThat(LEFT.length()).isEqualTo(1);
   }
 
   @Test
-  public void validSubSequence() {
+  void validSubSequence() {
     assertThat(String.valueOf(LEFT)).isEqualTo(LEFT.subSequence(0, 1));
   }
 
   @Test
-  public void invalidSubSequenceThrows() {
+  void invalidSubSequenceThrows() {
     assertThatExceptionOfType(IndexOutOfBoundsException.class)
         .isThrownBy(() -> LEFT.subSequence(-1, 10));
   }
 
   @Test
-  public void buildChord() {
+  void buildChord() {
     CharSequence[] sequences = {"foo", Keys.LEFT};
     assertThat(chord(sequences)).isEqualTo("foo\uE012\uE000");
   }
 
   @Test
-  public void keyForCharacterCode() {
+  void keyForCharacterCode() {
     Keys key = Keys.LEFT;
     assertThat((CharSequence) getKeyFromUnicode(key.charAt(0))).isEqualTo(key);
   }

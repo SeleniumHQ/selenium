@@ -62,23 +62,23 @@ import static org.openqa.selenium.logging.LogType.DRIVER;
 import static org.openqa.selenium.logging.LogType.SERVER;
 
 @Tag("UnitTests")
-public class JsonTest {
+class JsonTest {
 
   @Test
-  public void canReadBooleans() {
+  void canReadBooleans() {
     assertThat((Boolean) new Json().toType("true", Boolean.class)).isTrue();
     assertThat((Boolean) new Json().toType("false", Boolean.class)).isFalse();
   }
 
   @Test
-  public void canReadANumber() {
+  void canReadANumber() {
     assertThat((Number) new Json().toType("42", Number.class)).isEqualTo(Long.valueOf(42));
     assertThat((Integer) new Json().toType("42", Integer.class)).isEqualTo(Integer.valueOf(42));
     assertThat((Double) new Json().toType("42", Double.class)).isEqualTo(Double.valueOf(42));
   }
 
   @Test
-  public void canRoundTripNumbers() {
+  void canRoundTripNumbers() {
     Map<String, Object> original = ImmutableMap.of(
         "options", ImmutableMap.of("args", Arrays.asList(1L, "hello")));
 
@@ -90,7 +90,7 @@ public class JsonTest {
   }
 
   @Test
-  public void roundTripAFirefoxOptions() {
+  void roundTripAFirefoxOptions() {
     Map<String, Object> caps = ImmutableMap.of(
         "moz:firefoxOptions", ImmutableMap.of(
             "prefs", ImmutableMap.of("foo.bar", 1)));
@@ -104,7 +104,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldCoerceAListOfCapabilitiesIntoSomethingMutable() {
+  void shouldCoerceAListOfCapabilitiesIntoSomethingMutable() {
     // This is needed since Grid expects each of the capabilities to be mutable
     List<Capabilities> expected = Arrays.asList(
         new ImmutableCapabilities("cheese", "brie"),
@@ -119,7 +119,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldUseBeanSettersToPopulateFields() {
+  void shouldUseBeanSettersToPopulateFields() {
     Map<String, String> map = ImmutableMap.of("name", "fishy");
 
     Json json = new Json();
@@ -130,7 +130,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldAllowUserToPopulateFieldsDirectly() {
+  void shouldAllowUserToPopulateFieldsDirectly() {
     Map<String, String> map = ImmutableMap.of("theName", "fishy");
 
     Json json = new Json();
@@ -141,7 +141,7 @@ public class JsonTest {
   }
 
   @Test
-  public void settingFinalFieldsShouldWork() {
+  void settingFinalFieldsShouldWork() {
     Map<String, String> map = ImmutableMap.of("theName", "fishy");
 
     Json json = new Json();
@@ -152,14 +152,14 @@ public class JsonTest {
   }
 
   @Test
-  public void canConstructASimpleString() {
+  void canConstructASimpleString() {
     String text = new Json().toType("\"cheese\"", String.class);
 
     assertThat(text).isEqualTo("cheese");
   }
 
   @Test
-  public void canPopulateAMap() {
+  void canPopulateAMap() {
     String raw = "{\"cheese\": \"brie\", \"foodstuff\": \"cheese\"}";
 
     Map<String, String> map = new Json().toType(raw, Map.class);
@@ -170,7 +170,7 @@ public class JsonTest {
   }
 
   @Test
-  public void canPopulateAMapThatContainsNull() {
+  void canPopulateAMapThatContainsNull() {
     String raw = "{\"foo\": null}";
 
     Map<?,?> converted = new Json().toType(raw, Map.class);
@@ -180,7 +180,7 @@ public class JsonTest {
   }
 
   @Test
-  public void canPopulateASimpleBean() {
+  void canPopulateASimpleBean() {
     String raw = "{\"value\": \"time\"}";
 
     SimpleBean bean = new Json().toType(raw, SimpleBean.class);
@@ -188,7 +188,7 @@ public class JsonTest {
   }
 
   @Test
-  public void canNotPopulateAnObjectOfAClassWithNoDefaultConstructor() {
+  void canNotPopulateAnObjectOfAClassWithNoDefaultConstructor() {
     String raw = "{\"value\": \"time\"}";
 
     assertThatExceptionOfType(JsonException.class)
@@ -201,7 +201,7 @@ public class JsonTest {
   }
 
   @Test
-  public void willSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
+  void willSilentlyDiscardUnusedFieldsWhenPopulatingABean() {
     String raw = "{\"value\": \"time\", \"frob\": \"telephone\"}";
 
     SimpleBean bean = new Json().toType(raw, SimpleBean.class);
@@ -210,7 +210,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldSetPrimitiveValuesToo() {
+  void shouldSetPrimitiveValuesToo() {
     String raw = "{\"magicNumber\": 3}";
 
     Map<?,?> map = new Json().toType(raw, Map.class);
@@ -219,7 +219,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldBeAbleToReadAnInstant() {
+  void shouldBeAbleToReadAnInstant() {
     // We will lose the nanoseconds
     Instant now = Instant.ofEpochMilli(System.currentTimeMillis());
     String raw = String.valueOf(now.toEpochMilli());
@@ -230,7 +230,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldPopulateFieldsOnNestedBeans() {
+  void shouldPopulateFieldsOnNestedBeans() {
     String raw = "{\"name\": \"frank\", \"bean\": {\"value\": \"lots\"}}";
 
     ContainingBean bean = new Json().toType(raw, ContainingBean.class);
@@ -240,7 +240,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldProperlyFillInACapabilitiesObject() {
+  void shouldProperlyFillInACapabilitiesObject() {
     DesiredCapabilities capabilities = new DesiredCapabilities(CapabilityType.BROWSER_NAME,
                                                                CapabilityType.BROWSER_VERSION,
                                                                Platform.ANY);
@@ -254,7 +254,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldUseAMapToRepresentComplexObjects() {
+  void shouldUseAMapToRepresentComplexObjects() {
     String toModel = "{\"thing\": \"hairy\", \"hairy\": true}";
 
     Map<?,?> modelled = new Json().toType(toModel, Object.class);
@@ -262,7 +262,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldConvertAResponseWithAnElementInIt() {
+  void shouldConvertAResponseWithAnElementInIt() {
     String json =
         "{\"value\":{\"value\":\"\",\"text\":\"\",\"selected\":false,\"enabled\":true,\"id\":\"three\"},\"context\":\"con\",\"sessionId\":\"sess\"}";
     Response converted = new Json().toType(json, Response.class);
@@ -272,13 +272,13 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
+  void shouldBeAbleToCopeWithStringsThatLookLikeBooleans() {
     String json = "{\"value\":\"false\",\"context\":\"foo\",\"sessionId\":\"1210083863107\"}";
     new Json().toType(json, Response.class);
   }
 
   @Test
-  public void shouldBeAbleToSetAnObjectToABoolean() {
+  void shouldBeAbleToSetAnObjectToABoolean() {
     String json = "{\"value\":true,\"context\":\"foo\",\"sessionId\":\"1210084658750\"}";
 
     Response response = new Json().toType(json, Response.class);
@@ -287,7 +287,7 @@ public class JsonTest {
   }
 
   @Test
-  public void canHandleValueBeingAnArray() {
+  void canHandleValueBeingAnArray() {
     String[] value = {"Cheese", "Peas"};
 
     Response response = new Response();
@@ -304,7 +304,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldConvertObjectsInArraysToMaps() {
+  void shouldConvertObjectsInArraysToMaps() {
     Date date = new Date();
     Cookie cookie = new Cookie("foo", "bar", "localhost", "/rooted", date, true, true);
 
@@ -325,7 +325,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldConvertAnArrayBackIntoAnArray() {
+  void shouldConvertAnArrayBackIntoAnArray() {
     Exception e = new Exception();
     String converted = new Json().toJson(e);
 
@@ -336,7 +336,7 @@ public class JsonTest {
   }
 
   @Test
-  public void sShouldBeAbleToReconstituteASessionId() {
+  void sShouldBeAbleToReconstituteASessionId() {
     String json = new Json().toJson(new SessionId("id"));
     SessionId sessionId = new Json().toType(json, SessionId.class);
 
@@ -344,7 +344,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldBeAbleToConvertACommand() {
+  void shouldBeAbleToConvertACommand() {
     SessionId sessionId = new SessionId("session id");
     Command original = new Command(
         sessionId,
@@ -361,7 +361,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldConvertCapabilitiesToAMapAndIncludeCustomValues() {
+  void shouldConvertCapabilitiesToAMapAndIncludeCustomValues() {
     Capabilities caps = new ImmutableCapabilities("furrfu", "fishy");
 
     String raw = new Json().toJson(caps);
@@ -371,7 +371,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldParseCapabilitiesWithLoggingPreferences() {
+  void shouldParseCapabilitiesWithLoggingPreferences() {
     String caps = String.format(
         "{\"%s\": {" +
         "\"browser\": \"WARNING\"," +
@@ -392,7 +392,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
+  void shouldNotParseQuotedJsonObjectsAsActualJsonObjects() {
     String jsonStr = "{\"inner\":\"{\\\"color\\\":\\\"green\\\",\\\"number\\\":123}\"}";
 
     System.out.println(jsonStr);
@@ -407,7 +407,7 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldBeAbleToConvertASelenium3CommandToASelenium2Command() {
+  void shouldBeAbleToConvertASelenium3CommandToASelenium2Command() {
     SessionId expectedId = new SessionId("thisisakey");
 
     // In selenium 2, the sessionId is an object. In selenium 3, it's a straight string.
@@ -421,19 +421,19 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldCallFromJsonMethodIfPresent() {
+  void shouldCallFromJsonMethodIfPresent() {
     JsonAware res = new Json().toType("\"converted\"", JsonAware.class);
     assertThat(res.convertedValue).isEqualTo("converted");
   }
 
   @Test
-  public void fromJsonMethodNeedNotBePublic() {
+  void fromJsonMethodNeedNotBePublic() {
     JsonAware res = new Json().toType("\"converted\"", PrivatelyAware.class);
     assertThat(res.convertedValue).isEqualTo("converted");
   }
 
   @Test
-  public void fromJsonMethodNeedNotOnlyAcceptAString() {
+  void fromJsonMethodNeedNotOnlyAcceptAString() {
     Json json = new Json();
     String raw = json.toJson(ImmutableMap.of("cheese", "truffled brie"));
     MapTakingFromJsonMethod res = json.toType(raw, MapTakingFromJsonMethod.class);
@@ -443,7 +443,7 @@ public class JsonTest {
 
   // Test for issue 8187
   @Test
-  public void decodingResponseWithNumbersInValueObject() {
+  void decodingResponseWithNumbersInValueObject() {
     Response response = new Json().toType(
         "{\"status\":0,\"value\":{\"width\":96,\"height\":46.19140625}}",
         Response.class);
@@ -456,31 +456,31 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldRecognizeNumericStatus() {
+  void shouldRecognizeNumericStatus() {
     Response response = new Json().toType(
         "{\"status\":0,\"value\":\"cheese\"}",
         Response.class);
 
-    assertThat(response.getStatus().intValue()).isEqualTo(0);
+    assertThat(response.getStatus().intValue()).isZero();
     assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
     String value = (String) response.getValue();
     assertThat(value).isEqualTo("cheese");
   }
 
   @Test
-  public void shouldRecognizeStringStatus() {
+  void shouldRecognizeStringStatus() {
     Response response = new Json().toType(
         "{\"status\":\"success\",\"value\":\"cheese\"}",
         Response.class);
 
-    assertThat(response.getStatus().intValue()).isEqualTo(0);
+    assertThat(response.getStatus().intValue()).isZero();
     assertThat(response.getState()).isEqualTo(new ErrorCodes().toState(0));
     String value = (String) response.getValue();
     assertThat(value).isEqualTo("cheese");
   }
 
   @Test
-  public void shouldConvertInvalidSelectorError() {
+  void shouldConvertInvalidSelectorError() {
     Response response = new Json().toType(
         "{\"state\":\"invalid selector\",\"message\":\"invalid xpath selector\"}",
         Response.class);
@@ -489,31 +489,31 @@ public class JsonTest {
   }
 
   @Test
-  public void shouldRecognizeStringState() {
+  void shouldRecognizeStringState() {
     Response response = new Json()
         .toType(
             "{\"state\":\"success\",\"value\":\"cheese\"}",
             Response.class);
     assertThat(response.getState()).isEqualTo("success");
-    assertThat(response.getStatus().intValue()).isEqualTo(0);
+    assertThat(response.getStatus().intValue()).isZero();
     String value = (String) response.getValue();
     assertThat(value).isEqualTo("cheese");
   }
 
   @Test
-  public void noStatusShouldBeNullInResponseObject() {
+  void noStatusShouldBeNullInResponseObject() {
     Response response = new Json().toType("{\"value\":\"cheese\"}", Response.class);
     assertThat(response.getStatus()).isNull();
   }
 
   @Test
-  public void canConvertAnEnumWithALowerCaseValue() {
+  void canConvertAnEnumWithALowerCaseValue() {
     Proxy.ProxyType type = new Json().toType("\"pac\"", Proxy.ProxyType.class);
     assertThat(type).isEqualTo(PAC);
   }
 
   @Test
-  public void canCoerceSimpleValuesToStrings() {
+  void canCoerceSimpleValuesToStrings() {
     Map<String, Object> value = ImmutableMap.of(
         "boolean", true,
         "integer", 42,

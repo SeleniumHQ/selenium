@@ -79,7 +79,7 @@ public class WebDriverBackedSeleniumHandlerTest {
   }
 
   @Test
-  public void searchGoogle() {
+  void searchGoogle() {
     Selenium selenium = new DefaultSelenium("localhost", port, "*chrome", appServer.whereIs("/"));
     selenium.start();
 

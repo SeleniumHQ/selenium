@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestElementIndex extends InternalSelenseTestBase {
   @Test
-  public void testElementIndex() {
+  void testElementIndex() {
     selenium.open("test_element_order.html");
     assertEquals(selenium.getElementIndex("d2"), "1");
     assertEquals(selenium.getElementIndex("d1.1.1"), "0");

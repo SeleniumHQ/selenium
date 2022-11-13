@@ -22,10 +22,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 
-public class AtomsInjectionTest extends JupiterTestBase {
+class AtomsInjectionTest extends JupiterTestBase {
 
   @Test
-  public void testInjectingAtomShouldNotTrampleOnUnderscoreGlobal() {
+  void testInjectingAtomShouldNotTrampleOnUnderscoreGlobal() {
     driver.get(pages.underscorePage);
     driver.findElement(By.tagName("body"));
     assertThat(((JavascriptExecutor) driver).executeScript("return _.join('');")).isEqualTo("123");

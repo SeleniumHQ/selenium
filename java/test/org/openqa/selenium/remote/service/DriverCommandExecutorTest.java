@@ -42,12 +42,12 @@ import java.net.ConnectException;
 import java.net.URL;
 
 @Tag("UnitTests")
-public class DriverCommandExecutorTest {
+class DriverCommandExecutorTest {
 
   private static final String DRIVER_SERVER_URL = "http://a.base.url:3000";
 
   @Test
-  public void shouldStartDriverServerOnTheNewSession() throws IOException {
+  void shouldStartDriverServerOnTheNewSession() throws IOException {
     Command command = new Command(null, DriverCommand.NEW_SESSION(new ImmutableCapabilities()));
     Response response = new Response(new SessionId("foo"));
     DriverService service = mock(DriverService.class);
@@ -63,7 +63,7 @@ public class DriverCommandExecutorTest {
   }
 
   @Test
-  public void shouldNotStartDriverServerOnGetCommand() throws IOException {
+  void shouldNotStartDriverServerOnGetCommand() throws IOException {
     Command command = new Command(new SessionId("some id"), DriverCommand.GET("https://example.com"));
     Response response = new Response();
     DriverService service = mock(DriverService.class);
@@ -79,7 +79,7 @@ public class DriverCommandExecutorTest {
   }
 
   @Test
-  public void shouldStopDriverServerOnExceptionForTheNewSessionCommand() throws IOException {
+  void shouldStopDriverServerOnExceptionForTheNewSessionCommand() throws IOException {
     Command command = new Command(null, DriverCommand.NEW_SESSION(new ImmutableCapabilities()));
     DriverService service = mock(DriverService.class);
     when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
@@ -95,7 +95,7 @@ public class DriverCommandExecutorTest {
   }
 
   @Test
-  public void shouldNotStopDriverServerOnExceptionForGetCommand() throws IOException {
+  void shouldNotStopDriverServerOnExceptionForGetCommand() throws IOException {
     Command command = new Command(new SessionId("some id"), DriverCommand.GET("https://example.com"));
     DriverService service = mock(DriverService.class);
     when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
@@ -111,7 +111,7 @@ public class DriverCommandExecutorTest {
   }
 
   @Test
-  public void shouldNotStopDriverServerOnExceptionForTheNewSessionCommandIfItWasAlreadyRunning() throws IOException {
+  void shouldNotStopDriverServerOnExceptionForTheNewSessionCommandIfItWasAlreadyRunning() throws IOException {
     Command command = new Command(null, DriverCommand.NEW_SESSION(new ImmutableCapabilities()));
     DriverService service = mock(DriverService.class);
     when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));
@@ -127,7 +127,7 @@ public class DriverCommandExecutorTest {
   }
 
   @Test
-  public void shouldNotStopDriverServerOnExceptionForTheNewSessionCommandIfItDied() throws IOException {
+  void shouldNotStopDriverServerOnExceptionForTheNewSessionCommandIfItDied() throws IOException {
     Command command = new Command(null, DriverCommand.NEW_SESSION(new ImmutableCapabilities()));
     DriverService service = mock(DriverService.class);
     when(service.getUrl()).thenReturn(new URL("http://a.base.url:3000"));

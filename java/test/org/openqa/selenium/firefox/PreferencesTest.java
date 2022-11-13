@@ -17,18 +17,17 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @Tag("UnitTests")
-public class PreferencesTest {
+class PreferencesTest {
 
   private static final String emptyDefaults = "{\"mutable\": {}, \"frozen\": {}}";
   private StringReader defaults;
@@ -39,17 +38,17 @@ public class PreferencesTest {
   }
 
   @Test
-  public void stringifyVsStringFormat() {
+  void stringifyVsStringFormat() {
     assertThat(String.format("\"%s\"", "stringifyMe")).isEqualTo("\"stringifyMe\"");
   }
 
   @Test
-  public void stringFormatOfStringify() {
+  void stringFormatOfStringify() {
     assertThat(String.format("\"%s\"", "\"stringifyMe\"")).isEqualTo("\"\"stringifyMe\"\"");
   }
 
   @Test
-  public void detectStringification() {
+  void detectStringification() {
     Preferences a = new Preferences(defaults);
 
     assertThat(canSet(a, "\"\"")).as("Empty String").isFalse();
@@ -64,7 +63,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void parsePreferences_boolean() {
+  void parsePreferences_boolean() {
     StringReader lines = new StringReader("user_pref(\"extensions.update.notifyUser\", false);");
     Preferences prefs = new Preferences(defaults, lines);
 
@@ -72,7 +71,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void parsePreferences_integer() {
+  void parsePreferences_integer() {
     StringReader lines = new StringReader("user_pref(\"dom.max_script_run_time\", 34);");
     Preferences prefs = new Preferences(defaults, lines);
 
@@ -80,7 +79,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void parsePreferences_string() {
+  void parsePreferences_string() {
     String prefWithComma = "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_1 like Mac OS X; en-us) "
         + "AppleWebKit/532.9 (KHTML, like Gecko)";
     String prefWithQuotes = "lpr ${MOZ_PRINTER_NAME:+-P\"$MOZ_PRINTER_NAME\"}";
@@ -95,7 +94,7 @@ public class PreferencesTest {
   }
 
   @Test
-  public void parsePreferences_multiline() {
+  void parsePreferences_multiline() {
     Reader lines = new StringReader(
         "user_pref(\"extensions.update.notifyUser\", false);\n" +
             "user_pref(\"dom.max_script_run_time\", 32);");
@@ -106,37 +105,13 @@ public class PreferencesTest {
   }
 
   @Test
-  public void cannotOverrideAFrozenPreference() {
-    StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
-    Preferences preferences = new Preferences(reader);
-    preferences.setPreference("frozen.pref", false);
-
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(preferences::checkForChangesInFrozenPreferences)
-        .withMessage("Preference frozen.pref may not be overridden: frozen value=true, requested value=false");
-  }
-
-  @Test
-  public void canOverrideAFrozenPreferenceWithTheFrozenValue() {
+  void canOverrideAFrozenPreferenceWithTheFrozenValue() {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
 
     preferences.setPreference("frozen.pref", true);
 
     assertThat(preferences.getPreference("frozen.pref")).isEqualTo(true);
-  }
-
-  @Test
-  public void canOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
-    Preferences preferences = new Preferences(defaults);
-    preferences.setPreference("dom.max_script_run_time", 29);
-
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(preferences::checkForChangesInFrozenPreferences)
-        .withMessage("dom.max_script_run_time must be == 0 || >= 30");
-
-    preferences.setPreference("dom.max_script_run_time", 31);
-    preferences.setPreference("dom.max_script_run_time", 0);
   }
 
   private boolean canSet(Preferences pref, String value) {

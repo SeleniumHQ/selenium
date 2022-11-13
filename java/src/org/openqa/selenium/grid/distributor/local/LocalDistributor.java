@@ -102,6 +102,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -167,15 +168,8 @@ public class LocalDistributor extends Distributor implements Closeable {
         return thread;
       });
 
-  private final Executor sessionCreatorExecutor = Executors.newFixedThreadPool(
-    Runtime.getRuntime().availableProcessors(),
-    r -> {
-      Thread thread = new Thread(r);
-      thread.setName("Local Distributor - Session Creation");
-      thread.setDaemon(true);
-      return thread;
-    }
-  );
+  private final Executor sessionCreatorExecutor;
+
   private final NewSessionQueue sessionQueue;
 
   private final boolean rejectUnsupportedCaps;
@@ -190,7 +184,8 @@ public class LocalDistributor extends Distributor implements Closeable {
     Secret registrationSecret,
     Duration healthcheckInterval,
     boolean rejectUnsupportedCaps,
-    Duration sessionRequestRetryInterval) {
+    Duration sessionRequestRetryInterval,
+    int newSessionThreadPoolSize) {
     super(tracer, clientFactory, registrationSecret);
     this.tracer = Require.nonNull("Tracer", tracer);
     this.bus = Require.nonNull("Event bus", bus);
@@ -215,6 +210,16 @@ public class LocalDistributor extends Distributor implements Closeable {
         register(nodeStatus);
       }
     }));
+
+    sessionCreatorExecutor =  Executors.newFixedThreadPool(
+      newSessionThreadPoolSize,
+      r -> {
+        Thread thread = new Thread(r);
+        thread.setName("Local Distributor - Session Creation");
+        thread.setDaemon(true);
+        return thread;
+      }
+    );
 
     NewSessionRunnable newSessionRunnable = new NewSessionRunnable();
     bus.addListener(NodeDrainComplete.listener(this::remove));
@@ -261,7 +266,8 @@ public class LocalDistributor extends Distributor implements Closeable {
       secretOptions.getRegistrationSecret(),
       distributorOptions.getHealthCheckInterval(),
       distributorOptions.shouldRejectUnsupportedCaps(),
-      newSessionQueueOptions.getSessionRequestRetryInterval());
+      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      distributorOptions.getNewSessionThreadPoolSize());
   }
 
   @Override
@@ -753,7 +759,7 @@ public class LocalDistributor extends Distributor implements Closeable {
         // starting the session, we just put the request back on the queue.
         // This does mean, however, that under high contention, we might end
         // up starving a session request.
-        Set<Capabilities> stereotypes =
+        Map<Capabilities, Long> stereotypes =
           getAvailableNodes()
             .stream()
             .filter(NodeStatus::hasCapacity)
@@ -763,15 +769,15 @@ public class LocalDistributor extends Distributor implements Closeable {
                   .getSlots()
                   .stream()
                   .map(Slot::getStereotype)
-                  .collect(Collectors.toSet()))
+                  .collect(Collectors.toList()))
             .flatMap(Collection::stream)
-            .collect(Collectors.toSet());
+            .collect(Collectors.groupingBy(ImmutableCapabilities::new, Collectors.counting()));
 
         if (!stereotypes.isEmpty()) {
-          Optional<SessionRequest> maybeRequest = sessionQueue.getNextAvailable(stereotypes);
-          maybeRequest.ifPresent(
+          List<SessionRequest> matchingRequests = sessionQueue.getNextAvailable(stereotypes);
+          matchingRequests.forEach(
             req -> sessionCreatorExecutor.execute(() -> handleNewSessionRequest(req)));
-          loop = maybeRequest.isPresent();
+          loop = !matchingRequests.isEmpty();
         } else {
           loop = false;
         }

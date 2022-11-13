@@ -2,19 +2,19 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.79.Final"
-    opentelemetry_version = "1.17.0"
-    junit_jupiter_version = "5.8.2"
-    junit_platform_version = "1.8.2"
+    netty_version = "4.1.84.Final"
+    opentelemetry_version = "1.19.0"
+    junit_jupiter_version = "5.9.1"
+    junit_platform_version = "1.9.1"
 
     maven_install(
         artifacts = [
             "com.beust:jcommander:1.82",
-            "com.github.javaparser:javaparser-core:3.24.4",
+            "com.github.javaparser:javaparser-core:3.24.7",
             maven.artifact(
                 group = "com.github.spotbugs",
                 artifact = "spotbugs",
-                version = "4.7.1",
+                version = "4.7.3",
                 exclusions = [
                     "org.slf4j:slf4j-api",
                 ],
@@ -24,10 +24,10 @@ def selenium_java_deps():
             "com.google.auto:auto-common:1.2.1",
             "com.google.auto.service:auto-service:1.0.1",
             "com.google.auto.service:auto-service-annotations:1.0.1",
-            "com.graphql-java:graphql-java:19.1",
+            "com.graphql-java:graphql-java:19.2",
             "com.graphql-java:java-dataloader:3.2.0",
-            "io.grpc:grpc-context:1.49.0",
-            "io.lettuce:lettuce-core:6.2.0.RELEASE",
+            "io.grpc:grpc-context:1.50.2",
+            "io.lettuce:lettuce-core:6.2.1.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
             "io.netty:netty-codec-http:%s" % netty_version,
@@ -78,23 +78,31 @@ def selenium_java_deps():
             "org.junit.platform:junit-platform-engine:%s" % junit_platform_version,
             "org.junit.platform:junit-platform-suite-engine:%s" % junit_platform_version,
             "org.junit.platform:junit-platform-suite-api:%s" % junit_platform_version,
-            "net.bytebuddy:byte-buddy:1.12.14",
-            "dev.failsafe:failsafe:3.2.4",
-            "net.sourceforge.htmlunit:htmlunit-core-js:2.64.0",
+            "net.bytebuddy:byte-buddy:1.12.18",
+            "dev.failsafe:failsafe:3.3.0",
+            "net.sourceforge.htmlunit:htmlunit-core-js:2.65.0",
             "org.apache.commons:commons-exec:1.3",
             "org.assertj:assertj-core:3.23.1",
-            "org.asynchttpclient:async-http-client:2.12.3",
+            maven.artifact(
+                group = "org.asynchttpclient",
+                artifact = "async-http-client",
+                version = "2.12.3",
+                exclusions = [
+                    "io.netty:netty-transport-native-epoll",
+                    "io.netty:netty-transport-native-kqueue",
+                ],
+            ),
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
-            "org.hsqldb:hsqldb:2.7.0",
-            "org.mockito:mockito-core:4.7.0",
-            "org.slf4j:slf4j-api:1.7.36",
-            "org.slf4j:slf4j-jdk14:1.7.36",
+            "org.hsqldb:hsqldb:2.7.1",
+            "org.mockito:mockito-core:4.8.1",
+            "org.slf4j:slf4j-api:2.0.3",
+            "org.slf4j:slf4j-jdk14:2.0.3",
             "org.testng:testng:7.6.1",
             "org.zeromq:jeromq:0.5.2",
-            "xyz.rogfam:littleproxy:2.0.11",
-            "org.seleniumhq.selenium:htmlunit-driver:3.64.0",
-            "org.redisson:redisson:3.17.6",
+            "xyz.rogfam:littleproxy:2.0.13",
+            "org.seleniumhq.selenium:htmlunit-driver:4.5.2",
+            "org.redisson:redisson:3.17.7",
             "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         ],
         excluded_artifacts = [
@@ -116,4 +124,5 @@ def selenium_java_deps():
             "https://maven.google.com",
         ],
         maven_install_json = "@selenium//java:maven_install.json",
+        version_conflict_policy = "pinned",
     )

@@ -14,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-import contextlib
 import errno
 import logging
 import os
@@ -32,8 +31,9 @@ from urllib.error import URLError
 from selenium.common.exceptions import WebDriverException
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
+from selenium.webdriver.common.selenium_manager import SeleniumManager
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 _HAS_NATIVE_DEVNULL = True
@@ -53,19 +53,18 @@ class Service(ABC):
     def __init__(
         self,
         executable: str,
-        start_error_message: str,
         port: int = 0,
         log_file: SubprocessStdAlias = DEVNULL,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
+        start_error_message: typing.Optional[str] = None,
     ) -> None:
         self.path = executable
         self.port = port or utils.free_port()
         self.log_file = open(os.devnull, "wb") if not _HAS_NATIVE_DEVNULL and log_file == DEVNULL else log_file
-        self.start_error_message = start_error_message
+        self.start_error_message = start_error_message or ""
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.creation_flags = 0
         self.env = env or os.environ
-        self.process: typing.Optional[subprocess.Popen] = None
 
     @property
     def service_url(self) -> str:
@@ -88,34 +87,19 @@ class Service(ABC):
            or when it can't connect to the service
         """
         try:
-            cmd = [self.path]
-            cmd.extend(self.command_line_args())
-            self.process = subprocess.Popen(
-                cmd,
-                env=self.env,
-                close_fds=system() != "Windows",
-                stdout=self.log_file,
-                stderr=self.log_file,
-                stdin=PIPE,
-                creationflags=self.creation_flags,
-            )
-        except TypeError:
-            raise
-        except OSError as err:
-            if err.errno == errno.ENOENT:
-                raise WebDriverException(
-                    f"'{os.path.basename(self.path)}' executable needs to be in PATH. {self.start_error_message}"
-                )
-            elif err.errno == errno.EACCES:
-                raise WebDriverException(
-                    f"'{os.path.basename(self.path)}' executable may have wrong permissions. {self.start_error_message}"
-                )
-            else:
-                raise
-        except Exception as e:
-            raise WebDriverException(
-                f"The executable {os.path.basename(self.path)} needs to be available in the path. {self.start_error_message}\n{str(e)}"
-            )
+            self._start_process(self.path)
+        except WebDriverException as err:
+            if "executable needs to be in PATH" in err.msg:
+                logger.debug("driver not found in PATH, trying Selenium Manager")
+                browser = self.__class__.__module__.split(".")[-2]
+                try:
+                    path = SeleniumManager.driver_location(browser)
+                except WebDriverException as new_err:
+                    logger.debug("Unable to obtain driver using Selenium Manager: " + new_err.msg)
+                    raise err
+
+                self._start_process(path)
+
         count = 0
         while True:
             self.assert_process_still_running()
@@ -158,13 +142,18 @@ class Service(ABC):
         Stops the service.
         """
         if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
-            with contextlib.suppress(Exception):
+            try:
                 # Todo: Be explicit in what we are catching here.
-                self.log_file.close()
+                if hasattr(self.log_file, "close"):
+                    self.log_file.close()  # type: ignore
+            except Exception:
+                pass
 
         if self.process is not None:
-            with contextlib.suppress(TypeError):
+            try:
                 self.send_remote_shutdown_command()
+            except TypeError:
+                pass
             self._terminate_process()
 
     def _terminate_process(self) -> None:
@@ -175,18 +164,61 @@ class Service(ABC):
         try:
             stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stderr
             for stream in stdin, stdout, stderr:
-                with contextlib.suppress(AttributeError):
-                    stream.close()
+                try:
+                    stream.close()  # type: ignore
+                except AttributeError:
+                    pass
             self.process.terminate()
             self.process.wait(60)
             # Todo: only SIGKILL if necessary; the process may be cleanly exited by now.
             self.process.kill()
         except OSError:
-            log.error("Error terminating service process.", exc_info=True)
+            logger.error("Error terminating service process.", exc_info=True)
 
     def __del__(self) -> None:
         # `subprocess.Popen` doesn't send signal on `__del__`;
         # so we attempt to close the launched process when `__del__`
         # is triggered.
-        with contextlib.suppress(Exception):
+        # do not use globals here; interpreter shutdown may have already cleaned them up
+        # and they would be `None`. This goes for anything this method is referencing internally.
+        try:
             self.stop()
+        except Exception:
+            pass
+
+    def _start_process(self, path: str) -> None:
+        """
+        Creates a subprocess by executing the command provided.
+
+        :param cmd: full command to execute
+        """
+        cmd = [path]
+        cmd.extend(self.command_line_args())
+        try:
+            self.process = subprocess.Popen(
+                cmd,
+                env=self.env,
+                close_fds=system() != "Windows",
+                stdout=self.log_file,
+                stderr=self.log_file,
+                stdin=PIPE,
+                creationflags=self.creation_flags,
+            )
+            logger.debug(f"Started executable: `{self.path}` in a child process with pid: {self.process.pid}")
+        except TypeError:
+            raise
+        except OSError as err:
+            if err.errno == errno.ENOENT:
+                raise WebDriverException(
+                    f"'{os.path.basename(self.path)}' executable needs to be in PATH. {self.start_error_message}"
+                )
+            elif err.errno == errno.EACCES:
+                raise WebDriverException(
+                    f"'{os.path.basename(self.path)}' executable may have wrong permissions. {self.start_error_message}"
+                )
+            else:
+                raise
+        except Exception as e:
+            raise WebDriverException(
+                f"The executable {os.path.basename(self.path)} needs to be available in the path. {self.start_error_message}\n{str(e)}"
+            )

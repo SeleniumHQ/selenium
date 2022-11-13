@@ -35,6 +35,7 @@ import org.openqa.selenium.remote.http.Route;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
@@ -104,6 +105,13 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
   @Override
   protected void execute(Config config) {
     Require.nonNull("Config", config);
+
+    config.get("server", "max-threads")
+      .ifPresent(value -> LOG.log(Level.WARNING,
+                                  () ->
+                                    "Support for max-threads flag is deprecated. " +
+                                    "The intent of the flag is to set the thread pool size in the Distributor. " +
+                                    "Please use newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config);
     server.start();

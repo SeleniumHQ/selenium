@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 @Disabled("apparently this test was ignored before. Probably a bad base path.")
 public class TestModalDialog extends InternalSelenseTestBase {
   @Test
-  public void testModalDialog() {
+  void testModalDialog() {
     selenium.open("test_modal_dialog.html");
     verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/common/legacy/test_modal_dialog\\.html$"));
     verifyEquals(selenium.getTitle(), "Modal Dialog Host Window");

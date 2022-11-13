@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ZeroMqTcpTest {
+class ZeroMqTcpTest {
   private EventBus bus;
   private ZContext zContext;
 
@@ -58,7 +58,7 @@ public class ZeroMqTcpTest {
 
   @Test
   @Timeout(4)
-  public void shouldBeAbleToPublishToAKnownTopic() throws InterruptedException {
+  void shouldBeAbleToPublishToAKnownTopic() throws InterruptedException {
     EventName cheese = new EventName("cheese");
     Event event = new Event(cheese, null);
 
@@ -67,22 +67,22 @@ public class ZeroMqTcpTest {
     bus.fire(event);
     latch.await(1, SECONDS);
 
-    assertThat(latch.getCount()).isEqualTo(0);
+    assertThat(latch.getCount()).isZero();
   }
 
   @Test
   @Timeout(4)
-  public void shouldNotReceiveEventsNotMeantForTheTopic() {
+  void shouldNotReceiveEventsNotMeantForTheTopic() {
     AtomicInteger count = new AtomicInteger(0);
     bus.addListener(new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));
 
     bus.fire(new Event(new EventName("cheese"), null));
 
-    assertThat(count.get()).isEqualTo(0);
+    assertThat(count.get()).isZero();
   }
 
   @Test
-  public void shouldBeAbleToFireEventsInParallel() throws InterruptedException {
+  void shouldBeAbleToFireEventsInParallel() throws InterruptedException {
     int maxCount = 100;
     EventName name = new EventName("cheese");
 

@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
 @Tag("UnitTests")
-public class JsonToWebElementConverterTest {
+class JsonToWebElementConverterTest {
 
   private RemoteWebDriver driver;
 
@@ -46,7 +46,7 @@ public class JsonToWebElementConverterTest {
   }
 
   @Test
-  public void shouldConvertShadowRootsToSearchContexts() {
+  void shouldConvertShadowRootsToSearchContexts() {
     UUID rootId = UUID.randomUUID();
 
     Object result = new JsonToWebElementConverter(driver)

@@ -99,9 +99,10 @@ import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-public class DistributorTest {
+class DistributorTest {
 
   private static final Logger LOG = Logger.getLogger("Distributor Test");
+  private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private final Secret registrationSecret = new Secret("hellim");
   private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
   private Tracer tracer;
@@ -135,7 +136,8 @@ public class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
@@ -148,7 +150,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void creatingANewSessionWithoutANodeEndsInFailure() {
+  void creatingANewSessionWithoutANodeEndsInFailure() {
     local = new LocalDistributor(
       tracer,
       bus,
@@ -159,13 +161,14 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
 
   @Test
-  public void shouldStartHeartBeatOnNodeStart() {
+  void shouldStartHeartBeatOnNodeStart() {
     EventBus bus = new GuavaEventBus();
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
@@ -197,14 +200,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToAddANodeAndCreateASession() {
+  void shouldBeAbleToAddANodeAndCreateASession() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -221,7 +225,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -238,14 +243,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void creatingASessionAddsItToTheSessionMap() {
+  void creatingASessionAddsItToTheSessionMap() {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -263,7 +269,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -281,14 +288,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldBeAbleToRemoveANode() throws MalformedURLException {
+  void shouldBeAbleToRemoveANode() throws MalformedURLException {
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
@@ -306,7 +314,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     Distributor distributor = new RemoteDistributor(
       tracer,
       new PassthroughHttpClient.Factory(local),
@@ -321,14 +330,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void testDrainingNodeDoesNotAcceptNewSessions() {
+  void testDrainingNodeDoesNotAcceptNewSessions() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -345,7 +355,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     distributor.drain(node.getId());
 
@@ -356,14 +367,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void testDrainedNodeShutsDownOnceEmpty() throws InterruptedException {
+  void testDrainedNodeShutsDownOnceEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -383,7 +395,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -391,7 +404,7 @@ public class DistributorTest {
 
     latch.await(5, TimeUnit.SECONDS);
 
-    assertThat(latch.getCount()).isEqualTo(0);
+    assertThat(latch.getCount()).isZero();
 
     assertThat(distributor.getStatus().getNodes()).isEmpty();
 
@@ -401,14 +414,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void drainedNodeDoesNotShutDownIfNotEmpty() throws InterruptedException {
+  void drainedNodeDoesNotShutDownIfNotEmpty() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -428,7 +442,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -446,14 +461,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void drainedNodeShutsDownAfterSessionsFinish() throws InterruptedException {
+  void drainedNodeShutsDownAfterSessionsFinish() throws InterruptedException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -476,7 +492,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -497,12 +514,12 @@ public class DistributorTest {
 
     waitTillNodesAreRemoved(distributor);
 
-    assertThat(latch.getCount()).isEqualTo(0);
+    assertThat(latch.getCount()).isZero();
     assertThat(distributor.getStatus().getNodes()).isEmpty();
   }
 
   @Test
-  public void registeringTheSameNodeMultipleTimesOnlyCountsTheFirstTime() {
+  void registeringTheSameNodeMultipleTimesOnlyCountsTheFirstTime() {
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(
         caps,
@@ -519,7 +536,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     local.add(node);
     local.add(node);
@@ -530,7 +548,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void theMostLightlyLoadedNodeIsSelectedFirst() {
+  void theMostLightlyLoadedNodeIsSelectedFirst() {
     // Create enough hosts so that we avoid the scheduler returning hosts in:
     // * insertion order
     // * reverse insertion order
@@ -541,7 +559,8 @@ public class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     Node lightest = createNode(caps, 10, 0);
     Node medium = createNode(caps, 10, 4);
@@ -563,7 +582,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5))
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize)
       .add(heavy)
       .add(medium)
       .add(lightest)
@@ -582,14 +602,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldUseLastSessionCreatedTimeAsTieBreaker() {
+  void shouldUseLastSessionCreatedTimeAsTieBreaker() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     Node leastRecent = createNode(caps, 5, 0);
 
     CombinedHandler handler = new CombinedHandler();
@@ -606,7 +627,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5))
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize)
       .add(leastRecent);
     waitToHaveCapacity(distributor);
 
@@ -658,7 +680,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldIncludeHostsThatAreUpInHostList() {
+  void shouldIncludeHostsThatAreUpInHostList() {
     CombinedHandler handler = new CombinedHandler();
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -667,7 +689,8 @@ public class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(sessions);
 
     URI uri = createUri();
@@ -690,7 +713,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
     distributor.add(alwaysDown);
     waitForAllNodesToMeetCondition(distributor, 1, DOWN);
@@ -717,14 +741,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
+  void shouldNotScheduleAJobIfAllSlotsAreBeingUsed() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, c) -> new Session(
@@ -740,7 +765,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     distributor.add(node);
     waitToHaveCapacity(distributor);
@@ -756,14 +782,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldReleaseSlotOnceSessionEnds() {
+  void shouldReleaseSlotOnceSessionEnds() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, c) -> new Session(
@@ -780,7 +807,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -813,7 +841,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldNotStartASessionIfTheCapabilitiesAreNotSupported() {
+  void shouldNotStartASessionIfTheCapabilitiesAreNotSupported() {
     CombinedHandler handler = new CombinedHandler();
 
     LocalSessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -822,7 +850,8 @@ public class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(sessions);
 
     Distributor distributor = new LocalDistributor(
@@ -835,7 +864,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
 
     Node node = createNode(caps, 1, 0);
@@ -850,14 +880,15 @@ public class DistributorTest {
   }
 
   @Test
-  public void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
+  void attemptingToStartASessionWhichFailsMarksAsTheSlotAsAvailable() {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalNode node = LocalNode.builder(tracer, bus, routableUri, routableUri, registrationSecret)
       .add(caps, new TestSessionFactory((id, caps) -> {
@@ -875,7 +906,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     distributor.add(node);
     waitToHaveCapacity(distributor);
 
@@ -887,7 +919,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldReturnNodesThatWereDownToPoolOfNodesOnceTheyMarkTheirHealthCheckPasses() {
+  void shouldReturnNodesThatWereDownToPoolOfNodesOnceTheyMarkTheirHealthCheckPasses() {
     CombinedHandler handler = new CombinedHandler();
 
     SessionMap sessions = new LocalSessionMap(tracer, bus);
@@ -898,7 +930,8 @@ public class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     URI uri = createUri();
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
@@ -920,7 +953,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
     distributor.add(node);
     waitForAllNodesToMeetCondition(distributor, 1, DOWN);
@@ -941,7 +975,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldNotRemoveNodeWhoseHealthCheckPassesBeforeThreshold()
+  void shouldNotRemoveNodeWhoseHealthCheckPassesBeforeThreshold()
     throws InterruptedException {
     CombinedHandler handler = new CombinedHandler();
 
@@ -955,7 +989,8 @@ public class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     URI uri = createUri();
     Node node = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
@@ -984,7 +1019,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
     distributor.add(node);
 
@@ -1016,7 +1052,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldPrioritizeHostsWithTheMostSlotsAvailableForASessionType() {
+  void shouldPrioritizeHostsWithTheMostSlotsAvailableForASessionType() {
     // Consider the case where you have 1 Windows machine and 5 linux machines. All of these hosts
     // can run Chrome and Firefox sessions, but only one can run Edge sessions. Ideally, the machine
     // able to run Edge would be sorted last.
@@ -1031,7 +1067,8 @@ public class DistributorTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     LocalDistributor distributor = new LocalDistributor(
       tracer,
@@ -1043,7 +1080,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     //Create all three Capability types
     Capabilities edge = new ImmutableCapabilities("browserName", "edge");
@@ -1129,7 +1167,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldFallbackToSecondAvailableCapabilitiesIfFirstNotAvailable() {
+  void shouldFallbackToSecondAvailableCapabilitiesIfFirstNotAvailable() {
     CombinedHandler handler = new CombinedHandler();
 
     Node firstNode = createNode(new ImmutableCapabilities("browserName", "not cheese"), 1, 1);
@@ -1148,7 +1186,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     local.add(firstNode);
     local.add(secondNode);
@@ -1175,7 +1214,7 @@ public class DistributorTest {
   }
 
   @Test
-  public void shouldFallbackToSecondAvailableCapabilitiesIfFirstThrowsOnCreation() {
+  void shouldFallbackToSecondAvailableCapabilitiesIfFirstThrowsOnCreation() {
     CombinedHandler handler = new CombinedHandler();
     Node brokenNode = createBrokenNode(new ImmutableCapabilities("browserName", "not cheese"));
     Node node = createNode(new ImmutableCapabilities("browserName", "cheese"), 1, 0);
@@ -1191,7 +1230,8 @@ public class DistributorTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     local.add(brokenNode);
     local.add(node);
     waitForAllNodesToHaveCapacity(local, 2);

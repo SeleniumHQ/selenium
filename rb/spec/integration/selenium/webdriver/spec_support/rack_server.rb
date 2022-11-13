@@ -35,7 +35,7 @@ module Selenium
         end
 
         def start
-          if Platform.jruby? || Platform.windows?
+          if Platform.jruby? || Platform.windows? || Platform.truffleruby?
             start_threaded
           else
             start_forked
