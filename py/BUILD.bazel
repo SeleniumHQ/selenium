@@ -264,7 +264,7 @@ py_binary(
         "//common/devtools/chromium/" + n + ":js_protocol",
     ],
     outs = ["selenium/webdriver/common/devtools/" + n],
-    cmd = "python3 $(location :generate) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $@",
+    cmd = "$(location :generate) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $@",
     tools = [
         ":generate",
     ],
