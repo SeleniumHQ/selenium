@@ -17,7 +17,6 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'childprocess'
 require 'tmpdir'
 require 'fileutils'
 require 'date'

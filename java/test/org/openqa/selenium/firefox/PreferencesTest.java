@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.Reader;
 import java.io.StringReader;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("UnitTests")
 class PreferencesTest {
@@ -106,17 +105,6 @@ class PreferencesTest {
   }
 
   @Test
-  void cannotOverrideAFrozenPreference() {
-    StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
-    Preferences preferences = new Preferences(reader);
-    preferences.setPreference("frozen.pref", false);
-
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(preferences::checkForChangesInFrozenPreferences)
-        .withMessage("Preference frozen.pref may not be overridden: frozen value=true, requested value=false");
-  }
-
-  @Test
   void canOverrideAFrozenPreferenceWithTheFrozenValue() {
     StringReader reader = new StringReader("{\"frozen\": {\"frozen.pref\": true }, \"mutable\": {}}");
     Preferences preferences = new Preferences(reader);
@@ -124,19 +112,6 @@ class PreferencesTest {
     preferences.setPreference("frozen.pref", true);
 
     assertThat(preferences.getPreference("frozen.pref")).isEqualTo(true);
-  }
-
-  @Test
-  void canOverrideMaxScriptRuntimeIfGreaterThanDefaultValueOrSetToInfinity() {
-    Preferences preferences = new Preferences(defaults);
-    preferences.setPreference("dom.max_script_run_time", 29);
-
-    assertThatExceptionOfType(IllegalStateException.class)
-        .isThrownBy(preferences::checkForChangesInFrozenPreferences)
-        .withMessage("dom.max_script_run_time must be == 0 || >= 30");
-
-    preferences.setPreference("dom.max_script_run_time", 31);
-    preferences.setPreference("dom.max_script_run_time", 0);
   }
 
   private boolean canSet(Preferences pref, String value) {

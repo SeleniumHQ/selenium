@@ -22,6 +22,7 @@ import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -183,31 +184,7 @@ public class LocalNode extends Node {
     this.currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
-      .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
-        if (notification.getKey() != null && notification.getValue() != null) {
-          SessionSlot slot = notification.getValue();
-          SessionId id = notification.getKey();
-          if (notification.wasEvicted()) {
-            // Session is timing out, stopping it by sending a DELETE
-            LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
-            slot.execute(new HttpRequest(DELETE, "/session/" + id));
-          }
-          // Attempt to stop the session
-          slot.stop();
-          // Invalidate temp file system
-          this.tempFileSystems.invalidate(id);
-          // Decrement pending sessions if Node is draining
-          if (this.isDraining()) {
-            int done = pendingSessions.decrementAndGet();
-            if (done <= 0) {
-              LOG.info("Node draining complete!");
-              bus.fire(new NodeDrainComplete(this.getId()));
-            }
-          }
-        } else {
-          LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
-        }
-      })
+      .removalListener(this::stopTimedOutSession)
       .build();
 
     ScheduledExecutorService sessionCleanupNodeService =
@@ -248,6 +225,36 @@ public class LocalNode extends Node {
 
     Runtime.getRuntime().addShutdownHook(new Thread(this::stopAllSessions));
     new JMXHelper().register(this);
+  }
+
+  private void stopTimedOutSession(RemovalNotification<SessionId, SessionSlot> notification) {
+    if (notification.getKey() != null && notification.getValue() != null) {
+      SessionSlot slot = notification.getValue();
+      SessionId id = notification.getKey();
+      if (notification.wasEvicted()) {
+        // Session is timing out, stopping it by sending a DELETE
+        LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
+        try {
+          slot.execute(new HttpRequest(DELETE, "/session/" + id));
+        } catch (Exception e) {
+          LOG.log(Level.WARNING, String.format("Exception while trying to stop session %s", id), e);
+        }
+      }
+      // Attempt to stop the session
+      slot.stop();
+      // Invalidate temp file system
+      this.tempFileSystems.invalidate(id);
+      // Decrement pending sessions if Node is draining
+      if (this.isDraining()) {
+        int done = pendingSessions.decrementAndGet();
+        if (done <= 0) {
+          LOG.info("Node draining complete!");
+          bus.fire(new NodeDrainComplete(this.getId()));
+        }
+      }
+    } else {
+      LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
+    }
   }
 
   public static Builder builder(

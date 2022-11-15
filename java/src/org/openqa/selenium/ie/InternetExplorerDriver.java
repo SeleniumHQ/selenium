@@ -49,7 +49,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   /**
    * Capability that defines how elements are scrolled into view in the InternetExplorerDriver.
    */
-  public static final String ELEMENT_SCROLL_BEHAVIOR = CapabilityType.ELEMENT_SCROLL_BEHAVIOR;
+  public static final String ELEMENT_SCROLL_BEHAVIOR = "elementScrollBehavior";
 
   /**
    * Capability that defines which behaviour will be used if an unexpected Alert is found.

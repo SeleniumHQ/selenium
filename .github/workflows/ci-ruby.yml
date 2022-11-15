@@ -35,14 +35,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
           path: |
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
@@ -68,14 +65,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
           path: |
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
@@ -92,7 +86,7 @@ jobs:
       - name: Run Chrome tests
         uses: ./.github/actions/bazel
         with:
-          command: test --test_output=all //rb:${{ matrix.target }}
+          command: test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
           attempts: 3
         env:
           DISPLAY: :99
@@ -112,14 +106,11 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
           path: |
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
@@ -139,7 +130,7 @@ jobs:
       - name: Run Firefox tests
         uses: ./.github/actions/bazel
         with:
-          command: test --test_output=all //rb:${{ matrix.target }}
+          command: test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
           attempts: 3
         env:
           DISPLAY: :99
@@ -151,14 +142,11 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
           path: |
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-docs-${{ hashFiles('**/BUILD.bazel') }}
@@ -176,14 +164,11 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
           path: |
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-lint-${{ hashFiles('**/BUILD.bazel') }}
@@ -201,24 +186,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ '2.7', '3.1' ]
+        ruby: [ '2.7.6', '3.1.2', 'truffleruby-22.3.0' ]
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
       - name: Cache Bazel artifacts
         uses: actions/cache@v2
         with:
           path: |
+            /tmp/bazel/external
             ~/.cache/bazel-disk
             ~/.cache/bazel-repo
           key: ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-
+      - name: Patch WORKSPACE to select Ruby ${{ matrix.ruby }}
+        run: sed -i -E "s/(rb_download\(version = \")(.+)(\"\))/\1${{ matrix.ruby }}\3/" WORKSPACE
       - name: Run unit tests
         uses: ./.github/actions/bazel
         with:
-          command: test --test_output=all //rb:unit-test
+          command: test --cache_test_results=no --test_output=all //rb:unit-test

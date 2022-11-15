@@ -323,25 +323,21 @@ load("//common:repositories.bzl", "pin_browsers")
 pin_browsers()
 
 http_archive(
-    name = "bazelruby_rules_ruby",
-    sha256 = "43e1dc0b747d51617dcbc02c15c4a1383cb572d58bef3accc10b9c8bd1e06b62",
-    strip_prefix = "rules_ruby-2caa1f20d5ba22080af653470037c72bf219af45",
-    url = "https://github.com/bazelruby/rules_ruby/archive/2caa1f20d5ba22080af653470037c72bf219af45.tar.gz",
+    name = "rules_ruby",
+    sha256 = "bb0bffb0285ff8fa9a967fc2580ddf3b511818a6baf269dcd6c5c6076c4921d8",
+    strip_prefix = "rules_ruby-c3cefa71d0111a04c9ce0672c65d376262d8d975",
+    url = "https://github.com/p0deje/rules_ruby/archive/c3cefa71d0111a04c9ce0672c65d376262d8d975.zip",
 )
 
 load(
-    "@bazelruby_rules_ruby//ruby:deps.bzl",
-    "rules_ruby_dependencies",
-    "rules_ruby_select_sdk",
+    "@rules_ruby//ruby:deps.bzl",
+    "rb_bundle",
+    "rb_download",
 )
 
-rules_ruby_dependencies()
+rb_download(version = "2.7.6")
 
-rules_ruby_select_sdk(version = "host")
-
-load("@bazelruby_rules_ruby//ruby:defs.bzl", "ruby_bundle")
-
-ruby_bundle(
+rb_bundle(
     name = "bundle",
     srcs = [
         "//:rb/lib/selenium/devtools/version.rb",

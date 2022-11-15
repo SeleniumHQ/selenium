@@ -78,6 +78,10 @@ module Selenium
         engine == :jruby
       end
 
+      def truffleruby?
+        engine == :truffleruby
+      end
+
       def ruby_version
         RUBY_VERSION
       end
