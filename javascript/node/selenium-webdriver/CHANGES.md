@@ -1,3 +1,13 @@
+## v4.6.1
+
+#### :bug: Bug Fix
+
+* Support Node 17 and above (#11262)
+
+#### :nail_care: Polish
+
+* Fix typos (#11258) 
+
 ## v4.6.0
 
 #### :rocket: New Feature
