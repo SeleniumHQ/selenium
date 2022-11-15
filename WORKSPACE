@@ -2,17 +2,6 @@ workspace(
     name = "selenium",
 )
 
-load("//common/private:env.bzl", "env")
-
-env(
-    name = "python_version",
-    env_var = ["PYTHON_VERSION"],
-)
-
-load("@python_version//:defs.bzl", "PYTHON_VERSION")
-
-register_toolchains(":py_toolchain")
-
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
@@ -57,7 +46,7 @@ load("@rules_python//python:repositories.bzl", "python_register_toolchains")
 
 python_register_toolchains(
     name = "python_toolchain",
-    python_version = PYTHON_VERSION,
+    python_version = "3.8",
 )
 
 load("@python_toolchain//:defs.bzl", "interpreter")
