@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.grid;
 
+import java.util.function.Supplier;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MemoizedConfig;
@@ -30,6 +31,8 @@ import org.openqa.selenium.remote.http.Message;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
 
 public abstract class TemplateGridServerCommand extends TemplateGridCommand {
 
@@ -44,6 +47,42 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
       new BaseServerOptions(config),
       handler.httpHandler,
       handler.websocketHandler);
+  }
+
+  private static final String GRAPHQL = "/graphql";
+
+  protected static Routable[] graphqlRoute(String prefix, Supplier<HttpHandler> handler) {
+    Routable optionsRoute = Route.options(GRAPHQL).to(handler);
+    Routable postRoute = Route.post(GRAPHQL).to(handler);
+    if (prefix.isEmpty()) {
+      return new Routable[] {optionsRoute, postRoute};
+    }
+    return new Routable[] {
+      optionsRoute,
+      Route.options(prefix + GRAPHQL).to(handler),
+      postRoute,
+      Route.post(prefix + GRAPHQL).to(handler)
+    };
+  }
+
+  protected static Routable[] hubRoute(String prefix, Route route) {
+    Routable alwaysAdd = Route.prefix("/wd/hub").to(route);
+    if (prefix.isEmpty()) {
+      return new Routable[] {alwaysAdd};
+    }
+    return new Routable[] {
+      alwaysAdd,
+      Route.prefix(prefix + "/wd/hub").to(route)
+    };
+  }
+
+  protected static Routable[] baseRoute(String prefix, Route route) {
+    if (prefix.isEmpty()) {
+      return new Routable[] {};
+    }
+    return new Routable[] {
+      Route.prefix(prefix).to(route)
+    };
   }
 
   protected abstract Handlers createHandlers(Config config);

@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.commands;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.stream.Stream;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
@@ -43,6 +44,7 @@ import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
+import org.openqa.selenium.grid.server.ReverseProxyOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -185,14 +187,19 @@ public class Standalone extends TemplateGridServerCommand {
       serverOptions.getExternalUri(),
       getFormattedVersion());
 
-    Routable ui = new GridUiRoute();
+    String subPath = new ReverseProxyOptions(config).subPath();
+    Routable ui = new GridUiRoute(subPath);
 
-    Routable httpHandler = combine(
-      ui,
-      router,
-      Route.prefix("/wd/hub").to(combine(router)),
-      Route.options("/graphql").to(() -> graphqlHandler),
-      Route.post("/graphql").to(() -> graphqlHandler));
+    Routable[] appendRoutes = Stream.of(
+        new Routable[]{router},
+        baseRoute(subPath, combine(router)),
+        hubRoute(subPath, combine(router)),
+        graphqlRoute(subPath, () -> graphqlHandler)
+      ).flatMap(Stream::of)
+      .toArray(Routable[]::new);
+
+
+    Routable httpHandler = combine(ui, appendRoutes);
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {
