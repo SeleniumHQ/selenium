@@ -22,7 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.openqa.selenium.internal.Require;
@@ -78,7 +78,7 @@ public class BiDi implements Closeable {
     connection.addListener(event, handler);
   }
 
-  <X> void addListener(List<String> browsingContextIds, Event<X> event, Consumer<X> handler) {
+  <X> void addListener(Set<String> browsingContextIds, Event<X> event, Consumer<X> handler) {
     Require.nonNull("List of browsing context ids", browsingContextIds);
     Require.nonNull("Event to listen for", event);
     Require.nonNull("Handler to call", handler);
