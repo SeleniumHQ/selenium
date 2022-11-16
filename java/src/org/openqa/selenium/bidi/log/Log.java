@@ -40,7 +40,7 @@ public class Log {
 
         Optional<GenericLogEntry> genericLogEntry = Optional.empty();
         Optional<ConsoleLogEntry> consoleLogEntry = Optional.empty();
-        Optional<GenericLogEntry> javascriptLogEntry = Optional.empty();
+        Optional<JavascriptLogEntry> javascriptLogEntry = Optional.empty();
 
         if (type != null) {
           try (StringReader reader = new StringReader(JSON.toJson(params));
