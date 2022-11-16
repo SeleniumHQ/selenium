@@ -48,7 +48,7 @@ public class Log {
             if ("console".equals(type)) {
               consoleLogEntry = Optional.ofNullable(input.read(ConsoleLogEntry.class));
             } else if ("javascript".equals(type)) {
-              javascriptLogEntry = Optional.ofNullable(input.read(GenericLogEntry.class));
+              javascriptLogEntry = Optional.ofNullable(input.read(JavascriptLogEntry.class));
             } else {
               genericLogEntry = Optional.ofNullable(input.read(GenericLogEntry.class));
             }
