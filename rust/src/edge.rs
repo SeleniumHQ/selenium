@@ -126,7 +126,12 @@ impl BrowserManager for EdgeManager {
         }
     }
 
-    fn get_driver_url(&self, driver_version: &str, os: &str, arch: &str) -> String {
+    fn get_driver_url(
+        &self,
+        driver_version: &str,
+        os: &str,
+        arch: &str,
+    ) -> Result<String, Box<dyn Error>> {
         let driver_label = if WINDOWS.is(os) {
             if ARM64.is(arch) {
                 "arm64"
@@ -144,10 +149,10 @@ impl BrowserManager for EdgeManager {
         } else {
             "linux64"
         };
-        format!(
+        Ok(format!(
             "{}{}/edgedriver_{}.zip",
             DRIVER_URL, driver_version, driver_label
-        )
+        ))
     }
 
     fn get_driver_path_in_cache(&self, driver_version: &str, os: &str, arch: &str) -> PathBuf {

@@ -111,10 +111,17 @@ impl BrowserManager for FirefoxManager {
         }
     }
 
-    fn get_driver_url(&self, driver_version: &str, os: &str, arch: &str) -> String {
+    fn get_driver_url(
+        &self,
+        driver_version: &str,
+        os: &str,
+        arch: &str,
+    ) -> Result<String, Box<dyn Error>> {
         // As of 0.32.0, geckodriver ships aarch64 binaries for Linux and Windows
         // https://github.com/mozilla/geckodriver/releases/tag/v0.32.0
-        let minor_driver_version = get_minor_version(driver_version).parse::<i32>().unwrap();
+        let minor_driver_version = get_minor_version(driver_version)?
+            .parse::<i32>()
+            .unwrap_or_default();
         let driver_label = if WINDOWS.is(os) {
             if X32.is(arch) {
                 "win32.zip"
@@ -136,14 +143,17 @@ impl BrowserManager for FirefoxManager {
         } else {
             "linux64.tar.gz"
         };
-        format!(
+        Ok(format!(
             "{}download/v{}/{}-v{}-{}",
             DRIVER_URL, driver_version, self.driver_name, driver_version, driver_label
-        )
+        ))
     }
 
     fn get_driver_path_in_cache(&self, driver_version: &str, os: &str, arch: &str) -> PathBuf {
-        let minor_driver_version = get_minor_version(driver_version).parse::<i32>().unwrap();
+        let minor_driver_version = get_minor_version(driver_version)
+            .unwrap_or_default()
+            .parse::<i32>()
+            .unwrap_or_default();
         let arch_folder = if WINDOWS.is(os) {
             if X32.is(arch) {
                 "win32"
@@ -199,11 +209,9 @@ mod unit_tests {
         );
 
         data.iter().for_each(|d| {
-            let driver_url = firefox_manager.get_driver_url(
-                d.get(0).unwrap(),
-                d.get(1).unwrap(),
-                d.get(2).unwrap(),
-            );
+            let driver_url = firefox_manager
+                .get_driver_url(d.first().unwrap(), d.get(1).unwrap(), d.get(2).unwrap())
+                .unwrap();
             assert_eq!(d.get(3).unwrap().to_string(), driver_url);
         });
     }
