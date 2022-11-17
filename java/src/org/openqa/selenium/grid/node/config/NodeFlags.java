@@ -222,12 +222,12 @@ public class NodeFlags implements HasRoles {
   private String nodeImplementation = DEFAULT_NODE_IMPLEMENTATION;
 
   @Parameter(
-    names = {"--downloads-dir"},
+    names = {"--downloads-path"},
     description = "The default location wherein all browser triggered file downloads would be "
       + "available to be retrieved from. This is usually the directory that you configure in "
       + "your browser as the default location for storing downloaded files.")
-  @ConfigValue(section = NODE_SECTION, name = "downloads-dir", example = "")
-  private String downloadsDir = "";
+  @ConfigValue(section = NODE_SECTION, name = "downloads-path", example = "")
+  private String downloadsPath = "";
 
   @Override
   public Set<Role> getRoles() {

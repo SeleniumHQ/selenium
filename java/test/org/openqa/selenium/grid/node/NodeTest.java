@@ -30,7 +30,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import java.util.Base64;
+import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -495,7 +495,7 @@ class NodeTest {
     Session session = response.right().getSession();
     String hello = "Hello, world!";
 
-    HttpRequest req = new HttpRequest(GET, String.format("/session/%s/file", session.getId()));
+    HttpRequest req = new HttpRequest(GET, String.format("/session/%s/se/file", session.getId()));
     File zip = createTmpFile(hello);
     req.addQueryParameter("filename", zip.getName());
     HttpResponse rsp = node.execute(req);
@@ -503,7 +503,9 @@ class NodeTest {
     Map<String, Object> map = new Json().toType(string(rsp), Json.MAP_TYPE);
     File baseDir = getTemporaryFilesystemBaseDir(TemporaryFilesystem.getDefaultTmpFS());
     String encodedContents = map.get("contents").toString();
-    String decodedContents = new String(Base64.getMimeDecoder().decode(encodedContents));
+    Zip.unzip(encodedContents, baseDir);
+    Path path = new File(baseDir.getAbsolutePath() + "/" + map.get("filename")).toPath();
+    String decodedContents = String.join("", Files.readAllLines(path));
     assertThat(decodedContents).isEqualTo(hello);
   }
 

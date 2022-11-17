@@ -63,7 +63,6 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
@@ -123,7 +122,7 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final int configuredSessionCount;
   private final boolean cdpEnabled;
-  private final String downloadsDir;
+  private final String downloadsPath;
 
   private final boolean bidiEnabled;
   private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
@@ -148,7 +147,7 @@ public class LocalNode extends Node {
     Duration heartbeatPeriod,
     List<SessionSlot> factories,
     Secret registrationSecret,
-    String downloadsDir) {
+    String downloadsPath) {
     super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
@@ -165,7 +164,7 @@ public class LocalNode extends Node {
     this.sessionCount.set(drainAfterSessionCount);
     this.cdpEnabled = cdpEnabled;
     this.bidiEnabled = bidiEnabled;
-    this.downloadsDir = Optional.ofNullable(downloadsDir).orElse("");
+    this.downloadsPath = Optional.ofNullable(downloadsPath).orElse("");
 
     this.healthCheck = healthCheck == null ?
                        () -> {
@@ -180,10 +179,8 @@ public class LocalNode extends Node {
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, TemporaryFilesystem>) notification -> {
         TemporaryFilesystem tempFS = notification.getValue();
-        if (tempFS != null) {
-          tempFS.deleteTemporaryFiles();
-          tempFS.deleteBaseDir();
-        }
+        tempFS.deleteTemporaryFiles();
+        tempFS.deleteBaseDir();
       })
       .build();
 
@@ -485,17 +482,18 @@ public class LocalNode extends Node {
     if (slot != null && slot.getSession() instanceof DockerSession) {
       return executeWebDriverCommand(req);
     }
-    if (this.downloadsDir.isEmpty()) {
-      throw new WebDriverException(
-        "Please specify the directory that would contain downloaded files and restart the node.");
+    if (this.downloadsPath.isEmpty()) {
+      String msg = "Please specify the path wherein the files downloaded using the browser "
+        + "would be available via the command line arg [--downloads-path] and restart the node";
+      throw new WebDriverException(msg);
     }
-    File dir = new File(this.downloadsDir);
+    File dir = new File(this.downloadsPath);
     if (!dir.exists()) {
       throw new WebDriverException(
-        String.format("Cannot locate downloads directory %s.", downloadsDir));
+        String.format("Cannot locate downloads directory %s.", downloadsPath));
     }
     if (!dir.isDirectory()) {
-      throw new WebDriverException(String.format("Invalid directory: %s.",downloadsDir));
+      throw new WebDriverException(String.format("Invalid directory: %s.", downloadsPath));
     }
     String filename = req.getQueryParameter("filename");
     try {
@@ -504,13 +502,13 @@ public class LocalNode extends Node {
       ).orElse(new File[]{});
       if (allFiles.length == 0) {
         throw new WebDriverException(
-          String.format("Cannot find file [%s] in directory %s.", filename, downloadsDir));
+          String.format("Cannot find file [%s] in directory %s.", filename, downloadsPath));
       }
       if (allFiles.length != 1) {
         throw new WebDriverException(
           String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
       }
-      String content = Contents.string(allFiles[0]);
+      String content = Zip.zip(allFiles[0]);
       ImmutableMap<String, Object> result = ImmutableMap.of(
         "filename", filename,
         "contents", content);

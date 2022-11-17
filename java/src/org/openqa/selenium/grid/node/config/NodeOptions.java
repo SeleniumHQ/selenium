@@ -149,7 +149,7 @@ public class NodeOptions {
   }
 
   public Optional<String> getDownloadsDirectory() {
-    return config.get(NODE_SECTION, "downloads-dir");
+    return config.get(NODE_SECTION, "downloads-path");
   }
 
   public Node getNode() {
