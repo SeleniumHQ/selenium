@@ -15,17 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.server;
+package org.openqa.selenium.grid.router.httpd;
 
 import org.openqa.selenium.grid.config.Config;
 
-public class ReverseProxyOptions {
+public class RouterOptions {
 
   static final String REVERSE_PROXY_SECTION = "reverse_proxy";
 
   private final Config config;
 
-  public ReverseProxyOptions(Config config) {
+  public RouterOptions(Config config) {
     this.config = config;
   }
 

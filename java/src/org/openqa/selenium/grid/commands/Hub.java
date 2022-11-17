@@ -41,7 +41,7 @@ import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
-import org.openqa.selenium.grid.server.ReverseProxyOptions;
+import org.openqa.selenium.grid.router.httpd.RouterOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -188,7 +188,7 @@ public class Hub extends TemplateGridServerCommand {
 
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
-    String subPath = new ReverseProxyOptions(config).subPath();
+    String subPath = new RouterOptions(config).subPath();
     Routable ui = new GridUiRoute(subPath);
 
     Routable[] appendRoutes = Stream.of(

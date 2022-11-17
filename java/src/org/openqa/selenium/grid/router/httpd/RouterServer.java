@@ -41,7 +41,6 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
-import org.openqa.selenium.grid.server.ReverseProxyOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.config.SessionMapOptions;
@@ -159,7 +158,7 @@ public class RouterServer extends TemplateGridServerCommand {
       serverOptions.getExternalUri(),
       getServerVersion());
 
-    String subPath = new ReverseProxyOptions(config).subPath();
+    String subPath = new RouterOptions(config).subPath();
     Routable ui = new GridUiRoute(subPath);
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());

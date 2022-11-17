@@ -44,7 +44,7 @@ import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
-import org.openqa.selenium.grid.server.ReverseProxyOptions;
+import org.openqa.selenium.grid.router.httpd.RouterOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -187,7 +187,7 @@ public class Standalone extends TemplateGridServerCommand {
       serverOptions.getExternalUri(),
       getFormattedVersion());
 
-    String subPath = new ReverseProxyOptions(config).subPath();
+    String subPath = new RouterOptions(config).subPath();
     Routable ui = new GridUiRoute(subPath);
 
     Routable[] appendRoutes = Stream.of(
