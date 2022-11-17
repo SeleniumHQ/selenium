@@ -63,6 +63,7 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
@@ -122,6 +123,7 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final int configuredSessionCount;
   private final boolean cdpEnabled;
+  private final String downloadsDir;
 
   private final boolean bidiEnabled;
   private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
@@ -145,7 +147,8 @@ public class LocalNode extends Node {
     Duration sessionTimeout,
     Duration heartbeatPeriod,
     List<SessionSlot> factories,
-    Secret registrationSecret) {
+    Secret registrationSecret,
+    String downloadsDir) {
     super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
@@ -162,6 +165,7 @@ public class LocalNode extends Node {
     this.sessionCount.set(drainAfterSessionCount);
     this.cdpEnabled = cdpEnabled;
     this.bidiEnabled = bidiEnabled;
+    this.downloadsDir = Optional.ofNullable(downloadsDir).orElse("");
 
     this.healthCheck = healthCheck == null ?
                        () -> {
@@ -176,8 +180,10 @@ public class LocalNode extends Node {
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, TemporaryFilesystem>) notification -> {
         TemporaryFilesystem tempFS = notification.getValue();
-        tempFS.deleteTemporaryFiles();
-        tempFS.deleteBaseDir();
+        if (tempFS != null) {
+          tempFS.deleteTemporaryFiles();
+          tempFS.deleteBaseDir();
+        }
       })
       .build();
 
@@ -472,6 +478,49 @@ public class LocalNode extends Node {
   }
 
   @Override
+  public HttpResponse downloadFile(HttpRequest req, SessionId id) {
+    // When the session is running in a Docker container, the download file command
+    // needs to be forwarded to the container as well.
+    SessionSlot slot = currentSessions.getIfPresent(id);
+    if (slot != null && slot.getSession() instanceof DockerSession) {
+      return executeWebDriverCommand(req);
+    }
+    if (this.downloadsDir.isEmpty()) {
+      throw new WebDriverException(
+        "Please specify the directory that would contain downloaded files and restart the node.");
+    }
+    File dir = new File(this.downloadsDir);
+    if (!dir.exists()) {
+      throw new WebDriverException(
+        String.format("Cannot locate downloads directory %s.", downloadsDir));
+    }
+    if (!dir.isDirectory()) {
+      throw new WebDriverException(String.format("Invalid directory: %s.",downloadsDir));
+    }
+    String filename = req.getQueryParameter("filename");
+    try {
+      File[] allFiles = Optional.ofNullable(
+        dir.listFiles((dir1, name) -> name.equals(filename))
+      ).orElse(new File[]{});
+      if (allFiles.length == 0) {
+        throw new WebDriverException(
+          String.format("Cannot find file [%s] in directory %s.", filename, downloadsDir));
+      }
+      if (allFiles.length != 1) {
+        throw new WebDriverException(
+          String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
+      }
+      String content = Contents.string(allFiles[0]);
+      ImmutableMap<String, Object> result = ImmutableMap.of(
+        "filename", filename,
+        "contents", content);
+      return new HttpResponse().setContent(asJson(result));
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
 
     // When the session is running in a Docker container, the upload file command
@@ -701,6 +750,7 @@ public class LocalNode extends Node {
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
+    private String downloadsDir = "";
 
     private Builder(
       Tracer tracer,
@@ -755,6 +805,11 @@ public class LocalNode extends Node {
       return this;
     }
 
+    public Builder downloadsDirectory(String dir) {
+      this.downloadsDir = dir;
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
         tracer,
@@ -770,7 +825,8 @@ public class LocalNode extends Node {
         sessionTimeout,
         heartbeatPeriod,
         factories.build(),
-        registrationSecret);
+        registrationSecret,
+        downloadsDir);
     }
 
     public Advanced advanced() {

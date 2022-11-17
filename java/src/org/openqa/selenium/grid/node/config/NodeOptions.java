@@ -148,6 +148,10 @@ public class NodeOptions {
     }
   }
 
+  public Optional<String> getDownloadsDirectory() {
+    return config.get(NODE_SECTION, "downloads-dir");
+  }
+
   public Node getNode() {
     return config.getClass(NODE_SECTION, "implementation", Node.class, DEFAULT_NODE_IMPLEMENTATION);
   }
