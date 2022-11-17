@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.grid;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
@@ -51,38 +55,37 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
 
   private static final String GRAPHQL = "/graphql";
 
-  protected static Routable[] graphqlRoute(String prefix, Supplier<HttpHandler> handler) {
-    Routable optionsRoute = Route.options(GRAPHQL).to(handler);
-    Routable postRoute = Route.post(GRAPHQL).to(handler);
-    if (prefix.isEmpty()) {
-      return new Routable[] {optionsRoute, postRoute};
-    }
-    return new Routable[] {
-      optionsRoute,
-      Route.options(prefix + GRAPHQL).to(handler),
-      postRoute,
-      Route.post(prefix + GRAPHQL).to(handler)
-    };
+  protected static Routable graphqlRoute(String prefix, Supplier<HttpHandler> handler) {
+    Routable optionsRoute =  buildRoute(GRAPHQL,
+      prefix,
+      path -> Route.options(path).to(handler)
+    );
+    Routable postRoute = buildRoute(GRAPHQL,
+      prefix,
+      path -> Route.post(path).to(handler)
+    );
+    return Route.combine(optionsRoute, postRoute);
   }
 
-  protected static Routable[] hubRoute(String prefix, Route route) {
-    Routable alwaysAdd = Route.prefix("/wd/hub").to(route);
-    if (prefix.isEmpty()) {
-      return new Routable[] {alwaysAdd};
-    }
-    return new Routable[] {
-      alwaysAdd,
-      Route.prefix(prefix + "/wd/hub").to(route)
-    };
+  protected static Routable hubRoute(String prefix, Route route) {
+    return buildRoute("/wd/hub",
+      prefix,
+      path -> Route.prefix(path).to(route)
+    );
   }
 
-  protected static Routable[] baseRoute(String prefix, Route route) {
-    if (prefix.isEmpty()) {
-      return new Routable[] {};
-    }
-    return new Routable[] {
-      Route.prefix(prefix).to(route)
-    };
+  private static Routable buildRoute(String url, String prefix, Function<String, Route> mapper) {
+    List<String> subPaths = prefix.isEmpty()
+      ? Collections.singletonList(url)
+      : Arrays.asList(prefix + url, url);
+    return subPaths.stream()
+      .map(mapper)
+      .reduce(Route::combine)
+      .get();
+  }
+
+  protected static Routable baseRoute(String prefix, Route route) {
+    return Route.prefix(prefix).to(route);
   }
 
   protected abstract Handlers createHandlers(Config config);

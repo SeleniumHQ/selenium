@@ -17,8 +17,11 @@
 
 package org.openqa.selenium.grid.web;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -53,14 +56,15 @@ public class GridUiRoute implements Routable {
 
       Supplier<HttpHandler> redirectHandler = () -> req -> uiRedirect;
 
-      Routable[] appendRoutes = Stream.of(
-          redirectRoutes(prefix, redirectHandler),
-          consoleRoutes(prefix, redirectHandler),
-          uiRoutes(prefix, () -> uiHandler)
-        )
-        .flatMap(Stream::of)
-        .toArray(Routable[]::new);
-      routes = Route.combine(get("/").to(redirectHandler), appendRoutes);
+      Routable appendRoute = Route.combine(
+        consoleRoute(prefix, redirectHandler),
+        uiRoute(prefix, () -> uiHandler)
+      );
+      if (!prefix.isEmpty()) {
+        appendRoute = Route.combine(appendRoute, redirectRoute(prefix, redirectHandler));
+      }
+
+      routes = Route.combine(get("/").to(redirectHandler), appendRoute);
     } else {
       LOG.warning("It was not possible to load the Grid UI.");
       Json json = new Json();
@@ -78,33 +82,34 @@ public class GridUiRoute implements Routable {
     return routes.execute(req);
   }
 
-  private static Routable[] uiRoutes(String prefix, Supplier<HttpHandler> handler) {
-    Routable alwaysAdd = Route.prefix("/ui").to(Route.matching(req -> true).to(handler));
-    if (prefix.isEmpty()) {
-      return new Routable[]{alwaysAdd};
-    }
-    return new Routable[]{
-      alwaysAdd,
-      Route.prefix(prefix + "/ui").to(Route.matching(req -> true).to(handler))
-    };
+  private static Routable uiRoute(String prefix, Supplier<HttpHandler> handler) {
+    return buildRoute(
+      "/ui",
+      prefix,
+      path -> Route.prefix(path).to(Route.matching(req -> true).to(handler))
+    );
   }
 
-  private static Routable[] consoleRoutes(String prefix, Supplier<HttpHandler> handler) {
-    Routable alwaysAdd = get("/grid/console").to(handler);
-    if (prefix.isEmpty()) {
-      return new Routable[]{alwaysAdd};
-    }
-    return new Routable[]{
-      alwaysAdd,
-      get(prefix + "/grid/console").to(handler)
-    };
+  private static Routable consoleRoute(String prefix, Supplier<HttpHandler> handler) {
+    return buildRoute(
+      "/grid/console",
+      prefix,
+      path -> get(path).to(handler)
+    );
   }
 
-  private static Routable[] redirectRoutes(String prefix, Supplier<HttpHandler> handler ) {
-    if (prefix.isEmpty()) {
-      return new Routable[]{};
-    }
+  private static Routable buildRoute(String url, String prefix, Function<String, Route> mapper) {
+    List<String> subPaths = prefix.isEmpty()
+      ? Collections.singletonList(url)
+      : Arrays.asList(prefix + url, url);
+    return subPaths.stream()
+      .map(mapper)
+      .reduce(Route::combine)
+      .get();
+  }
+
+  private static Routable redirectRoute(String prefix, Supplier<HttpHandler> handler ) {
     prefix = prefix.endsWith("/") ? prefix.substring(0, prefix.length() -1) : prefix;
-    return new Routable[]{get(prefix).to(handler)};
+    return get(prefix).to(handler);
   }
 }

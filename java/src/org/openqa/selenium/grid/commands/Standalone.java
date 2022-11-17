@@ -190,16 +190,18 @@ public class Standalone extends TemplateGridServerCommand {
     String subPath = new RouterOptions(config).subPath();
     Routable ui = new GridUiRoute(subPath);
 
-    Routable[] appendRoutes = Stream.of(
-        new Routable[]{router},
-        baseRoute(subPath, combine(router)),
+    Routable appendRoute = Stream.of(
+        router,
         hubRoute(subPath, combine(router)),
         graphqlRoute(subPath, () -> graphqlHandler)
-      ).flatMap(Stream::of)
-      .toArray(Routable[]::new);
+      ).reduce(Route::combine)
+      .get();
 
+    if (!subPath.isEmpty()) {
+      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(router)));
+    }
 
-    Routable httpHandler = combine(ui, appendRoutes);
+    Routable httpHandler = combine(ui, appendRoute);
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {

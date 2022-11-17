@@ -163,15 +163,17 @@ public class RouterServer extends TemplateGridServerCommand {
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
-    Routable[] appendRoutes = Stream.of(
-        new Routable[]{routerWithSpecChecks},
-        baseRoute(subPath, combine(routerWithSpecChecks)),
+    Routable appendRoute = Stream.of(
+        routerWithSpecChecks,
         hubRoute(subPath, combine(routerWithSpecChecks)),
         graphqlRoute(subPath, () -> graphqlHandler)
-      ).flatMap(Stream::of)
-      .toArray(Routable[]::new);
-
-    Routable route = Route.combine(ui, appendRoutes);
+      )
+      .reduce(Route::combine)
+      .get();
+    if (!subPath.isEmpty()) {
+      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(routerWithSpecChecks)));
+    }
+    Routable route = Route.combine(ui, appendRoute);
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {

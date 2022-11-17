@@ -191,15 +191,16 @@ public class Hub extends TemplateGridServerCommand {
     String subPath = new RouterOptions(config).subPath();
     Routable ui = new GridUiRoute(subPath);
 
-    Routable[] appendRoutes = Stream.of(
-        new Routable[]{routerWithSpecChecks},
-        baseRoute(subPath, combine(routerWithSpecChecks)),
+    Routable appendRoute = Stream.of(
+        routerWithSpecChecks,
         hubRoute(subPath, combine(routerWithSpecChecks)),
         graphqlRoute(subPath, () -> graphqlHandler)
-      ).flatMap(Stream::of)
-      .toArray(Routable[]::new);
-
-    Routable httpHandler = combine(ui, appendRoutes);
+      ).reduce(Route::combine)
+      .get();
+    if (!subPath.isEmpty()) {
+      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(routerWithSpecChecks)));
+    }
+    Routable httpHandler = combine(ui, appendRoute);
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {
