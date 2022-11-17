@@ -22,6 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
 public class LogInspectorTest {
+
   String page;
   private AppServer server;
   private FirefoxDriver driver;
@@ -60,7 +61,8 @@ public class LogInspectorTest {
   }
 
   @Test
-  void canListenToJavascriptLog() throws ExecutionException, InterruptedException, TimeoutException {
+  void canListenToJavascriptLog()
+    throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
       logInspector.onJavaScriptLog(future::complete);
@@ -78,7 +80,8 @@ public class LogInspectorTest {
   }
 
   @Test
-  void canListenToJavascriptErrorLog() throws ExecutionException, InterruptedException, TimeoutException {
+  void canListenToJavascriptErrorLog()
+    throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
       logInspector.onJavaScriptException(future::complete);
@@ -96,7 +99,8 @@ public class LogInspectorTest {
   }
 
   @Test
-  void canRetrieveStacktraceForALog() throws ExecutionException, InterruptedException, TimeoutException {
+  void canRetrieveStacktraceForALog()
+    throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
       logInspector.onJavaScriptException(future::complete);
@@ -114,7 +118,8 @@ public class LogInspectorTest {
   }
 
   @Test
-  void canListenToConsoleLogForABrowsingContext() throws ExecutionException, InterruptedException, TimeoutException {
+  void canListenToConsoleLogForABrowsingContext()
+    throws ExecutionException, InterruptedException, TimeoutException {
     page = server.whereIs("/bidi/logEntryAdded.html");
     String browsingContextId = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
 
@@ -138,7 +143,8 @@ public class LogInspectorTest {
   }
 
   @Test
-  void canListenToJavascriptLogForABrowsingContext() throws ExecutionException, InterruptedException, TimeoutException {
+  void canListenToJavascriptLogForABrowsingContext()
+    throws ExecutionException, InterruptedException, TimeoutException {
     page = server.whereIs("/bidi/logEntryAdded.html");
     String browsingContextId = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
 
@@ -158,7 +164,8 @@ public class LogInspectorTest {
   }
 
   @Test
-  void canListenToJavascriptErrorLogForABrowsingContext() throws ExecutionException, InterruptedException, TimeoutException {
+  void canListenToJavascriptErrorLogForABrowsingContext()
+    throws ExecutionException, InterruptedException, TimeoutException {
     page = server.whereIs("/bidi/logEntryAdded.html");
     String browsingContextId = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
 
@@ -178,7 +185,8 @@ public class LogInspectorTest {
   }
 
   @Test
-  void canListenToConsoleLogForMultipleBrowsingContexts() throws ExecutionException, InterruptedException, TimeoutException {
+  void canListenToConsoleLogForMultipleBrowsingContexts()
+    throws ExecutionException, InterruptedException, TimeoutException {
     page = server.whereIs("/bidi/logEntryAdded.html");
     String firstBrowsingContextId = driver.getWindowHandle();
     String secondBrowsingContextId = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
@@ -277,6 +285,35 @@ public class LogInspectorTest {
       driver.switchTo().newWindow(WindowType.TAB);
       driver.get(page);
       // Triggers console event in the third tab, but we have not subscribed for that
+      driver.findElement(By.id("consoleLog")).click();
+
+      latch.await();
+
+      assertThat(latch.getCount()).isEqualTo(0);
+    }
+  }
+
+  @Test
+  void canListenToAnyTypeOfLogForMultipleBrowsingContexts() throws InterruptedException {
+    page = server.whereIs("/bidi/logEntryAdded.html");
+    String firstBrowsingContextId = driver.getWindowHandle();
+    String secondBrowsingContextId = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
+
+    Set<String> browsingContextIds = new HashSet<>();
+    browsingContextIds.add(firstBrowsingContextId);
+    browsingContextIds.add(secondBrowsingContextId);
+
+    CountDownLatch latch = new CountDownLatch(2);
+
+    try (LogInspector logInspector = new LogInspector(browsingContextIds, driver)) {
+      logInspector.onLog(logEntry -> latch.countDown());
+
+      driver.get(page);
+      driver.findElement(By.id("jsException")).click();
+
+      driver.switchTo().window(firstBrowsingContextId);
+
+      driver.get(page);
       driver.findElement(By.id("consoleLog")).click();
 
       latch.await();

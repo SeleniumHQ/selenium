@@ -1,10 +1,19 @@
 package org.openqa.selenium.bidi;
 
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.bidi.log.*;
+
+import org.openqa.selenium.bidi.log.BaseLogEntry;
+import org.openqa.selenium.bidi.log.ConsoleLogEntry;
+import org.openqa.selenium.bidi.log.GenericLogEntry;
+import org.openqa.selenium.bidi.log.JavascriptLogEntry;
+import org.openqa.selenium.bidi.log.Log;
+import org.openqa.selenium.bidi.log.LogEntry;
 import org.openqa.selenium.internal.Require;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class LogInspector implements AutoCloseable {
