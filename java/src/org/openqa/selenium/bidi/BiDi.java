@@ -84,7 +84,7 @@ public class BiDi implements Closeable {
     Require.nonNull("Handler to call", handler);
 
     send(new Command<>("session.subscribe",
-      ImmutableMap.of("contexts", Collections.singletonList(browsingContextIds),
+      ImmutableMap.of("contexts", browsingContextIds,
         "events", Collections.singletonList(event.getMethod()))));
 
     connection.addListener(event, handler);
