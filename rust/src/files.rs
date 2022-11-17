@@ -88,7 +88,9 @@ pub fn untargz(file: File, target: PathBuf) -> Result<(), Box<dyn Error>> {
     let parent_path = target
         .parent()
         .ok_or(format!("Error getting parent of {:?}", file))?;
-    archive.unpack(parent_path)?;
+    if !target.exists() {
+        archive.unpack(parent_path)?;
+    }
     Ok(())
 }
 
@@ -98,6 +100,9 @@ pub fn unzip(file: File, target: PathBuf) -> Result<(), Box<dyn Error>> {
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i)?;
+        if target.exists() {
+            continue;
+        }
         let target_file_name = target.file_name().unwrap().to_str().unwrap();
         if target_file_name == file.name() {
             log::debug!(
@@ -108,17 +113,19 @@ pub fn unzip(file: File, target: PathBuf) -> Result<(), Box<dyn Error>> {
             if let Some(p) = target.parent() {
                 create_path_if_not_exists(p);
             }
-            let mut outfile = File::create(&target)?;
+            if !target.exists() {
+                let mut outfile = File::create(&target)?;
 
-            // Set permissions in Unix-like systems
-            #[cfg(unix)]
-            {
-                use std::os::unix::fs::PermissionsExt;
+                // Set permissions in Unix-like systems
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::PermissionsExt;
 
-                fs::set_permissions(&target, fs::Permissions::from_mode(0o755))?;
+                    fs::set_permissions(&target, fs::Permissions::from_mode(0o755))?;
+                }
+
+                io::copy(&mut file, &mut outfile)?;
             }
-
-            io::copy(&mut file, &mut outfile)?;
             break;
         }
     }
