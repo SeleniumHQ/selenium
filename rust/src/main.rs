@@ -31,6 +31,7 @@ use crate::chrome::ChromeManager;
 use crate::edge::EdgeManager;
 use crate::files::clear_cache;
 use crate::firefox::FirefoxManager;
+use crate::iexplorer::IExplorerManager;
 use crate::manager::BrowserManager;
 
 mod chrome;
@@ -38,6 +39,7 @@ mod downloads;
 mod edge;
 mod files;
 mod firefox;
+mod iexplorer;
 mod manager;
 mod metadata;
 
@@ -49,11 +51,11 @@ mod metadata;
 {usage-heading} {usage}
 {all-args}")]
 struct Cli {
-    /// Browser name (chrome, firefox, or edge)
+    /// Browser name (chrome, firefox, edge, or iexplorer)
     #[clap(short, long, value_parser, default_value = "")]
     browser: String,
 
-    /// Driver name (chromedriver, geckodriver, or msedgedriver)
+    /// Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer)
     #[clap(short, long, value_parser, default_value = "")]
     driver: String,
 
@@ -104,6 +106,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         || driver_name.eq_ignore_ascii_case("msedgedriver")
     {
         EdgeManager::new()
+    } else if browser_name.eq_ignore_ascii_case("iexplorer")
+        || driver_name.eq_ignore_ascii_case("iedriverserver")
+    {
+        IExplorerManager::new()
     } else {
         exit_with_error("Invalid browser/driver name".to_string());
         exit(exitcode::DATAERR);
@@ -125,7 +131,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     log::debug!("Detected browser: {} {}", browser_name, browser_version);
                 }
                 None => {
-                    log::warn!(
+                    log::debug!(
                         "The version of {} cannot be detected. Trying with latest driver version",
                         browser_name
                     );
