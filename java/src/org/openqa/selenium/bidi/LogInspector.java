@@ -7,7 +7,7 @@ import org.openqa.selenium.internal.Require;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class LogInspector {
+public class LogInspector implements AutoCloseable {
 
   private final List<Consumer<ConsoleLogEntry>> consoleLogListeners = new LinkedList<>();
   private final List<Consumer<JavascriptLogEntry>> jsExceptionLogListeners = new LinkedList<>();
@@ -59,10 +59,9 @@ public class LogInspector {
           if (jsLogEntry.getLevel() == BaseLogEntry.LogLevel.ERROR) {
             jsExceptionLogListeners.forEach(
               consumer -> consumer.accept(jsLogEntry));
-          } else {
-            jsLogListeners.forEach(
-              consumer -> consumer.accept(jsLogEntry));
           }
+          jsLogListeners.forEach(
+            consumer -> consumer.accept(jsLogEntry));
         }
       );
 
@@ -97,5 +96,10 @@ public class LogInspector {
 
   public void onLog(Consumer<LogEntry> consumer) {
     this.bidi.addListener(Log.entryAdded(), consumer);
+  }
+
+  @Override
+  public void close() {
+    this.bidi.clearListener(Log.entryAdded());
   }
 }
