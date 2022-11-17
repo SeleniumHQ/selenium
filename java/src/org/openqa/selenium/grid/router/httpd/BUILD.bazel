@@ -6,6 +6,7 @@ java_library(
     srcs = glob(["*.java"]),
     visibility = [
         "//java/src/org/openqa/selenium/grid:__pkg__",
+        "//java/src/org/openqa/selenium/grid/commands:__pkg__",
         "//java/test/org/openqa/selenium/grid/router:__pkg__",
         "//java/test/org/openqa/selenium/grid/router/httpd:__pkg__",
     ],
