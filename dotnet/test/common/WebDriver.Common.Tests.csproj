@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net471;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net5.0;net48;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>WebDriver.Common.Tests</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
   </PropertyGroup>
