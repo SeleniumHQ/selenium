@@ -27,7 +27,6 @@ import org.openqa.selenium.bidi.log.Log;
 import org.openqa.selenium.bidi.log.LogEntry;
 import org.openqa.selenium.internal.Require;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -50,16 +49,7 @@ public class LogInspector implements AutoCloseable {
   }
 
   public LogInspector(String browsingContextId, WebDriver driver) {
-    Require.nonNull("WebDriver", driver);
-    Require.nonNull("Browsing context id", browsingContextId);
-
-    if (!(driver instanceof HasBiDi)) {
-      throw new IllegalArgumentException("WebDriver instance must support BiDi protocol");
-    }
-
-    this.bidi = ((HasBiDi) driver).getBiDi();
-    this.browsingContextIds = Collections.singleton(browsingContextId);
-    initializeLogListener();
+    this(Collections.singleton(Require.nonNull("Browsing context id", browsingContextId)), driver);
   }
 
   public LogInspector(Set<String> browsingContextIds, WebDriver driver) {
