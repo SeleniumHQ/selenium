@@ -42,7 +42,7 @@ import java.util.concurrent.TimeoutException;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-public class LogInspectorTest {
+class LogInspectorTest {
 
   String page;
   private AppServer server;
@@ -238,7 +238,7 @@ public class LogInspectorTest {
 
       latch.await();
 
-      assertThat(latch.getCount()).isEqualTo(0);
+      assertThat(latch.getCount()).isZero();
     }
   }
 
@@ -274,7 +274,7 @@ public class LogInspectorTest {
 
       latch.await();
 
-      assertThat(latch.getCount()).isEqualTo(0);
+      assertThat(latch.getCount()).isZero();
     }
   }
 
@@ -310,7 +310,7 @@ public class LogInspectorTest {
 
       latch.await();
 
-      assertThat(latch.getCount()).isEqualTo(0);
+      assertThat(latch.getCount()).isZero();
     }
   }
 
@@ -339,7 +339,7 @@ public class LogInspectorTest {
 
       latch.await();
 
-      assertThat(latch.getCount()).isEqualTo(0);
+      assertThat(latch.getCount()).isZero();
     }
   }
 
