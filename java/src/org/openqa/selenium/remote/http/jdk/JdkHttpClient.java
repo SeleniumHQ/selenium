@@ -300,5 +300,14 @@ public class JdkHttpClient implements HttpClient {
       Objects.requireNonNull(config, "Client config must be set");
       return new JdkHttpClient(config);
     }
+
+    @Override
+    public void cleanupIdleClients() {
+      HttpClient.Factory.super.cleanupIdleClients();
+
+      // The SelectorManager thread uses internally a WeakReference to the HttpClient to check if it
+      // is still used or the thread can be stopped. Calling the GC will clear the WeakReference.
+      System.gc();
+    }
   }
 }
