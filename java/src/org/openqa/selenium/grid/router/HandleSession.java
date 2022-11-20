@@ -147,8 +147,12 @@ class HandleSession implements HttpHandler {
         Throwable cause = e.getCause();
         if (cause instanceof RuntimeException) {
           throw (RuntimeException) cause;
+        } else if (cause != null) {
+          throw new RuntimeException(errorMessage, cause);
+        } else if (e instanceof RuntimeException) {
+          throw (RuntimeException) e;
         }
-        throw new RuntimeException(errorMessage, cause);
+        throw new RuntimeException(errorMessage, e);
       }
     }
   }
