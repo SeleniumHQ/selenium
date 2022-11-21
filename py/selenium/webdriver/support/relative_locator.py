@@ -105,7 +105,7 @@ class RelativeBy:
             - element_or_locator: Element to look below
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling above method")
+            raise WebDriverException("Element or locator must be given when calling below method")
 
         self.filters.append({"kind": "below", "args": [element_or_locator]})
         return self
@@ -117,7 +117,7 @@ class RelativeBy:
             - element_or_locator: Element to look to the left of
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling above method")
+            raise WebDriverException("Element or locator must be given when calling to_left_of method")
 
         self.filters.append({"kind": "left", "args": [element_or_locator]})
         return self
@@ -129,7 +129,7 @@ class RelativeBy:
             - element_or_locator: Element to look right of
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling above method")
+            raise WebDriverException("Element or locator must be given when calling to_right_of method")
 
         self.filters.append({"kind": "right", "args": [element_or_locator]})
         return self
@@ -141,7 +141,7 @@ class RelativeBy:
             - element_or_locator_distance: Element to look near by the element or within a distance
         """
         if not element_or_locator_distance:
-            raise WebDriverException("Element or locator or distance must be given when calling above method")
+            raise WebDriverException("Element or locator or distance must be given when calling near method")
 
         self.filters.append({"kind": "near", "args": [element_or_locator_distance]})
         return self
