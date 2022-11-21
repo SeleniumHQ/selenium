@@ -85,7 +85,7 @@ CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel.execute('build', task.name)
+  task.out = Bazel.execute('build', %w[], task.name)
 end
 
 # Spoof tasks to get CI working with bazel
