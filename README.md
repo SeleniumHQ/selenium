@@ -209,6 +209,19 @@ To build the Ruby code run:
 ```sh
 bazel build //rb/...
 ```
+
+To run tests on a browser:
+
+```sh
+bazel test --cache_test_results=no --test_output=all //rb:<browsername>-test 
+```
+
+To run a particular test on a browser:
+
+```sh
+bazel test --cache_test_results=no --test_output=all --test_arg="-e<Test_Target>" //rb:<browsername>-test
+```
+Example, Test_Target = Selenium::WebDriver::Devtools
 </details>
 
 ####  .NET
