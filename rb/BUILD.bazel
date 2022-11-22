@@ -352,6 +352,30 @@ rb_test(
 )
 
 rb_test(
+    name = "ie-test",
+    srcs = glob([
+        "spec/integration/selenium/webdriver/*_spec.rb",
+        "spec/integration/selenium/webdriver/ie/**/*_spec.rb",
+    ]),
+    args = [
+        "--format",
+        "documentation",
+        "--force-color",
+        "rb/spec",
+    ],
+    bin = "@bundle//:bin/rspec",
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    deps = [
+        ":remote",
+        ":ie",
+        "@bundle",
+    ],
+)
+
+rb_test(
     name = "safari-test",
     srcs = glob([
         "spec/integration/selenium/webdriver/*_spec.rb",
@@ -533,6 +557,31 @@ rb_test(
         ":bidi",
         ":remote",
         ":safari",
+        "@bundle",
+    ],
+)
+
+rb_test(
+    name = "remote-ie-test",
+    srcs = glob([
+        "spec/integration/selenium/webdriver/*_spec.rb",
+        "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
+        "spec/integration/selenium/webdriver/ie/**/*_spec.rb",
+    ]) + [":selenium-server-deploy"],
+    args = [
+        "--format",
+        "documentation",
+        "--force-color",
+        "rb/spec",
+    ],
+    bin = "@bundle//:bin/rspec",
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    deps = [
+        ":remote",
+        ":ie",
         "@bundle",
     ],
 )
