@@ -157,11 +157,15 @@ jobs:
   unit-test:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
     needs: check_workflow
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         ruby: [ '2.7.6', '3.1.2', 'jruby-9.4.0.0', 'truffleruby-22.3.0' ]
+        os: ['ubuntu-latest']
+        include:
+          - ruby: 2.7.6
+            os: windows-latest
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
