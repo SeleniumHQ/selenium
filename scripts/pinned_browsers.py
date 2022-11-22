@@ -7,7 +7,7 @@ import urllib3
 
 # Find the current stable versions of each browser we
 # support and the sha256 of these. That's useful for
-# updating `//commmon:repositories.bzl`
+# updating `//common:repositories.bzl`
 
 http = urllib3.PoolManager()
 

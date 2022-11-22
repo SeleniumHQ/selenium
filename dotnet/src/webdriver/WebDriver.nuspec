@@ -49,7 +49,7 @@
     <file src="**\WebDriver.pdb" target="lib" />
     <file src="**\WebDriver.xml" target="lib" />
     <file src="..\icon.png" target="images" />
-    <file src="..\manager\**" target="tools" />
-    <file src="..\Selenium.WebDriver.props" target="build" />
+    <file src="..\manager\**" target="manager" />
+    <file src="..\Selenium.WebDriver.targets" target="build" />
   </files>
 </package>

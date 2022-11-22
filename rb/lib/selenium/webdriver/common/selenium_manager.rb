@@ -21,6 +21,7 @@ module Selenium
   module WebDriver
     #
     # Wrapper for getting information from the Selenium Manager binaries.
+    # This implementation is still in beta, and may change.
     # @api private
     #
     class SeleniumManager

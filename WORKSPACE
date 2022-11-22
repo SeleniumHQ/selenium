@@ -2,17 +2,6 @@ workspace(
     name = "selenium",
 )
 
-load("//common/private:env.bzl", "env")
-
-env(
-    name = "python_version",
-    env_var = ["PYTHON_VERSION"],
-)
-
-load("@python_version//:defs.bzl", "PYTHON_VERSION")
-
-register_toolchains(":py_toolchain")
-
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
@@ -48,16 +37,16 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "56dc7569e5dd149e576941bdb67a57e19cd2a7a63cc352b62ac047732008d7e1",
-    strip_prefix = "rules_python-0.10.0",
-    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.10.0.tar.gz",
+    sha256 = "8c8fe44ef0a9afc256d1e75ad5f448bb59b81aba149b8958f02f7b3a98f5d9b4",
+    strip_prefix = "rules_python-0.13.0",
+    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.13.0.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "python_register_toolchains")
 
 python_register_toolchains(
     name = "python_toolchain",
-    python_version = PYTHON_VERSION,
+    python_version = "3.8",
 )
 
 load("@python_toolchain//:defs.bzl", "interpreter")
@@ -91,9 +80,9 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
-RULES_JVM_EXTERNAL_TAG = "4.4.2"
+RULES_JVM_EXTERNAL_TAG = "4.5"
 
-RULES_JVM_EXTERNAL_SHA = "735602f50813eb2ea93ca3f5e43b1959bd80b213b836a07a62a29d757670b77b"
+RULES_JVM_EXTERNAL_SHA = "b17d7388feb9bfa7f2fa09031b32707df529f26c91ab9e5d909eb1676badd9a6"
 
 http_archive(
     name = "rules_jvm_external",
@@ -102,6 +91,7 @@ http_archive(
     ],
     patches = [
         "//java:rules_jvm_external_javadoc.patch",
+        "//java:add_missing_dirs.patch",
     ],
     sha256 = RULES_JVM_EXTERNAL_SHA,
     strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
@@ -322,25 +312,21 @@ load("//common:repositories.bzl", "pin_browsers")
 pin_browsers()
 
 http_archive(
-    name = "bazelruby_rules_ruby",
-    sha256 = "43e1dc0b747d51617dcbc02c15c4a1383cb572d58bef3accc10b9c8bd1e06b62",
-    strip_prefix = "rules_ruby-2caa1f20d5ba22080af653470037c72bf219af45",
-    url = "https://github.com/bazelruby/rules_ruby/archive/2caa1f20d5ba22080af653470037c72bf219af45.tar.gz",
+    name = "rules_ruby",
+    sha256 = "bb0bffb0285ff8fa9a967fc2580ddf3b511818a6baf269dcd6c5c6076c4921d8",
+    strip_prefix = "rules_ruby-c3cefa71d0111a04c9ce0672c65d376262d8d975",
+    url = "https://github.com/p0deje/rules_ruby/archive/c3cefa71d0111a04c9ce0672c65d376262d8d975.zip",
 )
 
 load(
-    "@bazelruby_rules_ruby//ruby:deps.bzl",
-    "rules_ruby_dependencies",
-    "rules_ruby_select_sdk",
+    "@rules_ruby//ruby:deps.bzl",
+    "rb_bundle",
+    "rb_download",
 )
 
-rules_ruby_dependencies()
+rb_download(version = "2.7.6")
 
-rules_ruby_select_sdk(version = "host")
-
-load("@bazelruby_rules_ruby//ruby:defs.bzl", "ruby_bundle")
-
-ruby_bundle(
+rb_bundle(
     name = "bundle",
     srcs = [
         "//:rb/lib/selenium/devtools/version.rb",

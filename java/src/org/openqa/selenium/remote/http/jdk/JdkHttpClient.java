@@ -245,7 +245,11 @@ public class JdkHttpClient implements HttpClient {
       @Override
       public void close() {
         LOG.fine("Closing websocket");
-        underlyingSocket.sendClose(1000, "WebDriver closing socket");
+        synchronized (underlyingSocket) {
+          if (!underlyingSocket.isOutputClosed()) {
+            underlyingSocket.sendClose(1000, "WebDriver closing socket");
+          }
+        }
       }
     };
   }

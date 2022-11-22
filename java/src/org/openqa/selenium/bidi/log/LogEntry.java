@@ -24,11 +24,11 @@ public class LogEntry {
 
   private final Optional<GenericLogEntry> genericLogEntry;
   private final Optional<ConsoleLogEntry> consoleLogEntry;
-  private final Optional<GenericLogEntry> javascriptLogEntry;
+  private final Optional<JavascriptLogEntry> javascriptLogEntry;
 
   public LogEntry(Optional<GenericLogEntry> genericLogEntry,
                   Optional<ConsoleLogEntry> consoleLogEntry,
-                  Optional<GenericLogEntry> javascriptLogEntry) {
+                  Optional<JavascriptLogEntry> javascriptLogEntry) {
     this.genericLogEntry = genericLogEntry;
     this.consoleLogEntry = consoleLogEntry;
     this.javascriptLogEntry = javascriptLogEntry;
@@ -42,7 +42,7 @@ public class LogEntry {
     return consoleLogEntry;
   }
 
-  public Optional<GenericLogEntry> getJavascriptLogEntry() {
+  public Optional<JavascriptLogEntry> getJavascriptLogEntry() {
     return javascriptLogEntry;
   }
 }

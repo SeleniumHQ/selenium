@@ -242,8 +242,20 @@ copy_file(
 
 copy_file(
     name = "props",
-    src = "build/WebDriver.props",
-    out = "Selenium.WebDriver.props",
+    src = "build/Selenium.WebDriver.targets",
+    out = "Selenium.WebDriver.targets",
+)
+
+copy_file(
+    name = "manager-linux",
+    src = "//common/manager:linux/selenium-manager",
+    out = "manager/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-macos",
+    src = "//common/manager:macos/selenium-manager",
+    out = "manager/macos/selenium-manager",
 )
 
 copy_file(
@@ -266,6 +278,8 @@ nuget_package(
     deps = [
         ":logo",
         ":props",
+        ":manager-linux",
+        ":manager-macos",
         ":manager-windows",
         ":net45",
         ":net46",

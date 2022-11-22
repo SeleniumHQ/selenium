@@ -54,6 +54,7 @@ function getRequestOptions(aUrl) {
   options.search = null
   options.hash = null
   options.path = options.pathname
+  options.hostname = options.hostname === 'localhost' ? '127.0.0.1' : options.hostname // To support Node 17 and above. Refer https://github.com/nodejs/node/issues/40702 for details.
   return options
 }
 

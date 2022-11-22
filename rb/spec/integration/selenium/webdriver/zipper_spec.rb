@@ -57,8 +57,7 @@ module Selenium
           expect(File).to exist(zip_file)
         end
 
-        # Bug - `File.symlink` has permissions issues on Windows
-        it 'follows symlinks', except: {platform: :windows} do
+        it 'follows symlinks' do
           filename = create_file
           File.symlink(filename, File.join(dir_to_zip, 'link'))
 

@@ -47,10 +47,9 @@ before submitting your pull requests.
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
 * [Python 3.7+](https://www.python.org/downloads/) and `python` on the `PATH`
-* [Ruby 3+](https://www.ruby-lang.org/en/documentation/installation/) and `ruby` on the `PATH`
 * [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
 * macOS users:
-  * Install the latest version of Xcode including the command-line tools. This command should work `xcode-select --install` 
+  * Install the latest version of Xcode including the command-line tools. This command should work `xcode-select --install`
   * Apple Silicon Macs should add `build --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
   to make sure this isn't required in the long run.
 * Windows users:
@@ -126,7 +125,7 @@ medium is akin to integration tests, and large is akin to end-to-end tests.
 
 The `test_tag_filters` allow us to pass in browser names and a few different tags that we can
 find in the code base.
-  
+
 To build the Grid deployment jar, run this command:
 
 ```sh
@@ -134,7 +133,7 @@ bazel build grid
 ```
 
 The log will show where the output jar is located.
-  
+
 </details>
 
 #### JavaScript
@@ -185,9 +184,9 @@ bazel test //py:test-<browsername>
 ```
 
 If you add `--//common:pin_browsers` it will download the browsers and drivers for you to use.
-  
+
 To install locally run:
-  
+
 ```sh
 bazel build //py:selenium-wheel
 pip install bazel-bin/py/selenium-*.whl
@@ -226,14 +225,14 @@ Also
 ```sh
 bazel build //dotnet/test/common:chrome
 ```
-  
+
 </details>
 
 
 ### Build Details
 
-Bazel files are called BUILD.bazel, and the order the modules are built is determined 
-by the build system. If you want to build an individual module (assuming all dependent 
+Bazel files are called BUILD.bazel, and the order the modules are built is determined
+by the build system. If you want to build an individual module (assuming all dependent
 modules have previously been built), try the following:
 
 ```sh
@@ -302,7 +301,7 @@ bazel run debug-server
 Now, navigate to
 [http://localhost:2310/javascript](http://localhost:2310/javascript).
 You'll find the contents of the `javascript/` directory being shown.
-We use the [Closure Library](https://developers.google.com/closure/library/) 
+We use the [Closure Library](https://developers.google.com/closure/library/)
 for developing much of the JavaScript, so now navigate to
 [http://localhost:2310/javascript/atoms/test](http://localhost:2310/javascript/atoms/test).
 
@@ -324,7 +323,7 @@ targets.
 
 ## Maven _per se_
 
-Selenium is not built with Maven. It is built with `bazel`, 
+Selenium is not built with Maven. It is built with `bazel`,
 though that is invoked with `go` as outlined above,
 so you do not have to learn too much about that.
 
@@ -399,7 +398,7 @@ bazel test --run_under="xvfb-run -a" //java/... --test_tag_filters=chrome
 
 If you're finding it hard to set up a development environment using bazel
 and you have access to Docker, then you can build a Docker image suitable
-for building and testing Selenium in from the Dockerfile in the 
+for building and testing Selenium in from the Dockerfile in the
 [dev image](scripts/dev-image/Dockerfile) directory.
 
 ### MacOS

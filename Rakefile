@@ -51,11 +51,11 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.5'
+  '4.6'
 end
 
 def version
-  "#{release_version}.3"
+  "#{release_version}.0"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -85,7 +85,7 @@ CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel.execute('build', %w[--workspace_status_command scripts/build-info.py], task.name)
+  task.out = Bazel.execute('build', %w[], task.name)
 end
 
 # Spoof tasks to get CI working with bazel
@@ -439,13 +439,16 @@ namespace :copyright do
         'javascript/selenium-core/scripts/ui-map-sample.js',
         'javascript/selenium-core/scripts/user-extensions.js',
         'javascript/selenium-core/scripts/xmlextras.js',
-        'javascript/selenium-core/xpath/**/*.js'
+        'javascript/selenium-core/xpath/**/*.js',
+        'javascript/grid-ui/node_modules/**/*.js'
       )
     )
+    Copyright.new.update(FileList['javascript/**/*.tsx'])
     Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'])
     Copyright.new(comment_characters: '#', prefix: ["# frozen_string_literal: true\n", "\n"])
       .update(FileList['rb/**/*.rb'])
     Copyright.new.update(FileList['java/**/*.java'])
+    Copyright.new.update(FileList['rust/**/*.rs'])
   end
 end
 

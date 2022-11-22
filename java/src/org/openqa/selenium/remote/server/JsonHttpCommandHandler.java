@@ -70,7 +70,6 @@ import org.openqa.selenium.remote.server.handler.GetElementSize;
 import org.openqa.selenium.remote.server.handler.GetElementText;
 import org.openqa.selenium.remote.server.handler.GetLogHandler;
 import org.openqa.selenium.remote.server.handler.GetPageSource;
-import org.openqa.selenium.remote.server.handler.GetScreenOrientation;
 import org.openqa.selenium.remote.server.handler.GetSessionCapabilities;
 import org.openqa.selenium.remote.server.handler.GetSessionLogsHandler;
 import org.openqa.selenium.remote.server.handler.GetTagName;
@@ -82,7 +81,6 @@ import org.openqa.selenium.remote.server.handler.GoForward;
 import org.openqa.selenium.remote.server.handler.ImplicitlyWait;
 import org.openqa.selenium.remote.server.handler.MaximizeWindow;
 import org.openqa.selenium.remote.server.handler.RefreshPage;
-import org.openqa.selenium.remote.server.handler.Rotate;
 import org.openqa.selenium.remote.server.handler.SendKeys;
 import org.openqa.selenium.remote.server.handler.SetAlertText;
 import org.openqa.selenium.remote.server.handler.SetScriptTimeout;
@@ -97,18 +95,15 @@ import org.openqa.selenium.remote.server.handler.UploadFile;
 import org.openqa.selenium.remote.server.handler.W3CActions;
 import org.openqa.selenium.remote.server.handler.html5.ClearLocalStorage;
 import org.openqa.selenium.remote.server.handler.html5.ClearSessionStorage;
-import org.openqa.selenium.remote.server.handler.html5.GetAppCacheStatus;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageKeys;
 import org.openqa.selenium.remote.server.handler.html5.GetLocalStorageSize;
-import org.openqa.selenium.remote.server.handler.html5.GetLocationContext;
 import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageKeys;
 import org.openqa.selenium.remote.server.handler.html5.GetSessionStorageSize;
 import org.openqa.selenium.remote.server.handler.html5.RemoveLocalStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.RemoveSessionStorageItem;
 import org.openqa.selenium.remote.server.handler.html5.SetLocalStorageItem;
-import org.openqa.selenium.remote.server.handler.html5.SetLocationContext;
 import org.openqa.selenium.remote.server.handler.html5.SetSessionStorageItem;
 import org.openqa.selenium.remote.server.handler.interactions.ClickInSession;
 import org.openqa.selenium.remote.server.handler.interactions.DoubleClickInSession;
@@ -124,8 +119,6 @@ import org.openqa.selenium.remote.server.handler.interactions.touch.Move;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Scroll;
 import org.openqa.selenium.remote.server.handler.interactions.touch.SingleTapOnElement;
 import org.openqa.selenium.remote.server.handler.interactions.touch.Up;
-import org.openqa.selenium.remote.server.handler.mobile.GetNetworkConnection;
-import org.openqa.selenium.remote.server.handler.mobile.SetNetworkConnection;
 import org.openqa.selenium.remote.server.log.LoggingManager;
 import org.openqa.selenium.remote.server.log.PerSessionLogHandler;
 import org.openqa.selenium.remote.server.rest.RestishHandler;
@@ -162,7 +155,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ACTIVE_ELEMENT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALERT_TEXT;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_COOKIES;
 import static org.openqa.selenium.remote.DriverCommand.GET_ALL_SESSIONS;
-import static org.openqa.selenium.remote.DriverCommand.GET_APP_CACHE_STATUS;
 import static org.openqa.selenium.remote.DriverCommand.GET_AVAILABLE_LOG_TYPES;
 import static org.openqa.selenium.remote.DriverCommand.GET_CAPABILITIES;
 import static org.openqa.selenium.remote.DriverCommand.GET_COOKIE;
@@ -181,11 +173,8 @@ import static org.openqa.selenium.remote.DriverCommand.GET_ELEMENT_VALUE_OF_CSS_
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_KEYS;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOCAL_STORAGE_SIZE;
-import static org.openqa.selenium.remote.DriverCommand.GET_LOCATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_LOG;
-import static org.openqa.selenium.remote.DriverCommand.GET_NETWORK_CONNECTION;
 import static org.openqa.selenium.remote.DriverCommand.GET_PAGE_SOURCE;
-import static org.openqa.selenium.remote.DriverCommand.GET_SCREEN_ORIENTATION;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_LOGS;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.GET_SESSION_STORAGE_KEYS;
@@ -209,9 +198,6 @@ import static org.openqa.selenium.remote.DriverCommand.SET_ALERT_VALUE;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_POSITION;
 import static org.openqa.selenium.remote.DriverCommand.SET_CURRENT_WINDOW_SIZE;
 import static org.openqa.selenium.remote.DriverCommand.SET_LOCAL_STORAGE_ITEM;
-import static org.openqa.selenium.remote.DriverCommand.SET_LOCATION;
-import static org.openqa.selenium.remote.DriverCommand.SET_NETWORK_CONNECTION;
-import static org.openqa.selenium.remote.DriverCommand.SET_SCREEN_ORIENTATION;
 import static org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT;
 import static org.openqa.selenium.remote.DriverCommand.SET_SESSION_STORAGE_ITEM;
 import static org.openqa.selenium.remote.DriverCommand.SET_TIMEOUT;
@@ -410,11 +396,6 @@ public class JsonHttpCommandHandler {
     addNewMapping(IMPLICITLY_WAIT, ImplicitlyWait::new);
     addNewMapping(SET_SCRIPT_TIMEOUT, SetScriptTimeout::new);
 
-    addNewMapping(GET_LOCATION, GetLocationContext::new);
-    addNewMapping(SET_LOCATION,  SetLocationContext::new);
-
-    addNewMapping(GET_APP_CACHE_STATUS, GetAppCacheStatus::new);
-
     addNewMapping(GET_LOCAL_STORAGE_ITEM, GetLocalStorageItem::new);
     addNewMapping(REMOVE_LOCAL_STORAGE_ITEM, RemoveLocalStorageItem::new);
     addNewMapping(GET_LOCAL_STORAGE_KEYS, GetLocalStorageKeys::new);
@@ -428,9 +409,6 @@ public class JsonHttpCommandHandler {
     addNewMapping(SET_SESSION_STORAGE_ITEM, SetSessionStorageItem::new);
     addNewMapping(CLEAR_SESSION_STORAGE, ClearSessionStorage::new);
     addNewMapping(GET_SESSION_STORAGE_SIZE, GetSessionStorageSize::new);
-
-    addNewMapping(GET_SCREEN_ORIENTATION, GetScreenOrientation::new);
-    addNewMapping(SET_SCREEN_ORIENTATION, Rotate::new);
 
     addNewMapping(MOVE_TO, MouseMoveToLocation::new);
     addNewMapping(CLICK, ClickInSession::new);
@@ -454,9 +432,6 @@ public class JsonHttpCommandHandler {
     addNewMapping(GET_AVAILABLE_LOG_TYPES, GetAvailableLogTypesHandler::new);
     addNewMapping(GET_LOG, GetLogHandler::new);
     addNewMapping(GET_SESSION_LOGS, GetSessionLogsHandler::new);
-
-    addNewMapping(GET_NETWORK_CONNECTION, GetNetworkConnection::new);
-    addNewMapping(SET_NETWORK_CONNECTION, SetNetworkConnection::new);
 
     // Deprecated end points. Will be removed.
     addNewMapping("getWindowSize", GetWindowSize::new);
