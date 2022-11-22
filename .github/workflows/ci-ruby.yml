@@ -36,15 +36,10 @@ jobs:
         with:
           java-version: 11
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: ./.github/actions/cache-bazel
         with:
-          path: |
-            /tmp/bazel/external
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-ruby-build-gem-${{ matrix.target }}-
+          workflow: ruby
+          key: gem-${{ matrix.target }}
       - name: Build Gems
         uses: ./.github/actions/bazel
         with:
@@ -66,15 +61,10 @@ jobs:
         with:
           java-version: 11
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: ./.github/actions/cache-bazel
         with:
-          path: |
-            /tmp/bazel/external
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
+          workflow: ruby
+          key: ${{ matrix.target }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Chrome
@@ -107,15 +97,10 @@ jobs:
         with:
           java-version: 11
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: ./.github/actions/cache-bazel
         with:
-          path: |
-            /tmp/bazel/external
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
+          workflow: ruby
+          key: ${{ matrix.target }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Firefox
@@ -143,15 +128,10 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v2
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: ./.github/actions/cache-bazel
         with:
-          path: |
-            /tmp/bazel/external
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-ruby-docs-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-ruby-${{ matrix.target }}-
+          workflow: ruby
+          key: docs
       - name: Run docs tests
         uses: ./.github/actions/bazel
         with:
@@ -165,15 +145,10 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v2
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: ./.github/actions/cache-bazel
         with:
-          path: |
-            /tmp/bazel/external
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-ruby-lint-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-ruby-lint-
+          workflow: ruby
+          key: lint
       - name: Run lint tests
         uses: ./.github/actions/bazel
         with:
@@ -191,15 +166,10 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v2
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: ./.github/actions/cache-bazel
         with:
-          path: |
-            /tmp/bazel/external
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-
+          workflow: ruby
+          key: unit-test-${{ matrix.ruby }}
       - name: Set Ruby version to ${{ matrix.ruby }}
         run: echo 'RUBY_VERSION = "${{ matrix.ruby }}"' > rb/ruby_version.bzl
       - name: Run unit tests
