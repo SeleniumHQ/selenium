@@ -318,13 +318,14 @@ http_archive(
     url = "https://github.com/p0deje/rules_ruby/archive/0799d724aeca58d42ecbe3b7ebde112dc6565c9f.zip",
 )
 
+load("//rb:ruby_version.bzl", "RUBY_VERSION")
 load(
     "@rules_ruby//ruby:deps.bzl",
     "rb_bundle",
     "rb_download",
 )
 
-rb_download(version = "2.7.6")
+rb_download(version = RUBY_VERSION)
 
 rb_bundle(
     name = "bundle",
