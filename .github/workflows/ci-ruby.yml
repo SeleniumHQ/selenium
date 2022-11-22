@@ -90,6 +90,37 @@ jobs:
         env:
           DISPLAY: :99
 
+  edge-test:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
+    needs: check_workflow
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [ 'edge-test', 'remote-edge-test' ]
+        os: [ 'windows-latest' ]
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Cache Bazel artifacts
+        uses: ./.github/actions/cache-bazel
+        with:
+          workflow: ruby
+          key: ${{ matrix.target }}
+      - name: Setup Edge
+        uses: browser-actions/setup-edge@latest
+        with:
+          edge-version: stable
+      - name: Run Edge tests
+        uses: ./.github/actions/bazel
+        with:
+          command: test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
+          attempts: 3
+
   firefox-test:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
     needs: check_workflow
