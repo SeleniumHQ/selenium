@@ -21,7 +21,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Security.Permissions;
+using System.Net.Http;
+using System.Threading.Tasks;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Remote;
 
@@ -235,20 +236,23 @@ namespace OpenQA.Selenium
                 bool isInitialized = false;
                 try
                 {
-                    Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
-                    HttpWebRequest request = HttpWebRequest.Create(serviceHealthUri) as HttpWebRequest;
-                    request.KeepAlive = false;
-                    request.Timeout = 5000;
-                    HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.DefaultRequestHeaders.ConnectionClose = true;
+                        httpClient.Timeout = TimeSpan.FromSeconds(5);
 
-                    // Checking the response from the 'status' end point. Note that we are simply checking
-                    // that the HTTP status returned is a 200 status, and that the resposne has the correct
-                    // Content-Type header. A more sophisticated check would parse the JSON response and
-                    // validate its values. At the moment we do not do this more sophisticated check.
-                    isInitialized = response.StatusCode == HttpStatusCode.OK && response.ContentType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
-                    response.Close();
+                        Uri serviceHealthUri = new Uri(this.ServiceUrl, new Uri(DriverCommand.Status, UriKind.Relative));
+                        using (var response = Task.Run(async () => await httpClient.GetAsync(serviceHealthUri)).GetAwaiter().GetResult())
+                        {
+                            // Checking the response from the 'status' end point. Note that we are simply checking
+                            // that the HTTP status returned is a 200 status, and that the resposne has the correct
+                            // Content-Type header. A more sophisticated check would parse the JSON response and
+                            // validate its values. At the moment we do not do this more sophisticated check.
+                            isInitialized = response.StatusCode == HttpStatusCode.OK && response.Content.Headers.ContentType.MediaType.StartsWith("application/json", StringComparison.OrdinalIgnoreCase);
+                        }
+                    }
                 }
-                catch (WebException ex)
+                catch (Exception ex) when (ex is HttpRequestException || ex is TaskCanceledException)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -394,23 +398,29 @@ namespace OpenQA.Selenium
                 {
                     Uri shutdownUrl = new Uri(this.ServiceUrl, "/shutdown");
                     DateTime timeout = DateTime.Now.Add(this.TerminationTimeout);
-                    while (this.IsRunning && DateTime.Now < timeout)
+                    using (var httpClient = new HttpClient())
                     {
-                        try
+                        httpClient.DefaultRequestHeaders.ConnectionClose = true;
+
+                        while (this.IsRunning && DateTime.Now < timeout)
                         {
-                            // Issue the shutdown HTTP request, then wait a short while for
-                            // the process to have exited. If the process hasn't yet exited,
-                            // we'll retry. We wait for exit here, since catching the exception
-                            // for a failed HTTP request due to a closed socket is particularly
-                            // expensive.
-                            HttpWebRequest request = HttpWebRequest.Create(shutdownUrl) as HttpWebRequest;
-                            request.KeepAlive = false;
-                            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                            response.Close();
-                            this.driverServiceProcess.WaitForExit(3000);
-                        }
-                        catch (WebException)
-                        {
+                            try
+                            {
+                                // Issue the shutdown HTTP request, then wait a short while for
+                                // the process to have exited. If the process hasn't yet exited,
+                                // we'll retry. We wait for exit here, since catching the exception
+                                // for a failed HTTP request due to a closed socket is particularly
+                                // expensive.
+                                using (var response = Task.Run(async () => await httpClient.GetAsync(shutdownUrl)).GetAwaiter().GetResult())
+                                {
+
+                                }
+
+                                this.driverServiceProcess.WaitForExit(3000);
+                            }
+                            catch (Exception ex) when (ex is HttpRequestException || ex is TimeoutException)
+                            {
+                            }
                         }
                     }
                 }
