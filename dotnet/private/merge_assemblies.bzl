@@ -34,7 +34,7 @@ def _merged_assembly_impl(ctx):
 
     args.append("-out={}".format(output_assembly.path))
     args.append(input_assembly.path)
-    (refs, runfiles, native_dlls) = collect_transitive_info(deps, target_framework)
+    (refs, runfiles, native_dlls) = collect_transitive_info(name, deps, target_framework)
     for ref in refs.to_list():
         args.append(ref.path)
 
