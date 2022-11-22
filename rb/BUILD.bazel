@@ -18,6 +18,8 @@ CDP_VERSIONS = [
     "v107",
 ]
 
+exports_files(["ruby_version.bzl"])
+
 copy_file(
     name = "find-elements",
     src = "//javascript/atoms/fragments:find-elements.js",

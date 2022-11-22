@@ -200,8 +200,8 @@ jobs:
           key: ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-ruby-unit-test-${{ matrix.ruby }}-
-      - name: Patch WORKSPACE to select Ruby ${{ matrix.ruby }}
-        run: sed -i -E "s/(rb_download\(version = \")(.+)(\"\))/\1${{ matrix.ruby }}\3/" WORKSPACE
+      - name: Set Ruby version to ${{ matrix.ruby }}
+        run: echo 'RUBY_VERSION = "${{ matrix.ruby }}"' > rb/ruby_version.bzl
       - name: Run unit tests
         uses: ./.github/actions/bazel
         with:
