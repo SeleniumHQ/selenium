@@ -92,6 +92,19 @@ module Selenium
         def wait(timeout = 10)
           Wait.new(timeout: timeout)
         end
+
+        def png_size(path)
+          png = File.read(path, mode: 'rb')[0x10..0x18]
+          width = png.unpack1('NN')
+          height = png.unpack('NN').last
+
+          if Platform.macos? # Retina
+            width /= 2
+            height /= 2
+          end
+
+          [width, height]
+        end
       end # Helpers
     end # SpecSupport
   end # WebDriver

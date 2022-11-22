@@ -51,14 +51,8 @@ module Selenium
             path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
             screenshot = driver.save_full_page_screenshot(path)
 
-            if Platform.linux?
-              expect(File.read(screenshot)[0x10..0x18].unpack1('NN')).to be >= viewport_width
-              expect(File.read(screenshot)[0x10..0x18].unpack('NN').last).to be > viewport_height
-            else
-              expect(File.read(screenshot)[0x10..0x18].unpack1('NN') / 2).to be >= viewport_width
-              expect(File.read(screenshot)[0x10..0x18].unpack('NN').last / 2).to be > viewport_height
-            end
-
+            expect(width).to be >= viewport_width
+            expect(height).to be > viewport_height
           ensure
             FileUtils.rm_rf(path)
           end
