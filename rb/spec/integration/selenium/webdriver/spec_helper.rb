@@ -52,6 +52,7 @@ RSpec.configure do |c|
     guards = WebDriver::Support::Guards.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
     guards.add_condition(:driver, GlobalTestEnv.driver)
     guards.add_condition(:browser, GlobalTestEnv.browser)
+    guards.add_condition(:ci, WebDriver::Platform.ci)
     guards.add_condition(:platform, WebDriver::Platform.os)
 
     results = guards.disposition
