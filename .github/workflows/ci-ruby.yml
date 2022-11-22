@@ -48,11 +48,12 @@ jobs:
   chrome-test:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
     needs: check_workflow
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         target: [ 'chrome-test', 'remote-chrome-test' ]
+        os: [ 'ubuntu-latest', 'windows-latest' ]
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
@@ -66,13 +67,21 @@ jobs:
           workflow: ruby
           key: ${{ matrix.target }}
       - name: Setup Fluxbox
+        if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get -y install fluxbox
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: stable
       - name: Start XVFB
+        if: matrix.os == 'ubuntu-latest'
         run: Xvfb :99 &
       - name: Start Fluxbox
+        if: matrix.os == 'ubuntu-latest'
         run: fluxbox -display :99 &
+      - name: Set resolution
+        if: matrix.os == 'windows-latest'
+        run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Run Chrome tests
         uses: ./.github/actions/bazel
         with:
