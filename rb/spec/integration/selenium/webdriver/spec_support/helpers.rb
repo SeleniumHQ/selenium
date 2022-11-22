@@ -98,7 +98,7 @@ module Selenium
           width = png.unpack1('NN')
           height = png.unpack('NN').last
 
-          if Platform.macos? # Retina
+          if Platform.mac? # Retina
             width /= 2
             height /= 2
           end
