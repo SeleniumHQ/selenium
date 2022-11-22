@@ -311,28 +311,28 @@ load("//common:repositories.bzl", "pin_browsers")
 
 pin_browsers()
 
-#http_archive(
-#    name = "rules_ruby",
-#    sha256 = "bb0bffb0285ff8fa9a967fc2580ddf3b511818a6baf269dcd6c5c6076c4921d8",
-#    strip_prefix = "rules_ruby-c3cefa71d0111a04c9ce0672c65d376262d8d975",
-#    url = "https://github.com/p0deje/rules_ruby/archive/c3cefa71d0111a04c9ce0672c65d376262d8d975.zip",
-#)
+http_archive(
+    name = "rules_ruby",
+    sha256 = "bb0bffb0285ff8fa9a967fc2580ddf3b511818a6baf269dcd6c5c6076c4921d8",
+    strip_prefix = "rules_ruby-c3cefa71d0111a04c9ce0672c65d376262d8d975",
+    url = "https://github.com/p0deje/rules_ruby/archive/c3cefa71d0111a04c9ce0672c65d376262d8d975.zip",
+)
 
-#load(
-#    "@rules_ruby//ruby:deps.bzl",
-#    "rb_bundle",
-#    "rb_download",
-#)
+load(
+    "@rules_ruby//ruby:deps.bzl",
+    "rb_bundle",
+    "rb_download",
+)
 
-#rb_download(version = "2.7.6")
+rb_download(version = "2.7.6")
 
-#rb_bundle(
-#    name = "bundle",
-#    srcs = [
-#        "//:rb/lib/selenium/devtools/version.rb",
-#        "//:rb/lib/selenium/webdriver/version.rb",
-#        "//:rb/selenium-devtools.gemspec",
-#        "//:rb/selenium-webdriver.gemspec",
-#    ],
-#    gemfile = "//:rb/Gemfile",
-#)
+rb_bundle(
+    name = "bundle",
+    srcs = [
+        "//:rb/lib/selenium/devtools/version.rb",
+        "//:rb/lib/selenium/webdriver/version.rb",
+        "//:rb/selenium-devtools.gemspec",
+        "//:rb/selenium-webdriver.gemspec",
+    ],
+    gemfile = "//:rb/Gemfile",
+)
