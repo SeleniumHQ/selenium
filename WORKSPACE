@@ -131,10 +131,10 @@ pinned_maven_install()
 
 http_archive(
     name = "d2l_rules_csharp",
-    sha256 = "7b2a83621049904b6e898ffdbe7893a5b410aedf599d63f127ef81eac839b6c1",
-    strip_prefix = "rules_csharp-bf24e589bbadcc20f15a16e13f577a0abd42a1d1",
+    sha256 = "c0152befb1fd0e08527b38e41ef00b6627f9f0c2be6f2d23a4950f41701fa48a",
+    strip_prefix = "rules_csharp-50e2f6c79e7a53e50b4518239b5ebcc61279759e",
     urls = [
-        "https://github.com/Brightspace/rules_csharp/archive/bf24e589bbadcc20f15a16e13f577a0abd42a1d1.tar.gz",
+        "https://github.com/Brightspace/rules_csharp/archive/50e2f6c79e7a53e50b4518239b5ebcc61279759e.tar.gz",
     ],
 )
 
@@ -311,28 +311,28 @@ load("//common:repositories.bzl", "pin_browsers")
 
 pin_browsers()
 
-http_archive(
-    name = "rules_ruby",
-    sha256 = "bb0bffb0285ff8fa9a967fc2580ddf3b511818a6baf269dcd6c5c6076c4921d8",
-    strip_prefix = "rules_ruby-c3cefa71d0111a04c9ce0672c65d376262d8d975",
-    url = "https://github.com/p0deje/rules_ruby/archive/c3cefa71d0111a04c9ce0672c65d376262d8d975.zip",
-)
+#http_archive(
+#    name = "rules_ruby",
+#    sha256 = "bb0bffb0285ff8fa9a967fc2580ddf3b511818a6baf269dcd6c5c6076c4921d8",
+#    strip_prefix = "rules_ruby-c3cefa71d0111a04c9ce0672c65d376262d8d975",
+#    url = "https://github.com/p0deje/rules_ruby/archive/c3cefa71d0111a04c9ce0672c65d376262d8d975.zip",
+#)
 
-load(
-    "@rules_ruby//ruby:deps.bzl",
-    "rb_bundle",
-    "rb_download",
-)
+#load(
+#    "@rules_ruby//ruby:deps.bzl",
+#    "rb_bundle",
+#    "rb_download",
+#)
 
-rb_download(version = "2.7.6")
+#rb_download(version = "2.7.6")
 
-rb_bundle(
-    name = "bundle",
-    srcs = [
-        "//:rb/lib/selenium/devtools/version.rb",
-        "//:rb/lib/selenium/webdriver/version.rb",
-        "//:rb/selenium-devtools.gemspec",
-        "//:rb/selenium-webdriver.gemspec",
-    ],
-    gemfile = "//:rb/Gemfile",
-)
+#rb_bundle(
+#    name = "bundle",
+#    srcs = [
+#        "//:rb/lib/selenium/devtools/version.rb",
+#        "//:rb/lib/selenium/webdriver/version.rb",
+#        "//:rb/selenium-devtools.gemspec",
+#        "//:rb/selenium-webdriver.gemspec",
+#    ],
+#    gemfile = "//:rb/Gemfile",
+#)
