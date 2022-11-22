@@ -40,7 +40,7 @@ public class Command<X> {
     this(method, params, input -> input.read(Require.nonNull("Type to convert to", typeOfX)));
   }
 
-  private Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
+  public Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
     this.method = Require.nonNull("Method name", method);
     this.params = ImmutableMap.copyOf(Require.nonNull("Command parameters", params));
     this.mapper = Require.nonNull("Mapper for result", mapper);
