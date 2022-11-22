@@ -34,7 +34,7 @@ def _merged_assembly_impl(ctx):
 
     args.append("-out={}".format(output_assembly.path))
     args.append(input_assembly.path)
-    (refs, runfiles, native_dlls) = collect_transitive_info(deps, target_framework)
+    (refs, runfiles, native_dlls) = collect_transitive_info(name, deps, target_framework)
     for ref in refs.to_list():
         args.append(ref.path)
 
@@ -56,7 +56,9 @@ def _merged_assembly_impl(ctx):
 
     providers[target_framework] = CSharpAssemblyInfo[target_framework](
         out = output_assembly,
-        refout = None,
+        prefout = None,
+        irefout = None,
+        internals_visible_to = [],
         pdb = output_pdb,
         native_dlls = native_dlls,
         deps = deps,
@@ -66,7 +68,7 @@ def _merged_assembly_impl(ctx):
         runtimeconfig = None,
     )
 
-    fill_in_missing_frameworks(providers)
+    fill_in_missing_frameworks(name, providers)
     returned_info = providers.values()
     returned_info.append(
         DefaultInfo(

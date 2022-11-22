@@ -33,7 +33,7 @@ csharp_executable(
         "//conditions:default": False,
     }),
     target_frameworks = [
-        "netcoreapp3.1",
+        "net6.0",
     ],
     visibility = ["//visibility:public"],
     deps = [
