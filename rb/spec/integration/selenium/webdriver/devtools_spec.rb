@@ -30,20 +30,21 @@ module Selenium
       end
 
       it 'supports events' do
-        callback = instance_double(Proc, call: nil)
-
-        driver.devtools.page.enable
-        driver.devtools.page.on(:load_event_fired) { callback.call }
-        driver.navigate.to url_for('xhtmlTest.html')
-        sleep 0.5
-
-        expect(callback).to have_received(:call).at_least(:once)
+        expect { |block|
+          driver.devtools.page.enable
+          driver.devtools.page.on(:load_event_fired, &block)
+          driver.navigate.to url_for('xhtmlTest.html')
+          sleep 0.5
+        }.to yield_control
       end
 
       it 'propagates errors in events' do
-        driver.devtools.page.enable
-        driver.devtools.page.on(:load_event_fired) { raise "This is fine!" }
-        expect { driver.navigate.to url_for('xhtmlTest.html') }.to raise_error(RuntimeError, "This is fine!")
+        expect {
+          driver.devtools.page.enable
+          driver.devtools.page.on(:load_event_fired) { raise "This is fine!" }
+          driver.navigate.to url_for('xhtmlTest.html')
+          sleep 0.5
+        }.to raise_error(RuntimeError, "This is fine!")
       end
 
       context 'authentication', except: {browser: %i[firefox firefox_nightly],
