@@ -237,7 +237,7 @@ _browsername_:
 * chrome
 * edge
 * firefox
-* firefox-nightly
+* firefox-nightly (requires setting `ENV['FIREFOX_NIGHTLY_BINARY']` with the path to the browser executable)
 * safari
 * safari-preview
 
