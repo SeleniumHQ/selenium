@@ -221,7 +221,19 @@ To run tests on a browser:
 ```sh
 bazel test --cache_test_results=no --test_output=all //rb:<browsername>-test 
 ```
-_browsername_: 
+
+To run remote tests on a browser:
+
+```sh
+bazel test --cache_test_results=no --test_output=all //rb:remote-<browsername>-test
+```
+
+To run a particular test on a browser:
+
+```sh
+bazel test --cache_test_results=no --test_output=all --test_arg="-e<Test_Target>" //rb:<browsername>-test
+```
+_browsername_:
 * chrome
 * edge
 * firefox
@@ -229,23 +241,6 @@ _browsername_:
 * safari
 * safari-preview
 
-To run remote tests on a browser:
-
-```sh
-bazel test --cache_test_results=no --test_output=all //rb:remote-<browsername>-test
-```
-_browsername_:
-* chrome
-* edge
-* firefox
-* safari
-* safari-preview
-
-To run a particular test on a browser:
-
-```sh
-bazel test --cache_test_results=no --test_output=all --test_arg="-e<Test_Target>" //rb:<browsername>-test
-```
 _Test_Target_ examples:
 * Selenium::WebDriver::Devtools
 * Selenium::WebDriver::TakesScreenshot
