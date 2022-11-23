@@ -104,7 +104,7 @@ pub fn unzip(file: File, target: PathBuf) -> Result<(), Box<dyn Error>> {
             continue;
         }
         let target_file_name = target.file_name().unwrap().to_str().unwrap();
-        if target_file_name == file.name() {
+        if target_file_name.eq_ignore_ascii_case(file.name()) {
             log::debug!(
                 "File extracted to {} ({} bytes)",
                 target.display(),
