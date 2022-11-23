@@ -32,7 +32,7 @@ module Selenium
         # @return [String] the path to the correct driver.
         def driver_path(driver_name)
           @driver_path ||= begin
-            unless %w[chromedriver geckodriver msedgedriver].include?(driver_name)
+            unless %w[chromedriver geckodriver msedgedriver IEDriverServer.exe].include?(driver_name)
               msg = "Unable to locate driver with name: #{driver_name}"
               raise Error::WebDriverError, msg
             end

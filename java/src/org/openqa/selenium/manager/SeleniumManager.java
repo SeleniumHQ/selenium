@@ -148,7 +148,7 @@ public class SeleniumManager {
    * @return the location of the driver.
    */
     public String getDriverPath(String driverName) {
-        if (!ImmutableList.of("geckodriver", "chromedriver", "msedgedriver").contains(driverName)) {
+        if (!ImmutableList.of("geckodriver", "chromedriver", "msedgedriver", "IEDriverServer").contains(driverName)) {
             throw new WebDriverException("Unable to locate driver with name: " + driverName);
         }
 

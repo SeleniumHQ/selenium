@@ -61,7 +61,7 @@ class SeleniumManager:
          - browser: which browser to get the driver path for.
         :Returns: The driver path to use
         """
-        if browser not in ("chrome", "firefox", "edge"):
+        if browser not in ("chrome", "firefox", "edge", "ie"):
             raise WebDriverException(f"Unable to locate driver associated with browser name: {browser}")
 
         args = (str(SeleniumManager.get_binary()), "--browser", browser)
