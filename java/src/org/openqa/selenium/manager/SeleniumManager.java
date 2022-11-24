@@ -91,7 +91,7 @@ public class SeleniumManager {
         String output = "";
         try {
             Process process = new ProcessBuilder(command)
-                    .redirectErrorStream(false).start();
+                    .redirectErrorStream(true).start();
             process.waitFor();
             output = CharStreams.toString(new InputStreamReader(
                     process.getInputStream(), StandardCharsets.UTF_8));
@@ -104,7 +104,8 @@ public class SeleniumManager {
                     e.getClass().getSimpleName(), Arrays.toString(command), e.getMessage()));
         }
         if (!output.startsWith(INFO)) {
-          throw new WebDriverException("Error running command: " + Arrays.toString(command));
+          throw new WebDriverException("Error running selenium-manager: " + Arrays.toString(command) +
+                                       ": " + output);
         }
 
         return output.trim();
