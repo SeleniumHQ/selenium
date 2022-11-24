@@ -186,7 +186,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ '2.7.6', '3.1.2', 'truffleruby-22.3.0' ]
+        ruby: [ '2.7.6', '3.1.2', 'jruby-9.4.0.0', 'truffleruby-22.3.0' ]
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v2
