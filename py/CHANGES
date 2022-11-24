@@ -1,3 +1,6 @@
+Selenium (TBA version)
+* Replace response.getheader() with response.headers.get() (deprecated in urllib3 1.26.13)
+
 Selenium 4.6.0
 * Document firefox `service=` arg. closes #11067
 * Additional types and tidying safari service
