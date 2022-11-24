@@ -234,10 +234,10 @@ def text_to_be_present_in_element_attribute(locator, attribute_, text_):
 
     def _predicate(driver):
         try:
-            element = driver.find_element(*locator)
-            if not _element_has_attribute(element, attribute_):
+            element_text = driver.find_element(*locator).get_attribute(attribute_)
+            if element_text is None:
                 return False
-            return text_ in element.get_attribute(attribute_)
+            return text_ in element_text
         except StaleElementReferenceException:
             return False
 
@@ -414,10 +414,6 @@ def alert_is_present():
     return _predicate
 
 
-def _element_has_attribute(element, attribute_):
-    return element.get_attribute(attribute_) is not None
-
-
 def element_attribute_to_include(locator, attribute_):
     """An expectation for checking if the given attribute is included in the
     specified element.
@@ -426,8 +422,8 @@ def element_attribute_to_include(locator, attribute_):
 
     def _predicate(driver):
         try:
-            element = driver.find_element(*locator)
-            return _element_has_attribute(element, attribute_)
+            element_attribute = driver.find_element(*locator).get_attribute(attribute_)
+            return element_attribute is not None
         except StaleElementReferenceException:
             return False
 
