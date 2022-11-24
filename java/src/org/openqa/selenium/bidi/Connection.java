@@ -108,20 +108,23 @@ public class Connection implements Closeable {
     long id = NEXT_ID.getAndIncrement();
 
     CompletableFuture<X> result = new CompletableFuture<>();
-    methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), inputOrException -> {
-      if (inputOrException.isRight()) {
-        try {
-          X value = command.getMapper().apply(inputOrException.right());
-          result.complete(value);
-        } catch (Exception e) {
-          LOG.log(Level.WARNING, String.format("Unable to map result for %s", command.getMethod()),
-                  e);
-          result.completeExceptionally(e);
+    if (command.getSendsResponse()) {
+      methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), inputOrException -> {
+        if (inputOrException.isRight()) {
+          try {
+            X value = command.getMapper().apply(inputOrException.right());
+            result.complete(value);
+          } catch (Exception e) {
+            LOG.log(Level.WARNING,
+                    String.format("Unable to map result for %s", command.getMethod()),
+                    e);
+            result.completeExceptionally(e);
+          }
+        } else {
+          result.completeExceptionally(inputOrException.left());
         }
-      } else {
-        result.completeExceptionally(inputOrException.left());
-      }
-    }));
+      }));
+    }
 
     ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
     serialized.put("id", id);
@@ -134,6 +137,10 @@ public class Connection implements Closeable {
     }
     LOG.log(getDebugLogLevel(), () -> String.format("-> %s", json));
     socket.sendText(json);
+
+    if (!command.getSendsResponse()) {
+      result.complete(null);
+    }
 
     return result;
   }
