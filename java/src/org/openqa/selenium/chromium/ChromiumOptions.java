@@ -290,4 +290,43 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
       options.experimentalOptions.forEach(this::setExperimentalOption);
     }
   }
+
+  protected void mergeInOptionsFromCaps(String capabilityName, Capabilities capabilities) {
+    Object object = capabilities.getCapability(capabilityName);
+
+    if (object instanceof Map) {
+      @SuppressWarnings("unchecked") Map<String, Object> options = (Map<String, Object>) object;
+
+      @SuppressWarnings("unchecked") List<String> arguments = (List<String>) (options.get("args"));
+      @SuppressWarnings("unchecked") List<Object> extensions =
+        (List<Object>) (options.get("extensions"));
+
+      arguments.forEach(arg -> {
+        if (!args.contains(arg)) {
+          addArguments(arg);
+        }
+      });
+
+      extensions.forEach(extension -> {
+        if (extension instanceof File) {
+          addExtensions((File) extension);
+        } else if (extension instanceof String) {
+          addEncodedExtensions((String) extension);
+        }
+      });
+
+      Object binary = options.get("binary");
+      if (binary instanceof String) {
+        setBinary((String) binary);
+      } else if (binary instanceof File) {
+        setBinary((File) binary);
+      }
+
+      options.forEach((k, v) -> {
+        if (!k.equals("binary") && !k.equals("extensions") && !k.equals("args")) {
+          setExperimentalOption(k, v);
+        }
+      });
+    }
+  }
 }

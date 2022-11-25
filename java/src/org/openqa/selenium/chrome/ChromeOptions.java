@@ -70,6 +70,8 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
     ChromeOptions newInstance = new ChromeOptions();
     newInstance.mergeInPlace(this);
     newInstance.mergeInPlace(extraCapabilities);
+    newInstance.mergeInOptionsFromCaps(CAPABILITY, extraCapabilities);
+
     return newInstance;
   }
 
