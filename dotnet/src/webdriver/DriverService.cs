@@ -66,14 +66,7 @@ namespace OpenQA.Selenium
             string executablePath = Path.Combine(servicePath, driverServiceExecutableName);
             if (!File.Exists(executablePath))
             {
-                try
-                {
-                    executablePath = SeleniumManager.DriverPath(driverServiceExecutableName);
-                }
-                catch (Exception e)
-                {
-                  // No-op; entirely a fall-back feature
-                }
+                executablePath = SeleniumManager.DriverPath(driverServiceExecutableName);
 
                 if (File.Exists(executablePath))
                 {
@@ -316,14 +309,7 @@ namespace OpenQA.Selenium
 
             if (string.IsNullOrEmpty(serviceDirectory))
             {
-                try
-                {
-                    serviceDirectory = Path.GetDirectoryName(SeleniumManager.DriverPath(executableName));
-                }
-                catch (Exception e)
-                {
-                    // No-op; entirely a fall-back feature
-                }
+                serviceDirectory = Path.GetDirectoryName(SeleniumManager.DriverPath(executableName));
 
                 if (string.IsNullOrEmpty(serviceDirectory))
                 {
