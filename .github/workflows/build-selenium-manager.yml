@@ -11,6 +11,7 @@ jobs:
         uses: actions/checkout@master
       - name: "Build release"
         run: |
+          rustup update
           cd rust
           cargo build --release
       - name: "Upload binary"
@@ -28,6 +29,7 @@ jobs:
         uses: actions/checkout@master
       - name: "Build release"
         run: |
+          rustup update
           cd rust
           cargo build --release
       - name: "Tar binary (to keep executable permission)"
@@ -49,6 +51,7 @@ jobs:
         uses: actions/checkout@master
       - name: "Build release"
         run: |
+          rustup update
           cd rust
           cargo build --release
       - name: "Tar binary (to keep executable permission)"
