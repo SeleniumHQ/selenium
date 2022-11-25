@@ -37,10 +37,6 @@ module Selenium
           GlobalTestEnv.create_driver!(**opts, &block)
         end
 
-        def ensure_single_window
-          GlobalTestEnv.ensure_single_window
-        end
-
         def url_for(filename)
           GlobalTestEnv.url_for filename
         end
