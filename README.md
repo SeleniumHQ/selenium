@@ -209,6 +209,46 @@ To build the Ruby code run:
 ```sh
 bazel build //rb/...
 ```
+
+To run unit tests:
+
+```sh
+bazel test --cache_test_results=no --test_output=all //rb:unit-test
+```
+
+To run tests on a browser:
+
+```sh
+bazel test --cache_test_results=no --test_output=all //rb:<browsername>-test 
+```
+
+To run remote tests on a browser:
+
+```sh
+bazel test --cache_test_results=no --test_output=all //rb:remote-<browsername>-test
+```
+
+To run a particular test on a browser:
+
+```sh
+bazel test --cache_test_results=no --test_output=all --test_arg="-e<Test_Target>" //rb:<browsername>-test
+```
+_browsername_:
+* chrome
+* edge
+* firefox
+* firefox-nightly (requires setting `ENV['FIREFOX_NIGHTLY_BINARY']` with the path to the browser executable)
+* safari
+* safari-preview
+
+_Test_Target_ examples:
+* Selenium::WebDriver::Devtools
+* Selenium::WebDriver::TakesScreenshot
+* Selenium::WebDriver::Timeouts
+* Selenium::WebDriver::Chrome::Driver
+* Selenium::WebDriver::Firefox::Profile
+* Selenium::Webdriver::Remote::Driver 
+
 </details>
 
 ####  .NET
