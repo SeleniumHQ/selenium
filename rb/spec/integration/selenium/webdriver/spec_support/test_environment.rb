@@ -189,12 +189,6 @@ module Selenium
           WebDriver::Driver.for(:firefox, options: options, **opts)
         end
 
-        def create_firefox_nightly_driver(**opts)
-          options = create_firefox_options(opts.delete(:options))
-          options.binary = ENV['FIREFOX_NIGHTLY_BINARY'] if ENV.key?('FIREFOX_NIGHTLY_BINARY')
-          WebDriver::Driver.for(:firefox, options: options, **opts)
-        end
-
         def create_firefox_options(options)
           options ||= WebDriver::Options.firefox
           options.web_socket_url = true

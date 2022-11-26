@@ -246,7 +246,6 @@ task test_rb: ['//rb:unit-test', :test_rb_local, :test_rb_remote]
 task test_rb_local: [
   '//rb:chrome-test',
   '//rb:firefox-test',
-  ('//rb:firefox-nightly-test' if ENV['FIREFOX_NIGHTLY_BINARY']),
   ('//rb:safari-preview-test' if SeleniumRake::Checks.mac?),
   ('//rb:safari-test' if SeleniumRake::Checks.mac?),
   ('//rb:ie-test' if SeleniumRake::Checks.windows?),
@@ -256,7 +255,6 @@ task test_rb_local: [
 task test_rb_remote: [
   '//rb:remote-chrome-test',
   '//rb:remote-firefox-test',
-  ('//rb:remote-firefox-nightly-test' if ENV['FIREFOX_NIGHTLY_BINARY']),
   ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
   ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
   ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),
