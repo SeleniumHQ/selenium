@@ -31,6 +31,7 @@ module Selenium
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', :chrome).to_sym
           @driver_instance = nil
+          @remote_server = nil
         end
 
         def print_env
@@ -61,9 +62,7 @@ module Selenium
         end
 
         def quit_driver
-          return unless @driver_instance
-
-          @driver_instance.quit
+          @driver_instance&.quit
         ensure
           @driver_instance = nil
         end
@@ -83,7 +82,7 @@ module Selenium
         end
 
         def reset_remote_server
-          @remote_server.stop if defined? @remote_server
+          @remote_server&.stop
           @remote_server = nil
           remote_server
         end
@@ -110,7 +109,7 @@ module Selenium
         def quit
           app_server.stop
 
-          @remote_server.stop if defined? @remote_server
+          @remote_server&.stop
 
           @driver_instance = @app_server = @remote_server = nil
         end
