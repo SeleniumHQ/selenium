@@ -1,0 +1,38 @@
+name: Nightly
+on:
+  schedule:
+    - cron: 0 0 * * *
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Nightly version number (e.g. 20221125)
+        required: true
+        type: string
+
+jobs:
+  ruby:
+    name: Ruby Gems
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        gem:
+          - selenium-devtools
+          - selenium-webdriver
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: ./.github/actions/cache-bazel
+        with:
+          workflow: ruby
+          key: bazel-ruby-nightly-${{ matrix.gem }}
+      - uses: ./.github/actions/bazel
+        with:
+          command: run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
+      - uses: ./.github/actions/bazel
+        env:
+          GEM_HOST_API_KEY: Bearer ${{ secrets.GITHUB_TOKEN }}
+        with:
+          command: run //rb:${{ matrix.gem }}-release-nightly
