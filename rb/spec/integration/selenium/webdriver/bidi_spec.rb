@@ -21,11 +21,13 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe BiDi, exclusive: {browser: %i[chrome_beta firefox]} do
+    describe BiDi, exclusive: {browser: %i[chrome firefox]} do
       it 'gets session status' do
-        status = driver.bidi.session.status
-        expect(status).to respond_to(:ready)
-        expect(status.message).not_to be_empty
+        reset_driver!(web_socket_url: true) do |driver|
+          status = driver.bidi.session.status
+          expect(status).to respond_to(:ready)
+          expect(status.message).not_to be_empty
+        end
       end
     end
   end

@@ -140,8 +140,7 @@ module Selenium
         end
 
         it 'can get and set context' do
-          options = Options.new(prefs: {'browser.download.dir': 'foo/bar'})
-          create_driver!(options: options) do |driver|
+          reset_driver!(prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
             expect(driver.context).to eq 'content'
 
             driver.context = 'chrome'

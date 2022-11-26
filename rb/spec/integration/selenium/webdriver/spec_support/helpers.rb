@@ -25,8 +25,8 @@ module Selenium
           GlobalTestEnv.driver_instance
         end
 
-        def reset_driver!(time = 0)
-          GlobalTestEnv.reset_driver!(time)
+        def reset_driver!(**opts)
+          GlobalTestEnv.reset_driver!(**opts)
         end
 
         def quit_driver
