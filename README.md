@@ -55,9 +55,9 @@ before submitting your pull requests.
 * Windows users:
   *  Latest version of [Visual Studio](https://www.visualstudio.com/) with command line tools and build tools installed
   * `BAZEL_VS` environment variable should point to the location of the build tools,
-     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools`
+     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools`
   * `BAZEL_VC` environment variable should point to the location of the command line tools,
-     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC`
+     e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2022\Community\VC`
   * `BAZEL_VC_FULL_VERSION` environment variable should contain the version of the installed command line tools,
      e.g. `14.27.29110`
   * A detailed setup guide can be seen on Jim Evan's [post](http://jimevansmusic.blogspot.com/2020/04/setting-up-windows-development.html)
@@ -200,7 +200,7 @@ twine upload bazel-bin/py/selenium-*.whl
 ```
 </details>
 
-####  Ruby
+#### Ruby
 <details>
 <summary>Click to see Ruby Build Steps</summary>
 
@@ -249,22 +249,38 @@ _Test_Target_ examples:
 * Selenium::WebDriver::Firefox::Profile
 * Selenium::Webdriver::Remote::Driver 
 
+Optional Environment Variable toggles in test suite:
+
+`ENV['WD_SPEC_DRIVER']` - the driver to test; either the browser name or 'remote' (gets set by Bazel)
+`ENV['WD_REMOTE_BROWSER']` - when 'WD_SPEC_DRIVER' is 'remote'; the name of the browser to test (gets set by Bazel)
+`ENV['WD_REMOTE_URL']` - url of an already running server to use for remote tests
+`ENV['DOWNLOAD_SERVER']` - when `WD_REMOTE_URL` not set; whether to download and use most recently released server version for remote tests
+`ENV['DEBUG']` - turns on verbose debugging
+`ENV['HEADLESS']` - for chrome, edge and firefox; runs tests in headless mode 
+`ENV['DISABLE_BUILD_CHECK']` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
+`ENV['CHROME_BINARY']` - path to test specific Chrome browser
+`ENV['EDGE_BINARY']` - path to test specific Edge browser
+`ENV['FIREFOX_BINARY']` - path to test specific Firefox browser
+
 </details>
 
-####  .NET
+#### .NET
 <details>
 <summary>Click to see .NET Build Steps</summary>
 
-To build the .NET code run:
+Bazel can not build .NET, yet, but it can set up tests with:
 
-```sh
-bazel build //dotnet/...
-```
-
-Also
 ```sh
 bazel build //dotnet/test/common:chrome
 ```
+
+Tests can then be run with:
+```sh
+cd dotnet
+dotnet test
+```
+
+More information about running Selenium's .NET tests can be found in this [README.md](dotnet/test/README.md) 
 
 </details>
 
