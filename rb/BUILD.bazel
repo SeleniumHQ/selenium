@@ -126,7 +126,7 @@ rb_gem_push(
 )
 
 rb_binary(
-    name = "webdriver-bump-nightly-version",
+    name = "selenium-webdriver-bump-nightly-version",
     srcs = [
         "lib/selenium/webdriver/support/nightly_version_generator.rb",
         "lib/selenium/webdriver/version.rb",
@@ -147,7 +147,7 @@ rb_gem_push(
 )
 
 rb_binary(
-    name = "devtools-bump-nightly-version",
+    name = "selenium-devtools-bump-nightly-version",
     srcs = [
         "lib/selenium/devtools/version.rb",
         "lib/selenium/webdriver/support/nightly_version_generator.rb",
