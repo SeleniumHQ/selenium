@@ -261,7 +261,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -287,7 +287,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -313,7 +313,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -339,7 +339,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -365,14 +365,14 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
     ],
     deps = [
-        ":remote",
         ":ie",
+        ":remote",
         "@bundle",
     ],
 )
@@ -389,7 +389,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -414,7 +414,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -439,7 +439,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -469,7 +469,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -496,7 +496,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -523,7 +523,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -550,7 +550,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -576,14 +576,14 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
     ],
     deps = [
-        ":remote",
         ":ie",
+        ":remote",
         "@bundle",
     ],
 )
@@ -601,7 +601,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -628,7 +628,7 @@ rb_binary(
         "rb/CHANGES",
         "rb/README.md",
     ],
-    bin = "@bundle//:bin/yard",
+    main = "@bundle//:bin/yard",
     deps = ["@bundle"],
 )
 
@@ -650,7 +650,7 @@ rb_binary(
         "rb/selenium-devtools.gemspec",
         "rb/selenium-webdriver.gemspec",
     ],
-    bin = "@bundle//:bin/rubocop",
+    main = "@bundle//:bin/rubocop",
     deps = [
         "@bundle",
     ],
@@ -662,7 +662,7 @@ rb_binary(
         "-rselenium-webdriver",
         "-rselenium/devtools",
     ],
-    bin = "@bundle//:bin/pry",
+    main = "@bundle//:bin/pry",
     deps = [
         ":bidi",
         ":chrome",
