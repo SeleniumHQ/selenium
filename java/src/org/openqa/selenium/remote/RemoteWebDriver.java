@@ -94,6 +94,7 @@ import static java.util.logging.Level.SEVERE;
 import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
+import static org.openqa.selenium.internal.Debug.isDebugging;
 
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
@@ -566,7 +567,11 @@ public class RemoteWebDriver implements WebDriver,
           "Error communicating with the remote browser. It may have died.", e);
       }
       populateWebDriverException(toThrow);
-      toThrow.addInfo("Command", command.toString());
+      if(isDebugging()) {
+        toThrow.addInfo("Command", command.toString());
+      } else {
+        toThrow.addInfo("Command", "[" + sessionId + ", " + command.getName() + " " + command.getParameters().keySet() + "]");
+      }
       throw toThrow;
     } finally {
       Thread.currentThread().setName(currentName);
@@ -576,7 +581,12 @@ public class RemoteWebDriver implements WebDriver,
       errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
     } catch (WebDriverException ex) {
       populateWebDriverException(ex);
-      ex.addInfo("Command", command.toString());
+      if(isDebugging()) {
+        ex.addInfo("Command", command.toString());
+      } else {
+        ex.addInfo("Command", "[" + sessionId + ", " + command.getName() + " " + command.getParameters().keySet() + "]");
+      }
+      
       throw ex;
     }
     return response;
