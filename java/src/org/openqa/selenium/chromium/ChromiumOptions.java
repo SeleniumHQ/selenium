@@ -292,41 +292,47 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   }
 
   protected void mergeInOptionsFromCaps(String capabilityName, Capabilities capabilities) {
-    Object object = capabilities.getCapability(capabilityName);
+    if (!(capabilities instanceof ChromiumOptions)) {
+      Object object = capabilities.getCapability(capabilityName);
 
-    if (object instanceof Map) {
-      @SuppressWarnings("unchecked") Map<String, Object> options = (Map<String, Object>) object;
+      if (object instanceof Map) {
+        @SuppressWarnings("unchecked") Map<String, Object> options = (Map<String, Object>) object;
 
-      @SuppressWarnings("unchecked") List<String> arguments = (List<String>) (options.get("args"));
-      @SuppressWarnings("unchecked") List<Object> extensions =
-        (List<Object>) (options.get("extensions"));
+        @SuppressWarnings("unchecked") List<String>
+          arguments =
+          (List<String>) (options.getOrDefault("args", new HashMap<>()));
+        @SuppressWarnings("unchecked") List<Object> extensionList =
+          (List<Object>) (options.getOrDefault("extensions", new ArrayList<>()));
 
-      arguments.forEach(arg -> {
-        if (!args.contains(arg)) {
-          addArguments(arg);
+        arguments.forEach(arg -> {
+          if (!args.contains(arg)) {
+            addArguments(arg);
+          }
+        });
+
+        extensionList.forEach(extension -> {
+          if (!extensions.contains(extension)) {
+            if (extension instanceof File) {
+              addExtensions((File) extension);
+            } else if (extension instanceof String) {
+              addEncodedExtensions((String) extension);
+            }
+          }
+        });
+
+        Object binary = options.get("binary");
+        if (binary instanceof String) {
+          setBinary((String) binary);
+        } else if (binary instanceof File) {
+          setBinary((File) binary);
         }
-      });
 
-      extensions.forEach(extension -> {
-        if (extension instanceof File) {
-          addExtensions((File) extension);
-        } else if (extension instanceof String) {
-          addEncodedExtensions((String) extension);
-        }
-      });
-
-      Object binary = options.get("binary");
-      if (binary instanceof String) {
-        setBinary((String) binary);
-      } else if (binary instanceof File) {
-        setBinary((File) binary);
+        options.forEach((k, v) -> {
+          if (!k.equals("binary") && !k.equals("extensions") && !k.equals("args")) {
+            setExperimentalOption(k, v);
+          }
+        });
       }
-
-      options.forEach((k, v) -> {
-        if (!k.equals("binary") && !k.equals("extensions") && !k.equals("args")) {
-          setExperimentalOption(k, v);
-        }
-      });
     }
   }
 }
