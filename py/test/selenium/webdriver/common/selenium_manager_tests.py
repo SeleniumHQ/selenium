@@ -32,4 +32,4 @@ def test_stderr_is_propagated_to_exceptions(monkeypatch):
     with pytest.raises(SeleniumManagerException, match=msg):
         manager = SeleniumManager()
         binary = manager.get_binary()
-        _ = SeleniumManager().run((binary, "--browser", "foo"))
+        _ = manager.run((str(binary), "--browser", "foo"))
