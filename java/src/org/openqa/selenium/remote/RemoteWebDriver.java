@@ -74,6 +74,7 @@ import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LocalLogs;
 import org.openqa.selenium.logging.LoggingHandler;
@@ -541,8 +542,7 @@ public class RemoteWebDriver
             new UnreachableBrowserException(
                 "Error communicating with the remote browser. It may have died.", e);
       }
-      populateWebDriverException(toThrow);
-      toThrow.addInfo("Command", command.toString());
+      populateWebDriverException(toThrow, command);
       throw toThrow;
     } finally {
       Thread.currentThread().setName(currentName);
@@ -551,20 +551,24 @@ public class RemoteWebDriver
     try {
       errorHandler.throwIfResponseFailed(response, System.currentTimeMillis() - start);
     } catch (WebDriverException ex) {
-      populateWebDriverException(ex);
-      ex.addInfo("Command", command.toString());
+      populateWebDriverException(ex, command);
       throw ex;
     }
     return response;
   }
 
-  private void populateWebDriverException(WebDriverException ex) {
+  private void populateWebDriverException(WebDriverException ex, Command command) {
     ex.addInfo(WebDriverException.DRIVER_INFO, this.getClass().getName());
     if (getSessionId() != null) {
       ex.addInfo(WebDriverException.SESSION_ID, getSessionId().toString());
     }
     if (getCapabilities() != null) {
       ex.addInfo("Capabilities", getCapabilities().toString());
+    }
+    if (ex instanceof UnreachableBrowserException && !Debug.isDebugging()) {
+      ex.addInfo("Command", "[" + command.getSessionId() + ", " + command.getName() + " " + command.getParameters().keySet() + "]");
+    } else {
+      ex.addInfo("Command", command.toString());
     }
   }
 
