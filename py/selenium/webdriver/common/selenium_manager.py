@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import logging
-import re
+from selenium.common.exceptions import SeleniumManagerException
 import subprocess
 import sys
 from pathlib import Path
@@ -31,6 +31,9 @@ class SeleniumManager:
     Wrapper for getting information from the Selenium Manager binaries.
     This implementation is still in beta, and may change.
     """
+
+    def __init__(self) -> None:
+        pass
 
     @staticmethod
     def get_binary() -> Path:
@@ -49,26 +52,27 @@ class SeleniumManager:
         path = Path(__file__).parent.joinpath(directory, file)
 
         if not path.is_file():
-            raise WebDriverException("Unable to obtain Selenium Manager")
+            tracker = "https://github.com/SeleniumHQ/selenium/issues"
+            raise WebDriverException(f"{path} is missing.  Please open an issue on {tracker}")
 
         return path
 
-    @staticmethod
-    def driver_location(browser: str) -> str:
+    def driver_location(self, browser: str) -> str:
         """
         Determines the path of the correct driver.
         :Args:
          - browser: which browser to get the driver path for.
         :Returns: The driver path to use
         """
-        if browser not in ("chrome", "firefox", "edge", "ie"):
-            raise WebDriverException(f"Unable to locate driver associated with browser name: {browser}")
+        allowed = ("chrome", "firefox", "edge", "ie")
+        if browser not in allowed:
+            raise SeleniumManagerException(f"{browser} is not a valid browser.  Choose one of: {allowed}")
 
-        args = (str(SeleniumManager.get_binary()), "--browser", browser)
-        result = SeleniumManager.run(args)
-        command = result.split("\t")[-1].strip()
-        logger.debug(f"Using driver at: {command}")
-        return command
+        binary, flag, browser = str(self.get_binary()), "--browser", browser
+        result = self.run((binary, flag, browser))
+        executable = result.split("\t")[-1].strip()
+        logger.debug(f"Using driver at: {executable}")
+        return executable
 
     @staticmethod
     def run(args: Tuple[str, str, str]) -> str:
@@ -79,9 +83,10 @@ class SeleniumManager:
         :Returns: The log string containing the driver location.
         """
         logger.debug(f"Executing selenium manager with: {args}")
-        result = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode("utf-8")
-
-        if not re.match("^INFO\t", result):
-            raise WebDriverException(f"Unsuccessful command executed: {args}")
-
-        return result
+        completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = completed_proc.stdout.decode("utf-8"), completed_proc.stderr.decode("utf-8")
+        if completed_proc.returncode:
+            raise SeleniumManagerException(f"Selenium Manager exited non zero.  {stdout}{stderr}")
+        else:
+            # selenium manager exited 0 successfully, parse the executable path from stdout.
+            return stdout.split("\t")[-1].strip()

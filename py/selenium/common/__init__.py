@@ -20,6 +20,7 @@ from .exceptions import ElementNotInteractableException
 from .exceptions import ElementNotSelectableException
 from .exceptions import ElementNotVisibleException
 from .exceptions import ImeActivationFailedException
+from .exceptions import SeleniumManagerException
 from .exceptions import ImeNotAvailableException
 from .exceptions import InsecureCertificateException
 from .exceptions import InvalidArgumentException
@@ -81,4 +82,5 @@ __all__ = [
     "InvalidSessionIdException",
     "SessionNotCreatedException",
     "UnknownMethodException",
+    "SeleniumManagerException"
 ]
