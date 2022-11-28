@@ -22,13 +22,13 @@ Automated driver management for Selenium
 Usage: selenium-manager [OPTIONS]
 Options:
   -b, --browser <BROWSER>
-          Browser name (chrome, firefox, or edge) [default: ]
+          Browser name (chrome, firefox, edge, or iexplorer) [default: ]
   -d, --driver <DRIVER>
-          Driver name (chromedriver, geckodriver, or msedgedriver) [default: ]
+          Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer) [default: ]
   -v, --driver-version <DRIVER_VERSION>
           Driver version (e.g., 106.0.5249.61, 0.31.0, etc.) [default: ]
   -B, --browser-version <BROWSER_VERSION>
-          Major browser version (e.g., 105, 106, etc.) [default: ]
+          Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted) [default: ]
   -D, --debug
           Display DEBUG messages
   -T, --trace

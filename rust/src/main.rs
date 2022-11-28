@@ -32,7 +32,7 @@ use crate::edge::EdgeManager;
 use crate::files::clear_cache;
 use crate::firefox::FirefoxManager;
 use crate::iexplorer::IExplorerManager;
-use crate::manager::BrowserManager;
+use crate::manager::{is_unstable, BrowserManager};
 
 mod chrome;
 mod downloads;
@@ -63,7 +63,7 @@ struct Cli {
     #[clap(short = 'v', long, value_parser, default_value = "")]
     driver_version: String,
 
-    /// Major browser version (e.g., 105, 106, etc.)
+    /// Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
     #[clap(short = 'B', long, value_parser, default_value = "")]
     browser_version: String,
 
@@ -97,10 +97,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else if browser_name.eq_ignore_ascii_case("firefox")
         || driver_name.eq_ignore_ascii_case("geckodriver")
     {
-        if !browser_version.is_empty() {
-            log::warn!("Currently it is not possible to force a given Firefox version");
-            browser_version = "".to_string();
-        }
         FirefoxManager::new()
     } else if browser_name.eq_ignore_ascii_case("edge")
         || driver_name.eq_ignore_ascii_case("msedgedriver")
@@ -124,8 +120,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     if driver_version.is_empty() {
-        if browser_version.is_empty() {
-            match browser_manager.get_browser_version(os) {
+        if browser_version.is_empty() || is_unstable(&browser_version) {
+            match browser_manager.get_browser_version(os, &browser_version) {
                 Some(version) => {
                     browser_version = version;
                     log::debug!("Detected browser: {} {}", browser_name, browser_version);

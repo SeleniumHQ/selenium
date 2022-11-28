@@ -15,14 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 
 use crate::downloads::read_redirect_from_link;
 use crate::files::compose_driver_path_in_cache;
 use crate::manager::ARCH::{ARM64, X32};
-use crate::manager::OS::{MACOS, WINDOWS};
-use crate::manager::{detect_browser_version, get_minor_version, BrowserManager};
+use crate::manager::OS::{LINUX, MACOS, WINDOWS};
+use crate::manager::{
+    detect_browser_version, format_one_arg, format_two_args, get_minor_version, BrowserManager,
+    BrowserPath, BETA, DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
+    STABLE, WMIC_COMMAND,
+};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
@@ -51,26 +56,66 @@ impl BrowserManager for FirefoxManager {
         self.browser_name
     }
 
-    fn get_browser_version(&self, os: &str) -> Option<String> {
-        let (shell, flag, args) = if WINDOWS.is(os) {
+    fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
+        HashMap::from([
             (
-                "cmd",
-                "/C",
-                vec![
-                    r#"cmd.exe /C wmic datafile where name='%PROGRAMFILES:\=\\%\\Mozilla Firefox\\firefox.exe' get Version /value"#,
-                    r#"cmd.exe /C wmic datafile where name='%PROGRAMFILES(X86):\=\\%\\Mozilla Firefox\\firefox.exe' get Version /value' get Version /value"#,
-                ],
-            )
-        } else if MACOS.is(os) {
+                BrowserPath::new(WINDOWS, STABLE),
+                r#"\\Mozilla Firefox\\firefox.exe"#,
+            ),
             (
-                "sh",
-                "-c",
-                vec![r#"/Applications/Firefox.app/Contents/MacOS/firefox -v"#],
-            )
-        } else {
-            ("sh", "-c", vec!["firefox -v"])
-        };
-        detect_browser_version(self.browser_name, shell, flag, args)
+                BrowserPath::new(WINDOWS, BETA),
+                r#"\\Mozilla Firefox\\firefox.exe"#,
+            ),
+            (
+                BrowserPath::new(WINDOWS, DEV),
+                r#"\\Firefox Developer Edition\\firefox.exe"#,
+            ),
+            (
+                BrowserPath::new(WINDOWS, NIGHTLY),
+                r#"\\Firefox Nightly\\firefox.exe"#,
+            ),
+            (
+                BrowserPath::new(MACOS, STABLE),
+                r#"/Applications/Firefox.app/Contents/MacOS/firefox"#,
+            ),
+            (
+                BrowserPath::new(MACOS, BETA),
+                r#"/Applications/Firefox.app/Contents/MacOS/firefox"#,
+            ),
+            (
+                BrowserPath::new(MACOS, DEV),
+                r#"/Applications/Firefox\ Developer\ Edition.app/Contents/MacOS/firefox"#,
+            ),
+            (
+                BrowserPath::new(MACOS, NIGHTLY),
+                r#"/Applications/Firefox\ Nightly.app/Contents/MacOS/firefox"#,
+            ),
+            (BrowserPath::new(LINUX, STABLE), "firefox"),
+            (BrowserPath::new(LINUX, BETA), "firefox"),
+            (BrowserPath::new(LINUX, DEV), "firefox"),
+            (BrowserPath::new(LINUX, NIGHTLY), "firefox-trunk"),
+        ])
+    }
+
+    fn get_browser_version(&self, os: &str, browser_version: &str) -> Option<String> {
+        match self.get_browser_path(os, browser_version) {
+            Some(browser_path) => {
+                let (shell, flag, args) = if WINDOWS.is(os) {
+                    (
+                        "cmd",
+                        "/C",
+                        vec![
+                            format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES, browser_path),
+                            format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES_X86, browser_path),
+                        ],
+                    )
+                } else {
+                    ("sh", "-c", vec![format_one_arg(DASH_VERSION, browser_path)])
+                };
+                detect_browser_version(self.browser_name, shell, flag, args)
+            }
+            _ => None,
+        }
     }
 
     fn get_driver_name(&self) -> &str {
