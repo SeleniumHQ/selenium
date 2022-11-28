@@ -302,4 +302,3 @@ class UnknownMethodException(WebDriverException):
 
 class SeleniumManagerException(WebDriverException):
     """Raised when an issue interacting with selenium manager occurs."""
-

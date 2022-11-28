@@ -15,12 +15,12 @@
 # specific language governing permissions and limitations
 # under the License.
 import logging
-from selenium.common.exceptions import SeleniumManagerException
 import subprocess
 import sys
 from pathlib import Path
 from typing import Tuple
 
+from selenium.common.exceptions import SeleniumManagerException
 from selenium.common.exceptions import WebDriverException
 
 logger = logging.getLogger(__name__)
