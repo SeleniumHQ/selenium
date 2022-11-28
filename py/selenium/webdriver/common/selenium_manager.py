@@ -21,7 +21,6 @@ from pathlib import Path
 from typing import Tuple
 
 from selenium.common.exceptions import SeleniumManagerException
-from selenium.common.exceptions import WebDriverException
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +52,7 @@ class SeleniumManager:
 
         if not path.is_file():
             tracker = "https://github.com/SeleniumHQ/selenium/issues"
-            raise WebDriverException(f"{path} is missing.  Please open an issue on {tracker}")
+            raise SeleniumManagerException(f"{path} is missing.  Please open an issue on {tracker}")
 
         return path
 
