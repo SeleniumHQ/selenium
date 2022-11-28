@@ -20,6 +20,7 @@ package org.openqa.selenium.chrome;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.testing.TestUtilities;
@@ -37,9 +38,11 @@ import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.OFF;
 import static org.openqa.selenium.chrome.ChromeDriverLogLevel.SEVERE;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.TIMEOUTS;
 
 @Tag("UnitTests")
@@ -205,6 +208,60 @@ class ChromeOptionsTest {
       .containsEntry("opt1", "val1")
       .containsEntry("opt2", "val4")
       .containsEntry("opt3", "val3");
+  }
+
+  @Test
+  void mergingOptionsWithMutableCapabilities() {
+    File ext1 = TestUtilities.createTmpFile("ext1");
+    String ext1Encoded = Base64.getEncoder().encodeToString("ext1".getBytes());
+    String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
+
+    MutableCapabilities one = new MutableCapabilities();
+
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("verbose");
+    options.addArguments("silent");
+    options.setExperimentalOption("opt1", "val1");
+    options.setExperimentalOption("opt2", "val4");
+    options.addExtensions(ext1);
+    options.addEncodedExtensions(ext2);
+    options.setAcceptInsecureCerts(true);
+    File binary = TestUtilities.createTmpFile("binary");
+    options.setBinary(binary);
+
+    one.setCapability(ChromeOptions.CAPABILITY, options);
+
+    ChromeOptions two = new ChromeOptions();
+    two.addArguments("verbose");
+    two.setExperimentalOption("opt2", "val2");
+    two.setExperimentalOption("opt3", "val3");
+    two = two.merge(one);
+
+    Map<String, Object> map = two.asMap();
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .containsEntry("opt1", "val1")
+      .containsEntry("opt2", "val4")
+      .containsEntry("opt3", "val3");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ACCEPT_INSECURE_CERTS).isExactlyInstanceOf(Boolean.class);
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("extensions").asInstanceOf(LIST)
+      .containsExactly(ext1Encoded, ext2);
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("binary").asInstanceOf(STRING)
+      .isEqualTo(binary.getPath());
   }
 
   @Test
