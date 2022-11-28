@@ -21,7 +21,7 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe DevTools, exclusive: {browser: %i[chrome edge firefox firefox_nightly]} do
+    describe DevTools, exclusive: {browser: %i[chrome edge firefox]} do
       after { reset_driver! }
 
       it 'sends commands' do
@@ -30,23 +30,24 @@ module Selenium
       end
 
       it 'supports events' do
-        callback = instance_double(Proc, call: nil)
-
-        driver.devtools.page.enable
-        driver.devtools.page.on(:load_event_fired) { callback.call }
-        driver.navigate.to url_for('xhtmlTest.html')
-        sleep 0.5
-
-        expect(callback).to have_received(:call).at_least(:once)
+        expect { |block|
+          driver.devtools.page.enable
+          driver.devtools.page.on(:load_event_fired, &block)
+          driver.navigate.to url_for('xhtmlTest.html')
+          sleep 0.5
+        }.to yield_control
       end
 
       it 'propagates errors in events' do
-        driver.devtools.page.enable
-        driver.devtools.page.on(:load_event_fired) { raise "This is fine!" }
-        expect { driver.navigate.to url_for('xhtmlTest.html') }.to raise_error(RuntimeError, "This is fine!")
+        expect {
+          driver.devtools.page.enable
+          driver.devtools.page.on(:load_event_fired) { raise "This is fine!" }
+          driver.navigate.to url_for('xhtmlTest.html')
+          sleep 0.5
+        }.to raise_error(RuntimeError, "This is fine!")
       end
 
-      context 'authentication', except: {browser: %i[firefox firefox_nightly],
+      context 'authentication', except: {browser: :firefox,
                                          reason: 'Fetch.enable is not yet supported'} do
         let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
         let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
@@ -94,7 +95,7 @@ module Selenium
         )
       end
 
-      it 'notifies about document log messages', except: {browser: %i[firefox firefox_nightly],
+      it 'notifies about document log messages', except: {browser: :firefox,
                                                           reason: 'Firefox & Chrome parse document differently'} do
         logs = []
         driver.on_log_event(:console) { |log| logs.push(log) }
@@ -108,7 +109,7 @@ module Selenium
         )
       end
 
-      it 'notifies about document log messages', only: {browser: %i[firefox firefox_nightly],
+      it 'notifies about document log messages', only: {browser: :firefox,
                                                         reason: 'Firefox & Chrome parse document differently'} do
         logs = []
         driver.on_log_event(:console) { |log| logs.push(log) }
@@ -135,7 +136,7 @@ module Selenium
         expect(exception.stacktrace).not_to be_empty
       end
 
-      it 'notifies about DOM mutations', except: {browser: %i[firefox firefox_nightly],
+      it 'notifies about DOM mutations', except: {browser: :firefox,
                                                   reason: 'Runtime.addBinding not yet supported'} do
         mutations = []
         driver.on_log_event(:mutation) { |mutation| mutations.push(mutation) }
@@ -151,7 +152,7 @@ module Selenium
         expect(mutation.old_value).to eq('display:none;')
       end
 
-      context 'network interception', except: {browser: %i[firefox firefox_nightly],
+      context 'network interception', except: {browser: :firefox,
                                                reason: 'Fetch.enable is not yet supported'} do
         it 'continues requests' do
           requests = []
@@ -201,7 +202,7 @@ module Selenium
         end
       end
 
-      context 'script pinning', except: {browser: %i[firefox firefox_nightly]} do
+      context 'script pinning', except: {browser: :firefox} do
         before do
           driver.navigate.to url_for('xhtmlTest.html')
         end

@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'open3'
+
 module Selenium
   module WebDriver
     #
@@ -71,14 +73,13 @@ module Selenium
         def run(command)
           WebDriver.logger.debug("Executing Process #{command}")
 
-          begin
-            result = `#{command}`
-            return result if result.match?(/^INFO\t/)
-          rescue StandardError => e
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
-          end
+          stdout, stderr, _status = Open3.capture3(command)
+          return stdout if stdout.match?(/^INFO\t/)
 
-          raise Error::WebDriverError, "Unsuccessful command executed: #{command}"
+          message = stdout.empty? ? stderr.gsub("\n\n", "\n") : stdout
+          raise Error::WebDriverError, "\n#{message}"
+        rescue StandardError => e
+          raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
         end
       end
     end # SeleniumManager

@@ -22,10 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe Window do
-      after do
-        sleep 1 if ENV['TRAVIS']
-        quit_driver
-      end
+      after(:all) { reset_driver! }
 
       let(:window) { driver.manage.window }
 

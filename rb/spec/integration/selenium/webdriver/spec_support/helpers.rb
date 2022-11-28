@@ -25,8 +25,8 @@ module Selenium
           GlobalTestEnv.driver_instance
         end
 
-        def reset_driver!(time = 0)
-          GlobalTestEnv.reset_driver!(time)
+        def reset_driver!(**opts)
+          GlobalTestEnv.reset_driver!(**opts)
         end
 
         def quit_driver
@@ -35,10 +35,6 @@ module Selenium
 
         def create_driver!(**opts, &block)
           GlobalTestEnv.create_driver!(**opts, &block)
-        end
-
-        def ensure_single_window
-          GlobalTestEnv.ensure_single_window
         end
 
         def url_for(filename)

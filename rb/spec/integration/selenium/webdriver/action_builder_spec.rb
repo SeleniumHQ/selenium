@@ -202,7 +202,10 @@ module Selenium
           expect(element.attribute(:value)).to eq('Clicked')
         end
 
-        it 'moves to element with offset' do
+        it 'moves to element with offset', except: {browser: :firefox,
+                                                    ci: :github,
+                                                    platform: :windows,
+                                                    reason: 'Some issues with resolution?'} do
           driver.navigate.to url_for('javascriptPage.html')
           origin = driver.find_element(id: 'keyUpArea')
           destination = driver.find_element(id: 'clickField')
@@ -317,7 +320,7 @@ module Selenium
 
       describe '#scroll_by', only: {browser: %i[chrome edge firefox]} do
         it 'scrolls by given amount', except: {browser: :firefox,
-                                               platform: %i[macosx windows],
+                                               platform: :macosx,
                                                reason: 'scrolls insufficient number of pixels'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')

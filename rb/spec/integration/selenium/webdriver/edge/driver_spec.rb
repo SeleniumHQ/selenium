@@ -66,16 +66,15 @@ module Selenium
         end
 
         describe '#logs' do
-          before do
-            quit_driver
-            options = Options.new(logging_prefs: {browser: 'ALL',
-                                                  driver: 'ALL',
-                                                  performance: 'ALL'})
-            create_driver!(options: options)
-            driver.navigate.to url_for('errors.html')
+          before(:all) do
+            reset_driver!(logging_prefs: {browser: 'ALL',
+                                          driver: 'ALL',
+                                          performance: 'ALL'})
           end
 
-          after(:all) { quit_driver }
+          before { driver.navigate.to url_for('errors.html') }
+
+          after(:all) { reset_driver! }
 
           it 'can fetch available log types' do
             expect(driver.logs.available_types).to include(:performance, :browser, :driver)

@@ -22,6 +22,11 @@ require 'websocket'
 module Selenium
   module WebDriver
     class WebSocketConnection
+      CONNECTION_ERRORS = [
+        Errno::ECONNRESET, # connection is aborted (browser process was killed)
+        Errno::EPIPE # broken pipe (browser process was killed)
+      ].freeze
+
       RESPONSE_WAIT_TIMEOUT = 30
       RESPONSE_WAIT_INTERVAL = 0.1
 
@@ -90,6 +95,8 @@ module Selenium
               end
             end
           end
+        rescue *CONNECTION_ERRORS
+          Thread.stop
         end
       end
 
@@ -122,6 +129,8 @@ module Selenium
           Thread.current.report_on_exception = true
 
           yield params
+        rescue *CONNECTION_ERRORS
+          Thread.stop
         end
       end
 

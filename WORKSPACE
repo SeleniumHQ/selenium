@@ -171,8 +171,8 @@ crate_repositories()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "5aae76dced38f784b58d9776e4ab12278bc156a9ed2b1d9fcd3e39921dc88fda",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.7.1/rules_nodejs-5.7.1.tar.gz"],
+    sha256 = "0e8a818724c0d5dcc10c31f9452ebd54b2ab94c452d4dcbb0d45a6636d2d5a44",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.7.2/rules_nodejs-5.7.2.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
@@ -313,18 +313,19 @@ pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "5aa0780f4fc159ac2970991128db4c843575395a3a903e2353332053461c4821",
-    strip_prefix = "rules_ruby-0799d724aeca58d42ecbe3b7ebde112dc6565c9f",
-    url = "https://github.com/p0deje/rules_ruby/archive/0799d724aeca58d42ecbe3b7ebde112dc6565c9f.zip",
+    sha256 = "e8b33567dfd129a782e513d61c65de2c9120e6944ff398a96227b3ad79cada70",
+    strip_prefix = "rules_ruby-3124474acd89192332f00938126753c5122b4df6",
+    url = "https://github.com/p0deje/rules_ruby/archive/3124474acd89192332f00938126753c5122b4df6.zip",
 )
 
+load("//rb:ruby_version.bzl", "RUBY_VERSION")
 load(
     "@rules_ruby//ruby:deps.bzl",
     "rb_bundle",
     "rb_download",
 )
 
-rb_download(version = "2.7.6")
+rb_download(version = RUBY_VERSION)
 
 rb_bundle(
     name = "bundle",

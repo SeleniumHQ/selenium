@@ -102,7 +102,7 @@ module Selenium
         begin
           path ||= SeleniumManager.driver_path(self.class::EXECUTABLE)
         rescue Error::WebDriverError => e
-          WebDriver.logger.debug("Unable obtain driver using Selenium Manager; #{e.message}")
+          WebDriver.logger.debug("Unable obtain driver using Selenium Manager\n #{e.message}")
         end
 
         raise Error::WebDriverError, self.class::MISSING_TEXT unless path

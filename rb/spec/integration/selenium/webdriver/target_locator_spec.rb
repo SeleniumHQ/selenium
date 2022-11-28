@@ -22,8 +22,15 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe TargetLocator do
+      before { @original_window = driver.window_handle }
+
       after do
-        ensure_single_window
+        handles = driver.window_handles
+        driver.switch_to.window(@original_window) if handles.include?(@original_window)
+
+        (handles - [driver.window_handle]).each do |handle|
+          driver.switch_to.window(handle) { driver.close }
+        end
       end
 
       let(:new_window) { driver.window_handles.find { |handle| handle != driver.window_handle } }
@@ -63,26 +70,19 @@ module Selenium
       end
 
       context 'window switching' do
-        after do
-          sleep 1 if ENV['TRAVIS']
-          quit_driver
-        end
-
         describe '#new_window' do
           it 'should switch to a new window' do
-            original_window = driver.window_handle
             driver.switch_to.new_window(:window)
 
             expect(driver.window_handles.size).to eq 2
-            expect(driver.window_handle).not_to eq original_window
+            expect(driver.window_handle).not_to eq @original_window
           end
 
           it 'should switch to a new tab' do
-            original_window = driver.window_handle
             driver.switch_to.new_window(:tab)
 
             expect(driver.window_handles.size).to eq 2
-            expect(driver.window_handle).not_to eq original_window
+            expect(driver.window_handle).not_to eq @original_window
           end
 
           it 'should raise exception when the new window type is not recognized' do
@@ -92,14 +92,12 @@ module Selenium
           end
 
           it 'should switch to the new window then close it when given a block' do
-            original_window = driver.window_handle
-
             driver.switch_to.new_window do
               expect(driver.window_handles.size).to eq 2
             end
 
             expect(driver.window_handles.size).to eq 1
-            expect(driver.window_handle).to eq original_window
+            expect(driver.window_handle).to eq @original_window
           end
 
           it 'should not error if switching to a new window with a block that closes window' do
@@ -168,29 +166,20 @@ module Selenium
 
       context 'with more than two windows', except: [{browser: %i[safari safari_preview]},
                                                      {driver: :remote, browser: :ie}] do
-        after do
-          # We need to reset driver because browsers behave differently
-          # when trying to open the same blank target in a new window.
-          # Sometimes it's opened in a new window (Firefox 55), sometimes
-          # in the same window (Firefox 57). In any event, this has nothing
-          # to do with Selenium test.
-          sleep 1 if ENV['TRAVIS']
-          reset_driver!
-        end
-
-        it 'should close current window when more than two windows exist' do
+        it 'should close current window via block' do
           driver.navigate.to url_for('xhtmlTest.html')
           wait_for_element(link: 'Create a new anonymous window')
           driver.find_element(link: 'Create a new anonymous window').click
           wait.until { driver.window_handles.size == 2 }
           driver.find_element(link: 'Open new window').click
           wait.until { driver.window_handles.size == 3 }
+          driver.switch_to.window(new_window)
 
           driver.switch_to.window(driver.window_handle) { driver.close }
           expect(driver.window_handles.size).to eq 2
         end
 
-        it 'should close another window when more than two windows exist' do
+        it 'should close another window' do
           driver.navigate.to url_for('xhtmlTest.html')
           wait_for_element(link: 'Create a new anonymous window')
           driver.find_element(link: 'Create a new anonymous window').click
