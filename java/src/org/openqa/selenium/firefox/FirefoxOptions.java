@@ -377,6 +377,51 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     if (capabilities instanceof FirefoxOptions) {
       newInstance.mirror((FirefoxOptions) capabilities);
     }
+
+    Object optionsValue = capabilities.getCapability(FIREFOX_OPTIONS);
+
+    if (optionsValue instanceof Map) {
+      @SuppressWarnings("unchecked") Map<String, Object>
+        options =
+        (Map<String, Object>) optionsValue;
+
+      @SuppressWarnings("unchecked") List<String> arguments = (List<String>) (options.get("args"));
+      @SuppressWarnings("unchecked") Map<String, Object> prefs =
+        (Map<String, Object>) options.get("prefs");
+      String rawProfile = (String) options.get("profile");
+      @SuppressWarnings("unchecked") Map<String, Object> logLevelMap =
+        (Map<String, Object>) options.get("log");
+      FirefoxDriverLogLevel logLevel =
+        FirefoxDriverLogLevel.fromString((String) logLevelMap.get("level"));
+
+      arguments.forEach(arg -> {
+        if (!((List<String>) this.firefoxOptions.get(Keys.ARGS.key())).contains(arg)) {
+          newInstance.addArguments(arg);
+        }
+      });
+
+      Object binary = options.get("binary");
+      if (binary instanceof String) {
+        newInstance.setBinary((String) binary);
+      } else if (binary instanceof Path) {
+        newInstance.setBinary((Path) binary);
+      } else if (binary instanceof FirefoxBinary) {
+        newInstance.setBinary((FirefoxBinary) binary);
+      }
+
+      prefs.forEach(newInstance::addPreference);
+
+      try {
+        newInstance.setProfile(FirefoxProfile.fromJson(rawProfile));
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
+
+      if (logLevel != null) {
+        newInstance.setLogLevel(logLevel);
+      }
+    }
+
     return newInstance;
   }
 
