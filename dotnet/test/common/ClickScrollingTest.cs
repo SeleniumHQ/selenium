@@ -73,6 +73,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Scroll bar gets in they way of clicking center element")]
         [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
         public void ShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow()
         {
@@ -94,6 +95,7 @@ namespace OpenQA.Selenium
 
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "IE is scrolling Button2 to top of screen instead of bottom of screen as per spec")]
         [IgnoreBrowser(Browser.Firefox, "https://github.com/mozilla/geckodriver/issues/2013")]
         public void ShouldNotScrollIfAlreadyScrolledAndElementIsInView()
         {
@@ -235,6 +237,8 @@ namespace OpenQA.Selenium
         // Tests below here are not included in the Java test suite
         //------------------------------------------------------------------
         [Test]
+        [IgnoreBrowser(Browser.IE, "Clicking label is not changing checkbox")]
+        [IgnoreTarget("net48", "Cannot create inline page with UrlBuilder")]
         public void ShouldBeAbleToClickInlineTextElementWithChildElementAfterScrolling()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()

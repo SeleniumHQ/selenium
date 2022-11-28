@@ -13,6 +13,7 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsLogTest : DevToolsTestFixture
     {
         [Test]
+        [Ignore("Unable to open secure url")]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]

@@ -66,6 +66,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         public void ShouldCaptureScreenshotOfCurrentViewport()
         {
 #if NETCOREAPP3_1 || NET6_0
@@ -120,6 +121,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         public void ShouldCaptureScreenshotAtFramePage()
         {
 #if NETCOREAPP3_1 || NET6_0
@@ -162,6 +164,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         public void ShouldCaptureScreenshotAtIFramePage()
         {
 #if NETCOREAPP3_1 || NET6_0
@@ -201,6 +204,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
         public void ShouldCaptureScreenshotAtFramePageAfterSwitching()
         {
@@ -239,6 +243,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Color comparisons fail on IE")]
         [IgnoreBrowser(Browser.Firefox, "Color comparisons fail on Firefox")]
         public void ShouldCaptureScreenshotAtIFramePageAfterSwitching()
         {

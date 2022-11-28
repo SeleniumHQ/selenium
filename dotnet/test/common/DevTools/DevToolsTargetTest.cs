@@ -22,7 +22,7 @@ namespace OpenQA.Selenium.DevTools
         {
             var domains = session.GetVersionSpecificDomains<V107.DevToolsSessionDomains>();
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
-            var response = await domains.Target.GetTargets(null);
+            var response = await domains.Target.GetTargets();
             V107.Target.TargetInfo[] allTargets = response.TargetInfos;
             foreach (V107.Target.TargetInfo targetInfo in allTargets)
             {
@@ -62,7 +62,7 @@ namespace OpenQA.Selenium.DevTools
                 ValidateMessage(e);
                 sync.Set();
             };
-            var targetsResponse = await domains.Target.GetTargets(null);
+            var targetsResponse = await domains.Target.GetTargets();
             allTargets = targetsResponse.TargetInfos;
             ValidateTargetsInfos(allTargets);
             ValidateTarget(allTargets[0]);
