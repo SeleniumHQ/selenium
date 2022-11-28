@@ -21,13 +21,13 @@ from selenium.common.exceptions import SeleniumManagerException
 from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 
-def test_non_supported_browser_raises_wde():
+def test_non_supported_browser_raises_sme():
     msg = r"foo is not a valid browser.  Choose one of: \('chrome', 'firefox', 'edge', 'ie'\)"
     with pytest.raises(SeleniumManagerException, match=msg):
         _ = SeleniumManager().driver_location("foo")
 
 
-def test_stderr_is_propagated_to_exceptions(monkeypatch):
+def test_stderr_is_propagated_to_exception_messages():
     msg = "Selenium Manager exited non zero.  Error:.*Invalid browser/driver name.*"
     with pytest.raises(SeleniumManagerException, match=msg):
         manager = SeleniumManager()
