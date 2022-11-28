@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using OpenQA.Selenium.DevTools.V107.Target;
 using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.DevTools
@@ -22,7 +20,7 @@ namespace OpenQA.Selenium.DevTools
         {
             var domains = session.GetVersionSpecificDomains<V107.DevToolsSessionDomains>();
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
-            var response = await domains.Target.GetTargets();
+            var response = await domains.Target.GetTargets(new GetTargetsCommandSettings());
             V107.Target.TargetInfo[] allTargets = response.TargetInfos;
             foreach (V107.Target.TargetInfo targetInfo in allTargets)
             {
@@ -62,7 +60,7 @@ namespace OpenQA.Selenium.DevTools
                 ValidateMessage(e);
                 sync.Set();
             };
-            var targetsResponse = await domains.Target.GetTargets();
+            var targetsResponse = await domains.Target.GetTargets(new GetTargetsCommandSettings());
             allTargets = targetsResponse.TargetInfos;
             ValidateTargetsInfos(allTargets);
             ValidateTarget(allTargets[0]);
