@@ -50,6 +50,28 @@ module Selenium
         "#{message['error']}: #{message['message']}\n#{message['stacktrace']}"
       end
 
+      def on_console_log(&block)
+        console_log_listener = []
+        enabled = console_log_listener.any?
+        console_log_listener << block
+        return if enabled
+
+        bidi.on(:console_api_called) do |params|
+          event = BiDi::Log::ConsoleLogEntry.new(
+            level: params['level'],
+            text: params['text'],
+            timestamp: params['timestamp'],
+            type: params['type'],
+            method: params['method'],
+            args: params['args']
+          )
+
+          console_log_listener.each do |listener|
+            listener.call(event)
+          end
+        end
+      end
+
     end # BiDi
   end # WebDriver
 end # Selenium
