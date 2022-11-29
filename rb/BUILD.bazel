@@ -13,9 +13,9 @@ package(default_visibility = ["//:__subpackages__"])
 
 CDP_VERSIONS = [
     "v85",
-    "v105",
     "v106",
     "v107",
+    "v108",
 ]
 
 GITHUB_PACKAGES_HOST = "https://rubygems.pkg.github.com/SeleniumHQ"
