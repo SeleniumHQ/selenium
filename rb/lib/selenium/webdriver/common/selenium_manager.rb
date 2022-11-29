@@ -39,7 +39,7 @@ module Selenium
               raise Error::WebDriverError, msg
             end
 
-            location = run("#{binary} --driver #{driver_name}").split("\t").last.strip
+            location = run("#{binary} --driver #{driver_name}")
             WebDriver.logger.debug("Driver found at #{location}")
             Platform.assert_executable location
 
@@ -73,13 +73,12 @@ module Selenium
         def run(command)
           WebDriver.logger.debug("Executing Process #{command}")
 
-          stdout, stderr, _status = Open3.capture3(command)
-          return stdout if stdout.match?(/^INFO\t/)
+          stdout, stderr, status = Open3.capture3(command)
+          if status.exitstatus.positive?
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{stdout}#{stderr}"
+          end
 
-          message = stdout.empty? ? stderr.gsub("\n\n", "\n") : stdout
-          raise Error::WebDriverError, "\n#{message}"
-        rescue StandardError => e
-          raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
+          stdout.gsub("INFO\t", '').strip
         end
       end
     end # SeleniumManager
