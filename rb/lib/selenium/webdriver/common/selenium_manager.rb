@@ -73,7 +73,12 @@ module Selenium
         def run(command)
           WebDriver.logger.debug("Executing Process #{command}")
 
-          stdout, stderr, status = Open3.capture3(command)
+          begin
+            stdout, stderr, status = Open3.capture3(command)
+          rescue StandardError => e
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e
+          end
+
           if status.exitstatus.positive?
             raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{stdout}#{stderr}"
           end
