@@ -81,11 +81,13 @@ class SeleniumManager:
          - args: the components of the command being executed.
         :Returns: The log string containing the driver location.
         """
-        logger.debug(f"Executing selenium manager with: {args}")
+        command = " ".join(args)
+        logger.debug(f"Executing: {command}")
         completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        stdout, stderr = completed_proc.stdout.decode("utf-8"), completed_proc.stderr.decode("utf-8")
+        stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
+        stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
         if completed_proc.returncode:
-            raise SeleniumManagerException(f"Selenium Manager exited non zero.  {stdout}{stderr}")
+            raise SeleniumManagerException(f"Selenium manager failed for: {command}. {stderr}")
         else:
             # selenium manager exited 0 successfully, parse the executable path from stdout.
             return stdout.split("\t")[-1].strip()
