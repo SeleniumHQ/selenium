@@ -28,7 +28,7 @@ def test_non_supported_browser_raises_sme():
 
 
 def test_stderr_is_propagated_to_exception_messages():
-    msg = "Selenium Manager exited non zero.  Error:.*Invalid browser/driver name.*"
+    msg = "Selenium manager failed for.*Error: \"Invalid browser/driver name\""
     with pytest.raises(SeleniumManagerException, match=msg):
         manager = SeleniumManager()
         binary = manager.get_binary()
