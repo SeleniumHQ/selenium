@@ -76,7 +76,7 @@ module Selenium
           begin
             stdout, stderr, status = Open3.capture3(command)
           rescue StandardError => e
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e.message
           end
 
           if status.exitstatus.positive?
