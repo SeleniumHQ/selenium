@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using OpenQA.Selenium.DevTools.V107.Target;
+using OpenQA.Selenium.DevTools.V108.Target;
 using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium.DevTools
@@ -18,24 +18,24 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task GetTargetActivateAndAttach()
         {
-            var domains = session.GetVersionSpecificDomains<V107.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V108.DevToolsSessionDomains>();
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
             var response = await domains.Target.GetTargets(new GetTargetsCommandSettings());
-            V107.Target.TargetInfo[] allTargets = response.TargetInfos;
-            foreach (V107.Target.TargetInfo targetInfo in allTargets)
+            V108.Target.TargetInfo[] allTargets = response.TargetInfos;
+            foreach (V108.Target.TargetInfo targetInfo in allTargets)
             {
                 ValidateTarget(targetInfo);
-                await domains.Target.ActivateTarget(new V107.Target.ActivateTargetCommandSettings()
+                await domains.Target.ActivateTarget(new V108.Target.ActivateTargetCommandSettings()
                 {
                     TargetId = targetInfo.TargetId
                 });
-                var attachResponse = await domains.Target.AttachToTarget(new V107.Target.AttachToTargetCommandSettings()
+                var attachResponse = await domains.Target.AttachToTarget(new V108.Target.AttachToTargetCommandSettings()
                 {
                     TargetId = targetInfo.TargetId,
                     Flatten = true
                 });
                 ValidateSession(attachResponse.SessionId);
-                var getInfoResponse = await domains.Target.GetTargetInfo(new V107.Target.GetTargetInfoCommandSettings()
+                var getInfoResponse = await domains.Target.GetTargetInfo(new V108.Target.GetTargetInfoCommandSettings()
                 {
                     TargetId = targetInfo.TargetId
                 });
@@ -49,10 +49,10 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task GetTargetAndSendMessageToTarget()
         {
-            var domains = session.GetVersionSpecificDomains<V107.DevToolsSessionDomains>();
-            V107.Target.TargetInfo[] allTargets = null;
+            var domains = session.GetVersionSpecificDomains<V108.DevToolsSessionDomains>();
+            V108.Target.TargetInfo[] allTargets = null;
             string sessionId = null;
-            V107.Target.TargetInfo targetInfo = null;
+            V108.Target.TargetInfo targetInfo = null;
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html");
             ManualResetEventSlim sync = new ManualResetEventSlim(false);
             domains.Target.ReceivedMessageFromTarget += (sender, e) =>
@@ -65,19 +65,19 @@ namespace OpenQA.Selenium.DevTools
             ValidateTargetsInfos(allTargets);
             ValidateTarget(allTargets[0]);
             targetInfo = allTargets[0];
-            await domains.Target.ActivateTarget(new V107.Target.ActivateTargetCommandSettings()
+            await domains.Target.ActivateTarget(new V108.Target.ActivateTargetCommandSettings()
             {
                 TargetId = targetInfo.TargetId
             });
 
-            var attachResponse = await domains.Target.AttachToTarget(new V107.Target.AttachToTargetCommandSettings()
+            var attachResponse = await domains.Target.AttachToTarget(new V108.Target.AttachToTargetCommandSettings()
             {
                 TargetId = targetInfo.TargetId,
                 Flatten = false
             });
             sessionId = attachResponse.SessionId;
             ValidateSession(sessionId);
-            await domains.Target.SendMessageToTarget(new V107.Target.SendMessageToTargetCommandSettings()
+            await domains.Target.SendMessageToTarget(new V108.Target.SendMessageToTargetCommandSettings()
             {
                 Message = "{\"id\":" + id + ",\"method\":\"Page.bringToFront\"}",
                 SessionId = sessionId,
@@ -92,32 +92,32 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task CreateAndContentLifeCycle()
         {
-            var domains = session.GetVersionSpecificDomains<V107.DevToolsSessionDomains>();
-            EventHandler<V107.Target.TargetCreatedEventArgs> targetCreatedHandler = (sender, e) =>
+            var domains = session.GetVersionSpecificDomains<V108.DevToolsSessionDomains>();
+            EventHandler<V108.Target.TargetCreatedEventArgs> targetCreatedHandler = (sender, e) =>
             {
                 ValidateTargetInfo(e.TargetInfo);
             };
             domains.Target.TargetCreated += targetCreatedHandler;
 
-            EventHandler<V107.Target.TargetCrashedEventArgs> targetCrashedHandler = (sender, e) =>
+            EventHandler<V108.Target.TargetCrashedEventArgs> targetCrashedHandler = (sender, e) =>
             {
                 ValidateTargetCrashed(e);
             };
             domains.Target.TargetCrashed += targetCrashedHandler;
 
-            EventHandler<V107.Target.TargetDestroyedEventArgs> targetDestroyedHandler = (sender, e) =>
+            EventHandler<V108.Target.TargetDestroyedEventArgs> targetDestroyedHandler = (sender, e) =>
             {
                 ValidateTargetId(e.TargetId);
             };
             domains.Target.TargetDestroyed += targetDestroyedHandler;
 
-            EventHandler<V107.Target.TargetInfoChangedEventArgs> targetInfoChangedHandler = (sender, e) =>
+            EventHandler<V108.Target.TargetInfoChangedEventArgs> targetInfoChangedHandler = (sender, e) =>
             {
                 ValidateTargetInfo(e.TargetInfo);
             };
             domains.Target.TargetInfoChanged += targetInfoChangedHandler;
 
-            var response = await domains.Target.CreateTarget(new V107.Target.CreateTargetCommandSettings()
+            var response = await domains.Target.CreateTarget(new V108.Target.CreateTargetCommandSettings()
             {
                 Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("devToolsConsoleTest.html"),
                 NewWindow = true,
@@ -125,12 +125,12 @@ namespace OpenQA.Selenium.DevTools
             });
 
             ValidateTargetId(response.TargetId);
-            await domains.Target.SetDiscoverTargets(new V107.Target.SetDiscoverTargetsCommandSettings()
+            await domains.Target.SetDiscoverTargets(new V108.Target.SetDiscoverTargetsCommandSettings()
             {
                 Discover = true
             });
 
-            var closeResponse = await domains.Target.CloseTarget(new V107.Target.CloseTargetCommandSettings()
+            var closeResponse = await domains.Target.CloseTarget(new V108.Target.CloseTargetCommandSettings()
             {
                 TargetId = response.TargetId
             });
@@ -139,7 +139,7 @@ namespace OpenQA.Selenium.DevTools
             Assert.That(closeResponse.Success, Is.True);
         }
 
-        private void ValidateTargetCrashed(V107.Target.TargetCrashedEventArgs targetCrashed)
+        private void ValidateTargetCrashed(V108.Target.TargetCrashedEventArgs targetCrashed)
         {
             Assert.That(targetCrashed, Is.Not.Null);
             Assert.That(targetCrashed.ErrorCode, Is.Not.Null);
@@ -152,7 +152,7 @@ namespace OpenQA.Selenium.DevTools
             Assert.That(targetId, Is.Not.Null);
         }
 
-        private void ValidateMessage(V107.Target.ReceivedMessageFromTargetEventArgs messageFromTarget)
+        private void ValidateMessage(V108.Target.ReceivedMessageFromTargetEventArgs messageFromTarget)
         {
             Assert.That(messageFromTarget, Is.Not.Null);
             Assert.That(messageFromTarget.Message, Is.Not.Null);
@@ -160,7 +160,7 @@ namespace OpenQA.Selenium.DevTools
             Assert.That(messageFromTarget.Message, Is.EqualTo("{\"id\":" + id + ",\"result\":{}}"));
         }
 
-        private void ValidateTargetInfo(V107.Target.TargetInfo targetInfo)
+        private void ValidateTargetInfo(V108.Target.TargetInfo targetInfo)
         {
             Assert.That(targetInfo, Is.Not.Null);
             Assert.That(targetInfo.TargetId, Is.Not.Null);
@@ -169,13 +169,13 @@ namespace OpenQA.Selenium.DevTools
             Assert.That(targetInfo.Url, Is.Not.Null);
         }
 
-        private void ValidateTargetsInfos(V107.Target.TargetInfo[] targets)
+        private void ValidateTargetsInfos(V108.Target.TargetInfo[] targets)
         {
             Assert.That(targets, Is.Not.Null);
             Assert.That(targets.Length, Is.GreaterThan(0));
         }
 
-        private void ValidateTarget(V107.Target.TargetInfo targetInfo)
+        private void ValidateTarget(V108.Target.TargetInfo targetInfo)
         {
             Assert.That(targetInfo, Is.Not.Null);
             Assert.That(targetInfo.TargetId, Is.Not.Null);
