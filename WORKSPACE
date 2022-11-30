@@ -42,22 +42,38 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.15.0.tar.gz",
 )
 
-load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+load("@rules_python//python:repositories.bzl", "python_register_multi_toolchains")
 
-python_register_toolchains(
-    name = "python_toolchain",
-    python_version = "3.8",
+default_python_version = "3.8"
+
+python_register_multi_toolchains(
+    name = "python",
+    default_version = default_python_version,
+    python_versions = [
+        "3.8",
+        "3.9",
+        "3.10",
+    ],
 )
 
-load("@python_toolchain//:defs.bzl", "interpreter")
+load("@python//:pip.bzl", "multi_pip_parse")
+load("@python//3.10:defs.bzl", interpreter_3_10 = "interpreter")
+load("@python//3.8:defs.bzl", interpreter_3_8 = "interpreter")
+load("@python//3.9:defs.bzl", interpreter_3_9 = "interpreter")
 
-# This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_parse")
-
-pip_parse(
+multi_pip_parse(
     name = "py_dev_requirements",
-    python_interpreter_target = interpreter,
-    requirements_lock = "//py:requirements_lock.txt",
+    default_version = default_python_version,
+    python_interpreter_target = {
+        "3.10": interpreter_3_10,
+        "3.8": interpreter_3_8,
+        "3.9": interpreter_3_9,
+    },
+    requirements_lock = {
+        "3.10": "//py:requirements_lock.txt",
+        "3.8": "//py:requirements_lock.txt",
+        "3.9": "//py:requirements_lock.txt",
+    },
 )
 
 load("@py_dev_requirements//:requirements.bzl", "install_deps")
