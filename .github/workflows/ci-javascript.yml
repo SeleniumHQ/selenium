@@ -21,7 +21,7 @@ jobs:
       bazel-target-prefix: '//javascript'
 
   node_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[js]') == true }}
     needs: check_workflow
     runs-on: ubuntu-latest
     strategy:

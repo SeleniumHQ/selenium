@@ -24,7 +24,7 @@ jobs:
       bazel-target-prefix: '//java'
 
   build:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[java]') == true }}
     needs: check_workflow
     runs-on: ubuntu-latest
     steps:

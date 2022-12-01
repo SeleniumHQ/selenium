@@ -19,7 +19,7 @@ jobs:
       bazel-target-prefix: '//dotnet'
 
   browser-test:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run dotnet]') == true }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[dotnet]') == true }}
     needs: check_workflow
     runs-on: 'windows-latest'
     strategy:
