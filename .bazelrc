@@ -1,4 +1,5 @@
 try-import .bazelrc.local
+try-import .bazelrc.windows.local
 
 # Ensure Windows support is accurate.
 

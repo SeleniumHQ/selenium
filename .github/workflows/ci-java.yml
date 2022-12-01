@@ -31,7 +31,7 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -40,9 +40,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-build-
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Build grid
         uses: ./.github/actions/bazel
         with:
@@ -58,7 +59,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -68,9 +69,10 @@ jobs:
             ${{ runner.os }}-bazel-small-tests-
             ${{ runner.os }}-bazel-build-
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Run small tests
         uses: ./.github/actions/bazel-test
         with:
@@ -91,7 +93,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -101,9 +103,10 @@ jobs:
             ${{ runner.os }}-bazel-medium-tests-
             ${{ runner.os }}-bazel-build-
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Run medium tests
         uses: ./.github/actions/bazel-test
         with:
@@ -118,7 +121,7 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -128,9 +131,10 @@ jobs:
             ${{ runner.os }}-bazel-lint-
             ${{ runner.os }}-bazel-build-
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Run linter
         uses: ./.github/actions/bazel-test
         with:
@@ -152,7 +156,7 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -164,9 +168,10 @@ jobs:
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:
@@ -208,7 +213,7 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -221,9 +226,10 @@ jobs:
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:
@@ -257,7 +263,7 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -269,9 +275,10 @@ jobs:
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:
@@ -299,7 +306,7 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -309,9 +316,10 @@ jobs:
             ${{ runner.os }}-bazel-firefox-tests-
             ${{ runner.os }}-bazel-build-
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Generate javadoc
         run: |
           ./go --verbose javadocs

@@ -26,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 import static org.openqa.selenium.PageLoadStrategy.EAGER;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_BINARY;
 import static org.openqa.selenium.firefox.FirefoxDriver.SystemProperty.BROWSER_PROFILE;
@@ -373,6 +374,69 @@ class FirefoxOptionsTest {
       .containsEntry("opt1", "val1")
       .containsEntry("opt2", "val4")
       .containsEntry("opt3", "val3");
+  }
+
+  @Test
+  void mergingOptionsWithMutableCapabilities() {
+    MutableCapabilities one = new MutableCapabilities();
+
+    FirefoxOptions options = new FirefoxOptions();
+    options.addArguments("verbose");
+    options.addArguments("silent");
+    options.addPreference("opt1", "val1");
+    options.addPreference("opt2", "val4");
+    options.setAcceptInsecureCerts(true);
+
+    String key = "browser.startup.homepage";
+    String value = "about:robots";
+
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference(key, value);
+
+    options.setProfile(profile);
+
+    options.setLogLevel(DEBUG);
+
+    File binary = TestUtilities.createTmpFile("binary");
+    options.setBinary(binary.toPath());
+
+    one.setCapability(FIREFOX_OPTIONS, options);
+
+    FirefoxOptions two = new FirefoxOptions();
+    two.addArguments("verbose");
+    two.addPreference("opt2", "val2");
+    two.addPreference("opt3", "val3");
+    two = two.merge(one);
+
+    Map<String, Object> map = two.asMap();
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("prefs").asInstanceOf(MAP)
+      .containsEntry("opt1", "val1")
+      .containsEntry("opt2", "val4")
+      .containsEntry("opt3", "val3");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ACCEPT_INSECURE_CERTS).isExactlyInstanceOf(Boolean.class);
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("binary").asInstanceOf(STRING)
+      .isEqualTo(binary.getPath());
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("log").asInstanceOf(MAP)
+      .containsEntry("level", "debug");
+
+    FirefoxProfile extractedProfile = two.getProfile();
+    assertThat(extractedProfile.getStringPreference(key, "-")).isEqualTo(value);
   }
 
   @Test

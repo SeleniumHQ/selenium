@@ -50,11 +50,15 @@ namespace OpenQA.Selenium.DevTools.V107
         /// contains the list of <see cref="TargetInfo"/> objects describing the
         /// targets available for this session.
         /// </returns>
-        public override async Task<ReadOnlyCollection<TargetInfo>> GetTargets()
+        public override async Task<ReadOnlyCollection<TargetInfo>> GetTargets(Object settings = null)
 
         {
             List<TargetInfo> targets = new List<TargetInfo>();
-            var response = await adapter.GetTargets(new GetTargetsCommandSettings());
+            if (settings == null)
+            {
+                settings = new GetTargetsCommandSettings();
+            }
+            var response = await adapter.GetTargets((GetTargetsCommandSettings) settings);
             for (int i = 0; i < response.TargetInfos.Length; i++)
             {
                 var targetInfo = response.TargetInfos[i];

@@ -15,32 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.session;
+package org.openqa.selenium.devtools.v108;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.google.auto.service.AutoService;
+import org.openqa.selenium.devtools.CdpInfo;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeOptions;
+@AutoService(CdpInfo.class)
+public class V108CdpInfo extends CdpInfo {
 
-import java.util.Map;
-
-@Tag("UnitTests")
-class EdgeFilterTest {
-
-  @Test
-  void shouldNotFilterOutEdgeCapabilities() {
-    Map<String, Object> original = new EdgeOptions().asMap();
-    Map<String, Object> filtered = new EdgeFilter().apply(original);
-    assertThat(filtered).isEqualTo(original);
+  public V108CdpInfo() {
+    super(108, V108Domains::new);
   }
-
-  @Test
-  void shouldFilterOutNonEdgeCapabilities() {
-    Map<String, Object> original = new ChromeOptions().asMap();
-    Map<String, Object> filtered = new EdgeFilter().apply(original);
-    assertThat(filtered).isNull();
-  }
-
 }

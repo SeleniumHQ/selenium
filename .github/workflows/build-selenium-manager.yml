@@ -8,9 +8,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
       - name: "Build release"
         run: |
+          rustup update
           cd rust
           cargo build --release
       - name: "Upload binary"
@@ -25,9 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
       - name: "Build release"
         run: |
+          rustup update
           cd rust
           cargo build --release
       - name: "Tar binary (to keep executable permission)"
@@ -46,9 +48,10 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: "Checkout project"
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
       - name: "Build release"
         run: |
+          rustup update
           cd rust
           cargo build --release
       - name: "Tar binary (to keep executable permission)"

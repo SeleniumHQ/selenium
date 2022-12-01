@@ -69,6 +69,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Does not work")]
         public void ShouldSubmitAFormWithNameSubmit()
         {
             driver.Url = formsPage;
@@ -329,6 +330,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreTarget("net48", "Cannot create inline page with UrlBuilder")]
         public void CanSubmitFormWithSubmitButtonIdEqualToSubmit()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()
@@ -343,6 +345,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreTarget("net48", "Cannot create inline page with UrlBuilder")]
         public void CanSubmitFormWithSubmitButtonNameEqualToSubmit()
         {
             string blank = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(new InlinePage()

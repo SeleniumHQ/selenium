@@ -1,0 +1,56 @@
+name: 'CI - .NET'
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '10 9,21 * * *'
+
+  push:
+
+  pull_request:
+
+jobs:
+  check_workflow:
+    permissions:
+      contents: none
+    uses: ./.github/workflows/should-workflow-run.yml
+    with:
+      bazel-target-prefix: '//dotnet'
+
+  browser-test:
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run dotnet]') == true }}
+    needs: check_workflow
+    runs-on: 'windows-latest'
+    strategy:
+      fail-fast: false
+      matrix:
+        driver: [ Chrome, Firefox ]
+        include:
+          - driver: Chrome
+            location: 'C:\SeleniumWebDrivers\ChromeDriver'
+          - driver: Firefox
+            location: 'C:\SeleniumWebDrivers\GeckoDriver'
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: 'adopt'
+      - name: Cache Bazel artifacts
+        uses: ./.github/actions/cache-bazel
+        with:
+          workflow: dotnet
+          key: ${{ matrix.driver }}
+      - name: Setup dotnet tests
+        uses: ./.github/actions/bazel
+        with:
+          command: build //dotnet/test/common:chrome
+      - name: Run ${{ matrix.driver }} tests
+        working-directory: dotnet
+        run: dotnet test test/common/WebDriver.Common.Tests.csproj
+        env:
+          ACTIVE_DRIVER_CONFIG: ${{ matrix.driver }}
+          DRIVER_SERVICE_LOCATION: ${{ matrix.location }}

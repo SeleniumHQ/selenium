@@ -17,20 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.util.Collections.EMPTY_MAP;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.singletonMap;
-import static java.util.stream.Collectors.toList;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.Contents.utf8String;
-
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
@@ -47,6 +37,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.Contents.utf8String;
 
 @SuppressWarnings("unchecked")
 @Tag("UnitTests")
@@ -156,32 +156,6 @@ class ProtocolHandshakeTest {
     assertThat(keys)
         .contains("browserName", "se:option")
         .doesNotContain("options");
-  }
-
-  @Test
-  void firstMatchSeparatesCapsForDifferentBrowsers() throws IOException {
-    Capabilities caps = new ImmutableCapabilities(
-        "moz:firefoxOptions", EMPTY_MAP,
-        "browserName", "chrome");
-
-    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
-    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
-
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(utf8String(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
-
-    new ProtocolHandshake().createSession(client, command);
-
-    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
-
-    List<Map<String, Object>> capabilities = mergeW3C(handshakeRequest);
-
-    assertThat(capabilities).contains(
-        singletonMap("moz:firefoxOptions", EMPTY_MAP),
-        singletonMap("browserName", "chrome"));
   }
 
   @Test

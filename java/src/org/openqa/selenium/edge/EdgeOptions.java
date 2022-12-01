@@ -18,6 +18,7 @@ package org.openqa.selenium.edge;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chromium.ChromiumOptions;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CapabilityType;
 
 import static org.openqa.selenium.remote.Browser.EDGE;
@@ -56,9 +57,13 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
 
   @Override
   public EdgeOptions merge(Capabilities extraCapabilities) {
+    Require.nonNull("Capabilities to merge", extraCapabilities);
+
     EdgeOptions newInstance = new EdgeOptions();
     newInstance.mergeInPlace(this);
     newInstance.mergeInPlace(extraCapabilities);
+    newInstance.mergeInOptionsFromCaps(CAPABILITY, extraCapabilities);
+
     return newInstance;
   }
 }

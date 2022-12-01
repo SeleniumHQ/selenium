@@ -24,6 +24,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 #endif
 
+using System.Text;
+
 namespace OpenQA.Selenium
 {
     /// <summary>
@@ -58,8 +60,7 @@ namespace OpenQA.Selenium
             if (binaryFile == null) return null;
 
             var arguments = "--driver " + driverName;
-            var output = RunCommand(binaryFile, arguments);
-            return output.Replace("INFO\t", "").TrimEnd();
+            return RunCommand(binaryFile, arguments);
         }
 
         /// <summary>
@@ -112,25 +113,44 @@ namespace OpenQA.Selenium
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
 
-            string output;
+            StringBuilder outputBuilder = new StringBuilder();
+            int processExitCode;
+
+            DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
 
             try
             {
+                process.OutputDataReceived += outputHandler;
+                process.ErrorDataReceived += outputHandler;
+
                 process.Start();
-                output = process.StandardOutput.ReadToEnd();
+
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
                 process.WaitForExit();
             }
             catch (Exception ex)
             {
                 throw new WebDriverException($"Error starting process: {fileName} {arguments}", ex);
             }
-
-            if (!output.StartsWith("INFO")) {
-                throw new WebDriverException($"Invalid response from process: {fileName} {arguments}");
+            finally
+            {
+                processExitCode = process.ExitCode;
+                process.OutputDataReceived -= outputHandler;
+                process.ErrorDataReceived -= outputHandler;
             }
 
-            return output;
+            string output = outputBuilder.ToString().Trim();
+
+            if (processExitCode > 0)
+            {
+                throw new WebDriverException($"Invalid response from process: {fileName} {arguments}\n{output}");
+            }
+
+            return output.Replace("INFO\t", "");
         }
     }
 }

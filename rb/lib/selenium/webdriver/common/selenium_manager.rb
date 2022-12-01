@@ -17,6 +17,8 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'open3'
+
 module Selenium
   module WebDriver
     #
@@ -37,7 +39,7 @@ module Selenium
               raise Error::WebDriverError, msg
             end
 
-            location = run("#{binary} --driver #{driver_name}").split("\t").last.strip
+            location = run("#{binary} --driver #{driver_name}")
             WebDriver.logger.debug("Driver found at #{location}")
             Platform.assert_executable location
 
@@ -72,13 +74,16 @@ module Selenium
           WebDriver.logger.debug("Executing Process #{command}")
 
           begin
-            result = `#{command}`
-            return result if result.match?(/^INFO\t/)
+            stdout, stderr, status = Open3.capture3(command)
           rescue StandardError => e
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}; #{e.message}"
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e.message
           end
 
-          raise Error::WebDriverError, "Unsuccessful command executed: #{command}"
+          if status.exitstatus.positive?
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{stdout}#{stderr}"
+          end
+
+          stdout.gsub("INFO\t", '').strip
         end
       end
     end # SeleniumManager

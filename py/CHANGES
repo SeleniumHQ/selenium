@@ -1,3 +1,9 @@
+Selenium 4.6.1
+* Replace response.getheader() with response.headers.get() (deprecated in urllib3 1.26.13).
+* Fixed a bug in `Service` destructors accessing modules that no longer existed during interpreter shutdown.
+* Improved exception messages when raising for `relative` locator issues.
+
+
 Selenium 4.6.0
 * Document firefox `service=` arg. closes #11067
 * Additional types and tidying safari service
