@@ -264,7 +264,7 @@ Optional Environment Variable toggles in test suite:
 
 If you want to use RubyMine for development, a bit of extra configuration is necessary to let the IDE know about Bazel toolchain and artifacts:
 
-1. Run `bazel build //rb:selenium-devtools //rb:selenium-webdriver` before configuring IDE. 
+1. Run `bazel build @bundle//:bundle //rb:selenium-devtools //rb:selenium-webdriver` before configuring IDE. 
 2. Open `rb/` as a main project directory.
 3. In <kbd>Settings / Lanugages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/ruby_rules_dist/dist/bin/ruby`.
 4. In <kbd>Run / Edit Configurations... / Edit configuration templates... / RSpec</kbd> add `-I ../bazel-bin/rb/lib` to <kbd>Ruby arguments</kbd>.
