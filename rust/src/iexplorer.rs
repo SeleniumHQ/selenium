@@ -15,14 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::config::ManagerConfig;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 
 use crate::downloads::read_redirect_from_link;
-use crate::files::compose_driver_path_in_cache;
+use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
-use crate::manager::{get_minor_version, BrowserManager, BrowserPath};
+use crate::SeleniumManager;
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -36,6 +37,7 @@ const LATEST_RELEASE: &str = "latest";
 pub struct IExplorerManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
+    pub config: ManagerConfig,
 }
 
 impl IExplorerManager {
@@ -43,11 +45,12 @@ impl IExplorerManager {
         Box::new(IExplorerManager {
             browser_name: BROWSER_NAME,
             driver_name: DRIVER_NAME,
+            config: ManagerConfig::default(),
         })
     }
 }
 
-impl BrowserManager for IExplorerManager {
+impl SeleniumManager for IExplorerManager {
     fn get_browser_name(&self) -> &str {
         self.browser_name
     }
@@ -56,7 +59,7 @@ impl BrowserManager for IExplorerManager {
         HashMap::new()
     }
 
-    fn get_browser_version(&self, _os: &str, _browser_version: &str) -> Option<String> {
+    fn discover_browser_version(&self) -> Option<String> {
         None
     }
 
@@ -64,11 +67,8 @@ impl BrowserManager for IExplorerManager {
         self.driver_name
     }
 
-    fn get_driver_version(
-        &self,
-        browser_version: &str,
-        _os: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
+        let browser_version = self.get_browser_version();
         let mut metadata = get_metadata();
 
         match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
@@ -98,23 +98,29 @@ impl BrowserManager for IExplorerManager {
         }
     }
 
-    fn get_driver_url(
-        &self,
-        driver_version: &str,
-        _os: &str,
-        _arch: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&self) -> Result<String, Box<dyn Error>> {
+        let driver_version = self.get_driver_version();
         Ok(format!(
             "{}download/selenium-{}/IEDriverServer_Win32_{}.zip",
             DRIVER_URL, driver_version, driver_version
         ))
     }
 
-    fn get_driver_path_in_cache(&self, driver_version: &str, os: &str, _arch: &str) -> PathBuf {
-        let _minor_driver_version = get_minor_version(driver_version)
+    fn get_driver_path_in_cache(&self) -> PathBuf {
+        let driver_version = self.get_driver_version();
+        let _minor_driver_version = self
+            .get_minor_version(driver_version)
             .unwrap_or_default()
             .parse::<i32>()
             .unwrap_or_default();
-        compose_driver_path_in_cache(self.driver_name, os, "win32", driver_version)
+        compose_driver_path_in_cache(self.driver_name, "Windows", "win32", driver_version)
+    }
+
+    fn get_config(&self) -> &ManagerConfig {
+        &self.config
+    }
+
+    fn set_config(&mut self, config: ManagerConfig) {
+        self.config = config;
     }
 }

@@ -2,6 +2,14 @@
 name = "selenium-manager"
 version = "1.0.0-M2"
 edition = "2021"
+authors = ["Selenium <selenium-developers@googlegroups.com"]
+license = "Apache-2.0"
+homepage = "https://www.selenium.dev/"
+repository = "https://github.com/SeleniumHQ/selenium"
+documentation = "https://www.selenium.dev/documentation/"
+description = """
+Selenium Manager is a CLI tool that automatically manages the browser/driver infrastructure required by Selenium.
+"""
 
 [dependencies]
 clap = { version = "4.0.22", features = ["derive"] }
