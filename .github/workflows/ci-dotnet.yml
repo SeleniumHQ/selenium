@@ -18,7 +18,7 @@ jobs:
     with:
       bazel-target-prefix: '//dotnet'
 
-  browser-test:
+  browser:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[dotnet]') == true }}
     needs: check_workflow
     runs-on: 'windows-latest'
@@ -26,6 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         driver: [ Chrome, Firefox ]
+        framework: [ net6.0, net48, netcoreapp3.1 ]
         include:
           - driver: Chrome
             location: 'C:\SeleniumWebDrivers\ChromeDriver'
@@ -43,14 +44,14 @@ jobs:
         uses: ./.github/actions/cache-bazel
         with:
           workflow: dotnet
-          key: ${{ matrix.driver }}
+          key: ${{ matrix.driver }}-${{ matrix.framework }}
       - name: Setup dotnet tests
         uses: ./.github/actions/bazel
         with:
           command: build //dotnet/test/common:chrome
       - name: Run ${{ matrix.driver }} tests
         working-directory: dotnet
-        run: dotnet test test/common/WebDriver.Common.Tests.csproj
+        run: dotnet test test/common/WebDriver.Common.Tests.csproj --framework ${{ matrix.framework }}
         env:
           ACTIVE_DRIVER_CONFIG: ${{ matrix.driver }}
           DRIVER_SERVICE_LOCATION: ${{ matrix.location }}
