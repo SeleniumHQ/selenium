@@ -1,3 +1,14 @@
+## v4.7.0
+
+#### :rocket: New Feature
+
+* Add support for Selenium Manager to work with IE Driver
+
+#### :nail_care: Polish
+
+* Adding CDP files for v108 and removing v105
+* Improve error handling for Selenium Manager
+
 ## v4.6.1
 
 #### :bug: Bug Fix
