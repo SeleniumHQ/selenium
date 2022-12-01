@@ -1,12 +1,12 @@
 using NUnit.Framework;
 using System.Collections.ObjectModel;
-using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Environment;
 using System.Collections.Generic;
 
 namespace OpenQA.Selenium
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.IE, "IE does not like this JS")]
     public class RelativeLocatorTest : DriverTestFixture
     {
         [Test]

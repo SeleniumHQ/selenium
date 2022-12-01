@@ -89,10 +89,12 @@ public class SeleniumManager {
    */
     private static String runCommand(String... command) {
         String output = "";
+        int code = 0;
         try {
             Process process = new ProcessBuilder(command)
                     .redirectErrorStream(true).start();
             process.waitFor();
+            code = process.exitValue();
             output = CharStreams.toString(new InputStreamReader(
                     process.getInputStream(), StandardCharsets.UTF_8));
         } catch (InterruptedException e) {
@@ -103,12 +105,12 @@ public class SeleniumManager {
             LOG.warning(String.format("%s running command %s: %s",
                     e.getClass().getSimpleName(), Arrays.toString(command), e.getMessage()));
         }
-        if (!output.startsWith(INFO)) {
-          throw new WebDriverException("Error running selenium-manager: " + Arrays.toString(command) +
-                                       ": " + output);
+        if (code > 0) {
+          throw new WebDriverException("Unsuccessful command executed: " + Arrays.toString(command) +
+                                        "\n" + output);
         }
 
-        return output.trim();
+        return output.replace(INFO, "").trim();
     }
 
   /**
@@ -156,9 +158,8 @@ public class SeleniumManager {
         String driverPath = null;
         File binaryFile = getBinary();
         if (binaryFile != null) {
-            String output = runCommand(binaryFile.getAbsolutePath(),
+          driverPath = runCommand(binaryFile.getAbsolutePath(),
                     "--driver", driverName.replaceAll(EXE, ""));
-            driverPath = output.replace(INFO, "");
         }
         return driverPath;
     }

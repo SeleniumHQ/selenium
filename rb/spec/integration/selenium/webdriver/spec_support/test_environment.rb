@@ -51,14 +51,14 @@ module Selenium
           driver == :remote ? ENV.fetch('WD_REMOTE_BROWSER', 'chrome').to_sym : driver
         end
 
-        def driver_instance(**opts)
-          @driver_instance || create_driver!(**opts)
+        def driver_instance(**opts, &block)
+          @driver_instance || create_driver!(**opts, &block)
         end
 
-        def reset_driver!(time: 0, **opts)
+        def reset_driver!(time: 0, **opts, &block)
           quit_driver
           sleep time
-          driver_instance(**opts)
+          driver_instance(**opts, &block)
         end
 
         def quit_driver

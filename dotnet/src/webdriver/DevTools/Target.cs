@@ -40,7 +40,7 @@ namespace OpenQA.Selenium.DevTools
         /// contains the list of <see cref="TargetInfo"/> objects describing the
         /// targets available for this session.
         /// </returns>
-        public abstract Task<ReadOnlyCollection<TargetInfo>> GetTargets();
+        public abstract Task<ReadOnlyCollection<TargetInfo>> GetTargets(Object settings = null);
 
         /// <summary>
         /// Asynchronously attaches to a target.

@@ -60,8 +60,7 @@ namespace OpenQA.Selenium
             if (binaryFile == null) return null;
 
             var arguments = "--driver " + driverName;
-            var output = RunCommand(binaryFile, arguments);
-            return output.Replace("INFO\t", "").TrimEnd();
+            return RunCommand(binaryFile, arguments);
         }
 
         /// <summary>
@@ -117,14 +116,15 @@ namespace OpenQA.Selenium
             process.StartInfo.RedirectStandardError = true;
 
             StringBuilder outputBuilder = new StringBuilder();
-            
+            int processExitCode;
+
             DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
 
             try
             {
                 process.OutputDataReceived += outputHandler;
                 process.ErrorDataReceived += outputHandler;
-                
+
                 process.Start();
 
                 process.BeginOutputReadLine();
@@ -138,17 +138,19 @@ namespace OpenQA.Selenium
             }
             finally
             {
+                processExitCode = process.ExitCode;
                 process.OutputDataReceived -= outputHandler;
                 process.ErrorDataReceived -= outputHandler;
             }
 
-            string output = outputBuilder.ToString();
+            string output = outputBuilder.ToString().Trim();
 
-            if (!output.StartsWith("INFO")) {
+            if (processExitCode > 0)
+            {
                 throw new WebDriverException($"Invalid response from process: {fileName} {arguments}\n{output}");
             }
 
-            return output;
+            return output.Replace("INFO\t", "");
         }
     }
 }
