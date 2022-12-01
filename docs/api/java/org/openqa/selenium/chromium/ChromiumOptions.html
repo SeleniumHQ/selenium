@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -268,46 +268,52 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 </tr>
 <tr id="i8" class="altColor">
 <td class="colFirst"><code>protected void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeInPlace(org.openqa.selenium.Capabilities)">mergeInPlace</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeInOptionsFromCaps(java.lang.String,org.openqa.selenium.Capabilities)">mergeInOptionsFromCaps</a></span>&#8203;(java.lang.String&nbsp;capabilityName,
+                      <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i9" class="rowColor">
-<td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidActivity(java.lang.String)">setAndroidActivity</a></span>&#8203;(java.lang.String&nbsp;activity)</code></th>
+<td class="colFirst"><code>protected void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#mergeInPlace(org.openqa.selenium.Capabilities)">mergeInPlace</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidDeviceSerialNumber(java.lang.String)">setAndroidDeviceSerialNumber</a></span>&#8203;(java.lang.String&nbsp;serial)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidActivity(java.lang.String)">setAndroidActivity</a></span>&#8203;(java.lang.String&nbsp;activity)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidPackage(java.lang.String)">setAndroidPackage</a></span>&#8203;(java.lang.String&nbsp;androidPackage)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidDeviceSerialNumber(java.lang.String)">setAndroidDeviceSerialNumber</a></span>&#8203;(java.lang.String&nbsp;serial)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i12" class="altColor">
+<td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidPackage(java.lang.String)">setAndroidPackage</a></span>&#8203;(java.lang.String&nbsp;androidPackage)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAndroidProcess(java.lang.String)">setAndroidProcess</a></span>&#8203;(java.lang.String&nbsp;processName)</code></th>
 <td class="colLast">
 <div class="block">Process name of the Activity hosting the WebView (as given by ps).</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.io.File)">setBinary</a></span>&#8203;(java.io.File&nbsp;path)</code></th>
 <td class="colLast">
 <div class="block">Sets the path to the Chrome executable.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setBinary(java.lang.String)">setBinary</a></span>&#8203;(java.lang.String&nbsp;path)</code></th>
 <td class="colLast">
 <div class="block">Sets the path to the Chrome executable.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setExperimentalOption(java.lang.String,java.lang.Object)">setExperimentalOption</a></span>&#8203;(java.lang.String&nbsp;name,
                      java.lang.Object&nbsp;value)</code></th>
@@ -315,12 +321,12 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <div class="block">Sets an experimental option.</div>
 </td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setHeadless(boolean)">setHeadless</a></span>&#8203;(boolean&nbsp;headless)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="ChromiumOptions.html" title="type parameter in ChromiumOptions">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setUseRunningAndroidApp(boolean)">setUseRunningAndroidApp</a></span>&#8203;(boolean&nbsp;useIt)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -625,10 +631,20 @@ extends <a href="../remote/AbstractDriverOptions.html" title="class in org.openq
 <a id="mergeInPlace(org.openqa.selenium.Capabilities)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>mergeInPlace</h4>
 <pre class="methodSignature">protected&nbsp;void&nbsp;mergeInPlace&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
+</li>
+</ul>
+<a id="mergeInOptionsFromCaps(java.lang.String,org.openqa.selenium.Capabilities)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>mergeInOptionsFromCaps</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;mergeInOptionsFromCaps&#8203;(java.lang.String&nbsp;capabilityName,
+                                      <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</pre>
 </li>
 </ul>
 </li>

@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10};
+var data = {"i0":10,"i1":10,"i2":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -167,6 +167,19 @@ extends java.lang.Object</pre>
        java.lang.reflect.Type&nbsp;typeOfX)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,java.util.Map,java.util.function.Function)">Command</a></span>&#8203;(java.lang.String&nbsp;method,
+       java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;params,
+       java.util.function.Function&lt;<a href="../json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>,&#8203;<a href="Command.html" title="type parameter in Command">X</a>&gt;&nbsp;mapper)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,java.util.Map,java.util.function.Function,boolean)">Command</a></span>&#8203;(java.lang.String&nbsp;method,
+       java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;params,
+       java.util.function.Function&lt;<a href="../json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>,&#8203;<a href="Command.html" title="type parameter in Command">X</a>&gt;&nbsp;mapper,
+       boolean&nbsp;sendsResponse)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -193,6 +206,11 @@ extends java.lang.Object</pre>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getParams()">getParams</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSendsResponse()">getSendsResponse</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -232,12 +250,35 @@ extends java.lang.Object</pre>
 <a id="&lt;init&gt;(java.lang.String,java.util.Map,java.lang.reflect.Type)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>Command</h4>
 <pre>public&nbsp;Command&#8203;(java.lang.String&nbsp;method,
                java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;params,
                java.lang.reflect.Type&nbsp;typeOfX)</pre>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.lang.String,java.util.Map,java.util.function.Function)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>Command</h4>
+<pre>public&nbsp;Command&#8203;(java.lang.String&nbsp;method,
+               java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;params,
+               java.util.function.Function&lt;<a href="../json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>,&#8203;<a href="Command.html" title="type parameter in Command">X</a>&gt;&nbsp;mapper)</pre>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.lang.String,java.util.Map,java.util.function.Function,boolean)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>Command</h4>
+<pre>public&nbsp;Command&#8203;(java.lang.String&nbsp;method,
+               java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;params,
+               java.util.function.Function&lt;<a href="../json/JsonInput.html" title="class in org.openqa.selenium.json">JsonInput</a>,&#8203;<a href="Command.html" title="type parameter in Command">X</a>&gt;&nbsp;mapper,
+               boolean&nbsp;sendsResponse)</pre>
 </li>
 </ul>
 </li>
@@ -262,10 +303,19 @@ extends java.lang.Object</pre>
 <a id="getParams()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getParams</h4>
 <pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;&nbsp;getParams()</pre>
+</li>
+</ul>
+<a id="getSendsResponse()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getSendsResponse</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;getSendsResponse()</pre>
 </li>
 </ul>
 </li>
