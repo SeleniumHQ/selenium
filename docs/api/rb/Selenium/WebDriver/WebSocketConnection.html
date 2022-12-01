@@ -108,6 +108,14 @@
 
     <dl class="constants">
       
+        <dt id="CONNECTION_ERRORS-constant" class="">CONNECTION_ERRORS =
+          
+        </dt>
+        <dd><pre class="code"><span class='lbracket'>[</span>
+  <span class='const'>Errno</span><span class='op'>::</span><span class='const'>ECONNRESET</span><span class='comma'>,</span> <span class='comment'># connection is aborted (browser process was killed)
+</span>  <span class='const'>Errno</span><span class='op'>::</span><span class='const'>EPIPE</span> <span class='comment'># broken pipe (browser process was killed)
+</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
         <dt id="RESPONSE_WAIT_TIMEOUT-constant" class="">RESPONSE_WAIT_TIMEOUT =
           
         </dt>
@@ -264,18 +272,18 @@
       <pre class="lines">
 
 
-30
-31
-32
-33
-34
 35
 36
 37
-38</pre>
+38
+39
+40
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>url:</span><span class='rparen'>)</span>
   <span class='ivar'>@callback_threads</span> <span class='op'>=</span> <span class='const'>ThreadGroup</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
@@ -313,12 +321,12 @@
       <pre class="lines">
 
 
-46
-47
-48</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_callbacks'>callbacks</span>
   <span class='ivar'>@callbacks</span> <span class='op'>||=</span> <span class='const'>Hash</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_callbacks'>callbacks</span><span class='comma'>,</span> <span class='id identifier rubyid_event'>event</span><span class='op'>|</span> <span class='id identifier rubyid_callbacks'>callbacks</span><span class='lbracket'>[</span><span class='id identifier rubyid_event'>event</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -343,14 +351,14 @@
       <pre class="lines">
 
 
-40
-41
-42
-43
-44</pre>
+45
+46
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_close'>close</span>
   <span class='ivar'>@callback_threads</span><span class='period'>.</span><span class='id identifier rubyid_list'>list</span><span class='period'>.</span><span class='id identifier rubyid_each'>each</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:exit</span><span class='rparen'>)</span>
@@ -377,19 +385,19 @@
       <pre class="lines">
 
 
-50
-51
-52
-53
-54
 55
 56
 57
 58
-59</pre>
+59
+60
+61
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/websocket_connection.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_id'>id</span> <span class='op'>=</span> <span class='id identifier rubyid_next_id'>next_id</span>
@@ -411,9 +419,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Nov  4 11:37:16 2022 by
+  Generated on Thu Dec  1 15:48:46 2022 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.28 (ruby-3.1.2).
+  0.9.28 (ruby-2.7.6).
 </div>
 
     </div>
