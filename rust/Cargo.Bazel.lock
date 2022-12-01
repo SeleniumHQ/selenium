@@ -1,5 +1,5 @@
 {
-  "checksum": "b21270eb378af4d97f97307f9ab86ddfa8888001b38b9b546e85439b6fc3288f",
+  "checksum": "1f6f10d00ab247c07e11c10daff89dd3adee69b379a7800bf87504ae398f80ea",
   "crates": {
     "adler 1.0.2": {
       "name": "adler",
@@ -497,7 +497,7 @@
               "target": "regex_automata"
             },
             {
-              "id": "serde 1.0.147",
+              "id": "serde 1.0.148",
               "target": "serde"
             }
           ],
@@ -924,13 +924,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap 4.0.27": {
+    "clap 4.0.29": {
       "name": "clap",
-      "version": "4.0.27",
+      "version": "4.0.29",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap/4.0.27/download",
-          "sha256": "0acbd8d28a0a60d7108d7ae850af6ba34cf2d1257fc646980e5f97ce14275966"
+          "url": "https://crates.io/api/v1/crates/clap/4.0.29/download",
+          "sha256": "4d63b9e9c07271b9957ad22c173bae2a4d9a81127680962039296abcd2f8251d"
         }
       },
       "targets": [
@@ -985,7 +985,7 @@
               "target": "clap_lex"
             },
             {
-              "id": "is-terminal 0.4.0",
+              "id": "is-terminal 0.4.1",
               "target": "is_terminal"
             },
             {
@@ -1013,7 +1013,7 @@
           ],
           "selects": {}
         },
-        "version": "4.0.27"
+        "version": "4.0.29"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -1067,7 +1067,7 @@
               "target": "quote"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "syn"
             }
           ],
@@ -2564,7 +2564,7 @@
               "target": "quote"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "syn"
             }
           ],
@@ -3859,13 +3859,13 @@
       },
       "license": "BSD-3-Clause"
     },
-    "io-lifetimes 1.0.1": {
+    "io-lifetimes 1.0.3": {
       "name": "io-lifetimes",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/io-lifetimes/1.0.1/download",
-          "sha256": "a7d367024b3f3414d8e01f437f704f41a9f64ab36f9067fa73e526ad4c763c87"
+          "url": "https://crates.io/api/v1/crates/io-lifetimes/1.0.3/download",
+          "sha256": "46112a93252b123d31a119a8d1a1ac19deac4fac6e0e8b0df58f0d4e5870e63c"
         }
       },
       "targets": [
@@ -3908,7 +3908,7 @@
         "deps": {
           "common": [
             {
-              "id": "io-lifetimes 1.0.1",
+              "id": "io-lifetimes 1.0.3",
               "target": "build_script_build"
             }
           ],
@@ -3928,7 +3928,7 @@
           }
         },
         "edition": "2018",
-        "version": "1.0.1"
+        "version": "1.0.3"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -3973,13 +3973,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "is-terminal 0.4.0": {
+    "is-terminal 0.4.1": {
       "name": "is-terminal",
-      "version": "0.4.0",
+      "version": "0.4.1",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/is-terminal/0.4.0/download",
-          "sha256": "aae5bc6e2eb41c9def29a3e0f1306382807764b9b53112030eff57435667352d"
+          "url": "https://crates.io/api/v1/crates/is-terminal/0.4.1/download",
+          "sha256": "927609f78c2913a6f6ac3c27a4fe87f43e2a35367c0c4b0f8265e8f49a104330"
         }
       },
       "targets": [
@@ -4004,14 +4004,14 @@
         "deps": {
           "common": [
             {
-              "id": "io-lifetimes 1.0.1",
+              "id": "io-lifetimes 1.0.3",
               "target": "io_lifetimes"
             }
           ],
           "selects": {
-            "cfg(not(any(windows, target_os = \"hermit\")))": [
+            "cfg(not(any(windows, target_os = \"hermit\", target_os = \"unknown\")))": [
               {
-                "id": "rustix 0.36.3",
+                "id": "rustix 0.36.4",
                 "target": "rustix"
               }
             ],
@@ -4030,7 +4030,7 @@
           }
         },
         "edition": "2018",
-        "version": "0.4.0"
+        "version": "0.4.1"
       },
       "license": "MIT"
     },
@@ -5181,7 +5181,7 @@
               "target": "quote"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "syn"
             }
           ],
@@ -5794,7 +5794,7 @@
               "target": "http"
             },
             {
-              "id": "serde 1.0.147",
+              "id": "serde 1.0.148",
               "target": "serde"
             },
             {
@@ -6155,7 +6155,7 @@
               "target": "build_script_build"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "syn"
             }
           ],
@@ -6222,13 +6222,13 @@
       },
       "license": "MIT/Apache-2.0"
     },
-    "rustix 0.36.3": {
+    "rustix 0.36.4": {
       "name": "rustix",
-      "version": "0.36.3",
+      "version": "0.36.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rustix/0.36.3/download",
-          "sha256": "0b1fbb4dfc4eb1d390c02df47760bb19a84bb80b301ecc947ab5406394d8223e"
+          "url": "https://crates.io/api/v1/crates/rustix/0.36.4/download",
+          "sha256": "cb93e85278e08bb5788653183213d3a60fc242b10cb9be96586f5a73dcb67c23"
         }
       },
       "targets": [
@@ -6277,11 +6277,11 @@
               "target": "bitflags"
             },
             {
-              "id": "io-lifetimes 1.0.1",
+              "id": "io-lifetimes 1.0.3",
               "target": "io_lifetimes"
             },
             {
-              "id": "rustix 0.36.3",
+              "id": "rustix 0.36.4",
               "target": "build_script_build"
             }
           ],
@@ -6322,7 +6322,7 @@
           }
         },
         "edition": "2018",
-        "version": "0.36.3"
+        "version": "0.36.4"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -6560,7 +6560,7 @@
         "deps": {
           "common": [
             {
-              "id": "clap 4.0.27",
+              "id": "clap 4.0.29",
               "target": "clap"
             },
             {
@@ -6596,7 +6596,7 @@
               "target": "reqwest"
             },
             {
-              "id": "serde 1.0.147",
+              "id": "serde 1.0.148",
               "target": "serde"
             },
             {
@@ -6703,13 +6703,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "serde 1.0.147": {
+    "serde 1.0.148": {
       "name": "serde",
-      "version": "1.0.147",
+      "version": "1.0.148",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/serde/1.0.147/download",
-          "sha256": "d193d69bae983fc11a79df82342761dfbf28a99fc8d203dca4c3c1b590948965"
+          "url": "https://crates.io/api/v1/crates/serde/1.0.148/download",
+          "sha256": "e53f64bb4ba0191d6d0676e1b141ca55047d83b74f5607e6d8eb88126c52c2dc"
         }
       },
       "targets": [
@@ -6753,7 +6753,7 @@
         "deps": {
           "common": [
             {
-              "id": "serde 1.0.147",
+              "id": "serde 1.0.148",
               "target": "build_script_build"
             }
           ],
@@ -6763,13 +6763,13 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "serde_derive 1.0.147",
+              "id": "serde_derive 1.0.148",
               "target": "serde_derive"
             }
           ],
           "selects": {}
         },
-        "version": "1.0.147"
+        "version": "1.0.148"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -6778,13 +6778,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "serde_derive 1.0.147": {
+    "serde_derive 1.0.148": {
       "name": "serde_derive",
-      "version": "1.0.147",
+      "version": "1.0.148",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/serde_derive/1.0.147/download",
-          "sha256": "4f1d362ca8fc9c3e3a7484440752472d68a6caa98f1ab81d99b5dfe517cec852"
+          "url": "https://crates.io/api/v1/crates/serde_derive/1.0.148/download",
+          "sha256": "a55492425aa53521babf6137309e7d34c20bbfbbfcfe2c7f3a047fd1f6b92c0c"
         }
       },
       "targets": [
@@ -6832,18 +6832,18 @@
               "target": "quote"
             },
             {
-              "id": "serde_derive 1.0.147",
+              "id": "serde_derive 1.0.148",
               "target": "build_script_build"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "syn"
             }
           ],
           "selects": {}
         },
         "edition": "2015",
-        "version": "1.0.147"
+        "version": "1.0.148"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -6907,7 +6907,7 @@
               "target": "ryu"
             },
             {
-              "id": "serde 1.0.147",
+              "id": "serde 1.0.148",
               "target": "serde"
             },
             {
@@ -6970,7 +6970,7 @@
               "target": "ryu"
             },
             {
-              "id": "serde 1.0.147",
+              "id": "serde 1.0.148",
               "target": "serde"
             }
           ],
@@ -7315,13 +7315,13 @@
       },
       "license": "BSD-3-Clause"
     },
-    "syn 1.0.103": {
+    "syn 1.0.105": {
       "name": "syn",
-      "version": "1.0.103",
+      "version": "1.0.105",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/syn/1.0.103/download",
-          "sha256": "a864042229133ada95abf3b54fdc62ef5ccabe9515b64717bcb9a1919e59445d"
+          "url": "https://crates.io/api/v1/crates/syn/1.0.105/download",
+          "sha256": "60b9b43d45702de4c839cb9b51d9f529c5dd26a4aff255b42b1ebc03e88ee908"
         }
       },
       "targets": [
@@ -7379,7 +7379,7 @@
               "target": "quote"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "build_script_build"
             },
             {
@@ -7390,7 +7390,7 @@
           "selects": {}
         },
         "edition": "2018",
-        "version": "1.0.103"
+        "version": "1.0.105"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -7709,7 +7709,7 @@
               "target": "quote"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "syn"
             }
           ],
@@ -7762,7 +7762,7 @@
               "target": "itoa"
             },
             {
-              "id": "serde 1.0.147",
+              "id": "serde 1.0.148",
               "target": "serde"
             },
             {
@@ -8054,7 +8054,7 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "tokio-macros 1.8.0",
+              "id": "tokio-macros 1.8.2",
               "target": "tokio_macros"
             }
           ],
@@ -8078,13 +8078,13 @@
       },
       "license": "MIT"
     },
-    "tokio-macros 1.8.0": {
+    "tokio-macros 1.8.2": {
       "name": "tokio-macros",
-      "version": "1.8.0",
+      "version": "1.8.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/tokio-macros/1.8.0/download",
-          "sha256": "9724f9a975fb987ef7a3cd9be0350edcbe130698af5b8f7a631e23d42d052484"
+          "url": "https://crates.io/api/v1/crates/tokio-macros/1.8.2/download",
+          "sha256": "d266c00fde287f55d3f1c3e96c500c362a2b8c695076ec180f27918820bc6df8"
         }
       },
       "targets": [
@@ -8117,14 +8117,14 @@
               "target": "quote"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "syn"
             }
           ],
           "selects": {}
         },
         "edition": "2018",
-        "version": "1.8.0"
+        "version": "1.8.2"
       },
       "license": "MIT"
     },
@@ -8771,6 +8771,18 @@
         },
         {
           "Binary": {
+            "crate_name": "exit",
+            "crate_root": "src/bin/exit.rs",
+            "srcs": {
+              "include": [
+                "**/*.rs"
+              ],
+              "exclude": []
+            }
+          }
+        },
+        {
+          "Binary": {
             "crate_name": "sleep",
             "crate_root": "src/bin/sleep.rs",
             "srcs": {
@@ -8785,18 +8797,6 @@
           "Binary": {
             "crate_name": "reader",
             "crate_root": "src/bin/reader.rs",
-            "srcs": {
-              "include": [
-                "**/*.rs"
-              ],
-              "exclude": []
-            }
-          }
-        },
-        {
-          "Binary": {
-            "crate_name": "exit",
-            "crate_root": "src/bin/exit.rs",
             "srcs": {
               "include": [
                 "**/*.rs"
@@ -9041,7 +9041,7 @@
               "target": "quote"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "syn"
             },
             {
@@ -9204,7 +9204,7 @@
               "target": "quote"
             },
             {
-              "id": "syn 1.0.103",
+              "id": "syn 1.0.105",
               "target": "syn"
             },
             {
@@ -10574,7 +10574,7 @@
               "target": "build_script_build"
             },
             {
-              "id": "zstd-sys 2.0.3+zstd.1.5.2",
+              "id": "zstd-sys 2.0.4+zstd.1.5.2",
               "target": "zstd_sys"
             }
           ],
@@ -10590,13 +10590,13 @@
       },
       "license": "MIT/Apache-2.0"
     },
-    "zstd-sys 2.0.3+zstd.1.5.2": {
+    "zstd-sys 2.0.4+zstd.1.5.2": {
       "name": "zstd-sys",
-      "version": "2.0.3+zstd.1.5.2",
+      "version": "2.0.4+zstd.1.5.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/zstd-sys/2.0.3+zstd.1.5.2/download",
-          "sha256": "44ccf97612ac95f3ccb89b2d7346b345e52f1c3019be4984f0455fb4ba991f8a"
+          "url": "https://crates.io/api/v1/crates/zstd-sys/2.0.4+zstd.1.5.2/download",
+          "sha256": "4fa202f2ef00074143e219d15b62ffc317d17cc33909feac471c044087cad7b0"
         }
       },
       "targets": [
@@ -10642,14 +10642,14 @@
               "target": "libc"
             },
             {
-              "id": "zstd-sys 2.0.3+zstd.1.5.2",
+              "id": "zstd-sys 2.0.4+zstd.1.5.2",
               "target": "build_script_build"
             }
           ],
           "selects": {}
         },
         "edition": "2018",
-        "version": "2.0.3+zstd.1.5.2"
+        "version": "2.0.4+zstd.1.5.2"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -10672,7 +10672,7 @@
   "binary_crates": [
     "assert_cmd 2.0.6",
     "cc 1.0.77",
-    "clap 4.0.27",
+    "clap 4.0.29",
     "wait-timeout 0.2.0",
     "webpki-roots 0.22.5"
   ],
@@ -10687,7 +10687,9 @@
       "aarch64-linux-android"
     ],
     "aarch64-pc-windows-gnullvm": [],
-    "aarch64-pc-windows-msvc": [],
+    "aarch64-pc-windows-msvc": [
+      "aarch64-pc-windows-msvc"
+    ],
     "aarch64-uwp-windows-msvc": [],
     "cfg(all(any(target_arch = \"x86_64\", target_arch = \"aarch64\"), target_os = \"hermit\"))": [],
     "cfg(all(any(target_os = \"android\", target_os = \"linux\"), any(rustix_use_libc, miri, not(all(target_os = \"linux\", any(target_arch = \"x86\", all(target_arch = \"x86_64\", target_pointer_width = \"64\"), all(target_endian = \"little\", any(target_arch = \"arm\", all(target_arch = \"aarch64\", target_pointer_width = \"64\"), target_arch = \"powerpc64\", target_arch = \"riscv64\", target_arch = \"mips\", target_arch = \"mips64\"))))))))": [
@@ -10726,6 +10728,7 @@
       "aarch64-apple-ios",
       "aarch64-apple-ios-sim",
       "aarch64-linux-android",
+      "aarch64-pc-windows-msvc",
       "armv7-linux-androideabi",
       "i686-apple-darwin",
       "i686-linux-android",
@@ -10733,6 +10736,7 @@
       "i686-unknown-freebsd",
       "powerpc-unknown-linux-gnu",
       "riscv32imc-unknown-none-elf",
+      "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
       "wasm32-unknown-unknown",
       "wasm32-wasi",
@@ -10747,6 +10751,7 @@
       "aarch64-apple-ios",
       "aarch64-apple-ios-sim",
       "aarch64-linux-android",
+      "aarch64-pc-windows-msvc",
       "aarch64-unknown-linux-gnu",
       "i686-apple-darwin",
       "i686-linux-android",
@@ -10765,6 +10770,7 @@
       "aarch64-apple-ios",
       "aarch64-apple-ios-sim",
       "aarch64-linux-android",
+      "aarch64-pc-windows-msvc",
       "aarch64-unknown-linux-gnu",
       "i686-apple-darwin",
       "i686-linux-android",
@@ -10840,6 +10846,7 @@
       "aarch64-apple-ios",
       "aarch64-apple-ios-sim",
       "aarch64-linux-android",
+      "aarch64-pc-windows-msvc",
       "aarch64-unknown-linux-gnu",
       "arm-unknown-linux-gnueabi",
       "armv7-linux-androideabi",
@@ -10851,6 +10858,7 @@
       "i686-unknown-linux-gnu",
       "powerpc-unknown-linux-gnu",
       "riscv32imc-unknown-none-elf",
+      "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
       "x86_64-apple-darwin",
       "x86_64-apple-ios",
@@ -10859,7 +10867,7 @@
       "x86_64-unknown-freebsd",
       "x86_64-unknown-linux-gnu"
     ],
-    "cfg(not(any(windows, target_os = \"hermit\")))": [
+    "cfg(not(any(windows, target_os = \"hermit\", target_os = \"unknown\")))": [
       "aarch64-apple-darwin",
       "aarch64-apple-ios",
       "aarch64-apple-ios-sim",
@@ -10874,8 +10882,8 @@
       "i686-unknown-linux-gnu",
       "powerpc-unknown-linux-gnu",
       "riscv32imc-unknown-none-elf",
+      "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
-      "wasm32-unknown-unknown",
       "wasm32-wasi",
       "x86_64-apple-darwin",
       "x86_64-apple-ios",
@@ -10888,6 +10896,7 @@
       "aarch64-apple-ios",
       "aarch64-apple-ios-sim",
       "aarch64-linux-android",
+      "aarch64-pc-windows-msvc",
       "aarch64-unknown-linux-gnu",
       "arm-unknown-linux-gnueabi",
       "armv7-linux-androideabi",
@@ -10899,6 +10908,7 @@
       "i686-unknown-linux-gnu",
       "powerpc-unknown-linux-gnu",
       "riscv32imc-unknown-none-elf",
+      "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
       "x86_64-apple-darwin",
       "x86_64-apple-ios",
@@ -10922,6 +10932,7 @@
       "i686-unknown-linux-gnu",
       "powerpc-unknown-linux-gnu",
       "riscv32imc-unknown-none-elf",
+      "riscv64gc-unknown-none-elf",
       "s390x-unknown-linux-gnu",
       "wasm32-unknown-unknown",
       "wasm32-wasi",
@@ -10943,6 +10954,7 @@
       "wasm32-wasi"
     ],
     "cfg(target_os = \"windows\")": [
+      "aarch64-pc-windows-msvc",
       "i686-pc-windows-msvc",
       "x86_64-pc-windows-msvc"
     ],
@@ -10968,6 +10980,7 @@
       "x86_64-unknown-linux-gnu"
     ],
     "cfg(windows)": [
+      "aarch64-pc-windows-msvc",
       "i686-pc-windows-msvc",
       "x86_64-pc-windows-msvc"
     ],
