@@ -39,6 +39,7 @@ from .exceptions import NoSuchFrameException
 from .exceptions import NoSuchShadowRootException
 from .exceptions import NoSuchWindowException
 from .exceptions import ScreenshotException
+from .exceptions import SeleniumManagerException
 from .exceptions import SessionNotCreatedException
 from .exceptions import StaleElementReferenceException
 from .exceptions import TimeoutException
@@ -81,4 +82,5 @@ __all__ = [
     "InvalidSessionIdException",
     "SessionNotCreatedException",
     "UnknownMethodException",
+    "SeleniumManagerException",
 ]

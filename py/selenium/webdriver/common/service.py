@@ -93,7 +93,7 @@ class Service(ABC):
                 logger.debug("driver not found in PATH, trying Selenium Manager")
                 browser = self.__class__.__module__.split(".")[-2]
                 try:
-                    path = SeleniumManager.driver_location(browser)
+                    path = SeleniumManager().driver_location(browser)
                 except WebDriverException as new_err:
                     logger.debug("Unable to obtain driver using Selenium Manager: " + new_err.msg)
                     raise err
