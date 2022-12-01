@@ -666,9 +666,10 @@ rb_binary(
         "README.md",
     ]),
     args = [
-        "--output_dir=docs/api/rb",
+        "doc",
+        "--output-dir=docs/api/rb",
         "--readme=rb/README.md",
-        "rb/lib/**/*.rb",
+        "rb/lib",
         "rb/CHANGES",
         "rb/README.md",
     ],
