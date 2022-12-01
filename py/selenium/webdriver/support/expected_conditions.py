@@ -234,9 +234,9 @@ def text_to_be_present_in_element_attribute(locator, attribute_, text_):
 
     def _predicate(driver):
         try:
-            if not element_attribute_to_include(locator, attribute_)(driver):
-                return False
             element_text = driver.find_element(*locator).get_attribute(attribute_)
+            if element_text is None:
+                return False
             return text_ in element_text
         except StaleElementReferenceException:
             return False
