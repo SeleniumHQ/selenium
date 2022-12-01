@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.service &#8212; Selenium 4.6 documentation</title>
+    <title>selenium.webdriver.common.service &#8212; Selenium 4.7 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -54,7 +54,6 @@
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -134,7 +133,7 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;driver not found in PATH, trying Selenium Manager&quot;</span><span class="p">)</span>
                 <span class="n">browser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">path</span> <span class="o">=</span> <span class="n">SeleniumManager</span><span class="o">.</span><span class="n">driver_location</span><span class="p">(</span><span class="n">browser</span><span class="p">)</span>
+                    <span class="n">path</span> <span class="o">=</span> <span class="n">SeleniumManager</span><span class="p">()</span><span class="o">.</span><span class="n">driver_location</span><span class="p">(</span><span class="n">browser</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">WebDriverException</span> <span class="k">as</span> <span class="n">new_err</span><span class="p">:</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Unable to obtain driver using Selenium Manager: &quot;</span> <span class="o">+</span> <span class="n">new_err</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="n">err</span>
@@ -183,14 +182,18 @@
 <span class="sd">        Stops the service.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">!=</span> <span class="n">PIPE</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">==</span> <span class="n">DEVNULL</span> <span class="ow">and</span> <span class="n">_HAS_NATIVE_DEVNULL</span><span class="p">):</span>
-            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># Todo: Be explicit in what we are catching here.</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span> <span class="s2">&quot;close&quot;</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">send_remote_shutdown_command</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_terminate_process</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_terminate_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -201,8 +204,10 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span>
             <span class="k">for</span> <span class="n">stream</span> <span class="ow">in</span> <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">:</span>
-                <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
                     <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
             <span class="c1"># Todo: only SIGKILL if necessary; the process may be cleanly exited by now.</span>
@@ -214,8 +219,12 @@
         <span class="c1"># `subprocess.Popen` doesn&#39;t send signal on `__del__`;</span>
         <span class="c1"># so we attempt to close the launched process when `__del__`</span>
         <span class="c1"># is triggered.</span>
-        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+        <span class="c1"># do not use globals here; interpreter shutdown may have already cleaned them up</span>
+        <span class="c1"># and they would be `None`. This goes for anything this method is referencing internally.</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_start_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -285,7 +294,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

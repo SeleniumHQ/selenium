@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.support.relative_locator &#8212; Selenium 4.6 documentation</title>
+    <title>selenium.webdriver.support.relative_locator &#8212; Selenium 4.7 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -145,7 +145,7 @@
 <span class="sd">            - element_or_locator: Element to look below</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">element_or_locator</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Element or locator must be given when calling above method&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Element or locator must be given when calling below method&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;below&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">element_or_locator</span><span class="p">]})</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -157,7 +157,7 @@
 <span class="sd">            - element_or_locator: Element to look to the left of</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">element_or_locator</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Element or locator must be given when calling above method&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Element or locator must be given when calling to_left_of method&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">element_or_locator</span><span class="p">]})</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -169,7 +169,7 @@
 <span class="sd">            - element_or_locator: Element to look right of</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">element_or_locator</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Element or locator must be given when calling above method&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Element or locator must be given when calling to_right_of method&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">element_or_locator</span><span class="p">]})</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -181,7 +181,7 @@
 <span class="sd">            - element_or_locator_distance: Element to look near by the element or within a distance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">element_or_locator_distance</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Element or locator or distance must be given when calling above method&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Element or locator or distance must be given when calling near method&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;kind&quot;</span><span class="p">:</span> <span class="s2">&quot;near&quot;</span><span class="p">,</span> <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">element_or_locator_distance</span><span class="p">]})</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -228,7 +228,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
