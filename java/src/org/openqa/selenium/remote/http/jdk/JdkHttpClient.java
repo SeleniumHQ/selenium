@@ -306,9 +306,9 @@ public class JdkHttpClient implements HttpClient {
   @Override
   public void close() {
     executorService.shutdownNow();
-//    if (this.websocket != null) {
-//      this.websocket.close();
-//    }
+    if (this.websocket != null) {
+      this.websocket.close();
+    }
     this.client = null;
   }
 
