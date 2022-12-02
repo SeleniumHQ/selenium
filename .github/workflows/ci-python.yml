@@ -23,7 +23,7 @@ jobs:
   tox_linting:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[py]') == true }}
     needs: check_workflow
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
