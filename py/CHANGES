@@ -1,3 +1,6 @@
+Selenium 4.7.2
+* Put selenium manager bug fix from 4.7.1 in the correct place
+
 Selenium 4.7.1
 * Fix bug preventing selenium manager from using Internet Explorer
 
