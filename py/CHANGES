@@ -1,3 +1,6 @@
+Selenium 4.7.1
+* Fix bug preventing selenium manager from using Internet Explorer
+
 Selenium 4.7.0
 * Add CDP files for v108 and remove v105
 * Improve error handling with Selenium Manager (#11329)
