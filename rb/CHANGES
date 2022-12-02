@@ -1,3 +1,8 @@
+4.7.1 (2022-12-02)
+=========================
+Ruby:
+  * Fix bug preventing selenium manager from using Internet Explorer
+
 4.7.0 (2022-12-01)
 =========================
 BiDi:
