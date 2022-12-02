@@ -251,16 +251,25 @@ _Test_Target_ examples:
 
 Optional Environment Variable toggles in test suite:
 
-`ENV['WD_SPEC_DRIVER']` - the driver to test; either the browser name or 'remote' (gets set by Bazel)
-`ENV['WD_REMOTE_BROWSER']` - when 'WD_SPEC_DRIVER' is 'remote'; the name of the browser to test (gets set by Bazel)
-`ENV['WD_REMOTE_URL']` - url of an already running server to use for remote tests
-`ENV['DOWNLOAD_SERVER']` - when `WD_REMOTE_URL` not set; whether to download and use most recently released server version for remote tests
-`ENV['DEBUG']` - turns on verbose debugging
-`ENV['HEADLESS']` - for chrome, edge and firefox; runs tests in headless mode 
-`ENV['DISABLE_BUILD_CHECK']` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
-`ENV['CHROME_BINARY']` - path to test specific Chrome browser
-`ENV['EDGE_BINARY']` - path to test specific Edge browser
-`ENV['FIREFOX_BINARY']` - path to test specific Firefox browser
+- `ENV['WD_SPEC_DRIVER']` - the driver to test; either the browser name or 'remote' (gets set by Bazel)
+- `ENV['WD_REMOTE_BROWSER']` - when 'WD_SPEC_DRIVER' is 'remote'; the name of the browser to test (gets set by Bazel)
+- `ENV['WD_REMOTE_URL']` - url of an already running server to use for remote tests
+- `ENV['DOWNLOAD_SERVER']` - when `WD_REMOTE_URL` not set; whether to download and use most recently released server version for remote tests
+- `ENV['DEBUG']` - turns on verbose debugging
+- `ENV['HEADLESS']` - for chrome, edge and firefox; runs tests in headless mode 
+- `ENV['DISABLE_BUILD_CHECK']` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
+- `ENV['CHROME_BINARY']` - path to test specific Chrome browser
+- `ENV['EDGE_BINARY']` - path to test specific Edge browser
+- `ENV['FIREFOX_BINARY']` - path to test specific Firefox browser
+
+If you want to use RubyMine for development, a bit of extra configuration is necessary to let the IDE know about Bazel toolchain and artifacts:
+
+1. Run `bazel build @bundle//:bundle //rb:selenium-devtools //rb:selenium-webdriver` before configuring IDE. 
+2. Open `rb/` as a main project directory.
+3. In <kbd>Settings / Lanugages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/ruby_rules_dist/dist/bin/ruby`.
+4. In <kbd>Run / Edit Configurations... / Edit configuration templates... / RSpec</kbd> add `-I ../bazel-bin/rb/lib` to <kbd>Ruby arguments</kbd>.
+5. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables above.
+
 
 </details>
 
