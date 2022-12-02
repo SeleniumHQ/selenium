@@ -67,8 +67,8 @@ class SeleniumManager:
         if browser not in allowed:
             raise SeleniumManagerException(f"{browser} is not a valid browser.  Choose one of: {allowed}")
 
-        if browser == 'ie':
-            browser = 'iexplorer'
+        if browser == "ie":
+            browser = "iexplorer"
 
         binary, flag, browser = str(self.get_binary()), "--browser", browser
         result = self.run((binary, flag, browser))
