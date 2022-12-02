@@ -90,7 +90,7 @@ class SeleniumManager:
         stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
         stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
         if completed_proc.returncode:
-            raise SeleniumManagerException(f"Selenium manager failed for: {command}. {stderr}")
+            raise SeleniumManagerException(f"Selenium manager failed for: {command}.\n{stdout}{stderr}")
         else:
             # selenium manager exited 0 successfully, parse the executable path from stdout.
             return stdout.split("\t")[-1].strip()
