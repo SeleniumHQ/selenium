@@ -43,7 +43,7 @@ jobs:
   tox_docs:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
     needs: check_workflow
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
@@ -63,7 +63,7 @@ jobs:
   tox_mypy:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
     needs: check_workflow
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
@@ -98,10 +98,6 @@ jobs:
           key: ${{ runner.os }}-bazel-python-unit-tests-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.7.10
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -131,10 +127,6 @@ jobs:
             ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.7.10
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@latest
       - name: Start XVFB
@@ -168,10 +160,6 @@ jobs:
             ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.7.10
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -212,10 +200,6 @@ jobs:
             ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.7.10
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
