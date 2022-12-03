@@ -58,6 +58,7 @@ public class DevTools implements Closeable {
   @Override
   public void close() {
     disconnectSession();
+    connection.close();
   }
 
   public void disconnectSession() {

@@ -440,6 +440,10 @@ public class RemoteWebDriver implements WebDriver,
     }
 
     try {
+      if (this instanceof HasDevTools) {
+        ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::close);
+      }
+
       execute(DriverCommand.QUIT);
     } finally {
       sessionId = null;

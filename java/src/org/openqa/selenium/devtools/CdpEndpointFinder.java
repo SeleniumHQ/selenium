@@ -47,10 +47,9 @@ public class CdpEndpointFinder {
     Require.nonNull("DevTools URI", reportedUri);
 
     ClientConfig config = ClientConfig.defaultConfig().baseUri(reportedUri);
-    HttpClient client = clientFactory.createClient(config);
 
     HttpResponse res;
-    try {
+    try (HttpClient client = clientFactory.createClient(config)) {
       res = client.execute(new HttpRequest(GET, "/json/version"));
     } catch (UncheckedIOException e) {
       LOG.warning("Unable to connect to determine websocket url: " + e.getMessage());
