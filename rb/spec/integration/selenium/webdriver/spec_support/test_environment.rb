@@ -205,7 +205,9 @@ module Selenium
 
         def chrome_driver(options: nil, **opts)
           service_opts = {}
-          service_opts[:args] = ['--disable-build-check'] if ENV['DISABLE_BUILD_CHECK']
+          service_opts[:args] = []
+          service_opts[:args] << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
+          service_opts[:args]  << '--verbose' if WebDriver.logger.level == :debug
           service = WebDriver::Service.chrome(**service_opts)
           WebDriver::Driver.for(:chrome, options: options, service: service, **opts)
         end
@@ -218,7 +220,9 @@ module Selenium
 
         def edge_driver(options: nil, **opts)
           service_opts = {}
-          service_opts[:args] = ['--disable-build-check'] if ENV['DISABLE_BUILD_CHECK']
+          service_opts[:args] = []
+          service_opts[:args] << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
+          service_opts[:args] << '--verbose' if WebDriver.logger.level == :debug
           service = WebDriver::Service.edge(**service_opts)
           WebDriver::Driver.for(:edge, options: options, service: service, **opts)
         end

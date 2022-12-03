@@ -56,8 +56,8 @@ module Selenium
         end
       end
 
-      attr_accessor :host
-      attr_reader :executable_path, :port, :extra_args
+      attr_accessor :host, :executable_path, :port, :args
+      alias_method :extra_args, :args
 
       #
       # End users should use a class method for the desired driver, rather than using this directly.
@@ -74,7 +74,7 @@ module Selenium
         @host = Platform.localhost
         @port = Integer(port)
 
-        @extra_args = args.is_a?(Hash) ? extract_service_args(args) : args
+        @args = args.is_a?(Hash) ? extract_service_args(args) : args
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
       end
