@@ -73,24 +73,24 @@ namespace OpenQA.Selenium
                 if (string.IsNullOrEmpty(binary))
                 {
 #if NET45 || NET46 || NET47
-            binary = "selenium-manager/windows/selenium-manager.exe";
+                    binary = "selenium-manager/windows/selenium-manager.exe";
 #else
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                binary = "selenium-manager/windows/selenium-manager.exe";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-            {
-                binary = "selenium-manager/linux/selenium-manager";
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                binary = "selenium-manager/macos/selenium-manager";
-            }
-            else
-            {
-                throw new WebDriverException("Selenium Manager did not find supported operating system");
-            }
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        binary = "selenium-manager/windows/selenium-manager.exe";
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        binary = "selenium-manager/linux/selenium-manager";
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    {
+                        binary = "selenium-manager/macos/selenium-manager";
+                    }
+                    else
+                    {
+                        throw new WebDriverException("Selenium Manager did not find supported operating system");
+                    }
 #endif
                 }
 
@@ -145,9 +145,9 @@ namespace OpenQA.Selenium
 
             string output = outputBuilder.ToString().Trim();
 
-            if (processExitCode > 0)
+            if (processExitCode != 0)
             {
-                throw new WebDriverException($"Invalid response from process: {fileName} {arguments}\n{output}");
+                throw new WebDriverException($"Invalid response from process (code {processExitCode}): {fileName} {arguments}\n{output}");
             }
 
             return output.Replace("INFO\t", "");
