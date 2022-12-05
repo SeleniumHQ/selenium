@@ -7,7 +7,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: |
-        cp .github/.bazelrc.local .
-        bazel ${{ inputs.command }}
+    - run: copy .github\.bazelrc.windows.local .
+      if: runner.os == 'Windows'
+      shell: cmd
+    - run: bazel ${{ inputs.command }}
+      if: runner.os == 'Windows'
+      shell: cmd
+    - run: cp .github/.bazelrc.local .
+      if: runner.os != 'Windows'
+      shell: bash
+    - run: bazel ${{ inputs.command }}
+      if: runner.os != 'Windows'
       shell: bash

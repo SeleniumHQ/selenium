@@ -25,7 +25,7 @@ module Selenium
       it 'should click' do
         driver.navigate.to url_for('formPage.html')
         expect { driver.find_element(id: 'imageButton').click }.not_to raise_error
-        reset_driver!(1) if %i[safari safari_preview].include? GlobalTestEnv.browser
+        reset_driver!(time: 1) if %i[safari safari_preview].include? GlobalTestEnv.browser
       end
 
       # Safari returns "click intercepted" error instead of "element click intercepted"
@@ -102,7 +102,7 @@ module Selenium
       end
 
       # https://github.com/mozilla/geckodriver/issues/245
-      it 'should send key presses chords', except: {browser: %i[firefox firefox_nightly safari safari_preview]} do
+      it 'should send key presses chords', except: {browser: %i[firefox safari safari_preview]} do
         driver.navigate.to url_for('javascriptPage.html')
         key_reporter = driver.find_element(id: 'keyReporter')
 

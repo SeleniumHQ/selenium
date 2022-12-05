@@ -261,8 +261,8 @@ domain Debugger
       optional string streamId
       # The total number of lines in the disassembly text.
       integer totalNumberOfLines
-      # The offsets of all function bodies plus one additional entry pointing
-      # one by past the end of the last function.
+      # The offsets of all function bodies, in the format [start1, end1,
+      # start2, end2, ...] where all ends are exclusive.
       array of integer functionBodyOffsets
       # The first chunk of disassembly.
       WasmDisassemblyChunk chunk
@@ -766,6 +766,22 @@ experimental domain HeapProfiler
       # Average sample interval in bytes. Poisson distribution is used for the intervals. The
       # default value is 32768 bytes.
       optional number samplingInterval
+      # By default, the sampling heap profiler reports only objects which are
+      # still alive when the profile is returned via getSamplingProfile or
+      # stopSampling, which is useful for determining what functions contribute
+      # the most to steady-state memory usage. This flag instructs the sampling
+      # heap profiler to also include information about objects discarded by
+      # major GC, which will show which functions cause large temporary memory
+      # usage or long GC pauses.
+      optional boolean includeObjectsCollectedByMajorGC
+      # By default, the sampling heap profiler reports only objects which are
+      # still alive when the profile is returned via getSamplingProfile or
+      # stopSampling, which is useful for determining what functions contribute
+      # the most to steady-state memory usage. This flag instructs the sampling
+      # heap profiler to also include information about objects discarded by
+      # minor GC, which is useful when tuning a latency-sensitive application
+      # for minimal GC activity.
+      optional boolean includeObjectsCollectedByMinorGC
 
   command startTrackingHeapObjects
     parameters
@@ -902,30 +918,6 @@ domain Profiler
       # Functions contained in the script that has coverage data.
       array of FunctionCoverage functions
 
-  # Describes a type collected during runtime.
-  experimental type TypeObject extends object
-    properties
-      # Name of a type collected with type profiling.
-      string name
-
-  # Source offset and types for a parameter or return value.
-  experimental type TypeProfileEntry extends object
-    properties
-      # Source offset of the parameter or end of function for return values.
-      integer offset
-      # The types for this parameter or return value.
-      array of TypeObject types
-
-  # Type profile data collected during runtime for a JavaScript script.
-  experimental type ScriptTypeProfile extends object
-    properties
-      # JavaScript script id.
-      Runtime.ScriptId scriptId
-      # JavaScript script name or url.
-      string url
-      # Type profile entries for parameters and return values of the functions in the script.
-      array of TypeProfileEntry entries
-
   command disable
 
   command enable
@@ -960,9 +952,6 @@ domain Profiler
       # Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
       number timestamp
 
-  # Enable type profile.
-  experimental command startTypeProfile
-
   command stop
     returns
       # Recorded profile.
@@ -972,9 +961,6 @@ domain Profiler
   # executing optimized code.
   command stopPreciseCoverage
 
-  # Disable type profile. Disabling releases type profile data collected so far.
-  experimental command stopTypeProfile
-
   # Collect coverage data for the current isolate, and resets execution counters. Precise code
   # coverage needs to have started.
   command takePreciseCoverage
@@ -983,12 +969,6 @@ domain Profiler
       array of ScriptCoverage result
       # Monotonically increasing time (in seconds) when the coverage update was taken in the backend.
       number timestamp
-
-  # Collect type profile.
-  experimental command takeTypeProfile
-    returns
-      # Type profile for all scripts since startTypeProfile() was turned on.
-      array of ScriptTypeProfile result
 
   event consoleProfileFinished
     parameters

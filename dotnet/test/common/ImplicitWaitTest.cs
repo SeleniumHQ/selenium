@@ -110,6 +110,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not properly handle multiple windows")]
         public void ShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfWindowSwitchTo()
         {
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);

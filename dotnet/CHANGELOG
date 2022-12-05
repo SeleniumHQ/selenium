@@ -1,3 +1,11 @@
+v4.7.0
+======
+* Adding CDP files for v108 and removing v105
+* Update Service classes to only use System.Net.Http.HttpClient (#11143)
+* Add .NET 6 support (#11298)
+* Add support for Selenium Manager to work with IE Driver
+* Improve error handling with Selenium Manager
+
 v4.6.0
 ======
 * Adding CDP files for v107 and removing v104

@@ -21,7 +21,7 @@ jobs:
       bazel-target-prefix: '//javascript'
 
   node_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[js]') == true }}
     needs: check_workflow
     runs-on: ubuntu-latest
     strategy:
@@ -32,9 +32,9 @@ jobs:
           - { "browser": "chrome", "version": "stable" }
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -48,9 +48,10 @@ jobs:
         with:
           node-version: '16.x'
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 11
+          distribution: 'adopt'
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Firefox
@@ -83,9 +84,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -94,9 +95,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bazel-atom-firefox-tests-
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 11
+          distribution: 'adopt'
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Firefox
@@ -124,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node
         uses: actions/setup-node@v2
         with:

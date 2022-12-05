@@ -69,12 +69,13 @@ public class Connection implements Closeable {
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks = new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
+  private final HttpClient client;
 
   public Connection(HttpClient client, String url) {
     Require.nonNull("HTTP client", client);
     Require.nonNull("URL to connect to", url);
-
-    socket = client.openSocket(new HttpRequest(GET, url), new Listener());
+    this.client = client;
+    socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
   private static class NamedConsumer<X> implements Consumer<X> {
@@ -188,6 +189,7 @@ public class Connection implements Closeable {
   @Override
   public void close() {
     socket.close();
+    client.close();
   }
 
   private class Listener implements WebSocket.Listener {

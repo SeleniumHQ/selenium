@@ -383,6 +383,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreTarget("net48", "Cannot create inline page with UrlBuilder")]
         public void CanHandleTextThatLooksLikeANumber()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.CreateInlinePage(

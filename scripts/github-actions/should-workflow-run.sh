@@ -21,8 +21,8 @@ for bazel_target in $affected_files ; do
   bazel query "$bazel_target"
 done
 
-echo "::set-output name=bazel-targets::${bazel_targets[*]}"
-echo "::set-output name=run-workflow::false"
+echo "bazel-targets=${bazel_targets[*]}" >> $GITHUB_OUTPUT
+echo "run-workflow=false" >> $GITHUB_OUTPUT
 
 if (( ${#bazel_targets[@]} == 0 )); then
   echo "No bazel targets found after checking the diff."
@@ -30,7 +30,7 @@ if (( ${#bazel_targets[@]} == 0 )); then
 fi
 
 if [[ " ${bazel_targets[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
-  echo "::set-output name=run-workflow::true"
+  echo "run-workflow=true" >> $GITHUB_OUTPUT
   echo "Bazel targets found: ${bazel_targets[*]}"
   exit 0
 fi
@@ -43,7 +43,7 @@ tests=$(bazel query \
     "kind(test, rdeps(//..., set(${bazel_targets[*]})))")
 
 if [[ " ${tests[*]} " == *"$BAZEL_TARGET_PREFIX"* ]]; then
-  echo "::set-output name=run-workflow::true"
+  echo "run-workflow=true" >> $GITHUB_OUTPUT
   echo "Test targets found: ${tests[*]}"
   exit 0
 fi

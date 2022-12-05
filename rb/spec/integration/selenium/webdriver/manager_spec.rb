@@ -121,9 +121,9 @@ module Selenium
         end
 
         it 'should not add secure cookie when http',
-           except: [{browser: %i[firefox firefox_nightly],
+           except: [{browser: :firefox,
                      reason: 'https://github.com/mozilla/geckodriver/issues/1840'},
-                    {browser: :chrome,
+                    {browser: %i[chrome edge],
                      reason: 'https://bugs.chromium.org/p/chromium/issues/detail?id=1177877#c7'}] do
           driver.manage.add_cookie name: 'secure',
                                    value: 'http',
@@ -145,7 +145,7 @@ module Selenium
         end
 
         context 'sameSite' do
-          it 'should allow adding with value Strict', only: {browser: %i[chrome edge firefox firefox_nightly]} do
+          it 'should allow adding with value Strict', only: {browser: %i[chrome edge firefox]} do
             driver.manage.add_cookie name: 'samesite',
                                      value: 'strict',
                                      same_site: 'Strict'
@@ -153,7 +153,7 @@ module Selenium
             expect(driver.manage.cookie_named('samesite')[:same_site]).to eq('Strict')
           end
 
-          it 'should allow adding with value Lax', only: {browser: %i[chrome edge firefox firefox_nightly]} do
+          it 'should allow adding with value Lax', only: {browser: %i[chrome edge firefox]} do
             driver.manage.add_cookie name: 'samesite',
                                      value: 'lax',
                                      same_site: 'Lax'
@@ -174,7 +174,7 @@ module Selenium
           end
 
           it 'should not allow adding with value None when secure is false',
-             except: [{browser: %i[firefox firefox_nightly],
+             except: [{browser: :firefox,
                        reason: "https://github.com/mozilla/geckodriver/issues/1842"},
                       {browser: %i[safari safari_preview]}] do
             expect {

@@ -51,7 +51,6 @@ class PullImage {
     String image = String.format("%s/%s", ref.getDomain(), ref.getName());
     HttpRequest req = new HttpRequest(POST, String.format("/v%s/images/create", DOCKER_API_VERSION))
       .addHeader("Content-Type", JSON_UTF_8)
-      .addHeader("Content-Length", "0")
       .addQueryParameter("fromImage", image);
 
     if (ref.getDigest() != null) {

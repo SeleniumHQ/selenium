@@ -54,52 +54,48 @@ module Selenium
         end
 
         describe 'PrintsPage' do
+          before(:all) { reset_driver!(args: ['--headless']) }
+
+          after(:all) { reset_driver! }
+
           let(:magic_number) { 'JVBER' }
-          let(:options) { Chrome::Options.new(args: ['--headless']) }
 
           it 'should return base64 for print command' do
-            create_driver!(options: options) do |driver|
-              driver.navigate.to url_for('printPage.html')
-              expect(driver.print_page).to include(magic_number)
-            end
+            driver.navigate.to url_for('printPage.html')
+            expect(driver.print_page).to include(magic_number)
           end
 
           it 'should print with valid params' do
-            create_driver!(options: options) do |driver|
-              driver.navigate.to url_for('printPage.html')
-              expect(driver.print_page(orientation: 'landscape',
-                                       page_ranges: ['1-2'],
-                                       page: {width: 30})).to include(magic_number)
-            end
+            driver.navigate.to url_for('printPage.html')
+            expect(driver.print_page(orientation: 'landscape',
+                                     page_ranges: ['1-2'],
+                                     page: {width: 30})).to include(magic_number)
           end
 
           it 'should save pdf' do
-            create_driver!(options: options) do |driver|
-              driver.navigate.to url_for('printPage.html')
+            driver.navigate.to url_for('printPage.html')
 
-              path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.pdf"
+            path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.pdf"
 
-              driver.save_print_page path
+            driver.save_print_page path
 
-              expect(File.exist?(path)).to be true
-              expect(File.size(path)).to be_positive
-            ensure
-              FileUtils.rm_rf(path)
-            end
+            expect(File.exist?(path)).to be true
+            expect(File.size(path)).to be_positive
+          ensure
+            FileUtils.rm_rf(path)
           end
         end
 
         describe '#logs' do
-          before do
-            quit_driver
-            options = Options.new(logging_prefs: {browser: 'ALL',
-                                                  driver: 'ALL',
-                                                  performance: 'ALL'})
-            create_driver!(options: options)
-            driver.navigate.to url_for('errors.html')
+          before(:all) do
+            reset_driver!(logging_prefs: {browser: 'ALL',
+                                          driver: 'ALL',
+                                          performance: 'ALL'})
           end
 
-          after(:all) { quit_driver }
+          before { driver.navigate.to url_for('errors.html') }
+
+          after(:all) { reset_driver! }
 
           it 'can fetch available log types' do
             expect(driver.logs.available_types).to include(:performance, :browser, :driver)

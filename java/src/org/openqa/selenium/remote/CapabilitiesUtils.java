@@ -28,12 +28,7 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.session.CapabilitiesFilter;
 import org.openqa.selenium.remote.session.CapabilityTransform;
-import org.openqa.selenium.remote.session.ChromeFilter;
-import org.openqa.selenium.remote.session.EdgeFilter;
-import org.openqa.selenium.remote.session.FirefoxFilter;
-import org.openqa.selenium.remote.session.InternetExplorerFilter;
 import org.openqa.selenium.remote.session.ProxyTransform;
-import org.openqa.selenium.remote.session.SafariFilter;
 import org.openqa.selenium.remote.session.StripAnyPlatform;
 import org.openqa.selenium.remote.session.W3CPlatformNameNormaliser;
 
@@ -74,7 +69,7 @@ public class CapabilitiesUtils {
   public static Stream<Map<String, Object>> makeW3CSafe(Map<String, Object> possiblyInvalidCapabilities) {
     Require.nonNull("Capabilities", possiblyInvalidCapabilities);
 
-    Set<CapabilitiesFilter> adapters = getCapabilityFilters();
+    Set<CapabilitiesFilter> adapters = ImmutableSet.of();
 
     // If there's an OSS value, generate a stream of capabilities from that using the transforms,
     // then add magic to generate each of the w3c capabilities. For the sake of simplicity, we're
@@ -190,18 +185,6 @@ public class CapabilitiesUtils {
       }
     }
     return toReturn;
-  }
-
-  private static Set<CapabilitiesFilter> getCapabilityFilters() {
-    ImmutableSet.Builder<CapabilitiesFilter> adapters = ImmutableSet.builder();
-    ServiceLoader.load(CapabilitiesFilter.class).forEach(adapters::add);
-    adapters
-      .add(new ChromeFilter())
-      .add(new EdgeFilter())
-      .add(new FirefoxFilter())
-      .add(new InternetExplorerFilter())
-      .add(new SafariFilter());
-    return adapters.build();
   }
 
   private static Set<CapabilityTransform> getCapabilityTransforms() {

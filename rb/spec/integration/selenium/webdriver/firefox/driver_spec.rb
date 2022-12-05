@@ -44,7 +44,9 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'should print full page' do
+          it 'should print full page', except: {ci: :github,
+                                                platform: :windows,
+                                                reason: 'Some issues with resolution?'} do
             viewport_width = driver.execute_script("return window.innerWidth;")
             viewport_height = driver.execute_script("return window.innerHeight;")
 
@@ -138,8 +140,7 @@ module Selenium
         end
 
         it 'can get and set context' do
-          options = Options.new(prefs: {'browser.download.dir': 'foo/bar'})
-          create_driver!(options: options) do |driver|
+          reset_driver!(prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
             expect(driver.context).to eq 'content'
 
             driver.context = 'chrome'
