@@ -105,6 +105,10 @@ class OsProcess {
     }
   }
 
+  public boolean waitForProcessStarted(long duration, TimeUnit unit) {
+    return executeWatchdog.waitForProcessStarted(duration, unit);
+  }
+
   private OutputStream getOutputStream() {
     return drainTo == null ? inputOut
         : new MultiOutputStream(inputOut, drainTo);
@@ -112,18 +116,21 @@ class OsProcess {
 
   public int destroy() {
     SeleniumWatchDog watchdog = executeWatchdog;
-    watchdog.waitForProcessStarted();
 
-    // I literally have no idea why we don't try and kill the process nicely on Windows. If you do,
-    // answers on the back of a postcard to SeleniumHQ, please.
-    if (!Platform.getCurrent().is(WINDOWS)) {
-      watchdog.destroyProcess();
-      watchdog.waitForTerminationAfterDestroy(2, SECONDS);
-    }
+    if (watchdog.waitForProcessStarted(2, TimeUnit.MINUTES)) {
+      // I literally have no idea why we don't try and kill the process nicely on Windows. If you do,
+      // answers on the back of a postcard to SeleniumHQ, please.
+      if (!Platform.getCurrent().is(WINDOWS)) {
+        watchdog.destroyProcess();
+        watchdog.waitForTerminationAfterDestroy(2, SECONDS);
+      }
 
-    if (isRunning()) {
-      watchdog.destroyHarder();
-      watchdog.waitForTerminationAfterDestroy(1, SECONDS);
+      if (isRunning()) {
+        watchdog.destroyHarder();
+        watchdog.waitForTerminationAfterDestroy(1, SECONDS);
+      }
+    } else {
+      log.warning("Tried to destory a process which never started.");
     }
 
     // Make a best effort to drain the streams.
@@ -236,8 +243,9 @@ class OsProcess {
       starting = true;
     }
 
-    private void waitForProcessStarted() {
-      while (starting) {
+    private boolean waitForProcessStarted(long duration, TimeUnit unit) {
+      long end = System.currentTimeMillis() + unit.toMillis(duration);
+      while (starting && System.currentTimeMillis() < end) {
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -245,6 +253,8 @@ class OsProcess {
           throw new WebDriverException(e);
         }
       }
+
+      return !starting;
     }
 
     private void waitForTerminationAfterDestroy(int duration, TimeUnit unit) {
