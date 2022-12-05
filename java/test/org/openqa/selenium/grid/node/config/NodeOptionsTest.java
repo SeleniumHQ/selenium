@@ -54,6 +54,8 @@ import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -364,6 +366,43 @@ class NodeOptionsTest {
       .anyMatch(
         capabilities ->
           geckoDriverLocation.equals(capabilities.getCapability("se:webDriverExecutable")));
+  }
+
+  @Test
+  void driversCanBeConfiguredWithASpecificArguments() {
+    String chLocation = "/Applications/Google Chrome Beta.app/Contents/MacOS/Google Chrome Beta";
+    String chromeDriverLocation = "/path/to/chromedriver_beta/chromedriver";
+    ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.setBinary(chLocation);
+    chromeOptions.addArguments("--homepage=https://www.selenium.dev");
+
+    StringBuilder chromeCaps = new StringBuilder();
+    new Json().newOutput(chromeCaps).setPrettyPrint(false).write(chromeOptions);
+
+    String[] rawConfig = new String[]{
+      "[node]",
+      "detect-drivers = false",
+      "[[node.driver-configuration]]",
+      "display-name = \"Chrome Beta\"",
+      String.format("webdriver-executable = '%s'", chromeDriverLocation),
+      String.format("stereotype = \"%s\"", chromeCaps.toString().replace("\"", "\\\""))
+    };
+    Config config = new TomlConfig(new StringReader(String.join("\n", rawConfig)));
+
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(capabilities -> {
+      reported.add(capabilities);
+      return Collections.singleton(HelperFactory.create(config, capabilities));
+    });
+
+    assertThat(reported).is(supporting("chrome"));
+    assertThat(reported)
+      .filteredOn(capabilities -> capabilities.asMap().containsKey(ChromeOptions.CAPABILITY));
+
+    assertThat(reported.get(0).asMap()).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("--homepage=https://www.selenium.dev");
   }
 
   @Test
