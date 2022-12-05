@@ -21,6 +21,11 @@ module Selenium
   module WebDriver
     class BiDi
       autoload :Session, 'selenium/webdriver/bidi/session'
+      autoload :Log, 'selenium/webdriver/bidi/log'
+      autoload :ConsoleLogEntry, 'selenium/webdriver/bidi/console_log_entry'
+      autoload :GenericLogEntry, 'selenium/webdriver/bidi/generic_log_entry'
+      autoload :JavascriptLogEntry, 'selenium/webdriver/bidi/javascript_log_entry'
+      autoload :BaseLogEntry, 'selenium/webdriver/bidi/base_log_entry'
 
       def initialize(url:)
         @ws = WebSocketConnection.new(url: url)
@@ -50,26 +55,12 @@ module Selenium
         "#{message['error']}: #{message['message']}\n#{message['stacktrace']}"
       end
 
-      def on_console_log(&block)
-        console_log_listener = []
-        enabled = console_log_listener.any?
-        console_log_listener << block
-        return if enabled
+      # def add_listener(event, &block)
+      #   send_cmd("session.subscribe", events: [event])
+      # end
 
-        bidi.on(:console_api_called) do |params|
-          event = BiDi::Log::ConsoleLogEntry.new(
-            level: params['level'],
-            text: params['text'],
-            timestamp: params['timestamp'],
-            type: params['type'],
-            method: params['method'],
-            args: params['args']
-          )
-
-          console_log_listener.each do |listener|
-            listener.call(event)
-          end
-        end
+      def log
+        Log.new(self)
       end
 
     end # BiDi
