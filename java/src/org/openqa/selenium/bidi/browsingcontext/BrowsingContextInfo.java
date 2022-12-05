@@ -78,7 +78,7 @@ public class BrowsingContextInfo {
           children = input.read(LIST_OF_BROWSING_CONTEXT_INFO);
           break;
 
-        case "parent]":
+        case "parent":
           parentBrowsingContext = input.read(String.class);
           break;
 

@@ -19,7 +19,6 @@ package org.openqa.selenium.bidi.browsingcontext;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
@@ -31,6 +30,7 @@ import org.openqa.selenium.json.JsonInput;
 import org.openqa.selenium.json.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,18 +40,16 @@ public class BrowsingContext {
 
   private final String id;
   private final BiDi bidi;
-
   private static final String CONTEXT = "context";
   private static final String RELOAD = "browsingContext.reload";
   private static final String HANDLE_USER_PROMPT = "browsingContext.handleUserPrompt";
 
   protected static final Type LIST_OF_BROWSING_CONTEXT_INFO =
-    new TypeToken<List<BrowsingContextInfo>>() {
-    }.getType();
+    new TypeToken<List<BrowsingContextInfo>>() {}.getType();
 
   private final Function<JsonInput, String> browsingContextIdMapper = jsonInput -> {
     Map<String, Object> result = jsonInput.read(Map.class);
-    return (String) result.get(CONTEXT);
+    return result.getOrDefault(CONTEXT, "").toString();
   };
 
   private final Function<JsonInput, NavigationResult> navigationInfoMapper =
@@ -60,7 +58,12 @@ public class BrowsingContext {
   private final Function<JsonInput, List<BrowsingContextInfo>> browsingContextInfoListMapper =
     jsonInput -> {
       Map<String, Object> result = jsonInput.read(Map.class);
-      List<Object> contexts = (List<Object>) result.get("contexts");
+      List<Object> contexts = (List<Object>) result.getOrDefault("contexts", new ArrayList<>());
+
+      if (contexts.isEmpty()) {
+        return new ArrayList<>();
+      }
+
       Json json = new Json();
       String dtr = json.toJson(contexts);
 
