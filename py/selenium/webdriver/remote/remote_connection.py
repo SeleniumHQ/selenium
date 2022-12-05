@@ -319,23 +319,17 @@ class RemoteConnection:
             conn = self._get_connection_manager()
             with conn as http:
                 response = http.request(method, url, body=body, headers=headers)
-
             statuscode = response.status
-            if not hasattr(response, "getheader"):
-                if hasattr(response.headers, "getheader"):
-                    response.getheader = lambda x: response.headers.getheader(x)
-                elif hasattr(response.headers, "get"):
-                    response.getheader = lambda x: response.headers.get(x)
         data = response.data.decode("UTF-8")
         LOGGER.debug(f"Remote response: status={response.status} | data={data} | headers={response.headers}")
         try:
             if 300 <= statuscode < 304:
-                return self._request("GET", response.getheader("location"))
+                return self._request("GET", response.headers.get("location", None))
             if 399 < statuscode <= 500:
                 return {"status": statuscode, "value": data}
             content_type = []
-            if response.getheader("Content-Type"):
-                content_type = response.getheader("Content-Type").split(";")
+            if response.headers.get("Content-Type", None):
+                content_type = response.headers.get("Content-Type", None).split(";")
             if not any([x.startswith("image/png") for x in content_type]):
 
                 try:

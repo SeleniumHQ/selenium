@@ -24,7 +24,7 @@ module Selenium
     describe SocketPoller do
       before(:context) do
         @server_thread = Thread.new do
-          server = TCPServer.open(9250)
+          server = TCPServer.open(Platform.localhost, 9250)
           Thread.current.thread_variable_set(:server, server)
           loop { server.accept.close }
         end

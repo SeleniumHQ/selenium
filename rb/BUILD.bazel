@@ -13,10 +13,14 @@ package(default_visibility = ["//:__subpackages__"])
 
 CDP_VERSIONS = [
     "v85",
-    "v105",
     "v106",
     "v107",
+    "v108",
 ]
+
+GITHUB_PACKAGES_HOST = "https://rubygems.pkg.github.com/SeleniumHQ"
+
+exports_files(["ruby_version.bzl"])
 
 copy_file(
     name = "find-elements",
@@ -119,6 +123,48 @@ rb_gem_build(
 rb_gem_push(
     name = "selenium-devtools-release",
     src = ":selenium-devtools",
+)
+
+rb_binary(
+    name = "selenium-webdriver-bump-nightly-version",
+    srcs = [
+        "lib/selenium/webdriver/support/nightly_version_generator.rb",
+        "lib/selenium/webdriver/version.rb",
+    ],
+    args = [
+        "rb/lib/selenium/webdriver/support/nightly_version_generator.rb",
+        "rb/lib/selenium/webdriver/version.rb",
+    ],
+)
+
+rb_gem_push(
+    name = "selenium-webdriver-release-nightly",
+    src = ":selenium-webdriver",
+    args = [
+        "--host",
+        GITHUB_PACKAGES_HOST,
+    ],
+)
+
+rb_binary(
+    name = "selenium-devtools-bump-nightly-version",
+    srcs = [
+        "lib/selenium/devtools/version.rb",
+        "lib/selenium/webdriver/support/nightly_version_generator.rb",
+    ],
+    args = [
+        "rb/lib/selenium/webdriver/support/nightly_version_generator.rb",
+        "rb/lib/selenium/devtools/version.rb",
+    ],
+)
+
+rb_gem_push(
+    name = "selenium-devtools-release-nightly",
+    src = ":selenium-devtools",
+    args = [
+        "--host",
+        GITHUB_PACKAGES_HOST,
+    ],
 )
 
 rb_library(
@@ -259,7 +305,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -285,7 +331,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -311,7 +357,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -337,7 +383,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -346,6 +392,30 @@ rb_test(
         ":bidi",
         ":devtools",
         ":firefox",
+        ":remote",
+        "@bundle",
+    ],
+)
+
+rb_test(
+    name = "ie-test",
+    srcs = glob([
+        "spec/integration/selenium/webdriver/*_spec.rb",
+        "spec/integration/selenium/webdriver/ie/**/*_spec.rb",
+    ]),
+    args = [
+        "--format",
+        "documentation",
+        "--force-color",
+        "rb/spec",
+    ],
+    main = "@bundle//:bin/rspec",
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    deps = [
+        ":ie",
         ":remote",
         "@bundle",
     ],
@@ -363,7 +433,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -388,7 +458,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -413,7 +483,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -443,7 +513,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -470,7 +540,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -497,7 +567,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -524,7 +594,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -533,6 +603,31 @@ rb_test(
         ":bidi",
         ":remote",
         ":safari",
+        "@bundle",
+    ],
+)
+
+rb_test(
+    name = "remote-ie-test",
+    srcs = glob([
+        "spec/integration/selenium/webdriver/*_spec.rb",
+        "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
+        "spec/integration/selenium/webdriver/ie/**/*_spec.rb",
+    ]) + [":selenium-server-deploy"],
+    args = [
+        "--format",
+        "documentation",
+        "--force-color",
+        "rb/spec",
+    ],
+    main = "@bundle//:bin/rspec",
+    tags = [
+        "no-sandbox",
+        "requires-network",
+    ],
+    deps = [
+        ":ie",
+        ":remote",
         "@bundle",
     ],
 )
@@ -550,7 +645,7 @@ rb_test(
         "--force-color",
         "rb/spec",
     ],
-    bin = "@bundle//:bin/rspec",
+    main = "@bundle//:bin/rspec",
     tags = [
         "no-sandbox",
         "requires-network",
@@ -571,13 +666,14 @@ rb_binary(
         "README.md",
     ]),
     args = [
-        "--output_dir=docs/api/rb",
+        "doc",
+        "--output-dir=docs/api/rb",
         "--readme=rb/README.md",
-        "rb/lib/**/*.rb",
+        "rb/lib",
         "rb/CHANGES",
         "rb/README.md",
     ],
-    bin = "@bundle//:bin/yard",
+    main = "@bundle//:bin/yard",
     deps = ["@bundle"],
 )
 
@@ -599,7 +695,7 @@ rb_binary(
         "rb/selenium-devtools.gemspec",
         "rb/selenium-webdriver.gemspec",
     ],
-    bin = "@bundle//:bin/rubocop",
+    main = "@bundle//:bin/rubocop",
     deps = [
         "@bundle",
     ],
@@ -611,7 +707,7 @@ rb_binary(
         "-rselenium-webdriver",
         "-rselenium/devtools",
     ],
-    bin = "@bundle//:bin/pry",
+    main = "@bundle//:bin/pry",
     deps = [
         ":bidi",
         ":chrome",

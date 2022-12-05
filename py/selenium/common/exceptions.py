@@ -298,3 +298,7 @@ class UnknownMethodException(WebDriverException):
     """
     The requested command matched a known URL but did not match any methods for that URL.
     """
+
+
+class SeleniumManagerException(WebDriverException):
+    """Raised when an issue interacting with selenium manager occurs."""

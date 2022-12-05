@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import java.io.Closeable;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.openqa.selenium.internal.Require;
@@ -61,6 +62,30 @@ public class BiDi implements Closeable {
 
     send(new Command<>("session.subscribe",
                        ImmutableMap.of("events", Collections.singletonList(event.getMethod()))));
+
+    connection.addListener(event, handler);
+  }
+
+  <X> void addListener(String browsingContextId, Event<X> event, Consumer<X> handler) {
+    Require.nonNull("Event to listen for", event);
+    Require.nonNull("Browsing context id", browsingContextId);
+    Require.nonNull("Handler to call", handler);
+
+    send(new Command<>("session.subscribe",
+      ImmutableMap.of("contexts", Collections.singletonList(browsingContextId),
+        "events", Collections.singletonList(event.getMethod()))));
+
+    connection.addListener(event, handler);
+  }
+
+  <X> void addListener(Set<String> browsingContextIds, Event<X> event, Consumer<X> handler) {
+    Require.nonNull("List of browsing context ids", browsingContextIds);
+    Require.nonNull("Event to listen for", event);
+    Require.nonNull("Handler to call", handler);
+
+    send(new Command<>("session.subscribe",
+      ImmutableMap.of("contexts", browsingContextIds,
+        "events", Collections.singletonList(event.getMethod()))));
 
     connection.addListener(event, handler);
   }

@@ -6,6 +6,7 @@ java_library(
     srcs = glob([
         "*.java",
         "log/*.java",
+        "browsingcontext/*.java"
     ]),
     visibility = [
         "//java/src/org/openqa/selenium/bidi:__subpackages__",

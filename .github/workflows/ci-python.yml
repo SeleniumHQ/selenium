@@ -21,14 +21,14 @@ jobs:
       bazel-target-prefix: '//py'
 
   tox_linting:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
+    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[py]') == true }}
     needs: check_workflow
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7.10
       - name: Install dependencies
@@ -43,12 +43,12 @@ jobs:
   tox_docs:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
     needs: check_workflow
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7.10
       - name: Install dependencies
@@ -63,12 +63,12 @@ jobs:
   tox_mypy:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
     needs: check_workflow
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Set up Python 3.7
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.7.9
       - name: Install dependencies
@@ -88,9 +88,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -98,14 +98,11 @@ jobs:
           key: ${{ runner.os }}-bazel-python-unit-tests-${{ hashFiles('**/BUILD.bazel') }}
           restore-keys: |
             ${{ runner.os }}-bazel-python-unit-tests-
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7.10
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Run unit tests
         uses: ./.github/actions/bazel
         with:
@@ -117,9 +114,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -130,10 +127,6 @@ jobs:
             ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7.10
       - name: Setup Chrome
         uses: browser-actions/setup-chrome@latest
       - name: Start XVFB
@@ -154,9 +147,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -167,14 +160,11 @@ jobs:
             ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7.10
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:
@@ -197,9 +187,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cache/bazel-disk
@@ -210,14 +200,11 @@ jobs:
             ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7.10
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:

@@ -51,7 +51,7 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.6'
+  '4.7'
 end
 
 def version
@@ -85,7 +85,7 @@ CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel.execute('build', %w[--workspace_status_command scripts/build-info.py], task.name)
+  task.out = Bazel.execute('build', %w[], task.name)
 end
 
 # Spoof tasks to get CI working with bazel
@@ -98,9 +98,9 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
-  //java/src/org/openqa/selenium/devtools/v105:v105.publish
   //java/src/org/openqa/selenium/devtools/v106:v106.publish
   //java/src/org/openqa/selenium/devtools/v107:v107.publish
+  //java/src/org/openqa/selenium/devtools/v108:v108.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
@@ -246,7 +246,6 @@ task test_rb: ['//rb:unit-test', :test_rb_local, :test_rb_remote]
 task test_rb_local: [
   '//rb:chrome-test',
   '//rb:firefox-test',
-  ('//rb:firefox-nightly-test' if ENV['FIREFOX_NIGHTLY_BINARY']),
   ('//rb:safari-preview-test' if SeleniumRake::Checks.mac?),
   ('//rb:safari-test' if SeleniumRake::Checks.mac?),
   ('//rb:ie-test' if SeleniumRake::Checks.windows?),
@@ -256,7 +255,6 @@ task test_rb_local: [
 task test_rb_remote: [
   '//rb:remote-chrome-test',
   '//rb:remote-firefox-test',
-  ('//rb:remote-firefox-nightly-test' if ENV['FIREFOX_NIGHTLY_BINARY']),
   ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
   ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
   ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),

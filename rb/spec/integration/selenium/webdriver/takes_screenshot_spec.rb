@@ -71,19 +71,6 @@ module Selenium
         FileUtils.rm_rf(path)
       end
 
-      def png_size(path)
-        png = File.read(path, mode: 'rb')[0x10..0x18]
-        width = png.unpack1('NN')
-        height = png.unpack('NN').last
-
-        if !Platform.linux?
-          width /= 2
-          height /= 2
-        end
-
-        [width, height]
-      end
-
       describe 'page size' do
         before do
           driver.navigate.to url_for('printPage.html')
@@ -104,7 +91,12 @@ module Selenium
           expect(height).to be <= viewport_height
         end
 
-        it 'takes full page screenshot', exclusive: {browser: :firefox} do
+        it 'takes full page screenshot', exclusive: {browser: :firefox},
+                                         except: {
+                                           ci: :github,
+                                           platform: :windows,
+                                           reason: 'Some issues with resolution?'
+                                         } do
           viewport_width = driver.execute_script("return window.innerWidth;")
           viewport_height = driver.execute_script("return window.innerHeight;")
 

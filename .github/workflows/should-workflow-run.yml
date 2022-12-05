@@ -25,13 +25,14 @@ jobs:
       result: ${{ steps.check-bazel-target-prefix.outputs.run-workflow }}
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 50
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
+          distribution: 'adopt'
       - name: Copy bazelrc
         run: cp .github/.bazelrc.local .
         shell: bash

@@ -1,3 +1,19 @@
+Selenium 4.7.2
+* Put selenium manager bug fix from 4.7.1 in the correct place
+
+Selenium 4.7.1
+* Fix bug preventing selenium manager from using Internet Explorer
+
+Selenium 4.7.0
+* Add CDP files for v108 and remove v105
+* Improve error handling with Selenium Manager (#11329)
+* Fix bug preventing alternate package managers from using Selenium Manager (#11234)
+
+Selenium 4.6.1
+* Replace response.getheader() with response.headers.get() (deprecated in urllib3 1.26.13).
+* Fixed a bug in `Service` destructors accessing modules that no longer existed during interpreter shutdown.
+* Improved exception messages when raising for `relative` locator issues.
+
 Selenium 4.6.0
 * Document firefox `service=` arg. closes #11067
 * Additional types and tidying safari service

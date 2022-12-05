@@ -4,6 +4,7 @@ using NUnit.Framework;
 namespace OpenQA.Selenium.Interactions
 {
     [TestFixture]
+    [IgnoreBrowser(Browser.IE, "IE does not support scrolling")]
     public class BasicWheelInterfaceTest : DriverTestFixture
     {
         [SetUp]
@@ -19,6 +20,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Incorrectly throws out of bounds exception")]
         public void ShouldAllowScrollingToAnElement()
         {
             driver.Url = scrollFrameOutOfViewport;
@@ -32,6 +34,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Incorrectly throws out of bounds exception")]
         public void ShouldScrollFromElementByGivenAmount()
         {
             driver.Url = scrollFrameOutOfViewport;
@@ -49,6 +52,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Incorrectly throws out of bounds exception")]
         public void ShouldAllowScrollingFromElementByGivenAmountWithOffset()
         {
             driver.Url = scrollFrameOutOfViewport;
@@ -85,6 +89,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Firefox, "Does not work on Mac for some reason")]
         public void ShouldAllowScrollingFromViewportByGivenAmount()
         {
             driver.Url = scrollFrameOutOfViewport;

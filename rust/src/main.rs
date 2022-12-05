@@ -18,10 +18,12 @@
 use std::env::consts::{ARCH, OS};
 use std::error::Error;
 use std::io::Write;
+use std::process::exit;
 
 use clap::Parser;
 use env_logger::fmt::Color;
 use env_logger::Target::Stdout;
+
 use log::Level;
 use log::LevelFilter::{Debug, Info, Trace};
 
@@ -29,6 +31,7 @@ use crate::chrome::ChromeManager;
 use crate::edge::EdgeManager;
 use crate::files::clear_cache;
 use crate::firefox::FirefoxManager;
+use crate::iexplorer::IExplorerManager;
 use crate::manager::BrowserManager;
 
 mod chrome;
@@ -36,6 +39,7 @@ mod downloads;
 mod edge;
 mod files;
 mod firefox;
+mod iexplorer;
 mod manager;
 mod metadata;
 
@@ -47,11 +51,11 @@ mod metadata;
 {usage-heading} {usage}
 {all-args}")]
 struct Cli {
-    /// Browser name (chrome, firefox, or edge)
+    /// Browser name (chrome, firefox, edge, or iexplorer)
     #[clap(short, long, value_parser, default_value = "")]
     browser: String,
 
-    /// Driver name (chromedriver, geckodriver, or msedgedriver)
+    /// Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer)
     #[clap(short, long, value_parser, default_value = "")]
     driver: String,
 
@@ -83,6 +87,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let driver_name: String = cli.driver;
     let os = OS;
     let arch = ARCH;
+    let mut driver_version = cli.driver_version;
+    let mut browser_version = cli.browser_version;
+
     let browser_manager: Box<dyn BrowserManager> = if browser_name.eq_ignore_ascii_case("chrome")
         || driver_name.eq_ignore_ascii_case("chromedriver")
     {
@@ -90,21 +97,27 @@ fn main() -> Result<(), Box<dyn Error>> {
     } else if browser_name.eq_ignore_ascii_case("firefox")
         || driver_name.eq_ignore_ascii_case("geckodriver")
     {
+        if !browser_version.is_empty() {
+            log::warn!("Currently it is not possible to force a given Firefox version");
+            browser_version = "".to_string();
+        }
         FirefoxManager::new()
     } else if browser_name.eq_ignore_ascii_case("edge")
         || driver_name.eq_ignore_ascii_case("msedgedriver")
     {
         EdgeManager::new()
+    } else if browser_name.eq_ignore_ascii_case("iexplorer")
+        || driver_name.eq_ignore_ascii_case("iedriverserver")
+    {
+        IExplorerManager::new()
     } else {
-        return Err(format!("Invalid browser/driver name"))?;
+        exit_with_error("Invalid browser/driver name".to_string());
+        exit(exitcode::DATAERR);
     };
 
     if cli.clear_cache {
         clear_cache();
     }
-
-    let mut driver_version = cli.driver_version;
-    let mut browser_version = cli.browser_version;
 
     if !driver_version.is_empty() && !browser_version.is_empty() {
         log::warn!("Ignoring --browser-version (since --driver-version is also used)");
@@ -118,14 +131,21 @@ fn main() -> Result<(), Box<dyn Error>> {
                     log::debug!("Detected browser: {} {}", browser_name, browser_version);
                 }
                 None => {
-                    log::warn!(
+                    log::debug!(
                         "The version of {} cannot be detected. Trying with latest driver version",
                         browser_name
                     );
                 }
             }
         }
-        driver_version = browser_manager.get_driver_version(&browser_version, os)?;
+        match browser_manager.get_driver_version(&browser_version, os) {
+            Ok(d) => {
+                driver_version = d;
+            }
+            Err(err) => {
+                exit_with_error(err.to_string());
+            }
+        }
         log::debug!(
             "Required driver: {} {}",
             browser_manager.get_driver_name(),
@@ -140,8 +160,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             browser_manager.get_driver_name(),
             driver_version
         );
-    } else {
-        browser_manager.download_driver(&driver_version, os, arch)?;
+    } else if let Err(err) = browser_manager.download_driver(&driver_version, os, arch) {
+        exit_with_error(err.to_string());
     }
     log::info!("{}", driver_path.display());
 
@@ -177,4 +197,9 @@ fn setup_logging(cli: &Cli) {
             )
         })
         .init();
+}
+
+fn exit_with_error(err: String) {
+    log::error!("{}", err);
+    exit(exitcode::DATAERR);
 }

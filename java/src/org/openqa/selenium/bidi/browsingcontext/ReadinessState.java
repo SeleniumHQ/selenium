@@ -15,32 +15,23 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.remote.session;
+package org.openqa.selenium.bidi.browsingcontext;
 
-import static org.assertj.core.api.Assertions.assertThat;
+public enum ReadinessState {
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Tag;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeOptions;
+  NONE("none"),
+  INTERACTIVE("interactive"),
+  COMPLETE("complete");
 
-import java.util.Map;
+  private final String text;
 
-@Tag("UnitTests")
-class EdgeFilterTest {
-
-  @Test
-  void shouldNotFilterOutEdgeCapabilities() {
-    Map<String, Object> original = new EdgeOptions().asMap();
-    Map<String, Object> filtered = new EdgeFilter().apply(original);
-    assertThat(filtered).isEqualTo(original);
+  ReadinessState(String text) {
+    this.text = text;
   }
 
-  @Test
-  void shouldFilterOutNonEdgeCapabilities() {
-    Map<String, Object> original = new ChromeOptions().asMap();
-    Map<String, Object> filtered = new EdgeFilter().apply(original);
-    assertThat(filtered).isNull();
+  @Override
+  public String toString() {
+    return String.valueOf(text);
   }
 
 }

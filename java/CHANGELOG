@@ -1,3 +1,25 @@
+v4.7.0
+======
+* Supported CDP versions: 85, 106, 107, 108
+* Remove deprecated classes for Rotatable, AppCache, NetworkConnection, LocationContext
+* Remove deprecated capabilities- IE_USE_PRE_PROCESS_PROXY, APPLICATION_NAME, ELEMENT_SCROLL_BEHAVIOR
+* Fix bug causing sessions to hang when session stops (#11167)
+* Support multiple reads of input stream (#11249)
+* Fix reading connection header (#11255)
+* BiDi: Implement JavascriptLogEntry
+* BiDi: Support browsing context in event subscriptions
+* BiDi: Fix type of JavascriptLogEntry
+* Grid: improved exception handling when no cause is set (#11286)
+* Fix following contract of Closeable (#11282)
+* Grid: Get TZ from parent container when not passed as cap (#11289)
+* BiDi: Add LogInspector
+* Grid: do not offload from multiple threads to a single worker (#11260)
+* Add support for Selenium Manager to work with IE Driver
+* Improve error handling with Selenium Manager (#11300)
+* BiDi: Add constructor parameter for commands without a response
+* Grid: remove browser filters from makeW3CSafe
+* Fix bug for merging MutableCapabilities and Options
+
 v4.6.0
 ======
 * Supported CDP versions: 85, 105, 106, 107

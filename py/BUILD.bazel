@@ -15,13 +15,13 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.6.0"
+SE_VERSION = "4.7.2"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v105",
     "v106",
     "v107",
+    "v108",
 ]
 
 TEST_DEPS = [
@@ -264,7 +264,7 @@ py_binary(
         "//common/devtools/chromium/" + n + ":js_protocol",
     ],
     outs = ["selenium/webdriver/common/devtools/" + n],
-    cmd = "python3 $(location :generate) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $@",
+    cmd = "$(location :generate) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $@",
     tools = [
         ":generate",
     ],

@@ -313,8 +313,8 @@ public class DockerSessionFactory implements SessionFactory {
     timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
     // Passing env vars set to the child container
     Map<String, String> seEnvVars = System.getenv();
-    seEnvVars.entrySet()
-      .stream().filter(entry -> entry.getKey().startsWith("SE_"))
+    seEnvVars.entrySet().stream()
+      .filter(entry -> entry.getKey().startsWith("SE_"))
       .forEach(entry -> envVars.put(entry.getKey(), entry.getValue()));
     return envVars;
   }
@@ -373,10 +373,14 @@ public class DockerSessionFactory implements SessionFactory {
     Optional<Object> timeZone =
       ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
     if (timeZone.isPresent()) {
-      String tz =  timeZone.get().toString();
+      String tz = timeZone.get().toString();
       if (Arrays.asList(TimeZone.getAvailableIDs()).contains(tz)) {
         return TimeZone.getTimeZone(tz);
       }
+    }
+    String envTz = System.getenv("TZ");
+    if (Arrays.asList(TimeZone.getAvailableIDs()).contains(envTz)) {
+      return TimeZone.getTimeZone(envTz);
     }
     return null;
   }

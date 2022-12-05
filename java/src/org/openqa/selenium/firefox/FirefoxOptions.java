@@ -376,7 +376,55 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     newInstance.mirror(this);
     if (capabilities instanceof FirefoxOptions) {
       newInstance.mirror((FirefoxOptions) capabilities);
+    } else {
+      Object optionsValue = capabilities.getCapability(FIREFOX_OPTIONS);
+
+      if (optionsValue instanceof Map) {
+        @SuppressWarnings("unchecked") Map<String, Object>
+          options =
+          (Map<String, Object>) optionsValue;
+
+        @SuppressWarnings("unchecked") List<String> arguments =
+          (List<String>) (options.getOrDefault("args", new ArrayList<>()));
+        @SuppressWarnings("unchecked") Map<String, Object> prefs =
+          (Map<String, Object>) options.getOrDefault("prefs", new HashMap<>());
+        String rawProfile = (String) options.get("profile");
+        @SuppressWarnings("unchecked") Map<String, Object> logLevelMap =
+          (Map<String, Object>) options.getOrDefault("log", new HashMap<>());
+        FirefoxDriverLogLevel logLevel =
+          FirefoxDriverLogLevel.fromString((String) logLevelMap.get("level"));
+
+        arguments.forEach(arg -> {
+          if (!((List<String>) newInstance.firefoxOptions.get(Keys.ARGS.key())).contains(arg)) {
+            newInstance.addArguments(arg);
+          }
+        });
+
+        Object binary = options.get("binary");
+        if (binary instanceof String) {
+          newInstance.setBinary((String) binary);
+        } else if (binary instanceof Path) {
+          newInstance.setBinary((Path) binary);
+        } else if (binary instanceof FirefoxBinary) {
+          newInstance.setBinary((FirefoxBinary) binary);
+        }
+
+        prefs.forEach(newInstance::addPreference);
+
+        if (rawProfile != null) {
+          try {
+            newInstance.setProfile(FirefoxProfile.fromJson(rawProfile));
+          } catch (IOException e) {
+            throw new WebDriverException(e);
+          }
+        }
+
+        if (logLevel != null) {
+          newInstance.setLogLevel(logLevel);
+        }
+      }
     }
+
     return newInstance;
   }
 

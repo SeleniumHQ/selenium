@@ -44,21 +44,18 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'should print full page' do
+          it 'should print full page', except: {ci: :github,
+                                                platform: :windows,
+                                                reason: 'Some issues with resolution?'} do
             viewport_width = driver.execute_script("return window.innerWidth;")
             viewport_height = driver.execute_script("return window.innerHeight;")
 
             path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
             screenshot = driver.save_full_page_screenshot(path)
+            width, height = png_size(screenshot)
 
-            if Platform.linux?
-              expect(File.read(screenshot)[0x10..0x18].unpack1('NN')).to be >= viewport_width
-              expect(File.read(screenshot)[0x10..0x18].unpack('NN').last).to be > viewport_height
-            else
-              expect(File.read(screenshot)[0x10..0x18].unpack1('NN') / 2).to be >= viewport_width
-              expect(File.read(screenshot)[0x10..0x18].unpack('NN').last / 2).to be > viewport_height
-            end
-
+            expect(width).to be >= viewport_width
+            expect(height).to be > viewport_height
           ensure
             FileUtils.rm_rf(path)
           end
@@ -143,8 +140,7 @@ module Selenium
         end
 
         it 'can get and set context' do
-          options = Options.new(prefs: {'browser.download.dir': 'foo/bar'})
-          create_driver!(options: options) do |driver|
+          reset_driver!(prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
             expect(driver.context).to eq 'content'
 
             driver.context = 'chrome'

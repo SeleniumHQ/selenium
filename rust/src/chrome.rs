@@ -117,15 +117,21 @@ impl BrowserManager for ChromeManager {
         }
     }
 
-    fn get_driver_url(&self, driver_version: &str, os: &str, arch: &str) -> String {
+    fn get_driver_url(
+        &self,
+        driver_version: &str,
+        os: &str,
+        arch: &str,
+    ) -> Result<String, Box<dyn Error>> {
         let driver_label = if WINDOWS.is(os) {
             "win32"
         } else if MACOS.is(os) {
             if ARM64.is(arch) {
                 // As of chromedriver 106, the naming convention for macOS ARM64 releases changed. See:
                 // https://groups.google.com/g/chromedriver-users/c/JRuQzH3qr2c
-                let major_driver_version =
-                    get_major_version(driver_version).parse::<i32>().unwrap();
+                let major_driver_version = get_major_version(driver_version)?
+                    .parse::<i32>()
+                    .unwrap_or_default();
                 if major_driver_version < 106 {
                     "mac64_m1"
                 } else {
@@ -137,10 +143,10 @@ impl BrowserManager for ChromeManager {
         } else {
             "linux64"
         };
-        format!(
+        Ok(format!(
             "{}{}/{}_{}.zip",
             DRIVER_URL, driver_version, self.driver_name, driver_label
-        )
+        ))
     }
 
     fn get_driver_path_in_cache(&self, driver_version: &str, os: &str, arch: &str) -> PathBuf {

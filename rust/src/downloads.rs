@@ -60,12 +60,10 @@ pub async fn download_driver_to_tmp_folder(
 
 #[tokio::main]
 pub async fn read_content_from_link(url: String) -> Result<String, Box<dyn Error>> {
-    Ok(parse_version(reqwest::get(url).await?.text().await?))
+    parse_version(reqwest::get(url).await?.text().await?)
 }
 
 #[tokio::main]
 pub async fn read_redirect_from_link(url: String) -> Result<String, Box<dyn Error>> {
-    Ok(parse_version(
-        reqwest::get(&url).await?.url().path().to_string(),
-    ))
+    parse_version(reqwest::get(&url).await?.url().path().to_string())
 }
