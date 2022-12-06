@@ -28,6 +28,7 @@ module Selenium
           @create_driver_error_count = 0
 
           populate_from_bazel_target
+          WebDriver.logger
 
           @driver = ENV.fetch('WD_SPEC_DRIVER', :chrome).to_sym
           @driver_instance = nil

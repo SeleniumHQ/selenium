@@ -37,7 +37,6 @@ RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
 
   c.before(:suite) do
-    WebDriver.logger
     GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote && ENV['WD_REMOTE_URL'].nil?
     GlobalTestEnv.print_env
   end
