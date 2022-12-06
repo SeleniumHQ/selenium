@@ -16,7 +16,6 @@
 // under the License.
 package org.openqa.selenium.manager;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Platform;
@@ -29,7 +28,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -87,7 +88,7 @@ public class SeleniumManager {
    * @param command the file and arguments to execute.
    * @return the standard output of the execution.
    */
-    private static String runCommand(String... command) {
+    private static String runCommand(List<String> command) {
         String output = "";
         int code = 0;
         try {
@@ -99,14 +100,14 @@ public class SeleniumManager {
                     process.getInputStream(), StandardCharsets.UTF_8));
         } catch (InterruptedException e) {
             LOG.warning(String.format("Interrupted exception running command %s: %s",
-                    Arrays.toString(command), e.getMessage()));
+                    command, e.getMessage()));
             Thread.currentThread().interrupt();
         } catch (Exception e) {
             LOG.warning(String.format("%s running command %s: %s",
-                    e.getClass().getSimpleName(), Arrays.toString(command), e.getMessage()));
+                    e.getClass().getSimpleName(), command, e.getMessage()));
         }
         if (code > 0) {
-          throw new WebDriverException("Unsuccessful command executed: " + Arrays.toString(command) +
+          throw new WebDriverException("Unsuccessful command executed: " + command +
                                         "\n" + output);
         }
 
@@ -147,20 +148,17 @@ public class SeleniumManager {
 
   /**
    * Determines the location of the correct driver.
-   * @param driverName which driver the service needs.
    * @return the location of the driver.
    */
-    public String getDriverPath(String driverName) {
-        if (!ImmutableList.of("geckodriver", "chromedriver", "msedgedriver", "IEDriverServer").contains(driverName)) {
-            throw new WebDriverException("Unable to locate driver with name: " + driverName);
+    public String getDriverPath(Map<String, String> arguments) {
+        File binaryFile = getBinary();
+        List<String> command = new ArrayList<>();
+        command.add(binaryFile.getAbsolutePath());
+        for (Map.Entry<String, String> arg: arguments.entrySet()) {
+            command.add((arg.getKey()));
+            command.add(arg.getValue());
         }
 
-        String driverPath = null;
-        File binaryFile = getBinary();
-        if (binaryFile != null) {
-          driverPath = runCommand(binaryFile.getAbsolutePath(),
-                    "--driver", driverName.replaceAll(EXE, ""));
-        }
-        return driverPath;
+        return runCommand(command);
     }
 }

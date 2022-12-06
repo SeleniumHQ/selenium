@@ -62,7 +62,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDriverOptions<ChromiumOptions<?>> {
 
-  private String binary;
+  protected String binary;
   private final List<String> args = new ArrayList<>();
   private final List<File> extensionFiles = new ArrayList<>();
   private final List<String> extensions = new ArrayList<>();

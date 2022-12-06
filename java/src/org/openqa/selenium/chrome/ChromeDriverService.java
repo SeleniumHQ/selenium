@@ -138,8 +138,19 @@ public class ChromeDriverService extends DriverService {
    */
   public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
     return new Builder()
+      .withOptions(options)
       .withLogLevel(options.getLogLevel())
       .build();
+  }
+
+  protected static Map<String, String> getSeleniumManagerArguments() {
+    Map<String, String> arguments = DriverService.getSeleniumManagerArguments();
+    // This is not implemented yet
+    //    String location = ((ChromeOptions) options).getBinary();
+    //    if (location != null) {
+    //      arguments.put("--location", location);
+    //    }
+    return arguments;
   }
 
   /**
@@ -228,12 +239,18 @@ public class ChromeDriverService extends DriverService {
       return this;
     }
 
+    private Builder withOptions(ChromeOptions options) {
+      ChromeDriverService.options = options;
+      return this;
+    }
+
     @Override
     protected File findDefaultExecutable() {
       return findExecutable(
         "chromedriver", CHROME_DRIVER_EXE_PROPERTY,
         "https://chromedriver.chromium.org/",
-        "https://chromedriver.chromium.org/downloads");
+        "https://chromedriver.chromium.org/downloads",
+        getSeleniumManagerArguments());
     }
 
     @Override

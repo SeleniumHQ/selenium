@@ -78,4 +78,8 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
   public ChromeDriverLogLevel getLogLevel(){
     return logLevel;
   }
+
+  public String getBinary() {
+    return binary;
+  }
 }

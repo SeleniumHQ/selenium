@@ -41,6 +41,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -95,6 +96,8 @@ public class DriverService implements Closeable {
   protected CommandLine process = null;
   private OutputStream outputStream = System.err;
 
+  protected static Capabilities options;
+
   /**
   *
   * @param executable The driver executable.
@@ -133,12 +136,21 @@ public class DriverService implements Closeable {
       String exeProperty,
       String exeDocs,
       String exeDownload) {
+      return findExecutable(exeName, exeProperty, exeDocs, exeDownload, getSeleniumManagerArguments());
+  }
+
+  protected static File findExecutable(
+    String exeName,
+    String exeProperty,
+    String exeDocs,
+    String exeDownload,
+    Map<String, String> seleniumManagerArguments) {
     String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
 
     if (exePath == null) {
       try {
-        exePath = SeleniumManager.getInstance().getDriverPath(exeName);
+        exePath = SeleniumManager.getInstance().getDriverPath(seleniumManagerArguments);
         checkExecutable(new File(exePath));
       } catch (Exception e) {
         LOG.warning(String.format("Unable to obtain driver using Selenium Manager: %s", e.getMessage()));
@@ -154,6 +166,15 @@ public class DriverService implements Closeable {
     File exe = new File(validPath);
     checkExecutable(exe);
     return exe;
+  }
+
+  protected static Map<String, String> getSeleniumManagerArguments() {
+    Map<String, String> args = new HashMap<>();
+    args.put("--browser", options.getBrowserName());
+    if (!options.getBrowserVersion().equals("")) {
+      args.put("--browser-version", options.getBrowserVersion());
+    }
+    return args;
   }
 
   protected static void checkExecutable(File exe) {
