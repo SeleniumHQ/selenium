@@ -15,14 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 
 use crate::downloads::read_content_from_link;
 use crate::files::compose_driver_path_in_cache;
+use crate::is_unstable;
 use crate::manager::ARCH::ARM64;
-use crate::manager::OS::{MACOS, WINDOWS};
-use crate::manager::{detect_browser_version, get_major_version, BrowserManager};
+use crate::manager::OS::{LINUX, MACOS, WINDOWS};
+use crate::manager::{
+    detect_browser_version, format_one_arg, format_two_args, get_major_version, BrowserManager,
+    BrowserPath, BETA, DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES,
+    ENV_PROGRAM_FILES_X86, NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND,
+};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
@@ -51,28 +57,73 @@ impl BrowserManager for ChromeManager {
         self.browser_name
     }
 
-    fn get_browser_version(&self, os: &str) -> Option<String> {
-        let (shell, flag, args) = if WINDOWS.is(os) {
+    fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
+        HashMap::from([
             (
-                "cmd",
-                "/C",
-                vec![
-                    r#"wmic datafile where name='%PROGRAMFILES:\=\\%\\Google\\Chrome\\Application\\chrome.exe' get Version /value"#,
-                    r#"wmic datafile where name='%PROGRAMFILES(X86):\=\\%\\Google\\Chrome\\Application\\chrome.exe' get Version /value"#,
-                    r#"wmic datafile where name='%LOCALAPPDATA:\=\\%\\Google\\Chrome\\Application\\chrome.exe' get Version /value"#,
-                    r#"REG QUERY HKCU\Software\Google\Chrome\BLBeacon /v version"#,
-                ],
-            )
-        } else if MACOS.is(os) {
+                BrowserPath::new(WINDOWS, STABLE),
+                r#"\\Google\\Chrome\\Application\\chrome.exe"#,
+            ),
             (
-                "sh",
-                "-c",
-                vec![r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --version"#],
-            )
-        } else {
-            ("sh", "-c", vec!["google-chrome --version"])
-        };
-        detect_browser_version(self.browser_name, shell, flag, args)
+                BrowserPath::new(WINDOWS, BETA),
+                r#"\\Google\\Chrome Beta\\Application\\chrome.exe"#,
+            ),
+            (
+                BrowserPath::new(WINDOWS, DEV),
+                r#"\\Google\\Chrome Dev\\Application\\chrome.exe"#,
+            ),
+            (
+                BrowserPath::new(WINDOWS, NIGHTLY),
+                r#"\\Google\\Chrome SxS\\Application\\chrome.exe"#,
+            ),
+            (
+                BrowserPath::new(MACOS, STABLE),
+                r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"#,
+            ),
+            (
+                BrowserPath::new(MACOS, BETA),
+                r#"/Applications/Google\ Chrome\ Beta.app/Contents/MacOS/Google\ Chrome\ Beta"#,
+            ),
+            (
+                BrowserPath::new(MACOS, DEV),
+                r#"/Applications/Google\ Chrome\ Dev.app/Contents/MacOS/Google\ Chrome\ Dev"#,
+            ),
+            (
+                BrowserPath::new(MACOS, NIGHTLY),
+                r#"/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary"#,
+            ),
+            (BrowserPath::new(LINUX, STABLE), "google-chrome"),
+            (BrowserPath::new(LINUX, BETA), "google-chrome-beta"),
+            (BrowserPath::new(LINUX, DEV), "google-chrome-unstable"),
+        ])
+    }
+
+    fn get_browser_version(&self, os: &str, browser_version: &str) -> Option<String> {
+        match self.get_browser_path(os, browser_version) {
+            Some(browser_path) => {
+                let (shell, flag, args) = if WINDOWS.is(os) {
+                    let mut commands = vec![
+                        format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES, browser_path),
+                        format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES_X86, browser_path),
+                        format_two_args(WMIC_COMMAND, ENV_LOCALAPPDATA, browser_path),
+                    ];
+                    if !is_unstable(browser_version) {
+                        commands.push(format_one_arg(
+                            REG_QUERY,
+                            r#"HKCU\Software\Google\Chrome\BLBeacon"#,
+                        ));
+                    }
+                    ("cmd", "/C", commands)
+                } else {
+                    (
+                        "sh",
+                        "-c",
+                        vec![format_one_arg(DASH_DASH_VERSION, browser_path)],
+                    )
+                };
+                detect_browser_version(self.browser_name, shell, flag, args)
+            }
+            _ => None,
+        }
     }
 
     fn get_driver_name(&self) -> &str {

@@ -233,7 +233,7 @@ class ErrorHandler:
                             file = f"{file}:{line}"
                         meth = frame.get("methodName", "<anonymous>")
                         if "className" in frame:
-                            meth = "{}.{}".format(frame["className"], meth)
+                            meth = f"{frame['className']}.{meth}"
                         msg = "    at %s (%s)"
                         msg = msg % (meth, file)
                         stacktrace.append(msg)

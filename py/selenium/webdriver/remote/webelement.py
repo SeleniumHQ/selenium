@@ -74,9 +74,7 @@ class WebElement(BaseWebElement):
         self._id = id_
 
     def __repr__(self):
-        return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
-            type(self), self._parent.session_id, self._id
-        )
+        return f'<{type(self).__module__}.{type(self).__name__} (session="{self._parent.session_id}", element="{self._id}")>'
 
     @property
     def tag_name(self) -> str:
@@ -176,9 +174,7 @@ class WebElement(BaseWebElement):
         """
         if getAttribute_js is None:
             _load_js()
-        attribute_value = self.parent.execute_script(
-            "return (%s).apply(null, arguments);" % getAttribute_js, self, name
-        )
+        attribute_value = self.parent.execute_script(f"return ({getAttribute_js}).apply(null, arguments);", self, name)
         return attribute_value
 
     def is_selected(self) -> bool:
@@ -261,7 +257,7 @@ class WebElement(BaseWebElement):
         # Only go into this conditional for browsers that don't use the atom themselves
         if isDisplayed_js is None:
             _load_js()
-        return self.parent.execute_script("return (%s).apply(null, arguments);" % isDisplayed_js, self)
+        return self.parent.execute_script(f"return ({isDisplayed_js}).apply(null, arguments);", self)
 
     @property
     def location_once_scrolled_into_view(self) -> dict:
@@ -422,13 +418,13 @@ class WebElement(BaseWebElement):
         """
         if by == By.ID:
             by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
+            value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
-            value = ".%s" % value
+            value = f".{value}"
         elif by == By.NAME:
             by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+            value = f'[name="{value}"]'
 
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
 

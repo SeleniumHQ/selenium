@@ -195,8 +195,7 @@ class FirefoxProfile:
                         self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
                     except Exception:
                         warnings.warn(
-                            "(skipping) failed to json.loads existing preference: %s" % matches.group(1)
-                            + matches.group(2)
+                            f"(skipping) failed to json.loads existing preference: {matches.group(1) + matches.group(2)}"
                         )
         except Exception:
             # The profile given hasn't had any changes made, i.e no users.js
@@ -233,7 +232,7 @@ class FirefoxProfile:
         # determine the addon id
         addon_details = self._addon_details(addon)
         addon_id = addon_details.get("id")
-        assert addon_id, "The addon id could not be found: %s" % addon
+        assert addon_id, f"The addon id could not be found: {addon}"
 
         # copy the addon to the profile
         addon_path = os.path.join(self.extensionsDir, addon_id)
@@ -300,7 +299,7 @@ class FirefoxProfile:
             }
 
         if not os.path.exists(addon_path):
-            raise OSError("Add-on path does not exist: %s" % addon_path)
+            raise OSError(f"Add-on path does not exist: {addon_path}")
 
         try:
             if zipfile.is_zipfile(addon_path):
@@ -324,7 +323,7 @@ class FirefoxProfile:
                 with open(os.path.join(addon_path, "install.rdf"), encoding="utf-8") as f:
                     manifest = f.read()
             else:
-                raise OSError("Add-on path is neither an XPI nor a directory: %s" % addon_path)
+                raise OSError(f"Add-on path is neither an XPI nor a directory: {addon_path}")
         except (OSError, KeyError) as e:
             raise AddonFormatError(str(e), sys.exc_info()[2])
 

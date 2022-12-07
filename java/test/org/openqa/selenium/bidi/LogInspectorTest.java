@@ -19,6 +19,7 @@ package org.openqa.selenium.bidi;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
@@ -138,6 +139,7 @@ class LogInspectorTest {
     }
   }
 
+  @Disabled("Until browsers support subscribing to multiple contexts.")
   @Test
   void canListenToConsoleLogForABrowsingContext()
     throws ExecutionException, InterruptedException, TimeoutException {
@@ -163,6 +165,7 @@ class LogInspectorTest {
     }
   }
 
+  @Disabled("Until browsers support subscribing to multiple contexts.")
   @Test
   void canListenToJavascriptLogForABrowsingContext()
     throws ExecutionException, InterruptedException, TimeoutException {
@@ -184,6 +187,7 @@ class LogInspectorTest {
     }
   }
 
+  @Disabled("Until browsers support subscribing to multiple contexts.")
   @Test
   void canListenToJavascriptErrorLogForABrowsingContext()
     throws ExecutionException, InterruptedException, TimeoutException {
@@ -205,6 +209,7 @@ class LogInspectorTest {
     }
   }
 
+  @Disabled("Until browsers support subscribing to multiple contexts.")
   @Test
   void canListenToConsoleLogForMultipleBrowsingContexts()
     throws ExecutionException, InterruptedException, TimeoutException {
@@ -242,6 +247,7 @@ class LogInspectorTest {
     }
   }
 
+  @Disabled("Until browsers support subscribing to multiple contexts.")
   @Test
   void canListenToJavascriptLogForMultipleBrowsingContexts() throws InterruptedException {
     page = server.whereIs("/bidi/logEntryAdded.html");
@@ -278,6 +284,7 @@ class LogInspectorTest {
     }
   }
 
+  @Disabled("Until browsers support subscribing to multiple contexts.")
   @Test
   void canListenToJavascriptErrorLogForMultipleBrowsingContexts() throws InterruptedException {
     page = server.whereIs("/bidi/logEntryAdded.html");
@@ -314,6 +321,7 @@ class LogInspectorTest {
     }
   }
 
+  @Disabled("Until browsers support subscribing to multiple contexts.")
   @Test
   void canListenToAnyTypeOfLogForMultipleBrowsingContexts() throws InterruptedException {
     page = server.whereIs("/bidi/logEntryAdded.html");

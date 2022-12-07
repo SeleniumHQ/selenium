@@ -69,7 +69,7 @@ class Select:
 
         throws NoSuchElementException If there is no option with specified value in SELECT
         """
-        css = "option[value =%s]" % self._escape_string(value)
+        css = f"option[value ={self._escape_string(value)}]"
         opts = self._el.find_elements(By.CSS_SELECTOR, css)
         matched = False
         for opt in opts:
@@ -78,7 +78,7 @@ class Select:
                 return
             matched = True
         if not matched:
-            raise NoSuchElementException("Cannot locate option with value: %s" % value)
+            raise NoSuchElementException(f"Cannot locate option with value: {value}")
 
     def select_by_index(self, index):
         """Select the option at the given index. This is done by examining the "index" attribute of an
@@ -94,7 +94,7 @@ class Select:
             if opt.get_attribute("index") == match:
                 self._set_selected(opt)
                 return
-        raise NoSuchElementException("Could not locate element with index %d" % index)
+        raise NoSuchElementException(f"Could not locate element with index {index}")
 
     def select_by_visible_text(self, text):
         """Select all options that display text matching the argument. That is, when given "Bar" this
@@ -107,7 +107,7 @@ class Select:
 
          throws NoSuchElementException If there is no option with specified text in SELECT
         """
-        xpath = ".//option[normalize-space(.) = %s]" % self._escape_string(text)
+        xpath = f".//option[normalize-space(.) = {self._escape_string(text)}]"
         opts = self._el.find_elements(By.XPATH, xpath)
         matched = False
         for opt in opts:
@@ -121,7 +121,7 @@ class Select:
             if sub_string_without_space == "":
                 candidates = self.options
             else:
-                xpath = ".//option[contains(.,%s)]" % self._escape_string(sub_string_without_space)
+                xpath = f".//option[contains(.,{self._escape_string(sub_string_without_space)})]"
                 candidates = self._el.find_elements(By.XPATH, xpath)
             for candidate in candidates:
                 if text == candidate.text:
@@ -131,7 +131,7 @@ class Select:
                     matched = True
 
         if not matched:
-            raise NoSuchElementException("Could not locate element with visible text: %s" % text)
+            raise NoSuchElementException(f"Could not locate element with visible text: {text}")
 
     def deselect_all(self) -> None:
         """Clear all selected entries. This is only valid when the SELECT supports multiple selections.
@@ -156,13 +156,13 @@ class Select:
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
         matched = False
-        css = "option[value = %s]" % self._escape_string(value)
+        css = f"option[value = {self._escape_string(value)}]"
         opts = self._el.find_elements(By.CSS_SELECTOR, css)
         for opt in opts:
             self._unset_selected(opt)
             matched = True
         if not matched:
-            raise NoSuchElementException("Could not locate element with value: %s" % value)
+            raise NoSuchElementException(f"Could not locate element with value: {value}")
 
     def deselect_by_index(self, index):
         """Deselect the option at the given index. This is done by examining the "index" attribute of an
@@ -179,7 +179,7 @@ class Select:
             if opt.get_attribute("index") == str(index):
                 self._unset_selected(opt)
                 return
-        raise NoSuchElementException("Could not locate element with index %d" % index)
+        raise NoSuchElementException(f"Could not locate element with index {index}")
 
     def deselect_by_visible_text(self, text):
         """Deselect all options that display text matching the argument. That is, when given "Bar" this
@@ -193,13 +193,13 @@ class Select:
         if not self.is_multiple:
             raise NotImplementedError("You may only deselect options of a multi-select")
         matched = False
-        xpath = ".//option[normalize-space(.) = %s]" % self._escape_string(text)
+        xpath = f".//option[normalize-space(.) = {self._escape_string(text)}]"
         opts = self._el.find_elements(By.XPATH, xpath)
         for opt in opts:
             self._unset_selected(opt)
             matched = True
         if not matched:
-            raise NoSuchElementException("Could not locate element with visible text: %s" % text)
+            raise NoSuchElementException(f"Could not locate element with visible text: {text}")
 
     def _set_selected(self, option) -> None:
         if not option.is_selected():
@@ -216,7 +216,7 @@ class Select:
             substrings = value.split('"')
             result = ["concat("]
             for substring in substrings:
-                result.append('"%s"' % substring)
+                result.append(f'"{substring}"')
                 result.append(", '\"', ")
             result = result[0:-1]
             if value.endswith('"'):
@@ -224,9 +224,9 @@ class Select:
             return "".join(result) + ")"
 
         if '"' in value:
-            return "'%s'" % value
+            return f"'{value}'"
 
-        return '"%s"' % value
+        return f'"{value}"'
 
     def _get_longest_token(self, value: str) -> str:
         items = value.split(" ")

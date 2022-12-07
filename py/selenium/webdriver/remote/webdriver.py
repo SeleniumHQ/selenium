@@ -288,7 +288,7 @@ class WebDriver(BaseWebDriver):
         self.start_session(capabilities, browser_profile)
 
     def __repr__(self):
-        return '<{0.__module__}.{0.__name__} (session="{1}")>'.format(type(self), self.session_id)
+        return f'<{type(self).__module__}.{type(self).__name__} (session="{self.session_id}")>'
 
     def __enter__(self):
         return self
@@ -850,13 +850,13 @@ class WebDriver(BaseWebDriver):
 
         if by == By.ID:
             by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
+            value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
             value = "".join(".%s" % x for x in value.split(" "))
         elif by == By.NAME:
             by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+            value = f'[name="{value}"]'
 
         return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
 
@@ -879,13 +879,13 @@ class WebDriver(BaseWebDriver):
 
         if by == By.ID:
             by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
+            value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
             value = "".join(".%s" % x for x in value.split(" "))
         elif by == By.NAME:
             by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+            value = f'[name="{value}"]'
 
         # Return empty list if driver returns null
         # See https://github.com/SeleniumHQ/selenium/issues/4555

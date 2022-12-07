@@ -110,7 +110,7 @@ class RemoteConnection:
         }
 
         if parsed_url.username:
-            base64string = b64encode("{0.username}:{0.password}".format(parsed_url).encode())
+            base64string = b64encode(f"{parsed_url.username}:{parsed_url.password}".encode())
             headers.update({"Authorization": f"Basic {base64string.decode()}"})
 
         if keep_alive:
@@ -285,7 +285,7 @@ class RemoteConnection:
            its JSON payload.
         """
         command_info = self._commands[command]
-        assert command_info is not None, "Unrecognised command %s" % command
+        assert command_info is not None, f"Unrecognised command {command}"
         path = string.Template(command_info[1]).substitute(params)
         if isinstance(params, dict) and "sessionId" in params:
             del params["sessionId"]

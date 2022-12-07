@@ -15,13 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 
 use crate::downloads::read_redirect_from_link;
 use crate::files::compose_driver_path_in_cache;
 
-use crate::manager::{get_minor_version, BrowserManager};
+use crate::manager::{get_minor_version, BrowserManager, BrowserPath};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -51,7 +52,11 @@ impl BrowserManager for IExplorerManager {
         self.browser_name
     }
 
-    fn get_browser_version(&self, _os: &str) -> Option<String> {
+    fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
+        HashMap::new()
+    }
+
+    fn get_browser_version(&self, _os: &str, _browser_version: &str) -> Option<String> {
         None
     }
 
