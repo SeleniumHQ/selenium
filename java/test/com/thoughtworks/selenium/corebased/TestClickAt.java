@@ -18,6 +18,7 @@
 package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -25,7 +26,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WrapsDriver;
-import org.openqa.selenium.remote.CapabilityType;
 
 @Disabled()
 public class TestClickAt extends InternalSelenseTestBase {
@@ -118,6 +118,6 @@ public class TestClickAt extends InternalSelenseTestBase {
     }
 
     Capabilities capabilities = ((HasCapabilities) driver).getCapabilities();
-    return capabilities.is(CapabilityType.HAS_NATIVE_EVENTS);
+    return capabilities.is("nativeEvents");
   }
 }

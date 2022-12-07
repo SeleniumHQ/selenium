@@ -58,11 +58,6 @@ public interface CapabilityType {
   @Deprecated
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String HAS_NATIVE_EVENTS = "nativeEvents";
-  /**
    * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
    */
   @Deprecated
