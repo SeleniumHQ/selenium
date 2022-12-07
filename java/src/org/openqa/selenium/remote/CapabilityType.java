@@ -62,11 +62,6 @@ public interface CapabilityType {
    */
   @Deprecated
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
 
   String BROWSER_NAME = "browserName";
   String PLATFORM_NAME = "platformName";
