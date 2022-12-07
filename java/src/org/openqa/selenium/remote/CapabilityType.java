@@ -66,11 +66,6 @@ public interface CapabilityType {
    * @deprecated Non W3C compliant
    */
   @Deprecated
-  String HAS_TOUCHSCREEN = "hasTouchScreen";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
 
   /**
