@@ -17,24 +17,20 @@
 
 package org.openqa.selenium.logging;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
@@ -89,16 +85,6 @@ class AvailableLogsTest extends JupiterTestBase {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PROFILER))
         .describedAs("Profiler logs should not be enabled by default").isFalse();
-  }
-
-  @Test
-  @Ignore(value = SAFARI, reason = "Safari does not support profiler logs")
-  public void shouldBeAbleToEnableProfilerLog() {
-    Capabilities caps = new ImmutableCapabilities(ENABLE_PROFILING_CAPABILITY, true);
-    localDriver = new WebDriverBuilder().get(caps);
-    Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes.contains(LogType.PROFILER))
-        .describedAs("Profiler log should be enabled").isTrue();
   }
 
   @Test

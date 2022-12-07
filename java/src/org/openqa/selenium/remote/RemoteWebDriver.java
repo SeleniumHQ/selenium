@@ -205,11 +205,6 @@ public class RemoteWebDriver implements WebDriver,
 
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
 
-    boolean isProfilingEnabled = capabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
-    if (isProfilingEnabled) {
-      builder.add(LogType.PROFILER);
-    }
-
     LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();
     mergedLoggingPrefs.addPreferences((LoggingPreferences) capabilities.getCapability(LOGGING_PREFS));
 

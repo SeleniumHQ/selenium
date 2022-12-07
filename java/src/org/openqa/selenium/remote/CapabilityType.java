@@ -86,13 +86,6 @@ public interface CapabilityType {
   @Deprecated
   String LOGGING_PREFS = "loggingPrefs";
 
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
-
-
   String BROWSER_NAME = "browserName";
   String PLATFORM_NAME = "platformName";
   String BROWSER_VERSION = "browserVersion";
