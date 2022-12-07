@@ -20,15 +20,14 @@
 module Selenium
   module WebDriver
     class BiDi
-      class BaseLogEntry
-        attr_accessor :level, :text, :timestamp
+      class GenericLogEntry < BaseLogEntry
+        attr_accessor :type
 
-        def initialize(level:, text:, timestamp:)
-          @level = level
-          @text = text
-          @timestamp = timestamp
+        def initialize(level:, text:, timestamp:, type:, stack_trace:)
+          super(level: level, text: text, timestamp: timestamp, stack_trace: stack_trace)
+          @type = type
         end
-      end # BaseLogEntry
+      end # GenericLogEntry
     end # BiDi
   end # WebDriver
 end # Selenium

@@ -32,6 +32,28 @@ module Selenium
           Status.new(status['ready'], status['message'])
         end
 
+        def subscribe(events, browsing_contexts = nil)
+          events_list = events.instance_of?(Array) ? events : [events]
+          browsing_contexts_list = if browsing_contexts.nil?
+                                     nil
+                                   else
+                                     browsing_contexts.instance_of?(Array) ? browsing_contexts : [browsing_contexts]
+                                   end
+
+          @bidi.send_cmd("session.subscribe", events: events_list, contexts: browsing_contexts_list)
+        end
+
+        def unsubscribe(events, browsing_contexts = nil)
+          events_list = events.instance_of?(Array) ? events : [events]
+          browsing_contexts_list = if browsing_contexts.nil?
+                                     nil
+                                   else
+                                     browsing_contexts.instance_of?(Array) ? browsing_contexts : [browsing_contexts]
+                                   end
+
+          @bidi.send_cmd("session.unsubscribe", events: events_list, contexts: browsing_contexts_list)
+        end
+
       end # Session
     end # BiDi
   end # WebDriver

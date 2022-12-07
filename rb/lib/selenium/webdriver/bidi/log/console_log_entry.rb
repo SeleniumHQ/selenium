@@ -20,14 +20,16 @@
 module Selenium
   module WebDriver
     class BiDi
-      class GenericLogEntry < BaseLogEntry
-        attr_accessor :type
+      class ConsoleLogEntry < GenericLogEntry
+        attr_accessor :method, :realm, :args
 
-        def initialize(level:, text:, timestamp:, type:)
-          super(level: level, text: text, timestamp: timestamp)
-          @type = type
+        def initialize(level:, text:, timestamp:, type:, method:, realm:, args:, stack_trace:)
+          super(level: level, text: text, timestamp: timestamp, type: type, stack_trace: stack_trace)
+          @method = method
+          @realm = realm
+          @args = args
         end
-      end # GenericLogEntry
+      end # ConsoleLogEntry
     end # BiDi
   end # WebDriver
 end # Selenium
