@@ -19,17 +19,15 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.logging.LoggingPreferences;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -78,17 +76,6 @@ class DesiredCapabilitiesTest {
 
     assertThat(origCapabilities.getCapability("BrowserName")).isEqualTo("ie");
     assertThat(newCapabilities.getCapability("BrowserName")).isEqualTo("firefox");
-  }
-
-  @Test
-  void testExtractDebugLogLevelFromCapabilityMap() {
-    Map<String, Object> capabilitiesMap
-        = ImmutableMap.of(CapabilityType.LOGGING_PREFS, ImmutableMap.of("browser", "DEBUG"));
-
-    DesiredCapabilities caps = new DesiredCapabilities(capabilitiesMap);
-    LoggingPreferences prefs =
-        (LoggingPreferences) caps.getCapability(CapabilityType.LOGGING_PREFS);
-    assertThat(prefs.getLevel("browser")).isSameAs(Level.FINE);
   }
 
   @Test

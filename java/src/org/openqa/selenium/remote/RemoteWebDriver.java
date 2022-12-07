@@ -53,9 +53,7 @@ import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
@@ -93,7 +91,6 @@ import java.util.stream.Stream;
 import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
@@ -204,14 +201,6 @@ public class RemoteWebDriver implements WebDriver,
     executeMethod = new RemoteExecuteMethod(this);
 
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
-
-    LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();
-    mergedLoggingPrefs.addPreferences((LoggingPreferences) capabilities.getCapability(LOGGING_PREFS));
-
-    if (!mergedLoggingPrefs.getEnabledLogTypes().contains(LogType.CLIENT) ||
-        mergedLoggingPrefs.getLevel(LogType.CLIENT) != Level.OFF) {
-      builder.add(LogType.CLIENT);
-    }
 
     Set<String> logTypesToInclude = builder.build();
 

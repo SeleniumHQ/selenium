@@ -68,14 +68,6 @@ public interface CapabilityType {
   @Deprecated
   String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
 
-  /**
-   * @deprecated Non W3C compliant
-   * Use {@link org.openqa.selenium.chrome.ChromeOptions#LOGGING_PREFS} or
-   * Use {@link org.openqa.selenium.edge.EdgeOptions#LOGGING_PREFS}
-   */
-  @Deprecated
-  String LOGGING_PREFS = "loggingPrefs";
-
   String BROWSER_NAME = "browserName";
   String PLATFORM_NAME = "platformName";
   String BROWSER_VERSION = "browserVersion";
