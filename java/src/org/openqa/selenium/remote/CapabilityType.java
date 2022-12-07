@@ -58,11 +58,6 @@ public interface CapabilityType {
   @Deprecated
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   /**
-   * @deprecated Use {@link CapabilityType#ACCEPT_INSECURE_CERTS}
-   */
-  @Deprecated
-  String ACCEPT_SSL_CERTS = "acceptSslCerts";
-  /**
    * @deprecated Non W3C compliant
    */
   @Deprecated

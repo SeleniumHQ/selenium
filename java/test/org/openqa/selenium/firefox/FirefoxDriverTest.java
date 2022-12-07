@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentMatchers;
@@ -31,7 +32,6 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
 import org.openqa.selenium.remote.CapabilityType;
@@ -64,16 +64,16 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
@@ -358,13 +358,10 @@ class FirefoxDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canBlockInvalidSslCertificates() {
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setAcceptUntrustedCertificates(false);
-
-    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setProfile(profile));
+  public void canBlockInsecureCerts() {
+    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setAcceptInsecureCerts(false));
     Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
-    assertThat(caps.is(ACCEPT_SSL_CERTS)).isFalse();
+    assertThat(caps.is(ACCEPT_INSECURE_CERTS)).isFalse();
   }
 
   @Test
