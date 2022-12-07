@@ -45,6 +45,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.interactions.Interactive;
@@ -442,6 +444,10 @@ public class RemoteWebDriver implements WebDriver,
     try {
       if (this instanceof HasDevTools) {
         ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::close);
+      }
+
+      if (this instanceof HasBiDi) {
+        ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
       }
 
       execute(DriverCommand.QUIT);
