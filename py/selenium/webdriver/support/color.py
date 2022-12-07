@@ -150,11 +150,11 @@ class Color:
 
     @property
     def rgb(self) -> str:
-        return "rgb(%d, %d, %d)" % (self.red, self.green, self.blue)
+        return f"rgb({self.red}, {self.green}, {self.blue})"
 
     @property
     def rgba(self) -> str:
-        return "rgba(%d, %d, %d, %s)" % (self.red, self.green, self.blue, self.alpha)
+        return f"rgba({self.red}, {self.green}, {self.blue}, {self.alpha})"
 
     @property
     def hex(self) -> str:
@@ -175,7 +175,7 @@ class Color:
         return hash((self.red, self.green, self.blue, self.alpha))
 
     def __repr__(self) -> str:
-        return "Color(red=%d, green=%d, blue=%d, alpha=%s)" % (self.red, self.green, self.blue, self.alpha)
+        return f"Color(red={self.red}, green={self.green}, blue={self.blue}, alpha={self.alpha})"
 
     def __str__(self) -> str:
         return f"Color: {self.rgba}"

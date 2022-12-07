@@ -30,7 +30,7 @@ class PointerInput(InputDevice):
     def __init__(self, kind, name):
         super().__init__()
         if kind not in POINTER_KINDS:
-            raise InvalidArgumentException("Invalid PointerInput kind '%s'" % kind)
+            raise InvalidArgumentException(f"Invalid PointerInput kind '{kind}'")
         self.type = POINTER
         self.kind = kind
         self.name = name

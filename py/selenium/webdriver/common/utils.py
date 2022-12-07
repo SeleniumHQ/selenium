@@ -93,8 +93,8 @@ def join_host_port(host: str, port: int) -> str:
 
     """
     if ":" in host and not host.startswith("["):
-        return "[%s]:%d" % (host, port)
-    return "%s:%d" % (host, port)
+        return f"[{host}]:{port}"
+    return f"{host}:{port}"
 
 
 def is_connectable(port: int, host: Optional[str] = "localhost") -> bool:
@@ -127,7 +127,7 @@ def is_url_connectable(port: Union[int, str]) -> bool:
     from urllib import request as url_request
 
     try:
-        res = url_request.urlopen("http://127.0.0.1:%s/status" % port)
+        res = url_request.urlopen(f"http://127.0.0.1:{port}/status")
         return res.getcode() == 200
     except Exception:
         return False
