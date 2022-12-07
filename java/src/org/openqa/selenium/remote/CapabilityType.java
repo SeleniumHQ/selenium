@@ -43,16 +43,6 @@ public interface CapabilityType {
   @Deprecated
   String VERSION = "version";
   /**
-   * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
-   */
-  @Deprecated
-  String SUPPORTS_ALERTS = "handlesAlerts";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String SUPPORTS_SQL_DATABASE = "databaseEnabled";
-  /**
    * @deprecated Non W3C compliant
    */
   @Deprecated
