@@ -1,5 +1,6 @@
 org.openqa.selenium
 org.openqa.selenium.bidi
+org.openqa.selenium.bidi.browsingcontext
 org.openqa.selenium.bidi.log
 org.openqa.selenium.chrome
 org.openqa.selenium.chromium
