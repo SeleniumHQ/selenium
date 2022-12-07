@@ -1,3 +1,11 @@
+v4.7.1
+======
+* Supported CDP versions: 85, 106, 107, 108
+* Add close method to JDK 11 client. Ensure close methods for Http client is called. (#11345)
+* Don’t specify content length when pulling images (#11343)
+* Allow arguments to be passed in Node flag "driver-configuration" (#11367)
+* Ensure all states of StartOrDie are handled (#11297)
+
 v4.7.0
 ======
 * Supported CDP versions: 85, 106, 107, 108
