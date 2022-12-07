@@ -1,0 +1,16 @@
+diff --git a/pkg/private/tar/build_tar.py b/pkg/private/tar/build_tar.py
+index ab16610d..b6b75bd7 100644
+--- a/pkg/private/tar/build_tar.py
++++ b/pkg/private/tar/build_tar.py
+@@ -309,7 +309,10 @@ def add_manifest_entry(self, entry_list, file_attributes):
+     elif entry.entry_type == manifest.ENTRY_IS_EMPTY_FILE:
+       self.add_empty_file(entry.dest, **attrs)
+     else:
+-      self.add_file(entry.src, entry.dest, **attrs)
++      if os.path.isdir(entry.src):
++        self.add_tree(entry.src, entry.dest, **attrs)
++      else:
++        self.add_file(entry.src, entry.dest, **attrs)
+ 
+ 
+ def main():
