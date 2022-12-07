@@ -6,6 +6,7 @@ load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
+load("//py/private:import.bzl", "py_import")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
 compile_pip_requirements(
@@ -164,6 +165,7 @@ pkg_files(
         "README.rst",
         "setup.py",
         ":selenium-pkg",
+        ":selenium-pkginfo",
     ],
     strip_prefix = strip_prefix.from_pkg(),
 )
@@ -174,6 +176,18 @@ pkg_tar(
     extension = "tar.gz",
     mode = "0644",
     package_file_name = "selenium-%s.tar.gz" % SE_VERSION,
+)
+
+genrule(
+    name = "selenium-pkginfo",
+    srcs = [":selenium-wheel-lib"],
+    cmd = "cp $(location :selenium-wheel-lib)/selenium-%s.dist-info/METADATA $@" % SE_VERSION,
+    outs = ["PKG-INFO"],
+)
+
+py_import(
+    name = "selenium-wheel-lib",
+    wheel = ":selenium-wheel",
 )
 
 py_wheel(
