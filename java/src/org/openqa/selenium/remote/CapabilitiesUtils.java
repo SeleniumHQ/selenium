@@ -22,9 +22,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.session.CapabilitiesFilter;
 import org.openqa.selenium.remote.session.CapabilityTransform;
@@ -32,9 +29,7 @@ import org.openqa.selenium.remote.session.ProxyTransform;
 import org.openqa.selenium.remote.session.StripAnyPlatform;
 import org.openqa.selenium.remote.session.W3CPlatformNameNormaliser;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,22 +43,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.PROXY;
-
 public class CapabilitiesUtils {
 
   private static final Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
 
   private CapabilitiesUtils() {
     // Helper class
-  }
-
-  public static Stream<Capabilities> makeW3CSafe(Capabilities possiblyInvalidCapabilities) {
-    Require.nonNull("Capabilities", possiblyInvalidCapabilities);
-
-    return makeW3CSafe(possiblyInvalidCapabilities.asMap()).map(ImmutableCapabilities::new);
   }
 
   public static Stream<Map<String, Object>> makeW3CSafe(Map<String, Object> possiblyInvalidCapabilities) {
@@ -75,13 +60,12 @@ public class CapabilitiesUtils {
     // then add magic to generate each of the w3c capabilities. For the sake of simplicity, we're
     // going to make the (probably wrong) assumption we can hold all of the firstMatch values and
     // alwaysMatch value in memory at the same time.
-    Map<String, Object> oss = convertOssToW3C(possiblyInvalidCapabilities);
     Stream<Map<String, Object>> fromOss;
     Set<String> usedKeys = new HashSet<>();
 
     // Are there any values we care want to pull out into a mapping of their own?
     List<Map<String, Object>> firsts = adapters.stream()
-      .map(adapter -> adapter.apply(oss))
+      .map(adapter -> adapter.apply(possiblyInvalidCapabilities))
       .filter(Objects::nonNull)
       .filter(map -> !map.isEmpty())
       .map(
@@ -97,7 +81,7 @@ public class CapabilitiesUtils {
     }
 
     // Are there any remaining unused keys?
-    Map<String, Object> always = oss.entrySet().stream()
+    Map<String, Object> always = possiblyInvalidCapabilities.entrySet().stream()
       .filter(entry -> !usedKeys.contains(entry.getKey()))
       .filter(entry -> entry.getValue() != null)
       .collect(ImmutableMap.toImmutableMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -114,42 +98,7 @@ public class CapabilitiesUtils {
     return fromOss;
   }
 
-  private static Map<String, Object> convertOssToW3C(Map<String, Object> capabilities) {
-    Map<String, Object> toReturn = new TreeMap<>(capabilities);
-
-    // Platform name
-    if (capabilities.containsKey(PLATFORM) && !capabilities.containsKey(PLATFORM_NAME)) {
-      toReturn.put(PLATFORM_NAME, String.valueOf(capabilities.get(PLATFORM)));
-    }
-
-    if (capabilities.containsKey(PROXY)) {
-      Map<String, Object> proxyMap = getProxyFromCapabilities(capabilities);
-      if (proxyMap.containsKey("noProxy")) {
-        Map<String, Object> w3cProxyMap = new HashMap<>(proxyMap);
-        Object rawData = proxyMap.get("noProxy");
-        if (rawData instanceof String) {
-          w3cProxyMap.put("noProxy", Arrays.asList(((String) rawData).split(",\\s*")));
-        }
-        toReturn.put(CapabilityType.PROXY, w3cProxyMap);
-      }
-    }
-
-    return toReturn;
-  }
-
-  private static Map<String, Object> getProxyFromCapabilities(Map<String, Object> capabilities) {
-    Object rawProxy = capabilities.get(CapabilityType.PROXY);
-    if (rawProxy instanceof Proxy) {
-      return ((Proxy) rawProxy).toJson();
-    } else if (rawProxy instanceof Map) {
-      //noinspection unchecked
-      return (Map<String, Object>) rawProxy;
-    } else {
-      return new HashMap<>();
-    }
-  }
-
-  private static Map<String, Object> applyTransforms(Map<String, Object> caps) {
+  public static Map<String, Object> applyTransforms(Map<String, Object> caps) {
     Queue<Map.Entry<String, Object>> toExamine = new LinkedList<>(caps.entrySet());
     Set<String> seenKeys = new HashSet<>();
     Map<String, Object> toReturn = new TreeMap<>();
