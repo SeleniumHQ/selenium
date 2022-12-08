@@ -35,7 +35,7 @@ module Selenium
 
             driver.navigate.to url_for(@page)
             driver.find_element(id: 'consoleLog').click
-            sleep 0.5
+            wait.until { !log_entry.nil? }
 
             expect(log_entry).to have_attributes(
               text: "Hello, world!",
@@ -57,7 +57,7 @@ module Selenium
 
             driver.navigate.to url_for(@page)
             driver.find_element(id: 'jsException').click
-            sleep 0.5
+            wait.until { !log_entry.nil? }
 
             expect(log_entry).to have_attributes(
               text: "Error: Not working",
@@ -75,7 +75,7 @@ module Selenium
 
             driver.navigate.to url_for(@page)
             driver.find_element(id: 'jsException').click
-            sleep 0.5
+            wait.until { !log_entry.nil? }
 
             expect(log_entry).to have_attributes(
               text: "Error: Not working",
@@ -93,7 +93,7 @@ module Selenium
 
             driver.navigate.to url_for(@page)
             driver.find_element(id: 'consoleError').click
-            sleep 0.5
+            wait.until { !log_entry.nil? }
 
             expect(log_entry["text"]).to eq("I am console error")
             expect(log_entry["type"]).to eq("console")
@@ -109,7 +109,7 @@ module Selenium
 
             driver.navigate.to url_for(@page)
             driver.find_element(id: 'jsException').click
-            sleep 0.5
+            wait.until { !log_entry.nil? }
 
             stack_trace = log_entry.stack_trace
 

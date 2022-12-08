@@ -53,9 +53,9 @@ module Selenium
           log_listeners[:console] << block
           return if enabled
 
-          on(:entry_added) do |params|
+          on_log do |params|
             type = params["type"]
-            __send__(:console_log_events, params) if type.eql?("console")
+            console_log_events(params) if type.eql?("console")
           end
         end
 
@@ -64,9 +64,9 @@ module Selenium
           log_listeners[:javascript] << block
           return if enabled
 
-          on(:entry_added) do |params|
+          on_log do |params|
             type = params["type"]
-            __send__(:javascript_log_events, params) if type.eql?("javascript")
+            javascript_log_events(params) if type.eql?("javascript")
           end
         end
 
@@ -76,11 +76,11 @@ module Selenium
           log_listeners[:javascript] << block
           return if enabled
 
-          on(:entry_added) do |params|
+          on_log do |params|
             type = params["type"]
             level = params["level"]
 
-            __send__(:javascript_log_events, params) if type.eql?("javascript") && level.eql?(LOG_LEVEL[:ERROR])
+            javascript_log_events(params) if type.eql?("javascript") && level.eql?(LOG_LEVEL[:ERROR])
           end
         end
 

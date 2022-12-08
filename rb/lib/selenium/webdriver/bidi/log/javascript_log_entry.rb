@@ -27,7 +27,7 @@ module Selenium
           super(level: level, text: text, timestamp: timestamp, type: type, stack_trace: stack_trace)
           @type = "javascript"
         end
-      end # ConsoleLogEntry
+      end # JavascriptLogEntry
     end # BiDi
   end # WebDriver
 end # Selenium
