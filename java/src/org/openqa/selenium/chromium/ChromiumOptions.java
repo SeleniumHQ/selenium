@@ -280,7 +280,9 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   protected void mergeInPlace(Capabilities capabilities) {
     Require.nonNull("Capabilities to merge", capabilities);
 
-    capabilities.getCapabilityNames().forEach(name -> {
+    Set<String> capabilityNames = capabilities.getCapabilityNames();
+
+    for (String name : capabilityNames) {
       if (!name.equals("binary") && !name.equals("extensions") && !name.equals("args")) {
         setCapability(name, capabilities.getCapability(name));
         return;
@@ -318,7 +320,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
           setBinary((File) binary);
         }
       }
-    });
+    }
 
     if (capabilities instanceof ChromiumOptions) {
       ChromiumOptions<?> options = (ChromiumOptions<?>) capabilities;
