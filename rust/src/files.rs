@@ -22,30 +22,32 @@ use std::io;
 use std::path::MAIN_SEPARATOR;
 use std::path::{Path, PathBuf};
 
+use crate::config::OS;
 use directories::BaseDirs;
 use flate2::read::GzDecoder;
 use regex::Regex;
 use tar::Archive;
 use zip::ZipArchive;
 
-use crate::manager::OS::WINDOWS;
+use crate::config::OS::WINDOWS;
 
 const CACHE_FOLDER: &str = ".cache/selenium";
 const ZIP: &str = "zip";
 const GZ: &str = "gz";
 const XML: &str = "xml";
 
-pub fn clear_cache() {
-    let cache_path = compose_cache_folder();
-    if cache_path.exists() {
-        log::debug!("Clearing cache at: {}", cache_path.display());
-        fs::remove_dir_all(&cache_path).unwrap_or_else(|err| {
-            log::warn!(
-                "The cache {} cannot be cleared: {}",
-                cache_path.display(),
-                err
-            )
-        });
+#[derive(Hash, Eq, PartialEq, Debug)]
+pub struct BrowserPath {
+    os: OS,
+    channel: String,
+}
+
+impl BrowserPath {
+    pub fn new(os: OS, channel: &str) -> BrowserPath {
+        BrowserPath {
+            os,
+            channel: channel.to_string(),
+        }
     }
 }
 

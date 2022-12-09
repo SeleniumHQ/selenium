@@ -15,21 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use crate::config::ManagerConfig;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 
+use crate::config::ARCH::{ARM64, X32};
+use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::read_redirect_from_link;
-use crate::files::compose_driver_path_in_cache;
-use crate::manager::ARCH::{ARM64, X32};
-use crate::manager::OS::{LINUX, MACOS, WINDOWS};
-use crate::manager::{
-    detect_browser_version, format_one_arg, format_two_args, get_minor_version, BrowserManager,
-    BrowserPath, BETA, DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
-    STABLE, WMIC_COMMAND,
-};
+use crate::files::{compose_driver_path_in_cache, BrowserPath};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
+};
+use crate::{
+    SeleniumManager, BETA, DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
+    STABLE, WMIC_COMMAND,
 };
 
 const BROWSER_NAME: &str = "firefox";
@@ -40,6 +40,7 @@ const LATEST_RELEASE: &str = "latest";
 pub struct FirefoxManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
+    pub config: ManagerConfig,
 }
 
 impl FirefoxManager {
@@ -47,11 +48,12 @@ impl FirefoxManager {
         Box::new(FirefoxManager {
             browser_name: BROWSER_NAME,
             driver_name: DRIVER_NAME,
+            config: ManagerConfig::default(),
         })
     }
 }
 
-impl BrowserManager for FirefoxManager {
+impl SeleniumManager for FirefoxManager {
     fn get_browser_name(&self) -> &str {
         self.browser_name
     }
@@ -97,22 +99,26 @@ impl BrowserManager for FirefoxManager {
         ])
     }
 
-    fn get_browser_version(&self, os: &str, browser_version: &str) -> Option<String> {
-        match self.get_browser_path(os, browser_version) {
+    fn discover_browser_version(&self) -> Option<String> {
+        match self.get_browser_path() {
             Some(browser_path) => {
-                let (shell, flag, args) = if WINDOWS.is(os) {
+                let (shell, flag, args) = if WINDOWS.is(self.get_os()) {
                     (
                         "cmd",
                         "/C",
                         vec![
-                            format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES, browser_path),
-                            format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES_X86, browser_path),
+                            self.format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES, browser_path),
+                            self.format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES_X86, browser_path),
                         ],
                     )
                 } else {
-                    ("sh", "-c", vec![format_one_arg(DASH_VERSION, browser_path)])
+                    (
+                        "sh",
+                        "-c",
+                        vec![self.format_one_arg(DASH_VERSION, browser_path)],
+                    )
                 };
-                detect_browser_version(self.browser_name, shell, flag, args)
+                self.detect_browser_version(shell, flag, args)
             }
             _ => None,
         }
@@ -122,11 +128,8 @@ impl BrowserManager for FirefoxManager {
         self.driver_name
     }
 
-    fn get_driver_version(
-        &self,
-        browser_version: &str,
-        _os: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
+        let browser_version = self.get_browser_version();
         let mut metadata = get_metadata();
 
         match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
@@ -156,15 +159,15 @@ impl BrowserManager for FirefoxManager {
         }
     }
 
-    fn get_driver_url(
-        &self,
-        driver_version: &str,
-        os: &str,
-        arch: &str,
-    ) -> Result<String, Box<dyn Error>> {
+    fn get_driver_url(&self) -> Result<String, Box<dyn Error>> {
+        let driver_version = self.get_driver_version();
+        let os = self.get_os();
+        let arch = self.get_arch();
+
         // As of 0.32.0, geckodriver ships aarch64 binaries for Linux and Windows
         // https://github.com/mozilla/geckodriver/releases/tag/v0.32.0
-        let minor_driver_version = get_minor_version(driver_version)?
+        let minor_driver_version = self
+            .get_minor_version(driver_version)?
             .parse::<i32>()
             .unwrap_or_default();
         let driver_label = if WINDOWS.is(os) {
@@ -194,8 +197,12 @@ impl BrowserManager for FirefoxManager {
         ))
     }
 
-    fn get_driver_path_in_cache(&self, driver_version: &str, os: &str, arch: &str) -> PathBuf {
-        let minor_driver_version = get_minor_version(driver_version)
+    fn get_driver_path_in_cache(&self) -> PathBuf {
+        let driver_version = self.get_driver_version();
+        let os = self.get_os();
+        let arch = self.get_arch();
+        let minor_driver_version = self
+            .get_minor_version(driver_version)
             .unwrap_or_default()
             .parse::<i32>()
             .unwrap_or_default();
@@ -222,6 +229,14 @@ impl BrowserManager for FirefoxManager {
         };
         compose_driver_path_in_cache(self.driver_name, os, arch_folder, driver_version)
     }
+
+    fn get_config(&self) -> &ManagerConfig {
+        &self.config
+    }
+
+    fn set_config(&mut self, config: ManagerConfig) {
+        self.config = config;
+    }
 }
 
 #[cfg(test)]
@@ -230,7 +245,7 @@ mod unit_tests {
 
     #[test]
     fn test_driver_url() {
-        let firefox_manager = FirefoxManager::new();
+        let mut firefox_manager = FirefoxManager::new();
 
         let data = vec!(
             vec!("0.32.0", "linux", "x86", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux32.tar.gz"),
@@ -254,9 +269,10 @@ mod unit_tests {
         );
 
         data.iter().for_each(|d| {
-            let driver_url = firefox_manager
-                .get_driver_url(d.first().unwrap(), d.get(1).unwrap(), d.get(2).unwrap())
-                .unwrap();
+            firefox_manager.set_driver_version(d.first().unwrap().to_string());
+            firefox_manager.set_os(d.get(1).unwrap().to_string());
+            firefox_manager.set_arch(d.get(2).unwrap().to_string());
+            let driver_url = firefox_manager.get_driver_url().unwrap();
             assert_eq!(d.get(3).unwrap().to_string(), driver_url);
         });
     }
