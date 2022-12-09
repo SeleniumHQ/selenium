@@ -280,7 +280,46 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   protected void mergeInPlace(Capabilities capabilities) {
     Require.nonNull("Capabilities to merge", capabilities);
 
-    capabilities.getCapabilityNames().forEach(name -> setCapability(name, capabilities.getCapability(name)));
+    capabilities.getCapabilityNames().forEach(name -> {
+      if (!name.equals("binary") && !name.equals("extensions") && !name.equals("args")) {
+        setCapability(name, capabilities.getCapability(name));
+        return;
+      }
+
+      if (name.equals("args") && capabilities.getCapability(name) != null) {
+        List<String> arguments = (List<String>) (capabilities.getCapability(("args")));
+        arguments.forEach(arg -> {
+          if (!args.contains(arg)) {
+            addArguments(arg);
+          }
+        });
+        return;
+      }
+
+      if (name.equals("extensions") && capabilities.getCapability(name) != null) {
+        List<Object> extensionList = (List<Object>) (capabilities.getCapability(("extensions")));
+        extensionList.forEach(extension -> {
+          if (!extensions.contains(extension)) {
+            if (extension instanceof File) {
+              addExtensions((File) extension);
+            } else if (extension instanceof String) {
+              addEncodedExtensions((String) extension);
+            }
+          }
+        });
+        return;
+      }
+
+      if (name.equals("binary") && capabilities.getCapability(name) != null) {
+        Object binary = capabilities.getCapability("binary");
+        if (binary instanceof String) {
+          setBinary((String) binary);
+        } else if (binary instanceof File) {
+          setBinary((File) binary);
+        }
+      }
+    });
+
     if (capabilities instanceof ChromiumOptions) {
       ChromiumOptions<?> options = (ChromiumOptions<?>) capabilities;
       for (String arg : options.args) {

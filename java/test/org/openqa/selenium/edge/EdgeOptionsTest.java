@@ -31,6 +31,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -135,6 +136,67 @@ class EdgeOptionsTest {
 
     assertThat(map).asInstanceOf(MAP)
       .extractingByKey(ACCEPT_INSECURE_CERTS).isExactlyInstanceOf(Boolean.class);
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("extensions").asInstanceOf(LIST)
+      .containsExactly(ext1Encoded, ext2);
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("binary").asInstanceOf(STRING)
+      .isEqualTo(binary.getPath());
+  }
+
+  @Test
+  void mergingOptionsWithOptionsAsMutableCapabilities() {
+    File ext1 = TestUtilities.createTmpFile("ext1");
+    String ext1Encoded = Base64.getEncoder().encodeToString("ext1".getBytes());
+    String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
+    ArrayList<Object> extensions = new ArrayList<>();
+    extensions.add(ext1);
+    extensions.add(ext2);
+
+    ArrayList<Object> args = new ArrayList<>();
+    args.add("silent");
+    args.add("verbose");
+
+    MutableCapabilities browserCaps = new MutableCapabilities();
+
+    File binary = TestUtilities.createTmpFile("binary");
+
+    browserCaps.setCapability("binary", binary.getPath());
+    browserCaps.setCapability("opt1", "val1");
+    browserCaps.setCapability("opt2", "val4");
+    browserCaps.setCapability("args", args);
+    browserCaps.setCapability("extensions", extensions);
+
+    MutableCapabilities one = new MutableCapabilities();
+    one.setCapability(EdgeOptions.CAPABILITY, browserCaps);
+
+    EdgeOptions two = new EdgeOptions();
+    two.addArguments("verbose");
+    two.setExperimentalOption("opt2", "val2");
+    two.setExperimentalOption("opt3", "val3");
+    two = two.merge(one);
+
+    Map<String, Object> map = two.asMap();
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+
+    assertThat(map).asInstanceOf(MAP)
+      .containsEntry("opt1", "val1");
+
+    assertThat(map).asInstanceOf(MAP)
+      .containsEntry("opt2", "val4");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .containsEntry("opt2", "val2")
+      .containsEntry("opt3", "val3");
 
     assertThat(map).asInstanceOf(MAP)
       .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
