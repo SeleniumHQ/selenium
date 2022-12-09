@@ -40,6 +40,7 @@ const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
 const webElement = require('./webelement')
 const { isObject } = require('./util')
+const BIDI = require("../bidi/bidi");
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1269,6 +1270,12 @@ class WebDriver {
 
   async getCdpTargets() {
     this._cdpConnection.execute('Target.getTargets')
+  }
+
+  async getBidi() {
+    const caps = await this.getCapabilities()
+    let WebSocketUrl = caps['map_'].get('webSocketUrl');
+    return new BIDI(WebSocketUrl);
   }
 
   /**

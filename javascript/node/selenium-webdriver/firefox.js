@@ -424,6 +424,14 @@ class Options extends Capabilities {
   enableDebugger() {
     return this.set('moz:debuggerAddress', true)
   }
+
+  /**
+   * Enable bidi connection
+   * @returns {!Capabilities}
+   */
+  enableBidi() {
+    return this.set('webSocketUrl', true)
+  }
 }
 
 /**
