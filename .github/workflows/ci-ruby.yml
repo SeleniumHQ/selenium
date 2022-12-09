@@ -41,6 +41,7 @@ jobs:
         with:
           workflow: ruby
           key: gem-${{ matrix.target }}
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Build Gems
         uses: ./.github/actions/bazel
         with:
@@ -68,6 +69,7 @@ jobs:
         with:
           workflow: ruby
           key: ${{ matrix.target }}
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Setup Fluxbox
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get -y install fluxbox
@@ -114,6 +116,7 @@ jobs:
         with:
           workflow: ruby
           key: ${{ matrix.target }}
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Setup Edge
         uses: browser-actions/setup-edge@latest
         with:
@@ -146,6 +149,7 @@ jobs:
         with:
           workflow: ruby
           key: ${{ matrix.target }}
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Setup Fluxbox
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get -y install fluxbox
@@ -183,6 +187,7 @@ jobs:
         with:
           workflow: ruby
           key: docs
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Run docs tests
         uses: ./.github/actions/bazel
         with:
@@ -200,6 +205,7 @@ jobs:
         with:
           workflow: ruby
           key: lint
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Run lint tests
         uses: ./.github/actions/bazel
         with:
@@ -225,6 +231,7 @@ jobs:
         with:
           workflow: ruby
           key: unit-test-${{ matrix.ruby }}
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Set Ruby version to ${{ matrix.ruby }}
         run: echo 'RUBY_VERSION = "${{ matrix.ruby }}"' > rb/ruby_version.bzl
       - name: Run unit tests

@@ -34,15 +34,11 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v3
+        uses: ./.github/actions/cache-bazel
         with:
-          path: |
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-node-tests-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-node-tests-
-            ${{ runner.os }}-bazel-build-
+          workflow: bazel
+          key: node-tests
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -86,14 +82,11 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: actions/cache@v3
+        uses: ./.github/actions/cache-bazel
         with:
-          path: |
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-atom-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-atom-firefox-tests-
+          workflow: bazel
+          key: atom-firefox-tests
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:

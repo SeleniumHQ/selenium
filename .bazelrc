@@ -38,6 +38,12 @@ build:linux --workspace_status_command=scripts/build-info.sh
 build:macos --workspace_status_command=scripts/build-info.sh
 build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"
 
+# Enable read-only public remote cache.
+# To enable write mode, add the following to your .bazelrc.local:
+#   build --remote_upload_local_results=true --google_credentials=<path-to-json-key>
+
+build --remote_cache=https://storage.googleapis.com/seleniumhq-bazel-remote-cache --remote_upload_local_results=false
+
 # Make sure we get something helpful when tests fail
 
 build --verbose_failures

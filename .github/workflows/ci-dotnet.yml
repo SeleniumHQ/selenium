@@ -45,6 +45,7 @@ jobs:
         with:
           workflow: dotnet
           key: ${{ matrix.driver }}-${{ matrix.framework }}
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Setup dotnet tests
         uses: ./.github/actions/bazel
         with:

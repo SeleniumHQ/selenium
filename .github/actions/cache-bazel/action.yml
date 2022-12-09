@@ -7,6 +7,9 @@ inputs:
   key:
     description: Extra cache key
     required: true
+  gcs-key:
+    description: GCS Key
+    required: false
 runs:
   using: "composite"
   steps:
@@ -29,7 +32,6 @@ runs:
           D:\_bazel\external\bundle
           D:\_bazel\external\rules_ruby
           D:\_bazel\external\rules_ruby_dist
-          D:\_bazel-disk
           D:\_bazel-repo
         key: ${{ runner.os }}-bazel-${{ inputs.workflow }}-${{ inputs.key }}-${{ hashFiles('**/BUILD.bazel') }}
         restore-keys: |
@@ -40,9 +42,18 @@ runs:
       with:
         path: |
           /tmp/bazel/external
-          ~/.cache/bazel-disk
           ~/.cache/bazel-repo
         key: ${{ runner.os }}-bazel-${{ inputs.workflow }}-${{ inputs.key }}-${{ hashFiles('**/BUILD.bazel') }}
         restore-keys: |
           ${{ runner.os }}-bazel-${{ inputs.workflow }}-${{ inputs.key }}-
           ${{ runner.os }}-bazel-${{ inputs.workflow }}-
+    - run: |
+        echo '${{ inputs.gcs-key }}' >> gcs.json
+        echo "build --remote_upload_local_results=true --google_credentials=gcs.json" >> .bazelrc
+      if: github.ref == 'refs/head/trunk' && runner.os != 'Windows'
+      shell: bash
+    - run: |
+        echo ${{ inputs.gcs-key }}>>gcs.json
+        echo "build --remote_upload_local_results=true --google_credentials=gcs.json">>.bazelrc
+      if: github.ref == 'refs/head/trunk' && runner.os == 'Windows'
+      shell: cmd
