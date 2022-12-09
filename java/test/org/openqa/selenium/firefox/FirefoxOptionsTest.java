@@ -58,7 +58,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -443,10 +442,6 @@ class FirefoxOptionsTest {
 
   @Test
   void mergingOptionsWithOptionsAsMutableCapabilities() throws IOException {
-    ArrayList<Object> args = new ArrayList<>();
-    args.add("verbose");
-    args.add("silent");
-
     Map<String, String> prefs = new HashMap<>();
     prefs.put("opt1", "val1");
     prefs.put("opt2", "val4");
@@ -461,7 +456,7 @@ class FirefoxOptionsTest {
 
     MutableCapabilities browserCaps = new MutableCapabilities();
 
-    browserCaps.setCapability("args", args);
+    browserCaps.setCapability("args", Arrays.asList("verbose", "silent"));
     browserCaps.setCapability("prefs", prefs);
     browserCaps.setCapability("profile", profile.toJson());
     browserCaps.setCapability("binary", binary.getPath());

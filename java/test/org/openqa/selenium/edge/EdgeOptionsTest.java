@@ -31,7 +31,6 @@ import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -153,13 +152,6 @@ class EdgeOptionsTest {
     File ext1 = TestUtilities.createTmpFile("ext1");
     String ext1Encoded = Base64.getEncoder().encodeToString("ext1".getBytes());
     String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
-    ArrayList<Object> extensions = new ArrayList<>();
-    extensions.add(ext1);
-    extensions.add(ext2);
-
-    ArrayList<Object> args = new ArrayList<>();
-    args.add("silent");
-    args.add("verbose");
 
     MutableCapabilities browserCaps = new MutableCapabilities();
 
@@ -168,8 +160,8 @@ class EdgeOptionsTest {
     browserCaps.setCapability("binary", binary.getPath());
     browserCaps.setCapability("opt1", "val1");
     browserCaps.setCapability("opt2", "val4");
-    browserCaps.setCapability("args", args);
-    browserCaps.setCapability("extensions", extensions);
+    browserCaps.setCapability("args", Arrays.asList("silent", "verbose"));
+    browserCaps.setCapability("extensions", Arrays.asList(ext1, ext2));
 
     MutableCapabilities one = new MutableCapabilities();
     one.setCapability(EdgeOptions.CAPABILITY, browserCaps);

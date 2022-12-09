@@ -332,6 +332,7 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     FirefoxOptions newInstance = new FirefoxOptions();
     getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
     newInstance.mirror(this);
+
     capabilities.getCapabilityNames().forEach(name -> {
       if (name.equals("args") && capabilities.getCapability(name) != null) {
         List<String> arguments = (List<String>) (capabilities.getCapability(("args")));
