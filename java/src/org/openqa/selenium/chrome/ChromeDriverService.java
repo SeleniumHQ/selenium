@@ -47,6 +47,11 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
 
   /**
+   * System property that toggles the formatting of the timestamps of the logs
+   */
+  public static final String CHROME_DRIVER_READABLE_TIMESTAMP = "webdriver.chrome.readableTimestamp";
+
+  /**
    * System property that defines the default location where ChromeDriver output is logged.
    */
   public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
@@ -155,6 +160,7 @@ public class ChromeDriverService extends DriverService {
       ChromeDriverService, ChromeDriverService.Builder> {
 
     private boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
+    private boolean readableTimestamp = Boolean.getBoolean(CHROME_DRIVER_READABLE_TIMESTAMP);
     private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
@@ -252,6 +258,17 @@ public class ChromeDriverService extends DriverService {
       return this;
     }
 
+    /**
+     * Configures the format of the logging for the driver server.
+     *
+     * @param readableTimestamp Whether the timestamp of the log is readable.
+     * @return A self reference.
+     */
+    public Builder withReadableTimestamp(Boolean readableTimestamp) {
+      this.readableTimestamp = readableTimestamp;
+      return this;
+    }
+
     @Override
     protected File findDefaultExecutable() {
       return findExecutable(
@@ -282,6 +299,10 @@ public class ChromeDriverService extends DriverService {
       args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+        // This flag only works when logged to file
+        if (readableTimestamp) {
+          args.add("--readable-timestamp");
+        }
       }
       if (appendLog) {
         args.add("--append-log");
