@@ -326,13 +326,6 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String BROWSER_PROFILE = "webdriver.firefox.profile";
   }
 
-  public static final class Capability {
-
-    public static final String BINARY = "firefox_binary";
-    public static final String PROFILE = "firefox_profile";
-    public static final String MARIONETTE = "marionette";
-  }
-
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
 
     public FirefoxDriverCommandExecutor(DriverService service) {

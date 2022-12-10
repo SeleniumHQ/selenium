@@ -18,8 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import static java.util.stream.Collectors.toMap;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.BINARY;
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.PROFILE;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 import org.openqa.selenium.Capabilities;
@@ -293,45 +291,6 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
   public FirefoxOptions setAndroidIntentArguments(List<String> args) {
     Require.nonNull("Android intent arguments", args);
     return setFirefoxOption("androidIntentArguments", args);
-  }
-
-  @Override
-  public void setCapability(String key, Object value) {
-    Require.nonNull("Capability name", key);
-    Require.nonNull("Value", value);
-
-    switch (key) {
-      case BINARY:
-        if (value instanceof FirefoxBinary) {
-          setBinary((FirefoxBinary) value);
-        } else if (value instanceof Path) {
-          setBinary((Path) value);
-        } else if (value instanceof String) {
-          setBinary((String) value);
-        } else {
-          throw new IllegalArgumentException("Unable to set binary from " + value);
-        }
-        break;
-
-      case PROFILE:
-        if (value instanceof FirefoxProfile) {
-          setProfile((FirefoxProfile) value);
-        } else if (value instanceof String) {
-          try {
-            FirefoxProfile profile = FirefoxProfile.fromJson((String) value);
-            setProfile(profile);
-          } catch (IOException e) {
-            throw new WebDriverException(e);
-          }
-        } else {
-          throw new WebDriverException("Unexpected value for profile: " + value);
-        }
-        break;
-
-      default:
-        // Do nothing
-    }
-    super.setCapability(key, value);
   }
 
   private FirefoxOptions setFirefoxOption(Keys key, Object value) {
