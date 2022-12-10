@@ -95,24 +95,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   }
 
   static GeckoDriverService createDefaultService(Capabilities caps) {
-    Builder builder = new Builder();
-
-    Object binary = caps.getCapability(FirefoxDriver.Capability.BINARY);
-    if (binary != null) {
-      FirefoxBinary actualBinary;
-      if (binary instanceof FirefoxBinary) {
-        actualBinary = (FirefoxBinary) binary;
-      } else if (binary instanceof String) {
-        actualBinary = new FirefoxBinary(new File(String.valueOf(binary)));
-      } else {
-        throw new IllegalArgumentException(
-            "Expected binary to be a string or a binary: " + binary);
-      }
-
-      builder.usingFirefoxBinary(actualBinary);
-    }
-
-    return builder.build();
+    return createDefaultService();
   }
 
   @Override
@@ -139,11 +122,6 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     @Override
     public int score(Capabilities capabilities) {
-      if (capabilities.getCapability(FirefoxDriver.Capability.MARIONETTE) != null
-          && ! capabilities.is(FirefoxDriver.Capability.MARIONETTE)) {
-        return 0;
-      }
-
       int score = 0;
 
       if (FIREFOX.is(capabilities)) {
