@@ -44,8 +44,8 @@ class WebDriver(ChromiumDriver):
         service_log_path=DEFAULT_SERVICE_LOG_PATH,
         service: Service = None,
         keep_alive=False,
-        verbose=False,
-    ):
+        verbose=False,  # Todo: Why is this now unused?
+    ) -> None:
         """
         Creates a new instance of the edge driver.
         Starts the service and then creates new instance of edge driver.

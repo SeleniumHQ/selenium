@@ -210,7 +210,7 @@ class WebDriver(BaseWebDriver):
         keep_alive=True,
         file_detector=None,
         options: Union[BaseOptions, List[BaseOptions]] = None,
-    ):
+    ) -> None:
         """
         Create a new driver that will issue commands using the wire protocol.
 

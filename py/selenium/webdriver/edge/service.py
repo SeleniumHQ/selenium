@@ -43,7 +43,7 @@ class Service(service.ChromiumService):
         log_path: typing.Optional[str] = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-    ):
+    ) -> None:
         self.service_args = service_args or []
 
         if verbose:

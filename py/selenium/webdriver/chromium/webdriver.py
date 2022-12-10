@@ -45,7 +45,7 @@ class ChromiumDriver(RemoteWebDriver):
         service_log_path=DEFAULT_SERVICE_LOG_PATH,
         service: Service = None,
         keep_alive=DEFAULT_KEEP_ALIVE,
-    ):
+    ) -> None:
         """
         Creates a new WebDriver instance of the ChromiumDriver.
         Starts the service and then creates new WebDriver instance of ChromiumDriver.

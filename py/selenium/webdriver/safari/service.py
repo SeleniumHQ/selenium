@@ -42,7 +42,7 @@ class Service(service.Service):
         quiet: bool = False,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-    ):
+    ) -> None:
         self._check_executable(executable_path)
         self.service_args = service_args or []
         self.quiet = quiet

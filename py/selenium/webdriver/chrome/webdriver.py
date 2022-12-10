@@ -46,7 +46,7 @@ class WebDriver(ChromiumDriver):
         chrome_options=None,
         service: Service = None,
         keep_alive=DEFAULT_KEEP_ALIVE,
-    ):
+    ) -> None:
         """
         Creates a new instance of the chrome driver.
         Starts the service and then creates new instance of chrome driver.

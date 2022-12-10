@@ -48,7 +48,7 @@ class WebDriver(RemoteWebDriver):
         service: Service = None,
         desired_capabilities=None,
         keep_alive=DEFAULT_KEEP_ALIVE,
-    ):
+    ) -> None:
         """
         Creates a new instance of the Ie driver.
 

@@ -55,8 +55,8 @@ class WebDriver(RemoteWebDriver):
         service=None,
         desired_capabilities=None,
         log_path=DEFAULT_LOG_PATH,
-        keep_alive=True,
-    ):
+        keep_alive=True,  # Todo: Why is this now unused?
+    ) -> None:
         """Starts a new local session of Firefox.
 
         Based on the combination and specificity of the various keyword

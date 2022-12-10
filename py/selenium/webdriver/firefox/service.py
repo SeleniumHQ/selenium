@@ -42,7 +42,7 @@ class Service(service.Service):
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-    ):
+    ) -> None:
         # Todo: This is vastly inconsistent, requires a follow up to standardise.
         file = log_path or "geckodriver.log"
         log_file = open(file, "a+", encoding="utf-8")

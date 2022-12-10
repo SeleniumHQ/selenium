@@ -40,7 +40,7 @@ class ChromiumService(service.Service):
         log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         start_error_message: typing.Optional[str] = None,
-    ):
+    ) -> None:
         self.service_args = service_args or []
         if log_path:
             self.service_args.append(f"--log-path={log_path}")

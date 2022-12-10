@@ -47,7 +47,7 @@ class WebDriver(RemoteWebDriver):
         service_args=None,
         options: Options = None,
         service: Service = None,
-    ):
+    ) -> None:
         """
 
         Creates a new Safari driver instance and launches or finds a running safaridriver service.

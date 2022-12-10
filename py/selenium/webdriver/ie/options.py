@@ -48,7 +48,7 @@ class Options(ArgOptions):
     ATTACH_TO_EDGE_CHROME = "ie.edgechromium"
     EDGE_EXECUTABLE_PATH = "ie.edgepath"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._options = {}
         self._additional = {}

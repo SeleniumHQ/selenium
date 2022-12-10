@@ -64,12 +64,12 @@ class WebElement(BaseWebElement):
     performed through this interface.
 
     All method calls will do a freshness check to ensure that the element
-    reference is still valid.  This essentially determines whether or not the
+    reference is still valid.  This essentially determines whether the
     element is still attached to the DOM.  If this test fails, then an
     ``StaleElementReferenceException`` is thrown, and all future calls to this
     instance will fail."""
 
-    def __init__(self, parent, id_):
+    def __init__(self, parent, id_) -> None:
         self._parent = parent
         self._id = id_
 

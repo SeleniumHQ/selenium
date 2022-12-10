@@ -34,7 +34,7 @@ class Service(service.Service):
         host: typing.Optional[str] = None,
         log_level: typing.Optional[str] = None,
         log_file: typing.Optional[str] = None,
-    ):
+    ) -> None:
         """
         Creates a new instance of the Service
 
