@@ -249,7 +249,7 @@ public class EdgeDriverService extends DriverService {
         args.add(String.format("--log-level=%s", logLevel));
       }
       if (allowedListIps != null) {
-        args.add(String.format("--whitelisted-ips=%s", allowedListIps));
+        args.add(String.format("--allowed-ips=%s", allowedListIps));
       }
       if (disableBuildCheck) {
         args.add("--disable-build-check");
