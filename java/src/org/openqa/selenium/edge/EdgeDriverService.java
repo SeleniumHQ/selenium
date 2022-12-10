@@ -119,7 +119,7 @@ public class EdgeDriverService extends DriverService {
 
     private final boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
-    private String loglevel = System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY);
+    private String logLevel = System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY);
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
 
@@ -150,15 +150,20 @@ public class EdgeDriverService extends DriverService {
      * @return A self reference.
      */
     public EdgeDriverService.Builder withVerbose(boolean verbose) {
-      this.verbose = verbose;
+      if (verbose) {
+        this.logLevel = "ALL";
+      }
+      this.verbose = false;
       return this;
     }
 
     /**
      * Configures the driver server log level.
      */
-    public EdgeDriverService.Builder withLoglevel(String level) {
-      this.loglevel = level;
+    public EdgeDriverService.Builder withLoglevel(String logLevel) {
+      this.verbose = false;
+      this.silent = false;
+      this.logLevel = logLevel;
       return this;
     }
 
@@ -169,7 +174,10 @@ public class EdgeDriverService extends DriverService {
      * @return A self reference.
      */
     public EdgeDriverService.Builder withSilent(boolean silent) {
-      this.silent = silent;
+      if (silent) {
+        this.logLevel = "OFF";
+      }
+      this.silent = false;
       return this;
     }
 
@@ -202,19 +210,21 @@ public class EdgeDriverService extends DriverService {
         }
       }
 
+      // If set in properties and not overwritten by method
+      if (verbose) {
+        withVerbose(true);
+      }
+      if (silent) {
+        withSilent(true);
+      }
+
       List<String> args = new ArrayList<>();
       args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
       }
-      if (verbose) {
-        args.add("--verbose");
-      }
-      if (silent) {
-        args.add("--silent");
-      }
-      if (loglevel != null) {
-        args.add(String.format("--log-level=%s", loglevel));
+      if (logLevel != null) {
+        args.add(String.format("--log-level=%s", logLevel));
       }
       if (allowedListIps != null) {
         args.add(String.format("--whitelisted-ips=%s", allowedListIps));
