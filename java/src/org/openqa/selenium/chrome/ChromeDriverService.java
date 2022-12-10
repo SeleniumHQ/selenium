@@ -27,10 +27,12 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.Browser.CHROME;
 
 /**
@@ -39,14 +41,13 @@ import static org.openqa.selenium.remote.Browser.CHROME;
 public class ChromeDriverService extends DriverService {
 
   /**
-   * System property that defines the location of the chromedriver executable that will be used by
+   * System property that defines the location of the ChromeDriver executable that will be used by
    * the {@link #createDefaultService() default service}.
    */
   public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
 
   /**
-   * System property that defines the location of the log that will be written by
-   * the {@link #createDefaultService() default service}.
+   * System property that defines the default location where ChromeDriver output is logged.
    */
   public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
@@ -56,41 +57,36 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.chrome.loglevel";
 
   /**
-   * Boolean system property that defines whether chromedriver should append to existing log file.
+   * Boolean system property that defines whether ChromeDriver should append to existing log file.
    */
-  public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY =
-      "webdriver.chrome.appendLog";
+  public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY = "webdriver.chrome.appendLog";
 
   /**
-   * Boolean system property that defines whether the chromedriver executable should be started
+   * Boolean system property that defines whether the ChromeDriver executable should be started
    * with verbose logging.
    */
-  public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY =
-      "webdriver.chrome.verboseLogging";
+  public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY = "webdriver.chrome.verboseLogging";
 
   /**
-   * Boolean system property that defines whether the chromedriver executable should be started
+   * Boolean system property that defines whether the ChromeDriver executable should be started
    * in silent mode.
    */
-  public static final String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY =
-    "webdriver.chrome.silentOutput";
+  public static final String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY = "webdriver.chrome.silentOutput";
 
   /**
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to ChromeDriver.
    */
-  public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY =
-    "webdriver.chrome.whitelistedIps";
+  public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY = "webdriver.chrome.whitelistedIps";
 
   /**
-   * System property that defines whether the chromedriver executable should check for build
-   * version compatibility between chromedriver and the browser.
+   * System property that defines whether the ChromeDriver executable should check for build
+   * version compatibility between ChromeDriver and the browser.
    */
-  public static final String CHROME_DRIVER_DISABLE_BUILD_CHECK =
-    "webdriver.chrome.disableBuildCheck";
+  public static final String CHROME_DRIVER_DISABLE_BUILD_CHECK = "webdriver.chrome.disableBuildCheck";
 
   /**
-   * @param executable  The chromedriver executable.
+   * @param executable  The ChromeDriver executable.
    * @param port        Which port to start the ChromeDriver on.
    * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
@@ -101,11 +97,13 @@ public class ChromeDriverService extends DriverService {
     int port,
     List<String> args,
     Map<String, String> environment) throws IOException {
-    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT,
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
   }
 
   /**
-   * @param executable  The chromedriver executable.
+   * @param executable  The ChromeDriver executable.
    * @param port        Which port to start the ChromeDriver on.
    * @param timeout     Timeout waiting for driver server to start.
    * @param args        The arguments to the launched server.
@@ -118,12 +116,14 @@ public class ChromeDriverService extends DriverService {
       Duration timeout,
       List<String> args,
       Map<String, String> environment) throws IOException {
-    super(executable, port, timeout, args, environment);
+    super(executable, port, timeout,
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
   }
 
   /**
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
-   * this configuration, the service will use the chromedriver executable identified by the
+   * this configuration, the service will use the ChromeDriver executable identified by the
    * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
    * be configured to use a free port on the current system.
    *
@@ -135,7 +135,7 @@ public class ChromeDriverService extends DriverService {
 
   /**
    * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
-   * this configuration, the service will use the chromedriver executable identified by the
+   * this configuration, the service will use the ChromeDriver executable identified by the
    * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
    * be configured to use a free port on the current system.
    *

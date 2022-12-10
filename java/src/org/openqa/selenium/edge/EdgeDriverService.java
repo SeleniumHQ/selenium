@@ -14,6 +14,7 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 package org.openqa.selenium.edge;
 
 import com.google.auto.service.AutoService;
@@ -35,23 +36,23 @@ import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.Browser.EDGE;
 
 /**
- * Manages the life and death of the EdgeDriver (MicrosoftWebDriver or MSEdgeDriver).
+ * Manages the life and death of the MSEdgeDriver
  */
 public class EdgeDriverService extends DriverService {
 
   /**
-   * System property that defines the location of the EdgeDriver executable that will be used by
+   * System property that defines the location of the MSEdgeDriver executable that will be used by
    * the default service.
    */
   public static final String EDGE_DRIVER_EXE_PROPERTY = "webdriver.edge.driver";
 
   /**
-   * System property that defines the default location where MicrosoftWebDriver output is logged.
+   * System property that defines the default location where MSEdgeDriver output is logged.
    */
   public static final String EDGE_DRIVER_LOG_PROPERTY = "webdriver.edge.logfile";
 
   /**
-   * System property that defines the log level when MicrosoftWebDriver output is logged.
+   * System property that defines the log level when MSEdgeDriver output is logged.
    */
   public static final String EDGE_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.edge.loglevel";
 
@@ -61,7 +62,7 @@ public class EdgeDriverService extends DriverService {
   public static final String EDGE_DRIVER_APPEND_LOG_PROPERTY = "webdriver.edge.appendLog";
 
   /**
-   * Boolean system property that defines whether the MicrosoftWebDriver executable should be started
+   * Boolean system property that defines whether the MSEdgeDriver executable should be started
    * with verbose logging.
    */
   public static final String EDGE_DRIVER_VERBOSE_LOG_PROPERTY = "webdriver.edge.verboseLogging";
@@ -85,8 +86,8 @@ public class EdgeDriverService extends DriverService {
   public static final String EDGE_DRIVER_DISABLE_BUILD_CHECK = "webdriver.edge.disableBuildCheck";
 
   /**
-   * @param executable  The EdgeDriver executable.
-   * @param port        Which port to start the EdgeDriver on.
+   * @param executable  The MSEdgeDriver executable.
+   * @param port        Which port to start the MSEdgeDriver on.
    * @param timeout     Timeout waiting for driver server to start.
    * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
@@ -112,7 +113,7 @@ public class EdgeDriverService extends DriverService {
    * @return A new ChromiumEdgeDriverService using the default configuration.
    */
   public static EdgeDriverService createDefaultService() {
-    return new EdgeDriverService.Builder().build();
+    return new Builder().build();
   }
 
   /**
@@ -120,7 +121,7 @@ public class EdgeDriverService extends DriverService {
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
-    EdgeDriverService, EdgeDriverService.Builder> {
+    EdgeDriverService, Builder> {
 
     private final boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
     private boolean appendLog = Boolean.getBoolean(EDGE_DRIVER_APPEND_LOG_PROPERTY);
@@ -155,7 +156,7 @@ public class EdgeDriverService extends DriverService {
      * @param appendLog True for appending to log file, false otherwise.
      * @return A self reference.
      */
-    public EdgeDriverService.Builder withAppendLog(boolean appendLog) {
+    public Builder withAppendLog(boolean appendLog) {
       this.appendLog = appendLog;
       return this;
     }
@@ -166,7 +167,7 @@ public class EdgeDriverService extends DriverService {
      * @param verbose whether verbose output is used
      * @return A self reference.
      */
-    public EdgeDriverService.Builder withVerbose(boolean verbose) {
+    public Builder withVerbose(boolean verbose) {
       if (verbose) {
         this.logLevel = "ALL";
       }
@@ -177,7 +178,7 @@ public class EdgeDriverService extends DriverService {
     /**
      * Configures the driver server log level.
      */
-    public EdgeDriverService.Builder withLoglevel(String logLevel) {
+    public Builder withLoglevel(String logLevel) {
       this.verbose = false;
       this.silent = false;
       this.logLevel = logLevel;
@@ -190,7 +191,7 @@ public class EdgeDriverService extends DriverService {
      * @param silent whether silent output is used
      * @return A self reference.
      */
-    public EdgeDriverService.Builder withSilent(boolean silent) {
+    public Builder withSilent(boolean silent) {
       if (silent) {
         this.logLevel = "OFF";
       }
@@ -205,7 +206,7 @@ public class EdgeDriverService extends DriverService {
      * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
      */
-    public EdgeDriverService.Builder withAllowedListIps(String allowedListIps) {
+    public Builder withAllowedListIps(String allowedListIps) {
       this.allowedListIps = allowedListIps;
       return this;
     }
@@ -236,6 +237,7 @@ public class EdgeDriverService extends DriverService {
       }
 
       List<String> args = new ArrayList<>();
+
       args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
