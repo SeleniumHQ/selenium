@@ -190,7 +190,10 @@ public class ChromeDriverService extends DriverService {
      */
     @SuppressWarnings("UnusedReturnValue")
     public Builder withVerbose(boolean verbose) {
-      this.verbose = verbose;
+      if (verbose) {
+        this.logLevel = ChromeDriverLogLevel.ALL;
+      }
+      this.verbose = false;
       return this;
     }
 
@@ -201,6 +204,8 @@ public class ChromeDriverService extends DriverService {
      * @return A self reference.
      */
     public Builder withLogLevel(ChromeDriverLogLevel logLevel) {
+      this.verbose = false;
+      this.silent = false;
       this.logLevel = logLevel;
       return this;
     }
@@ -212,7 +217,10 @@ public class ChromeDriverService extends DriverService {
      * @return A self reference.
      */
     public Builder withSilent(boolean silent) {
-      this.silent = silent;
+      if (silent) {
+        this.logLevel = ChromeDriverLogLevel.OFF;
+      }
+      this.silent = false;
       return this;
     }
 
@@ -245,12 +253,12 @@ public class ChromeDriverService extends DriverService {
         }
       }
 
-      if (logLevel != null) {
-        withLogLevel(logLevel);
-        withVerbose(false);
-      }
+      // If set in properties and not overwritten by method
       if (verbose) {
-        withLogLevel(ChromeDriverLogLevel.ALL);
+        withVerbose(true);
+      }
+      if (silent) {
+        withSilent(true);
       }
 
       List<String> args = new ArrayList<>();
@@ -264,9 +272,6 @@ public class ChromeDriverService extends DriverService {
       }
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
-      }
-      if (silent) {
-        args.add("--silent");
       }
       if (whitelistedIps != null) {
         args.add(String.format("--whitelisted-ips=%s", whitelistedIps));
