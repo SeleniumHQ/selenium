@@ -32,14 +32,14 @@ def test_bespoke_options_for_virtual_authenticator():
         has_resident_key=True,
         has_user_verification=True,
         is_user_consenting=False,
-        is_user_verified=True
+        is_user_verified=True,
     ).to_dict() == {
         "protocol": "ctap1/u2f",
         "transport": "ble",
         "hasResidentKey": True,
         "hasUserVerification": True,
         "isUserConsenting": False,
-        "isUserVerified": True
+        "isUserVerified": True,
     }
 
 
