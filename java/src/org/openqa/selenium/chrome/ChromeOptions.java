@@ -52,15 +52,9 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
    */
   public static final String CAPABILITY = "goog:chromeOptions";
   public static final String LOGGING_PREFS = "goog:loggingPrefs";
-  private ChromeDriverLogLevel logLevel;
 
   public ChromeOptions() {
     super(CapabilityType.BROWSER_NAME, CHROME.browserName(), CAPABILITY);
-  }
-
-  public ChromeOptions setLogLevel(ChromeDriverLogLevel logLevel){
-    this.logLevel = Require.nonNull("Log level", logLevel);
-    return this;
   }
 
   @Override
@@ -73,9 +67,5 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
     newInstance.mergeInOptionsFromCaps(CAPABILITY, extraCapabilities);
 
     return newInstance;
-  }
-
-  public ChromeDriverLogLevel getLogLevel(){
-    return logLevel;
   }
 }

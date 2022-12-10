@@ -21,6 +21,7 @@ import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -154,7 +155,7 @@ public class ChromeDriverService extends DriverService {
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
-    private ChromeDriverLogLevel logLevel = null;
+    private ChromiumDriverLogLevel logLevel = null;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -197,10 +198,10 @@ public class ChromeDriverService extends DriverService {
     /**
      * Configures the driver server verbosity.
      *
-     * @param logLevel {@link ChromeDriverLogLevel} for desired log level output.
+     * @param logLevel {@link ChromiumDriverLogLevel} for desired log level output.
      * @return A self reference.
      */
-    public Builder withLogLevel(ChromeDriverLogLevel logLevel) {
+    public Builder withLogLevel(ChromiumDriverLogLevel logLevel) {
       this.logLevel = logLevel;
       return this;
     }
@@ -250,7 +251,7 @@ public class ChromeDriverService extends DriverService {
         withVerbose(false);
       }
       if (verbose) {
-        withLogLevel(ChromeDriverLogLevel.ALL);
+        withLogLevel(ChromiumDriverLogLevel.ALL);
       }
 
       List<String> args = new ArrayList<>();

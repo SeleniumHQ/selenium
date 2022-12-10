@@ -68,6 +68,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   private final List<String> extensions = new ArrayList<>();
   private final Map<String, Object> experimentalOptions = new HashMap<>();
   private Map<String, Object> androidOptions = new HashMap<>();
+  private ChromiumDriverLogLevel logLevel;
 
   private final String capabilityName;
 
@@ -229,6 +230,15 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
     newOptions.put(name, value);
     androidOptions = Collections.unmodifiableMap(newOptions);
     return (T) this;
+  }
+
+  public T setLogLevel(ChromiumDriverLogLevel logLevel){
+    this.logLevel = Require.nonNull("Log level", logLevel);
+    return (T) this;
+  }
+
+  public ChromiumDriverLogLevel getLogLevel(){
+    return logLevel;
   }
 
   @Override
