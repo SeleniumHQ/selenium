@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 import warnings
 from typing import Union
 
@@ -24,7 +25,7 @@ from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 
 
 class Log:
-    def __init__(self):
+    def __init__(self) -> None:
         self.level = None
 
     def to_capabilities(self) -> dict:
@@ -36,9 +37,9 @@ class Log:
 class Options(ArgOptions):
     KEY = "moz:firefoxOptions"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
-        self._binary: FirefoxBinary = None
+        self._binary: typing.Optional[FirefoxBinary] = None
         self._preferences: dict = {}
         self._profile = None
         self._proxy = None

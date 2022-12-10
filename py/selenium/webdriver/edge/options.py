@@ -22,7 +22,7 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 class Options(ChromiumOptions):
     KEY = "ms:edgeOptions"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._use_webview = False
 
