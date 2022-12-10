@@ -87,7 +87,6 @@ public class FirefoxDriver extends RemoteWebDriver
   private final HasContext context;
   private final Optional<URI> cdpUri;
   private final Optional<URI> biDiUri;
-  protected FirefoxBinary binary;
   private Connection connection;
   private DevTools devTools;
   private BiDi biDi;
