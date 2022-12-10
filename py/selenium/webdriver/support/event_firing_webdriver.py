@@ -160,7 +160,7 @@ class EventFiringWebDriver:
 
 
 class EventFiringWebElement:
-    """" A wrapper around WebElement instance which supports firing events."""
+    """A wrapper around WebElement instance which supports firing events."""
 
     def __init__(self, webelement: WebElement, ef_driver: EventFiringWebDriver) -> None:
         """Creates a new instance of the EventFiringWebElement."""
