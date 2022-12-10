@@ -123,7 +123,7 @@ public class EdgeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     EdgeDriverService, Builder> {
 
-    private final boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
+    private boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
     private boolean appendLog = Boolean.getBoolean(EDGE_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
     private String logLevel = System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY);
@@ -158,6 +158,17 @@ public class EdgeDriverService extends DriverService {
      */
     public Builder withAppendLog(boolean appendLog) {
       this.appendLog = appendLog;
+      return this;
+    }
+
+    /**
+     * Allows the driver to be used with potentially incompatible versions of the browser.
+     *
+     * @param noBuildCheck True for not enforcing matching versions.
+     * @return A self reference.
+     */
+    public Builder withBuildCheckDisabled(boolean noBuildCheck) {
+      this.disableBuildCheck = noBuildCheck;
       return this;
     }
 

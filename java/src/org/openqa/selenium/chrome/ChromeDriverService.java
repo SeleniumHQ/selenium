@@ -154,7 +154,7 @@ public class ChromeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
       ChromeDriverService, ChromeDriverService.Builder> {
 
-    private final boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
+    private boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
     private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
@@ -184,6 +184,17 @@ public class ChromeDriverService extends DriverService {
      */
     public Builder withAppendLog(boolean appendLog) {
       this.appendLog = appendLog;
+      return this;
+    }
+
+    /**
+     * Allows the driver to be used with potentially incompatible versions of the browser.
+     *
+     * @param noBuildCheck True for not enforcing matching versions.
+     * @return A self reference.
+     */
+    public Builder withBuildCheckDisabled(boolean noBuildCheck) {
+      this.disableBuildCheck = noBuildCheck;
       return this;
     }
 
