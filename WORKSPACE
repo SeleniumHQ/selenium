@@ -2,17 +2,6 @@ workspace(
     name = "selenium",
 )
 
-load("//common/private:env.bzl", "env")
-
-env(
-    name = "python_version",
-    env_var = ["PYTHON_VERSION"],
-)
-
-load("@python_version//:defs.bzl", "PYTHON_VERSION")
-
-register_toolchains(":py_toolchain")
-
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
@@ -48,27 +37,43 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "56dc7569e5dd149e576941bdb67a57e19cd2a7a63cc352b62ac047732008d7e1",
-    strip_prefix = "rules_python-0.10.0",
-    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.10.0.tar.gz",
+    sha256 = "fda23c37fbacf7579f94d5e8f342d3a831140e9471b770782e83846117dd6596",
+    strip_prefix = "rules_python-0.15.0",
+    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.15.0.tar.gz",
 )
 
-load("@rules_python//python:repositories.bzl", "python_register_toolchains")
+load("@rules_python//python:repositories.bzl", "python_register_multi_toolchains")
 
-python_register_toolchains(
-    name = "python_toolchain",
-    python_version = PYTHON_VERSION,
+default_python_version = "3.8"
+
+python_register_multi_toolchains(
+    name = "python",
+    default_version = default_python_version,
+    python_versions = [
+        "3.8",
+        "3.9",
+        "3.10",
+    ],
 )
 
-load("@python_toolchain//:defs.bzl", "interpreter")
+load("@python//:pip.bzl", "multi_pip_parse")
+load("@python//3.10:defs.bzl", interpreter_3_10 = "interpreter")
+load("@python//3.8:defs.bzl", interpreter_3_8 = "interpreter")
+load("@python//3.9:defs.bzl", interpreter_3_9 = "interpreter")
 
-# This one is only needed if you're using the packaging rules.
-load("@rules_python//python:pip.bzl", "pip_parse")
-
-pip_parse(
+multi_pip_parse(
     name = "py_dev_requirements",
-    python_interpreter_target = interpreter,
-    requirements_lock = "//py:requirements_lock.txt",
+    default_version = default_python_version,
+    python_interpreter_target = {
+        "3.10": interpreter_3_10,
+        "3.8": interpreter_3_8,
+        "3.9": interpreter_3_9,
+    },
+    requirements_lock = {
+        "3.10": "//py:requirements_lock.txt",
+        "3.8": "//py:requirements_lock.txt",
+        "3.9": "//py:requirements_lock.txt",
+    },
 )
 
 load("@py_dev_requirements//:requirements.bzl", "install_deps")
@@ -142,10 +147,10 @@ pinned_maven_install()
 
 http_archive(
     name = "d2l_rules_csharp",
-    sha256 = "7b2a83621049904b6e898ffdbe7893a5b410aedf599d63f127ef81eac839b6c1",
-    strip_prefix = "rules_csharp-bf24e589bbadcc20f15a16e13f577a0abd42a1d1",
+    sha256 = "c0152befb1fd0e08527b38e41ef00b6627f9f0c2be6f2d23a4950f41701fa48a",
+    strip_prefix = "rules_csharp-50e2f6c79e7a53e50b4518239b5ebcc61279759e",
     urls = [
-        "https://github.com/Brightspace/rules_csharp/archive/bf24e589bbadcc20f15a16e13f577a0abd42a1d1.tar.gz",
+        "https://github.com/Brightspace/rules_csharp/archive/50e2f6c79e7a53e50b4518239b5ebcc61279759e.tar.gz",
     ],
 )
 
@@ -155,9 +160,9 @@ selenium_register_dotnet()
 
 http_archive(
     name = "rules_rust",
-    sha256 = "0cc7e6b39e492710b819e00d48f2210ae626b717a3ab96e048c43ab57e61d204",
+    sha256 = "dd79bd4e2e2adabae738c5e93c36d351cf18071ff2acf6590190acf4138984f6",
     urls = [
-        "https://github.com/bazelbuild/rules_rust/releases/download/0.10.0/rules_rust-v0.10.0.tar.gz",
+        "https://github.com/bazelbuild/rules_rust/releases/download/0.14.0/rules_rust-v0.14.0.tar.gz",
     ],
 )
 
@@ -182,8 +187,8 @@ crate_repositories()
 
 http_archive(
     name = "build_bazel_rules_nodejs",
-    sha256 = "5aae76dced38f784b58d9776e4ab12278bc156a9ed2b1d9fcd3e39921dc88fda",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.7.1/rules_nodejs-5.7.1.tar.gz"],
+    sha256 = "c2ad51299792d5af3b258f1dd71b3b57eff9424c2e1797d9c1d65717d95da03a",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.7.3/rules_nodejs-5.7.3.tar.gz"],
 )
 
 load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
@@ -193,7 +198,7 @@ build_bazel_rules_nodejs_dependencies()
 load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories", "npm_install")
 
 node_repositories(
-    node_version = "16.17.1",
+    node_version = "18.12.0",
 )
 
 npm_install(
@@ -226,10 +231,17 @@ rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
-    sha256 = "451e08a4d78988c06fa3f9306ec813b836b1d076d0f055595444ba4ff22b867f",
-    urls = [
-        "https://github.com/bazelbuild/rules_pkg/releases/download/0.7.1/rules_pkg-0.7.1.tar.gz",
+    patch_args = [
+        "-p1",
     ],
+    patches = [
+        "//py:rules_pkg_tree.patch",
+    ],
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.8.0/rules_pkg-0.8.0.tar.gz",
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.8.0/rules_pkg-0.8.0.tar.gz",
+    ],
+    sha256 = "eea0f59c28a9241156a47d7a8e32db9122f3d50b505fae0f33de6ce4d9b61834",
 )
 
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
@@ -324,18 +336,19 @@ pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "bb0bffb0285ff8fa9a967fc2580ddf3b511818a6baf269dcd6c5c6076c4921d8",
-    strip_prefix = "rules_ruby-c3cefa71d0111a04c9ce0672c65d376262d8d975",
-    url = "https://github.com/p0deje/rules_ruby/archive/c3cefa71d0111a04c9ce0672c65d376262d8d975.zip",
+    sha256 = "e8b33567dfd129a782e513d61c65de2c9120e6944ff398a96227b3ad79cada70",
+    strip_prefix = "rules_ruby-3124474acd89192332f00938126753c5122b4df6",
+    url = "https://github.com/p0deje/rules_ruby/archive/3124474acd89192332f00938126753c5122b4df6.zip",
 )
 
+load("//rb:ruby_version.bzl", "RUBY_VERSION")
 load(
     "@rules_ruby//ruby:deps.bzl",
     "rb_bundle",
     "rb_download",
 )
 
-rb_download(version = "2.7.6")
+rb_download(version = RUBY_VERSION)
 
 rb_bundle(
     name = "bundle",

@@ -25,9 +25,7 @@ from .service import Service
 
 
 class WebDriver(RemoteWebDriver):
-    """
-    Controls the WebKitGTKDriver and allows you to drive the browser.
-    """
+    """Controls the WebKitGTKDriver and allows you to drive the browser."""
 
     def __init__(
         self,
@@ -38,8 +36,7 @@ class WebDriver(RemoteWebDriver):
         service_log_path=None,
         keep_alive=False,
     ):
-        """
-        Creates a new instance of the WebKitGTK driver.
+        """Creates a new instance of the WebKitGTK driver.
 
         Starts the service and then creates new instance of WebKitGTK Driver.
 
@@ -69,10 +66,8 @@ class WebDriver(RemoteWebDriver):
         self._is_remote = False
 
     def quit(self):
-        """
-        Closes the browser and shuts down the WebKitGTKDriver executable
-        that is started when starting the WebKitGTKDriver
-        """
+        """Closes the browser and shuts down the WebKitGTKDriver executable
+        that is started when starting the WebKitGTKDriver."""
         try:
             super().quit()
         except http_client.BadStatusLine:

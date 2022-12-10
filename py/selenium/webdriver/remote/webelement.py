@@ -49,9 +49,10 @@ def _load_js():
 
 
 class BaseWebElement(metaclass=ABCMeta):
-    """
-    Abstract Base Class for WebElement.
-    ABC's will allow custom types to be registered as a WebElement to pass type checks.
+    """Abstract Base Class for WebElement.
+
+    ABC's will allow custom types to be registered as a WebElement to
+    pass type checks.
     """
 
     pass
@@ -64,19 +65,18 @@ class WebElement(BaseWebElement):
     performed through this interface.
 
     All method calls will do a freshness check to ensure that the element
-    reference is still valid.  This essentially determines whether or not the
+    reference is still valid.  This essentially determines whether the
     element is still attached to the DOM.  If this test fails, then an
     ``StaleElementReferenceException`` is thrown, and all future calls to this
-    instance will fail."""
+    instance will fail.
+    """
 
-    def __init__(self, parent, id_):
+    def __init__(self, parent, id_) -> None:
         self._parent = parent
         self._id = id_
 
     def __repr__(self):
-        return '<{0.__module__}.{0.__name__} (session="{1}", element="{2}")>'.format(
-            type(self), self._parent.session_id, self._id
-        )
+        return f'<{type(self).__module__}.{type(self).__name__} (session="{self._parent.session_id}", element="{self._id}")>'
 
     @property
     def tag_name(self) -> str:
@@ -116,8 +116,7 @@ class WebElement(BaseWebElement):
         self._execute(Command.CLEAR_ELEMENT)
 
     def get_property(self, name) -> str | bool | WebElement | dict:
-        """
-        Gets the given property of the element.
+        """Gets the given property of the element.
 
         :Args:
             - name - Name of the property to retrieve.
@@ -134,9 +133,9 @@ class WebElement(BaseWebElement):
             return self.parent.execute_script("return arguments[0][arguments[1]]", self, name)
 
     def get_dom_attribute(self, name) -> str:
-        """
-        Gets the given attribute of the element. Unlike :func:`~selenium.webdriver.remote.BaseWebElement.get_attribute`,
-        this method only returns attributes declared in the element's HTML markup.
+        """Gets the given attribute of the element. Unlike
+        :func:`~selenium.webdriver.remote.BaseWebElement.get_attribute`, this
+        method only returns attributes declared in the element's HTML markup.
 
         :Args:
             - name - Name of the attribute to retrieve.
@@ -172,13 +171,10 @@ class WebElement(BaseWebElement):
 
             # Check if the "active" CSS class is applied to an element.
             is_active = "active" in target_element.get_attribute("class")
-
         """
         if getAttribute_js is None:
             _load_js()
-        attribute_value = self.parent.execute_script(
-            "return (%s).apply(null, arguments);" % getAttribute_js, self, name
-        )
+        attribute_value = self.parent.execute_script(f"return ({getAttribute_js}).apply(null, arguments);", self, name)
         return attribute_value
 
     def is_selected(self) -> bool:
@@ -213,7 +209,6 @@ class WebElement(BaseWebElement):
             # Generally it's better to wrap the file path in one of the methods
             # in os.path to return the actual path to support cross OS testing.
             # file_input.send_keys(os.path.abspath("path/to/profilepic.gif"))
-
         """
         # transfer file to another machine only if remote driver is used
         # the same behaviour as for java binding
@@ -236,10 +231,9 @@ class WebElement(BaseWebElement):
 
     @property
     def shadow_root(self) -> ShadowRoot:
-        """
-        Returns a shadow root of the element if there is one or an error. Only works from
-        Chromium 96 onwards. Previous versions of Chromium based browsers will throw an
-        assertion exception.
+        """Returns a shadow root of the element if there is one or an error.
+        Only works from Chromium 96 onwards. Previous versions of Chromium
+        based browsers will throw an assertion exception.
 
         :Returns:
           - ShadowRoot object or
@@ -261,17 +255,16 @@ class WebElement(BaseWebElement):
         # Only go into this conditional for browsers that don't use the atom themselves
         if isDisplayed_js is None:
             _load_js()
-        return self.parent.execute_script("return (%s).apply(null, arguments);" % isDisplayed_js, self)
+        return self.parent.execute_script(f"return ({isDisplayed_js}).apply(null, arguments);", self)
 
     @property
     def location_once_scrolled_into_view(self) -> dict:
-        """THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover
-        where on the screen an element is so that we can click it. This method
-        should cause the element to be scrolled into view.
+        """THIS PROPERTY MAY CHANGE WITHOUT WARNING. Use this to discover where
+        on the screen an element is so that we can click it. This method should
+        cause the element to be scrolled into view.
 
-        Returns the top lefthand corner location on the screen, or ``None`` if
-        the element is not visible.
-
+        Returns the top lefthand corner location on the screen, or
+        ``None`` if the element is not visible.
         """
         old_loc = self._execute(
             Command.W3C_EXECUTE_SCRIPT,
@@ -307,18 +300,18 @@ class WebElement(BaseWebElement):
 
     @property
     def aria_role(self) -> str:
-        """Returns the ARIA role of the current web element"""
+        """Returns the ARIA role of the current web element."""
         return self._execute(Command.GET_ELEMENT_ARIA_ROLE)["value"]
 
     @property
     def accessible_name(self) -> str:
-        """Returns the ARIA Level of the current webelement"""
+        """Returns the ARIA Level of the current webelement."""
         return self._execute(Command.GET_ELEMENT_ARIA_LABEL)["value"]
 
     @property
     def screenshot_as_base64(self) -> str:
-        """
-        Gets the screenshot of the current element as a base64 encoded string.
+        """Gets the screenshot of the current element as a base64 encoded
+        string.
 
         :Usage:
             ::
@@ -329,8 +322,7 @@ class WebElement(BaseWebElement):
 
     @property
     def screenshot_as_png(self) -> bytes:
-        """
-        Gets the screenshot of the current element as a binary data.
+        """Gets the screenshot of the current element as a binary data.
 
         :Usage:
             ::
@@ -340,10 +332,9 @@ class WebElement(BaseWebElement):
         return b64decode(self.screenshot_as_base64.encode("ascii"))
 
     def screenshot(self, filename) -> bool:
-        """
-        Saves a screenshot of the current element to a PNG image file. Returns
-           False if there is any IOError, else returns True. Use full paths in
-           your filename.
+        """Saves a screenshot of the current element to a PNG image file.
+        Returns False if there is any IOError, else returns True. Use full
+        paths in your filename.
 
         :Args:
          - filename: The full path you wish to save your screenshot to. This
@@ -371,7 +362,8 @@ class WebElement(BaseWebElement):
 
     @property
     def parent(self):
-        """Internal reference to the WebDriver instance this element was found from."""
+        """Internal reference to the WebDriver instance this element was found
+        from."""
         return self._parent
 
     @property
@@ -383,7 +375,6 @@ class WebElement(BaseWebElement):
 
             if element1 == element2:
                 print("These 2 are equal")
-
         """
         return self._id
 
@@ -410,8 +401,7 @@ class WebElement(BaseWebElement):
         return self._parent.execute(command, params)
 
     def find_element(self, by=By.ID, value=None) -> WebElement:
-        """
-        Find an element given a By strategy and locator.
+        """Find an element given a By strategy and locator.
 
         :Usage:
             ::
@@ -422,19 +412,18 @@ class WebElement(BaseWebElement):
         """
         if by == By.ID:
             by = By.CSS_SELECTOR
-            value = '[id="%s"]' % value
+            value = f'[id="{value}"]'
         elif by == By.CLASS_NAME:
             by = By.CSS_SELECTOR
-            value = ".%s" % value
+            value = f".{value}"
         elif by == By.NAME:
             by = By.CSS_SELECTOR
-            value = '[name="%s"]' % value
+            value = f'[name="{value}"]'
 
         return self._execute(Command.FIND_CHILD_ELEMENT, {"using": by, "value": value})["value"]
 
     def find_elements(self, by=By.ID, value=None) -> list[WebElement]:
-        """
-        Find elements given a By strategy and locator.
+        """Find elements given a By strategy and locator.
 
         :Usage:
             ::

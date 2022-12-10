@@ -15,29 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::env::consts::{ARCH, OS};
 use std::error::Error;
 use std::io::Write;
+use std::process::exit;
 
 use clap::Parser;
 use env_logger::fmt::Color;
 use env_logger::Target::Stdout;
+use exitcode::DATAERR;
+use Color::{Blue, Cyan, Green, Red, Yellow};
+
 use log::Level;
 use log::LevelFilter::{Debug, Info, Trace};
 
-use crate::chrome::ChromeManager;
-use crate::edge::EdgeManager;
-use crate::files::clear_cache;
-use crate::firefox::FirefoxManager;
-use crate::manager::BrowserManager;
-
-mod chrome;
-mod downloads;
-mod edge;
-mod files;
-mod firefox;
-mod manager;
-mod metadata;
+use selenium_manager::{
+    clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
+};
 
 /// Automated driver management for Selenium
 #[derive(Parser, Debug)]
@@ -47,11 +40,11 @@ mod metadata;
 {usage-heading} {usage}
 {all-args}")]
 struct Cli {
-    /// Browser name (chrome, firefox, or edge)
+    /// Browser name (chrome, firefox, edge, or iexplorer)
     #[clap(short, long, value_parser, default_value = "")]
     browser: String,
 
-    /// Driver name (chromedriver, geckodriver, or msedgedriver)
+    /// Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer)
     #[clap(short, long, value_parser, default_value = "")]
     driver: String,
 
@@ -59,7 +52,7 @@ struct Cli {
     #[clap(short = 'v', long, value_parser, default_value = "")]
     driver_version: String,
 
-    /// Major browser version (e.g., 105, 106, etc.)
+    /// Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
     #[clap(short = 'B', long, value_parser, default_value = "")]
     browser_version: String,
 
@@ -79,71 +72,39 @@ struct Cli {
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     setup_logging(&cli);
-    let browser_name: String = cli.browser;
-    let driver_name: String = cli.driver;
-    let os = OS;
-    let arch = ARCH;
-    let browser_manager: Box<dyn BrowserManager> = if browser_name.eq_ignore_ascii_case("chrome")
-        || driver_name.eq_ignore_ascii_case("chromedriver")
-    {
-        ChromeManager::new()
-    } else if browser_name.eq_ignore_ascii_case("firefox")
-        || driver_name.eq_ignore_ascii_case("geckodriver")
-    {
-        FirefoxManager::new()
-    } else if browser_name.eq_ignore_ascii_case("edge")
-        || driver_name.eq_ignore_ascii_case("msedgedriver")
-    {
-        EdgeManager::new()
-    } else {
-        return Err(format!("Invalid browser/driver name"))?;
-    };
 
     if cli.clear_cache {
         clear_cache();
     }
 
-    let mut driver_version = cli.driver_version;
-    let mut browser_version = cli.browser_version;
+    let browser_name: String = cli.browser;
+    let driver_name: String = cli.driver;
 
-    if !driver_version.is_empty() && !browser_version.is_empty() {
-        log::warn!("Ignoring --browser-version (since --driver-version is also used)");
-    }
-
-    if driver_version.is_empty() {
-        if browser_version.is_empty() {
-            match browser_manager.get_browser_version(os) {
-                Some(version) => {
-                    browser_version = version;
-                    log::debug!("Detected browser: {} {}", browser_name, browser_version);
-                }
-                None => {
-                    log::warn!(
-                        "The version of {} cannot be detected. Trying with latest driver version",
-                        browser_name
-                    );
-                }
-            }
-        }
-        driver_version = browser_manager.get_driver_version(&browser_version, os)?;
-        log::debug!(
-            "Required driver: {} {}",
-            browser_manager.get_driver_name(),
-            driver_version
-        );
-    }
-
-    let driver_path = browser_manager.get_driver_path_in_cache(&driver_version, os, arch);
-    if driver_path.exists() {
-        log::debug!(
-            "{} {} already in the cache",
-            browser_manager.get_driver_name(),
-            driver_version
-        );
+    let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
+        get_manager_by_browser(browser_name).unwrap_or_else(|err| {
+            log::error!("{}", err);
+            exit(DATAERR);
+        })
+    } else if !driver_name.is_empty() {
+        get_manager_by_driver(driver_name).unwrap_or_else(|err| {
+            log::error!("{}", err);
+            exit(DATAERR);
+        })
     } else {
-        browser_manager.download_driver(&driver_version, os, arch)?;
-    }
-    log::info!("{}", driver_path.display());
+        log::error!("You need to specify a browser or driver");
+        exit(DATAERR);
+    };
+
+    selenium_manager.set_browser_version(cli.browser_version);
+    selenium_manager.set_driver_version(cli.driver_version);
+
+    match selenium_manager.resolve_driver() {
+        Ok(driver_path) => log::info!("{}", driver_path.display()),
+        Err(err) => {
+            log::error!("{}", err);
+            exit(DATAERR);
+        }
+    };
 
     Ok(())
 }
@@ -163,11 +124,11 @@ fn setup_logging(cli: &Cli) {
         .format(|buf, record| {
             let mut level_style = buf.style();
             match record.level() {
-                Level::Trace => level_style.set_color(Color::Cyan),
-                Level::Debug => level_style.set_color(Color::Blue),
-                Level::Info => level_style.set_color(Color::Green),
-                Level::Warn => level_style.set_color(Color::Yellow),
-                Level::Error => level_style.set_color(Color::Red).set_bold(true),
+                Level::Trace => level_style.set_color(Cyan),
+                Level::Debug => level_style.set_color(Blue),
+                Level::Info => level_style.set_color(Green),
+                Level::Warn => level_style.set_color(Yellow),
+                Level::Error => level_style.set_color(Red).set_bold(true),
             };
             writeln!(
                 buf,

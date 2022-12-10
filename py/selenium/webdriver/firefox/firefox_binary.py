@@ -31,8 +31,7 @@ class FirefoxBinary:
     NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
 
     def __init__(self, firefox_path=None, log_file=None):
-        """
-        Creates a new instance of Firefox binary.
+        """Creates a new instance of Firefox binary.
 
         :Args:
          - firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.
@@ -69,6 +68,7 @@ class FirefoxBinary:
 
     def launch_browser(self, profile, timeout=30):
         """Launches the browser for the given profile name.
+
         It is assumed the profile already exists.
         """
         self.profile = profile
@@ -112,8 +112,8 @@ class FirefoxBinary:
                 raise WebDriverException(
                     "Can't load the profile. Possible firefox version mismatch. "
                     "You must use GeckoDriver instead for Firefox 48+. Profile "
-                    "Dir: %s If you specified a log_file in the "
-                    "FirefoxBinary constructor, check it for details." % (self.profile.path)
+                    f"Dir: {self.profile.path} If you specified a log_file in the "
+                    "FirefoxBinary constructor, check it for details."
                 )
             count += 1
             time.sleep(1)
@@ -221,7 +221,7 @@ class FirefoxBinary:
 
     def which(self, fname):
         """Returns the fully qualified path by searching Path of the given
-        name"""
+        name."""
         for pe in os.environ["PATH"].split(os.pathsep):
             checkname = os.path.join(pe, fname)
             if os.access(checkname, os.X_OK) and not os.path.isdir(checkname):

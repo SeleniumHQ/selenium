@@ -38,8 +38,11 @@ public class InternetExplorerDriver extends RemoteWebDriver {
 
   /**
    * Capability that defines to use whether to use native or javascript events during operations.
+   *
+   * @deprecated Non W3C compliant
    */
-  public static final String NATIVE_EVENTS = CapabilityType.HAS_NATIVE_EVENTS;
+  @Deprecated
+  public static final String NATIVE_EVENTS = "nativeEvents";
 
   /**
    * Capability that defines the initial URL to be used when IE is launched.

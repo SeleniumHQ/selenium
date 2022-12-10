@@ -28,8 +28,8 @@ DEFAULT_SERVICE_LOG_PATH = None
 
 
 class WebDriver(ChromiumDriver):
-    """
-    Controls the Microsoft Edge driver and allows you to drive the browser.
+    """Controls the Microsoft Edge driver and allows you to drive the browser.
+
     You will need to download the MSEdgeDriver (Chromium) executable from
     https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
     """
@@ -44,11 +44,10 @@ class WebDriver(ChromiumDriver):
         service_log_path=DEFAULT_SERVICE_LOG_PATH,
         service: Service = None,
         keep_alive=False,
-        verbose=False,
-    ):
-        """
-        Creates a new instance of the edge driver.
-        Starts the service and then creates new instance of edge driver.
+        verbose=False,  # Todo: Why is this now unused?
+    ) -> None:
+        """Creates a new instance of the edge driver. Starts the service and
+        then creates new instance of edge driver.
 
         :Args:
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH

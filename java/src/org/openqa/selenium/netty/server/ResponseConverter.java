@@ -58,13 +58,6 @@ public class ResponseConverter extends ChannelOutboundHandlerAdapter {
     }
 
     HttpResponse seResponse = (HttpResponse) msg;
-    if (seResponse.getStatus() == 404) {
-      // In some cases the resource is not found, and if we have not read completely the input
-      // stream, a read/write lock will happen since the client gets a response and won't stream
-      // the remaining content. Closing the pipe avoids a lock and leaves the RequestConverter
-      // ready for upcoming requests.
-      ((RequestConverter) ctx.pipeline().context("se-request").handler()).closeInputPipe();
-    }
 
     // We may not know how large the response is, but figure it out if we can.
     byte[] ary = new byte[CHUNK_SIZE];

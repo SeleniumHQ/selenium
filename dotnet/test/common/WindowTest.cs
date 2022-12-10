@@ -172,6 +172,7 @@ namespace OpenQA.Selenium
         //------------------------------------------------------------------
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Edge in IE Mode does not support full screen")]
         public void ShouldBeAbleToFullScreenTheCurrentWindow()
         {
             IWindow window = driver.Manage().Window;
@@ -184,29 +185,21 @@ namespace OpenQA.Selenium
             FullScreen();
 
             Size windowSize = window.Size;
-            Point windowPosition = window.Position;
+
             Assert.That(windowSize.Height, Is.GreaterThan(targetSize.Height));
             Assert.That(windowSize.Width, Is.GreaterThan(targetSize.Width));
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Chrome window size does not report zero when minimized.")]
-        [IgnoreBrowser(Browser.Edge, "Edge window size does not report zero when minimized.")]
         public void ShouldBeAbleToMinimizeTheCurrentWindow()
         {
             Size targetSize = new Size(640, 400);
 
             ChangeSizeTo(targetSize);
 
-            Minimize();
+            driver.Manage().Window.Minimize();
 
-            IWindow window = driver.Manage().Window;
-            Size windowSize = window.Size;
-            Point windowPosition = window.Position;
-            Assert.That(windowSize.Height, Is.LessThan(targetSize.Height));
-            Assert.That(windowSize.Width, Is.LessThan(targetSize.Width));
-            Assert.That(windowPosition.X, Is.LessThan(0));
-            Assert.That(windowPosition.Y, Is.LessThan(0));
+            Assert.That(((IJavaScriptExecutor)driver).ExecuteScript("return document.hidden;"), Is.True);
         }
 
         private void FullScreen()
@@ -223,15 +216,6 @@ namespace OpenQA.Selenium
             window.Maximize();
             WaitFor(WindowHeightToBeGreaterThan(currentSize.Height), "Window height was not greater than " + currentSize.Height.ToString());
             WaitFor(WindowWidthToBeGreaterThan(currentSize.Width), "Window width was not greater than " + currentSize.Width.ToString());
-        }
-
-        private void Minimize()
-        {
-            IWindow window = driver.Manage().Window;
-            Size currentSize = window.Size;
-            window.Minimize();
-            WaitFor(WindowHeightToBeLessThan(currentSize.Height), "Window height was not less than " + currentSize.Height.ToString());
-            WaitFor(WindowWidthToBeLessThan(currentSize.Width), "Window width was not less than " + currentSize.Width.ToString());
         }
 
         private void ChangeSizeTo(Size targetSize)

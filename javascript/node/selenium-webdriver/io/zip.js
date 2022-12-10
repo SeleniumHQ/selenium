@@ -68,8 +68,8 @@ class Zip {
    * @param {string} dirPath path to the directory to add.
    * @param {string=} zipPath path to the folder in the archive to add the
    *     directory contents to. Defaults to the root folder.
-   * @return {!Promise<?>} returns a promise that will resolve when the
-   *     the operation is complete.
+   * @return {!Promise<?>} returns a promise that will resolve when
+   * the operation is complete.
    */
   addDir(dirPath, zipPath = '') {
     return io.walkDir(dirPath).then((entries) => {

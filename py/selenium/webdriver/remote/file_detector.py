@@ -25,10 +25,8 @@ from selenium.webdriver.common.utils import keys_to_typing
 
 
 class FileDetector(metaclass=ABCMeta):
-    """
-    Used for identifying whether a sequence of chars represents the path to a
-    file.
-    """
+    """Used for identifying whether a sequence of chars represents the path to
+    a file."""
 
     @abstractmethod
     def is_local_file(self, *keys: AnyKey) -> Optional[str]:
@@ -36,18 +34,14 @@ class FileDetector(metaclass=ABCMeta):
 
 
 class UselessFileDetector(FileDetector):
-    """
-    A file detector that never finds anything.
-    """
+    """A file detector that never finds anything."""
 
     def is_local_file(self, *keys: AnyKey) -> Optional[str]:
         return None
 
 
 class LocalFileDetector(FileDetector):
-    """
-    Detects files on the local disk.
-    """
+    """Detects files on the local disk."""
 
     def is_local_file(self, *keys: AnyKey) -> Optional[str]:
         file_path = "".join(keys_to_typing(keys))

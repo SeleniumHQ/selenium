@@ -10,11 +10,8 @@ py)
   tox -c py/tox.ini -e docs || exit
   ;;
 rb)
-  cd rb || exit
-  bundle install || exit
-  cd ..
   bazel run //rb:docs || exit
-  git checkout rb/Gemfile.lock || true
+  docs="$(bazel cquery --output=files //rb:docs 2> /dev/null).runfiles/selenium/docs/api/rb"
   ;;
 *)
   echo "Selenium API docs generation"
@@ -45,7 +42,7 @@ py)
   ;;
 rb)
   rm -rf docs/api/rb
-  mv bazel-bin/rb/docs.runfiles/selenium/docs/api/rb docs/api/rb
+  mv $docs docs/api/rb
   ;;
 *)
   echo "ERROR: unknown parameter \"$API_DOCS_LANGUAGE\""

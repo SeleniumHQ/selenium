@@ -17,18 +17,18 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assumptions.assumeFalse;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 class ContentEditableTest extends JupiterTestBase {
 
@@ -124,7 +124,6 @@ class ContentEditableTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "Doesn't write anything")
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   public void appendsTextToEndOfContentEditableWithMultipleTextNodes() {
     driver.get(appServer.whereIs("content-editable.html"));

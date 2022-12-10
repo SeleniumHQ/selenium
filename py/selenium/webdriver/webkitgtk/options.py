@@ -36,8 +36,7 @@ class Options(ArgOptions):
 
     @binary_location.setter
     def binary_location(self, value: str) -> None:
-        """
-        Allows you to set the browser binary to launch
+        """Allows you to set the browser binary to launch.
 
         :Args:
          - value : path to the browser binary
@@ -53,8 +52,7 @@ class Options(ArgOptions):
 
     @overlay_scrollbars_enabled.setter
     def overlay_scrollbars_enabled(self, value) -> None:
-        """
-        Allows you to enable or disable overlay scrollbars
+        """Allows you to enable or disable overlay scrollbars.
 
         :Args:
          - value : True or False
@@ -62,10 +60,8 @@ class Options(ArgOptions):
         self._overlay_scrollbars_enabled = value
 
     def to_capabilities(self):
-        """
-        Creates a capabilities with all the options that have been set and
-        returns a dictionary with everything
-        """
+        """Creates a capabilities with all the options that have been set and
+        returns a dictionary with everything."""
         caps = self._caps
 
         browser_options = {}

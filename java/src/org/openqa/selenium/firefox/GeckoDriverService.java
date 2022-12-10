@@ -171,12 +171,6 @@ public class GeckoDriverService extends FirefoxDriverService {
     }
 
     @Override
-    protected FirefoxDriverService.Builder withOptions(FirefoxOptions options) {
-      usingFirefoxBinary(options.getBinary());
-      return this;
-    }
-
-    @Override
     protected File findDefaultExecutable() {
       return findExecutable(
         "geckodriver", GECKO_DRIVER_EXE_PROPERTY,

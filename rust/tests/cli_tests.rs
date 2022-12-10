@@ -16,20 +16,26 @@
 // under the License.
 
 use assert_cmd::Command;
+
 use rstest::rstest;
 use std::str;
 
 #[rstest]
-#[case("chrome", "", "")]
-#[case("chrome", "105", "105.0.5195.52")]
-#[case("chrome", "106", "106.0.5249.61")]
-#[case("edge", "", "")]
-#[case("edge", "105", "105.0")]
-#[case("edge", "106", "106.0")]
-#[case("firefox", "", "")]
-#[case("firefox", "105", "0.32.0")]
+#[case("chrome", "chromedriver", "", "")]
+#[case("chrome", "chromedriver", "105", "105.0.5195.52")]
+#[case("chrome", "chromedriver", "106", "106.0.5249.61")]
+#[case("chrome", "chromedriver", "beta", "")]
+#[case("edge", "msedgedriver", "", "")]
+#[case("edge", "msedgedriver", "105", "105.0")]
+#[case("edge", "msedgedriver", "106", "106.0")]
+#[case("edge", "msedgedriver", "beta", "")]
+#[case("firefox", "geckodriver", "", "")]
+#[case("firefox", "geckodriver", "105", "0.32.0")]
+#[case("firefox", "geckodriver", "beta", "")]
+#[case("iexplorer", "IEDriverServer", "", "")]
 fn ok_test(
     #[case] browser: String,
+    #[case] driver_name: String,
     #[case] browser_version: String,
     #[case] driver_version: String,
 ) {
@@ -51,16 +57,20 @@ fn ok_test(
     };
     println!("{}", output);
 
-    assert!(output.contains("driver"));
+    assert!(output.contains(&driver_name));
     if !browser_version.is_empty() {
         assert!(output.contains(&driver_version));
     }
 }
 
 #[rstest]
-#[case("wrong-browser", "", "", 1)]
-#[case("chrome", "wrong-version", "", 101)]
-#[case("chrome", "", "wrong-version", 101)]
+#[case("wrong-browser", "", "", exitcode::DATAERR)]
+#[case("chrome", "wrong-browser-version", "", exitcode::DATAERR)]
+#[case("chrome", "", "wrong-driver-version", exitcode::DATAERR)]
+#[case("firefox", "", "wrong-driver-version", exitcode::DATAERR)]
+#[case("edge", "wrong-browser-version", "", exitcode::DATAERR)]
+#[case("edge", "", "wrong-driver-version", exitcode::DATAERR)]
+#[case("iexplorer", "", "wrong-driver-version", exitcode::DATAERR)]
 fn error_test(
     #[case] browser: String,
     #[case] browser_version: String,

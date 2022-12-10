@@ -23,7 +23,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.CapabilityType;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,12 +34,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TestUtilities {
-
-  public static boolean isNativeEventsEnabled(WebDriver driver) {
-    return driver instanceof HasCapabilities &&
-           ((HasCapabilities) driver).getCapabilities().is(CapabilityType.HAS_NATIVE_EVENTS);
-
-  }
 
   public static String getUserAgent(WebDriver driver) {
     try {

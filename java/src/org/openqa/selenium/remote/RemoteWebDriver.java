@@ -45,15 +45,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
@@ -91,7 +91,6 @@ import java.util.stream.Stream;
 import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
@@ -202,19 +201,6 @@ public class RemoteWebDriver implements WebDriver,
     executeMethod = new RemoteExecuteMethod(this);
 
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
-
-    boolean isProfilingEnabled = capabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
-    if (isProfilingEnabled) {
-      builder.add(LogType.PROFILER);
-    }
-
-    LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();
-    mergedLoggingPrefs.addPreferences((LoggingPreferences) capabilities.getCapability(LOGGING_PREFS));
-
-    if (!mergedLoggingPrefs.getEnabledLogTypes().contains(LogType.CLIENT) ||
-        mergedLoggingPrefs.getLevel(LogType.CLIENT) != Level.OFF) {
-      builder.add(LogType.CLIENT);
-    }
 
     Set<String> logTypesToInclude = builder.build();
 
@@ -440,6 +426,14 @@ public class RemoteWebDriver implements WebDriver,
     }
 
     try {
+      if (this instanceof HasDevTools) {
+        ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::close);
+      }
+
+      if (this instanceof HasBiDi) {
+        ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
+      }
+
       execute(DriverCommand.QUIT);
     } finally {
       sessionId = null;

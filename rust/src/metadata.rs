@@ -25,7 +25,7 @@ use serde::{Deserialize, Serialize};
 use crate::files::get_cache_folder;
 
 const METADATA_FILE: &str = "selenium-manager.json";
-const TTL_BROWSERS_SEC: u64 = 3600;
+const TTL_BROWSERS_SEC: u64 = 0;
 const TTL_DRIVERS_SEC: u64 = 86400;
 
 #[derive(Serialize, Deserialize)]

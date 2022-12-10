@@ -43,60 +43,15 @@ public interface CapabilityType {
   @Deprecated
   String VERSION = "version";
   /**
-   * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
-   */
-  @Deprecated
-  String SUPPORTS_ALERTS = "handlesAlerts";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String SUPPORTS_SQL_DATABASE = "databaseEnabled";
-  /**
    * @deprecated Non W3C compliant
    */
   @Deprecated
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   /**
-   * @deprecated Use {@link CapabilityType#ACCEPT_INSECURE_CERTS}
-   */
-  @Deprecated
-  String ACCEPT_SSL_CERTS = "acceptSslCerts";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String HAS_NATIVE_EVENTS = "nativeEvents";
-  /**
    * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
    */
   @Deprecated
   String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String HAS_TOUCHSCREEN = "hasTouchScreen";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String OVERLAPPING_CHECK_DISABLED = "overlappingCheckDisabled";
-
-  /**
-   * @deprecated Non W3C compliant
-   * Use {@link org.openqa.selenium.chrome.ChromeOptions#LOGGING_PREFS} or
-   * Use {@link org.openqa.selenium.edge.EdgeOptions#LOGGING_PREFS}
-   */
-  @Deprecated
-  String LOGGING_PREFS = "loggingPrefs";
-
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
-  String ENABLE_PROFILING_CAPABILITY = "webdriver.logging.profiler.enabled";
-
 
   String BROWSER_NAME = "browserName";
   String PLATFORM_NAME = "platformName";

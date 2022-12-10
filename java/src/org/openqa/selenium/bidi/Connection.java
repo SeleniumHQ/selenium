@@ -71,12 +71,14 @@ public class Connection implements Closeable {
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks = new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
+  private final HttpClient client;
 
   public Connection(HttpClient client, String url) {
     Require.nonNull("HTTP client", client);
     Require.nonNull("URL to connect to", url);
 
-    socket = client.openSocket(new HttpRequest(GET, url), new Listener());
+    this.client = client;
+    socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
   private static class NamedConsumer<X> implements Consumer<X> {
@@ -108,20 +110,23 @@ public class Connection implements Closeable {
     long id = NEXT_ID.getAndIncrement();
 
     CompletableFuture<X> result = new CompletableFuture<>();
-    methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), inputOrException -> {
-      if (inputOrException.isRight()) {
-        try {
-          X value = command.getMapper().apply(inputOrException.right());
-          result.complete(value);
-        } catch (Exception e) {
-          LOG.log(Level.WARNING, String.format("Unable to map result for %s", command.getMethod()),
-                  e);
-          result.completeExceptionally(e);
+    if (command.getSendsResponse()) {
+      methodCallbacks.put(id, NamedConsumer.of(command.getMethod(), inputOrException -> {
+        if (inputOrException.isRight()) {
+          try {
+            X value = command.getMapper().apply(inputOrException.right());
+            result.complete(value);
+          } catch (Exception e) {
+            LOG.log(Level.WARNING,
+                    String.format("Unable to map result for %s", command.getMethod()),
+                    e);
+            result.completeExceptionally(e);
+          }
+        } else {
+          result.completeExceptionally(inputOrException.left());
         }
-      } else {
-        result.completeExceptionally(inputOrException.left());
-      }
-    }));
+      }));
+    }
 
     ImmutableMap.Builder<String, Object> serialized = ImmutableMap.builder();
     serialized.put("id", id);
@@ -134,6 +139,10 @@ public class Connection implements Closeable {
     }
     LOG.log(getDebugLogLevel(), () -> String.format("-> %s", json));
     socket.sendText(json);
+
+    if (!command.getSendsResponse()) {
+      result.complete(null);
+    }
 
     return result;
   }
@@ -200,6 +209,7 @@ public class Connection implements Closeable {
   @Override
   public void close() {
     socket.close();
+    client.close();
   }
 
   private class Listener implements WebSocket.Listener {

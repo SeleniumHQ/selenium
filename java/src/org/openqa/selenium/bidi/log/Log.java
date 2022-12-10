@@ -40,7 +40,7 @@ public class Log {
 
         Optional<GenericLogEntry> genericLogEntry = Optional.empty();
         Optional<ConsoleLogEntry> consoleLogEntry = Optional.empty();
-        Optional<GenericLogEntry> javascriptLogEntry = Optional.empty();
+        Optional<JavascriptLogEntry> javascriptLogEntry = Optional.empty();
 
         if (type != null) {
           try (StringReader reader = new StringReader(JSON.toJson(params));
@@ -48,7 +48,7 @@ public class Log {
             if ("console".equals(type)) {
               consoleLogEntry = Optional.ofNullable(input.read(ConsoleLogEntry.class));
             } else if ("javascript".equals(type)) {
-              javascriptLogEntry = Optional.ofNullable(input.read(GenericLogEntry.class));
+              javascriptLogEntry = Optional.ofNullable(input.read(JavascriptLogEntry.class));
             } else {
               genericLogEntry = Optional.ofNullable(input.read(GenericLogEntry.class));
             }

@@ -282,9 +282,7 @@ class PrintOptions:
         self._print_options["pageRanges"] = value
 
     def __validate_num_property(self, property_name: str, value: float) -> None:
-        """
-        Helper function to validate some of the properties
-        """
+        """Helper function to validate some of the properties."""
         if not isinstance(value, (int, float)):
             raise ValueError(f"{property_name} should be an integer or a float")
 

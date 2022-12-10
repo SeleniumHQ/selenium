@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentMatchers;
@@ -31,10 +32,8 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
@@ -50,7 +49,6 @@ import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
@@ -64,16 +62,16 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
@@ -358,13 +356,10 @@ class FirefoxDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canBlockInvalidSslCertificates() {
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setAcceptUntrustedCertificates(false);
-
-    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setProfile(profile));
+  public void canBlockInsecureCerts() {
+    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setAcceptInsecureCerts(false));
     Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
-    assertThat(caps.is(ACCEPT_SSL_CERTS)).isFalse();
+    assertThat(caps.is(ACCEPT_INSECURE_CERTS)).isFalse();
   }
 
   @Test
@@ -525,25 +520,6 @@ class FirefoxDriverTest extends JupiterTestBase {
     driver.findElement(By.cssSelector("div.content"));
     assertThat(((JavascriptExecutor) driver).executeScript("return window.Sizzle + '';"))
       .isEqualTo("original sizzle value");
-  }
-
-  @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415067")
-  @NoDriverBeforeTest
-  public void testFirefoxCanNativelyClickOverlappingElements() {
-    FirefoxOptions options = new FirefoxOptions();
-    options.setCapability(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);
-    localDriver = new WebDriverBuilder().get(options);
-    localDriver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
-    localDriver.findElement(By.id("under")).click();
-    assertThat(localDriver.findElement(By.id("log")).getText())
-      .isEqualTo("Log:\n"
-        + "mousedown in over (handled by over)\n"
-        + "mousedown in over (handled by body)\n"
-        + "mouseup in over (handled by over)\n"
-        + "mouseup in over (handled by body)\n"
-        + "click in over (handled by over)\n"
-        + "click in over (handled by body)");
   }
 
   @Test

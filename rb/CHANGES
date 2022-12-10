@@ -1,3 +1,22 @@
+4.7.1 (2022-12-02)
+=========================
+Ruby:
+  * Fix bug preventing selenium manager from using Internet Explorer
+
+4.7.0 (2022-12-01)
+=========================
+BiDi:
+  * Released selenium-devtools 0.108.0 (supports CDP v85, v106, v107, v108)
+  * Fix bug with socket stability
+
+Ruby:
+  * Remove dependency on ChildProcess gem in favor of native Process.spawn (#11251)
+  * Add support for Selenium Manager to work with IE Driver
+  * Improve error handling for Selenium Manager
+
+Safari:
+  * Fix bug preventing Safari Options from being used with Safari Technology Preview
+
 4.6.1 (2022-11-04)
 =========================
 Ruby:
@@ -14,7 +33,6 @@ Ruby:
   * Revert "[rb] do not allow Select class to work with disabled selects"
   * Make sure selenium-manager is packed into gem
   * Fix platform list in #scroll_by guard
-
 
 4.5.0 (2022-09-28)
 =========================

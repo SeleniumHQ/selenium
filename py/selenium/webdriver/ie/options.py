@@ -48,7 +48,7 @@ class Options(ArgOptions):
     ATTACH_TO_EDGE_CHROME = "ie.edgechromium"
     EDGE_EXECUTABLE_PATH = "ie.edgepath"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self._options = {}
         self._additional = {}
@@ -67,12 +67,10 @@ class Options(ArgOptions):
 
     @browser_attach_timeout.setter
     def browser_attach_timeout(self, value: int) -> None:
-        """
-        Sets the options Browser Attach Timeout
+        """Sets the options Browser Attach Timeout.
 
         :Args:
          - value: Timeout in milliseconds
-
         """
         if not isinstance(value, int):
             raise ValueError("Browser Attach Timeout must be an integer.")
@@ -85,12 +83,10 @@ class Options(ArgOptions):
 
     @element_scroll_behavior.setter
     def element_scroll_behavior(self, value: ElementScrollBehavior) -> None:
-        """
-        Sets the options Element Scroll Behavior
+        """Sets the options Element Scroll Behavior.
 
         :Args:
          - value: 0 - Top, 1 - Bottom
-
         """
         if value not in [ElementScrollBehavior.TOP, ElementScrollBehavior.BOTTOM]:
             raise ValueError("Element Scroll Behavior out of range.")
@@ -103,12 +99,10 @@ class Options(ArgOptions):
 
     @ensure_clean_session.setter
     def ensure_clean_session(self, value: bool) -> None:
-        """
-        Sets the options Ensure Clean Session value
+        """Sets the options Ensure Clean Session value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.ENSURE_CLEAN_SESSION] = value
 
@@ -119,12 +113,10 @@ class Options(ArgOptions):
 
     @file_upload_dialog_timeout.setter
     def file_upload_dialog_timeout(self, value: int) -> None:
-        """
-        Sets the options File Upload Dialog Timeout value
+        """Sets the options File Upload Dialog Timeout value.
 
         :Args:
          - value: Timeout in milliseconds
-
         """
         if not isinstance(value, int):
             raise ValueError("File Upload Dialog Timeout must be an integer.")
@@ -137,12 +129,10 @@ class Options(ArgOptions):
 
     @force_create_process_api.setter
     def force_create_process_api(self, value: bool) -> None:
-        """
-        Sets the options Force Create Process Api value
+        """Sets the options Force Create Process Api value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.FORCE_CREATE_PROCESS_API] = value
 
@@ -153,12 +143,10 @@ class Options(ArgOptions):
 
     @force_shell_windows_api.setter
     def force_shell_windows_api(self, value: bool) -> None:
-        """
-        Sets the options Force Shell Windows Api value
+        """Sets the options Force Shell Windows Api value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.FORCE_SHELL_WINDOWS_API] = value
 
@@ -169,12 +157,10 @@ class Options(ArgOptions):
 
     @full_page_screenshot.setter
     def full_page_screenshot(self, value: bool) -> None:
-        """
-        Sets the options Full Page Screenshot value
+        """Sets the options Full Page Screenshot value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.FULL_PAGE_SCREENSHOT] = value
 
@@ -185,12 +171,10 @@ class Options(ArgOptions):
 
     @ignore_protected_mode_settings.setter
     def ignore_protected_mode_settings(self, value: bool) -> None:
-        """
-        Sets the options Ignore Protected Mode Settings value
+        """Sets the options Ignore Protected Mode Settings value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.IGNORE_PROTECTED_MODE_SETTINGS] = value
 
@@ -201,12 +185,10 @@ class Options(ArgOptions):
 
     @ignore_zoom_level.setter
     def ignore_zoom_level(self, value: bool) -> None:
-        """
-        Sets the options Ignore Zoom Level value
+        """Sets the options Ignore Zoom Level value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.IGNORE_ZOOM_LEVEL] = value
 
@@ -217,12 +199,10 @@ class Options(ArgOptions):
 
     @initial_browser_url.setter
     def initial_browser_url(self, value: str) -> None:
-        """
-        Sets the options Initial Browser Url value
+        """Sets the options Initial Browser Url value.
 
         :Args:
          - value: URL string
-
         """
         self._options[self.INITIAL_BROWSER_URL] = value
 
@@ -233,12 +213,10 @@ class Options(ArgOptions):
 
     @native_events.setter
     def native_events(self, value: bool) -> None:
-        """
-        Sets the options Native Events value
+        """Sets the options Native Events value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.NATIVE_EVENTS] = value
 
@@ -249,12 +227,10 @@ class Options(ArgOptions):
 
     @persistent_hover.setter
     def persistent_hover(self, value: bool) -> None:
-        """
-        Sets the options Persistent Hover value
+        """Sets the options Persistent Hover value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.PERSISTENT_HOVER] = value
 
@@ -265,12 +241,10 @@ class Options(ArgOptions):
 
     @require_window_focus.setter
     def require_window_focus(self, value: bool) -> None:
-        """
-        Sets the options Require Window Focus value
+        """Sets the options Require Window Focus value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.REQUIRE_WINDOW_FOCUS] = value
 
@@ -281,12 +255,10 @@ class Options(ArgOptions):
 
     @use_per_process_proxy.setter
     def use_per_process_proxy(self, value: bool) -> None:
-        """
-        Sets the options User Per Process Proxy value
+        """Sets the options User Per Process Proxy value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.USE_PER_PROCESS_PROXY] = value
 
@@ -297,12 +269,10 @@ class Options(ArgOptions):
 
     @use_legacy_file_upload_dialog_handling.setter
     def use_legacy_file_upload_dialog_handling(self, value: bool) -> None:
-        """
-        Sets the options Use Legacy File Upload Dialog Handling value
+        """Sets the options Use Legacy File Upload Dialog Handling value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.USE_LEGACY_FILE_UPLOAD_DIALOG_HANDLING] = value
 
@@ -313,12 +283,10 @@ class Options(ArgOptions):
 
     @attach_to_edge_chrome.setter
     def attach_to_edge_chrome(self, value: bool) -> None:
-        """
-        Sets the options Attach to Edge Chrome value
+        """Sets the options Attach to Edge Chrome value.
 
         :Args:
          - value: boolean value
-
         """
         self._options[self.ATTACH_TO_EDGE_CHROME] = value
 
@@ -329,12 +297,10 @@ class Options(ArgOptions):
 
     @edge_executable_path.setter
     def edge_executable_path(self, value: str) -> None:
-        """
-        Sets the options Initial Browser Url value
+        """Sets the options Initial Browser Url value.
 
         :Args:
          - value: Path string
-
         """
         self._options[self.EDGE_EXECUTABLE_PATH] = value
 
@@ -344,13 +310,11 @@ class Options(ArgOptions):
         return self._additional
 
     def add_additional_option(self, name: str, value):
-        """
-        Adds an additional option not yet added as a safe option for IE
+        """Adds an additional option not yet added as a safe option for IE.
 
         :Args:
          - name: name of the option to add
          - value: value of the option to add
-
         """
         self._additional[name] = value
 

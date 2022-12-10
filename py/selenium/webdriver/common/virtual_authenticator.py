@@ -23,18 +23,14 @@ from enum import Enum
 
 
 class Protocol(Enum):
-    """
-    Protocol to communicate with the authenticator.
-    """
+    """Protocol to communicate with the authenticator."""
 
     CTAP2 = "ctap2"
     U2F = "ctap1/u2f"
 
 
 class Transport(Enum):
-    """
-    Transport method to communicate with the authenticator.
-    """
+    """Transport method to communicate with the authenticator."""
 
     BLE = "ble"
     USB = "usb"
@@ -136,7 +132,7 @@ class Credential:
         sign_count: int,
     ):
         """Constructor. A credential stored in a virtual authenticator.
-        https://w3c.github.io/webauthn/#credential-parameters
+        https://w3c.github.io/webauthn/#credential-parameters.
 
         :Args:
             - credential_id (bytes): Unique base64 encoded string.
@@ -243,9 +239,8 @@ class Credential:
 
 
 def required_chromium_based_browser(func):
-    """
-    A decorator to ensure that the client used is a chromium based browser.
-    """
+    """A decorator to ensure that the client used is a chromium based
+    browser."""
 
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -259,9 +254,8 @@ def required_chromium_based_browser(func):
 
 
 def required_virtual_authenticator(func):
-    """
-    A decorator to ensure that the function is called with a virtual authenticator.
-    """
+    """A decorator to ensure that the function is called with a virtual
+    authenticator."""
 
     @functools.wraps(func)
     @required_chromium_based_browser

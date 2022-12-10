@@ -76,12 +76,12 @@ function driverLocation(browser) {
     result = execSync(args.join(' ')).toString()
   } catch (e) {
     throw new Error(
-      `Error executing command with ${args} : Error ${e.stderr.toString()}`
+      `Error executing command with ${args}\n${e.stdout.toString()}${e.stderr.toString()}`
     )
   }
 
   if (!result.startsWith('INFO\t')) {
-    throw new Error(`Unsuccessful command executed ${args}}`)
+    throw new Error(`Unsuccessful command executed: ${args}\n${result}`)
   }
 
   return result.replace('INFO\t', '').trim()

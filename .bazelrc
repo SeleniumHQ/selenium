@@ -1,6 +1,8 @@
 try-import .bazelrc.local
+try-import .bazelrc.windows.local
 
 # Ensure Windows support is accurate.
+
 startup --windows_enable_symlinks
 build --enable_runfiles
 
@@ -31,7 +33,10 @@ build --action_env=PATH
 
 # For build stamping
 
-build --workspace_status_command=scripts/build-info.py
+build --enable_platform_specific_config
+build:linux --workspace_status_command=scripts/build-info.sh
+build:macos --workspace_status_command=scripts/build-info.sh
+build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"
 
 # Make sure we get something helpful when tests fail
 
