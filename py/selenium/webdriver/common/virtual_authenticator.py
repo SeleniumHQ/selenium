@@ -23,6 +23,8 @@ from enum import Enum
 
 
 class Protocol(str, Enum):
+    """Protocol to communicate with the authenticator."""
+
     CTAP2: str = "ctap2"
     U2F: str = "ctap1/u2f"
 
