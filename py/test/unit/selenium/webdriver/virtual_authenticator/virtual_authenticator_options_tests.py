@@ -26,7 +26,7 @@ def options():
 
 
 def test_bespoke_options_for_virtual_authenticator():
-    va = VirtualAuthenticatorOptions(
+    assert VirtualAuthenticatorOptions(
         protocol="ctap1/u2f",
         transport="ble",
         has_resident_key=True,
