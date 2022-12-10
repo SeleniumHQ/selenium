@@ -39,8 +39,7 @@ else:
 
 class Timeouts:
     def __init__(self, implicit_wait: float = 0, page_load: float = 0, script: float = 0) -> None:
-        """
-        Create a new Timeout object.
+        """Create a new Timeout object.
 
         :Args:
          - implicit_wait - Either an int or a float. The number passed in needs to how many
@@ -56,43 +55,49 @@ class Timeouts:
 
     @property
     def implicit_wait(self) -> float:
-        """
-        Return the value for the implicit wait. This does not return the value on the remote end
+        """Return the value for the implicit wait.
+
+        This does not return the value on the remote end
         """
         return self._implicit_wait / 1000
 
     @implicit_wait.setter
     def implicit_wait(self, _implicit_wait: float) -> None:
-        """
-        Sets the value for the implicit wait. This does not set the value on the remote end
+        """Sets the value for the implicit wait.
+
+        This does not set the value on the remote end
         """
         self._implicit_wait = self._convert(_implicit_wait)
 
     @property
     def page_load(self) -> float:
-        """
-        Return the value for the page load wait. This does not return the value on the remote end
+        """Return the value for the page load wait.
+
+        This does not return the value on the remote end
         """
         return self._page_load / 1000
 
     @page_load.setter
     def page_load(self, _page_load: float) -> None:
-        """
-        Sets the value for the page load wait. This does not set the value on the remote end
+        """Sets the value for the page load wait.
+
+        This does not set the value on the remote end
         """
         self._page_load = self._convert(_page_load)
 
     @property
     def script(self) -> float:
-        """
-        Return the value for the script wait. This does not return the value on the remote end
+        """Return the value for the script wait.
+
+        This does not return the value on the remote end
         """
         return self._script / 1000
 
     @script.setter
     def script(self, _script: float) -> None:
-        """
-        Sets the value for the script wait. This does not set the value on the remote end
+        """Sets the value for the script wait.
+
+        This does not set the value on the remote end
         """
         self._script = self._convert(_script)
 

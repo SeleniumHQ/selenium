@@ -29,8 +29,8 @@ DEFAULT_KEEP_ALIVE = None
 
 
 class WebDriver(ChromiumDriver):
-    """
-    Controls the ChromeDriver and allows you to drive the browser.
+    """Controls the ChromeDriver and allows you to drive the browser.
+
     You will need to download the ChromeDriver executable from
     http://chromedriver.storage.googleapis.com/index.html
     """
@@ -47,9 +47,8 @@ class WebDriver(ChromiumDriver):
         service: Service = None,
         keep_alive=DEFAULT_KEEP_ALIVE,
     ) -> None:
-        """
-        Creates a new instance of the chrome driver.
-        Starts the service and then creates new instance of chrome driver.
+        """Creates a new instance of the chrome driver. Starts the service and
+        then creates new instance of chrome driver.
 
         :Args:
          - executable_path - Deprecated: path to the executable. If the default is used it assumes the executable is in the $PATH

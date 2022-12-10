@@ -46,15 +46,13 @@ class Options(ArgOptions):
 
     @property
     def binary(self) -> FirefoxBinary:
-        """Returns the FirefoxBinary instance"""
+        """Returns the FirefoxBinary instance."""
         return self._binary
 
     @binary.setter
     def binary(self, new_binary: Union[str, FirefoxBinary]) -> None:
         """Sets location of the browser binary, either by string or
-        ``FirefoxBinary`` instance.
-
-        """
+        ``FirefoxBinary`` instance."""
         if not isinstance(new_binary, FirefoxBinary):
             new_binary = FirefoxBinary(new_binary)
         self._binary = new_binary
@@ -68,7 +66,7 @@ class Options(ArgOptions):
 
     @binary_location.setter  # noqa
     def binary_location(self, value: str) -> None:
-        """Sets the location of the browser binary by string"""
+        """Sets the location of the browser binary by string."""
         self.binary = value
 
     @property
@@ -91,10 +89,8 @@ class Options(ArgOptions):
 
     @profile.setter
     def profile(self, new_profile: Union[str, FirefoxProfile]) -> None:
-        """Sets location of the browser profile to use, either by string
-        or ``FirefoxProfile``.
-
-        """
+        """Sets location of the browser profile to use, either by string or
+        ``FirefoxProfile``."""
         warnings.warn(
             "Setting a profile has been deprecated. Please use the set_preference and install_addons methods",
             DeprecationWarning,
@@ -113,8 +109,7 @@ class Options(ArgOptions):
 
     @headless.setter
     def headless(self, value: bool) -> None:
-        """
-        Sets the headless argument
+        """Sets the headless argument.
 
         Args:
           value: boolean value indicating to set the headless option
@@ -128,9 +123,7 @@ class Options(ArgOptions):
         super().enable_mobile(android_package, android_activity, device_serial)
 
     def to_capabilities(self) -> dict:
-        """Marshals the Firefox options to a `moz:firefoxOptions`
-        object.
-        """
+        """Marshals the Firefox options to a `moz:firefoxOptions` object."""
         # This intentionally looks at the internal properties
         # so if a binary or profile has _not_ been set,
         # it will defer to geckodriver to find the system Firefox

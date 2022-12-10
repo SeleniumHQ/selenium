@@ -25,9 +25,7 @@ from .service import Service
 
 
 class WebDriver(RemoteWebDriver):
-    """
-    Controls the WPEWebKitDriver and allows you to drive the browser.
-    """
+    """Controls the WPEWebKitDriver and allows you to drive the browser."""
 
     def __init__(
         self,
@@ -37,8 +35,7 @@ class WebDriver(RemoteWebDriver):
         desired_capabilities=DesiredCapabilities.WPEWEBKIT,
         service_log_path=None,
     ):
-        """
-        Creates a new instance of the WPEWebKit driver.
+        """Creates a new instance of the WPEWebKit driver.
 
         Starts the service and then creates new instance of WPEWebKit Driver.
 
@@ -61,10 +58,8 @@ class WebDriver(RemoteWebDriver):
         self._is_remote = False
 
     def quit(self):
-        """
-        Closes the browser and shuts down the WPEWebKitDriver executable
-        that is started when starting the WPEWebKitDriver
-        """
+        """Closes the browser and shuts down the WPEWebKitDriver executable
+        that is started when starting the WPEWebKitDriver."""
         try:
             super().quit()
         except http_client.BadStatusLine:

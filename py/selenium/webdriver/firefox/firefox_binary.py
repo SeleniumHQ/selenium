@@ -31,8 +31,7 @@ class FirefoxBinary:
     NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
 
     def __init__(self, firefox_path=None, log_file=None):
-        """
-        Creates a new instance of Firefox binary.
+        """Creates a new instance of Firefox binary.
 
         :Args:
          - firefox_path - Path to the Firefox executable. By default, it will be detected from the standard locations.
@@ -69,6 +68,7 @@ class FirefoxBinary:
 
     def launch_browser(self, profile, timeout=30):
         """Launches the browser for the given profile name.
+
         It is assumed the profile already exists.
         """
         self.profile = profile
@@ -221,7 +221,7 @@ class FirefoxBinary:
 
     def which(self, fname):
         """Returns the fully qualified path by searching Path of the given
-        name"""
+        name."""
         for pe in os.environ["PATH"].split(os.pathsep):
             checkname = os.path.join(pe, fname)
             if os.access(checkname, os.X_OK) and not os.path.isdir(checkname):

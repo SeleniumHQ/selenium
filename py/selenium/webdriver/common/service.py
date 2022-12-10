@@ -40,8 +40,9 @@ _HAS_NATIVE_DEVNULL = True
 
 
 class Service(ABC):
-    """The abstract base class for all service objects.  Services typically launch a child program
-    in a new process as an interim process to communicate with a browser.
+    """The abstract base class for all service objects.  Services typically
+    launch a child program in a new process as an interim process to
+    communicate with a browser.
 
     :param executable: install path of the executable.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
@@ -68,9 +69,7 @@ class Service(ABC):
 
     @property
     def service_url(self) -> str:
-        """
-        Gets the url of the Service
-        """
+        """Gets the url of the Service."""
         return f"http://{utils.join_host_port('localhost', self.port)}"
 
     @abstractmethod
@@ -79,8 +78,7 @@ class Service(ABC):
         raise NotImplementedError("This method needs to be implemented in a sub class")
 
     def start(self) -> None:
-        """
-        Starts the Service.
+        """Starts the Service.
 
         :Exceptions:
          - WebDriverException : Raised either when it can't start the service
@@ -119,15 +117,13 @@ class Service(ABC):
             raise WebDriverException(f"Service {self.path} unexpectedly exited. Status code was: {return_code}")
 
     def is_connectable(self) -> bool:
-        """Establishes a socket connection to determine if the service running on
-        the port is accessible."""
+        """Establishes a socket connection to determine if the service running
+        on the port is accessible."""
         return utils.is_connectable(self.port)
 
     def send_remote_shutdown_command(self) -> None:
-        """
-        Dispatch an HTTP request to the shutdown endpoint for the service in an
-        attempt to stop it.
-        """
+        """Dispatch an HTTP request to the shutdown endpoint for the service in
+        an attempt to stop it."""
         try:
             request.urlopen(f"{self.service_url}/shutdown")
         except URLError:
@@ -139,9 +135,7 @@ class Service(ABC):
             sleep(1)
 
     def stop(self) -> None:
-        """
-        Stops the service.
-        """
+        """Stops the service."""
         if self.log_file != PIPE and not (self.log_file == DEVNULL and _HAS_NATIVE_DEVNULL):
             try:
                 # Todo: Be explicit in what we are catching here.
@@ -158,10 +152,13 @@ class Service(ABC):
             self._terminate_process()
 
     def _terminate_process(self) -> None:
-        """Terminate the child process.  On POSIX this attempts a graceful
-        SIGTERM followed by a SIGKILL, on a Windows OS kill is an alias to
-        terminate.  Terminating does not raise itself if something has gone
-        wrong but (currently) silently ignores errors here."""
+        """Terminate the child process.
+
+        On POSIX this attempts a graceful SIGTERM followed by a SIGKILL,
+        on a Windows OS kill is an alias to terminate.  Terminating does
+        not raise itself if something has gone wrong but (currently)
+        silently ignores errors here.
+        """
         try:
             stdin, stdout, stderr = self.process.stdin, self.process.stdout, self.process.stderr
             for stream in stdin, stdout, stderr:
@@ -188,8 +185,7 @@ class Service(ABC):
             pass
 
     def _start_process(self, path: str) -> None:
-        """
-        Creates a subprocess by executing the command provided.
+        """Creates a subprocess by executing the command provided.
 
         :param cmd: full command to execute
         """

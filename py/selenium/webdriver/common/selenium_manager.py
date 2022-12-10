@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 
 
 class SeleniumManager:
-    """
-    Wrapper for getting information from the Selenium Manager binaries.
+    """Wrapper for getting information from the Selenium Manager binaries.
+
     This implementation is still in beta, and may change.
     """
 
@@ -36,8 +36,8 @@ class SeleniumManager:
 
     @staticmethod
     def get_binary() -> Path:
-        """
-        Determines the path of the correct Selenium Manager binary.
+        """Determines the path of the correct Selenium Manager binary.
+
         :Returns: The Selenium Manager executable location
         """
         directory = sys.platform

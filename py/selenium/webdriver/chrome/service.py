@@ -22,8 +22,8 @@ DEFAULT_EXECUTABLE_PATH = "chromedriver"
 
 
 class Service(service.ChromiumService):
-    """A Service class that is responsible for the starting and stopping
-    of `chromedriver`.
+    """A Service class that is responsible for the starting and stopping of
+    `chromedriver`.
 
     :param executable_path: install path of the chromedriver executable, defaults to `chromedriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.

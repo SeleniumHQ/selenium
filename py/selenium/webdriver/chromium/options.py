@@ -91,9 +91,8 @@ class ChromiumOptions(ArgOptions):
         return encoded_extensions + self._extensions
 
     def add_extension(self, extension: str) -> None:
-        """
-        Adds the path to the extension to a list that will be used to extract it
-        to the ChromeDriver
+        """Adds the path to the extension to a list that will be used to
+        extract it to the ChromeDriver.
 
         :Args:
          - extension: path to the \\*.crx file
@@ -108,9 +107,8 @@ class ChromiumOptions(ArgOptions):
             raise ValueError("argument can not be null")
 
     def add_encoded_extension(self, extension: str) -> None:
-        """
-        Adds Base64 encoded string with extension data to a list that will be used to extract it
-        to the ChromeDriver
+        """Adds Base64 encoded string with extension data to a list that will
+        be used to extract it to the ChromeDriver.
 
         :Args:
          - extension: Base64 encoded string with extension data
@@ -128,8 +126,7 @@ class ChromiumOptions(ArgOptions):
         return self._experimental_options
 
     def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]) -> None:
-        """
-        Adds an experimental option which is passed to chromium.
+        """Adds an experimental option which is passed to chromium.
 
         :Args:
           name: The experimental option name.

@@ -26,8 +26,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 def with_tag_name(tag_name: str) -> "RelativeBy":
-    """
-    Start searching for relative objects using a tag name.
+    """Start searching for relative objects using a tag name.
 
     Note: This method may be removed in future versions, please use
     `locate_with` instead.
@@ -43,8 +42,7 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
 
 
 def locate_with(by: By, using: str) -> "RelativeBy":
-    """
-    Start searching for relative objects your search criteria with By.
+    """Start searching for relative objects your search criteria with By.
 
     :Args:
         - by: The value from `By` passed in.
@@ -59,8 +57,7 @@ def locate_with(by: By, using: str) -> "RelativeBy":
 
 
 class RelativeBy:
-    """
-    Gives the opportunity to find elements based on their relative location
+    """Gives the opportunity to find elements based on their relative location
     on the page from a root elelemt. It is recommended that you use the helper
     function to create it.
 
@@ -147,9 +144,8 @@ class RelativeBy:
         return self
 
     def to_dict(self) -> Dict:
-        """
-        Create a dict that will be passed to the driver to start searching for the element
-        """
+        """Create a dict that will be passed to the driver to start searching
+        for the element."""
         return {
             "relative": {
                 "root": self.root,
