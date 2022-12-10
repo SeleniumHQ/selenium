@@ -45,18 +45,26 @@ class VirtualAuthenticatorOptions:
     Protocol = Protocol
     Transport = Transport
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        protocol: str = Protocol.CTAP2,
+        transport: str = Transport.USB,
+        has_resident_key: bool = False,
+        has_user_verification: bool = False,
+        is_user_consenting: bool = True,
+        is_user_verified: bool = False,
+    ) -> None:
         """Constructor.
 
         Initialize VirtualAuthenticatorOptions object.
         """
 
-        self.protocol: str = Protocol.CTAP2
-        self.transport: str = Transport.USB
-        self.has_resident_key: bool = False
-        self.has_user_verification: bool = False
-        self.is_user_consenting: bool = True
-        self.is_user_verified: bool = False
+        self.protocol: str = protocol
+        self.transport: str = transport
+        self.has_resident_key: bool = has_resident_key
+        self.has_user_verification: bool = has_user_verification
+        self.is_user_consenting: bool = is_user_consenting
+        self.is_user_verified: bool = is_user_verified
 
     def to_dict(self) -> typing.Dict[str, typing.Union[str, bool]]:
         return {
