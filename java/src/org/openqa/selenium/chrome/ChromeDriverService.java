@@ -51,6 +51,11 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
+   * System property that defines the log level when ChromeDriver output is logged.
+   */
+  public static final String CHROME_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.chrome.loglevel";
+
+  /**
    * Boolean system property that defines whether chromedriver should append to existing log file.
    */
   public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY =
@@ -154,7 +159,7 @@ public class ChromeDriverService extends DriverService {
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
-    private ChromeDriverLogLevel logLevel = null;
+    private ChromeDriverLogLevel logLevel = ChromeDriverLogLevel.fromString(System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY));
 
     @Override
     public int score(Capabilities capabilities) {
