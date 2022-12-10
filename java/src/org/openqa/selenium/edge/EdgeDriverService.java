@@ -56,6 +56,11 @@ public class EdgeDriverService extends DriverService {
   public static final String EDGE_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.edge.loglevel";
 
   /**
+   * Boolean system property that defines whether MSEdgeDriver should append to existing log file.
+   */
+  public static final String EDGE_DRIVER_APPEND_LOG_PROPERTY = "webdriver.edge.appendLog";
+
+  /**
    * Boolean system property that defines whether the MicrosoftWebDriver executable should be started
    * with verbose logging.
    */
@@ -118,6 +123,7 @@ public class EdgeDriverService extends DriverService {
     EdgeDriverService, EdgeDriverService.Builder> {
 
     private final boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
+    private boolean appendLog = Boolean.getBoolean(EDGE_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
     private String logLevel = System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY);
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
@@ -141,6 +147,17 @@ public class EdgeDriverService extends DriverService {
       }
 
       return score;
+    }
+
+    /**
+     * Configures the driver server appending to log file.
+     *
+     * @param appendLog True for appending to log file, false otherwise.
+     * @return A self reference.
+     */
+    public EdgeDriverService.Builder withAppendLog(boolean appendLog) {
+      this.appendLog = appendLog;
+      return this;
     }
 
     /**
@@ -222,6 +239,9 @@ public class EdgeDriverService extends DriverService {
       args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+      }
+      if (appendLog) {
+        args.add("--append-log");
       }
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel));
