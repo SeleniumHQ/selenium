@@ -97,14 +97,30 @@ public class GeckoDriverService extends FirefoxDriverService {
    * @return A new GeckoDriverService using the default configuration.
    */
   public static GeckoDriverService createDefaultService() {
-    return new Builder().build();
+    return createDefaultService(new FirefoxOptions());
+  }
+
+  /**
+   * Configures and returns a new {@link GeckoDriverService} using the default configuration. In
+   * this configuration, the service will use the GeckoDriver executable identified by the
+   * {@link #GECKO_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * be configured to use a free port on the current system.
+   *
+   * @return A new GeckoDriverService using the default configuration.
+   */
+  public static GeckoDriverService createDefaultService(FirefoxOptions options) {
+    return new Builder()
+      .withOptions(options)
+      .build();
   }
 
   /**
    *
    * @param caps Capabilities instance
    * @return default GeckoDriverService
+   * @deprecated Must use an instance of FirefoxOptions {@link #createDefaultService(FirefoxOptions)}
    */
+  @Deprecated
   static GeckoDriverService createDefaultService(Capabilities caps) {
     return createDefaultService();
   }
@@ -156,6 +172,10 @@ public class GeckoDriverService extends FirefoxDriverService {
       Require.nonNull("Firefox binary", firefoxBinary);
       checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
+      return this;
+    }
+
+    public Builder withOptions(FirefoxOptions options) {
       return this;
     }
 

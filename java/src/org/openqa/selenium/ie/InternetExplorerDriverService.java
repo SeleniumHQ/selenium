@@ -96,7 +96,21 @@ public class InternetExplorerDriverService extends DriverService {
    * @return A new InternetExplorerDriverService using the default configuration.
    */
   public static InternetExplorerDriverService createDefaultService() {
-    return new Builder().build();
+    return createDefaultService(new InternetExplorerOptions());
+  }
+
+  /**
+   * Configures and returns a new {@link InternetExplorerDriverService} using the default configuration. In
+   * this configuration, the service will use the IEDriverServer executable identified by the
+   * {@link #IE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * be configured to use a free port on the current system.
+   *
+   * @return A new InternetExplorerDriverService using the default configuration.
+   */
+  public static InternetExplorerDriverService createDefaultService(InternetExplorerOptions options) {
+    return new Builder()
+      .withOptions(options)
+      .build();
   }
 
   /**
@@ -167,6 +181,10 @@ public class InternetExplorerDriverService extends DriverService {
      */
     public Builder withSilent(Boolean silent) {
       this.silent = silent;
+      return this;
+    }
+
+    public Builder withOptions(InternetExplorerOptions options) {
       return this;
     }
 

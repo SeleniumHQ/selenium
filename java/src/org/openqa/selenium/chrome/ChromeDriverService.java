@@ -135,7 +135,7 @@ public class ChromeDriverService extends DriverService {
    * @return A new ChromeDriverService using the default configuration.
    */
   public static ChromeDriverService createDefaultService() {
-    return new Builder().build();
+    return createDefaultService(new ChromeOptions());
   }
 
   /**
@@ -146,10 +146,24 @@ public class ChromeDriverService extends DriverService {
    *
    * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
    */
-  public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
+  public static ChromeDriverService createDefaultService(ChromeOptions options) {
     return new Builder()
-      .withLogLevel(options.getLogLevel())
+      .withOptions(options)
       .build();
+  }
+
+  /**
+   * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
+   * this configuration, the service will use the chromedriver executable identified by the
+   * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * be configured to use a free port on the current system.
+   *
+   * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
+   * @deprecated use {@link #createDefaultService(ChromeOptions)}
+   */
+  @Deprecated
+  public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
+    return createDefaultService(options);
   }
 
   /**
@@ -267,6 +281,10 @@ public class ChromeDriverService extends DriverService {
     public Builder withReadableTimestamp(Boolean readableTimestamp) {
       this.readableTimestamp = readableTimestamp;
       return this;
+    }
+
+    public Builder withOptions(ChromeOptions options) {
+      return withLogLevel(options.getLogLevel());
     }
 
     @Override

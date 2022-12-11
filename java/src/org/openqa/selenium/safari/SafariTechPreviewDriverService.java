@@ -71,7 +71,13 @@ public class SafariTechPreviewDriverService extends DriverService {
   }
 
   public static SafariTechPreviewDriverService createDefaultService() {
-    return new Builder().build();
+    return createDefaultService(new SafariOptions());
+  }
+
+  public static SafariTechPreviewDriverService createDefaultService(SafariOptions options) {
+    return new Builder()
+      .withOptions(options)
+      .build();
   }
 
   @Override
@@ -96,6 +102,10 @@ public class SafariTechPreviewDriverService extends DriverService {
       }
 
       return score;
+    }
+
+    public Builder withOptions(SafariOptions options) {
+      return this;
     }
 
     @Override

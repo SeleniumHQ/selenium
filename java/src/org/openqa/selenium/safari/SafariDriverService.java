@@ -70,7 +70,13 @@ public class SafariDriverService extends DriverService {
   }
 
   public static SafariDriverService createDefaultService() {
-    return new Builder().build();
+    return createDefaultService(new SafariOptions());
+  }
+
+  public static SafariDriverService createDefaultService(SafariOptions options) {
+    return new Builder()
+      .withOptions(options)
+      .build();
   }
 
   @Override
@@ -95,6 +101,10 @@ public class SafariDriverService extends DriverService {
       }
 
       return score;
+    }
+
+    public Builder withOptions(SafariOptions options) {
+      return this;
     }
 
     @Override

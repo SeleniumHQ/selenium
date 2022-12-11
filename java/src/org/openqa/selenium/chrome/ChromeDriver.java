@@ -41,13 +41,13 @@ import java.util.Map;
 public class ChromeDriver extends ChromiumDriver {
 
   /**
-   * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService default}
+   * Creates a new ChromeDriver using the {@link ChromeDriverService#createDefaultService(ChromeOptions)}
    * server configuration.
    *
    * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
   public ChromeDriver() {
-    this(ChromeDriverService.createDefaultService(), new ChromeOptions());
+    this(new ChromeOptions());
   }
 
   /**
@@ -68,7 +68,7 @@ public class ChromeDriver extends ChromiumDriver {
    * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
   public ChromeDriver(ChromeOptions options) {
-    this(ChromeDriverService.createServiceWithConfig(options), options);
+    this(ChromeDriverService.createDefaultService(options), options);
   }
 
   /**

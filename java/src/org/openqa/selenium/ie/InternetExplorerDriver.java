@@ -163,7 +163,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
       options = new InternetExplorerOptions();
     }
     if (service == null) {
-      service = setupService(options);
+      service = InternetExplorerDriverService.createDefaultService(options);
     }
     run(service, options);
   }
@@ -195,48 +195,5 @@ public class InternetExplorerDriver extends RemoteWebDriver {
           String.format(
               "You appear to be running %s. The IE driver only runs on Windows.", current));
     }
-  }
-
-  private InternetExplorerDriverService setupService(Capabilities caps) {
-    InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
-
-    if (caps != null) {
-      if (caps.getCapability(LOG_FILE) != null) {
-        String value = (String) caps.getCapability(LOG_FILE);
-        if (value != null) {
-          builder.withLogFile(new File(value));
-        }
-      }
-
-      if (caps.getCapability(LOG_LEVEL) != null) {
-        String value = (String) caps.getCapability(LOG_LEVEL);
-        if (value != null) {
-          builder.withLogLevel(InternetExplorerDriverLogLevel.valueOf(value));
-        }
-      }
-
-      if (caps.getCapability(HOST) != null) {
-        String value = (String) caps.getCapability(HOST);
-        if (value != null) {
-          builder.withHost(value);
-        }
-      }
-
-      if (caps.getCapability(EXTRACT_PATH) != null) {
-        String value = (String) caps.getCapability(EXTRACT_PATH);
-        if (value != null) {
-          builder.withExtractPath(new File(value));
-        }
-      }
-
-      if (caps.getCapability(SILENT) != null) {
-        Boolean value = (Boolean) caps.getCapability(SILENT);
-        if (value != null) {
-          builder.withSilent(value);
-        }
-      }
-    }
-
-    return builder.build();
   }
 }

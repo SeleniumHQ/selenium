@@ -43,7 +43,7 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   public EdgeDriver(EdgeOptions options) {
-    this(new EdgeDriverService.Builder().build(), options);
+    this(EdgeDriverService.createDefaultService(options), options);
   }
 
   public EdgeDriver(EdgeDriverService service) {

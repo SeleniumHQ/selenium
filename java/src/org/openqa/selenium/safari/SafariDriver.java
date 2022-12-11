@@ -56,8 +56,8 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
    */
   public SafariDriver(SafariOptions safariOptions) {
     this(safariOptions.getUseTechnologyPreview() ?
-         SafariTechPreviewDriverService.createDefaultService() :
-         SafariDriverService.createDefaultService(),
+         SafariTechPreviewDriverService.createDefaultService(safariOptions) :
+         SafariDriverService.createDefaultService(safariOptions),
          safariOptions);
   }
 

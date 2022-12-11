@@ -118,9 +118,22 @@ public class EdgeDriverService extends DriverService {
    * @return A new ChromiumEdgeDriverService using the default configuration.
    */
   public static EdgeDriverService createDefaultService() {
-    return new Builder().build();
+    return createDefaultService(new EdgeOptions());
   }
 
+  /**
+   * Configures and returns a new {@link EdgeDriverService} using the default configuration. In
+   * this configuration, the service will use the MSEdgeDriver executable identified by the
+   * {@link #EDGE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * be configured to use a free port on the current system.
+   *
+   * @return A new ChromiumEdgeDriverService using the default configuration.
+   */
+  public static EdgeDriverService createDefaultService(EdgeOptions options) {
+    return new Builder()
+      .withOptions(options)
+      .build();
+  }
   /**
    * Builder used to configure new {@link EdgeDriverService} instances.
    */
@@ -236,6 +249,10 @@ public class EdgeDriverService extends DriverService {
      */
     public Builder withReadableTimestamp(Boolean readableTimestamp) {
       this.readableTimestamp = readableTimestamp;
+      return this;
+    }
+
+    public Builder withOptions(EdgeOptions options) {
       return this;
     }
 

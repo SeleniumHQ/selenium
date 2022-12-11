@@ -92,7 +92,7 @@ public class FirefoxDriver extends RemoteWebDriver
   private BiDi biDi;
 
   /**
-   * Creates a new FirefoxDriver using the {@link GeckoDriverService#createDefaultService)}
+   * Creates a new FirefoxDriver using the {@link GeckoDriverService#createDefaultService(FirefoxOptions)}
    * server configuration.
    *
    * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
@@ -108,7 +108,7 @@ public class FirefoxDriver extends RemoteWebDriver
    * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
    */
   public FirefoxDriver(FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);
+    this(GeckoDriverService.createDefaultService(options), options);
   }
 
   /**
