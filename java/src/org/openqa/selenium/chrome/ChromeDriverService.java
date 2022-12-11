@@ -129,7 +129,7 @@ public class ChromeDriverService extends DriverService {
   /**
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by the
-   * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * {@link ChromeDriverFinder} system property. Each service created by this method will
    * be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the default configuration.
@@ -141,7 +141,7 @@ public class ChromeDriverService extends DriverService {
   /**
    * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by the
-   * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * {@link ChromeDriverFinder} system property. Each service created by this method will
    * be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
@@ -284,15 +284,13 @@ public class ChromeDriverService extends DriverService {
     }
 
     public Builder withOptions(ChromeOptions options) {
+      usingDriverExecutable(ChromeDriverFinder.findExecutable(options));
       return withLogLevel(options.getLogLevel());
     }
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable(
-        "chromedriver", CHROME_DRIVER_EXE_PROPERTY,
-        "https://chromedriver.chromium.org/",
-        "https://chromedriver.chromium.org/downloads");
+      return ChromeDriverFinder.findExecutable();
     }
 
     @Override

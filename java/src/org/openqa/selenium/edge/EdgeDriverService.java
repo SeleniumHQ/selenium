@@ -253,15 +253,13 @@ public class EdgeDriverService extends DriverService {
     }
 
     public Builder withOptions(EdgeOptions options) {
+      usingDriverExecutable(EdgeDriverFinder.findExecutable(options));
       return this;
     }
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable(
-        "msedgedriver", EDGE_DRIVER_EXE_PROPERTY,
-        "https://docs.microsoft.com/en-us/microsoft-edge/webdriver-chromium/",
-        "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
+      return EdgeDriverFinder.findExecutable();
     }
 
     @Override

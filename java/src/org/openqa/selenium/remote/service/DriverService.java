@@ -27,11 +27,9 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.manager.SeleniumManager;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.Closeable;
 import java.io.File;
@@ -117,50 +115,6 @@ public class DriverService implements Closeable {
 
    this.url = getUrl(port);
  }
-
-  /**
-   *
-   * @param exeName Name of the executable file to look for in PATH
-   * @param exeProperty Name of a system property that specifies the path to the executable file
-   * @param exeDocs The link to the driver documentation page
-   * @param exeDownload The link to the driver download page
-   *
-   * @return The driver executable as a {@link File} object
-   * @throws IllegalStateException If the executable not found or cannot be executed
-   */
-  protected static File findExecutable(
-      String exeName,
-      String exeProperty,
-      String exeDocs,
-      String exeDownload) {
-    String defaultPath = new ExecutableFinder().find(exeName);
-    String exePath = System.getProperty(exeProperty, defaultPath);
-
-    if (exePath == null) {
-      try {
-        exePath = SeleniumManager.getInstance().getDriverPath(exeName);
-        checkExecutable(new File(exePath));
-      } catch (Exception e) {
-        exePath = null;
-        LOG.warning(String.format("Unable to obtain driver using Selenium Manager: %s", e.getMessage()));
-      }
-    }
-
-    String validPath = Require.state("The path to the driver executable", exePath).nonNull(
-        "The path to the driver executable must be set by the %s system property;"
-            + " for more information, see %s. "
-            + "The latest version can be downloaded from %s",
-            exeProperty, exeDocs, exeDownload);
-
-    File exe = new File(validPath);
-    checkExecutable(exe);
-    return exe;
-  }
-
-  protected static void checkExecutable(File exe) {
-    Require.state("The driver executable", exe).isFile();
-    Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
-  }
 
   protected List<String> getArgs() {
     return args;
@@ -366,7 +320,7 @@ public class DriverService implements Closeable {
     @SuppressWarnings("unchecked")
     public B usingDriverExecutable(File file) {
       Require.nonNull("Driver executable file", file);
-      checkExecutable(file);
+      DriverFinder.checkExecutable(file);
       this.exe = file;
       return (B) this;
     }
@@ -453,6 +407,7 @@ public class DriverService implements Closeable {
       }
 
       if (exe == null) {
+        LOG.warning("You are building this DriverService instance without having first called withOptions() or usingDriverExecutable()");
         exe = findDefaultExecutable();
       }
 

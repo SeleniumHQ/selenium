@@ -185,14 +185,13 @@ public class InternetExplorerDriverService extends DriverService {
     }
 
     public Builder withOptions(InternetExplorerOptions options) {
+      usingDriverExecutable(InternetExplorerDriverFinder.findExecutable(options));
       return this;
     }
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
-                            "https://www.selenium.dev/documentation/ie_driver_server/",
-                            "https://www.selenium.dev/downloads/");
+      return InternetExplorerDriverFinder.findExecutable();
     }
 
     @Override

@@ -24,6 +24,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -170,21 +171,19 @@ public class GeckoDriverService extends FirefoxDriverService {
      */
     public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
       Require.nonNull("Firefox binary", firefoxBinary);
-      checkExecutable(firefoxBinary.getFile());
+      DriverFinder.checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
       return this;
     }
 
     public Builder withOptions(FirefoxOptions options) {
+      usingDriverExecutable(FirefoxDriverFinder.findExecutable(options));
       return this;
     }
 
     @Override
     protected File findDefaultExecutable() {
-      return findExecutable(
-        "geckodriver", GECKO_DRIVER_EXE_PROPERTY,
-        "https://github.com/mozilla/geckodriver",
-        "https://github.com/mozilla/geckodriver/releases");
+      return FirefoxDriverFinder.findExecutable();
     }
 
     @Override
