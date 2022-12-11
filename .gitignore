@@ -101,7 +101,6 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
-Gemfile.lock
 /rb/.bundle
 /rb/.idea
 .sonar/
