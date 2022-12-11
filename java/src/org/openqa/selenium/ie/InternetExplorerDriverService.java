@@ -27,10 +27,12 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.Browser.IE;
 
 /**
@@ -80,7 +82,9 @@ public class InternetExplorerDriverService extends DriverService {
    */
   private InternetExplorerDriverService(File executable, int port, Duration timeout, List<String> args,
                                         Map<String, String> environment) throws IOException {
-    super(executable, port, timeout, args, environment);
+    super(executable, port, timeout,
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
   }
 
   /**

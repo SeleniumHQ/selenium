@@ -90,20 +90,40 @@ public class FirefoxDriver extends RemoteWebDriver
   private Connection connection;
   private DevTools devTools;
   private BiDi biDi;
+
+  /**
+   * Creates a new FirefoxDriver using the {@link GeckoDriverService#createDefaultService)}
+   * server configuration.
+   *
+   * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
+   */
   public FirefoxDriver() {
     this(new FirefoxOptions());
   }
 
+  /**
+   * Creates a new FirefoxDriver instance with the specified options.
+   *
+   * @param options The options to use.
+   * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
+   */
   public FirefoxDriver(FirefoxOptions options) {
     this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);
   }
 
+  /**
+   * Creates a new FirefoxDriver instance. The {@code service} will be started along with the driver,
+   * and shutdown upon calling {@link #quit()}.
+   *
+   * @param service The service to use.
+   * @see RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)
+   */
   public FirefoxDriver(FirefoxDriverService service) {
     this(service, new FirefoxOptions());
   }
 
   public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(service), options);
+    this(new FirefoxDriverCommandExecutor(service), Require.nonNull("Driver options", options));
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
