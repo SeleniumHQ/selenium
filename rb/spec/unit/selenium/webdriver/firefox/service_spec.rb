@@ -84,14 +84,15 @@ module Selenium
           expect(service.extra_args).to eq ['--foo', '--bar']
         end
 
-        # This is deprecated behavior
         it 'uses args when passed in as a Hash' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.firefox(args: {log: '/path/to/log',
-                                           marionette_port: 4})
+          expect {
+            service = Service.firefox(args: {log: '/path/to/log',
+                                             marionette_port: 4})
 
-          expect(service.extra_args).to eq ['--log=/path/to/log', '--marionette-port=4']
+            expect(service.extra_args).to eq ['--log=/path/to/log', '--marionette-port=4']
+          }.to have_deprecated(:driver_opts)
         end
       end
 

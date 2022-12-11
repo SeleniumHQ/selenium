@@ -89,10 +89,12 @@ module Selenium
         it 'uses args when passed in as a Hash' do
           allow(Platform).to receive(:find_binary).and_return(service_path)
 
-          service = Service.ie(args: {log_file: '/path/to/log',
-                                      silent: true})
+          expect {
+            service = Service.ie(args: {log_file: '/path/to/log',
+                                        silent: true})
 
-          expect(service.extra_args).to eq ['--log-file=/path/to/log', '--silent']
+            expect(service.extra_args).to eq ['--log-file=/path/to/log', '--silent']
+          }.to have_deprecated(:driver_opts)
         end
       end
 
