@@ -385,6 +385,11 @@ class AddingNodesTest {
     }
 
     @Override
+    public HttpResponse downloadFile(HttpRequest req, SessionId id) {
+      throw new UnsupportedOperationException("downloadFile");
+    }
+
+    @Override
     public Session getSession(SessionId id) throws NoSuchSessionException {
       if (running == null || !running.getId().equals(id)) {
         throw new NoSuchSessionException();

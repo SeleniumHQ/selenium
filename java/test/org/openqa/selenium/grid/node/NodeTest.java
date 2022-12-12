@@ -30,6 +30,7 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -115,6 +116,7 @@ class NodeTest {
     caps = new ImmutableCapabilities("browserName", "cheese");
 
     uri = new URI("http://localhost:1234");
+    File downloadsPath = new File(System.getProperty("java.io.tmpdir"));
 
     class Handler extends Session implements HttpHandler {
       private Handler(Capabilities capabilities) {
@@ -131,6 +133,7 @@ class NodeTest {
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+        .downloadsPath(downloadsPath.getAbsolutePath())
         .maximumConcurrentSessions(2)
         .build();
 
@@ -485,6 +488,28 @@ class NodeTest {
   }
 
   @Test
+  void canDownloadAFile() throws IOException {
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+    String hello = "Hello, world!";
+
+    HttpRequest req = new HttpRequest(GET, String.format("/session/%s/se/file", session.getId()));
+    File zip = createTmpFile(hello);
+    req.addQueryParameter("filename", zip.getName());
+    HttpResponse rsp = node.execute(req);
+    node.stop(session.getId());
+    Map<String, Object> map = new Json().toType(string(rsp), Json.MAP_TYPE);
+    File baseDir = getTemporaryFilesystemBaseDir(TemporaryFilesystem.getDefaultTmpFS());
+    String encodedContents = map.get("contents").toString();
+    Zip.unzip(encodedContents, baseDir);
+    Path path = new File(baseDir.getAbsolutePath() + "/" + map.get("filename")).toPath();
+    String decodedContents = String.join("", Files.readAllLines(path));
+    assertThat(decodedContents).isEqualTo(hello);
+  }
+
+  @Test
   void shouldNotCreateSessionIfDraining() {
     node.drain();
     assertThat(local.isDraining()).isTrue();
@@ -573,6 +598,17 @@ class NodeTest {
     assertThat(latch.getCount()).isEqualTo(1);
   }
 
+  private File createFile(String content, File directory) {
+    try {
+      File f = new File(directory.getAbsolutePath(), UUID.randomUUID().toString());
+      f.deleteOnExit();
+      Files.write(directory.toPath(), content.getBytes(StandardCharsets.UTF_8));
+      return f;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
   private File createTmpFile(String content) {
     try {
       File f = File.createTempFile("webdriver", "tmp");
