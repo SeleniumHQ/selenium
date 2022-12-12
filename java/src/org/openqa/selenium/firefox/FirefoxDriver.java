@@ -320,9 +320,6 @@ public class FirefoxDriver extends RemoteWebDriver
 
   @Override
   public void quit() {
-    if (connection != null) {
-      connection.close();
-    }
     super.quit();
   }
 
