@@ -148,7 +148,7 @@ public class NodeOptions {
     }
   }
 
-  public Optional<String> getDownloadsDirectory() {
+  public Optional<String> getDownloadsPath() {
     return config.get(NODE_SECTION, "downloads-path");
   }
 

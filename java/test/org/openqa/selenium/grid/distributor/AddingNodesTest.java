@@ -386,7 +386,7 @@ class AddingNodesTest {
 
     @Override
     public HttpResponse downloadFile(HttpRequest req, SessionId id) {
-      throw new UnsupportedOperationException("uploadFile");
+      throw new UnsupportedOperationException("downloadFile");
     }
 
     @Override

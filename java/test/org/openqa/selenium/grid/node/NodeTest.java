@@ -116,7 +116,7 @@ class NodeTest {
     caps = new ImmutableCapabilities("browserName", "cheese");
 
     uri = new URI("http://localhost:1234");
-    File downloadsDir = new File(System.getProperty("java.io.tmpdir"));
+    File downloadsPath = new File(System.getProperty("java.io.tmpdir"));
 
     class Handler extends Session implements HttpHandler {
       private Handler(Capabilities capabilities) {
@@ -133,7 +133,7 @@ class NodeTest {
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
         .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
-        .downloadsDirectory(downloadsDir.getAbsolutePath())
+        .downloadsPath(downloadsPath.getAbsolutePath())
         .maximumConcurrentSessions(2)
         .build();
 

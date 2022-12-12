@@ -748,7 +748,7 @@ public class LocalNode extends Node {
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
-    private String downloadsDir = "";
+    private String downloadsPath = "";
 
     private Builder(
       Tracer tracer,
@@ -803,8 +803,8 @@ public class LocalNode extends Node {
       return this;
     }
 
-    public Builder downloadsDirectory(String dir) {
-      this.downloadsDir = dir;
+    public Builder downloadsPath(String path) {
+      this.downloadsPath = path;
       return this;
     }
 
@@ -824,7 +824,7 @@ public class LocalNode extends Node {
         heartbeatPeriod,
         factories.build(),
         registrationSecret,
-        downloadsDir);
+        downloadsPath);
     }
 
     public Advanced advanced() {
