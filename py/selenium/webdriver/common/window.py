@@ -15,9 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""
-The WindowTypes implementation.
-"""
+"""The WindowTypes implementation."""
 
 
 class WindowTypes:

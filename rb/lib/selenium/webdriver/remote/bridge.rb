@@ -372,14 +372,6 @@ module Selenium
         end
         alias_method :actions, :action
 
-        def mouse
-          raise Error::UnsupportedOperationError, '#mouse is no longer supported, use #action instead'
-        end
-
-        def keyboard
-          raise Error::UnsupportedOperationError, '#keyboard is no longer supported, use #action instead'
-        end
-
         def send_actions(data)
           execute :actions, {}, {actions: data}
         end

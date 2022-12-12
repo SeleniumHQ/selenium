@@ -25,8 +25,8 @@ DEFAULT_EXECUTABLE_PATH: str = "/usr/bin/safaridriver"
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping
-    of `safaridriver`  This is only supported on MAC OSX.
+    """A Service class that is responsible for the starting and stopping of
+    `safaridriver`  This is only supported on MAC OSX.
 
     :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
@@ -42,7 +42,7 @@ class Service(service.Service):
         quiet: bool = False,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-    ):
+    ) -> None:
         self._check_executable(executable_path)
         self.service_args = service_args or []
         self.quiet = quiet
@@ -68,7 +68,5 @@ class Service(service.Service):
 
     @property
     def service_url(self) -> str:
-        """
-        Gets the url of the SafariDriver Service
-        """
+        """Gets the url of the SafariDriver Service."""
         return f"http://localhost:{self.port}"

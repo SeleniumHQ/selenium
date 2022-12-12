@@ -308,6 +308,11 @@ public class OneShotNode extends Node {
   }
 
   @Override
+  public HttpResponse downloadFile(HttpRequest req, SessionId id) {
+    return null;
+  }
+
+  @Override
   public void stop(SessionId id) throws NoSuchSessionException {
     LOG.info("Stop has been called: " + id);
     Require.nonNull("Session ID", id);

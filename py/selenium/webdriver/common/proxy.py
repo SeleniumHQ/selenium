@@ -15,15 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""
-The Proxy implementation.
-"""
+"""The Proxy implementation."""
 
 
 class ProxyTypeFactory:
-    """
-    Factory for proxy types.
-    """
+    """Factory for proxy types."""
 
     @staticmethod
     def make(ff_value, string):
@@ -31,12 +27,10 @@ class ProxyTypeFactory:
 
 
 class ProxyType:
-    """
-    Set of possible types of proxy.
+    """Set of possible types of proxy.
 
-    Each proxy type has 2 properties:
-       'ff_value' is value of Firefox profile preference,
-       'string' is id of proxy type.
+    Each proxy type has 2 properties:    'ff_value' is value of Firefox
+    profile preference,    'string' is id of proxy type.
     """
 
     DIRECT = ProxyTypeFactory.make(0, "DIRECT")  # Direct connection, no proxy (default on Windows).
@@ -60,9 +54,8 @@ class ProxyType:
 
 
 class Proxy:
-    """
-    Proxy contains information about proxy type and necessary proxy settings.
-    """
+    """Proxy contains information about proxy type and necessary proxy
+    settings."""
 
     proxyType = ProxyType.UNSPECIFIED
     autodetect = False
@@ -77,8 +70,7 @@ class Proxy:
     socksVersion = None
 
     def __init__(self, raw=None):
-        """
-        Creates a new Proxy.
+        """Creates a new Proxy.
 
         :Args:
          - raw: raw proxy data. If None, default class values are used.
@@ -109,15 +101,12 @@ class Proxy:
 
     @property
     def proxy_type(self):
-        """
-        Returns proxy type as `ProxyType`.
-        """
+        """Returns proxy type as `ProxyType`."""
         return self.proxyType
 
     @proxy_type.setter
     def proxy_type(self, value) -> None:
-        """
-        Sets proxy type.
+        """Sets proxy type.
 
         :Args:
          - value: The proxy type.
@@ -127,15 +116,12 @@ class Proxy:
 
     @property
     def auto_detect(self):
-        """
-        Returns autodetect setting.
-        """
+        """Returns autodetect setting."""
         return self.autodetect
 
     @auto_detect.setter
     def auto_detect(self, value) -> None:
-        """
-        Sets autodetect setting.
+        """Sets autodetect setting.
 
         :Args:
          - value: The autodetect value.
@@ -150,15 +136,12 @@ class Proxy:
 
     @property
     def ftp_proxy(self):
-        """
-        Returns ftp proxy setting.
-        """
+        """Returns ftp proxy setting."""
         return self.ftpProxy
 
     @ftp_proxy.setter
     def ftp_proxy(self, value) -> None:
-        """
-        Sets ftp proxy setting.
+        """Sets ftp proxy setting.
 
         :Args:
          - value: The ftp proxy value.
@@ -169,15 +152,12 @@ class Proxy:
 
     @property
     def http_proxy(self):
-        """
-        Returns http proxy setting.
-        """
+        """Returns http proxy setting."""
         return self.httpProxy
 
     @http_proxy.setter
     def http_proxy(self, value) -> None:
-        """
-        Sets http proxy setting.
+        """Sets http proxy setting.
 
         :Args:
          - value: The http proxy value.
@@ -188,15 +168,12 @@ class Proxy:
 
     @property
     def no_proxy(self):
-        """
-        Returns noproxy setting.
-        """
+        """Returns noproxy setting."""
         return self.noProxy
 
     @no_proxy.setter
     def no_proxy(self, value) -> None:
-        """
-        Sets noproxy setting.
+        """Sets noproxy setting.
 
         :Args:
          - value: The noproxy value.
@@ -207,15 +184,12 @@ class Proxy:
 
     @property
     def proxy_autoconfig_url(self):
-        """
-        Returns proxy autoconfig url setting.
-        """
+        """Returns proxy autoconfig url setting."""
         return self.proxyAutoconfigUrl
 
     @proxy_autoconfig_url.setter
     def proxy_autoconfig_url(self, value) -> None:
-        """
-        Sets proxy autoconfig url setting.
+        """Sets proxy autoconfig url setting.
 
         :Args:
          - value: The proxy autoconfig url value.
@@ -226,15 +200,12 @@ class Proxy:
 
     @property
     def ssl_proxy(self):
-        """
-        Returns https proxy setting.
-        """
+        """Returns https proxy setting."""
         return self.sslProxy
 
     @ssl_proxy.setter
     def ssl_proxy(self, value) -> None:
-        """
-        Sets https proxy setting.
+        """Sets https proxy setting.
 
         :Args:
          - value: The https proxy value.
@@ -245,15 +216,12 @@ class Proxy:
 
     @property
     def socks_proxy(self):
-        """
-        Returns socks proxy setting.
-        """
+        """Returns socks proxy setting."""
         return self.socksProxy
 
     @socks_proxy.setter
     def socks_proxy(self, value) -> None:
-        """
-        Sets socks proxy setting.
+        """Sets socks proxy setting.
 
         :Args:
          - value: The socks proxy value.
@@ -264,15 +232,12 @@ class Proxy:
 
     @property
     def socks_username(self):
-        """
-        Returns socks proxy username setting.
-        """
+        """Returns socks proxy username setting."""
         return self.socksUsername
 
     @socks_username.setter
     def socks_username(self, value) -> None:
-        """
-        Sets socks proxy username setting.
+        """Sets socks proxy username setting.
 
         :Args:
          - value: The socks proxy username value.
@@ -283,15 +248,12 @@ class Proxy:
 
     @property
     def socks_password(self):
-        """
-        Returns socks proxy password setting.
-        """
+        """Returns socks proxy password setting."""
         return self.socksPassword
 
     @socks_password.setter
     def socks_password(self, value) -> None:
-        """
-        Sets socks proxy password setting.
+        """Sets socks proxy password setting.
 
         :Args:
          - value: The socks proxy password value.
@@ -302,15 +264,12 @@ class Proxy:
 
     @property
     def socks_version(self):
-        """
-        Returns socks proxy version setting.
-        """
+        """Returns socks proxy version setting."""
         return self.socksVersion
 
     @socks_version.setter
     def socks_version(self, value) -> None:
-        """
-        Sets socks proxy version setting.
+        """Sets socks proxy version setting.
 
         :Args:
          - value: The socks proxy version value.
@@ -326,8 +285,7 @@ class Proxy:
             )
 
     def add_to_capabilities(self, capabilities):
-        """
-        Adds proxy information as capability in specified capabilities.
+        """Adds proxy information as capability in specified capabilities.
 
         :Args:
          - capabilities: The capabilities to which proxy will be added.

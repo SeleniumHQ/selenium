@@ -87,24 +87,43 @@ public class FirefoxDriver extends RemoteWebDriver
   private final HasContext context;
   private final Optional<URI> cdpUri;
   private final Optional<URI> biDiUri;
-  protected FirefoxBinary binary;
   private Connection connection;
   private DevTools devTools;
   private BiDi biDi;
+
+  /**
+   * Creates a new FirefoxDriver using the {@link GeckoDriverService#createDefaultService)}
+   * server configuration.
+   *
+   * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
+   */
   public FirefoxDriver() {
     this(new FirefoxOptions());
   }
 
+  /**
+   * Creates a new FirefoxDriver instance with the specified options.
+   *
+   * @param options The options to use.
+   * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
+   */
   public FirefoxDriver(FirefoxOptions options) {
     this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);
   }
 
+  /**
+   * Creates a new FirefoxDriver instance. The {@code service} will be started along with the driver,
+   * and shutdown upon calling {@link #quit()}.
+   *
+   * @param service The service to use.
+   * @see RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)
+   */
   public FirefoxDriver(FirefoxDriverService service) {
     this(service, new FirefoxOptions());
   }
 
   public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(service), options);
+    this(new FirefoxDriverCommandExecutor(service), Require.nonNull("Driver options", options));
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
@@ -301,9 +320,6 @@ public class FirefoxDriver extends RemoteWebDriver
 
   @Override
   public void quit() {
-    if (connection != null) {
-      connection.close();
-    }
     super.quit();
   }
 
@@ -325,13 +341,6 @@ public class FirefoxDriver extends RemoteWebDriver
      * rather than using that profile directly.
      */
     public static final String BROWSER_PROFILE = "webdriver.firefox.profile";
-  }
-
-  public static final class Capability {
-
-    public static final String BINARY = "firefox_binary";
-    public static final String PROFILE = "firefox_profile";
-    public static final String MARIONETTE = "marionette";
   }
 
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {

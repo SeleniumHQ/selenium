@@ -36,13 +36,11 @@ def _wrap_elements(result, ef_driver):
 
 
 class EventFiringWebDriver:
-    """
-    A wrapper around an arbitrary WebDriver instance which supports firing events
-    """
+    """A wrapper around an arbitrary WebDriver instance which supports firing
+    events."""
 
     def __init__(self, driver: WebDriver, event_listener: AbstractEventListener) -> None:
-        """
-        Creates a new instance of the EventFiringWebDriver
+        """Creates a new instance of the EventFiringWebDriver.
 
         :Args:
          - driver : A WebDriver instance
@@ -75,7 +73,8 @@ class EventFiringWebDriver:
 
     @property
     def wrapped_driver(self) -> WebDriver:
-        """Returns the WebDriver instance wrapped by this EventsFiringWebDriver"""
+        """Returns the WebDriver instance wrapped by this
+        EventsFiringWebDriver."""
         return self._driver
 
     def get(self, url: str) -> None:
@@ -161,14 +160,10 @@ class EventFiringWebDriver:
 
 
 class EventFiringWebElement:
-    """ "
-    A wrapper around WebElement instance which supports firing events
-    """
+    """A wrapper around WebElement instance which supports firing events."""
 
     def __init__(self, webelement: WebElement, ef_driver: EventFiringWebDriver) -> None:
-        """
-        Creates a new instance of the EventFiringWebElement
-        """
+        """Creates a new instance of the EventFiringWebElement."""
         self._webelement = webelement
         self._ef_driver = ef_driver
         self._driver = ef_driver.wrapped_driver
@@ -176,7 +171,8 @@ class EventFiringWebElement:
 
     @property
     def wrapped_element(self) -> WebElement:
-        """Returns the WebElement wrapped by this EventFiringWebElement instance"""
+        """Returns the WebElement wrapped by this EventFiringWebElement
+        instance."""
         return self._webelement
 
     def click(self) -> None:

@@ -32,12 +32,11 @@ def import_cdp():
 
 
 class Log:
-    """
-    This class allows access to logging APIs that use the new WebDriver Bidi
+    """This class allows access to logging APIs that use the new WebDriver Bidi
     protocol.
 
-    This class is not to be used directly and should be used from the webdriver
-    base classes.
+    This class is not to be used directly and should be used from the
+    webdriver base classes.
     """
 
     def __init__(self, driver, bidi_session) -> None:
@@ -50,8 +49,7 @@ class Log:
 
     @asynccontextmanager
     async def mutation_events(self) -> dict:
-        """
-        Listen for mutation events and emit them as they are found.
+        """Listen for mutation events and emit them as they are found.
 
         :Usage:
              ::
@@ -93,8 +91,8 @@ class Log:
 
     @asynccontextmanager
     async def add_js_error_listener(self):
-        """
-        Listen for JS errors and when the contextmanager exits check if there were JS Errors.
+        """Listen for JS errors and when the contextmanager exits check if
+        there were JS Errors.
 
         :Usage:
              ::
@@ -117,8 +115,7 @@ class Log:
 
     @asynccontextmanager
     async def add_listener(self, event_type) -> dict:
-        """
-        Listen for certain events that are passed in.
+        """Listen for certain events that are passed in.
 
         :Args:
          - event_type: The type of event that we want to look at.

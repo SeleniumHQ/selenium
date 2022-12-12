@@ -55,11 +55,9 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'pry', ['~> 0.14']
   s.add_development_dependency 'rack', ['~> 2.0']
-  s.add_development_dependency 'rake'
   s.add_development_dependency 'rspec', ['~> 3.0']
   s.add_development_dependency 'rubocop', ['~> 1.31']
   s.add_development_dependency 'rubocop-performance', ['~> 1.13']
-  s.add_development_dependency 'rubocop-rake'
   s.add_development_dependency 'rubocop-rspec', ['~> 2.12']
   s.add_development_dependency 'webmock', ['~> 3.5']
   s.add_development_dependency 'webrick', ['~> 1.7']

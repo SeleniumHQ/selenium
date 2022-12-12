@@ -23,9 +23,7 @@ from selenium.webdriver.common.proxy import Proxy
 
 
 class BaseOptions(metaclass=ABCMeta):
-    """
-    Base class for individual browser options
-    """
+    """Base class for individual browser options."""
 
     def __init__(self) -> None:
         super().__init__()
@@ -38,7 +36,7 @@ class BaseOptions(metaclass=ABCMeta):
         return self._caps
 
     def set_capability(self, name, value) -> None:
-        """Sets a capability"""
+        """Sets a capability."""
         self._caps[name] = value
 
     @property
@@ -50,9 +48,8 @@ class BaseOptions(metaclass=ABCMeta):
 
     @browser_version.setter
     def browser_version(self, version: str) -> None:
-        """
-        Requires the major version of the browser to match provided value:
-        https://w3c.github.io/webdriver/#dfn-browser-version
+        """Requires the major version of the browser to match provided value:
+        https://w3c.github.io/webdriver/#dfn-browser-version.
 
         :param version: The required version of the browser
         """
@@ -67,8 +64,8 @@ class BaseOptions(metaclass=ABCMeta):
 
     @platform_name.setter
     def platform_name(self, platform: str) -> None:
-        """
-        Requires the platform to match the provided value: https://w3c.github.io/webdriver/#dfn-platform-name
+        """Requires the platform to match the provided value:
+        https://w3c.github.io/webdriver/#dfn-platform-name.
 
         :param platform: the required name of the platform
         """
@@ -83,9 +80,8 @@ class BaseOptions(metaclass=ABCMeta):
 
     @page_load_strategy.setter
     def page_load_strategy(self, strategy: str) -> None:
-        """
-        Determines the point at which a navigation command is returned:
-        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies
+        """Determines the point at which a navigation command is returned:
+        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
 
         :param strategy: the strategy corresponding to a document readiness state
         """
@@ -103,9 +99,9 @@ class BaseOptions(metaclass=ABCMeta):
 
     @unhandled_prompt_behavior.setter
     def unhandled_prompt_behavior(self, behavior: str) -> None:
-        """
-        How the driver should respond when an alert is present and the command sent is not handling the alert:
-        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies
+        """How the driver should respond when an alert is present and the
+        command sent is not handling the alert:
+        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.
 
         :param behavior: behavior to use when an alert is encountered
         """
@@ -126,9 +122,8 @@ class BaseOptions(metaclass=ABCMeta):
 
     @timeouts.setter
     def timeouts(self, timeouts: dict) -> None:
-        """
-        How long the driver should wait for actions to complete before returning an error
-        https://w3c.github.io/webdriver/#timeouts
+        """How long the driver should wait for actions to complete before
+        returning an error https://w3c.github.io/webdriver/#timeouts.
 
         :param timeouts: values in milliseconds for implicit wait, page load and script timeout
         """
@@ -143,8 +138,7 @@ class BaseOptions(metaclass=ABCMeta):
         android_activity: typing.Optional[str] = None,
         device_serial: typing.Optional[str] = None,
     ) -> None:
-        """
-        Enables mobile browser use for browsers that support it
+        """Enables mobile browser use for browsers that support it.
 
         :Args:
             android_activity: The name of the android package to start
@@ -166,9 +160,9 @@ class BaseOptions(metaclass=ABCMeta):
 
     @accept_insecure_certs.setter
     def accept_insecure_certs(self, value: bool) -> None:
-        """
-        Whether untrusted and self-signed TLS certificates are implicitly trusted:
-        https://w3c.github.io/webdriver/#dfn-insecure-tls-certificates
+        """Whether untrusted and self-signed TLS certificates are implicitly
+        trusted: https://w3c.github.io/webdriver/#dfn-insecure-tls-
+        certificates.
 
         :param value: whether to accept insecure certificates
         """
@@ -183,8 +177,8 @@ class BaseOptions(metaclass=ABCMeta):
 
     @strict_file_interactability.setter
     def strict_file_interactability(self, value: bool) -> None:
-        """
-        Whether interactability checks will be applied to file type input elements. The default is false.
+        """Whether interactability checks will be applied to file type input
+        elements. The default is false.
 
         :param value: whether file interactability is strict
         """
@@ -199,9 +193,9 @@ class BaseOptions(metaclass=ABCMeta):
 
     @set_window_rect.setter
     def set_window_rect(self, value: bool) -> None:
-        """
-        Whether the remote end supports all of the resizing and positioning commands. The default is false.
-        https://w3c.github.io/webdriver/#dfn-strict-file-interactability
+        """Whether the remote end supports all of the resizing and positioning
+        commands. The default is false. https://w3c.github.io/webdriver/#dfn-
+        strict-file-interactability.
 
         :param value: whether remote end must support setting window resizing and repositioning
         """
@@ -244,8 +238,7 @@ class ArgOptions(BaseOptions):
         return self._arguments
 
     def add_argument(self, argument):
-        """
-        Adds an argument to the list
+        """Adds an argument to the list.
 
         :Args:
          - Sets the arguments
@@ -256,9 +249,8 @@ class ArgOptions(BaseOptions):
             raise ValueError("argument can not be null")
 
     def ignore_local_proxy_environment_variables(self) -> None:
-        """
-        By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from being picked up and used.
-        """
+        """By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
+        being picked up and used."""
         self._ignore_local_proxy = True
 
     def to_capabilities(self):
