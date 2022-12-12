@@ -127,14 +127,6 @@ module Selenium
         bridge.action(**opts)
       end
 
-      def mouse
-        bridge.mouse
-      end
-
-      def keyboard
-        bridge.keyboard
-      end
-
       #
       # Opens the specified URL in the browser.
       #
