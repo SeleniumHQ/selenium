@@ -20,38 +20,15 @@
 module Selenium
   module WebDriver
     class BiDi
-      autoload :Session, 'selenium/webdriver/bidi/session'
-      autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
-      autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context/browsing_context'
+      class NavigateResult
+        attr_accessor :url, :navigation_id
 
-      def initialize(url:)
-        @ws = WebSocketConnection.new(url: url)
-      end
+        def initialize(url:, navigation_id:)
+          @url = url
+          @navigation_id = navigation_id
+        end
 
-      def close
-        @ws.close
-      end
-
-      def callbacks
-        @ws.callbacks
-      end
-
-      def session
-        Session.new(self)
-      end
-
-      def send_cmd(method, **params)
-        data = {method: method, params: params.compact}
-        message = @ws.send_cmd(**data)
-        raise Error::WebDriverError, error_message(message) if message['error']
-
-        message['result']
-      end
-
-      def error_message(message)
-        "#{message['error']}: #{message['message']}\n#{message['stacktrace']}"
-      end
-
+      end # NavigateResult
     end # BiDi
   end # WebDriver
 end # Selenium
