@@ -28,10 +28,14 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.Platform.MAC;
 import static org.openqa.selenium.remote.Browser.SAFARI;
@@ -51,7 +55,9 @@ public class SafariDriverService extends DriverService {
     int port,
     List<String> args,
     Map<String, String> environment) throws IOException {
-    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT,
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
   }
 
   public SafariDriverService(

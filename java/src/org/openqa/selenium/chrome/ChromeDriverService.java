@@ -47,6 +47,11 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
 
   /**
+   * System property that toggles the formatting of the timestamps of the logs
+   */
+  public static final String CHROME_DRIVER_READABLE_TIMESTAMP = "webdriver.chrome.readableTimestamp";
+
+  /**
    * System property that defines the default location where ChromeDriver output is logged.
    */
   public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
@@ -162,7 +167,8 @@ public class ChromeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
       ChromeDriverService, ChromeDriverService.Builder> {
 
-    private final boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
+    private boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
+    private boolean readableTimestamp = Boolean.getBoolean(CHROME_DRIVER_READABLE_TIMESTAMP);
     private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
@@ -193,6 +199,17 @@ public class ChromeDriverService extends DriverService {
      */
     public Builder withAppendLog(boolean appendLog) {
       this.appendLog = appendLog;
+      return this;
+    }
+
+    /**
+     * Allows the driver to be used with potentially incompatible versions of the browser.
+     *
+     * @param noBuildCheck True for not enforcing matching versions.
+     * @return A self reference.
+     */
+    public Builder withBuildCheckDisabled(boolean noBuildCheck) {
+      this.disableBuildCheck = noBuildCheck;
       return this;
     }
 
@@ -244,23 +261,23 @@ public class ChromeDriverService extends DriverService {
      *
      * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
+     * @deprecated use {@link #withAllowedListIps(String)}
      */
-    public Builder withAllowedListIps(String allowedListIps) {
+    @Deprecated
+    public Builder withWhitelistedIps(String allowedListIps) {
       this.allowedListIps = allowedListIps;
       return this;
     }
 
     /**
-     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
-     * to the driver server.
+     * Configures the format of the logging for the driver server.
      *
-     * @param allowedListIps Comma-separated list of remote IPv4 addresses.
+     * @param readableTimestamp Whether the timestamp of the log is readable.
      * @return A self reference.
-     * @deprecated use {@link #withAllowedListIps(String)}
      */
-    @Deprecated
-    public Builder withWhitelistedIps(String allowedListIps) {
-      return withAllowedListIps(allowedListIps);
+    public Builder withReadableTimestamp(Boolean readableTimestamp) {
+      this.readableTimestamp = readableTimestamp;
+      return this;
     }
 
     @Override
@@ -293,6 +310,10 @@ public class ChromeDriverService extends DriverService {
       args.add(String.format("--port=%d", getPort()));
       if (getLogFile() != null) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
+        // This flag only works when logged to file
+        if (readableTimestamp) {
+          args.add("--readable-timestamp");
+        }
       }
       if (appendLog) {
         args.add("--append-log");
