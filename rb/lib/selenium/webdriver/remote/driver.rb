@@ -31,14 +31,6 @@ module Selenium
         include DriverExtensions::HasSessionId
 
         def initialize(bridge: nil, listener: nil, **opts)
-          desired_capabilities = opts[:desired_capabilities]
-          if desired_capabilities.is_a?(Symbol)
-            unless Remote::Capabilities.respond_to?(desired_capabilities)
-              raise Error::WebDriverError, "invalid desired capability: #{desired_capabilities.inspect}"
-            end
-
-            opts[:desired_capabilities] = Remote::Capabilities.__send__(desired_capabilities)
-          end
           opts[:url] ||= "http://#{Platform.localhost}:4444/wd/hub"
           super
           @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
