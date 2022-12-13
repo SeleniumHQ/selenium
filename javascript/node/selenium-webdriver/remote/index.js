@@ -18,7 +18,6 @@
 'use strict'
 
 const fs = require('fs')
-const path = require('path')
 const url = require('url')
 
 const httpUtil = require('../http/util')
@@ -29,6 +28,8 @@ const cmd = require('../lib/command')
 const input = require('../lib/input')
 const net = require('../net')
 const portprober = require('../net/portprober')
+
+const { getJavaPath, formatSpawnArgs } = require('./util')
 
 /**
  * @typedef {(string|!Array<string|number|!stream.Stream|null|undefined>)}
@@ -236,7 +237,7 @@ class DriverService {
                 net.getLoopbackAddress()
             }
 
-            var serverUrl = url.format({
+            const serverUrl = url.format({
               protocol: 'http',
               hostname: hostname,
               port: port + '',
@@ -479,13 +480,15 @@ class SeleniumServer extends DriverService {
       let port = resolved[0]
       let jvmArgs = resolved[1]
       let args = resolved[2]
-      return jvmArgs.concat('-jar', jar, '-port', port).concat(args)
+
+      const fullArgsList = jvmArgs
+        .concat('-jar', jar, '-port', port)
+        .concat(args)
+
+      return formatSpawnArgs(jar, fullArgsList)
     })
 
-    let java = 'java'
-    if (process.env['JAVA_HOME']) {
-      java = path.join(process.env['JAVA_HOME'], 'bin/java')
-    }
+    const java = getJavaPath()
 
     super(java, {
       loopback: options.loopback,
