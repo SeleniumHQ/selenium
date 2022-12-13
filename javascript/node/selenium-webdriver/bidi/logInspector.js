@@ -15,8 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const BIDI = require('./bidi')
-
+/**
+ * @type {{ERROR: string, INFO: string, DEBUG: string, WARNING: string}}
+ */
 const LOG_LEVEL = {
   DEBUG: 'debug',
   ERROR: 'error',
@@ -24,6 +25,9 @@ const LOG_LEVEL = {
   WARNING: 'warning'
 }
 
+/**
+ *
+ */
 class LogInspector {
   bidi
   ws
@@ -37,20 +41,25 @@ class LogInspector {
     this._browsingContextIds = browsingContextIds
   }
 
+  /**
+   * Subscribe to log event
+   * @returns {Promise<void>}
+   */
   async init () {
     this.bidi = await this._driver.getBidi()
-    // TODO this.bidi should have bidi instance need to remove connect once api is done
-    await this.bidi.connect()
     await this.bidi.subscribe('log.entryAdded', this._browsingContextIds)
   }
 
+  /**
+   * Listen to log events and capture logs based on log level
+   * @returns {Promise<void>}
+   */
   async listen () {
     this.ws = await this.bidi.socket
 
     this.ws.on('message', event => {
       const data = JSON.parse(Buffer.from(event.toString()))
-      console.log(data)
-      switch (data.params.level) {
+      switch (data.params?.level) {
         case LOG_LEVEL.INFO:
           this.info.push(data.params)
           break
@@ -74,26 +83,56 @@ class LogInspector {
   }
 
   // TODO below are used to check,will be replaced by spec methods as described in doc
+  /**
+   * returns all info logs collected
+   * @returns {[]}
+   */
   get infoLogs () {
     return this.info
   }
 
+  /**
+   * returns all debug logs collected
+   * @returns {[]}
+   */
   get debugLogs () {
     return this.debug
   }
 
+  /**
+   * return to all error logs collected
+   * @returns {[]}
+   */
   get errorLogs () {
     return this.error
   }
 
+  /**
+   * Return all warn logs collected
+   * @returns {[]}
+   */
   get warnLogs () {
     return this.warn
+  }
+
+  /**
+   * Unsubscribe to log event
+   * @returns {Promise<void>}
+   */
+  async close () {
+    await this.bidi.unsubscribe('log.entryAdded', this._browsingContextIds)
   }
 
 }
 
 let instance = undefined
 
+/**
+ * initiate inspector instance and return
+ * @param driver
+ * @param browsingContextIds
+ * @returns {Promise<LogInspector>}
+ */
 async function getInstance (driver, browsingContextIds) {
 
   if (instance === undefined) {
@@ -105,4 +144,8 @@ async function getInstance (driver, browsingContextIds) {
   return instance
 }
 
+/**
+ * API
+ * @type {function(*, *): Promise<LogInspector>}
+ */
 module.exports = getInstance

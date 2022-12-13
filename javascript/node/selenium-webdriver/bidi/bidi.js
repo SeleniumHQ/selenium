@@ -20,33 +20,52 @@ const WebSocket = require('ws');
 
 const RESPONSE_TIMEOUT = 1000 * 30
 
+
 class BIDI extends EventEmitter {
     id = 0;
     isConnected = false
     events = []
     browsingContexts = []
 
-    // initialize connection
-    constructor(_webSocketUrl) {
+  /**
+   * Create a new websocket connection
+   * @param _webSocketUrl
+   */
+  constructor(_webSocketUrl) {
         super();
         this._ws = new WebSocket(_webSocketUrl);
     }
 
-    connect() {
+  /**
+   * open connection to fire an open event
+   * @returns {Promise<resolved>}
+   */
+  connect() {
         return new Promise((resolve) => this._ws.on('open', () => {
             this.isConnected = true
             resolve()
         }))
     }
 
-    get socket() {
+  /**
+   * @returns {WebSocket}
+   */
+  get socket() {
         return this._ws
     }
 
-    get isConnected() {
+  /**
+   * @returns {boolean|*}
+   */
+  get isConnected() {
         return this.isConnected;
     }
 
+  /**
+   * Sends a bidi request
+   * @param params
+   * @returns {Promise<unknown>}
+   */
     send(params) {
         if (!this.isConnected) {
             throw new Error('No connection to WebDriver Bidi was established')
@@ -79,6 +98,12 @@ class BIDI extends EventEmitter {
         })
     }
 
+  /**
+   * Subscribe to events
+   * @param events
+   * @param browsingContexts
+   * @returns {Promise<void>}
+   */
     async subscribe(events, browsingContexts) {
 
       if (typeof events === 'string') {
@@ -107,11 +132,16 @@ class BIDI extends EventEmitter {
         await this.send(params)
     }
 
-
+  /**
+   * Unsubscribe to events
+   * @param events
+   * @param browsingContexts
+   * @returns {Promise<void>}
+   */
     async unsubscribe(events, browsingContexts) {
 
       if (typeof events === 'string') {
-        this.events.pop();
+        this.events =  this.events.filter(event => event !== events);
       } else if (Array.isArray(events)) {
         this.events =  this.events.filter(event => !events.includes(event));
       }
@@ -136,14 +166,22 @@ class BIDI extends EventEmitter {
         await this.send(params)
     }
 
-    get status() {
+  /**
+   * Get Bidi Status
+   * @returns {Promise<*>}
+   */
+  get status() {
         return this.send({
             method: 'session.status',
             params: {}
         })
     }
 
-    close() {
+  /**
+   * Close ws connection.
+   * @returns {Promise<unknown>}
+   */
+  close() {
         const closeWebSocket = (callback) => {
             // don't close if it's already closed
             if (this._ws.readyState === 3) {
@@ -164,4 +202,19 @@ class BIDI extends EventEmitter {
     }
 }
 
-module.exports = BIDI;
+/**
+ * Return a new bidi instance to webdriver
+ * @param webSocketUrl
+ * @returns {Promise<BIDI>}
+ */
+async function bidiInstance(webSocketUrl) {
+  const instance = new BIDI(webSocketUrl);
+  await instance.connect();
+  return instance;
+}
+
+/**
+ * API
+ * @type {function(*): Promise<BIDI>}
+ */
+module.exports = bidiInstance;

@@ -1272,10 +1272,14 @@ class WebDriver {
     this._cdpConnection.execute('Target.getTargets')
   }
 
+  /**
+   * Initiates bidi connection using 'webSocketUrl'
+   * @returns {BIDI}
+   */
   async getBidi() {
     const caps = await this.getCapabilities()
     let WebSocketUrl = caps['map_'].get('webSocketUrl');
-    return new BIDI(WebSocketUrl);
+    return await BIDI(WebSocketUrl);
   }
 
   /**
