@@ -288,20 +288,21 @@ pub trait SeleniumManager {
 // ----------------------------------------------------------
 
 pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumManager>, String> {
-    if browser_name.eq_ignore_ascii_case("chrome") {
+    let browser_name_lower_case = browser_name.to_ascii_lowercase();
+    if browser_name_lower_case.eq("chrome") {
         Ok(ChromeManager::new())
-    } else if browser_name.eq_ignore_ascii_case("firefox") {
+    } else if browser_name.eq("firefox") {
         Ok(FirefoxManager::new())
-    } else if browser_name.eq_ignore_ascii_case("edge")
-        || browser_name.eq_ignore_ascii_case("msedge")
-        || browser_name.eq_ignore_ascii_case("MicrosoftEdge")
-    {
+    } else if vec!["edge", "msedge", "microsoftedge"].contains(&browser_name_lower_case.as_str()) {
         Ok(EdgeManager::new())
-    } else if browser_name.eq_ignore_ascii_case("iexplorer")
-        || browser_name.eq_ignore_ascii_case("ie")
-        || browser_name.eq_ignore_ascii_case("InternetExplorer")
-        || browser_name.eq_ignore_ascii_case("internet-explorer")
-        || browser_name.eq_ignore_ascii_case("internet_explorer")
+    } else if vec![
+        "iexplorer",
+        "ie",
+        "internetexplorer",
+        "internet-explorer",
+        "internet_explorer",
+    ]
+    .contains(&browser_name_lower_case.as_str())
     {
         Ok(IExplorerManager::new())
     } else {
