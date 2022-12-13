@@ -76,7 +76,7 @@ class ReverseProxyEndToEndTest {
     Config additionalConfig =
       new TomlConfig(
         new StringReader(
-          "[reverse_proxy]\n" +
+          "[network]\n" +
             "sub-path = \"" + SUB_PATH + "\"\n" +
           "[node]\n" +
             "detect-drivers = false\n" +

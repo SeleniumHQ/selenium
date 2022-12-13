@@ -21,7 +21,7 @@ import org.openqa.selenium.grid.config.Config;
 
 public class RouterOptions {
 
-  static final String REVERSE_PROXY_SECTION = "reverse_proxy";
+  static final String NETWORK = "network";
 
   private final Config config;
 
@@ -30,7 +30,7 @@ public class RouterOptions {
   }
 
   public String subPath() {
-    return config.get(REVERSE_PROXY_SECTION, "sub-path").map(prefix -> {
+    return config.get(NETWORK, "sub-path").map(prefix -> {
       prefix = prefix.trim();
       if (!prefix.startsWith("/")) {
         prefix = "/" + prefix; //Prefix with a '/' if absent.
