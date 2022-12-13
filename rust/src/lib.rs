@@ -292,9 +292,17 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
         Ok(ChromeManager::new())
     } else if browser_name.eq_ignore_ascii_case("firefox") {
         Ok(FirefoxManager::new())
-    } else if browser_name.eq_ignore_ascii_case("edge") {
+    } else if browser_name.eq_ignore_ascii_case("edge")
+        || browser_name.eq_ignore_ascii_case("msedge")
+        || browser_name.eq_ignore_ascii_case("MicrosoftEdge")
+    {
         Ok(EdgeManager::new())
-    } else if browser_name.eq_ignore_ascii_case("iexplorer") {
+    } else if browser_name.eq_ignore_ascii_case("iexplorer")
+        || browser_name.eq_ignore_ascii_case("ie")
+        || browser_name.eq_ignore_ascii_case("InternetExplorer")
+        || browser_name.eq_ignore_ascii_case("internet-explorer")
+        || browser_name.eq_ignore_ascii_case("internet_explorer")
+    {
         Ok(IExplorerManager::new())
     } else {
         Err(format!("Invalid browser name: {browser_name}"))
