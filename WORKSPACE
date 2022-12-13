@@ -37,9 +37,9 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "fda23c37fbacf7579f94d5e8f342d3a831140e9471b770782e83846117dd6596",
-    strip_prefix = "rules_python-0.15.0",
-    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.15.0.tar.gz",
+    sha256 = "497ca47374f48c8b067d786b512ac10a276211810f4a580178ee9b9ad139323a",
+    strip_prefix = "rules_python-0.16.1",
+    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.16.1.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "python_register_multi_toolchains")
@@ -58,21 +58,21 @@ python_register_multi_toolchains(
 
 load("@python//:pip.bzl", "multi_pip_parse")
 load("@python//3.10:defs.bzl", interpreter_3_10 = "interpreter")
-load("@python//3.8:defs.bzl", interpreter_3_8 = "interpreter")
 load("@python//3.9:defs.bzl", interpreter_3_9 = "interpreter")
+load("@python//3.8:defs.bzl", interpreter_3_8 = "interpreter")
 
 multi_pip_parse(
     name = "py_dev_requirements",
     default_version = default_python_version,
     python_interpreter_target = {
         "3.10": interpreter_3_10,
-        "3.8": interpreter_3_8,
         "3.9": interpreter_3_9,
+        "3.8": interpreter_3_8,
     },
     requirements_lock = {
         "3.10": "//py:requirements_lock.txt",
-        "3.8": "//py:requirements_lock.txt",
         "3.9": "//py:requirements_lock.txt",
+        "3.8": "//py:requirements_lock.txt",
     },
 )
 
