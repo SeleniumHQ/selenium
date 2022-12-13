@@ -41,20 +41,20 @@ use selenium_manager::{
 {all-args}")]
 struct Cli {
     /// Browser name (chrome, firefox, edge, or iexplorer)
-    #[clap(short, long, value_parser, default_value = "")]
-    browser: String,
+    #[clap(short, long, value_parser)]
+    browser: Option<String>,
 
     /// Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer)
-    #[clap(short, long, value_parser, default_value = "")]
-    driver: String,
+    #[clap(short, long, value_parser)]
+    driver: Option<String>,
 
     /// Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
-    #[clap(short = 'v', long, value_parser, default_value = "")]
-    driver_version: String,
+    #[clap(short = 'v', long, value_parser)]
+    driver_version: Option<String>,
 
     /// Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
-    #[clap(short = 'B', long, value_parser, default_value = "")]
-    browser_version: String,
+    #[clap(short = 'B', long, value_parser)]
+    browser_version: Option<String>,
 
     /// Display DEBUG messages
     #[clap(short = 'D', long)]
@@ -77,8 +77,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         clear_cache();
     }
 
-    let browser_name: String = cli.browser;
-    let driver_name: String = cli.driver;
+    let browser_name: String = cli.browser.unwrap_or_default();
+    let driver_name: String = cli.driver.unwrap_or_default();
 
     let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
@@ -95,8 +95,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         exit(DATAERR);
     };
 
-    selenium_manager.set_browser_version(cli.browser_version);
-    selenium_manager.set_driver_version(cli.driver_version);
+    selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
+    selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
 
     match selenium_manager.resolve_driver() {
         Ok(driver_path) => log::info!("{}", driver_path.display()),
