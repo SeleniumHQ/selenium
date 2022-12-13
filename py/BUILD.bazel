@@ -175,6 +175,7 @@ pkg_tar(
     srcs = [":selenium-sdist-pkg"],
     extension = "tar.gz",
     mode = "0644",
+    package_dir = "selenium-%s" % SE_VERSION,
     package_file_name = "selenium-%s.tar.gz" % SE_VERSION,
 )
 
