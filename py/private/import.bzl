@@ -35,13 +35,13 @@ def _py_import_impl(ctx):
         runfiles = runfiles.merge(dep[DefaultInfo].default_runfiles)
 
     imports = depset(
-        items = [
+        [
             "%s/%s/%s-pyroot" % (ctx.workspace_name, ctx.label.package, ctx.label.name),
         ],
         transitive = [dep[PyInfo].imports for dep in ctx.attr.deps],
     )
     transitive_sources = depset(
-        items = [],
+        [],
         transitive = [dep[PyInfo].transitive_sources for dep in ctx.attr.deps],
     )
 
@@ -57,7 +57,7 @@ def _py_import_impl(ctx):
 
     return [
         DefaultInfo(
-            files = depset(items = [root]),
+            files = depset([root]),
             default_runfiles = runfiles,
         ),
         info,

@@ -50,8 +50,7 @@ class Mobile:
         return self.ConnectionType(self._driver.execute(Command.GET_NETWORK_CONNECTION)["value"])
 
     def set_network_connection(self, network):
-        """
-        Set the network connection for the remote device.
+        """Set the network connection for the remote device.
 
         Example of setting airplane mode::
 
@@ -66,21 +65,15 @@ class Mobile:
 
     @property
     def context(self):
-        """
-        returns the current context (Native or WebView).
-        """
+        """returns the current context (Native or WebView)."""
         return self._driver.execute(Command.CURRENT_CONTEXT_HANDLE)
 
     @context.setter
     def context(self, new_context) -> None:
-        """
-        sets the current context
-        """
+        """sets the current context."""
         self._driver.execute(Command.SWITCH_TO_CONTEXT, {"name": new_context})
 
     @property
     def contexts(self):
-        """
-        returns a list of available contexts
-        """
+        """returns a list of available contexts."""
         return self._driver.execute(Command.CONTEXT_HANDLES)

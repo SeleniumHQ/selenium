@@ -39,7 +39,8 @@ class RemoteConnection:
     """A connection with the Remote WebDriver server.
 
     Communicates with the server using the WebDriver wire protocol:
-    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
+    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+    """
 
     browser_name = None
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
@@ -55,8 +56,7 @@ class RemoteConnection:
 
     @classmethod
     def set_timeout(cls, timeout):
-        """
-        Override the default timeout
+        """Override the default timeout.
 
         :Args:
             - timeout - timeout value for http requests in seconds
@@ -65,9 +65,7 @@ class RemoteConnection:
 
     @classmethod
     def reset_timeout(cls):
-        """
-        Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT
-        """
+        """Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT."""
         cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
 
     @classmethod
@@ -80,9 +78,9 @@ class RemoteConnection:
 
     @classmethod
     def set_certificate_bundle_path(cls, path):
-        """
-        Set the path to the certificate bundle to verify connection to command executor.
-        Can also be set to None to disable certificate validation.
+        """Set the path to the certificate bundle to verify connection to
+        command executor. Can also be set to None to disable certificate
+        validation.
 
         :Args:
             - path - path of a .pem encoded certificate chain.
@@ -91,8 +89,7 @@ class RemoteConnection:
 
     @classmethod
     def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
-        """
-        Get headers for remote request.
+        """Get headers for remote request.
 
         :Args:
          - parsed_url - The parsed url
@@ -273,8 +270,7 @@ class RemoteConnection:
         }
 
     def execute(self, command, params):
-        """
-        Send a command to the remote server.
+        """Send a command to the remote server.
 
         Any path substitutions required for the URL mapped to the command should be
         included in the command parameters.
@@ -294,8 +290,7 @@ class RemoteConnection:
         return self._request(command_info[0], url, body=data)
 
     def _request(self, method, url, body=None):
-        """
-        Send an HTTP request to the remote server.
+        """Send an HTTP request to the remote server.
 
         :Args:
          - method - A string for the HTTP method to send the request with.
@@ -353,8 +348,6 @@ class RemoteConnection:
             response.close()
 
     def close(self):
-        """
-        Clean up resources when finished with the remote_connection
-        """
+        """Clean up resources when finished with the remote_connection."""
         if hasattr(self, "_conn"):
             self._conn.clear()

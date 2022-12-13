@@ -69,7 +69,7 @@ module Selenium
       #
 
       def initialize(bridge: nil, listener: nil, **opts)
-        @service = nil
+        @service_manager = nil
         @devtools = nil
         bridge ||= create_bridge(**opts)
         add_extensions(bridge.browser)
@@ -127,14 +127,6 @@ module Selenium
         bridge.action(**opts)
       end
 
-      def mouse
-        bridge.mouse
-      end
-
-      def keyboard
-        bridge.keyboard
-      end
-
       #
       # Opens the specified URL in the browser.
       #
@@ -180,7 +172,7 @@ module Selenium
       def quit
         bridge.quit
       ensure
-        @service&.stop
+        @service_manager&.stop
         @devtools&.close
       end
 
@@ -338,8 +330,8 @@ module Selenium
 
       def service_url(service)
         service ||= Service.send(browser)
-        @service = service.launch
-        @service.uri
+        @service_manager = service.launch
+        @service_manager.uri
       end
 
       def screenshot

@@ -76,6 +76,8 @@ public class LocalNodeFactory {
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
     ServiceLoader.load(DriverService.Builder.class).forEach(builders::add);
 
+    nodeOptions.getDownloadsPath().ifPresent(builder::downloadsPath);
+
     nodeOptions
       .getSessionFactories(
         caps -> createSessionFactory(tracer, clientFactory, sessionTimeout, builders, caps))

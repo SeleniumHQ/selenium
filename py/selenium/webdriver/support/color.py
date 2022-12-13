@@ -52,8 +52,7 @@ HSLA_PATTERN = r"^\s*hsla\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*,\s*
 
 
 class Color:
-    """
-    Color conversion support class
+    """Color conversion support class.
 
     Example:
 

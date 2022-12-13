@@ -141,6 +141,7 @@ public class DriverService implements Closeable {
         exePath = SeleniumManager.getInstance().getDriverPath(exeName);
         checkExecutable(new File(exePath));
       } catch (Exception e) {
+        exePath = null;
         LOG.warning(String.format("Unable to obtain driver using Selenium Manager: %s", e.getMessage()));
       }
     }

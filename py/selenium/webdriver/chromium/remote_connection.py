@@ -27,7 +27,7 @@ class ChromiumRemoteConnection(RemoteConnection):
         browser_name: str,
         keep_alive: bool = True,
         ignore_proxy: typing.Optional[bool] = False,
-    ):
+    ) -> None:
         super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
         self.browser_name = browser_name
         self._commands["launchApp"] = ("POST", "/session/$sessionId/chromium/launch_app")

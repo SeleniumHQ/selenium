@@ -20,8 +20,8 @@ from selenium.webdriver.common import service
 
 
 class ChromiumService(service.Service):
-    """A Service class that is responsible for the starting and stopping
-    the WebDriver instance of the ChromiumDriver.
+    """A Service class that is responsible for the starting and stopping the
+    WebDriver instance of the ChromiumDriver.
 
     :param executable_path: install path of the executable.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
@@ -40,7 +40,7 @@ class ChromiumService(service.Service):
         log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         start_error_message: typing.Optional[str] = None,
-    ):
+    ) -> None:
         self.service_args = service_args or []
         if log_path:
             self.service_args.append(f"--log-path={log_path}")

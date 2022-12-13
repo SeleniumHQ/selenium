@@ -122,6 +122,7 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final int configuredSessionCount;
   private final boolean cdpEnabled;
+  private final String downloadsPath;
 
   private final boolean bidiEnabled;
   private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
@@ -145,7 +146,8 @@ public class LocalNode extends Node {
     Duration sessionTimeout,
     Duration heartbeatPeriod,
     List<SessionSlot> factories,
-    Secret registrationSecret) {
+    Secret registrationSecret,
+    String downloadsPath) {
     super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
@@ -162,6 +164,7 @@ public class LocalNode extends Node {
     this.sessionCount.set(drainAfterSessionCount);
     this.cdpEnabled = cdpEnabled;
     this.bidiEnabled = bidiEnabled;
+    this.downloadsPath = Optional.ofNullable(downloadsPath).orElse("");
 
     this.healthCheck = healthCheck == null ?
                        () -> {
@@ -472,6 +475,50 @@ public class LocalNode extends Node {
   }
 
   @Override
+  public HttpResponse downloadFile(HttpRequest req, SessionId id) {
+    // When the session is running in a Docker container, the download file command
+    // needs to be forwarded to the container as well.
+    SessionSlot slot = currentSessions.getIfPresent(id);
+    if (slot != null && slot.getSession() instanceof DockerSession) {
+      return executeWebDriverCommand(req);
+    }
+    if (this.downloadsPath.isEmpty()) {
+      String msg = "Please specify the path wherein the files downloaded using the browser "
+        + "would be available via the command line arg [--downloads-path] and restart the node";
+      throw new WebDriverException(msg);
+    }
+    File dir = new File(this.downloadsPath);
+    if (!dir.exists()) {
+      throw new WebDriverException(
+        String.format("Cannot locate downloads directory %s.", downloadsPath));
+    }
+    if (!dir.isDirectory()) {
+      throw new WebDriverException(String.format("Invalid directory: %s.", downloadsPath));
+    }
+    String filename = req.getQueryParameter("filename");
+    try {
+      File[] allFiles = Optional.ofNullable(
+        dir.listFiles((dir1, name) -> name.equals(filename))
+      ).orElse(new File[]{});
+      if (allFiles.length == 0) {
+        throw new WebDriverException(
+          String.format("Cannot find file [%s] in directory %s.", filename, downloadsPath));
+      }
+      if (allFiles.length != 1) {
+        throw new WebDriverException(
+          String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
+      }
+      String content = Zip.zip(allFiles[0]);
+      ImmutableMap<String, Object> result = ImmutableMap.of(
+        "filename", filename,
+        "contents", content);
+      return new HttpResponse().setContent(asJson(result));
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
 
     // When the session is running in a Docker container, the upload file command
@@ -701,6 +748,7 @@ public class LocalNode extends Node {
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
+    private String downloadsPath = "";
 
     private Builder(
       Tracer tracer,
@@ -755,6 +803,11 @@ public class LocalNode extends Node {
       return this;
     }
 
+    public Builder downloadsPath(String path) {
+      this.downloadsPath = path;
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
         tracer,
@@ -770,7 +823,8 @@ public class LocalNode extends Node {
         sessionTimeout,
         heartbeatPeriod,
         factories.build(),
-        registrationSecret);
+        registrationSecret,
+        downloadsPath);
     }
 
     public Advanced advanced() {

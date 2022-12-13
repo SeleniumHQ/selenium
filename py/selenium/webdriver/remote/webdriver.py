@@ -176,19 +176,17 @@ def create_matches(options: List[BaseOptions]) -> Dict:
 
 
 class BaseWebDriver(metaclass=ABCMeta):
-    """
-    Abstract Base Class for all Webdriver subtypes.
-    ABC's allow custom implementations of Webdriver to be registered so that isinstance type checks
-    will succeed.
+    """Abstract Base Class for all Webdriver subtypes.
+
+    ABC's allow custom implementations of Webdriver to be registered so
+    that isinstance type checks will succeed.
     """
 
 
 class WebDriver(BaseWebDriver):
-    """
-    Controls a browser by sending commands to a remote server.
-    This server is expected to be running the WebDriver wire protocol
-    as defined at
-    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+    """Controls a browser by sending commands to a remote server. This server
+    is expected to be running the WebDriver wire protocol as defined at
+    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol.
 
     :Attributes:
      - session_id - String ID of the browser session started and controlled by this WebDriver.
@@ -210,9 +208,9 @@ class WebDriver(BaseWebDriver):
         keep_alive=True,
         file_detector=None,
         options: Union[BaseOptions, List[BaseOptions]] = None,
-    ):
-        """
-        Create a new driver that will issue commands using the wire protocol.
+    ) -> None:
+        """Create a new driver that will issue commands using the wire
+        protocol.
 
         :Args:
          - command_executor - Either a string representing URL of the remote server or a custom
@@ -303,9 +301,8 @@ class WebDriver(BaseWebDriver):
 
     @contextmanager
     def file_detector_context(self, file_detector_class, *args, **kwargs):
-        """
-        Overrides the current file detector (if necessary) in limited context.
-        Ensures the original file detector is set afterwards.
+        """Overrides the current file detector (if necessary) in limited
+        context. Ensures the original file detector is set afterwards.
 
         Example:
 
@@ -348,22 +345,22 @@ class WebDriver(BaseWebDriver):
         raise KeyError("browserName not specified in session capabilities")
 
     def start_client(self):
-        """
-        Called before starting a new session. This method may be overridden
-        to define custom startup behavior.
+        """Called before starting a new session.
+
+        This method may be overridden to define custom startup behavior.
         """
         pass
 
     def stop_client(self):
-        """
-        Called after executing a quit command. This method may be overridden
-        to define custom shutdown behavior.
+        """Called after executing a quit command.
+
+        This method may be overridden to define custom shutdown
+        behavior.
         """
         pass
 
     def start_session(self, capabilities: dict, browser_profile=None) -> None:
-        """
-        Creates a new session with the desired capabilities.
+        """Creates a new session with the desired capabilities.
 
         :Args:
          - capabilities - a capabilities dict to start the session with.
@@ -421,8 +418,7 @@ class WebDriver(BaseWebDriver):
         return value
 
     def execute(self, driver_command: str, params: dict = None) -> dict:
-        """
-        Sends a command to be executed by a command.CommandExecutor.
+        """Sends a command to be executed by a command.CommandExecutor.
 
         :Args:
          - driver_command: The name of the command to execute as a string.
@@ -449,9 +445,7 @@ class WebDriver(BaseWebDriver):
         return {"success": 0, "value": None, "sessionId": self.session_id}
 
     def get(self, url: str) -> None:
-        """
-        Loads a web page in the current browser session.
-        """
+        """Loads a web page in the current browser session."""
         self.execute(Command.GET, {"url": url})
 
     @property
@@ -466,7 +460,8 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_TITLE).get("value", "")
 
     def pin_script(self, script: str, script_key=None) -> ScriptKey:
-        """Store common javascript scripts to be executed later by a unique hashable ID."""
+        """Store common javascript scripts to be executed later by a unique
+        hashable ID."""
         script_key_instance = ScriptKey(script_key)
         self.pinned_scripts[script_key_instance.id] = script
         return script_key_instance
@@ -482,8 +477,7 @@ class WebDriver(BaseWebDriver):
         return list(self.pinned_scripts)
 
     def execute_script(self, script, *args):
-        """
-        Synchronously Executes JavaScript in the current window/frame.
+        """Synchronously Executes JavaScript in the current window/frame.
 
         :Args:
          - script: The JavaScript to execute.
@@ -506,8 +500,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(command, {"script": script, "args": converted_args})["value"]
 
     def execute_async_script(self, script: str, *args):
-        """
-        Asynchronously Executes JavaScript in the current window/frame.
+        """Asynchronously Executes JavaScript in the current window/frame.
 
         :Args:
          - script: The JavaScript to execute.
@@ -527,8 +520,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def current_url(self) -> str:
-        """
-        Gets the URL of the current page.
+        """Gets the URL of the current page.
 
         :Usage:
             ::
@@ -539,8 +531,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def page_source(self) -> str:
-        """
-        Gets the source of the current page.
+        """Gets the source of the current page.
 
         :Usage:
             ::
@@ -550,8 +541,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_PAGE_SOURCE)["value"]
 
     def close(self) -> None:
-        """
-        Closes the current window.
+        """Closes the current window.
 
         :Usage:
             ::
@@ -561,8 +551,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.CLOSE)
 
     def quit(self) -> None:
-        """
-        Quits the driver and closes every associated window.
+        """Quits the driver and closes every associated window.
 
         :Usage:
             ::
@@ -577,8 +566,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def current_window_handle(self) -> str:
-        """
-        Returns the handle of the current window.
+        """Returns the handle of the current window.
 
         :Usage:
             ::
@@ -589,8 +577,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def window_handles(self) -> List[str]:
-        """
-        Returns the handles of all windows within the current session.
+        """Returns the handles of all windows within the current session.
 
         :Usage:
             ::
@@ -600,28 +587,23 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.W3C_GET_WINDOW_HANDLES)["value"]
 
     def maximize_window(self) -> None:
-        """
-        Maximizes the current window that webdriver is using
-        """
+        """Maximizes the current window that webdriver is using."""
         command = Command.W3C_MAXIMIZE_WINDOW
         self.execute(command, None)
 
     def fullscreen_window(self) -> None:
-        """
-        Invokes the window manager-specific 'full screen' operation
-        """
+        """Invokes the window manager-specific 'full screen' operation."""
         self.execute(Command.FULLSCREEN_WINDOW)
 
     def minimize_window(self) -> None:
-        """
-        Invokes the window manager-specific 'minimize' operation
-        """
+        """Invokes the window manager-specific 'minimize' operation."""
         self.execute(Command.MINIMIZE_WINDOW)
 
     def print_page(self, print_options: Optional[PrintOptions] = None) -> str:
-        """
-        Takes PDF of the current page.
-        The driver makes a best effort to return a PDF based on the provided parameters.
+        """Takes PDF of the current page.
+
+        The driver makes a best effort to return a PDF based on the
+        provided parameters.
         """
         options = {}
         if print_options:
@@ -651,8 +633,7 @@ class WebDriver(BaseWebDriver):
 
     # Navigation
     def back(self) -> None:
-        """
-        Goes one step backward in the browser history.
+        """Goes one step backward in the browser history.
 
         :Usage:
             ::
@@ -662,8 +643,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.GO_BACK)
 
     def forward(self) -> None:
-        """
-        Goes one step forward in the browser history.
+        """Goes one step forward in the browser history.
 
         :Usage:
             ::
@@ -673,8 +653,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.GO_FORWARD)
 
     def refresh(self) -> None:
-        """
-        Refreshes the current page.
+        """Refreshes the current page.
 
         :Usage:
             ::
@@ -685,8 +664,8 @@ class WebDriver(BaseWebDriver):
 
     # Options
     def get_cookies(self) -> List[dict]:
-        """
-        Returns a set of dictionaries, corresponding to cookies visible in the current session.
+        """Returns a set of dictionaries, corresponding to cookies visible in
+        the current session.
 
         :Usage:
             ::
@@ -696,8 +675,8 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_ALL_COOKIES)["value"]
 
     def get_cookie(self, name) -> typing.Optional[typing.Dict]:
-        """
-        Get a single cookie by name. Returns the cookie if found, None if not.
+        """Get a single cookie by name. Returns the cookie if found, None if
+        not.
 
         :Usage:
             ::
@@ -708,8 +687,7 @@ class WebDriver(BaseWebDriver):
             return self.execute(Command.GET_COOKIE, {"name": name})["value"]
 
     def delete_cookie(self, name) -> None:
-        """
-        Deletes a single cookie with the given name.
+        """Deletes a single cookie with the given name.
 
         :Usage:
             ::
@@ -719,8 +697,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.DELETE_COOKIE, {"name": name})
 
     def delete_all_cookies(self) -> None:
-        """
-        Delete all cookies in the scope of the session.
+        """Delete all cookies in the scope of the session.
 
         :Usage:
             ::
@@ -730,8 +707,7 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.DELETE_ALL_COOKIES)
 
     def add_cookie(self, cookie_dict) -> None:
-        """
-        Adds a cookie to your current session.
+        """Adds a cookie to your current session.
 
         :Args:
          - cookie_dict: A dictionary object, with required keys - "name" and "value";
@@ -742,7 +718,6 @@ class WebDriver(BaseWebDriver):
             driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/'})
             driver.add_cookie({'name' : 'foo', 'value' : 'bar', 'path' : '/', 'secure':True})
             driver.add_cookie({'name': 'foo', 'value': 'bar', 'sameSite': 'Strict'})
-
         """
         if "sameSite" in cookie_dict:
             assert cookie_dict["sameSite"] in ["Strict", "Lax", "None"]
@@ -752,11 +727,10 @@ class WebDriver(BaseWebDriver):
 
     # Timeouts
     def implicitly_wait(self, time_to_wait: float) -> None:
-        """
-        Sets a sticky timeout to implicitly wait for an element to be found,
-           or a command to complete. This method only needs to be called one
-           time per session. To set the timeout for calls to
-           execute_async_script, see set_script_timeout.
+        """Sets a sticky timeout to implicitly wait for an element to be found,
+        or a command to complete. This method only needs to be called one time
+        per session. To set the timeout for calls to execute_async_script, see
+        set_script_timeout.
 
         :Args:
          - time_to_wait: Amount of time to wait (in seconds)
@@ -769,9 +743,8 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.SET_TIMEOUTS, {"implicit": int(float(time_to_wait) * 1000)})
 
     def set_script_timeout(self, time_to_wait: float) -> None:
-        """
-        Set the amount of time that the script should wait during an
-           execute_async_script call before throwing an error.
+        """Set the amount of time that the script should wait during an
+        execute_async_script call before throwing an error.
 
         :Args:
          - time_to_wait: The amount of time to wait (in seconds)
@@ -784,9 +757,8 @@ class WebDriver(BaseWebDriver):
         self.execute(Command.SET_TIMEOUTS, {"script": int(float(time_to_wait) * 1000)})
 
     def set_page_load_timeout(self, time_to_wait: float) -> None:
-        """
-        Set the amount of time to wait for a page load to complete
-           before throwing an error.
+        """Set the amount of time to wait for a page load to complete before
+        throwing an error.
 
         :Args:
          - time_to_wait: The amount of time to wait
@@ -803,8 +775,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def timeouts(self) -> Timeouts:
-        """
-        Get all the timeouts that have been set on the current session
+        """Get all the timeouts that have been set on the current session.
 
         :Usage:
             ::
@@ -819,8 +790,7 @@ class WebDriver(BaseWebDriver):
 
     @timeouts.setter
     def timeouts(self, timeouts) -> None:
-        """
-        Set all timeouts for the session. This will override any previously
+        """Set all timeouts for the session. This will override any previously
         set timeouts.
 
         :Usage:
@@ -832,8 +802,7 @@ class WebDriver(BaseWebDriver):
         _ = self.execute(Command.SET_TIMEOUTS, timeouts._to_json())["value"]
 
     def find_element(self, by=By.ID, value: Optional[str] = None) -> WebElement:
-        """
-        Find an element given a By strategy and locator.
+        """Find an element given a By strategy and locator.
 
         :Usage:
             ::
@@ -861,8 +830,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.FIND_ELEMENT, {"using": by, "value": value})["value"]
 
     def find_elements(self, by=By.ID, value: Optional[str] = None) -> List[WebElement]:
-        """
-        Find elements given a By strategy and locator.
+        """Find elements given a By strategy and locator.
 
         :Usage:
             ::
@@ -893,24 +861,19 @@ class WebDriver(BaseWebDriver):
 
     @property
     def desired_capabilities(self) -> dict:
-        """
-        returns the drivers current desired capabilities being used
-        """
+        """returns the drivers current desired capabilities being used."""
         warnings.warn("desired_capabilities is deprecated. Please call capabilities.", DeprecationWarning, stacklevel=2)
         return self.caps
 
     @property
     def capabilities(self) -> dict:
-        """
-        returns the drivers current capabilities being used.
-        """
+        """returns the drivers current capabilities being used."""
         return self.caps
 
     def get_screenshot_as_file(self, filename) -> bool:
-        """
-        Saves a screenshot of the current window to a PNG image file. Returns
-           False if there is any IOError, else returns True. Use full paths in
-           your filename.
+        """Saves a screenshot of the current window to a PNG image file.
+        Returns False if there is any IOError, else returns True. Use full
+        paths in your filename.
 
         :Args:
          - filename: The full path you wish to save your screenshot to. This
@@ -937,10 +900,9 @@ class WebDriver(BaseWebDriver):
         return True
 
     def save_screenshot(self, filename) -> bool:
-        """
-        Saves a screenshot of the current window to a PNG image file. Returns
-           False if there is any IOError, else returns True. Use full paths in
-           your filename.
+        """Saves a screenshot of the current window to a PNG image file.
+        Returns False if there is any IOError, else returns True. Use full
+        paths in your filename.
 
         :Args:
          - filename: The full path you wish to save your screenshot to. This
@@ -954,8 +916,7 @@ class WebDriver(BaseWebDriver):
         return self.get_screenshot_as_file(filename)
 
     def get_screenshot_as_png(self) -> bytes:
-        """
-        Gets the screenshot of the current window as a binary data.
+        """Gets the screenshot of the current window as a binary data.
 
         :Usage:
             ::
@@ -965,9 +926,8 @@ class WebDriver(BaseWebDriver):
         return b64decode(self.get_screenshot_as_base64().encode("ascii"))
 
     def get_screenshot_as_base64(self) -> str:
-        """
-        Gets the screenshot of the current window as a base64 encoded string
-           which is useful in embedded images in HTML.
+        """Gets the screenshot of the current window as a base64 encoded string
+        which is useful in embedded images in HTML.
 
         :Usage:
             ::
@@ -977,8 +937,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.SCREENSHOT)["value"]
 
     def set_window_size(self, width, height, windowHandle: str = "current") -> None:
-        """
-        Sets the width and height of the current window. (window.resizeTo)
+        """Sets the width and height of the current window. (window.resizeTo)
 
         :Args:
          - width: the width in pixels to set the window to
@@ -994,8 +953,7 @@ class WebDriver(BaseWebDriver):
         self.set_window_rect(width=int(width), height=int(height))
 
     def get_window_size(self, windowHandle: str = "current") -> dict:
-        """
-        Gets the width and height of the current window.
+        """Gets the width and height of the current window.
 
         :Usage:
             ::
@@ -1013,8 +971,7 @@ class WebDriver(BaseWebDriver):
         return {k: size[k] for k in ("width", "height")}
 
     def set_window_position(self, x, y, windowHandle: str = "current") -> dict:
-        """
-        Sets the x,y position of the current window. (window.moveTo)
+        """Sets the x,y position of the current window. (window.moveTo)
 
         :Args:
          - x: the x-coordinate in pixels to set the window position
@@ -1030,8 +987,7 @@ class WebDriver(BaseWebDriver):
         return self.set_window_rect(x=int(x), y=int(y))
 
     def get_window_position(self, windowHandle="current") -> dict:
-        """
-        Gets the x,y position of the current window.
+        """Gets the x,y position of the current window.
 
         :Usage:
             ::
@@ -1046,9 +1002,8 @@ class WebDriver(BaseWebDriver):
         return {k: position[k] for k in ("x", "y")}
 
     def get_window_rect(self) -> dict:
-        """
-        Gets the x, y coordinates of the window as well as height and width of
-        the current window.
+        """Gets the x, y coordinates of the window as well as height and width
+        of the current window.
 
         :Usage:
             ::
@@ -1058,9 +1013,8 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_WINDOW_RECT)["value"]
 
     def set_window_rect(self, x=None, y=None, width=None, height=None) -> dict:
-        """
-        Sets the x, y coordinates of the window as well as height and width of
-        the current window. This method is only supported for W3C compatible
+        """Sets the x, y coordinates of the window as well as height and width
+        of the current window. This method is only supported for W3C compatible
         browsers; other browsers should use `set_window_position` and
         `set_window_size`.
 
@@ -1083,9 +1037,8 @@ class WebDriver(BaseWebDriver):
 
     @file_detector.setter
     def file_detector(self, detector) -> None:
-        """
-        Set the file detector to be used when sending keyboard input.
-        By default, this is set to a file detector that does nothing.
+        """Set the file detector to be used when sending keyboard input. By
+        default, this is set to a file detector that does nothing.
 
         see FileDetector
         see LocalFileDetector
@@ -1102,8 +1055,7 @@ class WebDriver(BaseWebDriver):
 
     @property
     def orientation(self):
-        """
-        Gets the current orientation of the device
+        """Gets the current orientation of the device.
 
         :Usage:
             ::
@@ -1114,8 +1066,7 @@ class WebDriver(BaseWebDriver):
 
     @orientation.setter
     def orientation(self, value) -> None:
-        """
-        Sets the current orientation of the device
+        """Sets the current orientation of the device.
 
         :Args:
          - value: orientation to set it to.
@@ -1133,13 +1084,14 @@ class WebDriver(BaseWebDriver):
 
     @property
     def application_cache(self):
-        """Returns a ApplicationCache Object to interact with the browser app cache"""
+        """Returns a ApplicationCache Object to interact with the browser app
+        cache."""
         return ApplicationCache(self)
 
     @property
     def log_types(self):
-        """
-        Gets a list of the available log types. This only works with w3c compliant browsers.
+        """Gets a list of the available log types. This only works with w3c
+        compliant browsers.
 
         :Usage:
             ::
@@ -1149,8 +1101,7 @@ class WebDriver(BaseWebDriver):
         return self.execute(Command.GET_AVAILABLE_LOG_TYPES)["value"]
 
     def get_log(self, log_type):
-        """
-        Gets the log for a given log type
+        """Gets the log for a given log type.
 
         :Args:
          - log_type: type of log that which will be returned
@@ -1218,47 +1169,38 @@ class WebDriver(BaseWebDriver):
 
     # Virtual Authenticator Methods
     def add_virtual_authenticator(self, options: VirtualAuthenticatorOptions) -> None:
-        """
-        Adds a virtual authenticator with the given options.
-        """
+        """Adds a virtual authenticator with the given options."""
         self._authenticator_id = self.execute(Command.ADD_VIRTUAL_AUTHENTICATOR, options.to_dict())["value"]
 
     @property
     def virtual_authenticator_id(self) -> str:
-        """
-        Returns the id of the virtual authenticator.
-        """
+        """Returns the id of the virtual authenticator."""
         return self._authenticator_id
 
     @required_virtual_authenticator
     def remove_virtual_authenticator(self) -> None:
-        """
-        Removes a previously added virtual authenticator. The authenticator is no
-        longer valid after removal, so no methods may be called.
+        """Removes a previously added virtual authenticator.
+
+        The authenticator is no longer valid after removal, so no
+        methods may be called.
         """
         self.execute(Command.REMOVE_VIRTUAL_AUTHENTICATOR, {"authenticatorId": self._authenticator_id})
         self._authenticator_id = None
 
     @required_virtual_authenticator
     def add_credential(self, credential: Credential) -> None:
-        """
-        Injects a credential into the authenticator.
-        """
+        """Injects a credential into the authenticator."""
         self.execute(Command.ADD_CREDENTIAL, {**credential.to_dict(), "authenticatorId": self._authenticator_id})
 
     @required_virtual_authenticator
     def get_credentials(self) -> List[Credential]:
-        """
-        Returns the list of credentials owned by the authenticator.
-        """
+        """Returns the list of credentials owned by the authenticator."""
         credential_data = self.execute(Command.GET_CREDENTIALS, {"authenticatorId": self._authenticator_id})
         return [Credential.from_dict(credential) for credential in credential_data["value"]]
 
     @required_virtual_authenticator
     def remove_credential(self, credential_id: Union[str, bytearray]) -> None:
-        """
-        Removes a credential from the authenticator.
-        """
+        """Removes a credential from the authenticator."""
         # Check if the credential is bytearray converted to b64 string
         if type(credential_id) is bytearray:
             credential_id = urlsafe_b64encode(credential_id).decode()
@@ -1269,15 +1211,14 @@ class WebDriver(BaseWebDriver):
 
     @required_virtual_authenticator
     def remove_all_credentials(self) -> None:
-        """
-        Removes all credentials from the authenticator.
-        """
+        """Removes all credentials from the authenticator."""
         self.execute(Command.REMOVE_ALL_CREDENTIALS, {"authenticatorId": self._authenticator_id})
 
     @required_virtual_authenticator
     def set_user_verified(self, verified: bool) -> None:
-        """
-        Sets whether the authenticator will simulate success or fail on user verification.
+        """Sets whether the authenticator will simulate success or fail on user
+        verification.
+
         verified: True if the authenticator will pass user verification, False otherwise.
         """
         self.execute(Command.SET_USER_VERIFIED, {"authenticatorId": self._authenticator_id, "isUserVerified": verified})
