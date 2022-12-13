@@ -28,6 +28,7 @@ const cmd = require('../lib/command')
 const input = require('../lib/input')
 const net = require('../net')
 const portprober = require('../net/portprober')
+const logging = require('../lib/logging')
 
 const { getJavaPath, formatSpawnArgs } = require('./util')
 
@@ -119,6 +120,8 @@ class DriverService {
    * @param {!ServiceOptions} options Configuration options for the service.
    */
   constructor(executable, options) {
+    /** @private @const */
+    this.log_ = logging.getLogger('webdriver.DriverService')
     /** @private {string} */
     this.executable_ = executable
 
