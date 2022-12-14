@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/driver'
+require 'selenium/webdriver/chromium/driver'
 
 module Selenium
   module WebDriver
@@ -28,7 +28,7 @@ module Selenium
       # @api private
       #
 
-      class Driver < Selenium::WebDriver::Chrome::Driver
+      class Driver < Chromium::Driver
         def browser
           :edge
         end

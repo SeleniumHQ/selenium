@@ -341,7 +341,7 @@ module Selenium
       def add_extensions(browser)
         extensions = case browser
                      when :chrome, :msedge
-                       Chrome::Driver::EXTENSIONS
+                       Chromium::Driver::EXTENSIONS
                      when :firefox
                        Firefox::Driver::EXTENSIONS
                      when :safari, :safari_technology_preview
