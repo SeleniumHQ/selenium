@@ -30,9 +30,11 @@ module Selenium
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
 
-        def initialize(bridge: nil, listener: nil, **opts)
-          opts[:url] ||= "http://#{Platform.localhost}:4444/wd/hub"
-          super
+        def initialize(service: nil, url: nil, **opts)
+          raise ArgumentError, "Can not set :service object on #{self.class}" if service
+
+          url ||= "http://#{Platform.localhost}:4444/wd/hub"
+          super(url: url, **opts)
           @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
         end
 

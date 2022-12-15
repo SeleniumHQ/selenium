@@ -112,10 +112,10 @@ module Selenium
             allow(bridge).to receive(:browser).and_return(:chrome)
           end
 
-          it 'is not created when :url is provided' do
-            expect(Service).not_to receive(:new)
-
-            driver.new(url: 'http://example.com:4321')
+          it 'errors when :url is provided' do
+            expect {
+              driver.new(url: 'http://example.com:4321')
+            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Chrome::Driver with :url")
           end
 
           it 'is created when :url is not provided' do

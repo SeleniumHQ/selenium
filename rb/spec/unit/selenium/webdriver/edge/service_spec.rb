@@ -119,7 +119,9 @@ module Selenium
           it 'is not created when :url is provided' do
             expect(Service).not_to receive(:new)
 
-            driver.new(url: 'http://example.com:4321')
+            expect {
+              driver.new(url: 'http://example.com:4321')
+            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Edge::Driver with :url")
           end
 
           it 'is created when :url is not provided' do

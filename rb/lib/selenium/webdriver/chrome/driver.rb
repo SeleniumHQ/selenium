@@ -29,6 +29,13 @@ module Selenium
       #
 
       class Driver < Chromium::Driver
+        def initialize(service: nil, url: nil, **opts)
+          raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+
+          url = service_url(service || Service.chrome)
+          super(url: url, **opts)
+        end
+
         def browser
           :chrome
         end

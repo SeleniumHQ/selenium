@@ -31,6 +31,13 @@ module Selenium
                       DriverExtensions::HasApplePermissions,
                       DriverExtensions::HasWebStorage].freeze
 
+        def initialize(service: nil, url: nil, **opts)
+          raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+
+          url = service_url(service || Service.safari)
+          super(url: url, **opts)
+        end
+
         def browser
           :safari
         end

@@ -37,6 +37,13 @@ module Selenium
                       DriverExtensions::HasWebStorage,
                       DriverExtensions::PrintsPage].freeze
 
+        def initialize(service: nil, url: nil, **opts)
+          raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+
+          url = service_url(service || Service.firefox)
+          super(url: url, **opts)
+        end
+
         def browser
           :firefox
         end

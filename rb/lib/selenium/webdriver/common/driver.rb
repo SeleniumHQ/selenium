@@ -308,9 +308,8 @@ module Selenium
 
       attr_reader :bridge
 
-      def create_bridge(capabilities: nil, options: nil, url: nil, service: nil, http_client: nil)
-        Remote::Bridge.new(http_client: http_client,
-                           url: url || service_url(service)).tap do |bridge|
+      def create_bridge(capabilities: nil, options: nil, url: nil, http_client: nil)
+        Remote::Bridge.new(http_client: http_client, url: url).tap do |bridge|
           generated_caps = options ? options.as_json : generate_capabilities(capabilities)
           bridge.create_session(generated_caps)
         end
@@ -329,7 +328,6 @@ module Selenium
       end
 
       def service_url(service)
-        service ||= Service.send(browser)
         @service_manager = service.launch
         @service_manager.uri
       end
