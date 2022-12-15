@@ -131,51 +131,83 @@ module Selenium
                                           {'browserName' => 'firefox'}).as_json).to eq(expected)
           expect(Capabilities.first_match(Capabilities.chrome, Capabilities.firefox).as_json).to eq(expected)
         end
-      end
 
-      context 'timeouts' do
-        let(:as_json) do
-          {
-            'browserName' => 'chrome',
-            'timeouts' => {
-              'implicit' => 1,
-              'pageLoad' => 2,
-              'script' => 3
+        it 'sets browser version with version' do
+          capabilities = Capabilities.new
+          expect {
+            capabilities.version = 1
+          }.to have_deprecated(:jwp_caps)
+          expect(capabilities.browser_version).to eq 1
+        end
+
+        it 'gets browser version with version' do
+          capabilities = Capabilities.new
+          capabilities.browser_version = 1
+          expect {
+            expect(capabilities.version).to eq 1
+          }.to have_deprecated(:jwp_caps)
+        end
+
+        it 'sets platform name with platform' do
+          capabilities = Capabilities.new
+          capabilities.platform_name = 'this'
+          expect {
+            expect(capabilities.platform).to eq 'this'
+          }.to have_deprecated(:jwp_caps)
+        end
+
+        it 'gets platform name with platform' do
+          capabilities = Capabilities.new
+          expect {
+            capabilities.platform = 'this'
+          }.to have_deprecated(:jwp_caps)
+          expect(capabilities.platform_name).to eq 'this'
+        end
+
+        context 'timeouts' do
+          let(:as_json) do
+            {
+              'browserName' => 'chrome',
+              'timeouts' => {
+                'implicit' => 1,
+                'pageLoad' => 2,
+                'script' => 3
+              }
             }
-          }
-        end
+          end
 
-        it 'processes timeouts as hash' do
-          caps = Capabilities.chrome(timeouts: {implicit: 1, page_load: 2, script: 3})
-          expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
-          expect(caps.implicit_timeout).to eq(1)
-          expect(caps.page_load_timeout).to eq(2)
-          expect(caps.script_timeout).to eq(3)
-          expect(caps.as_json).to eq(as_json)
-        end
+          it 'processes timeouts as hash' do
+            caps = Capabilities.chrome(timeouts: {implicit: 1, page_load: 2, script: 3})
+            expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
+            expect(caps.implicit_timeout).to eq(1)
+            expect(caps.page_load_timeout).to eq(2)
+            expect(caps.script_timeout).to eq(3)
+            expect(caps.as_json).to eq(as_json)
+          end
 
-        it 'processes timeouts via timeouts reader' do
-          caps = Capabilities.chrome
-          caps.timeouts[:implicit] = 1
-          caps.timeouts[:page_load] = 2
-          caps.timeouts[:script] = 3
-          expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
-          expect(caps.implicit_timeout).to eq(1)
-          expect(caps.page_load_timeout).to eq(2)
-          expect(caps.script_timeout).to eq(3)
-          expect(caps.as_json).to eq(as_json)
-        end
+          it 'processes timeouts via timeouts reader' do
+            caps = Capabilities.chrome
+            caps.timeouts[:implicit] = 1
+            caps.timeouts[:page_load] = 2
+            caps.timeouts[:script] = 3
+            expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
+            expect(caps.implicit_timeout).to eq(1)
+            expect(caps.page_load_timeout).to eq(2)
+            expect(caps.script_timeout).to eq(3)
+            expect(caps.as_json).to eq(as_json)
+          end
 
-        it 'processes timeouts via per-timeout writers' do
-          caps = Capabilities.chrome
-          caps.implicit_timeout = 1
-          caps.page_load_timeout = 2
-          caps.script_timeout = 3
-          expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
-          expect(caps.implicit_timeout).to eq(1)
-          expect(caps.page_load_timeout).to eq(2)
-          expect(caps.script_timeout).to eq(3)
-          expect(caps.as_json).to eq(as_json)
+          it 'processes timeouts via per-timeout writers' do
+            caps = Capabilities.chrome
+            caps.implicit_timeout = 1
+            caps.page_load_timeout = 2
+            caps.script_timeout = 3
+            expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
+            expect(caps.implicit_timeout).to eq(1)
+            expect(caps.page_load_timeout).to eq(2)
+            expect(caps.script_timeout).to eq(3)
+            expect(caps.as_json).to eq(as_json)
+          end
         end
       end
     end # Remote

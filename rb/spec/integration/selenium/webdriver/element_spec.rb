@@ -94,7 +94,6 @@ module Selenium
         expect(element.text).to be_empty
       end
 
-
       it 'should send string keys' do
         driver.navigate.to url_for('formPage.html')
         wait_for_element(id: 'working')

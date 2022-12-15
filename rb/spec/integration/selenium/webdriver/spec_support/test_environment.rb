@@ -165,7 +165,7 @@ module Selenium
           {
             browser: browser,
             driver: driver,
-            version: driver_instance.capabilities.version,
+            version: driver_instance.capabilities.browser_version,
             platform: Platform.os,
             ci: Platform.ci
           }
