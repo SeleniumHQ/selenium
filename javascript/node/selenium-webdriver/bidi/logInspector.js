@@ -169,11 +169,8 @@ let instance = undefined
  * @returns {Promise<LogInspector>}
  */
 async function getInstance (driver, browsingContextIds) {
-
-  if (instance === undefined) {
-    instance = new LogInspector(driver, browsingContextIds)
-    await instance.init()
-  }
+  instance = new LogInspector(driver, browsingContextIds)
+  await instance.init()
   return instance
 }
 

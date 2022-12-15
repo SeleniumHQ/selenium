@@ -18,11 +18,11 @@
 'use strict'
 
 class BaseLogEntry {
-  constructor(level, text, timestamp, stack_trace) {
+  constructor(level, text, timeStamp, stackTrace) {
     this._level = level
     this._text = text
-    this._timestamp = timestamp
-    this._stack_trace = stack_trace
+    this._timeStamp = timeStamp
+    this._stackTrace = stackTrace
   }
 
   get level() {
@@ -33,18 +33,18 @@ class BaseLogEntry {
     return this._text
   }
 
-  get timestamp() {
-    return this._timestamp
+  get timeStamp() {
+    return this._timeStamp
   }
 
-  get stack_trace() {
-    return this._stack_trace
+  get stackTrace() {
+    return this._stackTrace
   }
 }
 
 class GenericLogEntry extends BaseLogEntry {
-  constructor(level, text, timestamp, type, stack_trace) {
-    super(level, text, timestamp, stack_trace)
+  constructor(level, text, timeStamp, type, stackTrace) {
+    super(level, text, timeStamp, stackTrace)
     this._type = type
   }
 
@@ -54,8 +54,8 @@ class GenericLogEntry extends BaseLogEntry {
 }
 
 class ConsoleLogEntry extends GenericLogEntry {
-  constructor(level, text, timestamp, type, method, realm, args, stack_trace) {
-    super(level, text, timestamp, type, stack_trace)
+  constructor(level, text, timeStamp, type, method, realm, args, stackTrace) {
+    super(level, text, timeStamp, type, stackTrace)
     this._method = method
     this._realm = realm
     this._args = args
@@ -75,13 +75,8 @@ class ConsoleLogEntry extends GenericLogEntry {
 }
 
 class JavascriptLogEntry extends GenericLogEntry {
-  constructor(level, text, timestamp, type, stack_trace) {
-    super(level, text, timestamp, stack_trace)
-    this._type = type
-  }
-
-  get type() {
-    return this._type
+  constructor(level, text, timeStamp, type, stackTrace) {
+    super(level, text, timeStamp, type, stackTrace)
   }
 }
 
