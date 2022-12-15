@@ -27,7 +27,7 @@ module Selenium
         let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
         let(:valid_response) do
           {status: 200,
-           body: {value: {sessionId: 0, capabilities: Remote::Capabilities.chrome}}.to_json,
+           body: {value: {sessionId: 0, capabilities: {browserName: 'chrome'}}}.to_json,
            headers: {content_type: 'application/json'}}
         end
 
@@ -64,7 +64,7 @@ module Selenium
           msg = "Don't use both :options and :capabilities when initializing Selenium::WebDriver::Chrome::Driver, " \
                 'prefer :options'
           expect {
-            described_class.new(options: Options.new, capabilities: Remote::Capabilities.chrome)
+            described_class.new(options: Options.new, capabilities: Remote::Capabilities.new(browser_name: 'chrome'))
           }.to raise_exception(ArgumentError, msg)
         end
 
@@ -72,15 +72,6 @@ module Selenium
           it 'accepts value as a Symbol' do
             expect_request
             expect { described_class.new(capabilities: :chrome) }.to have_deprecated(:capabilities)
-          end
-
-          it 'accepts Capabilities.chrome' do
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', invalid: 'foobar'}}})
-
-            expect {
-              capabilities = Remote::Capabilities.chrome(invalid: 'foobar')
-              described_class.new(capabilities: capabilities)
-            }.to have_deprecated(:capabilities)
           end
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do

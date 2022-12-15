@@ -27,7 +27,7 @@ module Selenium
         let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
         let(:valid_response) do
           {status: 200,
-           body: {value: {sessionId: 0, capabilities: Remote::Capabilities.edge}}.to_json,
+           body: {value: {sessionId: 0, capabilities: {browserName: 'MicrosoftEdge'}}}.to_json,
            headers: {content_type: 'application/json'}}
         end
 
@@ -69,7 +69,7 @@ module Selenium
           msg = "Don't use both :options and :capabilities when initializing Selenium::WebDriver::Edge::Driver, " \
                 'prefer :options'
           expect {
-            described_class.new(options: Options.new, capabilities: Remote::Capabilities.edge)
+            described_class.new(options: Options.new, capabilities: Remote::Capabilities.new(browser_name: 'msedge'))
           }.to raise_exception(ArgumentError, msg)
         end
 
@@ -81,13 +81,6 @@ module Selenium
                 described_class.new(capabilities: :edge)
               }.to have_deprecated(:capabilities)
             }.not_to raise_exception
-          end
-
-          it 'accepts Capabilities.edge' do
-            capabilities = Remote::Capabilities.edge(invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', invalid: 'foobar'}}})
-
-            expect { described_class.new(capabilities: capabilities) }.to have_deprecated(:capabilities)
           end
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do

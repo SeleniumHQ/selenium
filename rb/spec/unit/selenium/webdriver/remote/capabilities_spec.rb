@@ -24,28 +24,45 @@ module Selenium
     module Remote
       describe Capabilities do
         it 'has default capabilities for Chrome' do
-          caps = described_class.chrome
-          expect(caps.browser_name).to eq('chrome')
+          expect {
+            caps = described_class.chrome
+            expect(caps.browser_name).to eq('chrome')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'has default capabilities for Edge' do
-          caps = described_class.edge
-          expect(caps.browser_name).to eq('MicrosoftEdge')
+          expect {
+            caps = described_class.edge
+            expect(caps.browser_name).to eq('MicrosoftEdge')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'has default capabilities for Firefox' do
-          caps = described_class.firefox
-          expect(caps.browser_name).to eq('firefox')
+          expect {
+            caps = described_class.firefox
+            expect(caps.browser_name).to eq('firefox')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'has default capabilities for HtmlUnit' do
-          caps = described_class.htmlunit
-          expect(caps.browser_name).to eq('htmlunit')
+          expect {
+            caps = described_class.htmlunit
+            expect(caps.browser_name).to eq('htmlunit')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'has default capabilities for Internet Explorer' do
-          caps = described_class.internet_explorer
-          expect(caps.browser_name).to eq('internet explorer')
+          expect {
+            caps = described_class.internet_explorer
+            expect(caps.browser_name).to eq('internet explorer')
+          }.to have_deprecated(:caps_browsers)
+        end
+
+        it 'has default capabilities for Safari' do
+          expect {
+            caps = described_class.safari
+            expect(caps.browser_name).to eq('safari')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'converts noProxy from string to array' do
@@ -75,7 +92,7 @@ module Selenium
         end
 
         it 'can set and get arbitrary capabilities' do
-          caps = described_class.chrome
+          caps = described_class.new(browser_name: 'chrome')
           caps['chrome'] = :foo
           expect(caps['chrome']).to eq(:foo)
         end
@@ -99,8 +116,8 @@ module Selenium
         end
 
         it 'can merge capabilities' do
-          a = described_class.chrome
-          b = described_class.firefox
+          a = described_class.new(browser_name: 'chrome')
+          b = described_class.new(browser_name: 'firefox')
           a.merge!(b)
 
           expect(a.browser_name).to eq('firefox')
@@ -121,7 +138,7 @@ module Selenium
           expected = {'alwaysMatch' => {'browserName' => 'chrome'}}
           expect(described_class.always_match(browser_name: 'chrome').as_json).to eq(expected)
           expect(described_class.always_match('browserName' => 'chrome').as_json).to eq(expected)
-          expect(described_class.always_match(described_class.chrome).as_json).to eq(expected)
+          expect(described_class.always_match(described_class.new(browser_name: 'chrome')).as_json).to eq(expected)
         end
 
         it 'allows to set firstMatch' do
@@ -130,7 +147,8 @@ module Selenium
                                              {browser_name: 'firefox'}).as_json).to eq(expected)
           expect(described_class.first_match({'browserName' => 'chrome'},
                                              {'browserName' => 'firefox'}).as_json).to eq(expected)
-          expect(described_class.first_match(described_class.chrome, described_class.firefox).as_json).to eq(expected)
+          expect(described_class.first_match(described_class.new(browser_name: 'chrome'),
+                                             described_class.new(browser_name: 'firefox')).as_json).to eq(expected)
         end
 
         it 'sets browser version with version' do
@@ -178,7 +196,7 @@ module Selenium
           end
 
           it 'processes timeouts as hash' do
-            caps = described_class.chrome(timeouts: {implicit: 1, page_load: 2, script: 3})
+            caps = described_class.new(browser_name: 'chrome', timeouts: {implicit: 1, page_load: 2, script: 3})
             expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
             expect(caps.implicit_timeout).to eq(1)
             expect(caps.page_load_timeout).to eq(2)
@@ -187,7 +205,7 @@ module Selenium
           end
 
           it 'processes timeouts via timeouts reader' do
-            caps = described_class.chrome
+            caps = described_class.new(browser_name: 'chrome')
             caps.timeouts[:implicit] = 1
             caps.timeouts[:page_load] = 2
             caps.timeouts[:script] = 3
@@ -199,7 +217,7 @@ module Selenium
           end
 
           it 'processes timeouts via per-timeout writers' do
-            caps = described_class.chrome
+            caps = described_class.new(browser_name: 'chrome')
             caps.implicit_timeout = 1
             caps.page_load_timeout = 2
             caps.script_timeout = 3

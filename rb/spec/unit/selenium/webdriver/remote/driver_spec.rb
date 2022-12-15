@@ -25,7 +25,7 @@ module Selenium
       describe Driver do
         let(:valid_response) do
           {status: 200,
-           body: {value: {sessionId: 0, capabilities: Remote::Capabilities.chrome}}.to_json,
+           body: {value: {sessionId: 0, capabilities: {browserName: 'chrome'}}}.to_json,
            headers: {content_type: 'application/json'}}
         end
 
@@ -44,14 +44,14 @@ module Selenium
           server = 'https://example.com:4646/wd/hub'
           expect_request(endpoint: "#{server}/session")
 
-          expect { described_class.new(capabilities: :chrome, url: server) }.not_to raise_exception
+          expect { described_class.new(options: Options.chrome, url: server) }.not_to raise_exception
         end
 
         it 'uses provided HTTP Client' do
           client = Remote::Http::Default.new
           expect_request
 
-          driver = described_class.new(capabilities: :chrome, http_client: client)
+          driver = described_class.new(options: Options.chrome, http_client: client)
           expect(driver.send(:bridge).http).to eq client
         end
 
@@ -66,7 +66,7 @@ module Selenium
           msg = "Don't use both :options and :capabilities when initializing Selenium::WebDriver::Remote::Driver, " \
                 'prefer :options'
           expect {
-            described_class.new(options: Options.chrome, capabilities: Remote::Capabilities.chrome)
+            described_class.new(options: Options.chrome, capabilities: Remote::Capabilities.new(browser_name: 'chrome'))
           }.to raise_exception(ArgumentError, msg)
         end
 
@@ -74,13 +74,6 @@ module Selenium
           it 'accepts value as a Symbol' do
             expect_request
             expect { described_class.new(capabilities: :chrome) }.not_to raise_exception
-          end
-
-          it 'accepts generated Capabilities instance' do
-            capabilities = Remote::Capabilities.chrome(invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', invalid: 'foobar'}}})
-
-            expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do

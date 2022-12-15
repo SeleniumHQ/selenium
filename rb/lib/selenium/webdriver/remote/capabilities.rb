@@ -83,12 +83,14 @@ module Selenium
 
         class << self
           def chrome(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.chrome', 'Options.chrome', id: :caps_browsers)
             new({
               browser_name: 'chrome'
             }.merge(opts))
           end
 
           def edge(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.edge', 'Options.edge', id: :caps_browsers)
             new({
               browser_name: 'MicrosoftEdge'
             }.merge(opts))
@@ -96,6 +98,7 @@ module Selenium
           alias microsoftedge edge
 
           def firefox(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.firefox', 'Options.firefox', id: :caps_browsers)
             new({
               browser_name: 'firefox'
             }.merge(opts))
@@ -103,18 +106,23 @@ module Selenium
           alias ff firefox
 
           def safari(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.safari', 'Options.safari', id: :caps_browsers)
             new({
               browser_name: Selenium::WebDriver::Safari.technology_preview? ? 'Safari Technology Preview' : 'safari'
             }.merge(opts))
           end
 
           def htmlunit(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.htmlunit',
+                                       'as argument in constructor',
+                                       id: :caps_browsers)
             new({
               browser_name: 'htmlunit'
             }.merge(opts))
           end
 
           def internet_explorer(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.ie', 'Options.ie', id: :caps_browsers)
             new({
               browser_name: 'internet explorer',
               platform_name: :windows
