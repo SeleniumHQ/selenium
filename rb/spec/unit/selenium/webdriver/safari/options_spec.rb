@@ -65,19 +65,23 @@ module Selenium
               expect(options.instance_variable_get(:@options)['safari:foo']).to eq('bar')
             end
 
-            it 'adds an option with Hash' do
+            it 'adds an option with keyword' do
               options.add_option('safari:foo': 'bar')
               expect(options.instance_variable_get(:@options)[:'safari:foo']).to eq('bar')
             end
           end
 
           context 'when not namespaced' do
-            it 'raises exception with ordered pairs' do
-              expect { options.add_option('foo', 'bar') }.to raise_exception(ArgumentError)
+            it 'adds an option with ordered pairs' do
+              expect {
+                options.add_option(:foo, 'bar')
+              }.to raise_error(ArgumentError, /Safari does not support options that are not namespaced/)
             end
 
-            it 'raises exception with Hash' do
-              expect { options.add_option(foo: 'bar') }.to raise_exception(ArgumentError)
+            it 'raises exception with keyword' do
+              expect {
+                options.add_option(foo: 'bar')
+              }.to raise_error(ArgumentError, /Safari does not support options that are not namespaced/)
             end
           end
         end

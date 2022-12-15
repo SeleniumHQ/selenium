@@ -221,8 +221,6 @@ module Selenium
           options = browser_options[self.class::KEY]
           options['binary'] ||= binary_path if binary_path
 
-          check_w3c(options[:w3c]) if options.key?(:w3c)
-
           if @profile
             options['args'] ||= []
             options['args'] << "--user-data-dir=#{@profile.directory}"
@@ -231,17 +229,6 @@ module Selenium
           return if (@encoded_extensions + @extensions).empty?
 
           options['extensions'] = @encoded_extensions + @extensions.map { |ext| encode_extension(ext) }
-        end
-
-        def check_w3c(w3c)
-          if w3c
-            WebDriver.logger.warn("Setting 'w3c: true' is redundant and will no longer be allowed", id: :w3c)
-            return
-          end
-
-          raise Error::InvalidArgumentError,
-                "Setting 'w3c: false' is not allowed.\n" \
-                'Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/'
         end
 
         def binary_path

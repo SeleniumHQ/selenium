@@ -49,10 +49,9 @@ module Selenium
         end
 
         it 'accepts provided Options as sole parameter' do
-          opts = {invalid: 'foobar', args: ['-f']}
+          opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: 'internet explorer',
-                                                             'se:ieOptions': {invalid: 'foobar',
-                                                                              nativeEvents: true,
+                                                             'se:ieOptions': {nativeEvents: true,
                                                                               'ie.browserCommandLineSwitches': '-f'}}}})
 
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
@@ -118,10 +117,10 @@ module Selenium
             end
 
             it 'with Options instance' do
-              browser_opts = {start_page: 'http://selenium.dev'}
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'internet explorer',
-                                                                 'se:ieOptions': {startPage: 'http://selenium.dev',
-                                                                                  nativeEvents: true}}}})
+              browser_opts = {initial_browser_url: 'http://selenium.dev'}
+              expect_request(body: {capabilities: {alwaysMatch: {'browserName' => 'internet explorer',
+                                                                 'se:ieOptions' => {'initialBrowserUrl' => 'http://selenium.dev',
+                                                                                    'nativeEvents' => true}}}})
 
               expect { described_class.new(capabilities: [Options.new(**browser_opts)]) }.not_to raise_exception
             end
@@ -143,12 +142,12 @@ module Selenium
 
             it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
               capabilities = Remote::Capabilities.new(browser_name: 'internet explorer', invalid: 'foobar')
-              options = Options.new(start_page: 'http://selenium.dev')
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'internet explorer',
-                                                                 invalid: 'foobar',
-                                                                 'se:ieOptions': {startPage: 'http://selenium.dev',
-                                                                                  nativeEvents: true},
-                                                                 'company:key': 'value'}}})
+              options = Options.new(initial_browser_url: 'http://selenium.dev')
+              expect_request(body: {capabilities: {alwaysMatch: {'browserName' => 'internet explorer',
+                                                                 'invalid' => 'foobar',
+                                                                 'se:ieOptions' => {'initialBrowserUrl' => 'http://selenium.dev',
+                                                                                    'nativeEvents' => true},
+                                                                 'company:key' => 'value'}}})
 
               expect {
                 described_class.new(capabilities: [capabilities, options, as_json_object.new])

@@ -212,14 +212,14 @@ module Selenium
 
           it 'returns added options' do
             expect {
-              options.add_option(foo: 'bar')
+              options.add_option(:args, %w[foo bar])
             }.to have_deprecated(:add_option)
             options.add_option('foo:bar', {foo: 'bar'})
             expect(options.as_json).to eq('acceptInsecureCerts' => true,
                                           'browserName' => 'firefox',
                                           'foo:bar' => {'foo' => 'bar'},
                                           'moz:debuggerAddress' => true,
-                                          'moz:firefoxOptions' => {'foo' => 'bar'})
+                                          'moz:firefoxOptions' => {'args' => %w[foo bar]})
           end
 
           it 'converts to a json hash' do
@@ -240,7 +240,6 @@ module Selenium
                                        binary: '/foo/bar',
                                        prefs: {foo: 'bar'},
                                        env: {'FOO' => 'bar'},
-                                       foo: 'bar',
                                        profile: profile,
                                        log_level: :debug,
                                        android_package: 'package',
@@ -269,7 +268,6 @@ module Selenium
                                                'env' => {'FOO' => 'bar'},
                                                'profile' => 'encoded_profile',
                                                'log' => {'level' => 'debug'},
-                                               'foo' => 'bar',
                                                'androidPackage' => 'package',
                                                'androidActivity' => 'activity',
                                                'androidDeviceSerial' => '123',

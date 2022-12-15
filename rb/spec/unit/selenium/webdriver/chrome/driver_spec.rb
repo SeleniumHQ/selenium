@@ -48,7 +48,7 @@ module Selenium
         end
 
         it 'accepts provided Options as sole parameter' do
-          opts = {invalid: 'foobar', args: ['-f']}
+          opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': opts}}})
 
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception

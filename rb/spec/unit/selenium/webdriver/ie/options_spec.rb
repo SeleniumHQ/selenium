@@ -134,13 +134,10 @@ module Selenium
           end
 
           it 'returns added options' do
-            expect {
-              options.add_option(:foo, 'bar')
-            }.to have_deprecated(:add_option)
             options.add_option('foo:bar', {foo: 'bar'})
             expect(options.as_json).to eq('browserName' => 'internet explorer',
                                           'foo:bar' => {'foo' => 'bar'},
-                                          'se:ieOptions' => {'nativeEvents' => true, 'foo' => 'bar'})
+                                          'se:ieOptions' => {'nativeEvents' => true})
           end
 
           it 'returns a JSON hash' do

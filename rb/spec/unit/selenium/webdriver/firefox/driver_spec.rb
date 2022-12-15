@@ -51,7 +51,7 @@ module Selenium
         end
 
         it 'accepts provided Options as sole parameter' do
-          opts = {invalid: 'foobar', args: ['-f']}
+          opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
                                                              browserName: 'firefox',
                                                              'moz:firefoxOptions': opts,
