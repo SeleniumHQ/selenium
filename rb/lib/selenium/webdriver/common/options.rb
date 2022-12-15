@@ -85,7 +85,13 @@ module Selenium
       #
 
       def add_option(name, value = nil)
-        @options[name.keys.first] = name.values.first if value.nil? && name.is_a?(Hash)
+        name, value = name.first if value.nil? && name.is_a?(Hash)
+
+        unless name.to_s.include?(':')
+          WebDriver.logger.deprecate('Options#add_option for w3c or browser specific capabilities',
+                                     'applicable attribute accessors or pass into constructor',
+                                     id: :add_option)
+        end
         @options[name] = value
       end
 

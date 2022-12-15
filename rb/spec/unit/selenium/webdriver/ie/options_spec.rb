@@ -103,13 +103,27 @@ module Selenium
 
         describe '#add_option' do
           it 'adds an option with ordered pairs' do
-            options.add_option(:foo, 'bar')
+            expect {
+              options.add_option(:foo, 'bar')
+            }.to have_deprecated(:add_option)
             expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
           end
 
           it 'adds an option with Hash' do
-            options.add_option(foo: 'bar')
+            expect {
+              options.add_option(foo: 'bar')
+            }.to have_deprecated(:add_option)
             expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
+          end
+
+          it 'adds vendor namespaced options with ordered pairs' do
+            options.add_option('foo:bar', {bar: 'foo'})
+            expect(options.instance_variable_get(:@options)['foo:bar']).to eq({bar: 'foo'})
+          end
+
+          it 'adds vendor namespaced options with Hash' do
+            options.add_option('foo:bar' => {bar: 'foo'})
+            expect(options.instance_variable_get(:@options)['foo:bar']).to eq({bar: 'foo'})
           end
         end
 
@@ -120,7 +134,9 @@ module Selenium
           end
 
           it 'returns added options' do
-            options.add_option(:foo, 'bar')
+            expect {
+              options.add_option(:foo, 'bar')
+            }.to have_deprecated(:add_option)
             options.add_option('foo:bar', {foo: 'bar'})
             expect(options.as_json).to eq('browserName' => 'internet explorer',
                                           'foo:bar' => {'foo' => 'bar'},

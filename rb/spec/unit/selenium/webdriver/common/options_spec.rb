@@ -31,12 +31,16 @@ module Selenium
 
       describe '#as_json' do
         it 'does not override options set via symbol name' do
-          options.add_option(:local_state, {foo: 'bar'})
+          expect {
+            options.add_option(:local_state, {foo: 'bar'})
+          }.to have_deprecated(:add_option)
           expect(options.as_json).to include('localState' => {'foo' => 'bar'})
         end
 
         it 'does not override options set via string name' do
-          options.add_option('localState', {foo: 'bar'})
+          expect {
+            options.add_option('localState', {foo: 'bar'})
+          }.to have_deprecated(:add_option)
           expect(options.as_json).to include('localState' => {'foo' => 'bar'})
         end
       end
