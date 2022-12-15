@@ -29,11 +29,12 @@ module Selenium
       #
 
       class Driver < Chromium::Driver
-        def initialize(service: nil, url: nil, **opts)
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
           raise ArgumentError, "Can't initialize #{self.class} with :url" if url
 
+          caps = process_options(options, capabilities)
           url = service_url(service || Service.chrome)
-          super(url: url, **opts)
+          super(caps: caps, url: url, **opts)
         end
 
         def browser
@@ -44,6 +45,16 @@ module Selenium
 
         def devtools_address
           "http://#{capabilities['goog:chromeOptions']['debuggerAddress']}"
+        end
+
+        def process_options(options, capabilities)
+          if options && !options.is_a?(Options)
+            raise ArgumentError, ":options must be an instance of #{Options}"
+          elsif options.nil? && capabilities.nil?
+            capabilities = Remote::Capabilities.chrome
+          end
+
+          super(options, capabilities)
         end
       end # Driver
     end # Chrome

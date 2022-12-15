@@ -37,11 +37,12 @@ module Selenium
                       DriverExtensions::HasWebStorage,
                       DriverExtensions::PrintsPage].freeze
 
-        def initialize(service: nil, url: nil, **opts)
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
           raise ArgumentError, "Can't initialize #{self.class} with :url" if url
 
+          caps = process_options(options, capabilities)
           url = service_url(service || Service.firefox)
-          super(url: url, **opts)
+          super(caps: caps, url: url, **opts)
         end
 
         def browser
@@ -63,6 +64,16 @@ module Selenium
 
         def devtools_version
           Firefox::DEVTOOLS_VERSION
+        end
+
+        def process_options(options, capabilities)
+          if options && !options.is_a?(Options)
+            raise ArgumentError, ":options must be an instance of #{Options}"
+          elsif options.nil? && capabilities.nil?
+            capabilities = Remote::Capabilities.firefox
+          end
+
+          super(options, capabilities)
         end
       end # Driver
     end # Firefox

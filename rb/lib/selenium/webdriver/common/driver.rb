@@ -308,11 +308,19 @@ module Selenium
 
       attr_reader :bridge
 
-      def create_bridge(capabilities: nil, options: nil, url: nil, http_client: nil)
+      def create_bridge(caps:, url:, http_client: nil)
         Remote::Bridge.new(http_client: http_client, url: url).tap do |bridge|
-          generated_caps = options ? options.as_json : generate_capabilities(capabilities)
-          bridge.create_session(generated_caps)
+          bridge.create_session(caps)
         end
+      end
+
+      def process_options(options, capabilities)
+        if options && capabilities
+          msg = "Don't use both :options and :capabilities when initializing #{self.class}, prefer :options"
+          raise ArgumentError, msg
+        end
+
+        options ? options.as_json : generate_capabilities(capabilities)
       end
 
       def generate_capabilities(capabilities)
@@ -324,7 +332,7 @@ module Selenium
             raise ArgumentError, msg
           end
           cap.as_json
-        }.inject(:merge) || Remote::Capabilities.send(browser || :new)
+        }.inject(:merge)
       end
 
       def service_url(service)

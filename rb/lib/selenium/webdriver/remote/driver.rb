@@ -30,11 +30,12 @@ module Selenium
         include DriverExtensions::UploadsFiles
         include DriverExtensions::HasSessionId
 
-        def initialize(service: nil, url: nil, **opts)
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
           raise ArgumentError, "Can not set :service object on #{self.class}" if service
 
           url ||= "http://#{Platform.localhost}:4444/wd/hub"
-          super(url: url, **opts)
+          caps = process_options(options, capabilities)
+          super(caps: caps, url: url, **opts)
           @bridge.file_detector = ->((filename, *)) { File.exist?(filename) && filename.to_s }
         end
 
@@ -47,6 +48,12 @@ module Selenium
         def devtools_version
           capabilities['se:cdpVersion']&.split('.')&.first ||
             raise(Error::WebDriverError, "DevTools is not supported by the Remote Server")
+        end
+
+        def process_options(options, capabilities)
+          raise ArgumentError, "#{self.class} needs :options to be set" if options.nil? && capabilities.nil?
+
+          super(options, capabilities)
         end
       end # Driver
     end # Remote

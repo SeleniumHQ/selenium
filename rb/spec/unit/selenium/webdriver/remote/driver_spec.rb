@@ -36,10 +36,8 @@ module Selenium
         end
 
         it 'requires parameters' do
-          # Note that this is not a valid Session package, so expecting this request means we expect it to fail
-          expect_request(body: {capabilities: {alwaysMatch: {}}})
-
-          expect { Driver.new }.not_to raise_exception
+          expect { Driver.new }.to raise_exception(ArgumentError,
+                                                   'Selenium::WebDriver::Remote::Driver needs :options to be set')
         end
 
         it 'uses provided URL' do
@@ -62,6 +60,14 @@ module Selenium
           expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': opts}}})
 
           expect { Driver.new(options: Options.chrome(**opts)) }.not_to raise_exception
+        end
+
+        it 'does not allow both Options and Capabilities' do
+          msg = "Don't use both :options and :capabilities when initializing Selenium::WebDriver::Remote::Driver, " \
+                "prefer :options"
+          expect {
+            Driver.new(options: Options.chrome, capabilities: Remote::Capabilities.chrome)
+          }.to raise_exception(ArgumentError, msg)
         end
 
         context 'with :capabilities' do

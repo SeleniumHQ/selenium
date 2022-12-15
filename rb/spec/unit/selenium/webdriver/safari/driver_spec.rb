@@ -55,6 +55,20 @@ module Selenium
           expect { Driver.new(options: Options.new(**opts)) }.not_to raise_exception
         end
 
+        it 'does not accept Options of the wrong class' do
+          expect {
+            Driver.new(options: Options.chrome)
+          }.to raise_exception(ArgumentError, ':options must be an instance of Selenium::WebDriver::Safari::Options')
+        end
+
+        it 'does not allow both Options and Capabilities' do
+          msg = "Don't use both :options and :capabilities when initializing Selenium::WebDriver::Safari::Driver, " \
+                "prefer :options"
+          expect {
+            Driver.new(options: Options.new, capabilities: Remote::Capabilities.safari)
+          }.to raise_exception(ArgumentError, msg)
+        end
+
         context 'with :capabilities' do
           it 'accepts value as a Symbol' do
             expect_request(body: {capabilities: {alwaysMatch: {browserName: "safari"}}})

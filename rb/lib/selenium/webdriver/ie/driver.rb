@@ -30,15 +30,28 @@ module Selenium
       class Driver < WebDriver::Driver
         EXTENSIONS = [DriverExtensions::HasWebStorage].freeze
 
-        def initialize(service: nil, url: nil, **opts)
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
           raise ArgumentError, "Can't initialize #{self.class} with :url" if url
 
+          caps = process_options(options, capabilities)
           url = service_url(service || Service.ie)
-          super(url: url, **opts)
+          super(caps: caps, url: url, **opts)
         end
 
         def browser
           :internet_explorer
+        end
+
+        private
+
+        def process_options(options, capabilities)
+          if options && !options.is_a?(Options)
+            raise ArgumentError, ":options must be an instance of #{Options}"
+          elsif options.nil? && capabilities.nil?
+            capabilities = Remote::Capabilities.ie
+          end
+
+          super(options, capabilities)
         end
       end # Driver
     end # IE
