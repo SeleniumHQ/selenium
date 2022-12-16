@@ -58,7 +58,7 @@ class LogInspector {
   async onConsoleLog (callback) {
     this.ws = await this.bidi.socket
     let enabled = (LOG.TYPE_CONSOLE in this.listener) || this.logListener(LOG.TYPE_CONSOLE)
-    this.listener[console].push(callback)
+    this.listener[LOG.TYPE_CONSOLE].push(callback)
 
     if (enabled) {
       return

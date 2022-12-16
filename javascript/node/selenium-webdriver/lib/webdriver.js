@@ -1226,7 +1226,7 @@ class WebDriver {
     this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket(this._wsUrl)
+        this._wsConnection = new WebSocket(this._wsUrl.replace('localhost', '127.0.0.1'))
         this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
       } catch (err) {
         reject(err)
@@ -1279,7 +1279,7 @@ class WebDriver {
   async getBidi() {
     const caps = await this.getCapabilities()
     let WebSocketUrl = caps['map_'].get('webSocketUrl')
-    return await BIDI(WebSocketUrl)
+    return await BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
   }
 
   /**
