@@ -15,30 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { ConsoleLogEntry, JavascriptLogEntry } = require('./log_entries')
+const { ConsoleLogEntry, JavascriptLogEntry } = require('./logEntries')
 
-/**
- * @type {{ERROR: string, INFO: string, DEBUG: string, WARNING: string}}
- */
-const LOG_LEVEL = {
-  DEBUG: 'debug',
-  ERROR: 'error',
-  INFO: 'info',
-  WARNING: 'warning'
+const LOG = {
+  TYPE_CONSOLE : 'console',
+  TYPE_JS_EXCEPTION: 'jsException'
 }
 
-/**
- *
- */
 class LogInspector {
   bidi
   ws
 
   constructor (driver, browsingContextIds) {
-    this.debug = []
-    this.error = []
-    this.info = []
-    this.warn = []
     this._driver = driver
     this._browsingContextIds = browsingContextIds
     this.listener = {}
@@ -51,103 +39,73 @@ class LogInspector {
   async init () {
     this.bidi = await this._driver.getBidi()
     await this.bidi.subscribe('log.entryAdded', this._browsingContextIds)
-    
   }
 
-  logListener(kind) {
+  /**
+   * @param kind
+   */
+  logListener (kind) {
     if (!(kind in this.listener)) {
       this.listener[kind] = []
     }
   }
 
-  async onConsoleLog(callback) {
+  /**
+   * Listen to Console logs
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onConsoleLog (callback) {
     this.ws = await this.bidi.socket
-    const console = "console"
-    let enabled = (console in this.listener) || this.logListener(console)
+    let enabled = (LOG.TYPE_CONSOLE in this.listener) || this.logListener(LOG.TYPE_CONSOLE)
     this.listener[console].push(callback)
 
-    if (enabled) return
+    if (enabled) {
+      return
+    }
 
     this.ws.on('message', event => {
-      const data = JSON.parse(Buffer.from(event.toString()))
+      const { params } = JSON.parse(Buffer.from(event.toString()))
 
-      if(data.params?.type == console) {
-        var consoleEntry = new ConsoleLogEntry(
-          data.params.level,
-          data.params.text,
-          data.params.timestamp,
-          data.params.type,
-          data.params.method,
-          data.params.realm,
-          data.params.args,
-          data.params.stackTrace
-        )
+      if (params?.type === LOG.TYPE_CONSOLE) {
+        let consoleEntry = new ConsoleLogEntry(params.level, params.text,
+          params.timestamp, params.type, params.method, params.realm,
+          params.args, params.stackTrace)
 
-        this.listener[console].forEach(listener => {
+        this.listener[LOG.TYPE_CONSOLE].forEach(listener => {
           listener(consoleEntry)
         })
       }
     })
   }
 
-  async onJavascriptException(callback) {
+  /**
+   * List to JS Exceptions
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onJavascriptException (callback) {
     this.ws = await this.bidi.socket
-    const jsException = "jsException"
-    let enabled = (jsException in this.listener) || this.logListener(jsException)
-    this.listener[jsException].push(callback)
+    let enabled = (LOG.TYPE_JS_EXCEPTION in this.listener) || this.logListener(
+      LOG.TYPE_JS_EXCEPTION)
+    this.listener[LOG.TYPE_JS_EXCEPTION].push(callback)
 
-    if (enabled) return
+    if (enabled) {
+      return
+    }
 
     this.ws.on('message', event => {
-      const data = JSON.parse(Buffer.from(event.toString()))
-      if((data.params?.type == "javascript") && (data.params?.level == "error")) {
-        
-        var jsErrorEntry = new JavascriptLogEntry(
-          data.params.level,
-          data.params.text,
-          data.params.timestamp,
-          data.params.type,
-          data.params.stackTrace
-        )
+      const { params } = JSON.parse(Buffer.from(event.toString()))
+      if ((params?.type === 'javascript') && (params?.level === 'error')) {
 
-        this.listener[jsException].forEach(listener => {
+        let jsErrorEntry = new JavascriptLogEntry(params.level, params.text,
+          params.timestamp, params.type, params.stackTrace)
+
+        this.listener[LOG.TYPE_JS_EXCEPTION].forEach(listener => {
           listener(jsErrorEntry)
         })
       }
     })
-  }
-
-  // TODO below are used to check,will be replaced by spec methods as described in doc
-  /**
-   * returns all info logs collected
-   * @returns {[]}
-   */
-  get infoLogs () {
-    return this.info
-  }
-
-  /**
-   * returns all debug logs collected
-   * @returns {[]}
-   */
-  get debugLogs () {
-    return this.debug
-  }
-
-  /**
-   * return to all error logs collected
-   * @returns {[]}
-   */
-  get errorLogs () {
-    return this.error
-  }
-
-  /**
-   * Return all warn logs collected
-   * @returns {[]}
-   */
-  get warnLogs () {
-    return this.warn
   }
 
   /**
@@ -157,7 +115,6 @@ class LogInspector {
   async close () {
     await this.bidi.unsubscribe('log.entryAdded', this._browsingContextIds)
   }
-
 }
 
 let instance = undefined

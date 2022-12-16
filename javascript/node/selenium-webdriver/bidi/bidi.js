@@ -15,88 +15,87 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const {EventEmitter} = require('node:events');
-const WebSocket = require('ws');
+const { EventEmitter } = require('node:events')
+const WebSocket = require('ws')
 
 const RESPONSE_TIMEOUT = 1000 * 30
 
-
 class BIDI extends EventEmitter {
-    id = 0;
-    isConnected = false
-    events = []
-    browsingContexts = []
+  id = 0
+  isConnected = false
+  events = []
+  browsingContexts = []
 
   /**
    * Create a new websocket connection
    * @param _webSocketUrl
    */
-  constructor(_webSocketUrl) {
-        super();
-        this._ws = new WebSocket(_webSocketUrl);
-    }
+  constructor (_webSocketUrl) {
+    super()
+    this._ws = new WebSocket(_webSocketUrl)
+  }
 
   /**
    * open connection to fire an open event
    * @returns {Promise<resolved>}
    */
-  connect() {
-        return new Promise((resolve) => this._ws.on('open', () => {
-            this.isConnected = true
-            resolve()
-        }))
-    }
+  connect () {
+    return new Promise((resolve) => this._ws.on('open', () => {
+      this.isConnected = true
+      resolve()
+    }))
+  }
 
   /**
    * @returns {WebSocket}
    */
-  get socket() {
-        return this._ws
-    }
+  get socket () {
+    return this._ws
+  }
 
   /**
    * @returns {boolean|*}
    */
-  get isConnected() {
-        return this.isConnected;
-    }
+  get isConnected () {
+    return this.isConnected
+  }
 
   /**
    * Sends a bidi request
    * @param params
    * @returns {Promise<unknown>}
    */
-    send(params) {
-        if (!this.isConnected) {
-            throw new Error('No connection to WebDriver Bidi was established')
-        }
-
-        const id = ++this.id
-
-        this._ws.send(JSON.stringify({id, ...params}));
-
-        return new Promise((resolve, reject) => {
-            const t = setTimeout(() => {
-                reject(new Error(`Request with id ${id} timed out`))
-                handler.off('message', listener)
-            }, RESPONSE_TIMEOUT)
-
-            const listener = (data) => {
-                try {
-                    const payload = JSON.parse(data.toString())
-                    if (payload.id === id) {
-                        clearTimeout(t)
-                        handler.off('message', listener)
-                        resolve(payload)
-                    }
-                } catch (err) {
-                    log.error(`Failed parse message: ${err.message}`)
-                }
-            }
-
-            const handler = this._ws.on('message', listener)
-        })
+  send (params) {
+    if (!this.isConnected) {
+      throw new Error('No connection to WebDriver Bidi was established')
     }
+
+    const id = ++this.id
+
+    this._ws.send(JSON.stringify({ id, ...params }))
+
+    return new Promise((resolve, reject) => {
+      const t = setTimeout(() => {
+        reject(new Error(`Request with id ${id} timed out`))
+        handler.off('message', listener)
+      }, RESPONSE_TIMEOUT)
+
+      const listener = (data) => {
+        try {
+          const payload = JSON.parse(data.toString())
+          if (payload.id === id) {
+            clearTimeout(t)
+            handler.off('message', listener)
+            resolve(payload)
+          }
+        } catch (err) {
+          log.error(`Failed parse message: ${err.message}`)
+        }
+      }
+
+      const handler = this._ws.on('message', listener)
+    })
+  }
 
   /**
    * Subscribe to events
@@ -104,33 +103,32 @@ class BIDI extends EventEmitter {
    * @param browsingContexts
    * @returns {Promise<void>}
    */
-    async subscribe(events, browsingContexts) {
+  async subscribe (events, browsingContexts) {
 
-      if (typeof events === 'string') {
-        this.events.push(events);
-      } else if (Array.isArray(events)) {
-        this.events =  this.events.concat(events)
-      }
-
-      if (typeof browsingContexts === 'string') {
-        this.browsingContexts.push(browsingContexts);
-      } else if (Array.isArray(browsingContexts)) {
-        this.browsingContexts =  this.browsingContexts.concat(browsingContexts)
-      }
-
-        let params = {
-            method: 'session.subscribe',
-            params: {
-                events: this.events,
-            }
-        };
-
-        if(browsingContexts) {
-            params.params.contexts =  this.browsingContexts
-        }
-
-        await this.send(params)
+    if (typeof events === 'string') {
+      this.events.push(events)
+    } else if (Array.isArray(events)) {
+      this.events = this.events.concat(events)
     }
+
+    if (typeof browsingContexts === 'string') {
+      this.browsingContexts.push(browsingContexts)
+    } else if (Array.isArray(browsingContexts)) {
+      this.browsingContexts = this.browsingContexts.concat(browsingContexts)
+    }
+
+    let params = {
+      method: 'session.subscribe', params: {
+        events: this.events,
+      }
+    }
+
+    if (browsingContexts) {
+      params.params.contexts = this.browsingContexts
+    }
+
+    await this.send(params)
+  }
 
   /**
    * Unsubscribe to events
@@ -138,68 +136,67 @@ class BIDI extends EventEmitter {
    * @param browsingContexts
    * @returns {Promise<void>}
    */
-    async unsubscribe(events, browsingContexts) {
+  async unsubscribe (events, browsingContexts) {
 
-      if (typeof events === 'string') {
-        this.events =  this.events.filter(event => event !== events);
-      } else if (Array.isArray(events)) {
-        this.events =  this.events.filter(event => !events.includes(event));
-      }
-
-      if (typeof browsingContexts === 'string') {
-        this.browsingContexts.pop();
-      } else if (Array.isArray(browsingContexts)) {
-        this.browsingContexts =  this.browsingContexts.filter(id => !browsingContexts.includes(id));
-      }
-
-        let params = {
-            method: 'session.unsubscribe',
-            params: {
-                events: this.events,
-            }
-        };
-
-        if(browsingContexts) {
-            params.params.contexts =  this.browsingContexts
-        }
-
-        await this.send(params)
+    if (typeof events === 'string') {
+      this.events = this.events.filter(event => event !== events)
+    } else if (Array.isArray(events)) {
+      this.events = this.events.filter(event => !events.includes(event))
     }
+
+    if (typeof browsingContexts === 'string') {
+      this.browsingContexts.pop()
+    } else if (Array.isArray(browsingContexts)) {
+      this.browsingContexts =
+        this.browsingContexts.filter(id => !browsingContexts.includes(id))
+    }
+
+    let params = {
+      method: 'session.unsubscribe', params: {
+        events: this.events,
+      }
+    }
+
+    if (browsingContexts) {
+      params.params.contexts = this.browsingContexts
+    }
+
+    await this.send(params)
+  }
 
   /**
    * Get Bidi Status
    * @returns {Promise<*>}
    */
-  get status() {
-        return this.send({
-            method: 'session.status',
-            params: {}
-        })
-    }
+  get status () {
+    return this.send({
+      method: 'session.status', params: {}
+    })
+  }
 
   /**
    * Close ws connection.
    * @returns {Promise<unknown>}
    */
-  close() {
-        const closeWebSocket = (callback) => {
-            // don't close if it's already closed
-            if (this._ws.readyState === 3) {
-                callback();
-            } else {
-                // don't notify on user-initiated shutdown ('disconnect' event)
-                this._ws.removeAllListeners('close');
-                this._ws.once('close', () => {
-                    this._ws.removeAllListeners();
-                    callback();
-                });
-                this._ws.close();
-            }
-        };
-        return new Promise((fulfill, reject) => {
-            closeWebSocket(fulfill);
-        });
+  close () {
+    const closeWebSocket = (callback) => {
+      // don't close if it's already closed
+      if (this._ws.readyState === 3) {
+        callback()
+      } else {
+        // don't notify on user-initiated shutdown ('disconnect' event)
+        this._ws.removeAllListeners('close')
+        this._ws.once('close', () => {
+          this._ws.removeAllListeners()
+          callback()
+        })
+        this._ws.close()
+      }
     }
+    return new Promise((fulfill, reject) => {
+      closeWebSocket(fulfill)
+    })
+  }
 }
 
 /**
@@ -207,14 +204,14 @@ class BIDI extends EventEmitter {
  * @param webSocketUrl
  * @returns {Promise<BIDI>}
  */
-async function bidiInstance(webSocketUrl) {
-  const instance = new BIDI(webSocketUrl);
-  await instance.connect();
-  return instance;
+async function bidiInstance (webSocketUrl) {
+  const instance = new BIDI(webSocketUrl)
+  await instance.connect()
+  return instance
 }
 
 /**
  * API
  * @type {function(*): Promise<BIDI>}
  */
-module.exports = bidiInstance;
+module.exports = bidiInstance
