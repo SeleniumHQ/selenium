@@ -50,10 +50,10 @@ runs:
     - run: |
         echo '${{ inputs.gcs-key }}' >> gcs.json
         echo "build --remote_upload_local_results=true --google_credentials=gcs.json" >> .bazelrc
-      if: github.ref == 'refs/head/trunk' && runner.os != 'Windows'
+      if: github.ref == 'refs/heads/trunk' && runner.os != 'Windows'
       shell: bash
     - run: |
         echo ${{ inputs.gcs-key }}>>gcs.json
         echo "build --remote_upload_local_results=true --google_credentials=gcs.json">>.bazelrc
-      if: github.ref == 'refs/head/trunk' && runner.os == 'Windows'
+      if: github.ref == 'refs/heads/trunk' && runner.os == 'Windows'
       shell: cmd
