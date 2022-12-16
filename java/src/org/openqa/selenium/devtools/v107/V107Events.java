@@ -75,7 +75,8 @@ public class V107Events extends Events<ConsoleAPICalled, ExceptionThrown> {
     return new ConsoleEvent(
       event.getType().toString(),
       Instant.ofEpochMilli(ts),
-      modifiedArgs);
+      modifiedArgs,
+      event.getArgs());
   }
 
   @Override
