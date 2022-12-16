@@ -23,6 +23,7 @@ import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,11 +31,13 @@ public class ConsoleEvent {
 
   private final String type;
   private final Instant timestamp;
+  private final List<Object> modifiedArgs;
   private final List<Object> args;
 
-  public ConsoleEvent(String type, Instant timestamp, Object... args) {
+  public ConsoleEvent(String type, Instant timestamp, List<Object> modifiedArgs, Object... args) {
     this.type = type;
     this.timestamp = timestamp;
+    this.modifiedArgs = modifiedArgs;
     this.args = ImmutableList.copyOf(args);
   }
 
@@ -51,11 +54,10 @@ public class ConsoleEvent {
   }
 
   public List<String> getMessages() {
-    return args.stream()
-      .map(List.class::cast)
-      .map(lst -> lst.get(0))
+    return modifiedArgs.stream()
       .map(RemoteObject.class::cast)
       .map(RemoteObject::getValue)
+      .filter(Objects::nonNull)
       .map(Object::toString)
       .collect(Collectors.toList());
   }
