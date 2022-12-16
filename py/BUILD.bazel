@@ -175,6 +175,7 @@ pkg_tar(
     srcs = [":selenium-sdist-pkg"],
     extension = "tar.gz",
     mode = "0644",
+    package_dir = "selenium-%s" % SE_VERSION,
     package_file_name = "selenium-%s.tar.gz" % SE_VERSION,
 )
 
@@ -211,7 +212,7 @@ py_wheel(
     distribution = "selenium",
     homepage = "https://www.selenium.dev",
     license = "Apache 2.0",
-    python_requires = "~=3.7",
+    python_requires = ">=3.7",
     python_tag = "py3",
     requires = [
         "urllib3[socks]~=1.26",
