@@ -236,12 +236,12 @@ class ActionChains:
 
     def move_to_element_with_offset(self, to_element, xoffset, yoffset):
         """Move the mouse by an offset of the specified element. Offsets are
-        relative to the top-left corner of the element.
+        relative to the in-view center point of the element.
 
         :Args:
          - to_element: The WebElement to move to.
-         - xoffset: X offset to move to.
-         - yoffset: Y offset to move to.
+         - xoffset: X offset to move to, as a positive or negative integer.
+         - yoffset: Y offset to move to, as a positive or negative integer.
         """
 
         self.w3c_actions.pointer_action.move_to(to_element, int(xoffset), int(yoffset))
