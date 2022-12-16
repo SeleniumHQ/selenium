@@ -160,7 +160,7 @@ suite(
               `Body contains: ${body}`
             )
           })
-          driver.get(url)
+          await driver.get(url)
         }
       )
     })
