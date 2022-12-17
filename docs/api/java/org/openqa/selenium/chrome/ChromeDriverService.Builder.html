@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":42};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -183,7 +183,7 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -225,31 +225,46 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withBuildCheckDisabled(boolean)">withBuildCheckDisabled</a></span>&#8203;(boolean&nbsp;noBuildCheck)</code></th>
+<td class="colLast">
+<div class="block">Allows the driver to be used with potentially incompatible versions of the browser.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withLogLevel(org.openqa.selenium.chrome.ChromeDriverLogLevel)">withLogLevel</a></span>&#8203;(<a href="ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">ChromeDriverLogLevel</a>&nbsp;logLevel)</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server verbosity.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code><a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withReadableTimestamp(java.lang.Boolean)">withReadableTimestamp</a></span>&#8203;(java.lang.Boolean&nbsp;readableTimestamp)</code></th>
+<td class="colLast">
+<div class="block">Configures the format of the logging for the driver server.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withSilent(boolean)">withSilent</a></span>&#8203;(boolean&nbsp;silent)</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server for silent output.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withVerbose(boolean)">withVerbose</a></span>&#8203;(boolean&nbsp;verbose)</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server verbosity.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withWhitelistedIps(java.lang.String)">withWhitelistedIps</a></span>&#8203;(java.lang.String&nbsp;whitelistedIps)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withWhitelistedIps(java.lang.String)">withWhitelistedIps</a></span>&#8203;(java.lang.String&nbsp;allowedListIps)</code></th>
 <td class="colLast">
-<div class="block">Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
- to the driver server.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <code>#withAllowedListIps(String)</code></div>
+</div>
 </td>
 </tr>
 </table>
@@ -338,6 +353,22 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 </dl>
 </li>
 </ul>
+<a id="withBuildCheckDisabled(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withBuildCheckDisabled</h4>
+<pre class="methodSignature">public&nbsp;<a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a>&nbsp;withBuildCheckDisabled&#8203;(boolean&nbsp;noBuildCheck)</pre>
+<div class="block">Allows the driver to be used with potentially incompatible versions of the browser.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>noBuildCheck</code> - True for not enforcing matching versions.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
+</dl>
+</li>
+</ul>
 <a id="withVerbose(boolean)">
 <!--   -->
 </a>
@@ -392,12 +423,32 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 <ul class="blockList">
 <li class="blockList">
 <h4>withWhitelistedIps</h4>
-<pre class="methodSignature">public&nbsp;<a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a>&nbsp;withWhitelistedIps&#8203;(java.lang.String&nbsp;whitelistedIps)</pre>
+<pre class="methodSignature">@Deprecated
+public&nbsp;<a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a>&nbsp;withWhitelistedIps&#8203;(java.lang.String&nbsp;allowedListIps)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <code>#withAllowedListIps(String)</code></div>
+</div>
 <div class="block">Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
  to the driver server.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>whitelistedIps</code> - Comma-separated list of remote IPv4 addresses.</dd>
+<dd><code>allowedListIps</code> - Comma-separated list of remote IPv4 addresses.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
+</dl>
+</li>
+</ul>
+<a id="withReadableTimestamp(java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withReadableTimestamp</h4>
+<pre class="methodSignature">public&nbsp;<a href="ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a>&nbsp;withReadableTimestamp&#8203;(java.lang.Boolean&nbsp;readableTimestamp)</pre>
+<div class="block">Configures the format of the logging for the driver server.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>readableTimestamp</code> - Whether the timestamp of the log is readable.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>

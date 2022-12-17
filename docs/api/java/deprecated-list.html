@@ -167,39 +167,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#ACCEPT_SSL_CERTS">org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_WHITELISTED_IPS_PROPERTY">org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_WHITELISTED_IPS_PROPERTY</a></th>
 <td class="colLast">
-<div class="deprecationComment">Use <a href="org/openqa/selenium/remote/CapabilityType.html#ACCEPT_INSECURE_CERTS"><code>CapabilityType.ACCEPT_INSECURE_CERTS</code></a></div>
+<div class="deprecationComment">use <a href="org/openqa/selenium/chrome/ChromeDriverService.html#CHROME_DRIVER_ALLOWED_IPS_PROPERTY"><code>ChromeDriverService.CHROME_DRIVER_ALLOWED_IPS_PROPERTY</code></a></div>
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#ENABLE_PROFILING_CAPABILITY">org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY</a></th>
-<td class="colLast">
-<div class="deprecationComment">Non W3C compliant</div>
-</td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#HAS_NATIVE_EVENTS">org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS</a></th>
-<td class="colLast">
-<div class="deprecationComment">Non W3C compliant</div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#HAS_TOUCHSCREEN">org.openqa.selenium.remote.CapabilityType.HAS_TOUCHSCREEN</a></th>
-<td class="colLast">
-<div class="deprecationComment">Non W3C compliant</div>
-</td>
-</tr>
-<tr class="altColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#LOGGING_PREFS">org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS</a></th>
-<td class="colLast">
-<div class="deprecationComment">Non W3C compliant
- Use <a href="org/openqa/selenium/chrome/ChromeOptions.html#LOGGING_PREFS"><code>ChromeOptions.LOGGING_PREFS</code></a> or
- Use <a href="org/openqa/selenium/edge/EdgeOptions.html#LOGGING_PREFS"><code>EdgeOptions.LOGGING_PREFS</code></a></div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#OVERLAPPING_CHECK_DISABLED">org.openqa.selenium.remote.CapabilityType.OVERLAPPING_CHECK_DISABLED</a></th>
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/ie/InternetExplorerDriver.html#NATIVE_EVENTS">org.openqa.selenium.ie.InternetExplorerDriver.NATIVE_EVENTS</a></th>
 <td class="colLast">
 <div class="deprecationComment">Non W3C compliant</div>
 </td>
@@ -211,19 +185,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_ALERTS">org.openqa.selenium.remote.CapabilityType.SUPPORTS_ALERTS</a></th>
-<td class="colLast">
-<div class="deprecationComment">Use <a href="org/openqa/selenium/remote/CapabilityType.html#UNHANDLED_PROMPT_BEHAVIOUR"><code>CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR</code></a></div>
-</td>
-</tr>
-<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_JAVASCRIPT">org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT</a></th>
-<td class="colLast">
-<div class="deprecationComment">Non W3C compliant</div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/CapabilityType.html#SUPPORTS_SQL_DATABASE">org.openqa.selenium.remote.CapabilityType.SUPPORTS_SQL_DATABASE</a></th>
 <td class="colLast">
 <div class="deprecationComment">Non W3C compliant</div>
 </td>
@@ -269,102 +231,108 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withWhitelistedIps(java.lang.String)">org.openqa.selenium.chrome.ChromeDriverService.Builder.withWhitelistedIps&#8203;(String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">use <code>#withAllowedListIps(String)</code></div>
+</td>
+</tr>
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/PointerInput.html#createPointerDown(org.openqa.selenium.interactions.PointerInput.PointerEventProperties)">org.openqa.selenium.interactions.PointerInput.createPointerDown&#8203;(PointerInput.PointerEventProperties)</a></th>
 <td class="colLast">
 <div class="deprecationComment">always use the method with the button</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/interactions/PointerInput.html#createPointerUp(org.openqa.selenium.interactions.PointerInput.PointerEventProperties)">org.openqa.selenium.interactions.PointerInput.createPointerUp&#8203;(PointerInput.PointerEventProperties)</a></th>
 <td class="colLast">
 <div class="deprecationComment">always use the method with the button</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Point.html#move(int,int)">org.openqa.selenium.Point.move&#8203;(int, int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use {<a href="org/openqa/selenium/Point.html#moveBy(int,int)"><code>Point.moveBy(int, int)</code></a> instead}</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setHeight(int)">org.openqa.selenium.Rectangle.setHeight&#8203;(int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setWidth(int)">org.openqa.selenium.Rectangle.setWidth&#8203;(int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setX(int)">org.openqa.selenium.Rectangle.setX&#8203;(int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/Rectangle.html#setY(int)">org.openqa.selenium.Rectangle.setY&#8203;(int)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rectangle objects are supposed to be immutable, all setters will be removed soon</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DesiredCapabilities.html#setJavascriptEnabled(boolean)">org.openqa.selenium.remote.DesiredCapabilities.setJavascriptEnabled&#8203;(boolean)</a></th>
 <td class="colLast">
 <div class="deprecationComment">This setting has no effect in W3C sessions, and JWP support is going away soon.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DriverCommand.html#SET_IMPLICIT_WAIT_TIMEOUT(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.DriverCommand.SET_IMPLICIT_WAIT_TIMEOUT&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DriverCommand.html#SET_PAGE_LOAD_TIMEOUT(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.DriverCommand.SET_PAGE_LOAD_TIMEOUT&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/DriverCommand.html#SET_SCRIPT_TIMEOUT(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.DriverCommand.SET_SCRIPT_TIMEOUT&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#findElement(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebDriver.findElement&#8203;(String, String)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.html#findElements(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebDriver.findElements&#8203;(String, String)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.implicitlyWait&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#pageLoadTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.pageLoadTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.html#setScriptTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.remote.RemoteWebDriver.RemoteWebDriverOptions.RemoteTimeouts.setScriptTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast"></td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebElement.html#findElement(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebElement.findElement&#8203;(String, String)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/remote/RemoteWebElement.html#findElements(java.lang.String,java.lang.String)">org.openqa.selenium.remote.RemoteWebElement.findElements&#8203;(String, String)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Rely on using <a href="org/openqa/selenium/By.Remotable.html" title="interface in org.openqa.selenium"><code>By.Remotable</code></a> instead</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.implicitlyWait&#8203;(long, TimeUnit)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#implicitlyWait(java.time.Duration)"><code>WebDriver.Timeouts.implicitlyWait(Duration)</code></a>
@@ -384,7 +352,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  argument will be returned.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.pageLoadTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#pageLoadTimeout(java.time.Duration)"><code>WebDriver.Timeouts.pageLoadTimeout(Duration)</code></a>
@@ -394,7 +362,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  invalid argument will be returned.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(long,java.util.concurrent.TimeUnit)">org.openqa.selenium.WebDriver.Timeouts.setScriptTimeout&#8203;(long, TimeUnit)</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/WebDriver.Timeouts.html#setScriptTimeout(java.time.Duration)"><code>WebDriver.Timeouts.setScriptTimeout(Duration)</code></a>

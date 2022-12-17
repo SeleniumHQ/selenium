@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -226,19 +226,40 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withLoglevel(java.lang.String)">withLoglevel</a></span>&#8203;(java.lang.String&nbsp;level)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withAppendLog(boolean)">withAppendLog</a></span>&#8203;(boolean&nbsp;appendLog)</code></th>
+<td class="colLast">
+<div class="block">Configures the driver server appending to log file.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withBuildCheckDisabled(boolean)">withBuildCheckDisabled</a></span>&#8203;(boolean&nbsp;noBuildCheck)</code></th>
+<td class="colLast">
+<div class="block">Allows the driver to be used with potentially incompatible versions of the browser.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withLoglevel(java.lang.String)">withLoglevel</a></span>&#8203;(java.lang.String&nbsp;logLevel)</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server log level.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withReadableTimestamp(java.lang.Boolean)">withReadableTimestamp</a></span>&#8203;(java.lang.Boolean&nbsp;readableTimestamp)</code></th>
+<td class="colLast">
+<div class="block">Configures the format of the logging for the driver server.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withSilent(boolean)">withSilent</a></span>&#8203;(boolean&nbsp;silent)</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server for silent output.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withVerbose(boolean)">withVerbose</a></span>&#8203;(boolean&nbsp;verbose)</code></th>
 <td class="colLast">
@@ -315,6 +336,38 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 </dl>
 </li>
 </ul>
+<a id="withAppendLog(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withAppendLog</h4>
+<pre class="methodSignature">public&nbsp;<a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a>&nbsp;withAppendLog&#8203;(boolean&nbsp;appendLog)</pre>
+<div class="block">Configures the driver server appending to log file.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>appendLog</code> - True for appending to log file, false otherwise.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
+</dl>
+</li>
+</ul>
+<a id="withBuildCheckDisabled(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withBuildCheckDisabled</h4>
+<pre class="methodSignature">public&nbsp;<a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a>&nbsp;withBuildCheckDisabled&#8203;(boolean&nbsp;noBuildCheck)</pre>
+<div class="block">Allows the driver to be used with potentially incompatible versions of the browser.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>noBuildCheck</code> - True for not enforcing matching versions.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
+</dl>
+</li>
+</ul>
 <a id="withVerbose(boolean)">
 <!--   -->
 </a>
@@ -337,7 +390,7 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 <ul class="blockList">
 <li class="blockList">
 <h4>withLoglevel</h4>
-<pre class="methodSignature">public&nbsp;<a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a>&nbsp;withLoglevel&#8203;(java.lang.String&nbsp;level)</pre>
+<pre class="methodSignature">public&nbsp;<a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a>&nbsp;withLoglevel&#8203;(java.lang.String&nbsp;logLevel)</pre>
 <div class="block">Configures the driver server log level.</div>
 </li>
 </ul>
@@ -369,6 +422,22 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>allowedListIps</code> - Comma-separated list of remote IPv4 addresses.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
+</dl>
+</li>
+</ul>
+<a id="withReadableTimestamp(java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withReadableTimestamp</h4>
+<pre class="methodSignature">public&nbsp;<a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a>&nbsp;withReadableTimestamp&#8203;(java.lang.Boolean&nbsp;readableTimestamp)</pre>
+<div class="block">Configures the format of the logging for the driver server.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>readableTimestamp</code> - Whether the timestamp of the log is readable.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A self reference.</dd>
 </dl>

@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":6};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":9,"i2":6,"i3":9,"i4":9};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -215,7 +215,7 @@ extends <a href="TemplateGridCommand.html" title="class in org.openqa.selenium.g
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t3" class="tableTab"><span><a href="javascript:show(4);">Abstract Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -227,8 +227,26 @@ extends <a href="TemplateGridCommand.html" title="class in org.openqa.selenium.g
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code>protected static <a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#baseRoute(java.lang.String,org.openqa.selenium.remote.http.Route)">baseRoute</a></span>&#8203;(java.lang.String&nbsp;prefix,
+         <a href="../remote/http/Route.html" title="class in org.openqa.selenium.remote.http">Route</a>&nbsp;route)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>protected abstract <a href="TemplateGridServerCommand.Handlers.html" title="class in org.openqa.selenium.grid">TemplateGridServerCommand.Handlers</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createHandlers(org.openqa.selenium.grid.config.Config)">createHandlers</a></span>&#8203;(<a href="config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;config)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>protected static <a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#graphqlRoute(java.lang.String,java.util.function.Supplier)">graphqlRoute</a></span>&#8203;(java.lang.String&nbsp;prefix,
+            java.util.function.Supplier&lt;<a href="../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&gt;&nbsp;handler)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>protected static <a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hubRoute(java.lang.String,org.openqa.selenium.remote.http.Route)">hubRoute</a></span>&#8203;(java.lang.String&nbsp;prefix,
+        <a href="../remote/http/Route.html" title="class in org.openqa.selenium.remote.http">Route</a>&nbsp;route)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -295,6 +313,36 @@ extends <a href="TemplateGridCommand.html" title="class in org.openqa.selenium.g
 <li class="blockList">
 <h4>asServer</h4>
 <pre class="methodSignature">public&nbsp;<a href="server/Server.html" title="interface in org.openqa.selenium.grid.server">Server</a>&lt;?&gt;&nbsp;asServer&#8203;(<a href="config/Config.html" title="interface in org.openqa.selenium.grid.config">Config</a>&nbsp;initialConfig)</pre>
+</li>
+</ul>
+<a id="graphqlRoute(java.lang.String,java.util.function.Supplier)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>graphqlRoute</h4>
+<pre class="methodSignature">protected static&nbsp;<a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a>&nbsp;graphqlRoute&#8203;(java.lang.String&nbsp;prefix,
+                                       java.util.function.Supplier&lt;<a href="../remote/http/HttpHandler.html" title="interface in org.openqa.selenium.remote.http">HttpHandler</a>&gt;&nbsp;handler)</pre>
+</li>
+</ul>
+<a id="hubRoute(java.lang.String,org.openqa.selenium.remote.http.Route)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>hubRoute</h4>
+<pre class="methodSignature">protected static&nbsp;<a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a>&nbsp;hubRoute&#8203;(java.lang.String&nbsp;prefix,
+                                   <a href="../remote/http/Route.html" title="class in org.openqa.selenium.remote.http">Route</a>&nbsp;route)</pre>
+</li>
+</ul>
+<a id="baseRoute(java.lang.String,org.openqa.selenium.remote.http.Route)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>baseRoute</h4>
+<pre class="methodSignature">protected static&nbsp;<a href="../remote/http/Routable.html" title="interface in org.openqa.selenium.remote.http">Routable</a>&nbsp;baseRoute&#8203;(java.lang.String&nbsp;prefix,
+                                    <a href="../remote/http/Route.html" title="class in org.openqa.selenium.remote.http">Route</a>&nbsp;route)</pre>
 </li>
 </ul>
 <a id="createHandlers(org.openqa.selenium.grid.config.Config)">

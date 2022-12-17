@@ -146,7 +146,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">EdgeDriverService</span>
 extends <a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></pre>
-<div class="block">Manages the life and death of the EdgeDriver (MicrosoftWebDriver or MSEdgeDriver).</div>
+<div class="block">Manages the life and death of the MSEdgeDriver</div>
 </li>
 </ul>
 </div>
@@ -202,32 +202,46 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EDGE_DRIVER_APPEND_LOG_PROPERTY">EDGE_DRIVER_APPEND_LOG_PROPERTY</a></span></code></th>
+<td class="colLast">
+<div class="block">Boolean system property that defines whether MSEdgeDriver should append to existing log file.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EDGE_DRIVER_DISABLE_BUILD_CHECK">EDGE_DRIVER_DISABLE_BUILD_CHECK</a></span></code></th>
 <td class="colLast">
 <div class="block">System property that defines whether the MSEdgeDriver executable should check for build
  version compatibility between MSEdgeDriver and the browser.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EDGE_DRIVER_EXE_PROPERTY">EDGE_DRIVER_EXE_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines the location of the EdgeDriver executable that will be used by
+<div class="block">System property that defines the location of the MSEdgeDriver executable that will be used by
  the default service.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EDGE_DRIVER_LOG_LEVEL_PROPERTY">EDGE_DRIVER_LOG_LEVEL_PROPERTY</a></span></code></th>
+<td class="colLast">
+<div class="block">System property that defines the log level when MSEdgeDriver output is logged.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EDGE_DRIVER_LOG_LEVEL_PROPERTY">EDGE_DRIVER_LOG_LEVEL_PROPERTY</a></span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EDGE_DRIVER_LOG_PROPERTY">EDGE_DRIVER_LOG_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines the log level when MicrosoftWebDriver output is logged.</div>
+<div class="block">System property that defines the default location where MSEdgeDriver output is logged.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EDGE_DRIVER_LOG_PROPERTY">EDGE_DRIVER_LOG_PROPERTY</a></span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EDGE_DRIVER_READABLE_TIMESTAMP">EDGE_DRIVER_READABLE_TIMESTAMP</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines the default location where MicrosoftWebDriver output is logged.</div>
+<div class="block">System property that toggles the formatting of the timestamps of the logs</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -242,7 +256,7 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#EDGE_DRIVER_VERBOSE_LOG_PROPERTY">EDGE_DRIVER_VERBOSE_LOG_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">Boolean system property that defines whether the MicrosoftWebDriver executable should be started
+<div class="block">Boolean system property that defines whether the MSEdgeDriver executable should be started
  with verbose logging.</div>
 </td>
 </tr>
@@ -341,11 +355,25 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>EDGE_DRIVER_EXE_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String EDGE_DRIVER_EXE_PROPERTY</pre>
-<div class="block">System property that defines the location of the EdgeDriver executable that will be used by
+<div class="block">System property that defines the location of the MSEdgeDriver executable that will be used by
  the default service.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.edge.EdgeDriverService.EDGE_DRIVER_EXE_PROPERTY">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="EDGE_DRIVER_READABLE_TIMESTAMP">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>EDGE_DRIVER_READABLE_TIMESTAMP</h4>
+<pre>public static final&nbsp;java.lang.String EDGE_DRIVER_READABLE_TIMESTAMP</pre>
+<div class="block">System property that toggles the formatting of the timestamps of the logs</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#org.openqa.selenium.edge.EdgeDriverService.EDGE_DRIVER_READABLE_TIMESTAMP">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -356,7 +384,7 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>EDGE_DRIVER_LOG_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String EDGE_DRIVER_LOG_PROPERTY</pre>
-<div class="block">System property that defines the default location where MicrosoftWebDriver output is logged.</div>
+<div class="block">System property that defines the default location where MSEdgeDriver output is logged.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.edge.EdgeDriverService.EDGE_DRIVER_LOG_PROPERTY">Constant Field Values</a></dd>
@@ -370,10 +398,24 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>EDGE_DRIVER_LOG_LEVEL_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String EDGE_DRIVER_LOG_LEVEL_PROPERTY</pre>
-<div class="block">System property that defines the log level when MicrosoftWebDriver output is logged.</div>
+<div class="block">System property that defines the log level when MSEdgeDriver output is logged.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.edge.EdgeDriverService.EDGE_DRIVER_LOG_LEVEL_PROPERTY">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="EDGE_DRIVER_APPEND_LOG_PROPERTY">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>EDGE_DRIVER_APPEND_LOG_PROPERTY</h4>
+<pre>public static final&nbsp;java.lang.String EDGE_DRIVER_APPEND_LOG_PROPERTY</pre>
+<div class="block">Boolean system property that defines whether MSEdgeDriver should append to existing log file.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#org.openqa.selenium.edge.EdgeDriverService.EDGE_DRIVER_APPEND_LOG_PROPERTY">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -384,7 +426,7 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>EDGE_DRIVER_VERBOSE_LOG_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String EDGE_DRIVER_VERBOSE_LOG_PROPERTY</pre>
-<div class="block">Boolean system property that defines whether the MicrosoftWebDriver executable should be started
+<div class="block">Boolean system property that defines whether the MSEdgeDriver executable should be started
  with verbose logging.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
@@ -461,8 +503,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
                   throws java.io.IOException</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>executable</code> - The EdgeDriver executable.</dd>
-<dd><code>port</code> - Which port to start the EdgeDriver on.</dd>
+<dd><code>executable</code> - The MSEdgeDriver executable.</dd>
+<dd><code>port</code> - Which port to start the MSEdgeDriver on.</dd>
 <dd><code>timeout</code> - Timeout waiting for driver server to start.</dd>
 <dd><code>args</code> - The arguments to the launched server.</dd>
 <dd><code>environment</code> - The environment for the launched server.</dd>
