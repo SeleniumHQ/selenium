@@ -16,6 +16,7 @@
 // under the License.
 
 use crate::config::ManagerConfig;
+use reqwest::Client;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
@@ -23,7 +24,7 @@ use std::path::PathBuf;
 use crate::downloads::read_redirect_from_link;
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
-use crate::SeleniumManager;
+use crate::{create_default_http_client, SeleniumManager};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -38,6 +39,7 @@ pub struct IExplorerManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
+    pub http_client: Client,
 }
 
 impl IExplorerManager {
@@ -46,6 +48,7 @@ impl IExplorerManager {
             browser_name: BROWSER_NAME,
             driver_name: DRIVER_NAME,
             config: ManagerConfig::default(),
+            http_client: create_default_http_client(),
         })
     }
 }
@@ -53,6 +56,10 @@ impl IExplorerManager {
 impl SeleniumManager for IExplorerManager {
     fn get_browser_name(&self) -> &str {
         self.browser_name
+    }
+
+    fn get_http_client(&self) -> &Client {
+        &self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -82,7 +89,7 @@ impl SeleniumManager for IExplorerManager {
             }
             _ => {
                 let latest_url = format!("{}{}", DRIVER_URL, LATEST_RELEASE);
-                let driver_version = read_redirect_from_link(latest_url)?;
+                let driver_version = read_redirect_from_link(self.get_http_client(), latest_url)?;
 
                 if !browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
