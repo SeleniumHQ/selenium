@@ -48,7 +48,7 @@ module Selenium
           @bidi.session.subscribe("log.entryAdded", browsing_context_ids)
         end
 
-        def on_console_log(&block)
+        def on_console_entry(&block)
           enabled = log_listeners[:console].any?
           log_listeners[:console] << block
           return if enabled

@@ -31,7 +31,7 @@ module Selenium
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = LogInspector.new(driver)
-            log_inspector.on_console_log { |log| log_entry = log }
+            log_inspector.on_console_entry { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
             driver.find_element(id: 'consoleLog').click
