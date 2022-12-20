@@ -87,7 +87,7 @@ class LogInspectorTest {
   }
 
   @Test
-  void canFilterConsoleLogs() throws ExecutionException, InterruptedException {
+  void canFilterConsoleLogs() throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
       logInspector.onConsoleEntry(future::complete, FilterBy.logLevel(LogLevel.INFO));
@@ -96,12 +96,7 @@ class LogInspectorTest {
       driver.get(page);
       driver.findElement(By.id("consoleLog")).click();
 
-      ConsoleLogEntry logEntry = null;
-      try {
-        logEntry = future.get(5, TimeUnit.SECONDS);
-      } catch (TimeoutException e) {
-        fail("Time out exception" + e.getMessage());
-      }
+      ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
       assertThat(logEntry.getText()).isEqualTo("Hello, world!");
       assertThat(logEntry.getRealm()).isNull();
@@ -113,11 +108,19 @@ class LogInspectorTest {
 
       CompletableFuture<ConsoleLogEntry> errorLogfuture = new CompletableFuture<>();
 
-      logInspector.onConsoleEntry(errorLogfuture::complete, FilterBy.logLevel(LogLevel.WARNING));
-      driver.findElement(By.id("consoleLog")).click();
+      logInspector.onConsoleEntry(errorLogfuture::complete, FilterBy.logLevel(LogLevel.ERROR));
+      driver.findElement(By.id("consoleError")).click();
 
-      assertThatExceptionOfType(TimeoutException.class).isThrownBy(
-        () -> errorLogfuture.get(5, TimeUnit.SECONDS));
+      ConsoleLogEntry errorLogEntry = errorLogfuture.get(5, TimeUnit.SECONDS);
+
+      assertThat(errorLogEntry.getText()).isEqualTo("I am console error");
+      assertThat(errorLogEntry.getRealm()).isNull();
+      assertThat(errorLogEntry.getArgs().size()).isEqualTo(1);
+      assertThat(errorLogEntry.getType()).isEqualTo("console");
+      assertThat(errorLogEntry.getLevel()).isEqualTo(LogLevel.ERROR);
+      assertThat(errorLogEntry.getMethod()).isEqualTo("error");
+      assertThat(errorLogEntry.getStackTrace()).isNotNull();
+      assertThat(errorLogEntry.getStackTrace().getCallFrames().size()).isEqualTo(2);
     }
   }
 
