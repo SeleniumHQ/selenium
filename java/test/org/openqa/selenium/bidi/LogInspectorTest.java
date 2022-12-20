@@ -64,7 +64,7 @@ class LogInspectorTest {
   void canListenToConsoleLog() throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
-      logInspector.onConsoleLog(future::complete);
+      logInspector.onConsoleEntry(future::complete);
 
       page = server.whereIs("/bidi/logEntryAdded.html");
       driver.get(page);
@@ -148,7 +148,7 @@ class LogInspectorTest {
 
     try (LogInspector logInspector = new LogInspector(browsingContextId, driver)) {
       CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
-      logInspector.onConsoleLog(future::complete);
+      logInspector.onConsoleEntry(future::complete);
 
       driver.get(page);
       driver.findElement(By.id("consoleLog")).click();
@@ -224,7 +224,7 @@ class LogInspectorTest {
     CountDownLatch latch = new CountDownLatch(2);
 
     try (LogInspector logInspector = new LogInspector(browsingContextIds, driver)) {
-      logInspector.onConsoleLog(logEntry -> latch.countDown());
+      logInspector.onConsoleEntry(logEntry -> latch.countDown());
 
       driver.get(page);
       // Triggers console event in the second tab

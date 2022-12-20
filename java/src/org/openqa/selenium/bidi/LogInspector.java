@@ -95,7 +95,12 @@ public class LogInspector implements AutoCloseable {
     }
   }
 
+  @Deprecated
   public void onConsoleLog(Consumer<ConsoleLogEntry> consumer) {
+    consoleLogListeners.add(consumer);
+  }
+
+  public void onConsoleEntry(Consumer<ConsoleLogEntry> consumer) {
     consoleLogListeners.add(consumer);
   }
 
