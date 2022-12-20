@@ -22,7 +22,7 @@ module Selenium
     class BiDi
       autoload :Session, 'selenium/webdriver/bidi/session'
       autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
-      autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context/browsing_context'
+      autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
 
       def initialize(url:)
         @ws = WebSocketConnection.new(url: url)
