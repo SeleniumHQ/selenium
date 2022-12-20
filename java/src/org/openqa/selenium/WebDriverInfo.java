@@ -56,7 +56,7 @@ public interface WebDriverInfo {
   boolean isSupportingCdp();
 
   /**
-   * @return Whether the driver has enabled the CDP interface.
+   * @return Whether the driver has enabled the BiDi interface.
    */
   boolean isSupportingBiDi();
 
