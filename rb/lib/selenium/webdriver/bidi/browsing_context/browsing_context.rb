@@ -62,7 +62,7 @@ module Selenium
         end
 
         def get_tree(max_depth: nil)
-          result = @bidi.send_cmd("browsingContext.getTree", root: @id, maxDepth: max_depth)["contexts"][0]
+          result = @bidi.send_cmd("browsingContext.getTree", root: @id, maxDepth: max_depth).dig("contexts", 0)
 
           BrowsingContextInfo.new(
             id: result['context'],
