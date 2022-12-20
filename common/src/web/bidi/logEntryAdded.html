@@ -6,6 +6,8 @@
 
     <button id="consoleLog" onclick="helloWorld()">Click me for console logs</button>
 
+    <button id="consoleError" onclick="consoleError()">Click me for console error</button>
+
     <button id="jsException" onclick="createError()">Click me for jsException logs</button>
 
     <button id="logWithStacktrace" onclick="bar()">Click me to get an error with stacktrace</button>
@@ -20,6 +22,8 @@
         function foo() { throw new Error('Not working'); }
 
         function bar() { foo(); }
+
+        function consoleError() { console.error('I am console error'); }
     </script>
 
 </body>

@@ -21,6 +21,7 @@ module Selenium
   module WebDriver
     class BiDi
       autoload :Session, 'selenium/webdriver/bidi/session'
+      autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
 
       def initialize(url:)
         @ws = WebSocketConnection.new(url: url)
