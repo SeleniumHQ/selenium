@@ -29,7 +29,7 @@ use crate::metadata::{
 };
 use crate::{
     SeleniumManager, BETA, DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES,
-    ENV_PROGRAM_FILES_X86, NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND,
+    ENV_PROGRAM_FILES_X86, FALLBACK_RETRIES, NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND,
 };
 
 const BROWSER_NAME: &str = "chrome";
@@ -146,15 +146,37 @@ impl SeleniumManager for ChromeManager {
                 Ok(driver_version)
             }
             _ => {
-                let driver_url = if browser_version.is_empty() {
-                    format!("{}{}", DRIVER_URL, LATEST_RELEASE)
-                } else {
-                    format!("{}{}_{}", DRIVER_URL, LATEST_RELEASE, browser_version)
-                };
-                log::debug!("Reading {} version from {}", &self.driver_name, driver_url);
-                let driver_version = read_content_from_link(driver_url)?;
-
-                if !browser_version.is_empty() {
+                let mut driver_version = "".to_string();
+                let mut browser_version_int = browser_version.parse::<i32>().unwrap_or_default();
+                if browser_version_int > 0 {
+                    for i in 0..FALLBACK_RETRIES {
+                        let driver_url = if browser_version.is_empty() {
+                            format!("{}{}", DRIVER_URL, LATEST_RELEASE)
+                        } else {
+                            format!("{}{}_{}", DRIVER_URL, LATEST_RELEASE, browser_version_int)
+                        };
+                        log::debug!("Reading {} version from {}", &self.driver_name, driver_url);
+                        let content = read_content_from_link(driver_url);
+                        match content {
+                            Ok(version) => {
+                                driver_version = version;
+                                break;
+                            }
+                            _ => {
+                                log::warn!(
+                                "Error getting version of {} {}. Retrying with {} {} (attempt {}/{})",
+                                &self.driver_name,
+                                browser_version_int,
+                                &self.driver_name,
+                                browser_version_int - 1,
+                                i + 1, FALLBACK_RETRIES
+                            );
+                                browser_version_int -= 1;
+                            }
+                        }
+                    }
+                }
+                if !browser_version.is_empty() && !driver_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
                         browser_version,
                         self.driver_name,

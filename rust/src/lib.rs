@@ -55,6 +55,7 @@ pub const DASH_DASH_VERSION: &str = "{} --version";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
+pub const FALLBACK_RETRIES: u32 = 5;
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
