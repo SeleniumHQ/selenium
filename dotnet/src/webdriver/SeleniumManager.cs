@@ -143,14 +143,14 @@ namespace OpenQA.Selenium
                 process.ErrorDataReceived -= outputHandler;
             }
 
-            string output = outputBuilder.ToString().Trim();
+            string executablePath = outputBuilder.ToString().Trim().Replace("INFO\t", "");
 
             if (processExitCode != 0)
             {
-                throw new WebDriverException($"Invalid response from process (code {processExitCode}): {fileName} {arguments}\n{output}");
+                throw new WebDriverException($"Invalid response from process (code {processExitCode}): {fileName} {arguments}\n{executablePath}");
             }
 
-            return output.Replace("INFO\t", "");
+            return executablePath;
         }
     }
 }
