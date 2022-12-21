@@ -14,40 +14,22 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-
 package org.openqa.selenium.bidi.log;
 
-// @see <a href="https://w3c.github.io/webdriver-bidi/#types-log-logentry">https://w3c.github.io/webdriver-bidi/#types-log-logentry</a>
-public class BaseLogEntry {
+public class FilterBy {
 
   private final LogLevel level;
-  private final String text;
-  private final long timestamp;
-  private final StackTrace stackTrace;
+  
+  private FilterBy(LogLevel logLevel) {
+    this.level = logLevel;
+  }
+
+  public static FilterBy logLevel(LogLevel logLevel) {
+    return new FilterBy(logLevel);
+  }
 
   public LogLevel getLevel() {
     return level;
   }
 
-  public String getText() {
-    return text;
-  }
-
-  public long getTimestamp() {
-    return timestamp;
-  }
-
-  public StackTrace getStackTrace() {
-    return stackTrace;
-  }
-
-  public BaseLogEntry(LogLevel level,
-                      String text,
-                      long timestamp,
-                      StackTrace stackTrace) {
-    this.level = level;
-    this.text = text;
-    this.timestamp = timestamp;
-    this.stackTrace = stackTrace;
-  }
 }
