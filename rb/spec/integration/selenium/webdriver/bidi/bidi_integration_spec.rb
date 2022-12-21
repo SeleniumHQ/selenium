@@ -23,28 +23,31 @@ module Selenium
   module WebDriver
     class BiDi
       describe "BiDi Integration Tests", exclusive: {browser: %i[chrome firefox]} do
+        before do
+          quit_driver
+          create_driver!(web_socket_url: true)
+        end
+
         it 'can navigate and listen to errors' do
-          reset_driver!(web_socket_url: true) do |driver|
-            log_entry = nil
-            log_inspector = LogInspector.new(driver)
-            log_inspector.on_javascript_exception { |log| log_entry = log }
+          log_entry = nil
+          log_inspector = LogInspector.new(driver)
+          log_inspector.on_javascript_exception { |log| log_entry = log }
 
-            browsing_context = BrowsingContext.new(driver: driver, browsing_context_id: driver.window_handle)
-            info = browsing_context.navigate(url: url_for('/bidi/logEntryAdded.html'))
+          browsing_context = BrowsingContext.new(driver: driver, browsing_context_id: driver.window_handle)
+          info = browsing_context.navigate(url: url_for('/bidi/logEntryAdded.html'))
 
-            expect(browsing_context.id).not_to be_nil
-            expect(info.navigation_id).to be_nil
-            expect(info.url).to include('/bidi/logEntryAdded.html')
+          expect(browsing_context.id).not_to be_nil
+          expect(info.navigation_id).to be_nil
+          expect(info.url).to include('/bidi/logEntryAdded.html')
 
-            driver.find_element(id: 'jsException').click
-            wait.until { !log_entry.nil? }
+          driver.find_element(id: 'jsException').click
+          wait.until { !log_entry.nil? }
 
-            expect(log_entry).to have_attributes(
-              text: "Error: Not working",
-              type: "javascript",
-              level: LogInspector::LOG_LEVEL[:ERROR]
-            )
-          end
+          expect(log_entry).to have_attributes(
+            text: "Error: Not working",
+            type: "javascript",
+            level: LogInspector::LOG_LEVEL[:ERROR]
+          )
         end
       end
     end # BiDi
