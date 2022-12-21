@@ -35,24 +35,24 @@ class Index extends EventEmitter {
     this.isConnected = false
     this._ws = new WebSocket(_webSocketUrl)
     this._ws.on('open', () => {
-      this.isConnected = true;
-    });
+      this.isConnected = true
+    })
   }
 
   /**
    * Resolve connection
    * @returns {Promise<unknown>}
    */
-  async waitForConnection() {
+  async waitForConnection () {
     return new Promise((resolve) => {
       if (this.isConnected) {
-        resolve();
+        resolve()
       } else {
         this._ws.once('open', () => {
-          resolve();
-        });
+          resolve()
+        })
       }
-    });
+    })
   }
 
   /**
@@ -113,27 +113,37 @@ class Index extends EventEmitter {
    * @returns {Promise<void>}
    */
   async subscribe (events, browsingContexts) {
-
-    if (typeof events === 'string') {
-      this.events.push(events)
-    } else if (Array.isArray(events)) {
-      this.events = this.events.concat(events)
-    }
-
-    if (typeof browsingContexts === 'string') {
-      this.browsingContexts.push(browsingContexts)
-    } else if (Array.isArray(browsingContexts)) {
-      this.browsingContexts = this.browsingContexts.concat(browsingContexts)
-    }
-
-    let params = {
-      method: 'session.subscribe', params: {
-        events: this.events,
+    function toArray (arg) {
+      if (arg === undefined) {
+        return []
       }
+
+      return Array.isArray(arg) ? [...arg] : [arg]
     }
 
-    if (browsingContexts) {
-      params.params.contexts = this.browsingContexts
+    const eventsArray = toArray(events)
+    const contextsArray = toArray(browsingContexts)
+
+    const params = {
+      method: 'session.subscribe', params: {},
+    }
+
+    if (eventsArray.length && eventsArray.some(
+      event => typeof event !== 'string')) {
+      throw new TypeError('events should be string or string array')
+    }
+
+    if (contextsArray.length && contextsArray.some(
+      context => typeof context !== 'string')) {
+      throw new TypeError('browsingContexts should be string or string array')
+    }
+
+    if (eventsArray.length) {
+      params.params.events = eventsArray
+    }
+
+    if (contextsArray.length) {
+      params.params.contexts = contextsArray
     }
 
     await this.send(params)
@@ -146,7 +156,6 @@ class Index extends EventEmitter {
    * @returns {Promise<void>}
    */
   async unsubscribe (events, browsingContexts) {
-
     if (typeof events === 'string') {
       this.events = this.events.filter(event => event !== events)
     } else if (Array.isArray(events)) {
@@ -160,13 +169,13 @@ class Index extends EventEmitter {
         this.browsingContexts.filter(id => !browsingContexts.includes(id))
     }
 
-    let params = {
+    const params = {
       method: 'session.unsubscribe', params: {
         events: this.events,
       }
     }
 
-    if (browsingContexts) {
+    if (this.browsingContexts.length > 0) {
       params.params.contexts = this.browsingContexts
     }
 
