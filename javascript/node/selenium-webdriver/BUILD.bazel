@@ -23,7 +23,8 @@ SRC_FILES = [
     "remote/*.js",
     "testing/*.js",
     "devtools/*.js",
-    "common/*.js"
+    "common/*.js",
+    "bidi/*.js"
 ])
 
 pkg_npm(

@@ -40,6 +40,7 @@ const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
 const webElement = require('./webelement')
 const { isObject } = require('./util')
+const BIDI = require('../bidi')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1225,7 +1226,7 @@ class WebDriver {
     this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket(this._wsUrl)
+        this._wsConnection = new WebSocket(this._wsUrl.replace('localhost', '127.0.0.1'))
         this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
       } catch (err) {
         reject(err)
@@ -1269,6 +1270,16 @@ class WebDriver {
 
   async getCdpTargets() {
     this._cdpConnection.execute('Target.getTargets')
+  }
+
+  /**
+   * Initiates bidi connection using 'webSocketUrl'
+   * @returns {BIDI}
+   */
+  async getBidi() {
+    const caps = await this.getCapabilities()
+    let WebSocketUrl = caps['map_'].get('webSocketUrl')
+    return new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
   }
 
   /**

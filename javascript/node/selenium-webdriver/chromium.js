@@ -600,6 +600,14 @@ class Options extends Capabilities {
     }
     return this
   }
+
+  /**
+   * Enable bidi connection
+   * @returns {!Capabilities}
+   */
+  enableBidi() {
+    return this.set('webSocketUrl', true)
+  }
 }
 
 /**
