@@ -35,7 +35,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Cache Bazel artifacts
         uses: ./.github/actions/cache-bazel
         with:
@@ -62,7 +62,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Cache Bazel artifacts
         uses: ./.github/actions/cache-bazel
         with:
@@ -108,7 +108,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Cache Bazel artifacts
         uses: ./.github/actions/cache-bazel
         with:
@@ -140,7 +140,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Cache Bazel artifacts
         uses: ./.github/actions/cache-bazel
         with:

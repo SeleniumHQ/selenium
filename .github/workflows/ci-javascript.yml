@@ -51,7 +51,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Firefox
@@ -98,7 +98,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Firefox
