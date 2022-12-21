@@ -88,12 +88,13 @@ def url_contains(url: str):
 def url_matches(pattern: str):
     """An expectation for checking the current url.
 
-    pattern is the expected pattern, which must be an exact match
-    returns True if the url matches, false otherwise.
+    pattern is the expected pattern.  This finds the first
+    occurrence of pattern in the current url and as such does
+    not require an exact full match.
     """
 
     def _predicate(driver):
-        return bool(re.search(pattern, driver.current_url))
+        return re.search(pattern, driver.current_url) is not None
 
     return _predicate
 
