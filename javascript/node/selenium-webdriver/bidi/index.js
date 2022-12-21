@@ -20,7 +20,7 @@ const WebSocket = require('ws')
 
 const RESPONSE_TIMEOUT = 1000 * 30
 
-class BIDI extends EventEmitter {
+class Index extends EventEmitter {
   id = 0
   isConnected = false
   events = []
@@ -32,18 +32,27 @@ class BIDI extends EventEmitter {
    */
   constructor (_webSocketUrl) {
     super()
+    this.isConnected = false
     this._ws = new WebSocket(_webSocketUrl)
+    this._ws.on('open', () => {
+      this.isConnected = true;
+    });
   }
 
   /**
-   * open connection to fire an open event
-   * @returns {Promise<resolved>}
+   * Resolve connection
+   * @returns {Promise<unknown>}
    */
-  connect () {
-    return new Promise((resolve) => this._ws.on('open', () => {
-      this.isConnected = true
-      resolve()
-    }))
+  async waitForConnection() {
+    return new Promise((resolve) => {
+      if (this.isConnected) {
+        resolve();
+      } else {
+        this._ws.once('open', () => {
+          resolve();
+        });
+      }
+    });
   }
 
   /**
@@ -65,9 +74,9 @@ class BIDI extends EventEmitter {
    * @param params
    * @returns {Promise<unknown>}
    */
-  send (params) {
+  async send (params) {
     if (!this.isConnected) {
-      throw new Error('No connection to WebDriver Bidi was established')
+      await this.waitForConnection()
     }
 
     const id = ++this.id
@@ -75,7 +84,7 @@ class BIDI extends EventEmitter {
     this._ws.send(JSON.stringify({ id, ...params }))
 
     return new Promise((resolve, reject) => {
-      const t = setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         reject(new Error(`Request with id ${id} timed out`))
         handler.off('message', listener)
       }, RESPONSE_TIMEOUT)
@@ -84,7 +93,7 @@ class BIDI extends EventEmitter {
         try {
           const payload = JSON.parse(data.toString())
           if (payload.id === id) {
-            clearTimeout(t)
+            clearTimeout(timeoutId)
             handler.off('message', listener)
             resolve(payload)
           }
@@ -200,18 +209,7 @@ class BIDI extends EventEmitter {
 }
 
 /**
- * Return a new bidi instance to webdriver
- * @param webSocketUrl
- * @returns {Promise<BIDI>}
- */
-async function bidiInstance (webSocketUrl) {
-  const instance = new BIDI(webSocketUrl)
-  await instance.connect()
-  return instance
-}
-
-/**
  * API
- * @type {function(*): Promise<BIDI>}
+ * @type {function(*): Promise<Index>}
  */
-module.exports = bidiInstance
+module.exports = Index

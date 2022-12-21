@@ -117,16 +117,14 @@ class LogInspector {
   }
 }
 
-let instance = undefined
-
 /**
  * initiate inspector instance and return
  * @param driver
  * @param browsingContextIds
  * @returns {Promise<LogInspector>}
  */
-async function getInstance (driver, browsingContextIds) {
-  instance = new LogInspector(driver, browsingContextIds)
+async function getLogInspectorInstance (driver, browsingContextIds) {
+  let instance = new LogInspector(driver, browsingContextIds)
   await instance.init()
   return instance
 }
@@ -135,4 +133,4 @@ async function getInstance (driver, browsingContextIds) {
  * API
  * @type {function(*, *): Promise<LogInspector>}
  */
-module.exports = getInstance
+module.exports = getLogInspectorInstance
