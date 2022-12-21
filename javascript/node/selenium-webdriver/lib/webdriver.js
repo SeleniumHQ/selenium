@@ -2153,6 +2153,37 @@ class Window {
       new command.Command(command.Name.FULLSCREEN_WINDOW)
     )
   }
+
+  /**
+   * Gets the width and height of the current window
+   * @param windowHandle
+   * @returns {Promise<{width: *, height: *}>}
+   */
+  async getSize(windowHandle = 'current') {
+    if (windowHandle !== 'current') {
+      console.warn(`Only 'current' window is supported for W3C compatible browsers.`);
+    }
+
+    const rect = await this.getRect();
+    return {height: rect.height, width: rect.width};
+  }
+
+  /**
+   * Sets the width and height of the current window. (window.resizeTo)
+   * @param x
+   * @param y
+   * @param width
+   * @param height
+   * @param windowHandle
+   * @returns {Promise<void>}
+   */
+  async setSize({x = 0, y = 0, width = 0, height = 0}, windowHandle = 'current') {
+    if (windowHandle !== 'current') {
+      console.warn(`Only 'current' window is supported for W3C compatible browsers.`);
+    }
+
+    await this.setRect({x, y, width, height});
+  }
 }
 
 /**
