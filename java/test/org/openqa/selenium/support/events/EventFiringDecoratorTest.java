@@ -21,10 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Alert;
@@ -435,5 +437,22 @@ class EventFiringDecoratorTest {
 
     assertThatExceptionOfType(WebDriverException.class)
       .isThrownBy(decorated::getWindowHandle);
+  }
+
+  @Test
+  public void ensureListenersAreInvokedWhenUsingDecoratedSubClasses() {
+    RemoteWebDriver originalDriver = mock(RemoteWebDriver.class);
+    doNothing().when(originalDriver).get(any());
+    AtomicInteger invocationCount = new AtomicInteger(0);
+    WebDriverListener listener = new WebDriverListener() {
+      @Override
+      public void beforeAnyCall(Object target, Method method, Object[] args) {
+        invocationCount.incrementAndGet();
+      }
+    };
+    RemoteWebDriver rem = new EventFiringDecorator<>(RemoteWebDriver.class, listener)
+      .decorate(originalDriver);
+    rem.get("http://localhost:4444");
+    assertThat(invocationCount.get()).isEqualTo(1);
   }
 }

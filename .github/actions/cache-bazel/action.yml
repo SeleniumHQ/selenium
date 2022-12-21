@@ -50,10 +50,10 @@ runs:
     - run: |
         echo '${{ inputs.gcs-key }}' >> gcs.json
         echo "build --remote_cache=https://storage.googleapis.com/seleniumhq-bazel-remote-cache --remote_upload_local_results=${{ github.ref == 'refs/heads/trunk' }} --google_credentials=gcs.json" >> .bazelrc
-      if: runner.os != 'Windows'
+      if: inputs.gcs-key != '' && runner.os != 'Windows'
       shell: bash
     - run: |
         echo ${{ inputs.gcs-key }}>>gcs.json
         echo "build --remote_cache=https://storage.googleapis.com/seleniumhq-bazel-remote-cache --remote_upload_local_results=${{ github.ref == 'refs/heads/trunk' }} --google_credentials=gcs.json">>.bazelrc
-      if: github.ref == 'refs/heads/trunk' && runner.os == 'Windows'
+      if: inputs.gcs-key != '' && runner.os == 'Windows'
       shell: cmd

@@ -39,6 +39,7 @@ const session = require('./lib/session')
 const until = require('./lib/until')
 const webdriver = require('./lib/webdriver')
 const select = require('./lib/select')
+const LogInspector = require('./bidi/logInspector')
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
@@ -795,3 +796,4 @@ exports.logging = logging
 exports.promise = promise
 exports.until = until
 exports.Select = select.Select
+exports.LogInspector = LogInspector
