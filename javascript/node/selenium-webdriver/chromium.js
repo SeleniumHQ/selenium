@@ -310,6 +310,12 @@ class Options extends Capabilities {
   }
 
   /**
+   * @deprecated Use {@link Options#addArguments} instead.
+   * @example
+   * options.addArguments('--headless=chrome'); (or)
+   * options.addArguments('--headless');
+   * @example
+   *
    * Configures the driver to start the browser in headless mode.
    *
    * > __NOTE:__ Resizing the browser window in headless mode is only supported
