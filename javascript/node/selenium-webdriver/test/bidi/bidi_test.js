@@ -22,6 +22,7 @@ const firefox = require('../../firefox')
 const { Browser } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
+const BrowsingContext = require('../../bidi/browsingContext')
 
 suite(
   function (env) {
@@ -102,6 +103,110 @@ suite(
         assert.equal(stackTrace.callFrames.length, 3)
 
         await inspector.close()
+      })
+    })
+
+    describe('Browsing Context', function (){
+      it('can create a browsing context for given id', async function () {
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+        assert.equal(browsingContext.id, id)
+      })
+
+      it('can create a window', async function () {
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'window',
+        })
+        assert.notEqual(browsingContext.id, null)
+      })
+
+      it('can create a window with a reference context', async function () {
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'window',
+          referenceContext: await driver.getWindowHandle(),
+        })
+        assert.notEqual(browsingContext.id, null)
+      })
+
+      it('can create a tab', async function () {
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'tab',
+        })
+        assert.notEqual(browsingContext.id, null)
+      })
+
+      it('can create a tab with a reference context', async function () {
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'tab',
+          referenceContext: await driver.getWindowHandle(),
+        })
+        assert.notEqual(browsingContext.id, null)
+      })
+
+      it('can navigate to a url', async function () {
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'tab',
+        })
+
+        let info = await browsingContext.navigate(Pages.logEntryAdded)
+
+        assert.notEqual(browsingContext.id, null)
+        assert.equal(info.navigationId, null)
+        assert(info.url.includes('/bidi/logEntryAdded.html'))
+      })
+
+      it('can navigate to a url with readiness state', async function () {
+        const browsingContext = await BrowsingContext(driver, {
+          type: 'tab',
+        })
+
+        const info = await browsingContext.navigate(
+          Pages.logEntryAdded,
+          'complete'
+        )
+
+        assert.notEqual(browsingContext.id, null)
+        assert.equal(info.navigationId, null)
+        assert(info.url.includes('/bidi/logEntryAdded.html'))
+      })
+
+      it('can get tree with a child', async function () {
+        const browsingContextId = await driver.getWindowHandle()
+        const parentWindow = await BrowsingContext(driver, {
+          browsingContextId: browsingContextId,
+        })
+        await parentWindow.navigate(Pages.iframePage, 'complete')
+
+        const contextInfo = await parentWindow.getTree()
+        assert.equal(contextInfo.children.length, 1)
+        assert.equal(contextInfo.id, browsingContextId)
+        assert(contextInfo.children[0]['url'].includes('formPage.html'))
+      })
+
+      it('can get tree with depth', async function () {
+        const browsingContextId = await driver.getWindowHandle()
+        const parentWindow = await BrowsingContext(driver, {
+          browsingContextId: browsingContextId,
+        })
+        await parentWindow.navigate(Pages.iframePage, 'complete')
+
+        const contextInfo = await parentWindow.getTree(0)
+        assert.equal(contextInfo.children, null)
+        assert.equal(contextInfo.id, browsingContextId)
+      })
+
+      it('can close a window', async function () {
+        const window1 = await BrowsingContext(driver, { type: 'window' })
+        const window2 = await BrowsingContext(driver, { type: 'window' })
+
+        await window2.close()
+
+        assert.doesNotThrow(async function () {
+          await window1.getTree()
+        })
+        await assert.rejects(window2.getTree(), { message: 'no such frame' })
       })
     })
   },
