@@ -277,7 +277,6 @@ nuget_package(
     visibility = ["//visibility:public"],
     deps = [
         ":logo",
-        ":props",
         ":manager-linux",
         ":manager-macos",
         ":manager-windows",
@@ -289,6 +288,7 @@ nuget_package(
         ":net6.0",
         ":netstandard2.0",
         ":netstandard2.1",
+        ":props",
     ],
 )
 
