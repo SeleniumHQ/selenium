@@ -88,9 +88,9 @@ def url_contains(url: str):
 def url_matches(pattern: str):
     """An expectation for checking the current url.
 
-    pattern is the expected pattern.  This finds the first
-    occurrence of pattern in the current url and as such does
-    not require an exact full match.
+    pattern is the expected pattern.  This finds the first occurrence of
+    pattern in the current url and as such does not require an exact
+    full match.
     """
 
     def _predicate(driver):
