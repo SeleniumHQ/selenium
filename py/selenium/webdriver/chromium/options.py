@@ -133,7 +133,7 @@ class ChromiumOptions(ArgOptions):
           value: The option value.
         """
         if name.lower() == "w3c" and (value == "false" or value is False):
-            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."))
+            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."), stacklevel=2)
         self._experimental_options[name] = value
 
     @property
