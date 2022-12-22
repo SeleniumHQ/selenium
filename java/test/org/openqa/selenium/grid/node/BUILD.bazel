@@ -15,7 +15,6 @@ java_test_suite(
         "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/node",
         "//java/src/org/openqa/selenium/grid/node/local",
-        "//java/src/org/openqa/selenium/grid/node/locators",
         "//java/src/org/openqa/selenium/grid/node/remote",
         "//java/src/org/openqa/selenium/grid/security",
         "//java/src/org/openqa/selenium/grid/web",
