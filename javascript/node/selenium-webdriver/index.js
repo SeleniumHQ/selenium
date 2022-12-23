@@ -40,6 +40,7 @@ const until = require('./lib/until')
 const webdriver = require('./lib/webdriver')
 const select = require('./lib/select')
 const LogInspector = require('./bidi/logInspector')
+const BrowsingContext = require('./bidi/browsingContext')
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
@@ -797,3 +798,4 @@ exports.promise = promise
 exports.until = until
 exports.Select = select.Select
 exports.LogInspector = LogInspector
+exports.BrowsingContext = BrowsingContext
