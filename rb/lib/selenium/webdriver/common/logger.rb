@@ -48,9 +48,10 @@ module Selenium
       #
       # @param [String] progname Allow child projects to use Selenium's Logger pattern
       #
-      def initialize(progname = 'Selenium')
+      def initialize(progname = 'Selenium', ignored: nil)
         @logger = create_logger(progname)
-        @ignored = []
+        @ignored = Array(ignored)
+        @first_warning = false
       end
 
       #
@@ -94,6 +95,13 @@ module Selenium
       # @yield see #deprecate
       #
       def warn(message, id: [])
+        unless @first_warning
+          @first_warning = true
+          warn("Details on how to use and modify Selenium logger:\n", id: [:logger_info]) do
+            "https://selenium.dev/documentation/webdriver/troubleshooting/logging#ruby\n"
+          end
+        end
+
         id = Array(id)
         return if (@ignored & id).any?
 
