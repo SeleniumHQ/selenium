@@ -106,7 +106,7 @@ suite(
       })
     })
 
-    describe('Browsing Context', function (){
+    describe('Browsing Context', function () {
       it('can create a browsing context for given id', async function () {
         const id = await driver.getWindowHandle()
         const browsingContext = await BrowsingContext(driver, {
