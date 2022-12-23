@@ -65,8 +65,14 @@ public class DevTools implements Closeable {
     if (cdpSession != null) {
       SessionID id = cdpSession;
       cdpSession = null;
-      connection.sendAndWait(
-        cdpSession, getDomains().target().detachFromTarget(Optional.of(id), Optional.empty()), timeout);
+      try {
+        connection.sendAndWait(
+          cdpSession, getDomains().target().detachFromTarget(Optional.of(id), Optional.empty()),
+          timeout);
+      } catch (Exception e) {
+        // Exceptions should not prevent closing the connection and the web driver
+        log.warning("Exception while detaching from target: " + e.getMessage());
+      }
     }
   }
 
@@ -114,9 +120,14 @@ public class DevTools implements Closeable {
   public void createSession(String windowHandle) {
     TargetID targetId = findTarget(windowHandle);
 
-    // Start the session.
+    // Starts the session
+    // CDP creates a parent browser session when websocket connection is made
+    // Create session that is child of parent browser session and not child of already existing child page session
+    // Passing null for session id helps achieve that
+    // Child of already existing child page session throws an error when detaching from the target
+    // CDP allows attaching to child of child session but not detaching. Maybe it does not keep track of it.
     cdpSession = connection
-      .sendAndWait(cdpSession, getDomains().target().attachToTarget(targetId), timeout);
+      .sendAndWait(null, getDomains().target().attachToTarget(targetId), timeout);
 
     try {
       // We can do all of these in parallel, and we don't care about the result.

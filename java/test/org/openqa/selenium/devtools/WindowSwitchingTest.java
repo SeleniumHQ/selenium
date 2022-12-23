@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.devtools.idealized.target.model.TargetInfo;
@@ -52,5 +53,47 @@ class WindowSwitchingTest extends DevToolsTestBase {
     List<TargetInfo> updatedTargets = this.devTools.send(this.devTools.getDomains().target().getTargets());
 
     assertThat(updatedTargets).isNotEqualTo(originalTargets);
+  }
+
+  @Test
+  @Ignore(FIREFOX)
+  public void shouldBeAbleToCreateSessionForANewTab() {
+    WebDriver driver = new Augmenter().augment(this.driver);
+
+    DevTools devTools = ((HasDevTools)driver).getDevTools();
+    devTools.createSession();
+    addConsoleLogListener(devTools);
+
+    driver.get("https://www.selenium.dev/selenium/web/bidi/logEntryAdded.html");
+
+    List<TargetInfo> originalTargets = devTools.send(devTools.getDomains().target().getTargets());
+    driver.findElement(By.id("consoleLog")).click();
+
+    String originalWindowHandle = driver.getWindowHandle();
+
+    String windowHandle = driver.switchTo().newWindow(WindowType.TAB).getWindowHandle();
+
+    devTools.createSession(windowHandle);
+    addConsoleLogListener(devTools);
+
+    driver.get("https://www.selenium.dev/selenium/web/bidi/logEntryAdded.html");
+    driver.findElement(By.id("consoleLog")).click();
+
+    List<TargetInfo> updatedTargets = this.devTools.send(this.devTools.getDomains().target().getTargets());
+
+    assertThat(updatedTargets).isNotEqualTo(originalTargets);
+    driver.close();
+
+    List<TargetInfo> leftoverTargets = devTools.send(devTools.getDomains().target().getTargets());
+
+    assertThat(leftoverTargets.get(0).getTargetId().toString()).isEqualTo(originalTargets.get(0).getTargetId().toString());
+
+    driver.switchTo().window(originalWindowHandle);
+  }
+
+  public static void addConsoleLogListener(DevTools devTools) {
+    devTools.getDomains().events().addConsoleListener(consoleEvent -> {
+      assertThat(consoleEvent.getMessages()).contains("Hello, world!");
+    });
   }
 }
