@@ -186,6 +186,12 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
     return (T) this;
   }
 
+  /**
+   * @deprecated Use {@link #addArguments(String...)}.
+   * Pass '--headless=chrome' as argument.
+   * Example: `addArguments("--headless=chrome")`.
+   */
+  @Deprecated
   public T setHeadless(boolean headless) {
     args.remove("--headless");
     if (headless) {
