@@ -58,7 +58,7 @@ class LoggingTest extends JupiterTestBase {
     ((JavascriptExecutor) driver).executeScript("console.log('I like cheese');");
 
     assertThat(latch.await(10, SECONDS)).isTrue();
-    assertThat(seen.get().toString()).contains("I like cheese");
+    assertThat(seen.get().getMessages()).contains("I like cheese");
   }
 
   @Test
