@@ -34,11 +34,15 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+        uses: actions/cache@v3
         with:
-          workflow: bazel
-          key: node-tests
-          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-node-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-node-tests-
+            ${{ runner.os }}-bazel-build-
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -47,7 +51,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Firefox
@@ -82,16 +86,19 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+        uses: actions/cache@v3
         with:
-          workflow: bazel
-          key: atom-firefox-tests
-          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-atom-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-atom-firefox-tests-
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Firefox

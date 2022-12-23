@@ -90,16 +90,19 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+        uses: actions/cache@v3
         with:
-          workflow: python
-          key: unit-tests
-          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-python-unit-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Run unit tests
         uses: ./.github/actions/bazel
         with:
@@ -113,11 +116,15 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+        uses: actions/cache@v3
         with:
-          workflow: python
-          key: chrome-tests
-          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-chrome-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-chrome-tests-
+            ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Chrome
@@ -142,18 +149,22 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+        uses: actions/cache@v3
         with:
-          workflow: python
-          key: firefox-tests
-          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:
@@ -178,18 +189,22 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+        uses: actions/cache@v3
         with:
-          workflow: python
-          key: firefox-tests
-          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
+          path: |
+            ~/.cache/bazel-disk
+            ~/.cache/bazel-repo
+          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
+          restore-keys: |
+            ${{ runner.os }}-bazel-firefox-tests-
+            ${{ runner.os }}-bazel-python-unit-tests-
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:

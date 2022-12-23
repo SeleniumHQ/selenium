@@ -45,8 +45,8 @@ java_library(
         ":is-displayed",
     ],
     visibility = [
-        "//java/src/org/openqa/selenium/devtools:__pkg__",
         "//java/src/org/openqa/selenium/bidi:__pkg__",
+        "//java/src/org/openqa/selenium/devtools:__pkg__",
     ],
     exports = [
     ],

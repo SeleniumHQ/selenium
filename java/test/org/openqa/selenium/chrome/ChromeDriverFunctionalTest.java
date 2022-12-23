@@ -99,7 +99,7 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   @NoDriverBeforeTest
   public void canSetPermissionHeadless() {
     ChromeOptions options = new ChromeOptions();
-    options.setHeadless(true);
+    options.addArguments("--headless=chrome");
 
     localDriver = new WebDriverBuilder().get(options);
     HasPermissions permissions = (HasPermissions) localDriver;

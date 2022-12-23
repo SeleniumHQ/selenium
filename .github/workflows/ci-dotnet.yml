@@ -39,13 +39,12 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Cache Bazel artifacts
         uses: ./.github/actions/cache-bazel
         with:
           workflow: dotnet
           key: ${{ matrix.driver }}-${{ matrix.framework }}
-          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - name: Setup dotnet tests
         uses: ./.github/actions/bazel
         with:

@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Copy bazelrc
         run: cp .github/.bazelrc.local .
         shell: bash

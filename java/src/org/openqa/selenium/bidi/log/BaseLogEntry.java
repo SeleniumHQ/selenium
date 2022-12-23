@@ -50,22 +50,4 @@ public class BaseLogEntry {
     this.timestamp = timestamp;
     this.stackTrace = stackTrace;
   }
-
-  public enum LogLevel {
-    DEBUG("debug"),
-    ERROR("error"),
-    INFO("info"),
-    WARNING("warning");
-
-    private final String level;
-
-    LogLevel(String level) {
-      this.level = level;
-    }
-
-    @Override
-    public String toString() {
-      return level;
-    }
-  }
 }

@@ -33,7 +33,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
   private final String realm;
   private final List<Object> args;
 
-  public ConsoleLogEntry(BaseLogEntry.LogLevel level,
+  public ConsoleLogEntry(LogLevel level,
                          String text,
                          long timestamp,
                          String type,
@@ -60,7 +60,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
   }
 
   public static ConsoleLogEntry fromJson(JsonInput input) {
-    BaseLogEntry.LogLevel level = null;
+    LogLevel level = null;
     String text = null;
     long timestamp = 0;
     String type = null;
@@ -73,7 +73,7 @@ public class ConsoleLogEntry extends GenericLogEntry {
     while (input.hasNext()) {
       switch (input.nextName()) {
         case "level":
-          level = input.read(BaseLogEntry.LogLevel.class);
+          level = input.read(LogLevel.class);
           break;
 
         case "text":

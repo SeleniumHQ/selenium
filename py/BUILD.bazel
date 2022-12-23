@@ -182,8 +182,8 @@ pkg_tar(
 genrule(
     name = "selenium-pkginfo",
     srcs = [":selenium-wheel-lib"],
-    cmd = "cp $(location :selenium-wheel-lib)/selenium-%s.dist-info/METADATA $@" % SE_VERSION,
     outs = ["PKG-INFO"],
+    cmd = "cp $(location :selenium-wheel-lib)/selenium-%s.dist-info/METADATA $@" % SE_VERSION,
 )
 
 py_import(

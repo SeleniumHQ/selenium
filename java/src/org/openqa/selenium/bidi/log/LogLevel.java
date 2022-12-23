@@ -15,28 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.locators;
+package org.openqa.selenium.bidi.log;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.By;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.locators.CustomLocator;
+public enum LogLevel {
+  DEBUG("debug"),
+  ERROR("error"),
+  INFO("info"),
+  WARNING("warning");
 
-/**
- * A class implementing {link @CustomLocator} and to be used as a fallback locator on the server
- * side.
- */
+  private final String level;
 
-@AutoService(CustomLocator.class)
-public class ByName implements CustomLocator {
-  @Override
-  public String getLocatorName() {
-    return "name";
+  LogLevel(String level) {
+    this.level = level;
   }
 
   @Override
-  public By createBy(Object usingParameter) {
-    Require.argument("Locator value", usingParameter).instanceOf(String.class);
-    return By.name((String) usingParameter);
+  public String toString() {
+    return level;
   }
 }

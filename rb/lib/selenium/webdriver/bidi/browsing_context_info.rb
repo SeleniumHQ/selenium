@@ -20,33 +20,17 @@
 module Selenium
   module WebDriver
     class BiDi
-      class Session
-        Status = Struct.new(:ready, :message)
+      class BrowsingContextInfo
+        attr_accessor :id, :url, :children, :parent_browsing_context
 
-        def initialize(bidi)
-          @bidi = bidi
+        def initialize(id:, url:, children:, parent_context:)
+          @id = id
+          @url = url
+          @children = children
+          @parent_browsing_context = parent_context
         end
 
-        def status
-          status = @bidi.send_cmd('session.status')
-          Status.new(status['ready'], status['message'])
-        end
-
-        def subscribe(events, browsing_contexts = nil)
-          events_list = Array(events)
-          browsing_contexts_list = browsing_contexts.nil? ? nil : Array(browsing_contexts)
-
-          @bidi.send_cmd("session.subscribe", events: events_list, contexts: browsing_contexts_list)
-        end
-
-        def unsubscribe(events, browsing_contexts = nil)
-          events_list = Array(events)
-          browsing_contexts_list = browsing_contexts.nil? ? nil : Array(browsing_contexts)
-
-          @bidi.send_cmd("session.unsubscribe", events: events_list, contexts: browsing_contexts_list)
-        end
-
-      end # Session
+      end # BrowsingContextInfo
     end # BiDi
   end # WebDriver
 end # Selenium

@@ -28,6 +28,7 @@ import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
 import org.openqa.selenium.bidi.log.BaseLogEntry;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
+import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -77,7 +78,7 @@ class BiDiTest {
 
       assertThat(logEntry.getText()).isEqualTo("Error: Not working");
       assertThat(logEntry.getType()).isEqualTo("javascript");
-      assertThat(logEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
     }
   }
 
