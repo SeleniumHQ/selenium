@@ -312,7 +312,7 @@ class PenPointerTest extends JupiterTestBase {
       wait.until(fuzzyMatchingOfCoordinates(reporter, 40, 20));
     } finally {
       Sequence actionList = new Sequence(defaultPen, 0)
-        .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.pointer(), -50, -100));
+        .addAction(defaultPen.createPointerMove(Duration.ZERO, PointerInput.Origin.pointer(), new Point(-50, -100)));
       ((RemoteWebDriver) driver).perform(Collections.singletonList(actionList));
     }
   }
@@ -394,7 +394,7 @@ class PenPointerTest extends JupiterTestBase {
     Sequence actionListPen = new Sequence(pen, 0)
       .addAction(pen.createPointerMove(Duration.ZERO, origin, 0, 0))
       .addAction(pen.createPointerDown(0))
-      .addAction(pen.createPointerMove(Duration.ofMillis(800), origin, 2, 2, eventProperties))
+      .addAction(pen.createPointerMove(Duration.ofMillis(800), origin, new Point(2, 2), eventProperties))
       .addAction(pen.createPointerUp(0));
 
     ((RemoteWebDriver) driver).perform(List.of(actionListPen));
