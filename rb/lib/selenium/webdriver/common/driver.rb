@@ -51,7 +51,7 @@ module Selenium
             Safari::Driver.new(**opts)
           when :firefox, :ff
             Firefox::Driver.new(**opts)
-          when :edge
+          when :edge, :microsoftedge, :msedge
             Edge::Driver.new(**opts)
           when :remote
             Remote::Driver.new(**opts)
