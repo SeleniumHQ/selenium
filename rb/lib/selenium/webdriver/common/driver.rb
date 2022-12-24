@@ -346,6 +346,8 @@ module Selenium
                        Firefox::Driver::EXTENSIONS
                      when :safari, :safari_technology_preview
                        Safari::Driver::EXTENSIONS
+                     when :ie, :internet_explorer
+                       IE::Driver::EXTENSIONS
                      else
                        []
                      end
