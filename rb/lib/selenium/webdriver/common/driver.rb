@@ -326,7 +326,7 @@ module Selenium
       def generate_capabilities(capabilities)
         Array(capabilities).map { |cap|
           if cap.is_a? Symbol
-            cap = Remote::Capabilities.send(cap)
+            cap = WebDriver::Options.send(cap)
           elsif !cap.respond_to? :as_json
             msg = ":capabilities parameter only accepts objects responding to #as_json which #{cap.class} does not"
             raise ArgumentError, msg

@@ -49,7 +49,7 @@ module Selenium
           if options && !options.is_a?(Options)
             raise ArgumentError, ":options must be an instance of #{Options}"
           elsif options.nil? && capabilities.nil?
-            capabilities = Remote::Capabilities.safari
+            options = Options.new
           end
 
           super(options, capabilities)

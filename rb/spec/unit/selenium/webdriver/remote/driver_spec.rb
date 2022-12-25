@@ -30,7 +30,7 @@ module Selenium
         end
 
         def expect_request(body: nil, endpoint: nil)
-          body = (body || {capabilities: {alwaysMatch: {browserName: "chrome"}}}).to_json
+          body = (body || {capabilities: {alwaysMatch: {browserName: "chrome", 'goog:chromeOptions': {}}}}).to_json
           endpoint ||= "http://127.0.0.1:4444/wd/hub/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
@@ -72,7 +72,7 @@ module Selenium
 
         context 'with :capabilities' do
           it 'accepts value as a Symbol' do
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome"}}})
+            expect_request
             expect { Driver.new(capabilities: :chrome) }.not_to raise_exception
           end
 
