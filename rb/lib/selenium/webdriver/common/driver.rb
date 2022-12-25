@@ -314,13 +314,22 @@ module Selenium
         end
       end
 
-      def process_options(options, capabilities)
+      def process_options(options, capabilities, klass = nil)
         if options && capabilities
           msg = "Don't use both :options and :capabilities when initializing #{self.class}, prefer :options"
           raise ArgumentError, msg
         end
 
-        options ? options.as_json : generate_capabilities(capabilities)
+        options ? options.as_json : deprecate_capabilities(capabilities, klass)
+      end
+
+      def deprecate_capabilities(capabilities, klass)
+        if klass
+          WebDriver.logger.deprecate("The :capabilities parameter for #{self.class}",
+                                     ":options argument with an instance of #{klass}",
+                                     id: :capabilities)
+        end
+        generate_capabilities(capabilities)
       end
 
       def generate_capabilities(capabilities)

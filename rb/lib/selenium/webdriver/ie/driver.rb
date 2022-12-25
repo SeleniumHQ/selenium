@@ -50,7 +50,7 @@ module Selenium
             options = Options.new
           end
 
-          super(options, capabilities)
+          super(options, capabilities, Options)
         end
       end # Driver
     end # IE
