@@ -61,7 +61,7 @@ module Selenium
           opts = {args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: 'chrome', 'goog:chromeOptions': opts}}})
 
-          expect { Driver.new(options: Chrome::Options.new(**opts)) }.not_to raise_exception
+          expect { Driver.new(options: Options.chrome(**opts)) }.not_to raise_exception
         end
 
         context 'with :capabilities' do
@@ -108,7 +108,7 @@ module Selenium
             end
 
             it 'with Options instance' do
-              options = Chrome::Options.new(args: ['-f'])
+              options = Options.chrome(args: ['-f'])
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome",
                                                                  'goog:chromeOptions': {args: ['-f']}}}})
 
@@ -126,12 +126,12 @@ module Selenium
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome",
                                                                  'goog:chromeOptions': {},
                                                                  'company:key': 'value'}}})
-              expect { Driver.new(capabilities: [Chrome::Options.new, as_json_object.new]) }.not_to raise_exception
+              expect { Driver.new(capabilities: [Options.chrome, as_json_object.new]) }.not_to raise_exception
             end
 
             it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
               capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
-              options = Chrome::Options.new(args: ['-f'])
+              options = Options.chrome(args: ['-f'])
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar',
                                                                  'goog:chromeOptions': {args: ['-f']},
                                                                  'company:key': 'value'}}})
