@@ -33,18 +33,16 @@ module Selenium
         # @param [String] driver_name which driver to use.
         # @return [String] the path to the correct driver.
         def driver_path(driver_name)
-          @driver_path ||= begin
-            unless %w[chromedriver geckodriver msedgedriver IEDriverServer].include?(driver_name)
-              msg = "Unable to locate driver with name: #{driver_name}"
-              raise Error::WebDriverError, msg
-            end
-
-            location = run("#{binary} --driver #{driver_name}")
-            WebDriver.logger.debug("Driver found at #{location}")
-            Platform.assert_executable location
-
-            location
+          unless %w[chromedriver geckodriver msedgedriver IEDriverServer].include?(driver_name)
+            msg = "Unable to locate driver with name: #{driver_name}"
+            raise Error::WebDriverError, msg
           end
+
+          location = run("#{binary} --driver #{driver_name}")
+          WebDriver.logger.debug("Driver found at #{location}")
+          Platform.assert_executable location
+
+          location
         end
 
         private
