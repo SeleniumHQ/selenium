@@ -151,7 +151,10 @@ class JdkHttpMessages {
     res.setStatus(response.statusCode());
     response.headers().map()
       .forEach((name, values) -> values.stream().filter(Objects::nonNull).forEach(value -> res.addHeader(name, value)));
-    res.setContent(() -> new ByteArrayInputStream(response.body()));
+    byte[] responseBody = response.body();
+    if (responseBody != null) {
+      res.setContent(() -> new ByteArrayInputStream(responseBody));
+    }
 
     return res;
   }
