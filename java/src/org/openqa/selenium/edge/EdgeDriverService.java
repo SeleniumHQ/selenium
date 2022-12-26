@@ -121,6 +121,12 @@ public class EdgeDriverService extends DriverService {
     return new Builder().build();
   }
 
+  public static EdgeDriverService createServiceWithConfig(EdgeOptions options) {
+    return new Builder()
+      .withLoglevel(options.getLogLevel())
+      .build();
+  }
+
   /**
    * Builder used to configure new {@link EdgeDriverService} instances.
    */
@@ -132,7 +138,7 @@ public class EdgeDriverService extends DriverService {
     private boolean readableTimestamp = Boolean.getBoolean(EDGE_DRIVER_READABLE_TIMESTAMP);
     private boolean appendLog = Boolean.getBoolean(EDGE_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
-    private String logLevel = System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY);
+    private EdgeDriverLogLevel logLevel = EdgeDriverLogLevel.fromString(System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY));
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
 
@@ -186,7 +192,7 @@ public class EdgeDriverService extends DriverService {
      */
     public Builder withVerbose(boolean verbose) {
       if (verbose) {
-        this.logLevel = "ALL";
+        this.logLevel = EdgeDriverLogLevel.ALL;
       }
       this.verbose = false;
       return this;
@@ -195,7 +201,7 @@ public class EdgeDriverService extends DriverService {
     /**
      * Configures the driver server log level.
      */
-    public Builder withLoglevel(String logLevel) {
+    public Builder withLoglevel(EdgeDriverLogLevel logLevel) {
       this.verbose = false;
       this.silent = false;
       this.logLevel = logLevel;
@@ -210,7 +216,7 @@ public class EdgeDriverService extends DriverService {
      */
     public Builder withSilent(boolean silent) {
       if (silent) {
-        this.logLevel = "OFF";
+        this.logLevel = EdgeDriverLogLevel.OFF;
       }
       this.silent = false;
       return this;
@@ -278,7 +284,7 @@ public class EdgeDriverService extends DriverService {
         args.add("--append-log");
       }
       if (logLevel != null) {
-        args.add(String.format("--log-level=%s", logLevel));
+        args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
       if (allowedListIps != null) {
         args.add(String.format("--allowed-ips=%s", allowedListIps));

@@ -50,9 +50,15 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
    */
   public static final String CAPABILITY = "ms:edgeOptions";
   public static final String LOGGING_PREFS = "ms:loggingPrefs";
+  private EdgeDriverLogLevel logLevel;
 
   public EdgeOptions() {
     super(CapabilityType.BROWSER_NAME, EDGE.browserName(), CAPABILITY);
+  }
+
+  public EdgeOptions setLogLevel(EdgeDriverLogLevel logLevel){
+    this.logLevel = Require.nonNull("Log level", logLevel);
+    return this;
   }
 
   @Override
@@ -65,5 +71,9 @@ public class EdgeOptions extends ChromiumOptions<EdgeOptions> {
     newInstance.mergeInOptionsFromCaps(CAPABILITY, extraCapabilities);
 
     return newInstance;
+  }
+
+  public EdgeDriverLogLevel getLogLevel(){
+    return logLevel;
   }
 }

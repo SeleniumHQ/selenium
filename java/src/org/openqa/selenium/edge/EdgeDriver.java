@@ -20,6 +20,8 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.internal.Require;
@@ -39,11 +41,17 @@ import java.util.Map;
 public class EdgeDriver extends ChromiumDriver {
 
   public EdgeDriver() {
-    this(new EdgeOptions());
+    this(EdgeDriverService.createDefaultService(), new EdgeOptions());
   }
 
+  /**
+   * Creates a new EdgeDriver instance with the specified options.
+   *
+   * @param options The options to use.
+   * @see #EdgeDriver(EdgeDriverService, EdgeOptions)
+   */
   public EdgeDriver(EdgeOptions options) {
-    this(new EdgeDriverService.Builder().build(), options);
+    this(EdgeDriverService.createServiceWithConfig(options), options);
   }
 
   public EdgeDriver(EdgeDriverService service) {
