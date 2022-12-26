@@ -23,6 +23,7 @@ const { Browser } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const BrowsingContext = require('../../bidi/browsingContext')
+const until = require('../../lib/until')
 
 suite(
   function (env) {
@@ -207,6 +208,36 @@ suite(
           await window1.getTree()
         })
         await assert.rejects(window2.getTree(), { message: 'no such frame' })
+      })
+    })
+
+    describe('Integration Tests', function () {
+      it('can navigate and listen to errors', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onJavascriptException(function (log) {
+          logEntry = log
+        })
+
+        const id = await driver.getWindowHandle()
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: id,
+        })
+        const info = await browsingContext.navigate(Pages.logEntryAdded)
+
+        assert.notEqual(browsingContext.id, null)
+        assert.equal(info.navigationId, null)
+        assert(info.url.includes('/bidi/logEntryAdded.html'))
+
+        await driver.wait(until.urlIs(Pages.logEntryAdded))
+        await driver.findElement({ id: 'jsException' }).click()
+
+        assert.equal(logEntry.text, 'Error: Not working')
+        assert.equal(logEntry.type, 'javascript')
+        assert.equal(logEntry.level, 'error')
+
+        await inspector.close()
+        await browsingContext.close()
       })
     })
   },
