@@ -6,9 +6,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "apple_rules_lint",
-    sha256 = "8feab4b08a958b10cb2abb7f516652cd770b582b36af6477884b3bba1f2f0726",
-    strip_prefix = "apple_rules_lint-0.1.1",
-    url = "https://github.com/apple/apple_rules_lint/archive/0.1.1.zip",
+    sha256 = "7c3cc45a95e3ef6fbc484a4234789a027e11519f454df63cbb963ac499f103f9",
+    strip_prefix = "apple_rules_lint-0.3.2",
+    url = "https://github.com/apple/apple_rules_lint/archive/refs/tags/0.3.2.tar.gz",
 )
 
 load("@apple_rules_lint//lint:repositories.bzl", "lint_deps")
@@ -124,9 +124,9 @@ rules_jvm_external_setup()
 
 http_archive(
     name = "contrib_rules_jvm",
-    sha256 = "a939cd04da2deee16131898d91d8e23559dcd1a30a5128beac30a2b01b33c94f",
-    strip_prefix = "rules_jvm-0.4.0",
-    url = "https://github.com/bazel-contrib/rules_jvm/archive/v0.4.0.tar.gz",
+    sha256 = "548f0583192ff79c317789b03b882a7be9b1325eb5d3da5d7fdcc4b7ca69d543",
+    strip_prefix = "rules_jvm-0.9.0",
+    url = "https://github.com/bazel-contrib/rules_jvm/archive/refs/tags/v0.9.0.tar.gz",
 )
 
 load("@contrib_rules_jvm//:repositories.bzl", "contrib_rules_jvm_deps")
@@ -248,9 +248,8 @@ rules_pkg_dependencies()
 
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "59d5b42ac315e7eadffa944e86e90c2990110a1c8075f1cd145f487e999d22b3",
-    strip_prefix = "rules_docker-0.17.0",
-    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.17.0/rules_docker-v0.17.0.tar.gz"],
+    sha256 = "b1e80761a8a8243d03ebca8845e9cc1ba6c82ce7c5179ce2b295cd36f7e394bf",
+    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.25.0/rules_docker-v0.25.0.tar.gz"],
 )
 
 load(
@@ -297,18 +296,14 @@ container_pull(
 
 http_archive(
     name = "io_bazel_rules_k8s",
-    sha256 = "5d4e71b9e34065222115e85bb6dc3bfd80d7c926fafbcf6b01e04e99769c7ca1",
-    strip_prefix = "rules_k8s-32df7190a9b2534eb5d15e6c018b81fd345a0cf8",
-    url = "https://github.com/bazelbuild/rules_k8s/archive/32df7190a9b2534eb5d15e6c018b81fd345a0cf8.zip",
+    sha256 = "ce5b9bc0926681e2e7f2147b49096f143e6cbc783e71bc1d4f36ca76b00e6f4a",
+    strip_prefix = "rules_k8s-0.7",
+    urls = ["https://github.com/bazelbuild/rules_k8s/archive/refs/tags/v0.7.tar.gz"],
 )
 
 load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_defaults", "k8s_repositories")
 
 k8s_repositories()
-
-load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
-
-k8s_go_deps()
 
 load(
     "@io_bazel_rules_go//go:deps.bzl",
