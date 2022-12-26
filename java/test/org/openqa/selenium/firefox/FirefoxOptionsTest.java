@@ -59,6 +59,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -401,6 +402,68 @@ class FirefoxOptionsTest {
     options.setBinary(binary.toPath());
 
     one.setCapability(FIREFOX_OPTIONS, options);
+
+    FirefoxOptions two = new FirefoxOptions();
+    two.addArguments("verbose");
+    two.addPreference("opt2", "val2");
+    two.addPreference("opt3", "val3");
+    two = two.merge(one);
+
+    Map<String, Object> map = two.asMap();
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("prefs").asInstanceOf(MAP)
+      .containsEntry("opt1", "val1")
+      .containsEntry("opt2", "val4")
+      .containsEntry("opt3", "val3");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ACCEPT_INSECURE_CERTS).isExactlyInstanceOf(Boolean.class);
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("binary").asInstanceOf(STRING)
+      .isEqualTo(binary.getPath());
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(FIREFOX_OPTIONS).asInstanceOf(MAP)
+      .extractingByKey("log").asInstanceOf(MAP)
+      .containsEntry("level", "debug");
+
+    FirefoxProfile extractedProfile = two.getProfile();
+    assertThat(extractedProfile.getStringPreference(key, "-")).isEqualTo(value);
+  }
+
+  @Test
+  void mergingOptionsWithOptionsAsMutableCapabilities() throws IOException {
+    Map<String, String> prefs = new HashMap<>();
+    prefs.put("opt1", "val1");
+    prefs.put("opt2", "val4");
+
+    String key = "browser.startup.homepage";
+    String value = "about:robots";
+
+    FirefoxProfile profile = new FirefoxProfile();
+    profile.setPreference(key, value);
+
+    File binary = TestUtilities.createTmpFile("binary");
+
+    MutableCapabilities browserCaps = new MutableCapabilities();
+
+    browserCaps.setCapability("args", Arrays.asList("verbose", "silent"));
+    browserCaps.setCapability("prefs", prefs);
+    browserCaps.setCapability("profile", profile.toJson());
+    browserCaps.setCapability("binary", binary.getPath());
+    browserCaps.setCapability("log", DEBUG.toJson());
+
+    MutableCapabilities one = new MutableCapabilities();
+    one.setCapability(FIREFOX_OPTIONS, browserCaps);
 
     FirefoxOptions two = new FirefoxOptions();
     two.addArguments("verbose");

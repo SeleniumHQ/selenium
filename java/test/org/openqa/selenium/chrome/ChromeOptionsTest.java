@@ -27,6 +27,7 @@ import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -252,6 +253,60 @@ class ChromeOptionsTest {
 
     assertThat(map).asInstanceOf(MAP)
       .extractingByKey(ACCEPT_INSECURE_CERTS).isExactlyInstanceOf(Boolean.class);
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("extensions").asInstanceOf(LIST)
+      .containsExactly(ext1Encoded, ext2);
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("binary").asInstanceOf(STRING)
+      .isEqualTo(binary.getPath());
+  }
+
+  @Test
+  void mergingOptionsWithOptionsAsMutableCapabilities() {
+    File ext1 = TestUtilities.createTmpFile("ext1");
+    String ext1Encoded = Base64.getEncoder().encodeToString("ext1".getBytes());
+    String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
+
+    MutableCapabilities browserCaps = new MutableCapabilities();
+
+    File binary = TestUtilities.createTmpFile("binary");
+
+    browserCaps.setCapability("binary", binary.getPath());
+    browserCaps.setCapability("opt1", "val1");
+    browserCaps.setCapability("opt2", "val4");
+    browserCaps.setCapability("args", Arrays.asList("silent", "verbose"));
+    browserCaps.setCapability("extensions", Arrays.asList(ext1, ext2));
+
+    MutableCapabilities one = new MutableCapabilities();
+    one.setCapability(ChromeOptions.CAPABILITY, browserCaps);
+
+    ChromeOptions two = new ChromeOptions();
+    two.addArguments("verbose");
+    two.setExperimentalOption("opt2", "val2");
+    two.setExperimentalOption("opt3", "val3");
+    two = two.merge(one);
+
+    Map<String, Object> map = two.asMap();
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+
+    assertThat(map).asInstanceOf(MAP)
+      .containsEntry("opt1", "val1");
+
+    assertThat(map).asInstanceOf(MAP)
+      .containsEntry("opt2", "val4");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
+      .containsEntry("opt2", "val2")
+      .containsEntry("opt3", "val3");
 
     assertThat(map).asInstanceOf(MAP)
       .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
