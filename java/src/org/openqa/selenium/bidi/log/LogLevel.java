@@ -15,14 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict'
+package org.openqa.selenium.bidi.log;
 
-/**
- * @fileoverview Defines necessary adapaters for jasmine to have an equivalent
- * API to mocha.
- */
+public enum LogLevel {
+  DEBUG("debug"),
+  ERROR("error"),
+  INFO("info"),
+  WARNING("warning");
 
-global.after = global.afterAll
-global.before = global.beforeAll
+  private final String level;
 
-global.jasmine.DEFAULT_TIMEOUT_INTERVAL = 120 * 1000
+  LogLevel(String level) {
+    this.level = level;
+  }
+
+  @Override
+  public String toString() {
+    return level;
+  }
+}

@@ -59,10 +59,25 @@ module Selenium
         # Backward compatibility
         #
 
-        alias_method :version, :browser_version
-        alias_method :version=, :browser_version=
-        alias_method :platform, :platform_name
-        alias_method :platform=, :platform_name=
+        def version
+          WebDriver.logger.deprecate('`Capabilities#version`', '`Capabilities#browser_version`', id: :jwp_caps)
+          browser_version
+        end
+
+        def version=(value)
+          WebDriver.logger.deprecate('`Capabilities#version=`', '`Capabilities#browser_version=`', id: :jwp_caps)
+          self.browser_version = value
+        end
+
+        def platform
+          WebDriver.logger.deprecate('`Capabilities#platform`', '`Capabilities#platform_name`', id: :jwp_caps)
+          platform_name
+        end
+
+        def platform=(value)
+          WebDriver.logger.deprecate('`Capabilities#platform=`', '`Capabilities#platform_name=`', id: :jwp_caps)
+          self.platform_name = value
+        end
 
         #
         # Convenience methods for the common choices.

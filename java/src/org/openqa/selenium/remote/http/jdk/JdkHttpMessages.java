@@ -115,7 +115,12 @@ class JdkHttpMessages {
 
     if (length == null) {
       // read the data into a byte array to know the length
-      return BodyPublishers.ofByteArray(Contents.bytes(req.getContent()));
+      byte[] bytes = Contents.bytes(req.getContent());
+      if (bytes.length == 0) {
+        //Looks like we were given a request with no payload.
+        return BodyPublishers.noBody();
+      }
+      return BodyPublishers.ofByteArray(bytes);
     }
 
     // we know the length of the request and use it
@@ -146,7 +151,10 @@ class JdkHttpMessages {
     res.setStatus(response.statusCode());
     response.headers().map()
       .forEach((name, values) -> values.stream().filter(Objects::nonNull).forEach(value -> res.addHeader(name, value)));
-    res.setContent(() -> new ByteArrayInputStream(response.body()));
+    byte[] responseBody = response.body();
+    if (responseBody != null) {
+      res.setContent(() -> new ByteArrayInputStream(responseBody));
+    }
 
     return res;
   }

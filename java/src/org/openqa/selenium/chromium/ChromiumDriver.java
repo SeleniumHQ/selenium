@@ -276,7 +276,6 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   @Override
   public void quit() {
-    connection.ifPresent(Connection::close);
     super.quit();
   }
 }

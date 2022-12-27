@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/driver'
+require 'selenium/webdriver/chromium/driver'
 
 module Selenium
   module WebDriver
@@ -28,7 +28,15 @@ module Selenium
       # @api private
       #
 
-      class Driver < Selenium::WebDriver::Chrome::Driver
+      class Driver < Chromium::Driver
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+
+          caps = process_options(options, capabilities)
+          url = service_url(service || Service.edge)
+          super(caps: caps, url: url, **opts)
+        end
+
         def browser
           :edge
         end
@@ -37,6 +45,16 @@ module Selenium
 
         def devtools_address
           "http://#{capabilities['ms:edgeOptions']['debuggerAddress']}"
+        end
+
+        def process_options(options, capabilities)
+          if options && !options.is_a?(Options)
+            raise ArgumentError, ":options must be an instance of #{Options}"
+          elsif options.nil? && capabilities.nil?
+            options = Options.new
+          end
+
+          super(options, capabilities)
         end
       end # Driver
     end # Edge

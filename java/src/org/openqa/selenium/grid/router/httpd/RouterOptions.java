@@ -15,28 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.grid.node.locators;
+package org.openqa.selenium.grid.router.httpd;
 
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.By;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.locators.CustomLocator;
+import org.openqa.selenium.grid.config.Config;
 
-/**
- * A class implementing {link @CustomLocator} and to be used as a fallback locator on the server
- * side.
- */
+public class RouterOptions {
 
-@AutoService(CustomLocator.class)
-public class ByName implements CustomLocator {
-  @Override
-  public String getLocatorName() {
-    return "name";
+  static final String NETWORK = "network";
+
+  private final Config config;
+
+  public RouterOptions(Config config) {
+    this.config = config;
   }
 
-  @Override
-  public By createBy(Object usingParameter) {
-    Require.argument("Locator value", usingParameter).instanceOf(String.class);
-    return By.name((String) usingParameter);
+  public String subPath() {
+    return config.get(NETWORK, "sub-path").map(prefix -> {
+      prefix = prefix.trim();
+      if (!prefix.startsWith("/")) {
+        prefix = "/" + prefix; //Prefix with a '/' if absent.
+      }
+      if (prefix.endsWith("/")) {
+        prefix = prefix.substring(0, prefix.length() -1); //Remove the trailing '/' if present.
+      }
+      return prefix;
+    }).orElse("");
   }
 }

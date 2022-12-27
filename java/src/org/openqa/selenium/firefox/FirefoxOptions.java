@@ -331,8 +331,65 @@ public class FirefoxOptions extends AbstractDriverOptions<FirefoxOptions> {
     Require.nonNull("Capabilities to merge", capabilities);
     FirefoxOptions newInstance = new FirefoxOptions();
     getCapabilityNames().forEach(name -> newInstance.setCapability(name, getCapability(name)));
-    capabilities.getCapabilityNames().forEach(name -> newInstance.setCapability(name, capabilities.getCapability(name)));
     newInstance.mirror(this);
+
+    for (String name : capabilities.getCapabilityNames()) {
+
+      if (!name.equals(Keys.ARGS.key) &&
+          !name.equals(Keys.PREFS.key) &&
+          !name.equals(Keys.PROFILE.key) &&
+          !name.equals(Keys.BINARY.key) &&
+          !name.equals(Keys.LOG.key)) {
+        newInstance.setCapability(name, capabilities.getCapability(name));
+      }
+
+      if (name.equals(Keys.ARGS.key) && capabilities.getCapability(name) != null) {
+        List<String> arguments = (List<String>) (capabilities.getCapability(("args")));
+        arguments.forEach(arg -> {
+          if (!((List<String>) newInstance.firefoxOptions.get(Keys.ARGS.key())).contains(arg)) {
+            newInstance.addArguments(arg);
+          }
+        });
+      }
+
+      if (name.equals(Keys.PREFS.key) && capabilities.getCapability(name) != null) {
+        Map<String, Object> prefs =
+          (Map<String, Object>) (capabilities.getCapability(("prefs")));
+        prefs.forEach(newInstance::addPreference);
+      }
+
+      if (name.equals(Keys.PROFILE.key) && capabilities.getCapability(name) != null) {
+        String rawProfile =
+          (String) capabilities.getCapability("profile");
+        try {
+          newInstance.setProfile(FirefoxProfile.fromJson(rawProfile));
+        } catch (IOException e) {
+          throw new WebDriverException(e);
+        }
+      }
+
+      if (name.equals(Keys.BINARY.key) && capabilities.getCapability(name) != null) {
+        Object binary = capabilities.getCapability("binary");
+        if (binary instanceof String) {
+          newInstance.setBinary((String) binary);
+        } else if (binary instanceof Path) {
+          newInstance.setBinary((Path) binary);
+        } else if (binary instanceof FirefoxBinary) {
+          newInstance.setBinary((FirefoxBinary) binary);
+        }
+      }
+
+      if (name.equals(Keys.LOG.key) && capabilities.getCapability(name) != null) {
+        Map<String, Object> logLevelMap =
+          (Map<String, Object>) capabilities.getCapability("log");
+        FirefoxDriverLogLevel logLevel =
+          FirefoxDriverLogLevel.fromString((String) logLevelMap.get("level"));
+        if (logLevel != null) {
+          newInstance.setLogLevel(logLevel);
+        }
+      }
+    }
+
     if (capabilities instanceof FirefoxOptions) {
       newInstance.mirror((FirefoxOptions) capabilities);
     } else {

@@ -24,11 +24,12 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           java-version: 11
-          distribution: 'adopt'
+          distribution: 'temurin'
       - uses: ./.github/actions/cache-bazel
         with:
           workflow: ruby
           key: bazel-ruby-nightly-${{ matrix.gem }}
+          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
       - uses: ./.github/actions/bazel
         with:
           command: run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}

@@ -50,7 +50,6 @@ class GetContainerLogs {
 
     HttpResponse res = client.execute(
       new HttpRequest(GET, requestUrl)
-        .addHeader("Content-Length", "0")
         .addHeader("Content-Type", "text/plain"));
     if (res.getStatus() != HTTP_OK) {
       LOG.warning("Unable to inspect container " + id);

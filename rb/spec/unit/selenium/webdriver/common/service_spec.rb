@@ -30,6 +30,42 @@ module Selenium
         stub_const('Selenium::WebDriver::Service::EXECUTABLE', 'service')
       end
 
+      describe 'browser shortcuts' do
+        before { allow(Platform).to receive(:find_binary).and_return(service_path) }
+
+        let(:args) { %w[--foo --bar] }
+
+        it 'creates Chrome instance' do
+          service = Service.chrome(args: args)
+          expect(service).to be_a(Chrome::Service)
+          expect(service.args).to eq args
+        end
+
+        it 'creates Edge instance' do
+          service = Service.edge(args: args)
+          expect(service).to be_a(Edge::Service)
+          expect(service.args).to eq args
+        end
+
+        it 'creates Firefox instance' do
+          service = Service.firefox(args: args)
+          expect(service).to be_a(Firefox::Service)
+          expect(service.args).to eq args
+        end
+
+        it 'creates IE instance' do
+          service = Service.internet_explorer(args: args)
+          expect(service).to be_a(IE::Service)
+          expect(service.args).to eq args
+        end
+
+        it 'creates Safari instance' do
+          service = Service.safari(args: args)
+          expect(service).to be_a(Safari::Service)
+          expect(service.args).to eq args
+        end
+      end
+
       describe '#new' do
         it 'uses default path and port' do
           allow(Platform).to receive(:find_binary).and_return(service_path)

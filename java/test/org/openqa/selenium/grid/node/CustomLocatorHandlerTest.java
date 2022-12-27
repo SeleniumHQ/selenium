@@ -35,7 +35,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.node.locators.ById;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.grid.web.Values;
@@ -241,35 +240,6 @@ class CustomLocatorHandlerTest {
       new HttpRequest(POST, "/session/1234/element/234345/elements")
         .setContent(Contents.asJson(ImmutableMap.of(
           "using", "cheese",
-          "value", "tasty"))));
-
-    List<Map<String, Object>> elements = Values.get(res, new TypeToken<List<Map<String, Object>>>(){}.getType());
-    assertThat(elements).hasSize(1);
-    Object seenId = elements.get(0).get(Dialect.W3C.getEncodedElementKey());
-    assertThat(seenId).isEqualTo(elementId);
-  }
-
-  @Test
-  void shouldFallbackToUseById() {
-    String elementId = UUID.randomUUID().toString();
-
-    Node node = Mockito.mock(Node.class);
-    when(node.executeWebDriverCommand(argThat(matchesUri("/session/{sessionId}/elements"))))
-      .thenReturn(
-        new HttpResponse()
-          .addHeader("Content-Type", Json.JSON_UTF_8)
-          .setContent(Contents.asJson(singletonMap(
-            "value", singletonList(singletonMap(Dialect.W3C.getEncodedElementKey(), elementId))))));
-
-    HttpHandler handler = new CustomLocatorHandler(
-      node,
-      registrationSecret,
-      singleton(new ById()));
-
-    HttpResponse res = handler.execute(
-      new HttpRequest(POST, "/session/1234/elements")
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "using", "id",
           "value", "tasty"))));
 
     List<Map<String, Object>> elements = Values.get(res, new TypeToken<List<Map<String, Object>>>(){}.getType());

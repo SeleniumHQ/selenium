@@ -304,13 +304,25 @@ public class WebDriverDecorator<T extends WebDriver> {
             || decoratedInterfaces.contains(method.getDeclaringClass())) {
           return method.invoke(decorated, args);
         }
-        if (originalInterfaces.contains(method.getDeclaringClass())) {
+        // Check if the class in which the method resides, implements any one of the
+        // interfaces that we extracted from the decorated class.
+        boolean isCompatible = originalInterfaces.stream()
+          .anyMatch(eachInterface -> eachInterface.isAssignableFrom(method.getDeclaringClass()));
+
+        if (isCompatible) {
           decorated.beforeCall(method, args);
           Object result = decorated.call(method, args);
           decorated.afterCall(method, result, args);
           return result;
         }
-        if (derivedInterfaces.containsKey(method.getDeclaringClass())) {
+
+        // Check if the class in which the current method resides, implements any of the
+        // additional interfaces that we extracted from the decorated class.
+        // E.g., of additional interfaces include WrapsDriver,WrapsElement,JsonSerializer
+        isCompatible = derivedInterfaces.keySet().stream()
+          .anyMatch(eachInterface -> eachInterface.isAssignableFrom(method.getDeclaringClass()));
+
+        if (isCompatible) {
           return derivedInterfaces.get(method.getDeclaringClass()).invoke(proxy, method, args);
         }
 

@@ -14,30 +14,22 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+package org.openqa.selenium.bidi.log;
 
-package org.openqa.selenium.grid.node.locators;
+public class FilterBy {
 
-import com.google.auto.service.AutoService;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.remote.locators.CustomLocator;
-
-/**
- * A class implementing {link @CustomLocator} and to be used as a fallback locator on the server
- * side.
- */
-
-@AutoService(CustomLocator.class)
-public class ById implements CustomLocator {
-  @Override
-  public String getLocatorName() {
-    return "id";
+  private final LogLevel level;
+  
+  private FilterBy(LogLevel logLevel) {
+    this.level = logLevel;
   }
 
-  @Override
-  public By createBy(Object usingParameter) {
-    Require.argument("Locator value", usingParameter).instanceOf(String.class);
-    return By.id((String) usingParameter);
+  public static FilterBy logLevel(LogLevel logLevel) {
+    return new FilterBy(logLevel);
   }
+
+  public LogLevel getLevel() {
+    return level;
+  }
+
 }

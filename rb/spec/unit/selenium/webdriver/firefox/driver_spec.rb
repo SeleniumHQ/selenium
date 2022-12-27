@@ -32,7 +32,10 @@ module Selenium
         end
 
         def expect_request(body: nil, endpoint: nil)
-          body = (body || {capabilities: {alwaysMatch: {browserName: "firefox"}}}).to_json
+          body = (body || {capabilities: {alwaysMatch: {acceptInsecureCerts: true,
+                                                        browserName: "firefox",
+                                                        'moz:firefoxOptions': {},
+                                                        'moz:debuggerAddress': true}}}).to_json
           endpoint ||= "#{service_manager.uri}/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
@@ -56,9 +59,23 @@ module Selenium
           expect { Driver.new(options: Options.new(**opts)) }.not_to raise_exception
         end
 
+        it 'does not accept Options of the wrong class' do
+          expect {
+            Driver.new(options: Options.chrome)
+          }.to raise_exception(ArgumentError, ':options must be an instance of Selenium::WebDriver::Firefox::Options')
+        end
+
+        it 'does not allow both Options and Capabilities' do
+          msg = "Don't use both :options and :capabilities when initializing Selenium::WebDriver::Firefox::Driver, " \
+                "prefer :options"
+          expect {
+            Driver.new(options: Options.new, capabilities: Remote::Capabilities.firefox)
+          }.to raise_exception(ArgumentError, msg)
+        end
+
         context 'with :capabilities' do
           it 'accepts value as a Symbol' do
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "firefox"}}})
+            expect_request
             expect { Driver.new(capabilities: :firefox) }.not_to raise_exception
           end
 

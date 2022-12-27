@@ -17,15 +17,22 @@
 
 package org.openqa.selenium.bidi;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.fail;
+import static org.openqa.selenium.testing.Safely.safelyCall;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WindowType;
-import org.openqa.selenium.bidi.log.BaseLogEntry;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
+import org.openqa.selenium.bidi.log.FilterBy;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
+import org.openqa.selenium.bidi.log.LogEntry;
+import org.openqa.selenium.bidi.log.LogLevel;
 import org.openqa.selenium.bidi.log.StackTrace;
 import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
@@ -39,9 +46,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.openqa.selenium.testing.Safely.safelyCall;
 
 class LogInspectorTest {
 
@@ -64,7 +68,7 @@ class LogInspectorTest {
   void canListenToConsoleLog() throws ExecutionException, InterruptedException, TimeoutException {
     try (LogInspector logInspector = new LogInspector(driver)) {
       CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
-      logInspector.onConsoleLog(future::complete);
+      logInspector.onConsoleEntry(future::complete);
 
       page = server.whereIs("/bidi/logEntryAdded.html");
       driver.get(page);
@@ -76,9 +80,47 @@ class LogInspectorTest {
       assertThat(logEntry.getRealm()).isNull();
       assertThat(logEntry.getArgs().size()).isEqualTo(1);
       assertThat(logEntry.getType()).isEqualTo("console");
-      assertThat(logEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.INFO);
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
       assertThat(logEntry.getStackTrace()).isNull();
+    }
+  }
+
+  @Test
+  void canFilterConsoleLogs() throws ExecutionException, InterruptedException, TimeoutException {
+    try (LogInspector logInspector = new LogInspector(driver)) {
+      CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
+      logInspector.onConsoleEntry(future::complete, FilterBy.logLevel(LogLevel.INFO));
+
+      page = server.whereIs("/bidi/logEntryAdded.html");
+      driver.get(page);
+      driver.findElement(By.id("consoleLog")).click();
+
+      ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+
+      assertThat(logEntry.getText()).isEqualTo("Hello, world!");
+      assertThat(logEntry.getRealm()).isNull();
+      assertThat(logEntry.getArgs().size()).isEqualTo(1);
+      assertThat(logEntry.getType()).isEqualTo("console");
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
+      assertThat(logEntry.getMethod()).isEqualTo("log");
+      assertThat(logEntry.getStackTrace()).isNull();
+
+      CompletableFuture<ConsoleLogEntry> errorLogfuture = new CompletableFuture<>();
+
+      logInspector.onConsoleEntry(errorLogfuture::complete, FilterBy.logLevel(LogLevel.ERROR));
+      driver.findElement(By.id("consoleError")).click();
+
+      ConsoleLogEntry errorLogEntry = errorLogfuture.get(5, TimeUnit.SECONDS);
+
+      assertThat(errorLogEntry.getText()).isEqualTo("I am console error");
+      assertThat(errorLogEntry.getRealm()).isNull();
+      assertThat(errorLogEntry.getArgs().size()).isEqualTo(1);
+      assertThat(errorLogEntry.getType()).isEqualTo("console");
+      assertThat(errorLogEntry.getLevel()).isEqualTo(LogLevel.ERROR);
+      assertThat(errorLogEntry.getMethod()).isEqualTo("error");
+      assertThat(errorLogEntry.getStackTrace()).isNotNull();
+      assertThat(errorLogEntry.getStackTrace().getCallFrames().size()).isEqualTo(2);
     }
   }
 
@@ -97,7 +139,38 @@ class LogInspectorTest {
 
       assertThat(logEntry.getText()).isEqualTo("Error: Not working");
       assertThat(logEntry.getType()).isEqualTo("javascript");
-      assertThat(logEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
+    }
+  }
+
+  @Test
+  void canFilterJavascriptLogs() throws ExecutionException, InterruptedException {
+    try (LogInspector logInspector = new LogInspector(driver)) {
+      CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
+      logInspector.onJavaScriptLog(future::complete, FilterBy.logLevel(LogLevel.ERROR));
+
+      page = server.whereIs("/bidi/logEntryAdded.html");
+      driver.get(page);
+      driver.findElement(By.id("jsException")).click();
+
+      JavascriptLogEntry logEntry = null;
+      try {
+        logEntry = future.get(5, TimeUnit.SECONDS);
+      } catch (TimeoutException e) {
+        fail("Time out exception" + e.getMessage());
+      }
+
+      assertThat(logEntry.getText()).isEqualTo("Error: Not working");
+      assertThat(logEntry.getType()).isEqualTo("javascript");
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
+
+      CompletableFuture<JavascriptLogEntry> infoLogFuture = new CompletableFuture<>();
+
+      logInspector.onJavaScriptLog(infoLogFuture::complete, FilterBy.logLevel(LogLevel.INFO));
+      driver.findElement(By.id("jsException")).click();
+
+      assertThatExceptionOfType(TimeoutException.class).isThrownBy(
+        () -> infoLogFuture.get(5, TimeUnit.SECONDS));
     }
   }
 
@@ -116,7 +189,7 @@ class LogInspectorTest {
 
       assertThat(logEntry.getText()).isEqualTo("Error: Not working");
       assertThat(logEntry.getType()).isEqualTo("javascript");
-      assertThat(logEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
     }
   }
 
@@ -139,6 +212,36 @@ class LogInspectorTest {
     }
   }
 
+  @Test
+  void canFilterLogs() throws ExecutionException, InterruptedException {
+    try (LogInspector logInspector = new LogInspector(driver)) {
+      CompletableFuture<LogEntry> future = new CompletableFuture<>();
+      logInspector.onLog(future::complete, FilterBy.logLevel(LogLevel.INFO));
+
+      page = server.whereIs("/bidi/logEntryAdded.html");
+      driver.get(page);
+      driver.findElement(By.id("consoleLog")).click();
+
+      LogEntry logEntry = null;
+      try {
+        logEntry = future.get(5, TimeUnit.SECONDS);
+      } catch (TimeoutException e) {
+        fail("Time out exception" + e.getMessage());
+      }
+
+      assertThat(logEntry.getConsoleLogEntry().isPresent()).isTrue();
+
+      ConsoleLogEntry consoleLogEntry = logEntry.getConsoleLogEntry().get();
+      assertThat(consoleLogEntry.getText()).isEqualTo("Hello, world!");
+      assertThat(consoleLogEntry.getRealm()).isNull();
+      assertThat(consoleLogEntry.getArgs().size()).isEqualTo(1);
+      assertThat(consoleLogEntry.getType()).isEqualTo("console");
+      assertThat(consoleLogEntry.getLevel()).isEqualTo(LogLevel.INFO);
+      assertThat(consoleLogEntry.getMethod()).isEqualTo("log");
+      assertThat(consoleLogEntry.getStackTrace()).isNull();
+    }
+  }
+
   @Disabled("Until browsers support subscribing to multiple contexts.")
   @Test
   void canListenToConsoleLogForABrowsingContext()
@@ -148,7 +251,7 @@ class LogInspectorTest {
 
     try (LogInspector logInspector = new LogInspector(browsingContextId, driver)) {
       CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
-      logInspector.onConsoleLog(future::complete);
+      logInspector.onConsoleEntry(future::complete);
 
       driver.get(page);
       driver.findElement(By.id("consoleLog")).click();
@@ -159,7 +262,7 @@ class LogInspectorTest {
       assertThat(logEntry.getRealm()).isNull();
       assertThat(logEntry.getArgs().size()).isEqualTo(1);
       assertThat(logEntry.getType()).isEqualTo("console");
-      assertThat(logEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.INFO);
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
       assertThat(logEntry.getStackTrace()).isNull();
     }
@@ -183,7 +286,7 @@ class LogInspectorTest {
 
       assertThat(logEntry.getText()).isEqualTo("Error: Not working");
       assertThat(logEntry.getType()).isEqualTo("javascript");
-      assertThat(logEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
     }
   }
 
@@ -205,7 +308,7 @@ class LogInspectorTest {
 
       assertThat(logEntry.getText()).isEqualTo("Error: Not working");
       assertThat(logEntry.getType()).isEqualTo("javascript");
-      assertThat(logEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
     }
   }
 
@@ -224,7 +327,7 @@ class LogInspectorTest {
     CountDownLatch latch = new CountDownLatch(2);
 
     try (LogInspector logInspector = new LogInspector(browsingContextIds, driver)) {
-      logInspector.onConsoleLog(logEntry -> latch.countDown());
+      logInspector.onConsoleEntry(logEntry -> latch.countDown());
 
       driver.get(page);
       // Triggers console event in the second tab
@@ -348,6 +451,35 @@ class LogInspectorTest {
       latch.await();
 
       assertThat(latch.getCount()).isZero();
+    }
+  }
+
+
+  @Test
+  void canListenToLogsWithMultipleConsumers()
+    throws ExecutionException, InterruptedException, TimeoutException {
+    try (LogInspector logInspector = new LogInspector(driver)) {
+      CompletableFuture<JavascriptLogEntry> completableFuture1 = new CompletableFuture<>();
+      logInspector.onJavaScriptLog(completableFuture1::complete);
+
+      CompletableFuture<JavascriptLogEntry> completableFuture2 = new CompletableFuture<>();
+      logInspector.onJavaScriptLog(completableFuture2::complete);
+
+      page = server.whereIs("/bidi/logEntryAdded.html");
+      driver.get(page);
+      driver.findElement(By.id("jsException")).click();
+
+      JavascriptLogEntry logEntry = completableFuture1.get(5, TimeUnit.SECONDS);
+
+      assertThat(logEntry.getText()).isEqualTo("Error: Not working");
+      assertThat(logEntry.getType()).isEqualTo("javascript");
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
+
+      logEntry = completableFuture2.get(5, TimeUnit.SECONDS);
+
+      assertThat(logEntry.getText()).isEqualTo("Error: Not working");
+      assertThat(logEntry.getType()).isEqualTo("javascript");
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.ERROR);
     }
   }
 

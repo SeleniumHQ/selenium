@@ -1,3 +1,17 @@
+## v4.7.1
+
+#### :nail_care: Polish
+
+* feat/deprecation message for standalone3x (#11422)
+
+#### :bug: Bug Fix
+
+* feat/fix spawn format for SeleniumServer, issue 11405 (#11412)
+
+#### Committers: 1
+
+- Potapov Dmitriy ([@potapovDim](https://github.com/potapovDim))
+
 ## v4.7.0
 
 #### :rocket: New Feature

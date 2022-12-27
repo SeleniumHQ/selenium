@@ -43,7 +43,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Build grid
         uses: ./.github/actions/bazel
         with:
@@ -72,7 +72,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Run small tests
         uses: ./.github/actions/bazel-test
         with:
@@ -106,7 +106,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Run medium tests
         uses: ./.github/actions/bazel-test
         with:
@@ -134,7 +134,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Run linter
         uses: ./.github/actions/bazel-test
         with:
@@ -171,7 +171,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:
@@ -229,7 +229,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:
@@ -278,7 +278,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Setup Firefox
         uses: abhi1693/setup-browser@v0.3.4
         with:
@@ -319,7 +319,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
+          distribution: 'temurin'
       - name: Generate javadoc
         run: |
           ./go --verbose javadocs

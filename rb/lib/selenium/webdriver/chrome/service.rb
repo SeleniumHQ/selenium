@@ -17,10 +17,12 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/chromium/service'
+
 module Selenium
   module WebDriver
     module Chrome
-      class Service < WebDriver::Service
+      class Service < Chromium::Service
         DEFAULT_PORT = 9515
         EXECUTABLE = 'chromedriver'
         MISSING_TEXT = <<~ERROR
@@ -29,23 +31,6 @@ module Selenium
           More info at https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/?language=ruby.
         ERROR
         SHUTDOWN_SUPPORTED = true
-
-        private
-
-        # NOTE: This processing is deprecated
-        def extract_service_args(driver_opts)
-          driver_args = super
-          driver_opts = driver_opts.dup
-          driver_args << "--log-path=#{driver_opts.delete(:log_path)}" if driver_opts.key?(:log_path)
-          driver_args << "--url-base=#{driver_opts.delete(:url_base)}" if driver_opts.key?(:url_base)
-          driver_args << "--port-server=#{driver_opts.delete(:port_server)}" if driver_opts.key?(:port_server)
-          if driver_opts.key?(:whitelisted_ips)
-            driver_args << "--whitelisted-ips=#{driver_opts.delete(:whitelisted_ips)}"
-          end
-          driver_args << "--verbose" if driver_opts.key?(:verbose)
-          driver_args << "--silent" if driver_opts.key?(:silent)
-          driver_args
-        end
       end # Service
     end # Chrome
   end # WebDriver

@@ -17,22 +17,20 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/options'
+require 'selenium/webdriver/chromium/options'
 
 module Selenium
   module WebDriver
     module Edge
-      class Options < Selenium::WebDriver::Chrome::Options
+      class Options < Chromium::Options
         KEY = 'ms:edgeOptions'
         BROWSER = 'MicrosoftEdge'
 
-        protected
+        private
 
         def enable_logging(browser_options)
           browser_options['ms:loggingPrefs'] = @logging_prefs
         end
-
-        private
 
         def binary_path
           Edge.path

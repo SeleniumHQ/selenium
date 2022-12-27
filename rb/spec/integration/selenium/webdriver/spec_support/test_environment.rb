@@ -165,7 +165,7 @@ module Selenium
           {
             browser: browser,
             driver: driver,
-            version: driver_instance.capabilities.version,
+            version: driver_instance.capabilities.browser_version,
             platform: Platform.os,
             ci: Platform.ci
           }
@@ -191,8 +191,55 @@ module Selenium
           WebDriver::Driver.for(:remote, url: url, **opts)
         end
 
+        def chrome_driver(service: nil, **opts)
+          service ||= WebDriver::Service.chrome
+          service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
+          service.args << '--verbose' if WebDriver.logger.debug?
+          WebDriver::Driver.for(:chrome, service: service, **opts)
+        end
+
+        def edge_driver(service: nil, **opts)
+          service ||= WebDriver::Service.edge
+          service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
+          service.args << '--verbose' if WebDriver.logger.debug?
+          WebDriver::Driver.for(:edge, service: service, **opts)
+        end
+
+        def firefox_driver(service: nil, **opts)
+          service ||= WebDriver::Service.firefox
+          service.args.push('--log', 'trace') if WebDriver.logger.debug?
+          WebDriver::Driver.for(:firefox, **opts)
+        end
+
+        def safari_driver(**opts)
+          service_opts = {}
+          service_opts[:args] = []
+          service_opts[:args] << '--diagnose' if WebDriver.logger.debug?
+          service = WebDriver::Service.safari(**service_opts)
+          WebDriver::Driver.for(:safari, service: service, **opts)
+        end
+
+        def safari_preview_driver(**opts)
+          service_opts = {}
+          service_opts[:args] = []
+          service_opts[:args] << '--diagnose' if WebDriver.logger.debug?
+          service = WebDriver::Service.safari(**service_opts)
+          WebDriver::Driver.for(:safari, service: service, **opts)
+        end
+
+        def chrome_options(**opts)
+          opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
+          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
+          WebDriver::Options.chrome(**opts)
+        end
+
+        def edge_options(**opts)
+          opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
+          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
+          WebDriver::Options.edge(**opts)
+        end
+
         def firefox_options(**opts)
-          opts[:log_level] = 'TRACE' if WebDriver.logger.level == :debug
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           opts[:args] << '--headless' if ENV['HEADLESS']
           WebDriver::Options.firefox(**opts)
@@ -203,39 +250,9 @@ module Selenium
           WebDriver::Options.ie(**opts)
         end
 
-        def chrome_driver(options: nil, **opts)
-          service_opts = {}
-          service_opts[:args] = ['--disable-build-check'] if ENV['DISABLE_BUILD_CHECK']
-          service = WebDriver::Service.chrome(**service_opts)
-          WebDriver::Driver.for(:chrome, options: options, service: service, **opts)
-        end
-
-        def chrome_options(**opts)
-          opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
-          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
-          WebDriver::Options.chrome(**opts)
-        end
-
-        def edge_driver(options: nil, **opts)
-          service_opts = {}
-          service_opts[:args] = ['--disable-build-check'] if ENV['DISABLE_BUILD_CHECK']
-          service = WebDriver::Service.edge(**service_opts)
-          WebDriver::Driver.for(:edge, options: options, service: service, **opts)
-        end
-
-        def edge_options(**opts)
-          opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
-          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
-          WebDriver::Options.edge(**opts)
-        end
-
         def safari_preview_options(**opts)
           WebDriver::Safari.technology_preview!
           WebDriver::Options.safari(**opts)
-        end
-
-        def safari_preview_driver(**opts)
-          WebDriver::Driver.for(:safari, **opts)
         end
 
         def populate_from_bazel_target

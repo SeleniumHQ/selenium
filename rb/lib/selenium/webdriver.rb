@@ -36,6 +36,7 @@ module Selenium
     Location  = Struct.new(:latitude, :longitude, :altitude)
 
     autoload :BiDi,       'selenium/webdriver/bidi'
+    autoload :Chromium,   'selenium/webdriver/chromium'
     autoload :Chrome,     'selenium/webdriver/chrome'
     autoload :DevTools,   'selenium/webdriver/devtools'
     autoload :Edge,       'selenium/webdriver/edge'

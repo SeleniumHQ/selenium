@@ -35,6 +35,10 @@ module Selenium
           super
         end
 
+        def as_json(*)
+          @options[:browser_name] = Safari.technology_preview? ? "Safari Technology Preview" : 'safari'
+          super
+        end
       end # Options
     end # Safari
   end # WebDriver

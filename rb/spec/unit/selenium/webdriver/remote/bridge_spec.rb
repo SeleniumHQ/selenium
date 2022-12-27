@@ -67,7 +67,7 @@ module Selenium
               .with(any_args, payload)
               .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
 
-            bridge.create_session(Chrome::Options.new(args: %w[foo bar]).as_json)
+            bridge.create_session(Options.chrome(args: %w[foo bar]).as_json)
             expect(http).to have_received(:request).with(any_args, payload)
           end
 

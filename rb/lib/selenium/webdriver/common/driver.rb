@@ -51,7 +51,7 @@ module Selenium
             Safari::Driver.new(**opts)
           when :firefox, :ff
             Firefox::Driver.new(**opts)
-          when :edge
+          when :edge, :microsoftedge, :msedge
             Edge::Driver.new(**opts)
           when :remote
             Remote::Driver.new(**opts)
@@ -69,7 +69,7 @@ module Selenium
       #
 
       def initialize(bridge: nil, listener: nil, **opts)
-        @service = nil
+        @service_manager = nil
         @devtools = nil
         bridge ||= create_bridge(**opts)
         add_extensions(bridge.browser)
@@ -127,14 +127,6 @@ module Selenium
         bridge.action(**opts)
       end
 
-      def mouse
-        bridge.mouse
-      end
-
-      def keyboard
-        bridge.keyboard
-      end
-
       #
       # Opens the specified URL in the browser.
       #
@@ -180,7 +172,7 @@ module Selenium
       def quit
         bridge.quit
       ensure
-        @service&.stop
+        @service_manager&.stop
         @devtools&.close
       end
 
@@ -316,30 +308,36 @@ module Selenium
 
       attr_reader :bridge
 
-      def create_bridge(capabilities: nil, options: nil, url: nil, service: nil, http_client: nil)
-        Remote::Bridge.new(http_client: http_client,
-                           url: url || service_url(service)).tap do |bridge|
-          generated_caps = options ? options.as_json : generate_capabilities(capabilities)
-          bridge.create_session(generated_caps)
+      def create_bridge(caps:, url:, http_client: nil)
+        Remote::Bridge.new(http_client: http_client, url: url).tap do |bridge|
+          bridge.create_session(caps)
         end
+      end
+
+      def process_options(options, capabilities)
+        if options && capabilities
+          msg = "Don't use both :options and :capabilities when initializing #{self.class}, prefer :options"
+          raise ArgumentError, msg
+        end
+
+        options ? options.as_json : generate_capabilities(capabilities)
       end
 
       def generate_capabilities(capabilities)
         Array(capabilities).map { |cap|
           if cap.is_a? Symbol
-            cap = Remote::Capabilities.send(cap)
+            cap = WebDriver::Options.send(cap)
           elsif !cap.respond_to? :as_json
             msg = ":capabilities parameter only accepts objects responding to #as_json which #{cap.class} does not"
             raise ArgumentError, msg
           end
           cap.as_json
-        }.inject(:merge) || Remote::Capabilities.send(browser || :new)
+        }.inject(:merge)
       end
 
       def service_url(service)
-        service ||= Service.send(browser)
-        @service = service.launch
-        @service.uri
+        @service_manager = service.launch
+        @service_manager.uri
       end
 
       def screenshot
@@ -349,11 +347,13 @@ module Selenium
       def add_extensions(browser)
         extensions = case browser
                      when :chrome, :msedge
-                       Chrome::Driver::EXTENSIONS
+                       Chromium::Driver::EXTENSIONS
                      when :firefox
                        Firefox::Driver::EXTENSIONS
                      when :safari, :safari_technology_preview
                        Safari::Driver::EXTENSIONS
+                     when :ie, :internet_explorer
+                       IE::Driver::EXTENSIONS
                      else
                        []
                      end

@@ -1,3 +1,25 @@
+v4.7.2
+======
+* Grid: Support file downloads on the node (#11277)
+* Change chromium service names from whitelisted to allowed (#11409)
+* Avoid closing CDP connection in browser implementation since that logic now sits in RemoteWebDriver (Fixes #11401)
+* Fix bug where failing Selenium Manager method results in wrong error 
+* Allow changing chromium driver log timestamp formatting
+* Allow ignoring chromedriver build checks using service builders
+* Add support for appendLog to msedgedriver service
+* Fix msedgedriver log level logic
+* Allow setting chromedriver log level from system properties
+* Fix chromedriver log level logic
+* Remove deprecated Firefox capabilities 
+* Removing a few bits more of the magic that moves JWP to W3C
+* Removing deprecated SUPPORTS_ALERTS and SUPPORTS_SQL_DATABASE caps
+* Removing deprecated OVERLAPPING_CHECK_DISABLED cap
+* Removing deprecated LOGGING_PREFS cap
+* Removing deprecated HAS_TOUCHSCREEN cap
+* Removing deprecated HAS_NATIVE_EVENTS cap
+* Removing deprecated ENABLE_PROFILING_CAPABILITY cap
+* Removing deprecated ACCEPT_SSL_CERTS cap
+
 v4.7.1
 ======
 * Supported CDP versions: 85, 106, 107, 108

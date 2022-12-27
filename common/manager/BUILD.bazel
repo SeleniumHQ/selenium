@@ -20,13 +20,13 @@ exports_files(
         "windows/selenium-manager.exe",
     ],
     visibility = [
+        "//dotnet/src/webdriver:__pkg__",
         "//java/src/org/openqa/selenium/manager:__pkg__",
         "//java/test/org/openqa/selenium/chrome:__pkg__",
         "//java/test/org/openqa/selenium/edge:__pkg__",
         "//java/test/org/openqa/selenium/firefox:__pkg__",
+        "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
         "//rb:__pkg__",
-        "//javascript/node/selenium-webdriver:__pkg__",
-        "//dotnet/src/webdriver:__pkg__",
     ],
 )

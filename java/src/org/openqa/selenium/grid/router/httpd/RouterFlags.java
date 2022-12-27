@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.router.httpd;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.ROUTER_ROLE;
+import static org.openqa.selenium.grid.router.httpd.RouterOptions.NETWORK;
 
 import com.google.auto.service.AutoService;
 
@@ -55,6 +56,13 @@ public class RouterFlags implements HasRoles {
       "Both this and the username need to be set in order to be used.")
   @ConfigValue(section = "router", name = "password", example = "hunter2")
   private String password;
+
+  @Parameter(
+    names = {"--sub-path"},
+    arity = 1,
+    description = "A sub-path that should be considered for all user facing routes on the Hub/Router/Standalone")
+  @ConfigValue(section = NETWORK, name = "sub-path", example = "my_company/selenium_grid")
+  public String subPath;
 
   @Override
   public Set<Role> getRoles() {

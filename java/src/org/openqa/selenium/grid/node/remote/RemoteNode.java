@@ -190,6 +190,11 @@ public class RemoteNode extends Node {
   }
 
   @Override
+  public HttpResponse downloadFile(HttpRequest req, SessionId id) {
+    return client.execute(req);
+  }
+
+  @Override
   public void stop(SessionId id) throws NoSuchSessionException {
     Require.nonNull("Session ID", id);
     HttpRequest req = new HttpRequest(DELETE, "/se/grid/node/session/" + id);

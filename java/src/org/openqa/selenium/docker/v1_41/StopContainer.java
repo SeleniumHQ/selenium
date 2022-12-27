@@ -43,7 +43,6 @@ class StopContainer {
 
     String requestUrl = String.format("/v%s/containers/%s/stop", DOCKER_API_VERSION, id);
     HttpRequest request = new HttpRequest(POST, requestUrl)
-      .addHeader("Content-Length", "0")
       .addHeader("Content-Type", "text/plain")
       .addQueryParameter("t", seconds);
 

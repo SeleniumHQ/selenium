@@ -1,9 +1,25 @@
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_binary")
+load("@rules_rust//rust:defs.bzl", "rust_binary", "rust_library")
 
 rust_binary(
+    # Yes, this name is very similar to the library. Note the dash
+    # instead of an underscore
     name = "selenium-manager",
-    srcs = glob(["src/**/*.rs"]),
-    edition = "2018",
+    srcs = ["src/main.rs"],
+    edition = "2021",
+    visibility = ["//visibility:public"],
+    deps = [
+        ":selenium_manager",
+    ] + all_crate_deps(normal = True),
+)
+
+rust_library(
+    # The name here is used as the crate name
+    name = "selenium_manager",
+    srcs = glob(
+        ["src/**/*.rs"],
+        exclude = ["main.rs"],
+    ),
+    edition = "2021",
     deps = all_crate_deps(normal = True),
 )

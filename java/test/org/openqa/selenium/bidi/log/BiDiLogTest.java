@@ -75,7 +75,7 @@ class BiDiLogTest {
       assertThat(consoleLogEntry.getRealm()).isNull();
       assertThat(consoleLogEntry.getArgs().size()).isEqualTo(1);
       assertThat(consoleLogEntry.getType()).isEqualTo("console");
-      assertThat(consoleLogEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.INFO);
+      assertThat(consoleLogEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(consoleLogEntry.getMethod()).isEqualTo("log");
       assertThat(consoleLogEntry.getStackTrace()).isNull();
     }
@@ -101,7 +101,7 @@ class BiDiLogTest {
       GenericLogEntry javascriptLogEntry = logEntry.getJavascriptLogEntry().get();
       assertThat(javascriptLogEntry.getText()).isEqualTo("Error: Not working");
       assertThat(javascriptLogEntry.getType()).isEqualTo("javascript");
-      assertThat(javascriptLogEntry.getLevel()).isEqualTo(BaseLogEntry.LogLevel.ERROR);
+      assertThat(javascriptLogEntry.getLevel()).isEqualTo(LogLevel.ERROR);
     }
   }
 

@@ -82,6 +82,14 @@ public class ChromeDriverService extends DriverService {
    * System property that defines comma-separated list of remote IPv4 addresses which are
    * allowed to connect to ChromeDriver.
    */
+  public static final String CHROME_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.chrome.withAllowedIps";
+
+  /**
+   * System property that defines comma-separated list of remote IPv4 addresses which are
+   * allowed to connect to ChromeDriver.
+   * @deprecated use {@link #CHROME_DRIVER_ALLOWED_IPS_PROPERTY}
+   */
+  @Deprecated
   public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY = "webdriver.chrome.whitelistedIps";
 
   /**
@@ -178,7 +186,8 @@ public class ChromeDriverService extends DriverService {
     private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
-    private String whitelistedIps = System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY);
+    private String allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
+      System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
     private ChromeDriverLogLevel logLevel = ChromeDriverLogLevel.fromString(System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY));
 
     @Override
@@ -264,11 +273,13 @@ public class ChromeDriverService extends DriverService {
      * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
      * to the driver server.
      *
-     * @param whitelistedIps Comma-separated list of remote IPv4 addresses.
+     * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
+     * @deprecated use {@link #withAllowedListIps(String)}
      */
-    public Builder withWhitelistedIps(String whitelistedIps) {
-      this.whitelistedIps = whitelistedIps;
+    @Deprecated
+    public Builder withWhitelistedIps(String allowedListIps) {
+      this.allowedListIps = allowedListIps;
       return this;
     }
 
@@ -326,8 +337,8 @@ public class ChromeDriverService extends DriverService {
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
-      if (whitelistedIps != null) {
-        args.add(String.format("--whitelisted-ips=%s", whitelistedIps));
+      if (allowedListIps != null) {
+        args.add(String.format("--allowed-ips=%s", allowedListIps));
       }
       if (disableBuildCheck) {
         args.add("--disable-build-check");

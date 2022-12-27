@@ -195,8 +195,8 @@ pip install bazel-bin/py/selenium-*.whl
 To publish run:
 
 ```sh
-bazel build //py:selenium-wheel
-twine upload bazel-bin/py/selenium-*.whl
+bazel build //py:selenium-wheel //py:selenium-sdist
+twine upload bazel-bin/py/selenium-*.whl bazel-bin/py/selenium-*.tar.gz
 ```
 </details>
 

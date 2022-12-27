@@ -142,23 +142,32 @@ pub trait SeleniumManager {
                     .browsers
                     .push(create_browser_metadata(browser_name, &browser_version));
                 write_metadata(&metadata);
-                Some(browser_version)
+                if !browser_version.is_empty() {
+                    Some(browser_version)
+                } else {
+                    None
+                }
             }
         }
     }
 
-    fn discover_driver_version(&mut self) -> String {
-        if self.get_browser_version().is_empty() || self.is_browser_version_unstable() {
+    fn discover_driver_version(&mut self) -> Result<String, String> {
+        let browser_version = self.get_browser_version();
+        if browser_version.is_empty() || self.is_browser_version_unstable() {
             match self.discover_browser_version() {
                 Some(version) => {
                     log::debug!("Detected browser: {} {}", self.get_browser_name(), version);
                     self.set_browser_version(version);
                 }
                 None => {
-                    log::debug!(
+                    if self.is_browser_version_unstable() {
+                        return Err(format!("Browser version '{browser_version}' not found"));
+                    } else {
+                        log::debug!(
                         "The version of {} cannot be detected. Trying with latest driver version",
                         self.get_browser_name()
-                    );
+                        );
+                    }
                 }
             }
         }
@@ -170,7 +179,7 @@ pub trait SeleniumManager {
             self.get_driver_name(),
             driver_version
         );
-        driver_version
+        Ok(driver_version)
     }
 
     fn is_browser_version_unstable(&self) -> bool {
@@ -183,7 +192,7 @@ pub trait SeleniumManager {
 
     fn resolve_driver(&mut self) -> Result<PathBuf, Box<dyn Error>> {
         if self.get_driver_version().is_empty() {
-            let driver_version = self.discover_driver_version();
+            let driver_version = self.discover_driver_version()?;
             self.set_driver_version(driver_version);
         }
 
@@ -279,13 +288,22 @@ pub trait SeleniumManager {
 // ----------------------------------------------------------
 
 pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumManager>, String> {
-    if browser_name.eq_ignore_ascii_case("chrome") {
+    let browser_name_lower_case = browser_name.to_ascii_lowercase();
+    if browser_name_lower_case.eq("chrome") {
         Ok(ChromeManager::new())
-    } else if browser_name.eq_ignore_ascii_case("firefox") {
+    } else if browser_name.eq("firefox") {
         Ok(FirefoxManager::new())
-    } else if browser_name.eq_ignore_ascii_case("edge") {
+    } else if vec!["edge", "msedge", "microsoftedge"].contains(&browser_name_lower_case.as_str()) {
         Ok(EdgeManager::new())
-    } else if browser_name.eq_ignore_ascii_case("iexplorer") {
+    } else if vec![
+        "iexplorer",
+        "ie",
+        "internetexplorer",
+        "internet-explorer",
+        "internet_explorer",
+    ]
+    .contains(&browser_name_lower_case.as_str())
+    {
         Ok(IExplorerManager::new())
     } else {
         Err(format!("Invalid browser name: {browser_name}"))

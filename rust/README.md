@@ -16,19 +16,19 @@ Selenium Manager can be executed using Cargo as follows:
 
 ```
 $ cargo run -- --help
-selenium-manager 1.0.0-M1
-Automated driver management for Selenium
+selenium-manager 1.0.0-M2
+Selenium Manager is a CLI tool that automatically manages the browser/driver infrastructure required by Selenium.
 
 Usage: selenium-manager [OPTIONS]
 Options:
   -b, --browser <BROWSER>
-          Browser name (chrome, firefox, edge, or iexplorer) [default: ]
+          Browser name (chrome, firefox, edge, or iexplorer)
   -d, --driver <DRIVER>
-          Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer) [default: ]
+          Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer)
   -v, --driver-version <DRIVER_VERSION>
-          Driver version (e.g., 106.0.5249.61, 0.31.0, etc.) [default: ]
+          Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
   -B, --browser-version <BROWSER_VERSION>
-          Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted) [default: ]
+          Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
   -D, --debug
           Display DEBUG messages
   -T, --trace

@@ -22,12 +22,13 @@ java_library(
 
 java_library(
     name = "bidi",
-    srcs = glob([
-        "*.java",
-        "log/*.java",
-        "browsingcontext/*.java"
-    ],
-    exclude = AUGMENTER_SRCS,
+    srcs = glob(
+        [
+            "*.java",
+            "log/*.java",
+            "browsingcontext/*.java",
+        ],
+        exclude = AUGMENTER_SRCS,
     ),
     visibility = [
         "//java/src/org/openqa/selenium/bidi:__subpackages__",
