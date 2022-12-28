@@ -20,11 +20,20 @@ package org.openqa.selenium.grid.router;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.BiDiSessionStatus;
 import org.openqa.selenium.bidi.Command;
 import org.openqa.selenium.bidi.HasBiDi;
+import org.openqa.selenium.bidi.LogInspector;
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
+import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
+import org.openqa.selenium.bidi.log.ConsoleLogEntry;
+import org.openqa.selenium.bidi.log.LogLevel;
+import org.openqa.selenium.environment.webserver.AppServer;
+import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.router.DeploymentTypes.Deployment;
@@ -34,6 +43,10 @@ import org.openqa.selenium.testing.drivers.Browser;
 
 import java.io.StringReader;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class RemoteWebDriverBiDiTest {
 
@@ -60,5 +73,75 @@ class RemoteWebDriverBiDiTest {
       assertThat(status).isNotNull();
       assertThat(status.getMessage()).isEqualTo("Session already started");
     }
+  }
+
+  @Test
+  void canListenToLogs() throws ExecutionException, InterruptedException, TimeoutException {
+    Browser browser = Browser.FIREFOX;
+
+    Deployment deployment = DeploymentTypes.STANDALONE.start(
+      browser.getCapabilities(),
+      new TomlConfig(new StringReader(
+        "[node]\n" +
+        "driver-implementation = " + browser.displayName())));
+
+    FirefoxOptions options = new FirefoxOptions();
+    // Enable BiDi
+    options.setCapability("webSocketUrl", true);
+
+    WebDriver driver = new RemoteWebDriver(deployment.getServer().getUrl(), options);
+    driver = new Augmenter().augment(driver);
+
+    AppServer server = new NettyAppServer();
+    server.start();
+
+    try (LogInspector logInspector = new LogInspector(driver)) {
+      CompletableFuture<ConsoleLogEntry> future = new CompletableFuture<>();
+      logInspector.onConsoleEntry(future::complete);
+
+      String page = server.whereIs("/bidi/logEntryAdded.html");
+      driver.get(page);
+      driver.findElement(By.id("consoleLog")).click();
+
+      ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
+
+      assertThat(logEntry.getText()).isEqualTo("Hello, world!");
+      assertThat(logEntry.getRealm()).isNull();
+      assertThat(logEntry.getArgs().size()).isEqualTo(1);
+      assertThat(logEntry.getType()).isEqualTo("console");
+      assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
+      assertThat(logEntry.getMethod()).isEqualTo("log");
+      assertThat(logEntry.getStackTrace()).isNull();
+    }
+  }
+
+  @Test
+  void canNavigateToUrl() throws ExecutionException, InterruptedException, TimeoutException {
+    Browser browser = Browser.FIREFOX;
+
+    Deployment deployment = DeploymentTypes.STANDALONE.start(
+      browser.getCapabilities(),
+      new TomlConfig(new StringReader(
+        "[node]\n" +
+        "driver-implementation = " + browser.displayName())));
+
+    FirefoxOptions options = new FirefoxOptions();
+    // Enable BiDi
+    options.setCapability("webSocketUrl", true);
+
+    WebDriver driver = new RemoteWebDriver(deployment.getServer().getUrl(), options);
+    driver = new Augmenter().augment(driver);
+
+    AppServer server = new NettyAppServer();
+    server.start();
+
+    BrowsingContext browsingContext = new BrowsingContext(driver, WindowType.TAB);
+
+    String url = server.whereIs("/bidi/logEntryAdded.html");
+    NavigationResult info = browsingContext.navigate(url);
+
+    assertThat(browsingContext.getId()).isNotEmpty();
+    assertThat(info.getNavigationId()).isNull();
+    assertThat(info.getUrl()).contains("/bidi/logEntryAdded.html");
   }
 }

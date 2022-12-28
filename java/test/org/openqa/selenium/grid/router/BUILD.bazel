@@ -56,6 +56,7 @@ java_selenium_test_suite(
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
         "//java/src/org/openqa/selenium/support",
+        "//java/test/org/openqa/selenium/environment",
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         "//java/test/org/openqa/selenium/testing:annotations",
         "//java/test/org/openqa/selenium/testing:test-base",
