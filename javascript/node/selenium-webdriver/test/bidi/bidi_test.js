@@ -72,6 +72,23 @@ suite(
         await inspector.close()
       })
 
+      it('can listen to javascript log', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onJavascriptLog(function (log) {
+          logEntry = log
+        })
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'jsException' }).click()
+
+        assert.equal(logEntry.text, 'Error: Not working')
+        assert.equal(logEntry.type, 'javascript')
+        assert.equal(logEntry.level, 'error')
+
+        await inspector.close()
+      })
+
       it('can listen to javascript error log', async function () {
         let logEntry = null
         const inspector = await logInspector(driver)
@@ -102,6 +119,27 @@ suite(
         const stackTrace = logEntry.stackTrace
         assert.notEqual(stackTrace, null)
         assert.equal(stackTrace.callFrames.length, 3)
+
+        await inspector.close()
+      })
+
+      it('can listen to any log', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onLog(function (log) {
+          logEntry = log
+        })
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'consoleLog' }).click()
+
+        assert.equal(logEntry.text, 'Hello, world!')
+        assert.equal(logEntry.realm, null)
+        assert.equal(logEntry.type, 'console')
+        assert.equal(logEntry.level, 'info')
+        assert.equal(logEntry.method, 'log')
+        assert.equal(logEntry.stackTrace, null)
+        assert.equal(logEntry.args.length, 1)
 
         await inspector.close()
       })

@@ -15,11 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const { ConsoleLogEntry, JavascriptLogEntry } = require('./logEntries')
+const { ConsoleLogEntry, JavascriptLogEntry, GenericLogEntry } = require('./logEntries')
 
 const LOG = {
   TYPE_CONSOLE : 'console',
-  TYPE_JS_EXCEPTION: 'jsException'
+  TYPE_JS_LOGS : 'jsLogs',
+  TYPE_JS_EXCEPTION: 'jsException',
+  TYPE_LOG : 'log'
 }
 
 class LogInspector {
@@ -80,7 +82,36 @@ class LogInspector {
   }
 
   /**
-   * List to JS Exceptions
+   * Listen to JS logs
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onJavascriptLog (callback) {
+    this.ws = await this.bidi.socket
+    let enabled = (LOG.TYPE_JS_LOGS in this.listener) || this.logListener(
+      LOG.TYPE_JS_LOGS)
+    this.listener[LOG.TYPE_JS_LOGS].push(callback)
+
+    if (enabled) {
+      return
+    }
+
+    this.ws.on('message', event => {
+      const { params } = JSON.parse(Buffer.from(event.toString()))
+      if ((params?.type === 'javascript')) {
+
+        let jsEntry = new JavascriptLogEntry(params.level, params.text,
+          params.timestamp, params.type, params.stackTrace)
+
+        this.listener[LOG.TYPE_JS_LOGS].forEach(listener => {
+          listener(jsEntry)
+        })
+      }
+    })
+  }
+
+  /**
+   * Listen to JS Exceptions
    * @param callback
    * @returns {Promise<void>}
    */
@@ -107,6 +138,58 @@ class LogInspector {
       }
     })
   }
+
+  /**
+   * Listen to any logs
+   * @param callback
+   * @returns {Promise<void>}
+   */
+  async onLog (callback) {
+    this.ws = await this.bidi.socket
+    let enabled = (LOG.TYPE_LOG in this.listener) || this.logListener(
+      LOG.TYPE_LOG)
+    this.listener[LOG.TYPE_LOG].push(callback)
+
+    if (enabled) {
+      return
+    }
+
+    this.ws.on('message', event => {
+      const { params } = JSON.parse(Buffer.from(event.toString()))
+      if ((params?.type === 'javascript')) {
+
+        let jsEntry = new JavascriptLogEntry(params.level, params.text,
+          params.timestamp, params.type, params.stackTrace)
+
+        this.listener[LOG.TYPE_LOG].forEach(listener => {
+          listener(jsEntry)
+        })
+        return
+      }
+      
+      if ((params?.type === 'console')) {
+
+        let consoleEntry = new ConsoleLogEntry(params.level, params.text,
+          params.timestamp, params.type, params.method, params.realm,
+          params.args, params.stackTrace)
+
+        this.listener[LOG.TYPE_LOG].forEach(listener => {
+          listener(consoleEntry)
+        })
+        return
+      } 
+
+      if (params != undefined && !['console', 'javascript'].includes(params?.type)) {
+        let genericEntry = new GenericLogEntry(params.level, params.text,
+          params.timestamp, params.type, params.stackTrace)
+
+        this.listener[LOG.TYPE_LOG].forEach(listener => {
+          listener(genericEntry)
+        })
+      }
+    })
+  }
+
 
   /**
    * Unsubscribe to log event
