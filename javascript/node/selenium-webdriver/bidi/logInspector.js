@@ -57,7 +57,7 @@ class LogInspector {
    * @param callback
    * @returns {Promise<void>}
    */
-  async onConsoleLog (callback) {
+  async onConsoleEntry (callback) {
     this.ws = await this.bidi.socket
     let enabled = (LOG.TYPE_CONSOLE in this.listener) || this.logListener(LOG.TYPE_CONSOLE)
     this.listener[LOG.TYPE_CONSOLE].push(callback)
