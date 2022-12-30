@@ -29,6 +29,8 @@ Options:
           Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
   -B, --browser-version <BROWSER_VERSION>
           Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
+  -P, --browser-path <BROWSER_PATH>
+          Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
   -D, --debug
           Display DEBUG messages
   -T, --trace

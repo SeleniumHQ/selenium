@@ -95,3 +95,26 @@ fn error_test(
     .failure()
     .code(error_code);
 }
+
+#[rstest]
+#[case(
+    "chrome",
+    r#"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"#
+)]
+#[case("chrome", "/usr/bin/google-chrome")]
+#[case(
+    "chrome",
+    r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"#
+)]
+fn path_test(#[case] browser: String, #[case] browser_path: String) {
+    println!(
+        "Path test browser={} -- browser_path={}",
+        browser, browser_path
+    );
+
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    cmd.args(["--browser", &browser, "--browser-path", &browser_path])
+        .assert()
+        .success()
+        .code(0);
+}

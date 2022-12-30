@@ -29,7 +29,7 @@ use crate::metadata::{
 };
 use crate::{
     SeleniumManager, BETA, DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES,
-    ENV_PROGRAM_FILES_X86, NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND,
+    ENV_PROGRAM_FILES_X86, NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 const BROWSER_NAME: &str = "chrome";
@@ -99,33 +99,41 @@ impl SeleniumManager for ChromeManager {
     }
 
     fn discover_browser_version(&self) -> Option<String> {
-        match self.get_browser_path() {
-            Some(browser_path) => {
-                let (shell, flag, args) =
-                    if WINDOWS.is(self.get_os()) {
-                        let mut commands = vec![
-                            self.format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES, browser_path),
-                            self.format_two_args(WMIC_COMMAND, ENV_PROGRAM_FILES_X86, browser_path),
-                            self.format_two_args(WMIC_COMMAND, ENV_LOCALAPPDATA, browser_path),
-                        ];
-                        if !self.is_browser_version_unstable() {
-                            commands.push(self.format_one_arg(
+        let mut commands;
+        let mut browser_path = self.get_browser_path();
+        if browser_path.is_empty() {
+            match self.detect_browser_path() {
+                Some(path) => {
+                    browser_path = path;
+                    commands = vec![
+                        self.format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES, browser_path),
+                        self.format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES_X86, browser_path),
+                        self.format_two_args(WMIC_COMMAND_ENV, ENV_LOCALAPPDATA, browser_path),
+                    ];
+                    if !self.is_browser_version_unstable() {
+                        commands.push(
+                            self.format_one_arg(
                                 REG_QUERY,
                                 r#"HKCU\Software\Google\Chrome\BLBeacon"#,
-                            ));
-                        }
-                        ("cmd", "/C", commands)
-                    } else {
-                        (
-                            "sh",
-                            "-c",
-                            vec![self.format_one_arg(DASH_DASH_VERSION, browser_path)],
-                        )
-                    };
-                self.detect_browser_version(shell, flag, args)
+                            ),
+                        );
+                    }
+                }
+                _ => return None,
             }
-            _ => None,
+        } else {
+            commands = vec![self.format_one_arg(WMIC_COMMAND, browser_path)];
         }
+        let (shell, flag, args) = if WINDOWS.is(self.get_os()) {
+            ("cmd", "/C", commands)
+        } else {
+            (
+                "sh",
+                "-c",
+                vec![self.format_one_arg(DASH_DASH_VERSION, browser_path)],
+            )
+        };
+        self.detect_browser_version(shell, flag, args)
     }
 
     fn get_driver_name(&self) -> &str {

@@ -56,6 +56,12 @@ struct Cli {
     #[clap(short = 'B', long, value_parser)]
     browser_version: Option<String>,
 
+    /// Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome,
+    /// "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome",
+    /// "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+    #[clap(short = 'P', long, value_parser)]
+    browser_path: Option<String>,
+
     /// Display DEBUG messages
     #[clap(short = 'D', long)]
     debug: bool,
@@ -97,6 +103,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
+    selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
 
     match selenium_manager.resolve_driver() {
         Ok(driver_path) => log::info!("{}", driver_path.display()),
