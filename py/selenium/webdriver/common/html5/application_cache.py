@@ -24,7 +24,6 @@ from selenium.webdriver.remote.command import Command
 
 
 class ApplicationCache:
-
     UNCACHED = 0
     IDLE = 1
     CHECKING = 2

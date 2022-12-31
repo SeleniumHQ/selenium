@@ -39,7 +39,6 @@ class Transport(str, Enum):
 
 
 class VirtualAuthenticatorOptions:
-
     # These are so unnecessary but are now public API so we can't remove them without deprecating first.
     # These should not be class level state in here.
     Protocol = Protocol

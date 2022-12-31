@@ -19,7 +19,6 @@ from enum import Enum
 
 
 class Console(Enum):
-
     ALL = "all"
     LOG = "log"
     ERROR = "error"

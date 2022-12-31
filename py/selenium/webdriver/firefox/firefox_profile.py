@@ -170,7 +170,6 @@ class FirefoxProfile:
                 f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
     def _read_existing_userjs(self, userjs):
-
         pref_pattern = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         try:
             with open(userjs, encoding="utf-8") as f:
