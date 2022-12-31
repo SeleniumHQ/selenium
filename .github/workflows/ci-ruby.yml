@@ -212,7 +212,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ '2.7.6', '3.1.2', 'jruby-9.4.0.0', 'truffleruby-22.3.0' ]
+        ruby: [ '2.7.6', '3.2.0', 'jruby-9.4.0.0', 'truffleruby-22.3.0' ]
         os: ['ubuntu-latest']
         include:
           - ruby: 2.7.6
