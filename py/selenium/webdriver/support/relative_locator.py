@@ -14,10 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-
 from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Union
 
 from selenium.common.exceptions import WebDriverException
@@ -71,7 +70,7 @@ class RelativeBy:
         assert "mid" in ids
     """
 
-    def __init__(self, root: Dict[By, str] = None, filters: List = None):
+    def __init__(self, root: Optional[Dict[Union[By, str], str]] = None, filters: Optional[List] = None):
         """
         Creates a new RelativeBy object. It is preferred if you use the
         `locate_with` method as this signature could change.
