@@ -46,6 +46,7 @@ module Selenium
 
     it 'uses the given jar file and port' do
       allow(File).to receive(:exist?).with('selenium_server_deploy.jar').and_return(true)
+      allow(File).to receive(:exist?).with('<STDOUT>').and_return(false)
       allow(WebDriver::ChildProcess).to receive(:build)
         .with('java', '-jar', 'selenium_server_deploy.jar', 'standalone', '--port', '1234')
         .and_return(mock_process)
