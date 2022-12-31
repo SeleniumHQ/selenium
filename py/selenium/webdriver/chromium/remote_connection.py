@@ -32,9 +32,6 @@ class ChromiumRemoteConnection(RemoteConnection):
         self.browser_name = browser_name
         self._commands["launchApp"] = ("POST", "/session/$sessionId/chromium/launch_app")
         self._commands["setPermissions"] = ("POST", "/session/$sessionId/permissions")
-        self._commands["setNetworkConditions"] = ("POST", "/session/$sessionId/chromium/network_conditions")
-        self._commands["getNetworkConditions"] = ("GET", "/session/$sessionId/chromium/network_conditions")
-        self._commands["deleteNetworkConditions"] = ("DELETE", "/session/$sessionId/chromium/network_conditions")
         self._commands["executeCdpCommand"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cdp/execute")
         self._commands["getSinks"] = ("GET", f"/session/$sessionId/{vendor_prefix}/cast/get_sinks")
         self._commands["getIssueMessage"] = ("GET", f"/session/$sessionId/{vendor_prefix}/cast/get_issue_message")
@@ -45,3 +42,8 @@ class ChromiumRemoteConnection(RemoteConnection):
         )
         self._commands["startTabMirroring"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cast/start_tab_mirroring")
         self._commands["stopCasting"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cast/stop_casting")
+
+    def add_network_commands(self) -> None:
+        self._commands["setNetworkConditions"] = ("POST", "/session/$sessionId/chromium/network_conditions")
+        self._commands["getNetworkConditions"] = ("GET", "/session/$sessionId/chromium/network_conditions")
+        self._commands["deleteNetworkConditions"] = ("DELETE", "/session/$sessionId/chromium/network_conditions")
