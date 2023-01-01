@@ -47,8 +47,8 @@ module Selenium
         wait.until { !log_entry.nil? }
 
         expect(log_entry).to have_attributes(
-          text: "Error: Not working",
-          type: "javascript",
+          text: 'Error: Not working',
+          type: 'javascript',
           level: BiDi::LogInspector::LOG_LEVEL[:ERROR]
         )
       end

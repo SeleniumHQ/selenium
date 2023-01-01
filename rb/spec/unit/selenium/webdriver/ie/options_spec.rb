@@ -115,16 +115,16 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("browserName" => "internet explorer",
-                                          "se:ieOptions" => {"nativeEvents" => true})
+            expect(options.as_json).to eq('browserName' => 'internet explorer',
+                                          'se:ieOptions' => {'nativeEvents' => true})
           end
 
           it 'returns added options' do
             options.add_option(:foo, 'bar')
             options.add_option('foo:bar', {foo: 'bar'})
-            expect(options.as_json).to eq("browserName" => "internet explorer",
-                                          "foo:bar" => {"foo" => "bar"},
-                                          "se:ieOptions" => {"nativeEvents" => true, "foo" => "bar"})
+            expect(options.as_json).to eq('browserName' => 'internet explorer',
+                                          'foo:bar' => {'foo' => 'bar'},
+                                          'se:ieOptions' => {'nativeEvents' => true, 'foo' => 'bar'})
           end
 
           it 'returns a JSON hash' do

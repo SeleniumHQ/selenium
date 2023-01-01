@@ -65,8 +65,8 @@ module Selenium
 
         it 'respects setting on domain from a subdomain',
            exclusive: {driver: :none,
-                       reason: "Can only be tested on site with subdomains"} do
-          driver.get("https://opensource.saucelabs.com")
+                       reason: 'Can only be tested on site with subdomains'} do
+          driver.get('https://opensource.saucelabs.com')
 
           driver.manage.add_cookie name: 'domain',
                                    value: 'specified',
@@ -74,10 +74,10 @@ module Selenium
 
           expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
 
-          driver.get("https://accounts.saucelabs.com")
+          driver.get('https://accounts.saucelabs.com')
           expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
 
-          driver.get("https://saucelabs.com")
+          driver.get('https://saucelabs.com')
           expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
         end
 
@@ -101,8 +101,8 @@ module Selenium
            except: {browser: :chrome,
                     reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3734'},
            exclusive: {driver: :none,
-                       reason: "Can only be tested on site with subdomains"} do
-          driver.get("https://saucelabs.com")
+                       reason: 'Can only be tested on site with subdomains'} do
+          driver.get('https://saucelabs.com')
 
           expect {
             driver.manage.add_cookie name: 'domain',
@@ -116,7 +116,7 @@ module Selenium
                                    value: 'true',
                                    http_only: true
 
-          expect(driver.execute_script("return document.cookie")).to be_empty
+          expect(driver.execute_script('return document.cookie')).to be_empty
           expect(driver.manage.cookie_named('httponly')[:http_only]).to be true
         end
 
@@ -134,7 +134,7 @@ module Selenium
 
         it 'adds secure cookie when https',
            exclusive: {driver: :none,
-                       reason: "Can only be tested on https site"} do
+                       reason: 'Can only be tested on https site'} do
           driver.get 'https://www.selenium.dev'
 
           driver.manage.add_cookie name: 'secure',
@@ -162,7 +162,7 @@ module Selenium
 
           it 'allows adding with value None',
              exclusive: {driver: :none,
-                         reason: "Can only be tested on https site"} do
+                         reason: 'Can only be tested on https site'} do
             driver.get 'https://selenium.dev'
 
             driver.manage.add_cookie name: 'samesite',
@@ -175,7 +175,7 @@ module Selenium
 
           it 'does not allow adding with value None when secure is false',
              except: [{browser: :firefox,
-                       reason: "https://github.com/mozilla/geckodriver/issues/1842"},
+                       reason: 'https://github.com/mozilla/geckodriver/issues/1842'},
                       {browser: %i[safari safari_preview]}] do
             expect {
               driver.manage.add_cookie name: 'samesite',

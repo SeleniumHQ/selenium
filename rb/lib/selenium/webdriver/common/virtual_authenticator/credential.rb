@@ -44,8 +44,8 @@ module Selenium
 
         def from_json(opts)
           user_handle = opts['userHandle'] ? decode(opts['userHandle']) : nil
-          new(id: decode(opts["credentialId"]),
-              resident_credential: opts["isResidentCredential"],
+          new(id: decode(opts['credentialId']),
+              resident_credential: opts['isResidentCredential'],
               rp_id: opts['rpId'],
               private_key: opts['privateKey'],
               sign_count: opts['signCount'],

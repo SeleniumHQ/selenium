@@ -25,8 +25,8 @@
 module Selenium
   module WebDriver
     class VirtualAuthenticatorOptions
-      PROTOCOL = {ctap2: "ctap2", u2f: "ctap1/u2f"}.freeze
-      TRANSPORT = {ble: "ble", usb: "usb", nfc: "nfc", internal: "internal"}.freeze
+      PROTOCOL = {ctap2: 'ctap2', u2f: 'ctap1/u2f'}.freeze
+      TRANSPORT = {ble: 'ble', usb: 'usb', nfc: 'nfc', internal: 'internal'}.freeze
 
       attr_accessor :protocol, :transport, :resident_key, :user_verification, :user_consenting, :user_verified
       alias resident_key? resident_key

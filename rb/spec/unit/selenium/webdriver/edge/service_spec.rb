@@ -53,7 +53,7 @@ module Selenium
             expect(service.host).to eq Platform.localhost
           end
 
-          describe "#driver_path=" do
+          describe '#driver_path=' do
             after { described_class.driver_path = nil }
 
             it 'allows #driver_path= with String value' do

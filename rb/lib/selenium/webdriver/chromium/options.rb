@@ -241,7 +241,7 @@ module Selenium
 
           raise Error::InvalidArgumentError,
                 "Setting 'w3c: false' is not allowed.\n" \
-                "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/"
+                'Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/'
         end
 
         def binary_path

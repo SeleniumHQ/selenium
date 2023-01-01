@@ -430,7 +430,7 @@ module Selenium
 
           execute_script(script, Element::ELEMENT_KEY => element)
         rescue Error::JavascriptError
-          raise Error::UnsupportedOperationError, "To submit an element, it must be nested inside a form element"
+          raise Error::UnsupportedOperationError, 'To submit an element, it must be nested inside a form element'
         end
 
         #

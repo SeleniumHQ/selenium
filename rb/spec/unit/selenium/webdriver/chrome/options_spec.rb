@@ -246,7 +246,7 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("browserName" => "chrome", "goog:chromeOptions" => {})
+            expect(options.as_json).to eq('browserName' => 'chrome', 'goog:chromeOptions' => {})
           end
 
           it 'raises error when w3c is false' do
@@ -263,9 +263,9 @@ module Selenium
           it 'returns added options' do
             options.add_option(:foo, 'bar')
             options.add_option('foo:bar', {foo: 'bar'})
-            expect(options.as_json).to eq("browserName" => "chrome",
-                                          "foo:bar" => {"foo" => "bar"},
-                                          "goog:chromeOptions" => {"foo" => "bar"})
+            expect(options.as_json).to eq('browserName' => 'chrome',
+                                          'foo:bar' => {'foo' => 'bar'},
+                                          'goog:chromeOptions' => {'foo' => 'bar'})
           end
 
           it 'converts profile' do

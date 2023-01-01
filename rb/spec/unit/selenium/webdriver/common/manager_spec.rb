@@ -66,7 +66,7 @@ module Selenium
       describe 'self.run' do
         it 'errors if a problem with command' do
           expect {
-            described_class.send(:run, "anything")
+            described_class.send(:run, 'anything')
           }.to raise_error(Error::WebDriverError, /Unsuccessful command executed: /)
         end
       end
@@ -90,7 +90,7 @@ module Selenium
         it 'not used if found on PATH' do
           allow(described_class).to receive(:driver_path)
           allow(Platform).to receive(:assert_executable).and_return(false)
-          allow(Platform).to receive(:find_binary).and_return("something")
+          allow(Platform).to receive(:find_binary).and_return('something')
 
           WebDriver::Service.chrome
 

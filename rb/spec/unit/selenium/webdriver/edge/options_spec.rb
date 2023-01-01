@@ -201,7 +201,7 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("browserName" => "MicrosoftEdge", "ms:edgeOptions" => {})
+            expect(options.as_json).to eq('browserName' => 'MicrosoftEdge', 'ms:edgeOptions' => {})
           end
 
           it 'raises error when w3c is false' do
@@ -218,9 +218,9 @@ module Selenium
           it 'returns added options' do
             options.add_option(:foo, 'bar')
             options.add_option('foo:bar', {foo: 'bar'})
-            expect(options.as_json).to eq("browserName" => "MicrosoftEdge",
-                                          "foo:bar" => {"foo" => "bar"},
-                                          "ms:edgeOptions" => {"foo" => "bar"})
+            expect(options.as_json).to eq('browserName' => 'MicrosoftEdge',
+                                          'foo:bar' => {'foo' => 'bar'},
+                                          'ms:edgeOptions' => {'foo' => 'bar'})
           end
 
           it 'returns a JSON hash' do

@@ -83,7 +83,7 @@ module Selenium
           context_info = parent_window.get_tree
           expect(context_info.children.size).to eq(1)
           expect(context_info.id).to eq(browsing_context_id)
-          expect(context_info.children[0]["url"]).to include('formPage.html')
+          expect(context_info.children[0]['url']).to include('formPage.html')
         end
 
         it 'can get tree with depth' do

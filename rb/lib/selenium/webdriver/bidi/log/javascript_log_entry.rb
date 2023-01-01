@@ -25,7 +25,7 @@ module Selenium
 
         def initialize(level:, text:, timestamp:, type:, stack_trace:)
           super(level: level, text: text, timestamp: timestamp, type: type, stack_trace: stack_trace)
-          @type = "javascript"
+          @type = 'javascript'
         end
       end # JavascriptLogEntry
     end # BiDi

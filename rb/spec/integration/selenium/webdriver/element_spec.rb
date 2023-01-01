@@ -422,9 +422,9 @@ module Selenium
       end
 
       it 'returns ARIA role', only: {browser: %i[chrome edge]} do
-        driver.navigate.to "data:text/html," \
+        driver.navigate.to 'data:text/html,' \
                            "<div role='heading' aria-level='1'>Level 1 Header</div>" \
-                           "<h1>Level 1 Header</h1>" \
+                           '<h1>Level 1 Header</h1>' \
                            "<h2 role='alert'>Level 2 Header</h2>"
         expect(driver.find_element(tag_name: 'div').aria_role).to eq('heading')
         expect(driver.find_element(tag_name: 'h1').aria_role).to eq('heading')
@@ -432,7 +432,7 @@ module Selenium
       end
 
       it 'returns accessible name', only: {browser: %i[chrome edge]} do
-        driver.navigate.to "data:text/html,<h1>Level 1 Header</h1>"
+        driver.navigate.to 'data:text/html,<h1>Level 1 Header</h1>'
         expect(driver.find_element(tag_name: 'h1').accessible_name).to eq('Level 1 Header')
       end
 

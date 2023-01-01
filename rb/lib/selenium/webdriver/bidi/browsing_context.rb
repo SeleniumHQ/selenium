@@ -27,15 +27,15 @@ module Selenium
         attr_accessor :id
 
         READINESS_STATE = {
-          none: "none",
-          interactive: "interactive",
-          complete: "complete"
+          none: 'none',
+          interactive: 'interactive',
+          complete: 'complete'
         }.freeze
 
         def initialize(driver:, browsing_context_id: nil, type: nil, reference_context: nil)
           unless driver.capabilities.web_socket_url
             raise Error::WebDriverError,
-                  "WebDriver instance must support BiDi protocol"
+                  'WebDriver instance must support BiDi protocol'
           end
 
           unless type.nil? || %i[window tab].include?(type)
@@ -44,7 +44,7 @@ module Selenium
           end
 
           @bidi = driver.bidi
-          @id = browsing_context_id.nil? ? create(type, reference_context)["context"] : browsing_context_id
+          @id = browsing_context_id.nil? ? create(type, reference_context)['context'] : browsing_context_id
         end
 
         def navigate(url:, readiness_state: nil)
@@ -53,17 +53,17 @@ module Selenium
                   "Valid readiness states are :none, :interactive & :complete. Received: #{readiness_state.inspect}"
           end
 
-          navigate_result = @bidi.send_cmd("browsingContext.navigate", context: @id, url: url,
+          navigate_result = @bidi.send_cmd('browsingContext.navigate', context: @id, url: url,
                                                                        wait: READINESS_STATE[readiness_state])
 
           NavigateResult.new(
-            url: navigate_result["url"],
-            navigation_id: navigate_result["navigation"]
+            url: navigate_result['url'],
+            navigation_id: navigate_result['navigation']
           )
         end
 
         def get_tree(max_depth: nil)
-          result = @bidi.send_cmd("browsingContext.getTree", root: @id, maxDepth: max_depth).dig("contexts", 0)
+          result = @bidi.send_cmd('browsingContext.getTree', root: @id, maxDepth: max_depth).dig('contexts', 0)
 
           BrowsingContextInfo.new(
             id: result['context'],
@@ -74,13 +74,13 @@ module Selenium
         end
 
         def close
-          @bidi.send_cmd("browsingContext.close", context: @id)
+          @bidi.send_cmd('browsingContext.close', context: @id)
         end
 
         private
 
         def create(type, reference_context)
-          @bidi.send_cmd("browsingContext.create", type: type.to_s, referenceContext: reference_context)
+          @bidi.send_cmd('browsingContext.create', type: type.to_s, referenceContext: reference_context)
         end
       end # BrowsingContext
     end # BiDi

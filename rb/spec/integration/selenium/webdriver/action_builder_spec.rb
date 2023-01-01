@@ -288,19 +288,19 @@ module Selenium
           move_by = properties(moves[1])
           up = properties(driver.find_element(class: 'pointerup'))
 
-          expect(move_to).to include("button" => "-1",
-                                     "pageX" => (x_val + 5).to_s,
-                                     "pageY" => (y_val + 5).floor.to_s)
-          expect(down).to include("button" => "0")
-          expect(move_by).to include("button" => "-1",
-                                     "pageX" => (x_val + 5 + 2).to_s,
-                                     "pageY" => (y_val + 5 + 2).floor.to_s,
-                                     "tiltX" => "-40",
-                                     "tiltY" => "-10",
-                                     "twist" => "177")
-          expect(up).to include("button" => "0",
-                                "pageX" => (x_val + 5 + 2).to_s,
-                                "pageY" => (y_val + 5 + 2).floor.to_s)
+          expect(move_to).to include('button' => '-1',
+                                     'pageX' => (x_val + 5).to_s,
+                                     'pageY' => (y_val + 5).floor.to_s)
+          expect(down).to include('button' => '0')
+          expect(move_by).to include('button' => '-1',
+                                     'pageX' => (x_val + 5 + 2).to_s,
+                                     'pageY' => (y_val + 5 + 2).floor.to_s,
+                                     'tiltX' => '-40',
+                                     'tiltY' => '-10',
+                                     'twist' => '177')
+          expect(up).to include('button' => '0',
+                                'pageX' => (x_val + 5 + 2).to_s,
+                                'pageY' => (y_val + 5 + 2).floor.to_s)
         end
       end
 

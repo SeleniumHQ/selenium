@@ -27,7 +27,7 @@ module Selenium
     # @api private
     #
     class SeleniumManager
-      BIN_PATH = "../../../../../bin"
+      BIN_PATH = '../../../../../bin'
 
       class << self
         # @param [String] driver_name which driver to use.
@@ -60,7 +60,7 @@ module Selenium
                     end
             location = File.expand_path(path, __FILE__)
             unless location.is_a?(String) && File.exist?(location) && File.executable?(location)
-              raise Error::WebDriverError, "Unable to obtain Selenium Manager"
+              raise Error::WebDriverError, 'Unable to obtain Selenium Manager'
             end
 
             WebDriver.logger.debug("Selenium Manager found at #{location}")

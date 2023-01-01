@@ -134,7 +134,7 @@ module Selenium
       stub_request(:get, "#{repo}/selenium-10.0.1/#{expected_download_file_name}")
         .to_return(headers: {location: 'https://github-releases.githubusercontent.com/something'})
 
-      stub_request(:get, "https://github-releases.githubusercontent.com/something")
+      stub_request(:get, 'https://github-releases.githubusercontent.com/something')
         .to_return(body: 'this is pretending to be a jar file for testing purposes')
 
       begin

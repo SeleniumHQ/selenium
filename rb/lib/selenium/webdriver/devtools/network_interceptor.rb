@@ -32,11 +32,11 @@ module Selenium
       class NetworkInterceptor
         # CDP fails to get body on certain responses (301) and raises:
         # "Can only get response body on requests captured after headers received."
-        CANNOT_GET_BODY_ON_REDIRECT_ERROR_CODE = "-32000"
+        CANNOT_GET_BODY_ON_REDIRECT_ERROR_CODE = '-32000'
 
         # CDP fails to operate with intercepted requests.
         # Typical reason is browser cancelling intercepted requests/responses.
-        INVALID_INTERCEPTION_ID_ERROR_CODE = "-32602"
+        INVALID_INTERCEPTION_ID_ERROR_CODE = '-32602'
 
         def initialize(devtools)
           @devtools = devtools

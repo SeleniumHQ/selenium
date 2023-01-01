@@ -40,7 +40,7 @@ module Selenium
       end
 
       def as_json(*)
-        {"zip" => encoded}
+        {'zip' => encoded}
       end
 
       def to_json(*)

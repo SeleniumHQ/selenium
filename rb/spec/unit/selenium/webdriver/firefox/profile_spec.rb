@@ -51,7 +51,7 @@ module Selenium
         end
 
         it 'can override welcome page' do
-          profile['startup.homepage_welcome_url'] = "http://google.com"
+          profile['startup.homepage_welcome_url'] = 'http://google.com'
 
           expect(read_generated_prefs).to include('user_pref("browser.startup.homepage", "about:blank")',
                                                   'user_pref("startup.homepage_welcome_url", "http://google.com")')

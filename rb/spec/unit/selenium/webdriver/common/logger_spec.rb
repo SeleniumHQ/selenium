@@ -92,7 +92,7 @@ module Selenium
         end
 
         it 'logs with String' do
-          expect { logger.warn "String Value" }.to output(/WARN Selenium String Value/).to_stdout_from_any_process
+          expect { logger.warn 'String Value' }.to output(/WARN Selenium String Value/).to_stdout_from_any_process
         end
 
         it 'logs single id when set' do

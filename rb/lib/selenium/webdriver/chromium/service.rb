@@ -32,8 +32,8 @@ module Selenium
           if driver_opts.key?(:whitelisted_ips)
             driver_args << "--whitelisted-ips=#{driver_opts.delete(:whitelisted_ips)}"
           end
-          driver_args << "--verbose" if driver_opts.key?(:verbose)
-          driver_args << "--silent" if driver_opts.key?(:silent)
+          driver_args << '--verbose' if driver_opts.key?(:verbose)
+          driver_args << '--silent' if driver_opts.key?(:silent)
           driver_args
         end
       end # Service

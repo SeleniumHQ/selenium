@@ -111,7 +111,7 @@ module Selenium
         return {} if message.empty?
 
         message = JSON.parse(message)
-        messages[message["id"]] = message
+        messages[message['id']] = message
         WebDriver.logger.debug "WebSocket <- #{message}"[...MAX_LOG_MESSAGE_SIZE]
 
         message

@@ -32,8 +32,8 @@ module Selenium
       def save_screenshot(png_path, full_page: false)
         extension = File.extname(png_path).downcase
         if extension != '.png'
-          WebDriver.logger.warn "name used for saved screenshot does not match file type. " \
-                                "It should end with .png extension",
+          WebDriver.logger.warn 'name used for saved screenshot does not match file type. ' \
+                                'It should end with .png extension',
                                 id: :screenshot
         end
         File.open(png_path, 'wb') { |f| f << screenshot_as(:png, full_page: full_page) }

@@ -28,11 +28,11 @@ module Selenium
         let(:valid_response) do
           {status: 200,
            body: {value: {sessionId: 0, capabilities: Remote::Capabilities.edge}}.to_json,
-           headers: {content_type: "application/json"}}
+           headers: {content_type: 'application/json'}}
         end
 
         def expect_request(body: nil, endpoint: nil)
-          body = (body || {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", 'ms:edgeOptions': {}}}}).to_json
+          body = (body || {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', 'ms:edgeOptions': {}}}}).to_json
           endpoint ||= "#{service_manager.uri}/session"
           stub_request(:post, endpoint).with(body: body).to_return(valid_response)
         end
@@ -49,7 +49,7 @@ module Selenium
 
         it 'accepts provided Options as sole parameter' do
           opts = {invalid: 'foobar', args: ['-f']}
-          expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", 'ms:edgeOptions': opts}}})
+          expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', 'ms:edgeOptions': opts}}})
 
           expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
         end
@@ -67,7 +67,7 @@ module Selenium
 
         it 'does not allow both Options and Capabilities' do
           msg = "Don't use both :options and :capabilities when initializing Selenium::WebDriver::Edge::Driver, " \
-                "prefer :options"
+                'prefer :options'
           expect {
             described_class.new(options: Options.new, capabilities: Remote::Capabilities.edge)
           }.to raise_exception(ArgumentError, msg)
@@ -81,28 +81,28 @@ module Selenium
 
           it 'accepts Capabilities.edge' do
             capabilities = Remote::Capabilities.edge(invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', invalid: 'foobar'}}})
 
             expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do
             capabilities = Remote::Capabilities.new(browser_name: 'MicrosoftEdge', invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', invalid: 'foobar'}}})
 
             expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
             capabilities = Remote::Capabilities.new(browserName: 'MicrosoftEdge', invalid: 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', invalid: 'foobar'}}})
 
             expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Strings' do
             capabilities = Remote::Capabilities.new('browserName' => 'MicrosoftEdge', 'invalid' => 'foobar')
-            expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
+            expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', invalid: 'foobar'}}})
 
             expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
@@ -118,7 +118,7 @@ module Selenium
 
             it 'with Options instance' do
               options = Options.new(args: ['-f'])
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge",
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge',
                                                                  'ms:edgeOptions': {args: ['-f']}}}})
 
               expect { described_class.new(capabilities: [options]) }.not_to raise_exception
@@ -126,24 +126,24 @@ module Selenium
 
             it 'with Options instance with profile' do
               profile = Profile.new.tap(&:layout_on_disk)
-              allow(profile).to receive(:directory).and_return("PROF_DIR")
+              allow(profile).to receive(:directory).and_return('PROF_DIR')
               options = Options.new(profile: profile)
               expect_request(body: {capabilities:
-                                      {alwaysMatch: {browserName: "MicrosoftEdge",
-                                                     'ms:edgeOptions': {args: ["--user-data-dir=PROF_DIR"]}}}})
+                                      {alwaysMatch: {browserName: 'MicrosoftEdge',
+                                                     'ms:edgeOptions': {args: ['--user-data-dir=PROF_DIR']}}}})
 
               expect { described_class.new(capabilities: [options]) }.not_to raise_exception
             end
 
             it 'with Capabilities instance' do
               capabilities = Remote::Capabilities.new(browser_name: 'MicrosoftEdge', invalid: 'foobar')
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar'}}})
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', invalid: 'foobar'}}})
 
               expect { described_class.new(capabilities: [capabilities]) }.not_to raise_exception
             end
 
             it 'with Options instance and an instance of a custom object responding to #as_json' do
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge",
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge',
                                                                  'ms:edgeOptions': {},
                                                                  'company:key': 'value'}}})
               expect { described_class.new(capabilities: [Options.new, as_json_object.new]) }.not_to raise_exception
@@ -152,7 +152,7 @@ module Selenium
             it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
               capabilities = Remote::Capabilities.new(browser_name: 'MicrosoftEdge', invalid: 'foobar')
               options = Options.new(args: ['-f'])
-              expect_request(body: {capabilities: {alwaysMatch: {browserName: "MicrosoftEdge", invalid: 'foobar',
+              expect_request(body: {capabilities: {alwaysMatch: {browserName: 'MicrosoftEdge', invalid: 'foobar',
                                                                  'ms:edgeOptions': {args: ['-f']},
                                                                  'company:key': 'value'}}})
 
