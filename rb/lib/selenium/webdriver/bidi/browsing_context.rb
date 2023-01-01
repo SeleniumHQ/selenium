@@ -81,7 +81,6 @@ module Selenium
         def create(type, reference_context)
           @bidi.send_cmd("browsingContext.create", type: type.to_s, referenceContext: reference_context)
         end
-
       end # BrowsingContext
     end # BiDi
   end # WebDriver

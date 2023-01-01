@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Remote
-
       #
       # Driver implementation for remote server.
       # @api private

@@ -20,14 +20,12 @@
 module Selenium
   module WebDriver
     module Remote
-
       #
       # Specification of the desired and/or actual capabilities of the browser that the
       # server is being asked to create.
       #
 
       class Capabilities
-
         KNOWN = [
           :browser_name,
           :browser_version,

@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Safari
-
       #
       # Driver implementation for Safari.
       # @api private

@@ -258,7 +258,6 @@ module Selenium
                                    ':device, :duration, :number keywords',
                                    id: method
       end
-
     end # ActionBuilder
   end # WebDriver
 end # Selenium

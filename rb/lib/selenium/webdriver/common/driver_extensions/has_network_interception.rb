@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasNetworkInterception
-
         #
         # Intercepts requests coming from browser allowing
         # to either pass them through like proxy or provide
@@ -64,7 +63,6 @@ module Selenium
           @interceptor ||= DevTools::NetworkInterceptor.new(devtools)
           @interceptor.intercept(&block)
         end
-
       end # HasNetworkInterception
     end # DriverExtensions
   end # WebDriver

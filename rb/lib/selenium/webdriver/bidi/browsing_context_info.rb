@@ -29,7 +29,6 @@ module Selenium
           @children = children
           @parent_browsing_context = parent_context
         end
-
       end # BrowsingContextInfo
     end # BiDi
   end # WebDriver

@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class DevTools
-
       #
       # Wraps the network request/response interception, providing
       # thread-safety guarantees and handling special cases such as browser
@@ -31,7 +30,6 @@ module Selenium
       #
 
       class NetworkInterceptor
-
         # CDP fails to get body on certain responses (301) and raises:
         # "Can only get response body on requests captured after headers received."
         CANNOT_GET_BODY_ON_REDIRECT_ERROR_CODE = "-32000"
@@ -169,7 +167,6 @@ module Selenium
         def cancelled?(network_id)
           lock.synchronize { !!cancelled_requests.delete(network_id) }
         end
-
       end # NetworkInterceptor
     end # DevTools
   end # WebDriver

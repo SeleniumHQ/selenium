@@ -133,7 +133,6 @@ module Selenium
             listener.call(event)
           end
         end
-
       end # LogInspector
     end # Bidi
   end # WebDriver

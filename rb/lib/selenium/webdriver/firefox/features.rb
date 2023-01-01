@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module Firefox
       module Features
-
         FIREFOX_COMMANDS = {
           get_context: [:get, 'session/:session_id/moz/context'],
           set_context: [:post, 'session/:session_id/moz/context'],

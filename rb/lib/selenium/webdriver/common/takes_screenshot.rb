@@ -60,7 +60,6 @@ module Selenium
       rescue NameError
         raise Error::UnsupportedOperationError, "Full Page Screenshots are not supported for #{inspect}"
       end
-
     end # TakesScreenshot
   end # WebDriver
 end # Selenium

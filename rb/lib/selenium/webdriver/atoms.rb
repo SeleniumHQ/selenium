@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Atoms
-
       private
 
       def read_atom(function)
@@ -32,7 +31,6 @@ module Selenium
                         atom: read_atom(function_name))
         execute_script(script, *arguments)
       end
-
     end # Atoms
   end # WebDriver
 end # Selenium

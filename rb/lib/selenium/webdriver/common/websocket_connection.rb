@@ -159,7 +159,6 @@ module Selenium
         @id ||= 0
         @id += 1
       end
-
     end # BiDi
   end # WebDriver
 end # Selenium

@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Firefox
-
       #
       # Driver implementation for Firefox using GeckoDriver.
       # @api private

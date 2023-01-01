@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasApplePermissions
-
         #
         # Returns permissions.
         #
@@ -44,7 +43,6 @@ module Selenium
         def permissions=(permissions)
           @bridge.permissions = permissions
         end
-
       end # HasPermissions
     end # DriverExtensions
   end # WebDriver

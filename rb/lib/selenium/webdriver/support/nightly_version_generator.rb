@@ -22,7 +22,6 @@ require 'date'
 module Selenium
   module WebDriver
     module Support
-
       #
       # Updates version in `version.rb` file with nightly suffix:
       #   - VERSION = '4.6.1'
@@ -32,7 +31,6 @@ module Selenium
       #
 
       class NightlyVersionGenerator
-
         REGEXP = /VERSION = ['"]([\d.]+)['"]/.freeze
 
         def self.call(version_file, version_suffix)
@@ -48,7 +46,6 @@ module Selenium
 
           File.write(version_file, version_file_contents)
         end
-
       end # NightlyVersionGenerator
     end # Support
   end # WebDriver

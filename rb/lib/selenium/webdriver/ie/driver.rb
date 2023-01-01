@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module IE
-
       #
       # Driver implementation for Internet Explorer supporting
       # both OSS and W3C dialects of JSON wire protocol.

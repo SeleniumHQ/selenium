@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module Chromium
       class Service < WebDriver::Service
-
         protected
 
         def extract_service_args(driver_opts)

@@ -36,7 +36,6 @@ module Selenium
         def full_screenshot
           @bridge.full_screenshot
         end
-
       end # FullPageScreenshot
     end # DriverExtensions
   end # WebDriver

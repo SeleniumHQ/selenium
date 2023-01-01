@@ -45,7 +45,6 @@ module Selenium
 
           @bidi.send_cmd("session.unsubscribe", events: events_list, contexts: browsing_contexts_list)
         end
-
       end # Session
     end # BiDi
   end # WebDriver

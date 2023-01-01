@@ -23,7 +23,6 @@ module Selenium
   module WebDriver
     module Chrome
       module Features
-
         include WebDriver::Chromium::Features
 
         CHROME_COMMANDS = {

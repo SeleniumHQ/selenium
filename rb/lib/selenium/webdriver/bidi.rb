@@ -51,7 +51,6 @@ module Selenium
       def error_message(message)
         "#{message['error']}: #{message['message']}\n#{message['stacktrace']}"
       end
-
     end # BiDi
   end # WebDriver
 end # Selenium

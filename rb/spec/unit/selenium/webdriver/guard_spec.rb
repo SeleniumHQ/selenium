@@ -200,7 +200,6 @@ module Selenium
           end
         end
       end
-
     end # Support
   end # WebDriver
 end # Selenium

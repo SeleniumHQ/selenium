@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasLaunching
-
         #
         # Launches Chromium app specified by id.
         #
@@ -31,7 +30,6 @@ module Selenium
         def launch_app(id)
           @bridge.launch_app(id)
         end
-
       end # HasLaunching
     end # DriverExtensions
   end # WebDriver

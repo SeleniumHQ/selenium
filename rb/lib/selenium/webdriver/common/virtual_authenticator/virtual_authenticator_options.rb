@@ -25,7 +25,6 @@
 module Selenium
   module WebDriver
     class VirtualAuthenticatorOptions
-
       PROTOCOL = {ctap2: "ctap2", u2f: "ctap1/u2f"}.freeze
       TRANSPORT = {ble: "ble", usb: "usb", nfc: "nfc", internal: "internal"}.freeze
 

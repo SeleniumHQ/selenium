@@ -81,7 +81,6 @@ module Selenium
       private
 
       attr_reader :bridge
-
     end # ShadowRoot
   end # WebDriver
 end # Selenium
