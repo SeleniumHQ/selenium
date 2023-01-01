@@ -28,33 +28,33 @@ module Selenium
 
         it 'can create a browsing context for given id' do
           id = driver.window_handle
-          browsing_context = BrowsingContext.new(driver: driver, browsing_context_id: id)
+          browsing_context = described_class.new(driver: driver, browsing_context_id: id)
           expect(browsing_context.id).to eq(id)
         end
 
         it 'can create a window' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :window)
+          browsing_context = described_class.new(driver: driver, type: :window)
           expect(browsing_context.id).not_to be_nil
         end
 
         it 'can create a window with a reference context' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :window,
+          browsing_context = described_class.new(driver: driver, type: :window,
                                                  reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
         end
 
         it 'can create a tab' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :tab)
+          browsing_context = described_class.new(driver: driver, type: :tab)
           expect(browsing_context.id).not_to be_nil
         end
 
         it 'can create a tab with a reference context' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :tab, reference_context: driver.window_handle)
+          browsing_context = described_class.new(driver: driver, type: :tab, reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
         end
 
         it 'can navigate to a url' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :tab)
+          browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html')
 
@@ -64,7 +64,7 @@ module Selenium
         end
 
         it 'can navigate to a url with readiness state' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :tab)
+          browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html'),
                                            readiness_state: :complete
@@ -76,7 +76,7 @@ module Selenium
 
         it 'can get tree with a child' do
           browsing_context_id = driver.window_handle
-          parent_window = BrowsingContext.new(driver: driver, browsing_context_id: browsing_context_id)
+          parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),
                                  readiness_state: :complete)
 
@@ -88,7 +88,7 @@ module Selenium
 
         it 'can get tree with depth' do
           browsing_context_id = driver.window_handle
-          parent_window = BrowsingContext.new(driver: driver, browsing_context_id: browsing_context_id)
+          parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),
                                  readiness_state: :complete)
 
@@ -98,8 +98,8 @@ module Selenium
         end
 
         it 'can close a window' do
-          window1 = BrowsingContext.new(driver: driver, type: :window)
-          window2 = BrowsingContext.new(driver: driver, type: :window)
+          window1 = described_class.new(driver: driver, type: :window)
+          window2 = described_class.new(driver: driver, type: :window)
 
           window2.close
 

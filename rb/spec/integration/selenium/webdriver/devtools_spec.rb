@@ -47,8 +47,8 @@ module Selenium
         }.to raise_error(RuntimeError, "This is fine!")
       end
 
-      context 'authentication', except: {browser: :firefox,
-                                         reason: 'Fetch.enable is not yet supported'} do
+      describe '#register', except: {browser: :firefox,
+                                     reason: 'Fetch.enable is not yet supported'} do
         let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
         let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
@@ -152,8 +152,8 @@ module Selenium
         expect(mutation.old_value).to eq('display:none;')
       end
 
-      context 'network interception', except: {browser: :firefox,
-                                               reason: 'Fetch.enable is not yet supported'} do
+      describe '#intercept', except: {browser: :firefox,
+                                      reason: 'Fetch.enable is not yet supported'} do
         it 'continues requests' do
           requests = []
           driver.intercept do |request, &continue|
@@ -202,7 +202,7 @@ module Selenium
         end
       end
 
-      context 'script pinning', except: {browser: :firefox} do
+      describe '#pin_script', except: {browser: :firefox} do
         before do
           driver.navigate.to url_for('xhtmlTest.html')
         end

@@ -23,9 +23,9 @@ module Selenium
   module WebDriver
     module Chrome
       describe Profile do
-        let(:profile) { Profile.new }
+        let(:profile) { described_class.new }
         let(:model) { '/some/path' }
-        let(:model_profile) { Profile.new(model) }
+        let(:model_profile) { described_class.new(model) }
 
         before do
           allow(File).to receive(:exist?).with(model).and_return true
@@ -37,15 +37,15 @@ module Selenium
           allow(FileUtils).to receive(:cp_r)
         end
 
-        it 'should set and get preference paths' do
+        it 'sets and get preference paths' do
           profile['foo.bar.baz'] = true
-          expect(profile['foo.bar.baz']).to eq(true)
+          expect(profile['foo.bar.baz']).to be(true)
         end
 
         it 'reads existing prefs' do
           allow(File).to receive(:read).and_return('{"autofill": {"enabled": false}}')
 
-          expect(model_profile['autofill.enabled']).to eq(false)
+          expect(model_profile['autofill.enabled']).to be(false)
           expect(File).to have_received(:read).with('/some/path/Default/Preferences')
         end
 
@@ -55,16 +55,17 @@ module Selenium
           model_profile['some.other.pref'] = 123
 
           mock_io = StringIO.new
-          expect(FileUtils).to receive(:mkdir_p).with('/tmp/some/path/Default')
+          allow(FileUtils).to receive(:mkdir_p)
           allow(File).to receive(:open).with('/tmp/some/path/Default/Preferences', 'w').and_yield(mock_io)
 
           model_profile.layout_on_disk
 
           result = JSON.parse(mock_io.string)
 
-          expect(result['autofill']['enabled']).to eq(false)
+          expect(result['autofill']['enabled']).to be(false)
           expect(result['some']['other']['pref']).to eq(123)
           expect(File).to have_received(:read).with('/some/path/Default/Preferences')
+          expect(FileUtils).to have_received(:mkdir_p).with('/tmp/some/path/Default')
         end
       end
     end # Chrome

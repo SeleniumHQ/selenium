@@ -28,7 +28,7 @@ module Selenium
           expect(driver.permissions).to eq('getUserMedia' => false)
         end
 
-        context 'setting technology preview' do
+        describe '#technology_preview!' do
           before(:all) { quit_driver }
 
           after do

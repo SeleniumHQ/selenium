@@ -22,11 +22,11 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Options do
-      subject(:options) { Options.new(local_state: {}) }
+      subject(:options) { described_class.new(local_state: {}) }
 
       before do
-        stub_const("#{Options}::BROWSER", 'foo')
-        stub_const("#{Options}::CAPABILITIES", {local_state: 'localState'})
+        stub_const("#{described_class}::BROWSER", 'foo')
+        stub_const("#{described_class}::CAPABILITIES", {local_state: 'localState'})
       end
 
       describe '#as_json' do

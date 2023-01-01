@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Interactions
       describe NoneInput do
-        let(:none) { NoneInput.new(:name) }
+        let(:none) { described_class.new(:name) }
         let(:interaction) { Pause.new(none, 1) }
 
         describe '#type' do
@@ -34,7 +34,7 @@ module Selenium
 
         describe '#encode' do
           it 'returns nil if no actions' do
-            expect(none.encode).to eq(nil)
+            expect(none.encode).to be_nil
           end
 
           it 'encodes each action' do

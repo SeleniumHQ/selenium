@@ -25,7 +25,7 @@ module Selenium
       module Http
         describe Default do
           let(:client) do
-            client = Default.new
+            client = described_class.new
             client.server_url = URI.parse('http://example.com')
 
             client
@@ -39,7 +39,7 @@ module Selenium
           end
 
           describe '#initialize' do
-            let(:client) { Default.new(read_timeout: 22, open_timeout: 23) }
+            let(:client) { described_class.new(read_timeout: 22, open_timeout: 23) }
 
             it 'accepts read timeout options' do
               expect(client.open_timeout).to eq 23

@@ -22,7 +22,7 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Logger do
-      subject(:logger) { Logger.new('Selenium', ignored: [:logger_info]) }
+      subject(:logger) { described_class.new('Selenium', ignored: [:logger_info]) }
 
       around do |example|
         debug = $DEBUG
@@ -33,14 +33,14 @@ module Selenium
 
       describe '#new' do
         it 'allows creating a logger with a different progname' do
-          other_logger = Logger.new('NotSelenium')
+          other_logger = described_class.new('NotSelenium')
           msg = /WARN NotSelenium message/
           expect { other_logger.warn('message') }.to output(msg).to_stdout_from_any_process
         end
 
         it 'does not log info from constructor' do
           expect {
-            Logger.new('Selenium')
+            described_class.new('Selenium')
           }.not_to output(/.+/).to_stdout_from_any_process
         end
       end
@@ -86,7 +86,7 @@ module Selenium
 
       describe '#warn' do
         it 'logs info on first warning but not second' do
-          logger = Logger.new('Selenium')
+          logger = described_class.new('Selenium')
           expect { logger.warn('first') }.to output(/:logger_info/).to_stdout_from_any_process
           expect { logger.warn('second') }.not_to output(/:logger_info/).to_stdout_from_any_process
         end

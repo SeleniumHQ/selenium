@@ -44,19 +44,19 @@ module Selenium
         it 'does not require any parameters' do
           expect_request
 
-          expect { Driver.new }.not_to raise_exception
+          expect { described_class.new }.not_to raise_exception
         end
 
         it 'accepts provided Options as sole parameter' do
           opts = {invalid: 'foobar', args: ['-f']}
           expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", 'goog:chromeOptions': opts}}})
 
-          expect { Driver.new(options: Options.new(**opts)) }.not_to raise_exception
+          expect { described_class.new(options: Options.new(**opts)) }.not_to raise_exception
         end
 
         it 'does not accept Options of the wrong class' do
           expect {
-            Driver.new(options: Options.firefox)
+            described_class.new(options: Options.firefox)
           }.to raise_exception(ArgumentError, ':options must be an instance of Selenium::WebDriver::Chrome::Options')
         end
 
@@ -64,42 +64,42 @@ module Selenium
           msg = "Don't use both :options and :capabilities when initializing Selenium::WebDriver::Chrome::Driver, " \
                 "prefer :options"
           expect {
-            Driver.new(options: Options.new, capabilities: Remote::Capabilities.chrome)
+            described_class.new(options: Options.new, capabilities: Remote::Capabilities.chrome)
           }.to raise_exception(ArgumentError, msg)
         end
 
         context 'with :capabilities' do
           it 'accepts value as a Symbol' do
             expect_request
-            expect { Driver.new(capabilities: :chrome) }.not_to raise_exception
+            expect { described_class.new(capabilities: :chrome) }.not_to raise_exception
           end
 
           it 'accepts Capabilities.chrome' do
             capabilities = Remote::Capabilities.chrome(invalid: 'foobar')
             expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
 
-            expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
+            expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Snake Case as Symbols' do
             capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
             expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
 
-            expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
+            expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Symbols' do
             capabilities = Remote::Capabilities.new(browserName: 'chrome', invalid: 'foobar')
             expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
 
-            expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
+            expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           it 'accepts constructed Capabilities with Camel Case as Strings' do
             capabilities = Remote::Capabilities.new('browserName' => 'chrome', 'invalid' => 'foobar')
             expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
 
-            expect { Driver.new(capabilities: capabilities) }.not_to raise_exception
+            expect { described_class.new(capabilities: capabilities) }.not_to raise_exception
           end
 
           context 'when value is an Array' do
@@ -116,7 +116,7 @@ module Selenium
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome",
                                                                  'goog:chromeOptions': {args: ['-f']}}}})
 
-              expect { Driver.new(capabilities: [options]) }.not_to raise_exception
+              expect { described_class.new(capabilities: [options]) }.not_to raise_exception
             end
 
             it 'with Options instance with profile' do
@@ -128,21 +128,21 @@ module Selenium
                                        {alwaysMatch: {browserName: "chrome",
                                                       'goog:chromeOptions': {args: ["--user-data-dir=PROF_DIR"]}}}})
 
-              expect { Driver.new(capabilities: [options]) }.not_to raise_exception
+              expect { described_class.new(capabilities: [options]) }.not_to raise_exception
             end
 
             it 'with Capabilities instance' do
               capabilities = Remote::Capabilities.new(browser_name: 'chrome', invalid: 'foobar')
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome", invalid: 'foobar'}}})
 
-              expect { Driver.new(capabilities: [capabilities]) }.not_to raise_exception
+              expect { described_class.new(capabilities: [capabilities]) }.not_to raise_exception
             end
 
             it 'with Options instance and an instance of a custom object responding to #as_json' do
               expect_request(body: {capabilities: {alwaysMatch: {browserName: "chrome",
                                                                  'goog:chromeOptions': {},
                                                                  'company:key': 'value'}}})
-              expect { Driver.new(capabilities: [Options.new, as_json_object.new]) }.not_to raise_exception
+              expect { described_class.new(capabilities: [Options.new, as_json_object.new]) }.not_to raise_exception
             end
 
             it 'with Options instance, Capabilities instance and instance of a custom object responding to #as_json' do
@@ -152,7 +152,7 @@ module Selenium
                                                                  'goog:chromeOptions': {args: ['-f']},
                                                                  'company:key': 'value'}}})
 
-              expect { Driver.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception
+              expect { described_class.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception
             end
           end
         end

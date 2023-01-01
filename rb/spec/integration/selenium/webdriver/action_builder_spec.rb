@@ -310,11 +310,11 @@ module Selenium
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
 
-          expect(in_viewport?(iframe)).to eq false
+          expect(in_viewport?(iframe)).to be false
 
           driver.action.scroll_to(iframe).perform
 
-          expect(in_viewport?(iframe)).to eq true
+          expect(in_viewport?(iframe)).to be true
         end
       end
 
@@ -330,7 +330,7 @@ module Selenium
           driver.action.scroll_by(0, delta_y).perform
           sleep 0.5
 
-          expect(in_viewport?(footer)).to eq true
+          expect(in_viewport?(footer)).to be true
         end
       end
 
@@ -346,7 +346,7 @@ module Selenium
           driver.switch_to.frame(iframe)
           sleep 0.5
           checkbox = driver.find_element(name: 'scroll_checkbox')
-          expect(in_viewport?(checkbox)).to eq true
+          expect(in_viewport?(checkbox)).to be true
         end
 
         it 'scrolls from element by given amount with offset',
@@ -361,7 +361,7 @@ module Selenium
           iframe = driver.find_element(tag_name: 'iframe')
           driver.switch_to.frame(iframe)
           checkbox = driver.find_element(name: 'scroll_checkbox')
-          expect(in_viewport?(checkbox)).to eq true
+          expect(in_viewport?(checkbox)).to be true
         end
 
         it 'raises MoveTargetOutOfBoundsError when origin offset from element is out of viewport' do
@@ -384,7 +384,7 @@ module Selenium
           driver.switch_to.frame(iframe)
           checkbox = driver.find_element(name: 'scroll_checkbox')
           sleep 0.5
-          expect(in_viewport?(checkbox)).to eq true
+          expect(in_viewport?(checkbox)).to be true
         end
 
         it 'raises MoveTargetOutOfBoundsError when origin offset is out of viewport' do

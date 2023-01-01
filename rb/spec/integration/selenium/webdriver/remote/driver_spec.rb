@@ -23,12 +23,12 @@ module Selenium
   module WebDriver
     module Remote
       describe Driver, exclusive: {driver: :remote} do
-        it 'should expose session_id' do
-          expect(driver.session_id).to be_kind_of(String)
+        it 'exposes session_id' do
+          expect(driver.session_id).to be_a(String)
         end
 
-        it 'should expose remote status' do
-          expect(driver.status).to be_kind_of(Hash)
+        it 'exposes remote status' do
+          expect(driver.status).to be_a(Hash)
         end
 
         it 'uses a default file detector' do

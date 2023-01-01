@@ -30,21 +30,21 @@ module Selenium
 
           before { driver.navigate.to url_for('printPage.html') }
 
-          it 'should return base64 for print command' do
+          it 'returns base64 for print command' do
             expect(driver.print_page).to include(magic_number)
           end
 
-          it 'should print with orientation' do
+          it 'prints with orientation' do
             expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
           end
 
-          it 'should print with valid params' do
+          it 'prints with valid params' do
             expect(driver.print_page(orientation: 'landscape',
                                      page_ranges: ['1-2'],
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'should print full page', except: [{ci: :github,
+          it 'prints full page', except: [{ci: :github,
                                                  platform: :windows,
                                                  reason: 'Some issues with resolution?'},
                                                 {platform: :macosx,

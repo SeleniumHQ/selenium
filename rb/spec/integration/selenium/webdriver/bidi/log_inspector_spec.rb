@@ -30,7 +30,7 @@ module Selenium
         it 'can listen to console log' do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_console_entry { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
@@ -52,7 +52,7 @@ module Selenium
         it 'can listen to javascript log' do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_javascript_log { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
@@ -70,7 +70,7 @@ module Selenium
         it 'can listen to javascript error log' do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_javascript_exception { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
@@ -88,7 +88,7 @@ module Selenium
         it 'can listen to any log' do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_log { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
@@ -104,7 +104,7 @@ module Selenium
         it 'can retrieve stack trace for a log' do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_javascript_log { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)

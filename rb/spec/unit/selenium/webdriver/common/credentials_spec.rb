@@ -45,19 +45,19 @@ module Selenium
       let(:id) { [1, 2, 3, 4] }
       let(:rp_id) { 'localhost' }
       let(:user_handle) { [1] }
-      let(:private_key) { Credential.decode(base64_encoded_pk) }
+      let(:private_key) { described_class.decode(base64_encoded_pk) }
       let(:sign_count) { 0 }
 
       describe '#self.resident' do
         it 'adds credential' do
-          credential = Credential.resident(id: id,
-                                           rp_id: rp_id,
-                                           user_handle: user_handle,
-                                           private_key: private_key,
-                                           sign_count: sign_count)
+          credential = described_class.resident(id: id,
+                                                rp_id: rp_id,
+                                                user_handle: user_handle,
+                                                private_key: private_key,
+                                                sign_count: sign_count)
 
           expect(credential.id).to eq([1, 2, 3, 4])
-          expect(credential.resident_credential?).to eq(true)
+          expect(credential.resident_credential?).to be(true)
           expect(credential.rp_id).to eq('localhost')
           expect(credential.user_handle).to eq(user_handle)
           expect(credential.private_key).to eq(private_key)
@@ -67,13 +67,13 @@ module Selenium
 
       describe '#self.non_resident' do
         it 'can testRkDisabledCredential' do
-          credential = Credential.non_resident(id: id,
-                                               rp_id: rp_id,
-                                               private_key: private_key,
-                                               sign_count: sign_count)
+          credential = described_class.non_resident(id: id,
+                                                    rp_id: rp_id,
+                                                    private_key: private_key,
+                                                    sign_count: sign_count)
 
           expect(credential.id).to eq([1, 2, 3, 4])
-          expect(credential.resident_credential?).to eq(false)
+          expect(credential.resident_credential?).to be(false)
           expect(credential.rp_id).to eq('localhost')
           expect(credential.private_key).to eq(private_key)
           expect(credential.sign_count).to eq(0)
@@ -82,17 +82,17 @@ module Selenium
 
       describe '#self.from_json' do
         it 'creates Credential from JSON' do
-          credential_data = {'credentialId' => Credential.encode(id),
+          credential_data = {'credentialId' => described_class.encode(id),
                              'isResidentCredential' => true,
                              'rpId' => 'localhost',
-                             'userHandle' => Credential.encode(user_handle),
+                             'userHandle' => described_class.encode(user_handle),
                              'privateKey' => base64_encoded_pk,
                              'signCount' => 0}
 
-          credential = Credential.from_json(credential_data)
+          credential = described_class.from_json(credential_data)
 
           expect(credential.id).to eq(id)
-          expect(credential.resident_credential?).to eq(true)
+          expect(credential.resident_credential?).to be(true)
           expect(credential.rp_id).to eq('localhost')
           expect(credential.user_handle).to eq(user_handle)
           expect(credential.private_key).to eq(base64_encoded_pk)
@@ -102,20 +102,20 @@ module Selenium
 
       describe '#as_json' do
         it 'converts to JSON' do
-          credential = Credential.resident(id: id,
-                                           rp_id: rp_id,
-                                           private_key: private_key,
-                                           user_handle: user_handle,
-                                           sign_count: sign_count)
+          credential = described_class.resident(id: id,
+                                                rp_id: rp_id,
+                                                private_key: private_key,
+                                                user_handle: user_handle,
+                                                sign_count: sign_count)
 
           credential_json = credential.as_json
 
-          expect(credential_json['credentialId']).to eq(Credential.encode([1, 2, 3, 4]))
-          expect(credential_json['isResidentCredential']).to eq(true)
+          expect(credential_json['credentialId']).to eq(described_class.encode([1, 2, 3, 4]))
+          expect(credential_json['isResidentCredential']).to be(true)
           expect(credential_json['rpId']).to eq('localhost')
-          expect(credential_json['userHandle']).to eq(Credential.encode(user_handle))
+          expect(credential_json['userHandle']).to eq(described_class.encode(user_handle))
 
-          expect(credential_json['privateKey']).to eq(Credential.encode(private_key))
+          expect(credential_json['privateKey']).to eq(described_class.encode(private_key))
           expect(credential_json['signCount']).to eq(0)
         end
       end

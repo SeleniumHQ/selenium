@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Edge
       describe Profile, exclusive: {browser: :edge} do
-        let(:profile) { Profile.new }
+        let(:profile) { described_class.new }
 
         it 'adds an extension' do
           ext_path = '/some/path.crx'

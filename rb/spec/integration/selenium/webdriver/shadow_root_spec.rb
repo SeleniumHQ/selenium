@@ -28,7 +28,7 @@ module Selenium
 
       it 'gets shadow root from driver' do
         shadow_root = custom_element.shadow_root
-        expect(shadow_root).to be_a ShadowRoot
+        expect(shadow_root).to be_a described_class
       end
 
       it 'raises error if no shadow root' do

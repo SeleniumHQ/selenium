@@ -81,7 +81,7 @@ module Selenium
           @authenticator = driver.add_virtual_authenticator(u2f)
 
           expect(@authenticator.options.protocol).to eq :u2f
-          expect(@authenticator.options.resident_key?).to eq false
+          expect(@authenticator.options.resident_key?).to be false
         end
 
         it 'creates resident key enabled u2f' do
@@ -89,16 +89,16 @@ module Selenium
           @authenticator = driver.add_virtual_authenticator(u2f)
 
           expect(@authenticator.options.protocol).to eq :u2f
-          expect(@authenticator.options.resident_key?).to eq true
+          expect(@authenticator.options.resident_key?).to be true
         end
 
         it 'creates resident key disabled ctap2' do
           @authenticator = driver.add_virtual_authenticator(ctap2)
 
           expect(@authenticator.options.protocol).to eq :ctap2
-          expect(@authenticator.options.resident_key?).to eq false
-          expect(@authenticator.options.user_verified?).to eq true
-          expect(@authenticator.options.user_verification?).to eq true
+          expect(@authenticator.options.resident_key?).to be false
+          expect(@authenticator.options.user_verified?).to be true
+          expect(@authenticator.options.user_verification?).to be true
         end
 
         it 'creates resident key enabled ctap2' do
@@ -106,9 +106,9 @@ module Selenium
           @authenticator = driver.add_virtual_authenticator(ctap2)
 
           expect(@authenticator.options.protocol).to eq :ctap2
-          expect(@authenticator.options.resident_key?).to eq true
-          expect(@authenticator.options.user_verified?).to eq true
-          expect(@authenticator.options.user_verification?).to eq true
+          expect(@authenticator.options.resident_key?).to be true
+          expect(@authenticator.options.user_verified?).to be true
+          expect(@authenticator.options.user_verification?).to be true
         end
       end
 
@@ -118,7 +118,7 @@ module Selenium
 
           @authenticator.remove!
 
-          expect(@authenticator.valid?).to eq false
+          expect(@authenticator.valid?).to be false
         end
       end
 
@@ -196,13 +196,13 @@ module Selenium
           res_cred_output = credentials.find { |cred| Credential.encode(cred.id).match res_cred_resp['id'] }
           non_res_cred_output = credentials.tap { |cred| cred.delete(res_cred_output) }.first
 
-          expect(res_cred_output.resident_credential?).to eq true
+          expect(res_cred_output.resident_credential?).to be true
           expect(res_cred_output.rp_id).to eq 'localhost'
           expect(res_cred_output.sign_count).to eq 1
           expect(res_cred_output.user_handle).to eq [1]
 
-          expect(non_res_cred_output.resident_credential?).to eq false
-          expect(non_res_cred_output.rp_id).to eq nil
+          expect(non_res_cred_output.resident_credential?).to be false
+          expect(non_res_cred_output.rp_id).to be_nil
           expect(non_res_cred_output.sign_count).to eq 1
           expect(non_res_cred_output.user_handle).to be_nil
         end

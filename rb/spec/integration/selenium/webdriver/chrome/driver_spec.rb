@@ -34,9 +34,7 @@ module Selenium
         end
 
         it 'sets download path' do
-          driver.download_path = File.expand_path(__dir__)
-          # there is no simple way to verify that it's now possible to download
-          # at least it doesn't crash
+          expect { driver.download_path = File.expand_path(__dir__) }.not_to raise_exception
         end
 
         it 'can execute CDP commands' do
@@ -66,19 +64,19 @@ module Selenium
 
           let(:magic_number) { 'JVBER' }
 
-          it 'should return base64 for print command' do
+          it 'returns base64 for print command' do
             driver.navigate.to url_for('printPage.html')
             expect(driver.print_page).to include(magic_number)
           end
 
-          it 'should print with valid params' do
+          it 'prints with valid params' do
             driver.navigate.to url_for('printPage.html')
             expect(driver.print_page(orientation: 'landscape',
                                      page_ranges: ['1-2'],
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'should save pdf' do
+          it 'saves pdf' do
             driver.navigate.to url_for('printPage.html')
 
             path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.pdf"
@@ -112,26 +110,26 @@ module Selenium
 
             entries = driver.logs.get(:browser)
             expect(entries).not_to be_empty
-            expect(entries.first).to be_kind_of(LogEntry)
+            expect(entries.first).to be_a(LogEntry)
           end
 
           it 'can get the driver log' do
             entries = driver.logs.get(:driver)
             expect(entries).not_to be_empty
-            expect(entries.first).to be_kind_of(LogEntry)
+            expect(entries.first).to be_a(LogEntry)
           end
 
           it 'can get the performance log' do
             entries = driver.logs.get(:performance)
             expect(entries).not_to be_empty
-            expect(entries.first).to be_kind_of(LogEntry)
+            expect(entries.first).to be_a(LogEntry)
           end
         end
 
         it 'manages network features' do
           driver.network_conditions = {offline: false, latency: 56, download_throughput: 789, upload_throughput: 600}
           conditions = driver.network_conditions
-          expect(conditions['offline']).to eq false
+          expect(conditions['offline']).to be false
           expect(conditions['latency']).to eq 56
           expect(conditions['download_throughput']).to eq 789
           expect(conditions['upload_throughput']).to eq 600
@@ -150,7 +148,7 @@ module Selenium
           unless sinks.empty?
             device_name = sinks.first['name']
             driver.start_cast_tab_mirroring(device_name)
-            driver.stop_casting(device_name)
+            expect { driver.stop_casting(device_name) }.not_to raise_exception
           end
         end
 
