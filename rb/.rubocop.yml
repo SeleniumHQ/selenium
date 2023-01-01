@@ -4,41 +4,16 @@ require:
 
 AllCops:
   TargetRubyVersion: 2.7
+  NewCops: enable
   Exclude:
     - 'lib/selenium/devtools/**/*'
 
-Layout/EmptyLinesAroundAttributeAccessor:
-  Enabled: true
-
-Layout/EmptyLinesAroundClassBody:
-  Enabled: false
-
-Layout/EmptyLinesAroundModuleBody:
-  Enabled: false
-
 Layout/LineLength:
   AllowedPatterns:
-      - '\s+# rubocop'
-      - '^\s*#'
-      - '^\s*it .*, except: \{.*\} do$'
-
-Layout/SpaceAroundMethodCallOperator:
-  Enabled: true
+    - '^\s*#'
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
-
-Lint/DeprecatedOpenSSLConstant:
-  Enabled: true
-
-Lint/RaiseException:
-  Enabled: true
-
-Lint/StructNewOverride:
-  Enabled: true
-
-Lint/SuppressedException:
-  Enabled: false
 
 Metrics/AbcSize:
   Max: 28
@@ -82,9 +57,6 @@ Metrics/ModuleLength:
     - 'lib/selenium/webdriver/common/platform.rb'
     - 'spec/**/*'
 
-Metrics/ParameterLists:
-  CountKeywordArgs: false
-
 Metrics/PerceivedComplexity:
   Max: 9
 
@@ -107,19 +79,7 @@ RSpec/AnyInstance:
 RSpec/BeforeAfterAll:
   Enabled: false
 
-RSpec/ContextWording:
-  Enabled: false
-
-RSpec/DescribeClass:
-  Enabled: false
-
-RSpec/DescribedClass:
-  EnforcedStyle: explicit
-
 RSpec/ExampleLength:
-  Enabled: false
-
-RSpec/ExampleWording:
   Enabled: false
 
 RSpec/InstanceVariable:
@@ -127,17 +87,18 @@ RSpec/InstanceVariable:
     - 'spec/unit/selenium/webdriver/socket_poller_spec.rb'
     - 'spec/integration/selenium/webdriver/chrome/print_pdf_spec.rb'
 
-RSpec/MessageSpies:
-  Enabled: false
-
 RSpec/MultipleExpectations:
   Enabled: false
 
-RSpec/MultipleMemoizedHelpers:
-  Enabled: false
+RSpec/NoExpectationExample:
+  Exclude:
+    - 'spec/integration/selenium/webdriver/guard_spec.rb'
+    - 'spec/integration/selenium/webdriver/takes_screenshot_spec.rb'
 
-Style/Alias:
-  EnforcedStyle: prefer_alias_method
+RSpec/MultipleMemoizedHelpers:
+  Max: 6
+  Exclude:
+    - 'spec/unit/selenium/webdriver/common/interactions/*_spec.rb'
 
 Style/BlockDelimiters:
   EnforcedStyle: braces_for_chaining
@@ -155,16 +116,7 @@ Style/Dir:
 Style/Documentation:
   Enabled: false
 
-Style/ExponentialNotation:
-  Enabled: true
-
 Style/HashEachMethods:
-  Enabled: true
-
-Style/HashTransformKeys:
-  Enabled: true
-
-Style/HashTransformValues:
   Enabled: true
 
 # Port Integers do not need underscores
@@ -172,204 +124,4 @@ Style/NumericLiterals:
   Enabled: false
 
 Style/OptionalBooleanParameter:
-  Enabled: false
-
-Style/RegexpLiteral:
-  EnforcedStyle: mixed
-
-Style/SlicingWithRange:
-  Enabled: true
-
-Style/StringLiterals:
-  Enabled: false
-
-Style/SignalException:
-  Exclude:
-    - 'spec/integration/selenium/webdriver/guard_spec.rb'
-
-RSpec/BeEq:
-  Enabled: false
-
-# Additional things
-Gemspec/DeprecatedAttributeAssignment: # new in 1.10
-  Enabled: true
-Gemspec/RequireMFA: # new in 1.23
-  Enabled: true
-Layout/LineEndStringConcatenationIndentation: # new in 1.18
-  Enabled: true
-Layout/SpaceBeforeBrackets: # new in 1.7
-  Enabled: true
-Lint/AmbiguousAssignment: # new in 1.7
-  Enabled: true
-Lint/AmbiguousOperatorPrecedence: # new in 1.21
-  Enabled: true
-Lint/AmbiguousRange: # new in 1.19
-  Enabled: true
-Lint/DeprecatedConstants: # new in 1.8
-  Enabled: true
-Lint/DuplicateBranch: # new in 1.3
-  Enabled: true
-Lint/DuplicateRegexpCharacterClassElement: # new in 1.1
-  Enabled: true
-Lint/EmptyBlock: # new in 1.1
-  Enabled: true
-Lint/EmptyClass: # new in 1.3
-  Enabled: true
-Lint/EmptyInPattern: # new in 1.16
-  Enabled: true
-Lint/IncompatibleIoSelectWithFiberScheduler: # new in 1.21
-  Enabled: true
-Lint/LambdaWithoutLiteralBlock: # new in 1.8
-  Enabled: true
-Lint/NoReturnInBeginEndBlocks: # new in 1.2
-  Enabled: true
-Lint/NumberedParameterAssignment: # new in 1.9
-  Enabled: true
-Lint/OrAssignmentToConstant: # new in 1.9
-  Enabled: true
-Lint/RedundantDirGlobSort: # new in 1.8
-  Enabled: true
-Lint/RefinementImportMethods: # new in 1.27
-  Enabled: true
-Lint/RequireRelativeSelfPath: # new in 1.22
-  Enabled: true
-Lint/SymbolConversion: # new in 1.9
-  Enabled: true
-Lint/ToEnumArguments: # new in 1.1
-  Enabled: true
-Lint/TripleQuotes: # new in 1.9
-  Enabled: true
-Lint/UnexpectedBlockArity: # new in 1.5
-  Enabled: true
-Lint/UnmodifiedReduceAccumulator: # new in 1.1
-  Enabled: true
-Lint/UselessRuby2Keywords: # new in 1.23
-  Enabled: true
-Naming/BlockForwarding: # new in 1.24
-  Enabled: true
-Security/CompoundHash: # new in 1.28
-  Enabled: true
-Security/IoMethods: # new in 1.22
-  Enabled: true
-Style/ArgumentsForwarding: # new in 1.1
-  Enabled: true
-Style/CollectionCompact: # new in 1.2
-  Enabled: true
-Style/DocumentDynamicEvalDefinition: # new in 1.1
-  Enabled: true
-Style/EndlessMethod: # new in 1.8
-  Enabled: true
-Style/FetchEnvVar: # new in 1.28
-  Enabled: true
-Style/FileRead: # new in 1.24
-  Enabled: true
-Style/FileWrite: # new in 1.24
-  Enabled: true
-Style/HashConversion: # new in 1.10
-  Enabled: true
-Style/HashExcept: # new in 1.7
-  Enabled: true
-Style/IfWithBooleanLiteralBranches: # new in 1.9
-  Enabled: true
-Style/InPatternThen: # new in 1.16
-  Enabled: true
-Style/MapToHash: # new in 1.24
-  Enabled: true
-Style/MultilineInPatternThen: # new in 1.16
-  Enabled: true
-Style/NegatedIfElseCondition: # new in 1.2
-  Enabled: true
-Style/NestedFileDirname: # new in 1.26
-  Enabled: true
-Style/NilLambda: # new in 1.3
-  Enabled: true
-Style/NumberedParameters: # new in 1.22
-  Enabled: true
-Style/NumberedParametersLimit: # new in 1.22
-  Enabled: true
-Style/ObjectThen: # new in 1.28
-  Enabled: true
-Style/OpenStructUse: # new in 1.23
-  Enabled: true
-Style/QuotedSymbols: # new in 1.16
-  Enabled: true
-Style/RedundantArgument: # new in 1.4
-  Enabled: true
-Style/RedundantInitialize: # new in 1.27
-  Enabled: true
-Style/RedundantSelfAssignmentBranch: # new in 1.19
-  Enabled: true
-Style/SelectByRegexp: # new in 1.22
-  Enabled: true
-Style/StringChars: # new in 1.12
-  Enabled: true
-Style/SwapValues: # new in 1.1
-  Enabled: true
-Performance/AncestorsInclude: # new in 1.7
-  Enabled: true
-Performance/BigDecimalWithNumericArgument: # new in 1.7
-  Enabled: true
-Performance/BlockGivenWithExplicitBlock: # new in 1.9
-  Enabled: true
-Performance/CollectionLiteralInLoop: # new in 1.8
-  Enabled: true
-Performance/ConcurrentMonotonicTime: # new in 1.12
-  Enabled: true
-Performance/ConstantRegexp: # new in 1.9
-  Enabled: true
-Performance/MapCompact: # new in 1.11
-  Enabled: true
-Performance/MethodObjectAsBlock: # new in 1.9
-  Enabled: true
-Performance/RedundantEqualityComparisonBlock: # new in 1.10
-  Enabled: true
-Performance/RedundantSortBlock: # new in 1.7
-  Enabled: true
-Performance/RedundantSplitRegexpArgument: # new in 1.10
-  Enabled: true
-Performance/RedundantStringChars: # new in 1.7
-  Enabled: true
-Performance/ReverseFirst: # new in 1.7
-  Enabled: true
-Performance/SortReverse: # new in 1.7
-  Enabled: true
-Performance/Squeeze: # new in 1.7
-  Enabled: true
-Performance/StringIdentifierArgument: # new in 1.13
-  Enabled: true
-Performance/StringInclude: # new in 1.7
-  Enabled: true
-Performance/Sum: # new in 1.8
-  Enabled: true
-RSpec/BeNil: # new in 2.9.0
-  Enabled: true
-RSpec/ExcessiveDocstringSpacing: # new in 2.5
-  Enabled: true
-RSpec/IdenticalEqualityAssertion: # new in 2.4
-  Enabled: true
-RSpec/SubjectDeclaration: # new in 2.5
-  Enabled: true
-RSpec/VerifiedDoubleReference: # new in 2.10.0
-  Enabled: true
-RSpec/FactoryBot/SyntaxMethods: # new in 2.7
-  Enabled: true
-RSpec/Rails/AvoidSetupHook: # new in 2.4
-  Enabled: false
-Style/EnvHome: # new in 1.29
-  Enabled: true
-Layout/LineContinuationLeadingSpace: # new in 1.31
-  Enabled: false
-Layout/LineContinuationSpacing: # new in 1.31
-  Enabled: true
-Lint/ConstantOverwrittenInRescue: # new in 1.31
-  Enabled: true
-Lint/NonAtomicFileOperation: # new in 1.31
-  Enabled: true
-Style/MapCompactWithConditionalBlock: # new in 1.30
-  Enabled: true
-RSpec/ChangeByZero: # new in 2.11.0
-  Enabled: true
-RSpec/Capybara/SpecificMatcher: # new in 2.12
-  Enabled: false
-RSpec/Rails/HaveHttpStatus: # new in 2.12
   Enabled: false
