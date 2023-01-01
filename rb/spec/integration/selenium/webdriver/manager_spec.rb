@@ -43,7 +43,8 @@ module Selenium
            except: [{browser: %i[chrome edge],
                      reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=3732'},
                     {browser: :firefox,
-                     reason: 'https://github.com/mozilla/geckodriver/issues/1841'}], only: {browser: %i[chrome edge firefox]} do
+                     reason: 'https://github.com/mozilla/geckodriver/issues/1841'}],
+           only: {browser: %i[chrome edge firefox]} do
           driver.manage.add_cookie name: 'samesite',
                                    value: 'default'
 

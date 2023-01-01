@@ -98,7 +98,8 @@ module Selenium
           it 'adds an extension' do
             allow(File).to receive(:file?).and_return(true)
             ext = 'foo.crx'
-            allow_any_instance_of(described_class).to receive(:encode_file).with(ext).and_return("encoded_#{ext[/([^.]*)/]}")
+            allow_any_instance_of(described_class)
+              .to receive(:encode_file).with(ext).and_return("encoded_#{ext[/([^.]*)/]}")
 
             options.extensions << ext
             expect(options.extensions).to eq([ext])
@@ -144,7 +145,8 @@ module Selenium
           it 'adds an extension' do
             allow(File).to receive(:file?).and_return(true)
             ext = 'foo.crx'
-            allow_any_instance_of(described_class).to receive(:encode_file).with(ext).and_return("encoded_#{ext[/([^.]*)/]}")
+            allow_any_instance_of(described_class)
+              .to receive(:encode_file).with(ext).and_return("encoded_#{ext[/([^.]*)/]}")
 
             options.add_extension(ext)
             expect(options.extensions).to eq([ext])
@@ -278,8 +280,10 @@ module Selenium
 
           it 'returns a JSON hash' do
             allow(File).to receive(:file?).and_return(true)
-            allow_any_instance_of(described_class).to receive(:encode_extension).with('foo.crx').and_return("encoded_foo")
-            allow_any_instance_of(described_class).to receive(:encode_extension).with('bar.crx').and_return("encoded_bar")
+            allow_any_instance_of(described_class)
+              .to receive(:encode_extension).with('foo.crx').and_return('encoded_foo')
+            allow_any_instance_of(described_class)
+              .to receive(:encode_extension).with('bar.crx').and_return('encoded_bar')
 
             opts = described_class.new(browser_version: '75',
                                        platform_name: 'win10',

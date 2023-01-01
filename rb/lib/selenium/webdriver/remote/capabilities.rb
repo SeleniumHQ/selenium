@@ -93,14 +93,14 @@ module Selenium
               browser_name: 'MicrosoftEdge'
             }.merge(opts))
           end
-          alias_method :microsoftedge, :edge
+          alias microsoftedge edge
 
           def firefox(opts = {})
             new({
               browser_name: 'firefox'
             }.merge(opts))
           end
-          alias_method :ff, :firefox
+          alias ff firefox
 
           def safari(opts = {})
             new({
@@ -120,7 +120,7 @@ module Selenium
               platform_name: :windows
             }.merge(opts))
           end
-          alias_method :ie, :internet_explorer
+          alias ie internet_explorer
 
           def always_match(capabilities)
             new(always_match: capabilities)
@@ -147,7 +147,8 @@ module Selenium
 
             # Remote Server Specific
             if data.key?('webdriver.remote.sessionid')
-              caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
+              caps[:remote_session_id] =
+                data.delete('webdriver.remote.sessionid')
             end
 
             KNOWN.each do |cap|
@@ -282,7 +283,7 @@ module Selenium
           as_json == other.as_json
         end
 
-        alias_method :eql?, :==
+        alias eql? ==
 
         protected
 

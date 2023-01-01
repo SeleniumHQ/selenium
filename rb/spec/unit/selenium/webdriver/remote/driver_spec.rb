@@ -36,8 +36,8 @@ module Selenium
         end
 
         it 'requires parameters' do
-          expect { described_class.new }.to raise_exception(ArgumentError,
-                                                            'Selenium::WebDriver::Remote::Driver needs :options to be set')
+          expect { described_class.new }
+            .to raise_exception(ArgumentError, 'Selenium::WebDriver::Remote::Driver needs :options to be set')
         end
 
         it 'uses provided URL' do
@@ -142,7 +142,9 @@ module Selenium
                                                                  'goog:chromeOptions': {args: ['-f']},
                                                                  'company:key': 'value'}}})
 
-              expect { described_class.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception
+              expect {
+                described_class.new(capabilities: [capabilities, options, as_json_object.new])
+              }.not_to raise_exception
             end
           end
         end

@@ -256,7 +256,7 @@ module Selenium
         driver.switch_to.frame 0
         driver.switch_to.default_content
 
-        expect(driver.find_elements(id: 'iframe_page_heading').size).to be > 0
+        expect(driver.find_elements(id: 'iframe_page_heading').size).to be_positive
       end
 
       # Edge BUG - https://connect.microsoft.com/IE/feedback/details/1850030

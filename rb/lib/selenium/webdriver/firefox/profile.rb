@@ -143,7 +143,7 @@ module Selenium
           end
         end
 
-        alias_method :as_json, :encoded
+        alias as_json encoded
 
         private
 

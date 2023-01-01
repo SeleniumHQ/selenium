@@ -32,7 +32,12 @@ module Selenium
         let(:delta_x) { 30 }
         let(:delta_y) { 60 }
         let(:scroll) do
-          described_class.new(source: source, duration: duration, delta_x: delta_x, delta_y: delta_y, origin: origin, x: x,
+          described_class.new(source: source,
+                              duration: duration,
+                              delta_x: delta_x,
+                              delta_y: delta_y,
+                              origin: origin,
+                              x: x,
                               y: y)
         end
 
@@ -53,7 +58,12 @@ module Selenium
           context 'with element' do
             it 'returns a Hash with source, duration, x and y' do
               scroll = described_class.new(source: source,
-                                           duration: duration, delta_x: delta_x, delta_y: delta_y, origin: element, x: x, y: y)
+                                           duration: duration,
+                                           delta_x: delta_x,
+                                           delta_y: delta_y,
+                                           origin: element,
+                                           x: x,
+                                           y: y)
               allow(element).to receive(:is_a?).with(Element).and_return(true)
 
               expect(scroll.encode).to eq('type' => 'scroll',

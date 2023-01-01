@@ -127,7 +127,7 @@ module Selenium
         def continue_request(id)
           devtools.fetch.continue_request(request_id: id)
         end
-        alias_method :continue_response, :continue_request
+        alias continue_response continue_request
 
         def mutate_request(request)
           devtools.fetch.continue_request(

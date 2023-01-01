@@ -54,15 +54,17 @@ module Selenium
       end
 
       attr_reader :id, :resident_credential, :rp_id, :user_handle, :private_key, :sign_count
-      alias_method :resident_credential?, :resident_credential
+      alias resident_credential? resident_credential
 
-      def initialize(id:, resident_credential:, rp_id:, private_key:, user_handle: nil, sign_count: 0)
+      def initialize(id:, resident_credential:, rp_id:, private_key:, **opts)
         @id = id
         @resident_credential = resident_credential
         @rp_id = rp_id
-        @user_handle = user_handle
+        @user_handle = opts.delete(:user_handle) { nil }
         @private_key = private_key
-        @sign_count = sign_count
+        @sign_count = opts.delete(:sign_count) { 0 }
+
+        raise ArgumentError, "Invalid arguments: #{opts.keys}" unless opts.empty?
       end
 
       #

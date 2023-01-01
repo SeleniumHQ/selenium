@@ -156,7 +156,9 @@ module Selenium
                                                                  'ms:edgeOptions': {args: ['-f']},
                                                                  'company:key': 'value'}}})
 
-              expect { described_class.new(capabilities: [capabilities, options, as_json_object.new]) }.not_to raise_exception
+              expect {
+                described_class.new(capabilities: [capabilities, options, as_json_object.new])
+              }.not_to raise_exception
             end
           end
         end

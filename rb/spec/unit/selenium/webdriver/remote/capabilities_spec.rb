@@ -126,7 +126,8 @@ module Selenium
 
         it 'allows to set firstMatch' do
           expected = {'firstMatch' => [{'browserName' => 'chrome'}, {'browserName' => 'firefox'}]}
-          expect(described_class.first_match({browser_name: 'chrome'}, {browser_name: 'firefox'}).as_json).to eq(expected)
+          expect(described_class.first_match({browser_name: 'chrome'},
+                                             {browser_name: 'firefox'}).as_json).to eq(expected)
           expect(described_class.first_match({'browserName' => 'chrome'},
                                              {'browserName' => 'firefox'}).as_json).to eq(expected)
           expect(described_class.first_match(described_class.chrome, described_class.firefox).as_json).to eq(expected)

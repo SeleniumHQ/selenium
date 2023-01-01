@@ -74,7 +74,7 @@ module Selenium
       def ==(other)
         other.is_a?(self.class) && as_json == other.as_json
       end
-      alias_method :eql?, :==
+      alias eql? ==
 
       def ftp=(value)
         self.type = :manual

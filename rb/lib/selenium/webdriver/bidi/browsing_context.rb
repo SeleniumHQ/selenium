@@ -34,7 +34,8 @@ module Selenium
 
         def initialize(driver:, browsing_context_id: nil, type: nil, reference_context: nil)
           unless driver.capabilities.web_socket_url
-            raise Error::WebDriverError, "WebDriver instance must support BiDi protocol"
+            raise Error::WebDriverError,
+                  "WebDriver instance must support BiDi protocol"
           end
 
           unless type.nil? || %i[window tab].include?(type)

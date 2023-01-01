@@ -186,6 +186,7 @@ module Selenium
           execute :delete_session
           http.close
         rescue *QUIT_ERRORS
+          nil
         end
 
         def close
@@ -370,7 +371,7 @@ module Selenium
         def action(async: false, devices: [], duration: 250)
           ActionBuilder.new self, async: async, devices: devices, duration: duration
         end
-        alias_method :actions, :action
+        alias actions action
 
         def send_actions(data)
           execute :actions, {}, {actions: data}
@@ -517,7 +518,7 @@ module Selenium
           Element.new self, element_id_from(execute(:get_active_element))
         end
 
-        alias_method :switch_to_active_element, :active_element
+        alias switch_to_active_element active_element
 
         def find_element_by(how, what, parent_ref = [])
           how, what = convert_locator(how, what)

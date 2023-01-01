@@ -149,7 +149,7 @@ module Selenium
 
         it 'finds by css selector' do
           driver.navigate.to url_for('xhtmlTest.html')
-          expect(driver.find_elements(css: 'p').size).to be > 0
+          expect(driver.find_elements(css: 'p').size).to be_positive
         end
 
         it 'finds above element' do

@@ -77,7 +77,8 @@ module Selenium
             raise 'This code is executed but expected to fail'
           end
 
-          it 'does not guard if only matches and except does not', except: {browser: :not_chrome}, only: {browser: :chrome} do
+          it 'does not guard if only matches and except does not', except: {browser: :not_chrome},
+                                                                   only: {browser: :chrome} do
             # pass
           end
         end

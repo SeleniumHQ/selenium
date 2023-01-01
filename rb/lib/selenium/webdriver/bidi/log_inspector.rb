@@ -41,7 +41,8 @@ module Selenium
 
         def initialize(driver, browsing_context_ids = nil)
           unless driver.capabilities.web_socket_url
-            raise Error::WebDriverError, "WebDriver instance must support BiDi protocol"
+            raise Error::WebDriverError,
+                  "WebDriver instance must support BiDi protocol"
           end
 
           @bidi = driver.bidi

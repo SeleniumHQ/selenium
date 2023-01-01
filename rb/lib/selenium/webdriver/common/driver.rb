@@ -255,19 +255,19 @@ module Selenium
       #   driver.first(id: 'foo')
       #
 
-      alias_method :first, :find_element
+      alias first find_element
 
       #
       #   driver.all(class: 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
       #
 
-      alias_method :all, :find_elements
+      alias all find_elements
 
       #
       #   driver.script('function() { ... };')
       #
 
-      alias_method :script, :execute_script
+      alias script execute_script
 
       # Get the first element matching the given selector. If given a
       # String or Symbol, it will be used as the id of the element.

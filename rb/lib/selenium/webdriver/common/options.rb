@@ -38,12 +38,12 @@ module Selenium
         def ie(**opts)
           IE::Options.new(**opts)
         end
-        alias_method :internet_explorer, :ie
+        alias internet_explorer ie
 
         def edge(**opts)
           Edge::Options.new(**opts)
         end
-        alias_method :microsoftedge, :edge
+        alias microsoftedge edge
 
         def safari(**opts)
           Safari::Options.new(**opts)
@@ -95,7 +95,7 @@ module Selenium
         as_json == other.as_json
       end
 
-      alias_method :eql?, :==
+      alias eql? ==
 
       #
       # @api private

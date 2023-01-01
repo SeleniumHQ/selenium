@@ -33,12 +33,12 @@ module Selenium
         POINTER = :pointer
         ORIGINS = [VIEWPORT, POINTER].freeze
 
-        def initialize(source, duration, x, y, element: nil, origin: nil, **opts)
+        def initialize(source, duration, x, y, **opts)
           super(source)
           @duration = duration * 1000
           @x_offset = x
           @y_offset = y
-          @origin = element || origin || :viewport
+          @origin = opts.delete(:element) || opts.delete(:origin) || :viewport
           @type = :pointerMove
           @opts = opts
         end
