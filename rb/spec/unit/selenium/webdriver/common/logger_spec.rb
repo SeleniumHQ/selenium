@@ -29,7 +29,6 @@ module Selenium
         $DEBUG = false
         example.call
         $DEBUG = debug
-        WebDriver.instance_variable_set(:@logger, nil) # reset cache
       end
 
       describe '#new' do
