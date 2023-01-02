@@ -204,7 +204,7 @@ twine upload bazel-bin/py/selenium-*.whl bazel-bin/py/selenium-*.tar.gz
 <details>
 <summary>Click to see Ruby Build Steps</summary>
 
-To build the Ruby code run:
+To build all Ruby code run:
 
 ```sh
 bazel build //rb/...
@@ -213,26 +213,21 @@ bazel build //rb/...
 To run unit tests:
 
 ```sh
-bazel test --cache_test_results=no --test_output=all //rb:unit-test
+bazel test //rb:unit-test
 ```
 
-To run tests on a browser:
+To run tests on a specific browser:
 
 ```sh
-bazel test --cache_test_results=no --test_output=all //rb:<browsername>-test 
+bazel test //rb:<browsername>-test 
 ```
 
-To run remote tests on a browser:
+To run remote tests on a specific browser:
 
 ```sh
-bazel test --cache_test_results=no --test_output=all //rb:remote-<browsername>-test
+bazel test //rb:remote-<browsername>-test
 ```
 
-To run a particular test on a browser:
-
-```sh
-bazel test --cache_test_results=no --test_output=all --test_arg="-e<Test_Target>" //rb:<browsername>-test
-```
 _browsername_:
 * chrome
 * edge
@@ -241,15 +236,21 @@ _browsername_:
 * safari
 * safari-preview
 
+Commonly used bazel command line arguments:
+* Always run all tests - `--cache_test_results=no`
+* Display stdout at the end of the test run - `--test_output=all`
+* Run a specific test - `--test_arg="-e<Test_Target>"` (see examples below)
+* Run with an environment variable - `--test_env=MYENV=myvalue` (see examples below)
+
 _Test_Target_ examples:
 * Selenium::WebDriver::Devtools
 * Selenium::WebDriver::TakesScreenshot
 * Selenium::WebDriver::Timeouts
 * Selenium::WebDriver::Chrome::Driver
 * Selenium::WebDriver::Firefox::Profile
-* Selenium::Webdriver::Remote::Driver 
+* Selenium::Webdriver::Remote::Driver
 
-Optional Environment Variable toggles in test suite:
+Available Environment Variable toggles in test suite:
 
 - `ENV['WD_SPEC_DRIVER']` - the driver to test; either the browser name or 'remote' (gets set by Bazel)
 - `ENV['WD_REMOTE_BROWSER']` - when 'WD_SPEC_DRIVER' is 'remote'; the name of the browser to test (gets set by Bazel)
@@ -261,6 +262,11 @@ Optional Environment Variable toggles in test suite:
 - `ENV['CHROME_BINARY']` - path to test specific Chrome browser
 - `ENV['EDGE_BINARY']` - path to test specific Edge browser
 - `ENV['FIREFOX_BINARY']` - path to test specific Firefox browser
+
+To run with a specific version of Ruby you can change the version in `rb/ruby_version.bzl` or from command line:
+```sh
+echo 'RUBY_VERSION = <X.Y.Z>' > rb/ruby_version.bzl
+```
 
 If you want to use RubyMine for development, a bit of extra configuration is necessary to let the IDE know about Bazel toolchain and artifacts:
 
