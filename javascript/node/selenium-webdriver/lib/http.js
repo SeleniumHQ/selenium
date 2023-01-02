@@ -182,14 +182,14 @@ class InternalTypeError extends TypeError {}
  * @param params
  * @return {!Command} The transformed command to execute.
  */
-function toExecuteAtomCommand(command, atom, ...params) {
+function toExecuteAtomCommand(command, atom, name, ...params) {
   if (typeof atom !== 'function') {
     throw new InternalTypeError('atom is not a function: ' + typeof atom)
   }
 
   return new cmd.Command(cmd.Name.EXECUTE_SCRIPT)
     .setParameter('sessionId', command.getParameter('sessionId'))
-    .setParameter('script', `return (${atom}).apply(null, arguments)`)
+    .setParameter('script', `/* ${name} */return (${atom}).apply(null, arguments)`)
     .setParameter(
       'args',
       params.map((param) => command.getParameter(param))
@@ -252,7 +252,7 @@ const W3C_COMMAND_MAP = new Map([
   [
     cmd.Name.FIND_ELEMENTS_RELATIVE,
     (cmd) => {
-      return toExecuteAtomCommand(cmd, Atom.FIND_ELEMENTS, 'args')
+      return toExecuteAtomCommand(cmd, Atom.FIND_ELEMENTS, 'findElements', 'args')
     },
   ],
   [
@@ -272,7 +272,7 @@ const W3C_COMMAND_MAP = new Map([
   [
     cmd.Name.GET_ELEMENT_ATTRIBUTE,
     (cmd) => {
-      return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'id', 'name')
+      return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'getAttribute', 'id', 'name')
     },
   ],
   [
@@ -308,7 +308,7 @@ const W3C_COMMAND_MAP = new Map([
   [
     cmd.Name.IS_ELEMENT_DISPLAYED,
     (cmd) => {
-      return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'id')
+      return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'isDisplayed', 'id')
     },
   ],
 
