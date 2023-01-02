@@ -44,9 +44,9 @@ module Selenium
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'should print full page', except: [{ ci: :github,
-                                                  platform: :windows,
-                                                  reason: 'Some issues with resolution?' },
+          it 'should print full page', except: [{ci: :github,
+                                                 platform: :windows,
+                                                 reason: 'Some issues with resolution?'},
                                                 {platform: :macosx,
                                                  headless: true,
                                                  reason: 'showing half resolution of what expected'}] do

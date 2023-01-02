@@ -93,8 +93,8 @@ module Selenium
 
         it 'takes full page screenshot', exclusive: {browser: :firefox},
                                          except: [{ci: :github,
-                                                    platform: :windows,
-                                                    reason: 'Some issues with resolution?'},
+                                                   platform: :windows,
+                                                   reason: 'Some issues with resolution?'},
                                                   {platform: :macosx,
                                                    headless: true,
                                                    reason: 'showing half resolution of what expected'}] do
