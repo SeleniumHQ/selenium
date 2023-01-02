@@ -92,11 +92,12 @@ module Selenium
         end
 
         it 'takes full page screenshot', exclusive: {browser: :firefox},
-                                         except: {
-                                           ci: :github,
-                                           platform: :windows,
-                                           reason: 'Some issues with resolution?'
-                                         } do
+                                         except: [{ci: :github,
+                                                    platform: :windows,
+                                                    reason: 'Some issues with resolution?'},
+                                                  {platform: :macosx,
+                                                   headless: true,
+                                                   reason: 'showing half resolution of what expected'}] do
           viewport_width = driver.execute_script("return window.innerWidth;")
           viewport_height = driver.execute_script("return window.innerHeight;")
 
