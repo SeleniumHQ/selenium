@@ -23,10 +23,8 @@ module Selenium
   module WebDriver
     class BiDi
       describe BrowsingContext, exclusive: {browser: %i[chrome firefox]} do
-        before do
-          quit_driver
-          create_driver!(web_socket_url: true)
-        end
+        before { reset_driver!(web_socket_url: true) }
+        after { quit_driver }
 
         it 'can create a browsing context for given id' do
           id = driver.window_handle

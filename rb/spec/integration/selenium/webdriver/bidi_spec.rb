@@ -21,11 +21,9 @@ require_relative 'spec_helper'
 
 module Selenium
   module WebDriver
-    describe BiDi, exclusive: {browser: %i[chrome firefox]} do
-      before do
-        quit_driver
-        create_driver!(web_socket_url: true)
-      end
+    describe BiDi, only: {browser: %i[chrome edge firefox]} do
+      before { reset_driver!(web_socket_url: true) }
+      after { quit_driver }
 
       it 'gets session status' do
         status = driver.bidi.session.status
@@ -33,7 +31,7 @@ module Selenium
         expect(status.message).not_to be_empty
       end
 
-      it 'can navigate and listen to errors' do
+      it 'can navigate and listen to errors', except: {browser: :chrome, reason: 'not yet implemented'} do
         log_entry = nil
         log_inspector = BiDi::LogInspector.new(driver)
         log_inspector.on_javascript_exception { |log| log_entry = log }
