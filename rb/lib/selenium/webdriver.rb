@@ -33,7 +33,6 @@ module Selenium
     Point     = Struct.new(:x, :y)
     Dimension = Struct.new(:width, :height)
     Rectangle = Struct.new(:x, :y, :width, :height)
-    Location  = Struct.new(:latitude, :longitude, :altitude)
 
     autoload :BiDi,       'selenium/webdriver/bidi'
     autoload :Chromium,   'selenium/webdriver/chromium'
