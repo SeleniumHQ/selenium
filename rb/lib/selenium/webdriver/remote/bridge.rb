@@ -417,7 +417,7 @@ module Selenium
         end
 
         def submit_element(element)
-          script = "var form = arguments[0];\n" \
+          script = "/* submitForm */ var form = arguments[0];\n" \
                    "while (form.nodeName != \"FORM\" && form.parentNode) {\n  " \
                    "form = form.parentNode;\n" \
                    "}\n" \
