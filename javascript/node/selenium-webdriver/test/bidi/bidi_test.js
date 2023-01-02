@@ -23,6 +23,7 @@ const { Browser } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const BrowsingContext = require('../../bidi/browsingContext')
+const filterBy = require('../../bidi/filterBy')
 const until = require('../../lib/until')
 
 suite(
@@ -72,6 +73,70 @@ suite(
         await inspector.close()
       })
 
+      it('can listen to console log with different consumers', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onConsoleEntry(function (log) {
+          logEntry = log
+        })
+
+        let logEntryText = null
+        await inspector.onConsoleEntry(function (log) {
+          logEntryText = log.text
+        })
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'consoleLog' }).click()
+
+        assert.equal(logEntry.text, 'Hello, world!')
+        assert.equal(logEntry.realm, null)
+        assert.equal(logEntry.type, 'console')
+        assert.equal(logEntry.level, 'info')
+        assert.equal(logEntry.method, 'log')
+        assert.equal(logEntry.stackTrace, null)
+        assert.equal(logEntry.args.length, 1)
+
+        assert.equal(logEntryText, 'Hello, world!')
+
+        await inspector.close()
+      })
+
+      it('can filter console info level log', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onConsoleEntry(function (log) {
+          logEntry = log
+        }, filterBy.FilterBy.logLevel('info'))
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'consoleLog' }).click()
+
+        assert.equal(logEntry.text, 'Hello, world!')
+        assert.equal(logEntry.realm, null)
+        assert.equal(logEntry.type, 'console')
+        assert.equal(logEntry.level, 'info')
+        assert.equal(logEntry.method, 'log')
+        assert.equal(logEntry.stackTrace, null)
+        assert.equal(logEntry.args.length, 1)
+
+        await inspector.close()
+      })
+
+      it('can filter console log', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onConsoleEntry(function (log) {
+          logEntry = log
+        }, filterBy.FilterBy.logLevel('error'))
+
+        await driver.get(Pages.logEntryAdded)
+        // Generating info level log but we are filtering by error level
+        await driver.findElement({ id: 'consoleLog' }).click()
+
+        assert.equal(logEntry, null)
+        await inspector.close()
+      })
+
       it('can listen to javascript log', async function () {
         let logEntry = null
         const inspector = await logInspector(driver)
@@ -85,6 +150,38 @@ suite(
         assert.equal(logEntry.text, 'Error: Not working')
         assert.equal(logEntry.type, 'javascript')
         assert.equal(logEntry.level, 'error')
+
+        await inspector.close()
+      })
+
+      it('can filter javascript log at error level', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onJavascriptLog(function (log) {
+          logEntry = log
+        }, filterBy.FilterBy.logLevel('error'))
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'jsException' }).click()
+
+        assert.equal(logEntry.text, 'Error: Not working')
+        assert.equal(logEntry.type, 'javascript')
+        assert.equal(logEntry.level, 'error')
+
+        await inspector.close()
+      })
+
+      it('can filter javascript log', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onJavascriptLog(function (log) {
+          logEntry = log
+        }, filterBy.FilterBy.logLevel('info'))
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'jsException' }).click()
+
+        assert.equal(logEntry, null)
 
         await inspector.close()
       })
@@ -141,6 +238,43 @@ suite(
         assert.equal(logEntry.stackTrace, null)
         assert.equal(logEntry.args.length, 1)
 
+        await inspector.close()
+      })
+
+      it('can filter any log', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onLog(function (log) {
+          logEntry = log
+        }, filterBy.FilterBy.logLevel('info'))
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'consoleLog' }).click()
+
+        assert.equal(logEntry.text, 'Hello, world!')
+        assert.equal(logEntry.realm, null)
+        assert.equal(logEntry.type, 'console')
+        assert.equal(logEntry.level, 'info')
+        assert.equal(logEntry.method, 'log')
+        assert.equal(logEntry.stackTrace, null)
+        assert.equal(logEntry.args.length, 1)
+
+        await inspector.close()
+      })
+
+      it('can filter any log at error level', async function () {
+        let logEntry = null
+        const inspector = await logInspector(driver)
+        await inspector.onLog(function (log) {
+          logEntry = log
+        }, filterBy.FilterBy.logLevel('error'))
+
+        await driver.get(Pages.logEntryAdded)
+        await driver.findElement({ id: 'jsException' }).click()
+
+        assert.equal(logEntry.text, 'Error: Not working')
+        assert.equal(logEntry.type, 'javascript')
+        assert.equal(logEntry.level, 'error')
         await inspector.close()
       })
     })

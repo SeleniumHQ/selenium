@@ -15,13 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
+const { FilterBy } = require('./filterBy')
 const { ConsoleLogEntry, JavascriptLogEntry, GenericLogEntry } = require('./logEntries')
 
 const LOG = {
   TYPE_CONSOLE : 'console',
-  TYPE_JS_LOGS : 'jsLogs',
-  TYPE_JS_EXCEPTION: 'jsException',
-  TYPE_LOG : 'log'
+  TYPE_JS_LOGS : 'javascript',
 }
 
 class LogInspector {
@@ -57,26 +56,36 @@ class LogInspector {
    * @param callback
    * @returns {Promise<void>}
    */
-  async onConsoleEntry (callback) {
-    this.ws = await this.bidi.socket
-    let enabled = (LOG.TYPE_CONSOLE in this.listener) || this.logListener(LOG.TYPE_CONSOLE)
-    this.listener[LOG.TYPE_CONSOLE].push(callback)
-
-    if (enabled) {
-      return
+  async onConsoleEntry(callback, filterBy = undefined) {
+    if (filterBy != undefined && !(filterBy instanceof FilterBy)) {
+      throw Error(`Pass valid FilterBy object. Received: ${filterBy}`)
     }
 
-    this.ws.on('message', event => {
+    this.ws = await this.bidi.socket
+
+    this.ws.on('message', (event) => {
       const { params } = JSON.parse(Buffer.from(event.toString()))
 
       if (params?.type === LOG.TYPE_CONSOLE) {
-        let consoleEntry = new ConsoleLogEntry(params.level, params.text,
-          params.timestamp, params.type, params.method, params.realm,
-          params.args, params.stackTrace)
+        let consoleEntry = new ConsoleLogEntry(
+          params.level,
+          params.text,
+          params.timestamp,
+          params.type,
+          params.method,
+          params.realm,
+          params.args,
+          params.stackTrace
+        )
 
-        this.listener[LOG.TYPE_CONSOLE].forEach(listener => {
-          listener(consoleEntry)
-        })
+        if (filterBy != undefined) {
+          if (params?.level === filterBy.getLevel()) {
+            callback(consoleEntry)
+          }
+          return
+        }
+
+        callback(consoleEntry)
       }
     })
   }
@@ -86,26 +95,33 @@ class LogInspector {
    * @param callback
    * @returns {Promise<void>}
    */
-  async onJavascriptLog (callback) {
-    this.ws = await this.bidi.socket
-    let enabled = (LOG.TYPE_JS_LOGS in this.listener) || this.logListener(
-      LOG.TYPE_JS_LOGS)
-    this.listener[LOG.TYPE_JS_LOGS].push(callback)
-
-    if (enabled) {
-      return
+  async onJavascriptLog(callback, filterBy = undefined) {
+    if (filterBy != undefined && !(filterBy instanceof FilterBy)) {
+      throw Error(`Pass valid FilterBy object. Received: ${filterBy}`)
     }
 
-    this.ws.on('message', event => {
+    this.ws = await this.bidi.socket
+
+    this.ws.on('message', (event) => {
       const { params } = JSON.parse(Buffer.from(event.toString()))
-      if ((params?.type === 'javascript')) {
 
-        let jsEntry = new JavascriptLogEntry(params.level, params.text,
-          params.timestamp, params.type, params.stackTrace)
+      if (params?.type === LOG.TYPE_JS_LOGS) {
+        let jsEntry = new JavascriptLogEntry(
+          params.level,
+          params.text,
+          params.timestamp,
+          params.type,
+          params.stackTrace
+        )
 
-        this.listener[LOG.TYPE_JS_LOGS].forEach(listener => {
-          listener(jsEntry)
-        })
+        if (filterBy != undefined) {
+          if (params?.level === filterBy.getLevel()) {
+            callback(jsEntry)
+          }
+          return
+        }
+
+        callback(jsEntry)
       }
     })
   }
@@ -115,24 +131,29 @@ class LogInspector {
    * @param callback
    * @returns {Promise<void>}
    */
-  async onJavascriptException (callback) {
+  async onJavascriptException(callback) {
     this.ws = await this.bidi.socket
-    let enabled = (LOG.TYPE_JS_EXCEPTION in this.listener) || this.logListener(
-      LOG.TYPE_JS_EXCEPTION)
+    let enabled =
+      LOG.TYPE_JS_EXCEPTION in this.listener ||
+      this.logListener(LOG.TYPE_JS_EXCEPTION)
     this.listener[LOG.TYPE_JS_EXCEPTION].push(callback)
 
     if (enabled) {
       return
     }
 
-    this.ws.on('message', event => {
+    this.ws.on('message', (event) => {
       const { params } = JSON.parse(Buffer.from(event.toString()))
-      if ((params?.type === 'javascript') && (params?.level === 'error')) {
+      if (params?.type === 'javascript' && params?.level === 'error') {
+        let jsErrorEntry = new JavascriptLogEntry(
+          params.level,
+          params.text,
+          params.timestamp,
+          params.type,
+          params.stackTrace
+        )
 
-        let jsErrorEntry = new JavascriptLogEntry(params.level, params.text,
-          params.timestamp, params.type, params.stackTrace)
-
-        this.listener[LOG.TYPE_JS_EXCEPTION].forEach(listener => {
+        this.listener[LOG.TYPE_JS_EXCEPTION].forEach((listener) => {
           listener(jsErrorEntry)
         })
       }
@@ -144,52 +165,81 @@ class LogInspector {
    * @param callback
    * @returns {Promise<void>}
    */
-  async onLog (callback) {
-    this.ws = await this.bidi.socket
-    let enabled = (LOG.TYPE_LOG in this.listener) || this.logListener(
-      LOG.TYPE_LOG)
-    this.listener[LOG.TYPE_LOG].push(callback)
-
-    if (enabled) {
-      return
+  async onLog(callback, filterBy = undefined) {
+    if (filterBy != undefined && !(filterBy instanceof FilterBy)) {
+      throw Error(`Pass valid FilterBy object. Received: ${filterBy}`)
     }
 
-    this.ws.on('message', event => {
+    this.ws = await this.bidi.socket
+
+    this.ws.on('message', (event) => {
       const { params } = JSON.parse(Buffer.from(event.toString()))
-      if ((params?.type === 'javascript')) {
+      if (params?.type === 'javascript') {
+        let jsEntry = new JavascriptLogEntry(
+          params.level,
+          params.text,
+          params.timestamp,
+          params.type,
+          params.stackTrace
+        )
 
-        let jsEntry = new JavascriptLogEntry(params.level, params.text,
-          params.timestamp, params.type, params.stackTrace)
+        if (filterBy != undefined) {
+          if (params?.level === filterBy.getLevel()) {
+            callback(jsEntry)
+          }
+          return
+        }
 
-        this.listener[LOG.TYPE_LOG].forEach(listener => {
-          listener(jsEntry)
-        })
+        callback(jsEntry)
         return
       }
-      
-      if ((params?.type === 'console')) {
+  
+      if (params?.type === 'console') {
+        let consoleEntry = new ConsoleLogEntry(
+          params.level,
+          params.text,
+          params.timestamp,
+          params.type,
+          params.method,
+          params.realm,
+          params.args,
+          params.stackTrace
+        )
+        
+        if (filterBy != undefined) {
+          if (params?.level === filterBy.getLevel()) {
+            callback(consoleEntry)
+          }
+          return
+        }
 
-        let consoleEntry = new ConsoleLogEntry(params.level, params.text,
-          params.timestamp, params.type, params.method, params.realm,
-          params.args, params.stackTrace)
-
-        this.listener[LOG.TYPE_LOG].forEach(listener => {
-          listener(consoleEntry)
-        })
+        callback(consoleEntry)
         return
-      } 
+      }
 
-      if (params != undefined && !['console', 'javascript'].includes(params?.type)) {
-        let genericEntry = new GenericLogEntry(params.level, params.text,
-          params.timestamp, params.type, params.stackTrace)
+      if (
+        params != undefined &&
+        !['console', 'javascript'].includes(params?.type)
+      ) {
+        let genericEntry = new GenericLogEntry(
+          params.level,
+          params.text,
+          params.timestamp,
+          params.type,
+          params.stackTrace
+        )
 
-        this.listener[LOG.TYPE_LOG].forEach(listener => {
-          listener(genericEntry)
-        })
+        if (filterBy != undefined) {
+          if (params?.level === filterBy.getLevel()) {
+            callback(genericEntry)
+          }
+          return
+        }
+
+        callback(genericEntry)
       }
     })
   }
-
 
   /**
    * Unsubscribe to log event
