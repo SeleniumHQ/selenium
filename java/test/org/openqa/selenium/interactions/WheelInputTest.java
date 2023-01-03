@@ -22,6 +22,7 @@ import static org.openqa.selenium.remote.Dialect.W3C;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.json.Json;
@@ -43,8 +44,7 @@ class WheelInputTest {
 
     WheelInput wheelInput = new WheelInput("wheel");
     Interaction scroll = wheelInput.createScroll(
-      20,
-      30,
+      new Point(20, 30),
       0,
       0,
       Duration.ofMillis(100),
@@ -75,8 +75,7 @@ class WheelInputTest {
   @Test
   void shouldEncodeScrollInteractionWithViewPortOrigin() {
     WheelInput wheelInput = new WheelInput("test-wheel");
-    WheelInput.ScrollInteraction interaction = new WheelInput.ScrollInteraction(
-      wheelInput,
+    WheelInput.ScrollInteraction interaction = (WheelInput.ScrollInteraction) wheelInput.createScroll(
       25,
       50,
       30,
@@ -101,10 +100,8 @@ class WheelInputTest {
     innerElement.setId("12345");
 
     WheelInput wheelInput = new WheelInput("test-wheel");
-    WheelInput.ScrollInteraction interaction = new WheelInput.ScrollInteraction(
-      wheelInput,
-      25,
-      50,
+    WheelInput.ScrollInteraction interaction = (WheelInput.ScrollInteraction) wheelInput.createScroll(
+      new Point(25, 50),
       30,
       60,
       Duration.ofSeconds(1),
