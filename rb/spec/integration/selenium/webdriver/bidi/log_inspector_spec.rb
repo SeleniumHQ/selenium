@@ -27,7 +27,7 @@ module Selenium
           @page = '/bidi/logEntryAdded.html'
         end
 
-        it 'can listen to console log', except: {browser: :chrome} do
+        it 'can listen to console log' do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
@@ -49,6 +49,69 @@ module Selenium
           end
         end
 
+        it 'can listen to console log with different consumers' do
+          reset_driver!(web_socket_url: true) do |driver|
+            log_entry = nil
+            log_inspector = LogInspector.new(driver)
+            log_inspector.on_console_entry { |log| log_entry = log }
+
+            log_entry_text = nil
+            log_inspector.on_console_entry { |log| log_entry_text = log.text }
+
+            driver.navigate.to url_for(@page)
+            driver.find_element(id: 'consoleLog').click
+            wait.until { !log_entry.nil? }
+
+            expect(log_entry).to have_attributes(
+              text: "Hello, world!",
+              realm: nil,
+              type: "console",
+              level: LogInspector::LOG_LEVEL[:INFO],
+              method: "log",
+              stack_trace: nil
+            )
+            expect(log_entry.args.size).to eq(1)
+            expect(log_entry_text).to eq("Hello, world!")
+          end
+        end
+
+        it 'can filter console info level log' do
+          reset_driver!(web_socket_url: true) do |driver|
+            log_entry = nil
+            log_inspector = LogInspector.new(driver)
+            log_inspector.on_console_entry(FilterBy.log_level('info')) { |log| log_entry = log }
+
+            driver.navigate.to url_for(@page)
+            driver.find_element(id: 'consoleLog').click
+            wait.until { !log_entry.nil? }
+
+            expect(log_entry).to have_attributes(
+              text: "Hello, world!",
+              realm: nil,
+              type: "console",
+              level: LogInspector::LOG_LEVEL[:INFO],
+              method: "log",
+              stack_trace: nil
+            )
+            expect(log_entry.args.size).to eq(1)
+          end
+        end
+
+        it 'can filter console log' do
+          reset_driver!(web_socket_url: true) do |driver|
+            log_entry = nil
+            log_inspector = LogInspector.new(driver)
+            log_inspector.on_console_entry(FilterBy.log_level('error')) { |log| log_entry = log }
+
+            driver.navigate.to url_for(@page)
+            # Generating info level log but we are filtering by error level
+            wait.until { driver.find_element(id: 'consoleLog').displayed? }
+            driver.find_element(id: 'consoleLog').click
+
+            expect(log_entry).to be_nil
+          end
+        end
+
         it 'can listen to javascript log' do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
@@ -64,6 +127,39 @@ module Selenium
               type: 'javascript',
               level: LogInspector::LOG_LEVEL[:ERROR]
             )
+          end
+        end
+
+        it 'can filter javascript log at error level' do
+          reset_driver!(web_socket_url: true) do |driver|
+            log_entry = nil
+            log_inspector = LogInspector.new(driver)
+            log_inspector.on_javascript_log(FilterBy.log_level('error')) { |log| log_entry = log }
+
+            driver.navigate.to url_for(@page)
+            driver.find_element(id: 'jsException').click
+            wait.until { !log_entry.nil? }
+
+            expect(log_entry).to have_attributes(
+              text: "Error: Not working",
+              type: "javascript",
+              level: LogInspector::LOG_LEVEL[:ERROR]
+            )
+          end
+        end
+
+        it 'can filter javascript log' do
+          reset_driver!(web_socket_url: true) do |driver|
+            log_entry = nil
+            log_inspector = LogInspector.new(driver)
+            log_inspector.on_javascript_log(FilterBy.log_level('info')) { |log| log_entry = log }
+
+            driver.navigate.to url_for(@page)
+            # Generating js error level log but we are filtering by info level
+            wait.until { driver.find_element(id: 'jsException').displayed? }
+            driver.find_element(id: 'jsException').click
+
+            expect(log_entry).to be_nil
           end
         end
 
@@ -101,7 +197,43 @@ module Selenium
           end
         end
 
-        it 'can retrieve stack trace for a log', except: {browser: :chrome} do
+        it 'can filter any log' do
+          reset_driver!(web_socket_url: true) do |driver|
+            log_entry = nil
+            log_inspector = LogInspector.new(driver)
+            log_inspector.on_log(FilterBy.log_level('info')) { |log| log_entry = log }
+
+            driver.navigate.to url_for(@page)
+            driver.find_element(id: 'consoleLog').click
+            wait.until { !log_entry.nil? }
+
+            expect(log_entry["text"]).to eq("Hello, world!")
+            expect(log_entry["realm"]).to be_nil
+            expect(log_entry["type"]).to eq("console")
+            expect(log_entry["level"]).to eq("info")
+            expect(log_entry["method"]).to eq("log")
+            expect(log_entry["stackTrace"]).to be_nil
+            expect(log_entry["args"].size).to eq(1)
+          end
+        end
+
+        it 'can filter any log at error level' do
+          reset_driver!(web_socket_url: true) do |driver|
+            log_entry = nil
+            log_inspector = LogInspector.new(driver)
+            log_inspector.on_log(FilterBy.log_level('error')) { |log| log_entry = log }
+
+            driver.navigate.to url_for(@page)
+            driver.find_element(id: 'jsException').click
+            wait.until { !log_entry.nil? }
+
+            expect(log_entry["text"]).to eq("Error: Not working")
+            expect(log_entry["type"]).to eq("javascript")
+            expect(log_entry["level"]).to eq("error")
+          end
+        end
+
+        it 'can retrieve stack trace for a log' do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
