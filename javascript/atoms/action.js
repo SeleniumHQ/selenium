@@ -119,7 +119,11 @@ bot.action.clear = function (element) {
     // A single space is required, if you put empty string here you'll not be
     // able to interact with this element anymore in Firefox.
     bot.action.LegacyDevice_.focusOnElement(element);
-    element.innerHTML = goog.userAgent.GECKO ? ' ' : '';
+    if (goog.userAgent.GECKO) {
+      element.innerHTML = ' ';
+    } else {
+      element.textContent = '';
+    }
     var body = bot.getDocument().body;
     if (body) {
       bot.action.LegacyDevice_.focusOnElement(body);
