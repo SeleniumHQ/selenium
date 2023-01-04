@@ -135,6 +135,21 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        public void ShouldMoveToLocationAndClick()
+        {
+            driver.Url = "https://www.selenium.dev/selenium/web/mouse_interaction.html";
+
+            Actions actionProvider = new Actions(driver);
+            IAction moveAndClick = actionProvider.MoveToLocation(70,60).Click().Build();
+
+            moveAndClick.Perform();
+
+            IWebElement element = driver.FindElement(By.Id("greeting"));
+
+            Assert.AreEqual("Success!", element.Text);
+        }
+
+        [Test]
         public void ShouldNotMoveToANullLocator()
         {
             driver.Url = javascriptPage;

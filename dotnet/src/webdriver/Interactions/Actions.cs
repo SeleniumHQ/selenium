@@ -315,6 +315,18 @@ namespace OpenQA.Selenium.Interactions
         }
 
         /// <summary>
+        /// Moves the mouse from the upper left corner of the current viewport by the provided offset.
+        /// </summary>
+        /// <param name="offsetX">The horizontal offset to which to move the mouse.</param>
+        /// <param name="offsetY">The vertical offset to which to move the mouse.</param>
+        /// <returns>A self-reference to this <see cref="Actions"/>.</returns>
+        public Actions MoveToLocation(int offsetX, int offsetY)
+        {
+            this.actionBuilder.AddAction(this.defaultMouse.CreatePointerMove(CoordinateOrigin.Viewport, offsetX, offsetY, DefaultMouseMoveDuration));
+            return this;
+        }
+
+        /// <summary>
         /// Right-clicks the mouse on the specified element.
         /// </summary>
         /// <param name="onElement">The element on which to right-click.</param>
