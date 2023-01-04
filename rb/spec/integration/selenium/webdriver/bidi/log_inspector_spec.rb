@@ -21,13 +21,13 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    class BiDi
-      describe LogInspector, exclusive: {browser: %i[chrome firefox]} do
+    class BiDi # rubocop:disable Metrics/ClassLength
+      describe LogInspector, only: {browser: %i[chrome edge firefox]} do
         before do
           @page = '/bidi/logEntryAdded.html'
         end
 
-        it 'can listen to console log' do
+        it 'can listen to console log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
@@ -49,7 +49,7 @@ module Selenium
           end
         end
 
-        it 'can listen to console log with different consumers' do
+        it 'can listen to console log with different consumers', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = LogInspector.new(driver)
@@ -75,7 +75,7 @@ module Selenium
           end
         end
 
-        it 'can filter console info level log' do
+        it 'can filter console info level log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = LogInspector.new(driver)
@@ -97,7 +97,7 @@ module Selenium
           end
         end
 
-        it 'can filter console log' do
+        it 'can filter console log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = LogInspector.new(driver)
@@ -112,7 +112,7 @@ module Selenium
           end
         end
 
-        it 'can listen to javascript log' do
+        it 'can listen to javascript log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
@@ -130,7 +130,7 @@ module Selenium
           end
         end
 
-        it 'can filter javascript log at error level' do
+        it 'can filter javascript log at error level', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = LogInspector.new(driver)
@@ -148,7 +148,7 @@ module Selenium
           end
         end
 
-        it 'can filter javascript log' do
+        it 'can filter javascript log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = LogInspector.new(driver)
@@ -163,7 +163,7 @@ module Selenium
           end
         end
 
-        it 'can listen to javascript error log' do
+        it 'can listen to javascript error log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
@@ -181,7 +181,7 @@ module Selenium
           end
         end
 
-        it 'can listen to any log' do
+        it 'can listen to any log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
@@ -197,7 +197,7 @@ module Selenium
           end
         end
 
-        it 'can filter any log' do
+        it 'can filter any log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = LogInspector.new(driver)
@@ -217,7 +217,7 @@ module Selenium
           end
         end
 
-        it 'can filter any log at error level' do
+        it 'can filter any log at error level', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = LogInspector.new(driver)
@@ -233,7 +233,7 @@ module Selenium
           end
         end
 
-        it 'can retrieve stack trace for a log' do
+        it 'can retrieve stack trace for a log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
