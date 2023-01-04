@@ -94,8 +94,8 @@ module Selenium
     # @return [Logger]
     #
 
-    def self.logger
-      @logger ||= WebDriver::Logger.new
+    def self.logger(**opts)
+      @logger ||= WebDriver::Logger.new('Selenium', **opts)
     end
   end # WebDriver
 end # Selenium
