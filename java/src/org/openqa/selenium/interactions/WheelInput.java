@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.internal.Require;
@@ -52,6 +53,10 @@ public class WheelInput implements InputSource, Encodable {
 
   public Interaction createScroll(int x, int y, int deltaX, int deltaY, Duration duration, ScrollOrigin origin) {
     return new ScrollInteraction(this, x, y, deltaX, deltaY, duration, origin);
+  }
+
+  public Interaction createScroll(Point start, int deltaX, int deltaY, Duration duration, ScrollOrigin origin) {
+    return createScroll(start.x, start.y, deltaX, deltaY, duration, origin);
   }
 
   @Override
