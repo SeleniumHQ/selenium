@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntConsumer;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.PointerInput.Origin;
@@ -366,6 +367,19 @@ public class Actions {
     return tick(
         getActivePointer()
             .createPointerMove(Duration.ofMillis(200), Origin.pointer(), xOffset, yOffset));
+  }
+
+  public Actions moveToLocation(int xOffset, int yOffset) {
+    return tick(
+      getActivePointer()
+        .createPointerMove(Duration.ofMillis(250), Origin.viewport(), xOffset, yOffset));
+  }
+
+  public Actions moveToLocation(Point point) {
+    return tick(
+      getActivePointer()
+        .createPointerMove(
+          Duration.ofMillis(250), Origin.viewport(), point.getX(), point.getY()));
   }
 
   /**

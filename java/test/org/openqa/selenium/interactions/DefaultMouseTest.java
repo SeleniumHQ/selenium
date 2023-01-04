@@ -191,6 +191,32 @@ class DefaultMouseTest extends JupiterTestBase {
   }
 
   @Test
+  void testMoveToLocation() {
+    driver.get(pages.mouseInteractionPage);
+
+    Action moveAndClick = getBuilder(driver).moveToLocation(70, 60).click().build();
+
+    moveAndClick.perform();
+
+    WebElement element = driver.findElement(By.id("greeting"));
+
+    assertThat(element.getText()).isEqualTo("Success!");
+  }
+
+  @Test
+  void testMoveToLocationUsingPoint() {
+    driver.get(pages.mouseInteractionPage);
+
+    Action moveAndClick = getBuilder(driver).moveToLocation(new Point(70, 60)).click().build();
+
+    moveAndClick.perform();
+
+    WebElement element = driver.findElement(By.id("greeting"));
+
+    assertThat(element.getText()).isEqualTo("Success!");
+  }
+
+  @Test
   void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
