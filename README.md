@@ -4,6 +4,7 @@
 [![CI - Python](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-python.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-python.yml)
 [![CI - JavaScript](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-javascript.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-javascript.yml)
 [![CI - Java](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-java.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-java.yml)
+[![CI - .NET](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-dotnet.yml/badge.svg)](https://github.com/SeleniumHQ/selenium/actions/workflows/ci-dotnet.yml)
 
 <a href="https://selenium.dev"><img src="https://selenium.dev/images/selenium_logo_square_green.png" width="180" alt="Selenium"/></a>
 
