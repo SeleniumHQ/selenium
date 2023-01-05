@@ -1,4 +1,0 @@
-# Use predefined path for building so we could cache `external/`.
-startup --output_base=D:/_bazel
-build --disk_cache=D:/_bazel-disk
-build --repository_cache=D:/_bazel-repo

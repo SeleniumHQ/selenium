@@ -40,15 +40,20 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-      - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          workflow: dotnet
-          key: ${{ matrix.driver }}-${{ matrix.framework }}
+          bazelisk-cache: true
+          disk-cache: dotnet-${{ matrix.driver }}-${{ matrix.framework }}
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup dotnet tests
-        uses: ./.github/actions/bazel
-        with:
-          command: build //dotnet/test/common:chrome
+        run: bazel build //dotnet/test/common:chrome
       - name: Run ${{ matrix.driver }} tests
         working-directory: dotnet
         run: dotnet test test/common/WebDriver.Common.Tests.csproj --framework ${{ matrix.framework }}
