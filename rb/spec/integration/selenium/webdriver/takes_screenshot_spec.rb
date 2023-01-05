@@ -100,8 +100,8 @@ module Selenium
                                                    reason: 'Some issues with resolution?'},
                                                   {platform: :macosx,
                                                    headless: true,
-                                                   reason: 'showing half resolution of what expected'},
-                                                  exclusive: {browser: :firefox}] do
+                                                   reason: 'showing half resolution of what expected'}],
+                                         exclusive: {browser: :firefox} do
           viewport_width = driver.execute_script('return window.innerWidth;')
           viewport_height = driver.execute_script('return window.innerHeight;')
 
