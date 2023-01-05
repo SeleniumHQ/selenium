@@ -36,15 +36,20 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-      - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          workflow: ruby
-          key: gem-${{ matrix.target }}
+          bazelisk-cache: true
+          disk-cache: rb-${{ matrix.target }}
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Gems
-        uses: ./.github/actions/bazel
-        with:
-          command: build //rb:${{ matrix.target }}
+        run: bazel build //rb:${{ matrix.target }}
 
   chrome-test:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
@@ -58,16 +63,23 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
+        with:
+          bazelisk-cache: true
+          disk-cache: rb-${{ matrix.target }}
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'temurin'
-      - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
-        with:
-          workflow: ruby
-          key: ${{ matrix.target }}
       - name: Setup Fluxbox
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get -y install fluxbox
@@ -85,10 +97,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Run Chrome tests
-        uses: ./.github/actions/bazel
-        with:
-          command: test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
-          attempts: 3
+        run: bazel test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
         env:
           DISPLAY: :99
 
@@ -109,20 +118,24 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-      - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          workflow: ruby
-          key: ${{ matrix.target }}
+          bazelisk-cache: true
+          disk-cache: rb-${{ matrix.target }}
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Edge
         uses: browser-actions/setup-edge@latest
         with:
           edge-version: stable
       - name: Run Edge tests
-        uses: ./.github/actions/bazel
-        with:
-          command: test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
-          attempts: 3
+        run: bazel test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
 
   firefox-test:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
@@ -141,11 +154,18 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-      - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          workflow: ruby
-          key: ${{ matrix.target }}
+          bazelisk-cache: true
+          disk-cache: rb-${{ matrix.target }}
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get -y install fluxbox
@@ -164,10 +184,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
       - name: Run Firefox tests
-        uses: ./.github/actions/bazel
-        with:
-          command: test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
-          attempts: 3
+        run: bazel test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
         env:
           DISPLAY: :99
 
@@ -178,15 +195,20 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
-      - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          workflow: ruby
-          key: docs
+          bazelisk-cache: true
+          disk-cache: rb-docs
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run docs tests
-        uses: ./.github/actions/bazel
-        with:
-          command: run //rb:docs
+        run: bazel run //rb:docs
 
   lint:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
@@ -195,15 +217,20 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
-      - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          workflow: ruby
-          key: lint
+          bazelisk-cache: true
+          disk-cache: rb-lint
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run lint tests
-        uses: ./.github/actions/bazel
-        with:
-          command: run //rb:lint
+        run: bazel run //rb:lint
 
   unit-test:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
@@ -220,14 +247,19 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
-      - name: Cache Bazel artifacts
-        uses: ./.github/actions/cache-bazel
-        with:
-          workflow: ruby
-          key: unit-test-${{ matrix.ruby }}
       - name: Set Ruby version to ${{ matrix.ruby }}
         run: echo 'RUBY_VERSION = "${{ matrix.ruby }}"' > rb/ruby_version.bzl
-      - name: Run unit tests
-        uses: ./.github/actions/bazel
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          command: test --cache_test_results=no --test_output=all //rb:unit-test
+          bazelisk-cache: true
+          disk-cache: rb-unit-test-${{ matrix.ruby }}
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run unit tests
+        run: bazel test --cache_test_results=no --test_output=all //rb:unit-test

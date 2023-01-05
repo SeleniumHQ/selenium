@@ -89,24 +89,25 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
-      - name: Cache Bazel artifacts
-        uses: actions/cache@v3
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          path: |
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-python-unit-tests-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-python-unit-tests-
+          bazelisk-cache: true
+          disk-cache: py-unit
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
           java-version: '11'
           distribution: 'temurin'
       - name: Run unit tests
-        uses: ./.github/actions/bazel
-        with:
-          command: test //py:unit
+        run: bazel test //py:unit
 
   chrome_tests:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
@@ -115,16 +116,18 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
-      - name: Cache Bazel artifacts
-        uses: actions/cache@v3
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          path: |
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-chrome-tests-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-chrome-tests-
-            ${{ runner.os }}-bazel-python-unit-tests-
+          bazelisk-cache: true
+          disk-cache: py-chrome
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Chrome
@@ -134,10 +137,7 @@ jobs:
       - name: Start Fluxbox
         run: fluxbox -display :99 &
       - name: Run browser tests in Chrome
-        uses: ./.github/actions/bazel-test
-        with:
-          query: //py:test-chrome
-          attempts: 3
+        run: bazel test --flaky_test_attempts 3 //py:test-chrome
         env:
           DISPLAY: :99
 
@@ -148,16 +148,18 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
-      - name: Cache Bazel artifacts
-        uses: actions/cache@v3
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          path: |
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-firefox-tests-
-            ${{ runner.os }}-bazel-python-unit-tests-
+          bazelisk-cache: true
+          disk-cache: py-remote
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
@@ -175,9 +177,7 @@ jobs:
       - name: Start Fluxbox
         run: fluxbox -display :99 &
       - name: Run browser tests in Firefox (Remote)
-        uses: ./.github/actions/bazel
-        with:
-          command: test --jobs 1 //py:test-remote
+        run: bazel test --jobs 1 //py:test-remote
         env:
           DISPLAY: :99
 
@@ -188,16 +188,18 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
-      - name: Cache Bazel artifacts
-        uses: actions/cache@v3
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          path: |
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-firefox-tests-
-            ${{ runner.os }}-bazel-python-unit-tests-
+          bazelisk-cache: true
+          disk-cache: py-remote
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
@@ -215,10 +217,6 @@ jobs:
       - name: Start Fluxbox
         run: fluxbox -display :99 &
       - name: Run browser tests in Firefox
-        uses: ./.github/actions/bazel-test
-        with:
-          query: //py:test-firefox
-          attempts: 3
+        run: bazel test --flaky_test_attempts 3 //py:test-firefox
         env:
           DISPLAY: :99
-
