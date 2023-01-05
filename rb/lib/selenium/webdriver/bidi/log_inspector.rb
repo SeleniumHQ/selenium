@@ -54,8 +54,8 @@ module Selenium
           check_valid_filter(filter_by)
 
           on_log do |params|
-            type = params["type"]
-            console_log_events(params, filter_by, &block) if type.eql?("console")
+            type = params['type']
+            console_log_events(params, filter_by, &block) if type.eql?('console')
           end
         end
 
@@ -63,15 +63,15 @@ module Selenium
           check_valid_filter(filter_by)
 
           on_log do |params|
-            type = params["type"]
-            javascript_log_events(params, filter_by, &block) if type.eql?("javascript")
+            type = params['type']
+            javascript_log_events(params, filter_by, &block) if type.eql?('javascript')
           end
         end
 
         def on_javascript_exception(&block)
           on_log do |params|
-            type = params["type"]
-            javascript_log_events(params, FilterBy.log_level("error"), &block) if type.eql?("javascript")
+            type = params['type']
+            javascript_log_events(params, FilterBy.log_level('error'), &block) if type.eql?('javascript')
           end
         end
 

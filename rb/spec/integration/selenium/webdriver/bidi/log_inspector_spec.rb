@@ -52,7 +52,7 @@ module Selenium
         it 'can listen to console log with different consumers', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_console_entry { |log| log_entry = log }
 
             log_entry_text = nil
@@ -63,22 +63,22 @@ module Selenium
             wait.until { !log_entry.nil? }
 
             expect(log_entry).to have_attributes(
-              text: "Hello, world!",
+              text: 'Hello, world!',
               realm: nil,
-              type: "console",
+              type: 'console',
               level: LogInspector::LOG_LEVEL[:INFO],
-              method: "log",
+              method: 'log',
               stack_trace: nil
             )
             expect(log_entry.args.size).to eq(1)
-            expect(log_entry_text).to eq("Hello, world!")
+            expect(log_entry_text).to eq('Hello, world!')
           end
         end
 
         it 'can filter console info level log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_console_entry(FilterBy.log_level('info')) { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
@@ -86,11 +86,11 @@ module Selenium
             wait.until { !log_entry.nil? }
 
             expect(log_entry).to have_attributes(
-              text: "Hello, world!",
+              text: 'Hello, world!',
               realm: nil,
-              type: "console",
+              type: 'console',
               level: LogInspector::LOG_LEVEL[:INFO],
-              method: "log",
+              method: 'log',
               stack_trace: nil
             )
             expect(log_entry.args.size).to eq(1)
@@ -100,7 +100,7 @@ module Selenium
         it 'can filter console log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_console_entry(FilterBy.log_level('error')) { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
@@ -133,7 +133,7 @@ module Selenium
         it 'can filter javascript log at error level', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_javascript_log(FilterBy.log_level('error')) { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
@@ -141,8 +141,8 @@ module Selenium
             wait.until { !log_entry.nil? }
 
             expect(log_entry).to have_attributes(
-              text: "Error: Not working",
-              type: "javascript",
+              text: 'Error: Not working',
+              type: 'javascript',
               level: LogInspector::LOG_LEVEL[:ERROR]
             )
           end
@@ -151,7 +151,7 @@ module Selenium
         it 'can filter javascript log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_javascript_log(FilterBy.log_level('info')) { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
@@ -200,36 +200,36 @@ module Selenium
         it 'can filter any log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_log(FilterBy.log_level('info')) { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
             driver.find_element(id: 'consoleLog').click
             wait.until { !log_entry.nil? }
 
-            expect(log_entry["text"]).to eq("Hello, world!")
-            expect(log_entry["realm"]).to be_nil
-            expect(log_entry["type"]).to eq("console")
-            expect(log_entry["level"]).to eq("info")
-            expect(log_entry["method"]).to eq("log")
-            expect(log_entry["stackTrace"]).to be_nil
-            expect(log_entry["args"].size).to eq(1)
+            expect(log_entry['text']).to eq('Hello, world!')
+            expect(log_entry['realm']).to be_nil
+            expect(log_entry['type']).to eq('console')
+            expect(log_entry['level']).to eq('info')
+            expect(log_entry['method']).to eq('log')
+            expect(log_entry['stackTrace']).to be_nil
+            expect(log_entry['args'].size).to eq(1)
           end
         end
 
         it 'can filter any log at error level', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
-            log_inspector = LogInspector.new(driver)
+            log_inspector = described_class.new(driver)
             log_inspector.on_log(FilterBy.log_level('error')) { |log| log_entry = log }
 
             driver.navigate.to url_for(@page)
             driver.find_element(id: 'jsException').click
             wait.until { !log_entry.nil? }
 
-            expect(log_entry["text"]).to eq("Error: Not working")
-            expect(log_entry["type"]).to eq("javascript")
-            expect(log_entry["level"]).to eq("error")
+            expect(log_entry['text']).to eq('Error: Not working')
+            expect(log_entry['type']).to eq('javascript')
+            expect(log_entry['level']).to eq('error')
           end
         end
 
