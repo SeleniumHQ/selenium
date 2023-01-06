@@ -53,7 +53,7 @@ module Selenium
             options = Options.new
           end
 
-          super(options, capabilities, Options)
+          super(options, capabilities)
         end
       end # Driver
     end # Edge
