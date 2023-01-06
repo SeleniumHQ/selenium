@@ -21,6 +21,17 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        public void ShouldSetActivePointer()
+        {
+            Actions actionProvider = new Actions(driver);
+            actionProvider.setActivePointer(PointerKind.Mouse, "test mouse");
+
+            PointerInputDevice device = actionProvider.getActivePointer();
+
+            Assert.AreEqual("test mouse", device.DeviceName);
+        }
+
+        [Test]
         public void ShouldAllowDraggingElementWithMouseMovesItToAnotherList()
         {
             PerformDragAndDropWithMouse();
