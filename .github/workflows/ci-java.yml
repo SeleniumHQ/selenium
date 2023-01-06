@@ -78,11 +78,12 @@ jobs:
           distribution: 'temurin'
       - name: Run small tests
         run: bazel test --test_size_filters "small" --test_tag_filters "-lint" //java/...
-      - name: Sonar Scanner
-        uses: ./.github/actions/sonar-cloud
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      # (Alex R.): Temporarily disable due to slow execution and OOM errors
+      # - name: Sonar Scanner
+      #   uses: ./.github/actions/sonar-cloud
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   medium_tests:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
