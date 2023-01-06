@@ -28,11 +28,10 @@ module Selenium
       #
 
       class Driver < Chromium::Driver
-        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
-          raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+        include LocalDriver
 
-          caps = process_options(options, capabilities)
-          url = service_url(service || Service.edge)
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          caps, url = initialize_local_driver(capabilities, options, service, url)
           super(caps: caps, url: url, **opts)
         end
 
@@ -44,16 +43,6 @@ module Selenium
 
         def devtools_address
           "http://#{capabilities['ms:edgeOptions']['debuggerAddress']}"
-        end
-
-        def process_options(options, capabilities)
-          if options && !options.is_a?(Options)
-            raise ArgumentError, ":options must be an instance of #{Options}"
-          elsif options.nil? && capabilities.nil?
-            options = Options.new
-          end
-
-          super(options, capabilities)
         end
       end # Driver
     end # Edge
