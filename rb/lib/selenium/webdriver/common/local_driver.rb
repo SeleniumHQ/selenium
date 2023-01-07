@@ -23,14 +23,14 @@ module Selenium
       def initialize_local_driver(capabilities, options, service, url)
         raise ArgumentError, "Can't initialize #{self.class} with :url" if url
 
-        caps = process_options(options, capabilities)
         service ||= Service.send(browser)
+        caps = process_options(options, capabilities, service)
         url = service_url(service)
 
         [caps, url]
       end
 
-      def process_options(options, capabilities)
+      def process_options(options, capabilities, service)
         default_options = Options.send(browser)
 
         if options && capabilities
@@ -44,7 +44,9 @@ module Selenium
                                      id: :capabilities)
           generate_capabilities(capabilities)
         else
-          (options || default_options).as_json
+          options ||= default_options
+          service.executable_path ||= WebDriver::DriverFinder.path(options, service.class)
+          options.as_json
         end
       end
     end

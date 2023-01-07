@@ -17,23 +17,27 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require_relative '../spec_helper'
-
 module Selenium
   module WebDriver
-    module Edge
-      describe Service, exclusive: {browser: :edge} do
-        let(:service) { described_class.new }
-        let(:service_manager) { service.launch }
+    class DriverFinder
+      def self.path(options, klass)
+        path = klass.driver_path
+        path = path.call if path.is_a?(Proc)
+        path ||= Platform.find_binary(klass::EXECUTABLE)
 
-        before { service.executable_path = DriverFinder.path(Options.new, described_class) }
-        after { service_manager.stop }
-
-        it 'auto uses edgedriver' do
-          allow(Platform).to receive(:find_binary)
-          expect(service_manager.uri).to be_a(URI)
+        path ||= begin
+          SeleniumManager.driver_path(options)
+        rescue Error::WebDriverError => e
+          WebDriver.logger.debug("Unable obtain driver using Selenium Manager\n #{e.message}")
+          nil
         end
+        msg = "Unable to locate the #{klass::EXECUTABLE} executable; for more information on how to install drivers, " \
+              'see https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/'
+        raise Error::WebDriverError, msg unless path
+
+        Platform.assert_executable path
+        path
       end
-    end # Edge
-  end # WebDriver
-end # Selenium
+    end
+  end
+end

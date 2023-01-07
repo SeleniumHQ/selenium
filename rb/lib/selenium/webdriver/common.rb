@@ -19,6 +19,7 @@
 
 require 'selenium/webdriver/common/error'
 require 'selenium/webdriver/common/local_driver'
+require 'selenium/webdriver/common/driver_finder'
 require 'selenium/webdriver/common/platform'
 require 'selenium/webdriver/common/proxy'
 require 'selenium/webdriver/common/log_entry'
