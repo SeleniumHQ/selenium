@@ -33,7 +33,6 @@ module Selenium
     Point     = Struct.new(:x, :y)
     Dimension = Struct.new(:width, :height)
     Rectangle = Struct.new(:x, :y, :width, :height)
-    Location  = Struct.new(:latitude, :longitude, :altitude)
 
     autoload :BiDi,       'selenium/webdriver/bidi'
     autoload :Chromium,   'selenium/webdriver/chromium'
@@ -95,8 +94,8 @@ module Selenium
     # @return [Logger]
     #
 
-    def self.logger
-      @logger ||= WebDriver::Logger.new
+    def self.logger(**opts)
+      @logger ||= WebDriver::Logger.new('Selenium', **opts)
     end
   end # WebDriver
 end # Selenium

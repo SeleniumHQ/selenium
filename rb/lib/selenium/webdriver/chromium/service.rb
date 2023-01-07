@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module Chromium
       class Service < WebDriver::Service
-
         protected
 
         def extract_service_args(driver_opts)
@@ -33,8 +32,8 @@ module Selenium
           if driver_opts.key?(:whitelisted_ips)
             driver_args << "--whitelisted-ips=#{driver_opts.delete(:whitelisted_ips)}"
           end
-          driver_args << "--verbose" if driver_opts.key?(:verbose)
-          driver_args << "--silent" if driver_opts.key?(:silent)
+          driver_args << '--verbose' if driver_opts.key?(:verbose)
+          driver_args << '--silent' if driver_opts.key?(:silent)
           driver_args
         end
       end # Service

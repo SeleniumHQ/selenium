@@ -53,7 +53,7 @@ impl BrowserPath {
 
 pub fn create_path_if_not_exists(path: &Path) {
     if !path.exists() {
-        fs::create_dir_all(&path).unwrap();
+        fs::create_dir_all(path).unwrap();
     }
 }
 
@@ -178,5 +178,5 @@ pub fn parse_version(version_text: String) -> Result<String, Box<dyn Error>> {
         return Err("Wrong browser/driver version".into());
     }
     let re = Regex::new(r"[^\d^.]").unwrap();
-    Ok(re.replace_all(&*version_text, "").to_string())
+    Ok(re.replace_all(&version_text, "").to_string())
 }

@@ -38,12 +38,12 @@ module Selenium
         def ie(**opts)
           IE::Options.new(**opts)
         end
-        alias_method :internet_explorer, :ie
+        alias internet_explorer ie
 
         def edge(**opts)
           Edge::Options.new(**opts)
         end
-        alias_method :microsoftedge, :edge
+        alias microsoftedge edge
 
         def safari(**opts)
           Safari::Options.new(**opts)
@@ -85,7 +85,13 @@ module Selenium
       #
 
       def add_option(name, value = nil)
-        @options[name.keys.first] = name.values.first if value.nil? && name.is_a?(Hash)
+        name, value = name.first if value.nil? && name.is_a?(Hash)
+
+        unless name.to_s.include?(':')
+          WebDriver.logger.deprecate('Options#add_option for w3c or browser specific capabilities',
+                                     'applicable attribute accessors or pass into constructor',
+                                     id: :add_option)
+        end
         @options[name] = value
       end
 
@@ -95,7 +101,7 @@ module Selenium
         as_json == other.as_json
       end
 
-      alias_method :eql?, :==
+      alias eql? ==
 
       #
       # @api private
@@ -106,11 +112,27 @@ module Selenium
 
         w3c_options = process_w3c_options(options)
 
-        self.class::CAPABILITIES.each do |capability_alias, capability_name|
-          capability_value = options.delete(capability_alias)
-          options[capability_name] = capability_value if !capability_value.nil? && !options.key?(capability_name)
+        browser_options = self.class::CAPABILITIES.each_with_object({}) do |(capability_alias, capability_name), hash|
+          from_name = options.delete(capability_name)
+          from_alias = options.delete(capability_alias)
+          capability_value = if !from_name.nil? && capability_alias != capability_name
+                               WebDriver.logger.deprecate("#{capability_name} as option",
+                                                          capability_alias.to_s, id: :option_symbols)
+                               from_name
+                             elsif !from_alias.nil?
+                               from_alias
+                             end
+
+          hash[capability_name] = capability_value unless capability_value.nil?
         end
-        browser_options = defined?(self.class::KEY) ? {self.class::KEY => options} : options
+
+        unless options.empty?
+          msg = 'These options are not w3c compliant and will result in failures in a future release'
+          WebDriver.logger.warn("#{msg}: #{options}")
+          browser_options.merge!(options)
+        end
+
+        browser_options = {self.class::KEY => browser_options} if defined?(self.class::KEY)
 
         process_browser_options(browser_options)
         generate_as_json(w3c_options.merge(browser_options))

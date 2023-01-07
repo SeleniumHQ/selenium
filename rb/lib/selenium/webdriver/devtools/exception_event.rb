@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     class DevTools
       class ExceptionEvent
-
         attr_accessor :description, :timestamp, :stacktrace
 
         def initialize(description:, timestamp:, stacktrace:)
@@ -29,7 +28,6 @@ module Selenium
           @timestamp = Time.at(timestamp / 1000)
           @stacktrace = stacktrace
         end
-
       end # ExceptionEvent
     end # DevTools
   end # WebDriver

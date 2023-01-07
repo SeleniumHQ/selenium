@@ -24,14 +24,14 @@ module Selenium
     class DevTools
       describe Response do
         describe '.from' do
-          it 'should set the headers correctly' do
+          it 'sets the headers correctly' do
             params = {'responseHeaders' => [{'name' => 'Connection', 'value' => 'Keep-Alive'}]}
-            response = Response.from(1, nil, params)
+            response = described_class.from(1, nil, params)
             expect(response.headers).to eq({'Connection' => 'Keep-Alive'})
           end
 
-          it 'should not raise error on empty responseHeaders' do
-            expect { Response.from(1, nil, {}) }.not_to raise_error
+          it 'does not raise error on empty responseHeaders' do
+            expect { described_class.from(1, nil, {}) }.not_to raise_error
           end
         end
       end # Response

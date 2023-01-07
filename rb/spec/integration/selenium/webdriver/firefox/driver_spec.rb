@@ -30,25 +30,28 @@ module Selenium
 
           before { driver.navigate.to url_for('printPage.html') }
 
-          it 'should return base64 for print command' do
+          it 'returns base64 for print command' do
             expect(driver.print_page).to include(magic_number)
           end
 
-          it 'should print with orientation' do
+          it 'prints with orientation' do
             expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
           end
 
-          it 'should print with valid params' do
+          it 'prints with valid params' do
             expect(driver.print_page(orientation: 'landscape',
                                      page_ranges: ['1-2'],
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'should print full page', except: {ci: :github,
-                                                platform: :windows,
-                                                reason: 'Some issues with resolution?'} do
-            viewport_width = driver.execute_script("return window.innerWidth;")
-            viewport_height = driver.execute_script("return window.innerHeight;")
+          it 'prints full page', except: [{ci: :github,
+                                           platform: :windows,
+                                           reason: 'Some issues with resolution?'},
+                                          {platform: :macosx,
+                                           headless: true,
+                                           reason: 'showing half resolution of what expected'}] do
+            viewport_width = driver.execute_script('return window.innerWidth;')
+            viewport_height = driver.execute_script('return window.innerHeight;')
 
             path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
             screenshot = driver.save_full_page_screenshot(path)
@@ -69,8 +72,8 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh
@@ -84,8 +87,8 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh
@@ -99,8 +102,8 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh
@@ -115,8 +118,8 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh
@@ -130,8 +133,8 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh

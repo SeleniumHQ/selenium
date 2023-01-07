@@ -19,7 +19,6 @@
 
 module Selenium
   module WebDriver
-
     #
     # @api private
     #
@@ -120,7 +119,6 @@ module Selenium
       rescue Errno::ECHILD, Errno::ESRCH
         # already dead
       end
-
     end # ChildProcess
   end # WebDriver
 end # Selenium

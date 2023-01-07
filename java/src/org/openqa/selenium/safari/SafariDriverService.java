@@ -61,12 +61,14 @@ public class SafariDriverService extends DriverService {
   }
 
   public SafariDriverService(
-      File executable,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
-    super(executable, port, timeout, args, environment);
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
+    super(executable, port, timeout,
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
   }
 
   public static SafariDriverService createDefaultService() {

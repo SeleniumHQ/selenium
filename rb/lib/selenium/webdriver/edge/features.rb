@@ -23,7 +23,6 @@ module Selenium
   module WebDriver
     module Edge
       module Features
-
         include WebDriver::Chromium::Features
 
         EDGE_COMMANDS = {

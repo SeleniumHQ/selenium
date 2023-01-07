@@ -178,7 +178,7 @@ module Selenium
         end
 
         def camelize?(key)
-          key != "prefs"
+          key != 'prefs'
         end
       end # Options
     end # Firefox

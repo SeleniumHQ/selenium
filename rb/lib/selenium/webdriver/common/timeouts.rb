@@ -48,7 +48,7 @@ module Selenium
       def script
         Float(@bridge.timeouts['script']) / 1000
       end
-      alias_method :script_timeout, :script
+      alias script_timeout script
 
       #
       # Sets the amount of time to wait for an asynchronous script to finish
@@ -59,7 +59,7 @@ module Selenium
       def script=(seconds)
         @bridge.timeouts = {'script' => Integer(seconds * 1000)}
       end
-      alias_method :script_timeout=, :script=
+      alias script_timeout= script=
 
       #
       # Gets the amount of time to wait for a page load to complete before throwing an error.

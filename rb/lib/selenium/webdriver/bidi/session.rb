@@ -36,16 +36,15 @@ module Selenium
           events_list = Array(events)
           browsing_contexts_list = browsing_contexts.nil? ? nil : Array(browsing_contexts)
 
-          @bidi.send_cmd("session.subscribe", events: events_list, contexts: browsing_contexts_list)
+          @bidi.send_cmd('session.subscribe', events: events_list, contexts: browsing_contexts_list)
         end
 
         def unsubscribe(events, browsing_contexts = nil)
           events_list = Array(events)
           browsing_contexts_list = browsing_contexts.nil? ? nil : Array(browsing_contexts)
 
-          @bidi.send_cmd("session.unsubscribe", events: events_list, contexts: browsing_contexts_list)
+          @bidi.send_cmd('session.unsubscribe', events: events_list, contexts: browsing_contexts_list)
         end
-
       end # Session
     end # BiDi
   end # WebDriver

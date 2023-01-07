@@ -22,7 +22,6 @@ require 'selenium/webdriver/chromium/driver'
 module Selenium
   module WebDriver
     module Edge
-
       #
       # Driver implementation for Microsoft Edge.
       # @api private

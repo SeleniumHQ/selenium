@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasAuthentication
-
         #
         # Registers basic authentication handler which is automatically
         # used whenever browser gets an authentication required response.
@@ -82,7 +81,6 @@ module Selenium
             )
           end
         end
-
       end # HasAuthentication
     end # DriverExtensions
   end # WebDriver

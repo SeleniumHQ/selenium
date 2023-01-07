@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Interactions
       describe WheelInput do
-        let(:wheel) { WheelInput.new(name: :name) }
+        let(:wheel) { described_class.new(name: :name) }
         let(:origin) { :viewport }
         let(:duration) { 0.5 }
         let(:x) { 25 }

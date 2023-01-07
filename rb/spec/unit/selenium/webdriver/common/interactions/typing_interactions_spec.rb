@@ -25,17 +25,17 @@ module Selenium
       describe TypingInteraction do
         let(:source) { Interactions.key('keyboard') }
         let(:type) { :down }
-        let(:typing) { TypingInteraction.new(source, type, key) }
+        let(:typing) { described_class.new(source, type, key) }
         let(:key) { 'a' }
 
         describe '#initialize' do
           it 'raises a TypeError if the passed source is not a KeyInput' do
             mouse = Interactions.pointer(:mouse)
-            expect { TypingInteraction.new(mouse, type, key) }.to raise_error(TypeError)
+            expect { described_class.new(mouse, type, key) }.to raise_error(TypeError)
           end
 
           it 'raises a TypeError if the passed type is not a key in KeyInput::SUBTYPES' do
-            expect { TypingInteraction.new(source, :none, key) }.to raise_error(TypeError)
+            expect { described_class.new(source, :none, key) }.to raise_error(TypeError)
           end
         end
 

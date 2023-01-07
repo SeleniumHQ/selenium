@@ -43,7 +43,7 @@ module Selenium
       def ==(other)
         other.is_a?(self.class) && ref == other.ref
       end
-      alias_method :eql?, :==
+      alias eql? ==
 
       def hash
         [@id, @bridge].hash
@@ -207,7 +207,7 @@ module Selenium
       def send_keys(*args)
         bridge.send_keys_to_element @id, Keys.encode(args)
       end
-      alias_method :send_key, :send_keys
+      alias send_key send_keys
 
       #
       # If this element is a text entry element, this will clear the value. Has no effect on other
@@ -275,7 +275,7 @@ module Selenium
       def css_value(prop)
         bridge.element_value_of_css_property @id, prop
       end
-      alias_method :style, :css_value
+      alias style css_value
 
       #
       # Get the location of this element.
@@ -333,18 +333,18 @@ module Selenium
       #   element.first(id: 'foo')
       #
 
-      alias_method :first, :find_element
+      alias first find_element
 
       #
       #   element.all(class: 'bar')
       #
 
-      alias_method :all, :find_elements
+      alias all find_elements
 
       #
       #   element['class'] or element[:class] #=> "someclass"
       #
-      alias_method :[], :attribute
+      alias [] attribute
 
       #
       # @api private

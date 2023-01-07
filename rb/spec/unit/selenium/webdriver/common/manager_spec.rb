@@ -24,7 +24,7 @@ module Selenium
     describe SeleniumManager do
       describe 'self.binary' do
         before do
-          SeleniumManager.instance_variable_set(:@binary, nil)
+          described_class.instance_variable_set(:@binary, nil)
         end
 
         it 'detects Windows' do
@@ -32,7 +32,7 @@ module Selenium
           allow(File).to receive(:executable?).and_return(true)
           allow(Platform).to receive(:windows?).and_return(true)
 
-          expect(SeleniumManager.send(:binary)).to match(%r{/windows/selenium-manager\.exe$})
+          expect(described_class.send(:binary)).to match(%r{/windows/selenium-manager\.exe$})
         end
 
         it 'detects Mac' do
@@ -41,7 +41,7 @@ module Selenium
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(true)
 
-          expect(SeleniumManager.send(:binary)).to match(%r{/macos/selenium-manager$})
+          expect(described_class.send(:binary)).to match(%r{/macos/selenium-manager$})
         end
 
         it 'detects Linux' do
@@ -51,14 +51,14 @@ module Selenium
           allow(Platform).to receive(:mac?).and_return(false)
           allow(Platform).to receive(:linux?).and_return(true)
 
-          expect(SeleniumManager.send(:binary)).to match(%r{/linux/selenium-manager$})
+          expect(described_class.send(:binary)).to match(%r{/linux/selenium-manager$})
         end
 
         it 'errors if cannot find' do
           allow(File).to receive(:exist?).and_return(false)
 
           expect {
-            SeleniumManager.send(:binary)
+            described_class.send(:binary)
           }.to raise_error(Error::WebDriverError, /Unable to obtain Selenium Manager/)
         end
       end
@@ -66,7 +66,7 @@ module Selenium
       describe 'self.run' do
         it 'errors if a problem with command' do
           expect {
-            SeleniumManager.send(:run, "anything")
+            described_class.send(:run, 'anything')
           }.to raise_error(Error::WebDriverError, /Unsuccessful command executed: /)
         end
       end
@@ -74,32 +74,32 @@ module Selenium
       describe 'self.driver_path' do
         it 'errors if not one of 3 valid drivers' do
           expect {
-            SeleniumManager.driver_path('something')
+            described_class.driver_path('something')
           }.to raise_error(Error::WebDriverError, /Unable to locate driver with name/)
         end
 
         it 'does not use if driver_path provided' do
-          allow(SeleniumManager).to receive(:driver_path)
+          allow(described_class).to receive(:driver_path)
           allow(Platform).to receive(:assert_executable).and_return(false)
 
           WebDriver::Service.chrome(path: 'something')
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(described_class).not_to have_received(:driver_path)
         end
 
         it 'not used if found on PATH' do
-          allow(SeleniumManager).to receive(:driver_path)
+          allow(described_class).to receive(:driver_path)
           allow(Platform).to receive(:assert_executable).and_return(false)
-          allow(Platform).to receive(:find_binary).and_return("something")
+          allow(Platform).to receive(:find_binary).and_return('something')
 
           WebDriver::Service.chrome
 
-          expect(SeleniumManager).not_to have_received(:driver_path)
+          expect(described_class).not_to have_received(:driver_path)
         end
 
         it 'gives original error if not found' do
           allow(Platform).to receive(:find_binary)
-          allow(SeleniumManager).to receive(:driver_path)
+          allow(described_class).to receive(:driver_path)
 
           expect {
             WebDriver::Service.chrome

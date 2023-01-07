@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Firefox
-
       #
       # Driver implementation for Firefox using GeckoDriver.
       # @api private
@@ -53,7 +52,7 @@ module Selenium
 
         def devtools_url
           if capabilities['moz:debuggerAddress'].nil?
-            raise(Error::WebDriverError, "DevTools is not supported by this version of Firefox; use v85 or higher")
+            raise(Error::WebDriverError, 'DevTools is not supported by this version of Firefox; use v85 or higher')
           end
 
           uri = URI("http://#{capabilities['moz:debuggerAddress']}")

@@ -26,7 +26,7 @@ module Selenium
 
       it 'sends commands' do
         driver.devtools.page.navigate(url: url_for('xhtmlTest.html'))
-        expect(driver.title).to eq("XHTML Test Page")
+        expect(driver.title).to eq('XHTML Test Page')
       end
 
       it 'supports events' do
@@ -41,14 +41,14 @@ module Selenium
       it 'propagates errors in events' do
         expect {
           driver.devtools.page.enable
-          driver.devtools.page.on(:load_event_fired) { raise "This is fine!" }
+          driver.devtools.page.on(:load_event_fired) { raise 'This is fine!' }
           driver.navigate.to url_for('xhtmlTest.html')
           sleep 0.5
-        }.to raise_error(RuntimeError, "This is fine!")
+        }.to raise_error(RuntimeError, 'This is fine!')
       end
 
-      context 'authentication', except: {browser: :firefox,
-                                         reason: 'Fetch.enable is not yet supported'} do
+      describe '#register', except: {browser: :firefox,
+                                     reason: 'Fetch.enable is not yet supported'} do
         let(:username) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.first }
         let(:password) { SpecSupport::RackServer::TestApp::BASIC_AUTH_CREDENTIALS.last }
 
@@ -78,13 +78,13 @@ module Selenium
 
         driver.execute_script("console.log('I like cheese');")
         sleep 0.5
-        driver.execute_script("console.log(true);")
+        driver.execute_script('console.log(true);')
         sleep 0.5
-        driver.execute_script("console.log(null);")
+        driver.execute_script('console.log(null);')
         sleep 0.5
-        driver.execute_script("console.log(undefined);")
+        driver.execute_script('console.log(undefined);')
         sleep 0.5
-        driver.execute_script("console.log(document);")
+        driver.execute_script('console.log(document);')
         sleep 0.5
 
         expect(logs).to include(
@@ -101,7 +101,7 @@ module Selenium
         driver.on_log_event(:console) { |log| logs.push(log) }
         driver.navigate.to url_for('javascriptPage.html')
 
-        driver.execute_script("console.log(document);")
+        driver.execute_script('console.log(document);')
         wait.until { !logs.empty? }
 
         expect(logs).to include(
@@ -115,7 +115,7 @@ module Selenium
         driver.on_log_event(:console) { |log| logs.push(log) }
         driver.navigate.to url_for('javascriptPage.html')
 
-        driver.execute_script("console.log(document);")
+        driver.execute_script('console.log(document);')
         wait.until { !logs.empty? }
 
         expect(logs).to include(
@@ -152,8 +152,8 @@ module Selenium
         expect(mutation.old_value).to eq('display:none;')
       end
 
-      context 'network interception', except: {browser: :firefox,
-                                               reason: 'Fetch.enable is not yet supported'} do
+      describe '#intercept', except: {browser: :firefox,
+                                      reason: 'Fetch.enable is not yet supported'} do
         it 'continues requests' do
           requests = []
           driver.intercept do |request, &continue|
@@ -198,11 +198,11 @@ module Selenium
             end
           end
           driver.navigate.to url_for('html5Page.html')
-          expect(driver.find_elements(id: "appended")).not_to be_empty
+          expect(driver.find_elements(id: 'appended')).not_to be_empty
         end
       end
 
-      context 'script pinning', except: {browser: :firefox} do
+      describe '#pin_script', except: {browser: :firefox} do
         before do
           driver.navigate.to url_for('xhtmlTest.html')
         end

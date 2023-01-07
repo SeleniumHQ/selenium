@@ -33,16 +33,18 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
-      - name: Cache Bazel artifacts
-        uses: actions/cache@v3
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          path: |
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-node-tests-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-node-tests-
-            ${{ runner.os }}-bazel-build-
+          bazelisk-cache: true
+          disk-cache: node
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -70,10 +72,7 @@ jobs:
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Run JavaScript tests
-        uses: ./.github/actions/bazel-test
-        with:
-          query: //javascript/node/selenium-webdriver:tests
-          attempts: 3
+        run: bazel test --flaky_test_attempts 3 //javascript/node/selenium-webdriver:tests
         env:
           DISPLAY: :99
           SELENIUM_BROWSER: ${{ matrix.browser }}
@@ -85,15 +84,18 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
-      - name: Cache Bazel artifacts
-        uses: actions/cache@v3
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.1.0
         with:
-          path: |
-            ~/.cache/bazel-disk
-            ~/.cache/bazel-repo
-          key: ${{ runner.os }}-bazel-atom-firefox-tests-${{ hashFiles('**/BUILD.bazel') }}
-          restore-keys: |
-            ${{ runner.os }}-bazel-atom-firefox-tests-
+          bazelisk-cache: true
+          disk-cache: atoms
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -111,9 +113,7 @@ jobs:
       - name: Start Fluxbox
         run: fluxbox -display :99 &
       - name: Run atom tests on Firefox
-        uses: ./.github/actions/bazel
-        with:
-          command: test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...
+        run: bazel test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...
         env:
           DISPLAY: :99
           SELENIUM_BROWSER: firefox

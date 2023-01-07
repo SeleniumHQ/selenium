@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Chromium
-
       #
       # Driver implementation for Chrome.
       # @api private

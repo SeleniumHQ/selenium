@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Edge
       describe Service, exclusive: {browser: :edge} do
-        let(:service) { Service.new }
+        let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 
         after { service_manager.stop }

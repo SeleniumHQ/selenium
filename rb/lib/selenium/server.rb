@@ -210,6 +210,7 @@ module Selenium
       begin
         Net::HTTP.get(@host, '/selenium-server/driver/?cmd=shutDownSeleniumServer', @port)
       rescue Errno::ECONNREFUSED
+        nil
       end
 
       stop_process if @process

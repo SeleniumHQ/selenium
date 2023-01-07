@@ -27,7 +27,6 @@ module Selenium
           @url = url
           @navigation_id = navigation_id
         end
-
       end # NavigateResult
     end # BiDi
   end # WebDriver

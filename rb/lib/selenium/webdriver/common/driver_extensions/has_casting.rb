@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasCasting
-
         #
         # What devices ("sinks") are available to be cast to.
         #

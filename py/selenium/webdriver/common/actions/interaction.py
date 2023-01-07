@@ -30,7 +30,6 @@ POINTER_KINDS = {POINTER_MOUSE, POINTER_TOUCH, POINTER_PEN}
 
 
 class Interaction:
-
     PAUSE = "pause"
 
     def __init__(self, source) -> None:

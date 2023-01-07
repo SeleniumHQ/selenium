@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Firefox
       describe Profile, only: {browser: %i[firefox]} do
-        let(:profile) { Profile.new }
+        let(:profile) { described_class.new }
 
         def read_generated_prefs(from = nil)
           prof = from || profile
@@ -34,9 +34,9 @@ module Selenium
 
         it '#from_name' do
           ini = instance_double(ProfilesIni)
-          allow(Profile).to receive(:ini).and_return(ini)
+          allow(described_class).to receive(:ini).and_return(ini)
           allow(ini).to receive(:[]).and_return('not nil')
-          Profile.from_name('default')
+          described_class.from_name('default')
 
           expect(ini).to have_received(:[]).with('default')
         end
@@ -51,13 +51,13 @@ module Selenium
         end
 
         it 'can override welcome page' do
-          profile['startup.homepage_welcome_url'] = "http://google.com"
+          profile['startup.homepage_welcome_url'] = 'http://google.com'
 
           expect(read_generated_prefs).to include('user_pref("browser.startup.homepage", "about:blank")',
                                                   'user_pref("startup.homepage_welcome_url", "http://google.com")')
         end
 
-        it 'should set additional preferences' do
+        it 'sets additional preferences' do
           profile['foo.number'] = 123
           profile['foo.boolean'] = true
           profile['foo.string'] = 'bar'
@@ -67,30 +67,30 @@ module Selenium
                                                   'user_pref("foo.string", "bar")')
         end
 
-        it 'should be serializable to JSON' do
+        it 'is serializable to JSON' do
           profile['foo.boolean'] = true
 
-          new_profile = Profile.from_json(profile.to_json)
+          new_profile = described_class.from_json(profile.to_json)
           expect(read_generated_prefs(new_profile)).to include('user_pref("foo.boolean", true)')
         end
 
-        it 'should properly handle escaped characters' do
+        it 'properlies handle escaped characters' do
           profile['foo'] = 'C:\\r\\n'
 
           expect(read_generated_prefs).to include('user_pref("foo", "C:\\\\r\\\\n");')
         end
 
-        it 'should let the user override some specific prefs' do
+        it 'lets the user override some specific prefs' do
           profile['browser.startup.page'] = 'http://example.com'
 
           expect(read_generated_prefs).to include(%{user_pref("browser.startup.page", "http://example.com")})
         end
 
-        it 'should raise an error if the value given is not a string, number or boolean' do
+        it 'raises an error if the value given is not a string, number or boolean' do
           expect { profile['foo.bar'] = [] }.to raise_error(TypeError)
         end
 
-        it 'should raise an error if the value is already stringified' do
+        it 'raises an error if the value is already stringified' do
           expect { profile['foo.bar'] = '"stringified"' }.to raise_error(ArgumentError)
         end
 
@@ -130,14 +130,14 @@ module Selenium
           firebug = File.expand_path('../../../../../../third_party/firebug/firebug-1.5.0-fx.xpi', __dir__)
           profile.add_extension(firebug)
           extension_directory = File.expand_path('extensions/firebug@software.joehewitt.com', profile.layout_on_disk)
-          expect(Dir.exist?(extension_directory)).to eq(true)
+          expect(Dir.exist?(extension_directory)).to be(true)
         end
 
         it 'can install web extension without id' do
           mooltipass = File.expand_path('../../../../../../third_party/firebug/mooltipass-1.1.87.xpi', __dir__)
           profile.add_extension(mooltipass)
           extension_directory = File.expand_path('extensions/MooltipassExtension@1.1.87', profile.layout_on_disk)
-          expect(Dir.exist?(extension_directory)).to eq(true)
+          expect(Dir.exist?(extension_directory)).to be(true)
         end
 
         it 'can install web extension with id' do
@@ -145,7 +145,7 @@ module Selenium
           profile.add_extension(ext)
           extension_directory = File.expand_path('extensions/favourite-colour-examples@mozilla.org',
                                                  profile.layout_on_disk)
-          expect(Dir.exist?(extension_directory)).to eq(true)
+          expect(Dir.exist?(extension_directory)).to be(true)
         end
       end
     end # Firefox

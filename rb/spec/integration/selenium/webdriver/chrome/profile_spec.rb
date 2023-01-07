@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Chrome
       describe Profile, exclusive: {browser: :chrome} do
-        let(:profile) { Profile.new }
+        let(:profile) { described_class.new }
 
         it 'adds an extension' do
           ext_path = '/some/path.crx'

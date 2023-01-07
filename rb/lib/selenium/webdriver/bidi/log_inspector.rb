@@ -33,19 +33,20 @@ module Selenium
         }.freeze
 
         LOG_LEVEL = {
-          DEBUG: "debug",
-          ERROR: "error",
-          INFO: "info",
-          WARNING: "warning"
+          DEBUG: 'debug',
+          ERROR: 'error',
+          INFO: 'info',
+          WARNING: 'warning'
         }.freeze
 
         def initialize(driver, browsing_context_ids = nil)
           unless driver.capabilities.web_socket_url
-            raise Error::WebDriverError, "WebDriver instance must support BiDi protocol"
+            raise Error::WebDriverError,
+                  'WebDriver instance must support BiDi protocol'
           end
 
           @bidi = driver.bidi
-          @bidi.session.subscribe("log.entryAdded", browsing_context_ids)
+          @bidi.session.subscribe('log.entryAdded', browsing_context_ids)
         end
 
         def on_console_entry(&block)
@@ -54,8 +55,8 @@ module Selenium
           return if enabled
 
           on_log do |params|
-            type = params["type"]
-            console_log_events(params) if type.eql?("console")
+            type = params['type']
+            console_log_events(params) if type.eql?('console')
           end
         end
 
@@ -65,8 +66,8 @@ module Selenium
           return if enabled
 
           on_log do |params|
-            type = params["type"]
-            javascript_log_events(params) if type.eql?("javascript")
+            type = params['type']
+            javascript_log_events(params) if type.eql?('javascript')
           end
         end
 
@@ -77,10 +78,10 @@ module Selenium
           return if enabled
 
           on_log do |params|
-            type = params["type"]
-            level = params["level"]
+            type = params['type']
+            level = params['level']
 
-            javascript_log_events(params) if type.eql?("javascript") && level.eql?(LOG_LEVEL[:ERROR])
+            javascript_log_events(params) if type.eql?('javascript') && level.eql?(LOG_LEVEL[:ERROR])
           end
         end
 
@@ -133,7 +134,6 @@ module Selenium
             listener.call(event)
           end
         end
-
       end # LogInspector
     end # Bidi
   end # WebDriver

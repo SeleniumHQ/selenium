@@ -23,22 +23,22 @@ module Selenium
   module WebDriver
     describe VirtualAuthenticatorOptions do
       let(:options) do
-        VirtualAuthenticatorOptions.new(transport: :nfc,
-                                        protocol: :u2f,
-                                        resident_key: true,
-                                        user_verification: true,
-                                        user_consenting: false,
-                                        user_verified: true)
+        described_class.new(transport: :nfc,
+                            protocol: :u2f,
+                            resident_key: true,
+                            user_verification: true,
+                            user_consenting: false,
+                            user_verified: true)
       end
 
       describe '#initialize' do
         it 'sets parameters' do
           expect(options.transport).to eq(:nfc)
           expect(options.protocol).to eq(:u2f)
-          expect(options.resident_key?).to eq(true)
-          expect(options.user_verification?).to eq(true)
-          expect(options.user_consenting?).to eq(false)
-          expect(options.user_verified?).to eq(true)
+          expect(options.resident_key?).to be(true)
+          expect(options.user_verification?).to be(true)
+          expect(options.user_consenting?).to be(false)
+          expect(options.user_verified?).to be(true)
         end
       end
 
@@ -47,10 +47,10 @@ module Selenium
           json = options.as_json
           expect(json['transport']).to eq('nfc')
           expect(json['protocol']).to eq('ctap1/u2f')
-          expect(json['hasResidentKey']).to eq(true)
-          expect(json['hasUserVerification']).to eq(true)
-          expect(json['isUserConsenting']).to eq(false)
-          expect(json['isUserVerified']).to eq(true)
+          expect(json['hasResidentKey']).to be(true)
+          expect(json['hasUserVerification']).to be(true)
+          expect(json['isUserConsenting']).to be(false)
+          expect(json['isUserVerified']).to be(true)
         end
       end
     end # VirtualAuthenticatorOptions

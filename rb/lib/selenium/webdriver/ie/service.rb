@@ -42,7 +42,7 @@ module Selenium
           end
           driver_args << "--host=#{driver_opts[:host]}" if driver_opts.key?(:host)
           driver_args << "--extract_path=#{driver_opts[:extract_path]}" if driver_opts.key?(:extract_path)
-          driver_args << "--silent" if driver_opts[:silent] == true
+          driver_args << '--silent' if driver_opts[:silent] == true
           driver_args
         end
       end # Server

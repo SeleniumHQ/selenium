@@ -23,20 +23,20 @@ module Selenium
   module WebDriver
     module Firefox
       describe Profile, exclusive: {browser: :firefox} do
-        let(:profile) { Profile.new }
+        let(:profile) { described_class.new }
 
         before do
           profile['browser.startup.homepage'] = url_for('simpleTest.html')
           profile['browser.startup.page'] = 1
         end
 
-        it 'should instantiate the browser with the correct profile' do
+        it 'instantiates the browser with the correct profile' do
           reset_driver!(profile: profile) do |driver|
             expect { wait(5).until { driver.find_element(id: 'oneline') } }.not_to raise_error
           end
         end
 
-        it 'should be able to use the same profile more than once' do
+        it 'is able to use the same profile more than once' do
           reset_driver!(profile: profile) do |driver1|
             expect { wait(5).until { driver1.find_element(id: 'oneline') } }.not_to raise_error
             reset_driver!(profile: profile) do |driver2|

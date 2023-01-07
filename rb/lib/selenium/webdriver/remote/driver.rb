@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Remote
-
       #
       # Driver implementation for remote server.
       # @api private
@@ -47,7 +46,7 @@ module Selenium
 
         def devtools_version
           capabilities['se:cdpVersion']&.split('.')&.first ||
-            raise(Error::WebDriverError, "DevTools is not supported by the Remote Server")
+            raise(Error::WebDriverError, 'DevTools is not supported by the Remote Server')
         end
 
         def process_options(options, capabilities)

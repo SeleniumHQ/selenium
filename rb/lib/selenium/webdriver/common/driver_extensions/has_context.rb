@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasContext
-
         #
         # Sets the context that Selenium commands are running in using
         #         a `with` statement. The state of the context on the server is
@@ -37,7 +36,6 @@ module Selenium
         def context
           @bridge.context
         end
-
       end # HasContext
     end # DriverExtensions
   end # WebDriver

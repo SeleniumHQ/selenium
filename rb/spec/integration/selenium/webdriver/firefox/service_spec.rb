@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Firefox
       describe Service, exclusive: {browser: :firefox} do
-        let(:service) { Service.new }
+        let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 
         after { service_manager.stop }

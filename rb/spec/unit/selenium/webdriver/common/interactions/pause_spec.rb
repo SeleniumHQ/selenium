@@ -24,18 +24,18 @@ module Selenium
     module Interactions
       describe Pause do
         let(:source) { NoneInput.new }
-        let(:pause) { Pause.new(source) }
+        let(:pause) { described_class.new(source) }
         let(:duration) { 5 }
 
         describe '#initialize' do
           it 'accepts key input' do
             key = Interactions.key('key')
-            expect { Pause.new(key) }.not_to raise_error
+            expect { described_class.new(key) }.not_to raise_error
           end
 
           it 'accepts pointer input' do
             mouse = Interactions.pointer(:mouse)
-            expect { Pause.new(mouse) }.not_to raise_error
+            expect { described_class.new(mouse) }.not_to raise_error
           end
         end
 
@@ -51,7 +51,7 @@ module Selenium
           end
 
           it 'returns Hash with duration in ms if provided' do
-            expect(Pause.new(source, duration).encode).to include(duration: duration * 1000)
+            expect(described_class.new(source, duration).encode).to include(duration: duration * 1000)
           end
         end
       end

@@ -30,14 +30,18 @@ module Selenium
 
         RESERVED_KEYWORDS = %w[end].freeze
 
-        def call(output_dir:, version:, browser_protocol_path: nil, js_protocol_path: nil, loader_path: nil, **)
+        def call(output_dir:, version:, **opts)
           @template = ERB.new(File.read(TEMPLATE_PATH))
           @output_dir = output_dir
-          @loader_path = loader_path || "#{@output_dir}.rb"
+          @loader_path = opts.delete(:loader_path) || "#{@output_dir}.rb"
           @version = version
 
-          browser_protocol_path ||= File.expand_path('cdp/browser_protocol.json', __dir__)
-          js_protocol_path ||= File.expand_path('cdp/js_protocol.json', __dir__)
+          browser_protocol_path = opts.delete(:browser_protocol_path) do
+            File.expand_path('cdp/browser_protocol.json', __dir__)
+          end
+          js_protocol_path = opts.delete(:js_protocol_path) { File.expand_path('cdp/js_protocol.json', __dir__) }
+
+          raise ArgumentError, "Invalid arguments: #{opts.keys}" unless opts.empty?
 
           browser_protocol = JSON.parse(File.read(browser_protocol_path), symbolize_names: true)
           js_protocol = JSON.parse(File.read(js_protocol_path), symbolize_names: true)

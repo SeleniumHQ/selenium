@@ -255,19 +255,19 @@ module Selenium
       #   driver.first(id: 'foo')
       #
 
-      alias_method :first, :find_element
+      alias first find_element
 
       #
       #   driver.all(class: 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
       #
 
-      alias_method :all, :find_elements
+      alias all find_elements
 
       #
       #   driver.script('function() { ... };')
       #
 
-      alias_method :script, :execute_script
+      alias script execute_script
 
       # Get the first element matching the given selector. If given a
       # String or Symbol, it will be used as the id of the element.
@@ -320,7 +320,16 @@ module Selenium
           raise ArgumentError, msg
         end
 
-        options ? options.as_json : generate_capabilities(capabilities)
+        options ? options.as_json : deprecate_capabilities(capabilities)
+      end
+
+      def deprecate_capabilities(capabilities)
+        unless is_a?(Remote::Driver)
+          WebDriver.logger.deprecate("The :capabilities parameter for #{self.class}",
+                                     ":options argument with an instance of #{self.class}",
+                                     id: :capabilities)
+        end
+        generate_capabilities(capabilities)
       end
 
       def generate_capabilities(capabilities)

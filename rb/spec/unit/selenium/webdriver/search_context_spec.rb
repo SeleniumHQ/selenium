@@ -38,7 +38,7 @@ module Selenium
       let(:bridge)         { instance_double(Remote::Bridge).as_null_object }
       let(:search_context) { test_search_context.new(bridge) }
 
-      context 'finding a single element' do
+      context 'when finding a single element' do
         it 'accepts a hash' do
           allow(bridge).to receive(:find_element_by).with('id', 'bar', nil).and_return(element)
 
@@ -68,7 +68,7 @@ module Selenium
         end
       end
 
-      context 'finding multiple elements' do
+      context 'when finding multiple elements' do
         it 'accepts a hash' do
           allow(bridge).to receive(:find_elements_by).with('id', 'bar', nil).and_return([])
 

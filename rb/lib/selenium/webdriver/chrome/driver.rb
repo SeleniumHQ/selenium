@@ -22,7 +22,6 @@ require 'selenium/webdriver/chromium/driver'
 module Selenium
   module WebDriver
     module Chrome
-
       #
       # Driver implementation for Chrome.
       # @api private

@@ -20,14 +20,12 @@
 module Selenium
   module WebDriver
     module Remote
-
       #
       # Specification of the desired and/or actual capabilities of the browser that the
       # server is being asked to create.
       #
 
       class Capabilities
-
         KNOWN = [
           :browser_name,
           :browser_version,
@@ -85,44 +83,52 @@ module Selenium
 
         class << self
           def chrome(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.chrome', 'Options.chrome', id: :caps_browsers)
             new({
               browser_name: 'chrome'
             }.merge(opts))
           end
 
           def edge(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.edge', 'Options.edge', id: :caps_browsers)
             new({
               browser_name: 'MicrosoftEdge'
             }.merge(opts))
           end
-          alias_method :microsoftedge, :edge
+          alias microsoftedge edge
 
           def firefox(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.firefox', 'Options.firefox', id: :caps_browsers)
             new({
               browser_name: 'firefox'
             }.merge(opts))
           end
-          alias_method :ff, :firefox
+          alias ff firefox
 
           def safari(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.safari', 'Options.safari', id: :caps_browsers)
             new({
-              browser_name: Selenium::WebDriver::Safari.technology_preview? ? "Safari Technology Preview" : 'safari'
+              browser_name: Selenium::WebDriver::Safari.technology_preview? ? 'Safari Technology Preview' : 'safari'
             }.merge(opts))
           end
 
           def htmlunit(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.htmlunit',
+                                       'as argument in constructor',
+                                       id: :caps_browsers)
             new({
               browser_name: 'htmlunit'
             }.merge(opts))
           end
 
           def internet_explorer(opts = {})
+            WebDriver.logger.deprecate('Remote::Capabilities.ie', 'Options.ie', id: :caps_browsers)
             new({
               browser_name: 'internet explorer',
               platform_name: :windows
             }.merge(opts))
           end
-          alias_method :ie, :internet_explorer
+          alias ie internet_explorer
 
           def always_match(capabilities)
             new(always_match: capabilities)
@@ -149,7 +155,8 @@ module Selenium
 
             # Remote Server Specific
             if data.key?('webdriver.remote.sessionid')
-              caps[:remote_session_id] = data.delete('webdriver.remote.sessionid')
+              caps[:remote_session_id] =
+                data.delete('webdriver.remote.sessionid')
             end
 
             KNOWN.each do |cap|
@@ -284,7 +291,7 @@ module Selenium
           as_json == other.as_json
         end
 
-        alias_method :eql?, :==
+        alias eql? ==
 
         protected
 

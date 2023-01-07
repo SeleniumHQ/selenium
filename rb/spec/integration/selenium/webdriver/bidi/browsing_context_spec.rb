@@ -23,40 +23,38 @@ module Selenium
   module WebDriver
     class BiDi
       describe BrowsingContext, exclusive: {browser: %i[chrome firefox]} do
-        before do
-          quit_driver
-          create_driver!(web_socket_url: true)
-        end
+        before { reset_driver!(web_socket_url: true) }
+        after { quit_driver }
 
         it 'can create a browsing context for given id' do
           id = driver.window_handle
-          browsing_context = BrowsingContext.new(driver: driver, browsing_context_id: id)
+          browsing_context = described_class.new(driver: driver, browsing_context_id: id)
           expect(browsing_context.id).to eq(id)
         end
 
         it 'can create a window' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :window)
+          browsing_context = described_class.new(driver: driver, type: :window)
           expect(browsing_context.id).not_to be_nil
         end
 
         it 'can create a window with a reference context' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :window,
+          browsing_context = described_class.new(driver: driver, type: :window,
                                                  reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
         end
 
         it 'can create a tab' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :tab)
+          browsing_context = described_class.new(driver: driver, type: :tab)
           expect(browsing_context.id).not_to be_nil
         end
 
         it 'can create a tab with a reference context' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :tab, reference_context: driver.window_handle)
+          browsing_context = described_class.new(driver: driver, type: :tab, reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
         end
 
         it 'can navigate to a url' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :tab)
+          browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html')
 
@@ -66,7 +64,7 @@ module Selenium
         end
 
         it 'can navigate to a url with readiness state' do
-          browsing_context = BrowsingContext.new(driver: driver, type: :tab)
+          browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html'),
                                            readiness_state: :complete
@@ -78,19 +76,19 @@ module Selenium
 
         it 'can get tree with a child' do
           browsing_context_id = driver.window_handle
-          parent_window = BrowsingContext.new(driver: driver, browsing_context_id: browsing_context_id)
+          parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),
                                  readiness_state: :complete)
 
           context_info = parent_window.get_tree
           expect(context_info.children.size).to eq(1)
           expect(context_info.id).to eq(browsing_context_id)
-          expect(context_info.children[0]["url"]).to include('formPage.html')
+          expect(context_info.children[0]['url']).to include('formPage.html')
         end
 
         it 'can get tree with depth' do
           browsing_context_id = driver.window_handle
-          parent_window = BrowsingContext.new(driver: driver, browsing_context_id: browsing_context_id)
+          parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),
                                  readiness_state: :complete)
 
@@ -100,8 +98,8 @@ module Selenium
         end
 
         it 'can close a window' do
-          window1 = BrowsingContext.new(driver: driver, type: :window)
-          window2 = BrowsingContext.new(driver: driver, type: :window)
+          window1 = described_class.new(driver: driver, type: :window)
+          window2 = described_class.new(driver: driver, type: :window)
 
           window2.close
 

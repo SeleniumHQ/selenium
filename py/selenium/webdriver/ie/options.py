@@ -26,7 +26,6 @@ class ElementScrollBehavior(Enum):
 
 
 class Options(ArgOptions):
-
     KEY = "se:ieOptions"
     SWITCHES = "ie.browserCommandLineSwitches"
 

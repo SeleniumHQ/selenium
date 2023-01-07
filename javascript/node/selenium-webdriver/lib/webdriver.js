@@ -2905,7 +2905,7 @@ class WebElement {
    */
   submit() {
     const script =
-      'var form = arguments[0];\n' +
+      '/* submitForm */var form = arguments[0];\n' +
       'while (form.nodeName != "FORM" && form.parentNode) {\n' +
       '  form = form.parentNode;\n' +
       '}\n' +

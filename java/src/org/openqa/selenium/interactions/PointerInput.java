@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.internal.Require;
@@ -71,8 +72,16 @@ public class PointerInput implements InputSource, Encodable {
     return new Move(this, duration, origin, x, y);
   }
 
+  public Interaction createPointerMove(Duration duration, Origin origin, Point offset) {
+    return createPointerMove(duration, origin, offset.x, offset.y);
+  }
+
   public Interaction createPointerMove(Duration duration, Origin origin, int x, int y, PointerEventProperties eventProperties) {
     return new Move(this, duration, origin, x, y, eventProperties);
+  }
+
+  public Interaction createPointerMove(Duration duration, Origin origin, Point offset, PointerEventProperties eventProperties) {
+    return createPointerMove(duration, origin, offset.x, offset.y, eventProperties);
   }
 
   public Interaction createPointerDown(int button) {

@@ -24,7 +24,7 @@ module Selenium
   module WebDriver
     module Support
       describe CDPClientGenerator do
-        subject(:generator) { CDPClientGenerator.new }
+        subject(:generator) { described_class.new }
 
         describe '#snake_case' do
           it 'converts from camel case' do

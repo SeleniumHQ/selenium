@@ -270,6 +270,18 @@ public class ChromeDriverService extends DriverService {
     }
 
     /**
+     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
+     * to the driver server.
+     *
+     * @param allowedListIps Comma-separated list of remote IPv4 addresses.
+     * @return A self reference.
+     */
+    public Builder withAllowedListIps(String allowedListIps) {
+      this.allowedListIps = allowedListIps;
+      return this;
+    }
+
+    /**
      * Configures the format of the logging for the driver server.
      *
      * @param readableTimestamp Whether the timestamp of the log is readable.

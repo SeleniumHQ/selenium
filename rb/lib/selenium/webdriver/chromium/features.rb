@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module Chromium
       module Features
-
         CHROMIUM_COMMANDS = {
           launch_app: [:post, 'session/:session_id/chromium/launch_app'],
           get_network_conditions: [:get, 'session/:session_id/chromium/network_conditions'],

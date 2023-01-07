@@ -20,7 +20,6 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
 class SafariRemoteConnection(RemoteConnection):
-
     browser_name = DesiredCapabilities.SAFARI["browserName"]
 
     def __init__(self, remote_server_addr: str, keep_alive: bool = True, ignore_proxy: bool = False) -> None:

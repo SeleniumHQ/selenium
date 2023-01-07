@@ -24,12 +24,12 @@ module Selenium
     module Interactions
       describe PointerInput do
         let(:kind) { PointerInput::KIND[:mouse] }
-        let(:pointer) { PointerInput.new(kind, name: :name) }
+        let(:pointer) { described_class.new(kind, name: :name) }
         let(:interaction) { PointerCancel.new(pointer) }
 
         describe '#initialize' do
           it 'raises TypeError if kind is not recognized' do
-            expect { PointerInput.new(:none) }.to raise_error(TypeError)
+            expect { described_class.new(:none) }.to raise_error(TypeError)
           end
         end
 
@@ -47,7 +47,7 @@ module Selenium
 
         describe '#encode' do
           it 'returns nil if no actions' do
-            expect(pointer.encode).to eq(nil)
+            expect(pointer.encode).to be_nil
           end
 
           it 'encodes each action' do
