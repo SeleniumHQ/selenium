@@ -90,7 +90,7 @@ module Selenium
             raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{stdout}#{stderr}"
           end
 
-          stdout.gsub("INFO\t", '').strip
+          stdout.split("\n").last.gsub("INFO\t", '')
         end
       end
     end # SeleniumManager
