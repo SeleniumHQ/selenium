@@ -25,16 +25,18 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-      - uses: ./.github/actions/cache-bazel
+      - uses: p0deje/setup-bazel@0.1.0
         with:
-          workflow: ruby
-          key: bazel-ruby-nightly-${{ matrix.gem }}
-          gcs-key: ${{ secrets.GOOGLE_CLOUD_STORAGE_KEY }}
-      - uses: ./.github/actions/bazel
-        with:
-          command: run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
-      - uses: ./.github/actions/bazel
+          bazelisk-cache: true
+          disk-cache: rb-${{ matrix.gem }}
+          external-cache: |
+            crates: rust/Cargo.Bazel.lock
+            npm: package-lock.json
+            pypi__pip: py/requirements_lock.txt
+            rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - run: bazel run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
+      - run: bazel run //rb:${{ matrix.gem }}-release-nightly
         env:
           GEM_HOST_API_KEY: Bearer ${{ secrets.GITHUB_TOKEN }}
-        with:
-          command: run //rb:${{ matrix.gem }}-release-nightly
