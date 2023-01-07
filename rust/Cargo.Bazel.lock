@@ -1,5 +1,5 @@
 {
-  "checksum": "9762c7520c612ea9adb5a26039365e15126ce0d35e79f445287faa06016b8e1f",
+  "checksum": "d5e5d0da5abd8fd788ec68b15d8855e490a5fe56b590cfbace989a98e3b1e90c",
   "crates": {
     "adler 1.0.2": {
       "name": "adler",
@@ -210,62 +210,6 @@
         "version": "2.0.7"
       },
       "license": "MIT OR Apache-2.0"
-    },
-    "atty 0.2.14": {
-      "name": "atty",
-      "version": "0.2.14",
-      "repository": {
-        "Http": {
-          "url": "https://crates.io/api/v1/crates/atty/0.2.14/download",
-          "sha256": "d9b39be18770d11421cdb1b9947a45dd3f37e93092cbf377614828a319d5fee8"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "atty",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "include": [
-                "**/*.rs"
-              ],
-              "exclude": []
-            }
-          }
-        }
-      ],
-      "library_target_name": "atty",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "deps": {
-          "common": [],
-          "selects": {
-            "cfg(target_os = \"hermit\")": [
-              {
-                "id": "hermit-abi 0.1.19",
-                "target": "hermit_abi"
-              }
-            ],
-            "cfg(unix)": [
-              {
-                "id": "libc 0.2.139",
-                "target": "libc"
-              }
-            ],
-            "cfg(windows)": [
-              {
-                "id": "winapi 0.3.9",
-                "target": "winapi"
-              }
-            ]
-          }
-        },
-        "edition": "2015",
-        "version": "0.2.14"
-      },
-      "license": "MIT"
     },
     "autocfg 1.1.0": {
       "name": "autocfg",
@@ -1744,13 +1688,13 @@
       },
       "license": "(Apache-2.0 OR MIT) AND BSD-3-Clause"
     },
-    "env_logger 0.9.3": {
+    "env_logger 0.10.0": {
       "name": "env_logger",
-      "version": "0.9.3",
+      "version": "0.10.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/env_logger/0.9.3/download",
-          "sha256": "a12e6657c4c97ebab115a42dcee77225f7f482cdd841cf7088c657a42e9e00e7"
+          "url": "https://crates.io/api/v1/crates/env_logger/0.10.0/download",
+          "sha256": "85cdab6a89accf66733ad5a1693a4dcced6aeff64602b634530dd73c1f3ee9f0"
         }
       },
       "targets": [
@@ -1773,21 +1717,21 @@
           "**"
         ],
         "crate_features": [
-          "atty",
+          "auto-color",
+          "color",
           "default",
           "humantime",
-          "regex",
-          "termcolor"
+          "regex"
         ],
         "deps": {
           "common": [
             {
-              "id": "atty 0.2.14",
-              "target": "atty"
-            },
-            {
               "id": "humantime 2.1.0",
               "target": "humantime"
+            },
+            {
+              "id": "is-terminal 0.4.2",
+              "target": "is_terminal"
             },
             {
               "id": "log 0.4.17",
@@ -1804,8 +1748,8 @@
           ],
           "selects": {}
         },
-        "edition": "2018",
-        "version": "0.9.3"
+        "edition": "2021",
+        "version": "0.10.0"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -3115,51 +3059,6 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "hermit-abi 0.1.19": {
-      "name": "hermit-abi",
-      "version": "0.1.19",
-      "repository": {
-        "Http": {
-          "url": "https://crates.io/api/v1/crates/hermit-abi/0.1.19/download",
-          "sha256": "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
-        }
-      },
-      "targets": [
-        {
-          "Library": {
-            "crate_name": "hermit_abi",
-            "crate_root": "src/lib.rs",
-            "srcs": {
-              "include": [
-                "**/*.rs"
-              ],
-              "exclude": []
-            }
-          }
-        }
-      ],
-      "library_target_name": "hermit_abi",
-      "common_attrs": {
-        "compile_data_glob": [
-          "**"
-        ],
-        "crate_features": [
-          "default"
-        ],
-        "deps": {
-          "common": [
-            {
-              "id": "libc 0.2.139",
-              "target": "libc"
-            }
-          ],
-          "selects": {}
-        },
-        "edition": "2018",
-        "version": "0.1.19"
-      },
-      "license": "MIT/Apache-2.0"
-    },
     "hermit-abi 0.2.6": {
       "name": "hermit-abi",
       "version": "0.2.6",
@@ -3769,13 +3668,13 @@
       },
       "license": "Apache-2.0 OR MIT"
     },
-    "infer 0.11.0": {
+    "infer 0.12.0": {
       "name": "infer",
-      "version": "0.11.0",
+      "version": "0.12.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/infer/0.11.0/download",
-          "sha256": "0a6c16b11a665b26aeeb9b1d7f954cdeb034be38dd00adab4f2ae921a8fee804"
+          "url": "https://crates.io/api/v1/crates/infer/0.12.0/download",
+          "sha256": "a898e4b7951673fce96614ce5751d13c40fc5674bc2d759288e46c3ab62598b3"
         }
       },
       "targets": [
@@ -3813,7 +3712,7 @@
           "selects": {}
         },
         "edition": "2018",
-        "version": "0.11.0"
+        "version": "0.12.0"
       },
       "license": "MIT"
     },
@@ -6034,13 +5933,13 @@
       },
       "license": null
     },
-    "rstest 0.15.0": {
+    "rstest 0.16.0": {
       "name": "rstest",
-      "version": "0.15.0",
+      "version": "0.16.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rstest/0.15.0/download",
-          "sha256": "e9c9dc66cc29792b663ffb5269be669f1613664e69ad56441fdb895c2347b930"
+          "url": "https://crates.io/api/v1/crates/rstest/0.16.0/download",
+          "sha256": "b07f2d176c472198ec1e6551dc7da28f1c089652f66a7b722676c2238ebc0edf"
         }
       },
       "targets": [
@@ -6083,23 +5982,23 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "rstest_macros 0.14.0",
+              "id": "rstest_macros 0.16.0",
               "target": "rstest_macros"
             }
           ],
           "selects": {}
         },
-        "version": "0.15.0"
+        "version": "0.16.0"
       },
       "license": "MIT/Apache-2.0"
     },
-    "rstest_macros 0.14.0": {
+    "rstest_macros 0.16.0": {
       "name": "rstest_macros",
-      "version": "0.14.0",
+      "version": "0.16.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rstest_macros/0.14.0/download",
-          "sha256": "5015e68a0685a95ade3eee617ff7101ab6a3fc689203101ca16ebc16f2b89c66"
+          "url": "https://crates.io/api/v1/crates/rstest_macros/0.16.0/download",
+          "sha256": "7229b505ae0706e64f37ffc54a9c163e11022a6636d58fe1f3f52018257ff9f7"
         }
       },
       "targets": [
@@ -6151,18 +6050,22 @@
               "target": "quote"
             },
             {
-              "id": "rstest_macros 0.14.0",
+              "id": "rstest_macros 0.16.0",
               "target": "build_script_build"
             },
             {
               "id": "syn 1.0.107",
               "target": "syn"
+            },
+            {
+              "id": "unicode-ident 1.0.6",
+              "target": "unicode_ident"
             }
           ],
           "selects": {}
         },
         "edition": "2018",
-        "version": "0.14.0"
+        "version": "0.16.0"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -6580,7 +6483,7 @@
               "target": "directories"
             },
             {
-              "id": "env_logger 0.9.3",
+              "id": "env_logger 0.10.0",
               "target": "env_logger"
             },
             {
@@ -6592,7 +6495,7 @@
               "target": "flate2"
             },
             {
-              "id": "infer 0.11.0",
+              "id": "infer 0.12.0",
               "target": "infer"
             },
             {
@@ -6641,7 +6544,7 @@
               "target": "assert_cmd"
             },
             {
-              "id": "rstest 0.15.0",
+              "id": "rstest 0.16.0",
               "target": "rstest"
             }
           ],
@@ -8789,18 +8692,6 @@
         },
         {
           "Binary": {
-            "crate_name": "exit",
-            "crate_root": "src/bin/exit.rs",
-            "srcs": {
-              "include": [
-                "**/*.rs"
-              ],
-              "exclude": []
-            }
-          }
-        },
-        {
-          "Binary": {
             "crate_name": "sleep",
             "crate_root": "src/bin/sleep.rs",
             "srcs": {
@@ -8815,6 +8706,18 @@
           "Binary": {
             "crate_name": "reader",
             "crate_root": "src/bin/reader.rs",
+            "srcs": {
+              "include": [
+                "**/*.rs"
+              ],
+              "exclude": []
+            }
+          }
+        },
+        {
+          "Binary": {
+            "crate_name": "exit",
+            "crate_root": "src/bin/exit.rs",
             "srcs": {
               "include": [
                 "**/*.rs"
