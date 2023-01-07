@@ -111,7 +111,8 @@ public class SeleniumManager {
                     "\n" + output);
         }
 
-        return output.replace(INFO, "").trim();
+        String[] lines = output.split("\n");
+        return lines[lines.length -1].replace(INFO, "").trim();
     }
 
     /**
