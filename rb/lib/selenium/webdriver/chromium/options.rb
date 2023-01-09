@@ -168,6 +168,9 @@ module Selenium
         #
 
         def headless!
+          WebDriver.logger.deprecate('`Options#headless!`',
+                                     "`options = Selenium::WebDriver::Options.chrome(args: ['--headless=chrome'])`",
+                                     id: :headless!)
           add_argument '--headless'
         end
 
