@@ -31,6 +31,7 @@ use std::process::Command;
 
 use crate::downloads::download_driver_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
+use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
 };
@@ -42,6 +43,7 @@ pub mod edge;
 pub mod files;
 pub mod firefox;
 pub mod iexplorer;
+pub mod logger;
 pub mod metadata;
 
 pub const STABLE: &str = "stable";
@@ -84,17 +86,22 @@ pub trait SeleniumManager {
 
     fn set_config(&mut self, config: ManagerConfig);
 
+    fn get_logger(&self) -> &Logger;
+
+    fn set_logger(&mut self, log: Logger);
+
     // ----------------------------------------------------------
     // Shared functions
     // ----------------------------------------------------------
 
     fn download_driver(&self) -> Result<(), Box<dyn Error>> {
         let driver_url = Self::get_driver_url(self)?;
-        log::debug!("Driver URL: {}", driver_url);
+        self.get_logger()
+            .debug(format!("Driver URL: {}", driver_url));
         let (_tmp_folder, driver_zip_file) =
-            download_driver_to_tmp_folder(self.get_http_client(), driver_url)?;
+            download_driver_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
         let driver_path_in_cache = Self::get_driver_path_in_cache(self);
-        uncompress(&driver_zip_file, driver_path_in_cache)
+        uncompress(&driver_zip_file, driver_path_in_cache, self.get_logger())
     }
 
     fn detect_browser_path(&self) -> Option<&str> {
@@ -110,19 +117,22 @@ pub trait SeleniumManager {
     }
 
     fn detect_browser_version(&self, shell: &str, flag: &str, args: Vec<String>) -> Option<String> {
-        let mut metadata = get_metadata();
+        let mut metadata = get_metadata(self.get_logger());
         let browser_name = &self.get_browser_name();
 
         match get_browser_version_from_metadata(&metadata.browsers, browser_name) {
             Some(version) => {
-                log::trace!(
+                self.get_logger().trace(format!(
                     "Browser with valid TTL. Getting {} version from metadata",
                     browser_name
-                );
+                ));
                 Some(version)
             }
             _ => {
-                log::debug!("Using shell command to find out {} version", browser_name);
+                self.get_logger().debug(format!(
+                    "Using shell command to find out {} version",
+                    browser_name
+                ));
                 let mut browser_version = "".to_string();
                 for arg in args.iter() {
                     let output = match self.run_shell_command(shell, flag, arg.to_string()) {
@@ -133,11 +143,10 @@ pub trait SeleniumManager {
                     if full_browser_version.is_empty() {
                         continue;
                     }
-                    log::debug!(
+                    self.get_logger().debug(format!(
                         "The version of {} is {}",
-                        browser_name,
-                        full_browser_version
-                    );
+                        browser_name, full_browser_version
+                    ));
                     match self.get_major_version(&full_browser_version) {
                         Ok(v) => browser_version = v,
                         Err(_) => return None,
@@ -148,7 +157,7 @@ pub trait SeleniumManager {
                 metadata
                     .browsers
                     .push(create_browser_metadata(browser_name, &browser_version));
-                write_metadata(&metadata);
+                write_metadata(&metadata, self.get_logger());
                 if !browser_version.is_empty() {
                     Some(browser_version)
                 } else {
@@ -163,17 +172,21 @@ pub trait SeleniumManager {
         if browser_version.is_empty() || self.is_browser_version_unstable() {
             match self.discover_browser_version() {
                 Some(version) => {
-                    log::debug!("Detected browser: {} {}", self.get_browser_name(), version);
+                    self.get_logger().debug(format!(
+                        "Detected browser: {} {}",
+                        self.get_browser_name(),
+                        version
+                    ));
                     self.set_browser_version(version);
                 }
                 None => {
                     if self.is_browser_version_unstable() {
                         return Err(format!("Browser version '{browser_version}' not found"));
                     } else {
-                        log::debug!(
+                        self.get_logger().debug(format!(
                         "The version of {} cannot be detected. Trying with latest driver version",
                         self.get_browser_name()
-                        );
+                        ));
                     }
                 }
             }
@@ -181,11 +194,11 @@ pub trait SeleniumManager {
         let driver_version = self
             .request_driver_version()
             .unwrap_or_else(|err| err.to_string());
-        log::debug!(
+        self.get_logger().debug(format!(
             "Required driver: {} {}",
             self.get_driver_name(),
             driver_version
-        );
+        ));
         Ok(driver_version)
     }
 
@@ -205,11 +218,11 @@ pub trait SeleniumManager {
 
         let driver_path = self.get_driver_path_in_cache();
         if driver_path.exists() {
-            log::debug!(
+            self.get_logger().debug(format!(
                 "{} {} already in the cache",
                 self.get_driver_name(),
                 self.get_driver_version()
-            );
+            ));
         } else {
             self.download_driver()?;
         }
@@ -222,9 +235,10 @@ pub trait SeleniumManager {
         flag: &str,
         args: String,
     ) -> Result<String, Box<dyn Error>> {
-        log::debug!("Running {} command: {:?}", command, args);
+        self.get_logger()
+            .debug(format!("Running {} command: {:?}", command, args));
         let output = Command::new(command).args([flag, args.as_str()]).output()?;
-        log::debug!("{:?}", output);
+        self.get_logger().debug(format!("{:?}", output));
 
         Ok(String::from_utf8_lossy(&output.stdout).to_string())
     }
@@ -341,16 +355,16 @@ pub fn get_manager_by_driver(driver_name: String) -> Result<Box<dyn SeleniumMana
     }
 }
 
-pub fn clear_cache() {
+pub fn clear_cache(log: &Logger) {
     let cache_path = compose_cache_folder();
     if cache_path.exists() {
-        log::debug!("Clearing cache at: {}", cache_path.display());
+        log.debug(format!("Clearing cache at: {}", cache_path.display()));
         fs::remove_dir_all(&cache_path).unwrap_or_else(|err| {
-            log::warn!(
+            log.warn(format!(
                 "The cache {} cannot be cleared: {}",
                 cache_path.display(),
                 err
-            )
+            ))
         });
     }
 }

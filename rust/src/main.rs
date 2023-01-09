@@ -16,18 +16,14 @@
 // under the License.
 
 use std::error::Error;
-use std::io::Write;
+
 use std::process::exit;
 
 use clap::Parser;
-use env_logger::fmt::Color;
-use env_logger::Target::Stdout;
+
 use exitcode::DATAERR;
-use Color::{Blue, Cyan, Green, Red, Yellow};
 
-use log::Level;
-use log::LevelFilter::{Debug, Info, Trace};
-
+use selenium_manager::logger::Logger;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
@@ -62,6 +58,10 @@ struct Cli {
     #[clap(short = 'P', long, value_parser)]
     browser_path: Option<String>,
 
+    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
+    #[clap(short = 'O', long, value_parser, default_value = "LOGGER")]
+    output: String,
+
     /// Display DEBUG messages
     #[clap(short = 'D', long)]
     debug: bool,
@@ -77,10 +77,10 @@ struct Cli {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
-    setup_logging(&cli);
+    let log = Logger::create(cli.output, cli.debug, cli.trace);
 
     if cli.clear_cache {
-        clear_cache();
+        clear_cache(&log);
     }
 
     let browser_name: String = cli.browser.unwrap_or_default();
@@ -88,61 +88,37 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
-            log::error!("{}", err);
+            log.error(err);
+            log.flush();
             exit(DATAERR);
         })
     } else if !driver_name.is_empty() {
         get_manager_by_driver(driver_name).unwrap_or_else(|err| {
-            log::error!("{}", err);
+            log.error(err);
+            log.flush();
             exit(DATAERR);
         })
     } else {
-        log::error!("You need to specify a browser or driver");
+        log.error("You need to specify a browser or driver".to_string());
+        log.flush();
         exit(DATAERR);
     };
 
+    selenium_manager.set_logger(log);
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
 
     match selenium_manager.resolve_driver() {
-        Ok(driver_path) => log::info!("{}", driver_path.display()),
+        Ok(driver_path) => selenium_manager
+            .get_logger()
+            .info(driver_path.display().to_string()),
         Err(err) => {
-            log::error!("{}", err);
+            selenium_manager.get_logger().error(err.to_string());
             exit(DATAERR);
         }
     };
 
+    selenium_manager.get_logger().flush();
     Ok(())
-}
-
-fn setup_logging(cli: &Cli) {
-    let mut filter = match cli.debug {
-        true => Debug,
-        false => Info,
-    };
-    if cli.trace {
-        filter = Trace
-    }
-
-    env_logger::Builder::new()
-        .filter_level(filter)
-        .target(Stdout)
-        .format(|buf, record| {
-            let mut level_style = buf.style();
-            match record.level() {
-                Level::Trace => level_style.set_color(Cyan),
-                Level::Debug => level_style.set_color(Blue),
-                Level::Info => level_style.set_color(Green),
-                Level::Warn => level_style.set_color(Yellow),
-                Level::Error => level_style.set_color(Red).set_bold(true),
-            };
-            writeln!(
-                buf,
-                "{}\t{}",
-                level_style.value(record.level()),
-                record.args()
-            )
-        })
-        .init();
 }

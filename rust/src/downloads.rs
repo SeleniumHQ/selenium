@@ -24,18 +24,20 @@ use std::io::Cursor;
 use tempfile::{Builder, TempDir};
 
 use crate::files::parse_version;
+use crate::Logger;
 
 #[tokio::main]
 pub async fn download_driver_to_tmp_folder(
     http_client: &Client,
     url: String,
+    log: &Logger,
 ) -> Result<(TempDir, String), Box<dyn Error>> {
     let tmp_dir = Builder::new().prefix("selenium-manager").tempdir()?;
-    log::trace!(
+    log.trace(format!(
         "Downloading {} to temporal folder {:?}",
         url,
         tmp_dir.path()
-    );
+    ));
 
     let response = http_client.get(url).send().await?;
     let target_path;
@@ -47,11 +49,14 @@ pub async fn download_driver_to_tmp_folder(
             .and_then(|name| if name.is_empty() { None } else { Some(name) })
             .unwrap_or("tmp.bin");
 
-        log::trace!("File to be downloaded: {}", target_name);
+        log.trace(format!("File to be downloaded: {}", target_name));
         let target_name = tmp_dir.path().join(target_name);
         target_path = String::from(target_name.to_str().unwrap());
 
-        log::trace!("Temporal folder for driver package: {}", target_path);
+        log.trace(format!(
+            "Temporal folder for driver package: {}",
+            target_path
+        ));
         File::create(target_name)?
     };
     let mut content = Cursor::new(response.bytes().await?);
