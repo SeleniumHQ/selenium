@@ -164,22 +164,21 @@ impl SeleniumManager for ChromeManager {
             _ => {
                 let mut driver_version = "".to_string();
                 let mut browser_version_int = browser_version.parse::<i32>().unwrap_or_default();
-                if browser_version_int > 0 {
-                    for i in 0..FALLBACK_RETRIES {
-                        let driver_url = if browser_version.is_empty() {
-                            format!("{}{}", DRIVER_URL, LATEST_RELEASE)
-                        } else {
-                            format!("{}{}_{}", DRIVER_URL, LATEST_RELEASE, browser_version_int)
-                        };
-                        log::debug!("Reading {} version from {}", &self.driver_name, driver_url);
-                        let content = read_content_from_link(self.get_http_client(), driver_url);
-                        match content {
-                            Ok(version) => {
-                                driver_version = version;
-                                break;
-                            }
-                            _ => {
-                                log::warn!(
+                for i in 0..FALLBACK_RETRIES {
+                    let driver_url = if browser_version.is_empty() {
+                        format!("{}{}", DRIVER_URL, LATEST_RELEASE)
+                    } else {
+                        format!("{}{}_{}", DRIVER_URL, LATEST_RELEASE, browser_version_int)
+                    };
+                    log::debug!("Reading {} version from {}", &self.driver_name, driver_url);
+                    let content = read_content_from_link(self.get_http_client(), driver_url);
+                    match content {
+                        Ok(version) => {
+                            driver_version = version;
+                            break;
+                        }
+                        _ => {
+                            log::warn!(
                                 "Error getting version of {} {}. Retrying with {} {} (attempt {}/{})",
                                 &self.driver_name,
                                 browser_version_int,
@@ -187,8 +186,7 @@ impl SeleniumManager for ChromeManager {
                                 browser_version_int - 1,
                                 i + 1, FALLBACK_RETRIES
                             );
-                                browser_version_int -= 1;
-                            }
+                            browser_version_int -= 1;
                         }
                     }
                 }
