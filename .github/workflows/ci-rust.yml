@@ -1,26 +1,25 @@
-name: 'CI - Rust'
+name: CI - Rust
 
 on:
+  workflow_call:
   workflow_dispatch:
 
-  pull_request:
-    paths:
-      - 'rust/**'
-  push:
-    paths:
-      - 'rust/**'
-
 jobs:
-  build:
+  test:
+    name: Test
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-        rust: [ stable ]
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        rust:
+          - stable
     runs-on: ${{ matrix.os }}
     env:
       RUST_BACKTRACE: 1
     steps:
-    - name: Checkout repo
+    - name: Checkout repository
       uses: actions/checkout@v3
     - name: Install Rust toolchain
       uses: actions-rs/toolchain@v1
