@@ -170,6 +170,9 @@ impl SeleniumManager for ChromeManager {
                     } else {
                         format!("{}{}_{}", DRIVER_URL, LATEST_RELEASE, browser_version_int)
                     };
+                    if !browser_version.is_empty() && browser_version_int <= 0 {
+                        break;
+                    }
                     log::debug!("Reading {} version from {}", &self.driver_name, driver_url);
                     let content = read_content_from_link(self.get_http_client(), driver_url);
                     match content {
