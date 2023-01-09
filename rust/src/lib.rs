@@ -48,7 +48,8 @@ pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
-pub const WMIC_COMMAND: &str = r#"wmic datafile where name='%{}:\=\\%{}' get Version /value"#;
+pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /value"#;
+pub const WMIC_COMMAND_ENV: &str = r#"wmic datafile where name='%{}:\=\\%{}' get Version /value"#;
 pub const REG_QUERY: &str = r#"REG QUERY {} /v version"#;
 pub const DASH_VERSION: &str = "{} -v";
 pub const DASH_DASH_VERSION: &str = "{} --version";
@@ -91,7 +92,7 @@ pub trait SeleniumManager {
         uncompress(&driver_zip_file, driver_path_in_cache)
     }
 
-    fn get_browser_path(&self) -> Option<&str> {
+    fn detect_browser_path(&self) -> Option<&str> {
         let mut browser_version = self.get_browser_version();
         if browser_version.eq_ignore_ascii_case(CANARY) {
             browser_version = NIGHTLY;
@@ -280,6 +281,16 @@ pub trait SeleniumManager {
     fn set_driver_version(&mut self, driver_version: String) {
         let mut config = ManagerConfig::clone(self.get_config());
         config.driver_version = driver_version;
+        self.set_config(config);
+    }
+
+    fn get_browser_path(&self) -> &str {
+        self.get_config().browser_path.as_str()
+    }
+
+    fn set_browser_path(&mut self, browser_path: String) {
+        let mut config = ManagerConfig::clone(self.get_config());
+        config.browser_path = browser_path;
         self.set_config(config);
     }
 }
