@@ -260,6 +260,12 @@ class CustomLocatorHandler implements Routable {
       setSessionId(sessionId);
     }
 
+    public CustomWebDriver(CommandExecutor executor, String sessionId, int connectTimeoutSeconds, int readTimeoutSeconds) {
+      super(executor, new ImmutableCapabilities(), connectTimeoutSeconds, readTimeoutSeconds);
+
+      setSessionId(sessionId);
+    }
+
     @Override
     protected void startSession(Capabilities capabilities) {
       // no-op

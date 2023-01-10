@@ -81,6 +81,12 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
+  public SafariDriver(DriverService safariServer, SafariOptions safariOptions, int connectTimeoutSeconds, int readTimeoutSeconds) {
+    super(new SafariDriverCommandExecutor(safariServer), safariOptions, connectTimeoutSeconds, readTimeoutSeconds);
+    permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
+    debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
   @Beta
   public static RemoteWebDriverBuilder builder() {
     return RemoteWebDriver.builder().oneOf(new SafariOptions());

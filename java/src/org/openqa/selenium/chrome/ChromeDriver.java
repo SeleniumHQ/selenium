@@ -84,6 +84,12 @@ public class ChromeDriver extends ChromiumDriver {
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
+  public ChromeDriver(ChromeDriverService service, ChromeOptions options, int connectTimeoutSeconds, int readTimeoutSeconds) {
+    super(new ChromeDriverCommandExecutor(service), Require.nonNull("Driver options", options), ChromeOptions.CAPABILITY, connectTimeoutSeconds, readTimeoutSeconds);
+    casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
+    cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
   @Beta
   public static RemoteWebDriverBuilder builder() {
     return RemoteWebDriver.builder().oneOf(new ChromeOptions());

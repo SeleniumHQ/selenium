@@ -128,6 +128,15 @@ public class FirefoxDriver extends RemoteWebDriver
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
     super(executor, checkCapabilitiesAndProxy(options));
+    initFireFoxDriver();
+  }
+
+  private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options, int connectTimeoutSeconds, int readTimeoutSeconds) {
+    super(executor, checkCapabilitiesAndProxy(options), connectTimeoutSeconds, readTimeoutSeconds);
+    initFireFoxDriver();
+  }
+
+  private void initFireFoxDriver(){
     webStorage = new RemoteWebStorage(getExecuteMethod());
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
     fullPageScreenshot = new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
@@ -151,10 +160,10 @@ public class FirefoxDriver extends RemoteWebDriver
 
     this.cdpUri = cdpUri;
     this.capabilities = cdpUri.map(uri ->
-                                     new ImmutableCapabilities(
-                                       new PersistentCapabilities(capabilities)
-                                         .setCapability("se:cdp", uri.toString())
-                                         .setCapability("se:cdpVersion", "85.0")))
+        new ImmutableCapabilities(
+          new PersistentCapabilities(capabilities)
+            .setCapability("se:cdp", uri.toString())
+            .setCapability("se:cdpVersion", "85.0")))
       .orElse(new ImmutableCapabilities(capabilities));
   }
 
