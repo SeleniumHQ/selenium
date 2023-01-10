@@ -16,6 +16,7 @@
 // under the License.
 
 use crate::config::ManagerConfig;
+use reqwest::Client;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
@@ -28,8 +29,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    SeleniumManager, BETA, DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES,
-    ENV_PROGRAM_FILES_X86, FALLBACK_RETRIES, NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    create_default_http_client, SeleniumManager, BETA, DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA,
+    ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, FALLBACK_RETRIES, NIGHTLY, REG_QUERY, STABLE,
+    WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 const BROWSER_NAME: &str = "chrome";
@@ -41,6 +43,7 @@ pub struct ChromeManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
+    pub http_client: Client,
 }
 
 impl ChromeManager {
@@ -49,6 +52,7 @@ impl ChromeManager {
             browser_name: BROWSER_NAME,
             driver_name: DRIVER_NAME,
             config: ManagerConfig::default(),
+            http_client: create_default_http_client(),
         })
     }
 }
@@ -56,6 +60,10 @@ impl ChromeManager {
 impl SeleniumManager for ChromeManager {
     fn get_browser_name(&self) -> &str {
         self.browser_name
+    }
+
+    fn get_http_client(&self) -> &Client {
+        &self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -156,22 +164,24 @@ impl SeleniumManager for ChromeManager {
             _ => {
                 let mut driver_version = "".to_string();
                 let mut browser_version_int = browser_version.parse::<i32>().unwrap_or_default();
-                if browser_version_int > 0 {
-                    for i in 0..FALLBACK_RETRIES {
-                        let driver_url = if browser_version.is_empty() {
-                            format!("{}{}", DRIVER_URL, LATEST_RELEASE)
-                        } else {
-                            format!("{}{}_{}", DRIVER_URL, LATEST_RELEASE, browser_version_int)
-                        };
-                        log::debug!("Reading {} version from {}", &self.driver_name, driver_url);
-                        let content = read_content_from_link(driver_url);
-                        match content {
-                            Ok(version) => {
-                                driver_version = version;
-                                break;
-                            }
-                            _ => {
-                                log::warn!(
+                for i in 0..FALLBACK_RETRIES {
+                    let driver_url = if browser_version.is_empty() {
+                        format!("{}{}", DRIVER_URL, LATEST_RELEASE)
+                    } else {
+                        format!("{}{}_{}", DRIVER_URL, LATEST_RELEASE, browser_version_int)
+                    };
+                    if !browser_version.is_empty() && browser_version_int <= 0 {
+                        break;
+                    }
+                    log::debug!("Reading {} version from {}", &self.driver_name, driver_url);
+                    let content = read_content_from_link(self.get_http_client(), driver_url);
+                    match content {
+                        Ok(version) => {
+                            driver_version = version;
+                            break;
+                        }
+                        _ => {
+                            log::warn!(
                                 "Error getting version of {} {}. Retrying with {} {} (attempt {}/{})",
                                 &self.driver_name,
                                 browser_version_int,
@@ -179,8 +189,7 @@ impl SeleniumManager for ChromeManager {
                                 browser_version_int - 1,
                                 i + 1, FALLBACK_RETRIES
                             );
-                                browser_version_int -= 1;
-                            }
+                            browser_version_int -= 1;
                         }
                     }
                 }

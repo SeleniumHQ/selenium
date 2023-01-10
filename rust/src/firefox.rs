@@ -16,6 +16,7 @@
 // under the License.
 
 use crate::config::ManagerConfig;
+use reqwest::Client;
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
@@ -28,8 +29,8 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    SeleniumManager, BETA, DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
-    STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    create_default_http_client, SeleniumManager, BETA, DASH_VERSION, DEV, ENV_PROGRAM_FILES,
+    ENV_PROGRAM_FILES_X86, NIGHTLY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 const BROWSER_NAME: &str = "firefox";
@@ -41,6 +42,7 @@ pub struct FirefoxManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
+    pub http_client: Client,
 }
 
 impl FirefoxManager {
@@ -49,6 +51,7 @@ impl FirefoxManager {
             browser_name: BROWSER_NAME,
             driver_name: DRIVER_NAME,
             config: ManagerConfig::default(),
+            http_client: create_default_http_client(),
         })
     }
 }
@@ -56,6 +59,10 @@ impl FirefoxManager {
 impl SeleniumManager for FirefoxManager {
     fn get_browser_name(&self) -> &str {
         self.browser_name
+    }
+
+    fn get_http_client(&self) -> &Client {
+        &self.http_client
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -147,7 +154,7 @@ impl SeleniumManager for FirefoxManager {
             }
             _ => {
                 let latest_url = format!("{}{}", DRIVER_URL, LATEST_RELEASE);
-                let driver_version = read_redirect_from_link(latest_url)?;
+                let driver_version = read_redirect_from_link(self.get_http_client(), latest_url)?;
 
                 if !browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(

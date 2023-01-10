@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use reqwest::Client;
 use std::error::Error;
 use std::fs::File;
 use std::io::copy;
@@ -26,6 +27,7 @@ use crate::files::parse_version;
 
 #[tokio::main]
 pub async fn download_driver_to_tmp_folder(
+    http_client: &Client,
     url: String,
 ) -> Result<(TempDir, String), Box<dyn Error>> {
     let tmp_dir = Builder::new().prefix("selenium-manager").tempdir()?;
@@ -35,7 +37,7 @@ pub async fn download_driver_to_tmp_folder(
         tmp_dir.path()
     );
 
-    let response = reqwest::get(url).await?;
+    let response = http_client.get(url).send().await?;
     let target_path;
     let mut tmp_file = {
         let target_name = response
@@ -59,11 +61,17 @@ pub async fn download_driver_to_tmp_folder(
 }
 
 #[tokio::main]
-pub async fn read_content_from_link(url: String) -> Result<String, Box<dyn Error>> {
-    parse_version(reqwest::get(url).await?.text().await?)
+pub async fn read_content_from_link(
+    http_client: &Client,
+    url: String,
+) -> Result<String, Box<dyn Error>> {
+    parse_version(http_client.get(url).send().await?.text().await?)
 }
 
 #[tokio::main]
-pub async fn read_redirect_from_link(url: String) -> Result<String, Box<dyn Error>> {
-    parse_version(reqwest::get(&url).await?.url().path().to_string())
+pub async fn read_redirect_from_link(
+    http_client: &Client,
+    url: String,
+) -> Result<String, Box<dyn Error>> {
+    parse_version(http_client.get(&url).send().await?.url().path().to_string())
 }
