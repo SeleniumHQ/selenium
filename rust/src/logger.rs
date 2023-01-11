@@ -163,9 +163,9 @@ impl Logger {
             }
             OutputType::Shell => {
                 if level == Level::Info {
-                    println!("{}", message);
+                    print!("{}", message);
                 } else if level == Level::Error {
-                    eprintln!("{}", message);
+                    eprint!("{}", message);
                 }
             }
             _ => {
@@ -190,7 +190,7 @@ impl Logger {
         let json_output = &self.json.borrow();
         let json = json_output.deref();
         if !json.logs.is_empty() {
-            println!("{}", serde_json::to_string_pretty(json.deref()).unwrap());
+            print!("{}", serde_json::to_string_pretty(json.deref()).unwrap());
         }
     }
 }

@@ -55,13 +55,6 @@ fn shell_output_test() {
     let output = str::from_utf8(stdout).unwrap();
     println!("{}", output);
 
-    let driver = Path::new(strip_trailing_newline(output));
+    let driver = Path::new(output);
     assert!(driver.exists());
-}
-
-fn strip_trailing_newline(input: &str) -> &str {
-    input
-        .strip_suffix("\r\n")
-        .or_else(|| input.strip_suffix('\n'))
-        .unwrap_or(input)
 }
