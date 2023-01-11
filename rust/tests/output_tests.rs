@@ -36,6 +36,9 @@ fn json_output_test() {
     let json: JsonOutput = serde_json::from_str(output).unwrap();
     assert!(!json.logs.is_empty());
 
+    let output_code = json.result.code;
+    assert_eq!(output_code, 0);
+
     let driver = Path::new(&json.result.message);
     assert!(driver.exists());
 }
