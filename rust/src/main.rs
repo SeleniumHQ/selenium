@@ -89,18 +89,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
             log.error(err);
-            log.flush();
+            flush_and_exit(DATAERR, &log);
             exit(DATAERR);
         })
     } else if !driver_name.is_empty() {
         get_manager_by_driver(driver_name).unwrap_or_else(|err| {
             log.error(err);
-            log.flush();
+            flush_and_exit(DATAERR, &log);
             exit(DATAERR);
         })
     } else {
         log.error("You need to specify a browser or driver".to_string());
-        log.flush();
+        flush_and_exit(DATAERR, &log);
         exit(DATAERR);
     };
 
@@ -110,15 +110,23 @@ fn main() -> Result<(), Box<dyn Error>> {
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
 
     match selenium_manager.resolve_driver() {
-        Ok(driver_path) => selenium_manager
-            .get_logger()
-            .info(driver_path.display().to_string()),
+        Ok(driver_path) => {
+            selenium_manager
+                .get_logger()
+                .info(driver_path.display().to_string());
+            flush_and_exit(0, selenium_manager.get_logger());
+        }
         Err(err) => {
             selenium_manager.get_logger().error(err.to_string());
-            exit(DATAERR);
+            flush_and_exit(DATAERR, selenium_manager.get_logger());
         }
     };
 
-    selenium_manager.get_logger().flush();
     Ok(())
+}
+
+fn flush_and_exit(code: i32, log: &Logger) {
+    log.set_code(code);
+    log.flush();
+    exit(code);
 }

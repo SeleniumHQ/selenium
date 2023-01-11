@@ -47,8 +47,15 @@ pub struct Logs {
 }
 
 #[derive(Serialize, Deserialize)]
+pub struct Result {
+    pub code: i32,
+    pub message: String,
+}
+
+#[derive(Serialize, Deserialize)]
 pub struct JsonOutput {
     pub logs: Vec<Logs>,
+    pub result: Result,
 }
 
 impl Logger {
@@ -108,7 +115,13 @@ impl Logger {
             debug,
             trace,
             output: output_type,
-            json: RefCell::new(JsonOutput { logs: Vec::new() }),
+            json: RefCell::new(JsonOutput {
+                logs: Vec::new(),
+                result: Result {
+                    code: 0,
+                    message: "".to_string(),
+                },
+            }),
         }
     }
 
@@ -142,7 +155,10 @@ impl Logger {
                     self.json
                         .borrow_mut()
                         .logs
-                        .push(self.create_json_log(message, level));
+                        .push(self.create_json_log(message.to_string(), level));
+                }
+                if level == Level::Info || level <= Level::Error {
+                    self.json.borrow_mut().result.message = message;
                 }
             }
             OutputType::Shell => {
@@ -164,6 +180,10 @@ impl Logger {
             timestamp: now_unix_timestamp(),
             message,
         }
+    }
+
+    pub fn set_code(&self, code: i32) {
+        self.json.borrow_mut().result.code = code;
     }
 
     pub fn flush(&self) {
