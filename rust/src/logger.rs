@@ -81,9 +81,8 @@ impl Logger {
                 if trace {
                     filter = Trace
                 }
-
                 env_logger::Builder::new()
-                    .filter_module("selenium_manager", filter)
+                    .filter_module(env!("CARGO_CRATE_NAME"), filter)
                     .target(Stdout)
                     .format(|buf, record| {
                         let mut level_style = buf.style();
