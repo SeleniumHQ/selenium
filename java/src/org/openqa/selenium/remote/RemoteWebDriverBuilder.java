@@ -135,6 +135,10 @@ public class RemoteWebDriverBuilder {
     // Access through RemoteWebDriver.builder
   }
 
+  RemoteWebDriverBuilder(int connectTimeoutSeconds, int readTimeoutSeconds) {
+    this.clientConfig = ClientConfig.configWithTimeouts(connectTimeoutSeconds, readTimeoutSeconds);
+  }
+
   /**
    * Clears the current set of alternative browsers and instead sets the list of possible choices to
    * the arguments given to this method.

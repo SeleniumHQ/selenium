@@ -64,7 +64,7 @@ public class ClientConfig {
       null);
   }
 
-  public static ClientConfig defaultConfig(int connectTimeoutSeconds, int readTimeoutSeconds) {
+  public static ClientConfig configWithTimeouts(int connectTimeoutSeconds, int readTimeoutSeconds) {
     return new ClientConfig(
       null,
       Duration.ofSeconds(connectTimeoutSeconds),

@@ -173,6 +173,11 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     return RemoteWebDriver.builder().oneOf(new InternetExplorerOptions());
   }
 
+  @Beta
+  public static RemoteWebDriverBuilder builder(int connectTimeoutSeconds, int readTimeoutSeconds) {
+    return RemoteWebDriver.builder(connectTimeoutSeconds, readTimeoutSeconds).oneOf(new InternetExplorerOptions());
+  }
+
   private void run(InternetExplorerDriverService service, Capabilities capabilities) {
     assertOnWindows();
 

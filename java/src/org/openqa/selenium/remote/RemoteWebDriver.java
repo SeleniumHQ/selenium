@@ -193,7 +193,7 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing, int connectTimeoutSeconds, int readTimeoutSeconds) {
-    ClientConfig config = new ClientConfig.defaultConfig(connectTimeoutSeconds, readTimeoutSeconds).baseUrl(remoteAddress);
+    ClientConfig config = new ClientConfig.configWithTimeouts(connectTimeoutSeconds, readTimeoutSeconds).baseUrl(remoteAddress);
     if (enableTracing) {
       Tracer tracer = OpenTelemetryTracer.getInstance();
       CommandExecutor executor = new HttpCommandExecutor(

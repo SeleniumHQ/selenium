@@ -56,6 +56,12 @@ public class EdgeDriver extends ChromiumDriver {
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
+  public EdgeDriver(EdgeDriverService service, EdgeOptions options, int connectTimeoutSeconds, int readTimeoutSeconds) {
+    super(new EdgeDriverCommandExecutor(service), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY, connectTimeoutSeconds, readTimeoutSeconds);
+    casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
+    cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
   @Beta
   public static RemoteWebDriverBuilder builder() {
     return RemoteWebDriver.builder().oneOf(new EdgeOptions());
