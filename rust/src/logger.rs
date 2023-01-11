@@ -33,6 +33,8 @@ enum OutputType {
 }
 
 pub struct Logger {
+    debug: bool,
+    trace: bool,
     output: OutputType,
     json: RefCell<JsonOutput>,
 }
@@ -103,6 +105,8 @@ impl Logger {
         }
 
         Logger {
+            debug,
+            trace,
             output: output_type,
             json: RefCell::new(JsonOutput { logs: Vec::new() }),
         }
@@ -131,10 +135,15 @@ impl Logger {
     fn logger(&self, message: String, level: Level) {
         match self.output {
             OutputType::Json => {
-                self.json
-                    .borrow_mut()
-                    .logs
-                    .push(self.create_json_log(message, level));
+                let trace = level <= Level::Trace && self.trace;
+                let debug = level <= Level::Debug && self.debug;
+                let other = level <= Level::Info;
+                if trace || debug || other {
+                    self.json
+                        .borrow_mut()
+                        .logs
+                        .push(self.create_json_log(message, level));
+                }
             }
             OutputType::Shell => {
                 if level == Level::Info {
