@@ -205,78 +205,82 @@ twine upload bazel-bin/py/selenium-*.whl bazel-bin/py/selenium-*.tar.gz
 <details>
 <summary>Click to see Ruby Build Steps</summary>
 
-To build all Ruby code run:
+Build targets:
 
-```sh
-bazel build //rb/...
-```
+| Command                                     | Description                                       |
+|---------------------------------------------|---------------------------------------------------|
+| `bazel build //rb:selenium-devtools`        | Build selenium-devtools Ruby gem                  |
+| `bazel build //rb:selenium-webdriver`       | Build selenium-webdriver Ruby gem                 |
+| `bazel run //rb:selenium-devtools-release`  | Build and push selenium-devtools gem to RubyGems  |
+| `bazel run //rb:selenium-webdriver-release` | Build and push selenium-webdriver gem to RubyGems |
+| `bazel run //rb:console`                    | Start Pry REPL with all gems loaded               |
+| `bazel run //rb:docs`                       | Generate YARD docs                                |
+| `bazel run //rb:lint`                       | Run RuboCop linter                                |
 
-To run unit tests:
+Test targets:
 
-```sh
-bazel test //rb:unit-test
-```
+| Command                                                                              | Description                                             |
+|--------------------------------------------------------------------------------------|---------------------------------------------------------|
+| `bazel test //rb/spec/...`                                                           | Run both unit and integration tests using Chrome        |
+| `bazel test //rb/spec/integration/...`                                               | Run integration tests using Chrome                      |
+| `bazel test //rb/spec/integration/... --define browser=firefox`                      | Run integration tests using Firefox                     |
+| `bazel test //rb/spec/integration/... --define remote=true`                          | Run integration tests using Chrome and Selenium Server  |
+| `bazel test //rb/spec/integration/... --define browser=firefox --define remote=true` | Run integration tests using Firefox and Selenium Server |
+| `bazel test //rb/spec/unit/...`                                                      | Run unit tests                                          |
 
-To run tests on a specific browser:
+Suffix `...` tells Bazel to run all the test targets. They are conveniently named by test file name with `_spec.rb` removed so you can run them individually:
 
-```sh
-bazel test //rb:<browsername>-test 
-```
+| Test file                                                      | Test target                                              |
+|----------------------------------------------------------------|----------------------------------------------------------|
+| `rb/spec/integration/selenium/webdriver/chrome/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver/chrome:driver` |
+| `rb/spec/integration/selenium/webdriver/chrome/driver_spec.rb` | `//rb/spec/integration/selenium/webdriver/chrome:driver` |
 
-To run remote tests on a specific browser:
+Supported browsers:
 
-```sh
-bazel test //rb:remote-<browsername>-test
-```
+* `chrome`
+* `edge`
+* `firefox`
+* `ie`
+* `safari` (cannot be run in parallel - use `--local_test_jobs 1`)
+* `safari-preview` (cannot be run in parallel - use `--local_test_jobs 1`)
 
-_browsername_:
-* chrome
-* edge
-* firefox
-* ie
-* safari
-* safari-preview
+Useful command line options:
 
-Commonly used bazel command line arguments:
-* Always run all tests - `--cache_test_results=no`
-* Display stdout at the end of the test run - `--test_output=all`
-* Run a specific test - `--test_arg="-e<Test_Target>"` (see examples below)
-* Run with an environment variable - `--test_env=MYENV=myvalue` (see examples below)
+* `--flaky_test_attempts 3` - re-run failed tests up to 3 times
+* `--local_test_jobs 1` - control parallelism of tests
+* `--no-cache_test_results`, `-t-` - disable caching of test results and re-runs all of them
+* `--test_arg "-tfocus"` - test only [focused specs](https://relishapp.com/rspec/rspec-core/v/3-12/docs/filtering/inclusion-filters)
+* `--test_arg "-eTimeouts"` - test only specs which name include "Timeouts"
+* `--test_arg "<any other RSpec argument>"` - pass any extra RSpec arguments (see `bazel run @bundle//:bin/rspec -- --help`)
+* `--test_env FOO=bar` - pass extra environment variable to test process (see below for supported variables)
+* `--test_output all` - print all output from the tests, not just errors
+* `--test_output streamed` - run all tests one by one and print its output immediately
 
-_Test_Target_ examples:
-* Selenium::WebDriver::Devtools
-* Selenium::WebDriver::TakesScreenshot
-* Selenium::WebDriver::Timeouts
-* Selenium::WebDriver::Chrome::Driver
-* Selenium::WebDriver::Firefox::Profile
-* Selenium::Webdriver::Remote::Driver
+Supported environment variables:
 
-Available Environment Variable toggles in test suite:
-
-- `ENV['WD_SPEC_DRIVER']` - the driver to test; either the browser name or 'remote' (gets set by Bazel)
-- `ENV['WD_REMOTE_BROWSER']` - when 'WD_SPEC_DRIVER' is 'remote'; the name of the browser to test (gets set by Bazel)
-- `ENV['WD_REMOTE_URL']` - url of an already running server to use for remote tests
-- `ENV['DOWNLOAD_SERVER']` - when `WD_REMOTE_URL` not set; whether to download and use most recently released server version for remote tests
-- `ENV['DEBUG']` - turns on verbose debugging
-- `ENV['HEADLESS']` - for chrome, edge and firefox; runs tests in headless mode 
-- `ENV['DISABLE_BUILD_CHECK']` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
-- `ENV['CHROME_BINARY']` - path to test specific Chrome browser
-- `ENV['EDGE_BINARY']` - path to test specific Edge browser
-- `ENV['FIREFOX_BINARY']` - path to test specific Firefox browser
+- `WD_SPEC_DRIVER` - the driver to test; either the browser name or 'remote' (gets set by Bazel)
+- `WD_REMOTE_BROWSER` - when `WD_SPEC_DRIVER` is `remote`; the name of the browser to test (gets set by Bazel)
+- `WD_REMOTE_URL` - URL of an already running server to use for remote tests
+- `DOWNLOAD_SERVER` - when `WD_REMOTE_URL` not set; whether to download and use most recently released server version for remote tests
+- `DEBUG` - turns on verbose debugging
+- `HEADLESS` - for chrome, edge and firefox; runs tests in headless mode
+- `DISABLE_BUILD_CHECK` - for chrome and edge; whether to ignore driver and browser version mismatches (allows testing Canary builds)
+- `CHROME_BINARY` - path to test specific Chrome browser
+- `EDGE_BINARY` - path to test specific Edge browser
+- `FIREFOX_BINARY` - path to test specific Firefox browser
 
 To run with a specific version of Ruby you can change the version in `rb/ruby_version.bzl` or from command line:
 ```sh
-echo 'RUBY_VERSION = <X.Y.Z>' > rb/ruby_version.bzl
+echo 'RUBY_VERSION = "<X.Y.Z>"' > rb/ruby_version.bzl
 ```
 
 If you want to use RubyMine for development, a bit of extra configuration is necessary to let the IDE know about Bazel toolchain and artifacts:
 
-1. Run `bazel build @bundle//:bundle //rb:selenium-devtools //rb:selenium-webdriver` before configuring IDE. 
+1. Run `bazel build @bundle//:bundle //rb:selenium-devtools //rb:selenium-webdriver` before configuring IDE.
 2. Open `rb/` as a main project directory.
 3. In <kbd>Settings / Lanugages & Frameworks / Ruby SDK and Gems</kbd> add new <kbd>Interpreter</kbd> pointing to `../bazel-selenium/external/ruby_rules_dist/dist/bin/ruby`.
 4. In <kbd>Run / Edit Configurations... / Edit configuration templates... / RSpec</kbd> add `-I ../bazel-bin/rb/lib` to <kbd>Ruby arguments</kbd>.
 5. You should now be able to run and debug any spec. It uses Chrome by default, but you can alter it using environment variables above.
-
 
 </details>
 
@@ -296,7 +300,7 @@ cd dotnet
 dotnet test
 ```
 
-More information about running Selenium's .NET tests can be found in this [README.md](dotnet/test/README.md) 
+More information about running Selenium's .NET tests can be found in this [README.md](dotnet/test/README.md)
 
 </details>
 

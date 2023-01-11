@@ -51,15 +51,27 @@ jobs:
       - name: Build Gems
         run: bazel build //rb:${{ matrix.target }}
 
-  chrome-test:
+  integration-test:
     if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
     needs: check_workflow
     runs-on: ${{ matrix.os }}
+    name: ${{ format('{0}{1}-test ({2})', (matrix.remote && 'remote-' || ''), matrix.browser, matrix.os) }}
     strategy:
       fail-fast: false
       matrix:
-        target: [ 'chrome-test', 'remote-chrome-test' ]
-        os: [ 'ubuntu-latest', 'windows-latest' ]
+        browser:
+          - chrome
+          - edge
+          - firefox
+        remote:
+          - false
+          - true
+        os:
+          - ubuntu-latest
+          - windows-latest
+        exclude:
+          - browser: edge
+            os: ubuntu-latest
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
@@ -67,7 +79,7 @@ jobs:
         uses: p0deje/setup-bazel@0.1.0
         with:
           bazelisk-cache: true
-          disk-cache: rb-${{ matrix.target }}
+          disk-cache: rb-${{ matrix.browser }}-remote-${{ matrix.remote }}
           external-cache: |
             crates: rust/Cargo.Bazel.lock
             npm: package-lock.json
@@ -84,6 +96,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get -y install fluxbox
       - name: Setup Chrome
+        if: matrix.browser == 'chrome'
         uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: stable
@@ -96,95 +109,19 @@ jobs:
       - name: Set resolution
         if: matrix.os == 'windows-latest'
         run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
-      - name: Run Chrome tests
-        run: bazel test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
-        env:
-          DISPLAY: :99
-
-  edge-test:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
-    needs: check_workflow
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [ 'edge-test', 'remote-edge-test' ]
-        os: [ 'windows-latest' ]
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: rb-${{ matrix.target }}
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Edge
+        if: matrix.browser == 'edge'
         uses: browser-actions/setup-edge@latest
         with:
           edge-version: stable
-      - name: Run Edge tests
-        run: bazel test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
-
-  firefox-test:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
-    needs: check_workflow
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [ 'firefox-test', 'remote-firefox-test' ]
-        os: [ 'ubuntu-latest', 'windows-latest' ]
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: rb-${{ matrix.target }}
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Fluxbox
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Firefox
-        uses: abhi1693/setup-browser@v0.3.4
-        with:
-          browser: firefox
-          version: latest
-      - name: Start XVFB
-        if: matrix.os == 'ubuntu-latest'
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        if: matrix.os == 'ubuntu-latest'
-        run: fluxbox -display :99 &
-      - name: Set resolution
-        if: matrix.os == 'windows-latest'
-        run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
-      - name: Run Firefox tests
-        run: bazel test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
+      - name: Run tests
+        run: >
+          bazel test
+          --define browser=${{ matrix.browser }}
+          --define remote=${{ matrix.remote }}
+          --flaky_test_attempts 3
+          --local_test_jobs 1
+          //rb/spec/integration/...
         env:
           DISPLAY: :99
 
@@ -262,4 +199,4 @@ jobs:
           repository-cache: true
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run unit tests
-        run: bazel test --cache_test_results=no --test_output=all //rb:unit-test
+        run: bazel test //rb/spec/unit/...

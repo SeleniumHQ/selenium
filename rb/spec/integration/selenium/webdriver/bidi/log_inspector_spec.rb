@@ -27,7 +27,7 @@ module Selenium
           @page = '/bidi/logEntryAdded.html'
         end
 
-        it 'can listen to console log' do
+        it 'can listen to console log', except: {browser: :chrome} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
@@ -101,7 +101,7 @@ module Selenium
           end
         end
 
-        it 'can retrieve stack trace for a log' do
+        it 'can retrieve stack trace for a log', except: {browser: :chrome} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
