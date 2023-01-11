@@ -4,7 +4,7 @@ package(
         "//java/src/org/openqa/selenium/devtools:__subpackages__",
         "//javascript/node/selenium-webdriver:__pkg__",
         "//py:__pkg__",
-        "//rb:__pkg__",
+        "//rb/lib/selenium/devtools:__pkg__",
     ],
 )
 

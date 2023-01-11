@@ -241,28 +241,8 @@ task test_java_small_tests: [
   '//java/test/org/openqa/selenium/remote/server/log:test:run'
 ]
 
-task test_rb: ['//rb:unit-test', :test_rb_local, :test_rb_remote]
-
-task test_rb_local: [
-  '//rb:chrome-test',
-  '//rb:firefox-test',
-  ('//rb:safari-preview-test' if SeleniumRake::Checks.mac?),
-  ('//rb:safari-test' if SeleniumRake::Checks.mac?),
-  ('//rb:ie-test' if SeleniumRake::Checks.windows?),
-  ('//rb:edge-test' unless SeleniumRake::Checks.linux?)
-].compact
-
-task test_rb_remote: [
-  '//rb:remote-chrome-test',
-  '//rb:remote-firefox-test',
-  ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
-  ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
-  ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),
-  ('//rb:remote-edge-test' unless SeleniumRake::Checks.linux?)
-].compact
-
 task test_py: [:py_prep_for_install_release, 'py:marionette_test']
-task test: %i[test_javascript test_java test_rb]
+task test: %i[test_javascript test_java]
 task test: [:test_py] if SeleniumRake::Checks.python?
 task build: %i[all firefox remote selenium tests]
 

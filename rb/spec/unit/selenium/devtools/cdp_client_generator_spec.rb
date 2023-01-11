@@ -17,11 +17,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require File.expand_path('../spec_helper', __dir__)
-require 'selenium/webdriver/support/cdp_client_generator'
+require File.expand_path('../webdriver/spec_helper', __dir__)
+require 'selenium/devtools/support/cdp_client_generator'
 
 module Selenium
-  module WebDriver
+  module DevTools
     module Support
       describe CDPClientGenerator do
         subject(:generator) { described_class.new }
@@ -45,5 +45,5 @@ module Selenium
         end
       end # CDPClientGenerator
     end # Support
-  end # WebDriver
+  end # DevTools
 end # Selenium

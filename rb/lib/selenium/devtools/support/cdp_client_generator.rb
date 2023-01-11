@@ -22,7 +22,7 @@ require 'fileutils'
 require 'json'
 
 module Selenium
-  module WebDriver
+  module DevTools
     module Support
       class CDPClientGenerator
         # Input JSON files are generated from PDL tasks.
@@ -102,7 +102,7 @@ end
 if $PROGRAM_NAME == __FILE__
   browser_protocol_path, js_protocol_path, output_dir, loader_path, version = *ARGV
 
-  Selenium::WebDriver::Support::CDPClientGenerator.new.call(
+  Selenium::DevTools::Support::CDPClientGenerator.new.call(
     browser_protocol_path: browser_protocol_path,
     js_protocol_path: js_protocol_path,
     output_dir: output_dir,
