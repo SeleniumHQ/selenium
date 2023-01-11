@@ -35,6 +35,9 @@ fn json_output_test() {
 
     let json: JsonOutput = serde_json::from_str(output).unwrap();
     assert!(!json.logs.is_empty());
+
+    let driver = Path::new(&json.result.message);
+    assert!(driver.exists());
 }
 
 #[test]
@@ -49,8 +52,8 @@ fn shell_output_test() {
     let output = str::from_utf8(stdout).unwrap();
     println!("{}", output);
 
-    let path = Path::new(strip_trailing_newline(output));
-    assert!(path.exists());
+    let driver = Path::new(strip_trailing_newline(output));
+    assert!(driver.exists());
 }
 
 fn strip_trailing_newline(input: &str) -> &str {
