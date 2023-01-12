@@ -2,13 +2,9 @@ name: 'CI - Rust'
 
 on:
   pull_request:
-    branches:
-      - trunk
     paths:
       - 'rust/**'
   push:
-    branches:
-      - trunk
     paths:
       - 'rust/**'
 
