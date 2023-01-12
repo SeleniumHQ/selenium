@@ -98,7 +98,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   protected HasCdp cdp;
 
   protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
-    super(commandExecutor, capabilities);
+    super(Require.nonNull("CommandExecutor", commandExecutor), Require.nonNull("Capabilities", capabilities));
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new RemoteWebStorage(getExecuteMethod());
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());

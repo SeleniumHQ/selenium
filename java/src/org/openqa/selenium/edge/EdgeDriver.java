@@ -26,6 +26,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -51,7 +52,22 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
-    super(new EdgeDriverCommandExecutor(service), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
+    this(service,options, ClientConfig.defaultConfig());
+  }
+
+  /**
+   * Creates a new EdgeDriver instance.
+   * @param service The service to use
+   * @param options The options to use.
+   * @param config The client configuration to be used.
+   */
+  public EdgeDriver(EdgeDriverService service, EdgeOptions options, ClientConfig config) {
+    super(
+      new EdgeDriverCommandExecutor(
+        Require.nonNull("DriverService", service),
+        Require.nonNull("ClientConfig", config)
+        ),
+      options, EdgeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
@@ -62,8 +78,9 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   private static class EdgeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public EdgeDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+
+    public EdgeDriverCommandExecutor(DriverService service, ClientConfig config) {
+      super(service, getExtraCommands(), config);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

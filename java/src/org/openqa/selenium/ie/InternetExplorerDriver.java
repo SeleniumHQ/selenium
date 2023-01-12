@@ -21,10 +21,12 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
@@ -159,13 +161,15 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    */
   public InternetExplorerDriver(InternetExplorerDriverService service,
                                 InternetExplorerOptions options) {
-    if (options == null) {
-      options = new InternetExplorerOptions();
-    }
-    if (service == null) {
-      service = setupService(options);
-    }
-    run(service, options);
+    this(service, options, ClientConfig.defaultConfig());
+  }
+
+  public InternetExplorerDriver(InternetExplorerDriverService service,
+    InternetExplorerOptions options, ClientConfig config) {
+    Require.nonNull("DriverService", service);
+    Require.nonNull("Options", options);
+    Require.nonNull("ClientConfig", config);
+    run(service, options, config);
   }
 
   @Beta
@@ -173,10 +177,11 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     return RemoteWebDriver.builder().oneOf(new InternetExplorerOptions());
   }
 
-  private void run(InternetExplorerDriverService service, Capabilities capabilities) {
+  private void run(InternetExplorerDriverService service, Capabilities capabilities,
+    ClientConfig config) {
     assertOnWindows();
 
-    setCommandExecutor(new DriverCommandExecutor(service));
+    setCommandExecutor(new DriverCommandExecutor(service, config));
 
     startSession(capabilities);
   }
@@ -197,7 +202,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     }
   }
 
-  private InternetExplorerDriverService setupService(Capabilities caps) {
+  private static InternetExplorerDriverService setupService(Capabilities caps) {
     InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
 
     if (caps != null) {

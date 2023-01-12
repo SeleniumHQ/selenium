@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -76,7 +77,24 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(DriverService safariServer, SafariOptions safariOptions) {
-    super(new SafariDriverCommandExecutor(safariServer), safariOptions);
+    this(safariServer,safariOptions, ClientConfig.defaultConfig());
+  }
+
+  /**
+   * Initializes a new SafariDriver using the specified {@link SafariOptions}.
+   *
+   * @param safariServer preconfigured safari service
+   * @param safariOptions safari specific options / capabilities for the driver
+   * @param config The client configuration to be used.
+   */
+  public SafariDriver(DriverService safariServer, SafariOptions safariOptions, ClientConfig config) {
+    super(
+      new SafariDriverCommandExecutor(
+        Require.nonNull("DriverService", safariServer),
+        Require.nonNull("ClientConfig", config)
+        ),
+      safariOptions
+    );
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
   }
@@ -112,8 +130,9 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   }
 
   private static class SafariDriverCommandExecutor extends DriverCommandExecutor {
-    public SafariDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+
+    public SafariDriverCommandExecutor(DriverService service, ClientConfig config) {
+      super(service, getExtraCommands(), config);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

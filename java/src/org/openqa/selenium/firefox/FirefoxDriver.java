@@ -108,7 +108,7 @@ public class FirefoxDriver extends RemoteWebDriver
    * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
    */
   public FirefoxDriver(FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);
+    this(GeckoDriverService.createDefaultService(), options);
   }
 
   /**
@@ -123,7 +123,23 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(service), Require.nonNull("Driver options", options));
+    this(service, options, ClientConfig.defaultConfig());
+  }
+
+  /**
+   * Creates a new FirefoxDriver instance.
+   * @param service The service to use
+   * @param options The options to use.
+   * @param config The client configuration to be used.
+   */
+  public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, ClientConfig config) {
+    this(
+      new FirefoxDriverCommandExecutor(
+        Require.nonNull("DriverService", service),
+        Require.nonNull("ClientConfig", config)
+        ),
+      options
+    );
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
@@ -345,8 +361,8 @@ public class FirefoxDriver extends RemoteWebDriver
 
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
 
-    public FirefoxDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+    public FirefoxDriverCommandExecutor(DriverService service, ClientConfig config) {
+      super(service, getExtraCommands(), config);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

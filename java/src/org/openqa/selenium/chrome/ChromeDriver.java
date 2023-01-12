@@ -28,6 +28,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -79,7 +80,25 @@ public class ChromeDriver extends ChromiumDriver {
    * @param options The options required from ChromeDriver.
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    super(new ChromeDriverCommandExecutor(service), Require.nonNull("Driver options", options), ChromeOptions.CAPABILITY);
+    this(service, options, ClientConfig.defaultConfig());
+  }
+
+  /**
+   * Creates a new ChromeDriver instance with the specified options. The {@code service} will be
+   * started along with the driver, and shutdown upon calling {@link #quit()}.
+   *
+   * @param service The service to use.
+   * @param options The options required from ChromeDriver.
+   * @param config The client configuration to be used.
+   */
+  public ChromeDriver(ChromeDriverService service, ChromeOptions options, ClientConfig config) {
+    super(
+      new ChromeDriverCommandExecutor(
+        Require.nonNull("DriverService", service),
+        Require.nonNull("ClientConfig", config)
+        ),
+      options, ChromeOptions.CAPABILITY
+    );
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
@@ -90,8 +109,9 @@ public class ChromeDriver extends ChromiumDriver {
   }
 
   private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public ChromeDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+
+    public ChromeDriverCommandExecutor(DriverService service, ClientConfig config) {
+      super(service,getExtraCommands(), config);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

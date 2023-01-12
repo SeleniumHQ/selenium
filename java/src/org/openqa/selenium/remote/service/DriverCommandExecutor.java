@@ -22,6 +22,7 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 
+import java.util.Collections;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Command;
@@ -40,6 +41,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import org.openqa.selenium.remote.http.ClientConfig;
 
 /**
  * A specialized {@link HttpCommandExecutor} that will use a {@link DriverService} that lives
@@ -64,8 +66,11 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
    * @param service The DriverService to send commands to.
    */
   public DriverCommandExecutor(DriverService service) {
-    super(Require.nonNull("DriverService", service.getUrl()));
-    this.service = service;
+    this(service, Collections.emptyMap());
+  }
+
+  public DriverCommandExecutor(DriverService service, ClientConfig config) {
+    this(service, Collections.emptyMap(), config);
   }
 
   /**
@@ -77,7 +82,19 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
    */
   protected DriverCommandExecutor(
       DriverService service, Map<String, CommandInfo> additionalCommands) {
-    super(additionalCommands, service.getUrl());
+    this(service, additionalCommands, ClientConfig.defaultConfig());
+  }
+
+  protected DriverCommandExecutor(
+    DriverService service, Map<String, CommandInfo> additionalCommands, ClientConfig config) {
+    super(
+      Require.nonNull("Additional Commands", additionalCommands),
+      computeBaseUrlIfNeeded(
+        Require.nonNull("DriverService", service),
+        Require.nonNull("ClientConfig", config)
+      ),
+      getDefaultClientFactory()
+    );
     this.service = service;
   }
 
@@ -171,4 +188,12 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
   public void close() {
     shutdownGracefully(NAME, executorService);
   }
+
+  protected static ClientConfig computeBaseUrlIfNeeded(DriverService service, ClientConfig config) {
+    if (config.baseUri() == null) {
+      config = config.baseUrl(service.getUrl());
+    }
+    return config;
+  }
+
 }
