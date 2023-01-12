@@ -30,6 +30,10 @@ import java.time.Duration;
 
 public class ClientConfig {
 
+  //When running in Grid mode, if a user would like to alter the client timeouts, accommodate them
+  //by reading those via JVM arguments.
+  private static final int DEFAULT_CONNECTION_TIMEOUT_IN_SECS = parse("webdriver.client.connection.timeout.seconds", 10);
+  private static final int DEFAULT_READ_TIMEOUT_IN_MINUTES = parse("webdriver.client.read.timeout.minutes", 3);
   private static final Filter RETRY_FILTER = new RetryRequest();
   private static final Filter DEFAULT_FILTER = new AddSeleniumUserAgent();
   private final URI baseUri;
@@ -57,8 +61,8 @@ public class ClientConfig {
   public static ClientConfig defaultConfig() {
     return new ClientConfig(
       null,
-      Duration.ofSeconds(10),
-      Duration.ofMinutes(3),
+      Duration.ofSeconds(DEFAULT_CONNECTION_TIMEOUT_IN_SECS),
+      Duration.ofMinutes(DEFAULT_READ_TIMEOUT_IN_MINUTES),
       DEFAULT_FILTER,
       null,
       null);
@@ -185,5 +189,13 @@ public class ClientConfig {
       ", proxy=" + proxy +
       ", credentials=" + credentials +
       '}';
+  }
+
+  private static int parse(String jvm, int defaultValue) {
+    try {
+      return Integer.parseInt(System.getProperty(jvm, Integer.toString(defaultValue)));
+    } catch (NumberFormatException e) {
+      return defaultValue;
+    }
   }
 }
