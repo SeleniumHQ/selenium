@@ -790,9 +790,7 @@ experimental domain Audits
       PrefixedStorageInfo
       PrefixedVideoDisplayingFullscreen
       PrefixedVideoEnterFullscreen
-      PrefixedVideoEnterFullScreen
       PrefixedVideoExitFullscreen
-      PrefixedVideoExitFullScreen
       PrefixedVideoSupportsFullscreen
       RangeExpand
       RequestedSubresourceWithEmbeddedCredentials
