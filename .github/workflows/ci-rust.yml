@@ -1,0 +1,35 @@
+name: 'CI - Rust'
+
+on:
+  pull_request:
+    branches:
+      - trunk
+    paths:
+      - 'rust/**'
+  push:
+    branches:
+      - trunk
+    paths:
+      - 'rust/**'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        rust: [ stable ]
+    runs-on: ${{ matrix.os }}
+    env:
+      RUST_BACKTRACE: 1
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+    - name: Install Rust toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: ${{ matrix.rust }}
+    - name: Run tests
+      run: |
+        cd rust
+        cargo build
+        cargo test -- --nocapture
