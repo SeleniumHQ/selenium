@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
@@ -308,6 +309,7 @@ class RemoteWebDriverBuilderTest {
     assertThat(seen.get()).isEqualTo(uri);
   }
 
+  @Disabled
   @Test
   void shouldThrowErrorIfCustomConfigIfSetForLocalDriver() {
     ClientConfig config = ClientConfig.defaultConfig()

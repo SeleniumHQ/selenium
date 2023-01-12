@@ -341,14 +341,8 @@ public class RemoteWebDriverBuilder {
       throw new SessionNotCreatedException("Unable to find matching driver for capabilities");
     }
 
-    WebDriver localDriver = first.get().get();
+    return first.get().get();
 
-    if (localDriver != null && this.useCustomConfig) {
-      localDriver.quit();
-      throw new IllegalArgumentException("ClientConfig instances do not work for Local Drivers");
-    }
-
-    return localDriver;
   }
 
   /**
