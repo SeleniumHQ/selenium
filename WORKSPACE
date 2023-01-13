@@ -49,6 +49,7 @@ default_python_version = "3.8"
 python_register_multi_toolchains(
     name = "python",
     default_version = default_python_version,
+    ignore_root_user_error = True,
     python_versions = [
         "3.8",
         "3.9",
