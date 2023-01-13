@@ -38,7 +38,8 @@ fi
 ```
 
 8. In each of the `*.cs` files in `//dotnet/test/common/DevTools/`, update all
-      occurrences of `V<N-1>` to `V<N>`.
+      occurrences of `V<N-2>` to `V<N-1>`. For now, due to issues with timeliness of CI tool
+      updates, we keep this one version behind the latest.
 9. Commit the changes.
 
 ### Removing support for a version of Chromium DevTools Protocol from the .NET bindings
