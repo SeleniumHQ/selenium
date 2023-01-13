@@ -34,17 +34,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: node
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: node
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -85,17 +86,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: atoms
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: atoms
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -107,7 +109,6 @@ jobs:
         uses: abhi1693/setup-browser@v0.3.4
         with:
           browser: firefox
-          version: ${{ matrix.version }}
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Start Fluxbox

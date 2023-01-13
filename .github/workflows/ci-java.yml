@@ -31,17 +31,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: java
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: java
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -60,17 +61,18 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: java-small-tests
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: java-small-tests
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -95,17 +97,18 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: java-medium-tests
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: java-medium-tests
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -122,17 +125,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: java-lint
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: java-lint
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -157,17 +161,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: java-${{ matrix.browser }}-tests
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: java-${{ matrix.browser }}-tests
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
@@ -215,17 +220,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: java-${{ matrix.browser }}-server-tests
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: java-${{ matrix.browser }}-server-tests
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
@@ -265,17 +271,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: java-rc-tests
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: java-rc-tests
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
@@ -288,8 +295,6 @@ jobs:
         with:
           browser: firefox
           version: latest
-        if: |
-          matrix.browser == 'firefox'
       - name: Start XVFB
         run: Xvfb :99 &
       - name: Start Fluxbox
@@ -307,17 +312,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: java-doc
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: java-doc
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:

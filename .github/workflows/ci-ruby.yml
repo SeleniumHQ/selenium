@@ -37,17 +37,18 @@ jobs:
           java-version: 11
           distribution: 'temurin'
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: rb-${{ matrix.target }}
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: rb-${{ matrix.target }}
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Gems
         run: bazel build //rb:${{ matrix.target }}
 
@@ -76,17 +77,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: rb-${{ matrix.browser }}-remote-${{ matrix.remote }}
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: rb-${{ matrix.browser }}-remote-${{ matrix.remote }}
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -133,17 +135,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: rb-docs
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: rb-docs
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run docs tests
         run: bazel run //rb:docs
 
@@ -155,17 +158,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: rb-lint
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: rb-lint
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run lint tests
         run: bazel run //rb:lint
 
@@ -187,16 +191,17 @@ jobs:
       - name: Set Ruby version to ${{ matrix.ruby }}
         run: echo 'RUBY_VERSION = "${{ matrix.ruby }}"' > rb/ruby_version.bzl
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: rb-unit-test-${{ matrix.ruby }}
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: rb-unit-test-${{ matrix.ruby }}
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run unit tests
         run: bazel test //rb/spec/unit/...

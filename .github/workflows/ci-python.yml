@@ -90,17 +90,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: py-unit
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: py-unit
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -117,17 +118,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: py-chrome
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: py-chrome
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Chrome
@@ -149,17 +151,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: py-remote
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: py-remote
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java
@@ -189,17 +192,18 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
+        uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
-          disk-cache: py-remote
+          disk-cache: py-firefox
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: py-firefox
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Fluxbox
         run: sudo apt-get -y install fluxbox
       - name: Setup Java

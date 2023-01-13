@@ -25,17 +25,18 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-      - uses: p0deje/setup-bazel@0.1.0
+      - uses: p0deje/setup-bazel@0.2.0
         with:
           bazelisk-cache: true
           disk-cache: rb-${{ matrix.gem }}
           external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
+            name: rb-${{ matrix.gem }}
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
           repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - run: bazel run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
       - run: bazel run //rb:${{ matrix.gem }}-release-nightly
         env:
