@@ -153,7 +153,9 @@ public class ChromeDriverService extends DriverService {
    * be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
+   * @deprecated Use {@link Builder#withLogLevel(ChromeDriverLogLevel)}  }
    */
+  @Deprecated
   public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
     return new Builder()
       .withLogLevel(options.getLogLevel())

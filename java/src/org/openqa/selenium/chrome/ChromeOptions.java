@@ -58,6 +58,10 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
     super(CapabilityType.BROWSER_NAME, CHROME.browserName(), CAPABILITY);
   }
 
+  /**
+   * @deprecated Use {@link ChromeDriverService.Builder#withLogLevel(ChromeDriverLogLevel)} to set log level.
+   */
+  @Deprecated
   public ChromeOptions setLogLevel(ChromeDriverLogLevel logLevel){
     this.logLevel = Require.nonNull("Log level", logLevel);
     return this;
@@ -75,6 +79,10 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
     return newInstance;
   }
 
+  /**
+   * @deprecated Log Level only applies to {@link ChromeDriverService}.
+   */
+  @Deprecated
   public ChromeDriverLogLevel getLogLevel(){
     return logLevel;
   }
