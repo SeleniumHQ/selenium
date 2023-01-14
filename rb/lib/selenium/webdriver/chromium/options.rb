@@ -161,6 +161,9 @@ module Selenium
 
         #
         # Run Chrome in headless mode.
+        # Old headless uses a non-production browser and is set with `--headless`
+        # Native headless from v86 - v108 is set with `--headless=chrome`
+        # Native headless from v109+ is set with `--headless=new`
         #
         # @example Enable headless mode
         #   options = Selenium::WebDriver::Chrome::Options.new
@@ -169,7 +172,7 @@ module Selenium
 
         def headless!
           WebDriver.logger.deprecate('`Options#headless!`',
-                                     "`options = Selenium::WebDriver::Options.chrome(args: ['--headless=chrome'])`",
+                                     "`Options#add_argument('--headless=new')`",
                                      id: :headless)
           add_argument '--headless'
         end

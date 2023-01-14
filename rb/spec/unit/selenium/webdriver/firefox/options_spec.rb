@@ -127,7 +127,9 @@ module Selenium
 
         describe '#headless!' do
           it 'adds the -headless command-line flag' do
-            options.headless!
+            expect {
+              options.headless!
+            }.to have_deprecated(:headless)
             expect(options.as_json['moz:firefoxOptions']['args']).to include('-headless')
           end
         end

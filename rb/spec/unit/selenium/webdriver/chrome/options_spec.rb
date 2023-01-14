@@ -181,7 +181,9 @@ module Selenium
 
         describe '#headless!' do
           it 'adds necessary command-line arguments' do
-            options.headless!
+            expect {
+              options.headless!
+            }.to have_deprecated(:headless)
             expect(options.args).to eql(['--headless'])
           end
         end
