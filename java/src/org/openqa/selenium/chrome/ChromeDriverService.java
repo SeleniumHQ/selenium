@@ -21,6 +21,7 @@ import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -153,12 +154,12 @@ public class ChromeDriverService extends DriverService {
    * be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
-   * @deprecated Use {@link Builder#withLogLevel(ChromeDriverLogLevel)}  }
+   * @deprecated Use {@link Builder#withLogLevel(ChromiumDriverLogLevel)}  }
    */
   @Deprecated
   public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
     return new Builder()
-      .withLogLevel(options.getLogLevel())
+      .withLogLevel(ChromiumDriverLogLevel.fromString(options.getLogLevel().toString()))
       .build();
   }
 
@@ -176,7 +177,7 @@ public class ChromeDriverService extends DriverService {
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
       System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
-    private ChromeDriverLogLevel logLevel = ChromeDriverLogLevel.fromString(System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY));
+    private ChromiumDriverLogLevel logLevel = ChromiumDriverLogLevel.fromString(System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY));
 
     @Override
     public int score(Capabilities capabilities) {
@@ -218,13 +219,13 @@ public class ChromeDriverService extends DriverService {
     /**
      * Configures the driver server verbosity.
      *
-     * @param verbose True for verbose output, false otherwise.
+     * @param verbose Log all output for true, no changes made if false.
      * @return A self reference.
      */
     @SuppressWarnings("UnusedReturnValue")
     public Builder withVerbose(boolean verbose) {
       if (verbose) {
-        this.logLevel = ChromeDriverLogLevel.ALL;
+        this.logLevel = ChromiumDriverLogLevel.ALL;
       }
       this.verbose = false;
       return this;
@@ -235,10 +236,23 @@ public class ChromeDriverService extends DriverService {
      *
      * @param logLevel {@link ChromeDriverLogLevel} for desired log level output.
      * @return A self reference.
+     * @deprecated use {@link #withLogLevel(ChromiumDriverLogLevel)} instead.
      */
+    @Deprecated
     public Builder withLogLevel(ChromeDriverLogLevel logLevel) {
       this.verbose = false;
       this.silent = false;
+      this.logLevel = ChromiumDriverLogLevel.fromString(logLevel.toString());
+      return this;
+    }
+
+    /**
+     * Configures the driver server verbosity.
+     *
+     * @param logLevel {@link ChromiumDriverLogLevel} for desired log level output.
+     * @return A self reference.
+     */
+    public Builder withLogLevel(ChromiumDriverLogLevel logLevel) {
       this.logLevel = logLevel;
       return this;
     }
@@ -246,12 +260,12 @@ public class ChromeDriverService extends DriverService {
     /**
      * Configures the driver server for silent output.
      *
-     * @param silent True for silent output, false otherwise.
+     * @param silent Log no output for true, no changes made if false.
      * @return A self reference.
      */
     public Builder withSilent(boolean silent) {
       if (silent) {
-        this.logLevel = ChromeDriverLogLevel.OFF;
+        this.logLevel = ChromiumDriverLogLevel.OFF;
       }
       this.silent = false;
       return this;
