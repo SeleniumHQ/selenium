@@ -20,9 +20,9 @@ jobs:
           - selenium-devtools
           - selenium-webdriver
     with:
-      name: Release ${{ matrix.gem }}
+      name: Release
       cache-key: rb-nightly-${{ matrix.gem }}
       run: |
-        export GEM_HOST_API_KEY="Bearer ${{ github.token }}"
+        export GEM_HOST_API_KEY="Bearer ${{ secrets.GITHUB_TOKEN }}"
         bazel run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
         bazel run //rb:${{ matrix.gem }}-release-nightly
