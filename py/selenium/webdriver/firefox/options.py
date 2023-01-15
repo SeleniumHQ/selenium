@@ -108,7 +108,8 @@ class Options(ArgOptions):
         """
         warnings.warn(
             "headless property is deprecated, instead check for '-headless' in arguments",
-            DeprecationWarning, stacklevel=2
+            DeprecationWarning,
+            stacklevel=2
         )
         return "-headless" in self._arguments
 
@@ -120,8 +121,7 @@ class Options(ArgOptions):
           value: boolean value indicating to set the headless option
         """
         warnings.warn(
-            "headless property is deprecated, instead use add_argument('-headless')",
-            DeprecationWarning, stacklevel=2
+            "headless property is deprecated, instead use add_argument('-headless')", DeprecationWarning, stacklevel=2
         )
         if value:
             self._arguments.append("-headless")

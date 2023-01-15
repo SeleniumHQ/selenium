@@ -143,7 +143,8 @@ class ChromiumOptions(ArgOptions):
         """
         warnings.warn(
             "headless property is deprecated, instead check for '--headless' in arguments",
-            DeprecationWarning, stacklevel=2
+            DeprecationWarning,
+            stacklevel=2
         )
         return "--headless" in self._arguments
 
@@ -159,7 +160,8 @@ class ChromiumOptions(ArgOptions):
         """
         warnings.warn(
             "headless property is deprecated, instead use add_argument('--headless') or add_argument('--headless=new')",
-            DeprecationWarning, stacklevel=2
+            DeprecationWarning,
+            stacklevel=2
         )
         args = {"--headless"}
         if value is True:
