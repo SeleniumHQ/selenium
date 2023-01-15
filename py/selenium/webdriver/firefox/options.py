@@ -106,6 +106,11 @@ class Options(ArgOptions):
         """
         :Returns: True if the headless argument is set, else False
         """
+        warnings.warn(
+            "headless property is deprecated, instead check for '-headless' in arguments",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return "-headless" in self._arguments
 
     @headless.setter
@@ -115,6 +120,9 @@ class Options(ArgOptions):
         Args:
           value: boolean value indicating to set the headless option
         """
+        warnings.warn(
+            "headless property is deprecated, instead use add_argument('-headless')", DeprecationWarning, stacklevel=2
+        )
         if value:
             self._arguments.append("-headless")
         elif "-headless" in self._arguments:

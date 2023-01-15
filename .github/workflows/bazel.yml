@@ -46,6 +46,8 @@ jobs:
   bazel:
     name: ${{ inputs.name }}
     runs-on: ${{ inputs.os }}-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
@@ -99,8 +101,6 @@ jobs:
           edge-version: ${{ inputs.browser-version || 'stable' }}
       - name: Run Bazel
         run: ${{ inputs.run }}
-        env:
-          SELENIUM_BROWSER: ${{ inputs.browser }}
       - name: Start SSH session
         if: failure() && runner.debug == '1'
         uses: mxschmitt/action-tmate@v3

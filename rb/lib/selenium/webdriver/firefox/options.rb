@@ -109,7 +109,7 @@ module Selenium
 
         def headless!
           WebDriver.logger.deprecate('`Options#headless!`',
-                                     "`options = Selenium::WebDriver::Options.firefox(args: ['-headless'])`",
+                                     "`Options#add_argument('-headless')`",
                                      id: :headless)
           add_argument '-headless'
         end

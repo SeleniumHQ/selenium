@@ -316,6 +316,9 @@ class Options extends Capabilities {
    * options.addArguments('--headless');
    * @example
    *
+   * Recommended to use '--headless=chrome' as argument for browsers v94-108.
+   * Recommended to use '--headless=new' as argument for browsers v109+.
+   *
    * Configures the driver to start the browser in headless mode.
    *
    * > __NOTE:__ Resizing the browser window in headless mode is only supported

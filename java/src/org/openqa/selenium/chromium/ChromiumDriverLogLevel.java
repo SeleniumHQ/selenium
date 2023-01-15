@@ -15,10 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.chrome;
+package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
-import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 
 import java.util.Map;
 import java.util.logging.Level;
@@ -26,10 +25,8 @@ import java.util.logging.Level;
 /**
  * <a href="https://source.chromium.org/chromium/chromium/src/+/master:chrome/test/chromedriver/logging.cc">
  *   Log levels</a> defined by ChromeDriver
- * @deprecated use {@link ChromiumDriverLogLevel}
  */
-@Deprecated
-public enum ChromeDriverLogLevel {
+public enum ChromiumDriverLogLevel {
   ALL,
   INFO,
   DEBUG,
@@ -37,8 +34,8 @@ public enum ChromeDriverLogLevel {
   SEVERE,
   OFF;
 
-  private static final Map<Level, ChromeDriverLogLevel> logLevelToChromeLevelMap
-    = new ImmutableMap.Builder<Level, ChromeDriverLogLevel>()
+  private static final Map<Level, ChromiumDriverLogLevel> logLevelToChromeLevelMap
+    = new ImmutableMap.Builder<Level, ChromiumDriverLogLevel>()
     .put(Level.ALL, ALL)
     .put(Level.FINEST, DEBUG)
     .put(Level.FINER, DEBUG)
@@ -54,9 +51,9 @@ public enum ChromeDriverLogLevel {
     return super.toString().toLowerCase();
   }
 
-  public static ChromeDriverLogLevel fromString(String text) {
+  public static ChromiumDriverLogLevel fromString(String text) {
     if (text != null) {
-      for (ChromeDriverLogLevel b : ChromeDriverLogLevel.values()) {
+      for (ChromiumDriverLogLevel b : ChromiumDriverLogLevel.values()) {
         if (text.equalsIgnoreCase(b.toString())) {
           return b;
         }
@@ -65,7 +62,7 @@ public enum ChromeDriverLogLevel {
     return null;
   }
 
-  public static ChromeDriverLogLevel fromLevel(Level level) {
+  public static ChromiumDriverLogLevel fromLevel(Level level) {
     return logLevelToChromeLevelMap.getOrDefault(level, ALL);
   }
 }

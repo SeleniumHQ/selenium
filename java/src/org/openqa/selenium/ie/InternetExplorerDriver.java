@@ -89,34 +89,6 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   public static final String REQUIRE_WINDOW_FOCUS = "requireWindowFocus";
 
   /**
-   * Capability that defines the location of the file where IEDriverServer
-   * should write log messages to.
-   */
-  public static final String LOG_FILE = "logFile";
-
-  /**
-   * Capability that defines the detalization level the IEDriverServer logs.
-   */
-  public static final String LOG_LEVEL = "logLevel";
-
-  /**
-   * Capability that defines the address of the host adapter on which
-   * the IEDriverServer will listen for commands.
-   */
-  public static final String HOST = "host";
-
-  /**
-   * Capability that defines full path to directory to which will be
-   * extracted supporting files of the IEDriverServer.
-   */
-  public static final String EXTRACT_PATH = "extractPath";
-
-  /**
-   * Capability that defines suppress or not diagnostic output of the IEDriverServer.
-   */
-  public static final String SILENT = "silent";
-
-  /**
    * Capability that defines launch API of IE used by IEDriverServer.
    */
   public static final String FORCE_CREATE_PROCESS = "ie.forceCreateProcessApi";
@@ -163,7 +135,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
       options = new InternetExplorerOptions();
     }
     if (service == null) {
-      service = setupService(options);
+      service = InternetExplorerDriverService.createDefaultService();
     }
     run(service, options);
   }
@@ -195,48 +167,5 @@ public class InternetExplorerDriver extends RemoteWebDriver {
           String.format(
               "You appear to be running %s. The IE driver only runs on Windows.", current));
     }
-  }
-
-  private InternetExplorerDriverService setupService(Capabilities caps) {
-    InternetExplorerDriverService.Builder builder = new InternetExplorerDriverService.Builder();
-
-    if (caps != null) {
-      if (caps.getCapability(LOG_FILE) != null) {
-        String value = (String) caps.getCapability(LOG_FILE);
-        if (value != null) {
-          builder.withLogFile(new File(value));
-        }
-      }
-
-      if (caps.getCapability(LOG_LEVEL) != null) {
-        String value = (String) caps.getCapability(LOG_LEVEL);
-        if (value != null) {
-          builder.withLogLevel(InternetExplorerDriverLogLevel.valueOf(value));
-        }
-      }
-
-      if (caps.getCapability(HOST) != null) {
-        String value = (String) caps.getCapability(HOST);
-        if (value != null) {
-          builder.withHost(value);
-        }
-      }
-
-      if (caps.getCapability(EXTRACT_PATH) != null) {
-        String value = (String) caps.getCapability(EXTRACT_PATH);
-        if (value != null) {
-          builder.withExtractPath(new File(value));
-        }
-      }
-
-      if (caps.getCapability(SILENT) != null) {
-        Boolean value = (Boolean) caps.getCapability(SILENT);
-        if (value != null) {
-          builder.withSilent(value);
-        }
-      }
-    }
-
-    return builder.build();
   }
 }
