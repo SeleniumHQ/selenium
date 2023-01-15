@@ -158,8 +158,10 @@ public class ChromeDriverService extends DriverService {
    */
   @Deprecated
   public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
+    ChromeDriverLogLevel oldLevel = options.getLogLevel();
+    ChromiumDriverLogLevel level = (oldLevel == null) ? null : ChromiumDriverLogLevel.fromString(oldLevel.toString());
     return new Builder()
-      .withLogLevel(ChromiumDriverLogLevel.fromString(options.getLogLevel().toString()))
+      .withLogLevel(level)
       .build();
   }
 
