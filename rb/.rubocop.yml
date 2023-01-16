@@ -35,6 +35,7 @@ Metrics/ClassLength:
     - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
+    - 'spec/integration/selenium/webdriver/bidi/log_inspector_spec.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
 
 Metrics/CyclomaticComplexity:

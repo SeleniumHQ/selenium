@@ -21,11 +21,9 @@ require_relative '../spec_helper'
 
 module Selenium
   module WebDriver
-    class BiDi # rubocop:disable Metrics/ClassLength
+    class BiDi
       describe LogInspector, only: {browser: %i[chrome edge firefox]} do
-        before do
-          @page = '/bidi/logEntryAdded.html'
-        end
+        let(:page) { '/bidi/logEntryAdded.html' }
 
         it 'can listen to console log', except: {browser: %i[chrome edge]} do
           reset_driver!(web_socket_url: true) do |driver|
@@ -33,7 +31,7 @@ module Selenium
             log_inspector = described_class.new(driver)
             log_inspector.on_console_entry { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleLog').click
             wait.until { !log_entry.nil? }
 
@@ -58,7 +56,7 @@ module Selenium
             log_entry_text = nil
             log_inspector.on_console_entry { |log| log_entry_text = log.text }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleLog').click
             wait.until { !log_entry.nil? }
 
@@ -81,7 +79,7 @@ module Selenium
             log_inspector = described_class.new(driver)
             log_inspector.on_console_entry(FilterBy.log_level('info')) { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleLog').click
             wait.until { !log_entry.nil? }
 
@@ -97,13 +95,13 @@ module Selenium
           end
         end
 
-        it 'can filter console log', except: {browser: %i[chrome edge]} do
+        it 'can filter console log', except: {browser: %i[edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
             log_inspector.on_console_entry(FilterBy.log_level('error')) { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             # Generating info level log but we are filtering by error level
             wait.until { driver.find_element(id: 'consoleLog').displayed? }
             driver.find_element(id: 'consoleLog').click
@@ -112,13 +110,13 @@ module Selenium
           end
         end
 
-        it 'can listen to javascript log', except: {browser: %i[chrome edge]} do
+        it 'can listen to javascript log', except: {browser: %i[edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
             log_inspector.on_javascript_log { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'jsException').click
             wait.until { !log_entry.nil? }
 
@@ -130,13 +128,13 @@ module Selenium
           end
         end
 
-        it 'can filter javascript log at error level', except: {browser: %i[chrome edge]} do
+        it 'can filter javascript log at error level', except: {browser: %i[edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
             log_inspector.on_javascript_log(FilterBy.log_level('error')) { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'jsException').click
             wait.until { !log_entry.nil? }
 
@@ -148,13 +146,13 @@ module Selenium
           end
         end
 
-        it 'can filter javascript log', except: {browser: %i[chrome edge]} do
+        it 'can filter javascript log', except: {browser: %i[edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
             log_inspector.on_javascript_log(FilterBy.log_level('info')) { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             # Generating js error level log but we are filtering by info level
             wait.until { driver.find_element(id: 'jsException').displayed? }
             driver.find_element(id: 'jsException').click
@@ -163,13 +161,13 @@ module Selenium
           end
         end
 
-        it 'can listen to javascript error log', except: {browser: %i[chrome edge]} do
+        it 'can listen to javascript error log', except: {browser: %i[edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
             log_inspector.on_javascript_exception { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'jsException').click
             wait.until { !log_entry.nil? }
 
@@ -181,13 +179,13 @@ module Selenium
           end
         end
 
-        it 'can listen to any log', except: {browser: %i[chrome edge]} do
+        it 'can listen to any log', except: {browser: %i[edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
             log_inspector.on_log { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleError').click
             wait.until { !log_entry.nil? }
 
@@ -203,7 +201,7 @@ module Selenium
             log_inspector = described_class.new(driver)
             log_inspector.on_log(FilterBy.log_level('info')) { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'consoleLog').click
             wait.until { !log_entry.nil? }
 
@@ -217,13 +215,13 @@ module Selenium
           end
         end
 
-        it 'can filter any log at error level', except: {browser: %i[chrome edge]} do
+        it 'can filter any log at error level', except: {browser: %i[edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
             log_inspector.on_log(FilterBy.log_level('error')) { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'jsException').click
             wait.until { !log_entry.nil? }
 
@@ -233,13 +231,13 @@ module Selenium
           end
         end
 
-        it 'can retrieve stack trace for a log', except: {browser: %i[chrome edge]} do
+        it 'can retrieve stack trace for a log', except: {browser: %i[edge]} do
           reset_driver!(web_socket_url: true) do |driver|
             log_entry = nil
             log_inspector = described_class.new(driver)
             log_inspector.on_javascript_log { |log| log_entry = log }
 
-            driver.navigate.to url_for(@page)
+            driver.navigate.to url_for(page)
             driver.find_element(id: 'jsException').click
             wait.until { !log_entry.nil? }
 
