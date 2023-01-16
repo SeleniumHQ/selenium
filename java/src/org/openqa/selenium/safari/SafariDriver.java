@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -76,13 +77,11 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(DriverService safariServer, SafariOptions safariOptions) {
-    super(new SafariDriverCommandExecutor(safariServer), safariOptions);
-    permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
-    debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
+    this(safariServer, safariOptions, ClientConfig.defaultConfig());
   }
 
-  public SafariDriver(DriverService safariServer, SafariOptions safariOptions, int connectTimeoutSeconds, int readTimeoutSeconds) {
-    super(new SafariDriverCommandExecutor(safariServer), safariOptions, connectTimeoutSeconds, readTimeoutSeconds);
+  public SafariDriver(DriverService safariServer, SafariOptions safariOptions, ClientConfig clientConfig) {
+    super(new SafariDriverCommandExecutor(safariServer, clientConfig), safariOptions);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
   }
@@ -119,7 +118,11 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
 
   private static class SafariDriverCommandExecutor extends DriverCommandExecutor {
     public SafariDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+      this(service, ClientConfig.defaultConfig());
+    }
+
+    public SafariDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
+      super(service, getExtraCommands(), clientConfig);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

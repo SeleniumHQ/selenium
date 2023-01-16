@@ -125,28 +125,34 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
-    this(getDefaultServerURL(),
-         Require.nonNull("Capabilities", capabilities), true);
+    this(Require.nonNull("Capabilities", capabilities), true);
   }
 
   public RemoteWebDriver(Capabilities capabilities, boolean enableTracing) {
+    this(Require.nonNull("Capabilities", capabilities),
+      enableTracing,
+      ClientConfig.defaultConfig());
+  }
+
+  public RemoteWebDriver(Capabilities capabilities, boolean enableTracing, ClientConfig clientConfig) {
     this(getDefaultServerURL(),
-         Require.nonNull("Capabilities", capabilities), enableTracing);
+      capabilities,
+      enableTracing,
+      clientConfig);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
-    this(createExecutor(Require.nonNull("Server URL", remoteAddress), true),
-         Require.nonNull("Capabilities", capabilities));
+    this(remoteAddress, capabilities, true);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
-    this(createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing),
-      Require.nonNull("Capabilities", capabilities));
+    this(remoteAddress, capabilities, enableTracing, ClientConfig.defaultConfig());
   }
 
-  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, int connectTimeoutSeconds, int readTimeoutSeconds) {
-    this(createExecutor(Require.nonNull("Server URL", remoteAddress), true, connectTimeoutSeconds, readTimeoutSeconds),
-      Require.nonNull("Capabilities", capabilities));
+  public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing, ClientConfig clientConfig) {
+    this(createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing, clientConfig),
+      Require.nonNull("Capabilities", capabilities)
+    );
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
@@ -179,30 +185,20 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing) {
-    ClientConfig config = ClientConfig.defaultConfig().baseUrl(remoteAddress);
-    if (enableTracing) {
-      Tracer tracer = OpenTelemetryTracer.getInstance();
-      CommandExecutor executor = new HttpCommandExecutor(
-        Collections.emptyMap(),
-        config,
-        new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
-      return new TracedCommandExecutor(executor, tracer);
-    } else {
-      return new HttpCommandExecutor(config);
-    }
+    ClientConfig defaultConfig = ClientConfig.defaultConfig().baseUrl(remoteAddress);
+    return CommandExecutor(remoteAddress, enableTracing, defaultConfig);
   }
 
-  private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing, int connectTimeoutSeconds, int readTimeoutSeconds) {
-    ClientConfig config = new ClientConfig.configWithTimeouts(connectTimeoutSeconds, readTimeoutSeconds).baseUrl(remoteAddress);
+  private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing, ClientConfig clientConfig) {
     if (enableTracing) {
       Tracer tracer = OpenTelemetryTracer.getInstance();
       CommandExecutor executor = new HttpCommandExecutor(
         Collections.emptyMap(),
-        config,
+        clientConfig,
         new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
       return new TracedCommandExecutor(executor, tracer);
     } else {
-      return new HttpCommandExecutor(config);
+      return new HttpCommandExecutor(clientConfig);
     }
   }
 

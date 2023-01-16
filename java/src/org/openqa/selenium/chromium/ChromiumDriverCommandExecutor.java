@@ -19,6 +19,7 @@ package org.openqa.selenium.chromium;
 
 import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.remote.CommandInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -32,7 +33,11 @@ import java.util.Map;
 public class ChromiumDriverCommandExecutor extends DriverCommandExecutor {
 
   public ChromiumDriverCommandExecutor(DriverService service, Map<String, CommandInfo> extraCommands) {
-    super(service, getExtraCommands(extraCommands));
+    this(service, extraCommands, ClientConfig.defaultConfig());
+  }
+
+  public ChromiumDriverCommandExecutor(DriverService service, Map<String, CommandInfo> extraCommands, ClientConfig clientConfig) {
+    super(service, getExtraCommands(extraCommands), clientConfig);
   }
 
   private static Map<String, CommandInfo> getExtraCommands(Map<String, CommandInfo> commands) {

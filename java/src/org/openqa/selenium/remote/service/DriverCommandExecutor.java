@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.HttpCommandExecutor;
 import org.openqa.selenium.remote.Response;
+import org.openqa.selenium.remote.http.ClientConfig;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
    */
   public DriverCommandExecutor(DriverService service) {
     super(Require.nonNull("DriverService", service.getUrl()));
-    this.service = service;
+    this(service, Collections.emptyMap());
   }
 
   /**
@@ -77,7 +78,12 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
    */
   protected DriverCommandExecutor(
       DriverService service, Map<String, CommandInfo> additionalCommands) {
-    super(additionalCommands, service.getUrl());
+    this(service, additionalCommands, ClientConfig.defaultConfig());
+  }
+
+  protected DriverCommandExecutor(
+    DriverService service, Map<String, CommandInfo> additionalCommands, ClientConfig clientConfig) {
+    super(additionalCommands, service.getUrl(), clientConfig);
     this.service = service;
   }
 

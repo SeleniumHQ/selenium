@@ -26,6 +26,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -51,13 +52,11 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
-    super(new EdgeDriverCommandExecutor(service), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
-    casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
-    cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
+    this(service, options, ClientConfig.defaultConfig());
   }
 
-  public EdgeDriver(EdgeDriverService service, EdgeOptions options, int connectTimeoutSeconds, int readTimeoutSeconds) {
-    super(new EdgeDriverCommandExecutor(service), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY, connectTimeoutSeconds, readTimeoutSeconds);
+  public EdgeDriver(EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) {
+    super(new EdgeDriverCommandExecutor(service, clientConfig), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
@@ -69,7 +68,11 @@ public class EdgeDriver extends ChromiumDriver {
 
   private static class EdgeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
     public EdgeDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+      this(service, getExtraCommands(), ClientConfig.defaultConfig());
+    }
+
+    public EdgeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
+      super(service, getExtraCommands(), clientConfig);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

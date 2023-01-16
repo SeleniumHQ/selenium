@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
 import java.io.File;
@@ -174,8 +175,8 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   }
 
   @Beta
-  public static RemoteWebDriverBuilder builder(int connectTimeoutSeconds, int readTimeoutSeconds) {
-    return RemoteWebDriver.builder(connectTimeoutSeconds, readTimeoutSeconds).oneOf(new InternetExplorerOptions());
+  public static RemoteWebDriverBuilder builder(ClientConfig clientConfig) {
+    return RemoteWebDriver.builder(clientConfig).oneOf(new InternetExplorerOptions());
   }
 
   private void run(InternetExplorerDriverService service, Capabilities capabilities) {

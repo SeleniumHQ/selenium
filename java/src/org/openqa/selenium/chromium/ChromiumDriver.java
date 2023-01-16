@@ -99,15 +99,6 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
     super(commandExecutor, capabilities);
-    initChromiumDriver();
-  }
-
-  protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey, int connectTimeoutSeconds, int readTimeoutSeconds) {
-    super(commandExecutor, capabilities, connectTimeoutSeconds, readTimeoutSeconds);
-    initChromiumDriver();
-  }
-
-  private void initChromiumDriver(){
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new RemoteWebStorage(getExecuteMethod());
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());

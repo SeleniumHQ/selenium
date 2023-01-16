@@ -123,20 +123,19 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(service), Require.nonNull("Driver options", options));
+    this(service, options, ClientConfig.defaultConfig());
+  }
+
+  public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, ClientConfig clientConfig) {
+    this(new FirefoxDriverCommandExecutor(service, clientConfig), Require.nonNull("Driver options", options));
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
+    this(executor, checkCapabilitiesAndProxy(options), ClientConfig.defaultConfig());
+  }
+
+  private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options, ClientConfig clientConfig) {
     super(executor, checkCapabilitiesAndProxy(options));
-    initFireFoxDriver();
-  }
-
-  private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options, int connectTimeoutSeconds, int readTimeoutSeconds) {
-    super(executor, checkCapabilitiesAndProxy(options), connectTimeoutSeconds, readTimeoutSeconds);
-    initFireFoxDriver();
-  }
-
-  private void initFireFoxDriver(){
     webStorage = new RemoteWebStorage(getExecuteMethod());
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
     fullPageScreenshot = new AddHasFullPageScreenshot().getImplementation(getCapabilities(), getExecuteMethod());
@@ -355,7 +354,11 @@ public class FirefoxDriver extends RemoteWebDriver
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
 
     public FirefoxDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+      this(service, getExtraCommands(), ClientConfig.defaultConfig());
+    }
+
+    public FirefoxDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
+      super(service, getExtraCommands(), clientConfig);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

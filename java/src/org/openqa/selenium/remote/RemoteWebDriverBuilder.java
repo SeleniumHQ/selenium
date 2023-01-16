@@ -135,8 +135,8 @@ public class RemoteWebDriverBuilder {
     // Access through RemoteWebDriver.builder
   }
 
-  RemoteWebDriverBuilder(int connectTimeoutSeconds, int readTimeoutSeconds) {
-    this.clientConfig = ClientConfig.configWithTimeouts(connectTimeoutSeconds, readTimeoutSeconds);
+  RemoteWebDriverBuilder(ClientConfig clientConfig) {
+    this.clientConfig = clientConfig;
   }
 
   /**

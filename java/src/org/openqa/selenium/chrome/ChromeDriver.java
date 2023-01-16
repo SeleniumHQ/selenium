@@ -26,6 +26,7 @@ import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverService;
@@ -79,13 +80,11 @@ public class ChromeDriver extends ChromiumDriver {
    * @param options The options required from ChromeDriver.
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    super(new ChromeDriverCommandExecutor(service), Require.nonNull("Driver options", options), ChromeOptions.CAPABILITY);
-    casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
-    cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
+    this(service, options, ClientConfig.defaultConfig());
   }
 
-  public ChromeDriver(ChromeDriverService service, ChromeOptions options, int connectTimeoutSeconds, int readTimeoutSeconds) {
-    super(new ChromeDriverCommandExecutor(service), Require.nonNull("Driver options", options), ChromeOptions.CAPABILITY, connectTimeoutSeconds, readTimeoutSeconds);
+  public ChromeDriver(ChromeDriverService service, ChromeOptions options, ClientConfig clientConfig) {
+    super(new ChromeDriverCommandExecutor(service, clientConfig), Require.nonNull("Driver options", options), ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
@@ -97,7 +96,11 @@ public class ChromeDriver extends ChromiumDriver {
 
   private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
     public ChromeDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+      this(service, ClientConfig.ClientConfig.defaultConfig());
+    }
+
+    public ChromeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
+      super(service, getExtraCommands(), clientConfig);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {
