@@ -150,9 +150,9 @@ class ChromiumOptions(ArgOptions):
 
     @headless.setter
     def headless(self, value: bool) -> None:
-        """
-        Sets the headless argument
-        Old headless uses a non-production browser and is set with `--headless`
+        """Sets the headless argument Old headless uses a non-production
+        browser and is set with `--headless`
+
         Native headless from v86 - v108 is set with `--headless=chrome`
         Native headless from v109+ is set with `--headless=new`
         :Args:
