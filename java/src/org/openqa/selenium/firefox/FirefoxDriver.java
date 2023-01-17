@@ -131,7 +131,7 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
-    this(executor, checkCapabilitiesAndProxy(options), ClientConfig.defaultConfig());
+    this(executor, options, ClientConfig.defaultConfig());
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options, ClientConfig clientConfig) {
@@ -159,10 +159,10 @@ public class FirefoxDriver extends RemoteWebDriver
 
     this.cdpUri = cdpUri;
     this.capabilities = cdpUri.map(uri ->
-        new ImmutableCapabilities(
-          new PersistentCapabilities(capabilities)
-            .setCapability("se:cdp", uri.toString())
-            .setCapability("se:cdpVersion", "85.0")))
+                                     new ImmutableCapabilities(
+                                       new PersistentCapabilities(capabilities)
+                                         .setCapability("se:cdp", uri.toString())
+                                         .setCapability("se:cdpVersion", "85.0")))
       .orElse(new ImmutableCapabilities(capabilities));
   }
 
@@ -354,7 +354,7 @@ public class FirefoxDriver extends RemoteWebDriver
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
 
     public FirefoxDriverCommandExecutor(DriverService service) {
-      this(service, getExtraCommands(), ClientConfig.defaultConfig());
+      this(service, ClientConfig.defaultConfig());
     }
 
     public FirefoxDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {

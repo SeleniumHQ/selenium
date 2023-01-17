@@ -135,10 +135,10 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
     this.capabilities = cdpUri.map(uri -> new ImmutableCapabilities(
         new PersistentCapabilities(originalCapabilities)
-          .setCapability("se:cdp", uri.toString())
-          .setCapability(
-            "se:cdpVersion", originalCapabilities.getBrowserVersion())))
-      .orElse(new ImmutableCapabilities(originalCapabilities));
+            .setCapability("se:cdp", uri.toString())
+            .setCapability(
+                "se:cdpVersion", originalCapabilities.getBrowserVersion())))
+        .orElse(new ImmutableCapabilities(originalCapabilities));
   }
 
   @Override

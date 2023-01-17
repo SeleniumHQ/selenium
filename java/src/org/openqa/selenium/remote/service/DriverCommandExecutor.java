@@ -34,6 +34,9 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -65,7 +68,6 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
    * @param service The DriverService to send commands to.
    */
   public DriverCommandExecutor(DriverService service) {
-    super(Require.nonNull("DriverService", service.getUrl()));
     this(service, Collections.emptyMap());
   }
 
@@ -83,8 +85,16 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
 
   protected DriverCommandExecutor(
     DriverService service, Map<String, CommandInfo> additionalCommands, ClientConfig clientConfig) {
-    super(additionalCommands, service.getUrl(), clientConfig);
+    super(additionalCommands, service.getUrl(), computeClientConfigWithBaseURI(clientConfig, service));
     this.service = service;
+  }
+
+  private static ClientConfig computeClientConfigWithBaseURI(ClientConfig clientConfig, DriverService service) {
+    try {
+      return clientConfig.baseUri(service.getUrl().toURI());
+    } catch (URISyntaxException e) {
+      return clientConfig;
+    }
   }
 
   /**

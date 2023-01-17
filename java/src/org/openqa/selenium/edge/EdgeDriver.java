@@ -29,6 +29,7 @@ import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.net.URISyntaxException;
 import java.util.Map;
 
 /**
@@ -39,23 +40,23 @@ import java.util.Map;
  */
 public class EdgeDriver extends ChromiumDriver {
 
-  public EdgeDriver() {
+  public EdgeDriver() throws URISyntaxException {
     this(new EdgeOptions());
   }
 
-  public EdgeDriver(EdgeOptions options) {
+  public EdgeDriver(EdgeOptions options) throws URISyntaxException {
     this(new EdgeDriverService.Builder().build(), options);
   }
 
-  public EdgeDriver(EdgeDriverService service) {
+  public EdgeDriver(EdgeDriverService service) throws URISyntaxException {
     this(service, new EdgeOptions());
   }
 
-  public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
+  public EdgeDriver(EdgeDriverService service, EdgeOptions options) throws URISyntaxException {
     this(service, options, ClientConfig.defaultConfig());
   }
 
-  public EdgeDriver(EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) {
+  public EdgeDriver(EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) throws URISyntaxException {
     super(new EdgeDriverCommandExecutor(service, clientConfig), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
@@ -67,11 +68,11 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   private static class EdgeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public EdgeDriverCommandExecutor(DriverService service) {
-      this(service, getExtraCommands(), ClientConfig.defaultConfig());
+    public EdgeDriverCommandExecutor(DriverService service) throws URISyntaxException {
+      this(service, ClientConfig.defaultConfig());
     }
 
-    public EdgeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
+    public EdgeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) throws URISyntaxException {
       super(service, getExtraCommands(), clientConfig);
     }
 

@@ -64,16 +64,6 @@ public class ClientConfig {
       null);
   }
 
-  public static ClientConfig configWithTimeouts(int connectTimeoutSeconds, int readTimeoutSeconds) {
-    return new ClientConfig(
-      null,
-      Duration.ofSeconds(connectTimeoutSeconds),
-      Duration.ofSeconds(readTimeoutSeconds),
-      DEFAULT_FILTER,
-      null,
-      null);
-  }
-
   public ClientConfig baseUri(URI baseUri) {
     return new ClientConfig(
       Require.nonNull("Base URI", baseUri),

@@ -31,6 +31,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.net.URISyntaxException;
 import java.util.Map;
 
 /**
@@ -47,7 +48,7 @@ public class ChromeDriver extends ChromiumDriver {
    *
    * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
-  public ChromeDriver() {
+  public ChromeDriver() throws URISyntaxException {
     this(ChromeDriverService.createDefaultService(), new ChromeOptions());
   }
 
@@ -58,7 +59,7 @@ public class ChromeDriver extends ChromiumDriver {
    * @param service The service to use.
    * @see RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)
    */
-  public ChromeDriver(ChromeDriverService service) {
+  public ChromeDriver(ChromeDriverService service) throws URISyntaxException {
     this(service, new ChromeOptions());
   }
 
@@ -68,7 +69,7 @@ public class ChromeDriver extends ChromiumDriver {
    * @param options The options to use.
    * @see #ChromeDriver(ChromeDriverService, ChromeOptions)
    */
-  public ChromeDriver(ChromeOptions options) {
+  public ChromeDriver(ChromeOptions options) throws URISyntaxException {
     this(ChromeDriverService.createServiceWithConfig(options), options);
   }
 
@@ -79,11 +80,11 @@ public class ChromeDriver extends ChromiumDriver {
    * @param service The service to use.
    * @param options The options required from ChromeDriver.
    */
-  public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
+  public ChromeDriver(ChromeDriverService service, ChromeOptions options) throws URISyntaxException {
     this(service, options, ClientConfig.defaultConfig());
   }
 
-  public ChromeDriver(ChromeDriverService service, ChromeOptions options, ClientConfig clientConfig) {
+  public ChromeDriver(ChromeDriverService service, ChromeOptions options, ClientConfig clientConfig) throws URISyntaxException {
     super(new ChromeDriverCommandExecutor(service, clientConfig), Require.nonNull("Driver options", options), ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
@@ -95,11 +96,11 @@ public class ChromeDriver extends ChromiumDriver {
   }
 
   private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public ChromeDriverCommandExecutor(DriverService service) {
-      this(service, ClientConfig.ClientConfig.defaultConfig());
+    public ChromeDriverCommandExecutor(DriverService service) throws URISyntaxException {
+      this(service, ClientConfig.defaultConfig());
     }
 
-    public ChromeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
+    public ChromeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) throws URISyntaxException {
       super(service, getExtraCommands(), clientConfig);
     }
 

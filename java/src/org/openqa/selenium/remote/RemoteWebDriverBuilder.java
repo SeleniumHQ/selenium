@@ -135,10 +135,6 @@ public class RemoteWebDriverBuilder {
     // Access through RemoteWebDriver.builder
   }
 
-  RemoteWebDriverBuilder(ClientConfig clientConfig) {
-    this.clientConfig = clientConfig;
-  }
-
   /**
    * Clears the current set of alternative browsers and instead sets the list of possible choices to
    * the arguments given to this method.

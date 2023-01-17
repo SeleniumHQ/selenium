@@ -139,15 +139,19 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   public static final String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
   public InternetExplorerDriver() {
-    this(null, null);
+    this(null, null, null);
   }
 
   public InternetExplorerDriver(InternetExplorerOptions options) {
-    this(null, options);
+    this(null, options, null);
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service) {
-    this(service, null);
+    this(service, null, null);
+  }
+
+  public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options) {
+    this(service, options, null);
   }
 
   /**
@@ -159,14 +163,19 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    * @param options The options required from InternetExplorerDriver.
    */
   public InternetExplorerDriver(InternetExplorerDriverService service,
-                                InternetExplorerOptions options) {
+                                InternetExplorerOptions options,
+                                ClientConfig clientConfig) {
     if (options == null) {
       options = new InternetExplorerOptions();
     }
     if (service == null) {
       service = setupService(options);
     }
-    run(service, options);
+    if (clientConfig == null){
+      clientConfig = ClientConfig.defaultConfig();
+    }
+
+    run(service, options, clientConfig);
   }
 
   @Beta
@@ -174,12 +183,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     return RemoteWebDriver.builder().oneOf(new InternetExplorerOptions());
   }
 
-  @Beta
-  public static RemoteWebDriverBuilder builder(ClientConfig clientConfig) {
-    return RemoteWebDriver.builder(clientConfig).oneOf(new InternetExplorerOptions());
-  }
-
-  private void run(InternetExplorerDriverService service, Capabilities capabilities) {
+  private void run(InternetExplorerDriverService service, Capabilities capabilities, ClientConfig clientConfig) {
     assertOnWindows();
 
     setCommandExecutor(new DriverCommandExecutor(service));
