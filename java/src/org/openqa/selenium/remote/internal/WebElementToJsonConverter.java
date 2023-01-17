@@ -22,6 +22,7 @@ import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.RemoteWebElement;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
