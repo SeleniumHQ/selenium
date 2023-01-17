@@ -125,7 +125,7 @@ public enum Browser {
       }
 
       if (Boolean.getBoolean("webdriver.headless")) {
-        options.setHeadless(true);
+        options.addArguments("-headless");
       }
 
       return options;

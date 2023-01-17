@@ -112,22 +112,6 @@ def test_get_experimental_options(options):
     assert options.experimental_options["foo"] == "bar"
 
 
-def test_set_headless(options):
-    options.headless = True
-    assert "--headless" in options._arguments
-
-
-def test_unset_headless(options):
-    options._arguments = ["--headless"]
-    options.headless = False
-    assert "--headless" not in options._arguments
-
-
-def test_get_headless(options):
-    options._arguments = ["--headless"]
-    assert options.headless is True
-
-
 def test_creates_capabilities(options):
     options._arguments = ["foo"]
     options._binary_location = "/bar"

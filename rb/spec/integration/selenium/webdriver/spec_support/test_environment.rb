@@ -27,9 +27,9 @@ module Selenium
           @create_driver_error = nil
           @create_driver_error_count = 0
 
-          populate_from_bazel_target
+          WebDriver.logger.ignore(:logger_info)
 
-          @driver = ENV.fetch('WD_SPEC_DRIVER', :chrome).to_sym
+          @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
           @remote_server = nil
         end
@@ -48,7 +48,11 @@ module Selenium
         end
 
         def browser
-          driver == :remote ? ENV.fetch('WD_REMOTE_BROWSER', 'chrome').to_sym : driver
+          if driver == :remote
+            ENV.fetch('WD_REMOTE_BROWSER', 'chrome').tr('-', '_').to_sym
+          else
+            driver
+          end
         end
 
         def driver_instance(**opts, &block)
@@ -68,13 +72,18 @@ module Selenium
         end
 
         def app_server
-          @app_server ||= RackServer.new(root.join('common/src/web').to_s).tap(&:start)
+          @app_server ||= begin
+            app_server = RackServer.new(root.join('common/src/web').to_s, random_port)
+            app_server.start
+
+            app_server
+          end
         end
 
         def remote_server
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
-            port: PortProber.above(4444),
+            port: random_port,
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60
@@ -92,8 +101,9 @@ module Selenium
         end
 
         def remote_server_jar
-          test_jar = "#{Pathname.new(Dir.pwd).join('rb')}/selenium_server_deploy.jar"
-          built_jar = root.join('bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
+          jar = 'java/src/org/openqa/selenium/grid/selenium_server_deploy.jar'
+          test_jar = Pathname.new(Dir.pwd).join(jar)
+          built_jar = root.join("bazel-bin/#{jar}")
           jar = if File.exist?(test_jar) && ENV['DOWNLOAD_SERVER'].nil?
                   test_jar
                 elsif File.exist?(built_jar) && ENV['DOWNLOAD_SERVER'].nil?
@@ -107,7 +117,7 @@ module Selenium
         end
 
         def quit
-          app_server.stop
+          @app_server&.stop
 
           @remote_server&.stop
 
@@ -254,19 +264,15 @@ module Selenium
           WebDriver::Options.safari(**opts)
         end
 
-        def populate_from_bazel_target
-          name = ENV.fetch('TEST_TARGET', nil)
-          return unless name
+        def random_port
+          addr = Socket.getaddrinfo(Platform.localhost, 0, Socket::AF_INET, Socket::SOCK_STREAM)
+          addr = Socket.pack_sockaddr_in(0, addr[0][3])
+          sock = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
+          sock.bind(addr)
 
-          case name
-          when %r{//rb:remote-(.+)-test}
-            ENV['WD_REMOTE_BROWSER'] = Regexp.last_match(1).tr('-', '_')
-            ENV['WD_SPEC_DRIVER'] = 'remote'
-          when %r{//rb:(.+)-test}
-            ENV['WD_SPEC_DRIVER'] = Regexp.last_match(1).tr('-', '_')
-          else
-            raise "Don't know how to extract browser name from #{name}"
-          end
+          sock.local_address.ip_port
+        ensure
+          sock.close
         end
       end
     end # SpecSupport

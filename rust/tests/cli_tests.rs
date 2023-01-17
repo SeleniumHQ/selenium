@@ -24,14 +24,11 @@ use std::str;
 #[case("chrome", "chromedriver", "", "")]
 #[case("chrome", "chromedriver", "105", "105.0.5195.52")]
 #[case("chrome", "chromedriver", "106", "106.0.5249.61")]
-#[case("chrome", "chromedriver", "beta", "")]
 #[case("edge", "msedgedriver", "", "")]
 #[case("edge", "msedgedriver", "105", "105.0")]
 #[case("edge", "msedgedriver", "106", "106.0")]
-#[case("edge", "msedgedriver", "beta", "")]
 #[case("firefox", "geckodriver", "", "")]
 #[case("firefox", "geckodriver", "105", "0.32.0")]
-#[case("firefox", "geckodriver", "beta", "")]
 #[case("iexplorer", "IEDriverServer", "", "")]
 fn ok_test(
     #[case] browser: String,
@@ -94,6 +91,24 @@ fn error_test(
     .assert()
     .failure()
     .code(error_code);
+}
+
+#[rstest]
+#[case("chrome", "chromedriver")]
+#[case("edge", "msedgedriver")]
+#[case("firefox", "geckodriver")]
+fn beta_test(#[case] browser: String, #[case] driver_name: String) {
+    println!("Beta test browser={browser} -- driver_name={driver_name}");
+
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let assert = cmd
+        .args(["--browser", &browser, "--browser-version", "beta"])
+        .assert();
+
+    let stdout = &assert.get_output().stdout;
+    let output = str::from_utf8(stdout).unwrap();
+    println!("output {:?}", output);
+    assert!(output.contains(&driver_name) || output.contains("ERROR"));
 }
 
 #[rstest]

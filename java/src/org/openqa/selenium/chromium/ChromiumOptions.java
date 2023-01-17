@@ -188,8 +188,9 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
 
   /**
    * @deprecated Use {@link #addArguments(String...)}.
-   * Pass '--headless=chrome' as argument.
-   * Example: `addArguments("--headless=chrome")`.
+   * Recommended to use '--headless=chrome' as argument for browsers v94-108.
+   * Recommended to use '--headless=new' as argument for browsers v109+.
+   * Example: `addArguments("--headless=new")`.
    */
   @Deprecated
   public T setHeadless(boolean headless) {
