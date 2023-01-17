@@ -1,328 +1,110 @@
-# Configuration for Java CI
-# To force the execution of this workflow, add [run java] to your commit message
-name: 'CI - Java'
+name: CI - Java
 
 on:
+  workflow_call:
   workflow_dispatch:
 
-  schedule:
-    - cron: '15 9,21 * * *'
-
-  push:
-
-  pull_request:
-
-env:
-  NODE_VERSION: '16.x'
-
 jobs:
-  check_workflow:
-    permissions:
-      contents: none
-    uses: ./.github/workflows/should-workflow-run.yml
-    with:
-      bazel-target-prefix: '//java'
-
   build:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[java]') == true }}
-    needs: check_workflow
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: java
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Build grid
-        run: bazel build grid
+    name: Build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build
+      cache-key: java
+      run: bazel build grid
 
-  small_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
-    needs: [ check_workflow, build ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: java-small-tests
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Run small tests
-        run: bazel test --test_size_filters "small" --test_tag_filters "-lint" //java/...
-      # (Alex R.): Temporarily disable due to slow execution and OOM errors
-      # - name: Sonar Scanner
-      #   uses: ./.github/actions/sonar-cloud
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  medium_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
-    needs: [ check_workflow, small_tests ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: java-medium-tests
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Run medium tests
-        run: bazel test --test_size_filters "medium" --test_tag_filters "-lint" --flaky_test_attempts 3 //java/...
+  docs:
+    name: Documentation
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Documentation
+      cache-key: java-doc
+      run: ./go --verbose javadocs
 
   lint:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
-    needs: [ check_workflow, build ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: java-lint
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Run linter
-        run: bazel test --test_tag_filters "lint,-no-lint" //java/...
+    name: Lint
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint
+      cache-key: java-lint
+      run: bazel test --test_tag_filters "lint,-no-lint" //java/...
 
-  browser_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
-    needs: [ check_workflow, small_tests ]
-    runs-on: ubuntu-latest
+  small-tests:
+    name: Small Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Small Tests
+      cache-key: java-small-tests
+      run: bazel test --test_size_filters "small" --test_tag_filters "-lint" //java/...
+
+  medium-tests:
+    name: Medium Tests
+    needs: small-tests
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Medium Tests
+      cache-key: java-medium-tests
+      run: bazel test --test_size_filters "medium" --test_tag_filters "-lint" --flaky_test_attempts 3 //java/...
+
+  browser-tests:
+    name: Browser Tests
+    needs: small-tests
+    uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { "browser": "firefox", "version": "latest" }
-          - { "browser": "firefox", "version": "latest-beta" }
-          - { "browser": "firefox", "version": "latest-devedition" }
-          - { "browser": "chrome", "version": "stable" }
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: java-${{ matrix.browser }}-tests
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Fluxbox
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Setup Firefox
-        uses: abhi1693/setup-browser@v0.3.4
-        with:
-          browser: firefox
-          version: ${{ matrix.version }}
-        if: |
-          matrix.browser == 'firefox'
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
-        with:
-          version: ${{ matrix.version }}
-        if: |
-          matrix.browser == 'chrome'
-      - name: Start XVFB
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        run: fluxbox -display :99 &
-      - name: Run browser tests in ${{ matrix.browser }}
-        run: |
-          bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'rc|remote', tests(//java/...))" |
-            xargs bazel test --flaky_test_attempts 3
-        env:
-          DISPLAY: :99
+          - browser: chrome
+            browser-version: stable
+          - browser: firefox
+            browser-version: latest
+          - browser: firefox
+            browser-version: latest-beta
+          - browser: firefox
+            browser-version: latest-devedition
+    with:
+      name: Browser Tests (${{ matrix.browser }}, ${{ matrix.browser-version }})
+      browser: ${{ matrix.browser }}
+      browser-version: ${{ matrix.browser-version }}
+      cache-key: java-${{ matrix.browser }}-tests
+      run: >
+        bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'rc|remote', tests(//java/...))" |
+        xargs bazel test --flaky_test_attempts 3
 
-  server_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
-    needs: [ check_workflow, small_tests ]
-    runs-on: ubuntu-latest
+  server-tests:
+    name: Server Tests
+    needs: small-tests
+    uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { "browser": "firefox", "version": "latest" }
-          - { "browser": "firefox", "version": "latest-beta" }
-          - { "browser": "firefox", "version": "latest-devedition" }
-          - { "browser": "chrome", "version": "stable" }
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: java-${{ matrix.browser }}-server-tests
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Fluxbox
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Setup Firefox
-        uses: abhi1693/setup-browser@v0.3.4
-        with:
-          browser: firefox
-          version: ${{ matrix.version }}
-        if: |
-          matrix.browser == 'firefox'
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
-        with:
-          version: ${{ matrix.version }}
-        if: |
-          matrix.browser == 'chrome'
-      - name: Start XVFB
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        run: fluxbox -display :99 &
-      - name: Run server tests
-        run: |
-          bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))" |
-            xargs bazel test --flaky_test_attempts 3
-        env:
-          DISPLAY: :99
+          - browser: chrome
+            browser-version: stable
+          - browser: firefox
+            browser-version: latest
+          - browser: firefox
+            browser-version: latest-beta
+          - browser: firefox
+            browser-version: latest-devedition
+    with:
+      name: Server Tests (${{ matrix.browser }}, ${{ matrix.browser-version }})
+      browser: ${{ matrix.browser }}
+      browser-version: ${{ matrix.browser-version }}
+      cache-key: java-${{ matrix.browser }}-server-tests
+      run: >
+        bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))" |
+        xargs bazel test --flaky_test_attempts 3
 
-  rc_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
-    needs: [ check_workflow, small_tests ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: java-rc-tests
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Fluxbox
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Setup Firefox
-        uses: abhi1693/setup-browser@v0.3.4
-        with:
-          browser: firefox
-          version: latest
-        if: |
-          matrix.browser == 'firefox'
-      - name: Start XVFB
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        run: fluxbox -display :99 &
-      - name: Run browser tests in Firefox
-        run: bazel test --test_tag_filters "rc" --flaky_test_attempts 3 //java/...
-        env:
-          DISPLAY: :99
-
-  javadoc:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run java]') == true }}
-    needs: [ check_workflow, build ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: java-doc
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Generate javadoc
-        run: |
-          ./go --verbose javadocs
+  rc-tests:
+    name: RC Tests
+    needs: small-tests
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: RC Tests
+      browser: firefox
+      cache-key: java-rc-tests
+      run: bazel test --test_tag_filters "rc" --flaky_test_attempts 3 //java/...

@@ -5,28 +5,13 @@ load(
     "rb_binary",
     "rb_gem_build",
     "rb_gem_push",
-    "rb_library",
-    "rb_test",
 )
 
 package(default_visibility = ["//:__subpackages__"])
 
-CDP_VERSIONS = [
-    "v85",
-    "v106",
-    "v107",
-    "v108",
-]
-
 GITHUB_PACKAGES_HOST = "https://rubygems.pkg.github.com/SeleniumHQ"
 
 exports_files(["ruby_version.bzl"])
-
-copy_file(
-    name = "find-elements",
-    src = "//javascript/atoms/fragments:find-elements.js",
-    out = "lib/selenium/webdriver/atoms/findElements.js",
-)
 
 copy_file(
     name = "manager-linux",
@@ -44,30 +29,6 @@ copy_file(
     name = "manager-macos",
     src = "//common/manager:macos/selenium-manager",
     out = "bin/macos/selenium-manager",
-)
-
-copy_file(
-    name = "get-attribute",
-    src = "//javascript/webdriver/atoms:get-attribute.js",
-    out = "lib/selenium/webdriver/atoms/getAttribute.js",
-)
-
-copy_file(
-    name = "is-displayed",
-    src = "//javascript/atoms/fragments:is-displayed.js",
-    out = "lib/selenium/webdriver/atoms/isDisplayed.js",
-)
-
-copy_file(
-    name = "mutation-listener",
-    src = "//javascript/cdp-support:mutation-listener.js",
-    out = "lib/selenium/webdriver/atoms/mutationListener.js",
-)
-
-copy_file(
-    name = "selenium-server-deploy",
-    src = "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
-    out = "selenium_server_deploy.jar",
 )
 
 select_file(
@@ -96,607 +57,138 @@ copy_file(
 
 rb_gem_build(
     name = "selenium-webdriver",
+    srcs = [
+        "Gemfile",
+        "selenium-webdriver.gemspec",
+    ],
+    data = [
+        "CHANGES",
+        "README.md",
+        ":license",
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
+        ":notice",
+    ],
     gemspec = "selenium-webdriver.gemspec",
     deps = [
-        ":bidi",
-        ":chrome",
-        ":common",
-        ":edge",
-        ":firefox",
-        ":ie",
-        ":remote",
-        ":safari",
+        "//rb/lib:selenium-webdriver",
+        "//rb/lib/selenium:server",
+        "//rb/lib/selenium:webdriver",
+        "//rb/lib/selenium/webdriver:atoms",
+        "//rb/lib/selenium/webdriver:bidi",
+        "//rb/lib/selenium/webdriver:chrome",
+        "//rb/lib/selenium/webdriver:common",
+        "//rb/lib/selenium/webdriver:edge",
+        "//rb/lib/selenium/webdriver:firefox",
+        "//rb/lib/selenium/webdriver:ie",
+        "//rb/lib/selenium/webdriver:remote",
+        "//rb/lib/selenium/webdriver:safari",
+        "//rb/lib/selenium/webdriver:version",
     ],
 )
 
 rb_gem_push(
     name = "selenium-webdriver-release",
-    src = ":selenium-webdriver",
+    gem = ":selenium-webdriver",
 )
 
 rb_gem_build(
     name = "selenium-devtools",
+    srcs = [
+        "Gemfile",
+        "selenium-devtools.gemspec",
+    ],
+    data = [
+        "CHANGES",
+        "README.md",
+        ":license",
+        ":notice",
+    ],
     gemspec = "selenium-devtools.gemspec",
-    deps = [":devtools"],
+    deps = ["//rb/lib/selenium:devtools"],
 )
 
 rb_gem_push(
     name = "selenium-devtools-release",
-    src = ":selenium-devtools",
+    gem = ":selenium-devtools",
 )
 
 rb_binary(
     name = "selenium-webdriver-bump-nightly-version",
-    srcs = [
-        "lib/selenium/webdriver/support/nightly_version_generator.rb",
-        "lib/selenium/webdriver/version.rb",
-    ],
     args = [
-        "rb/lib/selenium/webdriver/support/nightly_version_generator.rb",
+        "rb/lib/selenium/support/nightly_version_generator.rb",
         "rb/lib/selenium/webdriver/version.rb",
+    ],
+    deps = [
+        "//rb/lib/selenium/support:nightly_version_generator",
+        "//rb/lib/selenium/webdriver:version",
     ],
 )
 
 rb_gem_push(
     name = "selenium-webdriver-release-nightly",
-    src = ":selenium-webdriver",
     args = [
         "--host",
         GITHUB_PACKAGES_HOST,
     ],
+    gem = ":selenium-webdriver",
 )
 
 rb_binary(
     name = "selenium-devtools-bump-nightly-version",
-    srcs = [
-        "lib/selenium/devtools/version.rb",
-        "lib/selenium/webdriver/support/nightly_version_generator.rb",
-    ],
     args = [
-        "rb/lib/selenium/webdriver/support/nightly_version_generator.rb",
+        "rb/lib/selenium/support/nightly_version_generator.rb",
         "rb/lib/selenium/devtools/version.rb",
+    ],
+    deps = [
+        "//rb/lib/selenium/devtools:version",
+        "//rb/lib/selenium/support:nightly_version_generator",
     ],
 )
 
 rb_gem_push(
     name = "selenium-devtools-release-nightly",
-    src = ":selenium-devtools",
     args = [
         "--host",
         GITHUB_PACKAGES_HOST,
     ],
-)
-
-rb_library(
-    name = "bidi",
-    srcs = glob([
-        "lib/selenium/webdriver/bidi/**/*.rb",
-        "lib/selenium/webdriver/bidi.rb",
-        "lib/selenium/webdriver/devtools/**/*.rb",
-        "lib/selenium/webdriver/devtools.rb",
-    ]) + [":mutation-listener"],
-    deps = [":common"],
-)
-
-rb_library(
-    name = "chrome",
-    srcs = glob([
-        "lib/selenium/webdriver/chrome/**/*.rb",
-        "lib/selenium/webdriver/chrome.rb",
-    ]),
-    deps = [":common"],
-)
-
-rb_library(
-    name = "common",
-    srcs = glob([
-        "lib/selenium/webdriver/atoms.rb",
-        "lib/selenium/webdriver/common/**/*.rb",
-        "lib/selenium/webdriver/common.rb",
-        "lib/selenium/webdriver/support/**/*.rb",
-        "lib/selenium/webdriver/support.rb",
-        "lib/selenium/webdriver/version.rb",
-        "lib/selenium/webdriver.rb",
-        "lib/selenium/server.rb",
-        "lib/selenium-webdriver.rb",
-        "selenium-webdriver.gemspec",
-        "Gemfile",
-        "CHANGES",
-        "README.md",
-    ]) + [
-        ":find-elements",
-        ":get-attribute",
-        ":is-displayed",
-        ":manager-linux",
-        ":manager-macos",
-        ":manager-windows",
-        ":license",
-        ":notice",
-    ],
-)
-
-rb_library(
-    name = "edge",
-    srcs = glob([
-        "lib/selenium/webdriver/edge/**/*.rb",
-        "lib/selenium/webdriver/edge.rb",
-    ]),
-    deps = [":chrome"],
-)
-
-rb_library(
-    name = "firefox",
-    srcs = glob([
-        "lib/selenium/webdriver/firefox/**/*.rb",
-        "lib/selenium/webdriver/firefox.rb",
-    ]),
-    deps = [":common"],
-)
-
-rb_library(
-    name = "ie",
-    srcs = glob([
-        "lib/selenium/webdriver/ie/**/*.rb",
-        "lib/selenium/webdriver/ie.rb",
-    ]),
-    deps = [":common"],
-)
-
-rb_library(
-    name = "remote",
-    srcs = glob([
-        "lib/selenium/webdriver/remote/**/*.rb",
-        "lib/selenium/webdriver/remote.rb",
-    ]),
-    deps = [":common"],
-)
-
-rb_library(
-    name = "safari",
-    srcs = glob([
-        "lib/selenium/webdriver/safari/**/*.rb",
-        "lib/selenium/webdriver/safari.rb",
-    ]),
-    deps = [":common"],
-)
-
-rb_library(
-    name = "devtools",
-    srcs = glob([
-        "Gemfile",
-        "lib/selenium/devtools.rb",
-        "lib/selenium/devtools/version.rb",
-        "selenium-devtools.gemspec",
-    ]) + [
-        ":license",
-        ":notice",
-    ] + [":cdp-" + n for n in CDP_VERSIONS],
-)
-
-[genrule(
-    name = "cdp-" + n,
-    srcs = [
-        "//common/devtools/chromium/" + n + ":browser_protocol",
-        "//common/devtools/chromium/" + n + ":js_protocol",
-        ":cdp-generate",
-    ],
-    outs = [
-        "lib/selenium/devtools/" + n,
-        "lib/selenium/devtools/" + n + ".rb",
-    ],
-    cmd = "$(location @rules_ruby_dist//:ruby) $(location :cdp-generate) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $(OUTS) " + n,
-    tools = ["@rules_ruby_dist//:ruby"],
-) for n in CDP_VERSIONS]
-
-filegroup(
-    name = "cdp-generate",
-    srcs = ["lib/selenium/webdriver/support/cdp_client_generator.rb"],
-)
-
-rb_test(
-    name = "chrome-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/chrome/**/*_spec.rb",
-    ]),
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":chrome",
-        ":devtools",
-        ":remote",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "edge-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/edge/**/*_spec.rb",
-    ]),
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":devtools",
-        ":edge",
-        ":remote",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "firefox-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
-    ]) + ["//common/extensions"],
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":devtools",
-        ":firefox",
-        ":remote",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "firefox-nightly-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
-    ]) + ["//common/extensions"],
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":devtools",
-        ":firefox",
-        ":remote",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "ie-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/ie/**/*_spec.rb",
-    ]),
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":ie",
-        ":remote",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "safari-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/safari/**/*_spec.rb",
-    ]),
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":remote",
-        ":safari",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "safari-preview-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/safari/**/*_spec.rb",
-    ]),
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":remote",
-        ":safari",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "unit-test",
-    srcs = glob([
-        "spec/unit/selenium/webdriver/**/*_spec.rb",
-        "spec/unit/selenium/*_spec.rb",
-    ]),
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":chrome",
-        ":edge",
-        ":firefox",
-        ":ie",
-        ":remote",
-        ":safari",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "remote-chrome-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/chrome/**/*_spec.rb",
-        "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-    ]) + [":selenium-server-deploy"],
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":chrome",
-        ":devtools",
-        ":remote",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "remote-edge-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/edge/**/*_spec.rb",
-        "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-    ]) + [":selenium-server-deploy"],
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":devtools",
-        ":edge",
-        ":remote",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "remote-firefox-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/firefox/**/*_spec.rb",
-        "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-    ]) + [":selenium-server-deploy"],
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":devtools",
-        ":firefox",
-        ":remote",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "remote-safari-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-        "spec/integration/selenium/webdriver/safari/**/*_spec.rb",
-    ]) + [":selenium-server-deploy"],
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":remote",
-        ":safari",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "remote-ie-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-        "spec/integration/selenium/webdriver/ie/**/*_spec.rb",
-    ]) + [":selenium-server-deploy"],
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":ie",
-        ":remote",
-        "@bundle",
-    ],
-)
-
-rb_test(
-    name = "remote-safari-preview-test",
-    srcs = glob([
-        "spec/integration/selenium/webdriver/*_spec.rb",
-        "spec/integration/selenium/webdriver/remote/**/*_spec.rb",
-        "spec/integration/selenium/webdriver/safari/**/*_spec.rb",
-    ]) + [":selenium-server-deploy"],
-    args = [
-        "--format",
-        "documentation",
-        "--force-color",
-        "rb/spec",
-    ],
-    main = "@bundle//:bin/rspec",
-    tags = [
-        "no-sandbox",
-        "requires-network",
-    ],
-    deps = [
-        ":bidi",
-        ":remote",
-        ":safari",
-        "@bundle",
-    ],
+    gem = ":selenium-devtools",
 )
 
 rb_binary(
     name = "docs",
-    srcs = glob([
-        "lib/**/*.rb",
-        "CHANGES",
-        "README.md",
-    ]),
     args = [
         "doc",
         "--output-dir=docs/api/rb",
         "--readme=rb/README.md",
-        "rb/lib",
-        "rb/CHANGES",
-        "rb/README.md",
+        "rb/",
     ],
     main = "@bundle//:bin/yard",
-    deps = ["@bundle"],
+    deps = [
+        ":selenium-devtools",
+        ":selenium-webdriver",
+        "@bundle",
+    ],
 )
 
 rb_binary(
     name = "lint",
-    srcs = glob([
-        "lib/**/*.rb",
-        "spec/**/*.rb",
-        "Gemfile",
-        "selenium-devtools.gemspec",
-        "selenium-webdriver.gemspec",
-        ".rubocop.yml",
-    ]),
+    testonly = True,
+    srcs = glob(["**/*.rb"]),
     args = [
         "--config=rb/.rubocop.yml",
-        "rb/lib",
-        "rb/spec",
-        "rb/Gemfile",
-        "rb/selenium-devtools.gemspec",
-        "rb/selenium-webdriver.gemspec",
+        "rb/",
     ],
+    data = [".rubocop.yml"],
     main = "@bundle//:bin/rubocop",
+    tags = ["local"],
     deps = [
+        ":selenium-devtools",
+        ":selenium-webdriver",
+        "//rb/lib/selenium/devtools:cdp-generate",
+        "//rb/lib/selenium/support:nightly_version_generator",
+        "//rb/spec",
         "@bundle",
     ],
 )
@@ -709,15 +201,8 @@ rb_binary(
     ],
     main = "@bundle//:bin/pry",
     deps = [
-        ":bidi",
-        ":chrome",
-        ":common",
-        ":devtools",
-        ":edge",
-        ":firefox",
-        ":ie",
-        ":remote",
-        ":safari",
+        ":selenium-devtools",
+        ":selenium-webdriver",
         "@bundle",
     ],
 )

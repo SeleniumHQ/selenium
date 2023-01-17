@@ -1,0 +1,106 @@
+load(
+    "@rules_ruby//ruby:defs.bzl",
+    "rb_library",
+)
+
+package(default_visibility = ["//rb:__subpackages__"])
+
+rb_library(
+    name = "atoms",
+    srcs = ["atoms.rb"],
+    data = [
+        "//rb/lib/selenium/webdriver/atoms:find-elements",
+        "//rb/lib/selenium/webdriver/atoms:get-attribute",
+        "//rb/lib/selenium/webdriver/atoms:is-displayed",
+    ],
+)
+
+rb_library(
+    name = "bidi",
+    srcs = glob([
+        "bidi/**/*.rb",
+        "bidi.rb",
+        "devtools/**/*.rb",
+        "devtools.rb",
+    ]),
+    data = ["//rb/lib/selenium/webdriver/atoms:mutation-listener"],
+    deps = [":common"],
+)
+
+rb_library(
+    name = "chromium",
+    srcs = glob([
+        "chromium/**/*.rb",
+        "chromium.rb",
+    ]),
+    deps = [":common"],
+)
+
+rb_library(
+    name = "chrome",
+    srcs = glob([
+        "chrome/**/*.rb",
+        "chrome.rb",
+    ]),
+    deps = [":chromium"],
+)
+
+rb_library(
+    name = "common",
+    srcs = glob([
+        "common/**/*.rb",
+        "common.rb",
+        "support/**/*.rb",
+        "support.rb",
+    ]),
+)
+
+rb_library(
+    name = "version",
+    srcs = ["version.rb"],
+)
+
+rb_library(
+    name = "edge",
+    srcs = glob([
+        "edge/**/*.rb",
+        "edge.rb",
+    ]),
+    deps = [":chromium"],
+)
+
+rb_library(
+    name = "firefox",
+    srcs = glob([
+        "firefox/**/*.rb",
+        "firefox.rb",
+    ]),
+    deps = [":common"],
+)
+
+rb_library(
+    name = "ie",
+    srcs = glob([
+        "ie/**/*.rb",
+        "ie.rb",
+    ]),
+    deps = [":common"],
+)
+
+rb_library(
+    name = "remote",
+    srcs = glob([
+        "remote/**/*.rb",
+        "remote.rb",
+    ]),
+    deps = [":common"],
+)
+
+rb_library(
+    name = "safari",
+    srcs = glob([
+        "safari/**/*.rb",
+        "safari.rb",
+    ]),
+    deps = [":common"],
+)

@@ -1,62 +1,49 @@
-name: 'CI - .NET'
+name: CI - .NET
 
 on:
+  workflow_call:
   workflow_dispatch:
 
-  schedule:
-    - cron: '10 9,21 * * *'
-
-  push:
-
-  pull_request:
-
 jobs:
-  check_workflow:
-    permissions:
-      contents: none
-    uses: ./.github/workflows/should-workflow-run.yml
+  build:
+    name: Build
+    uses: ./.github/workflows/bazel.yml
     with:
-      bazel-target-prefix: '//dotnet'
+      name: Build
+      cache-key: dotnet-build
+      os: windows
+      run: bazel build //dotnet/src/webdriver:package //dotnet/src/support:package
 
-  browser:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[dotnet]') == true }}
-    needs: check_workflow
-    runs-on: 'windows-latest'
+  integration-tests:
+    name: Browser Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        driver: [ Chrome, Firefox ]
-        framework: [ net6.0, net48, netcoreapp3.1 ]
+        driver:
+          - Chrome
+          - Firefox
+        framework:
+          - net48
+          - net6.0
+          - netcoreapp3.1
         include:
           - driver: Chrome
-            location: 'C:\SeleniumWebDrivers\ChromeDriver'
+            browser: chrome
+            location: C:\SeleniumWebDrivers\ChromeDriver
           - driver: Firefox
-            location: 'C:\SeleniumWebDrivers\GeckoDriver'
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: dotnet-${{ matrix.driver }}-${{ matrix.framework }}
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup dotnet tests
-        run: bazel build //dotnet/test/common:chrome
-      - name: Run ${{ matrix.driver }} tests
-        working-directory: dotnet
-        run: dotnet test test/common/WebDriver.Common.Tests.csproj --framework ${{ matrix.framework }}
-        env:
-          ACTIVE_DRIVER_CONFIG: ${{ matrix.driver }}
-          DRIVER_SERVICE_LOCATION: ${{ matrix.location }}
+            browser: chrome
+            location: C:\SeleniumWebDrivers\GeckoDriver
+    with:
+      name: Browser Tests (${{ matrix.driver }}, ${{ matrix.framework }})
+      browser: ${{ matrix.browser }}
+      cache-key: dotnet-${{ matrix.browser }}-${{ matrix.framework }}
+      java-version: 11
+      os: windows
+      run: |
+        bazel build //dotnet/test/common:${{ matrix.browser }}
+        $env:ACTIVE_DRIVER_CONFIG = '${{ matrix.driver }}'
+        $env:DRIVER_SERVICE_LOCATION = '${{ matrix.location }}'
+        cd dotnet
+        dotnet test test/common/WebDriver.Common.Tests.csproj --framework ${{ matrix.framework }}

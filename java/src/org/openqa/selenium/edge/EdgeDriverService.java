@@ -21,6 +21,7 @@ import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -132,7 +133,7 @@ public class EdgeDriverService extends DriverService {
     private boolean readableTimestamp = Boolean.getBoolean(EDGE_DRIVER_READABLE_TIMESTAMP);
     private boolean appendLog = Boolean.getBoolean(EDGE_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
-    private String logLevel = System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY);
+    private ChromiumDriverLogLevel logLevel = ChromiumDriverLogLevel.fromString(System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY));
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
 
@@ -186,7 +187,7 @@ public class EdgeDriverService extends DriverService {
      */
     public Builder withVerbose(boolean verbose) {
       if (verbose) {
-        this.logLevel = "ALL";
+        this.logLevel = ChromiumDriverLogLevel.ALL;
       }
       this.verbose = false;
       return this;
@@ -194,8 +195,20 @@ public class EdgeDriverService extends DriverService {
 
     /**
      * Configures the driver server log level.
+     * @deprecated Use {@link #withLoglevel(ChromiumDriverLogLevel)} instead.
      */
+    @Deprecated
     public Builder withLoglevel(String logLevel) {
+      this.verbose = false;
+      this.silent = false;
+      this.logLevel = ChromiumDriverLogLevel.fromString(logLevel);
+      return this;
+    }
+
+    /**
+     * Configures the driver server log level.
+     */
+    public Builder withLoglevel(ChromiumDriverLogLevel logLevel) {
       this.verbose = false;
       this.silent = false;
       this.logLevel = logLevel;
@@ -210,7 +223,7 @@ public class EdgeDriverService extends DriverService {
      */
     public Builder withSilent(boolean silent) {
       if (silent) {
-        this.logLevel = "OFF";
+        this.logLevel = ChromiumDriverLogLevel.OFF;
       }
       this.silent = false;
       return this;
@@ -278,7 +291,7 @@ public class EdgeDriverService extends DriverService {
         args.add("--append-log");
       }
       if (logLevel != null) {
-        args.add(String.format("--log-level=%s", logLevel));
+        args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
       if (allowedListIps != null) {
         args.add(String.format("--allowed-ips=%s", allowedListIps));

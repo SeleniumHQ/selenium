@@ -26,6 +26,7 @@ module Selenium
     class SocketLock
       def initialize(port, timeout)
         @port    = port
+        @server  = nil
         @timeout = timeout
       end
 
