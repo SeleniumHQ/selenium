@@ -1,265 +1,116 @@
-# Configuration for Ruby CI
-# To force the execution of this workflow, add [run ruby] to your commit message
-name: 'CI - Ruby'
+name: CI - Ruby
 
 on:
+  workflow_call:
   workflow_dispatch:
 
-  schedule:
-    - cron: '35 9,21 * * *'
-
-  push:
-
-  pull_request:
-
 jobs:
-  check_workflow:
-    permissions:
-      contents: none
-    uses: ./.github/workflows/should-workflow-run.yml
-    with:
-      bazel-target-prefix: '//rb'
-
   build:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[rb]') == true }}
-    needs: check_workflow
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [ 'selenium-devtools', 'selenium-webdriver' ]
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: rb-${{ matrix.target }}
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build Gems
-        run: bazel build //rb:${{ matrix.target }}
-
-  chrome-test:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
-    needs: check_workflow
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [ 'chrome-test', 'remote-chrome-test' ]
-        os: [ 'ubuntu-latest', 'windows-latest' ]
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: rb-${{ matrix.target }}
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-      - name: Setup Fluxbox
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
-        with:
-          chrome-version: stable
-      - name: Start XVFB
-        if: matrix.os == 'ubuntu-latest'
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        if: matrix.os == 'ubuntu-latest'
-        run: fluxbox -display :99 &
-      - name: Set resolution
-        if: matrix.os == 'windows-latest'
-        run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
-      - name: Run Chrome tests
-        run: bazel test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
-        env:
-          DISPLAY: :99
-
-  edge-test:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
-    needs: check_workflow
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [ 'edge-test', 'remote-edge-test' ]
-        os: [ 'windows-latest' ]
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: rb-${{ matrix.target }}
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Edge
-        uses: browser-actions/setup-edge@latest
-        with:
-          edge-version: stable
-      - name: Run Edge tests
-        run: bazel test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
-
-  firefox-test:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
-    needs: check_workflow
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [ 'firefox-test', 'remote-firefox-test' ]
-        os: [ 'ubuntu-latest', 'windows-latest' ]
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: rb-${{ matrix.target }}
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Fluxbox
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Firefox
-        uses: abhi1693/setup-browser@v0.3.4
-        with:
-          browser: firefox
-          version: latest
-      - name: Start XVFB
-        if: matrix.os == 'ubuntu-latest'
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        if: matrix.os == 'ubuntu-latest'
-        run: fluxbox -display :99 &
-      - name: Set resolution
-        if: matrix.os == 'windows-latest'
-        run: Set-DisplayResolution -Width 1920 -Height 1080 -Force
-      - name: Run Firefox tests
-        run: bazel test --cache_test_results=no --test_output=all //rb:${{ matrix.target }}
-        env:
-          DISPLAY: :99
+    name: Build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build
+      cache-key: rb-build
+      run: bazel build //rb:selenium-devtools //rb:selenium-webdriver
 
   docs:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
-    needs: check_workflow
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: rb-docs
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run docs tests
-        run: bazel run //rb:docs
+    name: Documentation
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Documentation
+      cache-key: rb-docs
+      run: bazel run //rb:docs
 
   lint:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
-    needs: check_workflow
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: rb-lint
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run lint tests
-        run: bazel run //rb:lint
+    name: Lint
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Lint
+      cache-key: rb-lint
+      run: bazel run //rb:lint
 
-  unit-test:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run ruby]') == true }}
-    needs: check_workflow
-    runs-on: ${{ matrix.os }}
+  unit-tests:
+    name: Unit Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        ruby: [ '2.7.6', '3.2.0', 'jruby-9.4.0.0', 'truffleruby-22.3.0' ]
-        os: ['ubuntu-latest']
         include:
-          - ruby: 2.7.6
-            os: windows-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Set Ruby version to ${{ matrix.ruby }}
-        run: echo 'RUBY_VERSION = "${{ matrix.ruby }}"' > rb/ruby_version.bzl
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: rb-unit-test-${{ matrix.ruby }}
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Run unit tests
-        run: bazel test --cache_test_results=no --test_output=all //rb:unit-test
+          - ruby-version: 2.7.6
+            os: ubuntu
+          - ruby-version: 2.7.6
+            os: windows
+          - ruby-version: 3.2.0
+            os: ubuntu
+          - ruby-version: jruby-9.4.0.0
+            os: ubuntu
+          - ruby-version: truffleruby-22.3.0
+            os: ubuntu
+    with:
+      name: Unit Tests (${{ matrix.ruby-version }}, ${{ matrix.os }})
+      cache-key: rb-unit-test-${{ matrix.ruby-version }}
+      os: ${{ matrix.os }}
+      ruby-version: ${{ matrix.ruby-version }}
+      run: bazel test //rb/spec/unit/...
+
+  integration-tests-local:
+    name: Local Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        browser:
+          - chrome
+          - edge
+          - firefox
+        os:
+          - ubuntu
+          - windows
+        exclude:
+          - browser: edge
+            os: ubuntu
+    with:
+      name: Local Tests (${{ matrix.browser }}, ${{ matrix.os }})
+      browser: ${{ matrix.browser }}
+      cache-key: rb-${{ matrix.browser }}-test
+      os: ${{ matrix.os }}
+      run: >
+        bazel test
+        --define browser=${{ matrix.browser }}
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        //rb/spec/integration/...
+
+  integration-tests-remote:
+    name: Remote Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        browser:
+          - chrome
+          - edge
+          - firefox
+        os:
+          - ubuntu
+          - windows
+        exclude:
+          - browser: edge
+            os: ubuntu
+    with:
+      name: Remote Tests (${{ matrix.browser }}, ${{ matrix.os }})
+      browser: ${{ matrix.browser }}
+      cache-key: rb-remote-${{ matrix.browser }}-test
+      os: ${{ matrix.os }}
+      run: >
+        bazel test
+        --define browser=${{ matrix.browser }}
+        --define remote=true
+        --flaky_test_attempts 3
+        --local_test_jobs 1
+        //rb/spec/integration/...

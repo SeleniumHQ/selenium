@@ -144,7 +144,7 @@ java_binary(
         "//java/test:__subpackages__",
         "//javascript:__subpackages__",
         "//py:__pkg__",
-        "//rb:__pkg__",
+        "//rb:__subpackages__",
     ],
     runtime_deps = [
         ":grid",

@@ -26,6 +26,7 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 
 import java.io.File;
 import java.time.Duration;
@@ -61,19 +62,19 @@ class ChromeDriverServiceTest {
     doReturn(exe).when(builderMock).findDefaultExecutable();
 
     List<String> silentLast = Arrays.asList("--port=1", "--log-level=OFF");
-    builderMock.withLogLevel(ChromeDriverLogLevel.ALL).usingPort(1).withSilent(true).build();
+    builderMock.withLogLevel(ChromiumDriverLogLevel.ALL).usingPort(1).withSilent(true).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(silentLast), any());
 
     List<String> silentFirst = Arrays.asList("--port=1", "--log-level=DEBUG");
-    builderMock.withSilent(true).withLogLevel(ChromeDriverLogLevel.DEBUG).usingPort(1).build();
+    builderMock.withSilent(true).withLogLevel(ChromiumDriverLogLevel.DEBUG).usingPort(1).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(silentFirst), any());
 
     List<String> verboseLast = Arrays.asList("--port=1", "--log-level=ALL");
-    builderMock.withLogLevel(ChromeDriverLogLevel.OFF).usingPort(1).withVerbose(true).build();
+    builderMock.withLogLevel(ChromiumDriverLogLevel.OFF).usingPort(1).withVerbose(true).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(verboseLast), any());
 
     List<String> verboseFirst = Arrays.asList("--port=1", "--log-level=INFO");
-    builderMock.withVerbose(true).withLogLevel(ChromeDriverLogLevel.INFO).usingPort(1).build();
+    builderMock.withVerbose(true).withLogLevel(ChromiumDriverLogLevel.INFO).usingPort(1).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(verboseFirst), any());
   }
 
@@ -86,7 +87,7 @@ class ChromeDriverServiceTest {
     doReturn(exe).when(builderMock).findDefaultExecutable();
 
     List<String> falseSilent = Arrays.asList("--port=1", "--log-level=DEBUG");
-    builderMock.withLogLevel(ChromeDriverLogLevel.DEBUG).usingPort(1).withSilent(false).build();
+    builderMock.withLogLevel(ChromiumDriverLogLevel.DEBUG).usingPort(1).withSilent(false).build();
     verify(builderMock).createDriverService(any(), anyInt(), any(), eq(falseSilent), any());
   }
 }

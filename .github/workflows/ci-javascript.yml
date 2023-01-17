@@ -1,136 +1,63 @@
-# Configuration for JavaScript CI
-# To force the execution of this workflow, add [run javascript] to your commit message
-name: 'CI - JavaScript'
+name: CI - JavaScript
 
 on:
+  workflow_call:
   workflow_dispatch:
 
-  schedule:
-    - cron: '45 9,21 * * *'
-
-  push:
-
-  pull_request:
-
 jobs:
-  check_workflow:
-    permissions:
-      contents: none
-    uses: ./.github/workflows/should-workflow-run.yml
+  build:
+    name: Build
+    uses: ./.github/workflows/bazel.yml
     with:
-      bazel-target-prefix: '//javascript'
+      name: Build
+      cache-key: javascript-build
+      run: bazel build //javascript/node/selenium-webdriver:selenium-webdriver
 
-  node_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[js]') == true }}
-    needs: check_workflow
-    runs-on: ubuntu-latest
+  atoms:
+    name: Atom Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Atom Tests
+      browser: firefox
+      cache-key: atoms
+      run: >
+        bazel test --test_tag_filters=firefox
+        //javascript/atoms/...
+        //javascript/selenium-atoms/...
+        //javascript/webdriver/...
+
+  browser-tests:
+    name: Browser Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { "browser": "firefox", "version": "latest" }
-          - { "browser": "chrome", "version": "stable" }
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: node
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: '16.x'
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-      - name: Setup Fluxbox
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Firefox
-        uses: abhi1693/setup-browser@v0.3.4
-        with:
-          browser: firefox
-          version: ${{ matrix.version }}
-        if: |
-          matrix.browser == 'firefox'
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
-        with:
-          chrome-version: ${{ matrix.version }}
-        if: |
-          matrix.browser == 'chrome'
-      - name: Start XVFB
-        run: Xvfb :99 &
-      - name: Run JavaScript tests
-        run: bazel test --flaky_test_attempts 3 //javascript/node/selenium-webdriver:tests
-        env:
-          DISPLAY: :99
-          SELENIUM_BROWSER: ${{ matrix.browser }}
-
-  firefox_atom_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
-    needs: check_workflow
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: atoms
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'temurin'
-      - name: Setup Fluxbox
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Firefox
-        uses: abhi1693/setup-browser@v0.3.4
-        with:
-          browser: firefox
-          version: ${{ matrix.version }}
-      - name: Start XVFB
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        run: fluxbox -display :99 &
-      - name: Run atom tests on Firefox
-        run: bazel test --test_tag_filters=firefox //javascript/atoms/... //javascript/selenium-atoms/... //javascript/webdriver/...
-        env:
-          DISPLAY: :99
-          SELENIUM_BROWSER: firefox
+        browser:
+          - chrome
+          - firefox
+    with:
+      name: Browser Tests  (${{ matrix.browser }})
+      browser: ${{ matrix.browser }}
+      cache-key: node
+      run: |
+        export SELENIUM_BROWSER=${{ matrix.browser }}
+        bazel test --flaky_test_attempts 3 //javascript/node/selenium-webdriver:tests
 
   # As soon as this gets merged https://github.com/facebook/jest/pull/9351, we should upgrade Jest and
   # run bazel test javascript/grid-ui:test for these tests
-  grid_ui_unit_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run javascript]') == true }}
-    needs: check_workflow
+  grid-ui:
+    name: Grid UI Tests
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: 16
       - name: NPM install
         run: cd javascript/grid-ui && npm install
       - name: Run unit tests

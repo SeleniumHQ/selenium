@@ -362,7 +362,7 @@ class FirefoxDriverTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   public void canStartHeadless() {
-    localDriver = new FirefoxDriver(new FirefoxOptions().setHeadless(true));
+    localDriver = new FirefoxDriver(new FirefoxOptions().addArguments("-headless"));
 
     assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability("moz:headless")).isEqualTo(true);
   }

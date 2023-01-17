@@ -64,13 +64,12 @@ module Selenium
         end
 
         describe '#logs' do
-          before(:all) do
+          before do
             reset_driver!(logging_prefs: {browser: 'ALL',
                                           driver: 'ALL',
                                           performance: 'ALL'})
+            driver.navigate.to url_for('errors.html')
           end
-
-          before { driver.navigate.to url_for('errors.html') }
 
           after(:all) { reset_driver! }
 

@@ -506,7 +506,7 @@ class FirefoxOptionsTest {
   void firefoxOptionsShouldEqualEquivalentImmutableCapabilities() {
     FirefoxOptions
       options =
-      new FirefoxOptions().addArguments("hello").setPageLoadStrategy(EAGER).setHeadless(true);
+      new FirefoxOptions().addArguments("hello", "-headless").setPageLoadStrategy(EAGER);
     Capabilities caps = new ImmutableCapabilities(options);
 
     assertThat(caps).isEqualTo(options);

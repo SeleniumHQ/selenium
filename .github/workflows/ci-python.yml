@@ -1,48 +1,21 @@
-# Configuration for Python CI
-# To force the execution of this workflow, add [run python] to your commit message
-name: 'CI - Python'
+name: CI - Python
 
 on:
+  workflow_call:
   workflow_dispatch:
 
-  schedule:
-    - cron: '05 9,21 * * *'
-
-  push:
-
-  pull_request:
-
 jobs:
-  check_workflow:
-    permissions:
-      contents: none
-    uses: ./.github/workflows/should-workflow-run.yml
+  build:
+    name: Build
+    uses: ./.github/workflows/bazel.yml
     with:
-      bazel-target-prefix: '//py'
+      name: Build
+      cache-key: py-build
+      run: bazel build //py:selenium-wheel //py:selenium-sdist
 
-  tox_linting:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[py]') == true }}
-    needs: check_workflow
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.7.10
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install tox==2.4.1
-      - name: Test with tox
-        run: tox -c py/tox.ini
-        env:
-          TOXENV: linting-check
-
-  tox_docs:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
-    needs: check_workflow
+  docs:
+    name: Documentation
+    needs: build
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
@@ -60,9 +33,9 @@ jobs:
         env:
           TOXENV: docs
 
-  tox_mypy:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
-    needs: check_workflow
+  lint:
+    name: Lint
+    needs: build
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout source tree
@@ -70,7 +43,27 @@ jobs:
       - name: Set up Python 3.7
         uses: actions/setup-python@v4
         with:
-          python-version: 3.7.9
+          python-version: 3.7.10
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox==2.4.1
+      - name: Test with tox
+        run: tox -c py/tox.ini
+        env:
+          TOXENV: linting-check
+
+  mypy:
+    name: Mypy
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v3
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7.10
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -82,141 +75,37 @@ jobs:
         env:
           TOXENV: mypy
 
-  unit_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
-    needs: check_workflow
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: py-unit
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Run unit tests
-        run: bazel test //py:unit
+  unit-tests:
+    name: Unit Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Unit Tests
+      cache-key: py-unit
+      run: bazel test //py:unit
 
-  chrome_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
-    needs: [ check_workflow, unit_tests ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: py-chrome
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Fluxbox
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@latest
-      - name: Start XVFB
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        run: fluxbox -display :99 &
-      - name: Run browser tests in Chrome
-        run: bazel test --flaky_test_attempts 3 //py:test-chrome
-        env:
-          DISPLAY: :99
+  browser-tests:
+    name: Browser Tests
+    needs: unit-tests
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        browser:
+          - chrome
+          - firefox
+    with:
+      name: Integration Tests (${{ matrix.browser }})
+      browser: ${{ matrix.browser }}
+      cache-key: py-${{ matrix.browser }}
+      run: bazel test --flaky_test_attempts 3 //py:test-${{ matrix.browser }}
 
-  firefox_tests_remote:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
-    needs: [ check_workflow, unit_tests ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: py-remote
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Fluxbox
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Setup Firefox
-        uses: abhi1693/setup-browser@v0.3.4
-        with:
-          browser: firefox
-          version: latest
-      - name: Start XVFB
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        run: fluxbox -display :99 &
-      - name: Run browser tests in Firefox (Remote)
-        run: bazel test --jobs 1 //py:test-remote
-        env:
-          DISPLAY: :99
-
-  firefox_tests:
-    if: ${{ needs.check_workflow.outputs.result == 'true' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(toJson(github.event.commits), '[run python]') == true }}
-    needs: [ check_workflow, unit_tests ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout source tree
-        uses: actions/checkout@v3
-      - name: Setup Bazel
-        uses: p0deje/setup-bazel@0.1.0
-        with:
-          bazelisk-cache: true
-          disk-cache: py-remote
-          external-cache: |
-            crates: rust/Cargo.Bazel.lock
-            npm: package-lock.json
-            pypi__pip: py/requirements_lock.txt
-            rules_ruby_dist: rb/ruby_version.bzl
-          repository-cache: true
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Setup Fluxbox
-        run: sudo apt-get -y install fluxbox
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-      - name: Setup Firefox
-        uses: abhi1693/setup-browser@v0.3.4
-        with:
-          browser: firefox
-          version: latest
-      - name: Start Xvfb
-        run: Xvfb :99 &
-      - name: Start Fluxbox
-        run: fluxbox -display :99 &
-      - name: Run browser tests in Firefox
-        run: bazel test --flaky_test_attempts 3 //py:test-firefox
-        env:
-          DISPLAY: :99
+  remote-tests:
+    name: Remote Tests
+    needs: unit-tests
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Integration Tests (remote)
+      browser: firefox
+      cache-key: py-remote
+      run: bazel test --local_test_jobs 1 --flaky_test_attempts 3 //py:test-remote

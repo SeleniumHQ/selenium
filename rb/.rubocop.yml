@@ -6,7 +6,7 @@ AllCops:
   TargetRubyVersion: 2.7
   NewCops: enable
   Exclude:
-    - 'lib/selenium/devtools/**/*'
+    - !ruby/regexp /lib\/selenium\/devtools\/v\d+/
 
 Layout/LineLength:
   AllowedPatterns:

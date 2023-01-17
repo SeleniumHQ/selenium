@@ -165,7 +165,10 @@ def get_options(driver_class, config):
         if not options:
             options = getattr(webdriver, f"{driver_class}Options")()
 
-        options.headless = headless
+        if driver_class == "Chrome" or driver_class == "Edge":
+            options.add_argument("--headless=new")
+        if driver_class == "Firefox":
+            options.add_argument("-headless")
     return options
 
 

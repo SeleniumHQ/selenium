@@ -420,9 +420,16 @@ public class RemoteWebDriver implements WebDriver,
       }
     }
 
-    execute(DriverCommand.CLOSE);
-  }
+    Response response = execute(DriverCommand.CLOSE);
+    Object value = response.getValue();
+    List<String> windowHandles = (ArrayList<String>) value;
 
+    if (windowHandles.isEmpty() && this instanceof HasBiDi) {
+      // If no top-level browsing contexts are open after calling close, it indicates that the WebDriver session is closed.
+      // If the WebDriver session is closed, the BiDi session also needs to be closed.
+      ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
+    }
+  }
   @Override
   public void quit() {
     // no-op if session id is null. We're only going to make ourselves unhappy
