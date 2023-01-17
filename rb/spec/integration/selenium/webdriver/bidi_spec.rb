@@ -52,6 +52,32 @@ module Selenium
           level: BiDi::LogInspector::LOG_LEVEL[:ERROR]
         )
       end
+
+      it 'does not close BiDi session if one window is closed' do
+        status = driver.bidi.session.status
+        expect(status).not_to be_nil
+        expect(status.message).to eq 'already connected'
+
+        driver.switch_to.new_window(:window)
+        driver.switch_to.new_window(:tab)
+        driver.switch_to.new_window(:tab)
+
+        driver.close
+
+        status_after_closing = driver.bidi.session.status
+        expect(status_after_closing).not_to be_nil
+        expect(status_after_closing.message).to eq 'already connected'
+      end
+
+      it 'closes BiDi session if last window is closed' do
+        status = driver.bidi.session.status
+        expect(status).not_to be_nil
+        expect(status.message).to eq 'already connected'
+
+        driver.close
+
+        expect { driver.bidi.session.status }.to raise_error(IOError)
+      end
     end
   end
 end
