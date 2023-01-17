@@ -72,6 +72,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -125,19 +126,23 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   public RemoteWebDriver(Capabilities capabilities) {
-    this(Require.nonNull("Capabilities", capabilities), true);
+    this(getDefaultServerURL(),
+         Require.nonNull("Capabilities", capabilities), true);
   }
 
   public RemoteWebDriver(Capabilities capabilities, boolean enableTracing) {
-    this(getDefaultServerURL(),capabilities, enableTracing);
+    this(getDefaultServerURL(),
+         Require.nonNull("Capabilities", capabilities), enableTracing);
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities) {
-    this(remoteAddress, capabilities, true);
+    this(createExecutor(Require.nonNull("Server URL", remoteAddress), true),
+         Require.nonNull("Capabilities", capabilities));
   }
 
   public RemoteWebDriver(URL remoteAddress, Capabilities capabilities, boolean enableTracing) {
-    this(createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing), capabilities);
+    this(createExecutor(Require.nonNull("Server URL", remoteAddress), enableTracing),
+         Require.nonNull("Capabilities", capabilities));
   }
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
