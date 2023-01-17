@@ -148,8 +148,7 @@ class SessionCleanUpTest {
       registrationSecret,
       5);
     handler.addHandler(queue);
-
-    LocalDistributor distributor = new LocalDistributor(
+    try(LocalDistributor distributor = new LocalDistributor(
       tracer,
       bus,
       clientFactory,
@@ -160,85 +159,87 @@ class SessionCleanUpTest {
       Duration.ofSeconds(1),
       false,
       Duration.ofSeconds(5),
-      Runtime.getRuntime().availableProcessors());
-    handler.addHandler(distributor);
+      Runtime.getRuntime().availableProcessors())) {
+      handler.addHandler(distributor);
 
-    Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
-    handler.addHandler(router);
+      Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
+      handler.addHandler(router);
 
-    server = new NettyServer(
-      new BaseServerOptions(
-        new MapConfig(ImmutableMap.of())),
-      handler);
+      server = new NettyServer(
+        new BaseServerOptions(
+          new MapConfig(ImmutableMap.of())),
+        handler);
 
-    server.start();
+      server.start();
 
-    StringBuilder rawCaps = new StringBuilder();
-    try (JsonOutput out = new Json().newOutput(rawCaps)) {
-      out.setPrettyPrint(false).write(capabilities);
-    }
+      StringBuilder rawCaps = new StringBuilder();
+      try (JsonOutput out = new Json().newOutput(rawCaps)) {
+        out.setPrettyPrint(false).write(capabilities);
+      }
 
-    Config additionalConfig =
-      new TomlConfig(
-        new StringReader(
-          "[node]\n" +
-          "detect-drivers = false\n" +
-          "driver-factories = [\n" +
-          String.format("\"%s\",", LocalTestSessionFactory.class.getName()) + "\n" +
-          String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
-          "]"));
+      Config additionalConfig =
+        new TomlConfig(
+          new StringReader(
+            "[node]\n" +
+            "detect-drivers = false\n" +
+            "driver-factories = [\n" +
+            String.format("\"%s\",", LocalTestSessionFactory.class.getName()) + "\n" +
+            String.format("\"%s\"", rawCaps.toString().replace("\"", "\\\"")) + "\n" +
+            "]"));
 
-    String[] rawConfig = new String[]{
-      "[events]",
-      "publish = \"tcp://localhost:" + publish + "\"",
-      "subscribe = \"tcp://localhost:" + subscribe + "\"",
-      "",
-      "[network]",
-      "relax-checks = true",
-      "",
-      "[server]",
-      "registration-secret = \"hereford hop\""};
+      String[] rawConfig = new String[]{
+        "[events]",
+        "publish = \"tcp://localhost:" + publish + "\"",
+        "subscribe = \"tcp://localhost:" + subscribe + "\"",
+        "",
+        "[network]",
+        "relax-checks = true",
+        "",
+        "[server]",
+        "registration-secret = \"hereford hop\""};
 
-    Config nodeConfig = new MemoizedConfig(
-      new CompoundConfig(
-        additionalConfig,
-        new TomlConfig(new StringReader(String.join("\n", rawConfig))),
-        new MapConfig(
-          ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))));
+      Config nodeConfig = new MemoizedConfig(
+        new CompoundConfig(
+          additionalConfig,
+          new TomlConfig(new StringReader(String.join("\n", rawConfig))),
+          new MapConfig(
+            ImmutableMap.of("server", ImmutableMap.of("port", PortProber.findFreePort())))));
 
-    Server<?> nodeServer = new NodeServer().asServer(nodeConfig).start();
+      Server<?> nodeServer = new NodeServer().asServer(nodeConfig).start();
 
-    waitToHaveCapacity(distributor);
+      waitToHaveCapacity(distributor);
 
-    HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(asJson(
-      ImmutableMap.of(
-        "capabilities", ImmutableMap.of(
-          "alwaysMatch", capabilities))));
+      HttpRequest request = new HttpRequest(POST, "/session");
+      request.setContent(asJson(
+        ImmutableMap.of(
+          "capabilities", ImmutableMap.of(
+            "alwaysMatch", capabilities))));
 
-    HttpClient client = clientFactory.createClient(server.getUrl());
-    HttpResponse httpResponse = client.execute(request);
-    assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
+      HttpClient client = clientFactory.createClient(server.getUrl());
+      HttpResponse httpResponse = client.execute(request);
+      assertThat(httpResponse.getStatus()).isEqualTo(HTTP_OK);
 
-    Optional<Map<String, Object>> maybeResponse =
-      Optional.ofNullable(Values.get(httpResponse, Map.class));
+      Optional<Map<String, Object>> maybeResponse =
+        Optional.ofNullable(Values.get(httpResponse, Map.class));
 
-    assertThat(maybeResponse).isPresent();
-    String rawResponse = JSON.toJson(maybeResponse.get().get("sessionId"));
-    SessionId id = JSON.toType(rawResponse, SessionId.class);
+      assertThat(maybeResponse).isPresent();
+      String rawResponse = JSON.toJson(maybeResponse.get().get("sessionId"));
+      SessionId id = JSON.toType(rawResponse, SessionId.class);
 
-    Session session = sessions.get(id);
+      Session session = sessions.get(id);
 
-    assertThat(session.getCapabilities().getBrowserName()).isEqualTo(capabilities.getBrowserName());
+      assertThat(session.getCapabilities().getBrowserName()).isEqualTo(
+        capabilities.getBrowserName());
 
-    nodeServer.stop();
+      nodeServer.stop();
 
-    waitTillNodesAreRemoved(distributor);
+      waitTillNodesAreRemoved(distributor);
 
-    try {
-      waitTillSessionIsRemoved(sessions, id);
-    } catch (Exception e) {
-      fail("Session not removed");
+      try {
+        waitTillSessionIsRemoved(sessions, id);
+      } catch (Exception e) {
+        fail("Session not removed");
+      }
     }
   }
 
@@ -271,7 +272,7 @@ class SessionCleanUpTest {
       .build();
     handler.addHandler(node);
 
-    LocalDistributor distributor = new LocalDistributor(
+    try(LocalDistributor distributor = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(handler),
@@ -282,48 +283,49 @@ class SessionCleanUpTest {
       Duration.ofSeconds(1),
       false,
       Duration.ofSeconds(5),
-      Runtime.getRuntime().availableProcessors());
-    handler.addHandler(distributor);
-    distributor.add(node);
+      Runtime.getRuntime().availableProcessors())) {
+      handler.addHandler(distributor);
+      distributor.add(node);
 
-    waitToHaveCapacity(distributor);
+      waitToHaveCapacity(distributor);
 
-    Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(new SessionRequest(
-        new RequestId(UUID.randomUUID()),
-        Instant.now(),
-        ImmutableSet.of(W3C),
-        ImmutableSet.of(capabilities),
-        ImmutableMap.of(),
-        ImmutableMap.of()));
-    assertThat(result.isRight()).isTrue();
+      Either<SessionNotCreatedException, CreateSessionResponse> result =
+        distributor.newSession(new SessionRequest(
+          new RequestId(UUID.randomUUID()),
+          Instant.now(),
+          ImmutableSet.of(W3C),
+          ImmutableSet.of(capabilities),
+          ImmutableMap.of(),
+          ImmutableMap.of()));
+      assertThat(result.isRight()).isTrue();
 
-    SessionId id = result.right().getSession().getId();
-    Session session = sessions.get(id);
+      SessionId id = result.right().getSession().getId();
+      Session session = sessions.get(id);
 
-    assertThat(session.getCapabilities().getBrowserName()).isEqualTo(capabilities.getBrowserName());
+      assertThat(session.getCapabilities().getBrowserName()).isEqualTo(
+        capabilities.getBrowserName());
 
-    availability.set(DOWN);
+      availability.set(DOWN);
 
-    waitTillNodesAreRemoved(distributor);
+      waitTillNodesAreRemoved(distributor);
 
-    try {
-      waitTillSessionIsRemoved(sessions, id);
-    } catch (Exception e) {
-      fail("Session not removed");
+      try {
+        waitTillSessionIsRemoved(sessions, id);
+      } catch (Exception e) {
+        fail("Session not removed");
+      }
+
+      Either<SessionNotCreatedException, CreateSessionResponse> sessionResponse =
+        distributor.newSession(new SessionRequest(
+          new RequestId(UUID.randomUUID()),
+          Instant.now(),
+          ImmutableSet.of(W3C),
+          ImmutableSet.of(capabilities),
+          ImmutableMap.of(),
+          ImmutableMap.of()));
+      assertThat(sessionResponse.isLeft()).isTrue();
+      assertThat(distributor.getStatus().getNodes().isEmpty()).isTrue();
     }
-
-    Either<SessionNotCreatedException, CreateSessionResponse> sessionResponse =
-      distributor.newSession(new SessionRequest(
-        new RequestId(UUID.randomUUID()),
-        Instant.now(),
-        ImmutableSet.of(W3C),
-        ImmutableSet.of(capabilities),
-        ImmutableMap.of(),
-        ImmutableMap.of()));
-    assertThat(sessionResponse.isLeft()).isTrue();
-    assertThat(distributor.getStatus().getNodes().isEmpty()).isTrue();
-
   }
 
   private void waitToHaveCapacity(Distributor distributor) {
