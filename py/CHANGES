@@ -1,3 +1,11 @@
+Selenium 4.8.0
+* Add CDP files for v109 and remove v106
+* Add logging to Selenium Manager for both stdout and stderr
+* Multiple updates and improvements to types
+* Fix sdist tar package_dir (#11416)
+* Add comment with name of large JS executions (#11038)
+* Deprecate headless property for chromium and firefox options classes (#11467)
+
 Selenium 4.7.2
 * Put selenium manager bug fix from 4.7.1 in the correct place
 

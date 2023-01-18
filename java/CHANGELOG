@@ -1,16 +1,40 @@
+v4.8.0
+======
+* Supported CDP versions: 85, 107, 108, 109
+* Implement Edge and Chrome Driver Services using log level with ChromiumDriverLogLevel enum
+* Deprecate Edge Driver Service using log level with String
+* Deprecate Chrome Driver Service using log level with ChromeDriverLogLevel enum
+* Deprecate setting Chrome Driver Service logging values in Chrome Options
+* Close BiDi session on closing the last top-level browsing context
+* Add withAllowedListIps() to ChromeDriverService
+* Add comment with name of large JS executions (#11038)
+* Allow Pointer and Wheel methods to accept Point object (#11477)
+* Fix bug where options are not properly merged into capabilities (#11396)
+* JDKHttpClient: Fix null pointer bug when responseBody is null (#11450)
+* CDP: Ensure child session is created under browser session (#11475)
+* Deprecate setHeadless for Chrome and Firefox Options (#11467)
+* Grid: Remove translations of non-w3c locators (#11470)
+* JDKHttpClient: Handle RQST with no Body [POST/PUT] (#11445)
+* Fix bug with decorated webdriver not calling the listeners  (#11438)
+* BiDi: Add filter parameter to LogInspector methods
+* BiDi: Rename 'onConsoleLog' to 'onConsoleEntry'
+* CDP: Fix bug with console events returning modified args (#11435)
+* Grid: Accommodate ability to specify sub-paths (#11271)
+* Grid: fix bug with pulling image using zero content-length (#11342)
+
 v4.7.2
 ======
 * Grid: Support file downloads on the node (#11277)
 * Change chromium service names from whitelisted to allowed (#11409)
 * Avoid closing CDP connection in browser implementation since that logic now sits in RemoteWebDriver (Fixes #11401)
-* Fix bug where failing Selenium Manager method results in wrong error 
+* Fix bug where failing Selenium Manager method results in wrong error
 * Allow changing chromium driver log timestamp formatting
 * Allow ignoring chromedriver build checks using service builders
 * Add support for appendLog to msedgedriver service
 * Fix msedgedriver log level logic
 * Allow setting chromedriver log level from system properties
 * Fix chromedriver log level logic
-* Remove deprecated Firefox capabilities 
+* Remove deprecated Firefox capabilities
 * Removing a few bits more of the magic that moves JWP to W3C
 * Removing deprecated SUPPORTS_ALERTS and SUPPORTS_SQL_DATABASE caps
 * Removing deprecated OVERLAPPING_CHECK_DISABLED cap
