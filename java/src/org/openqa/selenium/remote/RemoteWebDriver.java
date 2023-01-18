@@ -72,7 +72,6 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -175,20 +174,16 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing) {
-    ClientConfig defaultConfig = ClientConfig.defaultConfig().baseUrl(remoteAddress);
-    return createExecutor(remoteAddress, enableTracing, defaultConfig);
-  }
-
-  private static CommandExecutor createExecutor(URL remoteAddress, boolean enableTracing, ClientConfig clientConfig) {
+    ClientConfig config = ClientConfig.defaultConfig().baseUrl(remoteAddress);
     if (enableTracing) {
       Tracer tracer = OpenTelemetryTracer.getInstance();
       CommandExecutor executor = new HttpCommandExecutor(
         Collections.emptyMap(),
-        clientConfig,
+        config,
         new TracedHttpClient.Factory(tracer, HttpClient.Factory.createDefault()));
       return new TracedCommandExecutor(executor, tracer);
     } else {
-      return new HttpCommandExecutor(clientConfig);
+      return new HttpCommandExecutor(config);
     }
   }
 
@@ -420,16 +415,9 @@ public class RemoteWebDriver implements WebDriver,
       }
     }
 
-    Response response = execute(DriverCommand.CLOSE);
-    Object value = response.getValue();
-    List<String> windowHandles = (ArrayList<String>) value;
-
-    if (windowHandles.isEmpty() && this instanceof HasBiDi) {
-      // If no top-level browsing contexts are open after calling close, it indicates that the WebDriver session is closed.
-      // If the WebDriver session is closed, the BiDi session also needs to be closed.
-      ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
-    }
+    execute(DriverCommand.CLOSE);
   }
+
   @Override
   public void quit() {
     // no-op if session id is null. We're only going to make ourselves unhappy

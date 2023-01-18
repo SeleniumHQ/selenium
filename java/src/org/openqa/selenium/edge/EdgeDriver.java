@@ -68,10 +68,6 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   private static class EdgeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public EdgeDriverCommandExecutor(DriverService service) throws URISyntaxException {
-      this(service, ClientConfig.defaultConfig());
-    }
-
     public EdgeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) throws URISyntaxException {
       super(service, getExtraCommands(), clientConfig);
     }

@@ -117,10 +117,6 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   }
 
   private static class SafariDriverCommandExecutor extends DriverCommandExecutor {
-    public SafariDriverCommandExecutor(DriverService service) {
-      this(service, ClientConfig.defaultConfig());
-    }
-
     public SafariDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
       super(service, getExtraCommands(), clientConfig);
     }

@@ -111,19 +111,19 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   public static final String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
   public InternetExplorerDriver() {
-    this(null, null, null);
+    this(InternetExplorerDriverService.createDefaultService(), new InternetExplorerOptions(), ClientConfig.defaultConfig());
   }
 
   public InternetExplorerDriver(InternetExplorerOptions options) {
-    this(null, options, null);
+    this(InternetExplorerDriverService.createDefaultService(), options, ClientConfig.defaultConfig());
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service) {
-    this(service, null, null);
+    this(service, new InternetExplorerOptions();, ClientConfig.defaultConfig());
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options) {
-    this(service, options, null);
+    this(service, options, ClientConfig.defaultConfig());
   }
 
   /**
@@ -158,7 +158,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   private void run(InternetExplorerDriverService service, Capabilities capabilities, ClientConfig clientConfig) {
     assertOnWindows();
 
-    setCommandExecutor(new DriverCommandExecutor(service));
+    setCommandExecutor(new DriverCommandExecutor(service, capabilities, clientConfig));
 
     startSession(capabilities);
   }
