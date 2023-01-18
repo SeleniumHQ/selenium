@@ -145,7 +145,6 @@ public class SessionSlot implements
 
     try {
       Either<WebDriverException, ActiveSession> possibleSession = factory.apply(sessionRequest);
-
       if (possibleSession.isRight()) {
         ActiveSession session = possibleSession.right();
         currentSession = session;
