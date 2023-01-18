@@ -144,15 +144,7 @@ public class SessionSlot implements
     }
 
     try {
-      Capabilities mergedCapabilities =
-        sessionRequest.getDesiredCapabilities().merge(this.getStereotype());
-      CreateSessionRequest mergedSessionRequest = new CreateSessionRequest(
-        sessionRequest.getDownstreamDialects(),
-        mergedCapabilities,
-        sessionRequest.getMetadata());
-
-      Either<WebDriverException, ActiveSession> possibleSession =
-        factory.apply(mergedSessionRequest);
+      Either<WebDriverException, ActiveSession> possibleSession = factory.apply(sessionRequest);
 
       if (possibleSession.isRight()) {
         ActiveSession session = possibleSession.right();
