@@ -1,3 +1,32 @@
+4.8.0 (Unreleased)
+=========================
+Ruby:
+  * Allow updating instance variables on service classes
+  * Deprecate extract_service_args processing in service classes
+  * Fix bug preventing sending nil to #send_keys with Remote Driver
+  * Fix bug with IE specific methods not available to IE Driver
+  * Created Chromium superclass for Chrome and Edge
+  * Deprecated platform and version setters/getters in Capabilities class
+  * Revamped driver constructor logic
+  * Fix bug preventing using Safari Technology Preview when using SafariOptions
+  * Fix bug preventing more than one driver type to access Selenium Manager
+  * Defaults to using Options instead of Capabilities
+  * Make Options classes more strict for allowed arguments and types
+  * Removed previously deprecated actions class parameters
+  * Removed Location struct
+  * Add comment with name of large JS executions (#11038)
+  * update logger with link on how to use it (#11478)
+  * Deprecate #add_option for Option classes in favor of constructor and attr_accessor
+  * Deprecate all unrecognized capabilities for Options classes
+  * Deprecate support for :capabilities for local drivers
+  * Deprecate browser class methods for Capabilities
+  * Deprecate #headless! for Chrome and Firefox
+
+BiDi:
+  * Released selenium-devtools 0.109.0 (supports CDP v85, v107, v108, v109)
+  * Add LogInspector (#11368)
+  * Add Browsing context commands (#11446)
+
 4.7.1 (2022-12-02)
 =========================
 Ruby:
