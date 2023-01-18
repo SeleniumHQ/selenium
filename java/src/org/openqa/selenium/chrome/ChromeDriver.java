@@ -31,7 +31,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverService;
 
-import java.net.URISyntaxException;
 import java.util.Map;
 
 /**

@@ -34,8 +34,6 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
