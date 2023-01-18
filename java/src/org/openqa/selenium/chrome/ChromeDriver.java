@@ -80,11 +80,11 @@ public class ChromeDriver extends ChromiumDriver {
    * @param service The service to use.
    * @param options The options required from ChromeDriver.
    */
-  public ChromeDriver(ChromeDriverService service, ChromeOptions options) throws URISyntaxException {
+  public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
     this(service, options, ClientConfig.defaultConfig());
   }
 
-  public ChromeDriver(ChromeDriverService service, ChromeOptions options, ClientConfig clientConfig) throws URISyntaxException {
+  public ChromeDriver(ChromeDriverService service, ChromeOptions options, ClientConfig clientConfig) {
     super(new ChromeDriverCommandExecutor(service, clientConfig), Require.nonNull("Driver options", options), ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
@@ -96,7 +96,7 @@ public class ChromeDriver extends ChromiumDriver {
   }
 
   private static class ChromeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public ChromeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) throws URISyntaxException {
+    public ChromeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
       super(service, getExtraCommands(), clientConfig);
     }
 

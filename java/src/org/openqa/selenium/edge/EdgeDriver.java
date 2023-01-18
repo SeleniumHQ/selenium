@@ -40,23 +40,23 @@ import java.util.Map;
  */
 public class EdgeDriver extends ChromiumDriver {
 
-  public EdgeDriver() throws URISyntaxException {
+  public EdgeDriver() {
     this(new EdgeOptions());
   }
 
-  public EdgeDriver(EdgeOptions options) throws URISyntaxException {
+  public EdgeDriver(EdgeOptions options) {
     this(new EdgeDriverService.Builder().build(), options);
   }
 
-  public EdgeDriver(EdgeDriverService service) throws URISyntaxException {
+  public EdgeDriver(EdgeDriverService service) {
     this(service, new EdgeOptions());
   }
 
-  public EdgeDriver(EdgeDriverService service, EdgeOptions options) throws URISyntaxException {
+  public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
     this(service, options, ClientConfig.defaultConfig());
   }
 
-  public EdgeDriver(EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) throws URISyntaxException {
+  public EdgeDriver(EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) {
     super(new EdgeDriverCommandExecutor(service, clientConfig), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
@@ -68,7 +68,7 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   private static class EdgeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public EdgeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) throws URISyntaxException {
+    public EdgeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
       super(service, getExtraCommands(), clientConfig);
     }
 
