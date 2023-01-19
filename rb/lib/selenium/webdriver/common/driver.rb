@@ -188,6 +188,7 @@ module Selenium
         # it indicates that the WebDriver session is closed.
         # If the WebDriver session is closed, the BiDi session also needs to be closed.
         @bidi&.close if open_window_handles.empty?
+        open_window_handles
       end
 
       #

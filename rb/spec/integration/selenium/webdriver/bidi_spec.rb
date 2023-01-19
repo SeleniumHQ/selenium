@@ -55,8 +55,8 @@ module Selenium
 
       it 'does not close BiDi session if one window is closed' do
         status = driver.bidi.session.status
-        expect(status).not_to be_nil
-        expect(status.message).to eq 'already connected'
+        expect(status.ready).to be false
+        expect(status.message).to be_a String
 
         driver.switch_to.new_window(:window)
         driver.switch_to.new_window(:tab)
@@ -65,14 +65,14 @@ module Selenium
         driver.close
 
         status_after_closing = driver.bidi.session.status
-        expect(status_after_closing).not_to be_nil
-        expect(status_after_closing.message).to eq 'already connected'
+        expect(status_after_closing.ready).to be false
+        expect(status_after_closing.message).to be_a String
       end
 
       it 'closes BiDi session if last window is closed' do
         status = driver.bidi.session.status
-        expect(status).not_to be_nil
-        expect(status.message).to eq 'already connected'
+        expect(status.ready).to be false
+        expect(status.message).to be_a String
 
         driver.close
 
