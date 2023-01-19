@@ -25,6 +25,7 @@ use crate::config::ARCH::ARM64;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::read_content_from_link;
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::logger::Logger;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
@@ -44,6 +45,7 @@ pub struct ChromeManager {
     pub driver_name: &'static str,
     pub config: ManagerConfig,
     pub http_client: Client,
+    pub log: Logger,
 }
 
 impl ChromeManager {
@@ -53,6 +55,7 @@ impl ChromeManager {
             driver_name: DRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),
+            log: Logger::default(),
         })
     }
 }
@@ -150,15 +153,15 @@ impl SeleniumManager for ChromeManager {
 
     fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
         let browser_version = self.get_browser_version();
-        let mut metadata = get_metadata();
+        let mut metadata = get_metadata(self.get_logger());
 
         match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
         {
             Some(driver_version) => {
-                log::trace!(
+                self.log.trace(format!(
                     "Driver TTL is valid. Getting {} version from metadata",
                     &self.driver_name
-                );
+                ));
                 Ok(driver_version)
             }
             _ => {
@@ -173,7 +176,10 @@ impl SeleniumManager for ChromeManager {
                     if !browser_version.is_empty() && browser_version_int <= 0 {
                         break;
                     }
-                    log::debug!("Reading {} version from {}", &self.driver_name, driver_url);
+                    self.log.debug(format!(
+                        "Reading {} version from {}",
+                        &self.driver_name, driver_url
+                    ));
                     let content = read_content_from_link(self.get_http_client(), driver_url);
                     match content {
                         Ok(version) => {
@@ -181,14 +187,14 @@ impl SeleniumManager for ChromeManager {
                             break;
                         }
                         _ => {
-                            log::warn!(
+                            self.log.warn(format!(
                                 "Error getting version of {} {}. Retrying with {} {} (attempt {}/{})",
                                 &self.driver_name,
                                 browser_version_int,
                                 &self.driver_name,
                                 browser_version_int - 1,
                                 i + 1, FALLBACK_RETRIES
-                            );
+                            ));
                             browser_version_int -= 1;
                         }
                     }
@@ -199,7 +205,7 @@ impl SeleniumManager for ChromeManager {
                         self.driver_name,
                         &driver_version,
                     ));
-                    write_metadata(&metadata);
+                    write_metadata(&metadata, self.get_logger());
                 }
                 Ok(driver_version)
             }
@@ -261,5 +267,13 @@ impl SeleniumManager for ChromeManager {
 
     fn set_config(&mut self, config: ManagerConfig) {
         self.config = config;
+    }
+
+    fn get_logger(&self) -> &Logger {
+        &self.log
+    }
+
+    fn set_logger(&mut self, log: Logger) {
+        self.log = log;
     }
 }
