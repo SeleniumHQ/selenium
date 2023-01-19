@@ -83,6 +83,7 @@ class SessionQueueGridTest {
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
   private Server<?> server;
+  private EventBus bus;
 
   private static Server<?> createServer(HttpHandler handler) {
     return new NettyServer(
@@ -95,7 +96,7 @@ class SessionQueueGridTest {
   @BeforeEach
   public void setup() throws URISyntaxException, MalformedURLException {
     Tracer tracer = DefaultTestTracer.createTracer();
-    EventBus bus = new GuavaEventBus();
+    bus = new GuavaEventBus();
     int nodePort = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + nodePort);
     CombinedHandler handler = new CombinedHandler();
@@ -237,6 +238,7 @@ class SessionQueueGridTest {
 
   @AfterEach
   public void stopServer() {
+    bus.close();
     server.stop();
   }
 

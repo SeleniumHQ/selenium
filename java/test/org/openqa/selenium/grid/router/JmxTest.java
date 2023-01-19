@@ -27,7 +27,6 @@ import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.data.DefaultSlotMatcher;
 import org.openqa.selenium.grid.data.Session;
-import org.openqa.selenium.grid.distributor.Distributor;
 import org.openqa.selenium.grid.distributor.local.LocalDistributor;
 import org.openqa.selenium.grid.distributor.selector.DefaultSlotSelector;
 import org.openqa.selenium.grid.jmx.JMXHelper;
@@ -259,7 +258,7 @@ class JmxTest {
       secret,
       5);
 
-    Distributor distributor = new LocalDistributor(
+    try (LocalDistributor distributor = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(localNode),
@@ -270,28 +269,29 @@ class JmxTest {
       Duration.ofMinutes(5),
       false,
       Duration.ofSeconds(5),
-      Runtime.getRuntime().availableProcessors());
+      Runtime.getRuntime().availableProcessors())) {
 
-    distributor.add(localNode);
+      distributor.add(localNode);
 
-    MBeanInfo info = beanServer.getMBeanInfo(name);
-    assertThat(info).isNotNull();
+      MBeanInfo info = beanServer.getMBeanInfo(name);
+      assertThat(info).isNotNull();
 
-    String nodeUpCount = (String) beanServer.getAttribute(name, "NodeUpCount");
-    LOG.info("Node up count=" + nodeUpCount);
-    assertThat(Integer.parseInt(nodeUpCount)).isEqualTo(1);
+      String nodeUpCount = (String) beanServer.getAttribute(name, "NodeUpCount");
+      LOG.info("Node up count=" + nodeUpCount);
+      assertThat(Integer.parseInt(nodeUpCount)).isEqualTo(1);
 
-    String nodeDownCount = (String) beanServer.getAttribute(name, "NodeDownCount");
-    LOG.info("Node down count=" + nodeDownCount);
-    assertThat(Integer.parseInt(nodeDownCount)).isZero();
+      String nodeDownCount = (String) beanServer.getAttribute(name, "NodeDownCount");
+      LOG.info("Node down count=" + nodeDownCount);
+      assertThat(Integer.parseInt(nodeDownCount)).isZero();
 
-    String activeSlots = (String) beanServer.getAttribute(name, "ActiveSlots");
-    LOG.info("Active slots count=" + activeSlots);
-    assertThat(Integer.parseInt(activeSlots)).isZero();
+      String activeSlots = (String) beanServer.getAttribute(name, "ActiveSlots");
+      LOG.info("Active slots count=" + activeSlots);
+      assertThat(Integer.parseInt(activeSlots)).isZero();
 
-    String idleSlots = (String) beanServer.getAttribute(name, "IdleSlots");
-    LOG.info("Idle slots count=" + idleSlots);
-    assertThat(Integer.parseInt(idleSlots)).isEqualTo(1);
+      String idleSlots = (String) beanServer.getAttribute(name, "IdleSlots");
+      LOG.info("Idle slots count=" + idleSlots);
+      assertThat(Integer.parseInt(idleSlots)).isEqualTo(1);
+    }
   }
 
 }
