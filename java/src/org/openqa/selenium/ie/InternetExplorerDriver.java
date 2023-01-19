@@ -27,6 +27,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
 
@@ -119,7 +120,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service) {
-    this(service, new InternetExplorerOptions();, ClientConfig.defaultConfig());
+    this(service, new InternetExplorerOptions(), ClientConfig.defaultConfig());
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options) {
@@ -158,7 +159,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   private void run(InternetExplorerDriverService service, Capabilities capabilities, ClientConfig clientConfig) {
     assertOnWindows();
 
-    setCommandExecutor(new DriverCommandExecutor(service, capabilities, clientConfig));
+    setCommandExecutor(new DriverCommandExecutor(service, clientConfig));
 
     startSession(capabilities);
   }
