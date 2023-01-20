@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "1.0.0-M2"
+version = "1.0.0-M3"
 edition = "2021"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"

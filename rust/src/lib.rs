@@ -23,7 +23,7 @@ use crate::iexplorer::IExplorerManager;
 use std::fs;
 
 use crate::config::{str_to_os, ManagerConfig};
-use reqwest::Client;
+use reqwest::{Client, ClientBuilder, Proxy};
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
@@ -69,6 +69,8 @@ pub trait SeleniumManager {
     fn get_browser_name(&self) -> &str;
 
     fn get_http_client(&self) -> &Client;
+
+    fn set_http_client(&mut self, http_client: Client);
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str>;
 
@@ -312,6 +314,27 @@ pub trait SeleniumManager {
         config.browser_path = browser_path;
         self.set_config(config);
     }
+
+    fn get_proxy(&self) -> &str {
+        self.get_config().proxy.as_str()
+    }
+
+    fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
+        if !proxy.is_empty() {
+            self.get_logger().debug(format!("Using proxy: {}", &proxy));
+            let http_proxy = Proxy::all(proxy.as_str())?;
+            let http_client = http_client_builder()
+                .proxy(http_proxy)
+                .build()
+                .unwrap_or_default();
+            self.set_http_client(http_client);
+        }
+
+        let mut config = ManagerConfig::clone(self.get_config());
+        config.proxy = proxy;
+        self.set_config(config);
+        Ok(())
+    }
 }
 
 // ----------------------------------------------------------
@@ -370,11 +393,7 @@ pub fn clear_cache(log: &Logger) {
 }
 
 pub fn create_default_http_client() -> Client {
-    Client::builder()
-        .danger_accept_invalid_certs(true)
-        .use_rustls_tls()
-        .build()
-        .unwrap_or_default()
+    http_client_builder().build().unwrap_or_default()
 }
 
 // ----------------------------------------------------------
@@ -387,4 +406,10 @@ fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn
         .get(index)
         .ok_or(format!("Wrong version: {}", full_version))?
         .to_string())
+}
+
+pub fn http_client_builder() -> ClientBuilder {
+    Client::builder()
+        .danger_accept_invalid_certs(true)
+        .use_rustls_tls()
 }

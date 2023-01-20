@@ -21,7 +21,7 @@ use std::process::exit;
 
 use clap::Parser;
 
-use exitcode::DATAERR;
+use exitcode::{DATAERR, UNAVAILABLE};
 
 use selenium_manager::logger::Logger;
 use selenium_manager::{
@@ -61,6 +61,10 @@ struct Cli {
     /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
     #[clap(short = 'O', long, value_parser, default_value = "LOGGER")]
     output: String,
+
+    /// HTTP proxy for network connection (e.g., https://myproxy.net:8080)
+    #[clap(short = 'p', long, value_parser)]
+    proxy: Option<String>,
 
     /// Display DEBUG messages
     #[clap(short = 'D', long)]
@@ -108,6 +112,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    match selenium_manager.set_proxy(cli.proxy.unwrap_or_default()) {
+        Ok(_) => {}
+        Err(err) => {
+            selenium_manager.get_logger().error(err.to_string());
+            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
+        }
+    }
 
     match selenium_manager.resolve_driver() {
         Ok(driver_path) => {
