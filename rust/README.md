@@ -33,6 +33,8 @@ Options:
           Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
   -p, --proxy <PROXY>
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
+  -t, --timeout <TIMEOUT>
+          Timeout for network requests (in seconds) [default: 30]
   -D, --debug
           Display DEBUG messages
   -T, --trace

@@ -17,7 +17,7 @@
 
 use assert_cmd::Command;
 
-use exitcode::UNAVAILABLE;
+use exitcode::{DATAERR, UNAVAILABLE};
 
 #[test]
 fn wrong_proxy_test() {
@@ -26,4 +26,20 @@ fn wrong_proxy_test() {
         .assert()
         .failure()
         .code(UNAVAILABLE);
+}
+
+#[test]
+fn timeout_proxy_test() {
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    cmd.args([
+        "--browser",
+        "edge",
+        "--proxy",
+        "https://localhost:45678",
+        "--timeout",
+        "1",
+    ])
+    .assert()
+    .failure()
+    .code(DATAERR);
 }

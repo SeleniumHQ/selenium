@@ -28,6 +28,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 use std::process::Command;
+use std::time::Duration;
 
 use crate::downloads::download_driver_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
@@ -46,6 +47,7 @@ pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
 
+pub const REQUEST_TIMEOUT_SEC: u64 = 30;
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
@@ -193,9 +195,20 @@ pub trait SeleniumManager {
                 }
             }
         }
-        let driver_version = self
-            .request_driver_version()
-            .unwrap_or_else(|err| err.to_string());
+        let driver_version = match self.request_driver_version() {
+            Ok(version) => {
+                if version.is_empty() {
+                    return Err(format!(
+                        "The {} version cannot be discovered",
+                        self.get_driver_name()
+                    ));
+                }
+                version
+            }
+            Err(err) => {
+                return Err(err.to_string());
+            }
+        };
         self.get_logger().debug(format!(
             "Required driver: {} {}",
             self.get_driver_name(),
@@ -320,19 +333,44 @@ pub trait SeleniumManager {
     }
 
     fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
+        let mut config = ManagerConfig::clone(self.get_config());
+        config.proxy = proxy.to_string();
+        self.set_config(config);
+
         if !proxy.is_empty() {
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
-            let http_proxy = Proxy::all(proxy.as_str())?;
-            let http_client = http_client_builder()
-                .proxy(http_proxy)
-                .build()
-                .unwrap_or_default();
-            self.set_http_client(http_client);
+            self.update_http_proxy()?;
         }
+        Ok(())
+    }
 
+    fn get_timeout(&self) -> u64 {
+        self.get_config().timeout
+    }
+
+    fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
         let mut config = ManagerConfig::clone(self.get_config());
-        config.proxy = proxy;
+        config.timeout = timeout;
         self.set_config(config);
+
+        if timeout != REQUEST_TIMEOUT_SEC {
+            self.get_logger()
+                .debug(format!("Using timeout of {} seconds", timeout));
+            self.update_http_proxy()?;
+        }
+        Ok(())
+    }
+
+    fn update_http_proxy(&mut self) -> Result<(), Box<dyn Error>> {
+        let proxy = self.get_proxy();
+        let timeout = self.get_timeout();
+
+        let mut builder = http_client_builder().timeout(Duration::from_secs(timeout));
+        if !proxy.is_empty() {
+            builder = builder.proxy(Proxy::all(proxy)?);
+        }
+        let http_client = builder.build().unwrap_or_default();
+        self.set_http_client(http_client);
         Ok(())
     }
 }
@@ -393,7 +431,10 @@ pub fn clear_cache(log: &Logger) {
 }
 
 pub fn create_default_http_client() -> Client {
-    http_client_builder().build().unwrap_or_default()
+    http_client_builder()
+        .timeout(Duration::from_secs(REQUEST_TIMEOUT_SEC))
+        .build()
+        .unwrap_or_default()
 }
 
 // ----------------------------------------------------------

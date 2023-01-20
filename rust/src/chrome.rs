@@ -184,8 +184,7 @@ impl SeleniumManager for ChromeManager {
                         "Reading {} version from {}",
                         &self.driver_name, driver_url
                     ));
-                    let content = read_content_from_link(self.get_http_client(), driver_url);
-                    match content {
+                    match read_content_from_link(self.get_http_client(), driver_url) {
                         Ok(version) => {
                             driver_version = version;
                             break;

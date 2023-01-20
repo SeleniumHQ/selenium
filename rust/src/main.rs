@@ -24,6 +24,7 @@ use clap::Parser;
 use exitcode::{DATAERR, UNAVAILABLE};
 
 use selenium_manager::logger::Logger;
+use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
@@ -65,6 +66,10 @@ struct Cli {
     /// HTTP proxy for network connection (e.g., https://myproxy.net:8080)
     #[clap(short = 'p', long, value_parser)]
     proxy: Option<String>,
+
+    /// Timeout for network requests (in seconds)
+    #[clap(short = 't', long, value_parser, default_value_t = REQUEST_TIMEOUT_SEC)]
+    timeout: u64,
 
     /// Display DEBUG messages
     #[clap(short = 'D', long)]
@@ -112,6 +117,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    match selenium_manager.set_timeout(cli.timeout) {
+        Ok(_) => {}
+        Err(err) => {
+            selenium_manager.get_logger().error(err.to_string());
+            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
+        }
+    }
     match selenium_manager.set_proxy(cli.proxy.unwrap_or_default()) {
         Ok(_) => {}
         Err(err) => {
