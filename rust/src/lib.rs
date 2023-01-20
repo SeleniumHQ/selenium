@@ -47,7 +47,7 @@ pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
 
-pub const REQUEST_TIMEOUT_SEC: u64 = 30;
+pub const REQUEST_TIMEOUT_SEC: u64 = 60;
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
