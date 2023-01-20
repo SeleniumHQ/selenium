@@ -27,24 +27,22 @@ module Selenium
     # @api private
     #
     class SeleniumManager
-      BIN_PATH = "../../../../../bin"
+      BIN_PATH = '../../../../../bin'
 
       class << self
         # @param [String] driver_name which driver to use.
         # @return [String] the path to the correct driver.
         def driver_path(driver_name)
-          @driver_path ||= begin
-            unless %w[chromedriver geckodriver msedgedriver IEDriverServer].include?(driver_name)
-              msg = "Unable to locate driver with name: #{driver_name}"
-              raise Error::WebDriverError, msg
-            end
-
-            location = run("#{binary} --driver #{driver_name}")
-            WebDriver.logger.debug("Driver found at #{location}")
-            Platform.assert_executable location
-
-            location
+          unless %w[chromedriver geckodriver msedgedriver IEDriverServer].include?(driver_name)
+            msg = "Unable to locate driver with name: #{driver_name}"
+            raise Error::WebDriverError, msg
           end
+
+          location = run("#{binary} --driver #{driver_name}")
+          WebDriver.logger.debug("Driver found at #{location}")
+          Platform.assert_executable location
+
+          location
         end
 
         private
@@ -62,7 +60,7 @@ module Selenium
                     end
             location = File.expand_path(path, __FILE__)
             unless location.is_a?(String) && File.exist?(location) && File.executable?(location)
-              raise Error::WebDriverError, "Unable to obtain Selenium Manager"
+              raise Error::WebDriverError, 'Unable to obtain Selenium Manager'
             end
 
             WebDriver.logger.debug("Selenium Manager found at #{location}")

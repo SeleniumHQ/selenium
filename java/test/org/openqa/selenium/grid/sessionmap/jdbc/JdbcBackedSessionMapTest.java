@@ -60,6 +60,7 @@ class JdbcBackedSessionMapTest {
   @AfterAll
   public static void killDBConnection() throws SQLException {
     connection.close();
+    bus.close();
   }
 
   @Test

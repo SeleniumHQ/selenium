@@ -58,7 +58,6 @@ class ListImages {
 
     // https://docs.docker.com/engine/api/v1.41/#operation/ImageList
     HttpRequest req = new HttpRequest(GET, String.format("/v%s/images/json", DOCKER_API_VERSION))
-      .addHeader("Content-Length", "0")
       .addHeader("Content-Type", JSON_UTF_8)
       .addQueryParameter("filters", JSON.toJson(filters));
 

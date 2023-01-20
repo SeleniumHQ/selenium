@@ -22,7 +22,6 @@ from .command import Command
 
 
 class ShadowRoot:
-
     # TODO: We should look and see  how we can create a search context like Java/.NET
 
     def __init__(self, session, id_) -> None:

@@ -38,7 +38,6 @@ class IsContainerPresent {
 
     HttpResponse res = client.execute(
       new HttpRequest(GET, String.format("/v%s/containers/%s/json", DOCKER_API_VERSION, id))
-        .addHeader("Content-Length", "0")
         .addHeader("Content-Type", "text/plain"));
 
     return res.isSuccessful();

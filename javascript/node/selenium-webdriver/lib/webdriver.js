@@ -40,6 +40,7 @@ const cdpTargets = ['page', 'browser']
 const { Credential } = require('./virtual_authenticator')
 const webElement = require('./webelement')
 const { isObject } = require('./util')
+const BIDI = require('../bidi')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1225,7 +1226,7 @@ class WebDriver {
     this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket(this._wsUrl)
+        this._wsConnection = new WebSocket(this._wsUrl.replace('localhost', '127.0.0.1'))
         this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
       } catch (err) {
         reject(err)
@@ -1269,6 +1270,16 @@ class WebDriver {
 
   async getCdpTargets() {
     this._cdpConnection.execute('Target.getTargets')
+  }
+
+  /**
+   * Initiates bidi connection using 'webSocketUrl'
+   * @returns {BIDI}
+   */
+  async getBidi() {
+    const caps = await this.getCapabilities()
+    let WebSocketUrl = caps['map_'].get('webSocketUrl')
+    return new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
   }
 
   /**
@@ -2142,6 +2153,37 @@ class Window {
       new command.Command(command.Name.FULLSCREEN_WINDOW)
     )
   }
+
+  /**
+   * Gets the width and height of the current window
+   * @param windowHandle
+   * @returns {Promise<{width: *, height: *}>}
+   */
+  async getSize(windowHandle = 'current') {
+    if (windowHandle !== 'current') {
+      console.warn(`Only 'current' window is supported for W3C compatible browsers.`);
+    }
+
+    const rect = await this.getRect();
+    return {height: rect.height, width: rect.width};
+  }
+
+  /**
+   * Sets the width and height of the current window. (window.resizeTo)
+   * @param x
+   * @param y
+   * @param width
+   * @param height
+   * @param windowHandle
+   * @returns {Promise<void>}
+   */
+  async setSize({x = 0, y = 0, width = 0, height = 0}, windowHandle = 'current') {
+    if (windowHandle !== 'current') {
+      console.warn(`Only 'current' window is supported for W3C compatible browsers.`);
+    }
+
+    await this.setRect({x, y, width, height});
+  }
 }
 
 /**
@@ -2863,7 +2905,7 @@ class WebElement {
    */
   submit() {
     const script =
-      'var form = arguments[0];\n' +
+      '/* submitForm */var form = arguments[0];\n' +
       'while (form.nodeName != "FORM" && form.parentNode) {\n' +
       '  form = form.parentNode;\n' +
       '}\n' +

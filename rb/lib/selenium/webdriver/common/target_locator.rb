@@ -51,9 +51,8 @@ module Selenium
       #
 
       def new_window(type = :window)
-        unless %i[window tab].include?(type)
-          raise ArgumentError, "Valid types are :tab and :window, received: #{type.inspect}"
-        end
+        raise ArgumentError, "Valid types are :tab and :window, received: #{type.inspect}" unless %i[window
+                                                                                                     tab].include?(type)
 
         handle = @bridge.new_window(type)['handle']
 

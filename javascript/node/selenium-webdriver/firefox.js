@@ -299,6 +299,10 @@ class Options extends Capabilities {
   }
 
   /**
+   * @deprecated Use {@link Options#addArguments} instead.
+   * @example
+   * options.addArguments('-headless');
+   * @example
    * Configures the geckodriver to start Firefox in headless mode.
    *
    * @return {!Options} A self reference.
@@ -423,6 +427,14 @@ class Options extends Capabilities {
    */
   enableDebugger() {
     return this.set('moz:debuggerAddress', true)
+  }
+
+  /**
+   * Enable bidi connection
+   * @returns {!Capabilities}
+   */
+  enableBidi() {
+    return this.set('webSocketUrl', true)
   }
 }
 

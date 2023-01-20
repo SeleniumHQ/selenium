@@ -17,32 +17,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/chromium/driver'
+
 module Selenium
   module WebDriver
     module Chrome
-
       #
       # Driver implementation for Chrome.
       # @api private
       #
 
-      class Driver < WebDriver::Driver
-        EXTENSIONS = [DriverExtensions::HasCDP,
-                      DriverExtensions::HasBiDi,
-                      DriverExtensions::HasCasting,
-                      DriverExtensions::HasNetworkConditions,
-                      DriverExtensions::HasNetworkInterception,
-                      DriverExtensions::HasWebStorage,
-                      DriverExtensions::HasLaunching,
-                      DriverExtensions::HasLocation,
-                      DriverExtensions::HasPermissions,
-                      DriverExtensions::DownloadsFiles,
-                      DriverExtensions::HasDevTools,
-                      DriverExtensions::HasAuthentication,
-                      DriverExtensions::HasLogs,
-                      DriverExtensions::HasLogEvents,
-                      DriverExtensions::HasPinnedScripts,
-                      DriverExtensions::PrintsPage].freeze
+      class Driver < Chromium::Driver
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+
+          caps = process_options(options, capabilities)
+          url = service_url(service || Service.chrome)
+          super(caps: caps, url: url, **opts)
+        end
 
         def browser
           :chrome
@@ -50,21 +42,19 @@ module Selenium
 
         private
 
-        def devtools_url
-          uri = URI(devtools_address)
-          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
-
-          JSON.parse(response)['webSocketDebuggerUrl']
-        end
-
-        def devtools_version
-          Integer(capabilities.browser_version.split('.').first)
-        end
-
         def devtools_address
           "http://#{capabilities['goog:chromeOptions']['debuggerAddress']}"
         end
 
+        def process_options(options, capabilities)
+          if options && !options.is_a?(Options)
+            raise ArgumentError, ":options must be an instance of #{Options}"
+          elsif options.nil? && capabilities.nil?
+            options = Options.new
+          end
+
+          super(options, capabilities)
+        end
       end # Driver
     end # Chrome
   end # WebDriver

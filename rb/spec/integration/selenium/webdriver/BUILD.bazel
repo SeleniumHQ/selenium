@@ -1,0 +1,111 @@
+load("@rules_ruby//ruby:defs.bzl", "rb_library", "rb_test")
+load("//rb/spec/integration:configuration.bzl", "ENV", "TAGS")
+
+package(default_visibility = ["//rb:__subpackages__"])
+
+rb_library(
+    name = "spec_helper",
+    testonly = True,
+    srcs = glob([
+        "spec_helper.rb",
+        "spec_support.rb",
+        "spec_support/**/*",
+    ]),
+    data = [
+        "//rb:manager-macos",
+        "//rb:manager-windows",
+        "//rb:manager-linux",
+    ] + select({
+        "//rb/spec/integration:remote": ["//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar"],
+        "//conditions:default": [],
+    }),
+    deps = ["@bundle"],
+)
+
+[
+    rb_test(
+        name = file[:-8],
+        srcs = [file],
+        args = ["rb/spec/"],
+        env = ENV,
+        main = "@bundle//:bin/rspec",
+        tags = TAGS,
+        deps = [
+            ":spec_helper",
+            "//rb/lib/selenium/webdriver:common",
+        ],
+    )
+    for file in glob(
+        ["*_spec.rb"],
+        exclude = [
+            "bidi_spec.rb",
+            "driver_spec.rb",
+            "devtools_spec.rb",
+            "element_spec.rb",
+        ],
+    )
+]
+
+rb_test(
+    name = "bidi",
+    srcs = ["bidi_spec.rb"],
+    args = ["rb/spec/"],
+    env = ENV,
+    main = "@bundle//:bin/rspec",
+    tags = TAGS,
+    deps = [
+        ":spec_helper",
+        "//rb/lib/selenium/devtools",
+        "//rb/lib/selenium/webdriver:bidi",
+    ],
+)
+
+rb_test(
+    name = "devtools",
+    srcs = ["devtools_spec.rb"],
+    args = ["rb/spec/"],
+    env = ENV,
+    main = "@bundle//:bin/rspec",
+    tags = TAGS,
+    deps = [
+        ":spec_helper",
+        "//rb/lib/selenium/devtools",
+        "//rb/lib/selenium/webdriver:bidi",
+    ],
+)
+
+rb_test(
+    name = "driver",
+    srcs = ["driver_spec.rb"],
+    args = ["rb/spec/"],
+    env = ENV,
+    main = "@bundle//:bin/rspec",
+    tags = TAGS,
+    deps = [
+        ":spec_helper",
+        "//rb/lib/selenium/webdriver:chrome",
+        "//rb/lib/selenium/webdriver:edge",
+        "//rb/lib/selenium/webdriver:firefox",
+        "//rb/lib/selenium/webdriver:ie",
+        "//rb/lib/selenium/webdriver:remote",
+        "//rb/lib/selenium/webdriver:safari",
+    ],
+)
+
+rb_test(
+    name = "element",
+    srcs = ["element_spec.rb"],
+    args = ["rb/spec/"],
+    env = ENV,
+    main = "@bundle//:bin/rspec",
+    tags = TAGS,
+    deps = [
+        ":spec_helper",
+        "//rb/lib/selenium/webdriver:chrome",
+        "//rb/lib/selenium/webdriver:edge",
+        "//rb/lib/selenium/webdriver:firefox",
+        "//rb/lib/selenium/webdriver:ie",
+        "//rb/lib/selenium/webdriver:remote",
+        "//rb/lib/selenium/webdriver:safari",
+    ],
+)

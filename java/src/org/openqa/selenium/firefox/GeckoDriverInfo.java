@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.firefox.FirefoxDriver.Capability.MARIONETTE;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
@@ -47,10 +46,6 @@ public class GeckoDriverInfo implements WebDriverInfo {
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    if (capabilities.is(MARIONETTE)) {
-      return false;
-    }
-
     if (FIREFOX.is(capabilities)) {
       return true;
     }
@@ -90,10 +85,6 @@ public class GeckoDriverInfo implements WebDriverInfo {
   public Optional<WebDriver> createDriver(Capabilities capabilities)
       throws SessionNotCreatedException {
     if (!isAvailable()) {
-      return Optional.empty();
-    }
-
-    if (capabilities.is(MARIONETTE)) {
       return Optional.empty();
     }
 

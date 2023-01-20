@@ -22,21 +22,26 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Logger do
-      subject(:logger) { Logger.new('Selenium') }
+      subject(:logger) { described_class.new('Selenium', ignored: [:logger_info]) }
 
       around do |example|
         debug = $DEBUG
         $DEBUG = false
         example.call
         $DEBUG = debug
-        WebDriver.instance_variable_set(:@logger, nil) # reset cache
       end
 
       describe '#new' do
         it 'allows creating a logger with a different progname' do
-          other_logger = Logger.new('NotSelenium')
+          other_logger = described_class.new('NotSelenium')
           msg = /WARN NotSelenium message/
           expect { other_logger.warn('message') }.to output(msg).to_stdout_from_any_process
+        end
+
+        it 'does not log info from constructor' do
+          expect {
+            described_class.new('Selenium')
+          }.not_to output(/.+/).to_stdout_from_any_process
         end
       end
 
@@ -80,8 +85,14 @@ module Selenium
       end
 
       describe '#warn' do
+        it 'logs info on first warning but not second' do
+          logger = described_class.new('Selenium')
+          expect { logger.warn('first') }.to output(/:logger_info/).to_stdout_from_any_process
+          expect { logger.warn('second') }.not_to output(/:logger_info/).to_stdout_from_any_process
+        end
+
         it 'logs with String' do
-          expect { logger.warn "String Value" }.to output(/WARN Selenium String Value/).to_stdout_from_any_process
+          expect { logger.warn 'String Value' }.to output(/WARN Selenium String Value/).to_stdout_from_any_process
         end
 
         it 'logs single id when set' do

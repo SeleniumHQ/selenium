@@ -133,7 +133,7 @@ class ChromiumOptions(ArgOptions):
           value: The option value.
         """
         if name.lower() == "w3c" and (value == "false" or value is False):
-            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."))
+            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."), stacklevel=2)
         self._experimental_options[name] = value
 
     @property
@@ -141,15 +141,28 @@ class ChromiumOptions(ArgOptions):
         """
         :Returns: True if the headless argument is set, else False
         """
+        warnings.warn(
+            "headless property is deprecated, instead check for '--headless' in arguments",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return "--headless" in self._arguments
 
     @headless.setter
     def headless(self, value: bool) -> None:
-        """
-        Sets the headless argument
+        """Sets the headless argument Old headless uses a non-production
+        browser and is set with `--headless`
+
+        Native headless from v86 - v108 is set with `--headless=chrome`
+        Native headless from v109+ is set with `--headless=new`
         :Args:
           value: boolean value indicating to set the headless option
         """
+        warnings.warn(
+            "headless property is deprecated, instead use add_argument('--headless') or add_argument('--headless=new')",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         args = {"--headless"}
         if value is True:
             self._arguments.extend(args)

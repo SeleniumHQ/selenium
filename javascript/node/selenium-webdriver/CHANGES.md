@@ -1,3 +1,33 @@
+## v4.8.0
+
+#### :rocket: New Feature
+
+* Add initial BiDi Support (#11395)
+* Add window wrappers getSize and setSize
+* Add BiDi browser context commands (#11473)
+* Add BiDi methods to listen to js logs and any type of logs
+* Add BiDi filtering capability to LogInspector (#11495)
+* Add comment with name of large JS executions (#11038)
+
+#### :nail_care: Polish
+
+* Add CDP support for v109 and remove v106
+* Deprecate setHeadless() in Chrome and Firefox (#11467)
+
+## v4.7.1
+
+#### :nail_care: Polish
+
+* feat/deprecation message for standalone3x (#11422)
+
+#### :bug: Bug Fix
+
+* feat/fix spawn format for SeleniumServer, issue 11405 (#11412)
+
+#### Committers: 1
+
+- Potapov Dmitriy ([@potapovDim](https://github.com/potapovDim))
+
 ## v4.7.0
 
 #### :rocket: New Feature

@@ -38,7 +38,6 @@ DEFAULT_SERVICE_LOG_PATH = "geckodriver.log"
 
 
 class WebDriver(RemoteWebDriver):
-
     CONTEXT_CHROME = "chrome"
     CONTEXT_CONTENT = "content"
 

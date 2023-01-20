@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     class DevTools
       class Request
-
         attr_accessor :url, :method, :headers, :post_data
         attr_reader :id
 
@@ -60,7 +59,6 @@ module Selenium
         def inspect
           %(#<#{self.class.name} @id="#{id}" @method="#{method}" @url="#{url}")
         end
-
       end # Request
     end # DevTools
   end # WebDriver

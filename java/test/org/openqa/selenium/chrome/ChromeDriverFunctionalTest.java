@@ -95,26 +95,6 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
     assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
   }
 
-  @Test
-  @NoDriverBeforeTest
-  public void canSetPermissionHeadless() {
-    ChromeOptions options = new ChromeOptions();
-    options.setHeadless(true);
-
-    localDriver = new WebDriverBuilder().get(options);
-    HasPermissions permissions = (HasPermissions) localDriver;
-
-    localDriver.get(pages.clicksPage);
-    assertThat(checkPermission(localDriver, CLIPBOARD_READ)).isEqualTo("prompt");
-    assertThat(checkPermission(localDriver, CLIPBOARD_WRITE)).isEqualTo("prompt");
-
-    permissions.setPermission(CLIPBOARD_READ, "granted");
-    permissions.setPermission(CLIPBOARD_WRITE, "granted");
-
-    assertThat(checkPermission(localDriver, CLIPBOARD_READ)).isEqualTo("granted");
-    assertThat(checkPermission(localDriver, CLIPBOARD_WRITE)).isEqualTo("granted");
-  }
-
   public String checkPermission(WebDriver driver, String permission){
     @SuppressWarnings("unchecked")
     Map<String, Object> result = (Map<String, Object>) ((JavascriptExecutor) driver).executeAsyncScript(

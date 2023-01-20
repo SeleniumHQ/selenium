@@ -29,7 +29,7 @@ module Selenium
         attr_accessor :use_technology_preview
 
         def technology_preview
-          "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
+          '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
         end
 
         def technology_preview!

@@ -25,24 +25,24 @@
 module Selenium
   module WebDriver
     class VirtualAuthenticatorOptions
-
-      PROTOCOL = {ctap2: "ctap2", u2f: "ctap1/u2f"}.freeze
-      TRANSPORT = {ble: "ble", usb: "usb", nfc: "nfc", internal: "internal"}.freeze
+      PROTOCOL = {ctap2: 'ctap2', u2f: 'ctap1/u2f'}.freeze
+      TRANSPORT = {ble: 'ble', usb: 'usb', nfc: 'nfc', internal: 'internal'}.freeze
 
       attr_accessor :protocol, :transport, :resident_key, :user_verification, :user_consenting, :user_verified
-      alias_method :resident_key?, :resident_key
-      alias_method :user_verification?, :user_verification
-      alias_method :user_consenting?, :user_consenting
-      alias_method :user_verified?, :user_verified
+      alias resident_key? resident_key
+      alias user_verification? user_verification
+      alias user_consenting? user_consenting
+      alias user_verified? user_verified
 
-      def initialize(protocol: :ctap2, transport: :usb, resident_key: false,
-                     user_verification: false, user_consenting: true, user_verified: false)
-        @protocol = protocol
-        @transport = transport
-        @resident_key = resident_key
-        @user_verification = user_verification
-        @user_consenting = user_consenting
-        @user_verified = user_verified
+      def initialize(**opts)
+        @protocol = opts.delete(:protocol) { :ctap2 }
+        @transport = opts.delete(:transport) { :usb }
+        @resident_key = opts.delete(:resident_key) { false }
+        @user_verification = opts.delete(:user_verification) { false }
+        @user_consenting = opts.delete(:user_consenting) { true }
+        @user_verified = opts.delete(:user_verified) { false }
+
+        raise ArgumentError, "Invalid arguments: #{opts.keys}" unless opts.empty?
       end
 
       #

@@ -81,7 +81,6 @@ module Selenium
       def error_message(error)
         [error['code'], error['message'], error['data']].join(': ')
       end
-
     end # DevTools
   end # WebDriver
 end # Selenium

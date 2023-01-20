@@ -288,19 +288,19 @@ module Selenium
           move_by = properties(moves[1])
           up = properties(driver.find_element(class: 'pointerup'))
 
-          expect(move_to).to include("button" => "-1",
-                                     "pageX" => (x_val + 5).to_s,
-                                     "pageY" => (y_val + 5).floor.to_s)
-          expect(down).to include("button" => "0")
-          expect(move_by).to include("button" => "-1",
-                                     "pageX" => (x_val + 5 + 2).to_s,
-                                     "pageY" => (y_val + 5 + 2).floor.to_s,
-                                     "tiltX" => "-40",
-                                     "tiltY" => "-10",
-                                     "twist" => "177")
-          expect(up).to include("button" => "0",
-                                "pageX" => (x_val + 5 + 2).to_s,
-                                "pageY" => (y_val + 5 + 2).floor.to_s)
+          expect(move_to).to include('button' => '-1',
+                                     'pageX' => (x_val + 5).to_s,
+                                     'pageY' => (y_val + 5).floor.to_s)
+          expect(down).to include('button' => '0')
+          expect(move_by).to include('button' => '-1',
+                                     'pageX' => (x_val + 5 + 2).to_s,
+                                     'pageY' => (y_val + 5 + 2).floor.to_s,
+                                     'tiltX' => '-40',
+                                     'tiltY' => '-10',
+                                     'twist' => '177')
+          expect(up).to include('button' => '0',
+                                'pageX' => (x_val + 5 + 2).to_s,
+                                'pageY' => (y_val + 5 + 2).floor.to_s)
         end
       end
 
@@ -310,17 +310,18 @@ module Selenium
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           iframe = driver.find_element(tag_name: 'iframe')
 
-          expect(in_viewport?(iframe)).to eq false
+          expect(in_viewport?(iframe)).to be false
 
           driver.action.scroll_to(iframe).perform
 
-          expect(in_viewport?(iframe)).to eq true
+          expect(in_viewport?(iframe)).to be true
         end
       end
 
       describe '#scroll_by', only: {browser: %i[chrome edge firefox]} do
         it 'scrolls by given amount', except: {browser: :firefox,
                                                platform: :macosx,
+                                               headless: false,
                                                reason: 'scrolls insufficient number of pixels'} do
           driver.navigate.to url_for('scrolling_tests/frame_with_nested_scrolling_frame_out_of_view.html')
           footer = driver.find_element(tag_name: 'footer')
@@ -329,7 +330,7 @@ module Selenium
           driver.action.scroll_by(0, delta_y).perform
           sleep 0.5
 
-          expect(in_viewport?(footer)).to eq true
+          expect(in_viewport?(footer)).to be true
         end
       end
 
@@ -345,7 +346,7 @@ module Selenium
           driver.switch_to.frame(iframe)
           sleep 0.5
           checkbox = driver.find_element(name: 'scroll_checkbox')
-          expect(in_viewport?(checkbox)).to eq true
+          expect(in_viewport?(checkbox)).to be true
         end
 
         it 'scrolls from element by given amount with offset',
@@ -360,7 +361,7 @@ module Selenium
           iframe = driver.find_element(tag_name: 'iframe')
           driver.switch_to.frame(iframe)
           checkbox = driver.find_element(name: 'scroll_checkbox')
-          expect(in_viewport?(checkbox)).to eq true
+          expect(in_viewport?(checkbox)).to be true
         end
 
         it 'raises MoveTargetOutOfBoundsError when origin offset from element is out of viewport' do
@@ -383,7 +384,7 @@ module Selenium
           driver.switch_to.frame(iframe)
           checkbox = driver.find_element(name: 'scroll_checkbox')
           sleep 0.5
-          expect(in_viewport?(checkbox)).to eq true
+          expect(in_viewport?(checkbox)).to be true
         end
 
         it 'raises MoveTargetOutOfBoundsError when origin offset is out of viewport' do

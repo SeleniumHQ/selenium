@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     class DevTools
       class MutationEvent
-
         attr_accessor :element, :attribute_name, :current_value, :old_value
 
         def initialize(element:, attribute_name:, current_value:, old_value:)
@@ -30,7 +29,6 @@ module Selenium
           @current_value = current_value
           @old_value = old_value
         end
-
       end # MutationEvent
     end # DevTools
   end # WebDriver

@@ -27,7 +27,6 @@ from selenium.webdriver.common import utils
 
 
 class FirefoxBinary:
-
     NO_FOCUS_LIBRARY_NAME = "x_ignore_nofocus.so"
 
     def __init__(self, firefox_path=None, log_file=None):
@@ -205,7 +204,6 @@ class FirefoxBinary:
         self._firefox_env["LD_PRELOAD"] = self.NO_FOCUS_LIBRARY_NAME
 
     def _extract_and_check(self, profile, x86, amd64):
-
         paths = [x86, amd64]
         built_path = ""
         for path in paths:

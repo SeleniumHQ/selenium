@@ -21,6 +21,8 @@ module Selenium
   module WebDriver
     class BiDi
       autoload :Session, 'selenium/webdriver/bidi/session'
+      autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
+      autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
 
       def initialize(url:)
         @ws = WebSocketConnection.new(url: url)
@@ -49,7 +51,6 @@ module Selenium
       def error_message(message)
         "#{message['error']}: #{message['message']}\n#{message['stacktrace']}"
       end
-
     end # BiDi
   end # WebDriver
 end # Selenium

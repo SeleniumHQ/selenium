@@ -6,6 +6,7 @@ load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("//common:defs.bzl", "copy_file")
 load("//py:defs.bzl", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
+load("//py/private:import.bzl", "py_import")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
 compile_pip_requirements(
@@ -19,9 +20,9 @@ SE_VERSION = "4.7.2"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v106",
     "v107",
     "v108",
+    "v109",
 ]
 
 TEST_DEPS = [
@@ -164,6 +165,7 @@ pkg_files(
         "README.rst",
         "setup.py",
         ":selenium-pkg",
+        ":selenium-pkginfo",
     ],
     strip_prefix = strip_prefix.from_pkg(),
 )
@@ -173,7 +175,20 @@ pkg_tar(
     srcs = [":selenium-sdist-pkg"],
     extension = "tar.gz",
     mode = "0644",
+    package_dir = "selenium-%s" % SE_VERSION,
     package_file_name = "selenium-%s.tar.gz" % SE_VERSION,
+)
+
+genrule(
+    name = "selenium-pkginfo",
+    srcs = [":selenium-wheel-lib"],
+    outs = ["PKG-INFO"],
+    cmd = "cp $(location :selenium-wheel-lib)/selenium-%s.dist-info/METADATA $@" % SE_VERSION,
+)
+
+py_import(
+    name = "selenium-wheel-lib",
+    wheel = ":selenium-wheel",
 )
 
 py_wheel(
@@ -197,7 +212,7 @@ py_wheel(
     distribution = "selenium",
     homepage = "https://www.selenium.dev",
     license = "Apache 2.0",
-    python_requires = "~=3.7",
+    python_requires = ">=3.7",
     python_tag = "py3",
     requires = [
         "urllib3[socks]~=1.26",

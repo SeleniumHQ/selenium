@@ -76,7 +76,7 @@ module Selenium
         end
 
         it 'raises a NotImplementedError if not a subclass' do
-          expect { Interaction.new(NoneInput.new) }.to raise_error(NotImplementedError)
+          expect { described_class.new(NoneInput.new) }.to raise_error(NotImplementedError)
         end
       end
     end # Interactions

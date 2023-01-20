@@ -310,6 +310,15 @@ class Options extends Capabilities {
   }
 
   /**
+   * @deprecated Use {@link Options#addArguments} instead.
+   * @example
+   * options.addArguments('--headless=chrome'); (or)
+   * options.addArguments('--headless');
+   * @example
+   *
+   * Recommended to use '--headless=chrome' as argument for browsers v94-108.
+   * Recommended to use '--headless=new' as argument for browsers v109+.
+   *
    * Configures the driver to start the browser in headless mode.
    *
    * > __NOTE:__ Resizing the browser window in headless mode is only supported
@@ -599,6 +608,14 @@ class Options extends Capabilities {
       this.options_.windowTypes = windowTypes
     }
     return this
+  }
+
+  /**
+   * Enable bidi connection
+   * @returns {!Capabilities}
+   */
+  enableBidi() {
+    return this.set('webSocketUrl', true)
   }
 }
 

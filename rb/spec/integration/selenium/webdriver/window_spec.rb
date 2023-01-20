@@ -113,7 +113,7 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can make window full screen' do
+      it 'can make window full screen', except: {browser: %i[chrome edge], headless: true} do
         window.size = old_size = Dimension.new(700, 700)
 
         window.full_screen
@@ -124,7 +124,7 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can minimize the window' do
+      it 'can minimize the window', except: {browser: %i[chrome edge], headless: true} do
         window.minimize
         expect(driver.execute_script('return document.hidden;')).to be true
       end

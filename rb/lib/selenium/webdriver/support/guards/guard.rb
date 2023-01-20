@@ -21,14 +21,12 @@ module Selenium
   module WebDriver
     module Support
       class Guards
-
         #
         # Guard derived from RSpec example metadata.
         # @api private
         #
 
         class Guard
-
           attr_reader :guarded, :type, :messages, :reason
 
           def initialize(guarded, type, guards = nil)

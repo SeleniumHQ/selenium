@@ -39,7 +39,6 @@ class StartContainer {
     throwIfNecessary(
       client.execute(
         new HttpRequest(POST, String.format("/v%s/containers/%s/start", DOCKER_API_VERSION, id))
-          .addHeader("Content-Length", "0")
           .addHeader("Content-Type", "text/plain")),
       "Unable to start container: %s",
       id);

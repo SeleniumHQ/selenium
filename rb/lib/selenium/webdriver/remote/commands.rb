@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Remote
-
       #
       # https://w3c.github.io/webdriver/#endpoints
       # @api private
@@ -165,7 +164,6 @@ module Selenium
           set_user_verified: [:post, 'session/:session_id/webauthn/authenticator/:authenticatorId/uv']
 
         }.freeze
-
       end # Bridge
     end # Remote
   end # WebDriver

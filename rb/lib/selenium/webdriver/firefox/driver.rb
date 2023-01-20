@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Firefox
-
       #
       # Driver implementation for Firefox using GeckoDriver.
       # @api private
@@ -37,6 +36,14 @@ module Selenium
                       DriverExtensions::HasWebStorage,
                       DriverExtensions::PrintsPage].freeze
 
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+
+          caps = process_options(options, capabilities)
+          url = service_url(service || Service.firefox)
+          super(caps: caps, url: url, **opts)
+        end
+
         def browser
           :firefox
         end
@@ -45,7 +52,7 @@ module Selenium
 
         def devtools_url
           if capabilities['moz:debuggerAddress'].nil?
-            raise(Error::WebDriverError, "DevTools is not supported by this version of Firefox; use v85 or higher")
+            raise(Error::WebDriverError, 'DevTools is not supported by this version of Firefox; use v85 or higher')
           end
 
           uri = URI("http://#{capabilities['moz:debuggerAddress']}")
@@ -56,6 +63,16 @@ module Selenium
 
         def devtools_version
           Firefox::DEVTOOLS_VERSION
+        end
+
+        def process_options(options, capabilities)
+          if options && !options.is_a?(Options)
+            raise ArgumentError, ":options must be an instance of #{Options}"
+          elsif options.nil? && capabilities.nil?
+            options = Options.new
+          end
+
+          super(options, capabilities)
         end
       end # Driver
     end # Firefox

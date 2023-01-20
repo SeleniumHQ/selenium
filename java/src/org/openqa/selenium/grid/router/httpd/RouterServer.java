@@ -21,6 +21,7 @@ import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.stream.Stream;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
@@ -157,16 +158,22 @@ public class RouterServer extends TemplateGridServerCommand {
       serverOptions.getExternalUri(),
       getServerVersion());
 
-    Routable ui = new GridUiRoute();
+    String subPath = new RouterOptions(config).subPath();
+    Routable ui = new GridUiRoute(subPath);
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
-    Routable route = Route.combine(
-      ui,
-      routerWithSpecChecks,
-      Route.prefix("/wd/hub").to(combine(routerWithSpecChecks)),
-      Route.options("/graphql").to(() -> graphqlHandler),
-      Route.post("/graphql").to(() -> graphqlHandler));
+    Routable appendRoute = Stream.of(
+        routerWithSpecChecks,
+        hubRoute(subPath, combine(routerWithSpecChecks)),
+        graphqlRoute(subPath, () -> graphqlHandler)
+      )
+      .reduce(Route::combine)
+      .get();
+    if (!subPath.isEmpty()) {
+      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(routerWithSpecChecks)));
+    }
+    Routable route = Route.combine(ui, appendRoute);
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {

@@ -24,48 +24,65 @@ module Selenium
     module Remote
       describe Capabilities do
         it 'has default capabilities for Chrome' do
-          caps = Capabilities.chrome
-          expect(caps.browser_name).to eq('chrome')
+          expect {
+            caps = described_class.chrome
+            expect(caps.browser_name).to eq('chrome')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'has default capabilities for Edge' do
-          caps = Capabilities.edge
-          expect(caps.browser_name).to eq('MicrosoftEdge')
+          expect {
+            caps = described_class.edge
+            expect(caps.browser_name).to eq('MicrosoftEdge')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'has default capabilities for Firefox' do
-          caps = Capabilities.firefox
-          expect(caps.browser_name).to eq('firefox')
+          expect {
+            caps = described_class.firefox
+            expect(caps.browser_name).to eq('firefox')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'has default capabilities for HtmlUnit' do
-          caps = Capabilities.htmlunit
-          expect(caps.browser_name).to eq('htmlunit')
+          expect {
+            caps = described_class.htmlunit
+            expect(caps.browser_name).to eq('htmlunit')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'has default capabilities for Internet Explorer' do
-          caps = Capabilities.internet_explorer
-          expect(caps.browser_name).to eq('internet explorer')
+          expect {
+            caps = described_class.internet_explorer
+            expect(caps.browser_name).to eq('internet explorer')
+          }.to have_deprecated(:caps_browsers)
+        end
+
+        it 'has default capabilities for Safari' do
+          expect {
+            caps = described_class.safari
+            expect(caps.browser_name).to eq('safari')
+          }.to have_deprecated(:caps_browsers)
         end
 
         it 'converts noProxy from string to array' do
           proxy = Proxy.new(no_proxy: 'proxy_url, localhost')
-          caps = Capabilities.new(proxy: proxy)
+          caps = described_class.new(proxy: proxy)
           expect(caps.as_json['proxy']['noProxy']).to eq(%w[proxy_url localhost])
         end
 
         it 'does not convert noProxy if it is already array' do
           proxy = Proxy.new(no_proxy: ['proxy_url'])
-          caps = Capabilities.new(proxy: proxy)
+          caps = described_class.new(proxy: proxy)
           expect(caps.as_json['proxy']['noProxy']).to eq(['proxy_url'])
         end
 
-        it 'should default to no proxy' do
-          expect(Capabilities.new.proxy).to be_nil
+        it 'defaults to no proxy' do
+          expect(described_class.new.proxy).to be_nil
         end
 
         it 'can set and get standard capabilities' do
-          caps = Capabilities.new
+          caps = described_class.new
 
           caps.browser_name = 'foo'
           expect(caps.browser_name).to eq('foo')
@@ -75,107 +92,141 @@ module Selenium
         end
 
         it 'can set and get arbitrary capabilities' do
-          caps = Capabilities.chrome
+          caps = described_class.new(browser_name: 'chrome')
           caps['chrome'] = :foo
           expect(caps['chrome']).to eq(:foo)
         end
 
-        it 'should set the given proxy' do
+        it 'sets the given proxy' do
           proxy = Proxy.new(http: 'proxy_url')
-          capabilities = Capabilities.new(proxy: proxy)
+          capabilities = described_class.new(proxy: proxy)
 
           expect(capabilities.as_json).to eq('proxy' => {'proxyType' => 'manual',
                                                          'httpProxy' => 'proxy_url'})
         end
 
-        it 'should accept a Hash' do
-          capabilities = Capabilities.new(proxy: {http: 'foo:123'})
+        it 'accepts a Hash' do
+          capabilities = described_class.new(proxy: {http: 'foo:123'})
           expect(capabilities.proxy.http).to eq('foo:123')
         end
 
-        it 'should not contain proxy hash when no proxy settings' do
-          capabilities_hash = Capabilities.new.as_json
+        it 'does not contain proxy hash when no proxy settings' do
+          capabilities_hash = described_class.new.as_json
           expect(capabilities_hash).not_to have_key('proxy')
         end
 
         it 'can merge capabilities' do
-          a = Capabilities.chrome
-          b = Capabilities.firefox
+          a = described_class.new(browser_name: 'chrome')
+          b = described_class.new(browser_name: 'firefox')
           a.merge!(b)
 
           expect(a.browser_name).to eq('firefox')
         end
 
         it 'can be serialized and deserialized to JSON' do
-          caps = Capabilities.new(browser_name: 'firefox',
-                                  timeouts: {
-                                    implicit: 1,
-                                    page_load: 2,
-                                    script: 3
-                                  },
-                                  'extension:customCapability': true)
-          expect(caps).to eq(Capabilities.json_create(caps.as_json))
+          caps = described_class.new(browser_name: 'firefox',
+                                     timeouts: {
+                                       implicit: 1,
+                                       page_load: 2,
+                                       script: 3
+                                     },
+                                     'extension:customCapability': true)
+          expect(caps).to eq(described_class.json_create(caps.as_json))
         end
 
         it 'allows to set alwaysMatch' do
           expected = {'alwaysMatch' => {'browserName' => 'chrome'}}
-          expect(Capabilities.always_match(browser_name: 'chrome').as_json).to eq(expected)
-          expect(Capabilities.always_match('browserName' => 'chrome').as_json).to eq(expected)
-          expect(Capabilities.always_match(Capabilities.chrome).as_json).to eq(expected)
+          expect(described_class.always_match(browser_name: 'chrome').as_json).to eq(expected)
+          expect(described_class.always_match('browserName' => 'chrome').as_json).to eq(expected)
+          expect(described_class.always_match(described_class.new(browser_name: 'chrome')).as_json).to eq(expected)
         end
 
         it 'allows to set firstMatch' do
           expected = {'firstMatch' => [{'browserName' => 'chrome'}, {'browserName' => 'firefox'}]}
-          expect(Capabilities.first_match({browser_name: 'chrome'}, {browser_name: 'firefox'}).as_json).to eq(expected)
-          expect(Capabilities.first_match({'browserName' => 'chrome'},
-                                          {'browserName' => 'firefox'}).as_json).to eq(expected)
-          expect(Capabilities.first_match(Capabilities.chrome, Capabilities.firefox).as_json).to eq(expected)
+          expect(described_class.first_match({browser_name: 'chrome'},
+                                             {browser_name: 'firefox'}).as_json).to eq(expected)
+          expect(described_class.first_match({'browserName' => 'chrome'},
+                                             {'browserName' => 'firefox'}).as_json).to eq(expected)
+          expect(described_class.first_match(described_class.new(browser_name: 'chrome'),
+                                             described_class.new(browser_name: 'firefox')).as_json).to eq(expected)
         end
-      end
 
-      context 'timeouts' do
-        let(:as_json) do
-          {
-            'browserName' => 'chrome',
-            'timeouts' => {
-              'implicit' => 1,
-              'pageLoad' => 2,
-              'script' => 3
+        it 'sets browser version with version' do
+          capabilities = described_class.new
+          expect {
+            capabilities.version = 1
+          }.to have_deprecated(:jwp_caps)
+          expect(capabilities.browser_version).to eq 1
+        end
+
+        it 'gets browser version with version' do
+          capabilities = described_class.new
+          capabilities.browser_version = 1
+          expect {
+            expect(capabilities.version).to eq 1
+          }.to have_deprecated(:jwp_caps)
+        end
+
+        it 'sets platform name with platform' do
+          capabilities = described_class.new
+          capabilities.platform_name = 'this'
+          expect {
+            expect(capabilities.platform).to eq 'this'
+          }.to have_deprecated(:jwp_caps)
+        end
+
+        it 'gets platform name with platform' do
+          capabilities = described_class.new
+          expect {
+            capabilities.platform = 'this'
+          }.to have_deprecated(:jwp_caps)
+          expect(capabilities.platform_name).to eq 'this'
+        end
+
+        describe 'timeouts' do
+          let(:as_json) do
+            {
+              'browserName' => 'chrome',
+              'timeouts' => {
+                'implicit' => 1,
+                'pageLoad' => 2,
+                'script' => 3
+              }
             }
-          }
-        end
+          end
 
-        it 'processes timeouts as hash' do
-          caps = Capabilities.chrome(timeouts: {implicit: 1, page_load: 2, script: 3})
-          expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
-          expect(caps.implicit_timeout).to eq(1)
-          expect(caps.page_load_timeout).to eq(2)
-          expect(caps.script_timeout).to eq(3)
-          expect(caps.as_json).to eq(as_json)
-        end
+          it 'processes timeouts as hash' do
+            caps = described_class.new(browser_name: 'chrome', timeouts: {implicit: 1, page_load: 2, script: 3})
+            expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
+            expect(caps.implicit_timeout).to eq(1)
+            expect(caps.page_load_timeout).to eq(2)
+            expect(caps.script_timeout).to eq(3)
+            expect(caps.as_json).to eq(as_json)
+          end
 
-        it 'processes timeouts via timeouts reader' do
-          caps = Capabilities.chrome
-          caps.timeouts[:implicit] = 1
-          caps.timeouts[:page_load] = 2
-          caps.timeouts[:script] = 3
-          expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
-          expect(caps.implicit_timeout).to eq(1)
-          expect(caps.page_load_timeout).to eq(2)
-          expect(caps.script_timeout).to eq(3)
-          expect(caps.as_json).to eq(as_json)
-        end
+          it 'processes timeouts via timeouts reader' do
+            caps = described_class.new(browser_name: 'chrome')
+            caps.timeouts[:implicit] = 1
+            caps.timeouts[:page_load] = 2
+            caps.timeouts[:script] = 3
+            expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
+            expect(caps.implicit_timeout).to eq(1)
+            expect(caps.page_load_timeout).to eq(2)
+            expect(caps.script_timeout).to eq(3)
+            expect(caps.as_json).to eq(as_json)
+          end
 
-        it 'processes timeouts via per-timeout writers' do
-          caps = Capabilities.chrome
-          caps.implicit_timeout = 1
-          caps.page_load_timeout = 2
-          caps.script_timeout = 3
-          expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
-          expect(caps.implicit_timeout).to eq(1)
-          expect(caps.page_load_timeout).to eq(2)
-          expect(caps.script_timeout).to eq(3)
-          expect(caps.as_json).to eq(as_json)
+          it 'processes timeouts via per-timeout writers' do
+            caps = described_class.new(browser_name: 'chrome')
+            caps.implicit_timeout = 1
+            caps.page_load_timeout = 2
+            caps.script_timeout = 3
+            expect(caps.timeouts).to eq(implicit: 1, page_load: 2, script: 3)
+            expect(caps.implicit_timeout).to eq(1)
+            expect(caps.page_load_timeout).to eq(2)
+            expect(caps.script_timeout).to eq(3)
+            expect(caps.as_json).to eq(as_json)
+          end
         end
       end
     end # Remote

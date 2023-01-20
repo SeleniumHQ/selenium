@@ -26,7 +26,7 @@ module Selenium
         let(:source) { Interactions.pointer(:mouse) }
         let(:direction) { :down }
         let(:button) { :left }
-        let(:press) { PointerPress.new(source, direction, button) }
+        let(:press) { described_class.new(source, direction, button) }
         let(:opts) do
           {width: 0,
            height: 0,
@@ -41,28 +41,28 @@ module Selenium
 
         describe '#initialize' do
           it 'raises a ArgumentError if invalid button symbol' do
-            expect { PointerPress.new(source, direction, :none) }.to raise_error(ArgumentError)
+            expect { described_class.new(source, direction, :none) }.to raise_error(ArgumentError)
           end
 
           it 'raises a TypeError if source is not a PointerInput' do
             key = Interactions.key('key')
-            expect { PointerPress.new(key, direction, 'wrong') }.to raise_error(TypeError)
+            expect { described_class.new(key, direction, 'wrong') }.to raise_error(TypeError)
           end
 
           it 'raises a TypeError if button is not a Symbol or Integer' do
-            expect { PointerPress.new(source, direction, 'wrong') }.to raise_error(TypeError)
+            expect { described_class.new(source, direction, 'wrong') }.to raise_error(TypeError)
           end
 
           it 'raises an ArgumentError if button is negative' do
-            expect { PointerPress.new(source, direction, -1) }.to raise_error(ArgumentError)
+            expect { described_class.new(source, direction, -1) }.to raise_error(ArgumentError)
           end
 
           it 'accepts any positive integer' do
-            expect { PointerPress.new(source, direction, 1141) }.not_to raise_error
+            expect { described_class.new(source, direction, 1141) }.not_to raise_error
           end
 
           it 'raises a ArgumentError if invalid direction' do
-            expect { PointerPress.new(source, :none, button) }.to raise_error(ArgumentError)
+            expect { described_class.new(source, :none, button) }.to raise_error(ArgumentError)
           end
         end
 
@@ -74,7 +74,7 @@ module Selenium
 
         describe '#encode' do
           it 'processes opts' do
-            press = PointerPress.new(source, direction, button, **opts)
+            press = described_class.new(source, direction, button, **opts)
 
             expect(press.encode).to eq('type' => PointerPress::DIRECTIONS[direction].to_s,
                                        'button' => 0,

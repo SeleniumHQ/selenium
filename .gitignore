@@ -101,9 +101,10 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
-Gemfile.lock
 /rb/.bundle
 /rb/.idea
+rb/bin/
+rb/lib/selenium/devtools/v1*
 .sonar/
 .idea/sonarIssues.xml
 .idea/inspectionProfiles/profiles_settings.xml

@@ -27,10 +27,9 @@ module Selenium
           @create_driver_error = nil
           @create_driver_error_count = 0
 
-          populate_from_bazel_target
-          WebDriver.logger
+          WebDriver.logger.ignore(:logger_info)
 
-          @driver = ENV.fetch('WD_SPEC_DRIVER', :chrome).to_sym
+          @driver = ENV.fetch('WD_SPEC_DRIVER', 'chrome').tr('-', '_').to_sym
           @driver_instance = nil
           @remote_server = nil
         end
@@ -49,7 +48,11 @@ module Selenium
         end
 
         def browser
-          driver == :remote ? ENV.fetch('WD_REMOTE_BROWSER', 'chrome').to_sym : driver
+          if driver == :remote
+            ENV.fetch('WD_REMOTE_BROWSER', 'chrome').tr('-', '_').to_sym
+          else
+            driver
+          end
         end
 
         def driver_instance(**opts, &block)
@@ -69,13 +72,18 @@ module Selenium
         end
 
         def app_server
-          @app_server ||= RackServer.new(root.join('common/src/web').to_s).tap(&:start)
+          @app_server ||= begin
+            app_server = RackServer.new(root.join('common/src/web').to_s, random_port)
+            app_server.start
+
+            app_server
+          end
         end
 
         def remote_server
           @remote_server ||= Selenium::Server.new(
             remote_server_jar,
-            port: PortProber.above(4444),
+            port: random_port,
             log_level: WebDriver.logger.debug? && 'FINE',
             background: true,
             timeout: 60
@@ -93,8 +101,9 @@ module Selenium
         end
 
         def remote_server_jar
-          test_jar = "#{Pathname.new(Dir.pwd).join('rb')}/selenium_server_deploy.jar"
-          built_jar = root.join('bazel-bin/java/src/org/openqa/selenium/grid/selenium_server_deploy.jar')
+          jar = 'java/src/org/openqa/selenium/grid/selenium_server_deploy.jar'
+          test_jar = Pathname.new(Dir.pwd).join(jar)
+          built_jar = root.join("bazel-bin/#{jar}")
           jar = if File.exist?(test_jar) && ENV['DOWNLOAD_SERVER'].nil?
                   test_jar
                 elsif File.exist?(built_jar) && ENV['DOWNLOAD_SERVER'].nil?
@@ -108,7 +117,7 @@ module Selenium
         end
 
         def quit
-          app_server.stop
+          @app_server&.stop
 
           @remote_server&.stop
 
@@ -165,7 +174,7 @@ module Selenium
           {
             browser: browser,
             driver: driver,
-            version: driver_instance.capabilities.version,
+            version: driver_instance.capabilities.browser_version,
             platform: Platform.os,
             ci: Platform.ci
           }
@@ -191,8 +200,55 @@ module Selenium
           WebDriver::Driver.for(:remote, url: url, **opts)
         end
 
+        def chrome_driver(service: nil, **opts)
+          service ||= WebDriver::Service.chrome
+          service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
+          service.args << '--verbose' if WebDriver.logger.debug?
+          WebDriver::Driver.for(:chrome, service: service, **opts)
+        end
+
+        def edge_driver(service: nil, **opts)
+          service ||= WebDriver::Service.edge
+          service.args << '--disable-build-check' if ENV['DISABLE_BUILD_CHECK']
+          service.args << '--verbose' if WebDriver.logger.debug?
+          WebDriver::Driver.for(:edge, service: service, **opts)
+        end
+
+        def firefox_driver(service: nil, **opts)
+          service ||= WebDriver::Service.firefox
+          service.args.push('--log', 'trace') if WebDriver.logger.debug?
+          WebDriver::Driver.for(:firefox, **opts)
+        end
+
+        def safari_driver(**opts)
+          service_opts = {}
+          service_opts[:args] = []
+          service_opts[:args] << '--diagnose' if WebDriver.logger.debug?
+          service = WebDriver::Service.safari(**service_opts)
+          WebDriver::Driver.for(:safari, service: service, **opts)
+        end
+
+        def safari_preview_driver(**opts)
+          service_opts = {}
+          service_opts[:args] = []
+          service_opts[:args] << '--diagnose' if WebDriver.logger.debug?
+          service = WebDriver::Service.safari(**service_opts)
+          WebDriver::Driver.for(:safari, service: service, **opts)
+        end
+
+        def chrome_options(**opts)
+          opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
+          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
+          WebDriver::Options.chrome(**opts)
+        end
+
+        def edge_options(**opts)
+          opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
+          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
+          WebDriver::Options.edge(**opts)
+        end
+
         def firefox_options(**opts)
-          opts[:log_level] = 'TRACE' if WebDriver.logger.level == :debug
           opts[:binary] ||= ENV['FIREFOX_BINARY'] if ENV.key?('FIREFOX_BINARY')
           opts[:args] << '--headless' if ENV['HEADLESS']
           WebDriver::Options.firefox(**opts)
@@ -203,54 +259,20 @@ module Selenium
           WebDriver::Options.ie(**opts)
         end
 
-        def chrome_driver(options: nil, **opts)
-          service_opts = {}
-          service_opts[:args] = ['--disable-build-check'] if ENV['DISABLE_BUILD_CHECK']
-          service = WebDriver::Service.chrome(**service_opts)
-          WebDriver::Driver.for(:chrome, options: options, service: service, **opts)
-        end
-
-        def chrome_options(**opts)
-          opts[:binary] ||= ENV['CHROME_BINARY'] if ENV.key?('CHROME_BINARY')
-          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
-          WebDriver::Options.chrome(**opts)
-        end
-
-        def edge_driver(options: nil, **opts)
-          service_opts = {}
-          service_opts[:args] = ['--disable-build-check'] if ENV['DISABLE_BUILD_CHECK']
-          service = WebDriver::Service.edge(**service_opts)
-          WebDriver::Driver.for(:edge, options: options, service: service, **opts)
-        end
-
-        def edge_options(**opts)
-          opts[:binary] ||= ENV['EDGE_BINARY'] if ENV.key?('EDGE_BINARY')
-          opts[:args] << '--headless=chrome' if ENV['HEADLESS']
-          WebDriver::Options.edge(**opts)
-        end
-
         def safari_preview_options(**opts)
           WebDriver::Safari.technology_preview!
           WebDriver::Options.safari(**opts)
         end
 
-        def safari_preview_driver(**opts)
-          WebDriver::Driver.for(:safari, **opts)
-        end
+        def random_port
+          addr = Socket.getaddrinfo(Platform.localhost, 0, Socket::AF_INET, Socket::SOCK_STREAM)
+          addr = Socket.pack_sockaddr_in(0, addr[0][3])
+          sock = Socket.new(Socket::AF_INET, Socket::SOCK_STREAM, 0)
+          sock.bind(addr)
 
-        def populate_from_bazel_target
-          name = ENV.fetch('TEST_TARGET', nil)
-          return unless name
-
-          case name
-          when %r{//rb:remote-(.+)-test}
-            ENV['WD_REMOTE_BROWSER'] = Regexp.last_match(1).tr('-', '_')
-            ENV['WD_SPEC_DRIVER'] = 'remote'
-          when %r{//rb:(.+)-test}
-            ENV['WD_SPEC_DRIVER'] = Regexp.last_match(1).tr('-', '_')
-          else
-            raise "Don't know how to extract browser name from #{name}"
-          end
+          sock.local_address.ip_port
+        ensure
+          sock.close
         end
       end
     end # SpecSupport

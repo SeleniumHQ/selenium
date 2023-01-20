@@ -30,8 +30,9 @@ DEFAULT_SERVICE_LOG_PATH = None
 class WebDriver(ChromiumDriver):
     """Controls the Microsoft Edge driver and allows you to drive the browser.
 
-    You will need to download the MSEdgeDriver (Chromium) executable from
-    https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/
+    You will need to download the MSEdgeDriver (Chromium) executable
+    from https://developer.microsoft.com/en-us/microsoft-
+    edge/tools/webdriver/
     """
 
     def __init__(

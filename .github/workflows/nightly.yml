@@ -11,29 +11,18 @@ on:
 
 jobs:
   ruby:
-    name: Ruby Gems
-    runs-on: ubuntu-latest
+    name: Ruby
+    uses: ./.github/workflows/bazel.yml
     strategy:
       fail-fast: false
       matrix:
         gem:
           - selenium-devtools
           - selenium-webdriver
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: 'adopt'
-      - uses: ./.github/actions/cache-bazel
-        with:
-          workflow: ruby
-          key: bazel-ruby-nightly-${{ matrix.gem }}
-      - uses: ./.github/actions/bazel
-        with:
-          command: run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
-      - uses: ./.github/actions/bazel
-        env:
-          GEM_HOST_API_KEY: Bearer ${{ secrets.GITHUB_TOKEN }}
-        with:
-          command: run //rb:${{ matrix.gem }}-release-nightly
+    with:
+      name: Release
+      cache-key: rb-nightly-${{ matrix.gem }}
+      run: |
+        export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
+        bazel run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
+        bazel run //rb:${{ matrix.gem }}-release-nightly

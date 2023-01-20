@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     class DevTools
       class ConsoleEvent
-
         attr_accessor :type, :timestamp, :args
 
         def initialize(type:, timestamp:, args:)
@@ -31,7 +30,6 @@ module Selenium
             arg.key?('value') ? arg['value'] : arg
           end
         end
-
       end # ConsoleEvent
     end # DevTools
   end # WebDriver

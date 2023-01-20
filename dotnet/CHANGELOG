@@ -1,3 +1,9 @@
+v4.8.0
+======
+* Add CDP files for v109 and remove v106
+* Add comment with name of large JS executions (#11038)
+* Extend invalid selenium manager process exit codes (#11361)
+
 v4.7.0
 ======
 * Adding CDP files for v108 and removing v105

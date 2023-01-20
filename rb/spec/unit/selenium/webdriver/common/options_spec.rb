@@ -22,22 +22,16 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Options do
-      subject(:options) { Options.new(local_state: {}) }
+      subject(:options) { described_class.new('localState' => {}) }
 
       before do
-        stub_const("#{Options}::BROWSER", 'foo')
-        stub_const("#{Options}::CAPABILITIES", {local_state: 'localState'})
+        stub_const("#{described_class}::BROWSER", 'foo')
+        stub_const("#{described_class}::CAPABILITIES", {local_state: 'localState'})
       end
 
       describe '#as_json' do
-        it 'does not override options set via symbol name' do
-          options.add_option(:local_state, {foo: 'bar'})
-          expect(options.as_json).to include('localState' => {'foo' => 'bar'})
-        end
-
-        it 'does not override options set via string name' do
-          options.add_option('localState', {foo: 'bar'})
-          expect(options.as_json).to include('localState' => {'foo' => 'bar'})
+        it 'Using camel case string value is deprecated' do
+          expect { options.as_json }.to have_deprecated(:option_symbols)
         end
       end
     end # Options

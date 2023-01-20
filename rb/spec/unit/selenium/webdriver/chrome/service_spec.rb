@@ -21,115 +21,118 @@ require File.expand_path('../spec_helper', __dir__)
 
 module Selenium
   module WebDriver
-    describe Service do
-      describe '#new' do
-        let(:service_path) { "/path/to/#{Chrome::Service::EXECUTABLE}" }
+    module Chrome
+      describe Service do
+        describe '#new' do
+          let(:service_path) { "/path/to/#{Service::EXECUTABLE}" }
 
-        before do
-          allow(Platform).to receive(:assert_executable).and_return(true)
+          before do
+            allow(Platform).to receive(:assert_executable).and_return(true)
+          end
+
+          after { described_class.driver_path = nil }
+
+          it 'uses default path and port' do
+            allow(Platform).to receive(:find_binary).and_return(service_path)
+
+            service = described_class.chrome
+
+            expect(service.executable_path).to include Service::EXECUTABLE
+            expected_port = Service::DEFAULT_PORT
+            expect(service.port).to eq expected_port
+            expect(service.host).to eq Platform.localhost
+          end
+
+          it 'uses provided path and port' do
+            path = 'foo'
+            port = 5678
+
+            service = described_class.chrome(path: path, port: port)
+
+            expect(service.executable_path).to eq path
+            expect(service.port).to eq port
+            expect(service.host).to eq Platform.localhost
+          end
+
+          it 'allows #driver_path= with String value' do
+            path = '/path/to/driver'
+            described_class.driver_path = path
+
+            service = described_class.chrome
+
+            expect(service.executable_path).to eq path
+          end
+
+          it 'allows #driver_path= with Proc value' do
+            path = '/path/to/driver'
+            proc = proc { path }
+            described_class.driver_path = proc
+
+            service = described_class.chrome
+
+            expect(service.executable_path).to eq path
+          end
+
+          it 'does not create args by default' do
+            allow(Platform).to receive(:find_binary).and_return(service_path)
+
+            service = described_class.new
+
+            expect(service.extra_args).to be_empty
+          end
+
+          it 'uses provided args' do
+            allow(Platform).to receive(:find_binary).and_return(service_path)
+
+            service = described_class.chrome(args: ['--foo', '--bar'])
+
+            expect(service.extra_args).to eq ['--foo', '--bar']
+          end
+
+          it 'uses args when passed in as a Hash' do
+            allow(Platform).to receive(:find_binary).and_return(service_path)
+
+            expect {
+              service = described_class.new(args: {log_path: '/path/to/log',
+                                                   verbose: true})
+
+              expect(service.extra_args).to eq ['--log-path=/path/to/log', '--verbose']
+            }.to have_deprecated(:driver_opts)
+          end
         end
 
-        after { Chrome::Service.driver_path = nil }
+        context 'when initializing driver' do
+          let(:driver) { Chrome::Driver }
+          let(:service) { instance_double(described_class, launch: service_manager) }
+          let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
+          let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
 
-        it 'uses default path and port' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
+          before do
+            allow(Remote::Bridge).to receive(:new).and_return(bridge)
+            allow(bridge).to receive(:browser).and_return(:chrome)
+          end
 
-          service = Service.chrome
+          it 'errors when :url is provided' do
+            expect {
+              driver.new(url: 'http://example.com:4321')
+            }.to raise_error(ArgumentError, "Can't initialize Selenium::WebDriver::Chrome::Driver with :url")
+          end
 
-          expect(service.executable_path).to include Chrome::Service::EXECUTABLE
-          expected_port = Chrome::Service::DEFAULT_PORT
-          expect(service.port).to eq expected_port
-          expect(service.host).to eq Platform.localhost
-        end
+          it 'is created when :url is not provided' do
+            allow(described_class).to receive(:new).and_return(service)
 
-        it 'uses provided path and port' do
-          path = 'foo'
-          port = 5678
+            driver.new
+            expect(described_class).to have_received(:new).with(no_args)
+          end
 
-          service = Service.chrome(path: path, port: port)
+          it 'accepts :service without creating a new instance' do
+            allow(described_class).to receive(:new)
 
-          expect(service.executable_path).to eq path
-          expect(service.port).to eq port
-          expect(service.host).to eq Platform.localhost
-        end
-
-        it 'allows #driver_path= with String value' do
-          path = '/path/to/driver'
-          Chrome::Service.driver_path = path
-
-          service = Service.chrome
-
-          expect(service.executable_path).to eq path
-        end
-
-        it 'allows #driver_path= with Proc value' do
-          path = '/path/to/driver'
-          proc = proc { path }
-          Chrome::Service.driver_path = proc
-
-          service = Service.chrome
-
-          expect(service.executable_path).to eq path
-        end
-
-        it 'does not create args by default' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
-
-          service = Service.chrome
-
-          expect(service.extra_args).to be_empty
-        end
-
-        it 'uses provided args' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
-
-          service = Service.chrome(args: ['--foo', '--bar'])
-
-          expect(service.extra_args).to eq ['--foo', '--bar']
-        end
-
-        # This is deprecated behavior
-        it 'uses args when passed in as a Hash' do
-          allow(Platform).to receive(:find_binary).and_return(service_path)
-
-          service = Service.chrome(args: {log_path: '/path/to/log',
-                                          verbose: true})
-
-          expect(service.extra_args).to eq ['--log-path=/path/to/log', '--verbose']
+            driver.new(service: service)
+            expect(described_class).not_to have_received(:new)
+          end
         end
       end
-
-      context 'when initializing driver' do
-        let(:driver) { Chrome::Driver }
-        let(:service) { instance_double(Service, launch: service_manager) }
-        let(:service_manager) { instance_double(ServiceManager, uri: 'http://example.com') }
-        let(:bridge) { instance_double(Remote::Bridge, quit: nil, create_session: {}) }
-
-        before do
-          allow(Remote::Bridge).to receive(:new).and_return(bridge)
-          allow(bridge).to receive(:browser).and_return(:chrome)
-        end
-
-        it 'is not created when :url is provided' do
-          expect(Service).not_to receive(:new)
-
-          driver.new(url: 'http://example.com:4321')
-        end
-
-        it 'is created when :url is not provided' do
-          allow(Service).to receive(:new).and_return(service)
-
-          driver.new
-          expect(Service).to have_received(:new).with(no_args)
-        end
-
-        it 'accepts :service without creating a new instance' do
-          allow(Service).to receive(:new)
-
-          driver.new(service: service)
-          expect(Service).not_to have_received(:new)
-        end
-      end
-    end
+    end # Chrome
   end # WebDriver
 end # Selenium

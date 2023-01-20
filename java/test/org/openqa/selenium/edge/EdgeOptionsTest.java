@@ -147,6 +147,60 @@ class EdgeOptionsTest {
       .isEqualTo(binary.getPath());
   }
 
+  @Test
+  void mergingOptionsWithOptionsAsMutableCapabilities() {
+    File ext1 = TestUtilities.createTmpFile("ext1");
+    String ext1Encoded = Base64.getEncoder().encodeToString("ext1".getBytes());
+    String ext2 = Base64.getEncoder().encodeToString("ext2".getBytes());
+
+    MutableCapabilities browserCaps = new MutableCapabilities();
+
+    File binary = TestUtilities.createTmpFile("binary");
+
+    browserCaps.setCapability("binary", binary.getPath());
+    browserCaps.setCapability("opt1", "val1");
+    browserCaps.setCapability("opt2", "val4");
+    browserCaps.setCapability("args", Arrays.asList("silent", "verbose"));
+    browserCaps.setCapability("extensions", Arrays.asList(ext1, ext2));
+
+    MutableCapabilities one = new MutableCapabilities();
+    one.setCapability(EdgeOptions.CAPABILITY, browserCaps);
+
+    EdgeOptions two = new EdgeOptions();
+    two.addArguments("verbose");
+    two.setExperimentalOption("opt2", "val2");
+    two.setExperimentalOption("opt3", "val3");
+    two = two.merge(one);
+
+    Map<String, Object> map = two.asMap();
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("args").asInstanceOf(LIST)
+      .containsExactly("verbose", "silent");
+
+    assertThat(map).asInstanceOf(MAP)
+      .containsEntry("opt1", "val1");
+
+    assertThat(map).asInstanceOf(MAP)
+      .containsEntry("opt2", "val4");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .containsEntry("opt2", "val2")
+      .containsEntry("opt3", "val3");
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("extensions").asInstanceOf(LIST)
+      .containsExactly(ext1Encoded, ext2);
+
+    assertThat(map).asInstanceOf(MAP)
+      .extractingByKey(EdgeOptions.CAPABILITY).asInstanceOf(MAP)
+      .extractingByKey("binary").asInstanceOf(STRING)
+      .isEqualTo(binary.getPath());
+  }
+
   private void checkCommonStructure(EdgeOptions options) {
     assertThat(options.asMap())
         .containsEntry(CapabilityType.BROWSER_NAME, EDGE.browserName())

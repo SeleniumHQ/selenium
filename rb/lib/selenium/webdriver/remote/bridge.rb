@@ -186,6 +186,7 @@ module Selenium
           execute :delete_session
           http.close
         rescue *QUIT_ERRORS
+          nil
         end
 
         def close
@@ -367,18 +368,10 @@ module Selenium
         # actions
         #
 
-        def action(deprecated_async = nil, async: false, devices: [], duration: 250)
-          ActionBuilder.new self, nil, nil, deprecated_async, async: async, devices: devices, duration: duration
+        def action(async: false, devices: [], duration: 250)
+          ActionBuilder.new self, async: async, devices: devices, duration: duration
         end
-        alias_method :actions, :action
-
-        def mouse
-          raise Error::UnsupportedOperationError, '#mouse is no longer supported, use #action instead'
-        end
-
-        def keyboard
-          raise Error::UnsupportedOperationError, '#keyboard is no longer supported, use #action instead'
-        end
+        alias actions action
 
         def send_actions(data)
           execute :actions, {}, {actions: data}
@@ -400,7 +393,7 @@ module Selenium
           # TODO: rework file detectors before Selenium 4.0
           if @file_detector
             local_files = keys.first&.split("\n")&.map { |key| @file_detector.call(Array(key)) }&.compact
-            if local_files.any?
+            if local_files&.any?
               keys = local_files.map { |local_file| upload(local_file) }
               keys = Array(keys.join("\n"))
             end
@@ -425,7 +418,7 @@ module Selenium
         end
 
         def submit_element(element)
-          script = "var form = arguments[0];\n" \
+          script = "/* submitForm */ var form = arguments[0];\n" \
                    "while (form.nodeName != \"FORM\" && form.parentNode) {\n  " \
                    "form = form.parentNode;\n" \
                    "}\n" \
@@ -437,7 +430,7 @@ module Selenium
 
           execute_script(script, Element::ELEMENT_KEY => element)
         rescue Error::JavascriptError
-          raise Error::UnsupportedOperationError, "To submit an element, it must be nested inside a form element"
+          raise Error::UnsupportedOperationError, 'To submit an element, it must be nested inside a form element'
         end
 
         #
@@ -525,7 +518,7 @@ module Selenium
           Element.new self, element_id_from(execute(:get_active_element))
         end
 
-        alias_method :switch_to_active_element, :active_element
+        alias switch_to_active_element active_element
 
         def find_element_by(how, what, parent_ref = [])
           how, what = convert_locator(how, what)

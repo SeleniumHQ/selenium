@@ -23,6 +23,7 @@ pub struct ManagerConfig {
     pub driver_version: String,
     pub os: String,
     pub arch: String,
+    pub browser_path: String,
 }
 
 impl ManagerConfig {
@@ -32,6 +33,7 @@ impl ManagerConfig {
             driver_version: "".to_string(),
             os: OS.to_string(),
             arch: ARCH.to_string(),
+            browser_path: "".to_string(),
         }
     }
 
@@ -42,6 +44,7 @@ impl ManagerConfig {
             driver_version: config.driver_version.as_str().to_string(),
             os: config.os.as_str().to_string(),
             arch: config.arch.as_str().to_string(),
+            browser_path: config.browser_path.as_str().to_string(),
         }
     }
 }

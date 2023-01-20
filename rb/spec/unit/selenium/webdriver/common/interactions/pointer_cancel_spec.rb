@@ -23,12 +23,12 @@ module Selenium
   module WebDriver
     module Interactions
       describe PointerCancel do
-        let(:pointer_cancel) { PointerCancel.new(Interactions.pointer(:mouse)) }
+        let(:pointer_cancel) { described_class.new(Interactions.pointer(:mouse)) }
 
         describe '#initialize' do
           it 'raises a TypeError if source is not a PointerInput' do
             key = Interactions.key('key')
-            expect { PointerCancel.new(key) }.to raise_error(TypeError)
+            expect { described_class.new(key) }.to raise_error(TypeError)
           end
         end
 

@@ -4,9 +4,9 @@ load("//common:defs.bzl", "copy_file")
 
 BROWSER_VERSIONS = [
     "v85",
-    "v106",
     "v107",
     "v108",
+    "v109",
 ]
 
 SRC_FILES = [
@@ -23,7 +23,8 @@ SRC_FILES = [
     "remote/*.js",
     "testing/*.js",
     "devtools/*.js",
-    "common/*.js"
+    "common/*.js",
+    "bidi/*.js",
 ])
 
 pkg_npm(
@@ -145,7 +146,6 @@ genrule(
         ":cdp-srcs-generator-" + n,
     ],
 ) for n in BROWSER_VERSIONS]
-
 
 copy_file(
     name = "manager-linux",

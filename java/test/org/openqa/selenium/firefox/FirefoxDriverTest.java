@@ -29,11 +29,13 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.DriverCommand;
@@ -72,6 +74,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
@@ -135,7 +138,6 @@ class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, reason = "Assumed to be covered by tests for GeckoDriverService")
   @NoDriverBeforeTest
   public void canStartDriverWithSpecifiedBinary() {
     FirefoxBinary binary = spy(new FirefoxBinary());
@@ -180,27 +182,6 @@ class FirefoxDriverTest extends JupiterTestBase {
 
     localDriver = new WebDriverBuilder().get(options);
     wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
-  }
-
-  @Test
-  @Ignore(value = FIREFOX, reason = "Assumed to be covered by tests for GeckoDriverService")
-  @NoDriverBeforeTest
-  public void canSetBinaryInCapabilities() {
-    FirefoxBinary binary = spy(new FirefoxBinary());
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.BINARY, binary);
-
-    localDriver = new WebDriverBuilder().get(caps);
-
-    verify(binary, atLeastOnce()).getPath();
-  }
-
-  @Test
-  @NoDriverBeforeTest
-  public void canSetBinaryPathInCapabilities() {
-    String binPath = new FirefoxBinary().getPath();
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.BINARY, binPath);
-
-    localDriver = new WebDriverBuilder().get(caps);
   }
 
   @Test
@@ -327,16 +308,13 @@ class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  @Timeout(60)
-  @Ignore(FIREFOX)
+  @Timeout(10)
+  @NoDriverBeforeTest
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
-    FirefoxBinary binary = new FirefoxBinary();
     GeckoDriverService service = new GeckoDriverService.Builder()
-      .usingFirefoxBinary(binary)
       .withEnvironment(ImmutableMap.of("NSPR_LOG_MODULES", "all:5"))
       .build();
 
-    // We will have an infinite hang if this driver does not start properly.
     new FirefoxDriver(service).quit();
   }
 
@@ -356,6 +334,16 @@ class FirefoxDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
+  public void canPassCapabilities() {
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, "none");
+
+    localDriver = new FirefoxDriver(new FirefoxOptions().merge(caps));
+
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
+  }
+
+  @Test
+  @NoDriverBeforeTest
   public void canBlockInsecureCerts() {
     localDriver = new WebDriverBuilder().get(new FirefoxOptions().setAcceptInsecureCerts(false));
     Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
@@ -364,24 +352,23 @@ class FirefoxDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void shouldAllowUserToSuccessfullyOverrideTheHomePage() {
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setPreference("browser.startup.page", "1");
-    profile.setPreference("browser.startup.homepage", pages.javascriptPage);
+  public void canSetPageLoadStrategyViaOptions() {
+    localDriver = new FirefoxDriver(
+      new FirefoxOptions().setPageLoadStrategy(PageLoadStrategy.NONE));
 
-    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setProfile(profile));
-    new WebDriverWait(localDriver, Duration.ofSeconds(30)).until(urlToBe(pages.javascriptPage));
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  public void canStartHeadless() {
+    localDriver = new FirefoxDriver(new FirefoxOptions().addArguments("-headless"));
+
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability("moz:headless")).isEqualTo(true);
   }
 
   private ExpectedCondition<Boolean> urlToBe(final String expectedUrl) {
     return driver1 -> expectedUrl.equals(driver1.getCurrentUrl());
-  }
-
-  @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/273")
-  public void canAccessUrlProtectedByBasicAuth() {
-    driver.get(appServer.whereIsWithCredentials("basicAuth", "test", "test"));
-    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
   }
 
   @Test

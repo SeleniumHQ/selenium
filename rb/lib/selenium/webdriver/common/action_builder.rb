@@ -42,30 +42,13 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def initialize(bridge, deprecated_mouse = nil, deprecated_keyboard = nil, deprecated_async = nil,
-                     devices: [], async: false, duration: 250)
+      def initialize(bridge, devices: [], async: false, duration: 250)
         @bridge = bridge
         @duration = duration
-
-        @async = if deprecated_async.nil?
-                   async
-                 else
-                   WebDriver.logger.deprecate('initializing ActionBuilder with async parameter',
-                                              ':async keyword',
-                                              id: :action_async)
-                   deprecated_async
-                 end
-
+        @async = async
         @devices = []
-        if deprecated_keyboard || deprecated_mouse
-          WebDriver.logger.deprecate "initializing ActionBuilder with keyboard and mouse parameters",
-                                     "devices keyword or, even better, Driver#action",
-                                     id: :action_devices
-          add_input(deprecated_mouse)
-          add_input(deprecated_keyboard)
-        else
-          Array(devices).each { |device| add_input(device) }
-        end
+
+        Array(devices).each { |device| add_input(device) }
       end
 
       #
@@ -116,20 +99,6 @@ module Selenium
 
       def add_wheel_input(name)
         add_input(Interactions.wheel(name))
-      end
-
-      #
-      # Retrieves the input device for the given name
-      #
-      # @param [String] name name of the input device
-      # @return [Selenium::WebDriver::Interactions::InputDevice] input device with given name
-      #
-
-      def get_device(name)
-        WebDriver.logger.deprecate('#get_device with name parameter',
-                                   '#device with :name or :type keyword',
-                                   id: :get_device)
-        device(name: name)
       end
 
       #
@@ -194,11 +163,9 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pause(deprecated_device = nil, deprecated_duration = nil, device: nil, duration: 0)
-        deprecate_method(deprecated_device, deprecated_duration)
-
-        device ||= deprecated_device || pointer_input
-        device.create_pause(deprecated_duration || duration)
+      def pause(device: nil, duration: 0)
+        device ||= pointer_input
+        device.create_pause(duration)
         self
       end
 
@@ -218,13 +185,10 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def pauses(deprecated_device = nil, deprecated_number = nil, deprecated_duration = nil,
-                 device: nil, number: nil, duration: 0)
-        deprecate_method(deprecated_device, deprecated_duration, deprecated_number, method: :pauses)
-
-        number ||= deprecated_number || 2
-        device ||= deprecated_device || pointer_input
-        duration ||= deprecated_duration || 0
+      def pauses(device: nil, number: nil, duration: 0)
+        number ||= 2
+        device ||= pointer_input
+        duration ||= 0
 
         number.times { device.create_pause(duration) }
         self
@@ -294,7 +258,6 @@ module Selenium
                                    ':device, :duration, :number keywords',
                                    id: method
       end
-
     end # ActionBuilder
   end # WebDriver
 end # Selenium

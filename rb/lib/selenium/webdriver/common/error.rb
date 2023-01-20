@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Error
-
       #
       # Returns exception from its string representation.
       # @param [String, nil] error
@@ -213,7 +212,6 @@ module Selenium
       #
 
       class UnsupportedOperationError < WebDriverError; end
-
     end # Error
   end # WebDriver
 end # Selenium
