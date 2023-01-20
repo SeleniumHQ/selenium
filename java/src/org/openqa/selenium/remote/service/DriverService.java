@@ -247,6 +247,12 @@ public class DriverService implements Closeable {
         }
       } catch (ExecutionException | TimeoutException e) {
         throw new WebDriverException("Timed out waiting for driver server to start.", e);
+      } catch (org.openqa.selenium.SessionNotCreatedException e) {
+        if (e.getMessage().contains("This version of ChromeDriver only supports")) {
+           throw new org.openqa.selenium.SessionNotCreatedException("Context: chromedriver executable path is " + this.executable, e);
+        } else {
+           throw e;
+        }
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
         throw new WebDriverException("Timed out waiting for driver server to start.", e);
