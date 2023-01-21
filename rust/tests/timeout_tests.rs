@@ -22,8 +22,15 @@ use exitcode::DATAERR;
 #[test]
 fn timeout_proxy_test() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.args(["--browser", "edge", "--timeout", "0"])
-        .assert()
-        .failure()
-        .code(DATAERR);
+    cmd.args([
+        "--clear-cache",
+        "--debug",
+        "--browser",
+        "edge",
+        "--timeout",
+        "0",
+    ])
+    .assert()
+    .failure()
+    .code(DATAERR);
 }

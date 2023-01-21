@@ -17,7 +17,7 @@
 
 use assert_cmd::Command;
 
-use exitcode::{UNAVAILABLE};
+use exitcode::UNAVAILABLE;
 
 #[test]
 fn wrong_protocol_proxy_test() {
