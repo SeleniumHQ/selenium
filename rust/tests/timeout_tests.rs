@@ -17,27 +17,13 @@
 
 use assert_cmd::Command;
 
-use exitcode::{UNAVAILABLE};
+use exitcode::DATAERR;
 
 #[test]
-fn wrong_protocol_proxy_test() {
+fn timeout_proxy_test() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
+    cmd.args(["--browser", "edge", "--timeout", "0"])
         .assert()
         .failure()
-        .code(UNAVAILABLE);
-}
-
-#[test]
-fn wrong_port_proxy_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.args([
-        "--browser",
-        "chrome",
-        "--proxy",
-        "https:://localhost:1234567",
-    ])
-    .assert()
-    .failure()
-    .code(UNAVAILABLE);
+        .code(DATAERR);
 }
