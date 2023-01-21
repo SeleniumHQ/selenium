@@ -34,7 +34,7 @@ Options:
   -p, --proxy <PROXY>
           HTTP proxy for network connection (e.g., https://myproxy.net:8080)
   -t, --timeout <TIMEOUT>
-          Timeout for network requests (in seconds) [default: 60]
+          Timeout for network requests (in seconds) [default: 120]
   -D, --debug
           Display DEBUG messages
   -T, --trace

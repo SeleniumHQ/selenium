@@ -47,7 +47,7 @@ pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
 
-pub const REQUEST_TIMEOUT_SEC: u64 = 60;
+pub const REQUEST_TIMEOUT_SEC: u64 = 120; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
@@ -369,7 +369,7 @@ pub trait SeleniumManager {
         if !proxy.is_empty() {
             builder = builder.proxy(Proxy::all(proxy)?);
         }
-        let http_client = builder.build().unwrap_or_default();
+        let http_client = builder.build()?;
         self.set_http_client(http_client);
         Ok(())
     }

@@ -35,7 +35,7 @@ fn timeout_proxy_test() {
         "--browser",
         "edge",
         "--proxy",
-        "https://localhost:45678",
+        "http://localhost:34568",
         "--timeout",
         "1",
     ])
