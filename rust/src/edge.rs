@@ -139,14 +139,11 @@ impl SeleniumManager for EdgeManager {
         } else {
             commands = vec![self.format_one_arg(WMIC_COMMAND, browser_path)];
         }
-        let (shell, flag, args) = if WINDOWS.is(self.get_os()) {
-            ("cmd", "/C", commands)
+        let (shell, flag) = self.get_shell_command();
+        let args = if WINDOWS.is(self.get_os()) {
+            commands
         } else {
-            (
-                "sh",
-                "-c",
-                vec![self.format_one_arg(DASH_DASH_VERSION, browser_path)],
-            )
+            vec![self.format_one_arg(DASH_DASH_VERSION, browser_path)]
         };
         self.detect_browser_version(shell, flag, args)
     }
