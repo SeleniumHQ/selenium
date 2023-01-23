@@ -23,7 +23,12 @@ module Selenium
   module WebDriver
     describe BiDi, only: {browser: %i[chrome edge firefox]} do
       before { reset_driver!(web_socket_url: true) }
-      after { quit_driver }
+
+      after do
+        quit_driver
+      rescue Selenium::WebDriver::Error::InvalidSessionIdError
+        # do nothing
+      end
 
       it 'gets session status' do
         status = driver.bidi.session.status
