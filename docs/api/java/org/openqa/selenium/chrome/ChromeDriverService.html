@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":9,"i1":41};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -320,7 +320,7 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -337,7 +337,9 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <td class="colFirst"><code>static <a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createServiceWithConfig(org.openqa.selenium.chrome.ChromeOptions)">createServiceWithConfig</a></span>&#8203;(<a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;options)</code></th>
 <td class="colLast">
-<div class="block">Configures and returns a new <a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a> using the supplied configuration.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a>  }</div>
+</div>
 </td>
 </tr>
 </table>
@@ -610,7 +612,11 @@ public static final&nbsp;java.lang.String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY
 <ul class="blockListLast">
 <li class="blockList">
 <h4>createServiceWithConfig</h4>
-<pre class="methodSignature">public static&nbsp;<a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a>&nbsp;createServiceWithConfig&#8203;(<a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;options)</pre>
+<pre class="methodSignature">@Deprecated
+public static&nbsp;<a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome">ChromeDriverService</a>&nbsp;createServiceWithConfig&#8203;(<a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome">ChromeOptions</a>&nbsp;options)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use <a href="ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a>  }</div>
+</div>
 <div class="block">Configures and returns a new <a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a> using the supplied configuration. In
  this configuration, the service will use the ChromeDriver executable identified by the
  <a href="#CHROME_DRIVER_EXE_PROPERTY"><code>CHROME_DRIVER_EXE_PROPERTY</code></a> system property. Each service created by this method will

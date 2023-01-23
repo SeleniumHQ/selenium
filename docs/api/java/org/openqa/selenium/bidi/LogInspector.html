@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":42,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -187,7 +187,7 @@ implements java.lang.AutoCloseable</pre>
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -200,27 +200,58 @@ implements java.lang.AutoCloseable</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onConsoleLog(java.util.function.Consumer)">onConsoleLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onConsoleEntry(java.util.function.Consumer)">onConsoleEntry</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onGenericLog(java.util.function.Consumer)">onGenericLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/GenericLogEntry.html" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a>&gt;&nbsp;consumer)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onConsoleEntry(java.util.function.Consumer,org.openqa.selenium.bidi.log.FilterBy)">onConsoleEntry</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer,
+              <a href="log/FilterBy.html" title="class in org.openqa.selenium.bidi.log">FilterBy</a>&nbsp;filter)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onJavaScriptException(java.util.function.Consumer)">onJavaScriptException</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer)</code></th>
-<td class="colLast">&nbsp;</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onConsoleLog(java.util.function.Consumer)">onConsoleLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer)</code></th>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span></div>
+</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onJavaScriptLog(java.util.function.Consumer)">onJavaScriptLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onGenericLog(java.util.function.Consumer)">onGenericLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/GenericLogEntry.html" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a>&gt;&nbsp;consumer)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onGenericLog(java.util.function.Consumer,org.openqa.selenium.bidi.log.FilterBy)">onGenericLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/GenericLogEntry.html" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a>&gt;&nbsp;consumer,
+            <a href="log/FilterBy.html" title="class in org.openqa.selenium.bidi.log">FilterBy</a>&nbsp;filter)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onJavaScriptException(java.util.function.Consumer)">onJavaScriptException</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onJavaScriptLog(java.util.function.Consumer)">onJavaScriptLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onJavaScriptLog(java.util.function.Consumer,org.openqa.selenium.bidi.log.FilterBy)">onJavaScriptLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer,
+               <a href="log/FilterBy.html" title="class in org.openqa.selenium.bidi.log">FilterBy</a>&nbsp;filter)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onLog(java.util.function.Consumer)">onLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/LogEntry.html" title="class in org.openqa.selenium.bidi.log">LogEntry</a>&gt;&nbsp;consumer)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onLog(java.util.function.Consumer,org.openqa.selenium.bidi.log.FilterBy)">onLog</a></span>&#8203;(java.util.function.Consumer&lt;<a href="log/LogEntry.html" title="class in org.openqa.selenium.bidi.log">LogEntry</a>&gt;&nbsp;consumer,
+     <a href="log/FilterBy.html" title="class in org.openqa.selenium.bidi.log">FilterBy</a>&nbsp;filter)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -292,7 +323,28 @@ implements java.lang.AutoCloseable</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>onConsoleLog</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;onConsoleLog&#8203;(java.util.function.Consumer&lt;<a href="log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer)</pre>
+<pre class="methodSignature">@Deprecated
+public&nbsp;void&nbsp;onConsoleLog&#8203;(java.util.function.Consumer&lt;<a href="log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span></div>
+</li>
+</ul>
+<a id="onConsoleEntry(java.util.function.Consumer)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onConsoleEntry</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onConsoleEntry&#8203;(java.util.function.Consumer&lt;<a href="log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer)</pre>
+</li>
+</ul>
+<a id="onConsoleEntry(java.util.function.Consumer,org.openqa.selenium.bidi.log.FilterBy)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onConsoleEntry</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onConsoleEntry&#8203;(java.util.function.Consumer&lt;<a href="log/ConsoleLogEntry.html" title="class in org.openqa.selenium.bidi.log">ConsoleLogEntry</a>&gt;&nbsp;consumer,
+                           <a href="log/FilterBy.html" title="class in org.openqa.selenium.bidi.log">FilterBy</a>&nbsp;filter)</pre>
 </li>
 </ul>
 <a id="onJavaScriptLog(java.util.function.Consumer)">
@@ -302,6 +354,16 @@ implements java.lang.AutoCloseable</pre>
 <li class="blockList">
 <h4>onJavaScriptLog</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onJavaScriptLog&#8203;(java.util.function.Consumer&lt;<a href="log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer)</pre>
+</li>
+</ul>
+<a id="onJavaScriptLog(java.util.function.Consumer,org.openqa.selenium.bidi.log.FilterBy)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onJavaScriptLog</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onJavaScriptLog&#8203;(java.util.function.Consumer&lt;<a href="log/JavascriptLogEntry.html" title="class in org.openqa.selenium.bidi.log">JavascriptLogEntry</a>&gt;&nbsp;consumer,
+                            <a href="log/FilterBy.html" title="class in org.openqa.selenium.bidi.log">FilterBy</a>&nbsp;filter)</pre>
 </li>
 </ul>
 <a id="onJavaScriptException(java.util.function.Consumer)">
@@ -322,6 +384,16 @@ implements java.lang.AutoCloseable</pre>
 <pre class="methodSignature">public&nbsp;void&nbsp;onGenericLog&#8203;(java.util.function.Consumer&lt;<a href="log/GenericLogEntry.html" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a>&gt;&nbsp;consumer)</pre>
 </li>
 </ul>
+<a id="onGenericLog(java.util.function.Consumer,org.openqa.selenium.bidi.log.FilterBy)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onGenericLog</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onGenericLog&#8203;(java.util.function.Consumer&lt;<a href="log/GenericLogEntry.html" title="class in org.openqa.selenium.bidi.log">GenericLogEntry</a>&gt;&nbsp;consumer,
+                         <a href="log/FilterBy.html" title="class in org.openqa.selenium.bidi.log">FilterBy</a>&nbsp;filter)</pre>
+</li>
+</ul>
 <a id="onLog(java.util.function.Consumer)">
 <!--   -->
 </a>
@@ -329,6 +401,16 @@ implements java.lang.AutoCloseable</pre>
 <li class="blockList">
 <h4>onLog</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onLog&#8203;(java.util.function.Consumer&lt;<a href="log/LogEntry.html" title="class in org.openqa.selenium.bidi.log">LogEntry</a>&gt;&nbsp;consumer)</pre>
+</li>
+</ul>
+<a id="onLog(java.util.function.Consumer,org.openqa.selenium.bidi.log.FilterBy)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>onLog</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;onLog&#8203;(java.util.function.Consumer&lt;<a href="log/LogEntry.html" title="class in org.openqa.selenium.bidi.log">LogEntry</a>&gt;&nbsp;consumer,
+                  <a href="log/FilterBy.html" title="class in org.openqa.selenium.bidi.log">FilterBy</a>&nbsp;filter)</pre>
 </li>
 </ul>
 <a id="close()">

@@ -133,21 +133,38 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <tbody>
 <tr class="altColor">
 <td class="colFirst"><code><a href="../ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">ChromeDriverService.Builder.</span><code><span class="memberNameLink"><a href="../ChromeDriverService.Builder.html#withAllowedListIps(java.lang.String)">withAllowedListIps</a></span>&#8203;(java.lang.String&nbsp;allowedListIps)</code></th>
+<td class="colLast">
+<div class="block">Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
+ to the driver server.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">ChromeDriverService.Builder.</span><code><span class="memberNameLink"><a href="../ChromeDriverService.Builder.html#withAppendLog(boolean)">withAppendLog</a></span>&#8203;(boolean&nbsp;appendLog)</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server appending to log file.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code><a href="../ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">ChromeDriverService.Builder.</span><code><span class="memberNameLink"><a href="../ChromeDriverService.Builder.html#withBuildCheckDisabled(boolean)">withBuildCheckDisabled</a></span>&#8203;(boolean&nbsp;noBuildCheck)</code></th>
 <td class="colLast">
 <div class="block">Allows the driver to be used with potentially incompatible versions of the browser.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code><a href="../ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">ChromeDriverService.Builder.</span><code><span class="memberNameLink"><a href="../ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chrome.ChromeDriverLogLevel)">withLogLevel</a></span>&#8203;(<a href="../ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">ChromeDriverLogLevel</a>&nbsp;logLevel)</code></th>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <a href="../ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>withLogLevel(ChromiumDriverLogLevel)</code></a> instead.</div>
+</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../ChromeDriverService.Builder.html" title="class in org.openqa.selenium.chrome">ChromeDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">ChromeDriverService.Builder.</span><code><span class="memberNameLink"><a href="../ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)">withLogLevel</a></span>&#8203;(<a href="../../chromium/ChromiumDriverLogLevel.html" title="enum in org.openqa.selenium.chromium">ChromiumDriverLogLevel</a>&nbsp;logLevel)</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server verbosity.</div>
 </td>
@@ -178,7 +195,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colSecond" scope="row"><span class="typeNameLabel">ChromeDriverService.Builder.</span><code><span class="memberNameLink"><a href="../ChromeDriverService.Builder.html#withWhitelistedIps(java.lang.String)">withWhitelistedIps</a></span>&#8203;(java.lang.String&nbsp;allowedListIps)</code></th>
 <td class="colLast">
 <div class="block"><span class="deprecatedLabel">Deprecated.</span>
-<div class="deprecationComment">use <code>#withAllowedListIps(String)</code></div>
+<div class="deprecationComment">use <a href="../ChromeDriverService.Builder.html#withAllowedListIps(java.lang.String)"><code>withAllowedListIps(String)</code></a></div>
 </div>
 </td>
 </tr>

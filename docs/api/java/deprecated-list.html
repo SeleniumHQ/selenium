@@ -102,6 +102,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul>
 <li><a href="#interface">Interfaces</a></li>
 <li><a href="#class">Classes</a></li>
+<li><a href="#enum">Enums</a></li>
 <li><a href="#field">Fields</a></li>
 <li><a href="#method">Methods</a></li>
 </ul>
@@ -148,6 +149,28 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/support/events/EventFiringWebDriver.html" title="class in org.openqa.selenium.support.events">org.openqa.selenium.support.events.EventFiringWebDriver</a></th>
 <td class="colLast">
 <div class="deprecationComment">Use <a href="org/openqa/selenium/support/events/EventFiringDecorator.html" title="class in org.openqa.selenium.support.events"><code>EventFiringDecorator</code></a> and <a href="org/openqa/selenium/support/events/WebDriverListener.html" title="interface in org.openqa.selenium.support.events"><code>WebDriverListener</code></a> instead</div>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+<a id="enum">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<table class="deprecatedSummary">
+<caption><span>Enums</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Enum</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverLogLevel.html" title="enum in org.openqa.selenium.chrome">org.openqa.selenium.chrome.ChromeDriverLogLevel</a></th>
+<td class="colLast">
+<div class="deprecationComment">use <a href="org/openqa/selenium/chromium/ChromiumDriverLogLevel.html" title="enum in org.openqa.selenium.chromium"><code>ChromiumDriverLogLevel</code></a></div>
 </td>
 </tr>
 </tbody>
@@ -231,9 +254,59 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/bidi/LogInspector.html#onConsoleLog(java.util.function.Consumer)">org.openqa.selenium.bidi.LogInspector.onConsoleLog&#8203;(Consumer&lt;ConsoleLogEntry&gt;)</a></th>
+<td class="colLast"></td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chrome.ChromeDriverLogLevel)">org.openqa.selenium.chrome.ChromeDriverService.Builder.withLogLevel&#8203;(ChromeDriverLogLevel)</a></th>
+<td class="colLast">
+<div class="deprecationComment">use <a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> instead.</div>
+</td>
+</tr>
+<tr class="altColor">
 <th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withWhitelistedIps(java.lang.String)">org.openqa.selenium.chrome.ChromeDriverService.Builder.withWhitelistedIps&#8203;(String)</a></th>
 <td class="colLast">
-<div class="deprecationComment">use <code>#withAllowedListIps(String)</code></div>
+<div class="deprecationComment">use <a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withAllowedListIps(java.lang.String)"><code>ChromeDriverService.Builder.withAllowedListIps(String)</code></a></div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeDriverService.html#createServiceWithConfig(org.openqa.selenium.chrome.ChromeOptions)">org.openqa.selenium.chrome.ChromeDriverService.createServiceWithConfig&#8203;(ChromeOptions)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a>  }</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeOptions.html#getLogLevel()">org.openqa.selenium.chrome.ChromeOptions.getLogLevel()</a></th>
+<td class="colLast">
+<div class="deprecationComment">Log Level only applies to <a href="org/openqa/selenium/chrome/ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a>.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chrome/ChromeOptions.html#setLogLevel(org.openqa.selenium.chrome.ChromeDriverLogLevel)">org.openqa.selenium.chrome.ChromeOptions.setLogLevel&#8203;(ChromeDriverLogLevel)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/chrome/ChromeDriverService.Builder.html#withLogLevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>ChromeDriverService.Builder.withLogLevel(ChromiumDriverLogLevel)</code></a> to set log level.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/chromium/ChromiumOptions.html#setHeadless(boolean)">org.openqa.selenium.chromium.ChromiumOptions.setHeadless&#8203;(boolean)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/chromium/ChromiumOptions.html#addArguments(java.lang.String...)"><code>ChromiumOptions.addArguments(String...)</code></a>.
+ Recommended to use '--headless=chrome' as argument for browsers v94-108.
+ Recommended to use '--headless=new' as argument for browsers v109+.
+ Example: `addArguments("--headless=new")`.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/edge/EdgeDriverService.Builder.html#withLoglevel(java.lang.String)">org.openqa.selenium.edge.EdgeDriverService.Builder.withLoglevel&#8203;(String)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/edge/EdgeDriverService.Builder.html#withLoglevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>EdgeDriverService.Builder.withLoglevel(ChromiumDriverLogLevel)</code></a> instead.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colDeprecatedItemName" scope="row"><a href="org/openqa/selenium/firefox/FirefoxOptions.html#setHeadless(boolean)">org.openqa.selenium.firefox.FirefoxOptions.setHeadless&#8203;(boolean)</a></th>
+<td class="colLast">
+<div class="deprecationComment">Use <a href="org/openqa/selenium/firefox/FirefoxOptions.html#addArguments(java.lang.String...)"><code>FirefoxOptions.addArguments(String...)</code></a>.
+ Example: `addArguments("-headless")`.</div>
 </td>
 </tr>
 <tr class="rowColor">

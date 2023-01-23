@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -218,16 +218,25 @@ implements <a href="InputSource.html" title="interface in org.openqa.selenium.in
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createScroll(org.openqa.selenium.Point,int,int,java.time.Duration,org.openqa.selenium.interactions.WheelInput.ScrollOrigin)">createScroll</a></span>&#8203;(<a href="../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;start,
+            int&nbsp;deltaX,
+            int&nbsp;deltaY,
+            java.time.Duration&nbsp;duration,
+            <a href="WheelInput.ScrollOrigin.html" title="class in org.openqa.selenium.interactions">WheelInput.ScrollOrigin</a>&nbsp;origin)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#encode()">encode</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="SourceType.html" title="enum in org.openqa.selenium.interactions">SourceType</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getInputType()">getInputType</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getName()">getName</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -309,6 +318,19 @@ implements <a href="InputSource.html" title="interface in org.openqa.selenium.in
 <h4>createScroll</h4>
 <pre class="methodSignature">public&nbsp;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&nbsp;createScroll&#8203;(int&nbsp;x,
                                 int&nbsp;y,
+                                int&nbsp;deltaX,
+                                int&nbsp;deltaY,
+                                java.time.Duration&nbsp;duration,
+                                <a href="WheelInput.ScrollOrigin.html" title="class in org.openqa.selenium.interactions">WheelInput.ScrollOrigin</a>&nbsp;origin)</pre>
+</li>
+</ul>
+<a id="createScroll(org.openqa.selenium.Point,int,int,java.time.Duration,org.openqa.selenium.interactions.WheelInput.ScrollOrigin)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>createScroll</h4>
+<pre class="methodSignature">public&nbsp;<a href="Interaction.html" title="class in org.openqa.selenium.interactions">Interaction</a>&nbsp;createScroll&#8203;(<a href="../Point.html" title="class in org.openqa.selenium">Point</a>&nbsp;start,
                                 int&nbsp;deltaX,
                                 int&nbsp;deltaY,
                                 java.time.Duration&nbsp;duration,

@@ -43,7 +43,6 @@ org.openqa.selenium.grid.node.config
 org.openqa.selenium.grid.node.docker
 org.openqa.selenium.grid.node.httpd
 org.openqa.selenium.grid.node.local
-org.openqa.selenium.grid.node.locators
 org.openqa.selenium.grid.node.relay
 org.openqa.selenium.grid.node.remote
 org.openqa.selenium.grid.router

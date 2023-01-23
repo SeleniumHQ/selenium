@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
-var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":42,"i8":10,"i9":10,"i10":10,"i11":10};
+var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -183,7 +183,7 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -242,24 +242,33 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 <td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withLoglevel(java.lang.String)">withLoglevel</a></span>&#8203;(java.lang.String&nbsp;logLevel)</code></th>
 <td class="colLast">
-<div class="block">Configures the driver server log level.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use <a href="#withLoglevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>withLoglevel(ChromiumDriverLogLevel)</code></a> instead.</div>
+</div>
 </td>
 </tr>
 <tr id="i8" class="altColor">
+<td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withLoglevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)">withLoglevel</a></span>&#8203;(<a href="../chromium/ChromiumDriverLogLevel.html" title="enum in org.openqa.selenium.chromium">ChromiumDriverLogLevel</a>&nbsp;logLevel)</code></th>
+<td class="colLast">
+<div class="block">Configures the driver server log level.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withReadableTimestamp(java.lang.Boolean)">withReadableTimestamp</a></span>&#8203;(java.lang.Boolean&nbsp;readableTimestamp)</code></th>
 <td class="colLast">
 <div class="block">Configures the format of the logging for the driver server.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withSilent(boolean)">withSilent</a></span>&#8203;(boolean&nbsp;silent)</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server for silent output.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withVerbose(boolean)">withVerbose</a></span>&#8203;(boolean&nbsp;verbose)</code></th>
 <td class="colLast">
@@ -390,7 +399,21 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 <ul class="blockList">
 <li class="blockList">
 <h4>withLoglevel</h4>
-<pre class="methodSignature">public&nbsp;<a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a>&nbsp;withLoglevel&#8203;(java.lang.String&nbsp;logLevel)</pre>
+<pre class="methodSignature">@Deprecated
+public&nbsp;<a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a>&nbsp;withLoglevel&#8203;(java.lang.String&nbsp;logLevel)</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use <a href="#withLoglevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)"><code>withLoglevel(ChromiumDriverLogLevel)</code></a> instead.</div>
+</div>
+<div class="block">Configures the driver server log level.</div>
+</li>
+</ul>
+<a id="withLoglevel(org.openqa.selenium.chromium.ChromiumDriverLogLevel)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withLoglevel</h4>
+<pre class="methodSignature">public&nbsp;<a href="EdgeDriverService.Builder.html" title="class in org.openqa.selenium.edge">EdgeDriverService.Builder</a>&nbsp;withLoglevel&#8203;(<a href="../chromium/ChromiumDriverLogLevel.html" title="enum in org.openqa.selenium.chromium">ChromiumDriverLogLevel</a>&nbsp;logLevel)</pre>
 <div class="block">Configures the driver server log level.</div>
 </li>
 </ul>
