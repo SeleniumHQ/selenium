@@ -19,6 +19,18 @@ use assert_cmd::Command;
 
 use exitcode::UNAVAILABLE;
 
+use wiremock::MockServer;
+
+#[tokio::test]
+async fn ok_proxy_test() {
+    let mock_server = MockServer::start().await;
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    cmd.args(["--browser", "chrome", "--proxy", &mock_server.uri()])
+        .assert()
+        .success()
+        .code(0);
+}
+
 #[test]
 fn wrong_protocol_proxy_test() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
