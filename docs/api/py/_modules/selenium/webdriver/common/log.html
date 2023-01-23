@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.log &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.common.log &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -72,12 +72,11 @@
 
 
 <div class="viewcode-block" id="Log"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log">[docs]</a><span class="k">class</span> <span class="nc">Log</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class allows access to logging APIs that use the new WebDriver Bidi</span>
+    <span class="sd">&quot;&quot;&quot;This class allows access to logging APIs that use the new WebDriver Bidi</span>
 <span class="sd">    protocol.</span>
 
-<span class="sd">    This class is not to be used directly and should be used from the webdriver</span>
-<span class="sd">    base classes.</span>
+<span class="sd">    This class is not to be used directly and should be used from the</span>
+<span class="sd">    webdriver base classes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">,</span> <span class="n">bidi_session</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -90,8 +89,7 @@
 
 <div class="viewcode-block" id="Log.mutation_events"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log.mutation_events">[docs]</a>    <span class="nd">@asynccontextmanager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">mutation_events</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Listen for mutation events and emit them as they are found.</span>
+        <span class="sd">&quot;&quot;&quot;Listen for mutation events and emit them as they are found.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">             ::</span>
@@ -133,8 +131,8 @@
 
 <div class="viewcode-block" id="Log.add_js_error_listener"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log.add_js_error_listener">[docs]</a>    <span class="nd">@asynccontextmanager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">add_js_error_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Listen for JS errors and when the contextmanager exits check if there were JS Errors.</span>
+        <span class="sd">&quot;&quot;&quot;Listen for JS errors and when the contextmanager exits check if</span>
+<span class="sd">        there were JS Errors.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">             ::</span>
@@ -157,8 +155,7 @@
 
 <div class="viewcode-block" id="Log.add_listener"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.log.html#selenium.webdriver.common.log.Log.add_listener">[docs]</a>    <span class="nd">@asynccontextmanager</span>
     <span class="k">async</span> <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Listen for certain events that are passed in.</span>
+        <span class="sd">&quot;&quot;&quot;Listen for certain events that are passed in.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - event_type: The type of event that we want to look at.</span>
@@ -219,7 +216,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

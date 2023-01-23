@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.options &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.common.options &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -63,9 +63,7 @@
 
 
 <div class="viewcode-block" id="BaseOptions"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions">[docs]</a><span class="k">class</span> <span class="nc">BaseOptions</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for individual browser options</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Base class for individual browser options.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -78,7 +76,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span>
 
 <div class="viewcode-block" id="BaseOptions.set_capability"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.BaseOptions.set_capability">[docs]</a>    <span class="k">def</span> <span class="nf">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets a capability&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Sets a capability.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
     <span class="nd">@property</span>
@@ -90,9 +88,8 @@
 
     <span class="nd">@browser_version</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">browser_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Requires the major version of the browser to match provided value:</span>
-<span class="sd">        https://w3c.github.io/webdriver/#dfn-browser-version</span>
+        <span class="sd">&quot;&quot;&quot;Requires the major version of the browser to match provided value:</span>
+<span class="sd">        https://w3c.github.io/webdriver/#dfn-browser-version.</span>
 
 <span class="sd">        :param version: The required version of the browser</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -107,8 +104,8 @@
 
     <span class="nd">@platform_name</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">platform_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">platform</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Requires the platform to match the provided value: https://w3c.github.io/webdriver/#dfn-platform-name</span>
+        <span class="sd">&quot;&quot;&quot;Requires the platform to match the provided value:</span>
+<span class="sd">        https://w3c.github.io/webdriver/#dfn-platform-name.</span>
 
 <span class="sd">        :param platform: the required name of the platform</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -123,9 +120,8 @@
 
     <span class="nd">@page_load_strategy</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">page_load_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strategy</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Determines the point at which a navigation command is returned:</span>
-<span class="sd">        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies</span>
+        <span class="sd">&quot;&quot;&quot;Determines the point at which a navigation command is returned:</span>
+<span class="sd">        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.</span>
 
 <span class="sd">        :param strategy: the strategy corresponding to a document readiness state</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -143,9 +139,9 @@
 
     <span class="nd">@unhandled_prompt_behavior</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">unhandled_prompt_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">behavior</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        How the driver should respond when an alert is present and the command sent is not handling the alert:</span>
-<span class="sd">        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies</span>
+        <span class="sd">&quot;&quot;&quot;How the driver should respond when an alert is present and the</span>
+<span class="sd">        command sent is not handling the alert:</span>
+<span class="sd">        https://w3c.github.io/webdriver/#dfn-table-of-page-load-strategies.</span>
 
 <span class="sd">        :param behavior: behavior to use when an alert is encountered</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -166,9 +162,8 @@
 
     <span class="nd">@timeouts</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">timeouts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeouts</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        How long the driver should wait for actions to complete before returning an error</span>
-<span class="sd">        https://w3c.github.io/webdriver/#timeouts</span>
+        <span class="sd">&quot;&quot;&quot;How long the driver should wait for actions to complete before</span>
+<span class="sd">        returning an error https://w3c.github.io/webdriver/#timeouts.</span>
 
 <span class="sd">        :param timeouts: values in milliseconds for implicit wait, page load and script timeout</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -183,8 +178,7 @@
         <span class="n">android_activity</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">device_serial</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Enables mobile browser use for browsers that support it</span>
+        <span class="sd">&quot;&quot;&quot;Enables mobile browser use for browsers that support it.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">            android_activity: The name of the android package to start</span>
@@ -206,9 +200,9 @@
 
     <span class="nd">@accept_insecure_certs</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">accept_insecure_certs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Whether untrusted and self-signed TLS certificates are implicitly trusted:</span>
-<span class="sd">        https://w3c.github.io/webdriver/#dfn-insecure-tls-certificates</span>
+        <span class="sd">&quot;&quot;&quot;Whether untrusted and self-signed TLS certificates are implicitly</span>
+<span class="sd">        trusted: https://w3c.github.io/webdriver/#dfn-insecure-tls-</span>
+<span class="sd">        certificates.</span>
 
 <span class="sd">        :param value: whether to accept insecure certificates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -223,8 +217,8 @@
 
     <span class="nd">@strict_file_interactability</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">strict_file_interactability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Whether interactability checks will be applied to file type input elements. The default is false.</span>
+        <span class="sd">&quot;&quot;&quot;Whether interactability checks will be applied to file type input</span>
+<span class="sd">        elements. The default is false.</span>
 
 <span class="sd">        :param value: whether file interactability is strict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -239,9 +233,9 @@
 
     <span class="nd">@set_window_rect</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">set_window_rect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Whether the remote end supports all of the resizing and positioning commands. The default is false.</span>
-<span class="sd">        https://w3c.github.io/webdriver/#dfn-strict-file-interactability</span>
+        <span class="sd">&quot;&quot;&quot;Whether the remote end supports all of the resizing and positioning</span>
+<span class="sd">        commands. The default is false. https://w3c.github.io/webdriver/#dfn-</span>
+<span class="sd">        strict-file-interactability.</span>
 
 <span class="sd">        :param value: whether remote end must support setting window resizing and repositioning</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -284,8 +278,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span>
 
 <div class="viewcode-block" id="ArgOptions.add_argument"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions.add_argument">[docs]</a>    <span class="k">def</span> <span class="nf">add_argument</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argument</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Adds an argument to the list</span>
+        <span class="sd">&quot;&quot;&quot;Adds an argument to the list.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - Sets the arguments</span>
@@ -296,9 +289,8 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument can not be null&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArgOptions.ignore_local_proxy_environment_variables"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions.ignore_local_proxy_environment_variables">[docs]</a>    <span class="k">def</span> <span class="nf">ignore_local_proxy_environment_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from being picked up and used.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from</span>
+<span class="sd">        being picked up and used.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ignore_local_proxy</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="ArgOptions.to_capabilities"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.options.html#selenium.webdriver.common.options.ArgOptions.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -339,7 +331,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

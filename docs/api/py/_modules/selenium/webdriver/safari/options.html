@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.safari.options &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.safari.options &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -94,8 +94,7 @@
 
     <span class="nd">@binary_location</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Allows you to set the browser binary to launch</span>
+        <span class="sd">&quot;&quot;&quot;Allows you to set the browser binary to launch.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - value : path to the browser binary</span>
@@ -133,12 +132,10 @@
 
     <span class="nd">@automatic_inspection</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">automatic_inspection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the option Automatic Inspection to value</span>
+        <span class="sd">&quot;&quot;&quot;Sets the option Automatic Inspection to value.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: boolean value</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AUTOMATIC_INSPECTION</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -149,12 +146,10 @@
 
     <span class="nd">@automatic_profiling</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">automatic_profiling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the option Automatic Profiling to value</span>
+        <span class="sd">&quot;&quot;&quot;Sets the option Automatic Profiling to value.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: boolean value</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AUTOMATIC_PROFILING</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -165,12 +160,11 @@
 
     <span class="nd">@use_technology_preview</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">use_technology_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets browser name to Safari Technology Preview if value else to safari.</span>
+        <span class="sd">&quot;&quot;&quot;Sets browser name to Safari Technology Preview if value else to</span>
+<span class="sd">        safari.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: boolean value</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_capability</span><span class="p">(</span><span class="s2">&quot;browserName&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">SAFARI_TECH_PREVIEW</span> <span class="k">if</span> <span class="n">value</span> <span class="k">else</span> <span class="s2">&quot;safari&quot;</span><span class="p">)</span></div>
 </pre></div>
@@ -205,7 +199,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

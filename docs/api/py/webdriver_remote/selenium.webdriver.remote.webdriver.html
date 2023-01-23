@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.remote.webdriver &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.8 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -75,18 +75,17 @@
 <dl class="class">
 <dt id="selenium.webdriver.remote.webdriver.BaseWebDriver">
 <em class="property">class </em><code class="descclassname">selenium.webdriver.remote.webdriver.</code><code class="descname">BaseWebDriver</code><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#BaseWebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.BaseWebDriver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Abstract Base Class for all Webdriver subtypes.
-ABC’s allow custom implementations of Webdriver to be registered so that isinstance type checks
-will succeed.</p>
+<dd><p>Abstract Base Class for all Webdriver subtypes.</p>
+<p>ABC’s allow custom implementations of Webdriver to be registered so
+that isinstance type checks will succeed.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver">
 <em class="property">class </em><code class="descclassname">selenium.webdriver.remote.webdriver.</code><code class="descname">WebDriver</code><span class="sig-paren">(</span><em>command_executor='http://127.0.0.1:4444'</em>, <em>desired_capabilities=None</em>, <em>browser_profile=None</em>, <em>proxy=None</em>, <em>keep_alive=True</em>, <em>file_detector=None</em>, <em>options: Union[selenium.webdriver.common.options.BaseOptions</em>, <em>List[selenium.webdriver.common.options.BaseOptions]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Controls a browser by sending commands to a remote server.
-This server is expected to be running the WebDriver wire protocol
-as defined at
-<a class="reference external" href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol</a></p>
+<dd><p>Controls a browser by sending commands to a remote server. This server
+is expected to be running the WebDriver wire protocol as defined at
+<a class="reference external" href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -105,7 +104,8 @@ as defined at
 </tr>
 </tbody>
 </table>
-<p>Create a new driver that will issue commands using the wire protocol.</p>
+<p>Create a new driver that will issue commands using the wire
+protocol.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -190,7 +190,8 @@ driver.add_cookie({‘name’: ‘foo’, ‘value’: ‘bar’, ‘sameSite’
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.application_cache">
 <code class="descname">application_cache</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.application_cache" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a ApplicationCache Object to interact with the browser app cache</p>
+<dd><p>Returns a ApplicationCache Object to interact with the browser app
+cache.</p>
 </dd></dl>
 
 <dl class="method">
@@ -315,7 +316,7 @@ driver.add_cookie({‘name’: ‘foo’, ‘value’: ‘bar’, ‘sameSite’
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.desired_capabilities">
 <code class="descname">desired_capabilities</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.desired_capabilities" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the drivers current desired capabilities being used</p>
+<dd><p>returns the drivers current desired capabilities being used.</p>
 </dd></dl>
 
 <dl class="method">
@@ -395,8 +396,8 @@ driver.add_cookie({‘name’: ‘foo’, ‘value’: ‘bar’, ‘sameSite’
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.file_detector_context">
 <code class="descname">file_detector_context</code><span class="sig-paren">(</span><em>file_detector_class</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.file_detector_context"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.file_detector_context" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overrides the current file detector (if necessary) in limited context.
-Ensures the original file detector is set afterwards.</p>
+<dd><p>Overrides the current file detector (if necessary) in limited
+context. Ensures the original file detector is set afterwards.</p>
 <p>Example:</p>
 <dl class="docutils">
 <dt>with webdriver.file_detector_context(UselessFileDetector):</dt>
@@ -428,7 +429,7 @@ and used as a file detector during the duration of the context manager.</dd>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_element">
-<code class="descname">find_element</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value: Optional[str</em>, <em>None] = None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_element" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_element</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find an element given a By strategy and locator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -448,7 +449,7 @@ and used as a file detector during the duration of the context manager.</dd>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.find_elements">
-<code class="descname">find_elements</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value: Optional[str</em>, <em>None] = None</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements" title="Permalink to this definition">¶</a></dt>
+<code class="descname">find_elements</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.find_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.find_elements" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find elements given a By strategy and locator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -486,7 +487,7 @@ and used as a file detector during the duration of the context manager.</dd>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.fullscreen_window">
 <code class="descname">fullscreen_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.fullscreen_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.fullscreen_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invokes the window manager-specific ‘full screen’ operation</p>
+<dd><p>Invokes the window manager-specific ‘full screen’ operation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -497,8 +498,9 @@ and used as a file detector during the duration of the context manager.</dd>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_cookie">
-<code class="descname">get_cookie</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; Optional[Dict, None]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_cookie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_cookie" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a single cookie by name. Returns the cookie if found, None if not.</p>
+<code class="descname">get_cookie</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; Optional[Dict]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_cookie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_cookie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a single cookie by name. Returns the cookie if found, None if
+not.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -515,7 +517,8 @@ and used as a file detector during the duration of the context manager.</dd>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_cookies">
 <code class="descname">get_cookies</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[dict]<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_cookies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_cookies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a set of dictionaries, corresponding to cookies visible in the current session.</p>
+<dd><p>Returns a set of dictionaries, corresponding to cookies visible in
+the current session.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -538,7 +541,7 @@ and used as a file detector during the duration of the context manager.</dd>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_log">
 <code class="descname">get_log</code><span class="sig-paren">(</span><em>log_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the log for a given log type</p>
+<dd><p>Gets the log for a given log type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -568,10 +571,8 @@ and used as a file detector during the duration of the context manager.</dd>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_base64">
 <code class="descname">get_screenshot_as_base64</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_screenshot_as_base64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_base64" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Gets the screenshot of the current window as a base64 encoded string</dt>
-<dd>which is useful in embedded images in HTML.</dd>
-</dl>
+<dd><p>Gets the screenshot of the current window as a base64 encoded string
+which is useful in embedded images in HTML.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -588,11 +589,9 @@ and used as a file detector during the duration of the context manager.</dd>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_file">
 <code class="descname">get_screenshot_as_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_screenshot_as_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_screenshot_as_file" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Saves a screenshot of the current window to a PNG image file. Returns</dt>
-<dd>False if there is any IOError, else returns True. Use full paths in
-your filename.</dd>
-</dl>
+<dd><p>Saves a screenshot of the current window to a PNG image file.
+Returns False if there is any IOError, else returns True. Use full
+paths in your filename.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -649,8 +648,8 @@ should end with a <cite>.png</cite> extension.</li>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.get_window_rect">
 <code class="descname">get_window_rect</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.get_window_rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.get_window_rect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the x, y coordinates of the window as well as height and width of
-the current window.</p>
+<dd><p>Gets the x, y coordinates of the window as well as height and width
+of the current window.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -684,12 +683,10 @@ the current window.</p>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.implicitly_wait">
 <code class="descname">implicitly_wait</code><span class="sig-paren">(</span><em>time_to_wait: float</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.implicitly_wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.implicitly_wait" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Sets a sticky timeout to implicitly wait for an element to be found,</dt>
-<dd>or a command to complete. This method only needs to be called one
-time per session. To set the timeout for calls to
-execute_async_script, see set_script_timeout.</dd>
-</dl>
+<dd><p>Sets a sticky timeout to implicitly wait for an element to be found,
+or a command to complete. This method only needs to be called one time
+per session. To set the timeout for calls to execute_async_script, see
+set_script_timeout.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -711,7 +708,8 @@ execute_async_script, see set_script_timeout.</dd>
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.log_types">
 <code class="descname">log_types</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.log_types" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets a list of the available log types. This only works with w3c compliant browsers.</p>
+<dd><p>Gets a list of the available log types. This only works with w3c
+compliant browsers.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -728,13 +726,13 @@ execute_async_script, see set_script_timeout.</dd>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.maximize_window">
 <code class="descname">maximize_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.maximize_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.maximize_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Maximizes the current window that webdriver is using</p>
+<dd><p>Maximizes the current window that webdriver is using.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.minimize_window">
 <code class="descname">minimize_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.minimize_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.minimize_window" title="Permalink to this definition">¶</a></dt>
-<dd><p>Invokes the window manager-specific ‘minimize’ operation</p>
+<dd><p>Invokes the window manager-specific ‘minimize’ operation.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -762,7 +760,7 @@ execute_async_script, see set_script_timeout.</dd>
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.orientation">
 <code class="descname">orientation</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.orientation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the current orientation of the device</p>
+<dd><p>Gets the current orientation of the device.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -796,14 +794,16 @@ execute_async_script, see set_script_timeout.</dd>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.pin_script">
 <code class="descname">pin_script</code><span class="sig-paren">(</span><em>script: str</em>, <em>script_key=None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.script_key.ScriptKey<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.pin_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.pin_script" title="Permalink to this definition">¶</a></dt>
-<dd><p>Store common javascript scripts to be executed later by a unique hashable ID.</p>
+<dd><p>Store common javascript scripts to be executed later by a unique
+hashable ID.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.print_page">
-<code class="descname">print_page</code><span class="sig-paren">(</span><em>print_options: Optional[selenium.webdriver.common.print_page_options.PrintOptions</em>, <em>None] = None</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.print_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.print_page" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes PDF of the current page.
-The driver makes a best effort to return a PDF based on the provided parameters.</p>
+<code class="descname">print_page</code><span class="sig-paren">(</span><em>print_options: Optional[selenium.webdriver.common.print_page_options.PrintOptions] = None</em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.print_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.print_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes PDF of the current page.</p>
+<p>The driver makes a best effort to return a PDF based on the
+provided parameters.</p>
 </dd></dl>
 
 <dl class="method">
@@ -855,18 +855,17 @@ The driver makes a best effort to return a PDF based on the provided parameters.
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.remove_virtual_authenticator">
 <code class="descname">remove_virtual_authenticator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.remove_virtual_authenticator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.remove_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes a previously added virtual authenticator. The authenticator is no
-longer valid after removal, so no methods may be called.</p>
+<dd><p>Removes a previously added virtual authenticator.</p>
+<p>The authenticator is no longer valid after removal, so no
+methods may be called.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.save_screenshot">
 <code class="descname">save_screenshot</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.save_screenshot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.save_screenshot" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Saves a screenshot of the current window to a PNG image file. Returns</dt>
-<dd>False if there is any IOError, else returns True. Use full paths in
-your filename.</dd>
-</dl>
+<dd><p>Saves a screenshot of the current window to a PNG image file.
+Returns False if there is any IOError, else returns True. Use full
+paths in your filename.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -889,10 +888,8 @@ should end with a <cite>.png</cite> extension.</li>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.set_page_load_timeout">
 <code class="descname">set_page_load_timeout</code><span class="sig-paren">(</span><em>time_to_wait: float</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_page_load_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_page_load_timeout" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Set the amount of time to wait for a page load to complete</dt>
-<dd>before throwing an error.</dd>
-</dl>
+<dd><p>Set the amount of time to wait for a page load to complete before
+throwing an error.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -914,10 +911,8 @@ should end with a <cite>.png</cite> extension.</li>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.set_script_timeout">
 <code class="descname">set_script_timeout</code><span class="sig-paren">(</span><em>time_to_wait: float</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_script_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_script_timeout" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Set the amount of time that the script should wait during an</dt>
-<dd>execute_async_script call before throwing an error.</dd>
-</dl>
+<dd><p>Set the amount of time that the script should wait during an
+execute_async_script call before throwing an error.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -939,8 +934,9 @@ should end with a <cite>.png</cite> extension.</li>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.set_user_verified">
 <code class="descname">set_user_verified</code><span class="sig-paren">(</span><em>verified: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_user_verified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_user_verified" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets whether the authenticator will simulate success or fail on user verification.
-verified: True if the authenticator will pass user verification, False otherwise.</p>
+<dd><p>Sets whether the authenticator will simulate success or fail on user
+verification.</p>
+<p>verified: True if the authenticator will pass user verification, False otherwise.</p>
 </dd></dl>
 
 <dl class="method">
@@ -969,8 +965,8 @@ verified: True if the authenticator will pass user verification, False otherwise
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.set_window_rect">
 <code class="descname">set_window_rect</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>width=None</em>, <em>height=None</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.set_window_rect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.set_window_rect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the x, y coordinates of the window as well as height and width of
-the current window. This method is only supported for W3C compatible
+<dd><p>Sets the x, y coordinates of the window as well as height and width
+of the current window. This method is only supported for W3C compatible
 browsers; other browsers should use <cite>set_window_position</cite> and
 <cite>set_window_size</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1014,8 +1010,8 @@ browsers; other browsers should use <cite>set_window_position</cite> and
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.start_client">
 <code class="descname">start_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.start_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.start_client" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called before starting a new session. This method may be overridden
-to define custom startup behavior.</p>
+<dd><p>Called before starting a new session.</p>
+<p>This method may be overridden to define custom startup behavior.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1039,8 +1035,9 @@ to define custom startup behavior.</p>
 <dl class="method">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.stop_client">
 <code class="descname">stop_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/remote/webdriver.html#WebDriver.stop_client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.stop_client" title="Permalink to this definition">¶</a></dt>
-<dd><p>Called after executing a quit command. This method may be overridden
-to define custom shutdown behavior.</p>
+<dd><p>Called after executing a quit command.</p>
+<p>This method may be overridden to define custom shutdown
+behavior.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1074,7 +1071,7 @@ to define custom shutdown behavior.</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.remote.webdriver.WebDriver.timeouts">
 <code class="descname">timeouts</code><a class="headerlink" href="#selenium.webdriver.remote.webdriver.WebDriver.timeouts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all the timeouts that have been set on the current session</p>
+<dd><p>Get all the timeouts that have been set on the current session.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1196,7 +1193,7 @@ to define custom shutdown behavior.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.8 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.remote.switch_to &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.remote.switch_to &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -73,8 +73,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">active_element</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the element with focus, or BODY if nothing has focus.</span>
+        <span class="sd">&quot;&quot;&quot;Returns the element with focus, or BODY if nothing has focus.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            ::</span>
@@ -85,8 +84,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">alert</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Alert</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Switches focus to an alert on the page.</span>
+        <span class="sd">&quot;&quot;&quot;Switches focus to an alert on the page.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            ::</span>
@@ -98,8 +96,7 @@
         <span class="k">return</span> <span class="n">alert</span>
 
 <div class="viewcode-block" id="SwitchTo.default_content"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.default_content">[docs]</a>    <span class="k">def</span> <span class="nf">default_content</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Switch focus to the default frame.</span>
+        <span class="sd">&quot;&quot;&quot;Switch focus to the default frame.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            ::</span>
@@ -109,8 +106,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_FRAME</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="SwitchTo.frame"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.frame">[docs]</a>    <span class="k">def</span> <span class="nf">frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_reference</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Switches focus to the specified frame, by index, name, or webelement.</span>
+        <span class="sd">&quot;&quot;&quot;Switches focus to the specified frame, by index, name, or</span>
+<span class="sd">        webelement.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - frame_reference: The name of the window to switch to, an integer representing the index,</span>
@@ -149,9 +146,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_w3c_window</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="s2">&quot;handle&quot;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="SwitchTo.parent_frame"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.parent_frame">[docs]</a>    <span class="k">def</span> <span class="nf">parent_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Switches focus to the parent context. If the current context is the top</span>
-<span class="sd">        level browsing context, the context remains unchanged.</span>
+        <span class="sd">&quot;&quot;&quot;Switches focus to the parent context. If the current context is the</span>
+<span class="sd">        top level browsing context, the context remains unchanged.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            ::</span>
@@ -161,8 +157,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">SWITCH_TO_PARENT_FRAME</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SwitchTo.window"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.switch_to.html#selenium.webdriver.remote.switch_to.SwitchTo.window">[docs]</a>    <span class="k">def</span> <span class="nf">window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window_name</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Switches focus to the specified window.</span>
+        <span class="sd">&quot;&quot;&quot;Switches focus to the specified window.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - window_name: The name or window handle of the window to switch to.</span>
@@ -224,7 +219,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

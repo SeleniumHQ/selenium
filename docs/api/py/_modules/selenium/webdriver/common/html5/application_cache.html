@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.html5.application_cache &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.common.html5.application_cache &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,9 +55,7 @@
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The ApplicationCache implementation.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;The ApplicationCache implementation.&quot;&quot;&quot;</span>
 
 
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -66,7 +64,6 @@
 
 
 <div class="viewcode-block" id="ApplicationCache"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.html5.application_cache.html#selenium.webdriver.common.html5.application_cache.ApplicationCache">[docs]</a><span class="k">class</span> <span class="nc">ApplicationCache</span><span class="p">:</span>
-
     <span class="n">UNCACHED</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">IDLE</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="n">CHECKING</span> <span class="o">=</span> <span class="mi">2</span>
@@ -75,8 +72,7 @@
     <span class="n">OBSOLETE</span> <span class="o">=</span> <span class="mi">5</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Creates a new Application Cache.</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new Application Cache.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - driver: The WebDriver instance which performs user actions.</span>
@@ -90,9 +86,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a current status of application cache.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Returns a current status of application cache.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_APP_CACHE_STATUS</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 </pre></div>
 
@@ -126,7 +120,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

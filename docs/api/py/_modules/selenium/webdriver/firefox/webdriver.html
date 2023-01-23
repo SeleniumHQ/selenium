@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.firefox.webdriver &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -78,7 +78,6 @@
 
 
 <div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
-
     <span class="n">CONTEXT_CHROME</span> <span class="o">=</span> <span class="s2">&quot;chrome&quot;</span>
     <span class="n">CONTEXT_CONTENT</span> <span class="o">=</span> <span class="s2">&quot;content&quot;</span>
 
@@ -95,8 +94,8 @@
         <span class="n">service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">desired_capabilities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">log_path</span><span class="o">=</span><span class="n">DEFAULT_LOG_PATH</span><span class="p">,</span>
-        <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">):</span>
+        <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Todo: Why is this now unused?</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Starts a new local session of Firefox.</span>
 
 <span class="sd">        Based on the combination and specificity of the various keyword</span>
@@ -267,9 +266,9 @@
 
 <div class="viewcode-block" id="WebDriver.context"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.context">[docs]</a>    <span class="nd">@contextmanager</span>
     <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets the context that Selenium commands are running in using</span>
-<span class="sd">        a `with` statement. The state of the context on the server is</span>
-<span class="sd">        saved before entering the block, and restored upon exiting it.</span>
+        <span class="sd">&quot;&quot;&quot;Sets the context that Selenium commands are running in using a</span>
+<span class="sd">        `with` statement. The state of the context on the server is saved</span>
+<span class="sd">        before entering the block, and restored upon exiting it.</span>
 
 <span class="sd">        :param context: Context, may be one of the class properties</span>
 <span class="sd">            `CONTEXT_CHROME` or `CONTEXT_CONTENT`.</span>
@@ -288,8 +287,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="n">initial_context</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebDriver.install_addon"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.install_addon">[docs]</a>    <span class="k">def</span> <span class="nf">install_addon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">temporary</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Installs Firefox addon.</span>
+        <span class="sd">&quot;&quot;&quot;Installs Firefox addon.</span>
 
 <span class="sd">        Returns identifier of installed addon. This identifier can later</span>
 <span class="sd">        be used to uninstall addon.</span>
@@ -319,8 +317,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;INSTALL_ADDON&quot;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="WebDriver.uninstall_addon"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.uninstall_addon">[docs]</a>    <span class="k">def</span> <span class="nf">uninstall_addon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Uninstalls Firefox addon using its identifier.</span>
+        <span class="sd">&quot;&quot;&quot;Uninstalls Firefox addon using its identifier.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            ::</span>
@@ -330,10 +327,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UNINSTALL_ADDON&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">identifier</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_file"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_file">[docs]</a>    <span class="k">def</span> <span class="nf">get_full_page_screenshot_as_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Saves a full document screenshot of the current window to a PNG image file. Returns</span>
-<span class="sd">           False if there is any IOError, else returns True. Use full paths in</span>
-<span class="sd">           your filename.</span>
+        <span class="sd">&quot;&quot;&quot;Saves a full document screenshot of the current window to a PNG</span>
+<span class="sd">        image file. Returns False if there is any IOError, else returns True.</span>
+<span class="sd">        Use full paths in your filename.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - filename: The full path you wish to save your screenshot to. This</span>
@@ -360,10 +356,9 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="WebDriver.save_full_page_screenshot"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.save_full_page_screenshot">[docs]</a>    <span class="k">def</span> <span class="nf">save_full_page_screenshot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Saves a full document screenshot of the current window to a PNG image file. Returns</span>
-<span class="sd">           False if there is any IOError, else returns True. Use full paths in</span>
-<span class="sd">           your filename.</span>
+        <span class="sd">&quot;&quot;&quot;Saves a full document screenshot of the current window to a PNG</span>
+<span class="sd">        image file. Returns False if there is any IOError, else returns True.</span>
+<span class="sd">        Use full paths in your filename.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - filename: The full path you wish to save your screenshot to. This</span>
@@ -377,8 +372,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_png"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_png">[docs]</a>    <span class="k">def</span> <span class="nf">get_full_page_screenshot_as_png</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the full document screenshot of the current window as a binary data.</span>
+        <span class="sd">&quot;&quot;&quot;Gets the full document screenshot of the current window as a binary</span>
+<span class="sd">        data.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            ::</span>
@@ -388,9 +383,8 @@
         <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_full_page_screenshot_as_base64</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="WebDriver.get_full_page_screenshot_as_base64"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.webdriver.html#selenium.webdriver.firefox.webdriver.WebDriver.get_full_page_screenshot_as_base64">[docs]</a>    <span class="k">def</span> <span class="nf">get_full_page_screenshot_as_base64</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the full document screenshot of the current window as a base64 encoded string</span>
-<span class="sd">           which is useful in embedded images in HTML.</span>
+        <span class="sd">&quot;&quot;&quot;Gets the full document screenshot of the current window as a base64</span>
+<span class="sd">        encoded string which is useful in embedded images in HTML.</span>
 
 <span class="sd">        :Usage:</span>
 <span class="sd">            ::</span>
@@ -430,7 +424,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.firefox.extension_connection &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.firefox.extension_connection &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -90,7 +90,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">add_extension</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">launch_browser</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profile</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
-        <span class="n">_URL</span> <span class="o">=</span> <span class="s2">&quot;http://</span><span class="si">%s</span><span class="s2">:</span><span class="si">%d</span><span class="s2">/hub&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">HOST</span><span class="p">,</span> <span class="n">PORT</span><span class="p">)</span>
+        <span class="n">_URL</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">HOST</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">PORT</span><span class="si">}</span><span class="s2">/hub&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_URL</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ExtensionConnection.quit"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnection.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessionId</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -106,7 +106,7 @@
 <div class="viewcode-block" id="ExtensionConnection.connect_and_quit"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnection.connect_and_quit">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">connect_and_quit</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Connects to an running browser and quit immediately.&quot;&quot;&quot;</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/extensions/firefox/quit&quot;</span> <span class="o">%</span> <span class="n">_URL</span><span class="p">)</span></div>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_URL</span><span class="si">}</span><span class="s2">/extensions/firefox/quit&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ExtensionConnection.is_connectable"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnection.is_connectable">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
@@ -153,7 +153,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

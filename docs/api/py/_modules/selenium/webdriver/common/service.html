@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.service &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.common.service &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -80,8 +80,9 @@
 
 
 <div class="viewcode-block" id="Service"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service">[docs]</a><span class="k">class</span> <span class="nc">Service</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The abstract base class for all service objects.  Services typically launch a child program</span>
-<span class="sd">    in a new process as an interim process to communicate with a browser.</span>
+    <span class="sd">&quot;&quot;&quot;The abstract base class for all service objects.  Services typically</span>
+<span class="sd">    launch a child program in a new process as an interim process to</span>
+<span class="sd">    communicate with a browser.</span>
 
 <span class="sd">    :param executable: install path of the executable.</span>
 <span class="sd">    :param port: Port for the service to run on, defaults to 0 where the operating system will decide.</span>
@@ -108,9 +109,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">service_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets the url of the Service</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Gets the url of the Service.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">join_host_port</span><span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="Service.command_line_args"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.command_line_args">[docs]</a>    <span class="nd">@abstractmethod</span>
@@ -119,8 +118,7 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This method needs to be implemented in a sub class&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Service.start"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Starts the Service.</span>
+        <span class="sd">&quot;&quot;&quot;Starts the Service.</span>
 
 <span class="sd">        :Exceptions:</span>
 <span class="sd">         - WebDriverException : Raised either when it can&#39;t start the service</span>
@@ -132,6 +130,7 @@
             <span class="k">if</span> <span class="s2">&quot;executable needs to be in PATH&quot;</span> <span class="ow">in</span> <span class="n">err</span><span class="o">.</span><span class="n">msg</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;driver not found in PATH, trying Selenium Manager&quot;</span><span class="p">)</span>
                 <span class="n">browser</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">path</span> <span class="o">=</span> <span class="n">SeleniumManager</span><span class="p">()</span><span class="o">.</span><span class="n">driver_location</span><span class="p">(</span><span class="n">browser</span><span class="p">)</span>
                 <span class="k">except</span> <span class="n">WebDriverException</span> <span class="k">as</span> <span class="n">new_err</span><span class="p">:</span>
@@ -158,15 +157,13 @@
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Service </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2"> unexpectedly exited. Status code was: </span><span class="si">{</span><span class="n">return_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Service.is_connectable"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.is_connectable">[docs]</a>    <span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Establishes a socket connection to determine if the service running on</span>
-<span class="sd">        the port is accessible.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Establishes a socket connection to determine if the service running</span>
+<span class="sd">        on the port is accessible.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Service.send_remote_shutdown_command"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.send_remote_shutdown_command">[docs]</a>    <span class="k">def</span> <span class="nf">send_remote_shutdown_command</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Dispatch an HTTP request to the shutdown endpoint for the service in an</span>
-<span class="sd">        attempt to stop it.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Dispatch an HTTP request to the shutdown endpoint for the service in</span>
+<span class="sd">        an attempt to stop it.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">service_url</span><span class="si">}</span><span class="s2">/shutdown&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">URLError</span><span class="p">:</span>
@@ -178,9 +175,7 @@
             <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Service.stop"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Stops the service.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Stops the service.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">!=</span> <span class="n">PIPE</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">==</span> <span class="n">DEVNULL</span> <span class="ow">and</span> <span class="n">_HAS_NATIVE_DEVNULL</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># Todo: Be explicit in what we are catching here.</span>
@@ -197,10 +192,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_terminate_process</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_terminate_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Terminate the child process.  On POSIX this attempts a graceful</span>
-<span class="sd">        SIGTERM followed by a SIGKILL, on a Windows OS kill is an alias to</span>
-<span class="sd">        terminate.  Terminating does not raise itself if something has gone</span>
-<span class="sd">        wrong but (currently) silently ignores errors here.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Terminate the child process.</span>
+
+<span class="sd">        On POSIX this attempts a graceful SIGTERM followed by a SIGKILL,</span>
+<span class="sd">        on a Windows OS kill is an alias to terminate.  Terminating does</span>
+<span class="sd">        not raise itself if something has gone wrong but (currently)</span>
+<span class="sd">        silently ignores errors here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">stderr</span>
             <span class="k">for</span> <span class="n">stream</span> <span class="ow">in</span> <span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">:</span>
@@ -227,8 +225,7 @@
             <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_start_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Creates a subprocess by executing the command provided.</span>
+        <span class="sd">&quot;&quot;&quot;Creates a subprocess by executing the command provided.</span>
 
 <span class="sd">        :param cmd: full command to execute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -294,7 +291,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

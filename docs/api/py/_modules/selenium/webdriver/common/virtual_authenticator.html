@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.common.virtual_authenticator &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -62,99 +62,50 @@
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 
 
-<div class="viewcode-block" id="Protocol"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol">[docs]</a><span class="k">class</span> <span class="nc">Protocol</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Protocol to communicate with the authenticator.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Protocol"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol">[docs]</a><span class="k">class</span> <span class="nc">Protocol</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Protocol to communicate with the authenticator.&quot;&quot;&quot;</span>
 
-    <span class="n">CTAP2</span> <span class="o">=</span> <span class="s2">&quot;ctap2&quot;</span>
-    <span class="n">U2F</span> <span class="o">=</span> <span class="s2">&quot;ctap1/u2f&quot;</span></div>
+    <span class="n">CTAP2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ctap2&quot;</span>
+    <span class="n">U2F</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ctap1/u2f&quot;</span></div>
 
 
-<div class="viewcode-block" id="Transport"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport">[docs]</a><span class="k">class</span> <span class="nc">Transport</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Transport method to communicate with the authenticator.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Transport"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport">[docs]</a><span class="k">class</span> <span class="nc">Transport</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Transport method to communicate with the authenticator.&quot;&quot;&quot;</span>
 
-    <span class="n">BLE</span> <span class="o">=</span> <span class="s2">&quot;ble&quot;</span>
-    <span class="n">USB</span> <span class="o">=</span> <span class="s2">&quot;usb&quot;</span>
-    <span class="n">NFC</span> <span class="o">=</span> <span class="s2">&quot;nfc&quot;</span>
-    <span class="n">INTERNAL</span> <span class="o">=</span> <span class="s2">&quot;internal&quot;</span></div>
+    <span class="n">BLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ble&quot;</span>
+    <span class="n">USB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;usb&quot;</span>
+    <span class="n">NFC</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;nfc&quot;</span>
+    <span class="n">INTERNAL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;internal&quot;</span></div>
 
 
 <div class="viewcode-block" id="VirtualAuthenticatorOptions"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions">[docs]</a><span class="k">class</span> <span class="nc">VirtualAuthenticatorOptions</span><span class="p">:</span>
-
+    <span class="c1"># These are so unnecessary but are now public API so we can&#39;t remove them without deprecating first.</span>
+    <span class="c1"># These should not be class level state in here.</span>
     <span class="n">Protocol</span> <span class="o">=</span> <span class="n">Protocol</span>
     <span class="n">Transport</span> <span class="o">=</span> <span class="n">Transport</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Constructor. Initialize VirtualAuthenticatorOptions object.</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Protocol</span><span class="o">.</span><span class="n">CTAP2</span><span class="p">,</span>
+        <span class="n">transport</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Transport</span><span class="o">.</span><span class="n">USB</span><span class="p">,</span>
+        <span class="n">has_resident_key</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">has_user_verification</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">is_user_consenting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">is_user_verified</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Constructor.</span>
 
-<span class="sd">        :default:</span>
-<span class="sd">          - protocol: Protocol.CTAP2</span>
-<span class="sd">          - transport: Transport.USB</span>
-<span class="sd">          - hasResidentKey: False</span>
-<span class="sd">          - hasUserVerification: False</span>
-<span class="sd">          - isUserConsenting: True</span>
-<span class="sd">          - isUserVerified: False</span>
+<span class="sd">        Initialize VirtualAuthenticatorOptions object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_protocol</span><span class="p">:</span> <span class="n">Protocol</span> <span class="o">=</span> <span class="n">Protocol</span><span class="o">.</span><span class="n">CTAP2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transport</span><span class="p">:</span> <span class="n">Transport</span> <span class="o">=</span> <span class="n">Transport</span><span class="o">.</span><span class="n">USB</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_has_resident_key</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_has_user_verification</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_consenting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_verified</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">protocol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">transport</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_resident_key</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">has_resident_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_user_verification</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">has_user_verification</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_user_consenting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">is_user_consenting</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_user_verified</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">is_user_verified</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_protocol</span><span class="o">.</span><span class="n">value</span>
-
-    <span class="nd">@protocol</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="n">Protocol</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_protocol</span> <span class="o">=</span> <span class="n">protocol</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">transport</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transport</span><span class="o">.</span><span class="n">value</span>
-
-    <span class="nd">@transport</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">transport</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transport</span><span class="p">:</span> <span class="n">Transport</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_transport</span> <span class="o">=</span> <span class="n">transport</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">has_resident_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_resident_key</span>
-
-    <span class="nd">@has_resident_key</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">has_resident_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_has_resident_key</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">has_user_verification</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_user_verification</span>
-
-    <span class="nd">@has_user_verification</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">has_user_verification</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_has_user_verification</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_user_consenting</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_consenting</span>
-
-    <span class="nd">@is_user_consenting</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">is_user_consenting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_consenting</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_user_verified</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_verified</span>
-
-    <span class="nd">@is_user_verified</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">is_user_verified</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_is_user_verified</span> <span class="o">=</span> <span class="n">value</span>
-
-<div class="viewcode-block" id="VirtualAuthenticatorOptions.to_dict"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]:</span>
+<div class="viewcode-block" id="VirtualAuthenticatorOptions.to_dict"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]:</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s2">&quot;protocol&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">protocol</span><span class="p">,</span>
             <span class="s2">&quot;transport&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">transport</span><span class="p">,</span>
@@ -176,7 +127,7 @@
         <span class="n">sign_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Constructor. A credential stored in a virtual authenticator.</span>
-<span class="sd">        https://w3c.github.io/webauthn/#credential-parameters</span>
+<span class="sd">        https://w3c.github.io/webauthn/#credential-parameters.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">            - credential_id (bytes): Unique base64 encoded string.</span>
@@ -283,9 +234,8 @@
 
 
 <div class="viewcode-block" id="required_chromium_based_browser"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser">[docs]</a><span class="k">def</span> <span class="nf">required_chromium_based_browser</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A decorator to ensure that the client used is a chromium based browser.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A decorator to ensure that the client used is a chromium based</span>
+<span class="sd">    browser.&quot;&quot;&quot;</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -299,9 +249,8 @@
 
 
 <div class="viewcode-block" id="required_virtual_authenticator"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator">[docs]</a><span class="k">def</span> <span class="nf">required_virtual_authenticator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A decorator to ensure that the function is called with a virtual authenticator.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;A decorator to ensure that the function is called with a virtual</span>
+<span class="sd">    authenticator.&quot;&quot;&quot;</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="nd">@required_chromium_based_browser</span>
@@ -343,7 +292,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

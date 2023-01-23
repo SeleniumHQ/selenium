@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.chromium.webdriver &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.chromium.webdriver &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -70,9 +70,8 @@
 
 
 <div class="viewcode-block" id="ChromiumDriver"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver">[docs]</a><span class="k">class</span> <span class="nc">ChromiumDriver</span><span class="p">(</span><span class="n">RemoteWebDriver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Controls the WebDriver instance of ChromiumDriver and allows you to drive the browser.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Controls the WebDriver instance of ChromiumDriver and allows you to</span>
+<span class="sd">    drive the browser.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -85,10 +84,9 @@
         <span class="n">service_log_path</span><span class="o">=</span><span class="n">DEFAULT_SERVICE_LOG_PATH</span><span class="p">,</span>
         <span class="n">service</span><span class="p">:</span> <span class="n">Service</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keep_alive</span><span class="o">=</span><span class="n">DEFAULT_KEEP_ALIVE</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Creates a new WebDriver instance of the ChromiumDriver.</span>
-<span class="sd">        Starts the service and then creates new WebDriver instance of ChromiumDriver.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new WebDriver instance of the ChromiumDriver. Starts the</span>
+<span class="sd">        service and then creates new WebDriver instance of ChromiumDriver.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - browser_name - Browser name used when matching capabilities.</span>
@@ -163,8 +161,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;launchApp&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.get_network_conditions"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_network_conditions">[docs]</a>    <span class="k">def</span> <span class="nf">get_network_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Gets Chromium network emulation settings.</span>
+        <span class="sd">&quot;&quot;&quot;Gets Chromium network emulation settings.</span>
 
 <span class="sd">        :Returns:</span>
 <span class="sd">            A dict. For example:</span>
@@ -174,8 +171,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;getNetworkConditions&quot;</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.set_network_conditions"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_network_conditions">[docs]</a>    <span class="k">def</span> <span class="nf">set_network_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">network_conditions</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets Chromium network emulation settings.</span>
+        <span class="sd">&quot;&quot;&quot;Sets Chromium network emulation settings.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - network_conditions: A dict with conditions specification.</span>
@@ -194,14 +190,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;setNetworkConditions&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;network_conditions&quot;</span><span class="p">:</span> <span class="n">network_conditions</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.delete_network_conditions"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_network_conditions">[docs]</a>    <span class="k">def</span> <span class="nf">delete_network_conditions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Resets Chromium network emulation settings.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Resets Chromium network emulation settings.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;deleteNetworkConditions&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.set_permissions"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_permissions">[docs]</a>    <span class="k">def</span> <span class="nf">set_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets Applicable Permission.</span>
+        <span class="sd">&quot;&quot;&quot;Sets Applicable Permission.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - name: The item to set the permission on.</span>
@@ -214,9 +207,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;setPermissions&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;descriptor&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">},</span> <span class="s2">&quot;state&quot;</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.execute_cdp_cmd"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_cdp_cmd">[docs]</a>    <span class="k">def</span> <span class="nf">execute_cdp_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cmd_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Execute Chrome Devtools Protocol command and get returned result</span>
-<span class="sd">        The command and command args should follow chrome devtools protocol domains/commands, refer to link</span>
+        <span class="sd">&quot;&quot;&quot;Execute Chrome Devtools Protocol command and get returned result The</span>
+<span class="sd">        command and command args should follow chrome devtools protocol</span>
+<span class="sd">        domains/commands, refer to link</span>
 <span class="sd">        https://chromedevtools.github.io/devtools-protocol/</span>
 
 <span class="sd">        :Args:</span>
@@ -245,8 +238,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;getIssueMessage&quot;</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.set_sink_to_use"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_sink_to_use">[docs]</a>    <span class="k">def</span> <span class="nf">set_sink_to_use</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets a specific sink, using its name, as a Cast session receiver target.</span>
+        <span class="sd">&quot;&quot;&quot;Sets a specific sink, using its name, as a Cast session receiver</span>
+<span class="sd">        target.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - sink_name: Name of the sink to use as the target.</span>
@@ -254,8 +247,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;setSinkToUse&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;sinkName&quot;</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.start_desktop_mirroring"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_desktop_mirroring">[docs]</a>    <span class="k">def</span> <span class="nf">start_desktop_mirroring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Starts a desktop mirroring session on a specific receiver target.</span>
+        <span class="sd">&quot;&quot;&quot;Starts a desktop mirroring session on a specific receiver target.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - sink_name: Name of the sink to use as the target.</span>
@@ -263,8 +255,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;startDesktopMirroring&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;sinkName&quot;</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.start_tab_mirroring"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_tab_mirroring">[docs]</a>    <span class="k">def</span> <span class="nf">start_tab_mirroring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Starts a tab mirroring session on a specific receiver target.</span>
+        <span class="sd">&quot;&quot;&quot;Starts a tab mirroring session on a specific receiver target.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - sink_name: Name of the sink to use as the target.</span>
@@ -272,8 +263,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;startTabMirroring&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;sinkName&quot;</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.stop_casting"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.stop_casting">[docs]</a>    <span class="k">def</span> <span class="nf">stop_casting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sink_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Stops the existing Cast session on a specific receiver target.</span>
+        <span class="sd">&quot;&quot;&quot;Stops the existing Cast session on a specific receiver target.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - sink_name: Name of the sink to stop the Cast session.</span>
@@ -281,10 +271,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;stopCasting&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;sinkName&quot;</span><span class="p">:</span> <span class="n">sink_name</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="ChromiumDriver.quit"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.webdriver.html#selenium.webdriver.chromium.webdriver.ChromiumDriver.quit">[docs]</a>    <span class="k">def</span> <span class="nf">quit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Closes the browser and shuts down the ChromiumDriver executable</span>
-<span class="sd">        that is started when starting the ChromiumDriver</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Closes the browser and shuts down the ChromiumDriver executable that</span>
+<span class="sd">        is started when starting the ChromiumDriver.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
@@ -327,7 +315,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

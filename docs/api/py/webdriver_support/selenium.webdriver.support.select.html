@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.support.select &#8212; Selenium 4.7 documentation</title>
+    <title>selenium.webdriver.support.select &#8212; Selenium 4.8 documentation</title>
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.8 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -53,8 +53,8 @@
 <dl class="class">
 <dt id="selenium.webdriver.support.select.Select">
 <em class="property">class </em><code class="descclassname">selenium.webdriver.support.select.</code><code class="descname">Select</code><span class="sig-paren">(</span><em>webelement</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructor. A check is made that the given element is, indeed, a SELECT tag. If it is not,
-then an UnexpectedTagNameException is thrown.</p>
+<dd><p>Constructor. A check is made that the given element is, indeed, a
+SELECT tag. If it is not, then an UnexpectedTagNameException is thrown.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -75,21 +75,24 @@ then an UnexpectedTagNameException is thrown.</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.support.select.Select.all_selected_options">
 <code class="descname">all_selected_options</code><a class="headerlink" href="#selenium.webdriver.support.select.Select.all_selected_options" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list of all selected options belonging to this select tag</p>
+<dd><p>Returns a list of all selected options belonging to this select
+tag.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.support.select.Select.deselect_all">
 <code class="descname">deselect_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.deselect_all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear all selected entries. This is only valid when the SELECT supports multiple selections.
-throws NotImplementedError If the SELECT does not support multiple selections</p>
+<dd><p>Clear all selected entries.</p>
+<p>This is only valid when the SELECT supports multiple selections.
+throws NotImplementedError If the SELECT does not support
+multiple selections</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.support.select.Select.deselect_by_index">
 <code class="descname">deselect_by_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_by_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.deselect_by_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deselect the option at the given index. This is done by examining the “index” attribute of an
-element, and not merely by counting.</p>
+<dd><p>Deselect the option at the given index. This is done by examining
+the “index” attribute of an element, and not merely by counting.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -107,8 +110,8 @@ element, and not merely by counting.</p>
 <dl class="method">
 <dt id="selenium.webdriver.support.select.Select.deselect_by_value">
 <code class="descname">deselect_by_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_by_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.deselect_by_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deselect all options that have a value matching the argument. That is, when given “foo” this
-would deselect an option like:</p>
+<dd><p>Deselect all options that have a value matching the argument. That
+is, when given “foo” this would deselect an option like:</p>
 <blockquote>
 <div>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
@@ -128,8 +131,8 @@ would deselect an option like:</p>
 <dl class="method">
 <dt id="selenium.webdriver.support.select.Select.deselect_by_visible_text">
 <code class="descname">deselect_by_visible_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.deselect_by_visible_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.deselect_by_visible_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deselect all options that display text matching the argument. That is, when given “Bar” this
-would deselect an option like:</p>
+<dd><p>Deselect all options that display text matching the argument. That
+is, when given “Bar” this would deselect an option like:</p>
 <p>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -147,21 +150,21 @@ would deselect an option like:</p>
 <dl class="attribute">
 <dt id="selenium.webdriver.support.select.Select.first_selected_option">
 <code class="descname">first_selected_option</code><a class="headerlink" href="#selenium.webdriver.support.select.Select.first_selected_option" title="Permalink to this definition">¶</a></dt>
-<dd><p>The first selected option in this select tag (or the currently selected option in a
-normal select)</p>
+<dd><p>The first selected option in this select tag (or the currently
+selected option in a normal select)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="selenium.webdriver.support.select.Select.options">
 <code class="descname">options</code><a class="headerlink" href="#selenium.webdriver.support.select.Select.options" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a list of all options belonging to this select tag</p>
+<dd><p>Returns a list of all options belonging to this select tag.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selenium.webdriver.support.select.Select.select_by_index">
 <code class="descname">select_by_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.select_by_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.select_by_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select the option at the given index. This is done by examining the “index” attribute of an
-element, and not merely by counting.</p>
+<dd><p>Select the option at the given index. This is done by examining the
+“index” attribute of an element, and not merely by counting.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -179,8 +182,8 @@ element, and not merely by counting.</p>
 <dl class="method">
 <dt id="selenium.webdriver.support.select.Select.select_by_value">
 <code class="descname">select_by_value</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.select_by_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.select_by_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select all options that have a value matching the argument. That is, when given “foo” this
-would select an option like:</p>
+<dd><p>Select all options that have a value matching the argument. That is,
+when given “foo” this would select an option like:</p>
 <p>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -199,8 +202,8 @@ would select an option like:</p>
 <dl class="method">
 <dt id="selenium.webdriver.support.select.Select.select_by_visible_text">
 <code class="descname">select_by_visible_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/support/select.html#Select.select_by_visible_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.support.select.Select.select_by_visible_text" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select all options that display text matching the argument. That is, when given “Bar” this
-would select an option like:</p>
+<dd><p>Select all options that display text matching the argument. That is,
+when given “Bar” this would select an option like:</p>
 <blockquote>
 <div>&lt;option value=”foo”&gt;Bar&lt;/option&gt;</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
@@ -259,7 +262,7 @@ would select an option like:</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.7 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">Selenium 4.8 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
