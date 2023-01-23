@@ -40,7 +40,7 @@ jobs:
         id: check-targets
         run: ./scripts/github-actions/check-bazel-targets.sh
         env:
-          COMMIT_RANGE: ${{ github.event.before }}..${{ github.event.after }}
+          COMMIT_RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}..${{ github.sha }}
 
   dotnet:
     name: .NET
