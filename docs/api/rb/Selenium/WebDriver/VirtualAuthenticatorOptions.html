@@ -111,12 +111,12 @@
         <dt id="PROTOCOL-constant" class="">PROTOCOL =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>ctap2:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ctap2</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>u2f:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ctap1/u2f</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>ctap2:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ctap2</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>u2f:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ctap1/u2f</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="TRANSPORT-constant" class="">TRANSPORT =
           
         </dt>
-        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>ble:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>ble</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>usb:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>usb</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>nfc:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>nfc</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='label'>internal:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>internal</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+        <dd><pre class="code"><span class='lbrace'>{</span><span class='label'>ble:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ble</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>usb:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>usb</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nfc:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>nfc</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>internal:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>internal</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -335,7 +335,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(protocol: :ctap2, transport: :usb, resident_key: false, user_verification: false, user_consenting: true, user_verified: false)  &#x21d2; VirtualAuthenticatorOptions </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(**opts)  &#x21d2; VirtualAuthenticatorOptions </a>
     
 
     
@@ -367,7 +367,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(protocol: :ctap2, transport: :usb, resident_key: false, user_verification: false, user_consenting: true, user_verified: false)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::VirtualAuthenticatorOptions (class)">VirtualAuthenticatorOptions</a></span></tt> 
+    #<strong>initialize</strong>(**opts)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::VirtualAuthenticatorOptions (class)">VirtualAuthenticatorOptions</a></span></tt> 
   
 
   
@@ -383,6 +383,19 @@
 </div>
 <div class="tags">
   
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -390,6 +403,7 @@
       <pre class="lines">
 
 
+37
 38
 39
 40
@@ -401,16 +415,17 @@
 46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 37</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>protocol:</span> <span class='symbol'>:ctap2</span><span class='comma'>,</span> <span class='label'>transport:</span> <span class='symbol'>:usb</span><span class='comma'>,</span> <span class='label'>resident_key:</span> <span class='kw'>false</span><span class='comma'>,</span>
-               <span class='label'>user_verification:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>user_consenting:</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>user_verified:</span> <span class='kw'>false</span><span class='rparen'>)</span>
-  <span class='ivar'>@protocol</span> <span class='op'>=</span> <span class='id identifier rubyid_protocol'>protocol</span>
-  <span class='ivar'>@transport</span> <span class='op'>=</span> <span class='id identifier rubyid_transport'>transport</span>
-  <span class='ivar'>@resident_key</span> <span class='op'>=</span> <span class='id identifier rubyid_resident_key'>resident_key</span>
-  <span class='ivar'>@user_verification</span> <span class='op'>=</span> <span class='id identifier rubyid_user_verification'>user_verification</span>
-  <span class='ivar'>@user_consenting</span> <span class='op'>=</span> <span class='id identifier rubyid_user_consenting'>user_consenting</span>
-  <span class='ivar'>@user_verified</span> <span class='op'>=</span> <span class='id identifier rubyid_user_verified'>user_verified</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='ivar'>@protocol</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:protocol</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='symbol'>:ctap2</span> <span class='rbrace'>}</span>
+  <span class='ivar'>@transport</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:transport</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='symbol'>:usb</span> <span class='rbrace'>}</span>
+  <span class='ivar'>@resident_key</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:resident_key</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='kw'>false</span> <span class='rbrace'>}</span>
+  <span class='ivar'>@user_verification</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:user_verification</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='kw'>false</span> <span class='rbrace'>}</span>
+  <span class='ivar'>@user_consenting</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:user_consenting</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='kw'>true</span> <span class='rbrace'>}</span>
+  <span class='ivar'>@user_verified</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:user_verified</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='kw'>false</span> <span class='rbrace'>}</span>
+
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid arguments: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -450,12 +465,12 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_protocol'>protocol</span>
   <span class='ivar'>@protocol</span>
@@ -497,12 +512,12 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_resident_key'>resident_key</span>
   <span class='ivar'>@resident_key</span>
@@ -540,12 +555,12 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_transport'>transport</span>
   <span class='ivar'>@transport</span>
@@ -587,12 +602,12 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_user_consenting'>user_consenting</span>
   <span class='ivar'>@user_consenting</span>
@@ -634,12 +649,12 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_user_verification'>user_verification</span>
   <span class='ivar'>@user_verification</span>
@@ -681,12 +696,12 @@
       <pre class="lines">
 
 
+31
 32
-33
-34</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 32</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator_options.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_user_verified'>user_verified</span>
   <span class='ivar'>@user_verified</span>
@@ -761,7 +776,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Dec  1 15:48:46 2022 by
+  Generated on Mon Jan 23 16:24:36 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>

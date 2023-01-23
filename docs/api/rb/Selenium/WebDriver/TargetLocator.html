@@ -405,12 +405,12 @@
       <pre class="lines">
 
 
+117
 118
-119
-120</pre>
+119</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 118</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 117</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_active_element'>active_element</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_active_element'>switch_to_active_element</span>
@@ -446,12 +446,12 @@
       <pre class="lines">
 
 
+133
 134
-135
-136</pre>
+135</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 134</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 133</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alert'>alert</span>
   <span class='const'><span class='object_link'><a href="Alert.html" title="Selenium::WebDriver::Alert (class)">Alert</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Alert.html#initialize-instance_method" title="Selenium::WebDriver::Alert#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='ivar'>@bridge</span><span class='rparen'>)</span>
@@ -487,12 +487,12 @@
       <pre class="lines">
 
 
+125
 126
-127
-128</pre>
+127</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 126</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 125</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_default_content'>default_content</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_switch_to_default_content'>switch_to_default_content</span>
@@ -584,6 +584,19 @@
   
 </ul>
 
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -610,16 +623,14 @@
 69
 70
 71
-72
-73</pre>
+72</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 53</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_new_window'>new_window</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span> <span class='op'>=</span> <span class='symbol'>:window</span><span class='rparen'>)</span>
-  <span class='kw'>unless</span> <span class='qsymbols_beg'>%i[</span><span class='tstring_content'>window</span><span class='words_sep'> </span><span class='tstring_content'>tab</span><span class='tstring_end'>]</span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Valid types are :tab and :window, received: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Valid types are :tab and :window, received: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>unless</span> <span class='qsymbols_beg'>%i[</span><span class='tstring_content'>window</span><span class='words_sep'>
+                                                                                               </span><span class='tstring_content'>tab</span><span class='tstring_end'>]</span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_handle'>handle</span> <span class='op'>=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_new_window'>new_window</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>handle</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
 
@@ -731,6 +742,7 @@
       <pre class="lines">
 
 
+84
 85
 86
 87
@@ -755,11 +767,10 @@
 106
 107
 108
-109
-110</pre>
+109</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 85</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/target_locator.rb', line 84</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_window'>window</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
   <span class='kw'>if</span> <span class='id identifier rubyid_block_given?'>block_given?</span>
@@ -797,7 +808,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Dec  1 15:48:46 2022 by
+  Generated on Mon Jan 23 16:24:36 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>

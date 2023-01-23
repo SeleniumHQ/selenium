@@ -143,7 +143,7 @@
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-32000</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>-32000</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
         <dt id="INVALID_INTERCEPTION_ID_ERROR_CODE-constant" class="">INVALID_INTERCEPTION_ID_ERROR_CODE =
           <div class="docstring">
@@ -163,7 +163,7 @@
 
 </div>
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>-32602</span><span class='tstring_end'>&quot;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>-32602</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
     </dl>
   
@@ -266,13 +266,13 @@
       <pre class="lines">
 
 
+41
+42
 43
-44
-45
-46</pre>
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/network_interceptor.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/network_interceptor.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_devtools'>devtools</span><span class='rparen'>)</span>
   <span class='ivar'>@devtools</span> <span class='op'>=</span> <span class='id identifier rubyid_devtools'>devtools</span>
@@ -318,17 +318,17 @@
       <pre class="lines">
 
 
+46
+47
 48
 49
 50
 51
 52
-53
-54
-55</pre>
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/network_interceptor.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/devtools/network_interceptor.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_intercept'>intercept</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_devtools'>devtools</span><span class='period'>.</span><span class='id identifier rubyid_network'>network</span><span class='period'>.</span><span class='id identifier rubyid_on'>on</span><span class='lparen'>(</span><span class='symbol'>:loading_failed</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_params'>params</span><span class='op'>|</span> <span class='id identifier rubyid_track_cancelled_request'>track_cancelled_request</span><span class='lparen'>(</span><span class='id identifier rubyid_params'>params</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -348,7 +348,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Dec  1 15:48:46 2022 by
+  Generated on Mon Jan 23 16:24:36 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>

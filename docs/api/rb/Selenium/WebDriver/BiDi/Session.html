@@ -172,6 +172,50 @@
 </li>
 
       
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#subscribe-instance_method" title="#subscribe (instance method)">#<strong>subscribe</strong>(events, browsing_contexts = nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#unsubscribe-instance_method" title="#unsubscribe (instance method)">#<strong>unsubscribe</strong>(events, browsing_contexts = nil)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
     </ul>
   
 
@@ -258,12 +302,84 @@
 </table>
 </div>
     
+      <div class="method_details ">
+  <h3 class="signature " id="subscribe-instance_method">
+  
+    #<strong>subscribe</strong>(events, browsing_contexts = nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_subscribe'>subscribe</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='comma'>,</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_events_list'>events_list</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_browsing_contexts_list'>browsing_contexts_list</span> <span class='op'>=</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='kw'>nil</span> <span class='op'>:</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.subscribe</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>events:</span> <span class='id identifier rubyid_events_list'>events_list</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='id identifier rubyid_browsing_contexts_list'>browsing_contexts_list</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="unsubscribe-instance_method">
+  
+    #<strong>unsubscribe</strong>(events, browsing_contexts = nil)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+42
+43
+44
+45
+46
+47</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi/session.rb', line 42</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_unsubscribe'>unsubscribe</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='comma'>,</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_events_list'>events_list</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_events'>events</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_browsing_contexts_list'>browsing_contexts_list</span> <span class='op'>=</span> <span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='kw'>nil</span> <span class='op'>:</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_browsing_contexts'>browsing_contexts</span><span class='rparen'>)</span>
+
+  <span class='ivar'>@bidi</span><span class='period'>.</span><span class='id identifier rubyid_send_cmd'>send_cmd</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session.unsubscribe</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>events:</span> <span class='id identifier rubyid_events_list'>events_list</span><span class='comma'>,</span> <span class='label'>contexts:</span> <span class='id identifier rubyid_browsing_contexts_list'>browsing_contexts_list</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
   </div>
 
 </div>
 
       <div id="footer">
-  Generated on Thu Dec  1 15:48:45 2022 by
+  Generated on Mon Jan 23 16:24:35 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>

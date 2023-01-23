@@ -71,13 +71,13 @@
   
   
   
+  <dl>
+      <dt>Includes:</dt>
+      <dd><span class='object_link'><a href="../Chromium/Features.html" title="Selenium::WebDriver::Chromium::Features (module)">Selenium::WebDriver::Chromium::Features</a></span></dd>
+  </dl>
+  
   
 
-  
-  <dl>
-    <dt>Included in:</dt>
-    <dd><span class='object_link'><a href="../Edge/Features.html" title="Selenium::WebDriver::Edge::Features (module)">Edge::Features</a></span></dd>
-  </dl>
   
 
   
@@ -101,26 +101,25 @@
           
         </dt>
         <dd><pre class="code"><span class='lbrace'>{</span>
-  <span class='label'>launch_app:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/chromium/launch_app</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>get_cast_sinks:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/goog/cast/get_sinks</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>set_cast_sink_to_use:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/goog/cast/set_sink_to_use</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>start_cast_tab_mirroring:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/goog/cast/start_tab_mirroring</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>start_cast_desktop_mirroring:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/goog/cast/start_desktop_mirroring</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>get_cast_issue_message:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/goog/cast/get_issue_message</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
   <span class='label'>stop_casting:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/goog/cast/stop_casting</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>get_network_conditions:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/chromium/network_conditions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>set_network_conditions:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/chromium/network_conditions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>delete_network_conditions:</span> <span class='lbracket'>[</span><span class='symbol'>:delete</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/chromium/network_conditions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>set_permission:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/permissions</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>send_command:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/goog/cdp/execute</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>get_available_log_types:</span> <span class='lbracket'>[</span><span class='symbol'>:get</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/se/log/types</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span>
-  <span class='label'>get_log:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/se/log</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
+  <span class='label'>send_command:</span> <span class='lbracket'>[</span><span class='symbol'>:post</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>session/:session_id/goog/cdp/execute</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
 <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
 
 
+
+  
+  
+  <h3 class="inherited">Constants included
+     from <span class='object_link'><a href="../Chromium/Features.html" title="Selenium::WebDriver::Chromium::Features (module)">Selenium::WebDriver::Chromium::Features</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Chromium/Features.html#CHROMIUM_COMMANDS-constant" title="Selenium::WebDriver::Chromium::Features::CHROMIUM_COMMANDS (constant)">Selenium::WebDriver::Chromium::Features::CHROMIUM_COMMANDS</a></span></p>
 
 
 
@@ -133,94 +132,6 @@
     </h2>
 
     <ul class="summary">
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#available_log_types-instance_method" title="#available_log_types (instance method)">#<strong>available_log_types</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#cast_issue_message-instance_method" title="#cast_issue_message (instance method)">#<strong>cast_issue_message</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#cast_sink_to_use=-instance_method" title="#cast_sink_to_use= (instance method)">#<strong>cast_sink_to_use=</strong>(name)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#cast_sinks-instance_method" title="#cast_sinks (instance method)">#<strong>cast_sinks</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
       
         <li class="public ">
   <span class="summary_signature">
@@ -244,229 +155,20 @@
 </li>
 
       
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#delete_network_conditions-instance_method" title="#delete_network_conditions (instance method)">#<strong>delete_network_conditions</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#launch_app-instance_method" title="#launch_app (instance method)">#<strong>launch_app</strong>(id)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#log-instance_method" title="#log (instance method)">#<strong>log</strong>(type)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#network_conditions-instance_method" title="#network_conditions (instance method)">#<strong>network_conditions</strong>  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#network_conditions=-instance_method" title="#network_conditions= (instance method)">#<strong>network_conditions=</strong>(conditions)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#send_command-instance_method" title="#send_command (instance method)">#<strong>send_command</strong>(command_params)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#set_permission-instance_method" title="#set_permission (instance method)">#<strong>set_permission</strong>(name, value)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#start_cast_desktop_mirroring-instance_method" title="#start_cast_desktop_mirroring (instance method)">#<strong>start_cast_desktop_mirroring</strong>(name)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#start_cast_tab_mirroring-instance_method" title="#start_cast_tab_mirroring (instance method)">#<strong>start_cast_tab_mirroring</strong>(name)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#stop_casting-instance_method" title="#stop_casting (instance method)">#<strong>stop_casting</strong>(name)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'></div></span>
-  
-</li>
-
-      
     </ul>
   
 
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../Chromium/Features.html" title="Selenium::WebDriver::Chromium::Features (module)">Selenium::WebDriver::Chromium::Features</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../Chromium/Features.html#available_log_types-instance_method" title="Selenium::WebDriver::Chromium::Features#available_log_types (method)">#available_log_types</a></span>, <span class='object_link'><a href="../Chromium/Features.html#cast_issue_message-instance_method" title="Selenium::WebDriver::Chromium::Features#cast_issue_message (method)">#cast_issue_message</a></span>, <span class='object_link'><a href="../Chromium/Features.html#cast_sink_to_use=-instance_method" title="Selenium::WebDriver::Chromium::Features#cast_sink_to_use= (method)">#cast_sink_to_use=</a></span>, <span class='object_link'><a href="../Chromium/Features.html#cast_sinks-instance_method" title="Selenium::WebDriver::Chromium::Features#cast_sinks (method)">#cast_sinks</a></span>, <span class='object_link'><a href="../Chromium/Features.html#delete_network_conditions-instance_method" title="Selenium::WebDriver::Chromium::Features#delete_network_conditions (method)">#delete_network_conditions</a></span>, <span class='object_link'><a href="../Chromium/Features.html#launch_app-instance_method" title="Selenium::WebDriver::Chromium::Features#launch_app (method)">#launch_app</a></span>, <span class='object_link'><a href="../Chromium/Features.html#log-instance_method" title="Selenium::WebDriver::Chromium::Features#log (method)">#log</a></span>, <span class='object_link'><a href="../Chromium/Features.html#network_conditions-instance_method" title="Selenium::WebDriver::Chromium::Features#network_conditions (method)">#network_conditions</a></span>, <span class='object_link'><a href="../Chromium/Features.html#network_conditions=-instance_method" title="Selenium::WebDriver::Chromium::Features#network_conditions= (method)">#network_conditions=</a></span>, <span class='object_link'><a href="../Chromium/Features.html#send_command-instance_method" title="Selenium::WebDriver::Chromium::Features#send_command (method)">#send_command</a></span>, <span class='object_link'><a href="../Chromium/Features.html#set_permission-instance_method" title="Selenium::WebDriver::Chromium::Features#set_permission (method)">#set_permission</a></span>, <span class='object_link'><a href="../Chromium/Features.html#start_cast_desktop_mirroring-instance_method" title="Selenium::WebDriver::Chromium::Features#start_cast_desktop_mirroring (method)">#start_cast_desktop_mirroring</a></span>, <span class='object_link'><a href="../Chromium/Features.html#start_cast_tab_mirroring-instance_method" title="Selenium::WebDriver::Chromium::Features#start_cast_tab_mirroring (method)">#start_cast_tab_mirroring</a></span>, <span class='object_link'><a href="../Chromium/Features.html#stop_casting-instance_method" title="Selenium::WebDriver::Chromium::Features#stop_casting (method)">#stop_casting</a></span></p>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -474,129 +176,7 @@
 
     
       <div class="method_details first">
-  <h3 class="signature first" id="available_log_types-instance_method">
-  
-    #<strong>available_log_types</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-94
-95
-96
-97</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 94</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_available_log_types'>available_log_types</span>
-  <span class='id identifier rubyid_types'>types</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_available_log_types</span>
-  <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_types'>types</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_sym</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="cast_issue_message-instance_method">
-  
-    #<strong>cast_issue_message</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-58
-59
-60</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 58</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_cast_issue_message'>cast_issue_message</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:cast_issue_message</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="cast_sink_to_use=-instance_method">
-  
-    #<strong>cast_sink_to_use=</strong>(name)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-54
-55
-56</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 54</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_cast_sink_to_use='>cast_sink_to_use=</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_cast_sink_to_use</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>sinkName:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="cast_sinks-instance_method">
-  
-    #<strong>cast_sinks</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-50
-51
-52</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 50</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_cast_sinks'>cast_sinks</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_cast_sinks</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="commands-instance_method">
+  <h3 class="signature first" id="commands-instance_method">
   
     #<strong>commands</strong>(command)  &#x21d2; <tt>Object</tt> 
   
@@ -610,327 +190,15 @@
       <pre class="lines">
 
 
-42
-43
-44</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_commands'>commands</span><span class='lparen'>(</span><span class='id identifier rubyid_command'>command</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="#CHROME_COMMANDS-constant" title="Selenium::WebDriver::Chrome::Features::CHROME_COMMANDS (constant)">CHROME_COMMANDS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>COMMANDS</span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="delete_network_conditions-instance_method">
-  
-    #<strong>delete_network_conditions</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-86
-87
-88</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 86</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_delete_network_conditions'>delete_network_conditions</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:delete_network_conditions</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="launch_app-instance_method">
-  
-    #<strong>launch_app</strong>(id)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-46
-47
-48</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 46</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_launch_app'>launch_app</span><span class='lparen'>(</span><span class='id identifier rubyid_id'>id</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:launch_app</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>id:</span> <span class='id identifier rubyid_id'>id</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="log-instance_method">
-  
-    #<strong>log</strong>(type)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-99
-100
-101
-102
-103
-104
-105
-106
-107</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 99</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span><span class='lparen'>(</span><span class='id identifier rubyid_type'>type</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_data'>data</span> <span class='op'>=</span> <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_log</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>type:</span> <span class='id identifier rubyid_type'>type</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='rbrace'>}</span>
-
-  <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_data'>data</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_l'>l</span><span class='op'>|</span>
-    <span class='const'><span class='object_link'><a href="../LogEntry.html" title="Selenium::WebDriver::LogEntry (class)">LogEntry</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="../LogEntry.html#initialize-instance_method" title="Selenium::WebDriver::LogEntry#initialize (method)">new</a></span></span> <span class='id identifier rubyid_l'>l</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>level</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>UNKNOWN</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_l'>l</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>timestamp</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_l'>l</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>message</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='kw'>rescue</span> <span class='const'>KeyError</span>
-    <span class='kw'>next</span>
-  <span class='kw'>end</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="network_conditions-instance_method">
-  
-    #<strong>network_conditions</strong>  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-78
-79
-80</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 78</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_network_conditions'>network_conditions</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:get_network_conditions</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="network_conditions=-instance_method">
-  
-    #<strong>network_conditions=</strong>(conditions)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-82
-83
-84</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 82</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_network_conditions='>network_conditions=</span><span class='lparen'>(</span><span class='id identifier rubyid_conditions'>conditions</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_network_conditions</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>network_conditions:</span> <span class='id identifier rubyid_conditions'>conditions</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="send_command-instance_method">
-  
-    #<strong>send_command</strong>(command_params)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-90
-91
-92</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 90</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_send_command'>send_command</span><span class='lparen'>(</span><span class='id identifier rubyid_command_params'>command_params</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:send_command</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='id identifier rubyid_command_params'>command_params</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="set_permission-instance_method">
-  
-    #<strong>set_permission</strong>(name, value)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-74
-75
-76</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 74</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_set_permission'>set_permission</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:set_permission</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>descriptor:</span> <span class='lbrace'>{</span><span class='label'>name:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>state:</span> <span class='id identifier rubyid_value'>value</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="start_cast_desktop_mirroring-instance_method">
-  
-    #<strong>start_cast_desktop_mirroring</strong>(name)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-66
-67
-68</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 66</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_start_cast_desktop_mirroring'>start_cast_desktop_mirroring</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:start_cast_desktop_mirroring</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>sinkName:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="start_cast_tab_mirroring-instance_method">
-  
-    #<strong>start_cast_tab_mirroring</strong>(name)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-62
-63
-64</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 62</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_start_cast_tab_mirroring'>start_cast_tab_mirroring</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:start_cast_tab_mirroring</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>sinkName:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="stop_casting-instance_method">
-  
-    #<strong>stop_casting</strong>(name)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-70
-71
-72</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/chrome/features.rb', line 70</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_stop_casting'>stop_casting</span><span class='lparen'>(</span><span class='id identifier rubyid_name'>name</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_execute'>execute</span> <span class='symbol'>:stop_casting</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='label'>sinkName:</span> <span class='id identifier rubyid_name'>name</span><span class='rbrace'>}</span>
+  <span class='const'><span class='object_link'><a href="#CHROME_COMMANDS-constant" title="Selenium::WebDriver::Chrome::Features::CHROME_COMMANDS (constant)">CHROME_COMMANDS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="../Chromium/Features.html#CHROMIUM_COMMANDS-constant" title="Selenium::WebDriver::Chromium::Features::CHROMIUM_COMMANDS (constant)">CHROMIUM_COMMANDS</a></span></span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span> <span class='op'>||</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>COMMANDS</span><span class='lbracket'>[</span><span class='id identifier rubyid_command'>command</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -942,7 +210,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Dec  1 15:48:45 2022 by
+  Generated on Mon Jan 23 16:24:34 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>

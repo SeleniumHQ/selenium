@@ -216,13 +216,15 @@
 27
 28
 29
-30</pre>
+30
+31</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_lock.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='comma'>,</span> <span class='id identifier rubyid_timeout'>timeout</span><span class='rparen'>)</span>
   <span class='ivar'>@port</span>    <span class='op'>=</span> <span class='id identifier rubyid_port'>port</span>
+  <span class='ivar'>@server</span>  <span class='op'>=</span> <span class='kw'>nil</span>
   <span class='ivar'>@timeout</span> <span class='op'>=</span> <span class='id identifier rubyid_timeout'>timeout</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -267,7 +269,6 @@
       <pre class="lines">
 
 
-37
 38
 39
 40
@@ -275,10 +276,11 @@
 42
 43
 44
-45</pre>
+45
+46</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_lock.rb', line 37</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/socket_lock.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_locked'>locked</span>
   <span class='id identifier rubyid_lock'>lock</span>
@@ -299,7 +301,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Dec  1 15:48:46 2022 by
+  Generated on Mon Jan 23 16:24:36 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>

@@ -259,7 +259,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(source, duration, x, y, element: nil, origin: nil, **opts)  &#x21d2; PointerMove </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(source, duration, x, y, **opts)  &#x21d2; PointerMove </a>
     
 
     
@@ -308,7 +308,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(source, duration, x, y, element: nil, origin: nil, **opts)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Interactions::PointerMove (class)">PointerMove</a></span></tt> 
+    #<strong>initialize</strong>(source, duration, x, y, **opts)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Interactions::PointerMove (class)">PointerMove</a></span></tt> 
   
 
   
@@ -348,12 +348,12 @@
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/interactions/pointer_move.rb', line 36</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_duration'>duration</span><span class='comma'>,</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='label'>element:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>origin:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='comma'>,</span> <span class='id identifier rubyid_duration'>duration</span><span class='comma'>,</span> <span class='id identifier rubyid_x'>x</span><span class='comma'>,</span> <span class='id identifier rubyid_y'>y</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_source'>source</span><span class='rparen'>)</span>
   <span class='ivar'>@duration</span> <span class='op'>=</span> <span class='id identifier rubyid_duration'>duration</span> <span class='op'>*</span> <span class='int'>1000</span>
   <span class='ivar'>@x_offset</span> <span class='op'>=</span> <span class='id identifier rubyid_x'>x</span>
   <span class='ivar'>@y_offset</span> <span class='op'>=</span> <span class='id identifier rubyid_y'>y</span>
-  <span class='ivar'>@origin</span> <span class='op'>=</span> <span class='id identifier rubyid_element'>element</span> <span class='op'>||</span> <span class='id identifier rubyid_origin'>origin</span> <span class='op'>||</span> <span class='symbol'>:viewport</span>
+  <span class='ivar'>@origin</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:element</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_opts'>opts</span><span class='period'>.</span><span class='id identifier rubyid_delete'>delete</span><span class='lparen'>(</span><span class='symbol'>:origin</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='symbol'>:viewport</span>
   <span class='ivar'>@type</span> <span class='op'>=</span> <span class='symbol'>:pointerMove</span>
   <span class='ivar'>@opts</span> <span class='op'>=</span> <span class='id identifier rubyid_opts'>opts</span>
 <span class='kw'>end</span></pre>
@@ -481,7 +481,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Dec  1 15:48:46 2022 by
+  Generated on Mon Jan 23 16:24:36 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>

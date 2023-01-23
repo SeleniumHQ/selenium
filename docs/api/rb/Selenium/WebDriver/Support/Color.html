@@ -111,32 +111,32 @@
         <dt id="RGB_PATTERN-constant" class="">RGB_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*rgb\(\s*(\d{1,3})\s*,
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*rgb\(\s*(\d{1,3})\s*,
 \s*(\d{1,3})\s*,
-\s*(\d{1,3})\s*\)\s*$</span><span class='regexp_end'>}x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+\s*(\d{1,3})\s*\)\s*$</span><span class='regexp_end'>/x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="RGB_PCT_PATTERN-constant" class="">RGB_PCT_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*rgb\(\s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
 \s*(\d{1,3}|\d{1,2}\.\d+)%\s*,
-\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$</span><span class='regexp_end'>}x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+\s*(\d{1,3}|\d{1,2}\.\d+)%\s*\)\s*$</span><span class='regexp_end'>/x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="RGBA_PATTERN-constant" class="">RGBA_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*rgba\(\s*(\d{1,3})\s*,
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*rgba\(\s*(\d{1,3})\s*,
 \s*(\d{1,3})\s*,
 \s*(\d{1,3})\s*,
-\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>}x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>/x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="RGBA_PCT_PATTERN-constant" class="">RGBA_PCT_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*rgba\(\s*(\d{1,3}|\d{1,2}\.\d+)
 %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
 %\s*,\s*(\d{1,3}|\d{1,2}\.\d+)
-%\s*,\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>}x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+%\s*,\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>/x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="HEX_PATTERN-constant" class="">HEX_PATTERN =
           
@@ -151,17 +151,17 @@
         <dt id="HSL_PATTERN-constant" class="">HSL_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*hsl\(\s*(\d{1,3})\s*,
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*hsl\(\s*(\d{1,3})\s*,
 \s*(\d{1,3})%\s*,
-\s*(\d{1,3})%\s*\)\s*$</span><span class='regexp_end'>}x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+\s*(\d{1,3})%\s*\)\s*$</span><span class='regexp_end'>/x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
         <dt id="HSLA_PATTERN-constant" class="">HSLA_PATTERN =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>%r{</span><span class='tstring_content'>^\s*hsla\(\s*(\d{1,3})\s*,
+        <dd><pre class="code"><span class='tstring'><span class='regexp_beg'>/</span><span class='tstring_content'>^\s*hsla\(\s*(\d{1,3})\s*,
 \s*(\d{1,3})%\s*,
 \s*(\d{1,3})%\s*,
-\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>}x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+\s*(0|1|0\.\d+)\s*\)\s*$</span><span class='regexp_end'>/x</span></span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
       
     </dl>
   
@@ -815,8 +815,8 @@
     <span class='id identifier rubyid_g'>g</span> <span class='op'>=</span> <span class='id identifier rubyid_r'>r</span>
     <span class='id identifier rubyid_b'>b</span> <span class='op'>=</span> <span class='id identifier rubyid_r'>r</span>
   <span class='kw'>else</span>
-    <span class='id identifier rubyid_luminocity2'>luminocity2</span> <span class='op'>=</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>&lt;</span> <span class='float'>0.5</span> <span class='op'>?</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='int'>1</span> <span class='op'>+</span> <span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>+</span> <span class='id identifier rubyid_s'>s</span> <span class='op'>-</span> <span class='lparen'>(</span><span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_luminocity1'>luminocity1</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='int'>2</span> <span class='op'>*</span> <span class='id identifier rubyid_l'>l</span><span class='rparen'>)</span> <span class='op'>-</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span>
+    <span class='id identifier rubyid_luminocity2'>luminocity2</span> <span class='op'>=</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>&lt;</span> <span class='float'>0.5</span> <span class='op'>?</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='lparen'>(</span><span class='id identifier rubyid_s'>s</span> <span class='op'>+</span> <span class='int'>1</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_l'>l</span> <span class='op'>+</span> <span class='id identifier rubyid_s'>s</span> <span class='op'>-</span> <span class='lparen'>(</span><span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='id identifier rubyid_s'>s</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_luminocity1'>luminocity1</span> <span class='op'>=</span> <span class='lparen'>(</span><span class='id identifier rubyid_l'>l</span> <span class='op'>*</span> <span class='int'>2</span><span class='rparen'>)</span> <span class='op'>-</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span>
 
     <span class='id identifier rubyid_r'>r</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span> <span class='op'>+</span> <span class='lparen'>(</span><span class='float'>1.0</span> <span class='op'>/</span> <span class='float'>3.0</span><span class='rparen'>)</span><span class='rparen'>)</span>
     <span class='id identifier rubyid_g'>g</span> <span class='op'>=</span> <span class='id identifier rubyid_hue_to_rgb'>hue_to_rgb</span><span class='lparen'>(</span><span class='id identifier rubyid_luminocity1'>luminocity1</span><span class='comma'>,</span> <span class='id identifier rubyid_luminocity2'>luminocity2</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span><span class='rparen'>)</span>
@@ -1127,7 +1127,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Dec  1 15:48:46 2022 by
+  Generated on Mon Jan 23 16:24:35 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>

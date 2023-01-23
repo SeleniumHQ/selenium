@@ -360,15 +360,15 @@
       <pre class="lines">
 
 
+30
 31
 32
 33
 34
-35
-36</pre>
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_bridge'>bridge</span><span class='comma'>,</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='ivar'>@id</span> <span class='op'>=</span> <span class='id identifier rubyid_authenticator_id'>authenticator_id</span>
@@ -414,12 +414,12 @@
       <pre class="lines">
 
 
+23
 24
-25
-26</pre>
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 23</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_options'>options</span>
   <span class='ivar'>@options</span>
@@ -451,13 +451,13 @@
       <pre class="lines">
 
 
+37
 38
 39
-40
-41</pre>
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add_credential'>add_credential</span><span class='lparen'>(</span><span class='id identifier rubyid_credential'>credential</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_credential'>credential</span> <span class='op'>=</span> <span class='id identifier rubyid_credential'>credential</span><span class='period'>.</span><span class='id identifier rubyid_as_json'>as_json</span>
@@ -483,15 +483,15 @@
       <pre class="lines">
 
 
+42
 43
 44
 45
 46
-47
-48</pre>
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_credentials'>credentials</span>
   <span class='id identifier rubyid_credential_data'>credential_data</span> <span class='op'>=</span> <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_credentials'>credentials</span> <span class='ivar'>@id</span>
@@ -519,13 +519,13 @@
       <pre class="lines">
 
 
+62
 63
 64
-65
-66</pre>
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove!'>remove!</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_remove_virtual_authenticator'>remove_virtual_authenticator</span><span class='lparen'>(</span><span class='ivar'>@id</span><span class='rparen'>)</span>
@@ -551,12 +551,12 @@
       <pre class="lines">
 
 
+54
 55
-56
-57</pre>
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_all_credentials'>remove_all_credentials</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_remove_all_credentials'>remove_all_credentials</span> <span class='ivar'>@id</span>
@@ -581,13 +581,13 @@
       <pre class="lines">
 
 
+49
 50
 51
-52
-53</pre>
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_remove_credential'>remove_credential</span><span class='lparen'>(</span><span class='id identifier rubyid_credential_id'>credential_id</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_credential_id'>credential_id</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Credential.html" title="Selenium::WebDriver::Credential (class)">Credential</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="Credential.html#encode-class_method" title="Selenium::WebDriver::Credential.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_credential_id'>credential_id</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_credential_id'>credential_id</span><span class='period'>.</span><span class='id identifier rubyid_instance_of?'>instance_of?</span><span class='lparen'>(</span><span class='const'>Array</span><span class='rparen'>)</span>
@@ -613,12 +613,12 @@
       <pre class="lines">
 
 
+58
 59
-60
-61</pre>
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 59</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_user_verified='>user_verified=</span><span class='lparen'>(</span><span class='id identifier rubyid_verified'>verified</span><span class='rparen'>)</span>
   <span class='ivar'>@bridge</span><span class='period'>.</span><span class='id identifier rubyid_user_verified'>user_verified</span> <span class='id identifier rubyid_verified'>verified</span><span class='comma'>,</span> <span class='ivar'>@id</span>
@@ -665,12 +665,12 @@
       <pre class="lines">
 
 
+67
 68
-69
-70</pre>
+69</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/virtual_authenticator/virtual_authenticator.rb', line 67</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid?'>valid?</span>
   <span class='ivar'>@valid</span>
@@ -685,7 +685,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Dec  1 15:48:46 2022 by
+  Generated on Mon Jan 23 16:24:36 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>
