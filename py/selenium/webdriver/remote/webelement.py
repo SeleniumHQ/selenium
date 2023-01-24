@@ -247,7 +247,7 @@ class WebElement(BaseWebElement):
             "safari",
         ], "This only currently works in Chromium based browsers"
         assert (
-            not browser_main_version <= 95
+            browser_main_version > 95
         ), f"Please use Chromium based browsers with version 96 or later. Version used {self._parent.caps['browserVersion']}"
         return self._execute(Command.GET_SHADOW_ROOT)["value"]
 
