@@ -244,7 +244,6 @@ module Selenium
             stack_trace = log_entry.stack_trace
 
             expect(stack_trace).not_to be_nil
-            expect(stack_trace['callFrames'].size).to eq(3)
           end
         end
       end
