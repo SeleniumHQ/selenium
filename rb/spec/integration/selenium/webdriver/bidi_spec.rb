@@ -58,7 +58,7 @@ module Selenium
         )
       end
 
-      it 'does not close BiDi session if one window is closed' do
+      it 'does not close BiDi session if at least one window is opened' do
         status = driver.bidi.session.status
         expect(status.ready).to be false
         expect(status.message).to be_a String

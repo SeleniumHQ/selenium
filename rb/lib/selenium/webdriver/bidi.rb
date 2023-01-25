@@ -37,7 +37,7 @@ module Selenium
       end
 
       def session
-        Session.new(self)
+        @session ||= Session.new(self)
       end
 
       def send_cmd(method, **params)
