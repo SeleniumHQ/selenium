@@ -984,7 +984,6 @@ def main(browser_protocol_path, js_protocol_path, output_path):
         browser_protocol_path,
         js_protocol_path,
     ]
-    output_path.mkdir(parents=True)
 
     # Generate util.py
     util_path = output_path / "util.py"
