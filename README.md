@@ -39,12 +39,10 @@ before submitting your pull requests.
 * [Bazelisk](https://github.com/bazelbuild/bazelisk), a Bazel wrapper that automatically downloads
   the version of Bazel specified in `.bazelversion` file and transparently passes through all
   command-line arguments to the real Bazel binary.
-* The latest version of the [Java 11 OpenJDK](https://openjdk.java.net/)
+* Java JDK version 11 or greater (e.g., [Java 11 OpenJDK](https://openjdk.java.net/))
 * `java` and `jar` on the `$PATH` (make sure you use `java` executable from JDK but not JRE).
   * To test this, try running the command `javac`. This command won't exist if you only have the JRE
   installed. If you're met with a list of command-line options, you're referencing the JDK properly.
-* [Python 3.7+](https://www.python.org/downloads/) and `python` on the `PATH`
-* [The tox automation project](http://tox.readthedocs.org/) for Python: `pip install tox`
 * macOS users:
   * Install the latest version of Xcode including the command-line tools. This command should work `xcode-select --install`
   * Apple Silicon Macs should add `build --host_platform=//:rosetta` to their `.bazelrc.local` file. We are working
@@ -66,7 +64,7 @@ If you plan to compile the
 [IE driver](https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver),
 you also need:
 
-* [Visual Studio 2008](https://www.visualstudio.com/)
+* [Visual Studio 2022](https://www.visualstudio.com/)
 * 32 and 64-bit cross compilers
 
 The build will work on any platform, but the tests for IE will be
