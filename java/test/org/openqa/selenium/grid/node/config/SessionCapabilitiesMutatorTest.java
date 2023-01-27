@@ -194,8 +194,7 @@ public class SessionCapabilitiesMutatorTest {
 
     assertThat(modifiedCapabilities)
       .extractingByKey("ms:edgeOptions").asInstanceOf(MAP)
-      .extractingByKey("binary").asInstanceOf(STRING)
-      .isEqualTo("/path/to/binary");
+      .extractingByKey("binary").isNull();
   }
 
   @Test

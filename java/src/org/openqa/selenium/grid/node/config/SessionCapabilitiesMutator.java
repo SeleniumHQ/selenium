@@ -127,13 +127,6 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
         toReturn.put("extensions", stereotypeExtensions);
       }
 
-      // Grid will know the browser paths so preference is given to stereotype value in this case
-      // If the value is not present in stereotype but present in capabilities only then use capabilities value
-      if (name.equals("binary") && stereotypeOptions.get("binary") == null) {
-          Object binary = capsOptions.get("binary");
-          toReturn.put("binary", binary);
-      }
-
       if (!name.equals("binary") && !name.equals("extensions") && !name.equals("args")) {
         toReturn.put(name, capsOptions.get(name));
       }
@@ -177,13 +170,6 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
           (String) capsOptions.get("profile");
 
         toReturn.put("profile", rawProfile);
-      }
-
-      // Grid will know the browser paths so preference is given to stereotype value in this case
-      // If the value is not present in stereotype but present in capabilities only then use capabilities value
-      if (name.equals("binary") && stereotypeOptions.get("binary") == null) {
-        Object binary = capsOptions.get("binary");
-        toReturn.put("binary", binary);
       }
 
       if (name.equals("log")) {
