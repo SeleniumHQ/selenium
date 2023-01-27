@@ -27,11 +27,11 @@ from selenium.webdriver.remote.remote_connection import RemoteConnection
 def test_get_remote_connection_headers_defaults():
     url = "http://remote"
     headers = RemoteConnection.get_remote_connection_headers(parse.urlparse(url))
-    assert "Authorization" not in headers.keys()
-    assert "Connection" not in headers.keys()
+    assert "Authorization" not in headers
+    assert "Connection" not in headers
     assert headers.get("Accept") == "application/json"
     assert headers.get("Content-Type") == "application/json;charset=UTF-8"
-    assert headers.get("User-Agent").startswith("selenium/%s (python " % __version__)
+    assert headers.get("User-Agent").startswith(f"selenium/{__version__} (python ")
     assert headers.get("User-Agent").split(" ")[-1] in {"windows)", "mac)", "linux)"}
 
 
@@ -88,7 +88,7 @@ def test_get_proxy_url_https_auth(mock_proxy_auth_settings):
 def test_get_connection_manager_without_proxy(mock_proxy_settings_missing):
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
     conn = remote_connection._get_connection_manager()
-    assert type(conn) == urllib3.PoolManager
+    assert isinstance(conn, urllib3.PoolManager)
 
 
 def test_get_connection_manager_for_certs_and_timeout(monkeypatch):
@@ -109,13 +109,13 @@ def test_default_socket_timeout_is_correct():
 def test_get_connection_manager_with_proxy(mock_proxy_settings):
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
     conn = remote_connection._get_connection_manager()
-    assert type(conn) == urllib3.ProxyManager
+    assert isinstance(conn, urllib3.ProxyManager)
     assert conn.proxy.scheme == "http"
     assert conn.proxy.host == "http_proxy.com"
     assert conn.proxy.port == 8080
     remote_connection_https = RemoteConnection("https://remote", keep_alive=False)
     conn = remote_connection_https._get_connection_manager()
-    assert type(conn) == urllib3.ProxyManager
+    assert isinstance(conn, urllib3.ProxyManager)
     assert conn.proxy.scheme == "http"
     assert conn.proxy.host == "https_proxy.com"
     assert conn.proxy.port == 8080
@@ -125,14 +125,14 @@ def test_get_connection_manager_with_auth_proxy(mock_proxy_auth_settings):
     proxy_auth_header = urllib3.make_headers(proxy_basic_auth="user:password")
     remote_connection = RemoteConnection("http://remote", keep_alive=False)
     conn = remote_connection._get_connection_manager()
-    assert type(conn) == urllib3.ProxyManager
+    assert isinstance(conn, urllib3.ProxyManager)
     assert conn.proxy.scheme == "http"
     assert conn.proxy.host == "http_proxy.com"
     assert conn.proxy.port == 8080
     assert conn.proxy_headers == proxy_auth_header
     remote_connection_https = RemoteConnection("https://remote", keep_alive=False)
     conn = remote_connection_https._get_connection_manager()
-    assert type(conn) == urllib3.ProxyManager
+    assert isinstance(conn, urllib3.ProxyManager)
     assert conn.proxy.scheme == "https"
     assert conn.proxy.host == "https_proxy.com"
     assert conn.proxy.port == 8080
@@ -160,13 +160,13 @@ def test_get_connection_manager_with_auth_proxy(mock_proxy_auth_settings):
 def test_get_connection_manager_when_no_proxy_set(mock_no_proxy_settings, url):
     remote_connection = RemoteConnection(url)
     conn = remote_connection._get_connection_manager()
-    assert type(conn) == urllib3.PoolManager
+    assert isinstance(conn, urllib3.PoolManager)
 
 
 def test_ignore_proxy_env_vars(mock_proxy_settings):
     remote_connection = RemoteConnection("http://remote", ignore_proxy=True)
     conn = remote_connection._get_connection_manager()
-    assert type(conn) == urllib3.PoolManager
+    assert isinstance(conn, urllib3.PoolManager)
 
 
 def test_get_socks_proxy_when_set(mock_socks_proxy_settings):
@@ -174,7 +174,7 @@ def test_get_socks_proxy_when_set(mock_socks_proxy_settings):
     conn = remote_connection._get_connection_manager()
     from urllib3.contrib.socks import SOCKSProxyManager
 
-    assert type(conn) == SOCKSProxyManager
+    assert isinstance(conn, SOCKSProxyManager)
 
 
 class MockResponse:

@@ -23,6 +23,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use serde::{Deserialize, Serialize};
 
 use crate::files::get_cache_folder;
+use crate::Logger;
 
 const METADATA_FILE: &str = "selenium-manager.json";
 const TTL_BROWSERS_SEC: u64 = 0;
@@ -53,24 +54,24 @@ fn get_metadata_path() -> PathBuf {
     get_cache_folder().join(METADATA_FILE)
 }
 
-fn now_unix_timestamp() -> u64 {
+pub fn now_unix_timestamp() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()
         .as_secs()
 }
 
-fn new_metadata() -> Metadata {
-    log::trace!("Metadata file does not exist. Creating a new one");
+fn new_metadata(log: &Logger) -> Metadata {
+    log.trace("Metadata file does not exist. Creating a new one".to_string());
     Metadata {
         browsers: Vec::new(),
         drivers: Vec::new(),
     }
 }
 
-pub fn get_metadata() -> Metadata {
+pub fn get_metadata(log: &Logger) -> Metadata {
     let metadata_path = get_cache_folder().join(METADATA_FILE);
-    log::trace!("Reading metadata from {}", metadata_path.display());
+    log.trace(format!("Reading metadata from {}", metadata_path.display()));
 
     if metadata_path.exists() {
         let metadata_file = File::open(&metadata_path).unwrap();
@@ -81,11 +82,11 @@ pub fn get_metadata() -> Metadata {
                 meta.drivers.retain(|d| d.driver_ttl > now);
                 meta
             }
-            Err(_e) => new_metadata(),
+            Err(_e) => new_metadata(log),
         };
         metadata
     } else {
-        new_metadata()
+        new_metadata(log)
     }
 }
 
@@ -141,9 +142,9 @@ pub fn create_driver_metadata(
     }
 }
 
-pub fn write_metadata(metadata: &Metadata) {
+pub fn write_metadata(metadata: &Metadata, log: &Logger) {
     let metadata_path = get_metadata_path();
-    log::trace!("Writing metadata to {}", metadata_path.display());
+    log.trace(format!("Writing metadata to {}", metadata_path.display()));
     fs::write(
         metadata_path,
         serde_json::to_string_pretty(metadata).unwrap(),
