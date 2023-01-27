@@ -73,9 +73,10 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       Map<String, Object> toReturn = new HashMap<>(slotStereotype.merge(capabilities).asMap());
 
       // Merge browser specific stereotype and capabilities options
-      switch (browserName) {
+      switch (browserName.toLowerCase()) {
         case "chrome":
         case "microsoftedge":
+        case "msedge":
           toReturn.put(options, mergeChromiumOptions(stereotypeOptions, capsOptions));
           break;
         case "firefox":
@@ -126,9 +127,11 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
         toReturn.put("extensions", stereotypeExtensions);
       }
 
-      if (name.equals("binary")) {
-        Object binary = capsOptions.get("binary");
-        toReturn.put("binary", binary);
+      // Grid will know the browser paths so preference is given to stereotype value in this case
+      // If the value is not present in stereotype but present in capabilities only then use capabilities value
+      if (name.equals("binary") && stereotypeOptions.get("binary") == null) {
+          Object binary = capsOptions.get("binary");
+          toReturn.put("binary", binary);
       }
 
       if (!name.equals("binary") && !name.equals("extensions") && !name.equals("args")) {
@@ -176,7 +179,9 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
         toReturn.put("profile", rawProfile);
       }
 
-      if (name.equals("binary")) {
+      // Grid will know the browser paths so preference is given to stereotype value in this case
+      // If the value is not present in stereotype but present in capabilities only then use capabilities value
+      if (name.equals("binary") && stereotypeOptions.get("binary") == null) {
         Object binary = capsOptions.get("binary");
         toReturn.put("binary", binary);
       }

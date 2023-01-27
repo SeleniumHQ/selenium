@@ -114,6 +114,7 @@ public class SessionCapabilitiesMutatorTest {
     Map<String, Object> capabilityOptions = new HashMap<>();
     capabilityOptions.put("args", Arrays.asList("incognito", "--headless"));
     capabilityOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext2)));
+    capabilityOptions.put("binary", "/path/to/caps/binary");
     capabilityOptions.put("opt2", "val2");
     capabilityOptions.put("opt3", "val3");
 
@@ -153,7 +154,6 @@ public class SessionCapabilitiesMutatorTest {
     Map<String, Object> stereotypeOptions = new HashMap<>();
     stereotypeOptions.put("args", new ArrayList<>(Arrays.asList("incognito", "window-size=500,500")));
     stereotypeOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext1)));
-    stereotypeOptions.put("binary", "/path/to/binary");
     stereotypeOptions.put("opt1", "val1");
     stereotypeOptions.put("opt2", "val4");
 
@@ -166,6 +166,7 @@ public class SessionCapabilitiesMutatorTest {
     Map<String, Object> capabilityOptions = new HashMap<>();
     capabilityOptions.put("args", Arrays.asList("incognito", "--headless"));
     capabilityOptions.put("extensions", new ArrayList<>(Collections.singletonList(ext2)));
+    capabilityOptions.put("binary", "/path/to/binary");
     capabilityOptions.put("opt2", "val2");
     capabilityOptions.put("opt3", "val3");
 
@@ -233,6 +234,8 @@ public class SessionCapabilitiesMutatorTest {
     infoLog.put("level", "info");
     capabilityOptions.put("log", infoLog);
     capabilityOptions.put("profile", "different-profile-string");
+
+    capabilityOptions.put("binary", "/path/to/caps/binary");
 
     capabilities = new ImmutableCapabilities(
       "browserName", "firefox",
