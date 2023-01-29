@@ -40,6 +40,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -149,8 +150,14 @@ public class NodeOptions {
     }
   }
 
-  public Optional<String> getDownloadsPath() {
-    return config.get(NODE_SECTION, "downloads-path");
+  public boolean isAutoManageDownloadsFolder() {
+    return config.getBool(NODE_SECTION, "enable-manage-downloads")
+      .orElse(Boolean.FALSE);
+  }
+
+  public String baseDirForDownloads() {
+    return config.get(NODE_SECTION, "base-dir-downloads")
+      .orElse(System.getProperty("user.home"));
   }
 
   public Node getNode() {
@@ -216,8 +223,9 @@ public class NodeOptions {
     addDriverConfigs(factoryFactory, sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
+    ImmutableMultimap<Capabilities, SessionFactory> built = sessionFactories.build();
 
-    return sessionFactories.build().asMap();
+    return built.asMap();
   }
 
   public int getMaxSessions() {
@@ -633,6 +641,10 @@ public class NodeOptions {
       capabilities = new PersistentCapabilities(capabilities)
         .setCapability("se:vncEnabled", true)
         .setCapability("se:noVncPort", noVncPort());
+    }
+    if (isAutoManageDownloadsFolder() && Browser.honoursSpecifiedDownloadsDir(capabilities)) {
+      capabilities = new PersistentCapabilities(capabilities)
+        .setCapability("se:enableDownloads", true);
     }
     return capabilities;
   }

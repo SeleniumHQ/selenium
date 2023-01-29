@@ -225,6 +225,7 @@ public class RemoteWebDriver implements WebDriver,
   protected void startSession(Capabilities capabilities) {
     checkNonW3CCapabilities(capabilities);
     checkChromeW3CFalse(capabilities);
+    validateAutoManageDownloads(capabilities);
 
     Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
@@ -708,6 +709,21 @@ public class RemoteWebDriver implements WebDriver,
       }
     }
 
+  }
+
+  private void validateAutoManageDownloads(Capabilities caps) {
+    boolean supported = true;
+    if (Browser.honoursSpecifiedDownloadsDir(caps)) {
+      Object raw = caps.getCapability("se:enableDownloads");
+      if (raw != null ){
+        supported = Boolean.parseBoolean(raw.toString());
+      }
+    }
+    if (!supported) {
+      throw new WebDriverException(
+        "auto-manage downloads capability is NOT supported for browser " + caps.getBrowserName()
+      );
+    }
   }
 
   public FileDetector getFileDetector() {

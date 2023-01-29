@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote;
 
+import java.util.Optional;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.Proxy;
@@ -105,6 +106,11 @@ public abstract class AbstractDriverOptions<DO extends AbstractDriverOptions> ex
 
   public DO setProxy(Proxy proxy) {
     setCapability(PROXY, Require.nonNull("Proxy", proxy));
+    return (DO) this;
+  }
+
+  public DO enableManageDownloadsDir(boolean flag) {
+    setCapability("se:enableDownloads", flag);
     return (DO) this;
   }
 

@@ -26,7 +26,14 @@ import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -63,6 +70,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -116,6 +124,7 @@ public class LocalNode extends Node {
 
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
+
   private final EventBus bus;
   private final URI externalUri;
   private final URI gridUri;
@@ -124,7 +133,7 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final int configuredSessionCount;
   private final boolean cdpEnabled;
-  private final String downloadsPath;
+  private final boolean enableManageDownloads;
 
   private final boolean bidiEnabled;
   private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
@@ -133,6 +142,10 @@ public class LocalNode extends Node {
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final AtomicInteger pendingSessions = new AtomicInteger();
   private final AtomicInteger sessionCount = new AtomicInteger();
+  private final Map<SessionId,UUID> downloadFolderToSessionMapping = new ConcurrentHashMap<>();
+  private final String baseDir;
+
+  private File defaultDownloadsDir;
 
   protected LocalNode(
     Tracer tracer,
@@ -149,7 +162,8 @@ public class LocalNode extends Node {
     Duration heartbeatPeriod,
     List<SessionSlot> factories,
     Secret registrationSecret,
-    String downloadsPath) {
+    String baseDir,
+    boolean enableManageDownloads) {
     super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
@@ -166,7 +180,8 @@ public class LocalNode extends Node {
     this.sessionCount.set(drainAfterSessionCount);
     this.cdpEnabled = cdpEnabled;
     this.bidiEnabled = bidiEnabled;
-    this.downloadsPath = Optional.ofNullable(downloadsPath).orElse("");
+    this.enableManageDownloads = enableManageDownloads;
+    this.baseDir = baseDir;
 
     this.healthCheck = healthCheck == null ?
                        () -> {
@@ -283,6 +298,11 @@ public class LocalNode extends Node {
     return Math.toIntExact(currentSessions.size());
   }
 
+  @VisibleForTesting
+  public String getDownloadsDirForSession(SessionId sessionId) {
+    return downloadFolderToSessionMapping.get(sessionId).toString();
+  }
+
   @ManagedAttribute(name = "MaxSessions")
   public int getMaxSessionCount() {
     return maxSessionCount;
@@ -381,10 +401,19 @@ public class LocalNode extends Node {
           new RetrySessionRequestException("No slot matched the requested capabilities."));
       }
 
+      UUID folderIdForPossibleSession = UUID.randomUUID();
+      Capabilities desiredCapabilities = sessionRequest.getDesiredCapabilities();
+      Capabilities enriched = enrichWithDownloadsPathInfo(folderIdForPossibleSession, desiredCapabilities);
+      enriched = desiredCapabilities.merge(enriched);
+      sessionRequest = new CreateSessionRequest(sessionRequest.getDownstreamDialects(), enriched, sessionRequest.getMetadata());
+
       Either<WebDriverException, ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
 
       if (possibleSession.isRight()) {
         ActiveSession session = possibleSession.right();
+        downloadFolderToSessionMapping.put(session.getId(), folderIdForPossibleSession);
+        LOG.info("Downloads pertaining to Session Id [" + session.getId().toString() + "] will be " +
+        "saved to " + defaultDownloadsBaseFolder().getAbsolutePath() + "/" + folderIdForPossibleSession);
         currentSessions.put(session.getId(), slotToUse);
 
         checkSessionCount();
@@ -407,7 +436,7 @@ public class LocalNode extends Node {
           externalUri,
           slotToUse.isSupportingCdp(),
           slotToUse.isSupportingBiDi(),
-          sessionRequest.getDesiredCapabilities());
+          desiredCapabilities);
 
         String sessionCreatedMessage = "Session created by the Node";
         LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, caps));
@@ -423,6 +452,57 @@ public class LocalNode extends Node {
         return Either.left(possibleSession.left());
       }
     }
+  }
+
+  private Capabilities enrichWithDownloadsPathInfo(UUID id, Capabilities caps) {
+    if (!enableManageDownloads || !Browser.honoursSpecifiedDownloadsDir(caps)) {
+      // Auto enable of downloads is not turned on. So don't bother fiddling around
+      // with the capabilities.
+      return caps;
+    }
+
+    File subDir = new File(defaultDownloadsBaseFolder(), id.toString());
+    boolean created = subDir.mkdirs();
+    if (created) {
+      LOG.fine("Created folder " + subDir.getAbsolutePath() + " for auto downloads");
+    } else {
+      //Should we error out here because if the downloads folder can't be created, then
+      //there's a good chance that the downloads may not work too.
+      LOG.warning("Could not create folder " + subDir.getAbsolutePath() + " for auto downloads");
+    }
+    if (Browser.CHROME.is(caps)) {
+      ImmutableMap<String, Serializable> map = ImmutableMap.of(
+        "download.prompt_for_download", false,
+        "download.default_directory", subDir.getAbsolutePath());
+      appendPrefs(caps, "goog:chromeOptions", map);
+      return caps;
+    }
+
+    if (Browser.EDGE.is(caps)) {
+      ImmutableMap<String, Serializable> map = ImmutableMap.of(
+        "download.prompt_for_download", false,
+        "download.default_directory", subDir.getAbsolutePath());
+      appendPrefs(caps, "ms:edgeOptions", map);
+      return caps;
+    }
+
+    if (Browser.FIREFOX.is(caps)) {
+      ImmutableMap<String, Serializable> map = ImmutableMap.of(
+        "browser.download.folderList", 2,
+        "browser.download.dir", subDir.getAbsolutePath());
+      appendPrefs(caps, "moz:firefoxOptions", map);
+    }
+    return caps;
+  }
+
+  @SuppressWarnings("unchecked")
+  private Capabilities appendPrefs(Capabilities caps, String optionsKey, Map<String, Serializable> map) {
+    Map<String, Object> currentOptions = (Map<String, Object>) Optional.ofNullable(
+        caps.getCapability(optionsKey))
+      .orElse(new HashMap<>());
+
+    ((Map<String, Serializable>)currentOptions.computeIfAbsent("prefs",k -> new HashMap<>())).putAll(map);
+    return caps;
   }
 
   @Override
@@ -484,18 +564,19 @@ public class LocalNode extends Node {
     if (slot != null && slot.getSession() instanceof DockerSession) {
       return executeWebDriverCommand(req);
     }
-    if (this.downloadsPath.isEmpty()) {
-      String msg = "Please specify the path wherein the files downloaded using the browser "
-        + "would be available via the command line arg [--downloads-path] and restart the node";
+    if (!this.enableManageDownloads) {
+      String msg = "Please enable management of downloads via the command line arg "
+        + "[--enable-manage-downloads] and restart the node";
       throw new WebDriverException(msg);
     }
-    File dir = new File(this.downloadsPath);
+    File dir = new File(defaultDownloadsBaseFolder(),
+      downloadFolderToSessionMapping.get(id).toString());
     if (!dir.exists()) {
       throw new WebDriverException(
-        String.format("Cannot locate downloads directory %s.", downloadsPath));
+        String.format("Cannot locate downloads directory %s.", dir));
     }
     if (!dir.isDirectory()) {
-      throw new WebDriverException(String.format("Invalid directory: %s.", downloadsPath));
+      throw new WebDriverException(String.format("Invalid directory: %s.", dir));
     }
     if (req.getMethod().equals(HttpMethod.GET)) {
       //User wants to list files that can be downloaded
@@ -525,7 +606,7 @@ public class LocalNode extends Node {
       ).orElse(new File[]{});
       if (allFiles.length == 0) {
         throw new WebDriverException(
-          String.format("Cannot find file [%s] in directory %s.", filename, downloadsPath));
+          String.format("Cannot find file [%s] in directory %s.", filename, dir.getAbsolutePath()));
       }
       if (allFiles.length != 1) {
         throw new WebDriverException(
@@ -590,6 +671,26 @@ public class LocalNode extends Node {
     }
 
     currentSessions.invalidate(id);
+    deleteDownloadsFolderForSession(id);
+  }
+
+  private void deleteDownloadsFolderForSession(SessionId id) {
+    String childDir = downloadFolderToSessionMapping.get(id).toString();
+    Path toDelete = Paths.get(defaultDownloadsBaseFolder().getAbsolutePath(), childDir);
+    if (!toDelete.toFile().exists()) {
+      return;
+    }
+    try (Stream<Path> walk = Files.walk(toDelete)) {
+      walk
+        .sorted(Comparator.reverseOrder())
+        .map(Path::toFile)
+        .peek(each -> LOG.info("Deleting downloads folder for session " + id))
+        .forEach(File::delete);
+      downloadFolderToSessionMapping.remove(id);
+    } catch (IOException e) {
+      LOG.warning("Could not delete downloads directory for session " + id + ". Root cause: "
+        + e.getMessage());
+    }
   }
 
   private void stopAllSessions() {
@@ -756,6 +857,22 @@ public class LocalNode extends Node {
         .collect(Collectors.toSet()));
   }
 
+  private File defaultDownloadsBaseFolder() {
+    if (defaultDownloadsDir != null) {
+      return defaultDownloadsDir;
+    }
+    String location = baseDir + File.separator + ".cache" +
+      File.separator + "selenium" + File.separator + "downloads";
+    defaultDownloadsDir = new File(location);
+    boolean created = defaultDownloadsDir.mkdirs();
+    if (created) {
+      LOG.info("All files downloaded by sessions on this node can be found under [" + location + "].");
+    } else {
+      LOG.info(location + " already exists. Using it for managing downloaded files.");
+    }
+    return defaultDownloadsDir;
+  }
+
   public static class Builder {
 
     private final Tracer tracer;
@@ -772,7 +889,8 @@ public class LocalNode extends Node {
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
-    private String downloadsPath = "";
+    private boolean enableManageDownloads = false;
+    private String baseDirectory;
 
     private Builder(
       Tracer tracer,
@@ -827,8 +945,13 @@ public class LocalNode extends Node {
       return this;
     }
 
-    public Builder downloadsPath(String path) {
-      this.downloadsPath = path;
+    public Builder enableManageDownloads(boolean enable) {
+      this.enableManageDownloads = enable;
+      return this;
+    }
+
+    public Builder baseDirectory(String directory) {
+      this.baseDirectory = directory;
       return this;
     }
 
@@ -848,7 +971,8 @@ public class LocalNode extends Node {
         heartbeatPeriod,
         factories.build(),
         registrationSecret,
-        downloadsPath);
+        Optional.ofNullable(baseDirectory).orElse(System.getProperty("user.home")),
+        enableManageDownloads);
     }
 
     public Advanced advanced() {
