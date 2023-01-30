@@ -1,6 +1,6 @@
 [package]
 name = "selenium-manager"
-version = "1.0.0-M2"
+version = "1.0.0-M3"
 edition = "2021"
 authors = ["Selenium <selenium-developers@googlegroups.com"]
 license = "Apache-2.0"
@@ -31,6 +31,7 @@ exitcode = "1.1.2"
 [dev-dependencies]
 assert_cmd = "2.0.7"
 rstest = "0.16.0"
+wiremock = "0.5.17"
 
 [profile.release]
 opt-level = 'z'     # Optimize for size

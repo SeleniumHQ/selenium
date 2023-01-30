@@ -67,6 +67,10 @@ impl SeleniumManager for FirefoxManager {
         &self.http_client
     }
 
+    fn set_http_client(&mut self, http_client: Client) {
+        self.http_client = http_client;
+    }
+
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
         HashMap::from([
             (
