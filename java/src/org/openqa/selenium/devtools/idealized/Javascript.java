@@ -20,6 +20,7 @@ package org.openqa.selenium.devtools.idealized;
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.Event;
+import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.internal.Require;
 
 import java.util.HashMap;
@@ -31,7 +32,7 @@ import java.util.function.Consumer;
 public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
 
   private final DevTools devtools;
-  private final Map<String, ScriptId> pinnedScripts = new HashMap<>();
+  private final Map<SessionID, Map<String, ScriptId>> pinnedScripts = new HashMap<>();
   private final Set<String> bindings = new HashSet<>();
 
   public Javascript(DevTools devtools) {
@@ -42,7 +43,8 @@ public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
     devtools.send(disableRuntime());
     devtools.send(disablePage());
 
-    pinnedScripts.values().forEach(id -> removeScriptToEvaluateOnNewDocument(id.getActualId()));
+    pinnedScripts.forEach((sessionID, scriptIdMap) -> scriptIdMap.values()
+      .forEach(id -> removeScriptToEvaluateOnNewDocument(id.getActualId())));
 
     pinnedScripts.clear();
   }
@@ -55,8 +57,11 @@ public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
     Require.nonNull("Script name", exposeScriptAs);
     Require.nonNull("Script", script);
 
-    if (pinnedScripts.containsKey(script)) {
-      return pinnedScripts.get(script);
+    if (pinnedScripts.containsKey(devtools.getCdpSession())) {
+      Map<String, ScriptId> scripts = pinnedScripts.get(devtools.getCdpSession());
+      if (scripts.containsKey(script)) {
+        return scripts.get(script);
+      }
     }
 
     devtools.send(enableRuntime());
@@ -68,7 +73,9 @@ public abstract class Javascript<SCRIPTID, BINDINGCALLED> {
     SCRIPTID id = devtools.send(addScriptToEvaluateOnNewDocument(script));
     ScriptId scriptId = new ScriptId(id);
 
-    pinnedScripts.put(script, scriptId);
+    Map<String, ScriptId> scripts = pinnedScripts.getOrDefault(devtools.getCdpSession(), new HashMap<>());
+    scripts.put(script, scriptId);
+    pinnedScripts.put(devtools.getCdpSession(), scripts);
 
     return scriptId;
   }
