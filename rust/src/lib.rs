@@ -23,11 +23,12 @@ use crate::iexplorer::IExplorerManager;
 use std::fs;
 
 use crate::config::{str_to_os, ManagerConfig};
-use reqwest::Client;
+use reqwest::{Client, ClientBuilder, Proxy};
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 use std::process::Command;
+use std::time::Duration;
 
 use crate::downloads::download_driver_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
@@ -46,6 +47,7 @@ pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
 
+pub const REQUEST_TIMEOUT_SEC: u64 = 120; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
@@ -69,6 +71,8 @@ pub trait SeleniumManager {
     fn get_browser_name(&self) -> &str;
 
     fn get_http_client(&self) -> &Client;
+
+    fn set_http_client(&mut self, http_client: Client);
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str>;
 
@@ -191,9 +195,20 @@ pub trait SeleniumManager {
                 }
             }
         }
-        let driver_version = self
-            .request_driver_version()
-            .unwrap_or_else(|err| err.to_string());
+        let driver_version = match self.request_driver_version() {
+            Ok(version) => {
+                if version.is_empty() {
+                    return Err(format!(
+                        "The {} version cannot be discovered",
+                        self.get_driver_name()
+                    ));
+                }
+                version
+            }
+            Err(err) => {
+                return Err(err.to_string());
+            }
+        };
         self.get_logger().debug(format!(
             "Required driver: {} {}",
             self.get_driver_name(),
@@ -312,6 +327,52 @@ pub trait SeleniumManager {
         config.browser_path = browser_path;
         self.set_config(config);
     }
+
+    fn get_proxy(&self) -> &str {
+        self.get_config().proxy.as_str()
+    }
+
+    fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
+        let mut config = ManagerConfig::clone(self.get_config());
+        config.proxy = proxy.to_string();
+        self.set_config(config);
+
+        if !proxy.is_empty() {
+            self.get_logger().debug(format!("Using proxy: {}", &proxy));
+            self.update_http_proxy()?;
+        }
+        Ok(())
+    }
+
+    fn get_timeout(&self) -> u64 {
+        self.get_config().timeout
+    }
+
+    fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
+        let mut config = ManagerConfig::clone(self.get_config());
+        config.timeout = timeout;
+        self.set_config(config);
+
+        if timeout != REQUEST_TIMEOUT_SEC {
+            self.get_logger()
+                .debug(format!("Using timeout of {} seconds", timeout));
+            self.update_http_proxy()?;
+        }
+        Ok(())
+    }
+
+    fn update_http_proxy(&mut self) -> Result<(), Box<dyn Error>> {
+        let proxy = self.get_proxy();
+        let timeout = self.get_timeout();
+
+        let mut builder = http_client_builder().timeout(Duration::from_secs(timeout));
+        if !proxy.is_empty() {
+            builder = builder.proxy(Proxy::all(proxy)?);
+        }
+        let http_client = builder.build()?;
+        self.set_http_client(http_client);
+        Ok(())
+    }
 }
 
 // ----------------------------------------------------------
@@ -370,9 +431,8 @@ pub fn clear_cache(log: &Logger) {
 }
 
 pub fn create_default_http_client() -> Client {
-    Client::builder()
-        .danger_accept_invalid_certs(true)
-        .use_rustls_tls()
+    http_client_builder()
+        .timeout(Duration::from_secs(REQUEST_TIMEOUT_SEC))
         .build()
         .unwrap_or_default()
 }
@@ -387,4 +447,10 @@ fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn
         .get(index)
         .ok_or(format!("Wrong version: {}", full_version))?
         .to_string())
+}
+
+pub fn http_client_builder() -> ClientBuilder {
+    Client::builder()
+        .danger_accept_invalid_certs(true)
+        .use_rustls_tls()
 }
