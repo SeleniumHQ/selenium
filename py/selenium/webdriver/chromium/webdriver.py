@@ -74,7 +74,7 @@ class ChromiumDriver(RemoteWebDriver):
                 DeprecationWarning,
                 stacklevel=2,
             )
-        if keep_alive != DEFAULT_KEEP_ALIVE and type(self) == __class__:
+        if keep_alive != DEFAULT_KEEP_ALIVE and isinstance(self, __class__):
             warnings.warn(
                 "keep_alive has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
             )

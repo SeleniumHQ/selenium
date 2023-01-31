@@ -1,4 +1,4 @@
-4.8.0 (Unreleased)
+4.8.0 (2023-01-23)
 =========================
 Ruby:
   * Allow updating instance variables on service classes

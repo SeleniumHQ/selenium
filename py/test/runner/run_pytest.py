@@ -17,7 +17,7 @@
 
 import pytest
 
-with open("pytest.ini", "w") as ini_file:
+with open("pytest.ini", "w", encoding="utf-8") as ini_file:
     ini_file.write("[pytest]\n")
     ini_file.write("addopts = -r=a\n")
     ini_file.write("rootdir = py\n")
