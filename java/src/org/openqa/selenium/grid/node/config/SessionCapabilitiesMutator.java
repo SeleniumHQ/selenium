@@ -22,8 +22,9 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -56,33 +57,125 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
     }
 
     String browserName = capabilities.getBrowserName().toLowerCase();
-    if (!BROWSER_OPTIONS.containsKey(browserName)) {
-      return capabilities;
-    }
-
     String options = BROWSER_OPTIONS.get(browserName);
-    if (!slotStereotype.asMap().containsKey(options)) {
-      return capabilities;
-    }
+    if (slotStereotype.asMap().containsKey(options) && capabilities.asMap().containsKey(options)) {
 
-    @SuppressWarnings("unchecked")
-    Map<String, Object> stereotypeOptions = (Map<String, Object>) slotStereotype.asMap().get(options);
+      @SuppressWarnings("unchecked")
+      Map<String, Object>
+        stereotypeOptions =
+        (Map<String, Object>) slotStereotype.asMap().get(options);
 
-    Map<String, Object> toReturn = new HashMap<>(capabilities.asMap());
+      @SuppressWarnings("unchecked")
+      Map<String, Object> capsOptions = (Map<String, Object>) capabilities.asMap().get(options);
 
-    if (!toReturn.containsKey(options)) {
-      toReturn.put(options, stereotypeOptions);
+      // Merge top level capabilities, excluding browser specific options.
+      // This will overwrite the browser options too, but it does not matter since we tackle it separately just after this.
+      Map<String, Object> toReturn = new HashMap<>(slotStereotype.merge(capabilities).asMap());
+
+      // Merge browser specific stereotype and capabilities options
+      switch (browserName.toLowerCase()) {
+        case "chrome":
+        case "microsoftedge":
+        case "msedge":
+          toReturn.put(options, mergeChromiumOptions(stereotypeOptions, capsOptions));
+          break;
+        case "firefox":
+          toReturn.put(options, mergeFirefoxOptions(stereotypeOptions, capsOptions));
+          break;
+        default:
+          break;
+      }
+
       return new ImmutableCapabilities(toReturn);
     }
 
-    @SuppressWarnings("unchecked")
-    Map<String, Object> capsOptions = (Map<String, Object>) toReturn.get(options);
-    stereotypeOptions.forEach((key, value) -> {
-      if (!capsOptions.containsKey(key)) {
-        capsOptions.put(key, value);
-      }
-    });
+    return slotStereotype.merge(capabilities);
+  }
 
-    return new ImmutableCapabilities(toReturn);
+  private Map<String, Object> mergeChromiumOptions(Map<String, Object> stereotypeOptions,
+                                                   Map<String, Object> capsOptions) {
+    Map<String, Object> toReturn = new HashMap<>(stereotypeOptions);
+
+    for (Map.Entry<String, Object>  entry : capsOptions.entrySet()) {
+      String name = entry.getKey();
+      Object value = entry.getValue();
+      if (name.equals("args")) {
+        List<String> arguments = (List<String>) value;
+
+        List<String> stereotypeArguments =
+          (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>()));
+
+        arguments.forEach(arg -> {
+          if (!stereotypeArguments.contains(arg)) {
+            stereotypeArguments.add(arg);
+          }
+        });
+        toReturn.put("args", stereotypeArguments);
+      }
+
+      if (name.equals("extensions")) {
+        List<String> extensionList = (List<String>) value;
+
+        List<String> stereotypeExtensions =
+          (List<String>) (stereotypeOptions.getOrDefault(("extensions"), new ArrayList<>()));
+
+        extensionList.forEach(extension -> {
+          if (!stereotypeExtensions.contains(extension)) {
+            stereotypeExtensions.add(extension);
+          }
+        });
+
+        toReturn.put("extensions", stereotypeExtensions);
+      }
+
+      if (!name.equals("binary") && !name.equals("extensions") && !name.equals("args")) {
+        toReturn.put(name, value);
+      }
+    }
+
+    return toReturn;
+  }
+
+  private Map<String, Object> mergeFirefoxOptions(Map<String, Object> stereotypeOptions,
+                                                  Map<String, Object> capsOptions) {
+    Map<String, Object> toReturn = new HashMap<>(stereotypeOptions);
+
+    for (Map.Entry<String, Object>  entry : capsOptions.entrySet()) {
+      String name = entry.getKey();
+      Object value = entry.getValue();
+      if (name.equals("args")) {
+        List<String> arguments = (List<String>) value;
+        List<String> stereotypeArguments =
+          (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>()));
+        arguments.forEach(arg -> {
+          if (!stereotypeArguments.contains(arg)) {
+            stereotypeArguments.add(arg);
+          }
+        });
+        toReturn.put("args", stereotypeArguments);
+      }
+
+      if (name.equals("prefs")) {
+        Map<String, Object> prefs = (Map<String, Object>) value;
+
+        Map<String, Object> stereotypePrefs =
+          (Map<String, Object>) (stereotypeOptions.getOrDefault(("prefs"), new HashMap<>()));
+
+        stereotypePrefs.putAll(prefs);
+        toReturn.put("prefs", stereotypePrefs);
+      }
+
+      if (name.equals("profile")) {
+        String rawProfile = (String) value;
+        toReturn.put("profile", rawProfile);
+      }
+
+      if (name.equals("log")) {
+        Map<String, Object> logLevelMap = (Map<String, Object>) value;
+        toReturn.put("log", logLevelMap);
+      }
+    }
+
+    return toReturn;
   }
 }

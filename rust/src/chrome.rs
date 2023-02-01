@@ -24,7 +24,7 @@ use std::path::PathBuf;
 use crate::config::ARCH::ARM64;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::downloads::read_content_from_link;
-use crate::files::{compose_driver_path_in_cache, BrowserPath};
+use crate::files::{compose_driver_path_in_cache, BrowserPath, PARSE_ERROR};
 use crate::logger::Logger;
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -67,6 +67,10 @@ impl SeleniumManager for ChromeManager {
 
     fn get_http_client(&self) -> &Client {
         &self.http_client
+    }
+
+    fn set_http_client(&mut self, http_client: Client) {
+        self.http_client = http_client;
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -135,14 +139,11 @@ impl SeleniumManager for ChromeManager {
         } else {
             commands = vec![self.format_one_arg(WMIC_COMMAND, browser_path)];
         }
-        let (shell, flag, args) = if WINDOWS.is(self.get_os()) {
-            ("cmd", "/C", commands)
+        let (shell, flag) = self.get_shell_command();
+        let args = if WINDOWS.is(self.get_os()) {
+            commands
         } else {
-            (
-                "sh",
-                "-c",
-                vec![self.format_one_arg(DASH_DASH_VERSION, browser_path)],
-            )
+            vec![self.format_one_arg(DASH_DASH_VERSION, browser_path)]
         };
         self.detect_browser_version(shell, flag, args)
     }
@@ -180,13 +181,15 @@ impl SeleniumManager for ChromeManager {
                         "Reading {} version from {}",
                         &self.driver_name, driver_url
                     ));
-                    let content = read_content_from_link(self.get_http_client(), driver_url);
-                    match content {
+                    match read_content_from_link(self.get_http_client(), driver_url) {
                         Ok(version) => {
                             driver_version = version;
                             break;
                         }
-                        _ => {
+                        Err(err) => {
+                            if !err.to_string().eq(PARSE_ERROR) {
+                                return Err(err);
+                            }
                             self.log.warn(format!(
                                 "Error getting version of {} {}. Retrying with {} {} (attempt {}/{})",
                                 &self.driver_name,

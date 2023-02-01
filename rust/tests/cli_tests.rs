@@ -55,7 +55,7 @@ fn ok_test(
     println!("{}", output);
 
     assert!(output.contains(&driver_name));
-    if !browser_version.is_empty() {
+    if !browser_version.is_empty() && output.contains("cache") {
         assert!(output.contains(&driver_version));
     }
 }

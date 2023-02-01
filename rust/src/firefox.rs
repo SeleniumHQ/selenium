@@ -67,6 +67,10 @@ impl SeleniumManager for FirefoxManager {
         &self.http_client
     }
 
+    fn set_http_client(&mut self, http_client: Client) {
+        self.http_client = http_client;
+    }
+
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
         HashMap::from([
             (
@@ -125,14 +129,11 @@ impl SeleniumManager for FirefoxManager {
         } else {
             commands = vec![self.format_one_arg(WMIC_COMMAND, browser_path)];
         }
-        let (shell, flag, args) = if WINDOWS.is(self.get_os()) {
-            ("cmd", "/C", commands)
+        let (shell, flag) = self.get_shell_command();
+        let args = if WINDOWS.is(self.get_os()) {
+            commands
         } else {
-            (
-                "sh",
-                "-c",
-                vec![self.format_one_arg(DASH_VERSION, browser_path)],
-            )
+            vec![self.format_one_arg(DASH_VERSION, browser_path)]
         };
         self.detect_browser_version(shell, flag, args)
     }

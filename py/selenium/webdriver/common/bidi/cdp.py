@@ -194,8 +194,8 @@ class CdpBase:
         self.target_id = target_id
         self.channels = defaultdict(set)
         self.id_iter = itertools.count()
-        self.inflight_cmd = dict()
-        self.inflight_result = dict()
+        self.inflight_cmd = {}
+        self.inflight_result = {}
 
     async def execute(self, cmd: typing.Generator[dict, T, typing.Any]) -> T:
         """Execute a command on the server and wait for the result.
@@ -384,7 +384,7 @@ class CdpConnection(CdpBase, trio.abc.AsyncResource):
         :param trio_websocket.WebSocketConnection ws:
         """
         super().__init__(ws, session_id=None, target_id=None)
-        self.sessions = dict()
+        self.sessions = {}
 
     async def aclose(self):
         """Close the underlying WebSocket connection.

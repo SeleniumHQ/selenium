@@ -36,7 +36,7 @@ def test_bad_proxy_doesnt_interfere():
 
     assert hasattr(driver, "command_executor")
     assert hasattr(driver.command_executor, "_proxy_url")
-    assert type(driver.command_executor._conn) == urllib3.PoolManager
+    assert isinstance(driver.command_executor._conn, urllib3.PoolManager)
     os.environ.pop("https_proxy")
     os.environ.pop("http_proxy")
     driver.quit()

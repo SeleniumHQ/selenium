@@ -33,7 +33,7 @@ def reset_timeouts(driver):
 def test_should_not_timeout_if_callback_invoked_immediately(driver, pages):
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("arguments[arguments.length - 1](123);")
-    assert type(result) == int
+    assert isinstance(result, int)
     assert 123 == result
 
 
@@ -55,7 +55,7 @@ def test_should_be_able_to_return_an_array_literal_from_an_async_script(driver, 
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("arguments[arguments.length - 1]([]);")
     assert "Expected not to be null!", result is not None
-    assert type(result) == list
+    assert isinstance(result, list)
     assert len(result) == 0
 
 
@@ -63,7 +63,7 @@ def test_should_be_able_to_return_an_array_object_from_an_async_script(driver, p
     pages.load("ajaxy_page.html")
     result = driver.execute_async_script("arguments[arguments.length - 1](new Array());")
     assert "Expected not to be null!", result is not None
-    assert type(result) == list
+    assert isinstance(result, list)
     assert len(result) == 0
 
 
@@ -73,7 +73,7 @@ def test_should_be_able_to_return_arrays_of_primitives_from_async_scripts(driver
     result = driver.execute_async_script("arguments[arguments.length - 1]([null, 123, 'abc', true, false]);")
 
     assert result is not None
-    assert type(result) == list
+    assert isinstance(result, list)
     assert not bool(result.pop())
     assert bool(result.pop())
     assert "abc" == result.pop()
@@ -96,7 +96,7 @@ def test_should_be_able_to_return_arrays_of_web_elements_from_async_scripts(driv
 
     result = driver.execute_async_script("arguments[arguments.length - 1]([document.body, document.body]);")
     assert result is not None
-    assert type(result) == list
+    assert isinstance(result, list)
 
     list_ = result
     assert 2 == len(list_)

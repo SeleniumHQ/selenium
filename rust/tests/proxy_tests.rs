@@ -16,45 +16,40 @@
 // under the License.
 
 use assert_cmd::Command;
-use std::path::Path;
 
-use selenium_manager::logger::JsonOutput;
-use std::str;
+use exitcode::UNAVAILABLE;
 
-#[test]
-fn json_output_test() {
+use wiremock::MockServer;
+
+#[tokio::test]
+async fn ok_proxy_test() {
+    let mock_server = MockServer::start().await;
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.args(["--browser", "chrome", "--output", "json"])
+    cmd.args(["--browser", "chrome", "--proxy", &mock_server.uri()])
         .assert()
         .success()
         .code(0);
-
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
-
-    let json: JsonOutput = serde_json::from_str(output).unwrap();
-    assert!(!json.logs.is_empty());
-
-    let output_code = json.result.code;
-    assert_eq!(output_code, 0);
-
-    let driver = Path::new(&json.result.message);
-    assert!(driver.exists());
 }
 
 #[test]
-fn shell_output_test() {
+fn wrong_protocol_proxy_test() {
     let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
-    cmd.args(["--browser", "chrome", "--output", "shell"])
+    cmd.args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
         .assert()
-        .success()
-        .code(0);
+        .failure()
+        .code(UNAVAILABLE);
+}
 
-    let stdout = &cmd.unwrap().stdout;
-    let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
-
-    let driver = Path::new(output);
-    assert!(driver.exists());
+#[test]
+fn wrong_port_proxy_test() {
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    cmd.args([
+        "--browser",
+        "chrome",
+        "--proxy",
+        "https:://localhost:1234567",
+    ])
+    .assert()
+    .failure()
+    .code(UNAVAILABLE);
 }

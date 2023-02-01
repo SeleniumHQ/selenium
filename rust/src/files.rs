@@ -32,6 +32,7 @@ use zip::ZipArchive;
 use crate::config::OS::WINDOWS;
 use crate::Logger;
 
+pub const PARSE_ERROR: &str = "Wrong browser/driver version";
 const CACHE_FOLDER: &str = ".cache/selenium";
 const ZIP: &str = "zip";
 const GZ: &str = "gz";
@@ -180,8 +181,16 @@ pub fn get_binary_extension(os: &str) -> &str {
 
 pub fn parse_version(version_text: String) -> Result<String, Box<dyn Error>> {
     if version_text.to_ascii_lowercase().contains("error") {
-        return Err("Wrong browser/driver version".into());
+        return Err(PARSE_ERROR.into());
     }
-    let re = Regex::new(r"[^\d^.]").unwrap();
-    Ok(re.replace_all(&version_text, "").to_string())
+    let mut parsed_version = "".to_string();
+    let re_numbers_dots = Regex::new(r"[^\d^.]")?;
+    let re_versions = Regex::new(r"(?:(\d+)\.)?(?:(\d+)\.)?(?:(\d+)\.\d+)")?;
+    for token in version_text.split(' ') {
+        parsed_version = re_numbers_dots.replace_all(token, "").to_string();
+        if re_versions.is_match(parsed_version.as_str()) {
+            break;
+        }
+    }
+    Ok(parsed_version)
 }

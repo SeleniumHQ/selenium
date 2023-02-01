@@ -22,12 +22,14 @@ use crate::firefox::FirefoxManager;
 use crate::iexplorer::IExplorerManager;
 use std::fs;
 
+use crate::config::OS::WINDOWS;
 use crate::config::{str_to_os, ManagerConfig};
-use reqwest::Client;
+use reqwest::{Client, ClientBuilder, Proxy};
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::PathBuf;
 use std::process::Command;
+use std::time::Duration;
 
 use crate::downloads::download_driver_to_tmp_folder;
 use crate::files::{parse_version, uncompress, BrowserPath};
@@ -46,6 +48,7 @@ pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
 
+pub const REQUEST_TIMEOUT_SEC: u64 = 120; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
 pub const BETA: &str = "beta";
 pub const DEV: &str = "dev";
@@ -60,6 +63,8 @@ pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
 pub const FALLBACK_RETRIES: u32 = 5;
+pub const WHERE_COMMAND: &str = "where {}";
+pub const WHICH_COMMAND: &str = "which {}";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -69,6 +74,8 @@ pub trait SeleniumManager {
     fn get_browser_name(&self) -> &str;
 
     fn get_http_client(&self) -> &Client;
+
+    fn set_http_client(&mut self, http_client: Client);
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str>;
 
@@ -191,15 +198,65 @@ pub trait SeleniumManager {
                 }
             }
         }
-        let driver_version = self
-            .request_driver_version()
-            .unwrap_or_else(|err| err.to_string());
+        let driver_version = match self.request_driver_version() {
+            Ok(version) => {
+                if version.is_empty() {
+                    return Err(format!(
+                        "The {} version cannot be discovered",
+                        self.get_driver_name()
+                    ));
+                }
+                version
+            }
+            Err(err) => {
+                return Err(err.to_string());
+            }
+        };
         self.get_logger().debug(format!(
             "Required driver: {} {}",
             self.get_driver_name(),
             driver_version
         ));
         Ok(driver_version)
+    }
+
+    fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
+        let (shell, flag) = self.get_shell_command();
+        match self.run_shell_command(
+            shell,
+            flag,
+            self.format_one_arg(DASH_DASH_VERSION, self.get_driver_name()),
+        ) {
+            Ok(output) => {
+                let parsed_version = parse_version(output).unwrap_or_default();
+                if !parsed_version.is_empty() {
+                    let which_command = if WINDOWS.is(self.get_os()) {
+                        WHERE_COMMAND
+                    } else {
+                        WHICH_COMMAND
+                    };
+                    let driver_path = match self.run_shell_command(
+                        shell,
+                        flag,
+                        self.format_one_arg(which_command, self.get_driver_name()),
+                    ) {
+                        Ok(path) => Some(path),
+                        Err(_) => None,
+                    };
+                    return (Some(parsed_version), driver_path);
+                }
+                (None, None)
+            }
+            Err(_) => (None, None),
+        }
+    }
+
+    fn get_shell_command(&self) -> (&str, &str) {
+        if WINDOWS.is(self.get_os()) {
+            ("cmd", "/C")
+        } else {
+            ("sh", "-c")
+        }
     }
 
     fn is_browser_version_unstable(&self) -> bool {
@@ -216,6 +273,27 @@ pub trait SeleniumManager {
             self.set_driver_version(driver_version);
         }
 
+        let (in_path_driver_version, in_path_driver_path) = self.find_driver_in_path();
+        if let (Some(found_driver_version), Some(found_driver_path)) =
+            (in_path_driver_version, in_path_driver_path)
+        {
+            if found_driver_version.eq(self.get_driver_version()) {
+                self.get_logger().debug(format!(
+                    "Found {} {} in PATH: {}",
+                    self.get_driver_name(),
+                    found_driver_version,
+                    found_driver_path
+                ));
+                return Ok(PathBuf::from(found_driver_path));
+            } else {
+                self.get_logger().warn(format!(
+                    "Incompatible release of {} (version {}) detected in PATH: {}",
+                    self.get_driver_name(),
+                    found_driver_version,
+                    found_driver_path
+                ));
+            }
+        }
         let driver_path = self.get_driver_path_in_cache();
         if driver_path.exists() {
             self.get_logger().debug(format!(
@@ -240,7 +318,10 @@ pub trait SeleniumManager {
         let output = Command::new(command).args([flag, args.as_str()]).output()?;
         self.get_logger().debug(format!("{:?}", output));
 
-        Ok(String::from_utf8_lossy(&output.stdout).to_string())
+        Ok(
+            strip_trailing_newline(String::from_utf8_lossy(&output.stdout).to_string().as_str())
+                .to_string(),
+        )
     }
 
     fn get_major_version(&self, full_version: &str) -> Result<String, Box<dyn Error>> {
@@ -312,6 +393,52 @@ pub trait SeleniumManager {
         config.browser_path = browser_path;
         self.set_config(config);
     }
+
+    fn get_proxy(&self) -> &str {
+        self.get_config().proxy.as_str()
+    }
+
+    fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
+        let mut config = ManagerConfig::clone(self.get_config());
+        config.proxy = proxy.to_string();
+        self.set_config(config);
+
+        if !proxy.is_empty() {
+            self.get_logger().debug(format!("Using proxy: {}", &proxy));
+            self.update_http_proxy()?;
+        }
+        Ok(())
+    }
+
+    fn get_timeout(&self) -> u64 {
+        self.get_config().timeout
+    }
+
+    fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
+        let mut config = ManagerConfig::clone(self.get_config());
+        config.timeout = timeout;
+        self.set_config(config);
+
+        if timeout != REQUEST_TIMEOUT_SEC {
+            self.get_logger()
+                .debug(format!("Using timeout of {} seconds", timeout));
+            self.update_http_proxy()?;
+        }
+        Ok(())
+    }
+
+    fn update_http_proxy(&mut self) -> Result<(), Box<dyn Error>> {
+        let proxy = self.get_proxy();
+        let timeout = self.get_timeout();
+
+        let mut builder = http_client_builder().timeout(Duration::from_secs(timeout));
+        if !proxy.is_empty() {
+            builder = builder.proxy(Proxy::all(proxy)?);
+        }
+        let http_client = builder.build()?;
+        self.set_http_client(http_client);
+        Ok(())
+    }
 }
 
 // ----------------------------------------------------------
@@ -370,9 +497,8 @@ pub fn clear_cache(log: &Logger) {
 }
 
 pub fn create_default_http_client() -> Client {
-    Client::builder()
-        .danger_accept_invalid_certs(true)
-        .use_rustls_tls()
+    http_client_builder()
+        .timeout(Duration::from_secs(REQUEST_TIMEOUT_SEC))
         .build()
         .unwrap_or_default()
 }
@@ -387,4 +513,17 @@ fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn
         .get(index)
         .ok_or(format!("Wrong version: {}", full_version))?
         .to_string())
+}
+
+pub fn http_client_builder() -> ClientBuilder {
+    Client::builder()
+        .danger_accept_invalid_certs(true)
+        .use_rustls_tls()
+}
+
+fn strip_trailing_newline(input: &str) -> &str {
+    input
+        .strip_suffix("\r\n")
+        .or_else(|| input.strip_suffix('\n'))
+        .unwrap_or(input)
 }
