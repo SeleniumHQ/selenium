@@ -96,10 +96,11 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
                                                    Map<String, Object> capsOptions) {
     Map<String, Object> toReturn = new HashMap<>(stereotypeOptions);
 
-    for (String name : capsOptions.keySet()) {
+    for (Map.Entry<String, Object>  entry : capsOptions.entrySet()) {
+      String name = entry.getKey();
+      Object value = entry.getValue();
       if (name.equals("args")) {
-        List<String> arguments =
-          (List<String>) (capsOptions.getOrDefault(("args"), new ArrayList<>()));
+        List<String> arguments = (List<String>) value;
 
         List<String> stereotypeArguments =
           (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>()));
@@ -113,7 +114,7 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       }
 
       if (name.equals("extensions")) {
-        List<String> extensionList = (List<String>) (capsOptions.get(("extensions")));
+        List<String> extensionList = (List<String>) value;
 
         List<String> stereotypeExtensions =
           (List<String>) (stereotypeOptions.getOrDefault(("extensions"), new ArrayList<>()));
@@ -128,7 +129,7 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       }
 
       if (!name.equals("binary") && !name.equals("extensions") && !name.equals("args")) {
-        toReturn.put(name, capsOptions.get(name));
+        toReturn.put(name, value);
       }
     }
 
@@ -139,11 +140,11 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
                                                   Map<String, Object> capsOptions) {
     Map<String, Object> toReturn = new HashMap<>(stereotypeOptions);
 
-    for (String name : capsOptions.keySet()) {
+    for (Map.Entry<String, Object>  entry : capsOptions.entrySet()) {
+      String name = entry.getKey();
+      Object value = entry.getValue();
       if (name.equals("args")) {
-        List<String>
-          arguments =
-          (List<String>) (capsOptions.getOrDefault(("args"), new ArrayList<>()));
+        List<String> arguments = (List<String>) value;
         List<String> stereotypeArguments =
           (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>()));
         arguments.forEach(arg -> {
@@ -155,8 +156,7 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       }
 
       if (name.equals("prefs")) {
-        Map<String, Object> prefs =
-          (Map<String, Object>) (capsOptions.getOrDefault(("prefs"), new HashMap<>()));
+        Map<String, Object> prefs = (Map<String, Object>) value;
 
         Map<String, Object> stereotypePrefs =
           (Map<String, Object>) (stereotypeOptions.getOrDefault(("prefs"), new HashMap<>()));
@@ -166,15 +166,12 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       }
 
       if (name.equals("profile")) {
-        String rawProfile =
-          (String) capsOptions.get("profile");
-
+        String rawProfile = (String) value;
         toReturn.put("profile", rawProfile);
       }
 
       if (name.equals("log")) {
-        Map<String, Object> logLevelMap =
-          (Map<String, Object>) capsOptions.get("log");
+        Map<String, Object> logLevelMap = (Map<String, Object>) value;
         toReturn.put("log", logLevelMap);
       }
     }
