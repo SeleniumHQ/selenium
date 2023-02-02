@@ -173,11 +173,8 @@ public class Augmenter {
     // Grab a remote execution method, if possible
     RemoteWebDriver remote = extractRemoteWebDriver(driver);
     ExecuteMethod execute = remote == null ?
-                            (commandName, parameters) -> {
-                              throw new WebDriverException(
-                                "Cannot execute remote command: " + commandName);
-                            } :
-                            new RemoteExecuteMethod(remote);
+      (commandName, parameters) -> { throw new WebDriverException("Cannot execute remote command: " + commandName); } :
+      new RemoteExecuteMethod(remote);
 
     DynamicType.Builder<? extends WebDriver> builder = new ByteBuddy()
       .subclass(driver.getClass())
