@@ -26,7 +26,8 @@ use crate::files::BrowserPath;
 
 use crate::config::OS::MACOS;
 use crate::{
-    create_default_http_client, Logger, SeleniumManager, BETA, DEV, PLIST_COMMAND, STABLE,
+    create_default_http_client, format_one_arg, Logger, SeleniumManager, BETA, DEV, PLIST_COMMAND,
+    STABLE,
 };
 
 pub const SAFARI: &str = "safari";
@@ -89,16 +90,12 @@ impl SeleniumManager for SafariManager {
                 _ => return None,
             }
         }
-        let (shell, flag, args) = if MACOS.is(self.get_os()) {
-            (
-                "sh",
-                "-c",
-                vec![self.format_one_arg(PLIST_COMMAND, browser_path)],
-            )
+        let command = if MACOS.is(self.get_os()) {
+            vec![format_one_arg(PLIST_COMMAND, browser_path)]
         } else {
             return None;
         };
-        self.detect_browser_version(shell, flag, args)
+        self.detect_browser_version(command)
     }
 
     fn get_driver_name(&self) -> &str {
