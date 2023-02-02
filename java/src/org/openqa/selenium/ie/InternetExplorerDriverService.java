@@ -41,12 +41,6 @@ import static org.openqa.selenium.remote.Browser.IE;
 public class InternetExplorerDriverService extends DriverService {
 
   /**
-   * System property that defines the location of the IEDriverServer executable
-   * that will be used by the {@link #createDefaultService() default service}.
-   */
-  public static final String IE_DRIVER_EXE_PROPERTY = "webdriver.ie.driver";
-
-  /**
    * System property that defines the location of the file where IEDriverServer
    * should write log messages to.
    */
@@ -89,9 +83,9 @@ public class InternetExplorerDriverService extends DriverService {
 
   /**
    * Configures and returns a new {@link InternetExplorerDriverService} using the default configuration. In
-   * this configuration, the service will use the IEDriverServer executable identified by the
-   * {@link #IE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
-   * be configured to use a free port on the current system.
+   * this configuration, the service will use the IEDriverServer executable identified by
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(Capabilities, String, String)} )}.
+   * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new InternetExplorerDriverService using the default configuration.
    */
@@ -168,13 +162,6 @@ public class InternetExplorerDriverService extends DriverService {
     public Builder withSilent(Boolean silent) {
       this.silent = silent;
       return this;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      return findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
-                            "https://www.selenium.dev/documentation/ie_driver_server/",
-                            "https://www.selenium.dev/downloads/");
     }
 
     @Override

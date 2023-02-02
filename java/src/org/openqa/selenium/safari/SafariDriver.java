@@ -27,6 +27,7 @@ import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -73,12 +74,33 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   /**
    * Initializes a new SafariDriver using the specified {@link SafariOptions}.
    *
-   * @param safariOptions safari specific options / capabilities for the driver
+   * @param service either {@link SafariTechPreviewDriverService} or {@link SafariDriverService}
+   * @param options safari specific options / capabilities for the driver
    */
-  public SafariDriver(DriverService safariServer, SafariOptions safariOptions) {
-    super(new SafariDriverCommandExecutor(safariServer), safariOptions);
+  public SafariDriver(DriverService service, SafariOptions options) {
+    super(generateExecutor(service, options), options);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
+  private static SafariDriverCommandExecutor generateExecutor(DriverService service, SafariOptions options) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    if (service.getExecutable() == null) {
+      String defaultValue;
+      String driverProperty;
+      if (options.getUseTechnologyPreview()) {
+        defaultValue = "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver";
+        driverProperty = "webdriver.tp.safari.driver";
+      } else {
+        defaultValue = "/usr/bin/safaridriver";
+        driverProperty = "webdriver.safari.driver";
+      }
+
+      String path = DriverFinder.getPath(options, "safaridriver", driverProperty, defaultValue);
+      service.setExecutable(path);
+    }
+    return new SafariDriverCommandExecutor(service);
   }
 
   @Beta

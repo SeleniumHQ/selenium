@@ -52,6 +52,7 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.net.URI;
@@ -108,7 +109,7 @@ public class FirefoxDriver extends RemoteWebDriver
    * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
    */
   public FirefoxDriver(FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);
+    this(GeckoDriverService.createDefaultService(), options);
   }
 
   /**
@@ -123,7 +124,17 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(service), Require.nonNull("Driver options", options));
+    this(generateExecutor(service, options), options);
+  }
+
+  private static FirefoxDriverCommandExecutor generateExecutor(FirefoxDriverService service, FirefoxOptions options) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    if (service.getExecutable() == null) {
+      String path = DriverFinder.getPath(options, "geckodriver", "webdriver.gecko.driver");
+      service.setExecutable(path);
+    }
+    return new FirefoxDriverCommandExecutor(service);
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {

@@ -42,12 +42,6 @@ import static org.openqa.selenium.remote.Browser.CHROME;
 public class ChromeDriverService extends DriverService {
 
   /**
-   * System property that defines the location of the ChromeDriver executable that will be used by
-   * the {@link #createDefaultService() default service}.
-   */
-  public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
-
-  /**
    * System property that toggles the formatting of the timestamps of the logs
    */
   public static final String CHROME_DRIVER_READABLE_TIMESTAMP = "webdriver.chrome.readableTimestamp";
@@ -137,9 +131,9 @@ public class ChromeDriverService extends DriverService {
 
   /**
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
-   * this configuration, the service will use the ChromeDriver executable identified by the
-   * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
-   * be configured to use a free port on the current system.
+   * this configuration, the service will use the ChromeDriver executable identified by
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(Capabilities, String, String)} )}.
+   * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the default configuration.
    */
@@ -149,9 +143,9 @@ public class ChromeDriverService extends DriverService {
 
   /**
    * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
-   * this configuration, the service will use the ChromeDriver executable identified by the
-   * {@link #CHROME_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
-   * be configured to use a free port on the current system.
+   * this configuration, the service will use the ChromeDriver executable identified by
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(Capabilities, String, String)}.
+   * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
    * @deprecated Use {@link Builder#withLogLevel(ChromiumDriverLogLevel)}  }
@@ -308,14 +302,6 @@ public class ChromeDriverService extends DriverService {
     public Builder withReadableTimestamp(Boolean readableTimestamp) {
       this.readableTimestamp = readableTimestamp;
       return this;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      return findExecutable(
-        "chromedriver", CHROME_DRIVER_EXE_PROPERTY,
-        "https://chromedriver.chromium.org/",
-        "https://chromedriver.chromium.org/downloads");
     }
 
     @Override

@@ -26,6 +26,7 @@ import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.io.File;
 
@@ -137,6 +138,12 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     if (service == null) {
       service = InternetExplorerDriverService.createDefaultService();
     }
+
+    if (service.getExecutable() == null) {
+      String path = DriverFinder.getPath(options, "IEDriverServer", "webdriver.ie.driver");
+      service.setExecutable(path);
+    }
+
     run(service, options);
   }
 

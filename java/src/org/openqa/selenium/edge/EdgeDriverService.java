@@ -42,12 +42,6 @@ import static org.openqa.selenium.remote.Browser.EDGE;
 public class EdgeDriverService extends DriverService {
 
   /**
-   * System property that defines the location of the MSEdgeDriver executable that will be used by
-   * the default service.
-   */
-  public static final String EDGE_DRIVER_EXE_PROPERTY = "webdriver.edge.driver";
-
-  /**
    * System property that toggles the formatting of the timestamps of the logs
    */
   public static final String EDGE_DRIVER_READABLE_TIMESTAMP = "webdriver.edge.readableTimestamp";
@@ -113,8 +107,8 @@ public class EdgeDriverService extends DriverService {
   /**
    * Configures and returns a new {@link EdgeDriverService} using the default configuration. In
    * this configuration, the service will use the MSEdgeDriver executable identified by the
-   * {@link #EDGE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
-   * be configured to use a free port on the current system.
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(Capabilities, String, String)}.
+   * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromiumEdgeDriverService using the default configuration.
    */
@@ -250,14 +244,6 @@ public class EdgeDriverService extends DriverService {
     public Builder withReadableTimestamp(Boolean readableTimestamp) {
       this.readableTimestamp = readableTimestamp;
       return this;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      return findExecutable(
-        "msedgedriver", EDGE_DRIVER_EXE_PROPERTY,
-        "https://docs.microsoft.com/en-us/microsoft-edge/webdriver-chromium/",
-        "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
     }
 
     @Override

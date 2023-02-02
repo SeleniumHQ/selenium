@@ -28,6 +28,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -79,9 +80,19 @@ public class ChromeDriver extends ChromiumDriver {
    * @param options The options required from ChromeDriver.
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    super(new ChromeDriverCommandExecutor(service), Require.nonNull("Driver options", options), ChromeOptions.CAPABILITY);
+    super(generateExecutor(service, options), options, ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
+  private static ChromeDriverCommandExecutor generateExecutor(ChromeDriverService service, ChromeOptions options) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    if (service.getExecutable() == null) {
+      String path = DriverFinder.getPath(options, "chromedriver", "webdriver.chrome.driver");
+      service.setExecutable(path);
+    }
+    return new ChromeDriverCommandExecutor(service);
   }
 
   @Beta

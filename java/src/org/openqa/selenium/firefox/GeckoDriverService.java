@@ -47,12 +47,6 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
 public class GeckoDriverService extends FirefoxDriverService {
 
   /**
-   * System property that defines the location of the GeckoDriver executable
-   * that will be used by the {@link #createDefaultService() default service}.
-   */
-  public static final String GECKO_DRIVER_EXE_PROPERTY = "webdriver.gecko.driver";
-
-  /**
    * @param executable The GeckoDriver executable.
    * @param port Which port to start the GeckoDriver on.
    * @param args The arguments to the launched server.
@@ -154,17 +148,8 @@ public class GeckoDriverService extends FirefoxDriverService {
      */
     public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
       Require.nonNull("Firefox binary", firefoxBinary);
-      checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
       return this;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      return findExecutable(
-        "geckodriver", GECKO_DRIVER_EXE_PROPERTY,
-        "https://github.com/mozilla/geckodriver",
-        "https://github.com/mozilla/geckodriver/releases");
     }
 
     @Override

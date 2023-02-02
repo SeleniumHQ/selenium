@@ -40,15 +40,6 @@ import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
 public class SafariTechPreviewDriverService extends DriverService {
 
-  /**
-   * System property that defines the location of the tech preview safaridriver executable that
-   * will be used by the {@link #createDefaultService() default service}.
-   */
-  public static final String TP_SAFARI_DRIVER_EXE_PROPERTY = "webdriver.tp.safari.driver";
-
-  private static final File TP_SAFARI_DRIVER_EXECUTABLE =
-    new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
-
   public SafariTechPreviewDriverService(
     File executable,
     int port,
@@ -96,22 +87,6 @@ public class SafariTechPreviewDriverService extends DriverService {
       }
 
       return score;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      File exe;
-      if (System.getProperty(TP_SAFARI_DRIVER_EXE_PROPERTY) != null) {
-        exe = new File(System.getProperty(TP_SAFARI_DRIVER_EXE_PROPERTY));
-      } else {
-        exe = TP_SAFARI_DRIVER_EXECUTABLE;
-      }
-
-      if (!exe.isFile()) {
-        throw new WebDriverException("Unable to find driver executable: " + exe);
-      }
-
-      return exe;
     }
 
     @Override
