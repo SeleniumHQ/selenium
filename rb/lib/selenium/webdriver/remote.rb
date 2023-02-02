@@ -27,7 +27,6 @@ module Selenium
       autoload :Driver,       'selenium/webdriver/remote/driver'
       autoload :Response,     'selenium/webdriver/remote/response'
       autoload :Capabilities, 'selenium/webdriver/remote/capabilities'
-      autoload :COMMANDS,     'selenium/webdriver/remote/commands'
 
       module Http
         autoload :Common,  'selenium/webdriver/remote/http/common'

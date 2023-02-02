@@ -21,6 +21,7 @@ module Selenium
   module WebDriver
     module Remote
       class Bridge
+        autoload :COMMANDS, 'selenium/webdriver/remote/bridge/commands'
         include Atoms
 
         PORT = 4444
