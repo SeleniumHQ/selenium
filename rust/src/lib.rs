@@ -221,9 +221,9 @@ pub trait SeleniumManager {
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
-        match self.run_shell_command_with_log(
-            self.format_one_arg(DASH_DASH_VERSION, self.get_driver_name()),
-        ) {
+        match self
+            .run_shell_command_with_log(format_one_arg(DASH_DASH_VERSION, self.get_driver_name()))
+        {
             Ok(output) => {
                 let parsed_version = parse_version(output).unwrap_or_default();
                 if !parsed_version.is_empty() {
@@ -232,9 +232,10 @@ pub trait SeleniumManager {
                     } else {
                         WHICH_COMMAND
                     };
-                    let driver_path = match self.run_shell_command_with_log(
-                        self.format_one_arg(which_command, self.get_driver_name()),
-                    ) {
+                    let driver_path = match self.run_shell_command_with_log(format_one_arg(
+                        which_command,
+                        self.get_driver_name(),
+                    )) {
                         Ok(path) => Some(path),
                         Err(_) => None,
                     };
@@ -308,14 +309,6 @@ pub trait SeleniumManager {
 
     fn get_minor_version(&self, full_version: &str) -> Result<String, Box<dyn Error>> {
         get_index_version(full_version, 1)
-    }
-
-    fn format_one_arg(&self, string: &str, arg1: &str) -> String {
-        string.replacen("{}", arg1, 1)
-    }
-
-    fn format_two_args(&self, string: &str, arg1: &str, arg2: &str) -> String {
-        string.replacen("{}", arg1, 1).replacen("{}", arg2, 2)
     }
 
     // ----------------------------------------------------------
@@ -519,4 +512,12 @@ pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Er
         strip_trailing_newline(String::from_utf8_lossy(&output.stdout).to_string().as_str())
             .to_string(),
     )
+}
+
+pub fn format_one_arg(string: &str, arg1: &str) -> String {
+    string.replacen("{}", arg1, 1)
+}
+
+pub fn format_two_args(string: &str, arg1: &str, arg2: &str) -> String {
+    string.replacen("{}", arg1, 1).replacen("{}", arg2, 2)
 }
