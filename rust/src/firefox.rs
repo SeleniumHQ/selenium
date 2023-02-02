@@ -113,7 +113,7 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn discover_browser_version(&self) -> Option<String> {
-        let commands;
+        let mut commands;
         let mut browser_path = self.get_browser_path();
         if browser_path.is_empty() {
             match self.detect_browser_path() {
@@ -129,13 +129,10 @@ impl SeleniumManager for FirefoxManager {
         } else {
             commands = vec![self.format_one_arg(WMIC_COMMAND, browser_path)];
         }
-        let (shell, flag) = self.get_shell_command();
-        let args = if WINDOWS.is(self.get_os()) {
-            commands
-        } else {
-            vec![self.format_one_arg(DASH_VERSION, browser_path)]
-        };
-        self.detect_browser_version(shell, flag, args)
+        if !WINDOWS.is(self.get_os()) {
+            commands = vec![self.format_one_arg(DASH_VERSION, browser_path)]
+        }
+        self.detect_browser_version(commands)
     }
 
     fn get_driver_name(&self) -> &str {

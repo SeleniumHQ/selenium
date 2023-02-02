@@ -123,7 +123,7 @@ pub trait SeleniumManager {
             .cloned()
     }
 
-    fn detect_browser_version(&self, shell: &str, flag: &str, args: Vec<String>) -> Option<String> {
+    fn detect_browser_version(&self, commands: Vec<String>) -> Option<String> {
         let mut metadata = get_metadata(self.get_logger());
         let browser_name = &self.get_browser_name();
 
@@ -141,8 +141,8 @@ pub trait SeleniumManager {
                     browser_name
                 ));
                 let mut browser_version = "".to_string();
-                for arg in args.iter() {
-                    let output = match self.run_shell_command(shell, flag, arg.to_string()) {
+                for command in commands.iter() {
+                    let output = match self.run_shell_command_with_log(command.to_string()) {
                         Ok(out) => out,
                         Err(_e) => continue,
                     };
@@ -221,10 +221,7 @@ pub trait SeleniumManager {
     }
 
     fn find_driver_in_path(&self) -> (Option<String>, Option<String>) {
-        let (shell, flag) = self.get_shell_command();
-        match self.run_shell_command(
-            shell,
-            flag,
+        match self.run_shell_command_with_log(
             self.format_one_arg(DASH_DASH_VERSION, self.get_driver_name()),
         ) {
             Ok(output) => {
@@ -235,9 +232,7 @@ pub trait SeleniumManager {
                     } else {
                         WHICH_COMMAND
                     };
-                    let driver_path = match self.run_shell_command(
-                        shell,
-                        flag,
+                    let driver_path = match self.run_shell_command_with_log(
                         self.format_one_arg(which_command, self.get_driver_name()),
                     ) {
                         Ok(path) => Some(path),
@@ -248,14 +243,6 @@ pub trait SeleniumManager {
                 (None, None)
             }
             Err(_) => (None, None),
-        }
-    }
-
-    fn get_shell_command(&self) -> (&str, &str) {
-        if WINDOWS.is(self.get_os()) {
-            ("cmd", "/C")
-        } else {
-            ("sh", "-c")
         }
     }
 
@@ -307,21 +294,12 @@ pub trait SeleniumManager {
         Ok(driver_path)
     }
 
-    fn run_shell_command(
-        &self,
-        command: &str,
-        flag: &str,
-        args: String,
-    ) -> Result<String, Box<dyn Error>> {
+    fn run_shell_command_with_log(&self, command: String) -> Result<String, Box<dyn Error>> {
         self.get_logger()
-            .debug(format!("Running {} command: {:?}", command, args));
-        let output = Command::new(command).args([flag, args.as_str()]).output()?;
-        self.get_logger().debug(format!("{:?}", output));
-
-        Ok(
-            strip_trailing_newline(String::from_utf8_lossy(&output.stdout).to_string().as_str())
-                .to_string(),
-        )
+            .debug(format!("Running command: {:?}", command));
+        let output = run_shell_command(self.get_os(), command)?;
+        self.get_logger().debug(format!("Output: {:?}", output));
+        Ok(output)
     }
 
     fn get_major_version(&self, full_version: &str) -> Result<String, Box<dyn Error>> {
@@ -526,4 +504,19 @@ fn strip_trailing_newline(input: &str) -> &str {
         .strip_suffix("\r\n")
         .or_else(|| input.strip_suffix('\n'))
         .unwrap_or(input)
+}
+
+pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Error>> {
+    let (shell, flag) = if WINDOWS.is(os) {
+        ("cmd", "/C")
+    } else {
+        ("sh", "-c")
+    };
+    let output = Command::new(shell)
+        .args([flag, command.as_str()])
+        .output()?;
+    Ok(
+        strip_trailing_newline(String::from_utf8_lossy(&output.stdout).to_string().as_str())
+            .to_string(),
+    )
 }
