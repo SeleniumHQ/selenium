@@ -33,6 +33,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.remote.html5.AddWebStorage;
 
 import java.lang.reflect.Field;
@@ -217,6 +218,10 @@ public class Augmenter {
     // add interfaces that need to use the augmented driver
     if (!(driver instanceof HasAuthentication)) {
       augmentationList.add(createAugmentation(new AddHasAuthentication()));
+    }
+
+    if (!(driver instanceof HasLogEvents)) {
+      augmentationList.add(createAugmentation(new AddHasLogEvents()));
     }
 
     if (!augmentationList.isEmpty()) {
