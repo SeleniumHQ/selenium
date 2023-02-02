@@ -21,6 +21,7 @@ import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.remote.service.DriverServiceInfo;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -40,6 +41,14 @@ import static org.openqa.selenium.remote.Browser.CHROME;
  * Manages the life and death of a ChromeDriver server.
  */
 public class ChromeDriverService extends DriverService {
+
+  public static final String CHROME_DRIVER_NAME = "chromedriver";
+
+  /**
+   * System property that defines the location of the ChromeDriver executable that will be used by
+   * the {@link #createDefaultService() default service}.
+   */
+  public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
 
   /**
    * System property that toggles the formatting of the timestamps of the logs
@@ -129,10 +138,18 @@ public class ChromeDriverService extends DriverService {
       unmodifiableMap(new HashMap<>(environment)));
   }
 
+  public String getDriverName() {
+    return CHROME_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return CHROME_DRIVER_EXE_PROPERTY;
+  }
+
   /**
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(Capabilities, String, String)} )}.
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverServiceInfo, Capabilities)}.
    * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the default configuration.
@@ -144,7 +161,7 @@ public class ChromeDriverService extends DriverService {
   /**
    * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(Capabilities, String, String)}.
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverServiceInfo, Capabilities)}.
    * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.

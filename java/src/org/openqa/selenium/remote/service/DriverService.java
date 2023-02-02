@@ -59,7 +59,7 @@ import java.util.logging.Logger;
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is
  * used to stop the server.
  */
-public class DriverService implements Closeable {
+public class DriverService implements Closeable, DriverServiceInfo {
 
   private static final String NAME = "Driver Service Executor";
   private static final Logger LOG = Logger.getLogger(DriverService.class.getName());

@@ -87,17 +87,7 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
     if (service.getExecutable() == null) {
-      String defaultValue;
-      String driverProperty;
-      if (options.getUseTechnologyPreview()) {
-        defaultValue = "/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver";
-        driverProperty = "webdriver.tp.safari.driver";
-      } else {
-        defaultValue = "/usr/bin/safaridriver";
-        driverProperty = "webdriver.safari.driver";
-      }
-
-      String path = DriverFinder.getPath(options, "safaridriver", driverProperty, defaultValue);
+      String path = DriverFinder.getPath(service, options);
       service.setExecutable(path);
     }
     return new SafariDriverCommandExecutor(service);

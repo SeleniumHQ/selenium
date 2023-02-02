@@ -22,6 +22,7 @@ import com.google.auto.service.AutoService;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,14 @@ import static org.openqa.selenium.remote.Browser.IE;
  * Manages the life and death of an IEDriverServer.
  */
 public class InternetExplorerDriverService extends DriverService {
+
+  public static final String IE_DRIVER_NAME = "IEDriverServer";
+
+  /**
+   * System property that defines the location of the IEDriverServer executable
+   * that will be used by the {@link #createDefaultService() default service}.
+   */
+  public static final String IE_DRIVER_EXE_PROPERTY = "webdriver.ie.driver";
 
   /**
    * System property that defines the location of the file where IEDriverServer
@@ -81,11 +90,19 @@ public class InternetExplorerDriverService extends DriverService {
       unmodifiableMap(new HashMap<>(environment)));
   }
 
+  public String getDriverName() {
+    return IE_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return IE_DRIVER_EXE_PROPERTY;
+  }
+
   /**
    * Configures and returns a new {@link InternetExplorerDriverService} using the default configuration. In
-   * this configuration, the service will use the IEDriverServer executable identified by
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(Capabilities, String, String)} )}.
-   * Each service created by this method will be configured to use a free port on the current system.
+   * this configuration, the service will use the IEDriverServer executable identified by the
+   * {@link #IE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
+   * be configured to use a free port on the current system.
    *
    * @return A new InternetExplorerDriverService using the default configuration.
    */

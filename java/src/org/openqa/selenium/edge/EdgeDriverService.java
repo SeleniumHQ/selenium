@@ -23,6 +23,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,14 @@ import static org.openqa.selenium.remote.Browser.EDGE;
  * Manages the life and death of the MSEdgeDriver
  */
 public class EdgeDriverService extends DriverService {
+
+  public static final String EDGE_DRIVER_NAME = "msedgedriver";
+
+  /**
+   * System property that defines the location of the MSEdgeDriver executable that will be used by
+   * the default service.
+   */
+  public static final String EDGE_DRIVER_EXE_PROPERTY = "webdriver.edge.driver";
 
   /**
    * System property that toggles the formatting of the timestamps of the logs
@@ -104,10 +113,18 @@ public class EdgeDriverService extends DriverService {
           unmodifiableMap(new HashMap<>(environment)));
   }
 
+  public String getDriverName() {
+    return EDGE_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return EDGE_DRIVER_EXE_PROPERTY;
+  }
+
   /**
    * Configures and returns a new {@link EdgeDriverService} using the default configuration. In
    * this configuration, the service will use the MSEdgeDriver executable identified by the
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(Capabilities, String, String)}.
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverServiceInfo, Capabilities)}.
    * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromiumEdgeDriverService using the default configuration.

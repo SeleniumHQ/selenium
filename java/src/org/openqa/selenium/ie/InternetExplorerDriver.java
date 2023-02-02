@@ -140,7 +140,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     }
 
     if (service.getExecutable() == null) {
-      String path = DriverFinder.getPath(options, "IEDriverServer", "webdriver.ie.driver");
+      String path = DriverFinder.getPath(service, options);
       service.setExecutable(path);
     }
 

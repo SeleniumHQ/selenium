@@ -23,6 +23,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +40,17 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
 public class SafariTechPreviewDriverService extends DriverService {
+
+  /**
+   * System property that defines the location of the tech preview safaridriver executable that
+   * will be used by the {@link #createDefaultService() default service}.
+   */
+  public static final String TP_SAFARI_DRIVER_NAME = "safaridriver";
+
+  public static final String TP_SAFARI_DRIVER_EXE_PROPERTY = "webdriver.tp.safari.driver";
+
+  private static final File TP_SAFARI_DRIVER_EXECUTABLE =
+    new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
 
   public SafariTechPreviewDriverService(
     File executable,
@@ -59,6 +71,18 @@ public class SafariTechPreviewDriverService extends DriverService {
     super(executable, port, timeout,
       unmodifiableList(new ArrayList<>(args)),
       unmodifiableMap(new HashMap<>(environment)));
+  }
+
+  public String getDriverName() {
+    return TP_SAFARI_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return TP_SAFARI_DRIVER_EXE_PROPERTY;
+  }
+
+  public File getDriverExecutable() {
+    return TP_SAFARI_DRIVER_EXECUTABLE;
   }
 
   public static SafariTechPreviewDriverService createDefaultService() {

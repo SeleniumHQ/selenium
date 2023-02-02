@@ -131,7 +131,7 @@ public class FirefoxDriver extends RemoteWebDriver
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
     if (service.getExecutable() == null) {
-      String path = DriverFinder.getPath(options, "geckodriver", "webdriver.gecko.driver");
+      String path = DriverFinder.getPath(service, options);
       service.setExecutable(path);
     }
     return new FirefoxDriverCommandExecutor(service);
