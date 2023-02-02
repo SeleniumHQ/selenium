@@ -17,7 +17,7 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SimpleStartStopAndGetProfilerTest()
         {
-            var domains = session.GetVersionSpecificDomains<V108.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V109.DevToolsSessionDomains>();
             await domains.Profiler.Enable();
             await domains.Profiler.Start();
             var response = await domains.Profiler.Stop();
@@ -32,10 +32,10 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleGetBestEffortProfilerTest()
         {
-            var domains = session.GetVersionSpecificDomains<V108.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V109.DevToolsSessionDomains>();
             await domains.Profiler.Enable();
             driver.Url = simpleTestPage;
-            await domains.Profiler.SetSamplingInterval(new V108.Profiler.SetSamplingIntervalCommandSettings()
+            await domains.Profiler.SetSamplingInterval(new V109.Profiler.SetSamplingIntervalCommandSettings()
             {
                 Interval = 30
             });
@@ -53,10 +53,10 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleSetStartPreciseCoverageTest()
         {
-            var domains = session.GetVersionSpecificDomains<V108.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V109.DevToolsSessionDomains>();
             await domains.Profiler.Enable();
             driver.Url = simpleTestPage;
-            await domains.Profiler.StartPreciseCoverage(new V108.Profiler.StartPreciseCoverageCommandSettings()
+            await domains.Profiler.StartPreciseCoverage(new V109.Profiler.StartPreciseCoverageCommandSettings()
             {
                 CallCount = true,
                 Detailed = true
@@ -78,11 +78,11 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleProfileEvents()
         {
-            var domains = session.GetVersionSpecificDomains<V108.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V109.DevToolsSessionDomains>();
             await domains.Profiler.Enable();
             driver.Url = simpleTestPage;
             ManualResetEventSlim startSync = new ManualResetEventSlim(false);
-            EventHandler<V108.Profiler.ConsoleProfileStartedEventArgs> consoleProfileStartedHandler = (sender, e) =>
+            EventHandler<V109.Profiler.ConsoleProfileStartedEventArgs> consoleProfileStartedHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 startSync.Set();
@@ -94,7 +94,7 @@ namespace OpenQA.Selenium.DevTools
             driver.Navigate().Refresh();
 
             ManualResetEventSlim finishSync = new ManualResetEventSlim(false);
-            EventHandler<V108.Profiler.ConsoleProfileFinishedEventArgs> consoleProfileFinishedHandler = (sender, e) =>
+            EventHandler<V109.Profiler.ConsoleProfileFinishedEventArgs> consoleProfileFinishedHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 finishSync.Set();
@@ -109,7 +109,7 @@ namespace OpenQA.Selenium.DevTools
             await domains.Profiler.Disable();
         }
 
-        private void ValidateProfile(V108.Profiler.Profile profiler)
+        private void ValidateProfile(V109.Profiler.Profile profiler)
         {
             Assert.That(profiler, Is.Not.Null);
             Assert.That(profiler.Nodes, Is.Not.Null);
