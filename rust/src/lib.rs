@@ -75,7 +75,7 @@ pub const WHERE_COMMAND: &str = "where {}";
 pub const WHICH_COMMAND: &str = "which {}";
 pub const TTL_BROWSERS_SEC: u64 = 0;
 pub const TTL_DRIVERS_SEC: u64 = 86400;
-pub const UNAME_COMMAND: &str = "uname -m";
+pub const UNAME_COMMAND: &str = "uname -{}";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -173,13 +173,11 @@ pub trait SeleniumManager {
                     break;
                 }
                 if !self.is_safari() {
-                    metadata
-                        .browsers
-                        .push(create_browser_metadata(
-                            browser_name,
-                            &browser_version,
-                            browser_ttl,
-                        ));
+                    metadata.browsers.push(create_browser_metadata(
+                        browser_name,
+                        &browser_version,
+                        browser_ttl,
+                    ));
                     write_metadata(&metadata, self.get_logger());
                 }
                 if !browser_version.is_empty() {
