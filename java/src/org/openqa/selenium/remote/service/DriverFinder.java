@@ -11,7 +11,11 @@ import java.util.logging.Logger;
 public class DriverFinder {
   private static final Logger LOG = Logger.getLogger(DriverFinder.class.getName());
 
-  public static String getPath(DriverServiceInfo serviceInfo, Capabilities options) {
+  public static String getPath(DriverServiceInfo serviceInfo) {
+    return getPath(serviceInfo, null);
+  }
+
+    public static String getPath(DriverServiceInfo serviceInfo, Capabilities options) {
     String exePath = serviceInfo.getDriverProperty();
 
     if (exePath == null && serviceInfo.getDriverExecutable() != null) {
@@ -22,7 +26,11 @@ public class DriverFinder {
 
     if (exePath == null) {
       try {
-        exePath = SeleniumManager.getInstance().getDriverPath(options);
+        if (options == null) {
+          exePath = SeleniumManager.getInstance().getDriverPath(serviceInfo.getDriverName());
+        } else {
+          exePath = SeleniumManager.getInstance().getDriverPath(options);
+        }
       } catch (Exception e) {
         LOG.warning(String.format("Unable to obtain %s using Selenium Manager: %s", serviceInfo.getDriverName(), e.getMessage()));
       }

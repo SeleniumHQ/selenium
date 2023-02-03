@@ -28,6 +28,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
@@ -69,7 +70,7 @@ public class GeckoDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      GeckoDriverService.createDefaultService();
+      DriverFinder.getPath(GeckoDriverService.createDefaultService());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

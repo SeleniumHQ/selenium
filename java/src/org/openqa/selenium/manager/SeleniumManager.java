@@ -16,6 +16,7 @@
 // under the License.
 package org.openqa.selenium.manager;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
@@ -164,5 +165,14 @@ public class SeleniumManager {
           commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
         }
         return runCommand(commandList.toArray(new String[0]));
+    }
+
+    public String getDriverPath(String driverName) {
+      File binaryFile = getBinary();
+      if(binaryFile == null) {
+        return null;
+      }
+      ImmutableList<String> commandList = ImmutableList.of(binaryFile.getAbsolutePath(), "--driver", driverName);
+      return runCommand(commandList.toArray(new String[0]));
     }
 }
