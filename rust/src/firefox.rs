@@ -29,8 +29,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_default_http_client, Logger, SeleniumManager, BETA, DASH_VERSION, DEV,
-    ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    create_default_http_client, format_one_arg, format_two_args, Logger, SeleniumManager, BETA,
+    DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY, STABLE, WMIC_COMMAND,
+    WMIC_COMMAND_ENV,
 };
 
 const BROWSER_NAME: &str = "firefox";
@@ -113,29 +114,26 @@ impl SeleniumManager for FirefoxManager {
     }
 
     fn discover_browser_version(&self) -> Option<String> {
-        let commands;
+        let mut commands;
         let mut browser_path = self.get_browser_path();
         if browser_path.is_empty() {
             match self.detect_browser_path() {
                 Some(path) => {
                     browser_path = path;
                     commands = vec![
-                        self.format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES, browser_path),
-                        self.format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES_X86, browser_path),
+                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES, browser_path),
+                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES_X86, browser_path),
                     ];
                 }
                 _ => return None,
             }
         } else {
-            commands = vec![self.format_one_arg(WMIC_COMMAND, browser_path)];
+            commands = vec![format_one_arg(WMIC_COMMAND, browser_path)];
         }
-        let (shell, flag) = self.get_shell_command();
-        let args = if WINDOWS.is(self.get_os()) {
-            commands
-        } else {
-            vec![self.format_one_arg(DASH_VERSION, browser_path)]
-        };
-        self.detect_browser_version(shell, flag, args)
+        if !WINDOWS.is(self.get_os()) {
+            commands = vec![format_one_arg(DASH_VERSION, browser_path)]
+        }
+        self.detect_browser_version(commands)
     }
 
     fn get_driver_name(&self) -> &str {

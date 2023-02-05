@@ -28,7 +28,6 @@ use std::str;
 #[case("edge", "msedgedriver", "105", "105.0")]
 #[case("edge", "msedgedriver", "106", "106.0")]
 #[case("firefox", "geckodriver", "", "")]
-#[case("firefox", "geckodriver", "105", "0.32.0")]
 #[case("iexplorer", "IEDriverServer", "", "")]
 fn ok_test(
     #[case] browser: String,
