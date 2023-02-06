@@ -30,10 +30,10 @@ use crate::{
     STABLE,
 };
 
-pub const SAFARI: &str = "safari";
+const BROWSER_NAME: &str = "safaritp";
 const DRIVER_NAME: &str = "safaridriver";
 
-pub struct SafariManager {
+pub struct SafariTPManager {
     pub browser_name: &'static str,
     pub driver_name: &'static str,
     pub config: ManagerConfig,
@@ -41,10 +41,10 @@ pub struct SafariManager {
     pub log: Logger,
 }
 
-impl SafariManager {
+impl SafariTPManager {
     pub fn new() -> Box<Self> {
-        Box::new(SafariManager {
-            browser_name: SAFARI,
+        Box::new(SafariTPManager {
+            browser_name: BROWSER_NAME,
             driver_name: DRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),
@@ -53,7 +53,7 @@ impl SafariManager {
     }
 }
 
-impl SeleniumManager for SafariManager {
+impl SeleniumManager for SafariTPManager {
     fn get_browser_name(&self) -> &str {
         self.browser_name
     }
@@ -69,7 +69,7 @@ impl SeleniumManager for SafariManager {
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
         HashMap::from([(
             BrowserPath::new(MACOS, STABLE),
-            r#"/Applications/Safari.app"#,
+            r#"/Applications/Safari\ Technology\ Preview.app"#,
         )])
     }
 
@@ -104,7 +104,7 @@ impl SeleniumManager for SafariManager {
     }
 
     fn get_driver_path_in_cache(&self) -> PathBuf {
-        PathBuf::from("/usr/bin/safaridriver")
+        PathBuf::from("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver")
     }
 
     fn get_config(&self) -> &ManagerConfig {

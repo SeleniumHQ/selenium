@@ -38,6 +38,7 @@ use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
 };
+use crate::safaritp::SafariTPManager;
 
 pub mod chrome;
 pub mod config;
@@ -49,6 +50,7 @@ pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
 pub mod safari;
+pub mod safaritp;
 
 pub const REQUEST_TIMEOUT_SEC: u64 = 120; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
@@ -255,7 +257,7 @@ pub trait SeleniumManager {
     }
 
     fn is_safari(&self) -> bool {
-        self.get_browser_name().eq(SAFARI)
+        self.get_browser_name().contains(SAFARI)
     }
 
     fn is_browser_version_unstable(&self) -> bool {
@@ -264,11 +266,6 @@ pub trait SeleniumManager {
             || browser_version.eq_ignore_ascii_case(DEV)
             || browser_version.eq_ignore_ascii_case(NIGHTLY)
             || browser_version.eq_ignore_ascii_case(CANARY)
-    }
-
-    fn is_browser_version_dev(&self) -> bool {
-        let browser_version = self.get_browser_version();
-        browser_version.eq_ignore_ascii_case(DEV)
     }
 
     fn resolve_driver(&mut self) -> Result<PathBuf, Box<dyn Error>> {
@@ -456,6 +453,15 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
         Ok(IExplorerManager::new())
     } else if browser_name.eq("safari") {
         Ok(SafariManager::new())
+    } else if vec![
+        "safari technology preview",
+        r#"safari\ technology\ preview"#,
+        "safaritechnologypreview",
+        "safaritp",
+    ]
+    .contains(&browser_name_lower_case.as_str())
+    {
+        Ok(SafariTPManager::new())
     } else {
         Err(format!("Invalid browser name: {browser_name}"))
     }
