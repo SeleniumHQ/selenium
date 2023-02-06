@@ -23,19 +23,19 @@ class PinnedScript {
     this.scriptHandle_ = crypto.randomUUID().replace(/-/gi, '')
   }
 
-  getHandle() {
+  get handle() {
     return this.scriptHandle_
   }
 
-  getSource() {
+  get source() {
     return this.scriptSource_
   }
 
-  getScriptId() {
+  get scriptId() {
     return this.scriptId_
   }
 
-  setScriptId(id) {
+  set scriptId(id) {
     this.scriptId_ = id
   }
 

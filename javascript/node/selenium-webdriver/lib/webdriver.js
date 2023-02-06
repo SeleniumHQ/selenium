@@ -41,7 +41,7 @@ const { Credential } = require('./virtual_authenticator')
 const webElement = require('./webelement')
 const { isObject } = require('./util')
 const BIDI = require('../bidi')
-const { PinnedScript } = require('./pinnedscript')
+const { PinnedScript } = require('./pinnedScript')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -1581,9 +1581,9 @@ class WebDriver {
       }
     )
 
-    pinnedScript.setScriptId(result['result']['identifier'])
+    pinnedScript.scriptId = result['result']['identifier']
 
-    this.pinnedScripts_[pinnedScript.getHandle()] = pinnedScript
+    this.pinnedScripts_[pinnedScript.handle] = pinnedScript
 
     return pinnedScript
   }
@@ -1593,7 +1593,7 @@ class WebDriver {
       throw Error(`Pass valid PinnedScript object. Received: ${script}`)
     }
 
-    if (script.getHandle() in this.pinnedScripts_) {
+    if (script.handle in this.pinnedScripts_) {
       let connection
       if (Object.is(this._cdpConnection, undefined)) {
         connection = this.createCDPConnection('page')
@@ -1614,12 +1614,12 @@ class WebDriver {
       await connection.execute(
         'Page.removeScriptToEvaluateOnLoad',
         {
-          identifier: script.getScriptId(),
+          identifier: script.scriptId,
         },
         null
       )
 
-      delete this.pinnedScripts_[script.getHandle()]
+      delete this.pinnedScripts_[script.handle]
     }
   }
 
