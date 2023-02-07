@@ -106,6 +106,8 @@ JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
   //java/src/org/openqa/selenium/grid/sessionmap/redis:redis.publish
+  //java/src/org/openqa/selenium/grid:bom-dependencies.publish
+  //java/src/org/openqa/selenium/grid:bom.publish
   //java/src/org/openqa/selenium/grid:grid.publish
   //java/src/org/openqa/selenium/ie:ie.publish
   //java/src/org/openqa/selenium/json:json.publish

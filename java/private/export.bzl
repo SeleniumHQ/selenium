@@ -3,6 +3,7 @@ load(
     "javadoc",
     "pom_file",
 )
+load("@rules_jvm_external//private/rules:maven_bom_fragment.bzl", "maven_bom_fragment")
 load("@rules_jvm_external//private/rules:maven_project_jar.bzl", "maven_project_jar")
 load("@rules_jvm_external//private/rules:maven_publish.bzl", "maven_publish")
 load("//java/private:module.bzl", "java_module")
@@ -16,6 +17,7 @@ def java_export(
         opens_to = [],
         exports = [],
         tags = [],
+        testonly = None,
         visibility = None,
         **kwargs):
     tags = tags + ["maven_coordinates=%s" % maven_coordinates]
@@ -91,6 +93,20 @@ def java_export(
         javadocs = "%s-docs" % name,
         artifact_jar = ":%s-maven-module" % name,
         source_jar = ":%s-maven-source" % name,
+        visibility = visibility,
+    )
+
+    # We may want to aggregate several `java_export` targets into a single Maven BOM POM
+    # https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#bill-of-materials-bom-poms
+    maven_bom_fragment(
+        name = "%s.bom-fragment" % name,
+        maven_coordinates = maven_coordinates,
+        artifact = ":%s" % lib_name,
+        src_artifact = ":%s-maven-source" % name,
+        javadoc_artifact = None if "no-javadocs" in tags else ":%s-docs" % name,
+        pom = ":%s-pom" % name,
+        testonly = testonly,
+        tags = tags,
         visibility = visibility,
     )
 
