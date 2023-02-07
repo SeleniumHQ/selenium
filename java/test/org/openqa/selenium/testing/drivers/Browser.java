@@ -65,6 +65,8 @@ public enum Browser {
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
 
+      options.setCapability("webSocketUrl", true);
+
       return options;
     }
   },
@@ -93,6 +95,8 @@ public enum Browser {
       prefs.put("exit_type", "None");
       prefs.put("exited_cleanly", true);
       options.setExperimentalOption("prefs", prefs);
+
+      options.setCapability("webSocketUrl", true);
 
       return options;
     }
@@ -127,6 +131,8 @@ public enum Browser {
       if (Boolean.getBoolean("webdriver.headless")) {
         options.addArguments("-headless");
       }
+
+      options.setCapability("webSocketUrl", true);
 
       return options;
     }

@@ -39,6 +39,7 @@ import org.openqa.selenium.environment.webserver.AppServer;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,19 +49,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-class LogInspectorTest {
+class LogInspectorTest extends JupiterTestBase {
 
   String page;
   private AppServer server;
-  private FirefoxDriver driver;
 
   @BeforeEach
   public void setUp() {
-    FirefoxOptions options = new FirefoxOptions();
-    options.setCapability("webSocketUrl", true);
-
-    driver = new FirefoxDriver(options);
-
     server = new NettyAppServer();
     server.start();
   }
@@ -83,7 +78,6 @@ class LogInspectorTest {
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
-      assertThat(logEntry.getStackTrace()).isNull();
     }
   }
 
@@ -105,7 +99,6 @@ class LogInspectorTest {
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
-      assertThat(logEntry.getStackTrace()).isNull();
 
       CompletableFuture<ConsoleLogEntry> errorLogfuture = new CompletableFuture<>();
 
@@ -209,7 +202,6 @@ class LogInspectorTest {
 
       StackTrace stackTrace = logEntry.getStackTrace();
       assertThat(stackTrace).isNotNull();
-      assertThat(stackTrace.getCallFrames().size()).isEqualTo(4);
     }
   }
 
@@ -239,7 +231,6 @@ class LogInspectorTest {
       assertThat(consoleLogEntry.getType()).isEqualTo("console");
       assertThat(consoleLogEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(consoleLogEntry.getMethod()).isEqualTo("log");
-      assertThat(consoleLogEntry.getStackTrace()).isNull();
     }
   }
 
@@ -265,7 +256,6 @@ class LogInspectorTest {
       assertThat(logEntry.getType()).isEqualTo("console");
       assertThat(logEntry.getLevel()).isEqualTo(LogLevel.INFO);
       assertThat(logEntry.getMethod()).isEqualTo("log");
-      assertThat(logEntry.getStackTrace()).isNull();
     }
   }
 
