@@ -127,7 +127,7 @@ class BaseOptions(metaclass=ABCMeta):
 
         :param timeouts: values in milliseconds for implicit wait, page load and script timeout
         """
-        if all(x in timeouts.keys() for x in ("implicit", "pageLoad", "script")):
+        if all(x in ("implicit", "pageLoad", "script") for x in timeouts.keys()):
             self.set_capability("timeouts", timeouts)
         else:
             raise ValueError("Timeout keys can only be one of the following: implicit, pageLoad, script")
