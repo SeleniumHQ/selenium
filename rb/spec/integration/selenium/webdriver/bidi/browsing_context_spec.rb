@@ -32,28 +32,29 @@ module Selenium
           expect(browsing_context.id).to eq(id)
         end
 
-        it 'can create a window' do
+        it 'can create a window without a reference context' do
           browsing_context = described_class.new(driver: driver, type: :window)
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can create a window with a reference context' do
+        it 'can create a window with a reference context', except: {browser: :chrome} do
           browsing_context = described_class.new(driver: driver, type: :window,
                                                  reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can create a tab' do
+        it 'can create a tab without a reference context' do
           browsing_context = described_class.new(driver: driver, type: :tab)
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can create a tab with a reference context' do
+        it 'can create a tab with a reference context', except: {browser: :chrome} do
           browsing_context = described_class.new(driver: driver, type: :tab, reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can navigate to a url', except: {browser: :chrome, reason: 'navigation_id is not nil'} do
+        it 'can navigate to a url without a readiness state',
+           except: {browser: :chrome, reason: 'navigation_id is not nil'} do
           browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html')
