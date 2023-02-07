@@ -309,6 +309,14 @@ public class DockerSessionFactory implements SessionFactory {
       envVars.put("SE_SCREEN_WIDTH", String.valueOf(screenResolution.get().getWidth()));
       envVars.put("SE_SCREEN_HEIGHT", String.valueOf(screenResolution.get().getHeight()));
     }
+    Optional<String> locale = ofNullable(getLocale(sessionRequestCapabilities));
+    locale.ifPresent(l -> envVars.putAll(
+      Map.of(
+        "LANG", String.format("%s.UTF-8", l),
+        "LANGUAGE", l,
+        "LC_ALL", String.format("%s.UTF-8", l)
+      )
+    ));
     Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionRequestCapabilities));
     timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
     // Passing env vars set to the child container
@@ -385,10 +393,22 @@ public class DockerSessionFactory implements SessionFactory {
     return null;
   }
 
+  private String getLocale(Capabilities sessionRequestCapabilities) {
+    Optional<Object> locale =
+      ofNullable(sessionRequestCapabilities.getCapability("se:locale"));
+    if (locale.isPresent()) {
+      String stringLocale = locale.get().toString();
+      if (stringLocale.length() > 0) {
+        return stringLocale;
+      }
+    }
+    return null;
+  }
+
   private Dimension getScreenResolution(Capabilities sessionRequestCapabilities) {
     Optional<Object> screenResolution =
       ofNullable(sessionRequestCapabilities.getCapability("se:screenResolution"));
-    if (!screenResolution.isPresent()) {
+    if (screenResolution.isEmpty()) {
       return null;
     }
     try {
@@ -454,4 +474,5 @@ public class DockerSessionFactory implements SessionFactory {
       throw new SessionNotCreatedException(e.getMessage(), e);
     }
   }
+
 }
