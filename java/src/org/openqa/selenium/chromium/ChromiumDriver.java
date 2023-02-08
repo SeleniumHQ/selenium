@@ -101,7 +101,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final Optional<Connection> connection;
   private final Optional<DevTools> devTools;
   private final Optional<URI> biDiUri;
-  private BiDi biDi;
+  private final Optional<BiDi> biDi;
   protected HasCasting casting;
   protected HasCdp cdp;
 
@@ -127,6 +127,8 @@ public class ChromiumDriver extends RemoteWebDriver implements
       }
       return null;
     });
+
+    this.biDi = createBiDi(biDiUri);
 
     Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities)
       .flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(factory, uri));
@@ -237,12 +239,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
     return devTools;
   }
 
-  @Override
-  public Optional<BiDi> maybeGetBiDi() {
-    if (biDi != null) {
-      return Optional.of(biDi);
-    }
-
+  private Optional<BiDi> createBiDi(Optional<URI> biDiUri) {
     if (!biDiUri.isPresent()) {
       return Optional.empty();
     }
@@ -254,22 +251,15 @@ public class ChromiumDriver extends RemoteWebDriver implements
     ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
     HttpClient wsClient = clientFactory.createClient(wsConfig);
 
-    org.openqa.selenium.bidi.Connection connection =
+    org.openqa.selenium.bidi.Connection biDiConnection =
       new org.openqa.selenium.bidi.Connection(wsClient, wsUri.toString());
 
-    biDi = new BiDi(connection);
-
-    return Optional.of(biDi);
+    return Optional.of(new BiDi(biDiConnection));
   }
 
   @Override
-  public BiDi getBiDi() {
-    if (!biDiUri.isPresent()) {
-      throw new BiDiException("This version of Chromium driver does not support BiDi");
-    }
-
-    return maybeGetBiDi()
-      .orElseThrow(() -> new DevToolsException("Unable to initialize Bidi connection"));
+  public Optional<BiDi> maybeGetBiDi() {
+    return biDi;
   }
 
   @Override
