@@ -34,7 +34,6 @@ def get_local_path():
 
 
 def test_can_upload_file(driver, pages, get_local_path):
-
     pages.load("upload.html")
 
     driver.find_element(By.ID, "upload").send_keys(get_local_path("test_file.txt"))
@@ -46,7 +45,6 @@ def test_can_upload_file(driver, pages, get_local_path):
 
 
 def test_can_upload_two_files(driver, pages, get_local_path):
-
     pages.load("upload.html")
     two_file_paths = get_local_path("test_file.txt") + "\n" + get_local_path("test_file2.txt")
     driver.find_element(By.ID, "upload").send_keys(two_file_paths)
@@ -62,7 +60,6 @@ def test_can_upload_two_files(driver, pages, get_local_path):
 @pytest.mark.xfail_chrome
 @pytest.mark.xfail_safari
 def test_file_is_uploaded_to_remote_machine_on_select(driver, pages, get_local_path):
-
     uploaded_files = []
     original_upload_func = WebElement._upload
 

@@ -56,7 +56,6 @@ def data() -> Tuple:
 
 
 def test_rk_enabled_credential(data):
-
     _id, rp_id, user_handle, privatekey, sign_count = data
 
     credential = Credential.create_resident_credential(_id, rp_id, user_handle, privatekey, sign_count)

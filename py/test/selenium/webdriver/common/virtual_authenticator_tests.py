@@ -57,7 +57,6 @@ GET_CREDENTIAL = """getCredential([{
 
 
 def create_rk_enabled_u2f_authenticator(driver) -> WebDriver:
-
     options = VirtualAuthenticatorOptions()
     options.protocol = VirtualAuthenticatorOptions.Protocol.U2F
     options.has_resident_key = True
