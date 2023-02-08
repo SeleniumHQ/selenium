@@ -799,7 +799,7 @@ class WebDriver {
       script = 'return (' + script + ').apply(null, arguments);'
     }
 
-    if (script != undefined && script instanceof PinnedScript) {
+    if (script && script instanceof PinnedScript) {
       return this.execute(
         new command.Command(command.Name.EXECUTE_SCRIPT)
           .setParameter('script', script.executionScript())
@@ -820,7 +820,7 @@ class WebDriver {
       script = 'return (' + script + ').apply(null, arguments);'
     }
 
-    if (script != undefined && script instanceof PinnedScript) {
+    if (script && script instanceof PinnedScript) {
       return this.execute(
         new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT)
           .setParameter('script', script.executionScript())
