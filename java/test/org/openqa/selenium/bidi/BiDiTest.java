@@ -28,8 +28,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
+import org.openqa.selenium.bidi.browsingcontext.ReadinessState;
 import org.openqa.selenium.bidi.log.BaseLogEntry;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
@@ -70,7 +72,7 @@ class BiDiTest extends JupiterTestBase {
       BrowsingContext browsingContext = new BrowsingContext(driver, driver.getWindowHandle());
 
       page = server.whereIs("/bidi/logEntryAdded.html");
-      NavigationResult info = browsingContext.navigate(page);
+      NavigationResult info = browsingContext.navigate(page, ReadinessState.COMPLETE);
 
       assertThat(browsingContext.getId()).isNotEmpty();
       assertThat(info.getNavigationId()).isNull();
