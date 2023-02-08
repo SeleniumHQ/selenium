@@ -41,6 +41,7 @@ const { Credential } = require('./virtual_authenticator')
 const webElement = require('./webelement')
 const { isObject } = require('./util')
 const BIDI = require('../bidi')
+const { PinnedScript } = require('./pinnedScript')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -686,6 +687,8 @@ class WebDriver {
 
     /** @private {./virtual_authenticator}*/
     this.authenticatorId_ = null
+
+    this.pinnedScripts_ = {}
   }
 
   /**
@@ -795,6 +798,15 @@ class WebDriver {
     if (typeof script === 'function') {
       script = 'return (' + script + ').apply(null, arguments);'
     }
+
+    if (script && script instanceof PinnedScript) {
+      return this.execute(
+        new command.Command(command.Name.EXECUTE_SCRIPT)
+          .setParameter('script', script.executionScript())
+          .setParameter('args', args)
+      )
+    }
+
     return this.execute(
       new command.Command(command.Name.EXECUTE_SCRIPT)
         .setParameter('script', script)
@@ -807,6 +819,15 @@ class WebDriver {
     if (typeof script === 'function') {
       script = 'return (' + script + ').apply(null, arguments);'
     }
+
+    if (script && script instanceof PinnedScript) {
+      return this.execute(
+        new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT)
+          .setParameter('script', script.executionScript())
+          .setParameter('args', args)
+      )
+    }
+
     return this.execute(
       new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT)
         .setParameter('script', script)
@@ -1226,7 +1247,9 @@ class WebDriver {
     this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket(this._wsUrl.replace('localhost', '127.0.0.1'))
+        this._wsConnection = new WebSocket(
+          this._wsUrl.replace('localhost', '127.0.0.1')
+        )
         this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
       } catch (err) {
         reject(err)
@@ -1530,6 +1553,74 @@ class WebDriver {
         callback(event)
       }
     })
+  }
+
+  async pinScript(script) {
+    let pinnedScript = new PinnedScript(script)
+    let connection
+    if (Object.is(this._cdpConnection, undefined)) {
+      connection = await this.createCDPConnection('page')
+    } else {
+      connection = this._cdpConnection
+    }
+
+    await connection.execute('Page.enable', {}, null)
+
+    await connection.execute(
+      'Runtime.evaluate',
+      {
+        expression: pinnedScript.creationScript(),
+      },
+      null
+    )
+
+    let result = await connection.send(
+      'Page.addScriptToEvaluateOnNewDocument',
+      {
+        source: pinnedScript.creationScript(),
+      }
+    )
+
+    pinnedScript.scriptId = result['result']['identifier']
+
+    this.pinnedScripts_[pinnedScript.handle] = pinnedScript
+
+    return pinnedScript
+  }
+
+  async unpinScript(script) {
+    if (script && !(script instanceof PinnedScript)) {
+      throw Error(`Pass valid PinnedScript object. Received: ${script}`)
+    }
+
+    if (script.handle in this.pinnedScripts_) {
+      let connection
+      if (Object.is(this._cdpConnection, undefined)) {
+        connection = this.createCDPConnection('page')
+      } else {
+        connection = this._cdpConnection
+      }
+
+      await connection.execute('Page.enable', {}, null)
+
+      await connection.execute(
+        'Runtime.evaluate',
+        {
+          expression: script.removalScript(),
+        },
+        null
+      )
+
+      await connection.execute(
+        'Page.removeScriptToEvaluateOnLoad',
+        {
+          identifier: script.scriptId,
+        },
+        null
+      )
+
+      delete this.pinnedScripts_[script.handle]
+    }
   }
 
   /**
