@@ -169,7 +169,7 @@ def _java_module_impl(ctx):
     )
 
     return [
-        DefaultInfo(files = depset([module_jar, src_jar])),
+        DefaultInfo(files = depset([module_jar])),
         JavaModuleInfo(
             name = name,
             module_path = depset(direct = [module_jar], transitive = [info.module_path for info in all_infos]),
