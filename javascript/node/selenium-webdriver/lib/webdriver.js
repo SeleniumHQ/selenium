@@ -1589,7 +1589,7 @@ class WebDriver {
   }
 
   async unpinScript(script) {
-    if (script != undefined && !(script instanceof PinnedScript)) {
+    if (script && !(script instanceof PinnedScript)) {
       throw Error(`Pass valid PinnedScript object. Received: ${script}`)
     }
 
