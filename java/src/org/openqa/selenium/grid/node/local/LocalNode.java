@@ -26,6 +26,7 @@ import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.Arrays;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -63,6 +64,7 @@ import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
@@ -495,7 +497,28 @@ public class LocalNode extends Node {
     if (!dir.isDirectory()) {
       throw new WebDriverException(String.format("Invalid directory: %s.", downloadsPath));
     }
-    String filename = req.getQueryParameter("filename");
+    if (req.getMethod().equals(HttpMethod.GET)) {
+      //User wants to list files that can be downloaded
+      List<String> collected = Arrays.stream(
+        Optional.ofNullable(dir.listFiles()).orElse(new File[]{})
+      ).map(File::getName).collect(Collectors.toList());
+      ImmutableMap<String, Object> data = ImmutableMap.of("filenames", collected);
+      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value",data);
+      return new HttpResponse().setContent(asJson(result));
+    }
+
+    String raw = string(req);
+    if (raw.isEmpty()) {
+      throw new WebDriverException(
+        "Please specify file to download in payload as {\"filename\": \"fileToDownload\"}");
+    }
+
+    Map<String, Object> incoming = JSON.toType(raw, Json.MAP_TYPE);
+    String filename = Optional.ofNullable(incoming.get("filename"))
+      .map(Object::toString)
+      .orElseThrow(
+        () -> new WebDriverException(
+          "Please specify file to download in payload as {\"filename\": \"fileToDownload\"}"));
     try {
       File[] allFiles = Optional.ofNullable(
         dir.listFiles((dir1, name) -> name.equals(filename))
@@ -509,9 +532,10 @@ public class LocalNode extends Node {
           String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
       }
       String content = Zip.zip(allFiles[0]);
-      ImmutableMap<String, Object> result = ImmutableMap.of(
+      ImmutableMap<String, Object> data = ImmutableMap.of(
         "filename", filename,
         "contents", content);
+      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value",data);
       return new HttpResponse().setContent(asJson(result));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
