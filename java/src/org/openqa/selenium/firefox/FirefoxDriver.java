@@ -291,7 +291,7 @@ public class FirefoxDriver extends RemoteWebDriver
     }
 
     URI wsUri = biDiUri.orElseThrow(
-      () -> new BiDiException("This version of Firefox or geckodriver does not support CDP"));
+      () -> new BiDiException("This version of Firefox or geckodriver does not support BiDi"));
 
     HttpClient.Factory clientFactory = HttpClient.Factory.createDefault();
     ClientConfig wsConfig = ClientConfig.defaultConfig().baseUri(wsUri);
