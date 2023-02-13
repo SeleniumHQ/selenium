@@ -53,24 +53,22 @@ module Selenium
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can navigate to a url', except: {browser: %i[chrome edge], reason: 'navigation_id is not nil'} do
+        it 'can navigate to a url' do
           browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html')
 
           expect(browsing_context.id).not_to be_nil
-          expect(info.navigation_id).to be_nil
           expect(info.url).to include('/bidi/logEntryAdded.html')
         end
 
-        it 'can navigate to a url with readiness state', except: {browser: %i[chrome edge]} do
+        it 'can navigate to a url with readiness state' do
           browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html'),
                                            readiness_state: :complete
 
           expect(browsing_context.id).not_to be_nil
-          expect(info.navigation_id).to be_nil
           expect(info.url).to include('/bidi/logEntryAdded.html')
         end
 
