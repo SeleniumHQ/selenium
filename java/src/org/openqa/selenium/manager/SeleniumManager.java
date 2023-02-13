@@ -117,7 +117,7 @@ public class SeleniumManager {
    * Determines the correct Selenium Manager binary to use.
    * @return the path to the Selenium Manager binary.
    */
-    private File getBinary() {
+    private synchronized File getBinary() {
         if (binary == null) {
             try {
                 Platform current = Platform.getCurrent();
