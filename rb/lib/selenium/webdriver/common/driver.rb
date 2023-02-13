@@ -71,6 +71,7 @@ module Selenium
       def initialize(bridge: nil, listener: nil, **opts)
         @service_manager = nil
         @devtools = nil
+        @bidi = nil
         bridge ||= create_bridge(**opts)
         add_extensions(bridge.browser)
         @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
@@ -174,6 +175,7 @@ module Selenium
       ensure
         @service_manager&.stop
         @devtools&.close
+        @bidi&.close
       end
 
       #
@@ -181,7 +183,10 @@ module Selenium
       #
 
       def close
-        bridge.close
+        # If no top-level browsing contexts are open after calling close,
+        # it indicates that the WebDriver session is closed.
+        # If the WebDriver session is closed, the BiDi session also needs to be closed.
+        bridge.close.tap { |handles| @bidi&.close if handles&.empty? }
       end
 
       #
