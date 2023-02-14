@@ -69,7 +69,6 @@ module Selenium
       #
 
       def initialize(bridge: nil, listener: nil, **opts)
-        @service_manager = nil
         @devtools = nil
         @bidi = nil
         bridge ||= create_bridge(**opts)
