@@ -104,10 +104,12 @@ public class EdgeDriverService extends DriverService {
     int port,
     Duration timeout,
     List<String> args,
-    Map<String, String> environment) throws IOException {
-    super(executable, port, timeout,
-          unmodifiableList(new ArrayList<>(args)),
-          unmodifiableMap(new HashMap<>(environment)));
+    Map<String, String> environment,
+    List<String> seleniumManagerArgs) throws IOException {
+    super(executable, port, DEFAULT_TIMEOUT,
+            unmodifiableList(new ArrayList<>(args)),
+            unmodifiableMap(new HashMap<>(environment)),
+            unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   /**
@@ -121,6 +123,16 @@ public class EdgeDriverService extends DriverService {
   public static EdgeDriverService createDefaultService() {
     return new Builder().build();
   }
+
+  public static EdgeDriverService createServiceWithConfig(EdgeOptions options) {
+    EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
+    String binary = options.getBinary();
+    if (binary != null && !binary.isEmpty()) {
+      builder.withSeleniumManagerArgs(new String[]{"--browser-path", binary});
+    }
+    return builder.build();
+  }
+
 
   /**
    * Builder used to configure new {@link EdgeDriverService} instances.
@@ -253,11 +265,11 @@ public class EdgeDriverService extends DriverService {
     }
 
     @Override
-    protected File findDefaultExecutable() {
+    protected File findDefaultExecutable(List<String> seleniumManagerArgs) {
       return findExecutable(
         "msedgedriver", EDGE_DRIVER_EXE_PROPERTY,
         "https://docs.microsoft.com/en-us/microsoft-edge/webdriver-chromium/",
-        "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/");
+        "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/", seleniumManagerArgs);
     }
 
     @Override
@@ -309,9 +321,10 @@ public class EdgeDriverService extends DriverService {
         int port,
         Duration timeout,
         List<String> args,
-        Map<String, String> environment) {
+        Map<String, String> environment,
+        List<String> seleniumManagerArgs) {
       try {
-        return new EdgeDriverService(exe, port, timeout, args, environment);
+        return new EdgeDriverService(exe, port, timeout, args, environment, seleniumManagerArgs);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

@@ -43,10 +43,10 @@ class GeckoDriverServiceTest {
     doReturn(exe).when(builderMock).findDefaultExecutable();
     builderMock.build();
 
-    verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any());
+    verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any(), any());
 
     builderMock.withTimeout(customTimeout);
     builderMock.build();
-    verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
+    verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any(), any());
   }
 }

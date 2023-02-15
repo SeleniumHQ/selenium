@@ -63,10 +63,11 @@ public class GeckoDriverService extends FirefoxDriverService {
       File executable,
       int port,
       List<String> args,
-      Map<String, String> environment) throws IOException {
+      Map<String, String> environment, List<String> seleniumManagerArgs) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT,
       unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableMap(new HashMap<>(environment)),
+      unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   /**
@@ -82,10 +83,11 @@ public class GeckoDriverService extends FirefoxDriverService {
       int port,
       Duration timeout,
       List<String> args,
-      Map<String, String> environment) throws IOException {
+      Map<String, String> environment, List<String> seleniumManagerArgs) throws IOException {
     super(executable, port, timeout,
       unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableMap(new HashMap<>(environment)),
+      unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   /**
@@ -98,6 +100,15 @@ public class GeckoDriverService extends FirefoxDriverService {
    */
   public static GeckoDriverService createDefaultService() {
     return new Builder().build();
+  }
+
+  public static GeckoDriverService createServiceWithConfig(FirefoxOptions options) {
+    Builder builder = new Builder();
+    String binary = options.getBinary().getPath();
+    if (binary != null && !binary.isEmpty()) {
+      builder.withSeleniumManagerArgs(new String[]{"--browser-path", binary});
+    }
+    return builder.build();
   }
 
   /**
@@ -160,11 +171,11 @@ public class GeckoDriverService extends FirefoxDriverService {
     }
 
     @Override
-    protected File findDefaultExecutable() {
+    protected File findDefaultExecutable(List<String> seleniumManagerArgs) {
       return findExecutable(
         "geckodriver", GECKO_DRIVER_EXE_PROPERTY,
         "https://github.com/mozilla/geckodriver",
-        "https://github.com/mozilla/geckodriver/releases");
+        "https://github.com/mozilla/geckodriver/releases", seleniumManagerArgs);
     }
 
     @Override
@@ -197,9 +208,9 @@ public class GeckoDriverService extends FirefoxDriverService {
     protected GeckoDriverService createDriverService(File exe, int port,
                                                      Duration timeout,
                                                      List<String> args,
-                                                     Map<String, String> environment) {
+                                                     Map<String, String> environment, List<String> seleniumManagerArgs) {
       try {
-        GeckoDriverService service = new GeckoDriverService(exe, port, timeout, args, environment);
+        GeckoDriverService service = new GeckoDriverService(exe, port, timeout, args, environment, seleniumManagerArgs);
         String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
         if (firefoxLogFile != null) { // System property has higher precedence
           switch (firefoxLogFile) {

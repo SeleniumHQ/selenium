@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.remote.service;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
@@ -41,6 +42,8 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -88,6 +91,7 @@ public class DriverService implements Closeable {
   private final Duration timeout;
   private final List<String> args;
   private final Map<String, String> environment;
+  private final List<String> seleniumManagerArgs;
   /**
    * A reference to the current child process. Will be {@code null} whenever this service is not
    * running. Protected by {@link #lock}.
@@ -109,11 +113,13 @@ public class DriverService implements Closeable {
      int port,
      Duration timeout,
      List<String> args,
-     Map<String, String> environment) throws IOException {
+     Map<String, String> environment,
+     List<String> seleniumManagerArgs) throws IOException {
    this.executable = executable.getCanonicalPath();
    this.timeout = timeout;
    this.args = args;
    this.environment = environment;
+   this.seleniumManagerArgs = seleniumManagerArgs;
 
    this.url = getUrl(port);
  }
@@ -132,13 +138,14 @@ public class DriverService implements Closeable {
       String exeName,
       String exeProperty,
       String exeDocs,
-      String exeDownload) {
+      String exeDownload,
+      List<String> seleniumManagerArgs) {
     String defaultPath = new ExecutableFinder().find(exeName);
     String exePath = System.getProperty(exeProperty, defaultPath);
 
     if (exePath == null) {
       try {
-        exePath = SeleniumManager.getInstance().getDriverPath(exeName);
+        exePath = SeleniumManager.getInstance().getDriverPath(exeName, seleniumManagerArgs);
         checkExecutable(new File(exePath));
       } catch (Exception e) {
         exePath = null;
@@ -344,6 +351,7 @@ public class DriverService implements Closeable {
     private int port = 0;
     private File exe = null;
     private Map<String, String> environment = emptyMap();
+    private List<String> seleniumManagerArgs = new ArrayList<>();
     private File logFile;
     private Duration timeout;
 
@@ -412,6 +420,11 @@ public class DriverService implements Closeable {
       return (B) this;
     }
 
+    public B withSeleniumManagerArgs(String... arguments) {
+      this.seleniumManagerArgs.addAll(Arrays.asList(arguments));
+      return (B) this;
+    }
+
     /**
      * Configures the driver server to write log to the given file.
      *
@@ -453,7 +466,7 @@ public class DriverService implements Closeable {
       }
 
       if (exe == null) {
-        exe = findDefaultExecutable();
+        exe = findDefaultExecutable(seleniumManagerArgs);
       }
 
       if (timeout == null) {
@@ -462,17 +475,17 @@ public class DriverService implements Closeable {
 
       List<String> args = createArgs();
 
-      DS service = createDriverService(exe, port, timeout, args, environment);
+      DS service = createDriverService(exe, port, timeout, args, environment, seleniumManagerArgs);
       port = 0; // reset port to allow reusing this builder
 
       return service;
     }
 
-    protected abstract File findDefaultExecutable();
+    protected abstract File findDefaultExecutable(List<String> seleniumManagerArgs);
 
     protected abstract List<String> createArgs();
 
     protected abstract DS createDriverService(File exe, int port, Duration timeout, List<String> args,
-        Map<String, String> environment);
+        Map<String, String> environment, List<String> seleniumManagerArgs);
   }
 }

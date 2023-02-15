@@ -40,8 +40,9 @@ public abstract class FirefoxDriverService extends DriverService {
       int port,
       Duration timeout,
       List<String> args,
-      Map<String, String> environment) throws IOException {
-    super(executable, port, timeout, args, environment);
+      Map<String, String> environment,
+      List<String> seleniumManagerArgs) throws IOException {
+    super(executable, port, timeout, args, environment, seleniumManagerArgs);
   }
 
   public static abstract class Builder<DS extends FirefoxDriverService, B extends FirefoxDriverService.Builder<?, ?>>

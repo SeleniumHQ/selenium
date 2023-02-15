@@ -53,10 +53,11 @@ public class SafariTechPreviewDriverService extends DriverService {
     File executable,
     int port,
     List<String> args,
-    Map<String, String> environment) throws IOException {
+    Map<String, String> environment, List<String> seleniumManagerArgs) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT,
       unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableMap(new HashMap<>(environment)),
+      unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   public SafariTechPreviewDriverService(
@@ -64,10 +65,11 @@ public class SafariTechPreviewDriverService extends DriverService {
     int port,
     Duration timeout,
     List<String> args,
-    Map<String, String> environment) throws IOException {
+    Map<String, String> environment, List<String> seleniumManagerArgs) throws IOException {
     super(executable, port, timeout,
       unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableMap(new HashMap<>(environment)),
+      unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   public static SafariTechPreviewDriverService createDefaultService() {
@@ -99,7 +101,7 @@ public class SafariTechPreviewDriverService extends DriverService {
     }
 
     @Override
-    protected File findDefaultExecutable() {
+    protected File findDefaultExecutable(List<String> seleniumManagerArgs) {
       File exe;
       if (System.getProperty(TP_SAFARI_DRIVER_EXE_PROPERTY) != null) {
         exe = new File(System.getProperty(TP_SAFARI_DRIVER_EXE_PROPERTY));
@@ -125,9 +127,9 @@ public class SafariTechPreviewDriverService extends DriverService {
       int port,
       Duration timeout,
       List<String> args,
-      Map<String, String> environment) {
+      Map<String, String> environment, List<String> seleniumManagerArgs) {
       try {
-        return new SafariTechPreviewDriverService(exe, port, timeout, args, environment);
+        return new SafariTechPreviewDriverService(exe, port, timeout, args, environment, seleniumManagerArgs);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

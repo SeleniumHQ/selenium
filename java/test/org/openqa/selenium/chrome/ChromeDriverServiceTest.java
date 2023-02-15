@@ -46,11 +46,11 @@ class ChromeDriverServiceTest {
     doReturn(exe).when(builderMock).findDefaultExecutable();
     builderMock.build();
 
-    verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any());
+    verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any(), any());
 
     builderMock.withTimeout(customTimeout);
     builderMock.build();
-    verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
+    verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any(), any());
   }
 
   // Alternate behavior is throwing an error, but have to at least be consistent
@@ -63,19 +63,19 @@ class ChromeDriverServiceTest {
 
     List<String> silentLast = Arrays.asList("--port=1", "--log-level=OFF");
     builderMock.withLogLevel(ChromiumDriverLogLevel.ALL).usingPort(1).withSilent(true).build();
-    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(silentLast), any());
+    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(silentLast), any(), any());
 
     List<String> silentFirst = Arrays.asList("--port=1", "--log-level=DEBUG");
     builderMock.withSilent(true).withLogLevel(ChromiumDriverLogLevel.DEBUG).usingPort(1).build();
-    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(silentFirst), any());
+    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(silentFirst), any(), any());
 
     List<String> verboseLast = Arrays.asList("--port=1", "--log-level=ALL");
     builderMock.withLogLevel(ChromiumDriverLogLevel.OFF).usingPort(1).withVerbose(true).build();
-    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(verboseLast), any());
+    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(verboseLast), any(), any());
 
     List<String> verboseFirst = Arrays.asList("--port=1", "--log-level=INFO");
     builderMock.withVerbose(true).withLogLevel(ChromiumDriverLogLevel.INFO).usingPort(1).build();
-    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(verboseFirst), any());
+    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(verboseFirst), any(), any());
   }
 
   // Setting these to false makes no sense; we're just going to ignore it.
@@ -88,6 +88,6 @@ class ChromeDriverServiceTest {
 
     List<String> falseSilent = Arrays.asList("--port=1", "--log-level=DEBUG");
     builderMock.withLogLevel(ChromiumDriverLogLevel.DEBUG).usingPort(1).withSilent(false).build();
-    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(falseSilent), any());
+    verify(builderMock).createDriverService(any(), anyInt(), any(), eq(falseSilent), any(), any());
   }
 }

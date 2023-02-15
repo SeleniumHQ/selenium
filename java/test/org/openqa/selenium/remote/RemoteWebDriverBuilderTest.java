@@ -467,7 +467,7 @@ class RemoteWebDriverBuilderTest {
     private boolean started;
 
     FakeDriverService() throws IOException {
-      super(new File("."), 0, DEFAULT_TIMEOUT, null, null);
+      super(new File("."), 0, DEFAULT_TIMEOUT, null, null, null);
     }
 
     @Override

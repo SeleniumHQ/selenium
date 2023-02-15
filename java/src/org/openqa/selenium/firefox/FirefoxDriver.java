@@ -108,7 +108,7 @@ public class FirefoxDriver extends RemoteWebDriver
    * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
    */
   public FirefoxDriver(FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);
+    this(new FirefoxDriverCommandExecutor(GeckoDriverService.createServiceWithConfig(options)), options);
   }
 
   /**

@@ -29,7 +29,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -153,7 +155,7 @@ public class SeleniumManager {
      * @param driverName which driver the service needs.
      * @return the location of the driver.
      */
-    public String getDriverPath(String driverName) {
+    public String getDriverPath(String driverName, List<String> arguments) {
         if (!ImmutableList.of("geckodriver", "chromedriver", "msedgedriver", "IEDriverServer").contains(driverName)) {
             throw new WebDriverException("Unable to locate driver with name: " + driverName);
         }
@@ -161,8 +163,10 @@ public class SeleniumManager {
         String driverPath = null;
         File binaryFile = getBinary();
         if (binaryFile != null) {
-            driverPath = runCommand(binaryFile.getAbsolutePath(),
-                    "--driver", driverName.replaceAll(EXE, ""));
+            arguments.add(0, binaryFile.getAbsolutePath());
+            arguments.add("--driver");
+            arguments.add(driverName.replaceAll(EXE, ""));
+            driverPath = runCommand(arguments.toArray(new String[0]));
         }
         return driverPath;
     }

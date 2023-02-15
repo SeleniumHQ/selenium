@@ -110,10 +110,12 @@ public class ChromeDriverService extends DriverService {
     File executable,
     int port,
     List<String> args,
-    Map<String, String> environment) throws IOException {
+    Map<String, String> environment,
+    List<String> seleniumManagerArgs) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT,
       unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableMap(new HashMap<>(environment)),
+      unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   /**
@@ -129,10 +131,12 @@ public class ChromeDriverService extends DriverService {
       int port,
       Duration timeout,
       List<String> args,
-      Map<String, String> environment) throws IOException {
+      Map<String, String> environment,
+      List<String> seleniumManagerArgs) throws IOException {
     super(executable, port, timeout,
       unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableMap(new HashMap<>(environment)),
+      unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   /**
@@ -160,9 +164,12 @@ public class ChromeDriverService extends DriverService {
   public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
     ChromeDriverLogLevel oldLevel = options.getLogLevel();
     ChromiumDriverLogLevel level = (oldLevel == null) ? null : ChromiumDriverLogLevel.fromString(oldLevel.toString());
-    return new Builder()
-      .withLogLevel(level)
-      .build();
+    Builder builder = new Builder().withLogLevel(level);
+    String binary = options.getBinary();
+    if (binary != null && !binary.isEmpty()) {
+      builder.withSeleniumManagerArgs(new String[]{"--browser-path", binary});
+    }
+    return builder.build();
   }
 
   /**
@@ -311,11 +318,11 @@ public class ChromeDriverService extends DriverService {
     }
 
     @Override
-    protected File findDefaultExecutable() {
+    protected File findDefaultExecutable(List<String> seleniumManagerArgs) {
       return findExecutable(
         "chromedriver", CHROME_DRIVER_EXE_PROPERTY,
         "https://chromedriver.chromium.org/",
-        "https://chromedriver.chromium.org/downloads");
+        "https://chromedriver.chromium.org/downloads", seleniumManagerArgs);
     }
 
     @Override
@@ -367,9 +374,10 @@ public class ChromeDriverService extends DriverService {
         int port,
         Duration timeout,
         List<String> args,
-        Map<String, String> environment) {
+        Map<String, String> environment,
+        List<String> seleniumManagerArgs) {
       try {
-        return new ChromeDriverService(exe, port, timeout, args, environment);
+        return new ChromeDriverService(exe, port, timeout, args, environment, seleniumManagerArgs);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

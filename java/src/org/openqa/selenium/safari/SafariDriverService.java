@@ -54,10 +54,11 @@ public class SafariDriverService extends DriverService {
     File executable,
     int port,
     List<String> args,
-    Map<String, String> environment) throws IOException {
+    Map<String, String> environment, List<String> seleniumManagerArgs) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT,
       unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableMap(new HashMap<>(environment)),
+      unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   public SafariDriverService(
@@ -65,10 +66,11 @@ public class SafariDriverService extends DriverService {
     int port,
     Duration timeout,
     List<String> args,
-    Map<String, String> environment) throws IOException {
+    Map<String, String> environment, List<String> seleniumManagerArgs) throws IOException {
     super(executable, port, timeout,
       unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableMap(new HashMap<>(environment)),
+      unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   public static SafariDriverService createDefaultService() {
@@ -100,7 +102,7 @@ public class SafariDriverService extends DriverService {
     }
 
     @Override
-    protected File findDefaultExecutable() {
+    protected File findDefaultExecutable(List<String> seleniumManagerArgs) {
       File exe;
       if (System.getProperty(SAFARI_DRIVER_EXE_PROPERTY) != null) {
         exe = new File(System.getProperty(SAFARI_DRIVER_EXE_PROPERTY));
@@ -147,9 +149,9 @@ public class SafariDriverService extends DriverService {
         int port,
         Duration timeout,
         List<String> args,
-        Map<String, String> environment) {
+        Map<String, String> environment, List<String> seleniumManagerArgs) {
       try {
-        return new SafariDriverService(exe, port, timeout, args, environment);
+        return new SafariDriverService(exe, port, timeout, args, environment, seleniumManagerArgs);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

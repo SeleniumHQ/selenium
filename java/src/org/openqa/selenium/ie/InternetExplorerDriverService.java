@@ -81,10 +81,11 @@ public class InternetExplorerDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   private InternetExplorerDriverService(File executable, int port, Duration timeout, List<String> args,
-                                        Map<String, String> environment) throws IOException {
+                                        Map<String, String> environment, List<String> seleniumManagerArgs) throws IOException {
     super(executable, port, timeout,
       unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableMap(new HashMap<>(environment)),
+      unmodifiableList(new ArrayList<>(seleniumManagerArgs)));
   }
 
   /**
@@ -171,10 +172,10 @@ public class InternetExplorerDriverService extends DriverService {
     }
 
     @Override
-    protected File findDefaultExecutable() {
+    protected File findDefaultExecutable(List<String> seleniumManagerArgs) {
       return findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
                             "https://www.selenium.dev/documentation/ie_driver_server/",
-                            "https://www.selenium.dev/downloads/");
+                            "https://www.selenium.dev/downloads/", seleniumManagerArgs);
     }
 
     @Override
@@ -235,9 +236,10 @@ public class InternetExplorerDriverService extends DriverService {
     protected InternetExplorerDriverService createDriverService(File exe, int port,
                                                                 Duration timeout,
                                                                 List<String> args,
-                                                                Map<String, String> environment) {
+                                                                Map<String, String> environment,
+                                                                List<String> seleniumManagerArgs) {
       try {
-        return new InternetExplorerDriverService(exe, port, timeout, args, environment);
+        return new InternetExplorerDriverService(exe, port, timeout, args, environment, seleniumManagerArgs);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

@@ -100,6 +100,10 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
     return (T) this;
   }
 
+  public String getBinary() {
+    return binary;
+  }
+
   /**
    * @param arguments The arguments to use when starting Chrome.
    * @see #addArguments(List)
