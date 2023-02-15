@@ -38,7 +38,7 @@ import static org.openqa.selenium.Platform.WINDOWS;
 
 /**
  * This implementation is still in beta, and may change.
- *
+ * <p>
  * The Selenium-Manager binaries are distributed in a JAR file (org.openqa.selenium:selenium-manager) for
  * the Java binding language. Since these binaries are compressed within these JAR, we need to serialize
  * the proper binary for the current platform (Windows, macOS, or Linux) as an executable file. To
@@ -59,9 +59,9 @@ public class SeleniumManager {
 
     private File binary;
 
-  /**
-   * Wrapper for the Selenium Manager binary.
-   */
+    /**
+     * Wrapper for the Selenium Manager binary.
+     */
     private SeleniumManager() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (binary != null && binary.exists()) {
@@ -82,11 +82,12 @@ public class SeleniumManager {
         return manager;
     }
 
-  /**
-   * Executes a process with the given arguments.
-   * @param command the file and arguments to execute.
-   * @return the standard output of the execution.
-   */
+    /**
+     * Executes a process with the given arguments.
+     *
+     * @param command the file and arguments to execute.
+     * @return the standard output of the execution.
+     */
     private static String runCommand(String... command) {
         String output = "";
         int code = 0;
@@ -106,17 +107,18 @@ public class SeleniumManager {
                     e.getClass().getSimpleName(), Arrays.toString(command), e.getMessage()));
         }
         if (code > 0) {
-          throw new WebDriverException("Unsuccessful command executed: " + Arrays.toString(command) +
-                                        "\n" + output);
+            throw new WebDriverException("Unsuccessful command executed: " + Arrays.toString(command) +
+                    "\n" + output);
         }
 
         return output.replace(INFO, "").trim();
     }
 
-  /**
-   * Determines the correct Selenium Manager binary to use.
-   * @return the path to the Selenium Manager binary.
-   */
+    /**
+     * Determines the correct Selenium Manager binary to use.
+     *
+     * @return the path to the Selenium Manager binary.
+     */
     private synchronized File getBinary() {
         if (binary == null) {
             try {
@@ -145,11 +147,12 @@ public class SeleniumManager {
         return binary;
     }
 
-  /**
-   * Determines the location of the correct driver.
-   * @param driverName which driver the service needs.
-   * @return the location of the driver.
-   */
+    /**
+     * Determines the location of the correct driver.
+     *
+     * @param driverName which driver the service needs.
+     * @return the location of the driver.
+     */
     public String getDriverPath(String driverName) {
         if (!ImmutableList.of("geckodriver", "chromedriver", "msedgedriver", "IEDriverServer").contains(driverName)) {
             throw new WebDriverException("Unable to locate driver with name: " + driverName);
@@ -158,7 +161,7 @@ public class SeleniumManager {
         String driverPath = null;
         File binaryFile = getBinary();
         if (binaryFile != null) {
-          driverPath = runCommand(binaryFile.getAbsolutePath(),
+            driverPath = runCommand(binaryFile.getAbsolutePath(),
                     "--driver", driverName.replaceAll(EXE, ""));
         }
         return driverPath;
