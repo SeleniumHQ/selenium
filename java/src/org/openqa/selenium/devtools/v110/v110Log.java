@@ -15,20 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v107;
+package org.openqa.selenium.devtools.v110;
 
 import org.openqa.selenium.devtools.Command;
 import org.openqa.selenium.devtools.ConverterFunctions;
 import org.openqa.selenium.devtools.Event;
-import org.openqa.selenium.devtools.v107.log.Log;
-import org.openqa.selenium.devtools.v107.log.model.LogEntry;
-import org.openqa.selenium.devtools.v107.runtime.model.Timestamp;
+import org.openqa.selenium.devtools.v110.log.Log;
+import org.openqa.selenium.devtools.v110.log.model.LogEntry;
+import org.openqa.selenium.devtools.v110.runtime.model.Timestamp;
 import org.openqa.selenium.json.JsonInput;
 
 import java.util.function.Function;
 import java.util.logging.Level;
 
-public class V107Log implements org.openqa.selenium.devtools.idealized.log.Log {
+public class v110Log implements org.openqa.selenium.devtools.idealized.log.Log {
 
   @Override
   public Command<Void> enable() {

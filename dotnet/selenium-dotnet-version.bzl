@@ -7,12 +7,12 @@ SUPPORTED_NET_STANDARD_VERSIONS = ["netstandard2.0", "netstandard2.1", "net5.0",
 
 SUPPORTED_DEVTOOLS_VERSIONS = [
     "v85",
-    "v107",
     "v108",
     "v109",
+    "v110",
 ]
 
 ASSEMBLY_COMPANY = "Selenium Committers"
-ASSEMBLY_COPYRIGHT = "Copyright © Software Freedom Conservancy 2022"
+ASSEMBLY_COPYRIGHT = "Copyright © Software Freedom Conservancy 2023"
 ASSEMBLY_INFORMATIONAL_VERSION = "4"
 ASSEMBLY_PRODUCT = "Selenium"

@@ -20,37 +20,21 @@
 module Selenium
   module WebDriver
     class BiDi
-      autoload :Session, 'selenium/webdriver/bidi/session'
-      autoload :LogInspector, 'selenium/webdriver/bidi/log_inspector'
-      autoload :BrowsingContext, 'selenium/webdriver/bidi/browsing_context'
+      class FilterBy
+        attr_accessor :level
 
-      def initialize(url:)
-        @ws = WebSocketConnection.new(url: url)
-      end
+        def initialize(level)
+          @level = level
+        end
 
-      def close
-        @ws.close
-      end
-
-      def callbacks
-        @ws.callbacks
-      end
-
-      def session
-        @session ||= Session.new(self)
-      end
-
-      def send_cmd(method, **params)
-        data = {method: method, params: params.compact}
-        message = @ws.send_cmd(**data)
-        raise Error::WebDriverError, error_message(message) if message['error']
-
-        message['result']
-      end
-
-      def error_message(message)
-        "#{message['error']}: #{message['message']}\n#{message['stacktrace']}"
-      end
+        def self.log_level(level = nil)
+          unless %w[debug error info warning].include?(level)
+            raise Error::WebDriverError,
+                  "Valid log levels are 'debug', 'error', 'info' and 'warning'. Received: #{level}"
+          end
+          FilterBy.new(level)
+        end
+      end # FilterBy
     end # BiDi
   end # WebDriver
 end # Selenium
