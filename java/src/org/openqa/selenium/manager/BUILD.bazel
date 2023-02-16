@@ -19,6 +19,7 @@ java_export(
     deps = [
         "//java/src/org/openqa/selenium:core",
         artifact("com.google.guava:guava"),
+        artifact("com.google.code.gson:gson"),
     ],
 )
 
