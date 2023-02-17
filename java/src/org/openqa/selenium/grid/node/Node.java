@@ -150,7 +150,10 @@ public abstract class Node implements HasReadyState, Routable {
       post("/session/{sessionId}/se/file")
         .to(params -> new UploadFile(this, sessionIdFrom(params)))
         .with(spanDecorator("node.upload_file")),
-      get("/session/{sessionId}/se/file")
+      get("/session/{sessionId}/se/files")
+        .to(params -> new DownloadFile(this, sessionIdFrom(params)))
+        .with(spanDecorator("node.download_file")),
+      post("/session/{sessionId}/se/files")
         .to(params -> new DownloadFile(this, sessionIdFrom(params)))
         .with(spanDecorator("node.download_file")),
       get("/se/grid/node/owner/{sessionId}")
