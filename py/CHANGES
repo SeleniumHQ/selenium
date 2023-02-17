@@ -1,3 +1,10 @@
+Selenium 4.8.1
+* Add CDP files for v110 and remove v107
+* pylint fixes including tidy of f strings, simplifications of conditional statements and isinstances (#11205)
+* Replace devtools genrule with proper generate_devtools rule. (#11392)
+* Add docstring for `alert_is_present`
+* Updating Selenium Manager binaries for 4.8.1 release
+
 Selenium 4.8.0
 * Add CDP files for v109 and remove v106
 * Add logging to Selenium Manager for both stdout and stderr
