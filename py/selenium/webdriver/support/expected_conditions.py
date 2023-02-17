@@ -265,6 +265,22 @@ def text_to_be_present_in_element_attribute(locator, attribute_, text_):
     return _predicate
 
 
+def regex_to_be_present_in_element(locator, regexp):
+    """ An expectation for checking if the given text is present in the
+    specified element, extended to allow and return a regex match
+    locator, text
+    """
+
+    def _predicate(driver):
+        try:
+            element_text = driver.find_element(*locator).text
+            return re.search(regexp, element_text)
+        except StaleElementReferenceException:
+            return False
+
+    return _predicate
+
+
 def frame_to_be_available_and_switch_to_it(locator):
     """An expectation for checking whether the given frame is available to
     switch to.
