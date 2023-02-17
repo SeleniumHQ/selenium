@@ -287,7 +287,7 @@
             <span class="s2">&quot;safari&quot;</span><span class="p">,</span>
         <span class="p">],</span> <span class="s2">&quot;This only currently works in Chromium based browsers&quot;</span>
         <span class="k">assert</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="n">browser_main_version</span> <span class="o">&lt;=</span> <span class="mi">95</span>
+            <span class="n">browser_main_version</span> <span class="o">&gt;</span> <span class="mi">95</span>
         <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Please use Chromium based browsers with version 96 or later. Version used </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">caps</span><span class="p">[</span><span class="s1">&#39;browserVersion&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_SHADOW_ROOT</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
 
