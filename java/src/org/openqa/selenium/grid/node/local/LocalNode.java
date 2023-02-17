@@ -502,7 +502,7 @@ public class LocalNode extends Node {
       List<String> collected = Arrays.stream(
         Optional.ofNullable(dir.listFiles()).orElse(new File[]{})
       ).map(File::getName).collect(Collectors.toList());
-      ImmutableMap<String, Object> data = ImmutableMap.of("filenames", collected);
+      ImmutableMap<String, Object> data = ImmutableMap.of("names", collected);
       ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value",data);
       return new HttpResponse().setContent(asJson(result));
     }
@@ -510,15 +510,15 @@ public class LocalNode extends Node {
     String raw = string(req);
     if (raw.isEmpty()) {
       throw new WebDriverException(
-        "Please specify file to download in payload as {\"filename\": \"fileToDownload\"}");
+        "Please specify file to download in payload as {\"name\": \"fileToDownload\"}");
     }
 
     Map<String, Object> incoming = JSON.toType(raw, Json.MAP_TYPE);
-    String filename = Optional.ofNullable(incoming.get("filename"))
+    String filename = Optional.ofNullable(incoming.get("name"))
       .map(Object::toString)
       .orElseThrow(
         () -> new WebDriverException(
-          "Please specify file to download in payload as {\"filename\": \"fileToDownload\"}"));
+          "Please specify file to download in payload as {\"name\": \"fileToDownload\"}"));
     try {
       File[] allFiles = Optional.ofNullable(
         dir.listFiles((dir1, name) -> name.equals(filename))

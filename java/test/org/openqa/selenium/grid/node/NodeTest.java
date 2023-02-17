@@ -505,7 +505,7 @@ class NodeTest {
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/files", session.getId()));
     File zip = createTmpFile(hello);
-    String payload = new Json().toJson(Collections.singletonMap("filename", zip.getName()));
+    String payload = new Json().toJson(Collections.singletonMap("name", zip.getName()));
     req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
     HttpResponse rsp = node.execute(req);
     Map<String, Object> raw = new Json().toType(string(rsp), Json.MAP_TYPE);
@@ -540,7 +540,7 @@ class NodeTest {
         raw.get("value")
       ).map(data -> (Map<String, Object>) data)
       .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
-    List<String> files = (List<String>) map.get("filenames");
+    List<String> files = (List<String>) map.get("names");
     assertThat(files).contains(zip.getName());
   }
 
@@ -569,7 +569,7 @@ class NodeTest {
     createTmpFile("Hello, world!");
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/files", session.getId()));
-    String msg = "Please specify file to download in payload as {\"filename\": \"fileToDownload\"}";
+    String msg = "Please specify file to download in payload as {\"name\": \"fileToDownload\"}";
     assertThatThrownBy(() -> node.execute(req))
       .hasMessageContaining(msg);
   }
@@ -586,7 +586,7 @@ class NodeTest {
     String payload = new Json().toJson(Collections.singletonMap("my-file", "README.md"));
     req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
 
-    String msg = "Please specify file to download in payload as {\"filename\": \"fileToDownload\"}";
+    String msg = "Please specify file to download in payload as {\"name\": \"fileToDownload\"}";
     assertThatThrownBy(() -> node.execute(req))
       .hasMessageContaining(msg);
   }
@@ -600,7 +600,7 @@ class NodeTest {
     createTmpFile("Hello, world!");
 
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/files", session.getId()));
-    String payload = new Json().toJson(Collections.singletonMap("filename", "README.md"));
+    String payload = new Json().toJson(Collections.singletonMap("name", "README.md"));
     req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
 
     String msg = "Cannot find file [README.md] in directory";
