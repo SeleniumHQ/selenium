@@ -95,7 +95,7 @@
   <dl>
     <dt>Defined in:</dt>
     <dd>rb/lib/selenium/webdriver/bidi.rb<span class="defines">,<br />
-  rb/lib/selenium/webdriver/bidi/session.rb,<br /> rb/lib/selenium/webdriver/bidi/log_inspector.rb,<br /> rb/lib/selenium/webdriver/bidi/navigate_result.rb,<br /> rb/lib/selenium/webdriver/bidi/browsing_context.rb,<br /> rb/lib/selenium/webdriver/bidi/log/base_log_entry.rb,<br /> rb/lib/selenium/webdriver/bidi/browsing_context_info.rb,<br /> rb/lib/selenium/webdriver/bidi/log/console_log_entry.rb,<br /> rb/lib/selenium/webdriver/bidi/log/generic_log_entry.rb,<br /> rb/lib/selenium/webdriver/bidi/log/javascript_log_entry.rb</span>
+  rb/lib/selenium/webdriver/bidi/session.rb,<br /> rb/lib/selenium/webdriver/bidi/log/filter_by.rb,<br /> rb/lib/selenium/webdriver/bidi/log_inspector.rb,<br /> rb/lib/selenium/webdriver/bidi/navigate_result.rb,<br /> rb/lib/selenium/webdriver/bidi/browsing_context.rb,<br /> rb/lib/selenium/webdriver/bidi/log/base_log_entry.rb,<br /> rb/lib/selenium/webdriver/bidi/browsing_context_info.rb,<br /> rb/lib/selenium/webdriver/bidi/log/console_log_entry.rb,<br /> rb/lib/selenium/webdriver/bidi/log/generic_log_entry.rb,<br /> rb/lib/selenium/webdriver/bidi/log/javascript_log_entry.rb</span>
 </dd>
   </dl>
   
@@ -107,7 +107,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="BiDi/BaseLogEntry.html" title="Selenium::WebDriver::BiDi::BaseLogEntry (class)">BaseLogEntry</a></span>, <span class='object_link'><a href="BiDi/BrowsingContext.html" title="Selenium::WebDriver::BiDi::BrowsingContext (class)">BrowsingContext</a></span>, <span class='object_link'><a href="BiDi/BrowsingContextInfo.html" title="Selenium::WebDriver::BiDi::BrowsingContextInfo (class)">BrowsingContextInfo</a></span>, <span class='object_link'><a href="BiDi/ConsoleLogEntry.html" title="Selenium::WebDriver::BiDi::ConsoleLogEntry (class)">ConsoleLogEntry</a></span>, <span class='object_link'><a href="BiDi/GenericLogEntry.html" title="Selenium::WebDriver::BiDi::GenericLogEntry (class)">GenericLogEntry</a></span>, <span class='object_link'><a href="BiDi/JavascriptLogEntry.html" title="Selenium::WebDriver::BiDi::JavascriptLogEntry (class)">JavascriptLogEntry</a></span>, <span class='object_link'><a href="BiDi/LogInspector.html" title="Selenium::WebDriver::BiDi::LogInspector (class)">LogInspector</a></span>, <span class='object_link'><a href="BiDi/NavigateResult.html" title="Selenium::WebDriver::BiDi::NavigateResult (class)">NavigateResult</a></span>, <span class='object_link'><a href="BiDi/Session.html" title="Selenium::WebDriver::BiDi::Session (class)">Session</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="BiDi/BaseLogEntry.html" title="Selenium::WebDriver::BiDi::BaseLogEntry (class)">BaseLogEntry</a></span>, <span class='object_link'><a href="BiDi/BrowsingContext.html" title="Selenium::WebDriver::BiDi::BrowsingContext (class)">BrowsingContext</a></span>, <span class='object_link'><a href="BiDi/BrowsingContextInfo.html" title="Selenium::WebDriver::BiDi::BrowsingContextInfo (class)">BrowsingContextInfo</a></span>, <span class='object_link'><a href="BiDi/ConsoleLogEntry.html" title="Selenium::WebDriver::BiDi::ConsoleLogEntry (class)">ConsoleLogEntry</a></span>, <span class='object_link'><a href="BiDi/FilterBy.html" title="Selenium::WebDriver::BiDi::FilterBy (class)">FilterBy</a></span>, <span class='object_link'><a href="BiDi/GenericLogEntry.html" title="Selenium::WebDriver::BiDi::GenericLogEntry (class)">GenericLogEntry</a></span>, <span class='object_link'><a href="BiDi/JavascriptLogEntry.html" title="Selenium::WebDriver::BiDi::JavascriptLogEntry (class)">JavascriptLogEntry</a></span>, <span class='object_link'><a href="BiDi/LogInspector.html" title="Selenium::WebDriver::BiDi::LogInspector (class)">LogInspector</a></span>, <span class='object_link'><a href="BiDi/NavigateResult.html" title="Selenium::WebDriver::BiDi::NavigateResult (class)">NavigateResult</a></span>, <span class='object_link'><a href="BiDi/Session.html" title="Selenium::WebDriver::BiDi::Session (class)">Session</a></span>
     
   
 </p>
@@ -489,7 +489,7 @@
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/bidi.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_session'>session</span>
-  <span class='const'><span class='object_link'><a href="BiDi/Session.html" title="Selenium::WebDriver::BiDi::Session (class)">Session</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="BiDi/Session.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Session#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
+  <span class='ivar'>@session</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="BiDi/Session.html" title="Selenium::WebDriver::BiDi::Session (class)">Session</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="BiDi/Session.html#initialize-instance_method" title="Selenium::WebDriver::BiDi::Session#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -501,7 +501,7 @@
 </div>
 
       <div id="footer">
-  Generated on Mon Jan 23 16:24:35 2023 by
+  Generated on Fri Feb 17 23:46:40 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>
