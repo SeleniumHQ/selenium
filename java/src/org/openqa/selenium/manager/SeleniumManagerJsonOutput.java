@@ -20,18 +20,74 @@ import java.util.List;
 
 public class SeleniumManagerJsonOutput {
 
-    List<Log> logs;
-    Result result;
+    public List<Log> logs;
+    public Result result;
 
-    class Log {
-        String level;
-        long timestamp;
-        String message;
+    public List<Log> getLogs() {
+        return logs;
     }
 
-    class Result {
-        int code;
-        String message;
+    public void setLogs(List<Log> logs) {
+        this.logs = logs;
+    }
+
+    public Result getResult() {
+        return result;
+    }
+
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
+    public static class Log {
+        public String level;
+        long timestamp;
+        public String message;
+
+        public String getLevel() {
+            return level;
+        }
+
+        public void setLevel(String level) {
+            this.level = level;
+        }
+
+        public long getTimestamp() {
+            return timestamp;
+        }
+
+        public void setTimestamp(long timestamp) {
+            this.timestamp = timestamp;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
+
+    public static class Result {
+        public int code;
+        public String message;
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
     }
 
 }

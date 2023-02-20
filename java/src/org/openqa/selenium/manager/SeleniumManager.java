@@ -18,11 +18,11 @@ package org.openqa.selenium.manager;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
-import com.google.gson.GsonBuilder;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
 
 import java.io.File;
 import java.io.IOException;
@@ -113,7 +113,7 @@ public class SeleniumManager {
             throw new WebDriverException("Unsuccessful command executed: " + Arrays.toString(command) +
                     "\n" + output);
         }
-        SeleniumManagerJsonOutput jsonOutput = new GsonBuilder().create().fromJson(output,
+        SeleniumManagerJsonOutput jsonOutput = new Json().toType(output,
                 SeleniumManagerJsonOutput.class);
         jsonOutput.logs.stream().filter(log -> log.level.equalsIgnoreCase(WARN))
                 .forEach(log -> LOG.warning(log.message));
