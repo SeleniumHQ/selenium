@@ -29,7 +29,7 @@ use crate::{
     create_default_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE,
 };
 
-pub const SAFARITP_NAME: &[&str] = &[
+pub const SAFARITP_NAMES: &[&str] = &[
     "safaritp",
     "safari technology preview",
     r#"safari\ technology\ preview"#,
@@ -48,7 +48,7 @@ pub struct SafariTPManager {
 impl SafariTPManager {
     pub fn new() -> Box<Self> {
         Box::new(SafariTPManager {
-            browser_name: SAFARITP_NAME[0],
+            browser_name: SAFARITP_NAMES[0],
             driver_name: SAFARITPDRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),

@@ -35,7 +35,7 @@ use crate::{
     FALLBACK_RETRIES, NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
-pub const CHROME_NAMES: &[&str] = &["chrome"];
+pub const CHROME_NAME: &str = "chrome";
 pub const CHROMEDRIVER_NAME: &str = "chromedriver";
 const DRIVER_URL: &str = "https://chromedriver.storage.googleapis.com/";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
@@ -51,7 +51,7 @@ pub struct ChromeManager {
 impl ChromeManager {
     pub fn new() -> Box<Self> {
         Box::new(ChromeManager {
-            browser_name: CHROME_NAMES[0],
+            browser_name: CHROME_NAME,
             driver_name: CHROMEDRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),

@@ -34,7 +34,7 @@ use crate::{
     WMIC_COMMAND_ENV,
 };
 
-pub const FIREFOX_NAME: &[&str] = &["firefox"];
+pub const FIREFOX_NAME: &str = "firefox";
 pub const GECKODRIVER_NAME: &str = "geckodriver";
 const DRIVER_URL: &str = "https://github.com/mozilla/geckodriver/releases/";
 const LATEST_RELEASE: &str = "latest";
@@ -50,7 +50,7 @@ pub struct FirefoxManager {
 impl FirefoxManager {
     pub fn new() -> Box<Self> {
         Box::new(FirefoxManager {
-            browser_name: FIREFOX_NAME[0],
+            browser_name: FIREFOX_NAME,
             driver_name: GECKODRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),

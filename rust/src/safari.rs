@@ -29,7 +29,7 @@ use crate::{
     create_default_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE,
 };
 
-pub const SAFARI_NAME: &[&str] = &["safari"];
+pub const SAFARI_NAME: &str = "safari";
 pub const SAFARIDRIVER_NAME: &str = "safaridriver";
 
 pub struct SafariManager {
@@ -43,7 +43,7 @@ pub struct SafariManager {
 impl SafariManager {
     pub fn new() -> Box<Self> {
         Box::new(SafariManager {
-            browser_name: SAFARI_NAME[0],
+            browser_name: SAFARI_NAME,
             driver_name: SAFARIDRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),

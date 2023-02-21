@@ -15,11 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAMES};
-use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAME};
+use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAME};
+use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAMES};
 use crate::files::compose_cache_folder;
 use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
-use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAME};
+use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAMES};
 use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use std::fs;
 
@@ -38,7 +38,7 @@ use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
 };
-use crate::safaritp::{SafariTPManager, SAFARITP_NAME};
+use crate::safaritp::{SafariTPManager, SAFARITP_NAMES};
 
 pub mod chrome;
 pub mod config;
@@ -257,7 +257,7 @@ pub trait SeleniumManager {
     }
 
     fn is_safari(&self) -> bool {
-        self.get_browser_name().contains(SAFARI_NAME[0])
+        self.get_browser_name().contains(SAFARI_NAME)
     }
 
     fn is_browser_version_unstable(&self) -> bool {
@@ -435,17 +435,17 @@ pub trait SeleniumManager {
 
 pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumManager>, String> {
     let browser_name_lower_case = browser_name.to_ascii_lowercase();
-    if CHROME_NAMES.contains(&browser_name_lower_case.as_str()) {
+    if browser_name_lower_case.eq(CHROME_NAME) {
         Ok(ChromeManager::new())
-    } else if FIREFOX_NAME.contains(&browser_name_lower_case.as_str()) {
+    } else if browser_name_lower_case.eq(FIREFOX_NAME) {
         Ok(FirefoxManager::new())
-    } else if EDGE_NAME.contains(&browser_name_lower_case.as_str()) {
+    } else if EDGE_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(EdgeManager::new())
-    } else if IE_NAME.contains(&browser_name_lower_case.as_str()) {
+    } else if IE_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(IExplorerManager::new())
-    } else if SAFARI_NAME.contains(&browser_name_lower_case.as_str()) {
+    } else if browser_name_lower_case.eq(SAFARI_NAME) {
         Ok(SafariManager::new())
-    } else if SAFARITP_NAME.contains(&browser_name_lower_case.as_str()) {
+    } else if SAFARITP_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(SafariTPManager::new())
     } else {
         Err(format!("Invalid browser name: {browser_name}"))

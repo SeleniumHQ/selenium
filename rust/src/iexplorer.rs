@@ -30,7 +30,7 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 
-pub const IE_NAME: &[&str] = &[
+pub const IE_NAMES: &[&str] = &[
     "iexplorer",
     "ie",
     "internetexplorer",
@@ -52,7 +52,7 @@ pub struct IExplorerManager {
 impl IExplorerManager {
     pub fn new() -> Box<Self> {
         Box::new(IExplorerManager {
-            browser_name: IE_NAME[0],
+            browser_name: IE_NAMES[0],
             driver_name: IEDRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),
