@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.protocolvalue.LocalValue;
 import org.openqa.selenium.bidi.protocolvalue.RegExpValue;
 import org.openqa.selenium.bidi.protocolvalue.RemoteValue;
+import org.openqa.selenium.bidi.protocolvalue.SpecialNumberType;
 import org.openqa.selenium.bidi.script.ArgumentValue;
 import org.openqa.selenium.bidi.script.EvaluateResult;
 import org.openqa.selenium.bidi.script.EvaluateResultSuccess;
@@ -50,6 +51,242 @@ class LocalValueTest {
     options.setCapability("webSocketUrl", true);
 
     driver = new FirefoxDriver(options);
+  }
+
+  @Test
+  void canCallFunctionWithUndefinedArgument() {
+    String id = driver.getWindowHandle();
+    ScriptManager manager = new ScriptManager(id, driver);
+
+    List<ArgumentValue> arguments = new ArrayList<>();
+
+    ArgumentValue value = new ArgumentValue(LocalValue.createUndefinedValue());
+    arguments.add(value);
+
+    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
+                                                                  "(arg) => {{\n"
+                                                                  + "            if(arg!==undefined)\n"
+                                                                  + "                throw Error(\"Argument should be undefined, but was \"+arg);\n"
+                                                                  + "            return arg;\n"
+                                                                  + "        }}",
+                                                                  false,
+                                                                  Optional.of(arguments),
+                                                                  Optional.empty(),
+                                                                  Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("undefined");
+  }
+
+  @Test
+  void canCallFunctionWithNullArgument() {
+    String id = driver.getWindowHandle();
+    ScriptManager manager = new ScriptManager(id, driver);
+
+    List<ArgumentValue> arguments = new ArrayList<>();
+
+    ArgumentValue value = new ArgumentValue(LocalValue.createNullValue());
+    arguments.add(value);
+
+    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
+                                                                  "(arg) => {{\n"
+                                                                  + "            if(arg!==null)\n"
+                                                                  + "                throw Error(\"Argument should be undefined, but was \"+arg);\n"
+                                                                  + "            return arg;\n"
+                                                                  + "        }}",
+                                                                  false,
+                                                                  Optional.of(arguments),
+                                                                  Optional.empty(),
+                                                                  Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("null");
+  }
+
+  @Test
+  void canCallFunctionWithMinusZeroArgument() {
+    String id = driver.getWindowHandle();
+    ScriptManager manager = new ScriptManager(id, driver);
+
+    List<ArgumentValue> arguments = new ArrayList<>();
+
+    ArgumentValue value = new ArgumentValue(LocalValue.createNumberValue(SpecialNumberType.MINUS_ZERO));
+    arguments.add(value);
+
+    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
+                                                                  "(arg) => {{\n"
+                                                                  + "            if(arg!==-0)\n"
+                                                                  + "                throw Error(\"Argument should be -0, but was \"+arg);\n"
+                                                                  + "            return arg;\n"
+                                                                  + "        }}",
+                                                                  false,
+                                                                  Optional.of(arguments),
+                                                                  Optional.empty(),
+                                                                  Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("number");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat((String)successResult.getResult().getValue().get()).isEqualTo("-0");
+  }
+
+  @Test
+  void canCallFunctionWithInfinityArgument() {
+    String id = driver.getWindowHandle();
+    ScriptManager manager = new ScriptManager(id, driver);
+
+    List<ArgumentValue> arguments = new ArrayList<>();
+
+    ArgumentValue value = new ArgumentValue(LocalValue.createNumberValue(SpecialNumberType.INFINITY));
+    arguments.add(value);
+
+    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
+                                                                  "(arg) => {{\n"
+                                                                  + "            if(arg!==Infinity)\n"
+                                                                  + "                throw Error(\"Argument should be Infinity, but was \"+arg);\n"
+                                                                  + "            return arg;\n"
+                                                                  + "        }}",
+                                                                  false,
+                                                                  Optional.of(arguments),
+                                                                  Optional.empty(),
+                                                                  Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("number");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat((String)successResult.getResult().getValue().get()).isEqualTo("Infinity");
+  }
+
+  @Test
+  void canCallFunctionWithMinusInfinityArgument() {
+    String id = driver.getWindowHandle();
+    ScriptManager manager = new ScriptManager(id, driver);
+
+    List<ArgumentValue> arguments = new ArrayList<>();
+
+    ArgumentValue value = new ArgumentValue(LocalValue.createNumberValue(SpecialNumberType.MINUS_INFINITY));
+    arguments.add(value);
+
+    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
+                                                                  "(arg) => {{\n"
+                                                                  + "            if(arg!==-Infinity)\n"
+                                                                  + "                throw Error(\"Argument should be -Infinity, but was \"+arg);\n"
+                                                                  + "            return arg;\n"
+                                                                  + "        }}",
+                                                                  false,
+                                                                  Optional.of(arguments),
+                                                                  Optional.empty(),
+                                                                  Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("number");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat((String)successResult.getResult().getValue().get()).isEqualTo("-Infinity");
+  }
+
+  @Test
+  void canCallFunctionWithNumberArgument() {
+    String id = driver.getWindowHandle();
+    ScriptManager manager = new ScriptManager(id, driver);
+
+    List<ArgumentValue> arguments = new ArrayList<>();
+
+    ArgumentValue value = new ArgumentValue(LocalValue.createNumberValue(1.4));
+    arguments.add(value);
+
+    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
+                                                                  "(arg) => {{\n"
+                                                                  + "            if(arg!==1.4)\n"
+                                                                  + "                throw Error(\"Argument should be 1.4, but was \"+arg);\n"
+                                                                  + "            return arg;\n"
+                                                                  + "        }}",
+                                                                  false,
+                                                                  Optional.of(arguments),
+                                                                  Optional.empty(),
+                                                                  Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("number");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat((double)successResult.getResult().getValue().get()).isEqualTo(1.4);
+  }
+
+  @Test
+  void canCallFunctionWithBooleanArgument() {
+    String id = driver.getWindowHandle();
+    ScriptManager manager = new ScriptManager(id, driver);
+
+    List<ArgumentValue> arguments = new ArrayList<>();
+
+    ArgumentValue value = new ArgumentValue(LocalValue.createBooleanValue(true));
+    arguments.add(value);
+
+    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
+                                                                  "(arg) => {{\n"
+                                                                  + "            if(arg!==true)\n"
+                                                                  + "                throw Error(\"Argument should be true, but was \"+arg);\n"
+                                                                  + "            return arg;\n"
+                                                                  + "        }}",
+                                                                  false,
+                                                                  Optional.of(arguments),
+                                                                  Optional.empty(),
+                                                                  Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("boolean");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat((boolean)successResult.getResult().getValue().get()).isEqualTo(true);
+  }
+
+  @Test
+  void canCallFunctionWithBigIntArgument() {
+    String id = driver.getWindowHandle();
+    ScriptManager manager = new ScriptManager(id, driver);
+
+    List<ArgumentValue> arguments = new ArrayList<>();
+
+    ArgumentValue value = new ArgumentValue(LocalValue.createBigIntValue("42"));
+    arguments.add(value);
+
+    EvaluateResult result = manager.callFunctionInBrowsingContext(id,
+                                                                  "(arg) => {{\n"
+                                                                  + "            if(arg!==42n)\n"
+                                                                  + "                throw Error(\"Argument should be 42n, but was \"+arg);\n"
+                                                                  + "            return arg;\n"
+                                                                  + "        }}",
+                                                                  false,
+                                                                  Optional.of(arguments),
+                                                                  Optional.empty(),
+                                                                  Optional.empty());
+
+    assertThat(result.getResultType()).isEqualTo(EvaluateResult.EvaluateResultType.SUCCESS);
+    assertThat(result.getRealmId()).isNotNull();
+
+    EvaluateResultSuccess successResult = (EvaluateResultSuccess) result;
+    assertThat(successResult.getResult().getType()).isEqualTo("bigint");
+    assertThat(successResult.getResult().getValue().isPresent()).isTrue();
+    assertThat((String)successResult.getResult().getValue().get()).isEqualTo("42");
   }
 
   @Test
