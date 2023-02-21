@@ -20,6 +20,7 @@ use crate::edge::EdgeManager;
 use crate::files::compose_cache_folder;
 use crate::firefox::FirefoxManager;
 use crate::iexplorer::IExplorerManager;
+use crate::safari::{SafariManager, SAFARI};
 use std::fs;
 
 use crate::config::OS::WINDOWS;
@@ -37,6 +38,7 @@ use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
 };
+use crate::safaritp::SafariTPManager;
 
 pub mod chrome;
 pub mod config;
@@ -47,6 +49,8 @@ pub mod firefox;
 pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
+pub mod safari;
+pub mod safaritp;
 
 pub const REQUEST_TIMEOUT_SEC: u64 = 120; // The timeout is applied from when the request starts connecting until the response body has finished
 pub const STABLE: &str = "stable";
@@ -57,6 +61,8 @@ pub const NIGHTLY: &str = "nightly";
 pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /value"#;
 pub const WMIC_COMMAND_ENV: &str = r#"wmic datafile where name='%{}:\=\\%{}' get Version /value"#;
 pub const REG_QUERY: &str = r#"REG QUERY {} /v version"#;
+pub const PLIST_COMMAND: &str =
+    r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
 pub const DASH_VERSION: &str = "{} -v";
 pub const DASH_DASH_VERSION: &str = "{} --version";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
@@ -160,11 +166,12 @@ pub trait SeleniumManager {
                     }
                     break;
                 }
-
-                metadata
-                    .browsers
-                    .push(create_browser_metadata(browser_name, &browser_version));
-                write_metadata(&metadata, self.get_logger());
+                if !self.is_safari() {
+                    metadata
+                        .browsers
+                        .push(create_browser_metadata(browser_name, &browser_version));
+                    write_metadata(&metadata, self.get_logger());
+                }
                 if !browser_version.is_empty() {
                     Some(browser_version)
                 } else {
@@ -179,12 +186,14 @@ pub trait SeleniumManager {
         if browser_version.is_empty() || self.is_browser_version_unstable() {
             match self.discover_browser_version() {
                 Some(version) => {
-                    self.get_logger().debug(format!(
-                        "Detected browser: {} {}",
-                        self.get_browser_name(),
-                        version
-                    ));
-                    self.set_browser_version(version);
+                    if !self.is_safari() {
+                        self.get_logger().debug(format!(
+                            "Detected browser: {} {}",
+                            self.get_browser_name(),
+                            version
+                        ));
+                        self.set_browser_version(version);
+                    }
                 }
                 None => {
                     if self.is_browser_version_unstable() {
@@ -247,6 +256,10 @@ pub trait SeleniumManager {
         }
     }
 
+    fn is_safari(&self) -> bool {
+        self.get_browser_name().contains(SAFARI)
+    }
+
     fn is_browser_version_unstable(&self) -> bool {
         let browser_version = self.get_browser_version();
         browser_version.eq_ignore_ascii_case(BETA)
@@ -261,34 +274,38 @@ pub trait SeleniumManager {
             self.set_driver_version(driver_version);
         }
 
-        let (in_path_driver_version, in_path_driver_path) = self.find_driver_in_path();
-        if let (Some(found_driver_version), Some(found_driver_path)) =
-            (in_path_driver_version, in_path_driver_path)
-        {
-            if found_driver_version.eq(self.get_driver_version()) {
-                self.get_logger().debug(format!(
-                    "Found {} {} in PATH: {}",
-                    self.get_driver_name(),
-                    found_driver_version,
-                    found_driver_path
-                ));
-                return Ok(PathBuf::from(found_driver_path));
-            } else {
-                self.get_logger().warn(format!(
-                    "Incompatible release of {} (version {}) detected in PATH: {}",
-                    self.get_driver_name(),
-                    found_driver_version,
-                    found_driver_path
-                ));
+        if !self.is_safari() {
+            let (in_path_driver_version, in_path_driver_path) = self.find_driver_in_path();
+            if let (Some(found_driver_version), Some(found_driver_path)) =
+                (in_path_driver_version, in_path_driver_path)
+            {
+                if found_driver_version.eq(self.get_driver_version()) {
+                    self.get_logger().debug(format!(
+                        "Found {} {} in PATH: {}",
+                        self.get_driver_name(),
+                        found_driver_version,
+                        found_driver_path
+                    ));
+                    return Ok(PathBuf::from(found_driver_path));
+                } else {
+                    self.get_logger().warn(format!(
+                        "Incompatible release of {} (version {}) detected in PATH: {}",
+                        self.get_driver_name(),
+                        found_driver_version,
+                        found_driver_path
+                    ));
+                }
             }
         }
         let driver_path = self.get_driver_path_in_cache();
         if driver_path.exists() {
-            self.get_logger().debug(format!(
-                "{} {} already in the cache",
-                self.get_driver_name(),
-                self.get_driver_version()
-            ));
+            if !self.is_safari() {
+                self.get_logger().debug(format!(
+                    "{} {} already in the cache",
+                    self.get_driver_name(),
+                    self.get_driver_version()
+                ));
+            }
         } else {
             self.download_driver()?;
         }
@@ -434,6 +451,17 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
     .contains(&browser_name_lower_case.as_str())
     {
         Ok(IExplorerManager::new())
+    } else if browser_name.eq("safari") {
+        Ok(SafariManager::new())
+    } else if vec![
+        "safari technology preview",
+        r#"safari\ technology\ preview"#,
+        "safaritechnologypreview",
+        "safaritp",
+    ]
+    .contains(&browser_name_lower_case.as_str())
+    {
+        Ok(SafariTPManager::new())
     } else {
         Err(format!("Invalid browser name: {browser_name}"))
     }
@@ -448,6 +476,8 @@ pub fn get_manager_by_driver(driver_name: String) -> Result<Box<dyn SeleniumMana
         Ok(EdgeManager::new())
     } else if driver_name.eq_ignore_ascii_case("iedriverserver") {
         Ok(IExplorerManager::new())
+    } else if driver_name.eq_ignore_ascii_case("safaridriver") {
+        Ok(SafariManager::new())
     } else {
         Err(format!("Invalid driver name: {driver_name}"))
     }
