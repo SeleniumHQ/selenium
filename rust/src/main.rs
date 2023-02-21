@@ -37,11 +37,11 @@ use selenium_manager::{
 {usage-heading} {usage}
 {all-args}")]
 struct Cli {
-    /// Browser name (chrome, firefox, edge, or iexplorer)
+    /// Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
     #[clap(short, long, value_parser)]
     browser: Option<String>,
 
-    /// Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer)
+    /// Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
     #[clap(short, long, value_parser)]
     driver: Option<String>,
 
