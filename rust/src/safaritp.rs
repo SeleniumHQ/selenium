@@ -26,12 +26,16 @@ use crate::files::BrowserPath;
 
 use crate::config::OS::MACOS;
 use crate::{
-    create_default_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND,
-    STABLE,
+    create_default_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE,
 };
 
-const BROWSER_NAME: &str = "safaritp";
-const DRIVER_NAME: &str = "safaridriver";
+pub const SAFARITP_NAME: &[&str] = &[
+    "safaritp",
+    "safari technology preview",
+    r#"safari\ technology\ preview"#,
+    "safaritechnologypreview",
+];
+pub const SAFARITPDRIVER_NAME: &str = "safaridriver";
 
 pub struct SafariTPManager {
     pub browser_name: &'static str,
@@ -44,8 +48,8 @@ pub struct SafariTPManager {
 impl SafariTPManager {
     pub fn new() -> Box<Self> {
         Box::new(SafariTPManager {
-            browser_name: BROWSER_NAME,
-            driver_name: DRIVER_NAME,
+            browser_name: SAFARITP_NAME[0],
+            driver_name: SAFARITPDRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),
             log: Logger::default(),

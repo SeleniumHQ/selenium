@@ -30,8 +30,14 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 
-const BROWSER_NAME: &str = "iexplorer";
-const DRIVER_NAME: &str = "IEDriverServer";
+pub const IE_NAME: &[&str] = &[
+    "iexplorer",
+    "ie",
+    "internetexplorer",
+    "internet-explorer",
+    "internet_explorer",
+];
+pub const IEDRIVER_NAME: &str = "IEDriverServer";
 const DRIVER_URL: &str = "https://github.com/SeleniumHQ/selenium/releases/";
 const LATEST_RELEASE: &str = "latest";
 
@@ -46,8 +52,8 @@ pub struct IExplorerManager {
 impl IExplorerManager {
     pub fn new() -> Box<Self> {
         Box::new(IExplorerManager {
-            browser_name: BROWSER_NAME,
-            driver_name: DRIVER_NAME,
+            browser_name: IE_NAME[0],
+            driver_name: IEDRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),
             log: Logger::default(),

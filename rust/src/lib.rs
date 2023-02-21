@@ -15,12 +15,12 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use crate::chrome::ChromeManager;
-use crate::edge::EdgeManager;
+use crate::chrome::{ChromeManager, CHROMEDRIVER_NAME, CHROME_NAMES};
+use crate::edge::{EdgeManager, EDGEDRIVER_NAME, EDGE_NAME};
 use crate::files::compose_cache_folder;
-use crate::firefox::FirefoxManager;
-use crate::iexplorer::IExplorerManager;
-use crate::safari::{SafariManager, SAFARI};
+use crate::firefox::{FirefoxManager, FIREFOX_NAME, GECKODRIVER_NAME};
+use crate::iexplorer::{IExplorerManager, IEDRIVER_NAME, IE_NAME};
+use crate::safari::{SafariManager, SAFARIDRIVER_NAME, SAFARI_NAME};
 use std::fs;
 
 use crate::config::OS::WINDOWS;
@@ -38,7 +38,7 @@ use crate::logger::Logger;
 use crate::metadata::{
     create_browser_metadata, get_browser_version_from_metadata, get_metadata, write_metadata,
 };
-use crate::safaritp::SafariTPManager;
+use crate::safaritp::{SafariTPManager, SAFARITP_NAME};
 
 pub mod chrome;
 pub mod config;
@@ -257,7 +257,7 @@ pub trait SeleniumManager {
     }
 
     fn is_safari(&self) -> bool {
-        self.get_browser_name().contains(SAFARI)
+        self.get_browser_name().contains(SAFARI_NAME[0])
     }
 
     fn is_browser_version_unstable(&self) -> bool {
@@ -435,32 +435,17 @@ pub trait SeleniumManager {
 
 pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumManager>, String> {
     let browser_name_lower_case = browser_name.to_ascii_lowercase();
-    if browser_name_lower_case.eq("chrome") {
+    if CHROME_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(ChromeManager::new())
-    } else if browser_name.eq("firefox") {
+    } else if FIREFOX_NAME.contains(&browser_name_lower_case.as_str()) {
         Ok(FirefoxManager::new())
-    } else if vec!["edge", "msedge", "microsoftedge"].contains(&browser_name_lower_case.as_str()) {
+    } else if EDGE_NAME.contains(&browser_name_lower_case.as_str()) {
         Ok(EdgeManager::new())
-    } else if vec![
-        "iexplorer",
-        "ie",
-        "internetexplorer",
-        "internet-explorer",
-        "internet_explorer",
-    ]
-    .contains(&browser_name_lower_case.as_str())
-    {
+    } else if IE_NAME.contains(&browser_name_lower_case.as_str()) {
         Ok(IExplorerManager::new())
-    } else if browser_name.eq("safari") {
+    } else if SAFARI_NAME.contains(&browser_name_lower_case.as_str()) {
         Ok(SafariManager::new())
-    } else if vec![
-        "safari technology preview",
-        r#"safari\ technology\ preview"#,
-        "safaritechnologypreview",
-        "safaritp",
-    ]
-    .contains(&browser_name_lower_case.as_str())
-    {
+    } else if SAFARITP_NAME.contains(&browser_name_lower_case.as_str()) {
         Ok(SafariTPManager::new())
     } else {
         Err(format!("Invalid browser name: {browser_name}"))
@@ -468,15 +453,15 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
 }
 
 pub fn get_manager_by_driver(driver_name: String) -> Result<Box<dyn SeleniumManager>, String> {
-    if driver_name.eq_ignore_ascii_case("chromedriver") {
+    if driver_name.eq_ignore_ascii_case(CHROMEDRIVER_NAME) {
         Ok(ChromeManager::new())
-    } else if driver_name.eq_ignore_ascii_case("geckodriver") {
+    } else if driver_name.eq_ignore_ascii_case(GECKODRIVER_NAME) {
         Ok(FirefoxManager::new())
-    } else if driver_name.eq_ignore_ascii_case("msedgedriver") {
+    } else if driver_name.eq_ignore_ascii_case(EDGEDRIVER_NAME) {
         Ok(EdgeManager::new())
-    } else if driver_name.eq_ignore_ascii_case("iedriverserver") {
+    } else if driver_name.eq_ignore_ascii_case(IEDRIVER_NAME) {
         Ok(IExplorerManager::new())
-    } else if driver_name.eq_ignore_ascii_case("safaridriver") {
+    } else if driver_name.eq_ignore_ascii_case(SAFARIDRIVER_NAME) {
         Ok(SafariManager::new())
     } else {
         Err(format!("Invalid driver name: {driver_name}"))
