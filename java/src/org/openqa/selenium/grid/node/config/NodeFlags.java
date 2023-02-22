@@ -86,9 +86,8 @@ public class NodeFlags implements HasRoles {
 
   @Parameter(
     names = {"--selenium-manager"}, arity = 1,
-    description = "When drivers are not available on the current system, fallback to, " +
-                  "Selenium Manager. Drivers will be downloaded the first time a session " +
-                  "request for the given browser is processed.")
+    description = "When drivers are not available on the current system, use, " +
+                  "Selenium Manager.")
   @ConfigValue(section = NODE_SECTION, name = "selenium-manager", example = "true")
   public Boolean useSeleniumManager = DEFAULT_USE_SELENIUM_MANAGER;
 
