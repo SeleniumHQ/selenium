@@ -1,3 +1,16 @@
+v4.8.1
+======
+* Supported CDP versions: 85, 108, 109, 110
+* Merge capabilities of slot with the new session request capabilities (#11369)
+* Keep track of pinned scripts per CDP session (#11598)
+* Simplify Augmentation for Basic Auth (#11601)
+* Print requested capabilities in SessionNotCreatedException (#11604)
+* Simplify Augmentation for Dom Mutation
+* Generate a Maven BOM (#11560)
+* Synchronize method to get Selenium Manager binary (fix #11620) (#11640)
+* Updating Selenium Manager binaries for 4.8.1 release
+* File downloads url - Adhere to w3c standards (#11646)
+
 v4.8.0
 ======
 * Supported CDP versions: 85, 107, 108, 109

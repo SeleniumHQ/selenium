@@ -23,6 +23,7 @@ require_relative 'log/base_log_entry'
 require_relative 'log/generic_log_entry'
 require_relative 'log/console_log_entry'
 require_relative 'log/javascript_log_entry'
+require_relative 'log/filter_by'
 
 module Selenium
   module WebDriver
@@ -49,43 +50,41 @@ module Selenium
           @bidi.session.subscribe('log.entryAdded', browsing_context_ids)
         end
 
-        def on_console_entry(&block)
-          enabled = log_listeners[:console].any?
-          log_listeners[:console] << block
-          return if enabled
+        def on_console_entry(filter_by = nil, &block)
+          check_valid_filter(filter_by)
 
           on_log do |params|
             type = params['type']
-            console_log_events(params) if type.eql?('console')
+            console_log_events(params, filter_by, &block) if type.eql?('console')
           end
         end
 
-        def on_javascript_log(&block)
-          enabled = log_listeners[:javascript].any?
-          log_listeners[:javascript] << block
-          return if enabled
+        def on_javascript_log(filter_by = nil, &block)
+          check_valid_filter(filter_by)
 
           on_log do |params|
             type = params['type']
-            javascript_log_events(params) if type.eql?('javascript')
+            javascript_log_events(params, filter_by, &block) if type.eql?('javascript')
           end
         end
 
         def on_javascript_exception(&block)
-          enabled = log_listeners[:js_exception].any?
-          log_listeners[:js_exception] << block
-          log_listeners[:javascript] << block
-          return if enabled
-
           on_log do |params|
             type = params['type']
-            level = params['level']
-
-            javascript_log_events(params) if type.eql?('javascript') && level.eql?(LOG_LEVEL[:ERROR])
+            javascript_log_events(params, FilterBy.log_level('error'), &block) if type.eql?('javascript')
           end
         end
 
-        def on_log(&block)
+        def on_log(filter_by = nil, &block)
+          unless filter_by.nil?
+            check_valid_filter(filter_by)
+
+            on(:entry_added) do |params|
+              yield(params) if params['level'] == filter_by.level
+            end
+            return
+          end
+
           on(:entry_added, &block)
         end
 
@@ -96,11 +95,13 @@ module Selenium
           @bidi.callbacks["log.#{event}"] << block
         end
 
-        def log_listeners
-          @log_listeners ||= Hash.new { |listeners, kind| listeners[kind] = [] }
+        def check_valid_filter(filter_by)
+          return if filter_by.nil? || filter_by.instance_of?(FilterBy)
+
+          raise "Pass valid FilterBy object. Received: #{filter_by.inspect}"
         end
 
-        def console_log_events(params)
+        def console_log_events(params, filter_by)
           event = ConsoleLogEntry.new(
             level: params['level'],
             text: params['text'],
@@ -111,12 +112,16 @@ module Selenium
             args: params['args'],
             stack_trace: params['stackTrace']
           )
-          log_listeners[:console].each do |listener|
-            listener.call(event)
+
+          unless filter_by.nil?
+            yield(event) if params['level'] == filter_by.level
+            return
           end
+
+          yield(event)
         end
 
-        def javascript_log_events(params)
+        def javascript_log_events(params, filter_by)
           event = JavascriptLogEntry.new(
             level: params['level'],
             text: params['text'],
@@ -124,15 +129,13 @@ module Selenium
             type: params['type'],
             stack_trace: params['stackTrace']
           )
-          log_listeners[:javascript].each do |listener|
-            listener.call(event)
+
+          unless filter_by.nil?
+            yield(event) if params['level'] == filter_by.level
+            return
           end
 
-          return unless params['level'].eql?(LOG_LEVEL[:ERROR])
-
-          log_listeners[:js_exception].each do |listener|
-            listener.call(event)
-          end
+          yield(event)
         end
       end # LogInspector
     end # Bidi

@@ -23,7 +23,6 @@ from selenium import webdriver
 
 
 def test_bad_proxy_doesnt_interfere():
-
     # these values should be ignored if ignore_local_proxy_environment_variables() is called.
     os.environ["https_proxy"] = "bad"
     os.environ["http_proxy"] = "bad"

@@ -156,9 +156,7 @@ module Selenium
                                       'callback(navigator.permissions.query({name: arguments[0]}));', name)['state']
         end
 
-        it 'can set single permissions', except: {
-          browser: :chrome, reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4335'
-        } do
+        it 'can set single permissions' do
           driver.navigate.to url_for('xhtmlTest.html')
 
           expect(get_permission('clipboard-read')).to eq('prompt')
@@ -173,9 +171,7 @@ module Selenium
           reset_driver!
         end
 
-        it 'can set multiple permissions', except: {
-          browser: :chrome, reason: 'https://bugs.chromium.org/p/chromedriver/issues/detail?id=4335'
-        } do
+        it 'can set multiple permissions' do
           driver.navigate.to url_for('xhtmlTest.html')
 
           expect(get_permission('clipboard-read')).to eq('prompt')

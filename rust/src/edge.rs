@@ -34,8 +34,8 @@ use crate::{
     REG_QUERY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
-const BROWSER_NAME: &str = "edge";
-const DRIVER_NAME: &str = "msedgedriver";
+pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
+pub const EDGEDRIVER_NAME: &str = "msedgedriver";
 const DRIVER_URL: &str = "https://msedgedriver.azureedge.net/";
 const LATEST_STABLE: &str = "LATEST_STABLE";
 const LATEST_RELEASE: &str = "LATEST_RELEASE";
@@ -51,8 +51,8 @@ pub struct EdgeManager {
 impl EdgeManager {
     pub fn new() -> Box<Self> {
         Box::new(EdgeManager {
-            browser_name: BROWSER_NAME,
-            driver_name: DRIVER_NAME,
+            browser_name: EDGE_NAMES[0],
+            driver_name: EDGEDRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),
             log: Logger::default(),

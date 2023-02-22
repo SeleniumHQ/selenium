@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+const RESPONSE_TIMEOUT = 1000 * 30
 class CDPConnection {
   constructor(wsConnection) {
     this._wsConnection = wsConnection
@@ -34,6 +35,42 @@ class CDPConnection {
 
     const mergedMessage = Object.assign({ params: params }, message)
     this._wsConnection.send(JSON.stringify(mergedMessage), callback)
+  }
+
+  async send(method, params) {
+    let cdp_id = this.cmd_id++
+    let message = {
+      method,
+      id: cdp_id,
+    }
+    if (this.sessionId) {
+      message['sessionId'] = this.sessionId
+    }
+
+    const mergedMessage = Object.assign({ params: params }, message)
+    this._wsConnection.send(JSON.stringify(mergedMessage))
+
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
+        reject(new Error(`Request with id ${cdp_id} timed out`))
+        handler.off('message', listener)
+      }, RESPONSE_TIMEOUT)
+
+      const listener = (data) => {
+        try {
+          const payload = JSON.parse(data.toString())
+          if (payload.id === cdp_id) {
+            clearTimeout(timeoutId)
+            handler.off('message', listener)
+            resolve(payload)
+          }
+        } catch (err) {
+          console.error(`Failed parse message: ${err.message}`)
+        }
+      }
+
+      const handler = this._wsConnection.on('message', listener)
+    })
   }
 }
 

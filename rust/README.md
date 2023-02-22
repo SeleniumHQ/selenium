@@ -22,9 +22,9 @@ Selenium Manager is a CLI tool that automatically manages the browser/driver inf
 Usage: selenium-manager [OPTIONS]
 Options:
   -b, --browser <BROWSER>
-          Browser name (chrome, firefox, edge, or iexplorer)
+          Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
   -d, --driver <DRIVER>
-          Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer)
+          Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
   -v, --driver-version <DRIVER_VERSION>
           Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
   -B, --browser-version <BROWSER_VERSION>
