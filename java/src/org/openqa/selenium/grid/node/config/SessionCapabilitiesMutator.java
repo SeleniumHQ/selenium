@@ -57,6 +57,9 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
     }
 
     String browserName = capabilities.getBrowserName().toLowerCase();
+    if (!BROWSER_OPTIONS.containsKey(browserName)) {
+      return capabilities;
+    }
     String options = BROWSER_OPTIONS.get(browserName);
     if (slotStereotype.asMap().containsKey(options) && capabilities.asMap().containsKey(options)) {
 
