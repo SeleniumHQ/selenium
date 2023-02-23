@@ -40,6 +40,7 @@ import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.remote.tracing.AttributeKey;
 import org.openqa.selenium.remote.tracing.EventAttribute;
@@ -128,6 +129,8 @@ public class DriverServiceSessionFactory implements SessionFactory {
                        EventAttribute.setValue(this.getClass().getName()));
 
       DriverService service = builder.build();
+      String path = DriverFinder.getPath(service, capabilities);
+      service.setExecutable(path);
       try {
         service.start();
 
