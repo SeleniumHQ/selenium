@@ -16,37 +16,36 @@ public class DriverFinder {
   }
 
     public static String getPath(DriverServiceInfo serviceInfo, Capabilities options) {
-    String exePath = serviceInfo.getDriverProperty();
+      String defaultPath = new ExecutableFinder().find(serviceInfo.getDriverName());
+      String exePath = System.getProperty(serviceInfo.getDriverProperty(), defaultPath);
 
-    if (exePath == null && serviceInfo.getDriverExecutable() != null) {
-      exePath = serviceInfo.getDriverExecutable().toString();
-    } else if (exePath == null) {
-      exePath = new ExecutableFinder().find(serviceInfo.getDriverName());
-    }
-
-    if (exePath == null) {
-      try {
-        if (options == null) {
-          exePath = SeleniumManager.getInstance().getDriverPath(serviceInfo.getDriverName());
-        } else {
-          exePath = SeleniumManager.getInstance().getDriverPath(options);
-        }
-      } catch (Exception e) {
-        LOG.warning(String.format("Unable to obtain %s using Selenium Manager: %s", serviceInfo.getDriverName(), e.getMessage()));
+      if (exePath == null && serviceInfo.getDriverExecutable() != null) {
+        exePath = serviceInfo.getDriverExecutable().getAbsolutePath();
       }
-    }
-    if (exePath != null && exePath.isEmpty()) {
-      exePath = null;
-    }
-    Require.state("The path to the driver executable", exePath).nonNull(
-      "Unable to locate the %s executable; for more information on how to install drivers, " +
+
+      if (exePath == null) {
+        try {
+          if (options == null) {
+            exePath = SeleniumManager.getInstance().getDriverPath(serviceInfo.getDriverName());
+          } else {
+            exePath = SeleniumManager.getInstance().getDriverPath(options);
+          }
+        } catch (Exception e) {
+          LOG.warning(String.format("Unable to obtain %s using Selenium Manager: %s",
+                                    serviceInfo.getDriverName(), e.getMessage()));
+        }
+      }
+
+      String validPath = Require.state("The path to the driver executable", exePath).nonNull(
+        "Unable to locate the %s executable; for more information on how to install drivers, " +
         "see https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/",
-      serviceInfo.getDriverName());
+        serviceInfo.getDriverName());
 
-    File exe = new File(exePath);
-    Require.state("The driver executable", exe).isFile();
-    Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
+      File exe = new File(validPath);
+      Require.state("The driver executable", exe).isFile();
+      Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
+      return validPath;
+    }
 
-    return exePath;
-  }
+
 }
