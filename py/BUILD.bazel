@@ -16,13 +16,13 @@ compile_pip_requirements(
     requirements_txt = ":requirements_lock.txt",
 )
 
-SE_VERSION = "4.8.0"
+SE_VERSION = "4.8.2"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v107",
     "v108",
     "v109",
+    "v110",
 ]
 
 TEST_DEPS = [
@@ -275,10 +275,10 @@ py_binary(
 
 [generate_devtools(
     name = "create-cdp-srcs-{}".format(devtools_version),
-    outdir = "selenium/webdriver/common/devtools/{}".format(devtools_version),
     browser_protocol = "//common/devtools/chromium/{}:browser_protocol".format(devtools_version),
     generator = ":generate",
     js_protocol = "//common/devtools/chromium/{}:js_protocol".format(devtools_version),
+    outdir = "selenium/webdriver/common/devtools/{}".format(devtools_version),
     protocol_version = devtools_version,
 ) for devtools_version in BROWSER_VERSIONS]
 

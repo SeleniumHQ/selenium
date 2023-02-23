@@ -1,3 +1,9 @@
+v4.8.1
+======
+* Add CDP files for v110 and remove v107
+* IJavascriptEngine implements IDisposable where available (#11594)
+* Updating Selenium Manager binaries for 4.8.1 release
+
 v4.8.0
 ======
 * Add CDP files for v109 and remove v106

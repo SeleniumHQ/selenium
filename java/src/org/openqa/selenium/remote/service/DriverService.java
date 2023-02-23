@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.remote.service;
 
-import static java.util.Collections.emptyMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -52,9 +48,12 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
+
 /**
  * Manages the life and death of a native executable driver server.
- *
  * It is expected that the driver server implements the
  * <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">WebDriver Wire Protocol</a>.
  * In particular, it should implement /status command that is used to check if the server is alive.
@@ -133,8 +132,7 @@ public class DriverService implements Closeable {
       String exeProperty,
       String exeDocs,
       String exeDownload) {
-    String defaultPath = new ExecutableFinder().find(exeName);
-    String exePath = System.getProperty(exeProperty, defaultPath);
+    String exePath = findExePath(exeName, exeProperty);
 
     if (exePath == null) {
       try {
@@ -142,19 +140,25 @@ public class DriverService implements Closeable {
         checkExecutable(new File(exePath));
       } catch (Exception e) {
         exePath = null;
-        LOG.warning(String.format("Unable to obtain driver using Selenium Manager: %s", e.getMessage()));
+        LOG.warning(
+          String.format("Unable to obtain driver using Selenium Manager: %s", e.getMessage()));
       }
     }
 
-    String validPath = Require.state("The path to the driver executable", exePath).nonNull(
-        "The path to the driver executable must be set by the %s system property;"
-            + " for more information, see %s. "
-            + "The latest version can be downloaded from %s",
-            exeProperty, exeDocs, exeDownload);
+    String validPath = Require.state("The path to the driver executable", exePath)
+      .nonNull("The path to the driver executable must be set by the %s system property;"
+               + " for more information, see %s. "
+               + "The latest version can be downloaded from %s",
+               exeProperty, exeDocs, exeDownload);
 
     File exe = new File(validPath);
     checkExecutable(exe);
     return exe;
+  }
+
+  protected static String findExePath(String exeName, String exeProperty) {
+    String defaultPath = new ExecutableFinder().find(exeName);
+    return System.getProperty(exeProperty, defaultPath);
   }
 
   protected static void checkExecutable(File exe) {
@@ -472,7 +476,8 @@ public class DriverService implements Closeable {
 
     protected abstract List<String> createArgs();
 
-    protected abstract DS createDriverService(File exe, int port, Duration timeout, List<String> args,
-        Map<String, String> environment);
+    protected abstract DS createDriverService(File exe, int port, Duration timeout,
+                                              List<String> args,
+                                              Map<String, String> environment);
   }
 }

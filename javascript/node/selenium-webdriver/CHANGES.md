@@ -1,3 +1,18 @@
+## v4.8.1
+
+#### :rocket: New Feature
+
+* Add script pinning (#11584)
+
+#### :nail_care: Polish
+
+* Add CDP support for v110 and remove v107
+* Updating Selenium Manager binaries for 4.8.1 release
+
+#### :bug: Bug Fix
+
+fix: iedriver download with selenium-manager #11579
+
 ## v4.8.0
 
 #### :rocket: New Feature

@@ -833,12 +833,12 @@ const wchar_t* const CLEAR[] = {
     L"lse a.value=\"\";pd(a,od);pd(a,nd);if(a=wc.document.body)Dd(a);else th",
     L"row new P(13,\"Cannot unfocus element after clearing.\");}else if(R(a,",
     L"\"INPUT\")&&a.getAttribute(\"type\")&&\"number\"==a.getAttribute(\"typ",
-    L"e\").toLowerCase())Dd(a),\na.value=\"\";else if(Vc(a))if(Dd(a),a.inner",
-    L"HTML=\"\",a=wc.document.body)Dd(a);else throw new P(13,\"Cannot unfocu",
-    L"s element after clearing.\");});; return this._.apply(null,arguments);",
-    L"}).apply({navigator:typeof window!='undefined'?window.navigator:null,d",
-    L"ocument:typeof window!='undefined'?window.document:null}, arguments);}",
-    L"\n",
+    L"e\").toLowerCase())Dd(a),\na.value=\"\";else if(Vc(a))if(Dd(a),a.textC",
+    L"ontent=\"\",a=wc.document.body)Dd(a);else throw new P(13,\"Cannot unfo",
+    L"cus element after clearing.\");});; return this._.apply(null,arguments",
+    L");}).apply({navigator:typeof window!='undefined'?window.navigator:null",
+    L",document:typeof window!='undefined'?window.document:null}, arguments)",
+    L";}\n",
     NULL
 };
 

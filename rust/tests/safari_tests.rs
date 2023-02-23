@@ -15,16 +15,17 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v107;
+use assert_cmd::Command;
+use std::env::consts::OS;
 
-import com.google.auto.service.AutoService;
+#[test]
+fn safari_test() {
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let safari_assert = cmd.args(["--browser", "safari"]).assert();
 
-import org.openqa.selenium.devtools.CdpInfo;
-
-@AutoService(CdpInfo.class)
-public class V107CdpInfo extends CdpInfo {
-
-  public V107CdpInfo() {
-    super(107, V107Domains::new);
-  }
+    if OS.eq("macos") {
+        safari_assert.success();
+    } else {
+        safari_assert.failure();
+    }
 }
