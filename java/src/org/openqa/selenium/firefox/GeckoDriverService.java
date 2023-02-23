@@ -111,7 +111,16 @@ public class GeckoDriverService extends FirefoxDriverService {
   }
 
   /**
+   * Checks if the browser driver binary is already present. Grid uses this method to show
+   * the available browsers and drivers, hence its visibility.
    *
+   * @return Whether the browser driver path was found.
+   */
+  static boolean isPresent() {
+    return findExePath("geckodriver", GECKO_DRIVER_EXE_PROPERTY) != null;
+  }
+
+  /**
    * @param caps Capabilities instance
    * @return default GeckoDriverService
    */

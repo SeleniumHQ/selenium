@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -31,6 +28,9 @@ import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
+
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class GeckoDriverInfo implements WebDriverInfo {
@@ -78,13 +78,18 @@ public class GeckoDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isPresent() {
+    return GeckoDriverService.isPresent();
+  }
+
+  @Override
   public int getMaximumSimultaneousSessions() {
     return Runtime.getRuntime().availableProcessors();
   }
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

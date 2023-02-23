@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.remote.service;
 
-import static java.util.Collections.emptyMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -30,6 +26,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.Closeable;
 import java.io.File;
@@ -50,9 +47,12 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
+
 /**
  * Manages the life and death of a native executable driver server.
- *
  * It is expected that the driver server implements the
  * <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">WebDriver Wire Protocol</a>.
  * In particular, it should implement /status command that is used to check if the server is alive.
@@ -123,19 +123,24 @@ public class DriverService implements Closeable, DriverServiceInfo {
   }
 
   public void setExecutable(String executable) {
-   this.executable = executable;
+    this.executable = executable;
   }
 
+  protected static String findExePath(String exeName, String exeProperty) {
+    String defaultPath = new ExecutableFinder().find(exeName);
+    return System.getProperty(exeProperty, defaultPath);
+  }
+  
   protected List<String> getArgs() {
     return args;
   }
 
   protected Map<String, String> getEnvironment() {
-   return environment;
- }
+    return environment;
+  }
 
   protected URL getUrl(int port) throws IOException {
-   return new URL(String.format("http://localhost:%d", port));
+    return new URL(String.format("http://localhost:%d", port));
  }
 
   /**
@@ -429,7 +434,8 @@ public class DriverService implements Closeable, DriverServiceInfo {
 
     protected abstract List<String> createArgs();
 
-    protected abstract DS createDriverService(File exe, int port, Duration timeout, List<String> args,
-        Map<String, String> environment);
+    protected abstract DS createDriverService(File exe, int port, Duration timeout,
+                                              List<String> args,
+                                              Map<String, String> environment);
   }
 }

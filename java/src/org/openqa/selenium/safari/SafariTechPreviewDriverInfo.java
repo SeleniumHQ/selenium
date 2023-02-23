@@ -79,6 +79,11 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isPresent() {
+    return SafariTechPreviewDriverService.isPresent();
+  }
+
+  @Override
   public int getMaximumSimultaneousSessions() {
     return 1;
   }

@@ -170,10 +170,21 @@ public class ChromeDriverService extends DriverService {
   @Deprecated
   public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
     ChromeDriverLogLevel oldLevel = options.getLogLevel();
-    ChromiumDriverLogLevel level = (oldLevel == null) ? null : ChromiumDriverLogLevel.fromString(oldLevel.toString());
+    ChromiumDriverLogLevel level = (oldLevel == null) ? null :
+                                   ChromiumDriverLogLevel.fromString(oldLevel.toString());
     return new Builder()
       .withLogLevel(level)
       .build();
+  }
+
+  /**
+   * Checks if the browser driver binary is already present. Grid uses this method to show
+   * the available browsers and drivers, hence its visibility.
+   *
+   * @return Whether the browser driver path was found.
+   */
+  static boolean isPresent() {
+    return findExePath("chromedriver", CHROME_DRIVER_EXE_PROPERTY) != null;
   }
 
   /**
@@ -181,7 +192,7 @@ public class ChromeDriverService extends DriverService {
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
-      ChromeDriverService, ChromeDriverService.Builder> {
+    ChromeDriverService, ChromeDriverService.Builder> {
 
     private boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
     private boolean readableTimestamp = Boolean.getBoolean(CHROME_DRIVER_READABLE_TIMESTAMP);
@@ -189,8 +200,10 @@ public class ChromeDriverService extends DriverService {
     private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
     private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
-      System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
-    private ChromiumDriverLogLevel logLevel = ChromiumDriverLogLevel.fromString(System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY));
+                                                       System.getProperty(
+                                                         CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
+    private ChromiumDriverLogLevel logLevel = ChromiumDriverLogLevel
+      .fromString(System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY));
 
     @Override
     public int score(Capabilities capabilities) {

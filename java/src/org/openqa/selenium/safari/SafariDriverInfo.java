@@ -78,13 +78,18 @@ public class SafariDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isPresent() {
+    return SafariDriverService.isPresent();
+  }
+
+  @Override
   public int getMaximumSimultaneousSessions() {
     return 1;
   }
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

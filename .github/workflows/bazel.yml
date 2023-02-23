@@ -51,6 +51,9 @@ jobs:
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v3
+      - name: Free space
+        if: inputs.os != 'windows'
+        run: ./scripts/github-actions/free-disk-space.sh
       - name: Set Ruby version
         if: inputs.ruby-version != ''
         run: echo 'RUBY_VERSION = "${{ inputs.ruby-version }}"' > rb/ruby_version.bzl
