@@ -73,6 +73,7 @@ public class DevTools implements Closeable {
         // Exceptions should not prevent closing the connection and the web driver
         log.warning("Exception while detaching from target: " + e.getMessage());
       }
+      cdpSession = null;
     }
   }
 
@@ -118,6 +119,9 @@ public class DevTools implements Closeable {
    * @param windowHandle result of {@link WebDriver#getWindowHandle()}, optional.
    */
   public void createSession(String windowHandle) {
+    if (connection.isClosed()) {
+      connection.reopen();
+    }
     TargetID targetId = findTarget(windowHandle);
 
     // Starts the session
