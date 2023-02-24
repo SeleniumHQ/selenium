@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -48,6 +46,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 class RemoteWebDriverBiDiTest {
 
   @Test
@@ -58,6 +58,7 @@ class RemoteWebDriverBiDiTest {
       browser.getCapabilities(),
       new TomlConfig(new StringReader(
         "[node]\n" +
+        "selenium-manager = true\n" +
         "driver-implementation = " + browser.displayName())));
 
     FirefoxOptions options = new FirefoxOptions();
@@ -83,6 +84,7 @@ class RemoteWebDriverBiDiTest {
       browser.getCapabilities(),
       new TomlConfig(new StringReader(
         "[node]\n" +
+        "selenium-manager = true\n" +
         "driver-implementation = " + browser.displayName())));
 
     FirefoxOptions options = new FirefoxOptions();
@@ -123,6 +125,7 @@ class RemoteWebDriverBiDiTest {
       browser.getCapabilities(),
       new TomlConfig(new StringReader(
         "[node]\n" +
+        "selenium-manager = true\n" +
         "driver-implementation = " + browser.displayName())));
 
     FirefoxOptions options = new FirefoxOptions();
