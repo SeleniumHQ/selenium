@@ -75,13 +75,18 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isPresent() {
+    return InternetExplorerDriverService.isPresent();
+  }
+
+  @Override
   public int getMaximumSimultaneousSessions() {
     return 1;
   }
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

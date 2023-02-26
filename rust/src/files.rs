@@ -30,7 +30,9 @@ use tar::Archive;
 use zip::ZipArchive;
 
 use crate::config::OS::WINDOWS;
+use crate::Logger;
 
+pub const PARSE_ERROR: &str = "Wrong browser/driver version";
 const CACHE_FOLDER: &str = ".cache/selenium";
 const ZIP: &str = "zip";
 const GZ: &str = "gz";
@@ -57,20 +59,24 @@ pub fn create_path_if_not_exists(path: &Path) {
     }
 }
 
-pub fn uncompress(compressed_file: &String, target: PathBuf) -> Result<(), Box<dyn Error>> {
+pub fn uncompress(
+    compressed_file: &String,
+    target: PathBuf,
+    log: &Logger,
+) -> Result<(), Box<dyn Error>> {
     let file = File::open(compressed_file)?;
     let kind = infer::get_from_path(compressed_file)?
         .ok_or(format!("Format for file {:?} cannot be inferred", file))?;
     let extension = kind.extension();
-    log::trace!(
+    log.trace(format!(
         "The detected extension of the compressed file is {}",
         extension
-    );
+    ));
 
     if extension.eq_ignore_ascii_case(ZIP) {
-        unzip(file, target)?
+        unzip(file, target, log)?
     } else if extension.eq_ignore_ascii_case(GZ) {
-        untargz(file, target)?
+        untargz(file, target, log)?
     } else if extension.eq_ignore_ascii_case(XML) {
         return Err("Wrong browser/driver version".into());
     } else {
@@ -83,8 +89,8 @@ pub fn uncompress(compressed_file: &String, target: PathBuf) -> Result<(), Box<d
     Ok(())
 }
 
-pub fn untargz(file: File, target: PathBuf) -> Result<(), Box<dyn Error>> {
-    log::trace!("Untargz file to {}", target.display());
+pub fn untargz(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn Error>> {
+    log.trace(format!("Untargz file to {}", target.display()));
     let tar = GzDecoder::new(&file);
     let mut archive = Archive::new(tar);
     let parent_path = target
@@ -96,8 +102,8 @@ pub fn untargz(file: File, target: PathBuf) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-pub fn unzip(file: File, target: PathBuf) -> Result<(), Box<dyn Error>> {
-    log::trace!("Unzipping file to {}", target.display());
+pub fn unzip(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn Error>> {
+    log.trace(format!("Unzipping file to {}", target.display()));
     let mut archive = ZipArchive::new(file)?;
 
     for i in 0..archive.len() {
@@ -107,11 +113,11 @@ pub fn unzip(file: File, target: PathBuf) -> Result<(), Box<dyn Error>> {
         }
         let target_file_name = target.file_name().unwrap().to_str().unwrap();
         if target_file_name.eq_ignore_ascii_case(file.name()) {
-            log::debug!(
+            log.debug(format!(
                 "File extracted to {} ({} bytes)",
                 target.display(),
                 file.size()
-            );
+            ));
             if let Some(p) = target.parent() {
                 create_path_if_not_exists(p);
             }
@@ -175,8 +181,16 @@ pub fn get_binary_extension(os: &str) -> &str {
 
 pub fn parse_version(version_text: String) -> Result<String, Box<dyn Error>> {
     if version_text.to_ascii_lowercase().contains("error") {
-        return Err("Wrong browser/driver version".into());
+        return Err(PARSE_ERROR.into());
     }
-    let re = Regex::new(r"[^\d^.]").unwrap();
-    Ok(re.replace_all(&version_text, "").to_string())
+    let mut parsed_version = "".to_string();
+    let re_numbers_dots = Regex::new(r"[^\d^.]")?;
+    let re_versions = Regex::new(r"(?:(\d+)\.)?(?:(\d+)\.)?(?:(\d+)\.\d+)")?;
+    for token in version_text.split(' ') {
+        parsed_version = re_numbers_dots.replace_all(token, "").to_string();
+        if re_versions.is_match(parsed_version.as_str()) {
+            break;
+        }
+    }
+    Ok(parsed_version)
 }

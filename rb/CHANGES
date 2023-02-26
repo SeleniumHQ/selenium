@@ -1,4 +1,16 @@
-4.8.0 (Unreleased)
+4.8.1 (2023-02-17)
+=========================
+Ruby:
+  * Fix autoload of WebDriver::Remote::Bridge::COMMANDS
+  * Subclass is setting value before the superclass is setting it to nil
+  * Updating Selenium Manager binaries for 4.8.1 release
+
+BiDi:
+  * Released selenium-devtools 0.110.0 (supports CDP v85, v108, v109, v110)
+  * Close BiDi session on closing the last top-level browsing context
+  * Add filtering capability to LogInspector
+
+4.8.0 (2023-01-23)
 =========================
 Ruby:
   * Allow updating instance variables on service classes

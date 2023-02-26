@@ -209,12 +209,11 @@ class Service(ABC):
                 raise WebDriverException(
                     f"'{os.path.basename(self.path)}' executable needs to be in PATH. {self.start_error_message}"
                 )
-            elif err.errno == errno.EACCES:
+            if err.errno == errno.EACCES:
                 raise WebDriverException(
                     f"'{os.path.basename(self.path)}' executable may have wrong permissions. {self.start_error_message}"
                 )
-            else:
-                raise
+            raise
         except Exception as e:
             raise WebDriverException(
                 f"The executable {os.path.basename(self.path)} needs to be available in the path. {self.start_error_message}\n{str(e)}"

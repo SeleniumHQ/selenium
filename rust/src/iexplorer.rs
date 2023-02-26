@@ -24,14 +24,20 @@ use std::path::PathBuf;
 use crate::downloads::read_redirect_from_link;
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
-use crate::{create_default_http_client, SeleniumManager};
+use crate::{create_default_http_client, Logger, SeleniumManager};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 
-const BROWSER_NAME: &str = "iexplorer";
-const DRIVER_NAME: &str = "IEDriverServer";
+pub const IE_NAMES: &[&str] = &[
+    "iexplorer",
+    "ie",
+    "internetexplorer",
+    "internet-explorer",
+    "internet_explorer",
+];
+pub const IEDRIVER_NAME: &str = "IEDriverServer";
 const DRIVER_URL: &str = "https://github.com/SeleniumHQ/selenium/releases/";
 const LATEST_RELEASE: &str = "latest";
 
@@ -40,15 +46,17 @@ pub struct IExplorerManager {
     pub driver_name: &'static str,
     pub config: ManagerConfig,
     pub http_client: Client,
+    pub log: Logger,
 }
 
 impl IExplorerManager {
     pub fn new() -> Box<Self> {
         Box::new(IExplorerManager {
-            browser_name: BROWSER_NAME,
-            driver_name: DRIVER_NAME,
+            browser_name: IE_NAMES[0],
+            driver_name: IEDRIVER_NAME,
             config: ManagerConfig::default(),
             http_client: create_default_http_client(),
+            log: Logger::default(),
         })
     }
 }
@@ -60,6 +68,10 @@ impl SeleniumManager for IExplorerManager {
 
     fn get_http_client(&self) -> &Client {
         &self.http_client
+    }
+
+    fn set_http_client(&mut self, http_client: Client) {
+        self.http_client = http_client;
     }
 
     fn get_browser_path_map(&self) -> HashMap<BrowserPath, &str> {
@@ -76,15 +88,15 @@ impl SeleniumManager for IExplorerManager {
 
     fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
         let browser_version = self.get_browser_version();
-        let mut metadata = get_metadata();
+        let mut metadata = get_metadata(self.get_logger());
 
         match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
         {
             Some(driver_version) => {
-                log::trace!(
+                self.log.trace(format!(
                     "Driver TTL is valid. Getting {} version from metadata",
                     &self.driver_name
-                );
+                ));
                 Ok(driver_version)
             }
             _ => {
@@ -97,7 +109,7 @@ impl SeleniumManager for IExplorerManager {
                         self.driver_name,
                         &driver_version,
                     ));
-                    write_metadata(&metadata);
+                    write_metadata(&metadata, self.get_logger());
                 }
 
                 Ok(driver_version)
@@ -129,5 +141,13 @@ impl SeleniumManager for IExplorerManager {
 
     fn set_config(&mut self, config: ManagerConfig) {
         self.config = config;
+    }
+
+    fn get_logger(&self) -> &Logger {
+        &self.log
+    }
+
+    fn set_logger(&mut self, log: Logger) {
+        self.log = log;
     }
 }

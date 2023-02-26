@@ -147,7 +147,7 @@ public class RemoteWebDriver implements WebDriver,
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
     this.executor = Require.nonNull("Command executor", executor);
-    capabilities = init(capabilities);
+    this.capabilities = init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs) executor).setLocalLogs(localLogs);

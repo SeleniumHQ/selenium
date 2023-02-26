@@ -73,13 +73,18 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
   }
 
   @Override
+  public boolean isPresent() {
+    return EdgeDriverService.isPresent();
+  }
+
+  @Override
   public int getMaximumSimultaneousSessions() {
     return Runtime.getRuntime().availableProcessors();
   }
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }

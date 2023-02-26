@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.gridui;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -112,7 +113,8 @@ class OverallGridTest {
     Config config = new MemoizedConfig(
       new MapConfig(ImmutableMap.of(
         "server", Collections.singletonMap("port", port),
-        "node", Collections.singletonMap("detect-drivers", true))));
+        "node", ImmutableMap.of("detect-drivers", true, "selenium-manager", true)
+      )));
 
     Server<?> server = new Standalone().asServer(config).start();
 

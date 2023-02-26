@@ -406,7 +406,7 @@ function createServiceFromCapabilities(capabilities) {
     )
 
     try {
-      exe = driverLocation(Browser.INTERNET_EXPLORER)
+      exe = driverLocation('iexplorer')
     } catch (err) {
       console.log(`Unable to obtain driver using Selenium Manager: ${err}`)
     }

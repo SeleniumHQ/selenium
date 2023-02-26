@@ -326,7 +326,6 @@ class RemoteConnection:
             if response.headers.get("Content-Type", None):
                 content_type = response.headers.get("Content-Type", None).split(";")
             if not any([x.startswith("image/png") for x in content_type]):
-
                 try:
                     data = utils.load_json(data.strip())
                 except ValueError:

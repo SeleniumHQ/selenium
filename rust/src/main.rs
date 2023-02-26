@@ -16,18 +16,15 @@
 // under the License.
 
 use std::error::Error;
-use std::io::Write;
+
 use std::process::exit;
 
 use clap::Parser;
-use env_logger::fmt::Color;
-use env_logger::Target::Stdout;
-use exitcode::DATAERR;
-use Color::{Blue, Cyan, Green, Red, Yellow};
 
-use log::Level;
-use log::LevelFilter::{Debug, Info, Trace};
+use exitcode::{DATAERR, UNAVAILABLE};
 
+use selenium_manager::logger::Logger;
+use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
@@ -40,11 +37,11 @@ use selenium_manager::{
 {usage-heading} {usage}
 {all-args}")]
 struct Cli {
-    /// Browser name (chrome, firefox, edge, or iexplorer)
+    /// Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
     #[clap(short, long, value_parser)]
     browser: Option<String>,
 
-    /// Driver name (chromedriver, geckodriver, msedgedriver, or IEDriverServer)
+    /// Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
     #[clap(short, long, value_parser)]
     driver: Option<String>,
 
@@ -62,6 +59,18 @@ struct Cli {
     #[clap(short = 'P', long, value_parser)]
     browser_path: Option<String>,
 
+    /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
+    #[clap(short = 'O', long, value_parser, default_value = "LOGGER")]
+    output: String,
+
+    /// HTTP proxy for network connection (e.g., https://myproxy.net:8080)
+    #[clap(short = 'p', long, value_parser)]
+    proxy: Option<String>,
+
+    /// Timeout for network requests (in seconds)
+    #[clap(short = 't', long, value_parser, default_value_t = REQUEST_TIMEOUT_SEC)]
+    timeout: u64,
+
     /// Display DEBUG messages
     #[clap(short = 'D', long)]
     debug: bool,
@@ -77,10 +86,10 @@ struct Cli {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
-    setup_logging(&cli);
+    let log = Logger::create(cli.output, cli.debug, cli.trace);
 
     if cli.clear_cache {
-        clear_cache();
+        clear_cache(&log);
     }
 
     let browser_name: String = cli.browser.unwrap_or_default();
@@ -88,61 +97,59 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut selenium_manager: Box<dyn SeleniumManager> = if !browser_name.is_empty() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
-            log::error!("{}", err);
+            log.error(err);
+            flush_and_exit(DATAERR, &log);
             exit(DATAERR);
         })
     } else if !driver_name.is_empty() {
         get_manager_by_driver(driver_name).unwrap_or_else(|err| {
-            log::error!("{}", err);
+            log.error(err);
+            flush_and_exit(DATAERR, &log);
             exit(DATAERR);
         })
     } else {
-        log::error!("You need to specify a browser or driver");
+        log.error("You need to specify a browser or driver".to_string());
+        flush_and_exit(DATAERR, &log);
         exit(DATAERR);
     };
 
+    selenium_manager.set_logger(log);
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    match selenium_manager.set_timeout(cli.timeout) {
+        Ok(_) => {}
+        Err(err) => {
+            selenium_manager.get_logger().error(err.to_string());
+            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
+        }
+    }
+    match selenium_manager.set_proxy(cli.proxy.unwrap_or_default()) {
+        Ok(_) => {}
+        Err(err) => {
+            selenium_manager.get_logger().error(err.to_string());
+            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
+        }
+    }
 
     match selenium_manager.resolve_driver() {
-        Ok(driver_path) => log::info!("{}", driver_path.display()),
+        Ok(driver_path) => {
+            selenium_manager
+                .get_logger()
+                .info(driver_path.display().to_string());
+            flush_and_exit(0, selenium_manager.get_logger());
+        }
         Err(err) => {
-            log::error!("{}", err);
-            exit(DATAERR);
+            selenium_manager.get_logger().error(err.to_string());
+            flush_and_exit(DATAERR, selenium_manager.get_logger());
         }
     };
 
     Ok(())
 }
 
-fn setup_logging(cli: &Cli) {
-    let mut filter = match cli.debug {
-        true => Debug,
-        false => Info,
-    };
-    if cli.trace {
-        filter = Trace
-    }
-
-    env_logger::Builder::new()
-        .filter_level(filter)
-        .target(Stdout)
-        .format(|buf, record| {
-            let mut level_style = buf.style();
-            match record.level() {
-                Level::Trace => level_style.set_color(Cyan),
-                Level::Debug => level_style.set_color(Blue),
-                Level::Info => level_style.set_color(Green),
-                Level::Warn => level_style.set_color(Yellow),
-                Level::Error => level_style.set_color(Red).set_bold(true),
-            };
-            writeln!(
-                buf,
-                "{}\t{}",
-                level_style.value(record.level()),
-                record.args()
-            )
-        })
-        .init();
+fn flush_and_exit(code: i32, log: &Logger) {
+    log.set_code(code);
+    log.flush();
+    exit(code);
 }

@@ -10,53 +10,53 @@ def pin_browsers():
 
     http_archive(
         name = "linux_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/108.0.2/linux-x86_64/en-US/firefox-108.0.2.tar.bz2",
-        sha256 = "d283f522ec219ac78b66909f3c12431ecdbb4fc8ff5c1250e2e6f057b6482e23",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/109.0.1/linux-x86_64/en-US/firefox-109.0.1.tar.bz2",
+        sha256 = "487a18ecbb0b3b91e402b55424f429d2e4e6127696ee48bb0e60ce7f9879d581",
         build_file_content = "exports_files([\"firefox\"])",
     )
 
     dmg_archive(
         name = "mac_firefox",
-        url = "https://ftp.mozilla.org/pub/firefox/releases/108.0.2/mac/en-US/Firefox%20108.0.2.dmg",
-        sha256 = "0cbfb19ac25d72caa048171cb3a6f936cc8447fb7ea45188dbec029184e53052",
+        url = "https://ftp.mozilla.org/pub/firefox/releases/109.0.1/mac/en-US/Firefox%20109.0.1.dmg",
+        sha256 = "4d69f1675824ff317710d4eadb8ca875573c29692247f398e23bc7a4d31159ba",
         build_file_content = "exports_files([\"Firefox.app\"])",
     )
 
     http_archive(
         name = "linux_geckodriver",
-        url = "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz",
-        sha256 = "c33054fda83b8d3275c87472dd005a9f70372e9338c2df2665d8cfeb923e67ba",
+        url = "https://github.com/mozilla/geckodriver/releases/download/v0.32.1/geckodriver-v0.32.1-linux64.tar.gz",
+        sha256 = "8059f4b4e0bc62dac0c26d020948e92918a8425c382585a19aa50fe3c8284fa8",
         build_file_content = "exports_files([\"geckodriver\"])",
     )
 
     http_archive(
         name = "mac_geckodriver",
-        url = "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-macos.tar.gz",
-        sha256 = "8c5bef0690de88a36ef94d07c71c7d7725b115b147d348b56cfae5f3c56bc8a1",
+        url = "https://github.com/mozilla/geckodriver/releases/download/v0.32.1/geckodriver-v0.32.1-macos.tar.gz",
+        sha256 = "09883777f88e4f40aeebc6bd8eed75197ea80cff3f89c41a69455e0bc1b92536",
         build_file_content = "exports_files([\"geckodriver\"])",
     )
 
     pkg_archive(
         name = "mac_edge",
-        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-108.0.1462.76.pkg?platform=Mac&Consent=0&channel=Stable",
-        sha256 = "271f5f770c47a3bfa82124d1a328a33bd1a3d4695a8aca453afd46bc741fa88a",
+        url = "https://officecdn-microsoft-com.akamaized.net/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/MicrosoftEdge-109.0.1518.78.pkg?platform=Mac&Consent=0&channel=Stable",
+        sha256 = "a5d59232a411f0d90fe080f739cd2cc14bc5bcea02d86250f9d5df84e32dd162",
         move = {
-            "MicrosoftEdge-108.0.1462.76.pkg/Payload/Microsoft Edge.app": "Edge.app",
+            "MicrosoftEdge-109.0.1518.78.pkg/Payload/Microsoft Edge.app": "Edge.app",
         },
         build_file_content = "exports_files([\"Edge.app\"])",
     )
 
     http_archive(
         name = "linux_edgedriver",
-        url = "https://msedgedriver.azureedge.net/108.0.1462.76/edgedriver_linux64.zip",
-        sha256 = "77d5cc4f315691551f50d46f76dedfc0526598f1118498dac9be01c49a745504",
+        url = "https://msedgedriver.azureedge.net/109.0.1518.78/edgedriver_linux64.zip",
+        sha256 = "7492b69802cd52a0d1cc36752fa2aa87122757473b61567b716e0ed5e18431da",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 
     http_archive(
         name = "mac_edgedriver",
-        url = "https://msedgedriver.azureedge.net/108.0.1462.76/edgedriver_mac64.zip",
-        sha256 = "242e0455c7edaef6e8f39729d496e840db7bc9b73816d6c9c63dfac1c8064efd",
+        url = "https://msedgedriver.azureedge.net/109.0.1518.78/edgedriver_mac64.zip",
+        sha256 = "3235c877f1665487437ca5990d8519e7e30439e8e7b39b22b5d4975e6ba295c8",
         build_file_content = "exports_files([\"msedgedriver\"])",
     )
 

@@ -66,12 +66,23 @@ public class SafariTechPreviewDriverService extends DriverService {
     List<String> args,
     Map<String, String> environment) throws IOException {
     super(executable, port, timeout,
-      unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+          unmodifiableList(new ArrayList<>(args)),
+          unmodifiableMap(new HashMap<>(environment)));
   }
 
   public static SafariTechPreviewDriverService createDefaultService() {
     return new Builder().build();
+  }
+
+  /**
+   * Checks if the browser driver binary is available. Grid uses this method to show
+   * the available browsers and drivers, hence its visibility.
+   *
+   * @return Whether the browser driver path was found.
+   */
+  static boolean isPresent() {
+    return findExePath(TP_SAFARI_DRIVER_EXECUTABLE.getAbsolutePath(),
+                       TP_SAFARI_DRIVER_EXE_PROPERTY) != null;
   }
 
   @Override

@@ -15,16 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v107;
+use assert_cmd::Command;
 
-import com.google.auto.service.AutoService;
+use exitcode::DATAERR;
 
-import org.openqa.selenium.devtools.CdpInfo;
-
-@AutoService(CdpInfo.class)
-public class V107CdpInfo extends CdpInfo {
-
-  public V107CdpInfo() {
-    super(107, V107Domains::new);
-  }
+#[test]
+fn timeout_proxy_test() {
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    cmd.args([
+        "--clear-cache",
+        "--debug",
+        "--browser",
+        "edge",
+        "--timeout",
+        "0",
+    ])
+    .assert()
+    .failure()
+    .code(DATAERR);
 }

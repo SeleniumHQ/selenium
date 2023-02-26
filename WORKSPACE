@@ -96,10 +96,6 @@ rules_proto_dependencies()
 
 rules_proto_toolchains()
 
-RULES_JVM_EXTERNAL_TAG = "4.5"
-
-RULES_JVM_EXTERNAL_SHA = "b17d7388feb9bfa7f2fa09031b32707df529f26c91ab9e5d909eb1676badd9a6"
-
 http_archive(
     name = "rules_jvm_external",
     patch_args = [
@@ -107,11 +103,10 @@ http_archive(
     ],
     patches = [
         "//java:rules_jvm_external_javadoc.patch",
-        "//java:add_missing_dirs.patch",
     ],
-    sha256 = RULES_JVM_EXTERNAL_SHA,
-    strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
-    url = "https://github.com/bazelbuild/rules_jvm_external/archive/refs/tags/%s.zip" % RULES_JVM_EXTERNAL_TAG,
+    sha256 = "b6a142dd4ac191d64c855463d4d3de30a7efd629cc65065a833865e34c261b74",
+    strip_prefix = "rules_jvm_external-cf8286d9b137ab36b89fc6654ce3e6fe48923778",
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/cf8286d9b137ab36b89fc6654ce3e6fe48923778.zip",
 )
 
 load("@rules_jvm_external//:repositories.bzl", "rules_jvm_external_deps")
@@ -229,12 +224,6 @@ rules_closure_toolchains()
 
 http_archive(
     name = "rules_pkg",
-    patch_args = [
-        "-p1",
-    ],
-    patches = [
-        "//py:rules_pkg_tree.patch",
-    ],
     sha256 = "eea0f59c28a9241156a47d7a8e32db9122f3d50b505fae0f33de6ce4d9b61834",
     urls = [
         "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.8.0/rules_pkg-0.8.0.tar.gz",

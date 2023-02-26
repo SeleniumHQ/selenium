@@ -16,6 +16,7 @@
 // under the License.
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
+use crate::REQUEST_TIMEOUT_SEC;
 use std::env::consts::{ARCH, OS};
 
 pub struct ManagerConfig {
@@ -24,6 +25,8 @@ pub struct ManagerConfig {
     pub os: String,
     pub arch: String,
     pub browser_path: String,
+    pub proxy: String,
+    pub timeout: u64,
 }
 
 impl ManagerConfig {
@@ -34,6 +37,8 @@ impl ManagerConfig {
             os: OS.to_string(),
             arch: ARCH.to_string(),
             browser_path: "".to_string(),
+            proxy: "".to_string(),
+            timeout: REQUEST_TIMEOUT_SEC,
         }
     }
 
@@ -45,6 +50,8 @@ impl ManagerConfig {
             os: config.os.as_str().to_string(),
             arch: config.arch.as_str().to_string(),
             browser_path: config.browser_path.as_str().to_string(),
+            proxy: config.proxy.as_str().to_string(),
+            timeout: config.timeout,
         }
     }
 }

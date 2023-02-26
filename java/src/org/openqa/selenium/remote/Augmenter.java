@@ -26,16 +26,19 @@ import net.bytebuddy.implementation.MethodDelegation;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.HasAuthentication;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.remote.html5.AddWebStorage;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -158,6 +161,12 @@ public class Augmenter {
       .filter(augmentation -> augmentation.whenMatches.test(caps))
       .collect(Collectors.toList());
 
+    return this.augment(driver, matchingAugmenters);
+  }
+
+  private WebDriver augment(WebDriver driver, List<Augmentation<?>> matchingAugmenters) {
+    Capabilities caps = ImmutableCapabilities.copyOf(((HasCapabilities) driver).getCapabilities());
+
     if (matchingAugmenters.isEmpty()) {
       return driver;
     }
@@ -193,10 +202,38 @@ public class Augmenter {
 
       copyFields(driver.getClass(), driver, toReturn);
 
+      toReturn = addDependentAugmentations(toReturn);
+
       return toReturn;
     } catch (ReflectiveOperationException e) {
       throw new IllegalStateException("Unable to create new proxy", e);
     }
+  }
+
+  private WebDriver addDependentAugmentations(WebDriver driver) {
+    List<Augmentation<?>> augmentationList = new ArrayList<>();
+
+    WebDriver toReturn = driver;
+
+    // add interfaces that need to use the augmented driver
+    if (!(driver instanceof HasAuthentication)) {
+      augmentationList.add(createAugmentation(new AddHasAuthentication()));
+    }
+
+    if (!(driver instanceof HasLogEvents)) {
+      augmentationList.add(createAugmentation(new AddHasLogEvents()));
+    }
+
+    if (!augmentationList.isEmpty()) {
+      Capabilities caps = ImmutableCapabilities.copyOf(((HasCapabilities) driver).getCapabilities());
+
+      List<Augmentation<?>> matchingAugmenters = augmentationList.stream()
+        .filter(augmentation -> augmentation.whenMatches.test(caps))
+        .collect(Collectors.toList());
+
+      toReturn = this.augment(driver, matchingAugmenters);
+    }
+    return toReturn;
   }
 
   private RemoteWebDriver extractRemoteWebDriver(WebDriver driver) {

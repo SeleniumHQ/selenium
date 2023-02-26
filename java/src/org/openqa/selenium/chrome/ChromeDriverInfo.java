@@ -72,8 +72,13 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
   }
 
   @Override
+  public boolean isPresent() {
+    return ChromeDriverService.isPresent();
+  }
+
+  @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }
