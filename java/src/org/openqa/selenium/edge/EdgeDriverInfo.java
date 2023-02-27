@@ -25,6 +25,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chromium.ChromiumDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
@@ -65,7 +66,7 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      EdgeDriverService.createDefaultService();
+      DriverFinder.getPath(EdgeDriverService.createDefaultService());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

@@ -26,6 +26,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -51,9 +52,19 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
-    super(new EdgeDriverCommandExecutor(service), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
+    super(generateExecutor(service, options), options, EdgeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
+  private static EdgeDriverCommandExecutor generateExecutor(EdgeDriverService service, EdgeOptions options) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    if (service.getExecutable() == null) {
+      String path = DriverFinder.getPath(service, options);
+      service.setExecutable(path);
+    }
+    return new EdgeDriverCommandExecutor(service);
   }
 
   @Beta

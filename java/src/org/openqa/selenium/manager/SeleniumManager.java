@@ -19,6 +19,7 @@ package org.openqa.selenium.manager;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
 import org.openqa.selenium.Beta;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
 
@@ -30,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -111,7 +113,8 @@ public class SeleniumManager {
                     "\n" + output);
         }
 
-        return output.replace(INFO, "").trim();
+        String[] lines = output.split("\n");
+        return lines[lines.length -1].replace(INFO, "").trim();
     }
 
     /**
@@ -149,21 +152,27 @@ public class SeleniumManager {
 
     /**
      * Determines the location of the correct driver.
-     *
-     * @param driverName which driver the service needs.
+     * @param options Browser Options instance.
      * @return the location of the driver.
      */
-    public String getDriverPath(String driverName) {
-        if (!ImmutableList.of("geckodriver", "chromedriver", "msedgedriver", "IEDriverServer").contains(driverName)) {
-            throw new WebDriverException("Unable to locate driver with name: " + driverName);
-        }
-
-        String driverPath = null;
+    public String getDriverPath(Capabilities options) {
         File binaryFile = getBinary();
-        if (binaryFile != null) {
-            driverPath = runCommand(binaryFile.getAbsolutePath(),
-                    "--driver", driverName.replaceAll(EXE, ""));
+        if(binaryFile == null) {
+          return null;
         }
-        return driverPath;
+        List<String> commandList = Arrays.asList(binaryFile.getAbsolutePath(), "--browser", options.getBrowserName());
+        if (!options.getBrowserVersion().isEmpty()) {
+          commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
+        }
+        return runCommand(commandList.toArray(new String[0]));
+    }
+
+    public String getDriverPath(String driverName) {
+      File binaryFile = getBinary();
+      if(binaryFile == null) {
+        return null;
+      }
+      ImmutableList<String> commandList = ImmutableList.of(binaryFile.getAbsolutePath(), "--driver", driverName);
+      return runCommand(commandList.toArray(new String[0]));
     }
 }

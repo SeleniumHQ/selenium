@@ -43,7 +43,6 @@ class ChromeDriverServiceTest {
     Duration customTimeout = Duration.ofSeconds(60);
 
     ChromeDriverService.Builder builderMock = spy(ChromeDriverService.Builder.class);
-    doReturn(exe).when(builderMock).findDefaultExecutable();
     builderMock.build();
 
     verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any());
@@ -59,7 +58,6 @@ class ChromeDriverServiceTest {
     File exe = new File("someFile");
 
     ChromeDriverService.Builder builderMock = spy(ChromeDriverService.Builder.class);
-    doReturn(exe).when(builderMock).findDefaultExecutable();
 
     List<String> silentLast = Arrays.asList("--port=1", "--log-level=OFF");
     builderMock.withLogLevel(ChromiumDriverLogLevel.ALL).usingPort(1).withSilent(true).build();
@@ -84,7 +82,6 @@ class ChromeDriverServiceTest {
     File exe = new File("someFile");
 
     ChromeDriverService.Builder builderMock = spy(ChromeDriverService.Builder.class);
-    doReturn(exe).when(builderMock).findDefaultExecutable();
 
     List<String> falseSilent = Arrays.asList("--port=1", "--log-level=DEBUG");
     builderMock.withLogLevel(ChromiumDriverLogLevel.DEBUG).usingPort(1).withSilent(false).build();
