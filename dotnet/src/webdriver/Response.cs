@@ -16,7 +16,6 @@
 // limitations under the License.
 // </copyright>
 
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
@@ -25,7 +24,7 @@ using OpenQA.Selenium.Internal;
 namespace OpenQA.Selenium
 {
     /// <summary>
-    /// Handles reponses from the browser
+    /// Handles responses from the browser
     /// </summary>
     public class Response
     {
@@ -103,9 +102,9 @@ namespace OpenQA.Selenium
                         this.responseValue = valueDictionary["value"];
                     }
                 }
-                else if (valueDictionary.ContainsKey("error"))
+                else if (valueDictionary.TryGetValue("error", out var error) && error is not null)
                 {
-                    this.responseStatus = WebDriverError.ResultFromError(valueDictionary["error"].ToString());
+                    this.responseStatus = WebDriverError.ResultFromError(error.ToString());
                 }
             }
         }
