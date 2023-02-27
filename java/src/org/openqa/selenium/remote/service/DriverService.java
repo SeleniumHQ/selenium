@@ -130,7 +130,7 @@ public class DriverService implements Closeable, DriverServiceInfo {
     String defaultPath = new ExecutableFinder().find(exeName);
     return System.getProperty(exeProperty, defaultPath);
   }
-  
+
   protected List<String> getArgs() {
     return args;
   }
@@ -179,7 +179,10 @@ public class DriverService implements Closeable, DriverServiceInfo {
       if (process != null) {
         return;
       }
-      process = new CommandLine(this.executable, args.toArray(new String[] {}));
+      if (this.executable == null) {
+        this.executable = DriverFinder.getPath(this);
+      }
+      process = new CommandLine(this.executable, args.toArray(new String[]{}));
       process.setEnvironmentVariables(environment);
       process.copyOutputTo(getOutputStream());
       process.executeAsync();
