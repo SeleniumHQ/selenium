@@ -118,6 +118,9 @@ public class DevTools implements Closeable {
    * @param windowHandle result of {@link WebDriver#getWindowHandle()}, optional.
    */
   public void createSession(String windowHandle) {
+    if (connection.isClosed()) {
+      connection.reopen();
+    }
     TargetID targetId = findTarget(windowHandle);
 
     // Starts the session
