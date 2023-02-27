@@ -73,7 +73,6 @@ public class DevTools implements Closeable {
         // Exceptions should not prevent closing the connection and the web driver
         log.warning("Exception while detaching from target: " + e.getMessage());
       }
-      cdpSession = null;
     }
   }
 
