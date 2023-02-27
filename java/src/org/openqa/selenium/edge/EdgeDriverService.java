@@ -140,7 +140,7 @@ public class EdgeDriverService extends DriverService {
    * @return Whether the browser driver path was found.
    */
   static boolean isPresent() {
-    return findExePath("msedgedriver", EDGE_DRIVER_EXE_PROPERTY) != null;
+    return findExePath(EDGE_DRIVER_NAME, EDGE_DRIVER_EXE_PROPERTY) != null;
   }
 
 

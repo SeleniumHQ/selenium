@@ -45,7 +45,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Logger;
 
 import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -62,7 +61,6 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
 public class DriverService implements Closeable, DriverServiceInfo {
 
   private static final String NAME = "Driver Service Executor";
-  private static final Logger LOG = Logger.getLogger(DriverService.class.getName());
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
 
   private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {

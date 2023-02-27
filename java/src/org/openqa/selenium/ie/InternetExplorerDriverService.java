@@ -22,7 +22,6 @@ import com.google.auto.service.AutoService;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -117,7 +116,7 @@ public class InternetExplorerDriverService extends DriverService {
    * @return Whether the browser driver path was found.
    */
   static boolean isPresent() {
-    return findExePath("IEDriverServer", IE_DRIVER_EXE_PROPERTY) != null;
+    return findExePath(IE_DRIVER_NAME, IE_DRIVER_EXE_PROPERTY) != null;
   }
 
   /**

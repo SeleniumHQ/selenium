@@ -21,9 +21,9 @@ import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.remote.service.DriverServiceInfo;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -184,7 +184,7 @@ public class ChromeDriverService extends DriverService {
    * @return Whether the browser driver path was found.
    */
   static boolean isPresent() {
-    return findExePath("chromedriver", CHROME_DRIVER_EXE_PROPERTY) != null;
+    return findExePath(CHROME_DRIVER_NAME, CHROME_DRIVER_EXE_PROPERTY) != null;
   }
 
   /**

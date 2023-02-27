@@ -117,7 +117,7 @@ public class GeckoDriverService extends FirefoxDriverService {
    * @return Whether the browser driver path was found.
    */
   static boolean isPresent() {
-    return findExePath("geckodriver", GECKO_DRIVER_EXE_PROPERTY) != null;
+    return findExePath(GECKO_DRIVER_NAME, GECKO_DRIVER_EXE_PROPERTY) != null;
   }
 
   /**
