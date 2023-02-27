@@ -22,9 +22,7 @@ jobs:
       run: |
         export CHANGES=$(git status -s)
         if [ -n "$CHANGES" ]; then
-           git config --local user.email "boni.garcia@uc3m.es"
-           git config --local user.name "Boni Garcia"
-           git add *
+           git add common/mirror/selenium
            git commit -m "Update mirror info" -a
            echo "::set-output name=commit::true"
         fi
