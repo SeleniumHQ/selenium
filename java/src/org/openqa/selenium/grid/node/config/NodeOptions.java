@@ -74,7 +74,7 @@ public class NodeOptions {
   public static final boolean DEFAULT_ENABLE_BIDI = true;
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
-  static final boolean DEFAULT_USE_SELENIUM_MANAGER = true;
+  static final boolean DEFAULT_USE_SELENIUM_MANAGER = false;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
   static final String DEFAULT_VNC_ENV_VAR = "SE_START_XVFB";
   static final int DEFAULT_NO_VNC_PORT = 7900;
