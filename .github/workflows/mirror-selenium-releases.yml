@@ -1,4 +1,4 @@
-name: mirror
+name: mirror-selenium-releases
 
 on:
   schedule:
