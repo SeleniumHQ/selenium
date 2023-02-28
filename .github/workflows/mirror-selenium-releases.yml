@@ -33,5 +33,5 @@ jobs:
       if: steps.git.outputs.commit == 'true'
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
         branch: ${{ github.ref }}
