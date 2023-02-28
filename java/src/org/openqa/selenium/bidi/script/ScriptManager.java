@@ -27,6 +27,7 @@ import org.openqa.selenium.bidi.protocolvalue.RemoteValue;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
+import org.openqa.selenium.json.TypeToken;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -50,6 +51,16 @@ public class ScriptManager {
   private final Function<JsonInput, EvaluateResult>
     evaluateResultMapper =
     jsonInput -> createEvaluateResult(jsonInput.read(Map.class));
+
+  private final Function<JsonInput, List<RealmInfo>>
+    realmInfoMapper = jsonInput -> {
+    Map<String, Object> response = jsonInput.read(Map.class);
+    try (StringReader reader = new StringReader(JSON.toJson(response.get("realms")));
+         JsonInput input = JSON.newInput(reader)) {
+      return input.read(new TypeToken<List<RealmInfo>>() {
+      }.getType());
+    }
+  };
 
   public ScriptManager(WebDriver driver) {
     this(new HashSet<>(), driver);
@@ -95,12 +106,12 @@ public class ScriptManager {
                                                 "sandbox", sandbox))));
   }
 
-  private EvaluateResult callFunctionInRealm(String realmId,
-                                             String functionDeclaration,
-                                             boolean awaitPromise,
-                                             Optional<List<ArgumentValue>> argumentValueList,
-                                             Optional<ArgumentValue> thisParameter,
-                                             Optional<ResultOwnership> resultOwnership) {
+  public EvaluateResult callFunctionInRealm(String realmId,
+                                            String functionDeclaration,
+                                            boolean awaitPromise,
+                                            Optional<List<ArgumentValue>> argumentValueList,
+                                            Optional<ArgumentValue> thisParameter,
+                                            Optional<ResultOwnership> resultOwnership) {
     Map<String, Object> params = getCallFunctionParams(
       "realm",
       realmId,
@@ -149,10 +160,10 @@ public class ScriptManager {
       "script.callFunction", params, evaluateResultMapper));
   }
 
-  private EvaluateResult evaluateFunctionInRealm(String realmId,
-                                                 String expression,
-                                                 boolean awaitPromise,
-                                                 Optional<ResultOwnership> resultOwnership) {
+  public EvaluateResult evaluateFunctionInRealm(String realmId,
+                                                String expression,
+                                                boolean awaitPromise,
+                                                Optional<ResultOwnership> resultOwnership) {
     Map<String, Object> params = getEvaluateParams(
       "realm",
       realmId,
@@ -279,5 +290,33 @@ public class ScriptManager {
     }
 
     return evaluateResult;
+  }
+
+  public List<RealmInfo> getAllRealms() {
+    return this.bidi.send(new Command<>(
+      "script.getRealms",
+      new HashMap<>(), realmInfoMapper));
+  }
+
+  public List<RealmInfo> getRealmsByType(RealmType type) {
+    return this.bidi.send(new Command<>(
+      "script.getRealms",
+      ImmutableMap.of("type", type.toString()),
+      realmInfoMapper));
+  }
+
+  public List<RealmInfo> getRealmsInBrowsingContext(String browsingContext) {
+    return this.bidi.send(new Command<>(
+      "script.getRealms",
+      ImmutableMap.of("context", browsingContext),
+      realmInfoMapper));
+  }
+
+  public List<RealmInfo> getRealmsInBrowsingContextByType(String browsingContext, RealmType type) {
+    return this.bidi.send(new Command<>(
+      "script.getRealms",
+      ImmutableMap.of("context", browsingContext,
+                      "type", type.toString()),
+      realmInfoMapper));
   }
 }
