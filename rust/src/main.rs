@@ -25,6 +25,8 @@ use exitcode::{DATAERR, UNAVAILABLE};
 
 use selenium_manager::logger::Logger;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
+use selenium_manager::TTL_DRIVERS_SEC;
+use selenium_manager::TTL_BROWSERS_SEC;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
@@ -82,6 +84,14 @@ struct Cli {
     /// Clear driver cache
     #[clap(short, long)]
     clear_cache: bool,
+
+    /// Set default driver ttl
+    #[clap(short = 'd_ttl', long, value_parser, default_value_driver_ttl = TTL_DRIVERS_SEC)]
+    driver_ttl: u64,
+
+    /// Set default browser ttl
+    #[clap(short = 'b_ttl', long, value_parser, default_value_browser_ttl = TTL_BROWSERS_SEC)]
+    browser_ttl: u64,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {

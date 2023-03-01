@@ -150,6 +150,7 @@ impl SeleniumManager for EdgeManager {
     fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
         let browser_version = self.get_browser_version();
         let mut metadata = get_metadata(self.get_logger());
+        let driver_ttl = self.get_config().driver_ttl;
 
         match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
         {
@@ -183,6 +184,7 @@ impl SeleniumManager for EdgeManager {
                         browser_version,
                         self.driver_name,
                         &driver_version,
+                        driver_ttl,
                     ));
                     write_metadata(&metadata, self.get_logger());
                 }
