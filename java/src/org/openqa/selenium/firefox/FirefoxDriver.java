@@ -52,6 +52,7 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.net.URI;
@@ -108,7 +109,7 @@ public class FirefoxDriver extends RemoteWebDriver
    * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
    */
   public FirefoxDriver(FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);
+    this(GeckoDriverService.createDefaultService(), options);
   }
 
   /**
@@ -127,7 +128,18 @@ public class FirefoxDriver extends RemoteWebDriver
   }
 
   public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, ClientConfig clientConfig) {
-    this(new FirefoxDriverCommandExecutor(service, clientConfig), Require.nonNull("Driver options", options));
+    this(generateExecutor(service, options, clientConfig), options);
+  }
+
+  private static FirefoxDriverCommandExecutor generateExecutor(FirefoxDriverService service, FirefoxOptions options, ClientConfig clientConfig) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    Require.nonNull("Driver clientConfig", clientConfig);
+    if (service.getExecutable() == null) {
+      String path = DriverFinder.getPath(service, options);
+      service.setExecutable(path);
+    }
+    return new FirefoxDriverCommandExecutor(service, clientConfig);
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
@@ -159,10 +171,10 @@ public class FirefoxDriver extends RemoteWebDriver
 
     this.cdpUri = cdpUri;
     this.capabilities = cdpUri.map(uri ->
-                                     new ImmutableCapabilities(
-                                       new PersistentCapabilities(capabilities)
-                                         .setCapability("se:cdp", uri.toString())
-                                         .setCapability("se:cdpVersion", "85.0")))
+        new ImmutableCapabilities(
+          new PersistentCapabilities(capabilities)
+            .setCapability("se:cdp", uri.toString())
+            .setCapability("se:cdpVersion", "85.0")))
       .orElse(new ImmutableCapabilities(capabilities));
   }
 
@@ -199,7 +211,7 @@ public class FirefoxDriver extends RemoteWebDriver
   public void setFileDetector(FileDetector detector) {
     throw new WebDriverException(
       "Setting the file detector only works on remote webdriver instances obtained " +
-      "via RemoteWebDriver");
+        "via RemoteWebDriver");
   }
 
   @Override

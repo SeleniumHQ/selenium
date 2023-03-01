@@ -46,6 +46,8 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
  */
 public class GeckoDriverService extends FirefoxDriverService {
 
+  public static final String GECKO_DRIVER_NAME = "geckodriver";
+
   /**
    * System property that defines the location of the GeckoDriver executable
    * that will be used by the {@link #createDefaultService() default service}.
@@ -67,6 +69,14 @@ public class GeckoDriverService extends FirefoxDriverService {
     super(executable, port, DEFAULT_TIMEOUT,
       unmodifiableList(new ArrayList<>(args)),
       unmodifiableMap(new HashMap<>(environment)));
+  }
+
+  public String getDriverName() {
+    return GECKO_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return GECKO_DRIVER_EXE_PROPERTY;
   }
 
   /**
@@ -107,7 +117,7 @@ public class GeckoDriverService extends FirefoxDriverService {
    * @return Whether the browser driver path was found.
    */
   static boolean isPresent() {
-    return findExePath("geckodriver", GECKO_DRIVER_EXE_PROPERTY) != null;
+    return findExePath(GECKO_DRIVER_NAME, GECKO_DRIVER_EXE_PROPERTY) != null;
   }
 
   /**
@@ -163,17 +173,8 @@ public class GeckoDriverService extends FirefoxDriverService {
      */
     public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
       Require.nonNull("Firefox binary", firefoxBinary);
-      checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
       return this;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      return findExecutable(
-        "geckodriver", GECKO_DRIVER_EXE_PROPERTY,
-        "https://github.com/mozilla/geckodriver",
-        "https://github.com/mozilla/geckodriver/releases");
     }
 
     @Override

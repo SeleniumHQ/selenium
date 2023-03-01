@@ -42,6 +42,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -65,17 +66,29 @@ public class Connection implements Closeable {
     return thread;
   });
   private static final AtomicLong NEXT_ID = new AtomicLong(1L);
-  private final WebSocket socket;
+  private WebSocket socket;
   private final Map<Long, Consumer<Either<Throwable, JsonInput>>> methodCallbacks = new ConcurrentHashMap<>();
   private final ReadWriteLock callbacksLock = new ReentrantReadWriteLock(true);
   private final Multimap<Event<?>, Consumer<?>> eventCallbacks = HashMultimap.create();
   private final HttpClient client;
+  private final String url;
+  private final AtomicBoolean isClosed;
 
   public Connection(HttpClient client, String url) {
     Require.nonNull("HTTP client", client);
     Require.nonNull("URL to connect to", url);
+    this.url = url;
     this.client = client;
-    socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
+    this.socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
+    this.isClosed = new AtomicBoolean();
+  }
+
+  boolean isClosed() {
+    return isClosed.get();
+  }
+
+  void reopen() {
+    this.socket = this.client.openSocket(new HttpRequest(GET, url), new Listener());
   }
 
   private static class NamedConsumer<X> implements Consumer<X> {
@@ -190,6 +203,7 @@ public class Connection implements Closeable {
   public void close() {
     socket.close();
     client.close();
+    this.isClosed.set(true);
   }
 
   private class Listener implements WebSocket.Listener {

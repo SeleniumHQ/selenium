@@ -191,13 +191,18 @@ class WebElementToJsonConverterTest {
 
   @Test
   void convertsAnArray() {
-    Object value = CONVERTER.apply(new Object[] {
+    Object value1 = CONVERTER.apply(new Object[] {
         "abc123", true, 123, Math.PI
     });
 
-    assertThat(value).isInstanceOf(Collection.class);
-    assertContentsInOrder(new ArrayList<>((Collection<?>) value),
+    assertThat(value1).isInstanceOf(Collection.class);
+    assertContentsInOrder(new ArrayList<>((Collection<?>) value1),
         "abc123", true, 123, Math.PI);
+    
+    Object value2 = CONVERTER.apply(new int[] { 123, 456, 789 });
+    
+		assertThat(value2).isInstanceOf(Collection.class);
+		assertContentsInOrder(new ArrayList<>((Collection<?>) value2), 123, 456, 789);
   }
 
   @Test
