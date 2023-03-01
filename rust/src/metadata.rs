@@ -122,7 +122,7 @@ pub fn get_driver_version_from_metadata(
 pub fn create_browser_metadata(
     browser_name: &str,
     browser_version: &String,
-    browser_ttl: un64,
+    browser_ttl: u64,
 ) -> Browser {
     Browser {
         browser_name: browser_name.to_string(),
@@ -135,7 +135,7 @@ pub fn create_driver_metadata(
     browser_version: &str,
     driver_name: &str,
     driver_version: &str,
-    driver_ttl: un64,
+    driver_ttl: u64,
 ) -> Driver {
     Driver {
         browser_version: browser_version.to_string(),
