@@ -134,7 +134,7 @@ public class LocalNode extends Node {
   private final AtomicInteger pendingSessions = new AtomicInteger();
   private final AtomicInteger sessionCount = new AtomicInteger();
 
-  private LocalNode(
+  protected LocalNode(
     Tracer tracer,
     EventBus bus,
     URI uri,
