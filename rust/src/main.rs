@@ -86,11 +86,11 @@ struct Cli {
     clear_cache: bool,
 
     /// Set default driver ttl
-    #[clap(short = "d_ttl", long, value_parser, default_value_driver_ttl = TTL_DRIVERS_SEC)]
+    #[clap(short = 'd', long, value_parser, default_value_driver_ttl = TTL_DRIVERS_SEC)]
     driver_ttl: u64,
 
     /// Set default browser ttl
-    #[clap(short = "b_ttl", long, value_parser, default_value_browser_ttl = TTL_BROWSERS_SEC)]
+    #[clap(short = 'b', long, value_parser, default_value_browser_ttl = TTL_BROWSERS_SEC)]
     browser_ttl: u64,
 }
 
