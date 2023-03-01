@@ -17,8 +17,10 @@
 
 package org.openqa.selenium.safari;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -62,6 +64,18 @@ class SafariDriverTest extends JupiterTestBase {
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = SafariDriver.builder().oneOf(options).build();
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  public void driverOverridesDefaultClientConfig() {
+    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
+    try {
+      localDriver = new SafariDriver(SafariDriverService.createDefaultService(), new SafariOptions(), clientConfig);
+      Assertions.fail("Should not have started a new session");
+    } catch (RuntimeException e) {
+      assertThat(e).isInstanceOf(SessionNotCreatedException.class);
+    }
   }
 
   @Test

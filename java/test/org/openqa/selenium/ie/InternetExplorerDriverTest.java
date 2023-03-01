@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.ie;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -24,6 +25,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -57,6 +59,18 @@ class InternetExplorerDriverTest extends JupiterTestBase {
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = InternetExplorerDriver.builder().oneOf(options).build();
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  public void driverOverridesDefaultClientConfig() {
+    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
+    try {
+      localDriver = new InternetExplorerDriver(InternetExplorerDriverService.createDefaultService(), new InternetExplorerOptions(), clientConfig);
+      Assertions.fail("Should not have started a new session");
+    } catch (RuntimeException e) {
+      assertThat(e).isInstanceOf(SessionNotCreatedException.class);
+    }
   }
 
   @Test

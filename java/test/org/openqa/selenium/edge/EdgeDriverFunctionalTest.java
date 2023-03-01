@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.edge;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.chromium.ChromiumNetworkConditions;
 import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
@@ -64,6 +66,18 @@ class EdgeDriverFunctionalTest extends JupiterTestBase {
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = EdgeDriver.builder().oneOf(options).build();
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  public void driverOverridesDefaultClientConfig() {
+    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
+    try {
+      localDriver = new EdgeDriver(EdgeDriverService.createDefaultService(), new EdgeOptions(), clientConfig);
+      Assertions.fail("Should not have started a new session");
+    } catch (RuntimeException e) {
+      assertThat(e).isInstanceOf(SessionNotCreatedException.class);
+    }
   }
 
   @Test
