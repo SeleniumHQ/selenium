@@ -49,6 +49,7 @@ pub mod firefox;
 pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
+pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 

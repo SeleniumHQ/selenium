@@ -23,7 +23,7 @@ use std::path::PathBuf;
 
 use crate::config::ARCH::ARM64;
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::downloads::read_content_from_link;
+use crate::downloads::read_version_from_link;
 use crate::files::{compose_driver_path_in_cache, BrowserPath, PARSE_ERROR};
 use crate::logger::Logger;
 use crate::metadata::{
@@ -177,7 +177,7 @@ impl SeleniumManager for ChromeManager {
                         "Reading {} version from {}",
                         &self.driver_name, driver_url
                     ));
-                    match read_content_from_link(self.get_http_client(), driver_url) {
+                    match read_version_from_link(self.get_http_client(), driver_url) {
                         Ok(version) => {
                             driver_version = version;
                             break;
