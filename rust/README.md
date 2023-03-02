@@ -45,9 +45,9 @@ Options:
           Print help information
   -V, --version
           Print version information
-  -d, --driver_ttl <TTL IN SECONDS>
+  --driver_ttl <TTL IN SECONDS>
           Set custom TTL for driver in seconds. Default value is 86400
-  -b, --browser_ttl <TTL IN SECONDS>
+  --browser_ttl <TTL IN SECONDS>
           Set custom TTL for browser in seconds default value is 0
 ```
 
