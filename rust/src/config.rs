@@ -17,6 +17,9 @@
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::REQUEST_TIMEOUT_SEC;
+use crate::TTL_BROWSERS_SEC;
+use crate::TTL_DRIVERS_SEC;
+
 use std::env::consts::{ARCH, OS};
 
 pub struct ManagerConfig {
@@ -27,6 +30,8 @@ pub struct ManagerConfig {
     pub browser_path: String,
     pub proxy: String,
     pub timeout: u64,
+    pub browser_ttl: u64,
+    pub driver_ttl: u64,
 }
 
 impl ManagerConfig {
@@ -39,6 +44,8 @@ impl ManagerConfig {
             browser_path: "".to_string(),
             proxy: "".to_string(),
             timeout: REQUEST_TIMEOUT_SEC,
+            browser_ttl: TTL_BROWSERS_SEC,
+            driver_ttl: TTL_DRIVERS_SEC,
         }
     }
 
@@ -52,6 +59,8 @@ impl ManagerConfig {
             browser_path: config.browser_path.as_str().to_string(),
             proxy: config.proxy.as_str().to_string(),
             timeout: config.timeout,
+            browser_ttl: config.browser_ttl,
+            driver_ttl: config.driver_ttl,
         }
     }
 }
