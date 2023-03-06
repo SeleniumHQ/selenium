@@ -16,11 +16,17 @@
 // under the License.
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::REQUEST_TIMEOUT_SEC;
 use crate::TTL_BROWSERS_SEC;
 use crate::TTL_DRIVERS_SEC;
 
-use std::env::consts::{ARCH, OS};
+use crate::{
+    format_one_arg, run_shell_command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC,
+    UNAME_COMMAND,
+};
+use std::env;
+use std::env::consts::{OS};
+
+pub const ARM64_ARCH: &str = "arm64";
 
 pub struct ManagerConfig {
     pub browser_version: String,
@@ -36,11 +42,27 @@ pub struct ManagerConfig {
 
 impl ManagerConfig {
     pub fn default() -> ManagerConfig {
+        let self_os = OS;
+        let self_arch = if WINDOWS.is(self_os) {
+            env::var(ENV_PROCESSOR_ARCHITECTURE).unwrap_or_default()
+        } else {
+            let uname_a = format_one_arg(UNAME_COMMAND, "a");
+            if run_shell_command(self_os, uname_a)
+                .unwrap_or_default()
+                .to_ascii_lowercase()
+                .contains(ARM64_ARCH)
+            {
+                ARM64_ARCH.to_string()
+            } else {
+                let uname_m = format_one_arg(UNAME_COMMAND, "m");
+                run_shell_command(self_os, uname_m).unwrap_or_default()
+            }
+        };
         ManagerConfig {
             browser_version: "".to_string(),
             driver_version: "".to_string(),
-            os: OS.to_string(),
-            arch: ARCH.to_string(),
+            os: self_os.to_string(),
+            arch: self_arch,
             browser_path: "".to_string(),
             proxy: "".to_string(),
             timeout: REQUEST_TIMEOUT_SEC,
@@ -107,15 +129,16 @@ pub enum ARCH {
 }
 
 impl ARCH {
-    pub fn to_str(&self) -> &str {
+    pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
-            ARCH::X32 => "x86",
-            ARCH::X64 => "x86_64",
-            ARCH::ARM64 => "aarch64",
+            ARCH::X32 => vec!["x86", "i386"],
+            ARCH::X64 => vec!["x86_64", "x64", "i686", "amd64", "ia64"],
+            ARCH::ARM64 => vec![ARM64_ARCH, "aarch64", "arm"],
         }
     }
 
     pub fn is(&self, arch: &str) -> bool {
-        self.to_str().eq_ignore_ascii_case(arch)
+        self.to_str_vector()
+            .contains(&arch.to_ascii_lowercase().as_str())
     }
 }
