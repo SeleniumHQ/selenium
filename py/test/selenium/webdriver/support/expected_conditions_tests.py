@@ -86,3 +86,14 @@ def test_clickable_element_false(driver, pages):
         target = (By.ID, "hiddenline")  # text, should not be clickable
         element = driver.find_element(*target)  # grab element at locator
         WebDriverWait(driver, 0.1).until(EC.element_to_be_clickable(element))
+
+def test_element_to_be_visible_and_enabled_true(driver, pages):
+    pages.load("simpleTest.html")
+    target = (By.ID, "checkbox1")    # checkbox which is enabled
+    WebDriverWait(driver, 0.1).until(EC.element_to_be_visible_and_enabled(target))
+
+def test_element_to_be_visible_and_enabled_false(driver, pages):
+    pages.load("simpleTest.html")
+    target = (By.ID, "checkbox2")    # checkbox which is disabled
+    with pytest.raises(TimeoutException):
+        WebDriverWait(driver, 0.1).until(EC.element_to_be_visible_and_enabled(target))

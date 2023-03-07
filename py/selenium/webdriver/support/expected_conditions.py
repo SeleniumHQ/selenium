@@ -143,6 +143,27 @@ def visibility_of_element_located(locator):
     return _predicate
 
 
+def element_to_be_visible_and_enabled(locator):
+    """An expectation for checking that an element is present on the DOM of a
+    page, visible and also enabled. Visibility means that the element is not only displayed
+    but also has a height and width that is greater than 0.
+
+    locator - used to find the element
+    returns the WebElement once it is located, visible and enabled
+    """
+
+    def _predicate(driver):
+        try:
+            element = _element_if_visible(driver.find_element(*locator))
+            if isinstance(element, WebElement):
+                return element.is_enabled()
+            return False
+        except (StaleElementReferenceException, NoSuchElementException):
+            return False
+        
+    return _predicate
+
+
 def visibility_of(element):
     """An expectation for checking that an element, known to be present on the
     DOM of a page, is visible.
