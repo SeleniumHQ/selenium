@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentMatchers;
@@ -65,6 +64,7 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -123,13 +123,10 @@ class FirefoxDriverTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   public void driverOverridesDefaultClientConfig() {
-    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
-    try {
+    assertThatThrownBy(() -> {
+      ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
       localDriver = new FirefoxDriver(GeckoDriverService.createDefaultService(), new FirefoxOptions(), clientConfig);
-      Assertions.fail("Should not have started a new session");
-    } catch (RuntimeException e) {
-      assertThat(e).isInstanceOf(SessionNotCreatedException.class);
-    }
+    }).isInstanceOf(SessionNotCreatedException.class);
   }
 
   @Test

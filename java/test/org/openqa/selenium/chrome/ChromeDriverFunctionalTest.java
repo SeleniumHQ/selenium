@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.chrome;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -42,6 +41,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
@@ -74,13 +74,10 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   @Test
   @NoDriverBeforeTest
   public void driverOverridesDefaultClientConfig() {
-    ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
-    try {
+    assertThatThrownBy(() -> {
+      ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
       localDriver = new ChromeDriver(ChromeDriverService.createDefaultService(), new ChromeOptions(), clientConfig);
-      Assertions.fail("Should not have started a new session");
-    } catch (RuntimeException e) {
-      assertThat(e).isInstanceOf(SessionNotCreatedException.class);
-    }
+    }).isInstanceOf(SessionNotCreatedException.class);
   }
 
   @Test
