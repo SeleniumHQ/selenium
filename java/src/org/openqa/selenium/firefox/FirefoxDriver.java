@@ -260,6 +260,10 @@ public class FirefoxDriver extends RemoteWebDriver
     context.setContext(commandContext);
   }
 
+  /**
+   * @deprecated Use W3C-compliant BiDi protocol. Use {{@link #maybeGetBiDi()}}
+   */
+  @Deprecated
   @Override
   public Optional<DevTools> maybeGetDevTools() {
     if (devTools != null) {
@@ -284,6 +288,9 @@ public class FirefoxDriver extends RemoteWebDriver
     return Optional.of(devTools);
   }
 
+  /**
+   * @deprecated Use W3C-compliant BiDi protocol. Use {{@link #getBiDi()}}
+   */
   @Override
   public DevTools getDevTools() {
     if (!cdpUri.isPresent()) {

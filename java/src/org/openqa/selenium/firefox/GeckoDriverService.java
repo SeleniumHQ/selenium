@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,9 +144,10 @@ public class GeckoDriverService extends FirefoxDriverService {
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends FirefoxDriverService.Builder<
-        GeckoDriverService, GeckoDriverService.Builder> {
+    GeckoDriverService, GeckoDriverService.Builder> {
 
     private FirefoxBinary firefoxBinary;
+    private String allowHosts;
 
     public Builder() {
     }
@@ -177,6 +179,17 @@ public class GeckoDriverService extends FirefoxDriverService {
       return this;
     }
 
+    /**
+     * Values of the Host header to allow for incoming requests.
+     *
+     * @param allowHosts Space-separated list of host names.
+     * @return A self reference.
+     */
+    public GeckoDriverService.Builder withAllowHosts(String allowHosts) {
+      this.allowHosts = allowHosts;
+      return this;
+    }
+
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
@@ -198,8 +211,13 @@ public class GeckoDriverService extends FirefoxDriverService {
           args.add("-b");
           args.add(e.getPath());
         });
+        // If the binary stays null, GeckoDriver will be responsible for finding Firefox on the
+        // PATH or via a capability.
       }
-      // If the binary stays null, GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
+      if (allowHosts != null) {
+        args.add("--allow-hosts");
+        args.addAll(Arrays.asList(allowHosts.split(" ")));
+      }
       return unmodifiableList(args);
     }
 

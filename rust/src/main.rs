@@ -25,8 +25,8 @@ use exitcode::{DATAERR, UNAVAILABLE};
 
 use selenium_manager::logger::Logger;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
-use selenium_manager::TTL_DRIVERS_SEC;
 use selenium_manager::TTL_BROWSERS_SEC;
+use selenium_manager::TTL_DRIVERS_SEC;
 use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
