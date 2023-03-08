@@ -1405,7 +1405,7 @@ class WebDriver {
         if (requestPausedParams.request.url == httpResponse.urlToIntercept) {
           connection.execute('Fetch.fulfillRequest', {
             requestId: requestPausedParams['requestId'],
-            responseCode: 200,
+            responseCode: httpResponse.status,
             responseHeaders: httpResponse.headers,
             body: httpResponse.body,
           })
