@@ -7,7 +7,7 @@ jobs:
     name: "[Windows] Build selenium-manager"
     runs-on: windows-latest
     env:
-      RUSTFLAGS: '-C target-feature=+crt-static'
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
     name: "[Linux] Build selenium-manager"
     runs-on: ubuntu-latest
     env:
-      RUSTFLAGS: '-C target-feature=+crt-static'
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v3
@@ -41,10 +41,12 @@ jobs:
       - name: "Build release"
         run: |
           cd rust
-          cargo build --release --target x86_64-unknown-linux-gnu
+          cargo install cargo-zigbuild
+          rustup target add x86_64-unknown-linux-musl
+          cargo zigbuild --release --target x86_64-unknown-linux-musl
       - name: "Tar binary (to keep executable permission)"
         run: |
-          cd rust/target/x86_64-unknown-linux-gnu/release
+          cd rust/target/x86_64-unknown-linux-musl/release
           tar -cvf ../../../../selenium-manager.tar selenium-manager
       - name: "Upload binary"
         uses: actions/upload-artifact@v3
@@ -57,7 +59,7 @@ jobs:
     name: "[macOS] Build selenium-manager"
     runs-on: macos-latest
     env:
-      RUSTFLAGS: '-C target-feature=+crt-static'
+      RUSTFLAGS: '-Ctarget-feature=+crt-static -Clink-args=-Wl,--copy-dt-needed-entries'
     steps:
       - name: "Checkout project"
         uses: actions/checkout@v3
