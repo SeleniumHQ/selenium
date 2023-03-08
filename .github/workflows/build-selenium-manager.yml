@@ -38,6 +38,9 @@ jobs:
         run: |
           rustup update
           rustc -vV
+      - name: "Install zig"
+        run: |
+          sudo snap install zig --beta --classic
       - name: "Build release"
         run: |
           cd rust
