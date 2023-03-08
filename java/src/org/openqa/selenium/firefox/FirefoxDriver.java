@@ -300,6 +300,7 @@ public class FirefoxDriver extends RemoteWebDriver
   /**
    * @deprecated Use W3C-compliant BiDi protocol. Use {{@link #getBiDi()}}
    */
+  @Deprecated
   @Override
   public DevTools getDevTools() {
     if (!cdpUri.isPresent()) {
