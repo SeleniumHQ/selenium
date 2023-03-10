@@ -192,5 +192,8 @@ pub fn parse_version(version_text: String) -> Result<String, Box<dyn Error>> {
             break;
         }
     }
+    if parsed_version.ends_with('.') {
+        parsed_version = parsed_version[0..parsed_version.len() - 1].to_string();
+    }
     Ok(parsed_version)
 }

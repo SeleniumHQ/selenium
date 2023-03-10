@@ -11,5 +11,6 @@ java_export(
         "//java:auto-service",
         "//java/src/org/openqa/selenium:core",
         "//java/src/org/openqa/selenium/remote",
+        "//java/src/org/openqa/selenium/manager:manager"
     ],
 )
