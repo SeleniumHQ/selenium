@@ -25,7 +25,7 @@ namespace OpenQA.Selenium
     /// The exception that is thrown when an element is not visible.
     /// </summary>
     [Serializable]
-    public class InvalidSelectorException : NoSuchElementException
+    public class InvalidSelectorException : WebDriverException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="InvalidSelectorException"/> class.

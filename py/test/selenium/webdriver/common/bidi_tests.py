@@ -23,6 +23,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
 @pytest.mark.xfail_safari
 async def test_check_console_messages(driver, pages):
     async with driver.bidi_connection() as session:
@@ -35,6 +37,8 @@ async def test_check_console_messages(driver, pages):
         assert messages["message"] == "I love cheese"
 
 
+@pytest.mark.xfail_firefox(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
+@pytest.mark.xfail_remote(reason="https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
 @pytest.mark.xfail_safari
 async def test_check_error_console_messages(driver, pages):
     async with driver.bidi_connection() as session:
