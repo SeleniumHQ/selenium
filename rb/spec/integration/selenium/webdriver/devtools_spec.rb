@@ -30,7 +30,7 @@ module Selenium
       end
 
       it 'supports events', except: {browser: :firefox,
-                                    reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
+                                     reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
         expect { |block|
           driver.devtools.page.enable
           driver.devtools.page.on(:load_event_fired, &block)
@@ -74,7 +74,7 @@ module Selenium
       end
 
       it 'notifies about log messages', except: {browser: :firefox,
-                                                reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
+                                                 reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
         logs = []
         driver.on_log_event(:console) { |log| logs.push(log) }
         driver.navigate.to url_for('javascriptPage.html')
@@ -112,8 +112,8 @@ module Selenium
         )
       end
 
-      it 'notifies about document log messages', except: {browser: %i[chrome edge firefox],
-                                                          reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
+      it 'notifies about document log messages',
+         except: {browser: %i[chrome edge firefox], reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
         logs = []
         driver.on_log_event(:console) { |log| logs.push(log) }
         driver.navigate.to url_for('javascriptPage.html')
