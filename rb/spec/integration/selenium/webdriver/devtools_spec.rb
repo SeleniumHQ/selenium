@@ -29,7 +29,8 @@ module Selenium
         expect(driver.title).to eq('XHTML Test Page')
       end
 
-      it 'supports events' do
+      it 'supports events', except: {browser: :firefox,
+                                    reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
         expect { |block|
           driver.devtools.page.enable
           driver.devtools.page.on(:load_event_fired, &block)
@@ -38,7 +39,8 @@ module Selenium
         }.to yield_control
       end
 
-      it 'propagates errors in events' do
+      it 'propagates errors in events', except: {browser: :firefox,
+                                                 reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
         expect {
           driver.devtools.page.enable
           driver.devtools.page.on(:load_event_fired) { raise 'This is fine!' }
@@ -71,7 +73,8 @@ module Selenium
         end
       end
 
-      it 'notifies about log messages' do
+      it 'notifies about log messages', except: {browser: :firefox,
+                                                reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
         logs = []
         driver.on_log_event(:console) { |log| logs.push(log) }
         driver.navigate.to url_for('javascriptPage.html')
@@ -109,8 +112,8 @@ module Selenium
         )
       end
 
-      it 'notifies about document log messages', only: {browser: :firefox,
-                                                        reason: 'Firefox & Chrome parse document differently'} do
+      it 'notifies about document log messages', except: {browser: %i[chrome edge firefox],
+                                                          reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
         logs = []
         driver.on_log_event(:console) { |log| logs.push(log) }
         driver.navigate.to url_for('javascriptPage.html')
@@ -123,7 +126,8 @@ module Selenium
         )
       end
 
-      it 'notifies about exceptions' do
+      it 'notifies about exceptions', except: {browser: :firefox,
+                                               reason: 'https://bugzilla.mozilla.org/show_bug.cgi?id=1819965'} do
         exceptions = []
         driver.on_log_event(:exception) { |exception| exceptions.push(exception) }
         driver.navigate.to url_for('javascriptPage.html')
