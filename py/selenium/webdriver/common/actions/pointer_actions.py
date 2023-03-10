@@ -194,7 +194,7 @@ class PointerActions(Interaction):
         self.pointer_up(MouseButton.LEFT)
         return self
 
-    def pause(self, duration=0):
+    def pause(self, duration: float = 0):
         self.source.create_pause(duration)
         return self
 
