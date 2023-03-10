@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.devtools;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
@@ -32,9 +30,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+
 class ConsoleEventsTest extends DevToolsTestBase {
 
   @Test
+  @Ignore(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
   public void canWatchConsoleEvents() throws InterruptedException, ExecutionException, TimeoutException {
     String page = appServer.create(
       new Page()
@@ -52,6 +54,7 @@ class ConsoleEventsTest extends DevToolsTestBase {
   }
 
   @Test
+  @Ignore(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1819965")
   public void canWatchConsoleEventsWithArgs() throws InterruptedException, ExecutionException, TimeoutException {
     String page = appServer.create(
       new Page()
