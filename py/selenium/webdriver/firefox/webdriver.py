@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import base64
+import logging
 import os
 import warnings
 import zipfile
@@ -31,6 +32,8 @@ from .options import Options
 from .remote_connection import FirefoxRemoteConnection
 from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
+
+logger = logging.getLogger(__name__)
 
 # Default for log_path variable. To be deleted when deprecations for arguments are removed.
 DEFAULT_LOG_PATH = None
@@ -212,8 +215,24 @@ class WebDriver(RemoteWebDriver):
                 rmtree(self.profile.path)
                 if self.profile.tempfolder:
                     rmtree(self.profile.tempfolder)
-            except Exception as e:
-                print(str(e))
+            except Exception:
+                logger.exception("Unable to remove profile specific paths.")
+
+        self._close_binary_file_handle()
+
+    def _close_binary_file_handle(self) -> None:
+        """Attempts to close the underlying file handles for `FirefoxBinary`
+        instances if they are used and open.
+
+        To keep inline with other cleanup raising here is swallowed and
+        will not cause a runtime error.
+        """
+        try:
+            if isinstance(self.binary, FirefoxBinary):
+                if hasattr(self.binary._log_file, "close"):
+                    self.binary._log_file.close()
+        except Exception:
+            logger.exception("Unable to close open file handle for firefox binary log file.")
 
     @property
     def firefox_profile(self):
