@@ -66,6 +66,7 @@ class Service(ABC):
         self.start_error_message = start_error_message or ""
         # Default value for every python subprocess: subprocess.Popen(..., creationflags=0)
         self.creation_flags = kwargs.pop("creation_flags", 0)
+        self.close_fds = kwargs.pop("close_fds") or system() != "Windows"
         self.env = env or os.environ
 
     @property
@@ -201,7 +202,7 @@ class Service(ABC):
             self.process = subprocess.Popen(
                 cmd,
                 env=self.env,
-                close_fds=system() != "Windows",
+                close_fds=self.close_fds,
                 stdout=self.log_file,
                 stderr=self.log_file,
                 stdin=PIPE,
