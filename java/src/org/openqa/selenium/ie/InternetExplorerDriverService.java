@@ -40,6 +40,8 @@ import static org.openqa.selenium.remote.Browser.IE;
  */
 public class InternetExplorerDriverService extends DriverService {
 
+  public static final String IE_DRIVER_NAME = "IEDriverServer";
+
   /**
    * System property that defines the location of the IEDriverServer executable
    * that will be used by the {@link #createDefaultService() default service}.
@@ -87,6 +89,14 @@ public class InternetExplorerDriverService extends DriverService {
       unmodifiableMap(new HashMap<>(environment)));
   }
 
+  public String getDriverName() {
+    return IE_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return IE_DRIVER_EXE_PROPERTY;
+  }
+
   /**
    * Configures and returns a new {@link InternetExplorerDriverService} using the default configuration. In
    * this configuration, the service will use the IEDriverServer executable identified by the
@@ -100,11 +110,21 @@ public class InternetExplorerDriverService extends DriverService {
   }
 
   /**
+   * Checks if the browser driver binary is available. Grid uses this method to show
+   * the available browsers and drivers, hence its visibility.
+   *
+   * @return Whether the browser driver path was found.
+   */
+  static boolean isPresent() {
+    return findExePath(IE_DRIVER_NAME, IE_DRIVER_EXE_PROPERTY) != null;
+  }
+
+  /**
    * Builder used to configure new {@link InternetExplorerDriverService} instances.
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
-      InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
+    InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
 
     private InternetExplorerDriverLogLevel logLevel;
     private String host = null;
@@ -168,13 +188,6 @@ public class InternetExplorerDriverService extends DriverService {
     public Builder withSilent(Boolean silent) {
       this.silent = silent;
       return this;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      return findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
-                            "https://www.selenium.dev/documentation/ie_driver_server/",
-                            "https://www.selenium.dev/downloads/");
     }
 
     @Override

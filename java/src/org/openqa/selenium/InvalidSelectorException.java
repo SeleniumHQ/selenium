@@ -25,7 +25,7 @@ package org.openqa.selenium;
  * errors, or a compound class name passed as an argument to By.className(),
  * or the expression does not select WebElements (e.g. "count(//input)").
  */
-public class InvalidSelectorException extends NoSuchElementException {
+public class InvalidSelectorException extends WebDriverException {
 
   private static final String SUPPORT_URL =
     BASE_SUPPORT_URL + "#invalid_selector_exception";

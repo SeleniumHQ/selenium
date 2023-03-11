@@ -65,10 +65,11 @@ This document will guide you through the contribution process.
 ### Step 1: Fork
 
 Fork the project [on Github](https://github.com/seleniumhq/selenium)
-and check out your copy locally.
+and check out your copy locally. Use `--depth 1` for a quick check out.
+The repository is ~2GB and checking the whole history takes a while.
 
 ```shell
-% git clone git@github.com:username/selenium.git
+% git clone git@github.com:username/selenium.git --depth 1
 % cd selenium
 % git remote add upstream git://github.com/seleniumhq/selenium.git
 ```
