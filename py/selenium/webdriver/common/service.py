@@ -68,7 +68,7 @@ class Service(ABC):
         self.creation_flags = kwargs.pop("creation_flags", 0)
         self.close_fds = kwargs.pop("close_fds") or system() != "Windows"
         self.env = env or os.environ
-        self.popen_kw = kwargs.get("popen_kw", {})
+        self.popen_kw = kwargs.pop("popen_kw", {})
 
     @property
     def service_url(self) -> str:
