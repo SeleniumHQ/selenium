@@ -68,6 +68,7 @@ class Service(ABC):
         self.creation_flags = kwargs.pop("creation_flags", 0)
         self.close_fds = kwargs.pop("close_fds") or system() != "Windows"
         self.env = env or os.environ
+        self.popen_kw = kwargs.get("popen_kw", {})
 
     @property
     def service_url(self) -> str:
@@ -207,6 +208,7 @@ class Service(ABC):
                 stderr=self.log_file,
                 stdin=PIPE,
                 creationflags=self.creation_flags,
+                **self.popen_kw,
             )
             logger.debug(f"Started executable: `{self.path}` in a child process with pid: {self.process.pid}")
         except TypeError:
