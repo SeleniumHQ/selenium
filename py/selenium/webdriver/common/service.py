@@ -58,6 +58,7 @@ class Service(ABC):
         log_file: SubprocessStdAlias = DEVNULL,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
         start_error_message: typing.Optional[str] = None,
+        **kwargs,
     ) -> None:
         self.path = executable
         self.port = port or utils.free_port()

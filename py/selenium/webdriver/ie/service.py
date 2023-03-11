@@ -32,6 +32,7 @@ class Service(service.Service):
         host: typing.Optional[str] = None,
         log_level: typing.Optional[str] = None,
         log_file: typing.Optional[str] = None,
+        **kwargs,
     ) -> None:
         """Creates a new instance of the Service.
 
@@ -56,6 +57,7 @@ class Service(service.Service):
             executable_path,
             port=port,
             start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
+            **kwargs,
         )
 
     def command_line_args(self) -> List[str]:

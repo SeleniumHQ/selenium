@@ -43,6 +43,7 @@ class Service(service.ChromiumService):
         log_path: typing.Optional[str] = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        **kwargs,
     ) -> None:
         self.service_args = service_args or []
 
@@ -61,4 +62,5 @@ class Service(service.ChromiumService):
             log_path=log_path,
             env=env,
             start_error_message="Please download from https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/",
+            **kwargs,
         )
