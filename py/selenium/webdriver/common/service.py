@@ -167,9 +167,14 @@ class Service(ABC):
                 except AttributeError:
                     pass
             self.process.terminate()
-            self.process.wait(60)
-            # Todo: only SIGKILL if necessary; the process may be cleanly exited by now.
-            self.process.kill()
+            try:
+                self.process.wait(60)
+            except TimeoutError:
+                logger.error(
+                    "Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.",
+                    exc_info=True,
+                )
+                self.process.kill()
         except OSError:
             logger.error("Error terminating service process.", exc_info=True)
 
