@@ -1,3 +1,9 @@
+Selenium 4.8.3
+* More fine grained control for `Service` subprocesses is now available via passing a `popen_kw` keyed map to any `Service` instance.
+* `Service` classes can now control `close_fds` and `creationflags` via `**kwargs` on any `Service` instance.
+* Setting `timeouts` on an `Options` instance no longer raises an exception for subsets of supported timeouts. (#11623)
+* No longer sending `SIGKILL` to subprocesses in instances where `SIGTERM` was successful within 60 seconds.
+
 Selenium 4.8.2
 * Update tox.ini for a valid "isort" version (#11667)
 * Undo a bug fix that caused a worse bug. (#11666)
