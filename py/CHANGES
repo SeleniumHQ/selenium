@@ -1,3 +1,8 @@
+Selenium 4.8.3
+* Add fine grained control for arguments provided to service subprocesses by passing a `popen_kw` mapping for all services.
+* `Options` classes now allow `timeout` to be set partially and no longer raise an exception when all values are not provided. (#11623)
+* No longer sending `SIGKILL` to subprocesses in instances where `SIGTERM` was successful within 60 seconds.
+
 Selenium 4.8.2
 * Update tox.ini for a valid "isort" version (#11667)
 * Undo a bug fix that caused a worse bug. (#11666)

@@ -685,6 +685,7 @@ class WebDriver(BaseWebDriver):
         """
         with contextlib.suppress(NoSuchCookieException):
             return self.execute(Command.GET_COOKIE, {"name": name})["value"]
+        return None
 
     def delete_cookie(self, name) -> None:
         """Deletes a single cookie with the given name.
