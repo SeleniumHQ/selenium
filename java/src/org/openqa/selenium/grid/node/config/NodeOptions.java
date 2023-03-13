@@ -150,12 +150,12 @@ public class NodeOptions {
     }
   }
 
-  public boolean isAutoManageDownloadsFolder() {
-    return config.getBool(NODE_SECTION, "enable-manage-downloads")
+  public boolean isManagedDownloadsEnabled() {
+    return config.getBool(NODE_SECTION, "enable-managed-downloads")
       .orElse(Boolean.FALSE);
   }
 
-  public String baseDirForDownloads() {
+  public String downloadsBaseDirectory() {
     return config.get(NODE_SECTION, "base-dir-downloads")
       .orElse(System.getProperty("user.home"));
   }
@@ -223,9 +223,8 @@ public class NodeOptions {
     addDriverConfigs(factoryFactory, sessionFactories);
     addSpecificDrivers(allDrivers, sessionFactories);
     addDetectedDrivers(allDrivers, sessionFactories);
-    ImmutableMultimap<Capabilities, SessionFactory> built = sessionFactories.build();
 
-    return built.asMap();
+    return sessionFactories.build().asMap();
   }
 
   public int getMaxSessions() {
@@ -642,11 +641,15 @@ public class NodeOptions {
         .setCapability("se:vncEnabled", true)
         .setCapability("se:noVncPort", noVncPort());
     }
-    if (isAutoManageDownloadsFolder() && Browser.honoursSpecifiedDownloadsDir(capabilities)) {
+    if (isManagedDownloadsEnabled() && canConfigureDownloadsDir(capabilities)) {
       capabilities = new PersistentCapabilities(capabilities)
-        .setCapability("se:enableDownloads", true);
+        .setCapability("se:downloadsEnabled", true);
     }
     return capabilities;
+  }
+
+  private boolean canConfigureDownloadsDir(Capabilities caps) {
+    return Browser.FIREFOX.is(caps) || Browser.CHROME.is(caps) || Browser.EDGE.is(caps);
   }
 
   private void report(Map.Entry<WebDriverInfo, Collection<SessionFactory>> entry) {

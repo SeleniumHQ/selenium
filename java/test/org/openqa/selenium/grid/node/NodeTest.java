@@ -17,23 +17,9 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.time.Duration.ofSeconds;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -85,16 +71,30 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static java.time.Duration.ofSeconds;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 class NodeTest {
 
@@ -128,8 +128,8 @@ class NodeTest {
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
     if (isDownloadsTestCase) {
-      stereotype = new ImmutableCapabilities("browserName", "chrome","se:enableDownloads", true);
-      caps= new ImmutableCapabilities("browserName", "chrome", "se:enableDownloads", true);
+      stereotype = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
+      caps = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
     }
 
     uri = new URI("http://localhost:1234");
@@ -147,13 +147,13 @@ class NodeTest {
 
 
     Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .baseDirectory(baseDir.getAbsolutePath())
+      .downloadsBaseDirectory(baseDir.getAbsolutePath())
       .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
       .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
       .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
       .maximumConcurrentSessions(2);
     if (isDownloadsTestCase) {
-      builder = builder.enableManageDownloads(true);
+      builder = builder.enableManagedDownloads(true);
     }
     local = builder.build();
 
@@ -619,9 +619,9 @@ class NodeTest {
     try {
       createTmpFile("Hello, world!");
       HttpRequest req = new HttpRequest(POST,
-        String.format("/session/%s/se/files", session.getId()));
+                                        String.format("/session/%s/se/files", session.getId()));
       String msg = "Please enable management of downloads via the command line arg "
-        + "[--enable-manage-downloads] and restart the node";
+                   + "[--enable-managed-downloads] and restart the node";
       assertThatThrownBy(() -> node.execute(req))
         .hasMessageContaining(msg);
     } finally {

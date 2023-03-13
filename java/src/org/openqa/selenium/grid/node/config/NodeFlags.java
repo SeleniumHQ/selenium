@@ -230,21 +230,22 @@ public class NodeFlags implements HasRoles {
   private String nodeImplementation = DEFAULT_NODE_IMPLEMENTATION;
 
   @Parameter(
-    names = {"--enable-manage-downloads"},
+    names = {"--enable-managed-downloads"},
     description = "When enabled, the Grid node will automatically do the following: \n" +
-  "\t1. Creates a directory named '$HOME/.cache/selenium/downloads/' which will now represent the directory "
-      + "into which files downloaded by Chrome/Firefox/Edge browser will be under.\n" +
-  "\t2. For every new session, a sub-directory will be created/deleted so that all files that were "
-      + "downloaded for a given session are stored in.")
-  @ConfigValue(section = NODE_SECTION, name = "enable-manage-downloads", example = "false")
-  public Boolean enableManageDownloads;
+                  "1. Creates a directory named '$HOME/.cache/selenium/downloads/' which "
+                  + "will now represent the directory into which files downloaded by "
+                  + "Chrome/Firefox/Edge browser will be under.\n" +
+                  "2. For every new session, a sub-directory will be created/deleted so that "
+                  + "all files that were downloaded for a given session are stored in.")
+  @ConfigValue(section = NODE_SECTION, name = "enable-managed-downloads", example = "false")
+  public Boolean managedDownloadsEnabled;
 
   @Parameter(
     names = {"--base-dir-downloads"},
-    description = "The base directory into which all downloads would be saved. If no value is specified "
-      + "then this defaults to the user's home directory.")
-  @ConfigValue(section = NODE_SECTION, name = "enable-manage-downloads", example = "user.home")
-  public String baseDirectory;
+    description = "The base directory into which all downloads would be saved. If no value "
+                  + "is specified then this defaults to the user's home directory.")
+  @ConfigValue(section = NODE_SECTION, name = "base-dir-downloads", example = "user.home")
+  public String downloadsBaseDir;
 
   @Override
   public Set<Role> getRoles() {

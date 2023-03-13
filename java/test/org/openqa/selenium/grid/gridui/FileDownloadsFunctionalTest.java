@@ -1,14 +1,7 @@
 package org.openqa.selenium.grid.gridui;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.google.common.collect.ImmutableMap;
-import java.io.File;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -19,6 +12,15 @@ import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.testing.drivers.Browser;
 
+import java.io.File;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 class FileDownloadsFunctionalTest extends AbstractGridTest {
 
   private static final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
@@ -27,7 +29,7 @@ class FileDownloadsFunctionalTest extends AbstractGridTest {
   @BeforeEach
   public void setup() {
     ImmutableMap<String, Object> nodeData = ImmutableMap.of(
-      "base-dir-downloads",tmpDir.getAbsolutePath(), "enable-manage-downloads", true);
+      "base-dir-downloads", tmpDir.getAbsolutePath(), "enable-manage-downloads", true);
     server = createStandalone(nodeData);
   }
 
@@ -50,7 +52,7 @@ class FileDownloadsFunctionalTest extends AbstractGridTest {
 
   private void runFileDownloadTestOn(Browser browser) throws InterruptedException {
     Capabilities options = browser.getCapabilities()
-      .merge(new ImmutableCapabilities("se:enableDownloads", true));
+      .merge(new ImmutableCapabilities("se:downloadsEnabled", true));
     if (browser == Browser.CHROME) {
       options = appendPrefs(options, ImmutableMap.of("safebrowsing.enabled", true));
     }

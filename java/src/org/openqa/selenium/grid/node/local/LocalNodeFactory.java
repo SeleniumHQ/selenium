@@ -71,8 +71,8 @@ public class LocalNodeFactory {
       .drainAfterSessionCount(nodeOptions.getDrainAfterSessionCount())
       .enableCdp(nodeOptions.isCdpEnabled())
       .enableBiDi(nodeOptions.isBiDiEnabled())
-      .baseDirectory(nodeOptions.baseDirForDownloads())
-      .enableManageDownloads(nodeOptions.isAutoManageDownloadsFolder())
+      .downloadsBaseDirectory(nodeOptions.downloadsBaseDirectory())
+      .enableManagedDownloads(nodeOptions.isManagedDownloadsEnabled())
       .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
 
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();

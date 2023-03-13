@@ -75,7 +75,7 @@ class DefaultSlotMatcherTest {
   void matchDownloadsForRegularTestMatchingAgainstADownloadAwareNode() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
-      "se:enableDownloads", true
+      "se:downloadsEnabled", true
     );
     Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome"
@@ -87,11 +87,11 @@ class DefaultSlotMatcherTest {
   void matchDownloadsForAutoDownloadTestMatchingAgainstADownloadAwareNode() {
     Capabilities stereotype = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
-      "se:enableDownloads", true
+      "se:downloadsEnabled", true
     );
     Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
-      "se:enableDownloads", true
+      "se:downloadsEnabled", true
     );
     assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
   }
@@ -103,7 +103,7 @@ class DefaultSlotMatcherTest {
     );
     Capabilities capabilities = new ImmutableCapabilities(
       CapabilityType.BROWSER_NAME, "chrome",
-      "se:enableDownloads", true
+      "se:downloadsEnabled", true
     );
     assertThat(slotMatcher.matches(stereotype, capabilities)).isFalse();
   }

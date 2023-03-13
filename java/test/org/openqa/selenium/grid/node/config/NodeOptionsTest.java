@@ -44,6 +44,7 @@ import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.safari.SafariDriverInfo;
 
 import java.io.StringReader;
 import java.net.URI;
@@ -53,7 +54,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.openqa.selenium.safari.SafariDriverInfo;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
@@ -143,7 +143,7 @@ class NodeOptionsTest {
       .filter(caps -> expected.equalsIgnoreCase(caps.getBrowserName()))
       .findFirst()
       .orElseThrow(() -> new AssertionError("Unable to find " + customMsg + " info"));
-    return Optional.ofNullable(found.getCapability("se:enableDownloads"))
+    return Optional.ofNullable(found.getCapability("se:downloadsEnabled"))
       .map(value -> Boolean.parseBoolean(value.toString()))
       .orElse(Boolean.FALSE);
   }

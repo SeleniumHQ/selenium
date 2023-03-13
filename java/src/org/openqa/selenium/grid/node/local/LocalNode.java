@@ -26,14 +26,6 @@ import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
-import java.io.Serializable;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
@@ -84,18 +76,25 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -105,6 +104,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
@@ -133,7 +133,7 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final int configuredSessionCount;
   private final boolean cdpEnabled;
-  private final boolean enableManageDownloads;
+  private final boolean managedDownloadsEnabled;
 
   private final boolean bidiEnabled;
   private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
@@ -142,8 +142,8 @@ public class LocalNode extends Node {
   private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
   private final AtomicInteger pendingSessions = new AtomicInteger();
   private final AtomicInteger sessionCount = new AtomicInteger();
-  private final Map<SessionId,UUID> downloadFolderToSessionMapping = new ConcurrentHashMap<>();
-  private final String baseDir;
+  private final Map<SessionId, UUID> downloadFolderToSessionMapping = new ConcurrentHashMap<>();
+  private final String downloadsBaseDir;
 
   private File defaultDownloadsDir;
 
@@ -162,8 +162,8 @@ public class LocalNode extends Node {
     Duration heartbeatPeriod,
     List<SessionSlot> factories,
     Secret registrationSecret,
-    String baseDir,
-    boolean enableManageDownloads) {
+    String downloadsBaseDir,
+    boolean managedDownloadsEnabled) {
     super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
@@ -180,8 +180,8 @@ public class LocalNode extends Node {
     this.sessionCount.set(drainAfterSessionCount);
     this.cdpEnabled = cdpEnabled;
     this.bidiEnabled = bidiEnabled;
-    this.enableManageDownloads = enableManageDownloads;
-    this.baseDir = baseDir;
+    this.managedDownloadsEnabled = managedDownloadsEnabled;
+    this.downloadsBaseDir = downloadsBaseDir;
 
     this.healthCheck = healthCheck == null ?
                        () -> {
@@ -403,17 +403,21 @@ public class LocalNode extends Node {
 
       UUID folderIdForPossibleSession = UUID.randomUUID();
       Capabilities desiredCapabilities = sessionRequest.getDesiredCapabilities();
-      Capabilities enriched = enrichWithDownloadsPathInfo(folderIdForPossibleSession, desiredCapabilities);
+      Capabilities enriched = enrichWithDownloadsPathInfo(folderIdForPossibleSession,
+                                                          desiredCapabilities);
       enriched = desiredCapabilities.merge(enriched);
-      sessionRequest = new CreateSessionRequest(sessionRequest.getDownstreamDialects(), enriched, sessionRequest.getMetadata());
+      sessionRequest = new CreateSessionRequest(sessionRequest.getDownstreamDialects(), enriched,
+                                                sessionRequest.getMetadata());
 
       Either<WebDriverException, ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
 
       if (possibleSession.isRight()) {
         ActiveSession session = possibleSession.right();
         downloadFolderToSessionMapping.put(session.getId(), folderIdForPossibleSession);
-        LOG.info("Downloads pertaining to Session Id [" + session.getId().toString() + "] will be " +
-        "saved to " + defaultDownloadsBaseFolder().getAbsolutePath() + "/" + folderIdForPossibleSession);
+        LOG.info(
+          "Downloads pertaining to Session Id [" + session.getId().toString() + "] will be " +
+          "saved to " + defaultDownloadsBaseFolder().getAbsolutePath() + "/"
+          + folderIdForPossibleSession);
         currentSessions.put(session.getId(), slotToUse);
 
         checkSessionCount();
@@ -455,9 +459,9 @@ public class LocalNode extends Node {
   }
 
   private Capabilities enrichWithDownloadsPathInfo(UUID id, Capabilities caps) {
-    if (!enableManageDownloads || !Browser.honoursSpecifiedDownloadsDir(caps)) {
-      // Auto enable of downloads is not turned on. So don't bother fiddling around
-      // with the capabilities.
+    Object downloadsEnabled = caps.getCapability("se:downloadsEnabled");
+    if (downloadsEnabled == null || !Boolean.parseBoolean(downloadsEnabled.toString())) {
+      // Managed downloads is not enabled on this Node or the user did not request it.
       return caps;
     }
 
@@ -474,23 +478,21 @@ public class LocalNode extends Node {
       ImmutableMap<String, Serializable> map = ImmutableMap.of(
         "download.prompt_for_download", false,
         "download.default_directory", subDir.getAbsolutePath());
-      appendPrefs(caps, "goog:chromeOptions", map);
-      return caps;
+      return appendPrefs(caps, "goog:chromeOptions", map);
     }
 
     if (Browser.EDGE.is(caps)) {
       ImmutableMap<String, Serializable> map = ImmutableMap.of(
         "download.prompt_for_download", false,
         "download.default_directory", subDir.getAbsolutePath());
-      appendPrefs(caps, "ms:edgeOptions", map);
-      return caps;
+      return appendPrefs(caps, "ms:edgeOptions", map);
     }
 
     if (Browser.FIREFOX.is(caps)) {
       ImmutableMap<String, Serializable> map = ImmutableMap.of(
         "browser.download.folderList", 2,
         "browser.download.dir", subDir.getAbsolutePath());
-      appendPrefs(caps, "moz:firefoxOptions", map);
+      return appendPrefs(caps, "moz:firefoxOptions", map);
     }
     return caps;
   }
@@ -564,9 +566,9 @@ public class LocalNode extends Node {
     if (slot != null && slot.getSession() instanceof DockerSession) {
       return executeWebDriverCommand(req);
     }
-    if (!this.enableManageDownloads) {
+    if (!this.managedDownloadsEnabled) {
       String msg = "Please enable management of downloads via the command line arg "
-        + "[--enable-manage-downloads] and restart the node";
+                   + "[--enable-managed-downloads] and restart the node";
       throw new WebDriverException(msg);
     }
     File dir = new File(defaultDownloadsBaseFolder(),
@@ -723,20 +725,20 @@ public class LocalNode extends Node {
         }
       });
       toUse = new PersistentCapabilities(cdpFiltered).setCapability("se:cdpEnabled", false);
-      }
+    }
 
-      // Add se:bidi if necessary to send the bidi url back
-      if ((isSupportingBiDi || toUse.getCapability("se:bidi") != null) && bidiEnabled) {
-        String bidiPath = String.format("/session/%s/se/bidi", other.getId());
-        toUse = new PersistentCapabilities(toUse).setCapability("se:bidi", rewrite(bidiPath));
-      } else {
-        // Remove any se:bidi* from the response, BiDi is not supported nor enabled
-        MutableCapabilities bidiFiltered = new MutableCapabilities();
-        toUse.asMap().forEach((key, value) -> {
-          if (!key.startsWith("se:bidi")) {
-            bidiFiltered.setCapability(key, value);
-          }
-        });
+    // Add se:bidi if necessary to send the bidi url back
+    if ((isSupportingBiDi || toUse.getCapability("se:bidi") != null) && bidiEnabled) {
+      String bidiPath = String.format("/session/%s/se/bidi", other.getId());
+      toUse = new PersistentCapabilities(toUse).setCapability("se:bidi", rewrite(bidiPath));
+    } else {
+      // Remove any se:bidi* from the response, BiDi is not supported nor enabled
+      MutableCapabilities bidiFiltered = new MutableCapabilities();
+      toUse.asMap().forEach((key, value) -> {
+        if (!key.startsWith("se:bidi")) {
+          bidiFiltered.setCapability(key, value);
+        }
+      });
       toUse = new PersistentCapabilities(bidiFiltered).setCapability("se:bidiEnabled", false);
     }
 
@@ -861,12 +863,13 @@ public class LocalNode extends Node {
     if (defaultDownloadsDir != null) {
       return defaultDownloadsDir;
     }
-    String location = baseDir + File.separator + ".cache" +
-      File.separator + "selenium" + File.separator + "downloads";
+    String location = this.downloadsBaseDir + File.separator + ".cache" +
+                      File.separator + "selenium" + File.separator + "downloads";
     defaultDownloadsDir = new File(location);
     boolean created = defaultDownloadsDir.mkdirs();
     if (created) {
-      LOG.info("All files downloaded by sessions on this node can be found under [" + location + "].");
+      LOG.info(
+        "All files downloaded by sessions on this node can be found under [" + location + "].");
     } else {
       LOG.info(location + " already exists. Using it for managing downloaded files.");
     }
@@ -889,8 +892,8 @@ public class LocalNode extends Node {
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
-    private boolean enableManageDownloads = false;
-    private String baseDirectory;
+    private boolean managedDownloadsEnabled = false;
+    private String downloadsBaseDir;
 
     private Builder(
       Tracer tracer,
@@ -945,13 +948,13 @@ public class LocalNode extends Node {
       return this;
     }
 
-    public Builder enableManageDownloads(boolean enable) {
-      this.enableManageDownloads = enable;
+    public Builder enableManagedDownloads(boolean enable) {
+      this.managedDownloadsEnabled = enable;
       return this;
     }
 
-    public Builder baseDirectory(String directory) {
-      this.baseDirectory = directory;
+    public Builder downloadsBaseDirectory(String directory) {
+      this.downloadsBaseDir = directory;
       return this;
     }
 
@@ -971,8 +974,8 @@ public class LocalNode extends Node {
         heartbeatPeriod,
         factories.build(),
         registrationSecret,
-        Optional.ofNullable(baseDirectory).orElse(System.getProperty("user.home")),
-        enableManageDownloads);
+        Optional.ofNullable(downloadsBaseDir).orElse(System.getProperty("user.home")),
+        managedDownloadsEnabled);
     }
 
     public Advanced advanced() {

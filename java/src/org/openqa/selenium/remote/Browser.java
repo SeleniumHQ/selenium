@@ -86,8 +86,4 @@ public interface Browser {
   default String toJson() {
     return browserName();
   }
-
-  static boolean honoursSpecifiedDownloadsDir(Capabilities caps) {
-    return Browser.FIREFOX.is(caps) || Browser.CHROME.is(caps) || Browser.EDGE.is(caps);
-  }
 }
