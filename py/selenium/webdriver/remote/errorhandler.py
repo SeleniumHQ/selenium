@@ -122,7 +122,7 @@ class ErrorHandler:
 
                 try:
                     value = json.loads(value_json)
-                    if len(value.keys()) == 1:
+                    if len(value) == 1:
                         value = value["value"]
                     status = value.get("error", None)
                     if not status:
