@@ -139,8 +139,6 @@ public class LocalNode extends Node {
   private final AtomicInteger pendingSessions = new AtomicInteger();
   private final AtomicInteger sessionCount = new AtomicInteger();
 
-  private File defaultDownloadsDir;
-
   protected LocalNode(
     Tracer tracer,
     EventBus bus,
@@ -230,16 +228,27 @@ public class LocalNode extends Node {
     sessionCleanupNodeService.scheduleAtFixedRate(
       GuardedRunnable.guard(currentSessions::cleanUp), 30, 30, TimeUnit.SECONDS);
 
-    ScheduledExecutorService tempFileCleanupNodeService =
+    ScheduledExecutorService uploadTempFileCleanupNodeService =
       Executors.newSingleThreadScheduledExecutor(
         r -> {
           Thread thread = new Thread(r);
           thread.setDaemon(true);
-          thread.setName("TempFile Cleanup Node " + externalUri);
+          thread.setName("UploadTempFile Cleanup Node " + externalUri);
           return thread;
         });
-    tempFileCleanupNodeService.scheduleAtFixedRate(
+    uploadTempFileCleanupNodeService.scheduleAtFixedRate(
       GuardedRunnable.guard(uploadsTempFileSystem::cleanUp), 30, 30, TimeUnit.SECONDS);
+
+    ScheduledExecutorService downloadTempFileCleanupNodeService =
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("DownloadTempFile Cleanup Node " + externalUri);
+          return thread;
+        });
+    downloadTempFileCleanupNodeService.scheduleAtFixedRate(
+      GuardedRunnable.guard(downloadsTempFileSystem::cleanUp), 30, 30, TimeUnit.SECONDS);
 
     ScheduledExecutorService heartbeatNodeService =
       Executors.newSingleThreadScheduledExecutor(
