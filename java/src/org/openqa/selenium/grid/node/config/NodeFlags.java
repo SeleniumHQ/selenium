@@ -240,13 +240,6 @@ public class NodeFlags implements HasRoles {
   @ConfigValue(section = NODE_SECTION, name = "enable-managed-downloads", example = "false")
   public Boolean managedDownloadsEnabled;
 
-  @Parameter(
-    names = {"--base-dir-downloads"},
-    description = "The base directory into which all downloads would be saved. If no value "
-                  + "is specified then this defaults to the user's home directory.")
-  @ConfigValue(section = NODE_SECTION, name = "base-dir-downloads", example = "user.home")
-  public String downloadsBaseDir;
-
   @Override
   public Set<Role> getRoles() {
     return Collections.singleton(NODE_ROLE);

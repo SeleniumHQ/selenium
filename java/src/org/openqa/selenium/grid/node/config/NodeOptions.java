@@ -155,11 +155,6 @@ public class NodeOptions {
       .orElse(Boolean.FALSE);
   }
 
-  public String downloadsBaseDirectory() {
-    return config.get(NODE_SECTION, "base-dir-downloads")
-      .orElse(System.getProperty("user.home"));
-  }
-
   public Node getNode() {
     return config.getClass(NODE_SECTION, "implementation", Node.class, DEFAULT_NODE_IMPLEMENTATION);
   }

@@ -106,12 +106,6 @@ class NodeTest {
   private ImmutableCapabilities caps;
   private URI uri;
   private Secret registrationSecret;
-  private static final File baseDir = new File(System.getProperty("java.io.tmpdir"));
-  private static  final File downloadsPath = new File(baseDir, ".cache/selenium/downloads");
-
-  static {
-    downloadsPath.mkdirs();
-  }
 
   private static <A, B> EitherAssert<A, B> assertThatEither(Either<A, B> either) {
     return new EitherAssert<>(either);
@@ -147,7 +141,6 @@ class NodeTest {
 
 
     Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-      .downloadsBaseDirectory(baseDir.getAbsolutePath())
       .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
       .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
       .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
@@ -497,7 +490,7 @@ class NodeTest {
     req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
     node.execute(req);
 
-    File baseDir = getTemporaryFilesystemBaseDir(local.getTemporaryFilesystem(session.getId()));
+    File baseDir = getTemporaryFilesystemBaseDir(local.getUploadsFilesystem(session.getId()));
     assertThat(baseDir.listFiles()).hasSize(1);
     File uploadDir = baseDir.listFiles()[0];
     assertThat(uploadDir.listFiles()).hasSize(1);
@@ -554,10 +547,10 @@ class NodeTest {
     HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/files", session.getId()));
 
     //Let's simulate as if we downloaded a file via a test case
-    String zip = simulateFileDownload(session.getId(),hello);
+    String zip = simulateFileDownload(session.getId(), hello);
 
     // This file we are going to leave in the downloads directory of the session
-    // Just to check if we can clean-up all the files for the session
+    // Just to check if we can clean up all the files for the session
     simulateFileDownload(session.getId(),"Goodbye, world!");
 
     String payload = new Json().toJson(Collections.singletonMap("name", zip));
@@ -577,17 +570,19 @@ class NodeTest {
       String decodedContents = String.join("", Files.readAllLines(path));
       assertThat(decodedContents).isEqualTo(hello);
     } finally {
-      File someDir = new File(downloadsPath, local.getDownloadsDirForSession(session.getId()));
+      UUID downloadsId = local.getDownloadsIdForSession(session.getId());
+      File someDir = getTemporaryFilesystemBaseDir(local.getDownloadsFilesystem(downloadsId));
       node.stop(session.getId());
-      //If the directory got wiped off, then it means that the files that went into it also got
-      //cleaned up and we are good!
-      assertThat(someDir).doesNotExist();
+      // The cache only wipes files downloaded by the Node, which start with "download"
+      // This test case puts files in there, which is why the directory is not deleted
+      // (Only when the process exits)
+      assertThat(someDir.listFiles((dir, name) -> name.startsWith("download"))).hasSize(0);
     }
   }
 
   @Test
   @DisplayName("DownloadsTestCase")
-  void canListFilesToDownload() {
+  void canListFilesToDownload() throws IOException {
     Either<WebDriverException, CreateSessionResponse> response =
       node.newSession(createSessionRequest(caps));
     assertThatEither(response).isRight();
@@ -795,6 +790,7 @@ class NodeTest {
     }
 
   }
+
   private File createTmpFile(String content) {
     try {
       File f = File.createTempFile("webdriver", "tmp");
@@ -815,18 +811,20 @@ class NodeTest {
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
     return new CreateSessionRequest(
-            ImmutableSet.copyOf(Dialect.values()),
-            caps,
-            ImmutableMap.of());
+      ImmutableSet.copyOf(Dialect.values()),
+      caps,
+      ImmutableMap.of());
   }
 
-  private String simulateFileDownload(SessionId id, String text) {
+  private String simulateFileDownload(SessionId id, String text) throws IOException {
     File zip = createTmpFile(text);
-    File target = new File(downloadsPath, local.getDownloadsDirForSession(id) + "/" + zip.getName());
+    UUID downloadsId = local.getDownloadsIdForSession(id);
+    File someDir = getTemporaryFilesystemBaseDir(local.getDownloadsFilesystem(downloadsId));
+    File target = new File(someDir, zip.getName());
     boolean renamed = zip.renameTo(target);
     if (!renamed) {
       throw new IllegalStateException("Could not move " + zip.getName() + " to directory " +
-      target.getParentFile().getAbsolutePath());
+                                      target.getParentFile().getAbsolutePath());
     }
     return zip.getName();
   }

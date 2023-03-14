@@ -71,7 +71,6 @@ public class LocalNodeFactory {
       .drainAfterSessionCount(nodeOptions.getDrainAfterSessionCount())
       .enableCdp(nodeOptions.isCdpEnabled())
       .enableBiDi(nodeOptions.isBiDiEnabled())
-      .downloadsBaseDirectory(nodeOptions.downloadsBaseDirectory())
       .enableManagedDownloads(nodeOptions.isManagedDownloadsEnabled())
       .heartbeatPeriod(nodeOptions.getHeartbeatPeriod());
 
