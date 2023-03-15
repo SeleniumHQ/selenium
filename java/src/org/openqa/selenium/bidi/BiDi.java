@@ -93,10 +93,14 @@ public class BiDi implements Closeable {
   public <X> void clearListener(Event<X> event) {
     Require.nonNull("Event to listen for", event);
 
-    send(new Command<>("session.unsubscribe",
-                       ImmutableMap.of("events", Collections.singletonList(event.getMethod()))));
+    // The browser throws an error if we try to unsubscribe an event that was not subscribed in the first place
+    if (connection.isEventSubscribed(event)) {
+      send(new Command<>(
+        "session.unsubscribe",
+        ImmutableMap.of("events", Collections.singletonList(event.getMethod()))));
 
-    connection.clearListener(event);
+      connection.clearListener(event);
+    }
   }
 
   public void clearListeners() {
