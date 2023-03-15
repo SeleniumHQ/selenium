@@ -17,31 +17,46 @@
 
 package org.openqa.selenium.grid.gridui;
 
-import java.util.Objects;
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.grid.commands.Standalone;
+import org.openqa.selenium.grid.config.Config;
+import org.openqa.selenium.grid.config.MapConfig;
+import org.openqa.selenium.grid.config.MemoizedConfig;
 import org.openqa.selenium.grid.server.Server;
+import org.openqa.selenium.grid.web.Values;
+import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.openqa.selenium.grid.gridui.Urls.whereIs;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-class OverallGridTest extends AbstractGridTest {
+class OverallGridTest {
 
   private Server<?> server;
   private WebDriver driver;
@@ -86,9 +101,39 @@ class OverallGridTest extends AbstractGridTest {
 
   @Test
   void shouldIncrementSessionCountWhenSessionStarts() {
-    remoteWebDriver = new RemoteWebDriver(server.getUrl(), Objects.requireNonNull(Browser.detect()).getCapabilities());
+    remoteWebDriver = new RemoteWebDriver(server.getUrl(), Browser.detect().getCapabilities());
     driver.get(whereIs(server, "/ui/index.html#/sessions"));
 
     wait.until(textToBe(By.cssSelector("div[data-testid='session-count']"), "1"));
   }
+
+  private Server<?> createStandalone() {
+    int port = PortProber.findFreePort();
+
+    Config config = new MemoizedConfig(
+      new MapConfig(ImmutableMap.of(
+        "server", Collections.singletonMap("port", port),
+        "node", ImmutableMap.of("detect-drivers", true, "selenium-manager", true)
+      )));
+
+    Server<?> server = new Standalone().asServer(config).start();
+
+    waitUntilReady(server);
+
+    return server;
+  }
+
+  private void waitUntilReady(Server<?> server) {
+    try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
+      new FluentWait<>(client)
+        .withTimeout(Duration.ofSeconds(5))
+        .until(
+          c -> {
+            HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+            Map<String, Object> status = Values.get(response, MAP_TYPE);
+            return status != null && Boolean.TRUE.equals(status.get("ready"));
+          });
+    }
+  }
+
 }
