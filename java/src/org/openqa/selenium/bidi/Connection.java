@@ -188,6 +188,16 @@ public class Connection implements Closeable {
     }
   }
 
+  public <X> boolean isEventSubscribed(Event<X> event) {
+    Lock lock = callbacksLock.writeLock();
+    lock.lock();
+    try {
+      return eventCallbacks.containsKey(event);
+    } finally {
+      lock.unlock();
+    }
+  }
+
   public void clearListeners() {
     Lock lock = callbacksLock.writeLock();
     lock.lock();

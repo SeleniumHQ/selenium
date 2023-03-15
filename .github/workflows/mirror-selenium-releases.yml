@@ -1,4 +1,4 @@
-name: mirror
+name: mirror-selenium-releases
 
 on:
   schedule:
@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -23,15 +23,15 @@ jobs:
       run: |
         export CHANGES=$(git status -s)
         if [ -n "$CHANGES" ]; then
-           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-           git config --local user.name "github-actions[bot]"
-           git add common/mirror/selenium
-           git commit -m "Update mirror info" -a
-           echo "::set-output name=commit::true"
+          git config --local user.email "selenium-ci@users.noreply.github.com"
+          git config --local user.name "Selenium CI Bot"        
+          git add common/mirror/selenium
+          git commit -m "Update mirror info" -a
+          echo "::set-output name=commit::true"
         fi
     - name: Push changes
       if: steps.git.outputs.commit == 'true'
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.SELENIUM_CI_TOKEN }}
         branch: ${{ github.ref }}

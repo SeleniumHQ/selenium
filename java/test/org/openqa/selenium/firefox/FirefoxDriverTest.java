@@ -44,9 +44,7 @@ import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
@@ -76,7 +74,6 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 class FirefoxDriverTest extends JupiterTestBase {
 
@@ -85,10 +82,10 @@ class FirefoxDriverTest extends JupiterTestBase {
   private static final String EXT_UNSIGNED_ZIP = "common/extensions/webextensions-selenium-example-unsigned.zip";
   private static final String EXT_SIGNED_DIR = "common/extensions/webextensions-selenium-example-signed";
   private static final String EXT_UNSIGNED_DIR = "common/extensions/webextensions-selenium-example";
-  private static char[] CHARS =
+  private static final char[] CHARS =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
       .toCharArray();
-  private static Random RANDOM = new Random();
+  private static final Random RANDOM = new Random();
 
   private static String randomString() {
     int n = 20 + RANDOM.nextInt(80);
@@ -365,10 +362,6 @@ class FirefoxDriverTest extends JupiterTestBase {
     localDriver = new FirefoxDriver(new FirefoxOptions().addArguments("-headless"));
 
     assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability("moz:headless")).isEqualTo(true);
-  }
-
-  private ExpectedCondition<Boolean> urlToBe(final String expectedUrl) {
-    return driver1 -> expectedUrl.equals(driver1.getCurrentUrl());
   }
 
   @Test

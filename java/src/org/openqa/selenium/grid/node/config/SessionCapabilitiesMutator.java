@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +55,10 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
 
     if (!Objects.equals(slotStereotype.getBrowserName(), capabilities.getBrowserName())) {
       return capabilities;
+    }
+
+    if ("internet explorer".equalsIgnoreCase(capabilities.getBrowserName())) {
+      return new ImmutableCapabilities(removeUnknownExtensionsForIE(capabilities));
     }
 
     String browserName = capabilities.getBrowserName().toLowerCase();
@@ -95,11 +100,21 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
     return slotStereotype.merge(capabilities);
   }
 
+  private Map<String, Object> removeUnknownExtensionsForIE(Capabilities capabilities) {
+    Map<String, Object> toReturn = new HashMap<>(capabilities.asMap());
+    capabilities.asMap().keySet()
+      .stream()
+      .filter(key -> key.contains(":"))
+      .filter(key -> !"se:ieOptions".equalsIgnoreCase(key))
+      .forEach(toReturn::remove);
+    return toReturn;
+  }
+
   private Map<String, Object> mergeChromiumOptions(Map<String, Object> stereotypeOptions,
                                                    Map<String, Object> capsOptions) {
     Map<String, Object> toReturn = new HashMap<>(stereotypeOptions);
 
-    for (Map.Entry<String, Object>  entry : capsOptions.entrySet()) {
+    for (Map.Entry<String, Object> entry : capsOptions.entrySet()) {
       String name = entry.getKey();
       Object value = entry.getValue();
       if (name.equals("args")) {

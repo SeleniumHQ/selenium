@@ -49,6 +49,7 @@ pub mod firefox;
 pub mod iexplorer;
 pub mod logger;
 pub mod metadata;
+pub mod mirror;
 pub mod safari;
 pub mod safaritp;
 
@@ -68,9 +69,13 @@ pub const DASH_DASH_VERSION: &str = "{} --version";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
+pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
 pub const FALLBACK_RETRIES: u32 = 5;
 pub const WHERE_COMMAND: &str = "where {}";
 pub const WHICH_COMMAND: &str = "which {}";
+pub const TTL_BROWSERS_SEC: u64 = 0;
+pub const TTL_DRIVERS_SEC: u64 = 86400;
+pub const UNAME_COMMAND: &str = "uname -{}";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -132,6 +137,7 @@ pub trait SeleniumManager {
     fn detect_browser_version(&self, commands: Vec<String>) -> Option<String> {
         let mut metadata = get_metadata(self.get_logger());
         let browser_name = &self.get_browser_name();
+        let browser_ttl = self.get_config().browser_ttl;
 
         match get_browser_version_from_metadata(&metadata.browsers, browser_name) {
             Some(version) => {
@@ -167,9 +173,11 @@ pub trait SeleniumManager {
                     break;
                 }
                 if !self.is_safari() {
-                    metadata
-                        .browsers
-                        .push(create_browser_metadata(browser_name, &browser_version));
+                    metadata.browsers.push(create_browser_metadata(
+                        browser_name,
+                        &browser_version,
+                        browser_ttl,
+                    ));
                     write_metadata(&metadata, self.get_logger());
                 }
                 if !browser_version.is_empty() {

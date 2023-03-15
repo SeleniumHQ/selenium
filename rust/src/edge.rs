@@ -23,7 +23,7 @@ use std::path::PathBuf;
 
 use crate::config::ARCH::{ARM64, X32};
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::downloads::read_content_from_link;
+use crate::downloads::read_version_from_link;
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -150,6 +150,7 @@ impl SeleniumManager for EdgeManager {
     fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
         let browser_version = self.get_browser_version();
         let mut metadata = get_metadata(self.get_logger());
+        let driver_ttl = self.get_config().driver_ttl;
 
         match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
         {
@@ -176,13 +177,14 @@ impl SeleniumManager for EdgeManager {
                     "Reading {} version from {}",
                     &self.driver_name, driver_url
                 ));
-                let driver_version = read_content_from_link(self.get_http_client(), driver_url)?;
+                let driver_version = read_version_from_link(self.get_http_client(), driver_url)?;
 
                 if !browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
                         browser_version,
                         self.driver_name,
                         &driver_version,
+                        driver_ttl,
                     ));
                     write_metadata(&metadata, self.get_logger());
                 }
