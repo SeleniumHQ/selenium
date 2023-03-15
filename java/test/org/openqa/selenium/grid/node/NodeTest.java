@@ -573,10 +573,7 @@ class NodeTest {
       UUID downloadsId = local.getDownloadsIdForSession(session.getId());
       File someDir = getTemporaryFilesystemBaseDir(local.getDownloadsFilesystem(downloadsId));
       node.stop(session.getId());
-      // The cache only wipes files downloaded by the Node, which start with "download"
-      // This test case puts files in there, which is why the directory is not deleted
-      // (Only when the process exits)
-      assertThat(someDir.listFiles((dir, name) -> name.startsWith("download"))).hasSize(0);
+      assertThat(someDir).doesNotExist();
     }
   }
 
@@ -820,7 +817,8 @@ class NodeTest {
     File zip = createTmpFile(text);
     UUID downloadsId = local.getDownloadsIdForSession(id);
     File someDir = getTemporaryFilesystemBaseDir(local.getDownloadsFilesystem(downloadsId));
-    File target = new File(someDir, zip.getName());
+    File downloadsDirectory = Optional.ofNullable(someDir.listFiles()).orElse(new File[]{})[0];
+    File target = new File(downloadsDirectory, zip.getName());
     boolean renamed = zip.renameTo(target);
     if (!renamed) {
       throw new IllegalStateException("Could not move " + zip.getName() + " to directory " +

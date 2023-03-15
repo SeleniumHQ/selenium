@@ -493,7 +493,8 @@ public class LocalNode extends Node {
     File tempDir;
     try {
       TemporaryFilesystem tempFS = getDownloadsFilesystem(uuid);
-      tempDir = tempFS.createTempDir("download", "file");
+//      tempDir = tempFS.createTempDir("download", "file");
+      tempDir = tempFS.createTempDir("download", "");
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -607,7 +608,9 @@ public class LocalNode extends Node {
     if (tempFS == null) {
       throw new WebDriverException("Cannot find downloads file system for session id: " + id);
     }
-    File downloadsDirectory = tempFS.getBaseDir();
+    File downloadsDirectory = Optional
+      .ofNullable(tempFS.getBaseDir().listFiles())
+      .orElse(new File[]{})[0];
     if (req.getMethod().equals(HttpMethod.GET)) {
       //User wants to list files that can be downloaded
       List<String> collected = Arrays.stream(
