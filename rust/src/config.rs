@@ -24,7 +24,7 @@ use crate::{
     UNAME_COMMAND,
 };
 use std::env;
-use std::env::consts::{OS};
+use std::env::consts::OS;
 
 pub const ARM64_ARCH: &str = "arm64";
 
