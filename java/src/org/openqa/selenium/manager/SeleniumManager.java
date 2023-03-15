@@ -22,6 +22,7 @@ import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.json.Json;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class SeleniumManager {
 
     private static final String SELENIUM_MANAGER = "selenium-manager";
     private static final String EXE = ".exe";
-    private static final String INFO = "INFO\t";
+    private static final String WARN = "WARN";
 
     private static SeleniumManager manager;
 
@@ -112,9 +113,11 @@ public class SeleniumManager {
             throw new WebDriverException("Unsuccessful command executed: " + Arrays.toString(command) +
                     "\n" + output);
         }
-
-        String[] lines = output.split("\n");
-        return lines[lines.length -1].replace(INFO, "").trim();
+        SeleniumManagerJsonOutput jsonOutput = new Json().toType(output,
+                SeleniumManagerJsonOutput.class);
+        jsonOutput.logs.stream().filter(log -> log.level.equalsIgnoreCase(WARN))
+                .forEach(log -> LOG.warning(log.message));
+        return jsonOutput.result.message;
     }
 
     /**
