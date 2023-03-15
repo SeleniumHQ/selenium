@@ -6,6 +6,7 @@ LARGE_TESTS = [
     "DistributedCdpTest.java",
     "NewSessionCreationTest.java",
     "RemoteWebDriverBiDiTest.java",
+    "RemoteWebDriverDownloadTest.java",
     "StressTest.java",
 ]
 

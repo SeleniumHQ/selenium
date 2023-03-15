@@ -40,6 +40,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -149,8 +150,9 @@ public class NodeOptions {
     }
   }
 
-  public Optional<String> getDownloadsPath() {
-    return config.get(NODE_SECTION, "downloads-path");
+  public boolean isManagedDownloadsEnabled() {
+    return config.getBool(NODE_SECTION, "enable-managed-downloads")
+      .orElse(Boolean.FALSE);
   }
 
   public Node getNode() {
@@ -634,7 +636,15 @@ public class NodeOptions {
         .setCapability("se:vncEnabled", true)
         .setCapability("se:noVncPort", noVncPort());
     }
+    if (isManagedDownloadsEnabled() && canConfigureDownloadsDir(capabilities)) {
+      capabilities = new PersistentCapabilities(capabilities)
+        .setCapability("se:downloadsEnabled", true);
+    }
     return capabilities;
+  }
+
+  private boolean canConfigureDownloadsDir(Capabilities caps) {
+    return Browser.FIREFOX.is(caps) || Browser.CHROME.is(caps) || Browser.EDGE.is(caps);
   }
 
   private void report(Map.Entry<WebDriverInfo, Collection<SessionFactory>> entry) {
