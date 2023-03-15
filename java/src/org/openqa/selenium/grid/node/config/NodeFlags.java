@@ -230,12 +230,16 @@ public class NodeFlags implements HasRoles {
   private String nodeImplementation = DEFAULT_NODE_IMPLEMENTATION;
 
   @Parameter(
-    names = {"--downloads-path"},
-    description = "The default location wherein all browser triggered file downloads would be "
-      + "available to be retrieved from. This is usually the directory that you configure in "
-      + "your browser as the default location for storing downloaded files.")
-  @ConfigValue(section = NODE_SECTION, name = "downloads-path", example = "")
-  private String downloadsPath = "";
+    names = {"--enable-managed-downloads"},
+    arity = 1,
+    description = "When enabled, the Grid node will automatically do the following: " +
+                  "1. Creates a directory named '$HOME/.cache/selenium/downloads/' which "
+                  + "will now represent the directory into which files downloaded by "
+                  + "Chrome/Firefox/Edge browser will be under. " +
+                  "2. For every new session, a sub-directory will be created/deleted so that "
+                  + "all files that were downloaded for a given session are stored in.")
+  @ConfigValue(section = NODE_SECTION, name = "enable-managed-downloads", example = "false")
+  public Boolean managedDownloadsEnabled;
 
   @Override
   public Set<Role> getRoles() {
