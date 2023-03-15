@@ -93,44 +93,48 @@ class NodeOptionsTest {
   }
 
   @Test
-  void ensureAutoDownloadsFlagIsAutoInjectedIntoChromeStereoCapabilitiesWhenEnabledForNode() {
+  void ensureManagedDownloadsFlagIsAutoInjectedIntoChromeStereoCapabilitiesWhenEnabledForNode() {
     boolean isEnabled = isDownloadEnabled(new ChromeDriverInfo(), "ChromeDriverInfo");
     assertThat(isEnabled).isTrue();
   }
 
   @Test
-  void ensureAutoDownloadsFlagIsAutoInjectedIntoFirefoxStereoCapabilitiesWhenEnabledForNode() {
+  void ensureManagedDownloadsFlagIsAutoInjectedIntoFirefoxStereoCapabilitiesWhenEnabledForNode() {
     boolean isEnabled = isDownloadEnabled(new GeckoDriverInfo(), "GeckoDriverInfo");
     assertThat(isEnabled).isTrue();
   }
 
   @Test
-  void ensureAutoDownloadsFlagIsAutoInjectedIntoEdgeStereoCapabilitiesWhenEnabledForNode() {
+  void ensureManagedDownloadsFlagIsAutoInjectedIntoEdgeStereoCapabilitiesWhenEnabledForNode() {
     assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
     boolean isEnabled = isDownloadEnabled(new EdgeDriverInfo(), "EdgeDriverInfo");
     assertThat(isEnabled).isTrue();
   }
 
   @Test
-  void ensureAutoDownloadsFlagIsNOTAutoInjectedIntoIEStereoCapabilitiesWhenEnabledForNode() {
+  void ensureManagedDownloadsFlagIsNOTAutoInjectedIntoIEStereoCapabilitiesWhenEnabledForNode() {
     assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
     assumeFalse(Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")),
-      "We don't have driver servers in PATH when we run unit tests");
-    boolean isEnabled = isDownloadEnabled(new InternetExplorerDriverInfo(), "InternetExplorerDriverInfo");
+                "We don't have driver servers in PATH when we run unit tests");
+    boolean
+      isEnabled =
+      isDownloadEnabled(new InternetExplorerDriverInfo(), "InternetExplorerDriverInfo");
     assertThat(isEnabled).isFalse();
   }
 
   @Test
-  void ensureAutoDownloadsFlagIsNOTAutoInjectedIntoSafariStereoCapabilitiesWhenEnabledForNode() {
+  void ensureManagedDownloadsFlagIsNOTAutoInjectedIntoSafariStereoCapabilitiesWhenEnabledForNode() {
     boolean isEnabled = isDownloadEnabled(new SafariDriverInfo(), "SafariDriverInfo");
     assertThat(isEnabled).isFalse();
   }
 
   boolean isDownloadEnabled(WebDriverInfo driver, String customMsg) {
     assumeTrue(driver.isAvailable(), customMsg + " needs to be available");
-    Config config = new MapConfig(singletonMap("node", ImmutableMap.of("detect-drivers", "true",
-      "selenium-manager", false,
-      "enable-manage-downloads", true)));
+    Config config = new MapConfig(
+      singletonMap("node", ImmutableMap.of("detect-drivers", "true",
+                                           "selenium-manager", false,
+                                           "enable-managed-downloads",
+                                           true)));
     List<Capabilities> reported = new ArrayList<>();
     new NodeOptions(config).getSessionFactories(caps -> {
       reported.add(caps);
