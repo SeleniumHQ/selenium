@@ -159,15 +159,17 @@ public class SeleniumManager {
      * @return the location of the driver.
      */
     public String getDriverPath(Capabilities options) {
-        File binaryFile = getBinary();
-        if(binaryFile == null) {
-          return null;
-        }
-        List<String> commandList = Arrays.asList(binaryFile.getAbsolutePath(), "--browser", options.getBrowserName());
-        if (!options.getBrowserVersion().isEmpty()) {
-          commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
-        }
-        return runCommand(commandList.toArray(new String[0]));
+      File binaryFile = getBinary();
+      if (binaryFile == null) {
+        return null;
+      }
+      List<String> commandList =
+        Arrays.asList(binaryFile.getAbsolutePath(), "--browser", options.getBrowserName(),
+                      "--output", "json");
+      if (!options.getBrowserVersion().isEmpty()) {
+        commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
+      }
+      return runCommand(commandList.toArray(new String[0]));
     }
 
     public String getDriverPath(String driverName) {
