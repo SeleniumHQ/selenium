@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Authenticator Tests</title>
+</head>
+
+<body>
+
+  <h1>Virtual Authenticator Tests</h1>
+
+  <script>
+
+
+    async function registerCredential(options={}) {
+      options=Object.assign({
+        authenticatorSelection: {
+          requireResidentKey: false,
+        },
+        rp: {
+          id: "localhost",
+          name: "Selenium WebDriver Test",
+        },
+        challenge: Int8Array.from("challenge"),
+        pubKeyCredParams: [
+          {type: "public-key",alg: -7},
+        ],
+        user: {
+          name: "name",
+          displayName: "displayName",
+          id: Int8Array.from([1]),
+        },
+      },options);
+      try {
+        const credential=await navigator.credentials.create({publicKey: options});
+        return {
+          status: "OK",
+          credential: {
+            id: credential.id,
+            rawId: Array.from(new Uint8Array(credential.rawId)),
+            transports: credential.response.getTransports(),
+          }
+        };
+      } catch(error) {
+        return {status: error.toString()};
+      }
+    }
+
+    async function getCredential(credentials,options={}) {
+      options=Object.assign({
+        challenge: Int8Array.from("Winter is Coming"),
+        rpId: "localhost",
+        allowCredentials: credentials,
+        userVerification: "preferred",
+      },options);
+      try {
+        const attestation=await navigator.credentials.get({publicKey: options});
+        return {
+          status: "OK",
+          attestation: {
+            userHandle: new Uint8Array(attestation.response.userHandle),
+          },
+        };
+      } catch(error) {
+        return {status: error.toString()};
+      }
+    }
+  </script>
+</body>
+
+</html>

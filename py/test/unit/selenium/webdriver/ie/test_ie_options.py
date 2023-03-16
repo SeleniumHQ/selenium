@@ -16,8 +16,10 @@
 # under the License.
 
 
-from selenium.webdriver.ie.options import Options, ElementScrollBehavior
 import pytest
+
+from selenium.webdriver.ie.options import ElementScrollBehavior
+from selenium.webdriver.ie.options import Options
 
 TIMEOUT = 30
 
@@ -28,8 +30,8 @@ def opts():
 
 
 def test_arguments(opts):
-    arg1 = '-k'
-    arg2 = '-private'
+    arg1 = "-k"
+    arg2 = "-private"
     opts.add_argument(arg1)
     opts.add_argument(arg2)
     assert arg1 in opts.arguments
@@ -44,7 +46,7 @@ def test_browser_attach_timeout(opts):
 
 def test_raises_exception_for_invalid_browser_attach_timeout(opts):
     with pytest.raises(ValueError):
-        opts.browser_attach_timeout = 'foo'
+        opts.browser_attach_timeout = "foo"
 
 
 def test_element_scroll_behavior(opts):
@@ -67,7 +69,7 @@ def test_file_upload_dialog_timeout(opts):
 
 def test_raises_exception_for_file_upload_dialog_timeout(opts):
     with pytest.raises(ValueError):
-        opts.file_upload_dialog_timeout = 'foo'
+        opts.file_upload_dialog_timeout = "foo"
 
 
 def test_force_create_process_api(opts):
@@ -101,7 +103,7 @@ def test_ignore_zoom_level(opts):
 
 
 def test_initial_browser_url(opts):
-    url = 'http://www.selenium.dev'
+    url = "http://www.selenium.dev"
     opts.initial_browser_url = url
     assert opts.initial_browser_url == url
     assert opts.options.get(Options.INITIAL_BROWSER_URL) == url
@@ -144,51 +146,52 @@ def test_attach_to_edge_chrome(opts):
 
 
 def test_edge_executable_path(opts):
-    path = '/path/to/edge'
+    path = "/path/to/edge"
     opts.edge_executable_path = path
     assert opts.edge_executable_path == path
     assert opts.options.get(Options.EDGE_EXECUTABLE_PATH) == path
 
 
 def test_additional_options(opts):
-    opts.add_additional_option('foo', 'bar')
-    assert opts.additional_options.get('foo') == 'bar'
+    opts.add_additional_option("foo", "bar")
+    assert opts.additional_options.get("foo") == "bar"
 
 
 def test_to_capabilities(opts):
-    opts._options['foo'] = 'bar'
+    opts._options["foo"] = "bar"
     assert Options.KEY in opts.to_capabilities()
     assert opts.to_capabilities().get(Options.KEY) == opts._options
 
 
 def test_to_capabilities_arguments(opts):
-    arg = '-k'
+    arg = "-k"
     opts.add_argument(arg)
     caps_opts = opts.to_capabilities().get(Options.KEY)
     assert caps_opts.get(Options.SWITCHES) == arg
 
 
 def test_to_capabilities_additional_options(opts):
-    name = 'foo'
-    value = 'bar'
+    name = "foo"
+    value = "bar"
     opts.add_additional_option(name, value)
     caps_opts = opts.to_capabilities().get(Options.KEY)
     assert caps_opts.get(name) == value
 
 
 def test_to_capabilities_should_not_modify_set_options(opts):
-    opts._options['foo'] = 'bar'
-    arg = '-k'
+    opts._options["foo"] = "bar"
+    arg = "-k"
     opts.add_argument(arg)
-    opts.add_additional_option('baz', 'qux')
+    opts.add_additional_option("baz", "qux")
     opts.to_capabilities().get(Options.KEY)
-    assert opts.options.get('foo') == 'bar'
+    assert opts.options.get("foo") == "bar"
     assert opts.arguments[0] == arg
-    assert opts.additional_options.get('baz') == 'qux'
+    assert opts.additional_options.get("baz") == "qux"
 
 
 def test_starts_with_default_capabilities(opts):
     from selenium.webdriver import DesiredCapabilities
+
     caps = DesiredCapabilities.INTERNETEXPLORER.copy()
     caps.update({"pageLoadStrategy": "normal"})
     assert opts._caps == caps
@@ -196,4 +199,5 @@ def test_starts_with_default_capabilities(opts):
 
 def test_is_a_baseoptions(opts):
     from selenium.webdriver.common.options import BaseOptions
+
     assert isinstance(opts, BaseOptions)

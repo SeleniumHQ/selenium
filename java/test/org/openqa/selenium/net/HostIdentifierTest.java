@@ -18,15 +18,14 @@ package org.openqa.selenium.net;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
-@Category(UnitTests.class)
-public class HostIdentifierTest {
+@Tag("UnitTests")
+class HostIdentifierTest {
 
   @Test
-  public void itWorks() {
+  void itWorks() {
     assertThat(HostIdentifier.getHostName()).isNotEmpty();
     assertThat(HostIdentifier.getHostAddress()).isNotEmpty();
   }

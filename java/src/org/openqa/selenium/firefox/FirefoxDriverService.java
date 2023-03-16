@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.remote.service.DriverService;
+import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +47,5 @@ public abstract class FirefoxDriverService extends DriverService {
 
   public static abstract class Builder<DS extends FirefoxDriverService, B extends FirefoxDriverService.Builder<?, ?>>
       extends DriverService.Builder<DS, B> {
-
-    protected abstract Builder withOptions(FirefoxOptions options);
   }
 }

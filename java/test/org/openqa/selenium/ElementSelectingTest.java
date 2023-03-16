@@ -19,52 +19,52 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-public class ElementSelectingTest extends JUnit4TestBase {
+class ElementSelectingTest extends JupiterTestBase {
   private static final boolean UNSELECTED = false;
   private static final boolean SELECTED = true;
 
   @Test
-  public void testShouldBeAbleToSelectAnEnabledUnselectedCheckbox() {
+  void testShouldBeAbleToSelectAnEnabledUnselectedCheckbox() {
     driver.get(pages.formPage);
     assertCanSelect(enabledUnselectedCheckbox());
   }
 
   @Test
-  public void testShouldBeAbleToSelectAnEnabledUnselectedRadioButton() {
+  void testShouldBeAbleToSelectAnEnabledUnselectedRadioButton() {
     driver.get(pages.formPage);
     assertCanSelect(enabledUnselectedRadioButton());
   }
 
   @Test
-  public void testShouldNotBeAbleToSelectADisabledCheckbox() {
+  void testShouldNotBeAbleToSelectADisabledCheckbox() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedCheckbox());
   }
 
   @Test
-  public void testShouldNotBeAbleToSelectADisabledCheckboxDisabledWithRandomString() {
+  void testShouldNotBeAbleToSelectADisabledCheckboxDisabledWithRandomString() {
     driver.get(pages.formPage);
     assertCannotSelect(randomlyDisabledSelectedCheckbox());
   }
 
   @Test
-  public void testShouldNotBeAbleToSelectADisabledRadioButton() {
+  void testShouldNotBeAbleToSelectADisabledRadioButton() {
     driver.get(pages.formPage);
     assertCannotSelect(disabledUnselectedRadioButton());
   }
 
   @Test
-  public void testShouldNotBeAbleToSelectADisabledRadioButtonDisabledWithRandomString() {
+  void testShouldNotBeAbleToSelectADisabledRadioButtonDisabledWithRandomString() {
     driver.get(pages.formPage);
     assertCannotSelect(randomlyDisabledUnselectedRadioButton());
   }
 
   @Test
-  public void testSelectingRadioButtonShouldUnselectItsSibling() {
+  void testSelectingRadioButtonShouldUnselectItsSibling() {
     driver.get(pages.formPage);
 
     WebElement originallySelected = enabledSelectedRadioButton();
@@ -79,19 +79,19 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToToggleAnEnabledUnselectedCheckbox() {
+  void testShouldBeAbleToToggleAnEnabledUnselectedCheckbox() {
     driver.get(pages.formPage);
     assertCanToggle(enabledUnselectedCheckbox());
   }
 
   @Test
-  public void testShouldBeAbleToToggleAnEnabledSelectedCheckbox() {
+  void testShouldBeAbleToToggleAnEnabledSelectedCheckbox() {
     driver.get(pages.formPage);
     assertCanToggle(enabledSelectedCheckbox());
   }
 
   @Test
-  public void testClickingOnASelectedRadioButtonShouldLeaveItSelected() {
+  void testClickingOnASelectedRadioButtonShouldLeaveItSelected() {
     driver.get(pages.formPage);
 
     WebElement button = enabledSelectedRadioButton();
@@ -103,13 +103,13 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToToggleEnabledMultiSelectOption() {
+  void testShouldBeAbleToToggleEnabledMultiSelectOption() {
     driver.get(pages.formPage);
     assertCanToggle(selectedMultipleSelectOption());
   }
 
   @Test
-  public void testShouldBeAbleToToggleSelectableCheckboxByClickingOnIt() {
+  void testShouldBeAbleToToggleSelectableCheckboxByClickingOnIt() {
     driver.get(pages.formPage);
 
     WebElement checkbox = enabledUnselectedCheckbox();
@@ -123,7 +123,7 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSelectSelectableRadioButtonByClickingOnIt() {
+  void testShouldBeAbleToSelectSelectableRadioButtonByClickingOnIt() {
     driver.get(pages.formPage);
 
     WebElement radioButton = enabledUnselectedRadioButton();
@@ -137,25 +137,25 @@ public class ElementSelectingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testClickingDisabledSelectedCheckboxShouldBeNoop() {
+  void testClickingDisabledSelectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(randomlyDisabledSelectedCheckbox());
   }
 
   @Test
-  public void testClickingDisabledUnselectedCheckboxShouldBeNoop() {
+  void testClickingDisabledUnselectedCheckboxShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedCheckbox());
   }
 
   @Test
-  public void testClickingDisabledSelectedRadioButtonShouldBeNoop() {
+  void testClickingDisabledSelectedRadioButtonShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledSelectedRadioButton());
   }
 
   @Test
-  public void testClickingDisabledUnselectedRadioButtonShouldBeNoop() {
+  void testClickingDisabledUnselectedRadioButtonShouldBeNoop() {
     driver.get(pages.formPage);
     assertClickingPreservesCurrentlySelectedStatus(disabledUnselectedRadioButton());
   }

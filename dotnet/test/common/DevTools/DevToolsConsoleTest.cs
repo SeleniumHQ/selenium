@@ -13,17 +13,16 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsConsoleTest : DevToolsTestFixture
     {
         [Test]
-        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyMessageAdded()
         {
-            var domains = session.GetVersionSpecificDomains<V100.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V111.DevToolsSessionDomains>();
             string consoleMessage = "Hello Selenium";
 
             ManualResetEventSlim sync = new ManualResetEventSlim(false);
-            EventHandler<V100.Console.MessageAddedEventArgs> messageAddedHandler = (sender, e) =>
+            EventHandler<V111.Console.MessageAddedEventArgs> messageAddedHandler = (sender, e) =>
             {
                 Assert.That(e.Message.Text, Is.EqualTo(consoleMessage));
                 sync.Set();

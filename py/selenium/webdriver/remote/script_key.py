@@ -13,12 +13,12 @@
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License
+# under the License.
+
 import uuid
 
 
 class ScriptKey:
-
     def __init__(self, id=None):
         self._id = id or uuid.uuid4()
 
@@ -28,3 +28,6 @@ class ScriptKey:
 
     def __eq__(self, other):
         return self._id == other
+
+    def __repr__(self) -> str:
+        return f"ScriptKey(id={self.id})"

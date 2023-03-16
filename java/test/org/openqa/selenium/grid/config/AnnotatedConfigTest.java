@@ -17,26 +17,25 @@
 
 package org.openqa.selenium.grid.config;
 
+import com.beust.jcommander.Parameter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import com.beust.jcommander.Parameter;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AnnotatedConfigTest {
+class AnnotatedConfigTest {
 
   @Test
-  public void shouldAllowConfigsToBeAnnotated() {
+  void shouldAllowConfigsToBeAnnotated() {
 
     class WithAnnotations {
 
@@ -51,7 +50,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void shouldAllowFieldsToBeSomethingOtherThanStrings() {
+  void shouldAllowFieldsToBeSomethingOtherThanStrings() {
     class WithTypes {
 
       @ConfigValue(section = "types", name = "bool", example = "false")
@@ -66,7 +65,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void shouldAllowCollectionTypeFieldsToBeAnnotated() {
+  void shouldAllowCollectionTypeFieldsToBeAnnotated() {
     class WithBadAnnotation {
 
       @ConfigValue(section = "the", name = "collection", example = "[]")
@@ -82,19 +81,21 @@ public class AnnotatedConfigTest {
     assertTrue(values.contains("gouda"));
   }
 
-  @Test(expected = ConfigException.class)
-  public void shouldNotAllowMapTypeFieldsToBeAnnotated() {
-    class WithBadAnnotation {
+  @Test
+  void shouldNotAllowMapTypeFieldsToBeAnnotated() {
+    assertThrows(ConfigException.class, () -> {
+      class WithBadAnnotation {
 
-      @ConfigValue(section = "bad", name = "map", example = "")
-      private final Map<String, String> cheeses = ImmutableMap.of("peas", "sausage");
-    }
+        @ConfigValue(section = "bad", name = "map", example = "")
+        private final Map<String, String> cheeses = ImmutableMap.of("peas", "sausage");
+      }
 
-    new AnnotatedConfig(new WithBadAnnotation());
+      new AnnotatedConfig(new WithBadAnnotation());
+    });
   }
 
   @Test
-  public void shouldWalkInheritanceHierarchy() {
+  void shouldWalkInheritanceHierarchy() {
     class Parent {
 
       @ConfigValue(section = "cheese", name = "type", example = "")
@@ -111,7 +112,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void configValuesFromChildClassesAreMoreImportant() {
+  void configValuesFromChildClassesAreMoreImportant() {
     class Parent {
 
       @ConfigValue(section = "cheese", name = "type", example = "\"gouda\"")
@@ -130,7 +131,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void defaultValuesForPrimitivesAreIgnored() {
+  void defaultValuesForPrimitivesAreIgnored() {
     // There's no way to tell the difference between the default values and the value having been
     // set to the default. Best not worry about it.
     class Defaults {
@@ -156,7 +157,7 @@ public class AnnotatedConfigTest {
   }
 
   @Test
-  public void shouldUseSetToFilterFields() {
+  void shouldUseSetToFilterFields() {
     class TypesToBeFiltered {
 
       @Parameter(names = {"--bool"})

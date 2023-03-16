@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.interactions;
 
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.internal.Require;
@@ -71,24 +72,48 @@ public class PointerInput implements InputSource, Encodable {
     return new Move(this, duration, origin, x, y);
   }
 
+  public Interaction createPointerMove(Duration duration, Origin origin, Point offset) {
+    return createPointerMove(duration, origin, offset.x, offset.y);
+  }
+
   public Interaction createPointerMove(Duration duration, Origin origin, int x, int y, PointerEventProperties eventProperties) {
     return new Move(this, duration, origin, x, y, eventProperties);
+  }
+
+  public Interaction createPointerMove(Duration duration, Origin origin, Point offset, PointerEventProperties eventProperties) {
+    return createPointerMove(duration, origin, offset.x, offset.y, eventProperties);
   }
 
   public Interaction createPointerDown(int button) {
     return new PointerPress(this, PointerPress.Direction.DOWN, button);
   }
 
+  /**
+   * @deprecated always use the method with the button
+   */
+  @Deprecated
   public Interaction createPointerDown(PointerEventProperties eventProperties) {
-    return new PointerPress(this, PointerPress.Direction.DOWN, eventProperties);
+    return createPointerDown(0, eventProperties);
+  }
+
+  public Interaction createPointerDown(int button, PointerEventProperties eventProperties) {
+    return new PointerPress(this, PointerPress.Direction.DOWN, button, eventProperties);
   }
 
   public Interaction createPointerUp(int button) {
     return new PointerPress(this, PointerPress.Direction.UP, button);
   }
 
+  /**
+   * @deprecated always use the method with the button
+   */
+  @Deprecated
   public Interaction createPointerUp(PointerEventProperties eventProperties) {
-    return new PointerPress(this, PointerPress.Direction.UP, eventProperties);
+    return createPointerUp(0, eventProperties);
+  }
+
+  public Interaction createPointerUp(int button, PointerEventProperties eventProperties) {
+    return new PointerPress(this, PointerPress.Direction.UP, button, eventProperties);
   }
 
   private static class PointerPress extends Interaction implements Encodable {
@@ -110,9 +135,17 @@ public class PointerInput implements InputSource, Encodable {
       this.eventProperties = new PointerEventProperties();
     }
 
+    /**
+     * @deprecated always use the constructor with the button
+     */
+    @Deprecated
     public PointerPress(InputSource source, Direction direction, PointerEventProperties eventProperties) {
+      this(source, direction, 0, eventProperties);
+    }
+
+    public PointerPress(InputSource source, Direction direction, int button, PointerEventProperties eventProperties) {
       super(source);
-      this.button = 0;
+      this.button = button;
       this.eventProperties = Require.nonNull("pointer event properties", eventProperties);
       this.direction = Require.nonNull("Direction of press", direction);
     }
@@ -212,6 +245,8 @@ public class PointerInput implements InputSource, Encodable {
     LEFT(0),
     MIDDLE(1),
     RIGHT(2),
+    BACK(3),
+    FORWARD(4),
     ;
 
     private final int button;

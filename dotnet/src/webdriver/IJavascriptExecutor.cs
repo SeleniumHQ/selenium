@@ -53,7 +53,8 @@ namespace OpenQA.Selenium
         /// </para>
         /// <para>
         /// Arguments must be a number (which will be converted to a <see cref="long"/>),
-        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>.
+        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>,
+        /// or a <see cref="IWrapsElement"/>.
         /// An exception will be thrown if the arguments do not meet these criteria.
         /// The arguments will be made available to the JavaScript via the "arguments" magic
         /// variable, as if the function were called via "Function.apply"
@@ -89,7 +90,8 @@ namespace OpenQA.Selenium
         /// </para>
         /// <para>
         /// Arguments must be a number (which will be converted to a <see cref="long"/>),
-        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>.
+        /// a <see cref="bool"/>, a <see cref="string"/> or a <see cref="IWebElement"/>,
+        /// or a <see cref="IWrapsElement"/>.
         /// An exception will be thrown if the arguments do not meet these criteria.
         /// The arguments will be made available to the JavaScript via the "arguments" magic
         /// variable, as if the function were called via "Function.apply"

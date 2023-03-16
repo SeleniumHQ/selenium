@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestFocusOnBlur extends InternalSelenseTestBase {
   @Test
-  public void testFocusOnBlur() {
+  void testFocusOnBlur() {
     selenium.open("test_focus_on_blur.html");
     selenium.type("testInput", "test");
     selenium.fireEvent("testInput", "blur");

@@ -35,10 +35,9 @@ public class PortProber {
   public static final int START_OF_USER_PORTS = 1024;
   private static final Random random = new Random();
   private static final EphemeralPortRangeDetector ephemeralRangeDetector;
+  private static final Platform current = Platform.getCurrent();
 
   static {
-    final Platform current = Platform.getCurrent();
-
     if (current.is(Platform.LINUX)) {
        ephemeralRangeDetector = LinuxEphemeralPortRangeDetector.getInstance();
      } else if (current.is(Platform.XP)) {
@@ -64,22 +63,42 @@ public class PortProber {
   }
 
   /**
-   * Returns a random port within the systems ephemeral port range <p/>
-   * See https://en.wikipedia.org/wiki/Ephemeral_ports for more information. <p/>
-   * If the system provides a too short range (mostly on old windows systems)
-   * the port range suggested from Internet Assigned Numbers Authority will be used.
+   * Returns a port that is within a probable free-range. <p/> Based on the ports in
+   * <a href="http://en.wikipedia.org/wiki/Ephemeral_ports">...</a>, this method stays away
+   * from all well-known ephemeral port ranges, since they can arbitrarily race with the
+   * operating system in allocations. Due to the port-greedy nature of selenium this
+   * happens fairly frequently. Staying within the known safe range increases the probability
+   * tests will run green quite significantly.
    *
    * @return a random port number
    */
   private static int createAcceptablePort() {
     synchronized (random) {
-      int FIRST_PORT = Math.max(START_OF_USER_PORTS, ephemeralRangeDetector.getLowestEphemeralPort());
-      int LAST_PORT = Math.min(HIGHEST_PORT, ephemeralRangeDetector.getHighestEphemeralPort());
+      final int FIRST_PORT;
+      final int LAST_PORT;
 
-      if (LAST_PORT - FIRST_PORT < 5000) {
+      int ephemeralStart = Math.max(START_OF_USER_PORTS, ephemeralRangeDetector.getLowestEphemeralPort());
+      int ephemeralEnd = Math.min(HIGHEST_PORT, ephemeralRangeDetector.getHighestEphemeralPort());
+
+      /*
+       * If the system provides a too short range of ephemeral ports (mostly on old windows systems)
+       * use the range suggested from Internet Assigned Numbers Authority as ephemeral port range.
+       */
+      if (ephemeralEnd - ephemeralStart < 5000) {
         EphemeralPortRangeDetector ianaRange = new FixedIANAPortRange();
-        FIRST_PORT = ianaRange.getLowestEphemeralPort();
-        LAST_PORT = ianaRange.getHighestEphemeralPort();
+        ephemeralStart = ianaRange.getLowestEphemeralPort();
+        ephemeralEnd = ianaRange.getHighestEphemeralPort();
+      }
+
+      int freeAbove = HIGHEST_PORT - ephemeralEnd;
+      int freeBelow = Math.max(0, ephemeralStart - START_OF_USER_PORTS);
+
+      if (freeAbove > freeBelow) {
+        FIRST_PORT = ephemeralEnd;
+        LAST_PORT = 65535;
+      } else {
+        FIRST_PORT = 1024;
+        LAST_PORT = ephemeralStart;
       }
 
       if (FIRST_PORT == LAST_PORT) {
@@ -94,14 +113,21 @@ public class PortProber {
     }
   }
 
-  private static int checkPortIsFree(int port) {
+  private static boolean isFree(String bindHost, int port) {
     try (ServerSocket socket = new ServerSocket()) {
       socket.setReuseAddress(true);
-      socket.bind(new InetSocketAddress("localhost", port));
-      return socket.getLocalPort();
-    } catch (IOException e) {
-      return -1;
+      socket.bind(new InetSocketAddress(bindHost, port));
+      return true;
+    } catch (Exception e) {
+      return false;
     }
+  }
+
+  static int checkPortIsFree(int port) {
+    if (isFree("localhost", port) && isFree("0.0.0.0", port)) {
+      return port;
+    }
+    return -1;
   }
 
   public static void waitForPortUp(int port, int timeout, TimeUnit unit) {

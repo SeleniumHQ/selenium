@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'childprocess'
+require 'selenium/webdriver/common/child_process'
 require 'selenium/webdriver/common/socket_poller'
 require 'net/http'
 
@@ -92,7 +92,7 @@ module Selenium
             download_server(redirected, destination)
           end
         rescue StandardError
-          FileUtils.rm download_file_name if File.exist? download_file_name
+          FileUtils.rm_rf download_file_name
           raise
         end
 
@@ -182,15 +182,21 @@ module Selenium
     def initialize(jar, opts = {})
       raise Errno::ENOENT, jar unless File.exist?(jar)
 
-      @jar        = jar
-      @host       = '127.0.0.1'
-      @role       = opts.fetch(:role, 'standalone')
-      @port       = opts.fetch(:port, 4444)
-      @timeout    = opts.fetch(:timeout, 30)
+      @jar = jar
+      @host = '127.0.0.1'
+      @role = opts.fetch(:role, 'standalone')
+      @port = opts.fetch(:port, 4444)
+      @timeout = opts.fetch(:timeout, 30)
       @background = opts.fetch(:background, false)
-      @log        = opts[:log]
-      @log_file   = nil
-      @additional_args = []
+      @additional_args = opts.fetch(:args, [])
+      @log = opts[:log]
+      if opts[:log_level]
+        @log ||= true
+        @additional_args << '--log-level'
+        @additional_args << opts[:log_level].to_s
+      end
+
+      @log_file = nil
     end
 
     def start
@@ -204,6 +210,7 @@ module Selenium
       begin
         Net::HTTP.get(@host, '/selenium-server/driver/?cmd=shutDownSeleniumServer', @port)
       rescue Errno::ECONNREFUSED
+        nil
       end
 
       stop_process if @process
@@ -231,7 +238,7 @@ module Selenium
 
       begin
         @process.poll_for_exit(5)
-      rescue ChildProcess::TimeoutError
+      rescue WebDriver::ChildProcess::TimeoutError
         @process.stop
       end
     rescue Errno::ECHILD
@@ -246,16 +253,13 @@ module Selenium
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
         args = ['-jar', @jar, @role, '--port', @port.to_s]
         server_command = ['java'] + properties + args + @additional_args
-        cp = ChildProcess.build(*server_command)
+        cp = WebDriver::ChildProcess.build(*server_command)
         WebDriver.logger.debug("Executing Process #{server_command}")
 
-        io = cp.io
-
         if @log.is_a?(String)
-          @log_file = File.open(@log, 'w')
-          io.stdout = io.stderr = @log_file
+          cp.io = @log
         elsif @log
-          io.inherit!
+          cp.io = :out
         end
 
         cp.detach = @background

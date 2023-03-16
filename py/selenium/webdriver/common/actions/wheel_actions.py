@@ -14,21 +14,20 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from .wheel_input import WheelInput
 from .interaction import Interaction
+from .wheel_input import WheelInput
 
 
 class WheelActions(Interaction):
-
     def __init__(self, source: WheelInput = None):
         if not source:
             source = WheelInput("wheel")
-        super(WheelActions, self).__init__(source)
+        super().__init__(source)
 
-    def pause(self, duration=0):
+    def pause(self, duration: float = 0):
         self.source.create_pause(duration)
         return self
 
-    def scroll(self, x, y, delta_x, delta_y, duration, origin):
+    def scroll(self, x=0, y=0, delta_x=0, delta_y=0, duration=0, origin="viewport"):
         self.source.create_scroll(x, y, delta_x, delta_y, duration, origin)
         return self

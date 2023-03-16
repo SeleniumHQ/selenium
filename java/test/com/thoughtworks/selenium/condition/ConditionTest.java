@@ -17,14 +17,13 @@
 
 package com.thoughtworks.selenium.condition;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.SeleniumException;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test for Condition class.
@@ -32,21 +31,21 @@ import org.junit.Test;
 public class ConditionTest {
 
   private static final ConditionRunner conditionRunner =
-      new JUnitConditionRunner(null, 1, 100);
+    new JUnitConditionRunner(null, 1, 100);
 
   @Test
-  public void testAppendsInfoToFailureMessage() {
+  void testAppendsInfoToFailureMessage() {
     try {
       conditionRunner.waitFor("this condition should always fail", new AlwaysFalseCondition());
       fail("the condition should have failed");
     } catch (AssertionError expected) {
       assertEquals("Condition \"Sky should be blue\" failed to become true within 100 msec; " +
-          "this condition should always fail; [sky is in fact pink]", expected.getMessage());
+        "this condition should always fail; [sky is in fact pink]", expected.getMessage());
     }
   }
 
   @Test
-  public void testNotCanInvertFailingSituationQuickly() {
+  void testNotCanInvertFailingSituationQuickly() {
     Condition alwaysFalse = new AlwaysFalseCondition();
     long start = System.currentTimeMillis();
     final StringBuilder sb = new StringBuilder();
@@ -77,7 +76,7 @@ public class ConditionTest {
   }
 
   @Test
-  public void testNotCanNegatePassingSituationAfterTimeout() {
+  void testNotCanNegatePassingSituationAfterTimeout() {
     Condition alwaysTrue = new AlwaysTrueCondition();
     long start = System.currentTimeMillis();
     try {
@@ -87,13 +86,13 @@ public class ConditionTest {
       long l = System.currentTimeMillis() - start;
       assertTrue(l >= 1000);
       assertEquals(
-          "Condition \"NOT of (Condition \"Sky should be blue\")\" failed to become true within 1000 msec; [yes it is really is blue]",
-          expected.getMessage());
+        "Condition \"NOT of (Condition \"Sky should be blue\")\" failed to become true within 1000 msec; [yes it is really is blue]",
+        expected.getMessage());
     }
   }
 
   @Test
-  public void testCanTurnTrueBeforeTimeout() {
+  void testCanTurnTrueBeforeTimeout() {
     long start = System.currentTimeMillis();
     final int[] time = new int[1];
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 2000);
@@ -109,7 +108,7 @@ public class ConditionTest {
   }
 
   @Test
-  public void testCannotTurnTrueAfterTimeout() {
+  void testCannotTurnTrueAfterTimeout() {
     long start = System.currentTimeMillis();
     final int[] time = new int[1];
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 500);
@@ -130,11 +129,10 @@ public class ConditionTest {
 
   /**
    * Why? Well because for some technologies/setups, any Selenium operation may result in a 'body
-   * not loaded' for the first few loops See http://jira.openqa.org/browse/SRC-302
-   *
+   * not loaded' for the first few loops See <a href="http://jira.openqa.org/browse/SRC-302"></a>
    */
   @Test
-  public void testCanLateNotifyOfSeleniumExceptionAfterTimeout() {
+  void testCanLateNotifyOfSeleniumExceptionAfterTimeout() {
     long start = System.currentTimeMillis();
     JUnitConditionRunner conditionRunner1 = new JUnitConditionRunner(null, 0, 100, 500);
     try {
@@ -147,8 +145,8 @@ public class ConditionTest {
       fail("the condition should have failed");
     } catch (AssertionError expected) {
       assertEquals(
-          "SeleniumException while waiting for 'Condition \"null\"' (otherwise timed out); cause: Yeehaa!",
-          expected.getMessage());
+        "SeleniumException while waiting for 'Condition \"null\"' (otherwise timed out); cause: Yeehaa!",
+        expected.getMessage());
       long l = System.currentTimeMillis() - start;
       assertTrue(l >= 500); // timed out after 500 milliseconds
     }
@@ -156,7 +154,7 @@ public class ConditionTest {
   }
 
   @Test
-  public void testRuntimeExceptionInsideConditionIsWrapped() {
+  void testRuntimeExceptionInsideConditionIsWrapped() {
     final RuntimeException thrownException = new RuntimeException("ooops");
     Condition condition = new Condition("foo") {
       @Override
@@ -169,16 +167,16 @@ public class ConditionTest {
       fail("should have thrown a exception");
     } catch (AssertionError expected) {
       assertEquals("Exception while waiting for 'Condition \"foo\"'; cause: ooops",
-          expected.getMessage());
+        expected.getMessage());
     }
   }
 
   @Test
-  public void testAssertionFailureInsideConditionIsNotWrapped() {
+  void testAssertionFailureInsideConditionIsNotWrapped() {
     Condition condition = new Condition() {
       @Override
       public boolean isTrue(ConditionRunner.Context runner) {
-        assertTrue("OMG", false);
+        fail("OMG");
         return false;
       }
     };
@@ -186,13 +184,12 @@ public class ConditionTest {
       conditionRunner.waitFor(condition);
       fail("should have thrown an assertion failed error");
     } catch (AssertionError expected) {
-      assertEquals("OMG", expected.getMessage());
-      assertEquals(AssertionError.class, expected.getClass());
+      assertTrue(expected.getMessage().contains("OMG"));
     }
   }
 
   @Test
-  public void testMessageWithArgs() {
+  void testMessageWithArgs() {
     final RuntimeException thrownException = new RuntimeException();
     Condition condition = new Condition("foo %s baz", "bar") {
       @Override
@@ -205,7 +202,7 @@ public class ConditionTest {
       fail("should have thrown a runtime exception");
     } catch (AssertionError expected) {
       assertEquals("Exception while waiting for 'Condition \"foo bar baz\"'",
-          expected.getMessage());
+        expected.getMessage());
     }
   }
 

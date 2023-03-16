@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.docker.v1_41;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.ImageId;
 import org.openqa.selenium.docker.internal.Reference;
@@ -34,10 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-public class ListImagesTest {
+class ListImagesTest {
 
   @Test
-  public void shouldReturnImageIfTagIsPresent() {
+  void shouldReturnImageIfTagIsPresent() {
 
     HttpHandler handler = req -> {
       String filters = req.getQueryParameter("filters");

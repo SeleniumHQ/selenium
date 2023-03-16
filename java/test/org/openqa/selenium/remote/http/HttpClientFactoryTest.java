@@ -22,23 +22,22 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.auto.service.AutoService;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
-@Category(UnitTests.class)
-public class HttpClientFactoryTest {
+@Tag("UnitTests")
+class HttpClientFactoryTest {
 
   private String oldProperty;
 
-  @Before
+  @BeforeEach
   public void storeSystemProperty() {
     oldProperty = System.getProperty("webdriver.http.factory");
   }
 
-  @After
+  @AfterEach
   public void restoreSystemProperty() {
     if (oldProperty != null) {
       System.setProperty("webdriver.http.factory", oldProperty);
@@ -48,19 +47,19 @@ public class HttpClientFactoryTest {
   }
 
   @Test
-  public void canCreateDefaultHttpClientFactory() {
+  void canCreateDefaultHttpClientFactory() {
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("netty");
   }
 
   @Test
-  public void canCreateHttpClientFactoryByName() {
+  void canCreateHttpClientFactoryByName() {
     HttpClient.Factory factory = HttpClient.Factory.create("netty");
     assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("netty");
   }
 
   @Test
-  public void canCreateCustomClientFactoryByName() {
+  void canCreateCustomClientFactoryByName() {
     HttpClient.Factory factory = HttpClient.Factory.create("cheesy");
     assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("cheesy");
   }
@@ -76,20 +75,20 @@ public class HttpClientFactoryTest {
   }
 
   @Test
-  public void shouldRespectSystemProperties() {
+  void shouldRespectSystemProperties() {
     System.setProperty("webdriver.http.factory", "cheesy");
     HttpClient.Factory factory = HttpClient.Factory.createDefault();
     assertThat(factory.getClass().getAnnotation(HttpClientName.class).value()).isEqualTo("cheesy");
   }
 
   @Test
-  public void shouldNotCreateHttpClientFactoryByInvalidName() {
+  void shouldNotCreateHttpClientFactoryByInvalidName() {
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
         () -> HttpClient.Factory.create("orange"));
   }
 
   @Test
-  public void canDetectHttpClientFactoriesWithSameName() {
+  void canDetectHttpClientFactoriesWithSameName() {
     assertThatExceptionOfType(IllegalStateException.class).isThrownBy(
         () -> HttpClient.Factory.create("duplicated"));
   }

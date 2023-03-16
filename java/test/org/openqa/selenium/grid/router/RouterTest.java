@@ -19,9 +19,8 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -66,11 +65,11 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
@@ -78,7 +77,7 @@ import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class RouterTest {
+class RouterTest {
 
   private Tracer tracer;
   private EventBus bus;
@@ -111,7 +110,7 @@ public class RouterTest {
       });
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
@@ -129,7 +128,8 @@ public class RouterTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(2),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     distributor = new LocalDistributor(
@@ -142,20 +142,21 @@ public class RouterTest {
       registrationSecret,
       Duration.ofSeconds(1),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      Runtime.getRuntime().availableProcessors());
     handler.addHandler(distributor);
 
     router = new Router(tracer, clientFactory, sessions, queue, distributor);
   }
 
   @Test
-  public void shouldListAnEmptyDistributorAsMeaningTheGridIsNotReady() {
+  void shouldListAnEmptyDistributorAsMeaningTheGridIsNotReady() {
     Map<String, Object> status = getStatus(router);
     assertFalse((Boolean) status.get("ready"));
   }
 
   @Test
-  public void addingANodeThatIsDownMeansTheGridIsNotReady() throws URISyntaxException {
+  void addingANodeThatIsDownMeansTheGridIsNotReady() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "amsterdam");
     URI uri = new URI("https://example.com");
 
@@ -168,11 +169,11 @@ public class RouterTest {
     waitUntilNotReady(router, Duration.ofSeconds(5));
 
     Map<String, Object> status = getStatus(router);
-    assertFalse(status.toString(), (Boolean) status.get("ready"));
+    assertFalse((Boolean) status.get("ready"), status.toString());
   }
 
   @Test
-  public void aNodeThatIsUpAndHasSpareSessionsMeansTheGridIsReady() throws URISyntaxException {
+  void aNodeThatIsUpAndHasSpareSessionsMeansTheGridIsReady() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("cheese", "peas");
     URI uri = new URI("https://example.com");
 
@@ -183,7 +184,7 @@ public class RouterTest {
   }
 
   @Test
-  public void shouldListAllNodesTheDistributorIsAwareOf() throws URISyntaxException {
+  void shouldListAllNodesTheDistributorIsAwareOf() throws URISyntaxException {
     Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
     Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");
     URI firstNodeUri = new URI("https://example1.com");
@@ -227,7 +228,7 @@ public class RouterTest {
   }
 
   @Test
-  public void ifNodesHaveSpareSlotsButAlreadyHaveMaxSessionsGridIsNotReady()
+  void ifNodesHaveSpareSlotsButAlreadyHaveMaxSessionsGridIsNotReady()
     throws URISyntaxException {
     Capabilities chromeCapabilities = new ImmutableCapabilities("browser", "chrome");
     Capabilities firefoxCapabilities = new ImmutableCapabilities("browser", "firefox");
@@ -249,7 +250,7 @@ public class RouterTest {
     waitUntilReady(router, Duration.ofSeconds(5));
 
     Map<String, Object> status = getStatus(router);
-    assertTrue(status.toString(), (Boolean) status.get("ready"));
+    assertTrue((Boolean) status.get("ready"), status.toString());
 
     SessionRequest sessionRequest = new SessionRequest(
       new RequestId(UUID.randomUUID()),

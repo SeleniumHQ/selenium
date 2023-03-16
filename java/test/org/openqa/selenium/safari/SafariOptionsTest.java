@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.safari;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.remote.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 import java.util.Set;
@@ -32,12 +31,13 @@ import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.Browser.SAFARI;
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
-@Category(UnitTests.class)
-public class SafariOptionsTest {
+@Tag("UnitTests")
+class SafariOptionsTest {
 
   @Test
-  public void roundTrippingToCapabilitiesAndBackWorks() {
+  void roundTrippingToCapabilitiesAndBackWorks() {
     SafariOptions expected = new SafariOptions().setUseTechnologyPreview(true);
 
     // Convert to a Map so we can create a standalone capabilities instance, which we then use to
@@ -48,12 +48,12 @@ public class SafariOptionsTest {
   }
 
   @Test
-  public void canConstructFromCapabilities() {
+  void canConstructFromCapabilities() {
     SafariOptions options = new SafariOptions();
     assertThat(options.getUseTechnologyPreview()).isFalse();
 
     options = new SafariOptions(
-      new ImmutableCapabilities(CapabilityType.BROWSER_NAME, SafariOptions.SAFARI_TECH_PREVIEW));
+      new ImmutableCapabilities(CapabilityType.BROWSER_NAME, SAFARI_TECH_PREVIEW.browserName()));
     assertThat(options.getUseTechnologyPreview()).isTrue();
 
     options = new SafariOptions(
@@ -62,38 +62,38 @@ public class SafariOptionsTest {
   }
 
   @Test
-  public void canSetAutomaticInspection() {
+  void canSetAutomaticInspection() {
     SafariOptions options = new SafariOptions().setAutomaticInspection(true);
     assertThat(options.getAutomaticInspection()).isTrue();
   }
 
   @Test
-  public void canSetAutomaticProfiling() {
+  void canSetAutomaticProfiling() {
     SafariOptions options = new SafariOptions().setAutomaticProfiling(true);
     assertThat(options.getAutomaticProfiling()).isTrue();
   }
 
   @Test
-  public void settingTechnologyPreviewModeAlsoChangesBrowserName() {
+  void settingTechnologyPreviewModeAlsoChangesBrowserName() {
     SafariOptions options = new SafariOptions();
     assertThat(options.getBrowserName()).isEqualTo(SAFARI.browserName());
 
     options.setUseTechnologyPreview(true);
-    assertThat(options.getBrowserName()).isEqualTo(SafariOptions.SAFARI_TECH_PREVIEW);
+    assertThat(options.getBrowserName()).isEqualTo(SAFARI_TECH_PREVIEW.browserName());
 
     options.setUseTechnologyPreview(false);
     assertThat(options.getBrowserName()).isEqualTo(SAFARI.browserName());
   }
 
   @Test
-  public void optionsAsMapShouldBeImmutable() {
+  void optionsAsMapShouldBeImmutable() {
     Map<String, Object> options = new SafariOptions().asMap();
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .isThrownBy(() -> options.put("browserType", "chrome"));
   }
 
   @Test
-  public void isW3CSafe() {
+  void isW3CSafe() {
     Map<String, Object> converted = new SafariOptions()
       .setUseTechnologyPreview(true)
       .setAutomaticInspection(true)

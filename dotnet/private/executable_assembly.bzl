@@ -1,6 +1,6 @@
 load("@d2l_rules_csharp//csharp/private:providers.bzl", "AnyTargetFrameworkInfo")
 load("@d2l_rules_csharp//csharp/private:actions/assembly.bzl", "AssemblyAction")
-load("@d2l_rules_csharp//csharp/private:actions/write_runtimeconfig.bzl", "write_runtimeconfig")
+load("@d2l_rules_csharp//csharp/private:actions/misc.bzl", "write_runtimeconfig")
 load(
     "@d2l_rules_csharp//csharp/private:common.bzl",
     "fill_in_missing_frameworks",
@@ -18,7 +18,7 @@ def _generate_execution_script_file(ctx, target):
     if ctx.attr.is_windows:
         shell_file_extension = "bat"
         execution_line = "%~dp0" + assembly_file_name + " %*"
-    if is_core_framework(tfm) or tfm == "net5.0":
+    if is_core_framework(tfm) or tfm == "net5.0" or tfm == "net6.0":
         execution_line = "dotnet " + execution_line
     else:
         execution_line = "mono " + execution_line
@@ -66,23 +66,25 @@ def create_executable_assembly(ctx, extra_srcs, extra_deps):
 
         providers[tfm] = AssemblyAction(
             ctx.actions,
-            name = ctx.attr.name,
             additionalfiles = ctx.files.additionalfiles,
             analyzers = ctx.attr.analyzers,
             debug = is_debug(ctx),
             defines = ctx.attr.defines,
             deps = ctx.attr.deps + extra_deps + stdrefs,
             keyfile = ctx.file.keyfile,
+            internals_visible_to = None,
+            internals_visible_to_cs = None,
             langversion = ctx.attr.langversion,
             resources = ctx.files.resources,
             srcs = ctx.files.srcs + extra_srcs,
             out = ctx.attr.out,
             target = "exe",
+            target_name = ctx.attr.name,
             target_framework = tfm,
             toolchain = ctx.toolchains["@d2l_rules_csharp//csharp/private:toolchain_type"],
         )
 
-    fill_in_missing_frameworks(providers)
+    fill_in_missing_frameworks(ctx.attr.out, providers)
 
     result = providers.values()
     dependency_files_list = _copy_dependency_files(ctx, result[0])
@@ -108,7 +110,7 @@ def create_executable_assembly(ctx, extra_srcs, extra_deps):
             files = direct_runfiles,
             transitive_files = depset(dependency_files_list, transitive = data_runfiles),
         ),
-        files = depset([result[0].out, result[0].refout, result[0].pdb, shell_file]),
+        files = depset([result[0].out, result[0].prefout, result[0].pdb, shell_file]),
     ))
 
     return result

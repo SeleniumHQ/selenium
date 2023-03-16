@@ -21,6 +21,7 @@ import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.stream.Stream;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
@@ -61,6 +62,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -156,16 +158,22 @@ public class RouterServer extends TemplateGridServerCommand {
       serverOptions.getExternalUri(),
       getServerVersion());
 
-    Routable ui = new GridUiRoute();
+    String subPath = new RouterOptions(config).subPath();
+    Routable ui = new GridUiRoute(subPath);
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
-    Routable route = Route.combine(
-      ui,
-      routerWithSpecChecks,
-      Route.prefix("/wd/hub").to(combine(routerWithSpecChecks)),
-      Route.options("/graphql").to(() -> graphqlHandler),
-      Route.post("/graphql").to(() -> graphqlHandler));
+    Routable appendRoute = Stream.of(
+        routerWithSpecChecks,
+        hubRoute(subPath, combine(routerWithSpecChecks)),
+        graphqlRoute(subPath, () -> graphqlHandler)
+      )
+      .reduce(Route::combine)
+      .get();
+    if (!subPath.isEmpty()) {
+      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(routerWithSpecChecks)));
+    }
+    Routable route = Route.combine(ui, appendRoute);
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {
@@ -191,6 +199,14 @@ public class RouterServer extends TemplateGridServerCommand {
   @Override
   protected void execute(Config config) {
     Require.nonNull("Config", config);
+
+    config.get("server", "max-threads")
+      .ifPresent(value -> LOG.log(Level.WARNING,
+                                  () ->
+                                    "Support for max-threads flag is deprecated. " +
+                                    "The intent of the flag is to set the thread pool size in the Distributor. " +
+                                    "Please use newsession-threadpool-size flag instead."));
+
 
     Server<?> server = asServer(config).start();
 

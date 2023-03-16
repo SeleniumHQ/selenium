@@ -19,19 +19,19 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
 // TODO(simon): The verifications should not be commented out
 public class TestGet extends InternalSelenseTestBase {
   @Test
-  public void testGet() {
+  void testGet() {
     // test API getters
     selenium.open("test_get.html");
     // IE uppercases the property names of the style.
     // Firefox lowercases the property names of the style.
-    // IE omits the trailing semi-colon.
+    // IE omits the trailing semicolon.
     verifyTrue(Pattern.compile("(width|WIDTH): 644px; (height|HEIGHT): 41px(;?)")
         .matcher(selenium.getAttribute("//img[@alt='banner']@style")).find());
     // This asserts on the current behavior of selArrayToString(). Commas and

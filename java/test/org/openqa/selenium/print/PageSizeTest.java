@@ -17,23 +17,22 @@
 
 package org.openqa.selenium.print;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.openqa.selenium.print.PageSize;
-import org.openqa.selenium.testing.UnitTests;
 
 
-@Category(UnitTests.class)
-public class PageSizeTest {
+@Tag("UnitTests")
+class PageSizeTest {
 
   // Defaults assertion
   private static final double HEIGHT = 21.59;
   private static final double WIDTH = 27.94;
 
   @Test
-  public void setsDefaultHeightWidth() {
+  void setsDefaultHeightWidth() {
     PageSize pageSize = new PageSize();
 
     assertThat(pageSize.getHeight()).isEqualTo(HEIGHT);

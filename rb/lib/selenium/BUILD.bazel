@@ -1,0 +1,19 @@
+load("@rules_ruby//ruby:defs.bzl", "rb_library")
+
+package(default_visibility = ["//rb:__subpackages__"])
+
+rb_library(
+    name = "devtools",
+    srcs = ["devtools.rb"],
+    deps = ["//rb/lib/selenium/devtools"],
+)
+
+rb_library(
+    name = "server",
+    srcs = ["server.rb"],
+)
+
+rb_library(
+    name = "webdriver",
+    srcs = ["webdriver.rb"],
+)

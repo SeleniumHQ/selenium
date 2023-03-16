@@ -19,24 +19,23 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.OutputType.BASE64;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.io.File;
 
-@Category(UnitTests.class)
-public class OutputTypeTest {
+@Tag("UnitTests")
+class OutputTypeTest {
   private static final String TEST_BASE64 = "ABADABAD";
   private static final byte[] TEST_BYTES = new byte[] {0, 16, 3, 0, 16, 3};
 
   @Test
-  public void testBase64() {
+  void testBase64() {
     assertThat(BASE64.convertFromBase64Png(TEST_BASE64)).isEqualTo(TEST_BASE64);
   }
 
   @Test
-  public void testBytes() {
+  void testBytes() {
     byte[] bytes = OutputType.BYTES
         .convertFromBase64Png(TEST_BASE64);
     assertThat(bytes.length).isEqualTo(TEST_BYTES.length);
@@ -46,7 +45,7 @@ public class OutputTypeTest {
   }
 
   @Test
-  public void testFiles() {
+  void testFiles() {
     File tmpFile = OutputType.FILE.convertFromBase64Png(TEST_BASE64);
     assertThat(tmpFile.exists()).isTrue();
     assertThat(tmpFile.length()).isEqualTo(TEST_BYTES.length);

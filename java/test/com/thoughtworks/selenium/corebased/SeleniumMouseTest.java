@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SeleniumMouseTest extends InternalSelenseTestBase {
   @Test
-  public void canFireAMouseOutEvent() {
+  void canFireAMouseOutEvent() {
     selenium.open("test_mouse_events1.html");
 
     selenium.mouseOut("id=out");

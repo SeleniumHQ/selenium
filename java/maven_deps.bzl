@@ -2,30 +2,32 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.76.Final"
-    opentelemetry_version = "1.13.0"
+    netty_version = "4.1.87.Final"
+    opentelemetry_version = "1.22.0"
+    junit_jupiter_version = "5.9.2"
+    junit_platform_version = "1.9.2"
 
     maven_install(
         artifacts = [
             "com.beust:jcommander:1.82",
-            "com.github.javaparser:javaparser-core:3.24.2",
+            "com.github.javaparser:javaparser-core:3.24.10",
             maven.artifact(
                 group = "com.github.spotbugs",
                 artifact = "spotbugs",
-                version = "4.6.0",
+                version = "4.7.3",
                 exclusions = [
                     "org.slf4j:slf4j-api",
                 ],
             ),
-            "com.google.code.gson:gson:2.9.0",
+            "com.google.code.gson:gson:2.10.1",
             "com.google.guava:guava:31.1-jre",
             "com.google.auto:auto-common:1.2.1",
             "com.google.auto.service:auto-service:1.0.1",
             "com.google.auto.service:auto-service-annotations:1.0.1",
-            "com.graphql-java:graphql-java:18.0",
-            "com.graphql-java:java-dataloader:3.1.2",
-            "io.grpc:grpc-context:1.46.0",
-            "io.lettuce:lettuce-core:6.1.8.RELEASE",
+            "com.graphql-java:graphql-java:20.0",
+            "com.graphql-java:java-dataloader:3.2.0",
+            "io.grpc:grpc-context:1.52.1",
+            "io.lettuce:lettuce-core:6.2.2.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
             "io.netty:netty-codec-http:%s" % netty_version,
@@ -40,6 +42,7 @@ def selenium_java_deps():
             "io.netty:netty-transport-native-epoll:%s" % netty_version,
             "io.netty:netty-transport-native-epoll:jar:linux-x86_64:%s" % netty_version,
             "io.netty:netty-transport-native-kqueue:%s" % netty_version,
+            "io.netty:netty-transport-native-kqueue:jar:osx-aarch_64:%s" % netty_version,
             "io.netty:netty-transport-native-kqueue:jar:osx-x86_64:%s" % netty_version,
             # End - Needed to support unix domain sockets
             "io.netty:netty-transport-native-unix-common:%s" % netty_version,
@@ -66,23 +69,40 @@ def selenium_java_deps():
                     "org.hamcrest:hamcrest-library",
                 ],
             ),
-            "net.bytebuddy:byte-buddy:1.12.9",
-            "dev.failsafe:failsafe:3.2.3",
-            "net.sourceforge.htmlunit:htmlunit-core-js:2.61.1",
+            "org.junit.jupiter:junit-jupiter-api:%s" % junit_jupiter_version,
+            "org.junit.jupiter:junit-jupiter-engine:%s" % junit_jupiter_version,
+            "org.junit.jupiter:junit-jupiter-params:%s" % junit_jupiter_version,
+            "org.junit.platform:junit-platform-launcher:%s" % junit_platform_version,
+            "org.junit.platform:junit-platform-reporting:%s" % junit_platform_version,
+            "org.junit.platform:junit-platform-commons:%s" % junit_platform_version,
+            "org.junit.platform:junit-platform-engine:%s" % junit_platform_version,
+            "org.junit.platform:junit-platform-suite-engine:%s" % junit_platform_version,
+            "org.junit.platform:junit-platform-suite-api:%s" % junit_platform_version,
+            "net.bytebuddy:byte-buddy:1.12.22",
+            "dev.failsafe:failsafe:3.3.0",
+            "net.sourceforge.htmlunit:htmlunit-core-js:2.69.0",
             "org.apache.commons:commons-exec:1.3",
-            "org.assertj:assertj-core:3.22.0",
-            "org.asynchttpclient:async-http-client:2.12.3",
+            "org.assertj:assertj-core:3.24.2",
+            maven.artifact(
+                group = "org.asynchttpclient",
+                artifact = "async-http-client",
+                version = "2.12.3",
+                exclusions = [
+                    "io.netty:netty-transport-native-epoll",
+                    "io.netty:netty-transport-native-kqueue",
+                ],
+            ),
             "org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5",
             "org.hamcrest:hamcrest:2.2",
-            "org.hsqldb:hsqldb:2.6.1",
-            "org.mockito:mockito-core:4.5.1",
-            "org.slf4j:slf4j-api:1.7.36",
-            "org.slf4j:slf4j-jdk14:1.7.36",
-            "org.testng:testng:7.5",
-            "org.zeromq:jeromq:0.5.2",
-            "xyz.rogfam:littleproxy:2.0.7",
-            "org.seleniumhq.selenium:htmlunit-driver:3.61.0",
-            "org.redisson:redisson:3.17.1",
+            "org.hsqldb:hsqldb:2.7.1",
+            "org.mockito:mockito-core:4.11.0",
+            "org.slf4j:slf4j-api:2.0.6",
+            "org.slf4j:slf4j-jdk14:2.0.6",
+            "org.testng:testng:7.7.1",
+            "org.zeromq:jeromq:0.5.3",
+            "xyz.rogfam:littleproxy:2.0.15",
+            "org.seleniumhq.selenium:htmlunit-driver:4.7.2",
+            "org.redisson:redisson:3.19.1",
             "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         ],
         excluded_artifacts = [
@@ -104,4 +124,5 @@ def selenium_java_deps():
             "https://maven.google.com",
         ],
         maven_install_json = "@selenium//java:maven_install.json",
+        version_conflict_policy = "pinned",
     )

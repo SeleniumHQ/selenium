@@ -38,10 +38,10 @@ module Selenium
         FileUtils.rm_rf zip_file
       end
 
-      context 'can zip' do
+      describe '#zip' do
         it 'a file' do
           File.open(zip_file, 'wb') do |io|
-            io << Base64.decode64(Zipper.zip_file(create_file))
+            io << Base64.decode64(described_class.zip_file(create_file))
           end
 
           expect(File).to exist(zip_file)
@@ -51,34 +51,33 @@ module Selenium
           create_file
 
           File.open(zip_file, 'wb') do |io|
-            io << Base64.decode64(Zipper.zip(dir_to_zip))
+            io << Base64.decode64(described_class.zip(dir_to_zip))
           end
 
           expect(File).to exist(zip_file)
         end
 
-        # Bug - `File.symlink` has permissions issues on Windows
-        it 'follows symlinks', except: {platform: :windows} do
+        it 'follows symlinks' do
           filename = create_file
           File.symlink(filename, File.join(dir_to_zip, 'link'))
 
           zip_file = File.join(Dir.tmpdir, 'test.zip')
           File.open(zip_file, 'wb') do |io|
-            io << Base64.decode64(Zipper.zip(dir_to_zip))
+            io << Base64.decode64(described_class.zip(dir_to_zip))
           end
 
-          unzipped = Zipper.unzip(zip_file)
+          unzipped = described_class.unzip(zip_file)
           expect(File.read(File.join(unzipped, 'link'))).to eq(file_content)
         end
       end
 
-      context 'can unzip' do
+      describe '#unzip' do
         it 'a file' do
           File.open(zip_file, 'wb') do |io|
-            io << Base64.decode64(Zipper.zip_file(create_file))
+            io << Base64.decode64(described_class.zip_file(create_file))
           end
 
-          unzipped = Zipper.unzip(zip_file)
+          unzipped = described_class.unzip(zip_file)
           expect(File.read(File.join(unzipped, base_file_name))).to eq(file_content)
         end
 
@@ -86,10 +85,10 @@ module Selenium
           create_file
 
           File.open(zip_file, 'wb') do |io|
-            io << Base64.decode64(Zipper.zip(dir_to_zip))
+            io << Base64.decode64(described_class.zip(dir_to_zip))
           end
 
-          unzipped = Zipper.unzip(zip_file)
+          unzipped = described_class.unzip(zip_file)
           expect(File.read(File.join(unzipped, base_file_name))).to eq(file_content)
         end
       end

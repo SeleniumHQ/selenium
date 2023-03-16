@@ -17,19 +17,16 @@
 
 package org.openqa.selenium.remote.server.handler.interactions;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.server.Session;
 
-@RunWith(JUnit4.class)
-public class SendKeyToActiveElementTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+
+class SendKeyToActiveElementTest {
 
   @Test
-  public void sendEmptyKeys() {
+  void sendEmptyKeys() {
     SendKeyToActiveElement sendKeys = new SendKeyToActiveElement(mock(Session.class));
     assertEquals("[send keys to active: []]", sendKeys.toString());
   }

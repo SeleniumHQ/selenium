@@ -28,6 +28,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -36,18 +37,10 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.HasTouchScreen;
 import org.openqa.selenium.interactions.Interactive;
-import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Locatable;
-import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Sequence;
-import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.logging.Logs;
-import org.openqa.selenium.support.events.internal.EventFiringKeyboard;
-import org.openqa.selenium.support.events.internal.EventFiringMouse;
-import org.openqa.selenium.support.events.internal.EventFiringTouch;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
@@ -75,8 +68,6 @@ public class EventFiringWebDriver implements
   JavascriptExecutor,
   TakesScreenshot,
   WrapsDriver,
-  HasInputDevices,
-  HasTouchScreen,
   Interactive,
   HasCapabilities {
 
@@ -338,33 +329,6 @@ public class EventFiringWebDriver implements
   }
 
   @Override
-  public Keyboard getKeyboard() {
-    if (driver instanceof HasInputDevices) {
-      return new EventFiringKeyboard(driver, dispatcher);
-    }
-    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-        + " user interactions yet.");
-  }
-
-  @Override
-  public Mouse getMouse() {
-    if (driver instanceof HasInputDevices) {
-      return new EventFiringMouse(driver, dispatcher);
-    }
-    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-        + " user interactions yet.");
-  }
-
-  @Override
-  public TouchScreen getTouch() {
-    if (driver instanceof HasTouchScreen) {
-      return new EventFiringTouch(driver, dispatcher);
-    }
-    throw new UnsupportedOperationException("Underlying driver does not implement advanced"
-        + " user interactions yet.");
- }
-
-  @Override
   public void perform(Collection<Sequence> actions) {
     if (driver instanceof Interactive) {
       ((Interactive) driver).perform(actions);
@@ -453,8 +417,23 @@ public class EventFiringWebDriver implements
     }
 
     @Override
+    public String getDomProperty(String name) {
+      return element.getDomProperty(name);
+    }
+
+    @Override
     public String getAttribute(String name) {
       return element.getAttribute(name);
+    }
+
+    @Override
+    public String getAriaRole() {
+      return element.getAriaRole();
+    }
+
+    @Override
+    public String getAccessibleName() {
+      return element.getAccessibleName();
     }
 
     @Override
@@ -478,6 +457,11 @@ public class EventFiringWebDriver implements
       String text = element.getText();
       dispatcher.afterGetText(element, driver, text);
       return text;
+    }
+
+    @Override
+    public SearchContext getShadowRoot() {
+      return element.getShadowRoot();
     }
 
     @Override
@@ -658,11 +642,6 @@ public class EventFiringWebDriver implements
     @Override
     public Timeouts timeouts() {
       return new EventFiringTimeouts(options.timeouts());
-    }
-
-    @Override
-    public ImeHandler ime() {
-      return options.ime();
     }
 
     @Override

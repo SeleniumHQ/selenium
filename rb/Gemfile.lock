@@ -1,0 +1,104 @@
+PATH
+  remote: .
+  specs:
+    selenium-devtools (0.110.0)
+      selenium-webdriver (~> 4.2)
+    selenium-webdriver (4.8.1)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 3.0)
+      websocket (~> 1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
+    ast (2.4.2)
+    coderay (1.1.3)
+    crack (0.4.5)
+      rexml
+    diff-lcs (1.5.0)
+    ffi (1.15.5-java)
+    hashdiff (1.0.1)
+    json (2.6.3)
+    json (2.6.3-java)
+    method_source (1.0.0)
+    parallel (1.22.1)
+    parser (3.1.3.0)
+      ast (~> 2.4.1)
+    pry (0.14.1)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+    pry (0.14.1-java)
+      coderay (~> 1.1)
+      method_source (~> 1.0)
+      spoon (~> 0.0)
+    public_suffix (5.0.1)
+    rack (2.2.5)
+    rainbow (3.1.1)
+    regexp_parser (2.6.1)
+    rexml (3.2.5)
+    rspec (3.12.0)
+      rspec-core (~> 3.12.0)
+      rspec-expectations (~> 3.12.0)
+      rspec-mocks (~> 3.12.0)
+    rspec-core (3.12.0)
+      rspec-support (~> 3.12.0)
+    rspec-expectations (3.12.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.12.0)
+    rspec-mocks (3.12.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.12.0)
+    rspec-support (3.12.0)
+    rubocop (1.42.0)
+      json (~> 2.3)
+      parallel (~> 1.10)
+      parser (>= 3.1.2.1)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.24.1, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.24.1)
+      parser (>= 3.1.1.0)
+    rubocop-performance (1.15.2)
+      rubocop (>= 1.7.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
+    rubocop-rspec (2.16.0)
+      rubocop (~> 1.33)
+    ruby-progressbar (1.11.0)
+    rubyzip (2.3.2)
+    spoon (0.0.6)
+      ffi
+    unicode-display_width (2.3.0)
+    webmock (3.18.1)
+      addressable (>= 2.8.0)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
+    webrick (1.7.0)
+    websocket (1.2.9)
+    yard (0.9.28)
+      webrick (~> 1.7.0)
+
+PLATFORMS
+  java
+  ruby
+  x64-mingw32
+
+DEPENDENCIES
+  pry (~> 0.14)
+  rack (~> 2.0)
+  rspec (~> 3.0)
+  rubocop (~> 1.42)
+  rubocop-performance (~> 1.15)
+  rubocop-rspec (~> 2.16)
+  selenium-devtools!
+  selenium-webdriver!
+  webmock (~> 3.5)
+  webrick (~> 1.7)
+  yard (~> 0.9.11)
+
+BUNDLED WITH
+   2.1.4

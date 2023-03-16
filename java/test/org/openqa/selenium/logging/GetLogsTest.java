@@ -17,37 +17,32 @@
 
 package org.openqa.selenium.logging;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
 @Ignore(FIREFOX)
 @Ignore(SAFARI)
-public class GetLogsTest extends JUnit4TestBase {
+class GetLogsTest extends JupiterTestBase {
 
   private WebDriver localDriver;
 
-  @After
+  @AfterEach
   public void quitDriver() {
     if (localDriver != null) {
       localDriver.quit();
@@ -56,7 +51,7 @@ public class GetLogsTest extends JUnit4TestBase {
   }
 
   @Test
-  public void logBufferShouldBeResetAfterEachGetLogCall() {
+  void logBufferShouldBeResetAfterEachGetLogCall() {
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -73,7 +68,7 @@ public class GetLogsTest extends JUnit4TestBase {
   }
 
   @Test
-  public void differentLogsShouldNotContainTheSameLogEntries() {
+  void differentLogsShouldNotContainTheSameLogEntries() {
     driver.get(pages.errorsPage);
     driver.findElement(By.cssSelector("input")).click();
 
@@ -114,25 +109,4 @@ public class GetLogsTest extends JUnit4TestBase {
     return false;
   }
 
-  @Test
-  public void turningOffLogShouldMeanNoLogMessages() {
-    Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
-    for (String logType : logTypes) {
-      createWebDriverWithLogging(logType, Level.OFF);
-      LogEntries entries = localDriver.manage().logs().get(logType);
-      assertThat(entries.getAll())
-          .describedAs("There should be no log entries for log type %s when logging is turned off.", logType)
-          .hasSize(0);
-      quitDriver();
-    }
-  }
-
-  private void createWebDriverWithLogging(String logType, Level logLevel) {
-    LoggingPreferences loggingPrefs = new LoggingPreferences();
-    loggingPrefs.enable(logType, logLevel);
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.LOGGING_PREFS, loggingPrefs);
-    localDriver = new WebDriverBuilder().get(caps);
-    localDriver.get(pages.errorsPage);
-    localDriver.findElement(By.cssSelector("input")).click();
-  }
 }

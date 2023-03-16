@@ -16,9 +16,6 @@
 // under the License.
 package org.openqa.selenium.edge;
 
-import static org.openqa.selenium.remote.Browser.EDGE;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -28,8 +25,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chromium.ChromiumDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
+
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 @AutoService(WebDriverInfo.class)
 public class EdgeDriverInfo extends ChromiumDriverInfo {
@@ -49,8 +50,7 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
     //webview2 - support https://docs.microsoft.com/en-us/microsoft-edge/webview2/how-to/webdriver
     return EDGE.is(capabilities.getBrowserName())
            || "webview2".equalsIgnoreCase(capabilities.getBrowserName())
-           || capabilities.getCapability("ms:edgeOptions") != null
-           || capabilities.getCapability("edgeOptions") != null;
+           || capabilities.getCapability("ms:edgeOptions") != null;
   }
 
   @Override
@@ -59,13 +59,23 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
   }
 
   @Override
+  public boolean isSupportingBiDi() {
+    return false;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
-      EdgeDriverService.createDefaultService();
+      DriverFinder.getPath(EdgeDriverService.createDefaultService());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
+  }
+
+  @Override
+  public boolean isPresent() {
+    return EdgeDriverService.isPresent();
   }
 
   @Override
@@ -75,7 +85,7 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }

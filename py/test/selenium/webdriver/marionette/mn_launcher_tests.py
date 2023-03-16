@@ -19,7 +19,7 @@ from selenium.webdriver import Firefox
 
 
 def test_launch_and_close_browser(driver):
-    assert 'browserName' in driver.capabilities
+    assert "browserName" in driver.capabilities
 
 
 def test_we_can_launch_multiple_firefox_instances(capabilities):

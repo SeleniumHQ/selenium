@@ -137,7 +137,6 @@ module Selenium
         def mutation_listener
           @mutation_listener ||= read_atom(:mutationListener)
         end
-
       end # HasLogEvents
     end # DriverExtensions
   end # WebDriver

@@ -19,13 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("apparently this test was ignored before. Probably a bad base path.")
+@Disabled("apparently this test was ignored before. Probably a bad base path.")
 public class TestModalDialog extends InternalSelenseTestBase {
   @Test
-  public void testModalDialog() {
+  void testModalDialog() {
     selenium.open("test_modal_dialog.html");
     verifyTrue(selenium.getLocation().matches("^[\\s\\S]*/common/legacy/test_modal_dialog\\.html$"));
     verifyEquals(selenium.getTitle(), "Modal Dialog Host Window");

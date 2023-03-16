@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.safari;
 
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.auto.service.AutoService;
 
 import org.openqa.selenium.Capabilities;
@@ -27,9 +25,14 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
+import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
+
+@SuppressWarnings("unused")
 @AutoService(WebDriverInfo.class)
 public class SafariTechPreviewDriverInfo implements WebDriverInfo {
 
@@ -40,12 +43,12 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(BROWSER_NAME, SafariOptions.SAFARI_TECH_PREVIEW);
+    return new ImmutableCapabilities(BROWSER_NAME, SAFARI_TECH_PREVIEW.browserName());
   }
 
   @Override
   public boolean isSupporting(Capabilities capabilities) {
-    if (SafariOptions.SAFARI_TECH_PREVIEW.equalsIgnoreCase(capabilities.getBrowserName())) {
+    if (SAFARI_TECH_PREVIEW.browserName().equalsIgnoreCase(capabilities.getBrowserName())) {
       return true;
     }
 
@@ -61,13 +64,23 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isSupportingBiDi() {
+    return false;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
-      SafariTechPreviewDriverService.createDefaultService();
+      DriverFinder.getPath(SafariTechPreviewDriverService.createDefaultService());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
+  }
+
+  @Override
+  public boolean isPresent() {
+    return SafariTechPreviewDriverService.isPresent();
   }
 
   @Override
@@ -77,7 +90,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

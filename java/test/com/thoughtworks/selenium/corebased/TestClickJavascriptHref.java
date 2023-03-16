@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestClickJavascriptHref extends InternalSelenseTestBase {
   @Test
-  public void testClickJavascriptHref() {
+  void testClickJavascriptHref() {
     selenium.open("test_click_javascript_page.html");
     selenium.click("link");
     verifyEquals(selenium.getAlert(), "link clicked: foo");

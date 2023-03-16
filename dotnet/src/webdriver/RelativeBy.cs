@@ -48,7 +48,7 @@ namespace OpenQA.Selenium
                 }
             }
 
-            wrappedAtom = string.Format(CultureInfo.InvariantCulture, "return ({0}).apply(null, arguments);", atom);
+            wrappedAtom = string.Format(CultureInfo.InvariantCulture, "/* findElements */return ({0}).apply(null, arguments);", atom);
         }
 
         private RelativeBy(object root) : this(root, null)
@@ -63,22 +63,6 @@ namespace OpenQA.Selenium
             {
                 this.filters.AddRange(filters);
             }
-        }
-
-        /// <summary>
-        /// Creates a new <see cref="RelativeBy"/> for finding elements with the specified tag name.
-        /// </summary>
-        /// <param name="tagName">The tag name of the element to find.</param>
-        /// <returns>A <see cref="RelativeBy"/> object to be used in finding the elements.</returns>
-        [Obsolete("Use the WithLocator method instead, passing By.TagName.")]
-        public static RelativeBy WithTagName(string tagName)
-        {
-            if (string.IsNullOrEmpty(tagName))
-            {
-                throw new ArgumentException("Tag name must not be null or the empty string", nameof(tagName));
-            }
-
-            return new RelativeBy(By.TagName(tagName));
         }
 
         /// <summary>

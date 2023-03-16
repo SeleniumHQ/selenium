@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasAddons
-
         #
         # Installs addon.
         #
@@ -43,7 +42,6 @@ module Selenium
         def uninstall_addon(id)
           @bridge.uninstall_addon(id)
         end
-
       end # HasAddons
     end # DriverExtensions
   end # WebDriver

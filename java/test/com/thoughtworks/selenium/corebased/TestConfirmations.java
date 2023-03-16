@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestConfirmations extends InternalSelenseTestBase {
   @Test
-  public void testConfirmations() throws Exception {
+  void testConfirmations() throws Exception {
     selenium.open("test_confirm.html");
     selenium.chooseCancelOnNextConfirmation();
     selenium.click("confirmAndLeave");

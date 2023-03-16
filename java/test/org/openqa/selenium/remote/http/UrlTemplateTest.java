@@ -21,22 +21,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
-@Category(UnitTests.class)
-public class UrlTemplateTest {
+@Tag("UnitTests")
+class UrlTemplateTest {
 
   @Test
-  public void shouldNotMatchAgainstTemplateThatDoesNotMatch() {
+  void shouldNotMatchAgainstTemplateThatDoesNotMatch() {
     UrlTemplate.Match match = new UrlTemplate("/session/cake").match("/i/like/peas");
 
     assertThat(match).isNull();
   }
 
   @Test
-  public void shouldReturnAStraightUrl() {
+  void shouldReturnAStraightUrl() {
     UrlTemplate.Match match = new UrlTemplate("/session/cake").match("/session/cake");
 
     assertThat(match.getUrl()).isEqualTo("/session/cake");
@@ -44,7 +43,7 @@ public class UrlTemplateTest {
   }
 
   @Test
-  public void shouldExpandParameters() {
+  void shouldExpandParameters() {
     UrlTemplate.Match match = new UrlTemplate("/i/like/{veggie}").match("/i/like/cake");
 
     assertThat(match.getUrl()).isEqualTo("/i/like/cake");
@@ -52,7 +51,7 @@ public class UrlTemplateTest {
   }
 
   @Test
-  public void itIsFineForTheFirstCharacterToBeAPattern() {
+  void itIsFineForTheFirstCharacterToBeAPattern() {
     UrlTemplate.Match match = new UrlTemplate("{cake}/type").match("cheese/type");
 
     assertThat(match.getUrl()).isEqualTo("cheese/type");
@@ -60,7 +59,7 @@ public class UrlTemplateTest {
   }
 
   @Test
-  public void aNullMatchDoesNotCauseANullPointerExceptionToBeThrown() {
+  void aNullMatchDoesNotCauseANullPointerExceptionToBeThrown() {
     assertThat(new UrlTemplate("/").match(null)).isNull();
   }
 }

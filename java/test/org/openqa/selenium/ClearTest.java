@@ -26,22 +26,22 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-public class ClearTest extends JUnit4TestBase {
+class ClearTest extends JupiterTestBase {
 
   @Test
-  public void testWritableTextInputShouldClear() {
+  void testWritableTextInputShouldClear() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("writableTextInput"));
     element.clear();
-    assertThat(element.getAttribute("value")).isEqualTo("");
+    assertThat(element.getAttribute("value")).isEmpty();
   }
 
   @Test
-  public void testTextInputShouldNotClearWhenDisabled() {
+  void testTextInputShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textInputNotEnabled"));
     assertThat(element.isEnabled()).isFalse();
@@ -50,7 +50,7 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testTextInputShouldNotClearWhenReadOnly() {
+  void testTextInputShouldNotClearWhenReadOnly() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("readOnlyTextInput"));
     assertThatExceptionOfType(InvalidElementStateException.class)
@@ -58,15 +58,15 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testWritableTextAreaShouldClear() {
+  void testWritableTextAreaShouldClear() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("writableTextArea"));
     element.clear();
-    assertThat(element.getAttribute("value")).isEqualTo("");
+    assertThat(element.getAttribute("value")).isEmpty();
   }
 
   @Test
-  public void testTextAreaShouldNotClearWhenDisabled() {
+  void testTextAreaShouldNotClearWhenDisabled() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textAreaNotEnabled"));
     assertThatExceptionOfType(InvalidElementStateException.class)
@@ -74,7 +74,7 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testTextAreaShouldNotClearWhenReadOnly() {
+  void testTextAreaShouldNotClearWhenReadOnly() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("textAreaReadOnly"));
     assertThatExceptionOfType(InvalidElementStateException.class)
@@ -82,50 +82,50 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testContentEditableAreaShouldClear() {
+  void testContentEditableAreaShouldClear() {
     driver.get(pages.readOnlyPage);
     WebElement element = driver.findElement(By.id("content-editable"));
     element.clear();
-    assertThat(element.getText()).isEqualTo("");
+    assertThat(element.getText()).isEmpty();
   }
 
   @Test
-  public void shouldBeAbleToClearNoTypeInput() {
+  void shouldBeAbleToClearNoTypeInput() {
     shouldBeAbleToClearInput(By.name("no_type"), "input with no type");
   }
 
   @Test
-  public void shouldBeAbleToClearNumberInput() {
+  void shouldBeAbleToClearNumberInput() {
     shouldBeAbleToClearInput(By.name("number_input"), "42");
   }
 
   @Test
-  public void shouldBeAbleToClearEmailInput() {
+  void shouldBeAbleToClearEmailInput() {
     shouldBeAbleToClearInput(By.name("email_input"), "admin@localhost");
   }
 
   @Test
-  public void shouldBeAbleToClearPasswordInput() {
+  void shouldBeAbleToClearPasswordInput() {
     shouldBeAbleToClearInput(By.name("password_input"), "qwerty");
   }
 
   @Test
-  public void shouldBeAbleToClearSearchInput() {
+  void shouldBeAbleToClearSearchInput() {
     shouldBeAbleToClearInput(By.name("search_input"), "search");
   }
 
   @Test
-  public void shouldBeAbleToClearTelInput() {
+  void shouldBeAbleToClearTelInput() {
     shouldBeAbleToClearInput(By.name("tel_input"), "911");
   }
 
   @Test
-  public void shouldBeAbleToClearTextInput() {
+  void shouldBeAbleToClearTextInput() {
     shouldBeAbleToClearInput(By.name("text_input"), "text input");
   }
 
   @Test
-  public void shouldBeAbleToClearUrlInput() {
+  void shouldBeAbleToClearUrlInput() {
     shouldBeAbleToClearInput(By.name("url_input"), "https://selenium.dev/");
   }
 
@@ -133,16 +133,6 @@ public class ClearTest extends JUnit4TestBase {
   @NotYetImplemented(HTMLUNIT)
   public void shouldBeAbleToClearRangeInput() {
     shouldBeAbleToClearInput(By.name("range_input"), "42", "50");
-  }
-
-  @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(SAFARI)
-  public void shouldBeAbleToClearCheckboxInput() {
-    shouldBeAbleToClearInput(By.name("checkbox_input"), "Checkbox");
   }
 
   @Test
@@ -159,7 +149,7 @@ public class ClearTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToClearDatetimeInput() {
+  void shouldBeAbleToClearDatetimeInput() {
     shouldBeAbleToClearInput(By.name("datetime_input"), "2017-11-22T11:22");
   }
 

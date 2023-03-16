@@ -1,3 +1,99 @@
+Selenium 4.8.3
+* Add fine grained control for arguments provided to service subprocesses by passing a `popen_kw` mapping for all services.
+* `Options` classes now allow `timeout` to be set partially and no longer raise an exception when all values are not provided. (#11623)
+* No longer sending `SIGKILL` to subprocesses in instances where `SIGTERM` was successful within 60 seconds.
+
+Selenium 4.8.2
+* Update tox.ini for a valid "isort" version (#11667)
+* Undo a bug fix that caused a worse bug. (#11666)
+
+Selenium 4.8.1
+* Add CDP files for v110 and remove v107
+* pylint fixes including tidy of f strings, simplifications of conditional statements and isinstances (#11205)
+* Replace devtools genrule with proper generate_devtools rule. (#11392)
+* Add docstring for `alert_is_present`
+* Updating Selenium Manager binaries for 4.8.1 release
+
+Selenium 4.8.0
+* Add CDP files for v109 and remove v106
+* Add logging to Selenium Manager for both stdout and stderr
+* Multiple updates and improvements to types
+* Fix sdist tar package_dir (#11416)
+* Add comment with name of large JS executions (#11038)
+* Deprecate headless property for chromium and firefox options classes (#11467)
+
+Selenium 4.7.2
+* Put selenium manager bug fix from 4.7.1 in the correct place
+
+Selenium 4.7.1
+* Fix bug preventing selenium manager from using Internet Explorer
+
+Selenium 4.7.0
+* Add CDP files for v108 and remove v105
+* Improve error handling with Selenium Manager (#11329)
+* Fix bug preventing alternate package managers from using Selenium Manager (#11234)
+
+Selenium 4.6.1
+* Replace response.getheader() with response.headers.get() (deprecated in urllib3 1.26.13).
+* Fixed a bug in `Service` destructors accessing modules that no longer existed during interpreter shutdown.
+* Improved exception messages when raising for `relative` locator issues.
+
+Selenium 4.6.0
+* Document firefox `service=` arg. closes #11067
+* Additional types and tidying safari service
+* Revert removal of default executable global for safari
+* Additional types; remove unused `permissions.py`
+* Remove `RemoteDriverServerException`
+* Remove unused `send_remote_shutdown_command` implementations in services
+* Update `log_path` docs for non chromium based services
+* Make `get_screenshot_as_file()` work with pathlib.Paths (#11095)
+* Remove `protocols.py`
+* fix typing in get_full_page_screenshot_as_png (#11163)
+* typo in error message (#11166)
+* Adding CDP files for v107 and removing v104
+* add initial support for selenium manager
+* Revert "[py] do not allow Select class to work with disabled selects"
+* #11093 - The SessionId shouldn't be added to params themself bu… (#11121)
+
+Selenium 4.5.0
+* Fix frame_to_be_available_and_switch_to_it() for string inputs (#10963)
+* Implicit non w3c capability conversion for `acceptSslCerts`, `platform` and `version` is now deprecated
+* Additional type hints
+* Bugfix options returning `None` when strict_file_interactability, set_window_rect or accept_insecure_certs are not set
+* Add CDP for v105, remove support for v102
+* Add CDP for v106, remove support for v103
+
+Selenium 4.4.3
+* Update explicit dependency for certifi to remove upper bound (#10956)
+
+Selenium 4.4.2
+* Add explicit dependency for certifi (#10953)
+
+Selenium 4.4.1
+* Removal of urllib3[secure] extras (deprecated) dependency
+
+Selenium 4.4.0
+* More flexibility in locating Firefox binary (#10818)
+* Add CDP for v104, remove support for v101
+* Throw error when setting w3c to False on Chromium, and warning when setting w3c to True
+
+Selenium 4.3.0
+* Deprecated find_element_by_* and find_elements_by_* are now removed (#10712)
+* Deprecated Opera support has been removed (#10630)
+* Fully upgraded from python 2x to 3.7 syntax and features (#10647)
+* Added a devtools version fallback mechanism to look for an older version when mismatch occurs (#10749)
+* Better support for co-operative multi inheritance by utilising super() throughout
+* Improved type hints throughout
+
+Selenium 4.2.0
+* Fix bug preventing Firefox from setting accept_insecure_certs to False (#10442)
+* Deprecated opera classes as not w3c compatible (#10379)
+* Fix SecurityError: Invalid Domain problem (#10653)
+* Implement convenience methods for scrolling
+
+Selenium 4.1.5
+* use `typing_extensions` to be compatible with `py37` (#10613)
+
 Selenium 4.1.4
 
 * Hook options class in safari driver (#10433)
@@ -15,6 +111,7 @@ Selenium 4.1.4
 * Use `get_timeout()` for urllib pool manager timeouts in remote connection (#10563)
 * Fixing "--connect-existing" #10598
 * Added DeprecationWarning to the warnings.warn methods inside the find_element_by_x methods (#10575)
+* Added virtual authenticator for Python Bindings (#10579)
 
 Selenium 4.1.3
 

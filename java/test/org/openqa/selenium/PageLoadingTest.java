@@ -17,11 +17,11 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
@@ -34,7 +34,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.WaitingConditions.elementTextToContain;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
@@ -49,13 +49,14 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-public class PageLoadingTest extends JUnit4TestBase {
+class PageLoadingTest extends JupiterTestBase {
 
   private void initDriverWithLoadStrategy(String strategy) {
     createNewDriver(new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, strategy));
   }
 
   @Test
+  @NeedsFreshDriver
   public void shouldSetAndGetPageLoadTimeout() {
     Duration timeout = driver.manage().timeouts().getPageLoadTimeout();
     assertThat(timeout).hasMillis(300000);
@@ -166,25 +167,25 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testNormalStrategyShouldWaitForDocumentToBeLoaded() {
+  void testNormalStrategyShouldWaitForDocumentToBeLoaded() {
     driver.get(pages.simpleTestPage);
     assertThat(driver.getTitle()).isEqualTo("Hello WebDriver");
   }
 
   @Test
-  public void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
+  void testShouldFollowRedirectsSentInTheHttpResponseHeaders() {
     driver.get(pages.redirectPage);
     assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   @Test
-  public void testShouldFollowMetaRedirects() {
+  void testShouldFollowMetaRedirects() {
     driver.get(pages.metaRedirectPage);
     wait.until(titleIs("We Arrive Here"));
   }
 
   @Test
-  public void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
+  void testShouldBeAbleToGetAFragmentOnTheCurrentPage() {
     driver.get(pages.xhtmlTestPage);
     driver.get(pages.xhtmlTestPage + "#text");
     wait.until(presenceOfElementLocated(By.id("id1")));
@@ -200,7 +201,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldThrowIfUrlIsMalformed() {
+  void testShouldThrowIfUrlIsMalformed() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> driver.get("www.test.com"));
   }
@@ -221,7 +222,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldReturnURLOnNotExistedPage() {
+  void testShouldReturnURLOnNotExistedPage() {
     String url = appServer.whereIs("not_existed_page.html");
     driver.get(url);
     assertThat(driver.getCurrentUrl()).isEqualTo(url);
@@ -276,7 +277,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
+  void testShouldBeAbleToNavigateBackInTheBrowserHistoryInPresenceOfIframes() {
     driver.get(pages.xhtmlTestPage);
 
     wait.until(visibilityOfElementLocated(By.name("sameWindow"))).click();
@@ -287,7 +288,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
+  void testShouldBeAbleToNavigateForwardsInTheBrowserHistory() {
     driver.get(pages.formPage);
 
     wait.until(visibilityOfElementLocated(By.id("imageButton"))).submit();
@@ -312,7 +313,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToRefreshAPage() {
+  void testShouldBeAbleToRefreshAPage() {
     driver.get(pages.xhtmlTestPage);
 
     driver.navigate().refresh();
@@ -358,7 +359,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldTimeoutIfAPageTakesTooLongToLoad() {
+  void testShouldTimeoutIfAPageTakesTooLongToLoad() {
     try {
       testPageLoadTimeoutIsEnforced(2);
     } finally {

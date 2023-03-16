@@ -1,3 +1,84 @@
+v4.8.1
+======
+* Add CDP files for v110 and remove v107
+* IJavascriptEngine implements IDisposable where available (#11594)
+* Updating Selenium Manager binaries for 4.8.1 release
+
+v4.8.0
+======
+* Add CDP files for v109 and remove v106
+* Add comment with name of large JS executions (#11038)
+* Extend invalid selenium manager process exit codes (#11361)
+
+v4.7.0
+======
+* Adding CDP files for v108 and removing v105
+* Update Service classes to only use System.Net.Http.HttpClient (#11143)
+* Add .NET 6 support (#11298)
+* Add support for Selenium Manager to work with IE Driver
+* Improve error handling with Selenium Manager
+
+v4.6.0
+======
+* Adding CDP files for v107 and removing v104
+* Initial implementation of Selenium Manager
+* allow select list class to work with disabled select elements again
+* Bundle smg into nuget package and copy binaries to users output
+* fix bug preventing installing addon from directory
+
+v4.5.1
+======
+* Fix bug preventing automatic detection of protocol version
+
+v4.5.0
+======
+* Add CDP support for v105, and remove v102
+* Add CDP support for v106, and remove v103
+* Update Select class to error when elements are disabled
+* Add support for installing unsigned add-ons in Firefox
+* Add return value for installing add-ons in Firefox
+
+v4.4.0
+======
+* Add CDP support for v104, and remove v101
+* Removed obsolete TouchActions class
+* Removed all methods marked obsolete from 4.0
+* Updated Newtonsoft.Json to address security issue
+* Implemented ability to run different versions of browser and driver for Chrome
+* Implemented VirtualAuth support
+* Fixed bug with unsuccessful http requests in session start
+* Fixed bug checking whether driver supports DevTools
+* Marked UseSpecCompliantProtocol obsolete and throwing error when user sets to false
+
+v4.3.0
+======
+* Added CDP support for v103, and remove v100
+* Removed Element `GetProperty()` method
+* Removed execute Chrome command methods
+* Removed AddAdditionalCapability() methods from Browser Options classes
+* Removed IFindsBy locator interfaces
+* Removed HTML5 commands, interfaces and classes since not w3c supported
+* Removed support for moving to top left of element due to inconsistencies
+
+v4.2.0
+======
+* Implement setting pointer event properties
+* Add CDP support for v102, and remove v99
+* Add performance to LogType
+* Removed Opera classes
+* Implemented Action Wheel Input and scrolling methods
+* Allow RemoteWebDriver to access Selenium logs
+* Fix bug where Actions class did not reset sequences after calling perform
+* Add Pause action to Actions class
+
+v4.1.1
+======
+* Add Zenkaku/Hankaku key
+* Allow Cookie name to be empty String when value not empty
+* Only add websocket-port if connectToRunningBrowser is not set
+* Add support for Chromium to cast desktop
+* Add CDP support for v99, v100, v101 and remove v94, v95, v96
+
 v4.1.0
 ======
 * add CDP support for v96 and remove v93

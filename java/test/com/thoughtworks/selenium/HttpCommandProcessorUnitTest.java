@@ -17,13 +17,7 @@
 
 package com.thoughtworks.selenium;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -33,13 +27,19 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+
 /**
  * {@link com.thoughtworks.selenium.HttpCommandProcessor} unit test class.
  */
 public class HttpCommandProcessorUnitTest {
 
   @Test
-  public void testCanStopTheSeleneseSessionEvenIfThereIsNoCurrentSession() {
+  void testCanStopTheSeleneseSessionEvenIfThereIsNoCurrentSession() {
     final HttpCommandProcessor processor;
 
     processor = new HttpCommandProcessor("a Server", 1234, "", "a url");
@@ -47,7 +47,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testCanStopTheSeleneseSessionWhenASessionIsInProgress() {
+  void testCanStopTheSeleneseSessionWhenASessionIsInProgress() {
     final HttpCommandProcessor processor;
 
     processor = new HttpCommandProcessor("a Server", 1234, "", "a url") {
@@ -63,7 +63,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testResourcesClosedWhenIoeOnGetConnection() {
+  void testResourcesClosedWhenIoeOnGetConnection() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetConnection = true;
@@ -76,7 +76,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testResourcesClosedWhenIoeOnGetOutputStream() {
+  void testResourcesClosedWhenIoeOnGetOutputStream() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetOutputStream = true;
@@ -89,7 +89,7 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testResourcesClosedWhenIoeOnGetInputStream() {
+  void testResourcesClosedWhenIoeOnGetInputStream() {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
     cmdProc.throwIoeOnGetInputStream = true;
@@ -102,19 +102,16 @@ public class HttpCommandProcessorUnitTest {
   }
 
   @Test
-  public void testResourcesClosedWhenNoIoes() {
+  void testResourcesClosedWhenNoIoes() throws IOException {
     IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
         "localhost", 4444, "*chrome", "http://www.google.com");
-    try {
-      cmdProc.getCommandResponseAsString("testCommand");
-      cmdProc.verifyClosedResources(true, true, true);
-    } catch (IOException ioe) {
-      fail();
-    }
+
+    cmdProc.getCommandResponseAsString("testCommand");
+    cmdProc.verifyClosedResources(true, true, true);
   }
 
   @Test
-  public void testGetBooleanArray() {
+  void testGetBooleanArray() {
     HttpCommandProcessor processor =
         new HttpCommandProcessor("localhost", 4444, "*chrome", "http://www.openqa.org");
     processor = spy(processor);

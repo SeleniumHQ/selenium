@@ -20,8 +20,8 @@ package org.openqa.selenium.grid.node.config;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
@@ -55,14 +55,14 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
-public class DriverServiceSessionFactoryTest {
+class DriverServiceSessionFactoryTest {
 
   private Tracer tracer;
   private HttpClient.Factory clientFactory;
   private DriverService.Builder builder;
   private DriverService driverService;
 
-  @Before
+  @BeforeEach
   public void setUp() throws MalformedURLException {
     tracer = DefaultTestTracer.createTracer();
 
@@ -76,7 +76,7 @@ public class DriverServiceSessionFactoryTest {
   }
 
   @Test
-  public void itDelegatesCapabilitiesTestingToPredicate() {
+  void itDelegatesCapabilitiesTestingToPredicate() {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
     assertThat(factory.test(toPayload("chrome"))).isTrue();
@@ -86,7 +86,7 @@ public class DriverServiceSessionFactoryTest {
   }
 
   @Test
-  public void shouldNotInstantiateSessionIfNoDialectSpecifiedInARequest() {
+  void shouldNotInstantiateSessionIfNoDialectSpecifiedInARequest() {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
     Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
@@ -97,7 +97,7 @@ public class DriverServiceSessionFactoryTest {
   }
 
   @Test
-  public void shouldNotInstantiateSessionIfCapabilitiesDoNotMatch() {
+  void shouldNotInstantiateSessionIfCapabilitiesDoNotMatch() {
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
 
     Either<WebDriverException, ActiveSession> session = factory.apply(new CreateSessionRequest(
@@ -108,7 +108,7 @@ public class DriverServiceSessionFactoryTest {
   }
 
   @Test
-  public void shouldNotInstantiateSessionIfBuilderCanNotBuildService() {
+  void shouldNotInstantiateSessionIfBuilderCanNotBuildService() {
     when(builder.build()).thenThrow(new WebDriverException());
 
     DriverServiceSessionFactory factory = factoryFor("chrome", builder);
@@ -122,7 +122,7 @@ public class DriverServiceSessionFactoryTest {
   }
 
   @Test
-  public void shouldNotInstantiateSessionIfRemoteEndReturnsInvalidResponse() throws IOException {
+  void shouldNotInstantiateSessionIfRemoteEndReturnsInvalidResponse() throws IOException {
     HttpClient httpClient = mock(HttpClient.class);
     when(httpClient.execute(any(HttpRequest.class))).thenReturn(
         new HttpResponse().setStatus(200).setContent(() -> new ByteArrayInputStream(
@@ -145,7 +145,7 @@ public class DriverServiceSessionFactoryTest {
   }
 
   @Test
-  public void shouldInstantiateSessionIfEverythingIsOK() throws IOException {
+  void shouldInstantiateSessionIfEverythingIsOK() throws IOException {
     HttpClient httpClient = mock(HttpClient.class);
     when(httpClient.execute(any(HttpRequest.class))).thenReturn(
       new HttpResponse().setStatus(200).setContent(() -> new ByteArrayInputStream(

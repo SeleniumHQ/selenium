@@ -17,24 +17,23 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Category(UnitTests.class)
-public class PersistentCapabilitiesTest {
+@Tag("UnitTests")
+class PersistentCapabilitiesTest {
 
   @Test
-  public void shouldAllowAnEmptySetOfCapabilities() {
+  void shouldAllowAnEmptySetOfCapabilities() {
     Capabilities seen = new PersistentCapabilities();
 
     assertThat(seen).isEqualTo(new ImmutableCapabilities());
   }
 
   @Test
-  public void modifyingTheCapabilitiesThisPersistentCapabilitiesIsBasedOnDoesNotChangeOurView() {
+  void modifyingTheCapabilitiesThisPersistentCapabilitiesIsBasedOnDoesNotChangeOurView() {
     MutableCapabilities mutableCaps = new MutableCapabilities();
     Capabilities caps = new PersistentCapabilities(mutableCaps);
 
@@ -44,7 +43,7 @@ public class PersistentCapabilitiesTest {
   }
 
   @Test
-  public void shouldBePossibleToOverrideAValue() {
+  void shouldBePossibleToOverrideAValue() {
     Capabilities original = new ImmutableCapabilities("vegetable", "peas");
     Capabilities seen = new PersistentCapabilities(original).setCapability("vegetable", "carrots");
 
@@ -52,7 +51,7 @@ public class PersistentCapabilitiesTest {
   }
 
   @Test
-  public void shouldActuallyBePersistent() {
+  void shouldActuallyBePersistent() {
     PersistentCapabilities original = new PersistentCapabilities(new ImmutableCapabilities("cheese", "cheddar"));
     Capabilities seen = original.setCapability("cheese", "orgu peynir");
 
@@ -61,7 +60,7 @@ public class PersistentCapabilitiesTest {
   }
 
   @Test
-  public void shouldAllowChainedCallsToSetCapabilities() {
+  void shouldAllowChainedCallsToSetCapabilities() {
     PersistentCapabilities caps = new PersistentCapabilities(new ImmutableCapabilities())
       .setCapability("one", 1)
       .setCapability("two", 2);

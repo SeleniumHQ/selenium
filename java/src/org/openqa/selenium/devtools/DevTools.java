@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.devtools;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.devtools.idealized.Domains;
 import org.openqa.selenium.devtools.idealized.target.model.SessionID;
 import org.openqa.selenium.devtools.idealized.target.model.TargetID;
@@ -32,10 +33,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class DevTools implements Closeable {
+  private static final Logger log = Logger.getLogger(DevTools.class.getName());
 
   private final Domains protocol;
   private final Duration timeout = Duration.ofSeconds(10);
@@ -54,14 +58,21 @@ public class DevTools implements Closeable {
   @Override
   public void close() {
     disconnectSession();
+    connection.close();
   }
 
   public void disconnectSession() {
     if (cdpSession != null) {
       SessionID id = cdpSession;
       cdpSession = null;
-      connection.sendAndWait(
-        cdpSession, getDomains().target().detachFromTarget(Optional.of(id), Optional.empty()), timeout);
+      try {
+        connection.sendAndWait(
+          cdpSession, getDomains().target().detachFromTarget(Optional.of(id), Optional.empty()),
+          timeout);
+      } catch (Exception e) {
+        // Exceptions should not prevent closing the connection and the web driver
+        log.warning("Exception while detaching from target: " + e.getMessage());
+      }
     }
   }
 
@@ -85,26 +96,41 @@ public class DevTools implements Closeable {
   }
 
   public void createSessionIfThereIsNotOne() {
+    createSessionIfThereIsNotOne(null);
+  }
+
+  public void createSessionIfThereIsNotOne(String windowHandle) {
     if (cdpSession == null) {
-      createSession();
+      createSession(windowHandle);
     }
   }
 
   public void createSession() {
-    // Figure out the targets.
-    List<TargetInfo> infos = connection.sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
+    createSession(null);
+  }
 
-    // Grab the first "page" type, and glom on to that.
-    // TODO: Find out which one might be the current one
-    TargetID targetId = infos.stream()
-      .filter(info -> "page".equals(info.getType()))
-      .map(TargetInfo::getTargetId)
-      .findAny()
-      .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
+  /**
+   * Create CDP session on given window/tab (aka target).
+   * If windowHandle is null, then the first "page" type will be selected.
+   * Pass the windowHandle if you have multiple windows/tabs opened to connect to
+   * the expected window/tab.
+   *
+   * @param windowHandle result of {@link WebDriver#getWindowHandle()}, optional.
+   */
+  public void createSession(String windowHandle) {
+    if (connection.isClosed()) {
+      connection.reopen();
+    }
+    TargetID targetId = findTarget(windowHandle);
 
-    // Start the session.
+    // Starts the session
+    // CDP creates a parent browser session when websocket connection is made
+    // Create session that is child of parent browser session and not child of already existing child page session
+    // Passing null for session id helps achieve that
+    // Child of already existing child page session throws an error when detaching from the target
+    // CDP allows attaching to child of child session but not detaching. Maybe it does not keep track of it.
     cdpSession = connection
-      .sendAndWait(cdpSession, getDomains().target().attachToTarget(targetId), timeout);
+      .sendAndWait(null, getDomains().target().attachToTarget(targetId), timeout);
 
     try {
       // We can do all of these in parallel, and we don't care about the result.
@@ -114,7 +140,7 @@ public class DevTools implements Closeable {
         // Clear the existing logs
         connection.send(cdpSession, getDomains().log().clear())
           .exceptionally(t -> {
-            t.printStackTrace();
+            log.log(Level.SEVERE, t.getMessage(), t);
             return null;
           })
       ).get(timeout.toMillis(), MILLISECONDS);
@@ -122,14 +148,30 @@ public class DevTools implements Closeable {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Thread has been interrupted", e);
     } catch (ExecutionException e) {
-      Throwable cause = e;
-      if (e.getCause() != null) {
-        cause = e.getCause();
-      }
-      throw new DevToolsException(cause);
+      throw new DevToolsException(unwrapCause(e));
     } catch (TimeoutException e) {
       throw new org.openqa.selenium.TimeoutException(e);
     }
+  }
+
+  private TargetID findTarget(String windowHandle) {
+    // Figure out the targets.
+    List<TargetInfo> infos = connection
+      .sendAndWait(cdpSession, getDomains().target().getTargets(), timeout);
+
+    // Grab the first "page" type, and glom on to that.
+    // Find out which one might be the current one
+    // (using given window handle like "CDwindow-24426957AC62D8BC83E58C184C38AF2D")
+    return infos.stream()
+      .filter(info -> "page".equals(info.getType()))
+      .map(TargetInfo::getTargetId)
+      .filter(id -> windowHandle == null || windowHandle.contains(id.toString()))
+      .findAny()
+      .orElseThrow(() -> new DevToolsException("Unable to find target id of a page"));
+  }
+
+  private Throwable unwrapCause(ExecutionException e) {
+    return e.getCause() != null ? e.getCause() : e;
   }
 
   public SessionID getCdpSession() {

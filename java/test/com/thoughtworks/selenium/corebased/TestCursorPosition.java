@@ -20,11 +20,11 @@ package com.thoughtworks.selenium.corebased;
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 import com.thoughtworks.selenium.SeleniumException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestCursorPosition extends InternalSelenseTestBase {
   @Test
-  public void testCursorPosition() {
+  void testCursorPosition() {
     selenium.open("test_type_page1.html");
     try {
       assertEquals(selenium.getCursorPosition("username"), "8");

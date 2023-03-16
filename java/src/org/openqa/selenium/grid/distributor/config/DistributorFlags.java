@@ -18,8 +18,10 @@
 package org.openqa.selenium.grid.distributor.config;
 
 
-import com.beust.jcommander.Parameter;
 import com.google.auto.service.AutoService;
+
+import com.beust.jcommander.Parameter;
+
 import org.openqa.selenium.grid.config.ConfigValue;
 import org.openqa.selenium.grid.config.HasRoles;
 import org.openqa.selenium.grid.config.Role;
@@ -30,8 +32,8 @@ import java.util.Set;
 
 import static org.openqa.selenium.grid.config.StandardGridRoles.DISTRIBUTOR_ROLE;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
-import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_GRID_MODEL_IMPLEMENTATION;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_HEALTHCHECK_INTERVAL;
+import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_NEWSESSION_THREADPOOL_SIZE;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_REJECT_UNSUPPORTED_CAPS;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_MATCHER;
 import static org.openqa.selenium.grid.distributor.config.DistributorOptions.DEFAULT_SLOT_SELECTOR_IMPLEMENTATION;
@@ -67,12 +69,6 @@ public class DistributorFlags implements HasRoles {
   private String implementation = DEFAULT_DISTRIBUTOR_IMPLEMENTATION;
 
   @Parameter(
-    names = {"--grid-model"},
-    description = "Full classname of non-default grid model. This is used to store states of the all the registered Nodes.")
-  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "grid-model", example = DEFAULT_GRID_MODEL_IMPLEMENTATION)
-  private String gridModel = DEFAULT_GRID_MODEL_IMPLEMENTATION;
-
-  @Parameter(
     names = {"--slot-matcher"},
     description = "Full classname of non-default slot matcher to use. This is used to determine whether a Node can support a particular session.")
   @ConfigValue(section = DISTRIBUTOR_SECTION, name = "slot-matcher", example = DEFAULT_SLOT_MATCHER)
@@ -96,6 +92,15 @@ public class DistributorFlags implements HasRoles {
     names = "--reject-unsupported-caps", arity = 1)
   @ConfigValue(section = DISTRIBUTOR_SECTION, name = "reject-unsupported-caps", example = "true")
   private boolean rejectUnsupportedCaps = DEFAULT_REJECT_UNSUPPORTED_CAPS;
+
+  @Parameter(
+    names = {"--newsession-threadpool-size"},
+    description = "The Distributor uses a fixed-sized thread pool to create new sessions as it consumes new session requests from the queue."
+                  + "This allows configuring the size of the thread pool. The default value is no. of available processors * 3. "
+                  + "Note: If the no. of threads is way greater than the available processors it will not always increase the performance. "
+                  + "A high number of threads causes more context switching which is an expensive operation. ")
+  @ConfigValue(section = DISTRIBUTOR_SECTION, name = "newsession-threadpool-size", example = "4")
+  public int newSessionThreadPoolSize = DEFAULT_NEWSESSION_THREADPOOL_SIZE;
 
   @Override
   public Set<Role> getRoles() {

@@ -25,23 +25,23 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
-public class TextPagesTest extends JUnit4TestBase {
+class TextPagesTest extends JupiterTestBase {
 
   private String textPage;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     textPage = GlobalTestEnvironment.get().getAppServer().whereIs("plain.txt");
   }
 
   @Test
-  public void testShouldBeAbleToLoadASimplePageOfText() {
+  void testShouldBeAbleToLoadASimplePageOfText() {
     driver.get(textPage);
     String source = driver.getPageSource();
     assertThat(source).contains("Test");

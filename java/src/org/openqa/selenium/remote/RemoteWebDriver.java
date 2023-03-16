@@ -17,16 +17,10 @@
 
 package org.openqa.selenium.remote;
 
-import static java.util.Collections.singleton;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.By;
@@ -51,18 +45,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
-import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Interactive;
-import org.openqa.selenium.interactions.Keyboard;
-import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
@@ -81,6 +72,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -97,12 +89,15 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Collections.singleton;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
 @Augmentable
 public class RemoteWebDriver implements WebDriver,
   JavascriptExecutor,
-  HasInputDevices,
   HasCapabilities,
   HasVirtualAuthenticator,
   Interactive,
@@ -122,8 +117,6 @@ public class RemoteWebDriver implements WebDriver,
 
   private JsonToWebElementConverter converter;
 
-  private RemoteKeyboard keyboard;
-  private RemoteMouse mouse;
   private Logs remoteLogs;
   private LocalLogs localLogs;
 
@@ -154,7 +147,7 @@ public class RemoteWebDriver implements WebDriver,
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
     this.executor = Require.nonNull("Command executor", executor);
-    capabilities = init(capabilities);
+    this.capabilities = init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
@@ -207,23 +200,8 @@ public class RemoteWebDriver implements WebDriver,
 
     converter = new JsonToWebElementConverter(this);
     executeMethod = new RemoteExecuteMethod(this);
-    keyboard = new RemoteKeyboard(executeMethod);
-    mouse = new RemoteMouse(executeMethod);
 
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
-
-    boolean isProfilingEnabled = capabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
-    if (isProfilingEnabled) {
-      builder.add(LogType.PROFILER);
-    }
-
-    LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();
-    mergedLoggingPrefs.addPreferences((LoggingPreferences) capabilities.getCapability(LOGGING_PREFS));
-
-    if (!mergedLoggingPrefs.getEnabledLogTypes().contains(LogType.CLIENT) ||
-        mergedLoggingPrefs.getLevel(LogType.CLIENT) != Level.OFF) {
-      builder.add(LogType.CLIENT);
-    }
 
     Set<String> logTypesToInclude = builder.build();
 
@@ -245,6 +223,9 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   protected void startSession(Capabilities capabilities) {
+    checkNonW3CCapabilities(capabilities);
+    checkChromeW3CFalse(capabilities);
+
     Response response = execute(DriverCommand.NEW_SESSION(singleton(capabilities)));
 
     if (response == null) {
@@ -257,20 +238,18 @@ public class RemoteWebDriver implements WebDriver,
     if (responseValue == null) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response without payload: " +
-        response.toString());
+        response);
     }
 
     if (!(responseValue instanceof Map)) {
       throw new SessionNotCreatedException(
         "The underlying command executor returned a response with a non well formed payload: " +
-        response.toString());
+        response);
     }
 
     @SuppressWarnings("unchecked") Map<String, Object> rawCapabilities = (Map<String, Object>) responseValue;
     MutableCapabilities returnedCapabilities = new MutableCapabilities(rawCapabilities);
-    String platformString = (String) rawCapabilities.getOrDefault(
-      PLATFORM,
-      rawCapabilities.get(PLATFORM_NAME));
+    String platformString = (String) rawCapabilities.get(PLATFORM_NAME);
     Platform platform;
     try {
       if (platformString == null || "".equals(platformString)) {
@@ -283,19 +262,7 @@ public class RemoteWebDriver implements WebDriver,
       // system property. Try to recover and parse this.
       platform = Platform.extractFromSysProperty(platformString);
     }
-    returnedCapabilities.setCapability(PLATFORM, platform);
     returnedCapabilities.setCapability(PLATFORM_NAME, platform);
-
-    if (rawCapabilities.containsKey(SUPPORTS_JAVASCRIPT)) {
-      Object raw = rawCapabilities.get(SUPPORTS_JAVASCRIPT);
-      if (raw instanceof String) {
-        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, Boolean.parseBoolean((String) raw));
-      } else if (raw instanceof Boolean) {
-        returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, ((Boolean) raw).booleanValue());
-      }
-    } else {
-      returnedCapabilities.setCapability(SUPPORTS_JAVASCRIPT, true);
-    }
 
     this.capabilities = returnedCapabilities;
     sessionId = new SessionId(response.getSessionId());
@@ -449,9 +416,16 @@ public class RemoteWebDriver implements WebDriver,
       }
     }
 
-    execute(DriverCommand.CLOSE);
-  }
+    Response response = execute(DriverCommand.CLOSE);
+    Object value = response.getValue();
+    List<String> windowHandles = (ArrayList<String>) value;
 
+    if (windowHandles.isEmpty() && this instanceof HasBiDi) {
+      // If no top-level browsing contexts are open after calling close, it indicates that the WebDriver session is closed.
+      // If the WebDriver session is closed, the BiDi session also needs to be closed.
+      ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
+    }
+  }
   @Override
   public void quit() {
     // no-op if session id is null. We're only going to make ourselves unhappy
@@ -460,6 +434,14 @@ public class RemoteWebDriver implements WebDriver,
     }
 
     try {
+      if (this instanceof HasDevTools) {
+        ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::close);
+      }
+
+      if (this instanceof HasBiDi) {
+        ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
+      }
+
       execute(DriverCommand.QUIT);
     } finally {
       sessionId = null;
@@ -492,9 +474,6 @@ public class RemoteWebDriver implements WebDriver,
           "You must be using an underlying instance of WebDriver that supports executing javascript");
     }
 
-    // Escape the quote marks
-    script = script.replaceAll("\"", "\\\"");
-
     List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
         Collectors.toList());
 
@@ -507,9 +486,6 @@ public class RemoteWebDriver implements WebDriver,
       throw new UnsupportedOperationException("You must be using an underlying instance of " +
           "WebDriver that supports executing javascript");
     }
-
-    // Escape the quote marks
-    script = script.replaceAll("\"", "\\\"");
 
     List<Object> convertedArgs = Stream.of(args).map(new WebElementToJsonConverter()).collect(
         Collectors.toList());
@@ -641,16 +617,6 @@ public class RemoteWebDriver implements WebDriver,
   }
 
   @Override
-  public Keyboard getKeyboard() {
-    return keyboard;
-  }
-
-  @Override
-  public Mouse getMouse() {
-    return mouse;
-  }
-
-  @Override
   public VirtualAuthenticator addVirtualAuthenticator(VirtualAuthenticatorOptions options) {
     String authenticatorId = (String)
         execute(DriverCommand.ADD_VIRTUAL_AUTHENTICATOR, options.toMap()).getValue();
@@ -708,6 +674,41 @@ public class RemoteWebDriver implements WebDriver,
     }
   }
 
+  private void checkNonW3CCapabilities(Capabilities capabilities) {
+    // Throwing warnings for non-W3C WebDriver compliant capabilities
+    List<String> invalid = capabilities.asMap().keySet()
+      .stream()
+      .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
+      .collect(Collectors.toList());
+
+    if (!invalid.isEmpty()) {
+      logger.log(Level.WARNING,
+                 () -> String.format("Support for Legacy Capabilities is deprecated; " +
+                                     "You are sending the following invalid capabilities: %s; " +
+                                     "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+                                     invalid));
+    }
+  }
+
+  private void checkChromeW3CFalse(Capabilities capabilities) {
+    // Throwing warnings when the user sets `w3c: false` inside `goog:chromeOptions`
+    if (Browser.CHROME.is(capabilities) && capabilities.asMap().containsKey("goog:chromeOptions")) {
+      Object capability = capabilities.getCapability("goog:chromeOptions");
+      boolean w3c = true;
+      if ((capability instanceof Map)) {
+        Object rawW3C = ((Map<?, ?>) capability).get("w3c");
+        w3c = rawW3C == null || Boolean.parseBoolean(String.valueOf(rawW3C));
+      }
+      if (!w3c) {
+        throw new WebDriverException(
+          "Setting 'w3c: false' inside 'goog:chromeOptions' will no longer be supported " +
+          "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/"
+        );
+      }
+    }
+
+  }
+
   public FileDetector getFileDetector() {
     return fileDetector;
   }
@@ -735,20 +736,16 @@ public class RemoteWebDriver implements WebDriver,
       return super.toString();
     }
 
-    // w3c name first
-    Object platform = caps.getCapability(PLATFORM_NAME);
-    if (!(platform instanceof String)) {
-      platform = caps.getCapability(PLATFORM);
-    }
-    if (platform == null) {
-      platform = "unknown";
+    Object platformName = caps.getCapability(PLATFORM_NAME);
+    if (platformName == null) {
+      platformName = "unknown";
     }
 
     return String.format(
       "%s: %s on %s (%s)",
       getClass().getSimpleName(),
       caps.getBrowserName(),
-      platform,
+      platformName,
       getSessionId());
   }
 
@@ -838,47 +835,10 @@ public class RemoteWebDriver implements WebDriver,
     }
 
     @Override
-    public ImeHandler ime() {
-      return new RemoteInputMethodManager();
-    }
-
-    @Override
     @Beta
     public Window window() {
       return new RemoteWindow();
     }
-
-    protected class RemoteInputMethodManager implements WebDriver.ImeHandler {
-
-      @Override
-      @SuppressWarnings("unchecked")
-      public List<String> getAvailableEngines() {
-        Response response = execute(DriverCommand.IME_GET_AVAILABLE_ENGINES);
-        return (List<String>) response.getValue();
-      }
-
-      @Override
-      public String getActiveEngine() {
-        Response response = execute(DriverCommand.IME_GET_ACTIVE_ENGINE);
-        return (String) response.getValue();
-      }
-
-      @Override
-      public boolean isActivated() {
-        Response response = execute(DriverCommand.IME_IS_ACTIVATED);
-        return (Boolean) response.getValue();
-      }
-
-      @Override
-      public void deactivate() {
-        execute(DriverCommand.IME_DEACTIVATE);
-      }
-
-      @Override
-      public void activateEngine(String engine) {
-        execute(DriverCommand.IME_ACTIVATE_ENGINE(engine));
-      }
-    } // RemoteInputMethodManager class
 
     protected class RemoteTimeouts implements Timeouts {
 

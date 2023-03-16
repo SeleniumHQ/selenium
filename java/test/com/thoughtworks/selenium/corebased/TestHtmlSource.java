@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestHtmlSource extends InternalSelenseTestBase {
   @Test
-  public void testHtmlSource() {
+  void testHtmlSource() {
     selenium.open("test_html_source.html");
     verifyTrue(selenium.getHtmlSource().matches("^[\\s\\S]*Text is here[\\s\\S]*$"));
     verifyFalse(selenium.getHtmlSource().matches("^[\\s\\S]*can not be found[\\s\\S]*$"));

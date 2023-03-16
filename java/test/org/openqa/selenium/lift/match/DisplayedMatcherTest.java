@@ -23,19 +23,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.lift.match.DisplayedMatcher.displayed;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 
-public class DisplayedMatcherTest {
+class DisplayedMatcherTest {
 
   @Test
-  public void testShouldNotFailForDisplayedWebElement() {
+  void testShouldNotFailForDisplayedWebElement() {
     WebElement element = createWebElementWithDisplayed(true);
     assertThat(element, is(displayed()));
   }
 
   @Test
-  public void testShouldFailForNotDisplayedWebElement() {
+  void testShouldFailForNotDisplayedWebElement() {
     final WebElement element = createWebElementWithDisplayed(false);
     assertThat(element, is(not(displayed())));
   }

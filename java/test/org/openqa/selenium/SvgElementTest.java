@@ -23,20 +23,20 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.util.List;
 
-public class SvgElementTest extends JUnit4TestBase {
+class SvgElementTest extends JupiterTestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415068")
+  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1428780")
   @NotYetImplemented(SAFARI)
-  public void testShouldClickOnGraphVisualElements() {
+  void testShouldClickOnGraphVisualElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
 
@@ -68,7 +68,7 @@ public class SvgElementTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
-  public void testShouldClickOnGraphTextElements() {
+  void testShouldClickOnGraphTextElements() {
     driver.get(pages.svgPage);
     WebElement svg = driver.findElement(By.cssSelector("svg"));
     List<WebElement> textElements = svg.findElements(By.cssSelector("text"));

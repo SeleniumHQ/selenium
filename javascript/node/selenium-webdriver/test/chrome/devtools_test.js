@@ -22,6 +22,7 @@ const fs = require('fs')
 const path = require('path')
 
 const chrome = require('../../chrome')
+const by = require('../../lib/by')
 const error = require('../../lib/error')
 const fileServer = require('../../lib/test/fileserver')
 const io = require('../../io')
@@ -138,27 +139,25 @@ test.suite(
     })
 
     describe('Basic Auth Injection', function () {
-      it('denies entry if username and password do not match',
-        async function () {
-          const pageCdpConnection = await driver.createCDPConnection('page')
+      it('denies entry if username and password do not match', async function () {
+        const pageCdpConnection = await driver.createCDPConnection('page')
 
-          await driver.register('random', 'random', pageCdpConnection)
-          await driver.get(fileServer.Pages.basicAuth)
-          let source = await driver.getPageSource()
-          assert.strictEqual(source.includes('Access granted!'), false, source)
-        })
+        await driver.register('random', 'random', pageCdpConnection)
+        await driver.get(fileServer.Pages.basicAuth)
+        let source = await driver.getPageSource()
+        assert.strictEqual(source.includes('Access granted!'), false, source)
+      })
     })
 
     describe('Basic Auth Injection', function () {
-      it('grants access if username and password are a match',
-        async function () {
-          const pageCdpConnection = await driver.createCDPConnection('page')
+      it('grants access if username and password are a match', async function () {
+        const pageCdpConnection = await driver.createCDPConnection('page')
 
-          await driver.register('genie', 'bottle', pageCdpConnection)
-          await driver.get(fileServer.Pages.basicAuth)
-          let source = await driver.getPageSource()
-          assert.strictEqual(source.includes('Access granted!'), true)
-        })
+        await driver.register('genie', 'bottle', pageCdpConnection)
+        await driver.get(fileServer.Pages.basicAuth)
+        let source = await driver.getPageSource()
+        assert.strictEqual(source.includes('Access granted!'), true)
+      })
     })
 
     describe('setDownloadPath', function () {
@@ -202,6 +201,98 @@ test.suite(
             if (err instanceof error.InvalidArgumentError) {
               return
             }
+            throw err
+          }
+        }
+      })
+    })
+
+    describe('Script pinning', function () {
+      it('allows to pin script', async function () {
+        await driver.get(fileServer.Pages.xhtmlTestPage)
+
+        let script = await driver.pinScript('return document.title;')
+
+        const result = await driver.executeScript(script)
+
+        assert.strictEqual(result, 'XHTML Test Page')
+      })
+
+      it('ensures pinned script is available on new pages', async function () {
+        await driver.get(fileServer.Pages.xhtmlTestPage)
+        await driver.createCDPConnection('page')
+
+        let script = await driver.pinScript('return document.title;')
+        await driver.get(fileServer.Pages.formPage)
+
+        const result = await driver.executeScript(script)
+
+        assert.strictEqual(result, 'We Leave From Here')
+      })
+
+      it('allows to unpin script', async function () {
+        let script = await driver.pinScript('return document.title;')
+        await driver.unpinScript(script)
+
+        await assertJSError(() => driver.executeScript(script))
+
+        async function assertJSError(fn) {
+          try {
+            await fn()
+            return Promise.reject(Error('should have failed'))
+          } catch (err) {
+            if (err instanceof error.JavascriptError) {
+              return
+            }
+            throw err
+          }
+        }
+      })
+
+      it('ensures unpinned scripts are not available on new pages', async function () {
+        await driver.createCDPConnection('page')
+
+        let script = await driver.pinScript('return document.title;')
+        await driver.unpinScript(script)
+
+        await driver.get(fileServer.Pages.formPage)
+
+        await assertJSError(() => driver.executeScript(script))
+
+        async function assertJSError(fn) {
+          try {
+            await fn()
+            return Promise.reject(Error('should have failed'))
+          } catch (err) {
+            if (err instanceof error.JavascriptError) {
+              return
+            }
+            throw err
+          }
+        }
+      })
+
+      it('handles arguments in pinned script', async function () {
+        await driver.get(fileServer.Pages.xhtmlTestPage)
+        await driver.createCDPConnection('page')
+
+        let script = await driver.pinScript('return arguments;')
+        let element = await driver.findElement(by.By.id('id1'))
+
+        const result = await driver.executeScript(script, 1, true, element)
+
+        assert.deepEqual(result, [1, true, element])
+      })
+
+      it('supports async pinned scripts', async function () {
+        let script = await driver.pinScript('arguments[0]()')
+        await assertAsyncScriptPinned(() => driver.executeAsyncScript(script))
+
+        async function assertAsyncScriptPinned(fn) {
+          try {
+            await fn()
+            return
+          } catch (err) {
             throw err
           }
         }

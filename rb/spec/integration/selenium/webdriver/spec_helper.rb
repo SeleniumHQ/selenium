@@ -37,7 +37,6 @@ RSpec.configure do |c|
   c.include(WebDriver::SpecSupport::Helpers)
 
   c.before(:suite) do
-    $DEBUG ||= ENV.fetch('DEBUG', nil) == 'true'
     GlobalTestEnv.remote_server.start if GlobalTestEnv.driver == :remote && ENV['WD_REMOTE_URL'].nil?
     GlobalTestEnv.print_env
   end
@@ -52,9 +51,9 @@ RSpec.configure do |c|
     guards = WebDriver::Support::Guards.new(example, bug_tracker: 'https://github.com/SeleniumHQ/selenium/issues')
     guards.add_condition(:driver, GlobalTestEnv.driver)
     guards.add_condition(:browser, GlobalTestEnv.browser)
+    guards.add_condition(:ci, WebDriver::Platform.ci)
     guards.add_condition(:platform, WebDriver::Platform.os)
-    window_manager = !WebDriver::Platform.linux? || !ENV['DESKTOP_SESSION'].nil?
-    guards.add_condition(:window_manager, window_manager)
+    guards.add_condition(:headless, !ENV['HEADLESS'].nil?)
 
     results = guards.disposition
     send(*results) if results

@@ -80,6 +80,7 @@
 const { Browser } = require('./lib/capabilities')
 const io = require('./io')
 const chromium = require('./chromium')
+const { driverLocation } = require('./common/seleniumManager')
 
 /**
  * Name of the EdgeDriver executable.
@@ -90,7 +91,6 @@ const EDGEDRIVER_CHROMIUM_EXE =
   process.platform === 'win32' ? 'msedgedriver.exe' : 'msedgedriver'
 
 /** @type {remote.DriverService} */
-let defaultService = null
 
 /**
  * Creates {@link selenium-webdriver/remote.DriverService} instances that manage
@@ -107,6 +107,19 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    */
   constructor(opt_exe) {
     let exe = opt_exe || locateSynchronously()
+
+    if (!exe) {
+      console.log(
+        `The WebDriver for Edge could not be found on the current PATH, trying Selenium Manager`
+      )
+
+      try {
+        exe = driverLocation('edge')
+      } catch (err) {
+        console.log(`Unable to obtain driver using Selenium Manager: ${err}`)
+      }
+    }
+
     if (!exe) {
       throw Error(
         `The WebDriver for Edge could not be found on the current PATH. Please download the ` +
@@ -115,6 +128,7 @@ class ServiceBuilder extends chromium.ServiceBuilder {
           `and ensure it can be found on your PATH.`
       )
     }
+
     super(exe)
     this.setLoopback(true)
   }
@@ -158,39 +172,19 @@ class Driver extends chromium.Driver {
   }
 
   /**
+   * returns new instance of edge driver service
+   * @returns {remote.DriverService}
+   */
+  static getDefaultService() {
+    return new ServiceBuilder().build()
+  }
+
+  /**
    * This function is a no-op as file detectors are not supported by this
    * implementation.
    * @override
    */
   setFileDetector() {}
-}
-
-/**
- * Sets the default service to use for new Edge instances.
- * @param {!remote.DriverService} service The service to use.
- * @throws {Error} If the default service is currently running.
- */
-function setDefaultService(service) {
-  if (defaultService && defaultService.isRunning()) {
-    throw Error(
-      'The previously configured EdgeDriver service is still running. ' +
-        'You must shut it down before you may adjust its configuration.'
-    )
-  }
-  defaultService = service
-}
-
-/**
- * Returns the default Microsoft Edge driver service. If such a service has
- * not been configured, one will be constructed using the default configuration
- * for a MicrosoftWebDriver executable found on the system PATH.
- * @return {!remote.DriverService} The default Microsoft Edge driver service.
- */
-function getDefaultService() {
-  if (!defaultService) {
-    defaultService = new ServiceBuilder().build()
-  }
-  return defaultService
 }
 
 /**
@@ -206,7 +200,6 @@ function locateSynchronously() {
 Options.prototype.BROWSER_NAME_VALUE = Browser.EDGE
 Options.prototype.CAPABILITY_KEY = 'ms:edgeOptions'
 Driver.prototype.VENDOR_CAPABILITY_PREFIX = 'ms'
-Driver.getDefaultService = getDefaultService
 
 // PUBLIC API
 
@@ -214,7 +207,5 @@ module.exports = {
   Driver,
   Options,
   ServiceBuilder,
-  getDefaultService,
-  setDefaultService,
   locateSynchronously,
 }

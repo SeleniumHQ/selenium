@@ -20,48 +20,40 @@ package org.openqa.selenium.safari;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverAfterTest;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 
-public class CleanSessionTest extends JUnit4TestBase {
+class CleanSessionTest extends JupiterTestBase {
 
   private static final Cookie COOKIE = new Cookie("foo", "bar");
 
-  private WebDriver driver2;
-
-  @After
-  public void quitDriver() {
-    if (driver2 != null) {
-      driver2.quit();
-    }
-  }
-
-  private void createCleanSession() {
-    removeDriver();
-    quitDriver();
-    SafariOptions safariOptions = new SafariOptions();
-    driver2 = new SafariDriver(safariOptions);
-    driver2.get(pages.alertsPage);
-  }
-
   @Test
+  @NoDriverBeforeTest
   public void shouldClearCookiesWhenStartingWithACleanSession() {
-    createCleanSession();
-    assertNoCookies();
-    driver2.manage().addCookie(COOKIE);
-    assertHasCookie(COOKIE);
+    SafariDriver firstDriver = new SafariDriver();
+    firstDriver.get(pages.alertsPage);
 
-    createCleanSession();
-    assertNoCookies();
+    assertThat(firstDriver.manage().getCookies()).isEmpty();
+
+    firstDriver.manage().addCookie(COOKIE);
+    assertThat(firstDriver.manage().getCookies()).contains(COOKIE);
+    firstDriver.quit();
+
+    localDriver = new SafariDriver();
+    localDriver.get(pages.alertsPage);
+    assertThat(localDriver.manage().getCookies()).isEmpty();
   }
 
   @Test
+  @NoDriverAfterTest
   public void isResilientToPagesRedefiningDependentDomFunctions() {
     runFunctionRedefinitionTest("window.dispatchEvent = function() {};");
     runFunctionRedefinitionTest("window.postMessage = function() {};");
@@ -81,6 +73,7 @@ public class CleanSessionTest extends JUnit4TestBase {
   }
 
   @Test
+  @NoDriverAfterTest
   @Ignore(SAFARI)
   public void executeAsyncScriptIsResilientToPagesRedefiningSetTimeout() {
     driver.get(appServer.whereIs("messages.html"));
@@ -97,7 +90,7 @@ public class CleanSessionTest extends JUnit4TestBase {
   }
 
   @Test
-  public void doesNotLeakInternalMessagesToThePageUnderTest() {
+  void doesNotLeakInternalMessagesToThePageUnderTest() {
     driver.get(appServer.whereIs("messages.html"));
 
     JavascriptExecutor executor = (JavascriptExecutor) driver;
@@ -110,19 +103,11 @@ public class CleanSessionTest extends JUnit4TestBase {
   }
 
   @Test
-  public void doesNotCreateExtraIframeOnPageUnderTest() {
+  void doesNotCreateExtraIframeOnPageUnderTest() {
     driver.get(appServer.whereIs("messages.html"));
-    assertThat(driver.findElements(By.tagName("iframe"))).hasSize(0);
+    assertThat(driver.findElements(By.tagName("iframe"))).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("return location.href;");
-    assertThat(driver.findElements(By.tagName("iframe"))).hasSize(0);
-  }
-
-  private void assertHasCookie(Cookie cookie) {
-    assertThat(driver2.manage().getCookies()).contains(cookie);
-  }
-
-  private void assertNoCookies() {
-    assertThat(driver2.manage().getCookies()).isEmpty();
+    assertThat(driver.findElements(By.tagName("iframe"))).isEmpty();
   }
 }

@@ -32,11 +32,11 @@
         var els = {};
         var allEvents = { events: [] };
         function displayMessage(message) {
-            document.getElementById("events").innerHTML = "<p>" + message + "</p>";
+            document.getElementById("events").innerHTML += "<p>" + message + "</p>";
         }
 
-        function appendMessage(message) {
-            document.getElementById("events").innerHTML += "<p>" + message + "</p>";
+        function appendMessage(type, message) {
+          document.getElementById("events").innerHTML += "<p class='" + type + "'>" + message + "</p>";
         }
 
         function recordPointerEvent(event) {
@@ -65,11 +65,10 @@
                 "altitudeAngle": event.altitudeAngle,
                 "azimuthAngle": event.azimuthAngle
             });
-            appendMessage(event.type + " " +
+            appendMessage(event.type, event.type + " " +
                 "button: " + event.button + ", " +
                 "pageX: " + event.pageX + ", " +
                 "pageY: " + event.pageY + ", " +
-                "button: " + event.button + ", " +
                 "buttons: " + event.buttons + ", " +
                 "ctrlKey: " + event.ctrlKey + ", " +
                 "altKey: " + event.altKey + ", " +

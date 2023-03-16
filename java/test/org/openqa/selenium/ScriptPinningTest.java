@@ -18,9 +18,9 @@
 package org.openqa.selenium;
 
 import com.google.common.collect.ImmutableSet;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.Set;
 
@@ -28,11 +28,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
-public class ScriptPinningTest extends JUnit4TestBase {
+class ScriptPinningTest extends JupiterTestBase {
 
   private JavascriptExecutor executor;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     assumeThat(driver).isInstanceOf(JavascriptExecutor.class);
 
@@ -42,7 +42,7 @@ public class ScriptPinningTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldAllowAScriptToBePinned() {
+  void shouldAllowAScriptToBePinned() {
     ScriptKey hello = executor.pin("return 'I like cheese'");
 
     Object value = executor.executeScript(hello);
@@ -51,7 +51,7 @@ public class ScriptPinningTest extends JUnit4TestBase {
   }
 
   @Test
-  public void pinnedScriptsShouldBeAbleToTakeArguments() {
+  void pinnedScriptsShouldBeAbleToTakeArguments() {
     ScriptKey hello = executor.pin("return arguments[0]");
 
     Object value = executor.executeScript(hello, "cheese");
@@ -60,7 +60,7 @@ public class ScriptPinningTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToListAllPinnedScripts() {
+  void shouldBeAbleToListAllPinnedScripts() {
     Set<ScriptKey> expected = ImmutableSet.of(
       executor.pin("return arguments[0];"),
       executor.pin("return 'cheese';"),
@@ -72,7 +72,7 @@ public class ScriptPinningTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldAllowAPinnedScriptToBeUnpinned() {
+  void shouldAllowAPinnedScriptToBeUnpinned() {
     ScriptKey cheese = executor.pin("return 'brie'");
     executor.unpin(cheese);
 
@@ -80,7 +80,7 @@ public class ScriptPinningTest extends JUnit4TestBase {
   }
 
   @Test
-  public void callingAnUnpinnedScriptIsAnError() {
+  void callingAnUnpinnedScriptIsAnError() {
     ScriptKey cheese = executor.pin("return 'brie'");
     executor.unpin(cheese);
 

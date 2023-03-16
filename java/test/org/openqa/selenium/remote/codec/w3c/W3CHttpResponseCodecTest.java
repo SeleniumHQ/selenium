@@ -28,8 +28,8 @@ import static org.openqa.selenium.remote.http.Contents.bytes;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
@@ -37,17 +37,16 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(UnitTests.class)
-public class W3CHttpResponseCodecTest {
+@Tag("UnitTests")
+class W3CHttpResponseCodecTest {
 
   @Test
-  public void noErrorNoCry() {
+  void noErrorNoCry() {
     Map<String, Object> data = new HashMap<>();
     data.put("value", "cheese");
 
@@ -61,7 +60,7 @@ public class W3CHttpResponseCodecTest {
   }
 
   @Test
-  public void shouldBeAbleToHandleGatewayTimeoutError() {
+  void shouldBeAbleToHandleGatewayTimeoutError() {
     String responseString = "<html>\r\n" +
       "<body>\r\n" +
       "<h1>504 Gateway Time-out</h1>\r\n" +
@@ -86,7 +85,7 @@ public class W3CHttpResponseCodecTest {
 
 
   @Test
-  public void shouldBeAbleToHandleBadGatewayError() {
+  void shouldBeAbleToHandleBadGatewayError() {
     String responseString = "<html>\r\n" +
       "<head><title>502 Bad Gateway</title></head>\r\n" +
       "<body>\r\n" +
@@ -111,7 +110,7 @@ public class W3CHttpResponseCodecTest {
   }
 
   @Test
-  public void decodingAnErrorWithoutAStacktraceIsDecodedProperlyForNonCompliantImplementations() {
+  void decodingAnErrorWithoutAStacktraceIsDecodedProperlyForNonCompliantImplementations() {
     Map<String, Object> error = new HashMap<>();
     error.put("error", "unsupported operation");  // 500
     error.put("message", "I like peas");
@@ -129,7 +128,7 @@ public class W3CHttpResponseCodecTest {
   }
 
   @Test
-  public void decodingAnErrorWithoutAStacktraceIsDecodedProperlyForConformingImplementations() {
+  void decodingAnErrorWithoutAStacktraceIsDecodedProperlyForConformingImplementations() {
     Map<String, Object> error = new HashMap<>();
     error.put("error", "unsupported operation");  // 500
     error.put("message", "I like peas");
@@ -149,7 +148,7 @@ public class W3CHttpResponseCodecTest {
   }
 
   @Test
-  public void shouldPopulateTheAlertTextIfThrowingAnUnhandledAlertException() {
+  void shouldPopulateTheAlertTextIfThrowingAnUnhandledAlertException() {
     Map<String, Map<String, Serializable>> data = ImmutableMap.of(
         "value", ImmutableMap.of(
             "error", "unexpected alert open",

@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestGetTextContent extends InternalSelenseTestBase {
   @Test
-  public void testGetTextContent() {
+  void testGetTextContent() {
     selenium.open("test_gettextcontent.html");
     verifyTrue(selenium.isTextPresent("Text1"));
 

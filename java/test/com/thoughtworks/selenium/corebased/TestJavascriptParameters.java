@@ -19,15 +19,15 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
-@Ignore("selenium.getValue is not a function. Needs to be added to selenium JS emulation")
+@Disabled("selenium.getValue is not a function. Needs to be added to selenium JS emulation")
 public class TestJavascriptParameters extends InternalSelenseTestBase {
   @Test
-  public void testJavascriptParameters() {
+  void testJavascriptParameters() {
     selenium.open("test_store_value.html");
     selenium.type("theText", selenium.getEval("[1,2,3,4,5].join(':')"));
     verifyEquals(selenium.getValue("theText"), "1:2:3:4:5");

@@ -51,7 +51,7 @@ module Selenium
             Safari::Driver.new(**opts)
           when :firefox, :ff
             Firefox::Driver.new(**opts)
-          when :edge
+          when :edge, :microsoftedge, :msedge
             Edge::Driver.new(**opts)
           when :remote
             Remote::Driver.new(**opts)
@@ -69,8 +69,8 @@ module Selenium
       #
 
       def initialize(bridge: nil, listener: nil, **opts)
-        @service = nil
         @devtools = nil
+        @bidi = nil
         bridge ||= create_bridge(**opts)
         add_extensions(bridge.browser)
         @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
@@ -123,16 +123,8 @@ module Selenium
       # @see ActionBuilder
       #
 
-      def action
-        bridge.action
-      end
-
-      def mouse
-        bridge.mouse
-      end
-
-      def keyboard
-        bridge.keyboard
+      def action(**opts)
+        bridge.action(**opts)
       end
 
       #
@@ -180,8 +172,9 @@ module Selenium
       def quit
         bridge.quit
       ensure
-        @service&.stop
+        @service_manager&.stop
         @devtools&.close
+        @bidi&.close
       end
 
       #
@@ -189,7 +182,10 @@ module Selenium
       #
 
       def close
-        bridge.close
+        # If no top-level browsing contexts are open after calling close,
+        # it indicates that the WebDriver session is closed.
+        # If the WebDriver session is closed, the BiDi session also needs to be closed.
+        bridge.close.tap { |handles| @bidi&.close if handles&.empty? }
       end
 
       #
@@ -248,25 +244,34 @@ module Selenium
         bridge.execute_async_script(script, *args)
       end
 
+      #
+      # @return [VirtualAuthenticator]
+      # @see VirtualAuthenticator
+      #
+
+      def add_virtual_authenticator(options)
+        bridge.add_virtual_authenticator(options)
+      end
+
       #-------------------------------- sugar  --------------------------------
 
       #
       #   driver.first(id: 'foo')
       #
 
-      alias_method :first, :find_element
+      alias first find_element
 
       #
       #   driver.all(class: 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
       #
 
-      alias_method :all, :find_elements
+      alias all find_elements
 
       #
       #   driver.script('function() { ... };')
       #
 
-      alias_method :script, :execute_script
+      alias script execute_script
 
       # Get the first element matching the given selector. If given a
       # String or Symbol, it will be used as the id of the element.
@@ -307,72 +312,45 @@ module Selenium
 
       attr_reader :bridge
 
-      def create_bridge(**opts)
-        opts[:url] ||= service_url(opts)
-        caps = opts.delete(:capabilities)
-        # NOTE: This is deprecated
-        cap_array = caps.is_a?(Hash) ? [caps] : Array(caps)
-
-        desired_capabilities = opts.delete(:desired_capabilities)
-        if desired_capabilities
-          WebDriver.logger.deprecate(':desired_capabilities as a parameter for driver initialization',
-                                     ':capabilities with an Array value of capabilities/options if necessary',
-                                     id: :desired_capabilities)
-          desired_capabilities = Remote::Capabilities.new(desired_capabilities) if desired_capabilities.is_a?(Hash)
-          cap_array << desired_capabilities
+      def create_bridge(caps:, url:, http_client: nil)
+        Remote::Bridge.new(http_client: http_client, url: url).tap do |bridge|
+          bridge.create_session(caps)
         end
-
-        options = opts.delete(:options)
-        if options
-          WebDriver.logger.deprecate(':options as a parameter for driver initialization',
-                                     ':capabilities with an Array of value capabilities/options if necessary',
-                                     id: :browser_options)
-          cap_array << options
-        end
-
-        capabilities = generate_capabilities(cap_array)
-
-        bridge_opts = {http_client: opts.delete(:http_client), url: opts.delete(:url)}
-        raise ArgumentError, "Unable to create a driver with parameters: #{opts}" unless opts.empty?
-
-        bridge = Remote::Bridge.new(**bridge_opts)
-
-        bridge.create_session(capabilities)
-        bridge
       end
 
-      def generate_capabilities(cap_array)
-        cap_array.map { |cap|
+      def process_options(options, capabilities)
+        if options && capabilities
+          msg = "Don't use both :options and :capabilities when initializing #{self.class}, prefer :options"
+          raise ArgumentError, msg
+        end
+
+        options ? options.as_json : deprecate_capabilities(capabilities)
+      end
+
+      def deprecate_capabilities(capabilities)
+        unless is_a?(Remote::Driver)
+          WebDriver.logger.deprecate("The :capabilities parameter for #{self.class}",
+                                     ":options argument with an instance of #{self.class}",
+                                     id: :capabilities)
+        end
+        generate_capabilities(capabilities)
+      end
+
+      def generate_capabilities(capabilities)
+        Array(capabilities).map { |cap|
           if cap.is_a? Symbol
-            cap = Remote::Capabilities.send(cap)
-          elsif cap.is_a? Hash
-            new_message = 'Capabilities instance initialized with the Hash, or build values with Options class'
-            WebDriver.logger.deprecate("passing a Hash value to :capabilities",
-                                       new_message,
-                                       id: :capabilities_hash)
-            cap = Remote::Capabilities.new(cap)
+            cap = WebDriver::Options.send(cap)
           elsif !cap.respond_to? :as_json
             msg = ":capabilities parameter only accepts objects responding to #as_json which #{cap.class} does not"
             raise ArgumentError, msg
           end
-          cap&.as_json
-        }.inject(:merge) || Remote::Capabilities.send(browser || :new)
+          cap.as_json
+        }.inject(:merge)
       end
 
-      def service_url(opts)
-        service_config = opts.delete(:service)
-        %i[driver_opts driver_path port].each do |key|
-          next unless opts.key? key
-
-          WebDriver.logger.deprecate(":#{key}", ':service with an instance of Selenium::WebDriver::Service',
-                                     id: "service_#{key}".to_sym)
-        end
-        service_config ||= Service.send(browser,
-                                        args: opts.delete(:driver_opts),
-                                        path: opts.delete(:driver_path),
-                                        port: opts.delete(:port))
-        @service = service_config.launch
-        @service.uri
+      def service_url(service)
+        @service_manager = service.launch
+        @service_manager.uri
       end
 
       def screenshot
@@ -382,11 +360,13 @@ module Selenium
       def add_extensions(browser)
         extensions = case browser
                      when :chrome, :msedge
-                       Chrome::Driver::EXTENSIONS
+                       Chromium::Driver::EXTENSIONS
                      when :firefox
                        Firefox::Driver::EXTENSIONS
                      when :safari, :safari_technology_preview
                        Safari::Driver::EXTENSIONS
+                     when :ie, :internet_explorer
+                       IE::Driver::EXTENSIONS
                      else
                        []
                      end

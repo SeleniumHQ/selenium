@@ -33,10 +33,10 @@ import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.data.StatusData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.grid.web.CombinedHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
@@ -48,7 +48,6 @@ import org.openqa.selenium.remote.tracing.HttpTracing;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.Status;
 import org.openqa.selenium.remote.tracing.Tracer;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,21 +69,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.tracing.HttpTracing.newSpanAsChildOf;
 
-@Category(UnitTests.class)
-public class TracerTest {
+@Tag("UnitTests")
+class TracerTest {
 
-  @Before
+  @BeforeEach
   public void before() {
     GlobalOpenTelemetry.resetForTest();
   }
 
-  @After
+  @AfterEach
   public void after() {
     GlobalOpenTelemetry.resetForTest();
   }
 
   @Test
-  public void shouldBeAbleToCreateATracer() {
+  void shouldBeAbleToCreateATracer() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
 
@@ -106,13 +105,13 @@ public class TracerTest {
   }
 
   @Test
-  public void shouldBeAbleToInjectContext() {
+  void shouldBeAbleToInjectContext() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
 
     HttpRequest cheeseReq = new HttpRequest(GET, "/cheeses");
 
-    assertThat(cheeseReq.getHeaderNames()).size().isEqualTo(0);
+    assertThat(cheeseReq.getHeaderNames()).size().isZero();
 
     try (Span span = tracer.getCurrentContext().createSpan("parent")) {
       span.setAttribute("cheese", "gouda");
@@ -127,7 +126,7 @@ public class TracerTest {
   }
 
   @Test
-  public void shouldBeAbleToCreateASpanWithAEvent() {
+  void shouldBeAbleToCreateASpanWithAEvent() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -144,11 +143,11 @@ public class TracerTest {
     assertThat(timedEvents).element(0).extracting(EventData::getName)
         .isEqualTo(event);
     assertThat(timedEvents).element(0).extracting(EventData::getTotalAttributeCount)
-        .isEqualTo(0);
+      .isEqualTo(0);
   }
 
   @Test
-  public void shouldBeAbleToCreateASpanWithEvents() {
+  void shouldBeAbleToCreateASpanWithEvents() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String startEvent = "Test event started";
@@ -173,7 +172,7 @@ public class TracerTest {
   }
 
   @Test
-  public void shouldBeAbleToCreateSpansWithEvents() {
+  void shouldBeAbleToCreateSpansWithEvents() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String httpEvent = "HTTP test event ";
@@ -204,7 +203,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithBooleanAttribute() {
+  void canCreateASpanEventWithBooleanAttribute() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -226,7 +225,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithBooleanArrayAttributes() {
+  void canCreateASpanEventWithBooleanArrayAttributes() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -252,7 +251,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithDoubleAttribute() {
+  void canCreateASpanEventWithDoubleAttribute() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -275,7 +274,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithDoubleArrayAttributes() {
+  void canCreateASpanEventWithDoubleArrayAttributes() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -301,7 +300,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithLongAttribute() {
+  void canCreateASpanEventWithLongAttribute() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -324,7 +323,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithLongArrayAttributes() {
+  void canCreateASpanEventWithLongArrayAttributes() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -350,7 +349,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithStringAttribute() {
+  void canCreateASpanEventWithStringAttribute() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -373,7 +372,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithStringArrayAttributes() {
+  void canCreateASpanEventWithStringArrayAttributes() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -399,7 +398,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithSameAttributeType() {
+  void canCreateASpanEventWithSameAttributeType() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -424,7 +423,7 @@ public class TracerTest {
   }
 
   @Test
-  public void canCreateASpanEventWithMultipleAttributeTypes() {
+  void canCreateASpanEventWithMultipleAttributeTypes() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
     String event = "Test event";
@@ -458,7 +457,7 @@ public class TracerTest {
   }
 
   @Test
-  public void nestingSpansInTheSameThreadShouldWork() {
+  void nestingSpansInTheSameThreadShouldWork() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
 
@@ -477,7 +476,7 @@ public class TracerTest {
   }
 
   @Test
-  public void nestingSpansFromDifferentThreadsIsFineToo() throws ExecutionException, InterruptedException {
+  void nestingSpansFromDifferentThreadsIsFineToo() throws ExecutionException, InterruptedException {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
 
@@ -499,7 +498,7 @@ public class TracerTest {
   }
 
   @Test
-  public void currentSpanIsKeptOnTracerCorrectlyWithinSameThread() {
+  void currentSpanIsKeptOnTracerCorrectlyWithinSameThread() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
 
@@ -515,7 +514,7 @@ public class TracerTest {
   }
 
   @Test
-  public void currentSpanIsKeptOnTracerCorrectlyBetweenThreads() throws ExecutionException, InterruptedException {
+  void currentSpanIsKeptOnTracerCorrectlyBetweenThreads() throws ExecutionException, InterruptedException {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
 
@@ -546,7 +545,7 @@ public class TracerTest {
   }
 
   @Test
-  public void cleverShenanigansRepresentingWhatWeSeeInTheRouter() {
+  void cleverShenanigansRepresentingWhatWeSeeInTheRouter() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
 
@@ -588,7 +587,7 @@ public class TracerTest {
   }
 
   @Test
-  public void shouldBeAbleToSetExternalContextAndCreatedSpansAreItsChildren() {
+  void shouldBeAbleToSetExternalContextAndCreatedSpansAreItsChildren() {
     List<SpanData> allSpans = new ArrayList<>();
     Tracer tracer = createTracer(allSpans);
 

@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestWait extends InternalSelenseTestBase {
   @Test
-  public void testWait() {
+  void testWait() {
     // Link click
     selenium.open("test_reload_onchange_page.html");
     selenium.click("theLink");

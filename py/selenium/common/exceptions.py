@@ -15,63 +15,53 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""
-Exceptions that may happen in all the webdriver code.
-"""
+"""Exceptions that may happen in all the webdriver code."""
 
-from typing import Optional, Sequence
+from typing import Optional
+from typing import Sequence
 
 
 class WebDriverException(Exception):
-    """
-    Base webdriver exception.
-    """
+    """Base webdriver exception."""
 
-    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None) -> None:
+    def __init__(
+        self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None
+    ) -> None:
+        super().__init__()
         self.msg = msg
         self.screen = screen
         self.stacktrace = stacktrace
 
     def __str__(self) -> str:
-        exception_msg = "Message: %s\n" % self.msg
+        exception_msg = f"Message: {self.msg}\n"
         if self.screen:
             exception_msg += "Screenshot: available via screen\n"
         if self.stacktrace:
             stacktrace = "\n".join(self.stacktrace)
-            exception_msg += "Stacktrace:\n%s" % stacktrace
+            exception_msg += f"Stacktrace:\n{stacktrace}"
         return exception_msg
 
 
 class InvalidSwitchToTargetException(WebDriverException):
-    """
-    Thrown when frame or window target to be switched doesn't exist.
-    """
-    pass
+    """Thrown when frame or window target to be switched doesn't exist."""
 
 
 class NoSuchFrameException(InvalidSwitchToTargetException):
-    """
-    Thrown when frame target to be switched doesn't exist.
-    """
-    pass
+    """Thrown when frame target to be switched doesn't exist."""
 
 
 class NoSuchWindowException(InvalidSwitchToTargetException):
-    """
-    Thrown when window target to be switched doesn't exist.
+    """Thrown when window target to be switched doesn't exist.
 
     To find the current set of active window handles, you can get a list
     of the active window handles in the following way::
 
         print driver.window_handles
-
     """
-    pass
 
 
 class NoSuchElementException(WebDriverException):
-    """
-    Thrown when element could not be found.
+    """Thrown when element could not be found.
 
     If you encounter this exception, you may want to check the following:
         * Check your selector used in your find_by...
@@ -79,31 +69,25 @@ class NoSuchElementException(WebDriverException):
           (webpage is still loading) see selenium.webdriver.support.wait.WebDriverWait()
           for how to write a wait wrapper to wait for an element to appear.
     """
-    pass
 
 
 class NoSuchAttributeException(WebDriverException):
-    """
-    Thrown when the attribute of element could not be found.
+    """Thrown when the attribute of element could not be found.
 
-    You may want to check if the attribute exists in the particular browser you are
-    testing against.  Some browsers may have different property names for the same
-    property.  (IE8's .innerText vs. Firefox .textContent)
+    You may want to check if the attribute exists in the particular
+    browser you are testing against.  Some browsers may have different
+    property names for the same property.  (IE8's .innerText vs. Firefox
+    .textContent)
     """
-    pass
 
 
 class NoSuchShadowRootException(WebDriverException):
-    """
-    Thrown when trying to access the shadow root of an element when it does not
-    have a shadow root attached.
-    """
-    pass
+    """Thrown when trying to access the shadow root of an element when it does
+    not have a shadow root attached."""
 
 
 class StaleElementReferenceException(WebDriverException):
-    """
-    Thrown when a reference to an element is now "stale".
+    """Thrown when a reference to an element is now "stale".
 
     Stale means the element no longer appears on the DOM of the page.
 
@@ -117,210 +101,157 @@ class StaleElementReferenceException(WebDriverException):
           node is rebuilt.
         * Element may have been inside an iframe or another context which was refreshed.
     """
-    pass
 
 
 class InvalidElementStateException(WebDriverException):
-    """
-    Thrown when a command could not be completed because the element is in an invalid state.
+    """Thrown when a command could not be completed because the element is in
+    an invalid state.
 
-    This can be caused by attempting to clear an element that isn't both editable and resettable.
+    This can be caused by attempting to clear an element that isn't both
+    editable and resettable.
     """
-    pass
 
 
 class UnexpectedAlertPresentException(WebDriverException):
-    """
-    Thrown when an unexpected alert has appeared.
+    """Thrown when an unexpected alert has appeared.
 
-    Usually raised when  an unexpected modal is blocking the webdriver from executing
-    commands.
+    Usually raised when  an unexpected modal is blocking the webdriver
+    from executing commands.
     """
 
-    def __init__(self, msg: Optional[str] = None, screen: Optional[str] = None, stacktrace: Optional[Sequence[str]] = None, alert_text: Optional[str] = None) -> None:
-        super(UnexpectedAlertPresentException, self).__init__(msg, screen, stacktrace)
+    def __init__(
+        self,
+        msg: Optional[str] = None,
+        screen: Optional[str] = None,
+        stacktrace: Optional[Sequence[str]] = None,
+        alert_text: Optional[str] = None,
+    ) -> None:
+        super().__init__(msg, screen, stacktrace)
         self.alert_text = alert_text
 
     def __str__(self) -> str:
-        return "Alert Text: %s\n%s" % (self.alert_text, super(UnexpectedAlertPresentException, self).__str__())
+        return f"Alert Text: {self.alert_text}\n{super().__str__()}"
 
 
 class NoAlertPresentException(WebDriverException):
-    """
-    Thrown when switching to no presented alert.
+    """Thrown when switching to no presented alert.
 
-    This can be caused by calling an operation on the Alert() class when an alert is
-    not yet on the screen.
+    This can be caused by calling an operation on the Alert() class when
+    an alert is not yet on the screen.
     """
-    pass
 
 
 class ElementNotVisibleException(InvalidElementStateException):
-    """
-    Thrown when an element is present on the DOM, but
-    it is not visible, and so is not able to be interacted with.
+    """Thrown when an element is present on the DOM, but it is not visible, and
+    so is not able to be interacted with.
 
-    Most commonly encountered when trying to click or read text
-    of an element that is hidden from view.
+    Most commonly encountered when trying to click or read text of an
+    element that is hidden from view.
     """
-    pass
 
 
 class ElementNotInteractableException(InvalidElementStateException):
-    """
-    Thrown when an element is present in the DOM but interactions
-    with that element will hit another element due to paint order
-    """
-    pass
+    """Thrown when an element is present in the DOM but interactions with that
+    element will hit another element due to paint order."""
 
 
 class ElementNotSelectableException(InvalidElementStateException):
-    """
-    Thrown when trying to select an unselectable element.
+    """Thrown when trying to select an unselectable element.
 
     For example, selecting a 'script' element.
     """
-    pass
 
 
 class InvalidCookieDomainException(WebDriverException):
-    """
-    Thrown when attempting to add a cookie under a different domain
-    than the current URL.
-    """
-    pass
+    """Thrown when attempting to add a cookie under a different domain than the
+    current URL."""
 
 
 class UnableToSetCookieException(WebDriverException):
-    """
-    Thrown when a driver fails to set a cookie.
-    """
-    pass
-
-
-class RemoteDriverServerException(WebDriverException):
-    """
-    """
-    pass
+    """Thrown when a driver fails to set a cookie."""
 
 
 class TimeoutException(WebDriverException):
-    """
-    Thrown when a command does not complete in enough time.
-    """
-    pass
+    """Thrown when a command does not complete in enough time."""
 
 
 class MoveTargetOutOfBoundsException(WebDriverException):
-    """
-    Thrown when the target provided to the `ActionsChains` move()
-    method is invalid, i.e. out of document.
-    """
-    pass
+    """Thrown when the target provided to the `ActionsChains` move() method is
+    invalid, i.e. out of document."""
 
 
 class UnexpectedTagNameException(WebDriverException):
-    """
-    Thrown when a support class did not get an expected web element.
-    """
-    pass
+    """Thrown when a support class did not get an expected web element."""
 
 
 class InvalidSelectorException(WebDriverException):
+    """Thrown when the selector which is used to find an element does not
+    return a WebElement.
+
+    Currently this only happens when the selector is an xpath expression
+    and it is either syntactically invalid (i.e. it is not a xpath
+    expression) or the expression does not select WebElements (e.g.
+    "count(//input)").
     """
-    Thrown when the selector which is used to find an element does not return
-    a WebElement. Currently this only happens when the selector is an xpath
-    expression and it is either syntactically invalid (i.e. it is not a
-    xpath expression) or the expression does not select WebElements
-    (e.g. "count(//input)").
-    """
-    pass
 
 
 class ImeNotAvailableException(WebDriverException):
+    """Thrown when IME support is not available.
+
+    This exception is thrown for every IME-related method call if IME
+    support is not available on the machine.
     """
-    Thrown when IME support is not available. This exception is thrown for every IME-related
-    method call if IME support is not available on the machine.
-    """
-    pass
 
 
 class ImeActivationFailedException(WebDriverException):
-    """
-    Thrown when activating an IME engine has failed.
-    """
-    pass
+    """Thrown when activating an IME engine has failed."""
 
 
 class InvalidArgumentException(WebDriverException):
-    """
-    The arguments passed to a command are either invalid or malformed.
-    """
-    pass
+    """The arguments passed to a command are either invalid or malformed."""
 
 
 class JavascriptException(WebDriverException):
-    """
-    An error occurred while executing JavaScript supplied by the user.
-    """
-    pass
+    """An error occurred while executing JavaScript supplied by the user."""
 
 
 class NoSuchCookieException(WebDriverException):
-    """
-    No cookie matching the given path name was found amongst the associated cookies of the
-    current browsing context's active document.
-    """
-    pass
+    """No cookie matching the given path name was found amongst the associated
+    cookies of the current browsing context's active document."""
 
 
 class ScreenshotException(WebDriverException):
-    """
-    A screen capture was made impossible.
-    """
-    pass
+    """A screen capture was made impossible."""
 
 
 class ElementClickInterceptedException(WebDriverException):
-    """
-    The Element Click command could not be completed because the element receiving the events
-    is obscuring the element that was requested to be clicked.
-    """
-    pass
+    """The Element Click command could not be completed because the element
+    receiving the events is obscuring the element that was requested to be
+    clicked."""
 
 
 class InsecureCertificateException(WebDriverException):
-    """
-    Navigation caused the user agent to hit a certificate warning, which is usually the result
-    of an expired or invalid TLS certificate.
-    """
-    pass
+    """Navigation caused the user agent to hit a certificate warning, which is
+    usually the result of an expired or invalid TLS certificate."""
 
 
 class InvalidCoordinatesException(WebDriverException):
-    """
-    The coordinates provided to an interaction's operation are invalid.
-    """
-    pass
+    """The coordinates provided to an interaction's operation are invalid."""
 
 
 class InvalidSessionIdException(WebDriverException):
-    """
-    Occurs if the given session id is not in the list of active sessions, meaning the session
-    either does not exist or that it's not active.
-    """
-    pass
+    """Occurs if the given session id is not in the list of active sessions,
+    meaning the session either does not exist or that it's not active."""
 
 
 class SessionNotCreatedException(WebDriverException):
-    """
-    A new session could not be created.
-    """
-    pass
+    """A new session could not be created."""
 
 
 class UnknownMethodException(WebDriverException):
-    """
-    The requested command matched a known URL but did not match any methods for that URL.
-    """
-    pass
+    """The requested command matched a known URL but did not match any methods
+    for that URL."""
+
+
+class SeleniumManagerException(WebDriverException):
+    """Raised when an issue interacting with selenium manager occurs."""

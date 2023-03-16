@@ -15,17 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""
-The Alert implementation.
-"""
+"""The Alert implementation."""
 
 from selenium.webdriver.common.utils import keys_to_typing
 from selenium.webdriver.remote.command import Command
 
 
-class Alert(object):
-    """
-    Allows to work with alerts.
+class Alert:
+    """Allows to work with alerts.
 
     Use this class to interact with alert prompts.  It contains methods for dismissing,
     accepting, inputting, and getting text from alert prompts.
@@ -46,12 +43,10 @@ class Alert(object):
 
         alert_text = Alert(driver).text
         self.assertEqual("Do you wish to quit?", alert_text)
-
     """
 
     def __init__(self, driver):
-        """
-        Creates a new Alert.
+        """Creates a new Alert.
 
         :Args:
          - driver: The WebDriver instance which performs user actions.
@@ -60,20 +55,15 @@ class Alert(object):
 
     @property
     def text(self):
-        """
-        Gets the text of the Alert.
-        """
+        """Gets the text of the Alert."""
         return self.driver.execute(Command.W3C_GET_ALERT_TEXT)["value"]
 
     def dismiss(self):
-        """
-        Dismisses the alert available.
-        """
+        """Dismisses the alert available."""
         self.driver.execute(Command.W3C_DISMISS_ALERT)
 
     def accept(self):
-        """
-        Accepts the alert available.
+        """Accepts the alert available.
 
         Usage::
         Alert(driver).accept() # Confirm a alert dialog.
@@ -81,10 +71,9 @@ class Alert(object):
         self.driver.execute(Command.W3C_ACCEPT_ALERT)
 
     def send_keys(self, keysToSend):
-        """
-        Send Keys to the Alert.
+        """Send Keys to the Alert.
 
         :Args:
          - keysToSend: The text to be sent to Alert.
         """
-        self.driver.execute(Command.W3C_SET_ALERT_VALUE, {'value': keys_to_typing(keysToSend), 'text': keysToSend})
+        self.driver.execute(Command.W3C_SET_ALERT_VALUE, {"value": keys_to_typing(keysToSend), "text": keysToSend})

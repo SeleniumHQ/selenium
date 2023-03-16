@@ -20,10 +20,10 @@ package org.openqa.selenium.grid.router;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -71,15 +71,16 @@ import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class NewSessionCreationTest {
+class NewSessionCreationTest {
 
+  private static final int newSessionThreadPoolSize = Runtime.getRuntime().availableProcessors();
   private Tracer tracer;
   private EventBus bus;
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
   private Server<?> server;
 
-  @Before
+  @BeforeEach
   public void setup() {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
@@ -87,20 +88,21 @@ public class NewSessionCreationTest {
     registrationSecret = new Secret("hereford hop");
   }
 
-  @After
+  @AfterEach
   public void stopServer() {
     server.stop();
   }
 
   @Test
-  public void ensureJsCannotCreateANewSession() throws URISyntaxException {
+  void ensureJsCannotCreateANewSession() throws URISyntaxException {
     SessionMap sessions = new LocalSessionMap(tracer, bus);
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(60),
-      registrationSecret);
+      registrationSecret,
+      5);
 
     Distributor distributor = new LocalDistributor(
       tracer,
@@ -112,7 +114,8 @@ public class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
 
     Routable router = new Router(tracer, clientFactory, sessions, queue, distributor)
       .with(new EnsureSpecCompliantHeaders(ImmutableList.of(), ImmutableSet.of()));
@@ -163,7 +166,7 @@ public class NewSessionCreationTest {
   }
 
   @Test
-  public void shouldNotRetryNewSessionRequestOnUnexpectedError() throws URISyntaxException {
+  void shouldNotRetryNewSessionRequestOnUnexpectedError() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     int nodePort = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + nodePort);
@@ -176,7 +179,8 @@ public class NewSessionCreationTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(2),
       Duration.ofSeconds(10),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     AtomicInteger count = new AtomicInteger();
@@ -211,7 +215,8 @@ public class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
 
     distributor.add(localNode);
@@ -238,8 +243,9 @@ public class NewSessionCreationTest {
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
-  @Test(timeout = 10000L)
-  public void shouldRejectRequestForUnsupportedCaps() throws URISyntaxException {
+  @Test
+  @Timeout(10)
+  void shouldRejectRequestForUnsupportedCaps() throws URISyntaxException {
     Capabilities capabilities = new ImmutableCapabilities("browserName", "cheese");
     int nodePort = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + nodePort);
@@ -252,7 +258,8 @@ public class NewSessionCreationTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
       Duration.ofSeconds(60),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     TestSessionFactory sessionFactory = new TestSessionFactory((id, caps) ->
@@ -278,7 +285,8 @@ public class NewSessionCreationTest {
       registrationSecret,
       Duration.ofMinutes(5),
       true,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      newSessionThreadPoolSize);
     handler.addHandler(distributor);
 
     distributor.add(localNode);

@@ -40,7 +40,7 @@ module Selenium
         @executable_path = config.executable_path
         @host = Platform.localhost
         @port = config.port
-        @extra_args = config.extra_args
+        @extra_args = config.args
         @shutdown_supported = config.shutdown_supported
 
         raise Error::WebDriverError, "invalid port: #{@port}" if @port < 1
@@ -79,12 +79,7 @@ module Selenium
       def build_process(*command)
         WebDriver.logger.debug("Executing Process #{command}")
         @process = ChildProcess.build(*command)
-        if WebDriver.logger.debug?
-          @process.io.stdout = @process.io.stderr = WebDriver.logger.io
-        elsif Platform.jruby?
-          # Apparently we need to read the output of drivers on JRuby.
-          @process.io.stdout = @process.io.stderr = File.new(Platform.null_device, 'w')
-        end
+        @process.io = WebDriver.logger.io if WebDriver.logger.debug?
 
         @process
       end
@@ -104,8 +99,6 @@ module Selenium
 
       def start_process
         @process = build_process(@executable_path, "--port=#{@port}", *@extra_args)
-        # NOTE: this is a bug only in Windows 7
-        @process.leader = true unless Platform.windows?
         @process.start
       end
 
@@ -113,7 +106,6 @@ module Selenium
         return if process_exited?
 
         @process.stop STOP_TIMEOUT
-        @process.io.stdout.close if Platform.jruby? && !WebDriver.logger.debug?
       end
 
       def stop_server

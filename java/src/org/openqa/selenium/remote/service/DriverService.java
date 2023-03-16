@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.remote.service;
 
-import static java.util.Collections.emptyMap;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
@@ -50,16 +46,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.util.Collections.emptyMap;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
+
 /**
  * Manages the life and death of a native executable driver server.
- *
  * It is expected that the driver server implements the
  * <a href="https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol">WebDriver Wire Protocol</a>.
  * In particular, it should implement /status command that is used to check if the server is alive.
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is
  * used to stop the server.
  */
-public class DriverService implements Closeable {
+public class DriverService implements Closeable, DriverServiceInfo {
 
   private static final String NAME = "Driver Service Executor";
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
@@ -80,8 +79,8 @@ public class DriverService implements Closeable {
   /**
    * Controls access to {@link #process}.
    */
+  private String executable;
   private final ReentrantLock lock = new ReentrantLock();
-  private final String executable;
   private final Duration timeout;
   private final List<String> args;
   private final Map<String, String> environment;
@@ -107,7 +106,9 @@ public class DriverService implements Closeable {
      Duration timeout,
      List<String> args,
      Map<String, String> environment) throws IOException {
-   this.executable = executable.getCanonicalPath();
+   if (executable != null) {
+     this.executable = executable.getCanonicalPath();
+   }
    this.timeout = timeout;
    this.args = args;
    this.environment = environment;
@@ -115,37 +116,17 @@ public class DriverService implements Closeable {
    this.url = getUrl(port);
  }
 
-  /**
-   *
-   * @param exeName Name of the executable file to look for in PATH
-   * @param exeProperty Name of a system property that specifies the path to the executable file
-   * @param exeDocs The link to the driver documentation page
-   * @param exeDownload The link to the driver download page
-   *
-   * @return The driver executable as a {@link File} object
-   * @throws IllegalStateException If the executable not found or cannot be executed
-   */
-  protected static File findExecutable(
-      String exeName,
-      String exeProperty,
-      String exeDocs,
-      String exeDownload) {
-    String defaultPath = new ExecutableFinder().find(exeName);
-    String exePath = System.getProperty(exeProperty, defaultPath);
-    Require.state("The path to the driver executable", exePath).nonNull(
-        "The path to the driver executable must be set by the %s system property;"
-            + " for more information, see %s. "
-            + "The latest version can be downloaded from %s",
-            exeProperty, exeDocs, exeDownload);
-
-    File exe = new File(exePath);
-    checkExecutable(exe);
-    return exe;
+  public String getExecutable() {
+    return executable;
   }
 
-  protected static void checkExecutable(File exe) {
-    Require.state("The driver executable", exe).isFile();
-    Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
+  public void setExecutable(String executable) {
+    this.executable = executable;
+  }
+
+  protected static String findExePath(String exeName, String exeProperty) {
+    String defaultPath = new ExecutableFinder().find(exeName);
+    return System.getProperty(exeProperty, defaultPath);
   }
 
   protected List<String> getArgs() {
@@ -153,11 +134,11 @@ public class DriverService implements Closeable {
   }
 
   protected Map<String, String> getEnvironment() {
-   return environment;
- }
+    return environment;
+  }
 
   protected URL getUrl(int port) throws IOException {
-   return new URL(String.format("http://localhost:%d", port));
+    return new URL(String.format("http://localhost:%d", port));
  }
 
   /**
@@ -196,10 +177,16 @@ public class DriverService implements Closeable {
       if (process != null) {
         return;
       }
-      process = new CommandLine(this.executable, args.toArray(new String[] {}));
+      if (this.executable == null) {
+        this.executable = DriverFinder.getPath(this);
+      }
+      process = new CommandLine(this.executable, args.toArray(new String[]{}));
       process.setEnvironmentVariables(environment);
       process.copyOutputTo(getOutputStream());
       process.executeAsync();
+      if (!process.waitForProcessStarted(timeout.toMillis(), TimeUnit.MILLISECONDS)) {
+        throw new WebDriverException("Timed out waiting for driver process to start.");
+      }
 
       CompletableFuture<StartOrDie> serverStarted = CompletableFuture.supplyAsync(() -> {
         waitUntilAvailable();
@@ -218,13 +205,15 @@ public class DriverService implements Closeable {
       try {
         StartOrDie status = (StartOrDie) CompletableFuture.anyOf(serverStarted, processFinished)
           .get(getTimeout().toMillis() * 2, TimeUnit.MILLISECONDS);
-        if (status == StartOrDie.SERVER_STARTED) {
-          processFinished.cancel(true);
-        } else {
-          if (status == StartOrDie.PROCESS_DIED) {
+        switch (status) {
+          case SERVER_STARTED:
+            processFinished.cancel(true);
+            break;
+          case PROCESS_DIED:
             process = null;
             throw new WebDriverException("Driver server process died prematurely.");
-          }
+          case PROCESS_IS_ACTIVE:
+            throw new WebDriverException("Timed out waiting for driver server to bind the port.");
         }
       } catch (ExecutionException | TimeoutException e) {
         throw new WebDriverException("Timed out waiting for driver server to start.", e);
@@ -347,7 +336,6 @@ public class DriverService implements Closeable {
     @SuppressWarnings("unchecked")
     public B usingDriverExecutable(File file) {
       Require.nonNull("Driver executable file", file);
-      checkExecutable(file);
       this.exe = file;
       return (B) this;
     }
@@ -433,10 +421,6 @@ public class DriverService implements Closeable {
         port = PortProber.findFreePort();
       }
 
-      if (exe == null) {
-        exe = findDefaultExecutable();
-      }
-
       if (timeout == null) {
         timeout = getDefaultTimeout();
       }
@@ -449,11 +433,10 @@ public class DriverService implements Closeable {
       return service;
     }
 
-    protected abstract File findDefaultExecutable();
-
     protected abstract List<String> createArgs();
 
-    protected abstract DS createDriverService(File exe, int port, Duration timeout, List<String> args,
-        Map<String, String> environment);
+    protected abstract DS createDriverService(File exe, int port, Duration timeout,
+                                              List<String> args,
+                                              Map<String, String> environment);
   }
 }

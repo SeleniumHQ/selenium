@@ -1,3 +1,238 @@
+v4.8.1
+======
+* Supported CDP versions: 85, 108, 109, 110
+* Merge capabilities of slot with the new session request capabilities (#11369)
+* Keep track of pinned scripts per CDP session (#11598)
+* Simplify Augmentation for Basic Auth (#11601)
+* Print requested capabilities in SessionNotCreatedException (#11604)
+* Simplify Augmentation for Dom Mutation
+* Generate a Maven BOM (#11560)
+* Synchronize method to get Selenium Manager binary (fix #11620) (#11640)
+* Updating Selenium Manager binaries for 4.8.1 release
+* File downloads url - Adhere to w3c standards (#11646)
+
+v4.8.0
+======
+* Supported CDP versions: 85, 107, 108, 109
+* Implement Edge and Chrome Driver Services using log level with ChromiumDriverLogLevel enum
+* Deprecate Edge Driver Service using log level with String
+* Deprecate Chrome Driver Service using log level with ChromeDriverLogLevel enum
+* Deprecate setting Chrome Driver Service logging values in Chrome Options
+* Close BiDi session on closing the last top-level browsing context
+* Add withAllowedListIps() to ChromeDriverService
+* Add comment with name of large JS executions (#11038)
+* Allow Pointer and Wheel methods to accept Point object (#11477)
+* Fix bug where options are not properly merged into capabilities (#11396)
+* JDKHttpClient: Fix null pointer bug when responseBody is null (#11450)
+* CDP: Ensure child session is created under browser session (#11475)
+* Deprecate setHeadless for Chrome and Firefox Options (#11467)
+* Grid: Remove translations of non-w3c locators (#11470)
+* JDKHttpClient: Handle RQST with no Body [POST/PUT] (#11445)
+* Fix bug with decorated webdriver not calling the listeners  (#11438)
+* BiDi: Add filter parameter to LogInspector methods
+* BiDi: Rename 'onConsoleLog' to 'onConsoleEntry'
+* CDP: Fix bug with console events returning modified args (#11435)
+* Grid: Accommodate ability to specify sub-paths (#11271)
+* Grid: fix bug with pulling image using zero content-length (#11342)
+
+v4.7.2
+======
+* Grid: Support file downloads on the node (#11277)
+* Change chromium service names from whitelisted to allowed (#11409)
+* Avoid closing CDP connection in browser implementation since that logic now sits in RemoteWebDriver (Fixes #11401)
+* Fix bug where failing Selenium Manager method results in wrong error
+* Allow changing chromium driver log timestamp formatting
+* Allow ignoring chromedriver build checks using service builders
+* Add support for appendLog to msedgedriver service
+* Fix msedgedriver log level logic
+* Allow setting chromedriver log level from system properties
+* Fix chromedriver log level logic
+* Remove deprecated Firefox capabilities
+* Removing a few bits more of the magic that moves JWP to W3C
+* Removing deprecated SUPPORTS_ALERTS and SUPPORTS_SQL_DATABASE caps
+* Removing deprecated OVERLAPPING_CHECK_DISABLED cap
+* Removing deprecated LOGGING_PREFS cap
+* Removing deprecated HAS_TOUCHSCREEN cap
+* Removing deprecated HAS_NATIVE_EVENTS cap
+* Removing deprecated ENABLE_PROFILING_CAPABILITY cap
+* Removing deprecated ACCEPT_SSL_CERTS cap
+
+v4.7.1
+======
+* Supported CDP versions: 85, 106, 107, 108
+* Add close method to JDK 11 client. Ensure close methods for Http client is called. (#11345)
+* Don’t specify content length when pulling images (#11343)
+* Allow arguments to be passed in Node flag "driver-configuration" (#11367)
+* Ensure all states of StartOrDie are handled (#11297)
+
+v4.7.0
+======
+* Supported CDP versions: 85, 106, 107, 108
+* Remove deprecated classes for Rotatable, AppCache, NetworkConnection, LocationContext
+* Remove deprecated capabilities- IE_USE_PRE_PROCESS_PROXY, APPLICATION_NAME, ELEMENT_SCROLL_BEHAVIOR
+* Fix bug causing sessions to hang when session stops (#11167)
+* Support multiple reads of input stream (#11249)
+* Fix reading connection header (#11255)
+* BiDi: Implement JavascriptLogEntry
+* BiDi: Support browsing context in event subscriptions
+* BiDi: Fix type of JavascriptLogEntry
+* Grid: improved exception handling when no cause is set (#11286)
+* Fix following contract of Closeable (#11282)
+* Grid: Get TZ from parent container when not passed as cap (#11289)
+* BiDi: Add LogInspector
+* Grid: do not offload from multiple threads to a single worker (#11260)
+* Add support for Selenium Manager to work with IE Driver
+* Improve error handling with Selenium Manager (#11300)
+* BiDi: Add constructor parameter for commands without a response
+* Grid: remove browser filters from makeW3CSafe
+* Fix bug for merging MutableCapabilities and Options
+
+v4.6.0
+======
+* Supported CDP versions: 85, 105, 106, 107
+* Updated IllegalArgumentException to NullPointerException for Null Values in Require Class (#11162)
+* Fix page ranges issue in PrintOptions (#11172) (#11174)
+* Ensure the correct output stream is used (#11175)
+* Add initial support for Selenium Manager
+* Revert "[java] only allow enabled select lists for Select class"
+* [grid] Closing input pipeline when 404 is returned
+* JDK Http client - avoid chunking without buffering to memory (#11198)
+* Avoiding pulling same netty dependencies for AsyncHttpClient
+* [grid] Only check for IEDriver on Windows.
+
+
+v4.5.3
+======
+* Supported CDP versions: 85, 104, 105, 106
+* Removing check "::1" in PortProber (Fixes #11159)
+
+v4.5.2
+======
+* Supported CDP versions: 85, 104, 105, 106
+* Add support for basic auth in JDK client (Related to #11068)
+* [grid] Adjusting PortProber for Docker execution
+
+v4.5.1
+======
+* Supported CDP versions: 85, 104, 105, 106
+* Avoid throwing errors once NetworkInterceptor is closed (Fixes #11032)
+* Avoiding hiding "internal" package so that selenium-api exports it (Fixes #11069)
+* Close the CDP connection on quit for FF (#11109)
+* Removed the broken escape (#11110)
+* Use the correct base64 decoder (#11107)
+* Reduce noisy logs from CDP version finder and made dialect related log debug level (Related to #11088)
+* Respect the last flag for binary data (#11108)
+* Check that a port truly is free before using it (#11085)
+* Make public constant storing capability name for IE options (#11114)
+* [grid] Add BiDi endpoint to returned caps if available, adding `se:bidi`
+* Ignoring additional headers in the JDK 11 implementation
+* Pick random port outside of well-known ranges of ephemeral ports (#10990)
+* [grid] Consume in batches from the new session queue (#10987)
+* [grid] Deprecate max-threads flag. Add an alternate flag in the Distributor for new session thread
+  pool size. (#10995)
+* [grid] Restoring behavior for session creation interval.
+* [grid] Add batch size flag for session queue
+* Make sure `EventFiringWebElement` implements all `WebElement` methods (#11144)
+* [bidi] Make BaseLogEntry.LogLevel enum public (#11147)
+* [grid] Removing default value for `max-threads` to avoid noisy warnings due to deprecation
+
+v4.5.0
+======
+* Supported CDP versions: 85, 104, 105, 106
+* Allow event firing decorator to accept a target class (#1694)
+* Fix Javadoc for executeAsyncScript method
+* [cdp] Add  support for CDP 105 and remove CDP 102
+* Make httpclient ClientConfig constructor protected (#10985)
+* Throw an error when trying to select a disabled select or option (#10812)
+* Add "webdriver.edge.loglevel" system property (#10961)
+* Remove deprecated Opera support (#10379)
+* [grid] Adding handler for options when using CORS and creating a session
+* Add a JDK 11 HTTP client (#10730)
+* [grid] Delete a session when a session times out (#10820)
+* Set high redirect default value in Netty client
+* [grid] Remove unused "grid-mode" flag
+* Improve default matcher to enable Appium
+* Remove host info for most exceptions, except SessionNotCreatedException (#9792)
+* Change message when session is not found in Grid for better exception handling
+* Remove IME support
+* Remove deprecated ForSeleniumServer caps
+* Remove deprecated BrowserType
+* Differentiate "Windows 7" and "Windows Vista" in Platform class
+* Fix bug preventing websocket connections in Firefox v105 from localhost
+
+v4.4.0
+======
+
+* Supported CDP versions: 85, 102, 103, 104
+* Fix bug to ensure correct window handle used by CDP (#10811)
+* Remove makeW3CSafe from NewSession in Command Payload
+* Allow decorating child classes of WebDriver (#10737)
+* Throwing an error when user sets `w3c:false` in `goog:chromeOptions`
+* Allow a Relay Node to boot and check periodically for the status endpoint.
+* Forwarding requests with non-W3C locators (useful for Relay Nodes with Appium)
+
+v4.3.0
+======
+
+* Supported CDP versions: 85, 101, 102, 103
+* Remove deprecated methods that use capabilities in WebDrivers (#10427)
+* Removal of deprecated Actions commands
+  Deprecated in (1/7/2017) for selenium-3.1.0 and (10/29/2018) for selenium-3.141.0
+* Removing deprecated getPlatform and getVersion
+* Removing a few non-W3C ways of matching browsers
+* Add support for BiDi log event (#10696)
+* Warning when user sets `w3c: true` in `goog:chromeOptions`
+* Adding native ARM support for sockets
+* Add Firefox profile preferences when retrieving from a file
+* Add BiDi augmenter support (#10789)
+* [cdp] Add support CDP 103 and remove CDP 100
+
+v4.2.2
+======
+
+* Supported CDP versions: 85, 100, 101, 102
+* Throwing warnings for non-W3C before creating session (#10741)
+* Update ExpectedCondition to extend java util Function (#10695)
+* Fixing SafariTechPreview
+
+v4.2.1
+======
+
+* Supported CDP versions: 85, 100, 101, 102
+* Improving warnings for non W3C capability checks (#10711)
+* Adding LOGGING_PREFS to Edge and Chrome options
+
+v4.2.0
+======
+
+* Supported CDP versions: 85, 100, 101, 102
+* Add wheel input (#10445)
+* Adding `--allow-origins` when starting GeckoDriver
+* Deactivating automatic retries in the HTTPClient
+* Implement separate Origin class for WheelInput (#10636)
+* Deprecating IME
+* Add javadocs to scroll()
+* Add support to create a BiDi session
+* [grid] Include JMX monitoring feature in the Grid local distributor (#10674)
+* [grid] Fixing Node drain when session expires
+* [grid] Add docker device mapping configuration (#10645)
+* [grid] Flag to disable CDP if needed (#10661)
+* [cdp] Add support Chrome 102 and remove for Chrome 99
+* Improve error message for unsuccessfully submitting form
+* [grid] Add deprecation notices to Grid logs and Java stdout,
+  check https://www.selenium.dev/blog/2022/legacy-protocol-support/
+* Deprecating non W3C caps and Augmenters using them,
+  check https://www.selenium.dev/blog/2022/legacy-protocol-support/
+* Logging warnings when non-W3C caps are being used,
+  check https://www.selenium.dev/blog/2022/legacy-protocol-support/
+* Removing HTMLRunner, this was a server extracted from the old
+  Grid server which was used to run HTML test
+  suites exported from the old Selenium IDE
+* Fix screen rotate error (#10693)
+* Make the action movement methods specify the button number
+* Convert RemoteWebElement::getLocation and ::getSize from JWP Standard to W3C Standard (#10700)
+* Creating browser name for SAFARI_TECH_PREVIEW
+
 v4.1.4
 ======
 

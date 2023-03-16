@@ -15,13 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 
+from page_loader import require_loaded
+from results_page import ResultsPage
+
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from results_page import ResultsPage
-from page_loader import require_loaded
 
 
-class GoogleOneBox(object):
+class GoogleOneBox:
     """This class models a page that has a google search bar."""
 
     def __init__(self, driver, url):

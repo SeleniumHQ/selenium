@@ -24,9 +24,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.NoSuchElementException;
@@ -34,13 +34,12 @@ import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.util.function.Function;
 
-@Category(UnitTests.class)
-public class FluentWaitTest {
+@Tag("UnitTests")
+class FluentWaitTest {
 
   private static final Object ARBITRARY_VALUE = new Object();
 
@@ -53,13 +52,13 @@ public class FluentWaitTest {
   @Mock
   private Sleeper mockSleeper;
 
-  @Before
+  @BeforeEach
   public void createMocks() {
     MockitoAnnotations.initMocks(this);
   }
 
   @Test
-  public void shouldWaitUntilReturnValueOfConditionIsNotNull() throws InterruptedException {
+  void shouldWaitUntilReturnValueOfConditionIsNotNull() throws InterruptedException {
     when(mockClock.instant()).thenReturn(EPOCH);
     when(mockCondition.apply(mockDriver)).thenReturn(null, ARBITRARY_VALUE);
 
@@ -73,7 +72,7 @@ public class FluentWaitTest {
   }
 
   @Test
-  public void shouldWaitUntilABooleanResultIsTrue() throws InterruptedException {
+  void shouldWaitUntilABooleanResultIsTrue() throws InterruptedException {
     when(mockClock.instant()).thenReturn(EPOCH);
     when(mockCondition.apply(mockDriver)).thenReturn(false, false, true);
 
@@ -88,7 +87,7 @@ public class FluentWaitTest {
   }
 
   @Test
-  public void checksTimeoutAfterConditionSoZeroTimeoutWaitsCanSucceed() {
+  void checksTimeoutAfterConditionSoZeroTimeoutWaitsCanSucceed() {
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(250));
     when(mockCondition.apply(mockDriver)).thenReturn(null);
 
@@ -100,7 +99,7 @@ public class FluentWaitTest {
   }
 
   @Test
-  public void canIgnoreMultipleExceptions() throws InterruptedException {
+  void canIgnoreMultipleExceptions() throws InterruptedException {
     when(mockClock.instant()).thenReturn(EPOCH);
     when(mockCondition.apply(mockDriver))
       .thenThrow(new NoSuchElementException(""))
@@ -118,7 +117,7 @@ public class FluentWaitTest {
   }
 
   @Test
-  public void propagatesUnIgnoredExceptions() {
+  void propagatesUnIgnoredExceptions() {
     final NoSuchWindowException exception = new NoSuchWindowException("");
 
     when(mockClock.instant()).thenReturn(EPOCH);
@@ -135,7 +134,7 @@ public class FluentWaitTest {
   }
 
   @Test
-  public void timeoutMessageIncludesLastIgnoredException() {
+  void timeoutMessageIncludesLastIgnoredException() {
     final NoSuchWindowException exception = new NoSuchWindowException("");
 
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(500), EPOCH.plusMillis(1500), EPOCH.plusMillis(2500));
@@ -154,7 +153,7 @@ public class FluentWaitTest {
   }
 
   @Test
-  public void timeoutMessageIncludesCustomMessage() {
+  void timeoutMessageIncludesCustomMessage() {
     TimeoutException exception = new TimeoutException(
         "Expected condition failed: Expected custom timeout message "
         + "(tried for 0 second(s) with 500 milliseconds interval)");
@@ -174,7 +173,7 @@ public class FluentWaitTest {
   private String state = null;
 
   @Test
-  public void timeoutMessageIncludesCustomMessageEvaluatedOnFailure() {
+  void timeoutMessageIncludesCustomMessageEvaluatedOnFailure() {
     TimeoutException exception = new TimeoutException(
         "Expected condition failed: external state "
         + "(tried for 0 second(s) with 500 milliseconds interval)");
@@ -194,7 +193,7 @@ public class FluentWaitTest {
   }
 
   @Test
-  public void timeoutMessageIncludesToStringOfCondition() {
+  void timeoutMessageIncludesToStringOfCondition() {
     TimeoutException exception = new TimeoutException(
         "Expected condition failed: waiting for toString called "
         + "(tried for 0 second(s) with 500 milliseconds interval)");
@@ -220,7 +219,7 @@ public class FluentWaitTest {
   }
 
   @Test
-  public void canIgnoreThrowables() {
+  void canIgnoreThrowables() {
     final AssertionError exception = new AssertionError();
 
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(1000));
@@ -237,7 +236,7 @@ public class FluentWaitTest {
   }
 
   @Test
-  public void callsDeprecatedHandlerForRuntimeExceptions() {
+  void callsDeprecatedHandlerForRuntimeExceptions() {
     final TimeoutException exception = new TimeoutException();
 
     when(mockClock.instant()).thenReturn(EPOCH, EPOCH.plusMillis(2500));

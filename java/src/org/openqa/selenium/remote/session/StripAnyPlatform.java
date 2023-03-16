@@ -17,18 +17,17 @@
 
 package org.openqa.selenium.remote.session;
 
-import static java.util.Collections.singleton;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM;
-import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
-
 import java.util.Collection;
 import java.util.Map;
+
+import static java.util.Collections.singleton;
+import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 
 public class StripAnyPlatform implements CapabilityTransform {
 
   @Override
   public Collection<Map.Entry<String, Object>> apply(Map.Entry<String, Object> entry) {
-    if (!(PLATFORM.equals(entry.getKey()) || PLATFORM_NAME.equals(entry.getKey()))) {
+    if (!(PLATFORM_NAME.equals(entry.getKey()))) {
       return singleton(entry);
     }
 

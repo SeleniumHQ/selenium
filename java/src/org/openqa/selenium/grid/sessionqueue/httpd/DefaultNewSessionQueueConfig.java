@@ -25,9 +25,6 @@ class DefaultNewSessionQueueConfig extends MapConfig {
 
   DefaultNewSessionQueueConfig() {
     super(ImmutableMap.of(
-        "events", ImmutableMap.of(
-            "publish", "tcp://*:4442",
-            "subscribe", "tcp://*:4443"),
         "server", ImmutableMap.of(
             "port", 5559)));
   }

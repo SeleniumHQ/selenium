@@ -20,7 +20,7 @@ package org.openqa.selenium;
 import static com.google.common.base.Throwables.getRootCause;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -28,10 +28,10 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.time.Duration;
@@ -39,11 +39,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
+class ExecutingAsyncJavascriptTest extends JupiterTestBase {
 
   private JavascriptExecutor executor;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     assumeTrue(driver instanceof JavascriptExecutor);
     executor = (JavascriptExecutor) driver;
@@ -63,7 +63,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldNotTimeoutIfCallbackInvokedImmediately() {
+  void shouldNotTimeoutIfCallbackInvokedImmediately() {
     driver.get(pages.ajaxyPage);
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1](123);");
     assertThat(result).isInstanceOf(Number.class);
@@ -71,7 +71,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined() {
+  void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined() {
     driver.get(pages.ajaxyPage);
     assertThat(((Number) executor.executeAsyncScript(
         "arguments[arguments.length - 1](123);")).longValue()).isEqualTo(123);
@@ -84,14 +84,14 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined() {
+  void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined() {
     driver.get(pages.ajaxyPage);
     assertThat(executor.executeAsyncScript("arguments[arguments.length - 1](null)")).isNull();
     assertThat(executor.executeAsyncScript("arguments[arguments.length - 1]()")).isNull();
   }
 
   @Test
-  public void shouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript() {
+  void shouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript() {
     driver.get(pages.ajaxyPage);
 
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1]([]);");
@@ -100,7 +100,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToReturnAnArrayObjectFromAnAsyncScript() {
+  void shouldBeAbleToReturnAnArrayObjectFromAnAsyncScript() {
     driver.get(pages.ajaxyPage);
 
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1](new Array());");
@@ -109,7 +109,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
+  void shouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
     Object result = executor.executeAsyncScript(
@@ -128,7 +128,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToReturnWebElementsFromAsyncScripts() {
+  void shouldBeAbleToReturnWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
     Object result = executor.executeAsyncScript("arguments[arguments.length - 1](document.body);");
@@ -137,7 +137,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
+  void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() {
     driver.get(pages.ajaxyPage);
 
     Object result = executor.executeAsyncScript(
@@ -199,14 +199,14 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldCatchErrorsWhenExecutingInitialScript() {
+  void shouldCatchErrorsWhenExecutingInitialScript() {
     driver.get(pages.ajaxyPage);
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> executor.executeAsyncScript("throw Error('you should catch this!');"));
   }
 
   @Test
-  public void shouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous() {
+  void shouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous() {
     driver.get(pages.ajaxyPage);
     assertThat((Boolean) executor.executeAsyncScript("arguments[arguments.length - 1](true);"))
         .isTrue();
@@ -241,7 +241,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToExecuteAsynchronousScripts() {
+  void shouldBeAbleToExecuteAsynchronousScripts() {
     driver.get(pages.ajaxyPage);
 
     WebElement typer = driver.findElement(By.name("typer"));
@@ -260,7 +260,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
         "var callback = arguments[arguments.length - 1];"
         + "window.registerListener(arguments[arguments.length - 1]);");
     assertThat(text).isEqualTo("bob");
-    assertThat(typer.getAttribute("value")).isEqualTo("");
+    assertThat(typer.getAttribute("value")).isEmpty();
 
     assertThat(getNumDivElements())
         .describedAs("There should be 1 DIV (for the butter message) + 1 DIV (for the new label)")
@@ -268,7 +268,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToPassMultipleArgumentsToAsyncScripts() {
+  void shouldBeAbleToPassMultipleArgumentsToAsyncScripts() {
     driver.get(pages.ajaxyPage);
     Number result = (Number) executor.executeAsyncScript(
         "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2);
@@ -276,7 +276,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
+  void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
     String script =
         "var url = arguments[0];" +
         "var callback = arguments[arguments.length - 1];" +

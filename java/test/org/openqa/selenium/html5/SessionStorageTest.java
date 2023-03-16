@@ -18,25 +18,25 @@
 package org.openqa.selenium.html5;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.Set;
 
-public class SessionStorageTest extends JUnit4TestBase {
-  @Before
+class SessionStorageTest extends JupiterTestBase {
+  @BeforeEach
   public void checkHasWebStorage() {
     assumeTrue(driver instanceof WebStorage);
   }
 
   @Test
-  public void testSessionStorageSetAndGetItem() {
+  void testSessionStorageSetAndGetItem() {
     driver.get(pages.html5Page);
     SessionStorage session = ((WebStorage) driver).getSessionStorage();
-    assertThat(session.size()).isEqualTo(0);
+    assertThat(session.size()).isZero();
 
     session.setItem("BAR", "FOO");
     assertThat(session.getItem("BAR")).isEqualTo("FOO");
@@ -46,11 +46,11 @@ public class SessionStorageTest extends JUnit4TestBase {
     assertThat(session.size()).isEqualTo(2);
 
     session.clear();
-    assertThat(session.size()).isEqualTo(0);
+    assertThat(session.size()).isZero();
   }
 
   @Test
-  public void testSessionStorageKeySet() {
+  void testSessionStorageKeySet() {
     driver.get(pages.html5Page);
 
     SessionStorage session = ((WebStorage) driver).getSessionStorage();
@@ -68,7 +68,7 @@ public class SessionStorageTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testClearSessionStorage() {
+  void testClearSessionStorage() {
     driver.get(pages.html5Page);
 
     SessionStorage session = ((WebStorage) driver).getSessionStorage();
@@ -78,11 +78,11 @@ public class SessionStorageTest extends JUnit4TestBase {
     assertThat(session.size()).isEqualTo(3);
 
     session.clear();
-    assertThat(session.size()).isEqualTo(0);
+    assertThat(session.size()).isZero();
   }
 
   @Test
-  public void testSessionStorageRemoveItem() {
+  void testSessionStorageRemoveItem() {
     driver.get(pages.html5Page);
 
     SessionStorage session = ((WebStorage) driver).getSessionStorage();
@@ -91,7 +91,7 @@ public class SessionStorageTest extends JUnit4TestBase {
     assertThat(session.size()).isEqualTo(1);
     String removedItemValue = session.removeItem("BAR");
     assertThat(removedItemValue).isEqualTo("FOO");
-    assertThat(session.size()).isEqualTo(0);
+    assertThat(session.size()).isZero();
     session.clear();
   }
 }

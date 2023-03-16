@@ -64,6 +64,7 @@ public class FirefoxProfile {
     if (prefsInModel.exists()) {
       StringReader reader = new StringReader("{\"frozen\": {}, \"mutable\": {}}");
       Preferences existingPrefs = new Preferences(reader, prefsInModel);
+      existingPrefs.addTo(this.additionalPrefs);
       acceptUntrustedCerts = getBooleanPreference(existingPrefs, ACCEPT_UNTRUSTED_CERTS_PREF, true);
       untrustedCertIssuer = getBooleanPreference(existingPrefs, ASSUME_UNTRUSTED_ISSUER_PREF, true);
     } else {
@@ -307,13 +308,6 @@ public class FirefoxProfile {
 
   public void cleanTemporaryModel() {
     clean(model);
-  }
-
-  /**
-   * @deprecated This method will not be replaced as no default preferences are loaded anymore.
-   */
-  public void checkForChangesInFrozenPreferences() {
-    additionalPrefs.checkForChangesInFrozenPreferences();
   }
 
   /**

@@ -17,22 +17,22 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-
-import org.junit.After;
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-public class ContentEditableTest extends JUnit4TestBase {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-  @After
+class ContentEditableTest extends JupiterTestBase {
+
+  @AfterEach
   public void switchToDefaultContent() {
     driver.switchTo().defaultContent();
   }
@@ -58,10 +58,9 @@ public class ContentEditableTest extends JUnit4TestBase {
   @NotYetImplemented(value = FIREFOX)
   @NotYetImplemented(SAFARI)
   public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
-    assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
-                isFirefox(driver) &&
-                (getEffectivePlatform(driver).is(Platform.LINUX) ||
-                 getEffectivePlatform(driver).is(Platform.MAC)));
+    assumeFalse(isFirefox(driver) &&
+      (getEffectivePlatform(driver).is(Platform.LINUX) ||
+        getEffectivePlatform(driver).is(Platform.MAC)), "FIXME: Fails in Firefox on Linux with synthesized events");
 
     driver.get(pages.richTextPage);
 
@@ -74,7 +73,7 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
+  void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable-blank"));
 
@@ -97,7 +96,7 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToTypeIntoTinyMCE() {
+  void testShouldBeAbleToTypeIntoTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");
 
@@ -125,7 +124,6 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = FIREFOX, reason = "Doesn't write anything")
   @NotYetImplemented(value = SAFARI, reason = "Prepends text")
   public void appendsTextToEndOfContentEditableWithMultipleTextNodes() {
     driver.get(appServer.whereIs("content-editable.html"));

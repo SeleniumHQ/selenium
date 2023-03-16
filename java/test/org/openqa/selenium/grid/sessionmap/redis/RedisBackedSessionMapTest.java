@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.grid.sessionmap.redis;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
@@ -38,9 +38,10 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 
-public class RedisBackedSessionMapTest {
+class RedisBackedSessionMapTest {
 
   private RedisServer server;
   private EventBus bus;
@@ -48,7 +49,7 @@ public class RedisBackedSessionMapTest {
   private URI uri;
   private RedisBackedSessionMap sessions;
 
-  @Before
+  @BeforeEach
   public void setUp() throws URISyntaxException {
     uri = new URI("redis://localhost:" + PortProber.findFreePort());
     server = RedisServer.builder().port(uri.getPort()).build();
@@ -59,19 +60,22 @@ public class RedisBackedSessionMapTest {
     sessions = new RedisBackedSessionMap(tracer, uri, bus);
   }
 
-  @After
+  @AfterEach
   public void tearDownRedisServer() {
     sessions.getRedisClient().close();
     safelyCall(() -> server.stop());
-  }
-
-  @Test(expected = NoSuchSessionException.class)
-  public void shouldThrowANoSuchSessionExceptionIfTheSessionDoesNotExist() {
-    sessions.get(new SessionId(UUID.randomUUID()));
+    bus.close();
   }
 
   @Test
-  public void canGetTheUriOfASessionWithoutNeedingUrl() throws URISyntaxException {
+  void shouldThrowANoSuchSessionExceptionIfTheSessionDoesNotExist() {
+    assertThrows(NoSuchSessionException.class, () -> {
+      sessions.get(new SessionId(UUID.randomUUID()));
+    });
+  }
+
+  @Test
+  void canGetTheUriOfASessionWithoutNeedingUrl() throws URISyntaxException {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
@@ -86,7 +90,7 @@ public class RedisBackedSessionMapTest {
   }
 
   @Test
-  public void canCreateARedisBackedSessionMap() throws URISyntaxException {
+  void canCreateARedisBackedSessionMap() throws URISyntaxException {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),
@@ -101,7 +105,7 @@ public class RedisBackedSessionMapTest {
   }
 
   @Test
-  public void shouldBeAbleToRemoveSessions() throws URISyntaxException {
+  void shouldBeAbleToRemoveSessions() throws URISyntaxException {
     Session expected = new Session(
       new SessionId(UUID.randomUUID()),
       new URI("http://example.com/foo"),

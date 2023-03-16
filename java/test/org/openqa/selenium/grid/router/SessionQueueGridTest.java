@@ -19,9 +19,9 @@ package org.openqa.selenium.grid.router;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.events.EventBus;
@@ -73,16 +73,17 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.openqa.selenium.remote.http.Contents.asJson;
 import static org.openqa.selenium.remote.http.HttpMethod.DELETE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-public class SessionQueueGridTest {
+class SessionQueueGridTest {
   private static final Capabilities CAPS = new ImmutableCapabilities("browserName", "cheese");
   private HttpClient.Factory clientFactory;
   private Secret registrationSecret;
   private Server<?> server;
+  private EventBus bus;
 
   private static Server<?> createServer(HttpHandler handler) {
     return new NettyServer(
@@ -92,10 +93,10 @@ public class SessionQueueGridTest {
       handler);
   }
 
-  @Before
+  @BeforeEach
   public void setup() throws URISyntaxException, MalformedURLException {
     Tracer tracer = DefaultTestTracer.createTracer();
-    EventBus bus = new GuavaEventBus();
+    bus = new GuavaEventBus();
     int nodePort = PortProber.findFreePort();
     URI nodeUri = new URI("http://localhost:" + nodePort);
     CombinedHandler handler = new CombinedHandler();
@@ -111,7 +112,8 @@ public class SessionQueueGridTest {
       new DefaultSlotMatcher(),
       Duration.ofSeconds(5),
       Duration.ofSeconds(60),
-      registrationSecret);
+      registrationSecret,
+      5);
     handler.addHandler(queue);
 
     LocalNode localNode = LocalNode.builder(tracer, bus, nodeUri, nodeUri, registrationSecret)
@@ -139,7 +141,8 @@ public class SessionQueueGridTest {
       registrationSecret,
       Duration.ofMinutes(5),
       false,
-      Duration.ofSeconds(5));
+      Duration.ofSeconds(5),
+      Runtime.getRuntime().availableProcessors());
     handler.addHandler(distributor);
 
     distributor.add(localNode);
@@ -151,7 +154,7 @@ public class SessionQueueGridTest {
   }
 
   @Test
-  public void shouldBeAbleToCreateMultipleSessions() {
+  void shouldBeAbleToCreateMultipleSessions() {
     ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(2);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -179,14 +182,14 @@ public class SessionQueueGridTest {
   }
 
   @Test
-  public void shouldBeAbleToRejectRequest() {
+  void shouldBeAbleToRejectRequest() {
     // Grid has no slots for the requested capabilities
     HttpResponse httpResponse = createSession(ImmutableMap.of("browserName", "burger"));
     assertThat(httpResponse.getStatus()).isEqualTo(HTTP_INTERNAL_ERROR);
   }
 
   @Test
-  public void shouldBeAbleToClearQueue() {
+  void shouldBeAbleToClearQueue() {
     ImmutableMap<String, String> caps = ImmutableMap.of("browserName", "cheese");
     ExecutorService fixedThreadPoolService = Executors.newFixedThreadPool(1);
     ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -233,8 +236,9 @@ public class SessionQueueGridTest {
     }
   }
 
-  @After
+  @AfterEach
   public void stopServer() {
+    bus.close();
     server.stop();
   }
 

@@ -1,3 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium.grid.sessionqueue.local;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -5,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.concurrent.GuardedRunnable;
 import org.openqa.selenium.grid.config.Config;
@@ -82,6 +100,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   private static final String NAME = "Local New Session Queue";
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
+  private final int batchSize;
   private final Map<RequestId, Data> requests;
   private final Map<RequestId, TraceContext> contexts;
   private final Deque<SessionRequest> queue;
@@ -96,13 +115,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   public LocalNewSessionQueue(
     Tracer tracer,
     SlotMatcher slotMatcher,
-    Duration retryPeriod,
+    Duration requestTimeoutCheck,
     Duration requestTimeout,
-    Secret registrationSecret) {
+    Secret registrationSecret,
+    int batchSize) {
     super(tracer, registrationSecret);
 
     this.slotMatcher = Require.nonNull("Slot matcher", slotMatcher);
-    Require.nonNegative("Retry period", retryPeriod);
+    Require.nonNegative("Retry period", requestTimeoutCheck);
 
     this.requestTimeout = Require.positive("Request timeout", requestTimeout);
 
@@ -110,13 +130,13 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     this.queue = new ConcurrentLinkedDeque<>();
     this.contexts = new ConcurrentHashMap<>();
 
-    // if retryPeriod is 0, we will schedule timeout checks every 15 seconds
-    // there is no need to run this more often
-    long period = retryPeriod.isZero() ? 15000 : retryPeriod.toMillis();
+    this.batchSize = Require.positive("Batch size", batchSize);
+
     service.scheduleAtFixedRate(
       GuardedRunnable.guard(this::timeoutSessions),
-      retryPeriod.toMillis(),
-      period, MILLISECONDS);
+      requestTimeoutCheck.toMillis(),
+      requestTimeoutCheck.toMillis(),
+      MILLISECONDS);
 
     new JMXHelper().register(this);
   }
@@ -132,9 +152,10 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     return new LocalNewSessionQueue(
       tracer,
       slotMatcher,
-      newSessionQueueOptions.getSessionRequestRetryInterval(),
+      newSessionQueueOptions.getSessionRequestTimeoutPeriod(),
       newSessionQueueOptions.getSessionRequestTimeout(),
-      secretOptions.getRegistrationSecret());
+      secretOptions.getRegistrationSecret(),
+      newSessionQueueOptions.getBatchSize());
   }
 
   private void timeoutSessions() {
@@ -280,23 +301,33 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
   }
 
   @Override
-  public Optional<SessionRequest> getNextAvailable(Set<Capabilities> stereotypes) {
+  public List<SessionRequest> getNextAvailable(Map<Capabilities, Long> stereotypes) {
     Require.nonNull("Stereotypes", stereotypes);
 
     Predicate<Capabilities> matchesStereotype =
-      caps -> stereotypes.stream().anyMatch(stereotype -> slotMatcher.matches(stereotype, caps));
+      caps -> stereotypes.entrySet()
+        .stream()
+        .filter(entry -> entry.getValue() > 0)
+        .anyMatch(entry -> {
+          boolean matches = slotMatcher.matches(entry.getKey(), caps);
+          if (matches) {
+            Long value = entry.getValue();
+            entry.setValue(value - 1);
+          }
+          return matches;
+        });
 
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      Optional<SessionRequest> maybeRequest =
-          queue.stream()
-              .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
-              .findFirst();
+      List<SessionRequest> availableRequests = queue.stream()
+        .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
+        .limit(batchSize)
+        .collect(Collectors.toList());
 
-      maybeRequest.ifPresent(req -> this.remove(req.getRequestId()));
+      availableRequests.forEach(req -> this.remove(req.getRequestId()));
 
-      return maybeRequest;
+      return availableRequests;
     } finally {
       writeLock.unlock();
     }

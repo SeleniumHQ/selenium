@@ -19,25 +19,24 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 /**
  * Tests WebDriver's Point class.
  */
-@Category(UnitTests.class)
-public class PointTest {
+@Tag("UnitTests")
+class PointTest {
 
   @Test
-  public void testSimpleAssignment() {
+  void testSimpleAssignment() {
     Point p1 = new Point(30, 50);
     assertThat(p1.getX()).isEqualTo(30);
     assertThat(p1.getY()).isEqualTo(50);
   }
 
   @Test
-  public void testEquality() {
+  void testEquality() {
     Point p1 = new Point(30, 60);
     Point p2 = new Point(40, 60);
 
@@ -52,7 +51,7 @@ public class PointTest {
   }
 
   @Test
-  public void testMoveBy() {
+  void testMoveBy() {
     Point p1 = new Point(31, 42);
 
     assertThat(p1.moveBy(4, 5)).isEqualTo(new Point(35, 47));

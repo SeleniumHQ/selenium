@@ -19,13 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("Not implemented")
+@Disabled("Not implemented")
 public class TestUIElementLocators extends InternalSelenseTestBase {
   @Test
-  public void testUIElementLocators() {
+  void testUIElementLocators() {
     selenium.addScript(getUiMap(), "uimap");
     selenium.open("test_locators.html");
     verifyEquals(selenium.getText("ui=pageset1::linksWithId()"), "this is the first element");

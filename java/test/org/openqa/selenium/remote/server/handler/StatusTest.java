@@ -19,14 +19,14 @@ package org.openqa.selenium.remote.server.handler;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-public class StatusTest {
+class StatusTest {
 
   @Test
-  public void testStatusHandler() {
+  void testStatusHandler() {
     Status status = new Status();
     Object value = status.handle().getValue();
     assertThat(value).isInstanceOf(Map.class);

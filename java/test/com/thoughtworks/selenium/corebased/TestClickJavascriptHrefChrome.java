@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestClickJavascriptHrefChrome extends InternalSelenseTestBase {
   @Test
-  public void testClickJavascriptHrefChrome() {
+  void testClickJavascriptHrefChrome() {
     selenium.open("test_click_javascript_chrome_page.html");
     selenium.click("id=a");
     verifyEquals(selenium.getAlert(), "a");

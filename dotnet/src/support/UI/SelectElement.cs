@@ -446,6 +446,10 @@ namespace OpenQA.Selenium.Support.UI
 
         private static void SetSelected(IWebElement option, bool select)
         {
+            if (select && !option.Enabled) {
+                throw new InvalidOperationException("You may not select a disabled option");
+            }
+
             bool isSelected = option.Selected;
             if ((!isSelected && select) || (isSelected && !select))
             {

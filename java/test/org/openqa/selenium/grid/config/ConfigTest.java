@@ -18,8 +18,8 @@
 package org.openqa.selenium.grid.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -27,17 +27,17 @@ import com.google.common.collect.ImmutableMap;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 
 import java.util.List;
 import java.util.Optional;
 
-public class ConfigTest {
+class ConfigTest {
 
   @Test
-  public void ensureFirstConfigValueIsChosen() {
+  void ensureFirstConfigValueIsChosen() {
     Config config = new CompoundConfig(
         new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "foo"))),
         new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "bar"))));
@@ -46,14 +46,14 @@ public class ConfigTest {
   }
 
   @Test
-  public void shouldReturnEmptyIfConfigValueIsMissing() {
+  void shouldReturnEmptyIfConfigValueIsMissing() {
     Config config = new MapConfig(ImmutableMap.of());
 
     assertFalse(config.get("section", "option").isPresent());
   }
 
   @Test
-  public void shouldReadSystemProperties() {
+  void shouldReadSystemProperties() {
     Config config = new CompoundConfig(
         new MapConfig(ImmutableMap.of()),
         new ConcatenatingConfig("", '.', System.getProperties()));
@@ -62,7 +62,7 @@ public class ConfigTest {
   }
 
   @Test
-  public void shouldReturnAllMatchingOptions() {
+  void shouldReturnAllMatchingOptions() {
     Config config = new CompoundConfig(
         new MapConfig(ImmutableMap.of("section", ImmutableMap.of("option", "foo"))),
         new MapConfig(ImmutableMap.of("section", ImmutableMap.of("cake", "fish"))),
@@ -74,7 +74,7 @@ public class ConfigTest {
   }
 
   @Test
-  public void shouldAllowMultipleValues() {
+  void shouldAllowMultipleValues() {
     class Settable {
       @Parameter(
           names = {"-D"},
@@ -97,7 +97,7 @@ public class ConfigTest {
   }
 
   @Test
-  public void compoundConfigsCanProperlyInstantiateClassesReferringToOptionsInOtherConfigs() {
+  void compoundConfigsCanProperlyInstantiateClassesReferringToOptionsInOtherConfigs() {
     Config config = new CompoundConfig(
       new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("taste", "delicious"))),
       new MapConfig(ImmutableMap.of("cheese", ImmutableMap.of("name", "cheddar"))),
@@ -109,7 +109,7 @@ public class ConfigTest {
   }
 
   @Test
-  public void shouldBeAbleToGetAClassWithDefaultConstructor() {
+  void shouldBeAbleToGetAClassWithDefaultConstructor() {
     Config config = new MapConfig(
       ImmutableMap.of("foo", ImmutableMap.of("caps", ImmutableCapabilities.class.getName())));
 

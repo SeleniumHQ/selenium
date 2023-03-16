@@ -1,0 +1,12 @@
+load("//java:defs.bzl", "JUNIT5_DEPS", "java_test_suite")
+
+java_test_suite(
+    name = "medium-tests",
+    size = "medium",
+    srcs = glob(["*.java"]),
+    deps = [
+        "//java/src/org/openqa/selenium/remote/http",
+        "//java/src/org/openqa/selenium/remote/http/jdk",
+        "//java/test/org/openqa/selenium/remote/internal:test-lib",
+    ] + JUNIT5_DEPS,
+)

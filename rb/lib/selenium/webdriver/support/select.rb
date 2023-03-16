@@ -86,7 +86,7 @@ module Selenium
         #
         #     <option value="foo">Bar</option>
         #
-        # When slecting by :value, selects all options that have a value matching the argument. That is, when given "foo" this
+        # When selecting by :value, selects all options that have a value matching the argument. That is, when given "foo" this
         # would select an option like:
         #
         #     <option value="foo">Bar</option>
@@ -215,6 +215,8 @@ module Selenium
         end
 
         def select_option(option)
+          raise Error::UnsupportedOperationError, 'You may not select a disabled option' unless option.enabled?
+
           option.click unless option.selected?
         end
 

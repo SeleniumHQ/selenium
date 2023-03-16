@@ -15,15 +15,14 @@
 # specific language governing permissions and limitations
 # under the License.
 from . import interaction
-
 from .input_device import InputDevice
-from .interaction import (Interaction,
-                          Pause)
+from .interaction import Interaction
+from .interaction import Pause
 
 
 class KeyInput(InputDevice):
     def __init__(self, name) -> None:
-        super(KeyInput, self).__init__()
+        super().__init__()
         self.name = name
         self.type = interaction.KEY
 
@@ -36,14 +35,13 @@ class KeyInput(InputDevice):
     def create_key_up(self, key) -> None:
         self.add_action(TypingInteraction(self, "keyUp", key))
 
-    def create_pause(self, pause_duration=0) -> None:
+    def create_pause(self, pause_duration: float = 0) -> None:
         self.add_action(Pause(self, pause_duration))
 
 
 class TypingInteraction(Interaction):
-
     def __init__(self, source, type_, key) -> None:
-        super(TypingInteraction, self).__init__(source)
+        super().__init__(source)
         self.type = type_
         self.key = key
 

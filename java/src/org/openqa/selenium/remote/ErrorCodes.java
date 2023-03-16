@@ -19,10 +19,9 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
+
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.ImeActivationFailedException;
-import org.openqa.selenium.ImeNotAvailableException;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
@@ -80,8 +79,6 @@ public class ErrorCodes {
   public static final int UNEXPECTED_ALERT_PRESENT = 26;
   public static final int NO_ALERT_PRESENT = 27;
   public static final int ASYNC_SCRIPT_TIMEOUT = 28;
-  public static final int IME_NOT_AVAILABLE = 30;
-  public static final int IME_ENGINE_ACTIVATION_FAILED = 31;
   public static final int INVALID_SELECTOR_ERROR = 32;
   public static final int SESSION_NOT_CREATED = 33;
   public static final int MOVE_TARGET_OUT_OF_BOUNDS = 34;
@@ -101,6 +98,70 @@ public class ErrorCodes {
   public static final int METHOD_NOT_ALLOWED = 405;
 
   private static final Logger log = Logger.getLogger(ErrorCodes.class.getName());
+  // Every row on this table should be self-explanatory, except for the two booleans at the end.
+  // The first of these is "isCanonicalJsonCodeForException". This means that when doing the mapping
+  // for a JSON Wire Protocol status code, this KnownError provides the exception that should be
+  // thrown. The second boolean is "isCanonicalForW3C". This means that when mapping a state or
+  // exception to a W3C state, this KnownError provides the default exception and Json Wire Protocol
+  // status to send.
+  private static final ImmutableSet<KnownError> KNOWN_ERRORS = ImmutableSet.<KnownError>builder()
+    .add(new KnownError(ASYNC_SCRIPT_TIMEOUT, "script timeout", 500, ScriptTimeoutException.class, true, true))
+    .add(new KnownError(ELEMENT_CLICK_INTERCEPTED, "element click intercepted", 400, ElementClickInterceptedException.class, true, true))
+    .add(new KnownError(ELEMENT_NOT_INTERACTABLE, "element not interactable", 400, ElementNotInteractableException.class, true, true))
+    .add(new KnownError(INVALID_ARGUMENT, "invalid argument", 400, InvalidArgumentException.class, true, true))
+    .add(new KnownError(INVALID_COOKIE_DOMAIN, "invalid cookie domain", 400, InvalidCookieDomainException.class, true, true))
+    .add(new KnownError(INVALID_ELEMENT_STATE, "invalid element state", 400, InvalidElementStateException.class, true, true))
+    .add(new KnownError(INVALID_SELECTOR_ERROR, "invalid selector", 400, InvalidSelectorException.class, true, true))
+    .add(new KnownError(INVALID_XPATH_SELECTOR, "invalid selector", 400, InvalidSelectorException.class, false, false))
+    .add(new KnownError(INVALID_XPATH_SELECTOR_RETURN_TYPER, "invalid selector", 400, InvalidSelectorException.class, false, true))
+    .add(new KnownError(JAVASCRIPT_ERROR, "javascript error", 500, JavascriptException.class, true, true))
+    .add(new KnownError(METHOD_NOT_ALLOWED, "unknown method", 405, UnsupportedCommandException.class, false, true))
+    .add(new KnownError(METHOD_NOT_ALLOWED, "unsupported operation", 500, UnsupportedCommandException.class, false, true))
+    .add(new KnownError(MOVE_TARGET_OUT_OF_BOUNDS, "move target out of bounds", 500, MoveTargetOutOfBoundsException.class, true, true))
+    .add(new KnownError(NO_ALERT_PRESENT, "no such alert", 404, NoAlertPresentException.class, true, true))
+    .add(new KnownError(NO_SUCH_COOKIE, "no such cookie", 404, NoSuchCookieException.class, true, true))
+    .add(new KnownError(NO_SUCH_ELEMENT, "no such element", 404, NoSuchElementException.class, true, true))
+    .add(new KnownError(NO_SUCH_FRAME, "no such frame", 404, NoSuchFrameException.class, true, true))
+    .add(new KnownError(NO_SUCH_SESSION, "invalid session id", 404, NoSuchSessionException.class, true, true))
+    .add(new KnownError(NO_SUCH_SHADOW_ROOT, "no such shadow root", 404, NoSuchShadowRootException.class, true, true))
+    .add(new KnownError(NO_SUCH_WINDOW, "no such window", 404, NoSuchWindowException.class, true, true))
+    .add(new KnownError(SESSION_NOT_CREATED, "session not created", 500, SessionNotCreatedException.class ,true, true))
+    .add(new KnownError(STALE_ELEMENT_REFERENCE, "stale element reference", 404, StaleElementReferenceException.class, true, true))
+    .add(new KnownError(TIMEOUT, "timeout", 500, TimeoutException.class, true, true))
+    .add(new KnownError(XPATH_LOOKUP_ERROR, "invalid selector", 400, InvalidSelectorException.class, false, false))
+    .add(new KnownError(UNABLE_TO_CAPTURE_SCREEN, "unable to capture screen", 500, ScreenshotException.class, true, true))
+    .add(new KnownError(UNABLE_TO_SET_COOKIE, "unable to set cookie", 500, UnableToSetCookieException.class, true, true))
+    .add(new KnownError(UNEXPECTED_ALERT_PRESENT, "unexpected alert open", 500, UnhandledAlertException.class, true, true))
+    .add(new KnownError(UNHANDLED_ERROR, "unknown error", 500, WebDriverException.class, true, true))
+    .add(new KnownError(UNKNOWN_COMMAND, "unknown command", 404, UnsupportedCommandException.class, true, true))
+
+    .build();
+
+  static {{
+    // Validate uniqueness constraints.
+    //
+    // There should be only one canonical JSON Wire protocol code per exception
+    Map<Object, Set<KnownError>> matched = new HashMap<>();
+    for (KnownError knownError : KNOWN_ERRORS) {
+      matched.computeIfAbsent(knownError, key -> new HashSet<>()).add(knownError);
+    }
+    for (Set<KnownError> errors : matched.values()) {
+      if (errors.size() != 1) {
+        throw new RuntimeException("Duplicate canonical exceptions: " + errors);
+      }
+    }
+
+    // There should only be one canonical W3C code to JSON Wire Protocol code
+//    matched = new HashMap<>();
+//    for (KnownError error : KNOWN_ERRORS) {
+//      matched.computeIfAbsent(error.getW3cCode(), key -> new HashSet<>()).add(error);
+//    }
+//    for (Set<KnownError> errors : matched.values()) {
+//      if (errors.size() != 1) {
+//        throw new RuntimeException("Duplicate canonical w3c state codes: " + errors);
+//      }
+//    }
+  }}
 
   public String toState(Integer status) {
     if (status == null) {
@@ -210,73 +271,6 @@ public class ErrorCodes {
 
     return !possibleMatches.isEmpty();
   }
-
-  // Every row on this table should be self-explanatory, except for the two booleans at the end.
-  // The first of these is "isCanonicalJsonCodeForException". This means that when doing the mapping
-  // for a JSON Wire Protocol status code, this KnownError provides the exception that should be
-  // thrown. The second boolean is "isCanonicalForW3C". This means that when mapping a state or
-  // exception to a W3C state, this KnownError provides the default exception and Json Wire Protocol
-  // status to send.
-  private static final ImmutableSet<KnownError> KNOWN_ERRORS = ImmutableSet.<KnownError>builder()
-    .add(new KnownError(ASYNC_SCRIPT_TIMEOUT, "script timeout", 500, ScriptTimeoutException.class, true, true))
-    .add(new KnownError(ELEMENT_CLICK_INTERCEPTED, "element click intercepted", 400, ElementClickInterceptedException.class, true, true))
-    .add(new KnownError(ELEMENT_NOT_INTERACTABLE, "element not interactable", 400, ElementNotInteractableException.class, true, true))
-    .add(new KnownError(IME_ENGINE_ACTIVATION_FAILED, "unsupported operation", 500, ImeActivationFailedException.class, true, false))
-    .add(new KnownError(IME_NOT_AVAILABLE, "unsupported operation", 500, ImeNotAvailableException.class, true, false))
-    .add(new KnownError(INVALID_ARGUMENT, "invalid argument", 400, InvalidArgumentException.class, true, true))
-    .add(new KnownError(INVALID_COOKIE_DOMAIN, "invalid cookie domain", 400, InvalidCookieDomainException.class, true, true))
-    .add(new KnownError(INVALID_ELEMENT_STATE, "invalid element state", 400, InvalidElementStateException.class, true, true))
-    .add(new KnownError(INVALID_SELECTOR_ERROR, "invalid selector", 400, InvalidSelectorException.class, true, true))
-    .add(new KnownError(INVALID_XPATH_SELECTOR, "invalid selector", 400, InvalidSelectorException.class, false, false))
-    .add(new KnownError(INVALID_XPATH_SELECTOR_RETURN_TYPER, "invalid selector", 400, InvalidSelectorException.class, false, true))
-    .add(new KnownError(JAVASCRIPT_ERROR, "javascript error", 500, JavascriptException.class, true, true))
-    .add(new KnownError(METHOD_NOT_ALLOWED, "unknown method", 405, UnsupportedCommandException.class, false, true))
-    .add(new KnownError(METHOD_NOT_ALLOWED, "unsupported operation", 500, UnsupportedCommandException.class, false, true))
-    .add(new KnownError(MOVE_TARGET_OUT_OF_BOUNDS, "move target out of bounds", 500, MoveTargetOutOfBoundsException.class, true, true))
-    .add(new KnownError(NO_ALERT_PRESENT, "no such alert", 404, NoAlertPresentException.class, true, true))
-    .add(new KnownError(NO_SUCH_COOKIE, "no such cookie", 404, NoSuchCookieException.class, true, true))
-    .add(new KnownError(NO_SUCH_ELEMENT, "no such element", 404, NoSuchElementException.class, true, true))
-    .add(new KnownError(NO_SUCH_FRAME, "no such frame", 404, NoSuchFrameException.class, true, true))
-    .add(new KnownError(NO_SUCH_SESSION, "invalid session id", 404, NoSuchSessionException.class, true, true))
-    .add(new KnownError(NO_SUCH_SHADOW_ROOT, "no such shadow root", 404, NoSuchShadowRootException.class, true, true))
-    .add(new KnownError(NO_SUCH_WINDOW, "no such window", 404, NoSuchWindowException.class, true, true))
-    .add(new KnownError(SESSION_NOT_CREATED, "session not created", 500, SessionNotCreatedException.class ,true, true))
-    .add(new KnownError(STALE_ELEMENT_REFERENCE, "stale element reference", 404, StaleElementReferenceException.class, true, true))
-    .add(new KnownError(TIMEOUT, "timeout", 500, TimeoutException.class, true, true))
-    .add(new KnownError(XPATH_LOOKUP_ERROR, "invalid selector", 400, InvalidSelectorException.class, false, false))
-    .add(new KnownError(UNABLE_TO_CAPTURE_SCREEN, "unable to capture screen", 500, ScreenshotException.class, true, true))
-    .add(new KnownError(UNABLE_TO_SET_COOKIE, "unable to set cookie", 500, UnableToSetCookieException.class, true, true))
-    .add(new KnownError(UNEXPECTED_ALERT_PRESENT, "unexpected alert open", 500, UnhandledAlertException.class, true, true))
-    .add(new KnownError(UNHANDLED_ERROR, "unknown error", 500, WebDriverException.class, true, true))
-    .add(new KnownError(UNKNOWN_COMMAND, "unknown command", 404, UnsupportedCommandException.class, true, true))
-
-    .build();
-
-  static {{
-    // Validate uniqueness constraints.
-    //
-    // There should be only one canonical JSON Wire protocol code per exception
-    Map<Object, Set<KnownError>> matched = new HashMap<>();
-    for (KnownError knownError : KNOWN_ERRORS) {
-      matched.computeIfAbsent(knownError, key -> new HashSet<>()).add(knownError);
-    }
-    for (Set<KnownError> errors : matched.values()) {
-      if (errors.size() != 1) {
-        throw new RuntimeException("Duplicate canonical exceptions: " + errors);
-      }
-    }
-
-    // There should only be one canonical W3C code to JSON Wire Protocol code
-//    matched = new HashMap<>();
-//    for (KnownError error : KNOWN_ERRORS) {
-//      matched.computeIfAbsent(error.getW3cCode(), key -> new HashSet<>()).add(error);
-//    }
-//    for (Set<KnownError> errors : matched.values()) {
-//      if (errors.size() != 1) {
-//        throw new RuntimeException("Duplicate canonical w3c state codes: " + errors);
-//      }
-//    }
-  }}
 
   private static class KnownError {
     private final int jsonCode;

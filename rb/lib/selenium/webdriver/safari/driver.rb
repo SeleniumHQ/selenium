@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Safari
-
       #
       # Driver implementation for Safari.
       # @api private
@@ -31,8 +30,28 @@ module Selenium
                       DriverExtensions::HasApplePermissions,
                       DriverExtensions::HasWebStorage].freeze
 
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+
+          caps = process_options(options, capabilities)
+          url = service_url(service || Service.safari)
+          super(caps: caps, url: url, **opts)
+        end
+
         def browser
           :safari
+        end
+
+        private
+
+        def process_options(options, capabilities)
+          if options && !options.is_a?(Options)
+            raise ArgumentError, ":options must be an instance of #{Options}"
+          elsif options.nil? && capabilities.nil?
+            options = Options.new
+          end
+
+          super(options, capabilities)
         end
       end # Driver
     end # Safari

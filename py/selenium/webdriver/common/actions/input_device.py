@@ -18,22 +18,15 @@
 import uuid
 
 
-class InputDevice(object):
-    """
-        Describes the input device being used for the action.
-    """
-    def __init__(self, name=None):
-        if not name:
-            self.name = uuid.uuid4()
-        else:
-            self.name = name
+class InputDevice:
+    """Describes the input device being used for the action."""
 
+    def __init__(self, name=None):
+        self.name = name or uuid.uuid4()
         self.actions = []
 
     def add_action(self, action):
-        """
-
-        """
+        """"""
         self.actions.append(action)
 
     def clear_actions(self):

@@ -25,44 +25,44 @@ import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 @Ignore(value = HTMLUNIT,
           reason = "Getting coordinates requires rendering, others: not tested")
-public class PositionAndSizeTest extends JUnit4TestBase {
+class PositionAndSizeTest extends JupiterTestBase {
 
   @Test
-  public void testShouldBeAbleToDetermineTheLocationOfAnElement() {
+  void testShouldBeAbleToDetermineTheLocationOfAnElement() {
     driver.get(pages.xhtmlTestPage);
 
     WebElement element = driver.findElement(By.id("username"));
     Point location = element.getLocation();
 
-    assertThat(location.getX()).isGreaterThan(0);
-    assertThat(location.getY()).isGreaterThan(0);
+    assertThat(location.getX()).isPositive();
+    assertThat(location.getY()).isPositive();
   }
 
   @Test
-  public void testShouldGetCoordinatesOfAnElement() {
+  void testShouldGetCoordinatesOfAnElement() {
     driver.get(appServer.whereIs("coordinates_tests/simple_page.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
     assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
   }
 
   @Test
-  public void testShouldGetCoordinatesOfAnEmptyElement() {
+  void testShouldGetCoordinatesOfAnEmptyElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_empty_element.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
     assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
   }
 
   @Test
-  public void testShouldGetCoordinatesOfATransparentElement() {
+  void testShouldGetCoordinatesOfATransparentElement() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_transparent_element.html"));
     assertThat(getLocationInViewPort(By.id("box"))).isEqualTo(new Point(10, 10));
     assertThat(getLocationOnPage(By.id("box"))).isEqualTo(new Point(10, 10));
@@ -85,7 +85,7 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
+  void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_element_out_of_view.html"));
     int windowHeight = driver.manage().window().getSize().getHeight();
     Point location = getLocationInViewPort(By.id("box"));
@@ -136,24 +136,24 @@ public class PositionAndSizeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
+  void testShouldGetCoordinatesOfAnElementWithFixedPosition() {
     driver.get(appServer.whereIs("coordinates_tests/page_with_fixed_element.html"));
-    assertThat(getLocationInViewPort(By.id("fixed")).getY()).isEqualTo(0);
-    assertThat(getLocationOnPage(By.id("fixed")).getY()).isEqualTo(0);
+    assertThat(getLocationInViewPort(By.id("fixed")).getY()).isZero();
+    assertThat(getLocationOnPage(By.id("fixed")).getY()).isZero();
 
     driver.findElement(By.id("bottom")).click();
-    assertThat(getLocationInViewPort(By.id("fixed")).getY()).isEqualTo(0);
-    assertThat(getLocationOnPage(By.id("fixed")).getY()).isGreaterThan(0);
+    assertThat(getLocationInViewPort(By.id("fixed")).getY()).isZero();
+    assertThat(getLocationOnPage(By.id("fixed")).getY()).isPositive();
   }
 
   @Test
-  public void testShouldCorrectlyIdentifyThatAnElementHasWidthAndHeight() {
+  void testShouldCorrectlyIdentifyThatAnElementHasWidthAndHeight() {
     driver.get(pages.xhtmlTestPage);
 
     WebElement shrinko = driver.findElement(By.id("linkId"));
     Dimension size = shrinko.getSize();
-    assertThat(size.width).isGreaterThan(0);
-    assertThat(size.height).isGreaterThan(0);
+    assertThat(size.width).isPositive();
+    assertThat(size.height).isPositive();
   }
 
   // TODO: This test's value seems dubious at best. The CSS spec does not define how browsers

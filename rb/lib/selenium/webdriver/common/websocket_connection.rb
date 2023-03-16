@@ -22,13 +22,19 @@ require 'websocket'
 module Selenium
   module WebDriver
     class WebSocketConnection
+      CONNECTION_ERRORS = [
+        Errno::ECONNRESET, # connection is aborted (browser process was killed)
+        Errno::EPIPE # broken pipe (browser process was killed)
+      ].freeze
+
       RESPONSE_WAIT_TIMEOUT = 30
       RESPONSE_WAIT_INTERVAL = 0.1
+
+      MAX_LOG_MESSAGE_SIZE = 9999
 
       def initialize(url:)
         @callback_threads = ThreadGroup.new
 
-        @messages = []
         @session_id = nil
         @url = url
 
@@ -49,16 +55,22 @@ module Selenium
       def send_cmd(**payload)
         id = next_id
         data = payload.merge(id: id)
+        WebDriver.logger.debug "WebSocket -> #{data}"[...MAX_LOG_MESSAGE_SIZE]
         data = JSON.generate(data)
-        WebDriver.logger.debug "WebSocket -> #{data}"
-
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
         socket.write(out_frame.to_s)
 
-        wait.until { @messages.find { |m| m['id'] == id } }
+        wait.until { messages.delete(id) }
       end
 
       private
+
+      # We should be thread-safe to use the hash without synchronization
+      # because its keys are WebSocket message identifiers and they should be
+      # unique within a devtools session.
+      def messages
+        @messages ||= {}
+      end
 
       def process_handshake
         socket.print(ws.to_s)
@@ -83,6 +95,8 @@ module Selenium
               end
             end
           end
+        rescue *CONNECTION_ERRORS
+          Thread.stop
         end
       end
 
@@ -97,8 +111,8 @@ module Selenium
         return {} if message.empty?
 
         message = JSON.parse(message)
-        @messages << message
-        WebDriver.logger.debug "WebSocket <- #{message}"
+        messages[message['id']] = message
+        WebDriver.logger.debug "WebSocket <- #{message}"[...MAX_LOG_MESSAGE_SIZE]
 
         message
       end
@@ -115,6 +129,8 @@ module Selenium
           Thread.current.report_on_exception = true
 
           yield params
+        rescue *CONNECTION_ERRORS
+          Thread.stop
         end
       end
 
@@ -143,7 +159,6 @@ module Selenium
         @id ||= 0
         @id += 1
       end
-
     end # BiDi
   end # WebDriver
 end # Selenium

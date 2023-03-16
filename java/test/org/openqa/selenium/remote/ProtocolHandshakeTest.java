@@ -17,6 +17,27 @@
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.http.HttpClient;
+import org.openqa.selenium.remote.http.HttpRequest;
+import org.openqa.selenium.remote.http.HttpResponse;
+import org.openqa.selenium.remote.http.WebSocket;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.Collections.EMPTY_MAP;
 import static java.util.Collections.singletonList;
@@ -27,34 +48,12 @@ import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.http.HttpClient;
-import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.http.WebSocket;
-import org.openqa.selenium.testing.UnitTests;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 @SuppressWarnings("unchecked")
-@Category(UnitTests.class)
-public class ProtocolHandshakeTest {
+@Tag("UnitTests")
+class ProtocolHandshakeTest {
 
   @Test
-  public void requestShouldIncludeJsonWireProtocolCapabilities() throws IOException {
+  void requestShouldIncludeJsonWireProtocolCapabilities() throws IOException {
     Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
@@ -72,7 +71,7 @@ public class ProtocolHandshakeTest {
   }
 
   @Test
-  public void requestShouldIncludeSpecCompliantW3CCapabilities() throws IOException {
+  void requestShouldIncludeSpecCompliantW3CCapabilities() throws IOException {
     Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
@@ -92,7 +91,7 @@ public class ProtocolHandshakeTest {
   }
 
   @Test
-  public void shouldParseW3CNewSessionResponse() throws IOException {
+  void shouldParseW3CNewSessionResponse() throws IOException {
     Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
@@ -107,7 +106,7 @@ public class ProtocolHandshakeTest {
   }
 
   @Test
-  public void shouldParseWireProtocolNewSessionResponse() throws IOException {
+  void shouldParseWireProtocolNewSessionResponse() throws IOException {
     Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
@@ -122,7 +121,7 @@ public class ProtocolHandshakeTest {
   }
 
   @Test
-  public void shouldNotIncludeNonProtocolExtensionKeys() throws IOException {
+  void shouldNotIncludeNonProtocolExtensionKeys() throws IOException {
     Capabilities caps = new ImmutableCapabilities(
         "se:option", "cheese",
         "option", "I like sausages",
@@ -160,33 +159,7 @@ public class ProtocolHandshakeTest {
   }
 
   @Test
-  public void firstMatchSeparatesCapsForDifferentBrowsers() throws IOException {
-    Capabilities caps = new ImmutableCapabilities(
-        "moz:firefoxOptions", EMPTY_MAP,
-        "browserName", "chrome");
-
-    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
-    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
-
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(utf8String(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
-
-    new ProtocolHandshake().createSession(client, command);
-
-    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
-
-    List<Map<String, Object>> capabilities = mergeW3C(handshakeRequest);
-
-    assertThat(capabilities).contains(
-        singletonMap("moz:firefoxOptions", EMPTY_MAP),
-        singletonMap("browserName", "chrome"));
-  }
-
-  @Test
-  public void doesNotCreateFirstMatchForNonW3CCaps() throws IOException {
+  void doesNotCreateFirstMatchForNonW3CCaps() throws IOException {
     Capabilities caps = new ImmutableCapabilities(
         "cheese", EMPTY_MAP,
         "moz:firefoxOptions", EMPTY_MAP,
@@ -218,7 +191,7 @@ public class ProtocolHandshakeTest {
   }
 
   @Test
-  public void shouldLowerCaseProxyTypeForW3CRequest() throws IOException {
+  void shouldLowerCaseProxyTypeForW3CRequest() throws IOException {
     Proxy proxy = new Proxy();
     proxy.setProxyType(AUTODETECT);
     Capabilities caps = new ImmutableCapabilities(CapabilityType.PROXY, proxy);
@@ -246,7 +219,7 @@ public class ProtocolHandshakeTest {
   }
 
   @Test
-  public void shouldNotIncludeMappingOfANYPlatform() throws IOException {
+  void shouldNotIncludeMappingOfANYPlatform() throws IOException {
     Capabilities caps = new ImmutableCapabilities(
         "platform", "ANY",
         "platformName", "ANY",

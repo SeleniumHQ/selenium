@@ -28,15 +28,14 @@ import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
-@Category(UnitTests.class)
-public class RouteTest {
+@Tag("UnitTests")
+class RouteTest {
 
   @Test
-  public void shouldNotRouteUnhandledUrls() {
+  void shouldNotRouteUnhandledUrls() {
     Route route = Route.get("/hello").to(() -> req ->
         new HttpResponse().setContent(utf8String("Hello, World!"))
     );
@@ -45,7 +44,7 @@ public class RouteTest {
   }
 
   @Test
-  public void shouldRouteSimplePaths() {
+  void shouldRouteSimplePaths() {
     Route route = Route.get("/hello").to(() -> req ->
         new HttpResponse().setContent(utf8String("Hello, World!"))
     );
@@ -58,7 +57,7 @@ public class RouteTest {
   }
 
   @Test
-  public void shouldAllowRoutesToBeUrlTemplates() {
+  void shouldAllowRoutesToBeUrlTemplates() {
     Route route = Route.post("/greeting/{name}").to(params -> req ->
         new HttpResponse().setContent(utf8String(String.format("Hello, %s!", params.get("name")))));
 
@@ -70,7 +69,7 @@ public class RouteTest {
   }
 
   @Test
-  public void shouldAllowRoutesToBePrefixed() {
+  void shouldAllowRoutesToBePrefixed() {
     Route route = Route.prefix("/cheese")
         .to(Route.get("/type").to(() -> req -> new HttpResponse().setContent(utf8String("brie"))));
 
@@ -81,7 +80,7 @@ public class RouteTest {
   }
 
   @Test
-  public void shouldAllowRoutesToBeNested() {
+  void shouldAllowRoutesToBeNested() {
     Route route = Route.prefix("/cheese").to(
         Route.prefix("/favourite").to(
             Route.get("/is/{kind}").to(
@@ -97,7 +96,7 @@ public class RouteTest {
   }
 
   @Test
-  public void nestedRoutesShouldStripPrefixFromRequest() {
+  void nestedRoutesShouldStripPrefixFromRequest() {
     Route route = Route.prefix("/cheese")
         .to(Route
                 .get("/type").to(() -> req -> new HttpResponse().setContent(Contents.utf8String(req.getUri()))));
@@ -109,7 +108,7 @@ public class RouteTest {
   }
 
   @Test
-  public void itShouldBePossibleToCombineRoutes() {
+  void itShouldBePossibleToCombineRoutes() {
     Route route = Route.combine(
         Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("world"))),
         Route.post("/cheese").to(
@@ -127,7 +126,7 @@ public class RouteTest {
   }
 
   @Test
-  public void laterRoutesOverrideEarlierRoutesToFacilitateOverridingRoutes() {
+  void laterRoutesOverrideEarlierRoutesToFacilitateOverridingRoutes() {
     HttpHandler handler = Route.combine(
         Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("world"))),
         Route.get("/hello").to(() -> req -> new HttpResponse().setContent(utf8String("buddy"))));
@@ -137,7 +136,7 @@ public class RouteTest {
   }
 
   @Test
-  public void shouldUseFallbackIfAnyDeclared() {
+  void shouldUseFallbackIfAnyDeclared() {
     HttpHandler handler = Route.delete("/negativity").to(() -> req -> new HttpResponse())
         .fallbackTo(() -> req -> new HttpResponse().setStatus(HTTP_NOT_FOUND));
 
@@ -149,7 +148,7 @@ public class RouteTest {
   }
 
   @Test
-  public void shouldReturnA404IfNoRouteMatches() {
+  void shouldReturnA404IfNoRouteMatches() {
     Route route = Route.get("/hello").to(() -> req -> new HttpResponse());
 
     HttpResponse response = route.execute(new HttpRequest(GET, "/greeting"));
@@ -158,7 +157,7 @@ public class RouteTest {
   }
 
   @Test
-  public void shouldReturnA500IfNoResponseIsReturned() {
+  void shouldReturnA500IfNoResponseIsReturned() {
     Route route = Route.get("/hello").to(() -> req -> null);
 
     HttpResponse response = route.execute(new HttpRequest(GET, "/hello"));

@@ -17,8 +17,8 @@
 package org.openqa.selenium.edge;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
@@ -26,6 +26,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -38,7 +39,9 @@ import java.util.Map;
  */
 public class EdgeDriver extends ChromiumDriver {
 
-  public EdgeDriver() { this(new EdgeOptions()); }
+  public EdgeDriver() {
+    this(new EdgeOptions());
+  }
 
   public EdgeDriver(EdgeOptions options) {
     this(new EdgeDriverService.Builder().build(), options);
@@ -49,14 +52,19 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
-    super(new EdgeDriverCommandExecutor(service), Require.nonNull("Driver options", options), EdgeOptions.CAPABILITY);
+    super(generateExecutor(service, options), options, EdgeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
-  @Deprecated
-  public EdgeDriver(Capabilities capabilities) {
-    this(new EdgeDriverService.Builder().build(), new EdgeOptions().merge(capabilities));
+  private static EdgeDriverCommandExecutor generateExecutor(EdgeDriverService service, EdgeOptions options) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    if (service.getExecutable() == null) {
+      String path = DriverFinder.getPath(service, options);
+      service.setExecutable(path);
+    }
+    return new EdgeDriverCommandExecutor(service);
   }
 
   @Beta

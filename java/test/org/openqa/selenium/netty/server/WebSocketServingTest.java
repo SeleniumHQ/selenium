@@ -18,8 +18,8 @@
 package org.openqa.selenium.netty.server;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.grid.config.MapConfig;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.Server;
@@ -48,29 +48,33 @@ import java.util.function.Consumer;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class WebSocketServingTest {
+class WebSocketServingTest {
 
   private Server<?> server;
 
-  @After
+  @AfterEach
   public void shutDown() {
     Safely.safelyCall(() -> server.stop());
   }
 
-  @Test(expected = ConnectionFailedException.class)
-  public void clientShouldThrowAnExceptionIfUnableToConnectToAWebSocketEndPoint() {
-    server = new NettyServer(defaultOptions(), req -> new HttpResponse()).start();
+  @Test
+  void clientShouldThrowAnExceptionIfUnableToConnectToAWebSocketEndPoint() {
+    assertThrows(ConnectionFailedException.class, () -> {
+      server = new NettyServer(defaultOptions(), req -> new HttpResponse()).start();
 
-    HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
+      HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl());
 
-    client.openSocket(new HttpRequest(GET, "/does-not-exist"), new WebSocket.Listener() {});
+      client.openSocket(new HttpRequest(GET, "/does-not-exist"), new WebSocket.Listener() {
+      });
+    });
   }
 
   @Test
-  public void shouldUseUriToChooseWhichWebSocketHandlerToUse() throws InterruptedException {
+  void shouldUseUriToChooseWhichWebSocketHandlerToUse() throws InterruptedException {
     AtomicBoolean foo = new AtomicBoolean(false);
     AtomicBoolean bar = new AtomicBoolean(false);
 
@@ -111,7 +115,7 @@ public class WebSocketServingTest {
   }
 
   @Test
-  public void shouldStillBeAbleToServeHttpTraffic() {
+  void shouldStillBeAbleToServeHttpTraffic() {
     server = new NettyServer(
       defaultOptions(),
       req -> new HttpResponse().setContent(utf8String("Brie!")),
@@ -129,7 +133,7 @@ public class WebSocketServingTest {
   }
 
   @Test
-  public void shouldPropagateCloseMessage() throws InterruptedException {
+  void shouldPropagateCloseMessage() throws InterruptedException {
     CountDownLatch latch = new CountDownLatch(1);
 
     server = new NettyServer(
@@ -146,7 +150,7 @@ public class WebSocketServingTest {
   }
 
   @Test
-  public void webSocketHandlersShouldBeAbleToFireMoreThanOneMessage() {
+  void webSocketHandlersShouldBeAbleToFireMoreThanOneMessage() {
     server = new NettyServer(
       defaultOptions(),
       req -> new HttpResponse(),

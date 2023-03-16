@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestCheckUncheck extends InternalSelenseTestBase {
   @Test
-  public void testCheckUncheck() {
+  void testCheckUncheck() {
     selenium.open("test_check_uncheck.html");
     verifyTrue(selenium.isChecked("base-spud"));
     verifyFalse(selenium.isChecked("base-rice"));

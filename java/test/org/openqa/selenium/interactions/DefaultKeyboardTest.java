@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.interactions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.Platform;
@@ -27,12 +27,12 @@ import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.Assume.assumeFalse;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -42,13 +42,13 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
-public class DefaultKeyboardTest extends JUnit4TestBase {
+class DefaultKeyboardTest extends JupiterTestBase {
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
   }
 
   @Test
-  public void testBasicKeyboardInput() {
+  void testBasicKeyboardInput() {
     driver.get(appServer.whereIs("single_text_input.html"));
 
     WebElement input = driver.findElement(By.id("textInput"));
@@ -162,7 +162,7 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
   public void testThrowsIllegalArgumentExceptionWithNoParameters() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys());
+      .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys());
   }
 
   @Test
@@ -170,7 +170,7 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
   public void testThrowsIllegalArgumentExceptionWithNullParameter() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys((CharSequence) null));
+      .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys((CharSequence) null));
   }
 
   @Test
@@ -178,7 +178,7 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
   public void testThrowsIllegalArgumentExceptionWithNullInParameters() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
-        .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
+      .isThrownBy(() -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
   }
 
   @Test
@@ -186,7 +186,7 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
   public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNull() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
+      () -> driver.findElement(By.id("keyReporter")).sendKeys("x", null, "y"));
   }
 
   @Test
@@ -194,11 +194,11 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
   public void testThrowsIllegalArgumentExceptionWithCharSequenceThatContainsNullOnly() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(
-        () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[]{null}));
+      () -> driver.findElement(By.id("keyReporter")).sendKeys(new CharSequence[]{null}));
   }
 
   @Test
-  public void canGenerateKeyboardShortcuts() {
+  void canGenerateKeyboardShortcuts() {
     driver.get(appServer.whereIs("keyboard_shortcut.html"));
 
     WebElement body = driver.findElement(By.xpath("//body"));
@@ -211,10 +211,10 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
     assertBackgroundColor(body, Colors.LIGHTBLUE);
 
     new Actions(driver)
-        .keyDown(Keys.SHIFT).keyDown(Keys.ALT)
-        .sendKeys("1")
-        .keyUp(Keys.SHIFT).keyUp(Keys.ALT)
-        .perform();
+      .keyDown(Keys.SHIFT).keyDown(Keys.ALT)
+      .sendKeys("1")
+      .keyUp(Keys.SHIFT).keyUp(Keys.ALT)
+      .perform();
     assertBackgroundColor(body, Colors.SILVER);
   }
 
@@ -230,12 +230,12 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
     shortWait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
 
     getBuilder(driver).click(input)
-        .keyDown(Keys.SHIFT)
-        .sendKeys(Keys.LEFT)
-        .sendKeys(Keys.LEFT)
-        .keyUp(Keys.SHIFT)
-        .sendKeys(Keys.DELETE)
-        .perform();
+      .keyDown(Keys.SHIFT)
+      .sendKeys(Keys.LEFT)
+      .sendKeys(Keys.LEFT)
+      .keyUp(Keys.SHIFT)
+      .sendKeys(Keys.DELETE)
+      .perform();
 
     assertThat(input.getAttribute("value")).isEqualTo("abc d");
   }
@@ -244,9 +244,8 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1422583")
   public void testSelectionSelectByWord() {
-    assumeFalse(
-        "MacOS has alternative keyboard",
-        getEffectivePlatform(driver).is(Platform.MAC));
+    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC),
+      "MacOS has alternative keyboard");
 
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -256,22 +255,21 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
     wait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
 
     getBuilder(driver).click(input)
-        .keyDown(Keys.SHIFT)
-        .keyDown(Keys.CONTROL)
-        .sendKeys(Keys.LEFT)
-        .keyUp(Keys.CONTROL)
-        .keyUp(Keys.SHIFT)
-        .sendKeys(Keys.DELETE)
-        .perform();
+      .keyDown(Keys.SHIFT)
+      .keyDown(Keys.CONTROL)
+      .sendKeys(Keys.LEFT)
+      .keyUp(Keys.CONTROL)
+      .keyUp(Keys.SHIFT)
+      .sendKeys(Keys.DELETE)
+      .perform();
 
     wait.until(ExpectedConditions.attributeToBe(input, "value", "abc "));
   }
 
   @Test
-  public void testSelectionSelectAll() {
-    assumeFalse(
-        "MacOS has alternative keyboard",
-        getEffectivePlatform(driver).is(Platform.MAC));
+  void testSelectionSelectAll() {
+    assumeFalse(getEffectivePlatform(driver).is(Platform.MAC),
+      "MacOS has alternative keyboard");
 
     driver.get(appServer.whereIs("single_text_input.html"));
 
@@ -282,20 +280,20 @@ public class DefaultKeyboardTest extends JUnit4TestBase {
     shortWait.until(ExpectedConditions.attributeToBe(input, "value", "abc def"));
 
     getBuilder(driver).click(input)
-        .keyDown(Keys.CONTROL)
-        .sendKeys("a")
-        .keyUp(Keys.CONTROL)
-        .sendKeys(Keys.DELETE)
-        .perform();
+      .keyDown(Keys.CONTROL)
+      .sendKeys("a")
+      .keyUp(Keys.CONTROL)
+      .sendKeys(Keys.DELETE)
+      .perform();
 
-    assertThat(input.getAttribute("value")).isEqualTo("");
+    assertThat(input.getAttribute("value")).isEmpty();
   }
 
   @Test
-  public void testLeftArrowEntry() {
+  void testLeftArrowEntry() {
     final String leftArrowSpaceTestStringCore = "bfmtv.fr";
-    final String leftArrowSpaceTestString = leftArrowSpaceTestStringCore+ "est";
-    final String leftArrowSpaceTestStringExpected = leftArrowSpaceTestStringCore+" est";
+    final String leftArrowSpaceTestString = leftArrowSpaceTestStringCore + "est";
+    final String leftArrowSpaceTestStringExpected = leftArrowSpaceTestStringCore + " est";
 
     driver.get(appServer.whereIs("single_text_input.html"));
     WebElement textInput = driver.findElement(By.id("textInput"));

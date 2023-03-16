@@ -17,20 +17,19 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 import static org.openqa.selenium.remote.http.UrlPath.ROUTE_PREFIX_KEY;
 
-@Category(UnitTests.class)
-public class UrlPathTest {
+@Tag("UnitTests")
+class UrlPathTest {
 
   @Test
-  public void shouldAssumeARegularHttpRequestHasNoPrefix() {
+  void shouldAssumeARegularHttpRequestHasNoPrefix() {
     HttpRequest req = new HttpRequest(GET, "/cheese");
 
     String absolute = UrlPath.relativeToServer(req, "/cake");
@@ -41,7 +40,7 @@ public class UrlPathTest {
   }
 
   @Test
-  public void shouldRedirectARequestWithAPrefixAttribute() {
+  void shouldRedirectARequestWithAPrefixAttribute() {
     HttpRequest req = new HttpRequest(GET, "/cake");
     req.setAttribute(ROUTE_PREFIX_KEY, singletonList("/cheese"));
 

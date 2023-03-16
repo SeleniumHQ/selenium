@@ -1,26 +1,28 @@
-# Copyright 2008-2009 WebDriver committers
-# Copyright 2008-2009 Google Inc.
+# Licensed to the Software Freedom Conservancy (SFC) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The SFC licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
 #
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
+#   http://www.apache.org/licenses/LICENSE-2.0
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 
 import pytest
 
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    WebDriverException)
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 def test_get_title(driver, pages):
@@ -32,7 +34,7 @@ def test_get_title(driver, pages):
 def test_get_current_url(driver, pages, webserver):
     pages.load("simpleTest.html")
     url = driver.current_url
-    assert webserver.where_is('simpleTest.html') == url
+    assert webserver.where_is("simpleTest.html") == url
 
 
 def test_find_element_by_xpath(driver, pages):
@@ -159,11 +161,11 @@ def test_navigate(driver, pages):
 
 
 def test_get_attribute(driver, pages):
-    url = pages.url('xhtmlTest.html')
+    url = pages.url("xhtmlTest.html")
     driver.get(url)
     elem = driver.find_element(By.ID, "id1")
     attr = elem.get_attribute("href")
-    assert '{0}#'.format(url) == attr
+    assert f"{url}#" == attr
 
 
 def test_get_implicit_attribute(driver, pages):
@@ -175,7 +177,7 @@ def test_get_implicit_attribute(driver, pages):
 
 
 def test_get_dom_attribute(driver, pages):
-    url = pages.url('formPage.html')
+    url = pages.url("formPage.html")
     driver.get(url)
     elem = driver.find_element(By.ID, "vsearchGadget")
     attr = elem.get_dom_attribute("accesskey")
@@ -183,7 +185,7 @@ def test_get_dom_attribute(driver, pages):
 
 
 def test_get_property(driver, pages):
-    url = pages.url('formPage.html')
+    url = pages.url("formPage.html")
     driver.get(url)
     elem = driver.find_element(By.ID, "withText")
     prop = elem.get_property("value")
@@ -210,15 +212,16 @@ def test_execute_script_with_args(driver, pages):
 
 def test_execute_script_with_multiple_args(driver, pages):
     pages.load("xhtmlTest.html")
-    result = driver.execute_script(
-        "return arguments[0] + arguments[1]", 1, 2)
+    result = driver.execute_script("return arguments[0] + arguments[1]", 1, 2)
     assert 3 == result
 
 
 def test_execute_script_with_element_args(driver, pages):
     pages.load("javascriptPage.html")
     button = driver.find_element(By.ID, "plainButton")
-    result = driver.execute_script("arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button)
+    result = driver.execute_script(
+        "arguments[0]['flibble'] = arguments[0].getAttribute('id'); return arguments[0]['flibble'];", button
+    )
     assert "plainButton" == result
 
 
@@ -244,28 +247,28 @@ def test_move_window_position(driver, pages):
     # because of system toolbars
     new_x = 50
     new_y = 50
-    if loc['x'] == new_x:
+    if loc["x"] == new_x:
         new_x += 10
-    if loc['y'] == new_y:
+    if loc["y"] == new_y:
         new_y += 10
     driver.set_window_position(new_x, new_y)
     loc = driver.get_window_position()
-    assert loc['x'] == new_x
-    assert loc['y'] == new_y
+    assert loc["x"] == new_x
+    assert loc["y"] == new_y
 
 
 def test_change_window_size(driver, pages):
     pages.load("blank.html")
     size = driver.get_window_size()
     newSize = [600, 600]
-    if size['width'] == 600:
+    if size["width"] == 600:
         newSize[0] = 500
-    if size['height'] == 600:
+    if size["height"] == 600:
         newSize[1] = 500
     driver.set_window_size(newSize[0], newSize[1])
     size = driver.get_window_size()
-    assert size['width'] == newSize[0]
-    assert size['height'] == newSize[1]
+    assert size["width"] == newSize[0]
+    assert size["height"] == newSize[1]
 
 
 @pytest.mark.xfail_firefox(raises=WebDriverException)

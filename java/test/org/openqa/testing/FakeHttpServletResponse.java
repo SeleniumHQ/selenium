@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class FakeHttpServletResponse extends HeaderContainer
+class FakeHttpServletResponse extends HeaderContainer
     implements HttpServletResponse {
 
   private final StringWriter stringWriter = new StringWriter();

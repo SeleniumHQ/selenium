@@ -18,12 +18,11 @@
 package org.openqa.selenium.edge;
 
 import org.assertj.core.api.Condition;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Collections;
 
@@ -31,29 +30,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Browser.EDGE;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
-@Category(UnitTests.class)
-public class EdgeDriverInfoTest {
+@Tag("UnitTests")
+class EdgeDriverInfoTest {
 
   @Test
-  public void canonicalCapabilitiesContainProperBrowserName() {
+  void canonicalCapabilitiesContainProperBrowserName() {
     Capabilities caps = new EdgeDriverInfo().getCanonicalCapabilities();
     assertThat(caps.getBrowserName()).isEqualTo(EDGE.browserName());
   }
 
   @Test
-  public void isSupportingCapabilitiesWithProperBrowserNameOnly() {
+  void isSupportingCapabilitiesWithProperBrowserNameOnly() {
     assertThat(new EdgeDriverInfo()).is(supporting(
         new ImmutableCapabilities(CapabilityType.BROWSER_NAME, EDGE.browserName())));
   }
 
   @Test
-  public void isNotSupportingFirefox() {
+  void isNotSupportingFirefox() {
     assertThat(new EdgeDriverInfo()).isNot(supporting(
         new ImmutableCapabilities(CapabilityType.BROWSER_NAME, FIREFOX.browserName())));
   }
 
   @Test
-  public void canDetectBrowserByVendorSpecificCapability() {
+  void canDetectBrowserByVendorSpecificCapability() {
     assertThat(new EdgeDriverInfo()).is(supporting(
         new ImmutableCapabilities(EdgeOptions.CAPABILITY, Collections.emptyMap())));
     assertThat(new EdgeDriverInfo()).is(supporting(

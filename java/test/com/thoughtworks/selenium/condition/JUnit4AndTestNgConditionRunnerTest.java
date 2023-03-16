@@ -17,15 +17,15 @@
 package com.thoughtworks.selenium.condition;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class JUnit4AndTestNgConditionRunnerTest {
+class JUnit4AndTestNgConditionRunnerTest {
 
   @Test
-  public void testAssertionErrorIsOfRightType() {
+  void testAssertionErrorIsOfRightType() {
     JUnit4AndTestNgConditionRunner cr = new JUnit4AndTestNgConditionRunner(null, null, 1, 1);
     try {
       cr.throwAssertionException("foo");

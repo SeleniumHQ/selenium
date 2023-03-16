@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestQuickOpen extends InternalSelenseTestBase {
   @Test
-  public void testQuickOpen() {
+  void testQuickOpen() {
     // <tr>
     // <td>setTimeout</td>
     // <td>5000</td>

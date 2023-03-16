@@ -20,6 +20,7 @@ package org.openqa.selenium.grid.commands;
 import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 
+import java.util.stream.Stream;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.UsernameAndPassword;
 import org.openqa.selenium.cli.CliCommand;
@@ -40,6 +41,7 @@ import org.openqa.selenium.grid.security.SecretOptions;
 import org.openqa.selenium.grid.server.BaseServerOptions;
 import org.openqa.selenium.grid.server.EventBusOptions;
 import org.openqa.selenium.grid.server.NetworkOptions;
+import org.openqa.selenium.grid.router.httpd.RouterOptions;
 import org.openqa.selenium.grid.server.Server;
 import org.openqa.selenium.grid.sessionmap.SessionMap;
 import org.openqa.selenium.grid.sessionmap.local.LocalSessionMap;
@@ -62,6 +64,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -148,9 +151,10 @@ public class Hub extends TemplateGridServerCommand {
     NewSessionQueue queue = new LocalNewSessionQueue(
       tracer,
       distributorOptions.getSlotMatcher(),
-      newSessionRequestOptions.getSessionRequestRetryInterval(),
+      newSessionRequestOptions.getSessionRequestTimeoutPeriod(),
       newSessionRequestOptions.getSessionRequestTimeout(),
-      secret);
+      secret,
+      newSessionRequestOptions.getBatchSize());
     handler.addHandler(queue);
 
     Distributor distributor = new LocalDistributor(
@@ -163,7 +167,8 @@ public class Hub extends TemplateGridServerCommand {
       secret,
       distributorOptions.getHealthCheckInterval(),
       distributorOptions.shouldRejectUnsupportedCaps(),
-      newSessionRequestOptions.getSessionRequestRetryInterval());
+      newSessionRequestOptions.getSessionRequestRetryInterval(),
+      distributorOptions.getNewSessionThreadPoolSize());
     handler.addHandler(distributor);
 
     Router router = new Router(tracer, clientFactory, sessions, queue, distributor);
@@ -181,15 +186,21 @@ public class Hub extends TemplateGridServerCommand {
         .setContent(Contents.utf8String("Router is " + ready));
     };
 
-    Routable ui = new GridUiRoute();
     Routable routerWithSpecChecks = router.with(networkOptions.getSpecComplianceChecks());
 
-    Routable httpHandler = combine(
-      ui,
-      routerWithSpecChecks,
-      Route.prefix("/wd/hub").to(combine(routerWithSpecChecks)),
-      Route.options("/graphql").to(() -> graphqlHandler),
-      Route.post("/graphql").to(() -> graphqlHandler));
+    String subPath = new RouterOptions(config).subPath();
+    Routable ui = new GridUiRoute(subPath);
+
+    Routable appendRoute = Stream.of(
+        routerWithSpecChecks,
+        hubRoute(subPath, combine(routerWithSpecChecks)),
+        graphqlRoute(subPath, () -> graphqlHandler)
+      ).reduce(Route::combine)
+      .get();
+    if (!subPath.isEmpty()) {
+      appendRoute = Route.combine(appendRoute, baseRoute(subPath, combine(routerWithSpecChecks)));
+    }
+    Routable httpHandler = combine(ui, appendRoute);
 
     UsernameAndPassword uap = secretOptions.getServerAuthentication();
     if (uap != null) {
@@ -206,6 +217,13 @@ public class Hub extends TemplateGridServerCommand {
   @Override
   protected void execute(Config config) {
     Require.nonNull("Config", config);
+
+    config.get("server", "max-threads")
+      .ifPresent(value -> LOG.log(Level.WARNING,
+                                  () ->
+                                    "Support for max-threads flag is deprecated. " +
+                                    "The intent of the flag is to set the thread pool size in the Distributor. " +
+                                    "Please use newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config).start();
 

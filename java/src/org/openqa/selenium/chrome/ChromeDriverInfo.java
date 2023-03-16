@@ -18,6 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -26,6 +27,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chromium.ChromiumDriverInfo;
 import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
@@ -47,8 +49,7 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
   @Override
   public boolean isSupporting(Capabilities capabilities) {
     return CHROME.is(capabilities) ||
-           capabilities.getCapability("chromeOptions") != null ||
-           capabilities.getCapability("goog:chromeOptions") != null;
+           capabilities.getCapability(ChromeOptions.CAPABILITY) != null;
   }
 
   @Override
@@ -57,9 +58,14 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
   }
 
   @Override
+  public boolean isSupportingBiDi() {
+    return false;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
-      ChromeDriverService.createDefaultService();
+      DriverFinder.getPath(ChromeDriverService.createDefaultService());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
@@ -67,8 +73,13 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
   }
 
   @Override
+  public boolean isPresent() {
+    return ChromeDriverService.isPresent();
+  }
+
+  @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }

@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.chromium;
 
-import com.google.common.collect.ImmutableList;
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Credentials;
@@ -38,16 +37,12 @@ import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.SessionStorage;
 import org.openqa.selenium.html5.WebStorage;
-import org.openqa.selenium.interactions.HasTouchScreen;
-import org.openqa.selenium.interactions.TouchScreen;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.EventType;
 import org.openqa.selenium.logging.HasLogEvents;
 import org.openqa.selenium.mobile.NetworkConnection;
-import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CommandExecutor;
 import org.openqa.selenium.remote.FileDetector;
-import org.openqa.selenium.remote.RemoteTouchScreen;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
@@ -80,7 +75,6 @@ public class ChromiumDriver extends RemoteWebDriver implements
   HasLogEvents,
   HasNetworkConditions,
   HasPermissions,
-  HasTouchScreen,
   LocationContext,
   NetworkConnection,
   WebStorage {
@@ -94,22 +88,20 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final Capabilities capabilities;
   private final RemoteLocationContext locationContext;
   private final RemoteWebStorage webStorage;
-  private final TouchScreen touchScreen;
   private final RemoteNetworkConnection networkConnection;
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
   private final HasLaunchApp launch;
-  protected HasCasting casting;
-  protected HasCdp cdp;
   private final Optional<Connection> connection;
   private final Optional<DevTools> devTools;
+  protected HasCasting casting;
+  protected HasCdp cdp;
 
   protected ChromiumDriver(CommandExecutor commandExecutor, Capabilities capabilities, String capabilityKey) {
     super(commandExecutor, capabilities);
     locationContext = new RemoteLocationContext(getExecuteMethod());
     webStorage = new RemoteWebStorage(getExecuteMethod());
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
-    touchScreen = new RemoteTouchScreen(getExecuteMethod());
     networkConnection = new RemoteNetworkConnection(getExecuteMethod());
     networkConditions = new AddHasNetworkConditions().getImplementation(getCapabilities(), getExecuteMethod());
     launch = new AddHasLaunchApp().getImplementation(getCapabilities(), getExecuteMethod());
@@ -172,7 +164,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
     Require.nonNull("Check to use to see how we should authenticate", whenThisMatches);
     Require.nonNull("Credentials to use when authenticating", useTheseCredentials);
 
-    getDevTools().createSessionIfThereIsNotOne();
+    getDevTools().createSessionIfThereIsNotOne(getWindowHandle());
     getDevTools().getDomains().network().addAuthHandler(whenThisMatches, useTheseCredentials);
   }
 
@@ -195,11 +187,6 @@ public class ChromiumDriver extends RemoteWebDriver implements
   public void setLocation(Location location) {
     Require.nonNull("Location", location);
     locationContext.setLocation(location);
-  }
-
-  @Override
-  public TouchScreen getTouch() {
-    return touchScreen;
   }
 
   @Override
@@ -289,7 +276,6 @@ public class ChromiumDriver extends RemoteWebDriver implements
 
   @Override
   public void quit() {
-    connection.ifPresent(Connection::close);
     super.quit();
   }
 }

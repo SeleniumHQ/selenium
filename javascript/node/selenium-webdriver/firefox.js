@@ -127,6 +127,7 @@ const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
+const { driverLocation } = require('./common/seleniumManager')
 
 /**
  * Thrown when there an add-on is malformed.
@@ -298,6 +299,10 @@ class Options extends Capabilities {
   }
 
   /**
+   * @deprecated Use {@link Options#addArguments} instead.
+   * @example
+   * options.addArguments('-headless');
+   * @example
    * Configures the geckodriver to start Firefox in headless mode.
    *
    * @return {!Options} A self reference.
@@ -423,6 +428,14 @@ class Options extends Capabilities {
   enableDebugger() {
     return this.set('moz:debuggerAddress', true)
   }
+
+  /**
+   * Enable bidi connection
+   * @returns {!Capabilities}
+   */
+  enableBidi() {
+    return this.set('webSocketUrl', true)
+  }
 }
 
 /**
@@ -459,16 +472,27 @@ function locateSynchronously() {
  */
 function findGeckoDriver() {
   let exe = locateSynchronously()
+
+  if (!exe) {
+    console.log(
+      `The ${GECKO_DRIVER_EXE} executable could not be found on the current PATH, trying Selenium Manager`
+    )
+
+    try {
+      exe = driverLocation(Browser.FIREFOX)
+    } catch (err) {
+      console.log(`Unable to obtain driver using Selenium Manager: ${err}`)
+    }
+  }
+
   if (!exe) {
     throw Error(
-      'The ' +
-        GECKO_DRIVER_EXE +
-        ' executable could not be found on the current ' +
-        'PATH. Please download the latest version from ' +
-        'https://github.com/mozilla/geckodriver/releases/ ' +
-        'and ensure it can be found on your PATH.'
+      `The ${GECKO_DRIVER_EXE} executable could not be found on the current PATH.
+      Please download the latest version from https://github.com/mozilla/geckodriver/releases/
+      and ensure it can be found on your PATH.`
     )
   }
+
   return exe
 }
 
@@ -672,7 +696,7 @@ class Driver extends webdriver.WebDriver {
    */
   async installAddon(path, temporary = false) {
     let stats = fs.statSync(path)
-    let buf;
+    let buf
     if (stats.isDirectory()) {
       let zip = new Zip()
       await zip.addDir(path)

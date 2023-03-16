@@ -35,28 +35,27 @@ import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DriverCommand;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.http.HttpRequest;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Category(UnitTests.class)
-public class JsonHttpCommandCodecTest {
+@Tag("UnitTests")
+class JsonHttpCommandCodecTest {
 
   private final JsonHttpCommandCodec codec = new JsonHttpCommandCodec();
 
   @Test
-  public void throwsIfCommandNameIsNotRecognized() {
+  void throwsIfCommandNameIsNotRecognized() {
     Command command = new Command(null, "garbage-command-name");
     assertThatExceptionOfType(UnsupportedCommandException.class)
         .isThrownBy(() -> codec.encode(command))
@@ -64,7 +63,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void throwsIfCommandHasNullSessionId() {
+  void throwsIfCommandHasNullSessionId() {
     codec.defineCommand("foo", DELETE, "/foo/:sessionId");
     Command command = new Command(null, "foo");
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -73,7 +72,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void throwsIfCommandIsMissingUriParameter() {
+  void throwsIfCommandIsMissingUriParameter() {
     codec.defineCommand("foo", DELETE, "/foo/:bar");
     Command command = new Command(new SessionId("id"), "foo");
     assertThatExceptionOfType(IllegalArgumentException.class)
@@ -82,7 +81,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void encodingAPostWithNoParameters() {
+  void encodingAPostWithNoParameters() {
     codec.defineCommand("foo", POST, "/foo/bar");
     Command command = new Command(null, "foo");
 
@@ -95,7 +94,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void encodingAPostWithUrlParameters() {
+  void encodingAPostWithUrlParameters() {
     codec.defineCommand("foo", POST, "/foo/:bar/baz");
     Command command = new Command(null, "foo", ImmutableMap.of("bar", "apples123"));
 
@@ -110,29 +109,29 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void encodingANonPostWithNoParameters() {
+  void encodingANonPostWithNoParameters() {
     codec.defineCommand("foo", DELETE, "/foo/bar/baz");
     HttpRequest request = codec.encode(new Command(null, "foo"));
     assertThat(request.getMethod()).isEqualTo(DELETE);
     assertThat(request.getHeader(CONTENT_TYPE)).isNull();
     assertThat(request.getHeader(CONTENT_LENGTH)).isNull();
-    assertThat(bytes(request.getContent()).length).isEqualTo(0);
+    assertThat(bytes(request.getContent()).length).isZero();
     assertThat(request.getUri()).isEqualTo("/foo/bar/baz");
   }
 
   @Test
-  public void encodingANonPostWithParameters() {
+  void encodingANonPostWithParameters() {
     codec.defineCommand("eat", GET, "/fruit/:fruit/:size");
     HttpRequest request = codec.encode(new Command(null, "eat", ImmutableMap.of(
         "fruit", "apple", "size", "large")));
     assertThat(request.getHeader(CONTENT_TYPE)).isNull();
     assertThat(request.getHeader(CONTENT_LENGTH)).isNull();
-    assertThat(bytes(request.getContent()).length).isEqualTo(0);
+    assertThat(bytes(request.getContent()).length).isZero();
     assertThat(request.getUri()).isEqualTo("/fruit/apple/large");
   }
 
   @Test
-  public void preventsCachingGetRequests() {
+  void preventsCachingGetRequests() {
     codec.defineCommand("foo", GET, "/foo");
     HttpRequest request = codec.encode(new Command(null, "foo"));
     assertThat(request.getMethod()).isEqualTo(GET);
@@ -140,7 +139,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void throwsIfEncodedCommandHasNoMapping() {
+  void throwsIfEncodedCommandHasNoMapping() {
     HttpRequest request = new HttpRequest(GET, "/foo/bar/baz");
     assertThatExceptionOfType(UnsupportedCommandException.class)
         .isThrownBy(() -> codec.decode(request))
@@ -148,7 +147,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void canDecodeCommandWithNoParameters() {
+  void canDecodeCommandWithNoParameters() {
     HttpRequest request = new HttpRequest(GET, "/foo/bar/baz");
     codec.defineCommand("foo", GET, "/foo/bar/baz");
 
@@ -159,7 +158,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void canExtractSessionIdFromPathParameters() {
+  void canExtractSessionIdFromPathParameters() {
     HttpRequest request = new HttpRequest(GET, "/foo/bar/baz");
     codec.defineCommand("foo", GET, "/foo/:sessionId/baz");
 
@@ -168,7 +167,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void removesSessionIdFromParameterMap() {
+  void removesSessionIdFromParameterMap() {
     HttpRequest request = new HttpRequest(GET, "/foo/bar/baz");
     codec.defineCommand("foo", GET, "/foo/:sessionId/baz");
 
@@ -178,7 +177,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void canExtractSessionIdFromRequestBody() {
+  void canExtractSessionIdFromRequestBody() {
     String data = new Json().toJson(ImmutableMap.of("sessionId", "sessionX"));
     HttpRequest request = new HttpRequest(POST, "/foo/bar/baz");
     request.setContent(utf8String(data));
@@ -189,7 +188,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void extractsAllParametersFromUrl() {
+  void extractsAllParametersFromUrl() {
     HttpRequest request = new HttpRequest(GET, "/fruit/apple/size/large");
     codec.defineCommand("pick", GET, "/fruit/:fruit/size/:size");
 
@@ -200,7 +199,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void extractsAllParameters() {
+  void extractsAllParameters() {
     String data = new Json().toJson(ImmutableMap.of("sessionId", "sessionX",
                                                     "fruit", "apple",
                                                     "color", "red",
@@ -216,7 +215,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void ignoresNullSessionIdInSessionBody() {
+  void ignoresNullSessionIdInSessionBody() {
     Map<String, Object> map = new HashMap<>();
     map.put("sessionId", null);
     map.put("fruit", "apple");
@@ -234,7 +233,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void decodeRequestWithUtf16Encoding() {
+  void decodeRequestWithUtf16Encoding() {
     codec.defineCommand("num", POST, "/one");
 
     byte[] data = "{\"char\":\"水\"}".getBytes(UTF_16);
@@ -248,7 +247,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void decodingUsesUtf8IfNoEncodingSpecified() {
+  void decodingUsesUtf8IfNoEncodingSpecified() {
     codec.defineCommand("num", POST, "/one");
 
     byte[] data = "{\"char\":\"水\"}".getBytes(UTF_8);
@@ -262,7 +261,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void codecRoundTrip() {
+  void codecRoundTrip() {
     codec.defineCommand("buy", POST, "/:sessionId/fruit/:fruit/size/:size");
 
     Command original = new Command(new SessionId("session123"), "buy", ImmutableMap.of(
@@ -276,7 +275,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void treatsEmptyPathAsRoot_recognizedCommand() {
+  void treatsEmptyPathAsRoot_recognizedCommand() {
     codec.defineCommand("num", POST, "/");
 
     byte[] data = "{\"char\":\"水\"}".getBytes(UTF_8);
@@ -290,7 +289,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void treatsNullPathAsRoot_recognizedCommand() {
+  void treatsNullPathAsRoot_recognizedCommand() {
     codec.defineCommand("num", POST, "/");
 
     byte[] data = "{\"char\":\"水\"}".getBytes(UTF_8);
@@ -304,7 +303,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void treatsEmptyPathAsRoot_unrecognizedCommand() {
+  void treatsEmptyPathAsRoot_unrecognizedCommand() {
     codec.defineCommand("num", GET, "/");
 
     byte[] data = "{\"char\":\"水\"}".getBytes(UTF_8);
@@ -318,7 +317,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void treatsNullPathAsRoot_unrecognizedCommand() {
+  void treatsNullPathAsRoot_unrecognizedCommand() {
     codec.defineCommand("num", GET, "/");
 
     byte[] data = "{\"char\":\"水\"}".getBytes(UTF_8);
@@ -332,7 +331,7 @@ public class JsonHttpCommandCodecTest {
   }
 
   @Test
-  public void whenDecodingAnHttpRequestDoesNotRecreateWebElements() {
+  void whenDecodingAnHttpRequestDoesNotRecreateWebElements() {
     Command command = new Command(
         new SessionId("1234567"),
         DriverCommand.EXECUTE_SCRIPT,

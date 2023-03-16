@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestSelectMultiLevelFrame extends InternalSelenseTestBase {
   @Test
-  public void testSelectMultiLevelFrame() {
+  void testSelectMultiLevelFrame() {
     selenium.open("test_multi_level_frame.html");
     // Select first level frame
     selenium.selectFrame("frame2");

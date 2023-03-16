@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     class DevTools
       class PinnedScript
-
         attr_accessor :key, :devtools_identifier, :script
 
         def initialize(script)
@@ -52,7 +51,6 @@ module Selenium
         def remove
           "__webdriver_#{key} = undefined"
         end
-
       end # PinnedScript
     end # DevTools
   end # WebDriver

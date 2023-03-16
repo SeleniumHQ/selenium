@@ -18,7 +18,6 @@
 # under the License.
 
 require 'rack'
-require 'socket'
 
 module Selenium
   module WebDriver
@@ -26,16 +25,16 @@ module Selenium
       class RackServer
         START_TIMEOUT = 30
 
-        def initialize(path, port = nil)
+        def initialize(path, port)
           @path = path
           @app  = TestApp.new(path)
 
           @host = ENV.fetch('localhost', 'localhost')
-          @port = Integer(port || PortProber.above(8180))
+          @port = port
         end
 
         def start
-          if Platform.jruby? || Platform.windows?
+          if Platform.jruby? || Platform.windows? || Platform.truffleruby?
             start_threaded
           else
             start_forked

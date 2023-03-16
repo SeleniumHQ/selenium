@@ -57,7 +57,8 @@ module Selenium
         #
 
         def initialize(log_level: nil, **opts)
-          @debugger_address = opts.delete(:debugger_address)
+          @debugger_address = opts.delete(:debugger_address) { true }
+          opts[:accept_insecure_certs] = true unless opts.key?(:accept_insecure_certs)
 
           super(**opts)
 
@@ -107,6 +108,9 @@ module Selenium
         #
 
         def headless!
+          WebDriver.logger.deprecate('`Options#headless!`',
+                                     "`Options#add_argument('-headless')`",
+                                     id: :headless)
           add_argument '-headless'
         end
 
@@ -177,7 +181,7 @@ module Selenium
         end
 
         def camelize?(key)
-          key != "prefs"
+          key != 'prefs'
         end
       end # Options
     end # Firefox

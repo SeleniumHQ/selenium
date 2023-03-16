@@ -17,41 +17,40 @@
 
 package org.openqa.selenium.firefox;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.Assume;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 
-@Category(UnitTests.class)
-public class ExecutableTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
+@Tag("UnitTests")
+class ExecutableTest {
 
   private String binaryPath;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     try {
       binaryPath = new FirefoxBinary().getPath();
     } catch (WebDriverException ex) {
       ex.printStackTrace();
-      Assume.assumeTrue(false);
+      assumeTrue(false);
     }
   }
 
   @Test
-  public void canFindVersion() {
+  void canFindVersion() {
     Executable exe = new Executable(new File(binaryPath));
     System.out.println(exe.getVersion());
     assertThat(exe.getVersion()).isNotEmpty().isNotEqualTo("1000.0 unknown");
   }
 
   @Test
-  public void canFindChannel() {
+  void canFindChannel() {
     Executable exe = new Executable(new File(binaryPath));
     System.out.println(exe.getChannel());
     assertThat(exe.getChannel()).isNotNull();

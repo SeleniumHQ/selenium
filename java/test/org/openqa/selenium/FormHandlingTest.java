@@ -21,25 +21,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 import java.io.File;
 import java.io.IOException;
 
-public class FormHandlingTest extends JUnit4TestBase {
+class FormHandlingTest extends JupiterTestBase {
 
   @Test
-  public void testShouldClickOnSubmitInputElements() {
+  void testShouldClickOnSubmitInputElements() {
     driver.get(pages.formPage);
     driver.findElement(By.id("submitButton")).click();
     wait.until(titleIs("We Arrive Here"));
@@ -47,13 +45,13 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testClickingOnUnclickableElementsDoesNothing() {
+  void testClickingOnUnclickableElementsDoesNothing() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("//body")).click();
   }
 
   @Test
-  public void testShouldBeAbleToClickImageButtons() {
+  void testShouldBeAbleToClickImageButtons() {
     driver.get(pages.formPage);
     driver.findElement(By.id("imageButton")).click();
     wait.until(titleIs("We Arrive Here"));
@@ -61,44 +59,35 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSubmitForms() {
+  void testShouldBeAbleToSubmitForms() {
     driver.get(pages.formPage);
     driver.findElement(By.name("login")).submit();
     wait.until(titleIs("We Arrive Here"));
   }
 
   @Test
-  public void testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted() {
+  void testShouldSubmitAFormWhenAnyInputElementWithinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.id("checky")).submit();
     wait.until(titleIs("We Arrive Here"));
   }
 
   @Test
-  public void testShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted() {
+  void testShouldSubmitAFormWhenAnyElementWithinThatFormIsSubmitted() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("//form/p")).submit();
     wait.until(titleIs("We Arrive Here"));
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
-  @NotYetImplemented(
-    value = FIREFOX, reason = "Delegates to JS and so the wrong exception is returned")
-  @NotYetImplemented(value = IE,
-      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
-  @NotYetImplemented(value = EDGE,
-      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
-  @NotYetImplemented(value = CHROME,
-      reason = "Throws JavascriptException: Error from JavaScript: Unable to find owning document")
-  public void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
+  void testShouldNotBeAbleToSubmitAFormThatDoesNotExist() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("SearchableText"));
-    assertThatExceptionOfType(NoSuchElementException.class).isThrownBy(element::submit);
+    assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(element::submit);
   }
 
   @Test
-  public void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
+  void testShouldBeAbleToEnterTextIntoATextAreaBySettingItsValue() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By.id("keyUpArea"));
     String cheesy = "brie and cheddar";
@@ -107,7 +96,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testSendKeysKeepsCapitalization() {
+  void testSendKeysKeepsCapitalization() {
     driver.get(pages.javascriptPage);
     WebElement textarea = driver.findElement(By
                                                  .id("keyUpArea"));
@@ -129,7 +118,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldSubmitAFormUsingTheEnterKey() {
+  void testShouldSubmitAFormUsingTheEnterKey() {
     driver.get(pages.formPage);
     WebElement nestedForm = driver.findElement(By.id("nested_form"));
     WebElement input = nestedForm.findElement(By.name("x"));
@@ -139,7 +128,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldEnterDataIntoFormFields() {
+  void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));
     String originalValue = element.getAttribute("value");
@@ -154,10 +143,10 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
+  void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
-    assertThat(uploadElement.getAttribute("value")).isEqualTo("");
+    assertThat(uploadElement.getAttribute("value")).isEmpty();
 
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -169,11 +158,11 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
+  void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
       throws IOException {
     driver.get(pages.xhtmlFormPage);
     WebElement uploadElement = driver.findElement(By.id("file"));
-    assertThat(uploadElement.getAttribute("value")).isEqualTo("");
+    assertThat(uploadElement.getAttribute("value")).isEmpty();
 
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -192,14 +181,14 @@ public class FormHandlingTest extends JUnit4TestBase {
 
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
-    assertThat(uploadElement.getAttribute("value")).isEqualTo("");
+    assertThat(uploadElement.getAttribute("value")).isEmpty();
 
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
 
     driver.get(pages.formPage);
     uploadElement = driver.findElement(By.id("upload"));
-    assertThat(uploadElement.getAttribute("value")).isEqualTo("");
+    assertThat(uploadElement.getAttribute("value")).isEmpty();
 
     uploadElement.sendKeys(file.getAbsolutePath());
     uploadElement.submit();
@@ -208,7 +197,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testSendingKeyboardEventsShouldAppendTextInInputs() {
+  void testSendingKeyboardEventsShouldAppendTextInInputs() {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.id("working"));
     element.sendKeys("some");
@@ -244,10 +233,10 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testEmptyTextBoxesShouldReturnAnEmptyStringNotNull() {
+  void testEmptyTextBoxesShouldReturnAnEmptyStringNotNull() {
     driver.get(pages.formPage);
     WebElement emptyTextBox = driver.findElement(By.id("working"));
-    assertThat(emptyTextBox.getAttribute("value")).isEqualTo("");
+    assertThat(emptyTextBox.getAttribute("value")).isEmpty();
   }
 
   @Test
@@ -265,17 +254,17 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testCanClickOnASubmitButton() {
+  void testCanClickOnASubmitButton() {
     checkSubmitButton("internal_explicit_submit");
   }
 
   @Test
-  public void testCanClickOnASubmitButtonNestedSpan() {
+  void testCanClickOnASubmitButtonNestedSpan() {
     checkSubmitButton("internal_span_submit");
   }
 
   @Test
-  public void testCanClickOnAnImplicitSubmitButton() {
+  void testCanClickOnAnImplicitSubmitButton() {
     checkSubmitButton("internal_implicit_submit");
   }
 
@@ -292,19 +281,15 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canSubmitFormWithSubmitButtonIdEqualToSubmit() {
-    String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
-    driver.get(appServer.create(new Page().withBody(
-        String.format("<form action='%s'>", blank),
-        "  <input type='submit' id='submit' value='Submit'>",
-        "</form>")));
-
-    driver.findElement(By.id("submit")).submit();
-    wait.until(titleIs("Submitted Successfully!"));
+  void canSubmitFormWithSubmitButtonIdEqualToSubmit() {
+    driver.get(pages.formPage);
+    driver.findElement(By.id("submit")).click();
+    wait.until(titleIs("We Arrive Here"));
+    assertThat(driver.getTitle()).isEqualTo("We Arrive Here");
   }
 
   @Test
-  public void canSubmitFormWithSubmitButtonNameEqualToSubmit() {
+  void canSubmitFormWithSubmitButtonNameEqualToSubmit() {
     String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
     driver.get(appServer.create(new Page().withBody(
         String.format("<form action='%s'>", blank),

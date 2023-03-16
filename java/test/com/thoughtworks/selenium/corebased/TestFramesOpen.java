@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestFramesOpen extends InternalSelenseTestBase {
   @Test
-  public void testFramesOpen() {
+  void testFramesOpen() {
     selenium.open("Frames.html");
     selenium.selectFrame("mainFrame");
     verifyTrue(selenium.getLocation().matches("^.*/test_open\\.html$"));

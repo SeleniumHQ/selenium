@@ -22,7 +22,7 @@ require_relative 'spec_helper'
 module Selenium
   module WebDriver
     describe FileReaper do
-      before { FileReaper.reap = true }
+      before { described_class.reap = true }
 
       let(:tmp_file) do
         Pathname.new(Dir.tmpdir).join(SecureRandom.uuid).tap(&:mkpath)
@@ -31,8 +31,8 @@ module Selenium
       it 'reaps files that have been added' do
         expect(tmp_file).to exist
 
-        FileReaper << tmp_file.to_s
-        expect(FileReaper.reap!).to be true
+        described_class << tmp_file.to_s
+        expect(described_class.reap!).to be true
 
         expect(tmp_file).not_to exist
       end
@@ -41,29 +41,29 @@ module Selenium
         expect(tmp_file).to exist
 
         expect {
-          FileReaper.reap(tmp_file.to_s)
+          described_class.reap(tmp_file.to_s)
         }.to raise_error(Error::WebDriverError)
       end
 
       it 'does not reap if reaping has been disabled' do
         expect(tmp_file).to exist
 
-        FileReaper.reap = false
-        FileReaper << tmp_file.to_s
+        described_class.reap = false
+        described_class << tmp_file.to_s
 
-        expect(FileReaper.reap!).to be false
+        expect(described_class.reap!).to be false
 
         expect(tmp_file).to exist
       end
 
-      unless Platform.jruby? || Platform.windows?
+      unless Platform.jruby? || Platform.windows? || Platform.truffleruby?
         it 'reaps files only for the current pid' do
           expect(tmp_file).to exist
 
-          FileReaper << tmp_file.to_s
+          described_class << tmp_file.to_s
 
           pid = fork do
-            FileReaper.reap!
+            described_class.reap!
             exit
           end
           Process.wait pid

@@ -15,14 +15,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""
-The Permission implementation.
-"""
+"""The Permission implementation."""
 
 
-class Permission(object):
-    """
-    Set of supported permissions.
-    """
+class Permission:
+    """Set of supported permissions."""
 
     GET_USER_MEDIA = "getUserMedia"

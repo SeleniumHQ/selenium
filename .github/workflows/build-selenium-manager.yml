@@ -1,0 +1,86 @@
+name: build-selenium-manager
+
+on: workflow_dispatch
+
+jobs:
+  windows:
+    name: "[Windows] Build selenium-manager"
+    runs-on: windows-latest
+    env:
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v3
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustc -vV
+      - name: "Build release"
+        run: |
+          cd rust
+          cargo build --release --target x86_64-pc-windows-msvc
+      - name: "Upload binary"
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-manager_windows-x64
+          path: rust/target/x86_64-pc-windows-msvc/release/selenium-manager.exe
+          retention-days: 6
+
+  linux:
+    name: "[Linux] Build selenium-manager"
+    runs-on: ubuntu-latest
+    env:
+      RUSTFLAGS: '-Ctarget-feature=-crt-static'
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v3
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustc -vV
+      - name: "Install zig"
+        run: |
+          sudo snap install zig --beta --classic
+      - name: "Build release"
+        run: |
+          cd rust
+          cargo install cargo-zigbuild
+          rustup target add x86_64-unknown-linux-musl
+          cargo zigbuild --release --target x86_64-unknown-linux-musl
+      - name: "Tar binary (to keep executable permission)"
+        run: |
+          cd rust/target/x86_64-unknown-linux-musl/release
+          tar -cvf ../../../../selenium-manager.tar selenium-manager
+      - name: "Upload binary"
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-manager_linux-x64
+          path: selenium-manager.tar
+          retention-days: 6
+
+  macos:
+    name: "[macOS] Build selenium-manager"
+    runs-on: macos-latest
+    env:
+      RUSTFLAGS: '-Ctarget-feature=+crt-static'
+    steps:
+      - name: "Checkout project"
+        uses: actions/checkout@v3
+      - name: "Update Rust"
+        run: |
+          rustup update
+          rustc -vV
+      - name: "Build release"
+        run: |
+          cd rust
+          cargo build --release --target x86_64-apple-darwin
+      - name: "Tar binary (to keep executable permission)"
+        run: |
+          cd rust/target/x86_64-apple-darwin/release
+          tar -cvf ../../../../selenium-manager.tar selenium-manager
+      - name: "Upload binary"
+        uses: actions/upload-artifact@v3
+        with:
+          name: selenium-manager_macos-x64
+          path: selenium-manager.tar
+          retention-days: 6

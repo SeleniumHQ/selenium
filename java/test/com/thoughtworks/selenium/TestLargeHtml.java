@@ -17,17 +17,17 @@
 
 package com.thoughtworks.selenium;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class TestLargeHtml extends InternalSelenseTestBase {
   @Test
-  public void testLargeHtml() {
+  void testLargeHtml() {
     selenium.open("test_large_html.html");
     String source = selenium.getHtmlSource().trim();
     String expectedEndsWith = "</html>";
     int index = source.length() - expectedEndsWith.length();
     String actualEndsWith = source.substring(index).toLowerCase();
-    Assert.assertEquals("source doesn't end correctly", actualEndsWith, expectedEndsWith);
+    Assertions.assertEquals(actualEndsWith, expectedEndsWith, "source doesn't end correctly");
   }
 }

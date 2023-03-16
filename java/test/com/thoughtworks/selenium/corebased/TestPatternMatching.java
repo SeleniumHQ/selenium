@@ -19,13 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
 public class TestPatternMatching extends InternalSelenseTestBase {
   @Test
-  public void testPatternMatching() {
+  void testPatternMatching() {
     selenium.open("test_verifications.html");
     verifyTrue(selenium.getValue("theText").matches("^[\\s\\S]*text[\\s\\S]*$"));
     verifyTrue(selenium.getValue("theHidden").matches("^[\\s\\S]* hidden value$"));

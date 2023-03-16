@@ -32,7 +32,6 @@ module Selenium
 
         private
 
-        # NOTE: This processing is deprecated
         def extract_service_args(driver_opts)
           driver_args = super
           driver_opts = driver_opts.dup

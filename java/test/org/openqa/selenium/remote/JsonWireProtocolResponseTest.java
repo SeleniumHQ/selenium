@@ -22,22 +22,21 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 
-@Category(UnitTests.class)
-public class JsonWireProtocolResponseTest {
+@Tag("UnitTests")
+class JsonWireProtocolResponseTest {
 
   @Test
-  public void successfulResponseGetsParsedProperly() {
+  void successfulResponseGetsParsedProperly() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
         ImmutableMap.of(
@@ -57,13 +56,13 @@ public class JsonWireProtocolResponseTest {
     Response response = result.createResponse();
 
     assertThat(response.getState()).isEqualTo("success");
-    assertThat((int) response.getStatus()).isEqualTo(0);
+    assertThat((int) response.getStatus()).isZero();
 
     assertThat(response.getValue()).isEqualTo(caps.asMap());
   }
 
   @Test
-  public void shouldIgnoreAw3CProtocolReply() {
+  void shouldIgnoreAw3CProtocolReply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, Map<String, Object>> payload =
         ImmutableMap.of(
@@ -82,7 +81,7 @@ public class JsonWireProtocolResponseTest {
   }
 
   @Test
-  public void shouldIgnoreAGeckodriver013Reply() {
+  void shouldIgnoreAGeckodriver013Reply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
         ImmutableMap.of(
@@ -100,7 +99,7 @@ public class JsonWireProtocolResponseTest {
   }
 
   @Test
-  public void shouldProperlyPopulateAnError() {
+  void shouldProperlyPopulateAnError() {
     WebDriverException exception = new SessionNotCreatedException("me no likey");
     Json json = new Json();
 

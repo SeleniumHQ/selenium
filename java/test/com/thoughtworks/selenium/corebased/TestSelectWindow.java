@@ -19,13 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
 public class TestSelectWindow extends InternalSelenseTestBase {
   @Test
-  public void testSelectWindow() {
+  void testSelectWindow() {
     selenium.open("test_select_window.html");
     selenium.click("popupPage");
     selenium.waitForPopUp("myPopupWindow", "5000");

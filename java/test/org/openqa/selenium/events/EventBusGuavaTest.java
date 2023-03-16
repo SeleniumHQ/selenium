@@ -17,9 +17,10 @@
 
 package org.openqa.selenium.events;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.openqa.selenium.events.local.GuavaEventBus;
 
 import java.util.concurrent.CountDownLatch;
@@ -30,21 +31,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EventBusGuavaTest {
+class EventBusGuavaTest {
   private EventBus bus;
 
-  @Before
+  @BeforeEach
   public void getBus() {
     bus = new GuavaEventBus();
   }
 
-  @After
+  @AfterEach
   public void closeBus() {
     bus.close();
   }
 
-  @Test(timeout = 4000)
-  public void shouldBeAbleToPublishToAKnownTopic() throws InterruptedException {
+  @Test
+  @Timeout(4)
+  void shouldBeAbleToPublishToAKnownTopic() throws InterruptedException {
     EventName cheese = new EventName("cheese");
     Event event = new Event(cheese, null);
 
@@ -53,21 +55,22 @@ public class EventBusGuavaTest {
     bus.fire(event);
     latch.await(1, SECONDS);
 
-    assertThat(latch.getCount()).isEqualTo(0);
+    assertThat(latch.getCount()).isZero();
   }
 
-  @Test(timeout = 4000)
-  public void shouldNotReceiveEventsNotMeantForTheTopic() {
+  @Test
+  @Timeout(4)
+  void shouldNotReceiveEventsNotMeantForTheTopic() {
     AtomicInteger count = new AtomicInteger(0);
     bus.addListener(new EventListener<>(new EventName("peas"), Object.class, obj -> count.incrementAndGet()));
 
     bus.fire(new Event(new EventName("cheese"), null));
 
-    assertThat(count.get()).isEqualTo(0);
+    assertThat(count.get()).isZero();
   }
 
   @Test
-  public void shouldBeAbleToFireEventsInParallel() throws InterruptedException {
+  void shouldBeAbleToFireEventsInParallel() throws InterruptedException {
     int maxCount = 100;
     EventName name = new EventName("cheese");
 

@@ -25,18 +25,26 @@ jobs:
       result: ${{ steps.check-bazel-target-prefix.outputs.run-workflow }}
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 50
-      - name: Setup bazelisk
-        uses: ./.github/actions/setup-bazelisk
+      - name: Setup Bazel
+        uses: p0deje/setup-bazel@0.2.0
+        with:
+          bazelisk-cache: true
+          external-cache: |
+            name: should-workflow-run
+            manifest:
+              crates: rust/Cargo.Bazel.lock
+              npm: package-lock.json
+              pypi__pip: py/requirements_lock.txt
+              rules_ruby_dist: rb/ruby_version.bzl
+          repository-cache: true
       - name: Setup Java
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
-      - name: Copy bazelrc
-        run: cp .github/.bazelrc.local .
-        shell: bash
+          distribution: 'temurin'
       - name: Check bazel target prefix
         id: check-bazel-target-prefix
         run: |

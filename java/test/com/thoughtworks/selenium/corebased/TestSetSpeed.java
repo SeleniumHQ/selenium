@@ -19,13 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("Set speed is a no-op, it seems")
+@Disabled("Set speed is a no-op, it seems")
 public class TestSetSpeed extends InternalSelenseTestBase {
   @Test
-  public void testSetSpeed() throws Exception {
+  void testSetSpeed() throws Exception {
     String lastSpeed = selenium.getSpeed();
     // The max value in slider is 1000, but setSpeed command can set higher than this
     selenium.setSpeed("1600");

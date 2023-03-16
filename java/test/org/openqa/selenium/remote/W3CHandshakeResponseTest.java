@@ -22,20 +22,19 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Map;
 
-@Category(UnitTests.class)
-public class W3CHandshakeResponseTest {
+@Tag("UnitTests")
+class W3CHandshakeResponseTest {
 
   @Test
-  public void successfulResponseGetsParsedProperly() {
+  void successfulResponseGetsParsedProperly() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, Map<String, Object>> payload =
         ImmutableMap.of(
@@ -55,13 +54,13 @@ public class W3CHandshakeResponseTest {
     Response response = result.createResponse();
 
     assertThat(response.getState()).isEqualTo("success");
-    assertThat((int) response.getStatus()).isEqualTo(0);
+    assertThat((int) response.getStatus()).isZero();
 
     assertThat(response.getValue()).isEqualTo(caps.asMap());
   }
 
   @Test
-  public void shouldIgnoreAJsonWireProtocolReply() {
+  void shouldIgnoreAJsonWireProtocolReply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
         ImmutableMap.of(
@@ -80,7 +79,7 @@ public class W3CHandshakeResponseTest {
   }
 
   @Test
-  public void shouldIgnoreAGeckodriver013Reply() {
+  void shouldIgnoreAGeckodriver013Reply() {
     Capabilities caps = new ImmutableCapabilities("cheese", "peas");
     Map<String, ?> payload =
         ImmutableMap.of(
@@ -98,7 +97,7 @@ public class W3CHandshakeResponseTest {
   }
 
   @Test
-  public void shouldProperlyPopulateAnError() {
+  void shouldProperlyPopulateAnError() {
     Map<String, ?> payload = ImmutableMap.of(
         "value", ImmutableMap.of(
             "error", "session not created",

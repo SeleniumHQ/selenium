@@ -56,14 +56,27 @@ public interface WebDriverInfo {
   boolean isSupportingCdp();
 
   /**
+   * @return Whether the driver has enabled the BiDi interface.
+   */
+  boolean isSupportingBiDi();
+
+  /**
    * Often, a {@link WebDriver} instance needs one or more supporting files or executables to be
    * present (such as a vendor-provided executable which speaks the WebDriver Protocol). This means
    * that even though the driver classes might be present in Java, it would make no sense to attempt
    * to instantiate the driver itself.
    *
-   * @return Whether or not the prerequisites required for this {@link WebDriver} are present.
+   * @return Whether the prerequisites required for this {@link WebDriver} are present.
    */
   boolean isAvailable();
+
+  /**
+   * Checks whether the browser driver is already present on the host machine. Different from
+   * {@link #isAvailable()} which uses Selenium Manager to obtain the driver when not present.
+   *
+   * @return Whether the browser driver is present on the host machine.
+   */
+  boolean isPresent();
 
   /**
    * Some browsers require all the resources of the current system in order to run (for example,

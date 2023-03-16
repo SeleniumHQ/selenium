@@ -40,6 +40,7 @@ namespace OpenQA.Selenium
         private Dictionary<string, PinnedScript> pinnedScripts = new Dictionary<string, PinnedScript>();
         private List<string> bindings = new List<string>();
         private bool isEnabled = false;
+        private bool isDisposed = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="JavaScriptEngine"/> class.
@@ -54,7 +55,7 @@ namespace OpenQA.Selenium
             this.session = new Lazy<DevToolsSession>(() =>
             {
                 IDevTools devToolsDriver = driver as IDevTools;
-                if (session == null)
+                if (devToolsDriver == null)
                 {
                     throw new WebDriverException("Driver must implement IDevTools to use these features");
                 }
@@ -392,6 +393,27 @@ namespace OpenQA.Selenium
                     MessageTimeStamp = e.Timestamp,
                     MessageType = e.Type
                 });
+            }
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.isDisposed)
+            {
+                if (disposing)
+                {
+                    if (this.session.IsValueCreated)
+                    {
+                        this.session.Value.Dispose();
+                    }
+                }
+
+                this.isDisposed = true;
             }
         }
     }

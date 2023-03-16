@@ -24,15 +24,15 @@ import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
-public class MiscTest extends JUnit4TestBase {
+class MiscTest extends JupiterTestBase {
 
   @Test
-  public void testShouldReturnTitleOfPageIfSet() {
+  void testShouldReturnTitleOfPageIfSet() {
     driver.get(pages.xhtmlTestPage);
     assertThat(driver.getTitle()).isEqualTo(("XHTML Test Page"));
 
@@ -41,7 +41,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldReportTheCurrentUrlCorrectly() {
+  void testShouldReportTheCurrentUrlCorrectly() {
     driver.get(pages.simpleTestPage);
     assertThat(driver.getCurrentUrl()).isEqualToIgnoringCase(pages.simpleTestPage);
 
@@ -50,14 +50,14 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @Test
-  public void shouldReturnTagName() {
+  void shouldReturnTagName() {
     driver.get(pages.formPage);
     WebElement selectBox = driver.findElement(By.id("cheese"));
     assertThat(selectBox.getTagName()).isEqualToIgnoringCase("input");
   }
 
   @Test
-  public void testShouldReturnTheSourceOfAPage() {
+  void testShouldReturnTheSourceOfAPage() {
     driver.get(pages.simpleTestPage);
 
     String source = driver.getPageSource().toLowerCase();
@@ -91,7 +91,7 @@ public class MiscTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testClickingShouldNotTrampleWOrHInGlobalScope() {
+  void testClickingShouldNotTrampleWOrHInGlobalScope() {
     driver.get(appServer.whereIs("globalscope.html"));
     String[] vars = new String[]{"w", "h"};
     for (String var : vars) {

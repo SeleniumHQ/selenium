@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Stream;
@@ -74,6 +75,11 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   public ChromiumOptions(String capabilityType, String browserType, String capability) {
     this.capabilityName = capability;
     setCapability(capabilityType, browserType);
+    // Allowing any origin "*" might sound risky but an attacker would need to know
+    // the port used to start DevTools to establish a connection. Given these sessions
+    // are relatively short-lived, the risk is reduced. Also, this will be removed when
+    // we only support Java 11 and above.
+    addArguments("--remote-allow-origins=*");
   }
 
   /**
@@ -125,6 +131,20 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
    * @param arguments The arguments to use when starting Chrome.
    */
   public T addArguments(List<String> arguments) {
+    /*
+      --remote-allow-origins is being added by default since Chrome 111. We need to check
+      if the argument already exists and then remove it.
+     */
+    String remoteAllowOrigins = "remote-allow-origins";
+    Optional<String> newArg = arguments.stream()
+      .filter(arg -> arg.contains(remoteAllowOrigins))
+      .findFirst();
+    Optional<String> existingArg = args.stream()
+      .filter(arg -> arg.contains(remoteAllowOrigins))
+      .findFirst();
+    if (newArg.isPresent() && existingArg.isPresent()) {
+      args.remove(existingArg.get());
+    }
     args.addAll(arguments);
     return (T) this;
   }
@@ -186,6 +206,13 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
     return (T) this;
   }
 
+  /**
+   * @deprecated Use {@link #addArguments(String...)}.
+   * Recommended to use '--headless=chrome' as argument for browsers v94-108.
+   * Recommended to use '--headless=new' as argument for browsers v109+.
+   * Example: `addArguments("--headless=new")`.
+   */
+  @Deprecated
   public T setHeadless(boolean headless) {
     args.remove("--headless");
     if (headless) {
@@ -274,7 +301,43 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   protected void mergeInPlace(Capabilities capabilities) {
     Require.nonNull("Capabilities to merge", capabilities);
 
-    capabilities.getCapabilityNames().forEach(name -> setCapability(name, capabilities.getCapability(name)));
+    for (String name : capabilities.getCapabilityNames()) {
+      if (!name.equals("binary") && !name.equals("extensions") && !name.equals("args")) {
+        setCapability(name, capabilities.getCapability(name));
+      }
+
+      if (name.equals("args") && capabilities.getCapability(name) != null) {
+        List<String> arguments = (List<String>) (capabilities.getCapability(("args")));
+        arguments.forEach(arg -> {
+          if (!args.contains(arg)) {
+            addArguments(arg);
+          }
+        });
+      }
+
+      if (name.equals("extensions") && capabilities.getCapability(name) != null) {
+        List<Object> extensionList = (List<Object>) (capabilities.getCapability(("extensions")));
+        extensionList.forEach(extension -> {
+          if (!extensions.contains(extension)) {
+            if (extension instanceof File) {
+              addExtensions((File) extension);
+            } else if (extension instanceof String) {
+              addEncodedExtensions((String) extension);
+            }
+          }
+        });
+      }
+
+      if (name.equals("binary") && capabilities.getCapability(name) != null) {
+        Object binary = capabilities.getCapability("binary");
+        if (binary instanceof String) {
+          setBinary((String) binary);
+        } else if (binary instanceof File) {
+          setBinary((File) binary);
+        }
+      }
+    }
+
     if (capabilities instanceof ChromiumOptions) {
       ChromiumOptions<?> options = (ChromiumOptions<?>) capabilities;
       for (String arg : options.args) {
@@ -288,6 +351,51 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
         setBinary(options.binary);
       }
       options.experimentalOptions.forEach(this::setExperimentalOption);
+    }
+  }
+
+  protected void mergeInOptionsFromCaps(String capabilityName, Capabilities capabilities) {
+    if (!(capabilities instanceof ChromiumOptions)) {
+      Object object = capabilities.getCapability(capabilityName);
+
+      if (object instanceof Map) {
+        @SuppressWarnings("unchecked") Map<String, Object> options = (Map<String, Object>) object;
+
+        @SuppressWarnings("unchecked") List<String>
+          arguments =
+          (List<String>) (options.getOrDefault("args", new HashMap<>()));
+        @SuppressWarnings("unchecked") List<Object> extensionList =
+          (List<Object>) (options.getOrDefault("extensions", new ArrayList<>()));
+
+        arguments.forEach(arg -> {
+          if (!args.contains(arg)) {
+            addArguments(arg);
+          }
+        });
+
+        extensionList.forEach(extension -> {
+          if (!extensions.contains(extension)) {
+            if (extension instanceof File) {
+              addExtensions((File) extension);
+            } else if (extension instanceof String) {
+              addEncodedExtensions((String) extension);
+            }
+          }
+        });
+
+        Object binary = options.get("binary");
+        if (binary instanceof String) {
+          setBinary((String) binary);
+        } else if (binary instanceof File) {
+          setBinary((File) binary);
+        }
+
+        options.forEach((k, v) -> {
+          if (!k.equals("binary") && !k.equals("extensions") && !k.equals("args")) {
+            setExperimentalOption(k, v);
+          }
+        });
+      }
     }
   }
 }

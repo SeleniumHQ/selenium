@@ -27,7 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Supplier;
 
-public class RemoteSupplier implements Supplier<WebDriver> {
+class RemoteSupplier implements Supplier<WebDriver> {
 
   private static OutOfProcessSeleniumServer server = new OutOfProcessSeleniumServer();
   private static volatile boolean started;
@@ -67,7 +67,7 @@ public class RemoteSupplier implements Supplier<WebDriver> {
     if (started) {
       return;
     }
-    server.start("standalone");
+    server.start("standalone", "--selenium-manager", "true");
     started = true;
   }
 }

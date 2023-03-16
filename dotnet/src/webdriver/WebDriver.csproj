@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
   </PropertyGroup>
@@ -87,6 +87,15 @@
     <EmbeddedResource Remove="obj\**" />
     <None Remove="cdp\**" />
     <None Remove="obj\**" />
+    <Compile Remove="Internal\IFindsByClassName.cs" />
+    <Compile Remove="Internal\IFindsByCssSelector.cs" />
+    <Compile Remove="Internal\IFindsById.cs" />
+    <Compile Remove="Internal\IFindsByLinkText.cs" />
+    <Compile Remove="Internal\IFindsByName.cs" />
+    <Compile Remove="Internal\IFindsByPartialLinkText.cs" />
+    <Compile Remove="Internal\IFindsByTagName.cs" />
+    <Compile Remove="Internal\IFindsByXPath.cs" />
+    <Compile Remove="Interactions\TouchActions.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -99,7 +108,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.19.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(OS)' == 'WINDOWS_NT'">
@@ -148,7 +158,7 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'!='net5.0' And '$(TargetFramework)'!='netstandard2.0' And '$(TargetFramework)'!='netstandard2.1'">
+  <ItemGroup Condition="'$(TargetFramework)'!='net6.0' And '$(TargetFramework)'!='net5.0' And '$(TargetFramework)'!='netstandard2.0' And '$(TargetFramework)'!='netstandard2.1'">
     <Reference Include="System.Net.Http" />
     <Reference Include="System.IO.Compression" />
   </ItemGroup>

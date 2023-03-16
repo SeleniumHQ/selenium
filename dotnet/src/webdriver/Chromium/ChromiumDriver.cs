@@ -245,29 +245,6 @@ namespace OpenQA.Selenium.Chromium
         }
 
         /// <summary>
-        /// Executes a custom Chrome command.
-        /// </summary>
-        /// <param name="commandName">Name of the command to execute.</param>
-        /// <param name="commandParameters">Parameters of the command to execute.</param>
-        [Obsolete("ExecuteChromeCommand is deprecated in favor of ExecuteCdpCommand.")]
-        public void ExecuteChromeCommand(string commandName, Dictionary<string, object> commandParameters)
-        {
-            ExecuteCdpCommand(commandName, commandParameters);
-        }
-
-        /// <summary>
-        /// Executes a custom Chrome command.
-        /// </summary>
-        /// <param name="commandName">Name of the command to execute.</param>
-        /// <param name="commandParameters">Parameters of the command to execute.</param>
-        /// <returns>An object representing the result of the command.</returns>
-        [Obsolete("ExecuteChromeCommandWithResult is deprecated in favor of ExecuteCdpCommand.")]
-        public object ExecuteChromeCommandWithResult(string commandName, Dictionary<string, object> commandParameters)
-        {
-            return ExecuteCdpCommand(commandName, commandParameters);
-        }
-
-        /// <summary>
         /// Creates a session to communicate with a browser using the Chromium Developer Tools debugging protocol.
         /// </summary>
         /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>

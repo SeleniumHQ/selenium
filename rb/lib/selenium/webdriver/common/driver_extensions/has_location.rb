@@ -29,8 +29,7 @@ module Selenium
         def location=(*)
           raise Error::UnsupportedOperationError, 'The W3C standard does not currently support setting location'
         end
-        alias_method :set_location, :location
-
+        alias set_location location
       end # HasLocation
     end # DriverExtensions
   end # WebDriver

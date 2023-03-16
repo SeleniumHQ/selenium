@@ -17,6 +17,18 @@
 
 package org.openqa.selenium.remote;
 
+import com.google.common.collect.ImmutableMap;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebDriverException;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -27,24 +39,11 @@ import static org.openqa.selenium.remote.WebDriverFixture.nullValueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.valueResponder;
 import static org.openqa.selenium.remote.WebDriverFixture.webDriverExceptionResponder;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.testing.UnitTests;
-
-@Category(UnitTests.class)
-public class RemoteWebElementTest {
+@Tag("UnitTests")
+class RemoteWebElementTest {
 
   @Test
-  public void throwIfRemoteEndReturnsNullFromFindChild() {
+  void throwIfRemoteEndReturnsNullFromFindChild() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, nullValueResponder);
 
     assertThatExceptionOfType(NoSuchElementException.class)
@@ -52,7 +51,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleClickCommand() {
+  void canHandleClickCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, nullValueResponder);
 
     fixture.element.click();
@@ -63,7 +62,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleWebDriverExceptionThrownByCommandExecutor() {
+  void canHandleWebDriverExceptionThrownByCommandExecutor() {
     WebElementFixture fixture = new WebElementFixture(
       new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
       echoCapabilities, webDriverExceptionResponder);
@@ -89,7 +88,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGeneralExceptionThrownByCommandExecutor() {
+  void canHandleGeneralExceptionThrownByCommandExecutor() {
     WebElementFixture fixture = new WebElementFixture(
       new ImmutableCapabilities("browserName", "cheese", "platformName", "WINDOWS"),
       echoCapabilities, exceptionResponder);
@@ -117,7 +116,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleWebDriverExceptionReturnedByCommandExecutor() {
+  void canHandleWebDriverExceptionReturnedByCommandExecutor() {
     WebElementFixture fixture = new WebElementFixture(
       new ImmutableCapabilities("browserName", "cheese"),
       echoCapabilities, errorResponder("element click intercepted", new WebDriverException("BOOM!!!")));
@@ -143,7 +142,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleResponseWithErrorCodeButNoExceptionReturnedByCommandExecutor() {
+  void canHandleResponseWithErrorCodeButNoExceptionReturnedByCommandExecutor() {
     WebElementFixture fixture = new WebElementFixture(
       new ImmutableCapabilities("browserName", "cheese"),
       echoCapabilities, errorResponder("element click intercepted", "BOOM!!!"));
@@ -169,7 +168,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleClearCommand() {
+  void canHandleClearCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, nullValueResponder);
 
     fixture.element.clear();
@@ -180,7 +179,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleSubmitCommand() {
+  void canHandleSubmitCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, nullValueResponder);
 
     fixture.element.submit();
@@ -191,7 +190,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleSendKeysCommand() {
+  void canHandleSendKeysCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, nullValueResponder);
     fixture.element.setFileDetector(mock(FileDetector.class));
 
@@ -203,7 +202,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGetAttributeCommand() {
+  void canHandleGetAttributeCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder("test"));
 
     assertThat(fixture.element.getAttribute("id")).isEqualTo("test");
@@ -214,7 +213,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGetDomAttributeCommand() {
+  void canHandleGetDomAttributeCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder("test"));
 
     assertThat(fixture.element.getDomAttribute("id")).isEqualTo("test");
@@ -225,7 +224,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGetDomPropertyCommand() {
+  void canHandleGetDomPropertyCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder("test"));
 
     assertThat(fixture.element.getDomProperty("id")).isEqualTo("test");
@@ -236,7 +235,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleIsSelectedCommand() {
+  void canHandleIsSelectedCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder(true));
 
     assertThat(fixture.element.isSelected()).isTrue();
@@ -247,7 +246,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleIsEnabledCommand() {
+  void canHandleIsEnabledCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder(true));
 
     assertThat(fixture.element.isEnabled()).isTrue();
@@ -258,7 +257,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleIsDisplayedCommand() {
+  void canHandleIsDisplayedCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder(true));
 
     assertThat(fixture.element.isDisplayed()).isTrue();
@@ -269,7 +268,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGeTextCommand() {
+  void canHandleGeTextCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder("test"));
 
     assertThat(fixture.element.getText()).isEqualTo("test");
@@ -280,7 +279,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGetTagNameCommand() {
+  void canHandleGetTagNameCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder("div"));
 
     assertThat(fixture.element.getTagName()).isEqualTo("div");
@@ -291,19 +290,19 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGetLocationCommand() {
+  void canHandleGetLocationCommand() {
     WebElementFixture fixture = new WebElementFixture(
       echoCapabilities, valueResponder(ImmutableMap.of("x", 10, "y", 20)));
 
     assertThat(fixture.element.getLocation()).isEqualTo(new Point(10, 20));
 
     fixture.verifyCommands(
-      new CommandPayload(DriverCommand.GET_ELEMENT_LOCATION,
+      new CommandPayload(DriverCommand.GET_ELEMENT_RECT,
                          ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
-  public void canHandleGetSizeCommand() {
+  void canHandleGetSizeCommand() {
     WebElementFixture fixture = new WebElementFixture(
       echoCapabilities, valueResponder(ImmutableMap.of("width", 100, "height", 200)));
 
@@ -311,11 +310,11 @@ public class RemoteWebElementTest {
 
     fixture.verifyCommands(
       new CommandPayload(
-        DriverCommand.GET_ELEMENT_SIZE, ImmutableMap.of("id", fixture.element.getId())));
+        DriverCommand.GET_ELEMENT_RECT, ImmutableMap.of("id", fixture.element.getId())));
   }
 
   @Test
-  public void canHandleGetRectCommand() {
+  void canHandleGetRectCommand() {
     WebElementFixture fixture = new WebElementFixture(
       echoCapabilities,
       valueResponder(ImmutableMap.of(
@@ -330,7 +329,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGetCssPropertyCommand() {
+  void canHandleGetCssPropertyCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder("red"));
 
     assertThat(fixture.element.getCssValue("color")).isEqualTo("red");
@@ -341,7 +340,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGetAriaRoleCommand() {
+  void canHandleGetAriaRoleCommand() {
     WebElementFixture fixture = new WebElementFixture(echoCapabilities, valueResponder("section"));
 
     assertThat(fixture.element.getAriaRole()).isEqualTo("section");
@@ -352,7 +351,7 @@ public class RemoteWebElementTest {
   }
 
   @Test
-  public void canHandleGetAccessibleNameCommand() {
+  void canHandleGetAccessibleNameCommand() {
     WebElementFixture fixture = new WebElementFixture(
       echoCapabilities, valueResponder("element name"));
 

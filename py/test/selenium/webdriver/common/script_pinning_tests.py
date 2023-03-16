@@ -14,10 +14,12 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import re
 
 import pytest
 
 from selenium.common.exceptions import JavascriptException
+from selenium.webdriver.remote.script_key import ScriptKey
 
 
 def test_should_allow_script_pinning(driver, pages):
@@ -27,7 +29,7 @@ def test_should_allow_script_pinning(driver, pages):
 
     result = driver.execute_script(script_key)
 
-    assert result == 'i like cheese'
+    assert result == "i like cheese"
 
 
 def test_should_allow_pinned_scripts_to_take_arguments(driver, pages):
@@ -67,3 +69,9 @@ def test_calling_unpinned_script_causes_error(driver, pages):
     driver.unpin(cheese)
     with pytest.raises(JavascriptException):
         driver.execute_script(cheese)
+
+
+def test_unpinning_non_existing_script_raises(driver, pages):
+    pages.load("simpleTest.html")
+    with pytest.raises(KeyError, match=re.escape(r"No script with key: ScriptKey(id=1) existed in {}")):
+        driver.unpin(ScriptKey(1))

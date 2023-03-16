@@ -18,14 +18,17 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chromium.ChromiumDriver;
 import org.openqa.selenium.chromium.ChromiumDriverCommandExecutor;
+import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -60,19 +63,6 @@ public class ChromeDriver extends ChromiumDriver {
   }
 
   /**
-   * Creates a new ChromeDriver instance. The {@code capabilities} will be passed to the
-   * ChromeDriver service.
-   *
-   * @param capabilities The capabilities required from the ChromeDriver.
-   * @see #ChromeDriver(ChromeDriverService, Capabilities)
-   * @deprecated Use {@link #ChromeDriver(ChromeOptions)} instead.
-   */
-  @Deprecated
-  public ChromeDriver(Capabilities capabilities) {
-    this(ChromeDriverService.createDefaultService(), capabilities);
-  }
-
-  /**
    * Creates a new ChromeDriver instance with the specified options.
    *
    * @param options The options to use.
@@ -87,25 +77,22 @@ public class ChromeDriver extends ChromiumDriver {
    * started along with the driver, and shutdown upon calling {@link #quit()}.
    *
    * @param service The service to use.
-   * @param options The options to use.
+   * @param options The options required from ChromeDriver.
    */
   public ChromeDriver(ChromeDriverService service, ChromeOptions options) {
-    this(service, (Capabilities) options);
-  }
-
-  /**
-   * Creates a new ChromeDriver instance. The {@code service} will be started along with the
-   * driver, and shutdown upon calling {@link #quit()}.
-   *
-   * @param service      The service to use.
-   * @param capabilities The capabilities required from the ChromeDriver.
-   * @deprecated Use {@link #ChromeDriver(ChromeDriverService, ChromeOptions)} instead.
-   */
-  @Deprecated
-  public ChromeDriver(ChromeDriverService service, Capabilities capabilities) {
-    super(new ChromeDriverCommandExecutor(service), capabilities, ChromeOptions.CAPABILITY);
+    super(generateExecutor(service, options), options, ChromeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
+  private static ChromeDriverCommandExecutor generateExecutor(ChromeDriverService service, ChromeOptions options) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    if (service.getExecutable() == null) {
+      String path = DriverFinder.getPath(service, options);
+      service.setExecutable(path);
+    }
+    return new ChromeDriverCommandExecutor(service);
   }
 
   @Beta

@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.interactions;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
@@ -29,7 +29,7 @@ import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
@@ -52,7 +52,7 @@ import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 /**
  * Tests operations that involve mouse and keyboard.
  */
-public class DefaultMouseTest extends JUnit4TestBase {
+class DefaultMouseTest extends JupiterTestBase {
 
   private Actions getBuilder(WebDriver driver) {
     return new Actions(driver);
@@ -121,7 +121,7 @@ public class DefaultMouseTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testDoubleClickThenGet() {
+  void testDoubleClickThenGet() {
     // Fails in ff3 if WebLoadingListener removes browser listener
     driver.get(pages.javascriptPage);
 
@@ -183,7 +183,7 @@ public class DefaultMouseTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testContextClick() {
+  void testContextClick() {
     driver.get(pages.javascriptPage);
 
     WebElement toContextClick = driver.findElement(By.id("doubleClickField"));
@@ -195,7 +195,7 @@ public class DefaultMouseTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testMoveAndClick() {
+  void testMoveAndClick() {
     driver.get(pages.javascriptPage);
 
     WebElement toClick = driver.findElement(By.id("clickField"));
@@ -210,7 +210,7 @@ public class DefaultMouseTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testCannotMoveToANullLocator() {
+  void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
     assertThatExceptionOfType(IllegalArgumentException.class)
         .isThrownBy(() -> getBuilder(driver).moveToElement(null).build());
@@ -226,7 +226,7 @@ public class DefaultMouseTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  public void testShouldClickElementInIFrame() {
+  void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
     driver.switchTo().frame("source");
     WebElement element = driver.findElement(By.id("otherframe"));
@@ -244,7 +244,7 @@ public class DefaultMouseTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("menu1"));
 
     final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEqualTo("");
+    assertThat(item.getText()).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     getBuilder(driver).moveToElement(element).build().perform();
@@ -264,7 +264,7 @@ public class DefaultMouseTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("menu1"));
 
     final WebElement item = driver.findElement(By.id("item1"));
-    assertThat(item.getText()).isEqualTo("");
+    assertThat(item.getText()).isEmpty();
 
     ((JavascriptExecutor) driver).executeScript("arguments[0].style.background = 'green'", element);
     getBuilder(driver).moveToElement(element).build().perform();

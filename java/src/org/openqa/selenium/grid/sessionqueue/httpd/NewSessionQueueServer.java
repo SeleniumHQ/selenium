@@ -35,10 +35,10 @@ import org.openqa.selenium.remote.http.Route;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static org.openqa.selenium.grid.config.StandardGridRoles.EVENT_BUS_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
@@ -49,7 +49,7 @@ import static org.openqa.selenium.remote.http.Route.get;
 public class NewSessionQueueServer extends TemplateGridServerCommand {
 
   private static final Logger LOG = Logger.getLogger(NewSessionQueueServer.class.getName());
-  private static final String LOCAL_NEWSESSION_QUEUE =
+  private static final String LOCAL_NEW_SESSION_QUEUE =
     "org.openqa.selenium.grid.sessionqueue.local.LocalNewSessionQueue";
 
   @Override
@@ -64,7 +64,7 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
 
   @Override
   public Set<Role> getConfigurableRoles() {
-    return ImmutableSet.of(EVENT_BUS_ROLE, HTTPD_ROLE, SESSION_QUEUE_ROLE, SESSION_QUEUE_ROLE);
+    return ImmutableSet.of(HTTPD_ROLE, SESSION_QUEUE_ROLE);
   }
 
   @Override
@@ -86,7 +86,7 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
   protected Handlers createHandlers(Config config) {
     NewSessionQueueOptions queueOptions = new NewSessionQueueOptions(config);
 
-    NewSessionQueue sessionQueue = queueOptions.getSessionQueue(LOCAL_NEWSESSION_QUEUE);
+    NewSessionQueue sessionQueue = queueOptions.getSessionQueue(LOCAL_NEW_SESSION_QUEUE);
 
     return new Handlers(
       Route.combine(
@@ -105,6 +105,13 @@ public class NewSessionQueueServer extends TemplateGridServerCommand {
   @Override
   protected void execute(Config config) {
     Require.nonNull("Config", config);
+
+    config.get("server", "max-threads")
+      .ifPresent(value -> LOG.log(Level.WARNING,
+                                  () ->
+                                    "Support for max-threads flag is deprecated. " +
+                                    "The intent of the flag is to set the thread pool size in the Distributor. " +
+                                    "Please use newsession-threadpool-size flag instead."));
 
     Server<?> server = asServer(config);
     server.start();

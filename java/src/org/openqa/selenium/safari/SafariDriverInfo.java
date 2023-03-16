@@ -18,12 +18,14 @@
 package org.openqa.selenium.safari;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
@@ -50,7 +52,7 @@ public class SafariDriverInfo implements WebDriverInfo {
     }
 
     return capabilities.asMap().keySet().parallelStream()
-      .map(key -> key.startsWith("safari.") || key.startsWith("safari:"))
+      .map(key -> key.startsWith("safari:"))
       .reduce(Boolean::logicalOr)
       .orElse(false);
   }
@@ -61,13 +63,23 @@ public class SafariDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isSupportingBiDi() {
+    return false;
+  }
+
+  @Override
   public boolean isAvailable() {
     try {
-      SafariDriverService.createDefaultService();
+      DriverFinder.getPath(SafariDriverService.createDefaultService());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
+  }
+
+  @Override
+  public boolean isPresent() {
+    return SafariDriverService.isPresent();
   }
 
   @Override
@@ -77,7 +89,7 @@ public class SafariDriverInfo implements WebDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

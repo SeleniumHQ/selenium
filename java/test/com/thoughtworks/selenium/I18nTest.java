@@ -17,68 +17,68 @@
 
 package com.thoughtworks.selenium;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("Test page does not load")
+@Disabled("Test page does not load")
 public class I18nTest extends InternalSelenseTestBase {
 
-  @Before
+  @BeforeEach
   public void navigateToPage() {
     selenium.open("../tests/html/test_locators.html");
   }
 
   @Test
-  public void testRomance() {
+  void testRomance() {
     String expected =
-        "\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2";
+      "\u00FC\u00F6\u00E4\u00DC\u00D6\u00C4 \u00E7\u00E8\u00E9 \u00BF\u00F1 \u00E8\u00E0\u00F9\u00F2";
     String id = "romance";
     verifyText(expected, id);
   }
 
   @Test
-  public void testKorean() {
+  void testKorean() {
     String expected = "\uC5F4\uC5D0";
     String id = "korean";
     verifyText(expected, id);
   }
 
   @Test
-  public void testChinese() {
+  void testChinese() {
     String expected = "\u4E2D\u6587";
     String id = "chinese";
     verifyText(expected, id);
   }
 
   @Test
-  public void testJapanese() {
+  void testJapanese() {
     String expected = "\u307E\u3077";
     String id = "japanese";
     verifyText(expected, id);
   }
 
   @Test
-  public void testDangerous() {
+  void testDangerous() {
     String expected = "&%?\\+|,%*";
     String id = "dangerous";
     verifyText(expected, id);
   }
 
   @Test
-  public void testDangerousLabels() {
+  void testDangerousLabels() {
     String[] labels = selenium.getSelectOptions("dangerous-labels");
-    Assert.assertEquals("Wrong number of labels", 3, labels.length);
-    Assert.assertEquals("mangled label", "veni, vidi, vici", labels[0]);
-    Assert.assertEquals("mangled label", "c:\\foo\\bar", labels[1]);
-    Assert.assertEquals("mangled label", "c:\\I came, I \\saw\\, I conquered", labels[2]);
+    Assertions.assertEquals(3, labels.length, "Wrong number of labels");
+    Assertions.assertEquals("veni, vidi, vici", labels[0], "mangled label");
+    Assertions.assertEquals("c:\\foo\\bar", labels[1], "mangled label");
+    Assertions.assertEquals("c:\\I came, I \\saw\\, I conquered", labels[2], "mangled label");
   }
 
   private void verifyText(String expected, String id) {
     assertTrue(selenium.isTextPresent(expected));
     String actual = selenium.getText(id);
-    Assert.assertEquals(id + " characters didn't match", expected, actual);
+    Assertions.assertEquals(expected, actual, id + " characters didn't match");
   }
 
 

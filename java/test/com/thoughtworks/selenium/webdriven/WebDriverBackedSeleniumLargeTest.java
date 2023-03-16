@@ -17,30 +17,30 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import com.thoughtworks.selenium.Selenium;
 import com.thoughtworks.selenium.Wait;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 
-public class WebDriverBackedSeleniumLargeTest extends JUnit4TestBase {
+public class WebDriverBackedSeleniumLargeTest extends JupiterTestBase {
 
   private Selenium selenium;
 
-  @Before
+  @BeforeEach
   public void setUpEnvironment() {
     String base = GlobalTestEnvironment.get().getAppServer().whereIs("");
     selenium = new WebDriverBackedSelenium(driver, base);
   }
 
   @Test
-  public void canUseTheOriginalWaitClassWithAWebDriverBackedInstance() {
+  void canUseTheOriginalWaitClassWithAWebDriverBackedInstance() {
     selenium.open(pages.dynamicPage);
 
     Wait waiter = new Wait() {
@@ -65,7 +65,7 @@ public class WebDriverBackedSeleniumLargeTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  public void testCallingStopThenSleepDoesNotCauseAnExceptionToBeThrown() {
+  void testCallingStopThenSleepDoesNotCauseAnExceptionToBeThrown() {
     // Stop selenium
     selenium.stop();
 
@@ -87,7 +87,7 @@ public class WebDriverBackedSeleniumLargeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToInvokeSeleniumCoreElementLocatorsWithGetEval() {
+  void testShouldBeAbleToInvokeSeleniumCoreElementLocatorsWithGetEval() {
     selenium.open(pages.simpleTestPage);
     String tagName = selenium.getEval(
         "var el = selenium.browserbot.findElement('id=oneline');" +

@@ -229,7 +229,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Edge, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.Firefox, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.IE, ".NET language bindings do not properly parse JavaScript stack trace")]
-        [IgnoreBrowser(Browser.EdgeLegacy, ".NET language bindings do not properly parse JavaScript stack trace")]
         [IgnoreBrowser(Browser.Safari, ".NET language bindings do not properly parse JavaScript stack trace")]
         public void ShouldThrowAnExceptionWithMessageAndStacktraceWhenTheJavascriptIsBad()
         {
@@ -314,7 +313,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        
+
         public void ShouldBeAbleToPassAWebElementAsArgument()
         {
             if (!(driver is IJavaScriptExecutor))
@@ -476,7 +475,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera)]
         public void ShouldBeAbleToHandleAnArrayOfElementsAsAnObjectArray()
         {
             driver.Url = formsPage;
@@ -490,7 +488,6 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Opera, "Opera obeys the method contract.")]
         public void ShouldBeAbleToPassADictionaryAsAParameter()
         {
             driver.Url = simpleTestPage;
@@ -542,7 +539,6 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.Firefox, "Driver does not return the documentElement object.")]
         [IgnoreBrowser(Browser.IE, "Driver does not return the documentElement object.")]
         [IgnoreBrowser(Browser.Safari, "Driver does not return the documentElement object.")]
-        [IgnoreBrowser(Browser.EdgeLegacy, "Driver does not return the documentElement object.")]
         public void ShouldReturnDocumentElementIfDocumentIsReturned()
         {
             driver.Url = simpleTestPage;
@@ -605,7 +601,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        
+
         public void ShouldBeAbleToPassMoreThanOneStringAsArguments()
         {
             if (!(driver is IJavaScriptExecutor))

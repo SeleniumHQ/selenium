@@ -19,11 +19,10 @@ package org.openqa.selenium.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,13 +33,13 @@ import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-@Category(UnitTests.class)
-public class ZipTest {
+@Tag("UnitTests")
+class ZipTest {
   private File inputDir;
   private File outputDir;
   private TemporaryFilesystem tmpFs;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     File baseForTest = new File(System.getProperty("java.io.tmpdir"), "tmpTest");
     baseForTest.mkdir();
@@ -50,13 +49,13 @@ public class ZipTest {
     outputDir = tmpFs.createTempDir("output", "ziptest");
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     tmpFs.deleteTemporaryFiles();
   }
 
   @Test
-  public void testCanZipASingleFile() throws IOException {
+  void testCanZipASingleFile() throws IOException {
     File input = new File(inputDir, "foo.txt");
     File unwanted = new File(inputDir, "nay.txt");
     writeTestFile(input);
@@ -73,7 +72,7 @@ public class ZipTest {
   }
 
   @Test
-  public void testCanZipADirectory() throws IOException {
+  void testCanZipADirectory() throws IOException {
     File input1 = new File(inputDir, "foo.txt");
     File input2 = new File(inputDir, "bar/bar.txt");
     writeTestFile(input1);
@@ -90,7 +89,7 @@ public class ZipTest {
   }
 
   @Test
-  public void testCanUnzip() throws IOException {
+  void testCanUnzip() throws IOException {
     File testZip = File.createTempFile("testUnzip", "zip");
     writeTestZip(testZip, 25);
     File out = Zip.unzipToTempDir(new FileInputStream(testZip), "unzip", "stream");

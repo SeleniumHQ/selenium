@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.grid.server;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
-
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.Parameter;
@@ -30,6 +28,8 @@ import org.openqa.selenium.grid.config.Role;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Set;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.HTTPD_ROLE;
 
 @AutoService(HasRoles.class)
 public class BaseServerFlags implements HasRoles {
@@ -65,7 +65,7 @@ public class BaseServerFlags implements HasRoles {
                   + "Default value is: (available processors) * 3.",
     names = "--max-threads")
   @ConfigValue(section = SERVER_SECTION, name = "max-threads", example = "12")
-  private int maxThreads = Runtime.getRuntime().availableProcessors() * 3;
+  private int maxThreads;
 
   @Parameter(
     names = "--allow-cors",

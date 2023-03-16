@@ -37,6 +37,11 @@ const { Capabilities } = require('./capabilities')
 const path = require('path')
 const { NoSuchElementError } = require('./error')
 const cdpTargets = ['page', 'browser']
+const { Credential } = require('./virtual_authenticator')
+const webElement = require('./webelement')
+const { isObject } = require('./util')
+const BIDI = require('../bidi')
+const { PinnedScript } = require('./pinnedScript')
 
 // Capability names that are defined in the W3C spec.
 const W3C_CAPABILITY_NAMES = new Set([
@@ -212,7 +217,7 @@ function fromWireValue(driver, value) {
   } else if (ShadowRoot.isId(value)) {
     let id = ShadowRoot.extractId(value)
     value = new ShadowRoot(driver, id)
-  } else if (value && typeof value === 'object') {
+  } else if (isObject(value)) {
     let result = {}
     for (let key in value) {
       if (Object.prototype.hasOwnProperty.call(value, key)) {
@@ -271,7 +276,7 @@ class IWebDriver {
 
   /**
    * @return {!Promise<!Capabilities>} A promise that will resolve with
-   *     the this instance's capabilities.
+   *     the instance's capabilities.
    */
   getCapabilities() {}
 
@@ -452,7 +457,7 @@ class IWebDriver {
    * @return {!(IThenable<T>|WebElementPromise)} A promise that will be
    *     resolved with the first truthy value returned by the condition
    *     function, or rejected if the condition times out. If the input
-   *     input condition is an instance of a {@link WebElementCondition},
+   *     condition is an instance of a {@link WebElementCondition},
    *     the returned value will be a {@link WebElementPromise}.
    * @throws {TypeError} if the provided `condition` is not a valid type.
    * @template T
@@ -583,7 +588,7 @@ class IWebDriver {
   findElements(locator) {} // eslint-disable-line
 
   /**
-   * Takes a screenshot of the current page. The driver makes a best effort to
+   * Takes a screenshot of the current page. The driver makes the best effort to
    * return a screenshot of the following, in order of preference:
    *
    * 1. Entire page
@@ -617,17 +622,17 @@ class IWebDriver {
    * Takes a PDF of the current page. The driver makes a best effort to
    * return a PDF based on the provided parameters.
    *
-   * @param {{orientation: (string|undefined),
-   *         scale: (number|undefined),
-   *         background: (boolean|undefined)
-   *         width: (number|undefined)
-   *         height: (number|undefined)
-   *         top: (number|undefined)
-   *         bottom: (number|undefined)
-   *         left: (number|undefined)
-   *         right: (number|undefined)
-   *         shrinkToFit: (boolean|undefined)
-   *         pageRanges: (<Array>|undefined)}} options.
+   * @param {{orientation:(string|undefined),
+   *         scale:(number|undefined),
+   *         background:(boolean|undefined),
+   *         width:(number|undefined),
+   *         height:(number|undefined),
+   *         top:(number|undefined),
+   *         bottom:(number|undefined),
+   *         left:(number|undefined),
+   *         right:(number|undefined),
+   *         shrinkToFit:(boolean|undefined),
+   *         pageRanges:(Array|undefined)}} options
    */
   printPage(options) {} // eslint-disable-line
 }
@@ -679,6 +684,11 @@ class WebDriver {
 
     /** @private @const {(function(this: void): ?|undefined)} */
     this.onQuit_ = onQuit
+
+    /** @private {./virtual_authenticator}*/
+    this.authenticatorId_ = null
+
+    this.pinnedScripts_ = {}
   }
 
   /**
@@ -709,10 +719,9 @@ class WebDriver {
   static createSession(executor, capabilities, onQuit = undefined) {
     let cmd = new command.Command(command.Name.NEW_SESSION)
 
-    // For OSS remote ends.
-    cmd.setParameter('desiredCapabilities', capabilities)
     // For W3C remote ends.
     cmd.setParameter('capabilities', {
+      firstMatch: [{}],
       alwaysMatch: filterNonW3CCaps(capabilities),
     })
 
@@ -730,6 +739,7 @@ class WebDriver {
   /** @override */
   async execute(command) {
     command.setParameter('sessionId', this.session_)
+
     let parameters = await toWireValue(command.getParameters())
     command.setParameters(parameters)
     let value = await this.executor_.execute(command)
@@ -788,6 +798,15 @@ class WebDriver {
     if (typeof script === 'function') {
       script = 'return (' + script + ').apply(null, arguments);'
     }
+
+    if (script && script instanceof PinnedScript) {
+      return this.execute(
+        new command.Command(command.Name.EXECUTE_SCRIPT)
+          .setParameter('script', script.executionScript())
+          .setParameter('args', args)
+      )
+    }
+
     return this.execute(
       new command.Command(command.Name.EXECUTE_SCRIPT)
         .setParameter('script', script)
@@ -800,6 +819,15 @@ class WebDriver {
     if (typeof script === 'function') {
       script = 'return (' + script + ').apply(null, arguments);'
     }
+
+    if (script && script instanceof PinnedScript) {
+      return this.execute(
+        new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT)
+          .setParameter('script', script.executionScript())
+          .setParameter('args', args)
+      )
+    }
+
     return this.execute(
       new command.Command(command.Name.EXECUTE_ASYNC_SCRIPT)
         .setParameter('script', script)
@@ -1219,7 +1247,9 @@ class WebDriver {
     this._wsUrl = await this.getWsUrl(debuggerUrl, target, caps)
     return new Promise((resolve, reject) => {
       try {
-        this._wsConnection = new WebSocket(this._wsUrl)
+        this._wsConnection = new WebSocket(
+          this._wsUrl.replace('localhost', '127.0.0.1')
+        )
         this._cdpConnection = new cdp.CdpConnection(this._wsConnection)
       } catch (err) {
         reject(err)
@@ -1266,6 +1296,16 @@ class WebDriver {
   }
 
   /**
+   * Initiates bidi connection using 'webSocketUrl'
+   * @returns {BIDI}
+   */
+  async getBidi() {
+    const caps = await this.getCapabilities()
+    let WebSocketUrl = caps['map_'].get('webSocketUrl')
+    return new BIDI(WebSocketUrl.replace('localhost', '127.0.0.1'))
+  }
+
+  /**
    * Retrieves 'webSocketDebuggerUrl' by sending a http request using debugger address
    * @param {string} debuggerAddress
    * @param target
@@ -1306,7 +1346,7 @@ class WebDriver {
 
   /**
    * Sets a listener for Fetch.authRequired event from CDP
-   * If event is triggered, it enter username and password
+   * If event is triggered, it enters username and password
    * and allows the test to move forward
    * @param {string} username
    * @param {string} password
@@ -1363,12 +1403,11 @@ class WebDriver {
       if (params.method === 'Fetch.requestPaused') {
         const requestPausedParams = params['params']
         if (requestPausedParams.request.url == httpResponse.urlToIntercept) {
-          connection.execute('Fetch.continueRequest', {
+          connection.execute('Fetch.fulfillRequest', {
             requestId: requestPausedParams['requestId'],
-            url: httpResponse.urlToIntercept,
-            method: httpResponse.method,
-            headers: httpResponse.headers,
-            postData: httpResponse.body,
+            responseCode: httpResponse.status,
+            responseHeaders: httpResponse.headers,
+            body: httpResponse.body,
           })
           callback()
         } else {
@@ -1514,6 +1553,178 @@ class WebDriver {
         callback(event)
       }
     })
+  }
+
+  async pinScript(script) {
+    let pinnedScript = new PinnedScript(script)
+    let connection
+    if (Object.is(this._cdpConnection, undefined)) {
+      connection = await this.createCDPConnection('page')
+    } else {
+      connection = this._cdpConnection
+    }
+
+    await connection.execute('Page.enable', {}, null)
+
+    await connection.execute(
+      'Runtime.evaluate',
+      {
+        expression: pinnedScript.creationScript(),
+      },
+      null
+    )
+
+    let result = await connection.send(
+      'Page.addScriptToEvaluateOnNewDocument',
+      {
+        source: pinnedScript.creationScript(),
+      }
+    )
+
+    pinnedScript.scriptId = result['result']['identifier']
+
+    this.pinnedScripts_[pinnedScript.handle] = pinnedScript
+
+    return pinnedScript
+  }
+
+  async unpinScript(script) {
+    if (script && !(script instanceof PinnedScript)) {
+      throw Error(`Pass valid PinnedScript object. Received: ${script}`)
+    }
+
+    if (script.handle in this.pinnedScripts_) {
+      let connection
+      if (Object.is(this._cdpConnection, undefined)) {
+        connection = this.createCDPConnection('page')
+      } else {
+        connection = this._cdpConnection
+      }
+
+      await connection.execute('Page.enable', {}, null)
+
+      await connection.execute(
+        'Runtime.evaluate',
+        {
+          expression: script.removalScript(),
+        },
+        null
+      )
+
+      await connection.execute(
+        'Page.removeScriptToEvaluateOnLoad',
+        {
+          identifier: script.scriptId,
+        },
+        null
+      )
+
+      delete this.pinnedScripts_[script.handle]
+    }
+  }
+
+  /**
+   *
+   * @returns The value of authenticator ID added
+   */
+  virtualAuthenticatorId() {
+    return this.authenticatorId_
+  }
+
+  /**
+   * Adds a virtual authenticator with the given options.
+   * @param options VirtualAuthenticatorOptions object to set authenticator options.
+   */
+  async addVirtualAuthenticator(options) {
+    this.authenticatorId_ = await this.execute(
+      new command.Command(command.Name.ADD_VIRTUAL_AUTHENTICATOR).setParameters(
+        options.toDict()
+      )
+    )
+  }
+
+  /**
+   * Removes a previously added virtual authenticator. The authenticator is no
+   * longer valid after removal, so no methods may be called.
+   */
+  async removeVirtualAuthenticator() {
+    await this.execute(
+      new command.Command(
+        command.Name.REMOVE_VIRTUAL_AUTHENTICATOR
+      ).setParameter('authenticatorId', this.authenticatorId_)
+    )
+    this.authenticatorId_ = null
+  }
+
+  /**
+   * Injects a credential into the authenticator.
+   * @param credential Credential to be added
+   */
+  async addCredential(credential) {
+    credential = credential.toDict()
+    credential['authenticatorId'] = this.authenticatorId_
+    await this.execute(
+      new command.Command(command.Name.ADD_CREDENTIAL).setParameters(credential)
+    )
+  }
+
+  /**
+   *
+   * @returns The list of credentials owned by the authenticator.
+   */
+  async getCredentials() {
+    let credential_data = await this.execute(
+      new command.Command(command.Name.GET_CREDENTIALS).setParameter(
+        'authenticatorId',
+        this.virtualAuthenticatorId()
+      )
+    )
+    var credential_list = []
+    for (var i = 0; i < credential_data.length; i++) {
+      credential_list.push(new Credential().fromDict(credential_data[i]))
+    }
+    return credential_list
+  }
+
+  /**
+   * Removes a credential from the authenticator.
+   * @param credential_id The ID of the credential to be removed.
+   */
+  async removeCredential(credential_id) {
+    // If credential_id is not a base64url, then convert it to base64url.
+    if (Array.isArray(credential_id)) {
+      credential_id = Buffer.from(credential_id).toString('base64url')
+    }
+
+    await this.execute(
+      new command.Command(command.Name.REMOVE_CREDENTIAL)
+        .setParameter('credentialId', credential_id)
+        .setParameter('authenticatorId', this.authenticatorId_)
+    )
+  }
+
+  /**
+   * Removes all the credentials from the authenticator.
+   */
+  async removeAllCredentials() {
+    await this.execute(
+      new command.Command(command.Name.REMOVE_ALL_CREDENTIALS).setParameter(
+        'authenticatorId',
+        this.authenticatorId_
+      )
+    )
+  }
+
+  /**
+   * Sets whether the authenticator will simulate success or fail on user verification.
+   * @param verified true if the authenticator will pass user verification, false otherwise.
+   */
+  async setUserVerified(verified) {
+    await this.execute(
+      new command.Command(command.Name.SET_USER_VERIFIED)
+        .setParameter('authenticatorId', this.authenticatorId_)
+        .setParameter('isUserVerified', verified)
+    )
   }
 }
 
@@ -1950,7 +2161,7 @@ class Window {
   }
 
   /**
-   * Retrieves the a rect describing the current top-level window's size and
+   * Retrieves a rect describing the current top-level window's size and
    * position.
    *
    * @return {!Promise<{x: number, y: number, width: number, height: number}>}
@@ -2032,6 +2243,37 @@ class Window {
     return this.driver_.execute(
       new command.Command(command.Name.FULLSCREEN_WINDOW)
     )
+  }
+
+  /**
+   * Gets the width and height of the current window
+   * @param windowHandle
+   * @returns {Promise<{width: *, height: *}>}
+   */
+  async getSize(windowHandle = 'current') {
+    if (windowHandle !== 'current') {
+      console.warn(`Only 'current' window is supported for W3C compatible browsers.`);
+    }
+
+    const rect = await this.getRect();
+    return {height: rect.height, width: rect.width};
+  }
+
+  /**
+   * Sets the width and height of the current window. (window.resizeTo)
+   * @param x
+   * @param y
+   * @param width
+   * @param height
+   * @param windowHandle
+   * @returns {Promise<void>}
+   */
+  async setSize({x = 0, y = 0, width = 0, height = 0}, windowHandle = 'current') {
+    if (windowHandle !== 'current') {
+      console.warn(`Only 'current' window is supported for W3C compatible browsers.`);
+    }
+
+    await this.setRect({x, y, width, height});
   }
 }
 
@@ -2162,13 +2404,23 @@ class TargetLocator {
    * If the specified frame can not be found, the returned promise will be
    * rejected with a {@linkplain error.NoSuchFrameError}.
    *
-   * @param {(number|WebElement|null)} id The frame locator.
+   * @param {(number|string|WebElement|null)} id The frame locator.
    * @return {!Promise<void>} A promise that will be resolved
    *     when the driver has changed focus to the specified frame.
    */
   frame(id) {
+    let frameReference = id
+    if (typeof id === 'string') {
+      frameReference = this.driver_
+        .findElement({ id })
+        .catch((_) => this.driver_.findElement({ name: id }))
+    }
+
     return this.driver_.execute(
-      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter('id', id)
+      new command.Command(command.Name.SWITCH_TO_FRAME).setParameter(
+        'id',
+        frameReference
+      )
     )
   }
 
@@ -2264,7 +2516,7 @@ class TargetLocator {
 
 const LEGACY_ELEMENT_ID_KEY = 'ELEMENT'
 const ELEMENT_ID_KEY = 'element-6066-11e4-a52e-4f735466cecf'
-const SHADOWROOT_ID_KEY = 'shadow-6066-11e4-a52e-4f735466cecf'
+const SHADOW_ROOT_ID_KEY = 'shadow-6066-11e4-a52e-4f735466cecf'
 
 /**
  * Represents a DOM element. WebElements can be found by searching from the
@@ -2309,14 +2561,7 @@ class WebElement {
    * @throws {TypeError} if the object is not a valid encoded ID.
    */
   static extractId(obj) {
-    if (obj && typeof obj === 'object') {
-      if (typeof obj[ELEMENT_ID_KEY] === 'string') {
-        return obj[ELEMENT_ID_KEY]
-      } else if (typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string') {
-        return obj[LEGACY_ELEMENT_ID_KEY]
-      }
-    }
-    throw new TypeError('object is not a WebElement ID')
+    return webElement.extractId(obj)
   }
 
   /**
@@ -2324,12 +2569,7 @@ class WebElement {
    * @return {boolean} whether the object is a valid encoded WebElement ID.
    */
   static isId(obj) {
-    return (
-      obj &&
-      typeof obj === 'object' &&
-      (typeof obj[ELEMENT_ID_KEY] === 'string' ||
-        typeof obj[LEGACY_ELEMENT_ID_KEY] === 'string')
-    )
+    return webElement.isId(obj)
   }
 
   /**
@@ -2432,7 +2672,7 @@ class WebElement {
   }
 
   /**
-   * Locates all of the descendants of this element that match the given search
+   * Locates all the descendants of this element that match the given search
    * criteria.
    *
    * @param {!(by.By|Function)} locator The locator strategy to use when
@@ -2599,7 +2839,7 @@ class WebElement {
    * the value of the property with the same name is returned. If neither value
    * is set, null is returned (for example, the "value" property of a textarea
    * element). The "style" attribute is converted as best can be to a
-   * text representation with a trailing semi-colon. The following are deemed to
+   * text representation with a trailing semicolon. The following are deemed to
    * be "boolean" attributes and will return either "true" or null:
    *
    * async, autofocus, autoplay, checked, compact, complete, controls, declare,
@@ -2755,13 +2995,18 @@ class WebElement {
    *     when the form has been submitted.
    */
   submit() {
-    const form = this.findElement({ xpath: './ancestor-or-self::form' })
-    this.driver_.executeScript(
-      "var e = arguments[0].ownerDocument.createEvent('Event');" +
-        "e.initEvent('submit', true, true);" +
-        'if (arguments[0].dispatchEvent(e)) { arguments[0].submit() }',
-      form
-    )
+    const script =
+      '/* submitForm */var form = arguments[0];\n' +
+      'while (form.nodeName != "FORM" && form.parentNode) {\n' +
+      '  form = form.parentNode;\n' +
+      '}\n' +
+      "if (!form) { throw Error('Unable to find containing form element'); }\n" +
+      "if (!form.ownerDocument) { throw Error('Unable to find owning document'); }\n" +
+      "var e = form.ownerDocument.createEvent('Event');\n" +
+      "e.initEvent('submit', true, true);\n" +
+      'if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n'
+
+    this.driver_.executeScript(script, this)
   }
 
   /**
@@ -2869,8 +3114,8 @@ class ShadowRoot {
    */
   static extractId(obj) {
     if (obj && typeof obj === 'object') {
-      if (typeof obj[SHADOWROOT_ID_KEY] === 'string') {
-        return obj[SHADOWROOT_ID_KEY]
+      if (typeof obj[SHADOW_ROOT_ID_KEY] === 'string') {
+        return obj[SHADOW_ROOT_ID_KEY]
       }
     }
     throw new TypeError('object is not a ShadowRoot ID')
@@ -2884,7 +3129,7 @@ class ShadowRoot {
     return (
       obj &&
       typeof obj === 'object' &&
-      typeof obj[SHADOWROOT_ID_KEY] === 'string'
+      typeof obj[SHADOW_ROOT_ID_KEY] === 'string'
     )
   }
 
@@ -2960,7 +3205,7 @@ class ShadowRoot {
   }
 
   /**
-   * Locates all of the descendants of this element that match the given search
+   * Locates all the descendants of this element that match the given search
    * criteria.
    *
    * @param {!(by.By|Function)} locator The locator strategy to use when

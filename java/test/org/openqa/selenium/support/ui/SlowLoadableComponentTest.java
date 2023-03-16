@@ -20,23 +20,22 @@ package org.openqa.selenium.support.ui;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.time.Clock;
 import java.time.Duration;
 
-@Category(UnitTests.class)
-public class SlowLoadableComponentTest {
+@Tag("UnitTests")
+class SlowLoadableComponentTest {
 
   @Test
-  public void testShouldDoNothingIfComponentIsAlreadyLoaded() {
+  void testShouldDoNothingIfComponentIsAlreadyLoaded() {
     new DetonatingSlowLoader().get();
   }
 
   @Test
-  public void testShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded() {
+  void testShouldCauseTheLoadMethodToBeCalledIfTheComponentIsNotAlreadyLoaded() {
     int numberOfTimesThroughLoop = 1;
     SlowLoading slowLoading = new SlowLoading(
         Clock.systemDefaultZone(), 1, numberOfTimesThroughLoop).get();
@@ -45,18 +44,18 @@ public class SlowLoadableComponentTest {
   }
 
   @Test
-  public void testTheLoadMethodShouldOnlyBeCalledOnceIfTheComponentTakesALongTimeToLoad() {
+  void testTheLoadMethodShouldOnlyBeCalledOnceIfTheComponentTakesALongTimeToLoad() {
     new OnlyOneLoad(Clock.systemDefaultZone(), 5, 5).get();
   }
 
   @Test
-  public void testShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoadBeforeTimeout() {
+  void testShouldThrowAnErrorIfCallingLoadDoesNotCauseTheComponentToLoadBeforeTimeout() {
     TickingClock clock = new TickingClock();
     assertThatExceptionOfType(Error.class).isThrownBy(() -> new BasicSlowLoader(clock, 2).get());
   }
 
   @Test
-  public void testShouldCancelLoadingIfAnErrorIsDetected() {
+  void testShouldCancelLoadingIfAnErrorIsDetected() {
     HasError error = new HasError();
     assertThatExceptionOfType(CustomError.class).isThrownBy(error::get);
   }

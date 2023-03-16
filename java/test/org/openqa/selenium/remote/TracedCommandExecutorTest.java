@@ -25,20 +25,19 @@ import static org.mockito.Mockito.when;
 import org.openqa.selenium.remote.tracing.Span;
 import org.openqa.selenium.remote.tracing.TraceContext;
 import org.openqa.selenium.remote.tracing.Tracer;
-import org.openqa.selenium.testing.UnitTests;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.UUID;
 
-@Category(UnitTests.class)
-public class TracedCommandExecutorTest {
+@Tag("UnitTests")
+class TracedCommandExecutorTest {
   @Mock
   private CommandExecutor commandExecutor;
   @Mock
@@ -50,7 +49,7 @@ public class TracedCommandExecutorTest {
 
   private TracedCommandExecutor tracedCommandExecutor;
 
-  @Before
+  @BeforeEach
   public void createMocksAndTracedCommandExecutor() {
     MockitoAnnotations.initMocks(this);
     when(tracer.getCurrentContext()).thenReturn(traceContext);
@@ -59,7 +58,7 @@ public class TracedCommandExecutorTest {
   }
 
   @Test
-  public void canCreateSpanWithAllAttributes() throws IOException {
+  void canCreateSpanWithAllAttributes() throws IOException {
     SessionId sessionId = new SessionId(UUID.randomUUID());
     Map<String, Object> parameters = new HashMap<>();
     parameters.put("param1", "value1");
@@ -77,7 +76,7 @@ public class TracedCommandExecutorTest {
   }
 
   @Test
-  public void canCreateSpanFromNullParameter() throws IOException {
+  void canCreateSpanFromNullParameter() throws IOException {
     SessionId sessionId = new SessionId(UUID.randomUUID());
     Map<String, Object> parameters = new HashMap<>();
     parameters.put("param1", null);
@@ -93,7 +92,7 @@ public class TracedCommandExecutorTest {
   }
 
   @Test
-  public void canCreateSpanWithSessionIdAndCommandName() throws IOException {
+  void canCreateSpanWithSessionIdAndCommandName() throws IOException {
     SessionId sessionId = new SessionId(UUID.randomUUID());
     Command command = new Command(sessionId, "findElement");
 
@@ -106,7 +105,7 @@ public class TracedCommandExecutorTest {
   }
 
   @Test
-  public void canCreateSpanWithCommandName() throws IOException {
+  void canCreateSpanWithCommandName() throws IOException {
     Command command = new Command(null, "createSession");
 
     tracedCommandExecutor.execute(command);

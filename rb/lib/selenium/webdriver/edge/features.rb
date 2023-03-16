@@ -17,14 +17,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/features'
+require 'selenium/webdriver/chromium/features'
 
 module Selenium
   module WebDriver
     module Edge
       module Features
-
-        include WebDriver::Chrome::Features
+        include WebDriver::Chromium::Features
 
         EDGE_COMMANDS = {
           get_cast_sinks: [:get, 'session/:session_id/ms/cast/get_sinks'],
@@ -37,7 +36,7 @@ module Selenium
         }.freeze
 
         def commands(command)
-          EDGE_COMMANDS[command] || Chrome::Features::CHROME_COMMANDS[command] || self.class::COMMANDS[command]
+          EDGE_COMMANDS[command] || CHROMIUM_COMMANDS[command] || self.class::COMMANDS[command]
         end
       end # Bridge
     end # Edge

@@ -19,13 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("getPrompt not implemented")
+@Disabled("getPrompt not implemented")
 public class TestPrompt extends InternalSelenseTestBase {
   @Test
-  public void testPrompt() throws Exception {
+  void testPrompt() throws Exception {
     selenium.open("test_prompt.html");
     verifyFalse(selenium.isPromptPresent());
     assertFalse(selenium.isPromptPresent());

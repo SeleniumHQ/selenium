@@ -17,23 +17,22 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.net.URI;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Category(UnitTests.class)
-public class CdpEndpointFinderTest {
+@Tag("UnitTests")
+class CdpEndpointFinderTest {
 
   @Test
-  public void shouldReturnEmptyIfNoDebuggerAddressIsGiven() {
+  void shouldReturnEmptyIfNoDebuggerAddressIsGiven() {
     Optional<URI> uri = CdpEndpointFinder
       .getReportedUri("foo:options", new ImmutableCapabilities());
 
@@ -41,7 +40,7 @@ public class CdpEndpointFinderTest {
   }
 
   @Test
-  public void shouldReturnUriIfPresent() {
+  void shouldReturnUriIfPresent() {
     Capabilities caps = new Json()
       .toType(
         "{\"ms:edgeOptions\": { \"debuggerAddress\": \"localhost:55498\" }}",
@@ -49,17 +48,17 @@ public class CdpEndpointFinderTest {
 
     Optional<URI> uri = CdpEndpointFinder.getReportedUri("ms:edgeOptions", caps);
 
-    assertThat(uri.get()).isEqualTo(URI.create("http://localhost:55498"));
+    assertThat(uri).contains(URI.create("http://localhost:55498"));
   }
 
   @Test
-  public void shouldReturnUriIfPresentAndIsAtTopLevel() {
+  void shouldReturnUriIfPresentAndIsAtTopLevel() {
     Capabilities caps = new Json().toType(
       "{\"moz:debuggerAddress\": \"localhost:93487\" }",
       Capabilities.class);
 
     Optional<URI> uri = CdpEndpointFinder.getReportedUri("moz:debuggerAddress", caps);
 
-    assertThat(uri.get()).isEqualTo(URI.create("http://localhost:93487"));
+    assertThat(uri).contains(URI.create("http://localhost:93487"));
   }
 }

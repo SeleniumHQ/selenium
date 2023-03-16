@@ -19,9 +19,8 @@ package org.openqa.selenium.io;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,15 +28,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
 
-@Category(UnitTests.class)
-public class FileHandlerTest {
+@Tag("UnitTests")
+class FileHandlerTest {
 
   @Test
-  public void testFileCopy() throws IOException {
+  void testFileCopy() throws IOException {
     File newFile = File.createTempFile("testFileCopy", "dst");
     File tmpFile = writeTestFile(File.createTempFile("FileUtilTest", "src"));
-    assertThat(newFile.length()).isEqualTo(0);
-    assertThat(tmpFile.length()).isGreaterThan(0);
+    assertThat(newFile.length()).isZero();
+    assertThat(tmpFile.length()).isPositive();
 
     try {
       // Copy it.

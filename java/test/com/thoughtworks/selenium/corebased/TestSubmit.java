@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestSubmit extends InternalSelenseTestBase {
   @Test
-  public void testSubmit() {
+  void testSubmit() {
     selenium.open("test_submit.html");
     selenium.submit("searchForm");
     assertEquals(selenium.getAlert(), "onsubmit called");

@@ -32,7 +32,7 @@ import java.nio.file.Path;
 
 import static org.openqa.selenium.build.InProject.locate;
 
-public class CommonWebResources implements Routable {
+class CommonWebResources implements Routable {
 
   private final Routable delegate;
 

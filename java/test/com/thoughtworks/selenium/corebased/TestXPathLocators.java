@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestXPathLocators extends InternalSelenseTestBase {
   @Test
-  public void testXPathLocators() {
+  void testXPathLocators() {
     selenium.open("test_locators.html");
     verifyEquals(selenium.getText("xpath=//a"), "this is the first element");
     verifyEquals(selenium.getText("xpath=//a[@class='a2']"), "this is the second element");

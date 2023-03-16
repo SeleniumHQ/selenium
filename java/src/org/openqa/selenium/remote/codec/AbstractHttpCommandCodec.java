@@ -17,6 +17,25 @@
 
 package org.openqa.selenium.remote.codec;
 
+import com.google.common.base.Objects;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+
+import org.openqa.selenium.UnsupportedCommandException;
+import org.openqa.selenium.internal.Require;
+import org.openqa.selenium.json.Json;
+import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.Command;
+import org.openqa.selenium.remote.CommandCodec;
+import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpMethod;
+import org.openqa.selenium.remote.http.HttpRequest;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import static com.google.common.net.HttpHeaders.CACHE_CONTROL;
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
@@ -65,11 +84,6 @@ import static org.openqa.selenium.remote.DriverCommand.GET_TIMEOUTS;
 import static org.openqa.selenium.remote.DriverCommand.GET_TITLE;
 import static org.openqa.selenium.remote.DriverCommand.GO_BACK;
 import static org.openqa.selenium.remote.DriverCommand.GO_FORWARD;
-import static org.openqa.selenium.remote.DriverCommand.IME_ACTIVATE_ENGINE;
-import static org.openqa.selenium.remote.DriverCommand.IME_DEACTIVATE;
-import static org.openqa.selenium.remote.DriverCommand.IME_GET_ACTIVE_ENGINE;
-import static org.openqa.selenium.remote.DriverCommand.IME_GET_AVAILABLE_ENGINES;
-import static org.openqa.selenium.remote.DriverCommand.IME_IS_ACTIVATED;
 import static org.openqa.selenium.remote.DriverCommand.IMPLICITLY_WAIT;
 import static org.openqa.selenium.remote.DriverCommand.IS_BROWSER_ONLINE;
 import static org.openqa.selenium.remote.DriverCommand.IS_ELEMENT_ENABLED;
@@ -99,25 +113,6 @@ import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_PARENT_FRAME;
 import static org.openqa.selenium.remote.DriverCommand.SWITCH_TO_WINDOW;
 import static org.openqa.selenium.remote.http.Contents.bytes;
 import static org.openqa.selenium.remote.http.Contents.string;
-
-import com.google.common.base.Objects;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-
-import org.openqa.selenium.UnsupportedCommandException;
-import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.Json;
-import org.openqa.selenium.net.Urls;
-import org.openqa.selenium.remote.Command;
-import org.openqa.selenium.remote.CommandCodec;
-import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.http.HttpMethod;
-import org.openqa.selenium.remote.http.HttpRequest;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A command codec that adheres to the W3C's WebDriver wire protocol.
@@ -210,13 +205,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(GET_SCREEN_ROTATION, get(sessionId + "/rotation"));
     defineCommand(SET_SCREEN_ROTATION, post(sessionId + "/rotation"));
 
-    String ime = sessionId + "/ime";
-    defineCommand(IME_GET_AVAILABLE_ENGINES, get(ime + "/available_engines"));
-    defineCommand(IME_GET_ACTIVE_ENGINE, get(ime + "/active_engine"));
-    defineCommand(IME_IS_ACTIVATED, get(ime + "/activated"));
-    defineCommand(IME_DEACTIVATE, post(ime + "/deactivate"));
-    defineCommand(IME_ACTIVATE_ENGINE, post(ime + "/activate"));
-
     // Mobile Spec
     defineCommand(GET_NETWORK_CONNECTION, get(sessionId + "/network_connection"));
     defineCommand(SET_NETWORK_CONNECTION, post(sessionId + "/network_connection"));
@@ -234,6 +222,18 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     defineCommand(REMOVE_CREDENTIAL, delete(webauthnId + "/credentials/:credentialId"));
     defineCommand(REMOVE_ALL_CREDENTIALS, delete(webauthnId + "/credentials"));
     defineCommand(SET_USER_VERIFIED, post(webauthnId + "/uv"));
+  }
+
+  protected static CommandSpec delete(String path) {
+    return new CommandSpec(HttpMethod.DELETE, path);
+  }
+
+  protected static CommandSpec get(String path) {
+    return new CommandSpec(HttpMethod.GET, path);
+  }
+
+  protected static CommandSpec post(String path) {
+    return new CommandSpec(HttpMethod.POST, path);
   }
 
   @Override
@@ -333,18 +333,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
 
   protected void defineCommand(String name, CommandSpec spec) {
     nameToSpec.put(Require.nonNull("Name", name), spec);
-  }
-
-  protected static CommandSpec delete(String path) {
-    return new CommandSpec(HttpMethod.DELETE, path);
-  }
-
-  protected static CommandSpec get(String path) {
-    return new CommandSpec(HttpMethod.GET, path);
-  }
-
-  protected static CommandSpec post(String path) {
-    return new CommandSpec(HttpMethod.POST, path);
   }
 
   private String buildUri(

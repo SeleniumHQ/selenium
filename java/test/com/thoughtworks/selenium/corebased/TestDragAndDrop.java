@@ -19,13 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("Move target out of bounds, apparently")
+@Disabled("Move target out of bounds, apparently")
 public class TestDragAndDrop extends InternalSelenseTestBase {
   @Test
-  public void testDragAndDrop() {
+  void testDragAndDrop() {
     selenium.open("slider/example.html");
     selenium.dragdrop("id=slider01", "800,0");
     assertEquals(selenium.getValue("id=output1"), "20");

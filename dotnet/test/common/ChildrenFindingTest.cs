@@ -13,7 +13,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
             IWebElement child = element.FindElement(By.XPath("select"));
-            Assert.AreEqual(child.GetAttribute("id"), "2");
+            Assert.AreEqual("2", child.GetAttribute("id"));
         }
 
         [Test]
@@ -50,9 +50,9 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
             ReadOnlyCollection<IWebElement> children = element.FindElements(By.XPath("select/option"));
-            Assert.AreEqual(children.Count, 8);
-            Assert.AreEqual(children[0].Text, "One");
-            Assert.AreEqual(children[1].Text, "Two");
+            Assert.AreEqual(8, children.Count);
+            Assert.AreEqual("One", children[0].Text);
+            Assert.AreEqual("Two", children[1].Text);
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace OpenQA.Selenium
             driver.Url = nestedPage;
             IWebElement element = driver.FindElement(By.Name("form2"));
             IWebElement child = element.FindElement(By.Name("selectomatic"));
-            Assert.AreEqual(child.GetAttribute("id"), "2");
+            Assert.AreEqual("2", child.GetAttribute("id"));
         }
 
         [Test]
@@ -328,6 +328,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Safari does not trim")]
         public void LinkWithLeadingSpaces()
         {
             driver.Url = simpleTestPage;
@@ -338,6 +339,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Safari, "Safari does not trim")]
         public void LinkWithTrailingSpace()
         {
             driver.Url = simpleTestPage;

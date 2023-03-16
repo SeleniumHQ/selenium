@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module IE
-
       #
       # Driver implementation for Internet Explorer supporting
       # both OSS and W3C dialects of JSON wire protocol.
@@ -30,8 +29,28 @@ module Selenium
       class Driver < WebDriver::Driver
         EXTENSIONS = [DriverExtensions::HasWebStorage].freeze
 
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          raise ArgumentError, "Can't initialize #{self.class} with :url" if url
+
+          caps = process_options(options, capabilities)
+          url = service_url(service || Service.ie)
+          super(caps: caps, url: url, **opts)
+        end
+
         def browser
           :internet_explorer
+        end
+
+        private
+
+        def process_options(options, capabilities)
+          if options && !options.is_a?(Options)
+            raise ArgumentError, ":options must be an instance of #{Options}"
+          elsif options.nil? && capabilities.nil?
+            options = Options.new
+          end
+
+          super(options, capabilities)
         end
       end # Driver
     end # IE

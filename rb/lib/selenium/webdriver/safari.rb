@@ -29,7 +29,7 @@ module Selenium
         attr_accessor :use_technology_preview
 
         def technology_preview
-          "/Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver"
+          '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver'
         end
 
         def technology_preview!
@@ -52,20 +52,6 @@ module Selenium
           raise Error::WebDriverError, 'Safari is only supported on Mac' unless Platform.os.mac?
 
           raise Error::WebDriverError, 'Unable to find Safari'
-        end
-
-        def driver_path=(path)
-          WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path=',
-                                     'Selenium::WebDriver::Safari::Service#driver_path=',
-                                     id: :driver_path
-          Selenium::WebDriver::Safari::Service.driver_path = path
-        end
-
-        def driver_path
-          WebDriver.logger.deprecate 'Selenium::WebDriver::Safari#driver_path',
-                                     'Selenium::WebDriver::Safari::Service#driver_path',
-                                     id: :driver_path
-          Selenium::WebDriver::Safari::Service.driver_path
         end
       end
     end # Safari

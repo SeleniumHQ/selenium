@@ -20,7 +20,6 @@ package org.openqa.selenium.safari;
 import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
-import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
@@ -28,6 +27,7 @@ import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -51,25 +51,15 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   }
 
   /**
-   * Converts the specified {@link Capabilities} to a {@link SafariOptions}
-   * instance and initializes a new SafariDriver using these options.
-   * @see SafariOptions#fromCapabilities(Capabilities)
-   *
-   * @param desiredCapabilities capabilities requested of the driver
-   * @deprecated Use {@link SafariDriver(SafariOptions)} instead.
-   */
-  @Deprecated
-  public SafariDriver(Capabilities desiredCapabilities) {
-    this(SafariOptions.fromCapabilities(desiredCapabilities));
-  }
-
-  /**
    * Initializes a new SafariDriver using the specified {@link SafariOptions}.
    *
    * @param safariOptions safari specific options / capabilities for the driver
    */
   public SafariDriver(SafariOptions safariOptions) {
-    this(SafariDriverService.createDefaultService(), safariOptions);
+    this(safariOptions.getUseTechnologyPreview() ?
+         SafariTechPreviewDriverService.createDefaultService() :
+         SafariDriverService.createDefaultService(),
+         safariOptions);
   }
 
   /**
@@ -84,12 +74,23 @@ public class SafariDriver extends RemoteWebDriver implements HasPermissions, Has
   /**
    * Initializes a new SafariDriver using the specified {@link SafariOptions}.
    *
-   * @param safariOptions safari specific options / capabilities for the driver
+   * @param service either {@link SafariTechPreviewDriverService} or {@link SafariDriverService}
+   * @param options safari specific options / capabilities for the driver
    */
-  public SafariDriver(SafariDriverService safariServer, SafariOptions safariOptions) {
-    super(new SafariDriverCommandExecutor(safariServer), safariOptions);
+  public SafariDriver(DriverService service, SafariOptions options) {
+    super(generateExecutor(service, options), options);
     permissions = new AddHasPermissions().getImplementation(getCapabilities(), getExecuteMethod());
     debugger = new AddHasDebugger().getImplementation(getCapabilities(), getExecuteMethod());
+  }
+
+  private static SafariDriverCommandExecutor generateExecutor(DriverService service, SafariOptions options) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    if (service.getExecutable() == null) {
+      String path = DriverFinder.getPath(service, options);
+      service.setExecutable(path);
+    }
+    return new SafariDriverCommandExecutor(service);
   }
 
   @Beta

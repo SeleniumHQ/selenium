@@ -20,14 +20,14 @@ package com.thoughtworks.selenium.webdriven;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
-public class FastWebDriverBackedSeleniumTest {
+class FastWebDriverBackedSeleniumTest {
 
   @Test
-  public void openPrefixARelativeURLWithTheBaseURL() {
+  void openPrefixARelativeURLWithTheBaseURL() {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver = mock(WebDriverWithJs.class);
 
@@ -38,7 +38,7 @@ public class FastWebDriverBackedSeleniumTest {
   }
 
   @Test
-  public void openPrefixARelativeURLWithTheBaseURLEvenWhenItStartsWithASlash() {
+  void openPrefixARelativeURLWithTheBaseURLEvenWhenItStartsWithASlash() {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver = mock(WebDriverWithJs.class);
 
@@ -49,7 +49,7 @@ public class FastWebDriverBackedSeleniumTest {
   }
 
   @Test
-  public void openDoesNotPrefixAURLIncludingHttpProtocol() {
+  void openDoesNotPrefixAURLIncludingHttpProtocol() {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver = mock(WebDriverWithJs.class);
 
@@ -60,7 +60,7 @@ public class FastWebDriverBackedSeleniumTest {
   }
 
   @Test
-  public void openDoesNotPrefixAURLIncludingHttpsProtocol() {
+  void openDoesNotPrefixAURLIncludingHttpsProtocol() {
     final WebDriverBackedSelenium selenium;
     final WebDriver driver = mock(WebDriverWithJs.class);
 

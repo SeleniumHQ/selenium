@@ -117,7 +117,7 @@ public class JdbcBackedSessionMap extends SessionMap implements Closeable {
   public boolean isReady() {
     try {
       return !connection.isClosed();
-    } catch (SQLException throwables) {
+    } catch (SQLException throwable) {
       return false;
     }
   }

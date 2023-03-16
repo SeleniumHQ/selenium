@@ -17,32 +17,29 @@
 
 package org.openqa.selenium.edge;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.time.Duration;
 
-@Category(UnitTests.class)
-public class EdgeDriverServiceTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
+@Tag("UnitTests")
+class EdgeDriverServiceTest {
 
   @Test
-  public void builderPassesTimeoutToDriverService() {
+  void builderPassesTimeoutToDriverService() {
     File exe = new File("someFile");
     Duration defaultTimeout = Duration.ofSeconds(20);
     Duration customTimeout = Duration.ofSeconds(60);
 
     EdgeDriverService.Builder builderMock = spy(EdgeDriverService.Builder.class);
-    doReturn(exe).when(builderMock).findDefaultExecutable();
     builderMock.build();
 
     verify(builderMock).createDriverService(any(), anyInt(), eq(defaultTimeout), any(), any());
@@ -53,8 +50,8 @@ public class EdgeDriverServiceTest {
   }
 
   @Test
-  public void testScoring() {
+  void testScoring() {
     EdgeDriverService.Builder builder = new EdgeDriverService.Builder();
-    assertThat(builder.score(new EdgeOptions())).isGreaterThan(0);
+    assertThat(builder.score(new EdgeOptions())).isPositive();
   }
 }

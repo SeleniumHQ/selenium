@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestImplicitLocators extends InternalSelenseTestBase {
   @Test
-  public void testImplicitLocators() {
+  void testImplicitLocators() {
     selenium.open("test_locators.html");
     verifyEquals(selenium.getText("id1"), "this is the first element");
     verifyEquals(selenium.getAttribute("id1@class"), "a1");

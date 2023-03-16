@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.environment.webserver.NettyAppServer;
@@ -38,20 +38,20 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.testing.Safely.safelyCall;
 import static org.openqa.selenium.testing.TestUtilities.isFirefoxVersionOlderThan;
 
-public class NetworkInterceptorRestTest {
+class NetworkInterceptorRestTest {
 
   private NettyAppServer appServer;
   private WebDriver driver;
   private NetworkInterceptor interceptor;
 
-  @BeforeClass
+  @BeforeAll
   public static void shouldTestBeRunAtAll() {
     // Until Firefox can initialise the Fetch domain, we need this check
     assumeThat(Browser.detect()).isNotEqualTo(Browser.FIREFOX);
     assumeThat(Boolean.getBoolean("selenium.skiptest")).isFalse();
   }
 
-  @Before
+  @BeforeEach
   public void setup() {
     driver = new WebDriverBuilder().get();
 
@@ -68,7 +68,7 @@ public class NetworkInterceptorRestTest {
     appServer.start();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     safelyCall(
       () -> interceptor.close(),
@@ -77,7 +77,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptPatchRequest() throws MalformedURLException {
+  void shouldInterceptPatchRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,
@@ -108,7 +108,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptPutRequest() throws MalformedURLException {
+  void shouldInterceptPutRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,
@@ -139,7 +139,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptPostRequest() throws MalformedURLException {
+  void shouldInterceptPostRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,
@@ -170,7 +170,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptDeleteRequest() throws MalformedURLException {
+  void shouldInterceptDeleteRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,
@@ -201,7 +201,7 @@ public class NetworkInterceptorRestTest {
   }
 
   @Test
-  public void shouldInterceptGetRequest() throws MalformedURLException {
+  void shouldInterceptGetRequest() throws MalformedURLException {
     AtomicBoolean seen = new AtomicBoolean(false);
     interceptor = new NetworkInterceptor(
       driver,

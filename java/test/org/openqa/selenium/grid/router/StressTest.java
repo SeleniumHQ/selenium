@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.grid.router;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -49,7 +49,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class StressTest {
+class StressTest {
 
   private final ExecutorService executor =
     Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() * 2);
@@ -58,7 +58,7 @@ public class StressTest {
   private Browser browser;
   private Server<?> appServer;
 
-  @Before
+  @BeforeEach
   public void setupServers() {
     browser = Objects.requireNonNull(Browser.detect());
 
@@ -66,6 +66,7 @@ public class StressTest {
       browser.getCapabilities(),
       new TomlConfig(new StringReader(
         "[node]\n" +
+        "selenium-manager = true\n" +
         "driver-implementation = " + browser.displayName())));
     tearDowns.add(deployment);
 
@@ -87,14 +88,14 @@ public class StressTest {
     appServer.start();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     tearDowns.parallelStream().forEach(Safely::safelyCall);
     executor.shutdownNow();
   }
 
   @Test
-  public void multipleSimultaneousSessions() throws Exception {
+  void multipleSimultaneousSessions() throws Exception {
     assertThat(server.isStarted()).isTrue();
 
     CompletableFuture<?>[] futures = new CompletableFuture<?>[10];

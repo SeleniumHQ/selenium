@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.devtools.idealized.Network;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ChangeUserAgentTest extends DevToolsTestBase {
+class ChangeUserAgentTest extends DevToolsTestBase {
 
   @Test
   @NotYetImplemented(value = Browser.FIREFOX, reason = "Network interception not yet supported")

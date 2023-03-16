@@ -14,25 +14,27 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+import typing
 from typing import List
 
 from selenium.webdriver.common import service
 
-
-DEFAULT_EXECUTABLE_PATH = 'IEDriverServer.exe'
+DEFAULT_EXECUTABLE_PATH = "IEDriverServer.exe"
 
 
 class Service(service.Service):
-    """
-    Object that manages the starting and stopping of the IEDriver
-    """
+    """Object that manages the starting and stopping of the IEDriver."""
 
-    def __init__(self, executable_path: str = DEFAULT_EXECUTABLE_PATH,
-                 port: int = 0, host: str = None,
-                 log_level: str = None, log_file: str = None):
-        """
-        Creates a new instance of the Service
+    def __init__(
+        self,
+        executable_path: str = DEFAULT_EXECUTABLE_PATH,
+        port: int = 0,
+        host: typing.Optional[str] = None,
+        log_level: typing.Optional[str] = None,
+        log_file: typing.Optional[str] = None,
+        **kwargs,
+    ) -> None:
+        """Creates a new instance of the Service.
 
         :Args:
          - executable_path : Path to the IEDriver
@@ -41,17 +43,22 @@ class Service(service.Service):
          - log_level : Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE".
            Default is "FATAL".
          - log_file : Target of logging of service, may be "stdout", "stderr" or file path.
-           Default is "stdout"."""
+           Default is "stdout".
+        """
         self.service_args = []
         if host:
-            self.service_args.append("--host=%s" % host)
+            self.service_args.append(f"--host={host}")
         if log_level:
-            self.service_args.append("--log-level=%s" % log_level)
+            self.service_args.append(f"--log-level={log_level}")
         if log_file:
-            self.service_args.append("--log-file=%s" % log_file)
+            self.service_args.append(f"--log-file={log_file}")
 
-        service.Service.__init__(self, executable_path, port=port,
-                                 start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver")
+        super().__init__(
+            executable_path,
+            port=port,
+            start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
+            **kwargs,
+        )
 
     def command_line_args(self) -> List[str]:
-        return ["--port=%d" % self.port] + self.service_args
+        return [f"--port={self.port}"] + self.service_args

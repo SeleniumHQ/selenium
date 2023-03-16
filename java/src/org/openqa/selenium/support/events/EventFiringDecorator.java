@@ -155,13 +155,18 @@ import java.util.logging.Logger;
  * extending {@link WebDriverDecorator}, not by creating sophisticated listeners.
  */
 @Beta
-public class EventFiringDecorator extends WebDriverDecorator  {
+public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorator<T>  {
 
   private static final Logger logger = Logger.getLogger(EventFiringDecorator.class.getName());
 
   private final List<WebDriverListener> listeners;
 
   public EventFiringDecorator(WebDriverListener... listeners) {
+    this.listeners = Arrays.asList(listeners);
+  }
+
+  public EventFiringDecorator(Class<T> targetClass, WebDriverListener... listeners) {
+    super(targetClass);
     this.listeners = Arrays.asList(listeners);
   }
 

@@ -1,4 +1,4 @@
-load("//java:defs.bzl", "artifact", "java_test_suite")
+load("//java:defs.bzl", "JUNIT5_DEPS", "artifact", "java_test_suite")
 
 java_test_suite(
     name = "small-tests",
@@ -15,7 +15,6 @@ java_test_suite(
         "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/node",
         "//java/src/org/openqa/selenium/grid/node/local",
-        "//java/src/org/openqa/selenium/grid/node/locators",
         "//java/src/org/openqa/selenium/grid/node/remote",
         "//java/src/org/openqa/selenium/grid/security",
         "//java/src/org/openqa/selenium/grid/web",
@@ -26,8 +25,8 @@ java_test_suite(
         "//java/test/org/openqa/selenium/remote/tracing:tracing-support",
         artifact("com.google.guava:guava"),
         artifact("io.opentelemetry:opentelemetry-api"),
-        artifact("junit:junit"),
+        artifact("org.junit.jupiter:junit-jupiter-api"),
         artifact("org.assertj:assertj-core"),
         artifact("org.mockito:mockito-core"),
-    ],
+    ] + JUNIT5_DEPS,
 )

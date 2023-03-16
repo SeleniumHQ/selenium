@@ -19,10 +19,10 @@ package org.openqa.selenium.support.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 import java.util.List;
 
@@ -30,9 +30,9 @@ import java.util.List;
 /**
  * Test for issue r759.
  */
-public class SelectLargeTest extends JUnit4TestBase {
+class SelectLargeTest extends JupiterTestBase {
   @Test
-  public void multipleSelectShouldBePossibleIfMultipleAttributeEmpty() {
+  void multipleSelectShouldBePossibleIfMultipleAttributeEmpty() {
     driver.get(pages.formPage);
 
     WebElement selectElement = driver.findElement(By.name("select_empty_multiple"));
@@ -50,7 +50,7 @@ public class SelectLargeTest extends JUnit4TestBase {
   }
 
   @Test
-  public void selectByVisibleTextShouldNormalizeSpaces() {
+  void selectByVisibleTextShouldNormalizeSpaces() {
     driver.get(pages.formPage);
 
     WebElement selectElement = driver.findElement(By.name("select_with_spaces"));

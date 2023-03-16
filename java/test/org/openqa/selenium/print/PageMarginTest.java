@@ -17,15 +17,14 @@
 
 package org.openqa.selenium.print;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.openqa.selenium.testing.UnitTests;
 
 
-@Category(UnitTests.class)
-public class PageMarginTest {
+@Tag("UnitTests")
+class PageMarginTest {
 
   // Defaults assertion
   private static final double TOP = 1.0;
@@ -34,7 +33,7 @@ public class PageMarginTest {
   private static final double RIGHT = 1.0;
 
   @Test
-  public void setsDefaultMarginValues() {
+  void setsDefaultMarginValues() {
     PageMargin pageMargin = new PageMargin();
 
     assertThat(pageMargin.getTop()).isEqualTo(TOP);

@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestComments extends InternalSelenseTestBase {
   @Test
-  public void testComments() {
+  void testComments() {
     selenium.open("test_verifications.html?foo=bar");
     verifyTrue(selenium.getLocation().matches(
         "^.*/test_verifications\\.html[\\s\\S]*$"));

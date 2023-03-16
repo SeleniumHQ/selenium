@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasNetworkConditions
-
         #
         # Returns network conditions.
         #
@@ -61,7 +60,6 @@ module Selenium
         def delete_network_conditions
           @bridge.delete_network_conditions
         end
-
       end # HasNetworkConditions
     end # DriverExtensions
   end # WebDriver

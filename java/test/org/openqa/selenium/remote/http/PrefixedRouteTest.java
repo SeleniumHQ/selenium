@@ -17,9 +17,8 @@
 
 package org.openqa.selenium.remote.http;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.testing.UnitTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,46 +28,46 @@ import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-@Category(UnitTests.class)
-public class PrefixedRouteTest {
+@Tag("UnitTests")
+class PrefixedRouteTest {
 
   @Test
-  public void pathWithoutPrefixIsNotMatched() {
+  void pathWithoutPrefixIsNotMatched() {
     Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cake"))).isFalse();
   }
 
   @Test
-  public void pathWithPrefixIsMatched() {
+  void pathWithPrefixIsMatched() {
     Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cheese/cake"))).isTrue();
   }
 
   @Test
-  public void pathWhichCoincidentallyStartsWithThePrefixIsNotMatched() {
+  void pathWhichCoincidentallyStartsWithThePrefixIsNotMatched() {
     Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cheeseandpeas"))).isFalse();
   }
 
   @Test
-  public void pathWhichIsJustThePrefixMatches() {
+  void pathWhichIsJustThePrefixMatches() {
     Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cheese"))).isTrue();
   }
 
   @Test
-  public void pathWhichIsJustThePrefixAndATrailingSlashMatches() {
+  void pathWhichIsJustThePrefixAndATrailingSlashMatches() {
     Route route = Route.prefix("/cheese").to(Route.matching(req -> true).to(() -> req -> new HttpResponse()));
 
     assertThat(route.matches(new HttpRequest(GET, "/cheese/"))).isTrue();
   }
 
   @Test
-  public void pathWhichDoesMatchHasPrefixAsAttributeWhenHandling() {
+  void pathWhichDoesMatchHasPrefixAsAttributeWhenHandling() {
     AtomicReference<String> path = new AtomicReference<>();
     AtomicReference<List<?>> parts = new AtomicReference<>();
 
@@ -86,7 +85,7 @@ public class PrefixedRouteTest {
   }
 
   @Test
-  public void nestingPrefixesAlsoCausesPathStoredInAttributeToBeExtended() {
+  void nestingPrefixesAlsoCausesPathStoredInAttributeToBeExtended() {
     AtomicReference<String> path = new AtomicReference<>();
     AtomicReference<List<?>> parts = new AtomicReference<>();
 

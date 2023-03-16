@@ -18,7 +18,7 @@
 package org.openqa.selenium.events;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.events.zeromq.ZeroMqEventBus;
 import org.openqa.selenium.grid.security.Secret;
 import org.zeromq.ZContext;
@@ -30,34 +30,40 @@ import java.util.concurrent.TimeoutException;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ZeroMqEventBusTest {
+class ZeroMqEventBusTest {
 
   @Test
-  public void shouldEnsureMessagesRequireSecret() throws InterruptedException, ExecutionException, TimeoutException {
+  void shouldEnsureMessagesRequireSecret()
+    throws InterruptedException, ExecutionException, TimeoutException {
     String publish = "inproc://zmqebt-publish";
     String subscribe = "inproc://zmqebt-subscribe";
 
     ZContext context = new ZContext();
-    EventBus good = ZeroMqEventBus.create(context, publish, subscribe, true, new Secret("cheese"));
-    EventBus alsoGood = ZeroMqEventBus.create(context, publish, subscribe, false, new Secret("cheese"));
-    EventBus bad = ZeroMqEventBus.create(context, publish, subscribe, false, new Secret("peas"));
+    try (
+          EventBus good = ZeroMqEventBus.create(context, publish, subscribe, true, new Secret("cheese"));
+          EventBus alsoGood = ZeroMqEventBus.create(context, publish, subscribe, false, new Secret("cheese"));
+          EventBus bad = ZeroMqEventBus.create(context, publish, subscribe, false, new Secret("peas"))) {
 
-    RuntimeException errorException = new RuntimeException("oh noes!");
-    EventName eventName = new EventName("evt");
-    CompletableFuture<String> future = new CompletableFuture<>();
-    good.addListener(new EventListener<>(eventName, String.class, future::complete));
-    good.addListener(ZeroMqEventBus.onRejectedEvent(evt -> future.completeExceptionally(errorException)));
+      RuntimeException errorException = new RuntimeException("oh noes!");
+      EventName eventName = new EventName("evt");
+      CompletableFuture<String> future = new CompletableFuture<>();
+      good.addListener(new EventListener<>(eventName, String.class, future::complete));
+      good.addListener(
+        ZeroMqEventBus.onRejectedEvent(evt -> future.completeExceptionally(errorException)));
 
-    alsoGood.fire(new Event(eventName, "tasty"));
+      alsoGood.fire(new Event(eventName, "tasty"));
 
-    String value = future.get(5, SECONDS);
-    assertThat(value).isEqualTo("tasty");
+      String value = future.get(5, SECONDS);
+      assertThat(value).isEqualTo("tasty");
 
-    CompletableFuture<String> badFuture = new CompletableFuture<>();
-    good.addListener(new EventListener<>(eventName, String.class, badFuture::complete));
-    good.addListener(ZeroMqEventBus.onRejectedEvent(evt -> badFuture.completeExceptionally(errorException)));
-    bad.fire(new Event(eventName, "not tasty"));
+      CompletableFuture<String> badFuture = new CompletableFuture<>();
+      good.addListener(new EventListener<>(eventName, String.class, badFuture::complete));
+      good.addListener(
+        ZeroMqEventBus.onRejectedEvent(evt -> badFuture.completeExceptionally(errorException)));
+      bad.fire(new Event(eventName, "not tasty"));
 
-    Assertions.assertThatThrownBy(() -> badFuture.get(5, SECONDS)).getCause().isSameAs(errorException);
+      Assertions.assertThatThrownBy(() -> badFuture.get(5, SECONDS)).getCause()
+        .isSameAs(errorException);
+    }
   }
 }

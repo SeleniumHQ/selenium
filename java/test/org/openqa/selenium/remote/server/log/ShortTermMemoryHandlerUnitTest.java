@@ -17,25 +17,22 @@
 
 package org.openqa.selenium.remote.server.log;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import org.junit.jupiter.api.Test;
 
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
  * {@link org.openqa.selenium.remote.server.log.ShortTermMemoryHandler} unit test class.
  */
-@RunWith(JUnit4.class)
-public class ShortTermMemoryHandlerUnitTest {
+class ShortTermMemoryHandlerUnitTest {
 
   @Test
-  public void testRecordsReturnsAnEmptyArrayWhenNoRecordHasBeenAdded() {
+  void testRecordsReturnsAnEmptyArrayWhenNoRecordHasBeenAdded() {
     final ShortTermMemoryHandler handler;
 
     handler = new ShortTermMemoryHandler(1, Level.FINEST, null);
@@ -44,7 +41,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testRecordsReturnsTheAddedRecordWhenASingleOneIsPublished() {
+  void testRecordsReturnsTheAddedRecordWhenASingleOneIsPublished() {
     final ShortTermMemoryHandler handler;
     final LogRecord theLogRecord;
 
@@ -57,7 +54,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testRecordsIsEmptyWhenAddedRecordIsLowerThanTheMinimumLevel() {
+  void testRecordsIsEmptyWhenAddedRecordIsLowerThanTheMinimumLevel() {
     final ShortTermMemoryHandler handler;
     final LogRecord theLogRecord;
 
@@ -69,7 +66,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testRecordsIsEmptyWhenAddedRecordIsEqualToTheMinimumLevel() {
+  void testRecordsIsEmptyWhenAddedRecordIsEqualToTheMinimumLevel() {
     final ShortTermMemoryHandler handler;
     final LogRecord theLogRecord;
 
@@ -82,7 +79,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testRecordsReturnsTheTwoAddedRecordWhenATwoRecordsArePublishedAndCapacityIsNotExceeded() {
+  void testRecordsReturnsTheTwoAddedRecordWhenATwoRecordsArePublishedAndCapacityIsNotExceeded() {
     final ShortTermMemoryHandler handler;
     final LogRecord firstLogRecord;
     final LogRecord secondLogRecord;
@@ -99,7 +96,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testRecordsOnlyReturnsTheLastRecordWhenATwoRecordsArePublishedAndCapacityIsExceeded() {
+  void testRecordsOnlyReturnsTheLastRecordWhenATwoRecordsArePublishedAndCapacityIsExceeded() {
     final ShortTermMemoryHandler handler;
     final LogRecord firstLogRecord;
     final LogRecord secondLogRecord;
@@ -115,7 +112,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testRecordsOnlyReturnsTheLastTwoRecordsWhenThreeRecordsArePublishedAndCapacityIsExceeded() {
+  void testRecordsOnlyReturnsTheLastTwoRecordsWhenThreeRecordsArePublishedAndCapacityIsExceeded() {
     final ShortTermMemoryHandler handler;
     final LogRecord firstLogRecord;
     final LogRecord secondLogRecord;
@@ -135,7 +132,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testRecordsOnlyReturnsTheLastRecordWhenThreeRecordsArePublishedAndCapacityIsOne() {
+  void testRecordsOnlyReturnsTheLastRecordWhenThreeRecordsArePublishedAndCapacityIsOne() {
     final ShortTermMemoryHandler handler;
     final LogRecord firstLogRecord;
     final LogRecord secondLogRecord;
@@ -154,7 +151,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testAfterCloseAllRecordsAreCleared() {
+  void testAfterCloseAllRecordsAreCleared() {
     final ShortTermMemoryHandler handler;
     final LogRecord firstLogRecord;
     final LogRecord secondLogRecord;
@@ -170,7 +167,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testFormattedRecordsReturnsAnEmptyStringWhenThereIsNoRecord() {
+  void testFormattedRecordsReturnsAnEmptyStringWhenThereIsNoRecord() {
     final ShortTermMemoryHandler handler;
 
     handler = new ShortTermMemoryHandler(1, Level.INFO, null);
@@ -179,7 +176,7 @@ public class ShortTermMemoryHandlerUnitTest {
   }
 
   @Test
-  public void testFormattedRecords() {
+  void testFormattedRecords() {
     final ShortTermMemoryHandler handler;
     final LogRecord firstLogRecord;
     final LogRecord secondLogRecord;

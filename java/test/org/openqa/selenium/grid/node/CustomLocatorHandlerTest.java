@@ -18,8 +18,10 @@
 package org.openqa.selenium.grid.node;
 
 
-import org.junit.Before;
-import org.junit.Test;
+import com.google.common.collect.ImmutableMap;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.openqa.selenium.By;
@@ -27,19 +29,19 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.InvalidArgumentException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.events.local.GuavaEventBus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.node.local.LocalNode;
-import org.openqa.selenium.grid.node.locators.ById;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
-import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.grid.web.Values;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.TypeToken;
 import org.openqa.selenium.remote.Dialect;
+import org.openqa.selenium.remote.ErrorFilter;
 import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpHandler;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -68,15 +70,13 @@ import static org.mockito.Mockito.when;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
-import com.google.common.collect.ImmutableMap;
-
-public class CustomLocatorHandlerTest {
+class CustomLocatorHandlerTest {
 
   private final Secret registrationSecret = new Secret("cheese");
   private LocalNode.Builder nodeBuilder;
   private URI nodeUri;
 
-  @Before
+  @BeforeEach
   public void partiallyBuildNode() {
     Tracer tracer = DefaultTestTracer.createTracer();
     nodeUri = URI.create("http://localhost:1234");
@@ -89,7 +89,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldRequireInputToHaveAUsingParameter() {
+  void shouldRequireInputToHaveAUsingParameter() {
     Node node = nodeBuilder.build();
 
     HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
@@ -103,7 +103,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldRequireInputToHaveAValueParameter() {
+  void shouldRequireInputToHaveAValueParameter() {
     Node node = nodeBuilder.build();
 
     HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
@@ -117,23 +117,24 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldRejectRequestWithAnUnknownLocatorMechanism() {
+  void shouldNotRejectRequestWithAnUnknownLocatorMechanism() {
     Node node = nodeBuilder.build();
 
     HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
 
-    HttpResponse res = handler.execute(
-      new HttpRequest(POST, "/session/1234/element")
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "using", "cheese",
-          "value", "tasty"))));
-
-    assertThat(res.getStatus()).isEqualTo(HTTP_BAD_REQUEST);
-    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> Values.get(res, MAP_TYPE));
+    // Getting a NoSuchSessionException means the request went through the
+    // CustomLocatorHandler successfully but stopped at the Node because
+    // the actually does not exist.
+    assertThatExceptionOfType(NoSuchSessionException.class)
+      .isThrownBy(() -> handler.execute(
+        new HttpRequest(POST, "/session/1234/element")
+          .setContent(Contents.asJson(ImmutableMap.of(
+            "using", "cheese",
+            "value", "tasty")))));
   }
 
   @Test
-  public void shouldCallTheGivenLocatorForALocator() {
+  void shouldCallTheGivenLocatorForALocator() {
     Capabilities caps = new ImmutableCapabilities("browserName", "cheesefox");
     Node node = nodeBuilder.add(
       caps,
@@ -170,7 +171,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToUseNodeAsWebDriver() {
+  void shouldBeAbleToUseNodeAsWebDriver() {
     String elementId = UUID.randomUUID().toString();
 
     Node node = Mockito.mock(Node.class);
@@ -209,7 +210,7 @@ public class CustomLocatorHandlerTest {
   }
 
   @Test
-  public void shouldBeAbleToRootASearchWithinAnElement() {
+  void shouldBeAbleToRootASearchWithinAnElement() {
     String elementId = UUID.randomUUID().toString();
 
     Node node = Mockito.mock(Node.class);
@@ -239,54 +240,6 @@ public class CustomLocatorHandlerTest {
       new HttpRequest(POST, "/session/1234/element/234345/elements")
         .setContent(Contents.asJson(ImmutableMap.of(
           "using", "cheese",
-          "value", "tasty"))));
-
-    List<Map<String, Object>> elements = Values.get(res, new TypeToken<List<Map<String, Object>>>(){}.getType());
-    assertThat(elements).hasSize(1);
-    Object seenId = elements.get(0).get(Dialect.W3C.getEncodedElementKey());
-    assertThat(seenId).isEqualTo(elementId);
-  }
-
-  @Test
-  public void shouldNotFindLocatorStrategyForId() {
-    Capabilities caps = new ImmutableCapabilities("browserName", "cheesefox");
-    Node node = nodeBuilder.add(
-      caps,
-      new TestSessionFactory((id, c) -> new Session(id, nodeUri, caps, c, Instant.now())))
-      .build();
-
-    HttpHandler handler = new CustomLocatorHandler(node, registrationSecret, emptySet());
-
-    HttpResponse res = handler.with(new ErrorFilter()).execute(
-      new HttpRequest(POST, "/session/1234/element")
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "using", "id",
-          "value", "tasty"))));
-
-    assertThatExceptionOfType(InvalidArgumentException.class).isThrownBy(() -> Values.get(res, WebElement.class));
-  }
-
-  @Test
-  public void shouldFallbackToUseById() {
-    String elementId = UUID.randomUUID().toString();
-
-    Node node = Mockito.mock(Node.class);
-    when(node.executeWebDriverCommand(argThat(matchesUri("/session/{sessionId}/elements"))))
-      .thenReturn(
-        new HttpResponse()
-          .addHeader("Content-Type", Json.JSON_UTF_8)
-          .setContent(Contents.asJson(singletonMap(
-            "value", singletonList(singletonMap(Dialect.W3C.getEncodedElementKey(), elementId))))));
-
-    HttpHandler handler = new CustomLocatorHandler(
-      node,
-      registrationSecret,
-      singleton(new ById()));
-
-    HttpResponse res = handler.execute(
-      new HttpRequest(POST, "/session/1234/elements")
-        .setContent(Contents.asJson(ImmutableMap.of(
-          "using", "id",
           "value", "tasty"))));
 
     List<Map<String, Object>> elements = Values.get(res, new TypeToken<List<Map<String, Object>>>(){}.getType());

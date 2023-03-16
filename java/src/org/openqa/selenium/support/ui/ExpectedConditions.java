@@ -1230,7 +1230,7 @@ public class ExpectedConditions {
    *
    * @param element     used as parent element. For example table with locator By.xpath("//table")
    * @param childLocator used to find child element. For example td By.xpath("./tr/td")
-   * @return visible subelement
+   * @return visible sub-element
    */
   public static ExpectedCondition<List<WebElement>> visibilityOfNestedElementsLocatedBy(
     final WebElement element, final By childLocator) {
@@ -1261,7 +1261,7 @@ public class ExpectedConditions {
    * @param locator     used to check parent element. For example table with locator
    *                    By.xpath("//table")
    * @param childLocator used to find child element. For example td By.xpath("./tr/td")
-   * @return subelement
+   * @return sub-element
    */
   public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(
     final By locator, final By childLocator)
@@ -1285,7 +1285,7 @@ public class ExpectedConditions {
    *
    * @param element     used as parent element
    * @param childLocator used to find child element. For example td By.xpath("./tr/td")
-   * @return subelement
+   * @return sub-element
    */
   public static ExpectedCondition<WebElement> presenceOfNestedElementLocatedBy(
     final WebElement element, final By childLocator)
@@ -1311,7 +1311,7 @@ public class ExpectedConditions {
    * @param parent     used to check parent element. For example table with locator
    *                    By.xpath("//table")
    * @param childLocator used to find child element. For example td By.xpath("./tr/td")
-   * @return subelement
+   * @return sub-element
    */
   public static ExpectedCondition<List<WebElement>> presenceOfNestedElementsLocatedBy(
     final By parent, final By childLocator)

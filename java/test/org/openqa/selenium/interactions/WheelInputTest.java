@@ -20,37 +20,35 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
-import org.openqa.selenium.interactions.PointerInput.Origin;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.PropertySetting;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-@Category(UnitTests.class)
-public class WheelInputTest {
+@Tag("UnitTests")
+class WheelInputTest {
 
   @Test
-  public void shouldEncodeWrappedElementInScrollOrigin() {
+  void shouldEncodeWrappedElementInScrollOrigin() {
     RemoteWebElement innerElement = new RemoteWebElement();
     innerElement.setId("12345");
     WebElement element = new WrappedWebElement(innerElement);
 
     WheelInput wheelInput = new WheelInput("wheel");
     Interaction scroll = wheelInput.createScroll(
-      20,
-      30,
+      new Point(20, 30),
       0,
       0,
       Duration.ofMillis(100),
-      Origin.fromElement(element));
+      WheelInput.ScrollOrigin.fromElement(element));
     Sequence sequence = new Sequence(wheelInput, 0).addAction(scroll);
 
     String rawJson = new Json().toJson(sequence);
@@ -65,7 +63,7 @@ public class WheelInputTest {
   }
 
   @Test
-  public void shouldEncodeWheelInput() {
+  void shouldEncodeWheelInput() {
     WheelInput wheelInput = new WheelInput("test-wheel");
     Map<String, Object> encodedResult = wheelInput.encode();
 
@@ -75,16 +73,15 @@ public class WheelInputTest {
   }
 
   @Test
-  public void shouldEncodeScrollInteractionWithViewPortOrigin() {
+  void shouldEncodeScrollInteractionWithViewPortOrigin() {
     WheelInput wheelInput = new WheelInput("test-wheel");
-    WheelInput.ScrollInteraction interaction = new WheelInput.ScrollInteraction(
-      wheelInput,
+    WheelInput.ScrollInteraction interaction = (WheelInput.ScrollInteraction) wheelInput.createScroll(
       25,
       50,
       30,
       60,
       Duration.ofSeconds(1),
-      Origin.viewport());
+      WheelInput.ScrollOrigin.fromViewport());
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
@@ -98,19 +95,17 @@ public class WheelInputTest {
   }
 
   @Test
-  public void shouldEncodeScrollInteractionWithElementOrigin() {
+  void shouldEncodeScrollInteractionWithElementOrigin() {
     RemoteWebElement innerElement = new RemoteWebElement();
     innerElement.setId("12345");
 
     WheelInput wheelInput = new WheelInput("test-wheel");
-    WheelInput.ScrollInteraction interaction = new WheelInput.ScrollInteraction(
-      wheelInput,
-      25,
-      50,
+    WheelInput.ScrollInteraction interaction = (WheelInput.ScrollInteraction) wheelInput.createScroll(
+      new Point(25, 50),
       30,
       60,
       Duration.ofSeconds(1),
-      Origin.fromElement(innerElement));
+      WheelInput.ScrollOrigin.fromElement(innerElement));
 
     Map<String, Object> encodedResult = interaction.encode();
     assertThat(encodedResult)
@@ -121,20 +116,6 @@ public class WheelInputTest {
       .containsEntry("deltaY", 60)
       .containsEntry("duration", 1000L)
       .containsEntry("origin", innerElement);
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void shouldNotAllowPointerOrigin() {
-
-    WheelInput wheelInput = new WheelInput("test-wheel");
-    WheelInput.ScrollInteraction interaction = new WheelInput.ScrollInteraction(
-      wheelInput,
-      25,
-      50,
-      30,
-      60,
-      Duration.ofSeconds(1),
-      Origin.pointer());
   }
 
   private static class ActionSequenceJson {

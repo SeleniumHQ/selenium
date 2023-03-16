@@ -17,11 +17,6 @@
 
 package org.openqa.selenium.grid.sessionqueue.config;
 
-import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
-import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_REQUEST_TIMEOUT;
-import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_RETRY_INTERVAL;
-import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.SESSION_QUEUE_SECTION;
-
 import com.google.auto.service.AutoService;
 
 import com.beust.jcommander.Parameter;
@@ -33,6 +28,13 @@ import org.openqa.selenium.grid.config.Role;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Set;
+
+import static org.openqa.selenium.grid.config.StandardGridRoles.SESSION_QUEUE_ROLE;
+import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_BATCH_SIZE;
+import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_REQUEST_TIMEOUT;
+import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_REQUEST_TIMEOUT_PERIOD;
+import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.DEFAULT_RETRY_INTERVAL;
+import static org.openqa.selenium.grid.sessionqueue.config.NewSessionQueueOptions.SESSION_QUEUE_SECTION;
 
 @SuppressWarnings("FieldMayBeFinal")
 @AutoService(HasRoles.class)
@@ -64,11 +66,23 @@ public class NewSessionQueueFlags implements HasRoles {
   private int sessionRequestTimeout = DEFAULT_REQUEST_TIMEOUT;
 
   @Parameter(
+    names = {"--session-request-timeout-period"},
+    description = "In seconds, how often the timeout for new session requests is checked.")
+  @ConfigValue(section = SESSION_QUEUE_SECTION, name = "session-request-timeout-period", example = "5")
+  private int sessionRequestTimeoutPeriod = DEFAULT_REQUEST_TIMEOUT_PERIOD;
+
+  @Parameter(
     names = {"--session-retry-interval"},
-    description = "Retry interval in seconds. If all slots are busy, new session request " +
-                  "will be retried after the given interval.")
-  @ConfigValue(section = SESSION_QUEUE_SECTION, name = "session-retry-interval", example = "5")
+    description = "Session creation interval in milliseconds. If all slots are busy, new session "
+                  + "request will be retried after the given interval.")
+  @ConfigValue(section = SESSION_QUEUE_SECTION, name = "session-retry-interval", example = "15")
   private int sessionRetryInterval = DEFAULT_RETRY_INTERVAL;
+
+  @Parameter(
+    names = {"--sessionqueue-batch-size"},
+    description = "Maximum batch size that can consumed from queue based on the available slots.")
+  @ConfigValue(section = SESSION_QUEUE_SECTION, name = "sessionqueue-batch-size", example = "20")
+  private int batchSize = DEFAULT_BATCH_SIZE;
 
   @Override
   public Set<Role> getRoles() {

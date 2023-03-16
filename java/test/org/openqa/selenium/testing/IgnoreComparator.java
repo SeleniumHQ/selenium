@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class IgnoreComparator {
+class IgnoreComparator {
   private final Set<Browser> ignored = new HashSet<>();
 
   // TODO(simon): reduce visibility
@@ -45,7 +45,7 @@ public class IgnoreComparator {
     return ignore != null && shouldIgnore(Stream.of(ignore));
   }
 
-  private boolean shouldIgnore(Stream<Ignore> ignoreList) {
+  public boolean shouldIgnore(Stream<Ignore> ignoreList) {
     return ignoreList.anyMatch(
       driver -> (ignored.contains(driver.value()) || driver.value() == Browser.ALL)
                 && ((!driver.travis() || TestUtilities.isOnTravis())

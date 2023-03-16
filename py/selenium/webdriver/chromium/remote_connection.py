@@ -14,23 +14,34 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import typing
 
 from selenium.webdriver.remote.remote_connection import RemoteConnection
 
 
 class ChromiumRemoteConnection(RemoteConnection):
-    def __init__(self, remote_server_addr, vendor_prefix, browser_name, keep_alive=True, ignore_proxy=False):
-        RemoteConnection.__init__(self, remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
+    def __init__(
+        self,
+        remote_server_addr: str,
+        vendor_prefix: str,
+        browser_name: str,
+        keep_alive: bool = True,
+        ignore_proxy: typing.Optional[bool] = False,
+    ) -> None:
+        super().__init__(remote_server_addr, keep_alive, ignore_proxy=ignore_proxy)
         self.browser_name = browser_name
-        self._commands["launchApp"] = ('POST', '/session/$sessionId/chromium/launch_app')
-        self._commands["setPermissions"] = ('POST', '/session/$sessionId/permissions')
-        self._commands["setNetworkConditions"] = ('POST', '/session/$sessionId/chromium/network_conditions')
-        self._commands["getNetworkConditions"] = ('GET', '/session/$sessionId/chromium/network_conditions')
-        self._commands["deleteNetworkConditions"] = ('DELETE', '/session/$sessionId/chromium/network_conditions')
-        self._commands['executeCdpCommand'] = ('POST', '/session/$sessionId/{}/cdp/execute'.format(vendor_prefix))
-        self._commands['getSinks'] = ('GET', '/session/$sessionId/{}/cast/get_sinks'.format(vendor_prefix))
-        self._commands['getIssueMessage'] = ('GET', '/session/$sessionId/{}/cast/get_issue_message'.format(vendor_prefix))
-        self._commands['setSinkToUse'] = ('POST', '/session/$sessionId/{}/cast/set_sink_to_use'.format(vendor_prefix))
-        self._commands['startDesktopMirroring'] = ('POST', '/session/$sessionId/{}/cast/start_desktop_mirroring'.format(vendor_prefix))
-        self._commands['startTabMirroring'] = ('POST', '/session/$sessionId/{}/cast/start_tab_mirroring'.format(vendor_prefix))
-        self._commands['stopCasting'] = ('POST', '/session/$sessionId/{}/cast/stop_casting'.format(vendor_prefix))
+        self._commands["launchApp"] = ("POST", "/session/$sessionId/chromium/launch_app")
+        self._commands["setPermissions"] = ("POST", "/session/$sessionId/permissions")
+        self._commands["setNetworkConditions"] = ("POST", "/session/$sessionId/chromium/network_conditions")
+        self._commands["getNetworkConditions"] = ("GET", "/session/$sessionId/chromium/network_conditions")
+        self._commands["deleteNetworkConditions"] = ("DELETE", "/session/$sessionId/chromium/network_conditions")
+        self._commands["executeCdpCommand"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cdp/execute")
+        self._commands["getSinks"] = ("GET", f"/session/$sessionId/{vendor_prefix}/cast/get_sinks")
+        self._commands["getIssueMessage"] = ("GET", f"/session/$sessionId/{vendor_prefix}/cast/get_issue_message")
+        self._commands["setSinkToUse"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cast/set_sink_to_use")
+        self._commands["startDesktopMirroring"] = (
+            "POST",
+            f"/session/$sessionId/{vendor_prefix}/cast/start_desktop_mirroring",
+        )
+        self._commands["startTabMirroring"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cast/start_tab_mirroring")
+        self._commands["stopCasting"] = ("POST", f"/session/$sessionId/{vendor_prefix}/cast/stop_casting")

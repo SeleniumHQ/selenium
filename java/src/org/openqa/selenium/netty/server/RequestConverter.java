@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.netty.server;
 
-import com.google.common.io.ByteStreams;
+import com.google.common.io.ByteSource;
+import com.google.common.io.FileBackedOutputStream;
 
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.remote.http.HttpMethod;
@@ -26,7 +27,6 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -41,13 +41,9 @@ import io.netty.util.ReferenceCountUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import static io.netty.handler.codec.http.HttpMethod.DELETE;
@@ -55,22 +51,20 @@ import static io.netty.handler.codec.http.HttpMethod.GET;
 import static io.netty.handler.codec.http.HttpMethod.HEAD;
 import static io.netty.handler.codec.http.HttpMethod.OPTIONS;
 import static io.netty.handler.codec.http.HttpMethod.POST;
-import static org.openqa.selenium.remote.http.Contents.memoize;
 
 class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
 
   private static final Logger LOG = Logger.getLogger(RequestConverter.class.getName());
-  private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
-  private static final ExecutorService SHUTDOWN_EXECUTOR = Executors.newSingleThreadExecutor();
   private static final List<io.netty.handler.codec.http.HttpMethod> SUPPORTED_METHODS =
     Arrays.asList(DELETE, GET, POST, OPTIONS);
-  private volatile PipedOutputStream out;
+  private volatile FileBackedOutputStream buffer;
+  private volatile HttpRequest request;
 
   @Override
   protected void channelRead0(
     ChannelHandlerContext ctx,
     HttpObject msg) throws Exception {
-    LOG.fine("Incoming message: " + msg);
+    LOG.log(Debug.getDebugLogLevel(), "Incoming message: " + msg);
 
     if (msg instanceof io.netty.handler.codec.http.HttpRequest) {
       LOG.log(Debug.getDebugLogLevel(), "Start of http request: " + msg);
@@ -84,65 +78,77 @@ class RequestConverter extends SimpleChannelInboundHandler<HttpObject> {
       }
 
       if (nettyRequest.headers().contains("Sec-WebSocket-Version") &&
-        "upgrade".equals(nettyRequest.headers().get("Connection"))) {
+          "upgrade".equalsIgnoreCase(nettyRequest.headers().get("Connection"))) {
         // Pass this on to later in the pipeline.
         ReferenceCountUtil.retain(msg);
         ctx.fireChannelRead(msg);
         return;
       }
 
-      HttpRequest req = createRequest(ctx, nettyRequest);
-      if (req == null) {
+      request = createRequest(ctx, nettyRequest);
+      if (request == null) {
         return;
       }
 
-      req.setAttribute(AttributeKey.HTTP_SCHEME.getKey(),
+      request.setAttribute(AttributeKey.HTTP_SCHEME.getKey(),
         nettyRequest.protocolVersion().protocolName());
-      req.setAttribute(AttributeKey.HTTP_FLAVOR.getKey(),
+      request.setAttribute(AttributeKey.HTTP_FLAVOR.getKey(),
         nettyRequest.protocolVersion().majorVersion());
 
-      out = new PipedOutputStream();
-      InputStream in = new PipedInputStream(out);
-
-      req.setContent(memoize(() -> in));
-      ctx.fireChannelRead(req);
+      buffer = null;
     }
 
     if (msg instanceof HttpContent) {
       ByteBuf buf = ((HttpContent) msg).content().retain();
-      EXECUTOR.submit(() -> {
-        try (InputStream inputStream = new ByteBufInputStream(buf)) {
-          ByteStreams.copy(inputStream, out);
-        } catch (IOException e) {
-          throw new UncheckedIOException(e);
+      int nBytes = buf.readableBytes();
+
+      if (nBytes > 0) {
+        if (buffer == null) {
+          buffer = new FileBackedOutputStream(3 * 1024 * 1024, true);
+        }
+
+        try {
+          buf.readBytes(buffer, nBytes);
         } finally {
           buf.release();
         }
-      });
-    }
+      }
 
-    if (msg instanceof LastHttpContent) {
-      LOG.fine("Closing input pipe.");
-      EXECUTOR.submit(() -> {
-        try {
-          out.close();
-        } catch (IOException e) {
-          throw new UncheckedIOException(e);
+      if (msg instanceof LastHttpContent) {
+        LOG.log(Debug.getDebugLogLevel(), "End of http request: " + msg);
+
+        if (buffer != null) {
+          ByteSource source = buffer.asByteSource();
+
+          request.setContent(() -> {
+            try {
+              return source.openBufferedStream();
+            } catch (IOException e) {
+              throw new UncheckedIOException(e);
+            }
+          });
+        } else {
+          request.setContent(() -> new InputStream() {
+            @Override
+            public int read() throws IOException {
+              return -1;
+            }
+
+            @Override
+            public int read(byte[] b, int off, int len) throws IOException {
+              return -1;
+            }
+          });
         }
-      });
+
+        ctx.fireChannelRead(request);
+      }
     }
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    LOG.fine("Closing input pipe, channel became inactive.");
-    SHUTDOWN_EXECUTOR.submit(() -> {
-      try {
-        out.close();
-      } catch (IOException e) {
-        throw new UncheckedIOException(e);
-      }
-    });
+    LOG.log(Debug.getDebugLogLevel(), "Channel became inactive.");
     super.channelInactive(ctx);
   }
 

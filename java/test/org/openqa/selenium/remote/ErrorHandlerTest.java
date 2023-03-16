@@ -18,11 +18,10 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.openqa.selenium.ImeActivationFailedException;
-import org.openqa.selenium.ImeNotAvailableException;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
@@ -42,7 +41,6 @@ import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,24 +49,40 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-@Category(UnitTests.class)
-public class ErrorHandlerTest {
+@Tag("UnitTests")
+class ErrorHandlerTest {
   private ErrorHandler handler;
 
-  @Before
+  private static void assertStackTracesEqual(StackTraceElement[] expected, StackTraceElement[] actual) {
+    assertThat(actual.length).as("Stacktrace length").isEqualTo(expected.length);
+    for (int i = 0; i < expected.length; i++) {
+      String message = "Frames at index [" + i + "]";
+      assertThat(actual[i].getFileName()).as(message).isEqualTo(expected[i].getFileName());
+      assertThat(actual[i].getClassName()).as(message).isEqualTo(expected[i].getClassName());
+      assertThat(actual[i].getMethodName()).as(message).isEqualTo(expected[i].getMethodName());
+      assertThat(actual[i].getLineNumber()).as(message).isEqualTo(expected[i].getLineNumber());
+    }
+  }
+
+  private static Map<String, Object> toMap(Object o) {
+    String rawJson = new Json().toJson(o);
+    return new Json().toType(rawJson, Map.class);
+  }
+
+  @BeforeEach
   public void setUp() {
     handler = new ErrorHandler();
     handler.setIncludeServerErrors(true);
   }
 
   @Test
-  public void testShouldNotThrowIfResponseWasASuccess() {
+  void testShouldNotThrowIfResponseWasASuccess() {
     handler.throwIfResponseFailed(createResponse(ErrorCodes.SUCCESS), 100);
     // All is well if this doesn't throw.
   }
 
   @Test
-  public void testThrowsCorrectExceptionTypes() {
+  void testThrowsCorrectExceptionTypes() {
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_WINDOW, NoSuchWindowException.class);
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_FRAME, NoSuchFrameException.class);
     assertThrowsCorrectExceptionType(ErrorCodes.NO_SUCH_ELEMENT, NoSuchElementException.class);
@@ -91,7 +105,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldThrowAVanillaWebDriverExceptionIfServerDoesNotProvideAValue() {
+  void testShouldThrowAVanillaWebDriverExceptionIfServerDoesNotProvideAValue() {
     Response response = createResponse(ErrorCodes.UNHANDLED_ERROR);
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(response, 123))
@@ -100,7 +114,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldNotSetCauseIfResponseValueIsJustAString() {
+  void testShouldNotSetCauseIfResponseValueIsJustAString() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR, "boom"), 123))
@@ -111,7 +125,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testCauseShouldBeAnUnknownServerExceptionIfServerOnlyReturnsAMessage() {
+  void testCauseShouldBeAnUnknownServerExceptionIfServerOnlyReturnsAMessage() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR, ImmutableMap.of("message", "boom")), 123))
@@ -121,7 +135,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testCauseShouldUseTheNamedClassIfAvailableOnTheClassPath() {
+  void testCauseShouldUseTheNamedClassIfAvailableOnTheClassPath() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR,
@@ -132,7 +146,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testCauseStackTraceShouldBeEmptyIfTheServerDidNotProvideThatInformation() {
+  void testCauseStackTraceShouldBeEmptyIfTheServerDidNotProvideThatInformation() {
     assertThatExceptionOfType(WebDriverException.class)
         .isThrownBy(() -> handler.throwIfResponseFailed(
             createResponse(ErrorCodes.UNHANDLED_ERROR,
@@ -146,7 +160,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldBeAbleToRebuildASerializedException() {
+  void testShouldBeAbleToRebuildASerializedException() {
     RuntimeException serverError = new RuntimeException("foo bar baz!\nCommand duration or timeout: 123 milliseconds");
 
     assertThatExceptionOfType(WebDriverException.class)
@@ -161,7 +175,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldIncludeScreenshotIfProvided() {
+  void testShouldIncludeScreenshotIfProvided() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
     data.put("screen", "screenGrabText");
@@ -185,7 +199,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified() {
+  void testShouldDefaultToWebDriverExceptionIfClassIsNotSpecified() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
     data.remove("class");
@@ -205,7 +219,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
+  void testShouldStillTryToBuildWebDriverExceptionIfClassIsNotProvidedAndStackTraceIsNotForJava() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
         "stackTrace", Collections.singletonList(
@@ -235,7 +249,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldNotBuildWebDriverExceptionIfClassAndStackTraceIsNull() {
+  void testShouldNotBuildWebDriverExceptionIfClassAndStackTraceIsNull() {
     Map<String, Object> data = new HashMap<>();
     data.put("message", "some error message");
     data.put("class", null);
@@ -250,7 +264,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldNotBuildWebDriverExceptionIfClassNullAndStackTraceNotNull() {
+  void testShouldNotBuildWebDriverExceptionIfClassNullAndStackTraceNotNull() {
     Map<String, Object> data = new HashMap<>();
     data.put("message", "some error message");
     data.put("class", null);
@@ -269,7 +283,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldNotBuildWebDriverExceptionIfClassNotNullAndStackTraceNull() {
+  void testShouldNotBuildWebDriverExceptionIfClassNotNullAndStackTraceNull() {
     Map<String, Object> data = new HashMap<>();
     data.put("message", "some error message");
     data.put("class", "a");
@@ -284,7 +298,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testToleratesNonNumericLineNumber() {
+  void testToleratesNonNumericLineNumber() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
         "stackTrace", Collections.singletonList(
@@ -314,7 +328,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testToleratesNumericLineNumberAsString() {
+  void testToleratesNumericLineNumberAsString() {
     Map<String, ?> data = ImmutableMap.of(
         "message", "some error message",
         "stackTrace", Collections.singletonList(
@@ -345,7 +359,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed() {
+  void testShouldIndicateWhenTheServerReturnedAnExceptionThatWasSuppressed() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
 
     handler.setIncludeServerErrors(false);
@@ -359,7 +373,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled() {
+  void testShouldStillIncludeScreenshotEvenIfServerSideExceptionsAreDisabled() {
     RuntimeException serverError = new RuntimeException("foo bar baz!");
     Map<String, Object> data = toMap(serverError);
     data.put("screen", "screenGrabText");
@@ -379,7 +393,7 @@ public class ErrorHandlerTest {
   }
 
   @Test
-  public void testStatusCodesRaisedBackToStatusMatches() {
+  void testStatusCodesRaisedBackToStatusMatches() {
     Map<Integer, Class<?>> exceptions = new HashMap<>();
     exceptions.put(ErrorCodes.NO_SUCH_SESSION, NoSuchSessionException.class);
     exceptions.put(ErrorCodes.NO_SUCH_ELEMENT, NoSuchElementException.class);
@@ -397,8 +411,6 @@ public class ErrorHandlerTest {
     exceptions.put(ErrorCodes.UNEXPECTED_ALERT_PRESENT, UnhandledAlertException.class);
     exceptions.put(ErrorCodes.NO_ALERT_PRESENT, NoAlertPresentException.class);
     exceptions.put(ErrorCodes.ASYNC_SCRIPT_TIMEOUT, ScriptTimeoutException.class);
-    exceptions.put(ErrorCodes.IME_NOT_AVAILABLE, ImeNotAvailableException.class);
-    exceptions.put(ErrorCodes.IME_ENGINE_ACTIVATION_FAILED, ImeActivationFailedException.class);
     exceptions.put(ErrorCodes.INVALID_SELECTOR_ERROR, InvalidSelectorException.class);
     exceptions.put(ErrorCodes.SESSION_NOT_CREATED, SessionNotCreatedException.class);
     exceptions.put(ErrorCodes.MOVE_TARGET_OUT_OF_BOUNDS, MoveTargetOutOfBoundsException.class);
@@ -428,21 +440,5 @@ public class ErrorHandlerTest {
     response.setStatus(status);
     response.setValue(value);
     return response;
-  }
-
-  private static void assertStackTracesEqual(StackTraceElement[] expected, StackTraceElement[] actual) {
-    assertThat(actual.length).as("Stacktrace length").isEqualTo(expected.length);
-    for (int i = 0; i < expected.length; i++) {
-      String message = "Frames at index [" + i + "]";
-      assertThat(actual[i].getFileName()).as(message).isEqualTo(expected[i].getFileName());
-      assertThat(actual[i].getClassName()).as(message).isEqualTo(expected[i].getClassName());
-      assertThat(actual[i].getMethodName()).as(message).isEqualTo(expected[i].getMethodName());
-      assertThat(actual[i].getLineNumber()).as(message).isEqualTo(expected[i].getLineNumber());
-    }
-  }
-
-  private static Map<String, Object> toMap(Object o) {
-    String rawJson = new Json().toJson(o);
-    return new Json().toType(rawJson, Map.class);
   }
 }

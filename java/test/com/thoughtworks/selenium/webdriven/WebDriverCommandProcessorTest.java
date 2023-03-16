@@ -17,17 +17,17 @@
 
 package com.thoughtworks.selenium.webdriven;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class WebDriverCommandProcessorTest {
   @Test
-  public void testDriverNeedNotImplementHasCapabilities() {
+  void testDriverNeedNotImplementHasCapabilities() {
     WebDriver driver = mock(WebDriver.class,
                             withSettings().extraInterfaces(JavascriptExecutor.class));
 
@@ -39,7 +39,7 @@ public class WebDriverCommandProcessorTest {
   }
 
   @Test
-  public void testRequiresAJavascriptEnabledDriver() {
+  void testRequiresAJavascriptEnabledDriver() {
     WebDriver driver = mock(WebDriver.class);
 
     try {

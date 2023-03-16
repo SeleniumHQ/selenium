@@ -19,13 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore("Rollup functionality is not implemented. Also addScript is not implemented")
+@Disabled("Rollup functionality is not implemented. Also addScript is not implemented")
 public class TestRollup extends InternalSelenseTestBase {
   @Test
-  public void testRollup() {
+  void testRollup() {
     // TODO(simon): re-enable this. It looks like the addScript method is not right
     selenium.addScript(getRollupScript(), "rollup");
     selenium.open("test_rollup.html");

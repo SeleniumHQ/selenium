@@ -18,16 +18,16 @@
 package com.thoughtworks.selenium;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class DefaultSeleniumTest {
 
   private static final String prefix = "setContext,com.thoughtworks.selenium.DefaultSeleniumTest: ";
 
   @Test
-  public void testBannerSimple() {
+  void testBannerSimple() {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
     selenium.showContextualBanner();
@@ -35,7 +35,7 @@ public class DefaultSeleniumTest {
   }
 
   @Test
-  public void testMoreComplexExample() {
+  void testMoreComplexExample() {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
     selenium.showContextualBanner();
@@ -43,7 +43,7 @@ public class DefaultSeleniumTest {
   }
 
   @Test
-  public void testEvenMOREComplexExample() {
+  void testEvenMOREComplexExample() {
     MyCommandProcessor cp = new MyCommandProcessor();
     DefaultSelenium selenium = new DefaultSelenium(cp);
     selenium.showContextualBanner();

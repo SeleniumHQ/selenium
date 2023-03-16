@@ -21,9 +21,6 @@ import com.google.auto.service.AutoService;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.net.MediaType;
 
-import dev.failsafe.Failsafe;
-import dev.failsafe.RetryPolicy;
-
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.cli.CliCommand;
 import org.openqa.selenium.events.EventBus;
@@ -54,10 +51,14 @@ import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.http.Route;
 import org.openqa.selenium.remote.tracing.Tracer;
 
+import dev.failsafe.Failsafe;
+import dev.failsafe.RetryPolicy;
+
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
@@ -85,7 +86,7 @@ public class NodeServer extends TemplateGridServerCommand {
 
   @Override
   public String getDescription() {
-    return "Adds this server as a node in the selenium grid.";
+    return "Adds this server as a Node in the Selenium Grid.";
   }
 
   @Override
@@ -203,6 +204,9 @@ public class NodeServer extends TemplateGridServerCommand {
         Executors.newSingleThreadExecutor().submit(() -> {
           Failsafe.with(registrationPolicy).run(
             () -> {
+              if (nodeRegistered.get()) {
+                throw new InterruptedException("Stopping registration thread.");
+              }
               HealthCheck.Result check = node.getHealthCheck().check();
               if (DOWN.equals(check.getAvailability())) {
                 LOG.severe("Node is not alive: " + check.getMessage());
@@ -210,9 +214,6 @@ public class NodeServer extends TemplateGridServerCommand {
                 throw new UnsupportedOperationException("Node cannot be registered");
               }
               bus.fire(new NodeStatusEvent(node.getStatus()));
-              if (nodeRegistered.get()) {
-                throw new InterruptedException("Stopping registration thread.");
-              }
               LOG.info("Sending registration event...");
             }
           );
@@ -226,6 +227,13 @@ public class NodeServer extends TemplateGridServerCommand {
   @Override
   protected void execute(Config config) {
     Require.nonNull("Config", config);
+
+    config.get("server", "max-threads")
+      .ifPresent(value -> LOG.log(Level.WARNING,
+                                  () ->
+                                    "Support for max-threads flag is deprecated. " +
+                                    "The intent of the flag is to set the thread pool size in the Distributor. " +
+                                    "Please use newsession-threadpool-size flag instead."));
 
     Runtime.getRuntime().addShutdownHook(shutdownHook);
     Server<?> server = asServer(config).start();

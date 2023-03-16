@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module Firefox
       module Features
-
         FIREFOX_COMMANDS = {
           get_context: [:get, 'session/:session_id/moz/context'],
           set_context: [:post, 'session/:session_id/moz/context'],
@@ -35,7 +34,11 @@ module Selenium
         end
 
         def install_addon(path, temporary)
-          addon = File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
+          addon = if File.directory?(path)
+                    Zipper.zip(path)
+                  else
+                    File.open(path, 'rb') { |crx_file| Base64.strict_encode64 crx_file.read }
+                  end
 
           payload = {addon: addon}
           payload[:temporary] = temporary unless temporary.nil?

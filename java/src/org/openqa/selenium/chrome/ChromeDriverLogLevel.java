@@ -18,6 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import com.google.common.collect.ImmutableMap;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 
 import java.util.Map;
 import java.util.logging.Level;
@@ -25,7 +26,9 @@ import java.util.logging.Level;
 /**
  * <a href="https://source.chromium.org/chromium/chromium/src/+/master:chrome/test/chromedriver/logging.cc">
  *   Log levels</a> defined by ChromeDriver
+ * @deprecated use {@link ChromiumDriverLogLevel}
  */
+@Deprecated
 public enum ChromeDriverLogLevel {
   ALL,
   INFO,

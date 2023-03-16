@@ -310,6 +310,15 @@ class Options extends Capabilities {
   }
 
   /**
+   * @deprecated Use {@link Options#addArguments} instead.
+   * @example
+   * options.addArguments('--headless=chrome'); (or)
+   * options.addArguments('--headless');
+   * @example
+   *
+   * Recommended to use '--headless=chrome' as argument for browsers v94-108.
+   * Recommended to use '--headless=new' as argument for browsers v109+.
+   *
    * Configures the driver to start the browser in headless mode.
    *
    * > __NOTE:__ Resizing the browser window in headless mode is only supported
@@ -600,6 +609,14 @@ class Options extends Capabilities {
     }
     return this
   }
+
+  /**
+   * Enable bidi connection
+   * @returns {!Capabilities}
+   */
+  enableBidi() {
+    return this.set('webSocketUrl', true)
+  }
 }
 
 /**
@@ -661,11 +678,13 @@ class Driver extends webdriver.WebDriver {
    */
   static createSession(caps, opt_serviceExecutor) {
     let executor
+    let onQuit
     if (opt_serviceExecutor instanceof http.Executor) {
       executor = opt_serviceExecutor
       configureExecutor(executor, this.VENDOR_COMMAND_PREFIX)
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
+      onQuit = () => service.kill()
       executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX)
     }
 
@@ -679,7 +698,7 @@ class Driver extends webdriver.WebDriver {
       }
     }
 
-    return /** @type {!Driver} */ (super.createSession(executor, caps))
+    return /** @type {!Driver} */ (super.createSession(executor, caps, onQuit))
   }
 
   /**
@@ -704,7 +723,7 @@ class Driver extends webdriver.WebDriver {
   /**
    * Schedules a command to get Chromium network emulation settings.
    * @return {!Promise} A promise that will be resolved when network
-   *     emulation settings are retrievied.
+   *     emulation settings are retrieved.
    */
   getNetworkConditions() {
     return this.execute(new command.Command(Command.GET_NETWORK_CONDITIONS))
@@ -860,7 +879,7 @@ class Driver extends webdriver.WebDriver {
    * @return {!promise.Thenable<void>} A promise that will be resolved
    *     when the mirror command has been issued to the device.
    */
-   startDesktopMirroring(deviceName) {
+  startDesktopMirroring(deviceName) {
     return this.schedule(
       new command.Command(Command.START_CAST_DESKTOP_MIRRORING).setParameter(
         'sinkName',

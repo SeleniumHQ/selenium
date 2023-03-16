@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.grid.sessionmap;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.events.EventBus;
@@ -44,13 +44,13 @@ import static java.time.Duration.ofSeconds;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * We test the session map by ensuring that the HTTP protocol is properly adhered to. If this is
  * true, then any implementations are interoperable, and we can breathe a sigh of relief.
  */
-public class SessionMapTest {
+class SessionMapTest {
 
   private SessionId id;
   private Session expected;
@@ -59,7 +59,7 @@ public class SessionMapTest {
   private SessionMap remote;
   private EventBus bus;
 
-  @Before
+  @BeforeEach
   public void setUp() throws URISyntaxException {
     id = new SessionId(UUID.randomUUID());
     expected = new Session(
@@ -78,27 +78,27 @@ public class SessionMapTest {
   }
 
   @Test
-  public void shouldBeAbleToAddASession() {
+  void shouldBeAbleToAddASession() {
     assertTrue(remote.add(expected));
 
     assertThat(local.get(id)).isEqualTo(expected);
   }
 
   @Test
-  public void shouldBeAbleToRetrieveASessionUri() {
+  void shouldBeAbleToRetrieveASessionUri() {
     local.add(expected);
 
     assertThat(remote.get(id)).isEqualTo(expected);
   }
 
   @Test
-  public void shouldThrowANoSuchSessionExceptionIfSessionCannotBeFound() {
+  void shouldThrowANoSuchSessionExceptionIfSessionCannotBeFound() {
     assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> local.get(id));
     assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> remote.get(id));
   }
 
   @Test
-  public void shouldAllowSessionsToBeRemoved() {
+  void shouldAllowSessionsToBeRemoved() {
     local.add(expected);
 
     assertThat(remote.get(id)).isEqualTo(expected);
@@ -113,17 +113,17 @@ public class SessionMapTest {
    * This is because multiple areas within the grid may all try and remove a session.
    */
   @Test
-  public void removingASessionThatDoesNotExistIsNotAnError() {
+  void removingASessionThatDoesNotExistIsNotAnError() {
     assertThatNoException().isThrownBy(() -> remote.remove(id));
   }
 
   @Test
-  public void shouldThrowAnExceptionIfGettingASessionThatDoesNotExist() {
+  void shouldThrowAnExceptionIfGettingASessionThatDoesNotExist() {
     assertThatExceptionOfType(NoSuchSessionException.class).isThrownBy(() -> remote.get(id));
   }
 
   @Test
-  public void shouldAllowEntriesToBeRemovedByAMessage() {
+  void shouldAllowEntriesToBeRemovedByAMessage() {
     local.add(expected);
 
     bus.fire(new SessionClosedEvent(expected.getId()));

@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestOpenInTargetFrame extends InternalSelenseTestBase {
   @Test
-  public void testOpenInTargetFrame() throws Exception {
+  void testOpenInTargetFrame() throws Exception {
     selenium.open("test_open_in_target_frame.html");
     selenium.selectFrame("rightFrame");
     selenium.click("link=Show new frame in leftFrame");

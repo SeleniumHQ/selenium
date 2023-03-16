@@ -51,11 +51,11 @@ $DEBUG = true if ENV['debug'] == 'true'
 verbose($DEBUG)
 
 def release_version
-  '4.1'
+  '4.8'
 end
 
 def version
-  "#{release_version}.4"
+  "#{release_version}.1"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -85,7 +85,7 @@ CrazyFun::Mappings::RakeMappings.new.add_all(crazy_fun)
 
 # If it looks like a bazel target, build it with bazel
 rule /\/\/.*/ do |task|
-  task.out = Bazel.execute('build', %w[--workspace_status_command scripts/build-info.py], task.name)
+  task.out = Bazel.execute('build', %w[], task.name)
 end
 
 # Spoof tasks to get CI working with bazel
@@ -98,19 +98,22 @@ task '//java/test/org/openqa/selenium/environment/webserver:webserver:uber' => [
 JAVA_RELEASE_TARGETS = %w[
   //java/src/org/openqa/selenium/chrome:chrome.publish
   //java/src/org/openqa/selenium/chromium:chromium.publish
+  //java/src/org/openqa/selenium/devtools/v109:v109.publish
+  //java/src/org/openqa/selenium/devtools/v110:v110.publish
+  //java/src/org/openqa/selenium/devtools/v111:v111.publish
   //java/src/org/openqa/selenium/devtools/v85:v85.publish
-  //java/src/org/openqa/selenium/devtools/v99:v99.publish
-  //java/src/org/openqa/selenium/devtools/v100:v100.publish
-  //java/src/org/openqa/selenium/devtools/v101:v101.publish
   //java/src/org/openqa/selenium/edge:edge.publish
   //java/src/org/openqa/selenium/firefox:firefox.publish
   //java/src/org/openqa/selenium/grid/sessionmap/jdbc:jdbc.publish
   //java/src/org/openqa/selenium/grid/sessionmap/redis:redis.publish
+  //java/src/org/openqa/selenium/grid:bom-dependencies.publish
+  //java/src/org/openqa/selenium/grid:bom.publish
   //java/src/org/openqa/selenium/grid:grid.publish
   //java/src/org/openqa/selenium/ie:ie.publish
   //java/src/org/openqa/selenium/json:json.publish
   //java/src/org/openqa/selenium/lift:lift.publish
-  //java/src/org/openqa/selenium/opera:opera.publish
+  //java/src/org/openqa/selenium/manager:manager.publish
+  //java/src/org/openqa/selenium/remote/http/jdk:jdk.publish
   //java/src/org/openqa/selenium/remote/http:http.publish
   //java/src/org/openqa/selenium/remote:remote.publish
   //java/src/org/openqa/selenium/safari:safari.publish
@@ -134,7 +137,6 @@ task tests: [
   '//java/test/org/openqa/selenium/ie:ie',
   '//java/test/org/openqa/selenium/chrome:chrome',
   '//java/test/org/openqa/selenium/edge:edge',
-  '//java/test/org/openqa/selenium/opera:opera',
   '//java/test/org/openqa/selenium/support:small-tests',
   '//java/test/org/openqa/selenium/support:large-tests',
   '//java/test/org/openqa/selenium/remote:small-tests',
@@ -187,7 +189,6 @@ task test_ie: [
 ]
 task test_jobbie: [:test_ie]
 task test_firefox: ['//java/test/org/openqa/selenium/firefox:marionette:run']
-task test_opera: ['//java/test/org/openqa/selenium/opera:opera:run']
 task test_remote_server: [
   '//java/test/org/openqa/selenium/remote/server:small-tests:run',
   '//java/test/org/openqa/selenium/remote/server/log:test:run'
@@ -220,7 +221,6 @@ task test_java_webdriver: %i[
 task test_java_webdriver: [:test_ie] if SeleniumRake::Checks.windows?
 task test_java_webdriver: [:test_chrome] if SeleniumRake::Checks.chrome?
 task test_java_webdriver: [:test_edge] if SeleniumRake::Checks.edge?
-task test_java_webdriver: [:test_opera] if SeleniumRake::Checks.opera?
 
 task test_java: [
   '//java/test/org/openqa/selenium/atoms:test:run',
@@ -243,30 +243,8 @@ task test_java_small_tests: [
   '//java/test/org/openqa/selenium/remote/server/log:test:run'
 ]
 
-task test_rb: ['//rb:unit-test', :test_rb_local, :test_rb_remote]
-
-task test_rb_local: [
-  '//rb:chrome-test',
-  '//rb:firefox-test',
-  ('//rb:firefox-nightly-test' if ENV['FIREFOX_NIGHTLY_BINARY']),
-  ('//rb:safari-preview-test' if SeleniumRake::Checks.mac?),
-  ('//rb:safari-test' if SeleniumRake::Checks.mac?),
-  ('//rb:ie-test' if SeleniumRake::Checks.windows?),
-  ('//rb:edge-test' unless SeleniumRake::Checks.linux?)
-].compact
-
-task test_rb_remote: [
-  '//rb:remote-chrome-test',
-  '//rb:remote-firefox-test',
-  ('//rb:remote-firefox-nightly-test' if ENV['FIREFOX_NIGHTLY_BINARY']),
-  ('//rb:remote-safari-test' if SeleniumRake::Checks.mac?),
-  ('//rb:remote-safari-preview-test' if SeleniumRake::Checks.mac?),
-  ('//rb:remote-ie-test' if SeleniumRake::Checks.windows?),
-  ('//rb:remote-edge-test' unless SeleniumRake::Checks.linux?)
-].compact
-
 task test_py: [:py_prep_for_install_release, 'py:marionette_test']
-task test: %i[test_javascript test_java test_rb]
+task test: %i[test_javascript test_java]
 task test: [:test_py] if SeleniumRake::Checks.python?
 task build: %i[all firefox remote selenium tests]
 
@@ -360,10 +338,12 @@ task 'prep-release-zip': [
   '//java/src/org/openqa/selenium:client-zip',
   '//java/src/org/openqa/selenium/grid:server-zip',
   '//java/src/org/openqa/selenium/grid:executable-grid',
-  '//java/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'
 ] do
-  ["build/dist/selenium-server-#{version}.zip", "build/dist/selenium-java-#{version}.zip",
-   "build/dist/selenium-server-#{version}.jar", "build/dist/selenium-html-runner-#{version}.jar"].each do |f|
+  [
+    "build/dist/selenium-server-#{version}.zip",
+    "build/dist/selenium-java-#{version}.zip",
+    "build/dist/selenium-server-#{version}.jar"
+  ].each do |f|
     rm_f(f) if File.exists?(f)
   end
 
@@ -375,8 +355,6 @@ task 'prep-release-zip': [
   chmod 0666, "build/dist/selenium-java-#{version}.zip"
   cp Rake::Task['//java/src/org/openqa/selenium/grid:executable-grid'].out, "build/dist/selenium-server-#{version}.jar", preserve: false
   chmod 0666, "build/dist/selenium-server-#{version}.jar"
-  cp Rake::Task['//java/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar'].out, "build/dist/selenium-html-runner-#{version}.jar", preserve: false
-  chmod 0666, "build/dist/selenium-html-runner-#{version}.jar"
 end
 
 task 'release-java': %i[prep-release-zip publish-maven]
@@ -401,7 +379,7 @@ def read_user_pass_from_m2_settings
   return [user, pass]
 end
 
-task 'publish-maven': JAVA_RELEASE_TARGETS + %w[//java/src/org/openqa/selenium/server/htmlrunner:selenium-runner_deploy.jar] do
+task 'publish-maven': JAVA_RELEASE_TARGETS do
  creds = read_user_pass_from_m2_settings
   JAVA_RELEASE_TARGETS.each do |p|
     Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
@@ -410,7 +388,7 @@ end
 
 task :'maven-install' do
   JAVA_RELEASE_TARGETS.each do |p|
-    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=true'], p)
+    Bazel::execute('run', ['--stamp', '--define', "maven_repo=file://#{ENV['HOME']}/.m2/repository", '--define', 'gpg_sign=false'], p)
   end
 end
 
@@ -441,13 +419,16 @@ namespace :copyright do
         'javascript/selenium-core/scripts/ui-map-sample.js',
         'javascript/selenium-core/scripts/user-extensions.js',
         'javascript/selenium-core/scripts/xmlextras.js',
-        'javascript/selenium-core/xpath/**/*.js'
+        'javascript/selenium-core/xpath/**/*.js',
+        'javascript/grid-ui/node_modules/**/*.js'
       )
     )
+    Copyright.new.update(FileList['javascript/**/*.tsx'])
     Copyright.new(comment_characters: '#').update(FileList['py/**/*.py'])
     Copyright.new(comment_characters: '#', prefix: ["# frozen_string_literal: true\n", "\n"])
       .update(FileList['rb/**/*.rb'])
     Copyright.new.update(FileList['java/**/*.java'])
+    Copyright.new.update(FileList['rust/**/*.rs'])
   end
 end
 

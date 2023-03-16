@@ -41,7 +41,7 @@ module Selenium
               to      = File.join(destination, entry.name)
               dirname = File.dirname(to)
 
-              FileUtils.mkdir_p dirname unless File.exist? dirname
+              FileUtils.mkdir_p dirname
               zip.extract(entry, to)
             end
           end

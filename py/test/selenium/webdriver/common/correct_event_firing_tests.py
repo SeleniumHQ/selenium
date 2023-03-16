@@ -76,8 +76,8 @@ def test_mouse_events_should_bubble_up_to_containing_elements(driver, pages):
 @pytest.mark.xfail_safari
 def test_should_emit_on_change_events_when_selecting_elements(driver, pages):
     pages.load("javascriptPage.html")
-    select = driver.find_element(By.ID, 'selector')
-    options = select.find_elements(By.TAG_NAME, 'option')
+    select = driver.find_element(By.ID, "selector")
+    options = select.find_elements(By.TAG_NAME, "option")
     initialTextValue = driver.find_element(By.ID, "result").text
 
     select.click()
@@ -109,6 +109,7 @@ def test_clearing_an_element_should_cause_the_on_change_handler_to_fire(driver, 
     element.clear()
     result = driver.find_element(By.ID, "result")
     assert result.text == "Cleared"
+
 
 # TODO Currently Failing and needs fixing
 # def test_sending_keys_to_another_element_should_cause_the_blur_event_to_fire(driver, pages):

@@ -59,6 +59,7 @@ public class SessionSlot implements
   private final SessionFactory factory;
   private final AtomicBoolean reserved = new AtomicBoolean(false);
   private final boolean supportingCdp;
+  private final boolean supportingBiDi;
   private ActiveSession currentSession;
 
   public SessionSlot(EventBus bus, Capabilities stereotype, SessionFactory factory) {
@@ -67,6 +68,7 @@ public class SessionSlot implements
     this.stereotype = ImmutableCapabilities.copyOf(Require.nonNull("Stereotype", stereotype));
     this.factory = Require.nonNull("Session factory", factory);
     this.supportingCdp = isSlotSupportingCdp(this.stereotype);
+    this.supportingBiDi = isSlotSupportingBiDi(this.stereotype);
   }
 
   public UUID getId() {
@@ -160,10 +162,20 @@ public class SessionSlot implements
     return supportingCdp;
   }
 
+  public boolean isSupportingBiDi() {
+    return supportingBiDi;
+  }
+
   private boolean isSlotSupportingCdp(Capabilities stereotype) {
     return StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
       .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
       .anyMatch(WebDriverInfo::isSupportingCdp);
+  }
+
+  private boolean isSlotSupportingBiDi(Capabilities stereotype) {
+    return StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
+      .filter(webDriverInfo -> webDriverInfo.isSupporting(stereotype))
+      .anyMatch(WebDriverInfo::isSupportingBiDi);
   }
 
   public boolean hasRelayFactory() {

@@ -28,6 +28,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.docker.Container;
 import org.openqa.selenium.docker.ContainerConfig;
 import org.openqa.selenium.docker.ContainerInfo;
+import org.openqa.selenium.docker.Device;
 import org.openqa.selenium.docker.Docker;
 import org.openqa.selenium.docker.Image;
 import org.openqa.selenium.docker.Port;
@@ -72,6 +73,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -96,6 +98,7 @@ public class DockerSessionFactory implements SessionFactory {
   private final URI dockerUri;
   private final Image browserImage;
   private final Capabilities stereotype;
+  private final List<Device> devices;
   private final Image videoImage;
   private final DockerAssetsPath assetsPath;
   private final String networkName;
@@ -110,6 +113,7 @@ public class DockerSessionFactory implements SessionFactory {
     URI dockerUri,
     Image browserImage,
     Capabilities stereotype,
+    List<Device> devices,
     Image videoImage,
     DockerAssetsPath assetsPath,
     String networkName,
@@ -123,6 +127,7 @@ public class DockerSessionFactory implements SessionFactory {
     this.networkName = Require.nonNull("Docker network name", networkName);
     this.stereotype = ImmutableCapabilities.copyOf(
       Require.nonNull("Stereotype", stereotype));
+    this.devices = Require.nonNull("Container devices", devices);
     this.videoImage = videoImage;
     this.assetsPath = assetsPath;
     this.runningInDocker = runningInDocker;
@@ -171,7 +176,7 @@ public class DockerSessionFactory implements SessionFactory {
       try {
         waitForServerToStart(client, Duration.ofMinutes(1));
       } catch (TimeoutException e) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
 
         EXCEPTION.accept(attributeMap, e);
@@ -200,7 +205,7 @@ public class DockerSessionFactory implements SessionFactory {
         attributeMap.put(AttributeKey.DRIVER_RESPONSE.getKey(),
                          EventAttribute.setValue(response.toString()));
       } catch (IOException | RuntimeException e) {
-        span.setAttribute("error", true);
+        span.setAttribute(AttributeKey.ERROR.getKey(), true);
         span.setStatus(Status.CANCELLED);
 
         EXCEPTION.accept(attributeMap, e);
@@ -261,7 +266,8 @@ public class DockerSessionFactory implements SessionFactory {
         mergedCapabilities,
         downstream,
         result.getDialect(),
-        Instant.now()));
+        Instant.now(),
+        assetsPath));
     }
   }
 
@@ -287,7 +293,8 @@ public class DockerSessionFactory implements SessionFactory {
     ContainerConfig containerConfig = image(browserImage)
       .env(browserContainerEnvVars)
       .shmMemorySize(browserContainerShmMemorySize)
-      .network(networkName);
+      .network(networkName)
+      .devices(devices);
     if (!runningInDocker) {
       containerConfig = containerConfig.map(Port.tcp(4444), Port.tcp(port));
     }
@@ -299,11 +306,17 @@ public class DockerSessionFactory implements SessionFactory {
       ofNullable(getScreenResolution(sessionRequestCapabilities));
     Map<String, String> envVars = new HashMap<>();
     if (screenResolution.isPresent()) {
-      envVars.put("SCREEN_WIDTH", String.valueOf(screenResolution.get().getWidth()));
-      envVars.put("SCREEN_HEIGHT", String.valueOf(screenResolution.get().getHeight()));
+      envVars.put("SE_SCREEN_WIDTH", String.valueOf(screenResolution.get().getWidth()));
+      envVars.put("SE_SCREEN_HEIGHT", String.valueOf(screenResolution.get().getHeight()));
     }
     Optional<TimeZone> timeZone = ofNullable(getTimeZone(sessionRequestCapabilities));
     timeZone.ifPresent(zone -> envVars.put("TZ", zone.getID()));
+    // Passing env vars set to the child container
+    Map<String, String> seEnvVars = System.getenv();
+    seEnvVars.entrySet().stream()
+      .filter(entry -> entry.getKey().startsWith("SE_") ||
+                       entry.getKey().equalsIgnoreCase("LANGUAGE"))
+      .forEach(entry -> envVars.put(entry.getKey(), entry.getValue()));
     return envVars;
   }
 
@@ -350,8 +363,10 @@ public class DockerSessionFactory implements SessionFactory {
     envVars.put("DISPLAY_CONTAINER_NAME", containerIp);
     Optional<Dimension> screenResolution =
       ofNullable(getScreenResolution(sessionRequestCapabilities));
-    screenResolution.ifPresent(dimension -> envVars
-      .put("VIDEO_SIZE", String.format("%sx%s", dimension.getWidth(), dimension.getHeight())));
+    screenResolution.ifPresent(dimension -> {
+      envVars.put("SE_SCREEN_WIDTH", String.valueOf(dimension.getWidth()));
+      envVars.put("SE_SCREEN_HEIGHT", String.valueOf(dimension.getHeight()));
+    });
     return envVars;
   }
 
@@ -359,10 +374,14 @@ public class DockerSessionFactory implements SessionFactory {
     Optional<Object> timeZone =
       ofNullable(sessionRequestCapabilities.getCapability("se:timeZone"));
     if (timeZone.isPresent()) {
-      String tz =  timeZone.get().toString();
+      String tz = timeZone.get().toString();
       if (Arrays.asList(TimeZone.getAvailableIDs()).contains(tz)) {
         return TimeZone.getTimeZone(tz);
       }
+    }
+    String envTz = System.getenv("TZ");
+    if (Arrays.asList(TimeZone.getAvailableIDs()).contains(envTz)) {
+      return TimeZone.getTimeZone(envTz);
     }
     return null;
   }

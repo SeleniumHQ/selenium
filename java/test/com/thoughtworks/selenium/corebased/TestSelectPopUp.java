@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestSelectPopUp extends InternalSelenseTestBase {
   @Test
-  public void testSelectPopUp() {
+  void testSelectPopUp() {
     selenium.open("test_select_window.html");
     selenium.click("popupPage");
     selenium.waitForPopUp("myPopupWindow", "");

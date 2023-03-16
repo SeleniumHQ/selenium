@@ -12,13 +12,12 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsProfilerTest : DevToolsTestFixture
     {
         [Test]
-        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SimpleStartStopAndGetProfilerTest()
         {
-            var domains = session.GetVersionSpecificDomains<V100.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V111.DevToolsSessionDomains>();
             await domains.Profiler.Enable();
             await domains.Profiler.Start();
             var response = await domains.Profiler.Stop();
@@ -28,16 +27,15 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
-        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleGetBestEffortProfilerTest()
         {
-            var domains = session.GetVersionSpecificDomains<V100.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V111.DevToolsSessionDomains>();
             await domains.Profiler.Enable();
             driver.Url = simpleTestPage;
-            await domains.Profiler.SetSamplingInterval(new V100.Profiler.SetSamplingIntervalCommandSettings()
+            await domains.Profiler.SetSamplingInterval(new V111.Profiler.SetSamplingIntervalCommandSettings()
             {
                 Interval = 30
             });
@@ -50,16 +48,15 @@ namespace OpenQA.Selenium.DevTools
         }
 
         [Test]
-        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleSetStartPreciseCoverageTest()
         {
-            var domains = session.GetVersionSpecificDomains<V100.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V111.DevToolsSessionDomains>();
             await domains.Profiler.Enable();
             driver.Url = simpleTestPage;
-            await domains.Profiler.StartPreciseCoverage(new V100.Profiler.StartPreciseCoverageCommandSettings()
+            await domains.Profiler.StartPreciseCoverage(new V111.Profiler.StartPreciseCoverageCommandSettings()
             {
                 CallCount = true,
                 Detailed = true
@@ -76,37 +73,34 @@ namespace OpenQA.Selenium.DevTools
 
 
         [Test]
-        [IgnoreBrowser(Selenium.Browser.EdgeLegacy, "Legacy Edge does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task SampleProfileEvents()
         {
-            var domains = session.GetVersionSpecificDomains<V100.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V111.DevToolsSessionDomains>();
             await domains.Profiler.Enable();
             driver.Url = simpleTestPage;
             ManualResetEventSlim startSync = new ManualResetEventSlim(false);
-            EventHandler<V100.Profiler.ConsoleProfileStartedEventArgs> consoleProfileStartedHandler = (sender, e) =>
+            EventHandler<V111.Profiler.ConsoleProfileStartedEventArgs> consoleProfileStartedHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 startSync.Set();
             };
             domains.Profiler.ConsoleProfileStarted += consoleProfileStartedHandler;
 
-            await domains.Profiler.StartTypeProfile();
             await domains.Profiler.Start();
             startSync.Wait(TimeSpan.FromSeconds(5));
             driver.Navigate().Refresh();
 
             ManualResetEventSlim finishSync = new ManualResetEventSlim(false);
-            EventHandler<V100.Profiler.ConsoleProfileFinishedEventArgs> consoleProfileFinishedHandler = (sender, e) =>
+            EventHandler<V111.Profiler.ConsoleProfileFinishedEventArgs> consoleProfileFinishedHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 finishSync.Set();
             };
             domains.Profiler.ConsoleProfileFinished += consoleProfileFinishedHandler;
 
-            await domains.Profiler.StopTypeProfile();
             var response = await domains.Profiler.Stop();
             finishSync.Wait(TimeSpan.FromSeconds(5));
 
@@ -115,7 +109,7 @@ namespace OpenQA.Selenium.DevTools
             await domains.Profiler.Disable();
         }
 
-        private void ValidateProfile(V100.Profiler.Profile profiler)
+        private void ValidateProfile(V111.Profiler.Profile profiler)
         {
             Assert.That(profiler, Is.Not.Null);
             Assert.That(profiler.Nodes, Is.Not.Null);

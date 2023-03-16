@@ -35,7 +35,7 @@ If you have `pip <https://pip.pypa.io/>`_ on your system, you can simply install
 
     pip install -U selenium
 
-Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.1.4.tar.gz), unarchive it, and run::
+Alternately, you can download the source distribution from `PyPI <https://pypi.org/project/selenium/#files>`_ (e.g. selenium-4.8.2.tar.gz), unarchive it, and run::
 
     python setup.py install
 
@@ -132,7 +132,7 @@ Download the server separately, from: https://www.selenium.dev/downloads/
 
 Run the server from the command line::
 
-    java -jar selenium-server-standalone-4.0.0.jar
+    java -jar selenium-server-4.6.0.jar
 
 Then run your Python client scripts.
 
@@ -144,3 +144,16 @@ View source code online:
 +-----------+------------------------------------------------------+
 | official: | https://github.com/SeleniumHQ/selenium/tree/trunk/py |
 +-----------+------------------------------------------------------+
+
+
+Contributing
+=============
+
+ - Create a branch for your work
+ - Ensure `tox` is installed (using a `virtualenv` is recommended)
+ - `python3.7 -m venv .venv && . .venv/bin/activate && pip install tox`
+ - After making changes, before committing execute `tox -e linting`
+ - If tox exits `0`, commit and push otherwise fix the newly introduced breakages.
+ - `flake8` requires manual fixes
+ - `black` will often rewrite the breakages automatically, however the files are unstaged and should staged again.
+ - `isort` will often rewrite the breakages automatically, however the files are unstaged and should staged again.

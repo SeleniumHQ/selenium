@@ -20,8 +20,8 @@ package org.openqa.selenium.interactions;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.remote.Dialect.W3C;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrappedWebElement;
 import org.openqa.selenium.interactions.PointerInput.Kind;
@@ -29,17 +29,16 @@ import org.openqa.selenium.interactions.PointerInput.Origin;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.PropertySetting;
 import org.openqa.selenium.remote.RemoteWebElement;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-@Category(UnitTests.class)
-public class PointerInputTest {
+@Tag("UnitTests")
+class PointerInputTest {
 
   @Test
-  public void encodesWrappedElementInMoveOrigin() {
+  void encodesWrappedElementInMoveOrigin() {
     RemoteWebElement innerElement = new RemoteWebElement();
     innerElement.setId("12345");
     WebElement element = new WrappedWebElement(innerElement);
@@ -61,9 +60,9 @@ public class PointerInputTest {
   }
 
   @Test
-  public void acceptsPointerEventProperties() {
+  void acceptsPointerEventProperties() {
     PointerInput pen = new PointerInput(PointerInput.Kind.PEN, "my pen");
-    Interaction pointerDown = pen.createPointerDown(PointerInput.eventProperties().setHeight(12).setTiltX(30));
+    Interaction pointerDown = pen.createPointerDown(0, PointerInput.eventProperties().setHeight(12).setTiltX(30));
 
     Map<String, Object> encode = ((Encodable) pointerDown).encode();
 

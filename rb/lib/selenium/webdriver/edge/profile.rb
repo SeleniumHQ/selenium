@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/profile'
+require 'selenium/webdriver/chromium/profile'
 
 module Selenium
   module WebDriver
@@ -26,7 +26,7 @@ module Selenium
       # @private
       #
 
-      class Profile < Selenium::WebDriver::Chrome::Profile
+      class Profile < Chromium::Profile
       end # Profile
     end # Edge
   end # WebDriver

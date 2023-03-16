@@ -16,24 +16,21 @@
 // under the License.
 package org.openqa.selenium.support;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.withSettings;
-
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.interactions.HasTouchScreen;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Category(UnitTests.class)
-public class ThreadGuardTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+@Tag("UnitTests")
+class ThreadGuardTest {
 
   @Test
-  public void testProtect() throws Exception {
+  void testProtect() throws Exception {
     WebDriver actual = mock(WebDriver.class);
     final WebDriver protect = ThreadGuard.protect(actual);
     final AtomicInteger successes = new AtomicInteger();
@@ -43,22 +40,13 @@ public class ThreadGuardTest {
     });
     foo.start();
     foo.join();
-    assertThat(successes.get()).isEqualTo(0);
+    assertThat(successes.get()).isZero();
   }
 
   @Test
-  public void testProtectSuccess() {
+  void testProtectSuccess() {
     WebDriver actual = mock(WebDriver.class);
     final WebDriver protect = ThreadGuard.protect(actual);
     assertThat(protect.findElement(By.id("foo"))).isNull();
-  }
-
-  @Test
-  public void testInterfacesProxiedProperly() {
-    WebDriver actual = mock(WebDriver.class,
-                            withSettings().extraInterfaces(HasTouchScreen.class));
-    final WebDriver webdriver = ThreadGuard.protect(actual);
-    HasTouchScreen hasTouchScreen = (HasTouchScreen) webdriver;
-    assertThat(hasTouchScreen).isNotNull();
   }
 }

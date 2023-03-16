@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.docker;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpHandler;
@@ -40,10 +40,10 @@ import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
-public class BootstrapTest {
+class BootstrapTest {
 
   @Test
-  public void shouldReportDockerIsUnsupportedIfServerReturns500() {
+  void shouldReportDockerIsUnsupportedIfServerReturns500() {
     HttpHandler client = req -> new HttpResponse().setStatus(HTTP_INTERNAL_ERROR);
 
     boolean isSupported = new Docker(client).isSupported();
@@ -52,7 +52,7 @@ public class BootstrapTest {
   }
 
   @Test
-  public void shouldReportDockerIsUnsupportedIfServerReturns404() {
+  void shouldReportDockerIsUnsupportedIfServerReturns404() {
     HttpHandler client = req -> new HttpResponse().setStatus(HTTP_NOT_FOUND);
 
     boolean isSupported = new Docker(client).isSupported();
@@ -61,8 +61,10 @@ public class BootstrapTest {
   }
 
   @Test
-  public void shouldReportDockerIsUnsupportIfRequestCausesAnIoException() {
-    HttpHandler client = req -> { throw new UncheckedIOException(new IOException("Eeek!")); };
+  void shouldReportDockerIsUnsupportedIfRequestCausesAnIoException() {
+    HttpHandler client = req -> {
+      throw new UncheckedIOException(new IOException("Eeek!"));
+    };
 
     boolean isSupported = new Docker(client).isSupported();
 
@@ -70,7 +72,7 @@ public class BootstrapTest {
   }
 
   @Test
-  public void shouldComplainBitterlyIfNoSupportedVersionOfDockerProtocolIsFound() {
+  void shouldComplainBitterlyIfNoSupportedVersionOfDockerProtocolIsFound() {
     HttpHandler client = req -> new HttpResponse()
       .setStatus(HTTP_BAD_REQUEST)
       .setHeader("Content-Type", "application/json")
@@ -83,8 +85,8 @@ public class BootstrapTest {
   }
 
   @Test
-  @Ignore("Need to check that the docker daemon is running without using our http stack")
-  public void shouldBeAbleToConnectToRunningDockerServer() throws URISyntaxException {
+  @Disabled("Need to check that the docker daemon is running without using our http stack")
+  void shouldBeAbleToConnectToRunningDockerServer() throws URISyntaxException {
     // It's not enough for the socket to exist. We must be able to connect to it
     assumeThat(Paths.get("/var/run/docker.sock")).exists();
 

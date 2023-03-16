@@ -17,23 +17,25 @@
 
 import http.client as http_client
 
-
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from .service import DEFAULT_EXECUTABLE_PATH, Service
+
+from .service import DEFAULT_EXECUTABLE_PATH
+from .service import Service
 
 
 class WebDriver(RemoteWebDriver):
-    """
-    Controls the WPEWebKitDriver and allows you to drive the browser.
-    """
+    """Controls the WPEWebKitDriver and allows you to drive the browser."""
 
-    def __init__(self, executable_path=DEFAULT_EXECUTABLE_PATH,
-                 port=0, options=None,
-                 desired_capabilities=DesiredCapabilities.WPEWEBKIT,
-                 service_log_path=None):
-        """
-        Creates a new instance of the WPEWebKit driver.
+    def __init__(
+        self,
+        executable_path=DEFAULT_EXECUTABLE_PATH,
+        port=0,
+        options=None,
+        desired_capabilities=DesiredCapabilities.WPEWEBKIT,
+        service_log_path=None,
+    ):
+        """Creates a new instance of the WPEWebKit driver.
 
         Starts the service and then creates new instance of WPEWebKit Driver.
 
@@ -52,19 +54,14 @@ class WebDriver(RemoteWebDriver):
         self.service = Service(executable_path, port=port, log_path=service_log_path)
         self.service.start()
 
-        RemoteWebDriver.__init__(
-            self,
-            command_executor=self.service.service_url,
-            desired_capabilities=desired_capabilities)
+        super().__init__(command_executor=self.service.service_url, desired_capabilities=desired_capabilities)
         self._is_remote = False
 
     def quit(self):
-        """
-        Closes the browser and shuts down the WPEWebKitDriver executable
-        that is started when starting the WPEWebKitDriver
-        """
+        """Closes the browser and shuts down the WPEWebKitDriver executable
+        that is started when starting the WPEWebKitDriver."""
         try:
-            RemoteWebDriver.quit(self)
+            super().quit()
         except http_client.BadStatusLine:
             pass
         finally:

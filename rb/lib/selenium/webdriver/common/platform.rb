@@ -78,6 +78,10 @@ module Selenium
         engine == :jruby
       end
 
+      def truffleruby?
+        engine == :truffleruby
+      end
+
       def ruby_version
         RUBY_VERSION
       end
@@ -105,7 +109,6 @@ module Selenium
 
       def cygwin?
         RUBY_PLATFORM.include?('cygwin')
-        !Regexp.last_match.nil?
       end
 
       def null_device

@@ -17,33 +17,33 @@
 
 import pytest
 
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
-from selenium.webdriver.firefox.options import Log, Options
+from selenium.webdriver.firefox.options import Log
+from selenium.webdriver.firefox.options import Options
 
 
 @pytest.fixture
 def driver_kwargs(driver_kwargs):
-    driver_kwargs['options'] = Options()
+    driver_kwargs["options"] = Options()
     return driver_kwargs
 
 
-class TestIntegration(object):
+class TestIntegration:
     def test_we_can_pass_options(self, driver, pages):
         pages.load("formPage.html")
         driver.find_element(By.ID, "cheese")
 
 
-class TestUnit(object):
+class TestUnit:
     def test_ctor(self):
         opts = Options()
         assert opts._binary is None
-        assert opts._preferences == {}
+        assert not opts._preferences
         assert opts._profile is None
-        assert opts._arguments == []
+        assert not opts._arguments
         assert isinstance(opts.log, Log)
 
     def test_binary(self):

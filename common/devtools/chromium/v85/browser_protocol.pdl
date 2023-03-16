@@ -2969,10 +2969,10 @@ domain Emulation
       # True if emulation is supported.
       boolean result
 
-  # Clears the overriden device metrics.
+  # Clears the overridden device metrics.
   command clearDeviceMetricsOverride
 
-  # Clears the overriden Geolocation Position and Error.
+  # Clears the overridden Geolocation Position and Error.
   command clearGeolocationOverride
 
   # Requests that page scale factor is reset to initial values.
@@ -3120,7 +3120,7 @@ domain Emulation
       # If set the virtual time policy change should be deferred until any frame starts navigating.
       # Note any previous deferred policy change is superseded.
       optional boolean waitForNavigation
-      # If set, base::Time::Now will be overriden to initially return this value.
+      # If set, base::Time::Now will be overridden to initially return this value.
       optional Network.TimeSinceEpoch initialVirtualTime
     returns
       # Absolute timestamp at which virtual time was first enabled (up time in milliseconds).
@@ -5776,7 +5776,7 @@ domain Page
       # Serialized page data.
       string data
 
-  # Clears the overriden device metrics.
+  # Clears the overridden device metrics.
   experimental deprecated command clearDeviceMetricsOverride
     # Use 'Emulation.clearDeviceMetricsOverride' instead
     redirect Emulation
@@ -5786,7 +5786,7 @@ domain Page
     # Use 'DeviceOrientation.clearDeviceOrientationOverride' instead
     redirect DeviceOrientation
 
-  # Clears the overriden Geolocation Position and Error.
+  # Clears the overridden Geolocation Position and Error.
   deprecated command clearGeolocationOverride
     # Use 'Emulation.clearGeolocationOverride' instead
     redirect Emulation

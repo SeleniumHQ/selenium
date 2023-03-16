@@ -19,6 +19,8 @@ package org.openqa.selenium.remote;
 
 import com.google.common.io.CountingOutputStream;
 import com.google.common.io.FileBackedOutputStream;
+
+import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
@@ -32,15 +34,18 @@ import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
@@ -63,7 +68,20 @@ public class ProtocolHandshake {
 
       if (result.isRight()) {
         Result toReturn = result.right();
-        LOG.info(String.format("Detected dialect: %s", toReturn.dialect));
+        LOG.log(Level.FINE, "Detected upstream dialect: {0}", toReturn.dialect);
+
+        List<String> invalid = desired.asMap().keySet()
+          .stream()
+          .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
+          .collect(Collectors.toList());
+
+        if (!invalid.isEmpty()) {
+          LOG.log(Level.WARNING,
+                  () -> String.format("Support for Legacy Capabilities is deprecated; " +
+                                      "You are sending the following invalid capabilities: %s; " +
+                                      "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
+                                      invalid));
+        }
         return toReturn;
       } else {
         throw result.left();
@@ -73,31 +91,35 @@ public class ProtocolHandshake {
 
   public Either<SessionNotCreatedException, Result> createSession(HttpHandler client, NewSessionPayload payload) throws IOException {
     int threshold = (int) Math.min(Runtime.getRuntime().freeMemory() / 10, Integer.MAX_VALUE);
-    FileBackedOutputStream os = new FileBackedOutputStream(threshold);
+    FileBackedOutputStream os = new FileBackedOutputStream(threshold, true);
 
     try (CountingOutputStream counter = new CountingOutputStream(os);
          Writer writer = new OutputStreamWriter(counter, UTF_8)) {
       payload.writeTo(writer);
-
-      try (InputStream rawIn = os.asByteSource().openBufferedStream();
-           BufferedInputStream contentStream = new BufferedInputStream(rawIn)) {
-        return createSession(client, contentStream, counter.getCount());
-      }
-    } finally {
-      os.reset();
+      Supplier<InputStream> contentSupplier = () -> {
+        try {
+          return os.asByteSource().openBufferedStream();
+        } catch (IOException e) {
+          throw new RuntimeException(e);
+        }
+      };
+      return createSession(client, contentSupplier, counter.getCount());
     }
   }
 
-  private Either<SessionNotCreatedException, Result> createSession(HttpHandler client, InputStream newSessionBlob, long size) {
+  private Either<SessionNotCreatedException, Result> createSession(HttpHandler client, Supplier<InputStream> contentSupplier, long size) {
     // Create the http request and send it
     HttpRequest request = new HttpRequest(HttpMethod.POST, "/session");
 
     HttpResponse response;
     long start = System.currentTimeMillis();
 
+    // Setting the CONTENT_LENGTH will allow a http client implementation not to read the data in
+    // memory. Usually the payload is small and buffering it to memory is okay, except for a new
+    // session e.g. with profiles.
     request.setHeader(CONTENT_LENGTH, String.valueOf(size));
     request.setHeader(CONTENT_TYPE, JSON_UTF_8);
-    request.setContent(() -> newSessionBlob);
+    request.setContent(contentSupplier);
 
     response = client.execute(request);
     long time = System.currentTimeMillis() - start;

@@ -15,13 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""
-The WindowTypes implementation.
-"""
+"""The WindowTypes implementation."""
 
 
-class WindowTypes(object):
+class WindowTypes:
     """Set of supported window types."""
 
-    TAB = 'tab'
-    WINDOW = 'window'
+    TAB = "tab"
+    WINDOW = "window"

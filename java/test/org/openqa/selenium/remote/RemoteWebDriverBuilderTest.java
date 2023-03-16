@@ -17,8 +17,8 @@
 
 package org.openqa.selenium.remote;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -35,7 +35,6 @@ import org.openqa.selenium.remote.http.Contents;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.testing.UnitTests;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,8 +61,8 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 import com.google.common.collect.ImmutableMap;
 
-@Category(UnitTests.class)
-public class RemoteWebDriverBuilderTest {
+@Tag("UnitTests")
+class RemoteWebDriverBuilderTest {
 
   private static final SessionId SESSION_ID = new SessionId(UUID.randomUUID());
   private static final HttpResponse CANNED_SESSION_RESPONSE = new HttpResponse()
@@ -74,13 +73,13 @@ public class RemoteWebDriverBuilderTest {
         "capabilities", new ImmutableCapabilities("se:cheese", "primula")))));
 
   @Test
-  public void justCallingBuildWithoutSettingAnyOptionsIsAnError() {
+  void justCallingBuildWithoutSettingAnyOptionsIsAnError() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
     assertThatExceptionOfType(SessionNotCreatedException.class).isThrownBy(builder::build);
   }
 
   @Test
-  public void mustSpecifyAtLeastOneSetOfOptions() {
+  void mustSpecifyAtLeastOneSetOfOptions() {
     List<List<Capabilities>> caps = new ArrayList<>();
 
     RemoteWebDriver.builder().oneOf(new FirefoxOptions())
@@ -97,7 +96,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void settingAGlobalCapabilityCountsAsAnOption() {
+  void settingAGlobalCapabilityCountsAsAnOption() {
     AtomicBoolean match = new AtomicBoolean(false);
 
     RemoteWebDriver.builder().setCapability("se:cheese", "anari")
@@ -115,7 +114,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldForbidGlobalCapabilitiesFromClobberingFirstMatchCapabilities() {
+  void shouldForbidGlobalCapabilitiesFromClobberingFirstMatchCapabilities() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
       .oneOf(new ImmutableCapabilities("se:cheese", "stinking bishop"))
       .setCapability("se:cheese", "cheddar")
@@ -125,7 +124,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void requireAllOptionsAreW3CCompatible() {
+  void requireAllOptionsAreW3CCompatible() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
       .setCapability("cheese", "casu marzu")
       .address("http://localhost:45734");
@@ -134,7 +133,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldRejectOldJsonWireProtocolNames() {
+  void shouldRejectOldJsonWireProtocolNames() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
       .oneOf(new ImmutableCapabilities("platform", Platform.getCurrent()))
       .address("http://localhost:35856");
@@ -143,7 +142,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldAllowMetaDataToBeSet() {
+  void shouldAllowMetaDataToBeSet() {
     AtomicBoolean seen = new AtomicBoolean(false);
 
     RemoteWebDriver.builder()
@@ -161,14 +160,14 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void doesNotAllowFirstMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
+  void doesNotAllowFirstMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> builder.addMetadata("firstMatch", "cheese"));
   }
 
   @Test
-  public void doesNotAllowAlwaysMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
+  void doesNotAllowAlwaysMatchToBeUsedAsAMetadataNameAsItIsConfusing() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> builder.addMetadata("alwaysMatch", "cheese"));
@@ -176,14 +175,14 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void doesNotAllowCapabilitiesToBeUsedAsAMetadataName() {
+  void doesNotAllowCapabilitiesToBeUsedAsAMetadataName() {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder();
     assertThatExceptionOfType(IllegalArgumentException.class)
       .isThrownBy(() -> builder.addMetadata("capabilities", "cheese"));
   }
 
   @Test
-  public void shouldAllowCapabilitiesToBeSetGlobally() {
+  void shouldAllowCapabilitiesToBeSetGlobally() {
     AtomicBoolean seen = new AtomicBoolean(false);
 
     RemoteWebDriver.builder()
@@ -203,7 +202,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void ifARemoteUrlIsGivenThatIsUsedForTheSession() {
+  void ifARemoteUrlIsGivenThatIsUsedForTheSession() {
     URI uri = URI.create("http://localhost:7575");
     AtomicReference<URI> seen = new AtomicReference<>();
 
@@ -220,7 +219,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldUseGivenDriverServiceForUrlIfProvided() throws IOException {
+  void shouldUseGivenDriverServiceForUrlIfProvided() throws IOException {
     URI uri = URI.create("http://localhost:9898");
     URL url = uri.toURL();
 
@@ -245,7 +244,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void settingBothDriverServiceAndUrlIsAnError() throws IOException {
+  void settingBothDriverServiceAndUrlIsAnError() throws IOException {
     RemoteWebDriverBuilder builder = RemoteWebDriver.builder()
         .withDriverService(new FakeDriverService());
 
@@ -254,7 +253,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void oneOfWillClearOutTheCurrentlySetCapabilities() {
+  void oneOfWillClearOutTheCurrentlySetCapabilities() {
     AtomicBoolean allOk = new AtomicBoolean();
 
     RemoteWebDriver.builder()
@@ -273,7 +272,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldBeAbleToSetClientConfigDirectly() {
+  void shouldBeAbleToSetClientConfigDirectly() {
     URI uri = URI.create("http://localhost:5763");
 
     AtomicReference<URI> seen = new AtomicReference<>();
@@ -291,7 +290,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldSetRemoteHostUriOnClientConfigIfSet() {
+  void shouldSetRemoteHostUriOnClientConfigIfSet() {
     URI uri = URI.create("http://localhost:6546");
     ClientConfig config = ClientConfig.defaultConfig().baseUri(uri);
 
@@ -310,7 +309,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldThrowErrorIfCustomConfigIfSetForLocalDriver() {
+  void shouldThrowErrorIfCustomConfigIfSetForLocalDriver() {
     ClientConfig config = ClientConfig.defaultConfig()
       .readTimeout(Duration.ofMinutes(4));
 
@@ -325,7 +324,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldSetSessionIdFromW3CResponse() {
+  void shouldSetSessionIdFromW3CResponse() {
     RemoteWebDriver driver = (RemoteWebDriver) RemoteWebDriver.builder()
       .oneOf(new FirefoxOptions())
       .address("http://localhost:34576")
@@ -336,7 +335,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void commandsShouldBeSentWithW3CHeaders() {
+  void commandsShouldBeSentWithW3CHeaders() {
     AtomicBoolean allOk = new AtomicBoolean(false);
 
     RemoteWebDriver.builder()
@@ -352,7 +351,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldUseWebDriverInfoToFindAMatchingDriverImplementationForRequestedCapabilitiesIfRemoteUrlNotSet() {
+  void shouldUseWebDriverInfoToFindAMatchingDriverImplementationForRequestedCapabilitiesIfRemoteUrlNotSet() {
     WebDriver driver = RemoteWebDriver.builder()
       .oneOf(new ImmutableCapabilities("browser", "selenium-test"))
       .connectingWith(config -> req -> CANNED_SESSION_RESPONSE)
@@ -362,7 +361,7 @@ public class RemoteWebDriverBuilderTest {
   }
 
   @Test
-  public void shouldAugmentDriverIfPossible() {
+  void shouldAugmentDriverIfPossible() {
     HttpResponse response = new HttpResponse()
       .setContent(Contents.asJson(ImmutableMap.of(
         "value", ImmutableMap.of(
@@ -370,7 +369,7 @@ public class RemoteWebDriverBuilderTest {
           "capabilities", new ImmutableCapabilities("firefox", "caps")))));
 
     Augmenter augmenter = new Augmenter().addDriverAugmentation("firefox",
-                                                                AugmenterTest.HasMagicNumbers.class,
+                                                                HasMagicNumbers.class,
                                                                 (c, exe) -> () -> 1);
     WebDriver driver = RemoteWebDriver.builder()
       .oneOf(new FirefoxOptions())
@@ -379,14 +378,14 @@ public class RemoteWebDriverBuilderTest {
       .connectingWith(config -> req -> response)
       .build();
 
-    int number = ((AugmenterTest.HasMagicNumbers)driver).getMagicNumber();
+    int number = ((HasMagicNumbers)driver).getMagicNumber();
 
-    assertThat(driver).isInstanceOf(AugmenterTest.HasMagicNumbers.class);
+    assertThat(driver).isInstanceOf(HasMagicNumbers.class);
     assertThat(number).isEqualTo(1);
   }
 
   @Test
-  public void shouldAugmentDriverWhenUsingDriverService() throws IOException {
+  void shouldAugmentDriverWhenUsingDriverService() throws IOException {
     URI uri = URI.create("http://localhost:9898");
     URL url = uri.toURL();
 
@@ -404,7 +403,7 @@ public class RemoteWebDriverBuilderTest {
           "capabilities", new ImmutableCapabilities("firefox", "caps")))));
 
     Augmenter augmenter = new Augmenter().addDriverAugmentation("firefox",
-                                                                AugmenterTest.HasMagicNumbers.class,
+                                                                HasMagicNumbers.class,
                                                                 (c, exe) -> () -> 1);
     WebDriver driver = RemoteWebDriver.builder()
       .oneOf(new FirefoxOptions())
@@ -413,14 +412,14 @@ public class RemoteWebDriverBuilderTest {
       .connectingWith(config -> req -> response)
       .build();
 
-    int number = ((AugmenterTest.HasMagicNumbers) driver).getMagicNumber();
+    int number = ((HasMagicNumbers) driver).getMagicNumber();
 
-    assertThat(driver).isInstanceOf(AugmenterTest.HasMagicNumbers.class);
+    assertThat(driver).isInstanceOf(HasMagicNumbers.class);
     assertThat(number).isEqualTo(1);
   }
 
   @Test
-  public void shouldAugmentWithDevToolsWhenUsingDriverService() throws IOException {
+  void shouldAugmentWithDevToolsWhenUsingDriverService() throws IOException {
     URI uri = URI.create("http://localhost:9898");
     URL url = uri.toURL();
 

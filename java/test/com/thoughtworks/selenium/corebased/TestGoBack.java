@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestGoBack extends InternalSelenseTestBase {
   @Test
-  public void testGoBack() {
+  void testGoBack() {
     selenium.open("test_click_page1.html");
     verifyEquals(selenium.getTitle(), "Click Page 1");
     // Click a regular link

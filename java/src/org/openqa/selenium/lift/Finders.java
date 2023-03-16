@@ -130,7 +130,6 @@ public class Finders {
         Collection<WebElement> collection = super.findFrom(context);
         if (!collection.isEmpty()) {
           Iterator<WebElement> iter = collection.iterator();
-          iter.hasNext();
           return Collections.singletonList(iter.next());
         }
         return collection;

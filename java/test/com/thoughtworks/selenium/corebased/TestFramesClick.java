@@ -19,11 +19,11 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestFramesClick extends InternalSelenseTestBase {
   @Test
-  public void testFramesClick() throws Exception {
+  void testFramesClick() throws Exception {
     selenium.open("Frames.html");
     selenium.selectFrame("mainFrame");
     selenium.open("test_click_page1.html");

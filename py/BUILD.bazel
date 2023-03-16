@@ -2,18 +2,27 @@ load("@rules_pkg//pkg:mappings.bzl", "pkg_files", "strip_prefix")
 load("@rules_pkg//pkg:pkg.bzl", "pkg_tar")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 load("@rules_python//python:packaging.bzl", "py_package", "py_wheel")
-load("@dev_requirements//:requirements.bzl", "requirement")
+load("@py_dev_requirements//:requirements.bzl", "requirement")
 load("//common:defs.bzl", "copy_file")
-load("//py:defs.bzl", "py_test_suite")
+load("//py:defs.bzl", "generate_devtools", "py_test_suite")
 load("//py/private:browsers.bzl", "BROWSERS")
+load("//py/private:import.bzl", "py_import")
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
 
-SE_VERSION = "4.1.4"
+compile_pip_requirements(
+    # base name for generated targets, typically "requirements"
+    name = "requirements",
+    requirements_in = ":requirements.txt",
+    requirements_txt = ":requirements_lock.txt",
+)
+
+SE_VERSION = "4.8.2"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v99",
-    "v100",
-    "v101",
+    "v109",
+    "v110",
+    "v111",
 ]
 
 TEST_DEPS = [
@@ -36,6 +45,24 @@ TEST_DEPS = [
     requirement("sniffio"),
     requirement("zipp"),
 ]
+
+copy_file(
+    name = "manager-macos",
+    src = "//common/manager:macos/selenium-manager",
+    out = "selenium/webdriver/common/macos/selenium-manager",
+)
+
+copy_file(
+    name = "manager-linux",
+    src = "//common/manager:linux/selenium-manager",
+    out = "selenium/webdriver/common/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-windows",
+    src = "//common/manager:windows/selenium-manager.exe",
+    out = "selenium/webdriver/common/windows/selenium-manager.exe",
+)
 
 copy_file(
     name = "get-attribute",
@@ -68,9 +95,21 @@ copy_file(
 )
 
 copy_file(
-    name = "favourite_color",
+    name = "webextensions-selenium-example-xpi",
     src = "//common/extensions:webextensions-selenium-example.xpi",
-    out = "test/selenium/webdriver/firefox/webextensions-selenium-example.xpi",
+    out = "test/extensions/webextensions-selenium-example.xpi",
+)
+
+copy_file(
+    name = "webextensions-selenium-example-zip",
+    src = "//common/extensions:webextensions-selenium-example.zip",
+    out = "test/extensions/webextensions-selenium-example.zip",
+)
+
+copy_file(
+    name = "webextensions-selenium-example-unsigned-zip",
+    src = "//common/extensions:webextensions-selenium-example-unsigned.zip",
+    out = "test/extensions/webextensions-selenium-example-unsigned.zip",
 )
 
 py_library(
@@ -86,7 +125,9 @@ py_library(
         ":get-attribute",
         ":is-displayed",
         ":mutation-listener",
-        ":favourite_color",
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
     ] + [":create-cdp-srcs-" + n for n in BROWSER_VERSIONS],
     imports = ["."],
     visibility = ["//visibility:public"],
@@ -124,6 +165,7 @@ pkg_files(
         "README.rst",
         "setup.py",
         ":selenium-pkg",
+        ":selenium-pkginfo",
     ],
     strip_prefix = strip_prefix.from_pkg(),
 )
@@ -133,7 +175,20 @@ pkg_tar(
     srcs = [":selenium-sdist-pkg"],
     extension = "tar.gz",
     mode = "0644",
+    package_dir = "selenium-%s" % SE_VERSION,
     package_file_name = "selenium-%s.tar.gz" % SE_VERSION,
+)
+
+genrule(
+    name = "selenium-pkginfo",
+    srcs = [":selenium-wheel-lib"],
+    outs = ["PKG-INFO"],
+    cmd = "cp $(location :selenium-wheel-lib)/selenium-%s.dist-info/METADATA $@" % SE_VERSION,
+)
+
+py_import(
+    name = "selenium-wheel-lib",
+    wheel = ":selenium-wheel",
 )
 
 py_wheel(
@@ -151,17 +206,19 @@ py_wheel(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
     ],
     description_file = "README.rst",
     distribution = "selenium",
     homepage = "https://www.selenium.dev",
     license = "Apache 2.0",
-    python_requires = "~=3.7",
+    python_requires = ">=3.7",
     python_tag = "py3",
     requires = [
-        "urllib3[secure, socks]~=1.26",
+        "urllib3[socks]~=1.26",
         "trio~=0.17",
         "trio-websocket~=0.9",
+        "certifi>=2021.10.8",
     ],
     strip_path_prefixes = [
         "py/",
@@ -199,6 +256,9 @@ py_library(
         "setup.cfg",
         "test/selenium/webdriver/common/test_file.txt",
         "test/selenium/webdriver/common/test_file2.txt",
+        ":webextensions-selenium-example-unsigned-zip",
+        ":webextensions-selenium-example-xpi",
+        ":webextensions-selenium-example-zip",
     ],
     imports = ["."],
     deps = [
@@ -213,18 +273,14 @@ py_binary(
     deps = [requirement("inflection")],
 )
 
-[genrule(
-    name = "create-cdp-srcs-" + n,
-    srcs = [
-        "//common/devtools/chromium/" + n + ":browser_protocol",
-        "//common/devtools/chromium/" + n + ":js_protocol",
-    ],
-    outs = ["selenium/webdriver/common/devtools/" + n],
-    cmd = "python3 $(location :generate) $(location //common/devtools/chromium/" + n + ":browser_protocol) $(location //common/devtools/chromium/" + n + ":js_protocol) $@",
-    tools = [
-        ":generate",
-    ],
-) for n in BROWSER_VERSIONS]
+[generate_devtools(
+    name = "create-cdp-srcs-{}".format(devtools_version),
+    browser_protocol = "//common/devtools/chromium/{}:browser_protocol".format(devtools_version),
+    generator = ":generate",
+    js_protocol = "//common/devtools/chromium/{}:js_protocol".format(devtools_version),
+    outdir = "selenium/webdriver/common/devtools/{}".format(devtools_version),
+    protocol_version = devtools_version,
+) for devtools_version in BROWSER_VERSIONS]
 
 py_test_suite(
     name = "unit",
@@ -366,9 +422,6 @@ py_test_suite(
         "--instafail",
         "--driver=firefox",
     ],
-    data = [
-        "//common/extensions",
-    ],
     tags = [
         "no-sandbox",
     ],
@@ -391,7 +444,6 @@ py_test_suite(
         "--driver=remote",
     ],
     data = [
-        "//common/extensions",
         "//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
     ],
     tags = [

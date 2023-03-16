@@ -15,13 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import warnings
+
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.service import Service
 from selenium.webdriver.edge.options import Options as EdgeOptions
-from selenium.webdriver.chrome.options import Options as ChromeOptions
-import warnings
-
-from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 DEFAULT_PORT = 0
@@ -30,17 +30,23 @@ DEFAULT_KEEP_ALIVE = None
 
 
 class ChromiumDriver(RemoteWebDriver):
-    """
-    Controls the WebDriver instance of ChromiumDriver and allows you to drive the browser.
-    """
+    """Controls the WebDriver instance of ChromiumDriver and allows you to
+    drive the browser."""
 
-    def __init__(self, browser_name, vendor_prefix,
-                 port=DEFAULT_PORT, options: BaseOptions = None, service_args=None,
-                 desired_capabilities=None, service_log_path=DEFAULT_SERVICE_LOG_PATH,
-                 service: Service = None, keep_alive=DEFAULT_KEEP_ALIVE):
-        """
-        Creates a new WebDriver instance of the ChromiumDriver.
-        Starts the service and then creates new WebDriver instance of ChromiumDriver.
+    def __init__(
+        self,
+        browser_name,
+        vendor_prefix,
+        port=DEFAULT_PORT,
+        options: BaseOptions = None,
+        service_args=None,
+        desired_capabilities=None,
+        service_log_path=DEFAULT_SERVICE_LOG_PATH,
+        service: Service = None,
+        keep_alive=DEFAULT_KEEP_ALIVE,
+    ) -> None:
+        """Creates a new WebDriver instance of the ChromiumDriver. Starts the
+        service and then creates new WebDriver instance of ChromiumDriver.
 
         :Args:
          - browser_name - Browser name used when matching capabilities.
@@ -54,18 +60,24 @@ class ChromiumDriver(RemoteWebDriver):
          - keep_alive - Deprecated: Whether to configure ChromiumRemoteConnection to use HTTP keep-alive.
         """
         if desired_capabilities:
-            warnings.warn('desired_capabilities has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "desired_capabilities has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if port != DEFAULT_PORT:
-            warnings.warn('port has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn("port has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2)
         self.port = port
         if service_log_path != DEFAULT_SERVICE_LOG_PATH:
-            warnings.warn('service_log_path has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "service_log_path has been deprecated, please pass in a Service object",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if keep_alive != DEFAULT_KEEP_ALIVE and type(self) == __class__:
-            warnings.warn('keep_alive has been deprecated, please pass in a Service object',
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "keep_alive has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
+            )
         else:
             keep_alive = True
 
@@ -83,19 +95,22 @@ class ChromiumDriver(RemoteWebDriver):
             _ignore_proxy = options._ignore_local_proxy
 
         if not service:
-            raise AttributeError('service cannot be None')
+            raise AttributeError("service cannot be None")
 
         self.service = service
         self.service.start()
 
         try:
-            RemoteWebDriver.__init__(
-                self,
+            super().__init__(
                 command_executor=ChromiumRemoteConnection(
                     remote_server_addr=self.service.service_url,
-                    browser_name=browser_name, vendor_prefix=vendor_prefix,
-                    keep_alive=keep_alive, ignore_proxy=_ignore_proxy),
-                options=options)
+                    browser_name=browser_name,
+                    vendor_prefix=vendor_prefix,
+                    keep_alive=keep_alive,
+                    ignore_proxy=_ignore_proxy,
+                ),
+                options=options,
+            )
         except Exception:
             self.quit()
             raise
@@ -103,22 +118,20 @@ class ChromiumDriver(RemoteWebDriver):
 
     def launch_app(self, id):
         """Launches Chromium app specified by id."""
-        return self.execute("launchApp", {'id': id})
+        return self.execute("launchApp", {"id": id})
 
     def get_network_conditions(self):
-        """
-        Gets Chromium network emulation settings.
+        """Gets Chromium network emulation settings.
 
         :Returns:
             A dict. For example:
             {'latency': 4, 'download_throughput': 2, 'upload_throughput': 2,
             'offline': False}
         """
-        return self.execute("getNetworkConditions")['value']
+        return self.execute("getNetworkConditions")["value"]
 
     def set_network_conditions(self, **network_conditions) -> None:
-        """
-        Sets Chromium network emulation settings.
+        """Sets Chromium network emulation settings.
 
         :Args:
          - network_conditions: A dict with conditions specification.
@@ -134,19 +147,14 @@ class ChromiumDriver(RemoteWebDriver):
 
             Note: 'throughput' can be used to set both (for download and upload).
         """
-        self.execute("setNetworkConditions", {
-            'network_conditions': network_conditions
-        })
+        self.execute("setNetworkConditions", {"network_conditions": network_conditions})
 
     def delete_network_conditions(self) -> None:
-        """
-        Resets Chromium network emulation settings.
-        """
+        """Resets Chromium network emulation settings."""
         self.execute("deleteNetworkConditions")
 
     def set_permissions(self, name: str, value: str) -> None:
-        """
-        Sets Applicable Permission.
+        """Sets Applicable Permission.
 
         :Args:
          - name: The item to set the permission on.
@@ -156,12 +164,12 @@ class ChromiumDriver(RemoteWebDriver):
             ::
                 driver.set_permissions('clipboard-read', 'denied')
         """
-        self.execute("setPermissions", {'descriptor': {'name': name}, 'state': value})
+        self.execute("setPermissions", {"descriptor": {"name": name}, "state": value})
 
     def execute_cdp_cmd(self, cmd: str, cmd_args: dict):
-        """
-        Execute Chrome Devtools Protocol command and get returned result
-        The command and command args should follow chrome devtools protocol domains/commands, refer to link
+        """Execute Chrome Devtools Protocol command and get returned result The
+        command and command args should follow chrome devtools protocol
+        domains/commands, refer to link
         https://chromedevtools.github.io/devtools-protocol/
 
         :Args:
@@ -175,63 +183,58 @@ class ChromiumDriver(RemoteWebDriver):
             For example to getResponseBody:
             {'base64Encoded': False, 'body': 'response body string'}
         """
-        return self.execute("executeCdpCommand", {'cmd': cmd, 'params': cmd_args})['value']
+        return self.execute("executeCdpCommand", {"cmd": cmd, "params": cmd_args})["value"]
 
     def get_sinks(self) -> list:
         """
         :Returns: A list of sinks available for Cast.
         """
-        return self.execute('getSinks')['value']
+        return self.execute("getSinks")["value"]
 
     def get_issue_message(self):
         """
         :Returns: An error message when there is any issue in a Cast session.
         """
-        return self.execute('getIssueMessage')['value']
+        return self.execute("getIssueMessage")["value"]
 
-    def set_sink_to_use(self, sink_name: str) -> str:
-        """
-        Sets a specific sink, using its name, as a Cast session receiver target.
-
-        :Args:
-         - sink_name: Name of the sink to use as the target.
-        """
-        return self.execute('setSinkToUse', {'sinkName': sink_name})
-
-    def start_desktop_mirroring(self, sink_name: str) -> str:
-        """
-        Starts a desktop mirroring session on a specific receiver target.
+    def set_sink_to_use(self, sink_name: str) -> dict:
+        """Sets a specific sink, using its name, as a Cast session receiver
+        target.
 
         :Args:
          - sink_name: Name of the sink to use as the target.
         """
-        return self.execute('startDesktopMirroring', {'sinkName': sink_name})
+        return self.execute("setSinkToUse", {"sinkName": sink_name})
 
-    def start_tab_mirroring(self, sink_name: str) -> str:
-        """
-        Starts a tab mirroring session on a specific receiver target.
+    def start_desktop_mirroring(self, sink_name: str) -> dict:
+        """Starts a desktop mirroring session on a specific receiver target.
 
         :Args:
          - sink_name: Name of the sink to use as the target.
         """
-        return self.execute('startTabMirroring', {'sinkName': sink_name})
+        return self.execute("startDesktopMirroring", {"sinkName": sink_name})
 
-    def stop_casting(self, sink_name: str) -> str:
+    def start_tab_mirroring(self, sink_name: str) -> dict:
+        """Starts a tab mirroring session on a specific receiver target.
+
+        :Args:
+         - sink_name: Name of the sink to use as the target.
         """
-        Stops the existing Cast session on a specific receiver target.
+        return self.execute("startTabMirroring", {"sinkName": sink_name})
+
+    def stop_casting(self, sink_name: str) -> dict:
+        """Stops the existing Cast session on a specific receiver target.
 
         :Args:
          - sink_name: Name of the sink to stop the Cast session.
         """
-        return self.execute('stopCasting', {'sinkName': sink_name})
+        return self.execute("stopCasting", {"sinkName": sink_name})
 
     def quit(self) -> None:
-        """
-        Closes the browser and shuts down the ChromiumDriver executable
-        that is started when starting the ChromiumDriver
-        """
+        """Closes the browser and shuts down the ChromiumDriver executable that
+        is started when starting the ChromiumDriver."""
         try:
-            RemoteWebDriver.quit(self)
+            super().quit()
         except Exception:
             # We don't care about the message because something probably has gone wrong
             pass
@@ -239,7 +242,4 @@ class ChromiumDriver(RemoteWebDriver):
             self.service.stop()
 
     def create_options(self) -> BaseOptions:
-        if self.vendor_prefix == "ms":
-            return EdgeOptions()
-        else:
-            return ChromeOptions()
+        return EdgeOptions() if self.vendor_prefix == "ms" else ChromeOptions()

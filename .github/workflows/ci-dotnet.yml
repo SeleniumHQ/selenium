@@ -1,0 +1,49 @@
+name: CI - .NET
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build
+      cache-key: dotnet-build
+      os: windows
+      run: bazel build //dotnet/src/webdriver:package //dotnet/src/support:package
+
+  integration-tests:
+    name: Browser Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        driver:
+          - Chrome
+          - Firefox
+        framework:
+          - net48
+          - net6.0
+          - netcoreapp3.1
+        include:
+          - driver: Chrome
+            browser: chrome
+            location: C:\SeleniumWebDrivers\ChromeDriver
+          - driver: Firefox
+            browser: chrome
+            location: C:\SeleniumWebDrivers\GeckoDriver
+    with:
+      name: Browser Tests (${{ matrix.driver }}, ${{ matrix.framework }})
+      browser: ${{ matrix.browser }}
+      cache-key: dotnet-${{ matrix.browser }}-${{ matrix.framework }}
+      java-version: 11
+      os: windows
+      run: |
+        bazel build //dotnet/test/common:${{ matrix.browser }}
+        $env:ACTIVE_DRIVER_CONFIG = '${{ matrix.driver }}'
+        $env:DRIVER_SERVICE_LOCATION = '${{ matrix.location }}'
+        cd dotnet
+        dotnet test test/common/WebDriver.Common.Tests.csproj --framework ${{ matrix.framework }}

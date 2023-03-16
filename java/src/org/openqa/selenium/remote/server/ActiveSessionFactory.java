@@ -17,15 +17,6 @@
 
 package org.openqa.selenium.remote.server;
 
-import static org.openqa.selenium.remote.Browser.CHROME;
-import static org.openqa.selenium.remote.Browser.EDGE;
-import static org.openqa.selenium.remote.Browser.FIREFOX;
-import static org.openqa.selenium.remote.Browser.HTMLUNIT;
-import static org.openqa.selenium.remote.Browser.IE;
-import static org.openqa.selenium.remote.Browser.OPERA;
-import static org.openqa.selenium.remote.Browser.SAFARI;
-import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -49,6 +40,14 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
+
+import static org.openqa.selenium.remote.Browser.CHROME;
+import static org.openqa.selenium.remote.Browser.EDGE;
+import static org.openqa.selenium.remote.Browser.FIREFOX;
+import static org.openqa.selenium.remote.Browser.HTMLUNIT;
+import static org.openqa.selenium.remote.Browser.IE;
+import static org.openqa.selenium.remote.Browser.SAFARI;
+import static org.openqa.selenium.remote.CapabilityType.BROWSER_NAME;
 
 /**
  * Used to create new {@link ActiveSession} instances as required.
@@ -84,7 +83,6 @@ public class ActiveSessionFactory implements SessionFactory {
         .put(containsKey(Pattern.compile("^moz:.*")), "org.openqa.selenium.firefox.GeckoDriverService")
         .put(browserName(IE.browserName()), "org.openqa.selenium.ie.InternetExplorerDriverService")
         .put(containsKey("se:ieOptions"), "org.openqa.selenium.ie.InternetExplorerDriverService")
-        .put(browserName(OPERA.browserName()), "org.openqa.selenium.opera.OperaDriverService")
         .put(browserName(SAFARI.browserName()), "org.openqa.selenium.safari.SafariDriverService")
         .put(containsKey(Pattern.compile("^safari\\..*")), "org.openqa.selenium.safari.SafariDriverService")
         .build()

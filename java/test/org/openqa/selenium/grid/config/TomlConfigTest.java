@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.grid.config;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.util.Arrays;
@@ -27,10 +27,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TomlConfigTest {
+class TomlConfigTest {
 
   @Test
-  public void shouldUseATableAsASection() {
+  void shouldUseATableAsASection() {
     String raw = "[cheeses]\nselected=brie";
     Config config = new TomlConfig(new StringReader(raw));
 
@@ -38,7 +38,7 @@ public class TomlConfigTest {
   }
 
   @Test
-  public void shouldContainConfigFromArrayOfTables() {
+  void shouldContainConfigFromArrayOfTables() {
     String[] rawConfig = new String[]{
       "[cheeses]",
       "default = manchego",

@@ -21,18 +21,19 @@ import contextlib
 import logging
 import os
 import re
-import socket
 import threading
-from io import open
+
 try:
     from urllib import request as urllib_request
 except ImportError:
     import urllib as urllib_request
 try:
-    from http.server import BaseHTTPRequestHandler, HTTPServer
+    from http.server import BaseHTTPRequestHandler
+    from http.server import HTTPServer
     from socketserver import ThreadingMixIn
 except ImportError:
-    from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+    from BaseHTTPServer import BaseHTTPRequestHandler
+    from BaseHTTPServer import HTTPServer
     from SocketServer import ThreadingMixIn
 
 
@@ -45,12 +46,15 @@ LOGGER = logging.getLogger(__name__)
 WEBDRIVER = os.environ.get("WEBDRIVER", updir())
 HTML_ROOT = os.path.join(WEBDRIVER, "../../../../common/src/web")
 if not os.path.isdir(HTML_ROOT):
-    message = ("Can't find 'common_web' directory, try setting WEBDRIVER"
-               " environment variable WEBDRIVER:" + WEBDRIVER + "  HTML_ROOT:" + HTML_ROOT)
+    message = (
+        "Can't find 'common_web' directory, try setting WEBDRIVER"
+        " environment variable WEBDRIVER:" + WEBDRIVER + "  HTML_ROOT:" + HTML_ROOT
+    )
     LOGGER.error(message)
     assert 0, message
 
-DEFAULT_HOST = "127.0.0.1"
+DEFAULT_HOST = "localhost"
+DEFAULT_HOST_IP = "127.0.0.1"
 DEFAULT_PORT = 8000
 
 
@@ -60,27 +64,29 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         """GET method handler."""
         try:
-            path = self.path[1:].split('?')[0]
+            path = self.path[1:].split("?")[0]
             if path[:5] == "page/":
                 html = """<html><head><title>Page{page_number}</title></head>
                 <body>Page number <span id=\"pageNumber\">{page_number}</span>
                 <p><a href=\"../xhtmlTest.html\" target=\"_top\">top</a>
-                </body></html>""".format(page_number=path[5:])
-                html = html.encode('utf-8')
+                </body></html>""".format(
+                    page_number=path[5:]
+                )
+                html = html.encode("utf-8")
             else:
-                with open(os.path.join(HTML_ROOT, path), 'r', encoding='latin-1') as f:
-                    html = f.read().encode('utf-8')
+                with open(os.path.join(HTML_ROOT, path), encoding="latin-1") as f:
+                    html = f.read().encode("utf-8")
             self.send_response(200)
-            self.send_header('Content-type', 'text/html')
+            self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(html)
-        except IOError:
+        except OSError:
             self.send_error(404, f"File Not Found: {path}")
 
     def do_POST(self):
         """POST method handler."""
         try:
-            remaining_bytes = int(self.headers['content-length'])
+            remaining_bytes = int(self.headers["content-length"])
             contents = ""
             line = self.rfile.readline()
             contents += line.decode("utf-8")
@@ -106,14 +112,14 @@ class HtmlOnlyHandler(BaseHTTPRequestHandler):
                 contents += line.decode("utf-8")
 
             self.send_response(200)
-            self.send_header('Content-type', 'text/html')
+            self.send_header("Content-type", "text/html")
             self.end_headers()
 
             self.wfile.write(
                 f"""<!doctype html>
                 {contents}
                 <script>window.top.window.onUploadDone();</script>
-                """.encode('utf-8')
+                """.encode()
             )
         except Exception as e:
             self.send_error(500, f"Error found: {e}")
@@ -127,10 +133,10 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
     pass
 
 
-class SimpleWebServer(object):
+class SimpleWebServer:
     """A very basic web server."""
 
-    def __init__(self, host=DEFAULT_HOST, port=DEFAULT_PORT):
+    def __init__(self, host=DEFAULT_HOST_IP, port=DEFAULT_PORT):
         self.stop_serving = False
         host = host
         port = port
@@ -140,7 +146,7 @@ class SimpleWebServer(object):
                 self.host = host
                 self.port = port
                 break
-            except socket.error:
+            except OSError:
                 LOGGER.debug(f"port {port} is in use, trying to next one")
                 port += 1
 
@@ -163,7 +169,10 @@ class SimpleWebServer(object):
         with contextlib.suppress(IOError):
             _ = urllib_request.urlopen(f"http://{self.host}:{self.port}")
 
-    def where_is(self, path) -> str:
+    def where_is(self, path, localhost=False) -> str:
+        # True force serve the page from localhost
+        if localhost:
+            return f"http://{DEFAULT_HOST}:{self.port}/{path}"
         return f"http://{self.host}:{self.port}/{path}"
 
 
@@ -173,12 +182,13 @@ def main(argv=None):
 
     if argv is None:
         import sys
+
         argv = sys.argv
 
     parser = OptionParser("%prog [options]")
-    parser.add_option("-p", "--port", dest="port", type="int",
-                      help=f"port to listen (default: {DEFAULT_PORT})",
-                      default=DEFAULT_PORT)
+    parser.add_option(
+        "-p", "--port", dest="port", type="int", help=f"port to listen (default: {DEFAULT_PORT})", default=DEFAULT_PORT
+    )
 
     opts, args = parser.parse_args(argv[1:])
     if args:

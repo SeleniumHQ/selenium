@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.chrome;
 
-import org.junit.Test;
+import com.google.common.util.concurrent.Uninterruptibles;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -29,8 +32,8 @@ import org.openqa.selenium.chromium.HasPermissions;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
+import org.openqa.selenium.testing.JupiterTestBase;
+import org.openqa.selenium.testing.NoDriverBeforeTest;
 
 import java.time.Duration;
 import java.util.List;
@@ -40,30 +43,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assumptions.assumeThat;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
-public class ChromeDriverFunctionalTest extends JUnit4TestBase {
+class ChromeDriverFunctionalTest extends JupiterTestBase {
 
   private final String CLIPBOARD_READ = "clipboard-read";
   private final String CLIPBOARD_WRITE = "clipboard-write";
 
   @Test
+  @NoDriverBeforeTest
   public void builderGeneratesDefaultChromeOptions() {
-    WebDriver driver = ChromeDriver.builder().build();
-    driver.quit();
+    localDriver = ChromeDriver.builder().build();
+    Capabilities capabilities = ((ChromeDriver) localDriver).getCapabilities();
+
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ZERO);
+    assertThat(capabilities.getCapability("browserName")).isEqualTo("chrome");
   }
 
   @Test
+  @NoDriverBeforeTest
   public void builderOverridesDefaultChromeOptions() {
     ChromeOptions options = new ChromeOptions();
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
-    WebDriver driver = ChromeDriver.builder().oneOf(options).build();
-    assertThat(driver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
-
-    driver.quit();
+    localDriver = ChromeDriver.builder().oneOf(options).build();
+    assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
   }
 
   @Test
-  public void builderWithClientConfigthrowsException() {
+  void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = ChromeDriver.builder().config(clientConfig);
 
@@ -73,7 +80,8 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canSetPermission() {
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4350")
+  void canSetPermission() {
     HasPermissions permissions = (HasPermissions) driver;
 
     driver.get(pages.clicksPage);
@@ -85,30 +93,6 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
     assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("denied");
     assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
-  }
-
-  @Test
-  public void canSetPermissionHeadless() {
-    ChromeOptions options = new ChromeOptions();
-    options.setHeadless(true);
-
-    //TestChromeDriver is not honoring headless request; using ChromeDriver instead
-    WebDriver driver = new WebDriverBuilder().get(options);
-    try {
-      HasPermissions permissions = (HasPermissions) driver;
-
-      driver.get(pages.clicksPage);
-      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("prompt");
-      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
-
-      permissions.setPermission(CLIPBOARD_READ, "granted");
-      permissions.setPermission(CLIPBOARD_WRITE, "granted");
-
-      assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("granted");
-      assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("granted");
-    } finally {
-      driver.quit();
-    }
   }
 
   public String checkPermission(WebDriver driver, String permission){
@@ -123,12 +107,12 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  public void canCast() throws InterruptedException {
+  void canCast() {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Thread.sleep(1500);
+    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
@@ -142,12 +126,12 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
 
   @Test
   @Ignore(gitHubActions = true)
-  public void canCastOnDesktop() throws InterruptedException {
+  public void canCastOnDesktop() {
     HasCasting caster = (HasCasting) driver;
 
     // Does not get list the first time it is called
     caster.getCastSinks();
-    Thread.sleep(1500);
+    Uninterruptibles.sleepUninterruptibly(Duration.ofMillis(1500));
     List<Map<String, String>> castSinks = caster.getCastSinks();
 
     // Can not call these commands if there are no sinks available
@@ -160,7 +144,7 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canManageNetworkConditions() {
+  void canManageNetworkConditions() {
     HasNetworkConditions conditions = (HasNetworkConditions) driver;
 
     ChromiumNetworkConditions networkConditions = new ChromiumNetworkConditions();
@@ -182,7 +166,7 @@ public class ChromeDriverFunctionalTest extends JUnit4TestBase {
   }
 
   @Test
-  public void canExecuteCdpCommands() {
+  void canExecuteCdpCommands() {
     HasCdp cdp = (HasCdp) driver;
 
     Map<String, Object> parameters = Map.of("url", pages.simpleTestPage);

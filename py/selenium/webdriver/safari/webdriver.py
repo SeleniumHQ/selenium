@@ -16,33 +16,37 @@
 # under the License.
 
 import http.client as http_client
-
-
 import warnings
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
-from .options import Options
-from .service import DEFAULT_EXECUTABLE_PATH, Service
-from .remote_connection import SafariRemoteConnection
 
+from .options import Options
+from .remote_connection import SafariRemoteConnection
+from .service import DEFAULT_EXECUTABLE_PATH
+from .service import Service
 
 DEFAULT_SAFARI_CAPS = DesiredCapabilities.SAFARI.copy()
 
 
 class WebDriver(RemoteWebDriver):
-    """
-    Controls the SafariDriver and allows you to drive the browser.
+    """Controls the SafariDriver and allows you to drive the browser."""
 
-    """
-
-    def __init__(self, port=0, executable_path=DEFAULT_EXECUTABLE_PATH, reuse_service=False,
-                 desired_capabilities=DEFAULT_SAFARI_CAPS, quiet=False,
-                 keep_alive=True, service_args=None, options: Options = None, service: Service = None):
-        """
-
-        Creates a new Safari driver instance and launches or finds a running safaridriver service.
+    def __init__(
+        self,
+        port=0,
+        executable_path=DEFAULT_EXECUTABLE_PATH,
+        reuse_service=False,
+        desired_capabilities=DEFAULT_SAFARI_CAPS,
+        quiet=False,
+        keep_alive=True,
+        service_args=None,
+        options: Options = None,
+        service: Service = None,
+    ) -> None:
+        """Creates a new Safari driver instance and launches or finds a running
+        safaridriver service.
 
         :Args:
          - port - The port on which the safaridriver service should listen for new connections. If zero, a free port will be found.
@@ -56,55 +60,62 @@ class WebDriver(RemoteWebDriver):
          - service - Service object for handling the browser driver if you need to pass extra details
         """
         if port:
-            warnings.warn("port has been deprecated, please set it via the service class",
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "port has been deprecated, please set it via the service class", DeprecationWarning, stacklevel=2
+            )
 
         if executable_path != DEFAULT_EXECUTABLE_PATH:
-            warnings.warn("executable_path has been deprecated, please use the Options class to set it",
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "executable_path has been deprecated, please use the Options class to set it",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if reuse_service:
-            warnings.warn("reuse_service has been deprecated, please use the Service class to set it",
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "reuse_service has been deprecated, please use the Service class to set it",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if desired_capabilities != DEFAULT_SAFARI_CAPS:
-            warnings.warn("desired_capabilities has been deprecated, please use the Options class to set it",
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "desired_capabilities has been deprecated, please use the Options class to set it",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         if quiet:
-            warnings.warn("quiet has been deprecated, please use the Service class to set it",
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "quiet has been deprecated, please use the Service class to set it", DeprecationWarning, stacklevel=2
+            )
         if not keep_alive:
-            warnings.warn("keep_alive has been deprecated, please use the Service class to set it",
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "keep_alive has been deprecated, please use the Service class to set it",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         if service_args:
-            warnings.warn("service_args has been deprecated, please use the Service class to set it",
-                          DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                "service_args has been deprecated, please use the Service class to set it",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         self._reuse_service = reuse_service
-        if service:
-            self.service = service
-        else:
-            self.service = Service(executable_path, port=port, quiet=quiet, service_args=service_args)
+        self.service = service or Service(executable_path, port=port, quiet=quiet, service_args=service_args)
         if not reuse_service:
             self.service.start()
 
-        executor = SafariRemoteConnection(remote_server_addr=self.service.service_url,
-                                          keep_alive=keep_alive)
+        executor = SafariRemoteConnection(remote_server_addr=self.service.service_url, keep_alive=keep_alive)
 
-        RemoteWebDriver.__init__(
-            self,
-            command_executor=executor,
-            options=options,
-            desired_capabilities=desired_capabilities)
+        super().__init__(command_executor=executor, options=options, desired_capabilities=desired_capabilities)
 
         self._is_remote = False
 
     def quit(self):
-        """
-        Closes the browser and shuts down the SafariDriver executable
-        that is started when starting the SafariDriver
-        """
+        """Closes the browser and shuts down the SafariDriver executable that
+        is started when starting the SafariDriver."""
         try:
-            RemoteWebDriver.quit(self)
+            super().quit()
         except http_client.BadStatusLine:
             pass
         finally:

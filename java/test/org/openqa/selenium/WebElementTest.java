@@ -19,23 +19,23 @@ package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.testing.JupiterTestBase;
 
 /**
  * Tests for generic WebElement.
  */
-public class WebElementTest extends JUnit4TestBase {
+class WebElementTest extends JupiterTestBase {
 
   @Test
-  public void testElementImplementsWrapsDriver() {
+  void testElementImplementsWrapsDriver() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
     assertThat(parent).isInstanceOf(WrapsDriver.class);
   }
 
   @Test
-  public void testElementReturnsOriginDriver() {
+  void testElementReturnsOriginDriver() {
     driver.get(pages.simpleTestPage);
     WebElement parent = driver.findElement(By.id("containsSomeDiv"));
     assertThat(((WrapsDriver) parent).getWrappedDriver()).isSameAs(driver);

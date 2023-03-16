@@ -19,13 +19,13 @@ package com.thoughtworks.selenium.corebased;
 
 import com.thoughtworks.selenium.InternalSelenseTestBase;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.regex.Pattern;
 
 public class TestAlerts extends InternalSelenseTestBase {
   @Test
-  public void testAlerts() throws Exception {
+  void testAlerts() throws Exception {
     selenium.open("test_verify_alert.html");
     verifyFalse(selenium.isAlertPresent());
     assertFalse(selenium.isAlertPresent());

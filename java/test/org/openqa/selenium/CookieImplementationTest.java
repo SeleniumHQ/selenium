@@ -18,7 +18,7 @@
 package org.openqa.selenium;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assume.assumeTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.openqa.selenium.testing.drivers.Browser.ALL;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
@@ -26,11 +26,11 @@ import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.DomainHelper;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
@@ -39,13 +39,13 @@ import java.util.Date;
 import java.util.Random;
 import java.util.Set;
 
-public class CookieImplementationTest extends JUnit4TestBase {
+class CookieImplementationTest extends JupiterTestBase {
 
   private DomainHelper domainHelper;
   private String cookiePage;
   private static final Random random = new Random();
 
-  @Before
+  @BeforeEach
   public void setUp() {
     domainHelper = new DomainHelper(appServer);
     assumeTrue(domainHelper.checkIsOnValidHostname());
@@ -203,10 +203,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3153")
-  @NotYetImplemented(value = EDGE, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3153")
   @Ignore(SAFARI)
-  @NotYetImplemented(value = FIREFOX, reason = "https://github.com/mozilla/geckodriver/issues/1104")
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
@@ -270,7 +267,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() {
+  void testShouldBeAbleToIncludeLeadingPeriodInDomainName() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
 
@@ -424,7 +421,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @NotYetImplemented(CHROME)
   public void canHandleHttpOnlyCookie() {
     Cookie addedCookie =
       new Cookie.Builder("fish", "cod")
@@ -517,7 +513,7 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertThat(driver.manage().getCookies()).isEmpty();
     String documentCookie = getDocumentCookieOrNull();
     if (documentCookie != null) {
-      assertThat(documentCookie).isEqualTo("");
+      assertThat(documentCookie).isEmpty();
     }
   }
 

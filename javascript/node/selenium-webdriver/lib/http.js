@@ -31,7 +31,8 @@ const error = require('./error')
 const logging = require('./logging')
 const promise = require('./promise')
 const { Session } = require('./session')
-const { WebElement } = require('./webdriver')
+const webElement = require('./webelement')
+const { isObject } = require('./util')
 
 const getAttribute = requireAtom(
   'get-attribute.js',
@@ -181,14 +182,14 @@ class InternalTypeError extends TypeError {}
  * @param params
  * @return {!Command} The transformed command to execute.
  */
-function toExecuteAtomCommand(command, atom, ...params) {
+function toExecuteAtomCommand(command, atom, name, ...params) {
   if (typeof atom !== 'function') {
     throw new InternalTypeError('atom is not a function: ' + typeof atom)
   }
 
   return new cmd.Command(cmd.Name.EXECUTE_SCRIPT)
     .setParameter('sessionId', command.getParameter('sessionId'))
-    .setParameter('script', `return (${atom}).apply(null, arguments)`)
+    .setParameter('script', `/* ${name} */return (${atom}).apply(null, arguments)`)
     .setParameter(
       'args',
       params.map((param) => command.getParameter(param))
@@ -251,7 +252,7 @@ const W3C_COMMAND_MAP = new Map([
   [
     cmd.Name.FIND_ELEMENTS_RELATIVE,
     (cmd) => {
-      return toExecuteAtomCommand(cmd, Atom.FIND_ELEMENTS, 'args')
+      return toExecuteAtomCommand(cmd, Atom.FIND_ELEMENTS, 'findElements', 'args')
     },
   ],
   [
@@ -271,7 +272,7 @@ const W3C_COMMAND_MAP = new Map([
   [
     cmd.Name.GET_ELEMENT_ATTRIBUTE,
     (cmd) => {
-      return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'id', 'name')
+      return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'getAttribute', 'id', 'name')
     },
   ],
   [
@@ -307,7 +308,7 @@ const W3C_COMMAND_MAP = new Map([
   [
     cmd.Name.IS_ELEMENT_DISPLAYED,
     (cmd) => {
-      return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'id')
+      return toExecuteAtomCommand(cmd, Atom.IS_DISPLAYED, 'isDisplayed', 'id')
     },
   ],
 
@@ -347,6 +348,44 @@ const W3C_COMMAND_MAP = new Map([
 
   // Server Extensions
   [cmd.Name.UPLOAD_FILE, post('/session/:sessionId/se/file')],
+
+  // Virtual Authenticator
+  [
+    cmd.Name.ADD_VIRTUAL_AUTHENTICATOR,
+    post('/session/:sessionId/webauthn/authenticator'),
+  ],
+  [
+    cmd.Name.REMOVE_VIRTUAL_AUTHENTICATOR,
+    del('/session/:sessionId/webauthn/authenticator/:authenticatorId'),
+  ],
+  [
+    cmd.Name.ADD_CREDENTIAL,
+    post(
+      '/session/:sessionId/webauthn/authenticator/:authenticatorId/credential'
+    ),
+  ],
+  [
+    cmd.Name.GET_CREDENTIALS,
+    get(
+      '/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials'
+    ),
+  ],
+  [
+    cmd.Name.REMOVE_CREDENTIAL,
+    del(
+      '/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials/:credentialId'
+    ),
+  ],
+  [
+    cmd.Name.REMOVE_ALL_CREDENTIALS,
+    del(
+      '/session/:sessionId/webauthn/authenticator/:authenticatorId/credentials'
+    ),
+  ],
+  [
+    cmd.Name.SET_USER_VERIFIED,
+    post('/session/:sessionId/webauthn/authenticator/:authenticatorId/uv'),
+  ],
 ])
 
 /**
@@ -424,7 +463,7 @@ const CLIENTS =
 class Executor {
   /**
    * @param {!(Client|IThenable<!Client>)} client The client to use for sending
-   *     requests to the server, or a promise-like object that will resolve to
+   *     requests to the server, or a promise-like object that will resolve
    *     to the client.
    */
   constructor(client) {
@@ -472,6 +511,7 @@ class Executor {
     this.log_.finer(() => `>>>\n${request}\n<<<\n${response}`)
 
     let httpResponse = /** @type {!Response} */ (response)
+
     let { isW3C, value } = parseHttpResponse(command, httpResponse)
 
     if (command.getName() === cmd.Name.NEW_SESSION) {
@@ -530,12 +570,10 @@ function parseHttpResponse(command, httpResponse) {
   }
 
   let parsed = tryParse(httpResponse.body)
+
   if (parsed && typeof parsed === 'object') {
     let value = parsed.value
-    let isW3C =
-      value !== null &&
-      typeof value === 'object' &&
-      typeof parsed.status === 'undefined'
+    let isW3C = isObject(value) && typeof parsed.status === 'undefined'
 
     if (!isW3C) {
       error.checkLegacyResponse(parsed)
@@ -585,10 +623,10 @@ function buildPath(path, parameters) {
       let key = pathParameters[i].substring(2) // Trim the /:
       if (key in parameters) {
         let value = parameters[key]
-        if (WebElement.isId(value)) {
+        if (webElement.isId(value)) {
           // When inserting a WebElement into the URL, only use its ID value,
           // not the full JSON.
-          value = WebElement.extractId(value)
+          value = webElement.extractId(value)
         }
         path = path.replace(pathParameters[i], '/' + value)
         delete parameters[key]
@@ -605,10 +643,10 @@ function buildPath(path, parameters) {
 // PUBLIC API
 
 module.exports = {
-  Executor: Executor,
-  Client: Client,
-  Request: Request,
-  Response: Response,
+  Executor,
+  Client,
+  Request,
+  Response,
   // Exported for testing.
-  buildPath: buildPath,
+  buildPath,
 }

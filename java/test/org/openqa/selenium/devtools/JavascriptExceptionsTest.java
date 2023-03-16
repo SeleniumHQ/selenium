@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.devtools;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.environment.webserver.Page;
@@ -31,7 +31,7 @@ import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class JavascriptExceptionsTest extends DevToolsTestBase {
+class JavascriptExceptionsTest extends DevToolsTestBase {
 
   @Test
   @NotYetImplemented(value = Browser.FIREFOX, reason = "`Log` domain not yet supported")
