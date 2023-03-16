@@ -198,7 +198,7 @@ class Service(ABC):
         """
         cmd = [path]
         cmd.extend(self.command_line_args())
-        close_file_descriptors = self.popen_kw.pop("close_fds", None) or system() != "Windows"
+        close_file_descriptors = self.popen_kw.pop("close_fds", system() != "Windows")
         try:
             self.process = subprocess.Popen(
                 cmd,
