@@ -34,7 +34,7 @@ GEM
       method_source (~> 1.0)
       spoon (~> 0.0)
     public_suffix (5.0.1)
-    rack (2.2.5)
+    rack (3.0.7)
     rainbow (3.1.1)
     regexp_parser (2.6.1)
     rexml (3.2.5)
@@ -89,7 +89,7 @@ PLATFORMS
 
 DEPENDENCIES
   pry (~> 0.14)
-  rack (~> 2.0)
+  rack (~> 3.0)
   rspec (~> 3.0)
   rubocop (~> 1.42)
   rubocop-performance (~> 1.15)
