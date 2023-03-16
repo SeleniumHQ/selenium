@@ -64,7 +64,7 @@ namespace OpenQA.Selenium.DevTools
         /// </summary>
         /// <param name="endpointAddress"></param>
         /// <param name="waitForDebuggerOnStart">When enabled new targets will be waiting until runtime.runIfWaitingForDebugger is invoked.</param>
-        public DevToolsSession(string endpointAddress, bool waitForDebuggerOnStart)
+        public DevToolsSession(string endpointAddress, bool waitForDebuggerOnStart = false)
         {
             if (string.IsNullOrWhiteSpace(endpointAddress))
             {
