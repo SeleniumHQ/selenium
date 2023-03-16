@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.chrome;
 
+import com.google.common.util.concurrent.Uninterruptibles;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -44,8 +46,6 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-
-import com.google.common.util.concurrent.Uninterruptibles;
 
 class ChromeDriverFunctionalTest extends JupiterTestBase {
 

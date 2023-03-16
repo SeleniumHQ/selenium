@@ -18,9 +18,11 @@
 package org.openqa.selenium.grid.node;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.openqa.selenium.BuildInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.data.CreateSessionResponse;
 import org.openqa.selenium.grid.data.NodeId;
@@ -41,13 +43,13 @@ import org.openqa.selenium.remote.locators.CustomLocator;
 import org.openqa.selenium.remote.tracing.SpanDecorator;
 import org.openqa.selenium.remote.tracing.Tracer;
 import org.openqa.selenium.status.HasReadyState;
-import org.openqa.selenium.WebDriverException;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -210,16 +212,21 @@ public abstract class Node implements HasReadyState, Routable {
     return OS_INFO;
   }
 
-  public abstract Either<WebDriverException, CreateSessionResponse> newSession(CreateSessionRequest sessionRequest);
+  public abstract Either<WebDriverException, CreateSessionResponse> newSession(
+    CreateSessionRequest sessionRequest);
 
   public abstract HttpResponse executeWebDriverCommand(HttpRequest req);
 
   public abstract Session getSession(SessionId id) throws NoSuchSessionException;
 
-  public TemporaryFilesystem getTemporaryFilesystem(SessionId id) throws IOException {
+  public TemporaryFilesystem getUploadsFilesystem(SessionId id) throws IOException {
     throw new UnsupportedOperationException();
   }
 
+  public TemporaryFilesystem getDownloadsFilesystem(UUID uuid) throws IOException {
+    throw new UnsupportedOperationException();
+  }
+  
   public abstract HttpResponse uploadFile(HttpRequest req, SessionId id);
 
   public abstract HttpResponse downloadFile(HttpRequest req, SessionId id);
