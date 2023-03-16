@@ -76,6 +76,17 @@ namespace OpenQA.Selenium.DevTools
             where TCommandResponse : ICommandResponse<TCommand>;
 
         /// <summary>
+        /// Returns a JToken based on a command created with the specified command name and params.
+        /// </summary>
+        /// <param name="commandName">The name of the command to send.</param>
+        /// <param name="params">The parameters of the command as a JToken object</param>
+        /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
+        /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
+        /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
+        /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
+        Task<JToken> SendCommand(string commandName, JToken @params, CancellationToken cancellationToken, int? millisecondsTimeout, bool throwExceptionIfResponseNotReceived);
+
+        /// <summary>
         /// Returns a <see cref="DevToolsCommandResponse"/> based on a command created with the specified command name and params.
         /// </summary>
         /// <param name="devToolsCommandSettings">The command name and parameters to send.</param>

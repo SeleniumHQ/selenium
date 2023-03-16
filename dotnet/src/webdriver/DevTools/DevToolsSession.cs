@@ -201,6 +201,28 @@ namespace OpenQA.Selenium.DevTools
         /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
         /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
         //[DebuggerStepThrough]
+        public async Task<JToken> SendCommand(string commandName, JToken commandParameters, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        {
+            var result = await SendCommand(new DevToolsCommandSettings(commandName) { CommandParameters = commandParameters, SessionId = this.ActiveSessionId }, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+
+            if (result == null)
+            {
+                return default(JToken);
+            }
+
+            return result.Result;
+        }
+
+        /// <summary>
+        /// Returns a JToken based on a command created with the specified command name and params.
+        /// </summary>
+        /// <param name="commandName">The name of the command to send.</param>
+        /// <param name="commandParameters">The parameters of the command as a JToken object</param>
+        /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
+        /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
+        /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
+        /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
+        //[DebuggerStepThrough]
         public async Task<DevToolsCommandResponse> SendCommand(DevToolsCommandSettings devToolsCommandSettings, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         {
             if (millisecondsTimeout.HasValue == false)
