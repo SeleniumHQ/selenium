@@ -515,29 +515,10 @@ pub fn create_default_http_client() -> Client {
         .unwrap_or_default()
 }
 
-// ----------------------------------------------------------
-// Private functions
-// ----------------------------------------------------------
-
-fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn Error>> {
-    let version_vec: Vec<&str> = full_version.split('.').collect();
-    Ok(version_vec
-        .get(index)
-        .ok_or(format!("Wrong version: {}", full_version))?
-        .to_string())
-}
-
 pub fn http_client_builder() -> ClientBuilder {
     Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
-}
-
-fn strip_trailing_newline(input: &str) -> &str {
-    input
-        .strip_suffix(CRLF)
-        .or_else(|| input.strip_suffix(LF))
-        .unwrap_or(input)
 }
 
 pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Error>> {
@@ -561,6 +542,25 @@ pub fn format_one_arg(string: &str, arg1: &str) -> String {
 
 pub fn format_two_args(string: &str, arg1: &str, arg2: &str) -> String {
     string.replacen("{}", arg1, 1).replacen("{}", arg2, 2)
+}
+
+// ----------------------------------------------------------
+// Private functions
+// ----------------------------------------------------------
+
+fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn Error>> {
+    let version_vec: Vec<&str> = full_version.split('.').collect();
+    Ok(version_vec
+        .get(index)
+        .ok_or(format!("Wrong version: {}", full_version))?
+        .to_string())
+}
+
+fn strip_trailing_newline(input: &str) -> &str {
+    input
+        .strip_suffix(CRLF)
+        .or_else(|| input.strip_suffix(LF))
+        .unwrap_or(input)
 }
 
 fn split_lines(string: &str) -> Vec<&str> {
