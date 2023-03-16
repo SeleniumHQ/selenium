@@ -164,7 +164,8 @@ public class SeleniumManager {
         return null;
       }
       List<String> commandList =
-        Arrays.asList(binaryFile.getAbsolutePath(), "--browser", options.getBrowserName(),
+        Arrays.asList(binaryFile.getAbsolutePath(),
+                      "--browser", options.getBrowserName(),
                       "--output", "json");
       if (!options.getBrowserVersion().isEmpty()) {
         commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
@@ -177,7 +178,9 @@ public class SeleniumManager {
       if(binaryFile == null) {
         return null;
       }
-      ImmutableList<String> commandList = ImmutableList.of(binaryFile.getAbsolutePath(), "--driver", driverName);
+      ImmutableList<String> commandList = ImmutableList.of(binaryFile.getAbsolutePath(),
+                                                           "--driver", driverName,
+                                                           "--output", "json");
       return runCommand(commandList.toArray(new String[0]));
     }
 }
