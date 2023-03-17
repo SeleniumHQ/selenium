@@ -25,10 +25,11 @@ use std::fs;
 
 use crate::config::OS::WINDOWS;
 use crate::config::{str_to_os, ManagerConfig};
+use is_executable::IsExecutable;
 use reqwest::{Client, ClientBuilder, Proxy};
 use std::collections::HashMap;
 use std::error::Error;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::Duration;
 
@@ -76,6 +77,8 @@ pub const WHICH_COMMAND: &str = "which {}";
 pub const TTL_BROWSERS_SEC: u64 = 0;
 pub const TTL_DRIVERS_SEC: u64 = 86400;
 pub const UNAME_COMMAND: &str = "uname -{}";
+pub const CRLF: &str = "\r\n";
+pub const LF: &str = "\n";
 
 pub trait SeleniumManager {
     // ----------------------------------------------------------
@@ -253,7 +256,22 @@ pub trait SeleniumManager {
                         which_command,
                         self.get_driver_name(),
                     )) {
-                        Ok(path) => Some(path),
+                        Ok(path) => {
+                            let path_vector = split_lines(path.as_str());
+                            if path_vector.len() == 1 {
+                                Some(path_vector.first().unwrap().to_string())
+                            } else {
+                                let exec_paths: Vec<&str> = path_vector
+                                    .into_iter()
+                                    .filter(|p| Path::new(p).is_executable())
+                                    .collect();
+                                if exec_paths.is_empty() {
+                                    None
+                                } else {
+                                    Some(exec_paths.first().unwrap().to_string())
+                                }
+                            }
+                        }
                         Err(_) => None,
                     };
                     return (Some(parsed_version), driver_path);
@@ -497,29 +515,10 @@ pub fn create_default_http_client() -> Client {
         .unwrap_or_default()
 }
 
-// ----------------------------------------------------------
-// Private functions
-// ----------------------------------------------------------
-
-fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn Error>> {
-    let version_vec: Vec<&str> = full_version.split('.').collect();
-    Ok(version_vec
-        .get(index)
-        .ok_or(format!("Wrong version: {}", full_version))?
-        .to_string())
-}
-
 pub fn http_client_builder() -> ClientBuilder {
     Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
-}
-
-fn strip_trailing_newline(input: &str) -> &str {
-    input
-        .strip_suffix("\r\n")
-        .or_else(|| input.strip_suffix('\n'))
-        .unwrap_or(input)
 }
 
 pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Error>> {
@@ -543,4 +542,31 @@ pub fn format_one_arg(string: &str, arg1: &str) -> String {
 
 pub fn format_two_args(string: &str, arg1: &str, arg2: &str) -> String {
     string.replacen("{}", arg1, 1).replacen("{}", arg2, 2)
+}
+
+// ----------------------------------------------------------
+// Private functions
+// ----------------------------------------------------------
+
+fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn Error>> {
+    let version_vec: Vec<&str> = full_version.split('.').collect();
+    Ok(version_vec
+        .get(index)
+        .ok_or(format!("Wrong version: {}", full_version))?
+        .to_string())
+}
+
+fn strip_trailing_newline(input: &str) -> &str {
+    input
+        .strip_suffix(CRLF)
+        .or_else(|| input.strip_suffix(LF))
+        .unwrap_or(input)
+}
+
+fn split_lines(string: &str) -> Vec<&str> {
+    if string.contains(CRLF) {
+        string.split(CRLF).collect()
+    } else {
+        string.split(LF).collect()
+    }
 }

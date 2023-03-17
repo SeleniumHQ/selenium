@@ -490,6 +490,7 @@ class ExecutingJavascriptTest extends JupiterTestBase {
 
   @Test
   @Ignore(IE)
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4395")
   public void testShouldBeAbleToReturnADateObject() throws ParseException {
     driver.get(pages.simpleTestPage);
 

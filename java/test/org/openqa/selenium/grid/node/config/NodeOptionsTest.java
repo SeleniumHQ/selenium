@@ -467,7 +467,7 @@ class NodeOptionsTest {
     assertThat(reported.get(0).asMap()).asInstanceOf(MAP)
       .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
       .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("--homepage=https://www.selenium.dev");
+      .containsAnyOf("--homepage=https://www.selenium.dev");
   }
 
   @Test

@@ -23,12 +23,6 @@ then
   bazel build //dotnet/src/webdriver/cdp:generate-v85
 fi
 
-if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v108/DevToolsSessionDomains.cs" ]]
-then
-  echo "Generating CDP code for version 108"
-  bazel build //dotnet/src/webdriver/cdp:generate-v108
-fi
-
 if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v109/DevToolsSessionDomains.cs" ]]
 then
   echo "Generating CDP code for version 109"
@@ -39,4 +33,10 @@ if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v110/DevToolsSessionDo
 then
   echo "Generating CDP code for version 110"
   bazel build //dotnet/src/webdriver/cdp:generate-v110
+fi
+
+if [[ ! -f "$1../../../bazel-bin/dotnet/src/webdriver/cdp/v111/DevToolsSessionDomains.cs" ]]
+then
+  echo "Generating CDP code for version 111"
+  bazel build //dotnet/src/webdriver/cdp:generate-v111
 fi

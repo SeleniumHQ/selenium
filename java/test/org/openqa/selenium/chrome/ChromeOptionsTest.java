@@ -143,7 +143,7 @@ class ChromeOptionsTest {
     assertThat(merged.asMap()).asInstanceOf(MAP)
       .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
       .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("verbose", "silent");
+      .containsExactly("--remote-allow-origins=*", "verbose", "silent");
   }
 
   @Test
@@ -243,7 +243,7 @@ class ChromeOptionsTest {
     assertThat(map).asInstanceOf(MAP)
       .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
       .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("verbose", "silent");
+      .containsExactly("--remote-allow-origins=*", "verbose", "silent");
 
     assertThat(map).asInstanceOf(MAP)
       .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
@@ -295,7 +295,7 @@ class ChromeOptionsTest {
     assertThat(map).asInstanceOf(MAP)
       .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
       .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("verbose", "silent");
+      .containsExactly("--remote-allow-origins=*", "verbose", "silent");
 
     assertThat(map).asInstanceOf(MAP)
       .containsEntry("opt1", "val1");

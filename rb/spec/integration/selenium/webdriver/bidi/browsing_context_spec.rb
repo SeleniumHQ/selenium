@@ -72,7 +72,7 @@ module Selenium
           expect(info.url).to include('/bidi/logEntryAdded.html')
         end
 
-        it 'can get tree with a child', except: {browser: %i[chrome edge]} do
+        it 'can get tree with a child' do
           browsing_context_id = driver.window_handle
           parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),
@@ -84,7 +84,7 @@ module Selenium
           expect(context_info.children[0]['url']).to include('formPage.html')
         end
 
-        it 'can get tree with depth', except: {browser: %i[chrome edge], reason: 'not yet implemented'} do
+        it 'can get tree with depth' do
           browsing_context_id = driver.window_handle
           parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),

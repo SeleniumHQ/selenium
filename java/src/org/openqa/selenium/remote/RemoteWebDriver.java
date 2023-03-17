@@ -692,8 +692,7 @@ public class RemoteWebDriver implements WebDriver,
 
   private void checkChromeW3CFalse(Capabilities capabilities) {
     // Throwing warnings when the user sets `w3c: false` inside `goog:chromeOptions`
-    if ("chrome".equalsIgnoreCase(capabilities.getBrowserName()) &&
-        capabilities.asMap().containsKey("goog:chromeOptions")) {
+    if (Browser.CHROME.is(capabilities) && capabilities.asMap().containsKey("goog:chromeOptions")) {
       Object capability = capabilities.getCapability("goog:chromeOptions");
       boolean w3c = true;
       if ((capability instanceof Map)) {
