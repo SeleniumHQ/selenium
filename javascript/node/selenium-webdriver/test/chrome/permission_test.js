@@ -20,11 +20,14 @@
 const assert = require('assert')
 const chrome = require('../../chrome')
 const test = require('../../lib/test')
+const {ignore} = require("../../lib/test");
+const {Browser} = require("../../index");
 
 test.suite(
   function (env) {
+    // Chrome unable to set "prompt" due to: https://bugs.chromium.org/p/chromedriver/issues/detail?id=4350
     describe('setPermission', () => {
-      it('can set permission', async function () {
+      ignore(env.browsers(Browser.CHROME)).it('can set permission', async function () {
         const driver = await env.builder().build()
 
         await driver.get(test.Pages.clicksPage)
@@ -44,7 +47,7 @@ test.suite(
         await driver.quit()
       })
 
-      it('can set permission in headless mode', async function () {
+      ignore(env.browsers(Browser.CHROME)).it('can set permission in headless mode', async function () {
         const driver = await env
           .builder()
           .setChromeOptions(new chrome.Options().headless())

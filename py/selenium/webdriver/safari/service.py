@@ -42,6 +42,7 @@ class Service(service.Service):
         quiet: bool = False,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        **kwargs,
     ) -> None:
         self._check_executable(executable_path)
         self.service_args = service_args or []
@@ -52,6 +53,7 @@ class Service(service.Service):
             port=port,
             log_file=log_file,  # type: ignore
             env=env,
+            **kwargs,
         )
 
     @staticmethod

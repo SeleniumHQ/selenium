@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,8 @@ import static org.openqa.selenium.remote.Browser.FIREFOX;
  * Manages the life and death of an GeckoDriver aka 'wires'.
  */
 public class GeckoDriverService extends FirefoxDriverService {
+
+  public static final String GECKO_DRIVER_NAME = "geckodriver";
 
   /**
    * System property that defines the location of the GeckoDriver executable
@@ -67,6 +70,14 @@ public class GeckoDriverService extends FirefoxDriverService {
     super(executable, port, DEFAULT_TIMEOUT,
       unmodifiableList(new ArrayList<>(args)),
       unmodifiableMap(new HashMap<>(environment)));
+  }
+
+  public String getDriverName() {
+    return GECKO_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return GECKO_DRIVER_EXE_PROPERTY;
   }
 
   /**
@@ -101,7 +112,16 @@ public class GeckoDriverService extends FirefoxDriverService {
   }
 
   /**
+   * Checks if the browser driver binary is already present. Grid uses this method to show
+   * the available browsers and drivers, hence its visibility.
    *
+   * @return Whether the browser driver path was found.
+   */
+  static boolean isPresent() {
+    return findExePath(GECKO_DRIVER_NAME, GECKO_DRIVER_EXE_PROPERTY) != null;
+  }
+
+  /**
    * @param caps Capabilities instance
    * @return default GeckoDriverService
    */
@@ -124,9 +144,10 @@ public class GeckoDriverService extends FirefoxDriverService {
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends FirefoxDriverService.Builder<
-        GeckoDriverService, GeckoDriverService.Builder> {
+    GeckoDriverService, GeckoDriverService.Builder> {
 
     private FirefoxBinary firefoxBinary;
+    private String allowHosts;
 
     public Builder() {
     }
@@ -154,17 +175,19 @@ public class GeckoDriverService extends FirefoxDriverService {
      */
     public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
       Require.nonNull("Firefox binary", firefoxBinary);
-      checkExecutable(firefoxBinary.getFile());
       this.firefoxBinary = firefoxBinary;
       return this;
     }
 
-    @Override
-    protected File findDefaultExecutable() {
-      return findExecutable(
-        "geckodriver", GECKO_DRIVER_EXE_PROPERTY,
-        "https://github.com/mozilla/geckodriver",
-        "https://github.com/mozilla/geckodriver/releases");
+    /**
+     * Values of the Host header to allow for incoming requests.
+     *
+     * @param allowHosts Space-separated list of host names.
+     * @return A self reference.
+     */
+    public GeckoDriverService.Builder withAllowHosts(String allowHosts) {
+      this.allowHosts = allowHosts;
+      return this;
     }
 
     @Override
@@ -188,8 +211,13 @@ public class GeckoDriverService extends FirefoxDriverService {
           args.add("-b");
           args.add(e.getPath());
         });
+        // If the binary stays null, GeckoDriver will be responsible for finding Firefox on the
+        // PATH or via a capability.
       }
-      // If the binary stays null, GeckoDriver will be responsible for finding Firefox on the PATH or via a capability.
+      if (allowHosts != null) {
+        args.add("--allow-hosts");
+        args.addAll(Arrays.asList(allowHosts.split(" ")));
+      }
       return unmodifiableList(args);
     }
 

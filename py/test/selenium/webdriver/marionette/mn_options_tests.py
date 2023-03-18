@@ -41,9 +41,9 @@ class TestUnit:
     def test_ctor(self):
         opts = Options()
         assert opts._binary is None
-        assert opts._preferences == {}
+        assert not opts._preferences
         assert opts._profile is None
-        assert opts._arguments == []
+        assert not opts._arguments
         assert isinstance(opts.log, Log)
 
     def test_binary(self):

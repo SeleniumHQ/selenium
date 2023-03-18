@@ -64,6 +64,7 @@ class RedisBackedSessionMapTest {
   public void tearDownRedisServer() {
     sessions.getRedisClient().close();
     safelyCall(() -> server.stop());
+    bus.close();
   }
 
   @Test

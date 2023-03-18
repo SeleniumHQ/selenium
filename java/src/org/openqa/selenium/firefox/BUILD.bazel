@@ -14,6 +14,7 @@ java_export(
         "//java/src/org/openqa/selenium/devtools/v85",
         "//java/src/org/openqa/selenium/json",
         "//java/src/org/openqa/selenium/remote",
-        artifact("com.google.guava:guava"),
+         "//java/src/org/openqa/selenium/manager:manager",
+       artifact("com.google.guava:guava"),
     ],
 )

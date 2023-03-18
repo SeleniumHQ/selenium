@@ -103,7 +103,7 @@ class ElementFindingTest extends JupiterTestBase {
   @Test
   void testFindingASingleElementByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElement(By.id("")));
   }
 
@@ -111,7 +111,7 @@ class ElementFindingTest extends JupiterTestBase {
   @NotYetImplemented(HTMLUNIT)
   public void testFindingMultipleElementsByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElements(By.id("")));
   }
 
@@ -231,14 +231,14 @@ class ElementFindingTest extends JupiterTestBase {
   @Test
   void testFindingASingleElementByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElement(By.tagName("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElements(By.tagName("")));
   }
 
@@ -320,28 +320,28 @@ class ElementFindingTest extends JupiterTestBase {
   @Test
   void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElement(By.className("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElements(By.className("")));
   }
 
   @Test
   void testFindingASingleElementByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElement(By.className("a b")));
   }
 
   @Test
   void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElements(By.className("a b")));
   }
 
@@ -572,28 +572,28 @@ class ElementFindingTest extends JupiterTestBase {
   @Test
   void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElement(By.cssSelector("")));
   }
 
   @Test
   void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElements(By.cssSelector("")));
   }
 
   @Test
   void testFindingASingleElementByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElement(By.cssSelector("//a/b/c[@id='1']")));
   }
 
   @Test
   void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
-    assertThatExceptionOfType(NoSuchElementException.class)
+    assertThatExceptionOfType(InvalidSelectorException.class)
         .isThrownBy(() -> driver.findElements(By.cssSelector("//a/b/c[@id='1']")));
   }
 

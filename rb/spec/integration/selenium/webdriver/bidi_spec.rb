@@ -23,7 +23,12 @@ module Selenium
   module WebDriver
     describe BiDi, only: {browser: %i[chrome edge firefox]} do
       before { reset_driver!(web_socket_url: true) }
-      after { quit_driver }
+
+      after do
+        quit_driver
+      rescue Selenium::WebDriver::Error::InvalidSessionIdError
+        # do nothing
+      end
 
       it 'gets session status' do
         status = driver.bidi.session.status
@@ -51,6 +56,32 @@ module Selenium
           type: 'javascript',
           level: BiDi::LogInspector::LOG_LEVEL[:ERROR]
         )
+      end
+
+      it 'does not close BiDi session if at least one window is opened' do
+        status = driver.bidi.session.status
+        expect(status.ready).to be false
+        expect(status.message).to be_a String
+
+        driver.switch_to.new_window(:window)
+        driver.switch_to.new_window(:tab)
+        driver.switch_to.new_window(:tab)
+
+        driver.close
+
+        status_after_closing = driver.bidi.session.status
+        expect(status_after_closing.ready).to be false
+        expect(status_after_closing.message).to be_a String
+      end
+
+      it 'closes BiDi session if last window is closed' do
+        status = driver.bidi.session.status
+        expect(status.ready).to be false
+        expect(status.message).to be_a String
+
+        driver.close
+
+        expect { driver.bidi.session.status }.to raise_error(IOError)
       end
     end
   end

@@ -27,9 +27,12 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chrome.ChromeDriverInfo;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriverInfo;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.GeckoDriverInfo;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.ConfigException;
 import org.openqa.selenium.grid.config.MapConfig;
@@ -37,9 +40,11 @@ import org.openqa.selenium.grid.config.TomlConfig;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
+import org.openqa.selenium.ie.InternetExplorerDriverInfo;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.safari.SafariDriverInfo;
 
 import java.io.StringReader;
 import java.net.URI;
@@ -85,6 +90,66 @@ class NodeOptionsTest {
       .filter(caps -> expected.equalsIgnoreCase(caps.getBrowserName()))
       .findFirst()
       .orElseThrow(() -> new AssertionError("Unable to find Chrome info"));
+  }
+
+  @Test
+  void ensureManagedDownloadsFlagIsAutoInjectedIntoChromeStereoCapabilitiesWhenEnabledForNode() {
+    boolean isEnabled = isDownloadEnabled(new ChromeDriverInfo(), "ChromeDriverInfo");
+    assertThat(isEnabled).isTrue();
+  }
+
+  @Test
+  void ensureManagedDownloadsFlagIsAutoInjectedIntoFirefoxStereoCapabilitiesWhenEnabledForNode() {
+    boolean isEnabled = isDownloadEnabled(new GeckoDriverInfo(), "GeckoDriverInfo");
+    assertThat(isEnabled).isTrue();
+  }
+
+  @Test
+  void ensureManagedDownloadsFlagIsAutoInjectedIntoEdgeStereoCapabilitiesWhenEnabledForNode() {
+    assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
+    boolean isEnabled = isDownloadEnabled(new EdgeDriverInfo(), "EdgeDriverInfo");
+    assertThat(isEnabled).isTrue();
+  }
+
+  @Test
+  void ensureManagedDownloadsFlagIsNOTAutoInjectedIntoIEStereoCapabilitiesWhenEnabledForNode() {
+    assumeTrue(Platform.getCurrent().is(Platform.WINDOWS));
+    assumeFalse(Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS")),
+                "We don't have driver servers in PATH when we run unit tests");
+    boolean
+      isEnabled =
+      isDownloadEnabled(new InternetExplorerDriverInfo(), "InternetExplorerDriverInfo");
+    assertThat(isEnabled).isFalse();
+  }
+
+  @Test
+  void ensureManagedDownloadsFlagIsNOTAutoInjectedIntoSafariStereoCapabilitiesWhenEnabledForNode() {
+    boolean isEnabled = isDownloadEnabled(new SafariDriverInfo(), "SafariDriverInfo");
+    assertThat(isEnabled).isFalse();
+  }
+
+  boolean isDownloadEnabled(WebDriverInfo driver, String customMsg) {
+    assumeTrue(driver.isAvailable(), customMsg + " needs to be available");
+    Config config = new MapConfig(
+      singletonMap("node", ImmutableMap.of("detect-drivers", "true",
+                                           "selenium-manager", false,
+                                           "enable-managed-downloads",
+                                           true)));
+    List<Capabilities> reported = new ArrayList<>();
+    new NodeOptions(config).getSessionFactories(caps -> {
+      reported.add(caps);
+      return Collections.singleton(HelperFactory.create(config, caps));
+    });
+    String expected = driver.getDisplayName();
+
+    Capabilities found = reported.stream()
+      .filter(driver::isSupporting)
+      .filter(caps -> expected.equalsIgnoreCase(caps.getBrowserName()))
+      .findFirst()
+      .orElseThrow(() -> new AssertionError("Unable to find " + customMsg + " info"));
+    return Optional.ofNullable(found.getCapability("se:downloadsEnabled"))
+      .map(value -> Boolean.parseBoolean(value.toString()))
+      .orElse(Boolean.FALSE);
   }
 
   @Test
@@ -402,7 +467,7 @@ class NodeOptionsTest {
     assertThat(reported.get(0).asMap()).asInstanceOf(MAP)
       .extractingByKey(ChromeOptions.CAPABILITY).asInstanceOf(MAP)
       .extractingByKey("args").asInstanceOf(LIST)
-      .containsExactly("--homepage=https://www.selenium.dev");
+      .containsAnyOf("--homepage=https://www.selenium.dev");
   }
 
   @Test

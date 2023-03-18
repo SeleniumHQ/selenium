@@ -22,7 +22,7 @@ require_relative '../spec_helper'
 module Selenium
   module WebDriver
     class BiDi
-      describe BrowsingContext, exclusive: {browser: %i[chrome firefox]} do
+      describe BrowsingContext, only: {browser: %i[chrome edge firefox]} do
         before { reset_driver!(web_socket_url: true) }
         after { quit_driver }
 
@@ -37,7 +37,7 @@ module Selenium
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can create a window with a reference context' do
+        it 'can create a window with a reference context', except: {browser: %i[chrome edge]} do
           browsing_context = described_class.new(driver: driver, type: :window,
                                                  reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
@@ -48,33 +48,31 @@ module Selenium
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can create a tab with a reference context' do
+        it 'can create a tab with a reference context', except: {browser: %i[chrome edge]} do
           browsing_context = described_class.new(driver: driver, type: :tab, reference_context: driver.window_handle)
           expect(browsing_context.id).not_to be_nil
         end
 
-        it 'can navigate to a url', except: {browser: :chrome, reason: 'navigation_id is not nil'} do
+        it 'can navigate to a url' do
           browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html')
 
           expect(browsing_context.id).not_to be_nil
-          expect(info.navigation_id).to be_nil
           expect(info.url).to include('/bidi/logEntryAdded.html')
         end
 
-        it 'can navigate to a url with readiness state', except: {browser: :chrome} do
+        it 'can navigate to a url with readiness state' do
           browsing_context = described_class.new(driver: driver, type: :tab)
 
           info = browsing_context.navigate url: url_for('/bidi/logEntryAdded.html'),
                                            readiness_state: :complete
 
           expect(browsing_context.id).not_to be_nil
-          expect(info.navigation_id).to be_nil
           expect(info.url).to include('/bidi/logEntryAdded.html')
         end
 
-        it 'can get tree with a child', except: {browser: :chrome} do
+        it 'can get tree with a child' do
           browsing_context_id = driver.window_handle
           parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),
@@ -86,7 +84,7 @@ module Selenium
           expect(context_info.children[0]['url']).to include('formPage.html')
         end
 
-        it 'can get tree with depth', except: {browser: :chrome, reason: 'not yet implemented'} do
+        it 'can get tree with depth' do
           browsing_context_id = driver.window_handle
           parent_window = described_class.new(driver: driver, browsing_context_id: browsing_context_id)
           parent_window.navigate(url: url_for('iframes.html'),

@@ -107,7 +107,7 @@ class DistributorTest {
   private final Wait<Object> wait = new FluentWait<>(new Object()).withTimeout(Duration.ofSeconds(5));
   private Tracer tracer;
   private EventBus bus;
-  private Distributor local;
+  private LocalDistributor local;
   private Capabilities stereotype;
   private Capabilities caps;
   private URI nodeUri;
@@ -147,6 +147,9 @@ class DistributorTest {
   @AfterEach
   public void cleanUp() {
     bus.close();
+    if (local !=null) {
+      local.close();
+    }
   }
 
   @Test
@@ -215,7 +218,7 @@ class DistributorTest {
         new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
-    Distributor distributor = new LocalDistributor(
+     local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -227,14 +230,14 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    distributor.add(node);
-    waitToHaveCapacity(distributor);
+    local.add(node);
+    waitToHaveCapacity(local);
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
     sessionCaps.setCapability("sausages", "gravy");
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(sessionCaps));
+      local.newSession(createRequest(sessionCaps));
     assertThatEither(result).isRight();
     Session session = result.right().getSession();
     assertThat(session.getCapabilities().getCapability("sausages"))
@@ -259,7 +262,7 @@ class DistributorTest {
         new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
-    LocalDistributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -271,14 +274,14 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    distributor.add(node);
-    waitToHaveCapacity(distributor);
+    local.add(node);
+    waitToHaveCapacity(local);
 
     MutableCapabilities sessionCaps = new MutableCapabilities(caps);
     sessionCaps.setCapability("sausages", "gravy");
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(sessionCaps));
+      local.newSession(createRequest(sessionCaps));
     assertThatEither(result).isRight();
     Session returned = result.right().getSession();
     Session session = sessions.get(returned.getId());
@@ -304,7 +307,7 @@ class DistributorTest {
         new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
-    Distributor local = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -345,7 +348,7 @@ class DistributorTest {
         new TestSessionFactory((id, c) -> new Session(id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
-    Distributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -357,12 +360,12 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    distributor.add(node);
-    distributor.drain(node.getId());
+    local.add(node);
+    local.drain(node.getId());
 
     assertTrue(node.isDraining());
 
-    Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(createRequest(caps));
+    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
 
@@ -385,7 +388,7 @@ class DistributorTest {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 
-    Distributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -397,19 +400,19 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    distributor.add(node);
-    waitToHaveCapacity(distributor);
+    local.add(node);
+    waitToHaveCapacity(local);
 
-    distributor.drain(node.getId());
+    local.drain(node.getId());
 
     latch.await(5, TimeUnit.SECONDS);
 
     assertThat(latch.getCount()).isZero();
 
-    assertThat(distributor.getStatus().getNodes()).isEmpty();
+    assertThat(local.getStatus().getNodes()).isEmpty();
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
 
@@ -432,7 +435,7 @@ class DistributorTest {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 
-    Distributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -444,20 +447,20 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    distributor.add(node);
-    waitToHaveCapacity(distributor);
+    local.add(node);
+    waitToHaveCapacity(local);
 
     Either<SessionNotCreatedException, CreateSessionResponse> session =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
     assertThatEither(session).isRight();
 
-    distributor.drain(node.getId());
+    local.drain(node.getId());
 
     latch.await(5, TimeUnit.SECONDS);
 
     assertThat(latch.getCount()).isEqualTo(1);
 
-    assertThat(distributor.getStatus().getNodes().size()).isEqualTo(1);
+    assertThat(local.getStatus().getNodes().size()).isEqualTo(1);
   }
 
   @Test
@@ -482,7 +485,7 @@ class DistributorTest {
     CountDownLatch latch = new CountDownLatch(1);
     bus.addListener(NodeDrainComplete.listener(ignored -> latch.countDown()));
 
-    Distributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -494,28 +497,28 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    distributor.add(node);
-    waitToHaveCapacity(distributor);
+    local.add(node);
+    waitToHaveCapacity(local);
 
     Either<SessionNotCreatedException, CreateSessionResponse> firstResponse =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
 
     Either<SessionNotCreatedException, CreateSessionResponse> secondResponse =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
 
-    distributor.drain(node.getId());
+    local.drain(node.getId());
 
-    assertThat(distributor.getStatus().getNodes().size()).isEqualTo(1);
+    assertThat(local.getStatus().getNodes().size()).isEqualTo(1);
 
     node.stop(firstResponse.right().getSession().getId());
     node.stop(secondResponse.right().getSession().getId());
 
     latch.await(5, TimeUnit.SECONDS);
 
-    waitTillNodesAreRemoved(distributor);
+    waitTillNodesAreRemoved(local);
 
     assertThat(latch.getCount()).isZero();
-    assertThat(distributor.getStatus().getNodes()).isEmpty();
+    assertThat(local.getStatus().getNodes()).isEmpty();
   }
 
   @Test
@@ -572,7 +575,7 @@ class DistributorTest {
     handler.addHandler(medium);
     handler.addHandler(heavy);
     handler.addHandler(massive);
-    Distributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(handler),
@@ -589,13 +592,13 @@ class DistributorTest {
       .add(lightest)
       .add(massive);
 
-    wait.until(obj -> distributor.getStatus().getNodes().size() == 4);
-    wait.until(ignored -> distributor.getStatus().getNodes().stream()
+    wait.until(obj -> local.getStatus().getNodes().size() == 4);
+    wait.until(ignored -> local.getStatus().getNodes().stream()
       .allMatch(node -> node.getAvailability() == UP && node.hasCapacity()));
-    wait.until(obj -> distributor.getStatus().hasCapacity());
+    wait.until(obj -> local.getStatus().hasCapacity());
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     Session session = result.right().getSession();
     assertThat(session.getUri()).isEqualTo(lightest.getStatus().getExternalUri());
@@ -617,7 +620,7 @@ class DistributorTest {
     handler.addHandler(sessions);
     handler.addHandler(leastRecent);
 
-    Distributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(handler),
@@ -630,17 +633,17 @@ class DistributorTest {
       Duration.ofSeconds(5),
       newSessionThreadPoolSize)
       .add(leastRecent);
-    waitToHaveCapacity(distributor);
+    waitToHaveCapacity(local);
 
-    distributor.newSession(createRequest(caps));
+    local.newSession(createRequest(caps));
 
     Node middle = createNode(caps, 5, 0);
     handler.addHandler(middle);
-    distributor.add(middle);
-    waitForAllNodesToHaveCapacity(distributor, 2);
+    local.add(middle);
+    waitForAllNodesToHaveCapacity(local, 2);
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     Session session = result.right().getSession();
     // Least lightly loaded is middle
@@ -648,10 +651,10 @@ class DistributorTest {
 
     Node mostRecent = createNode(caps, 5, 0);
     handler.addHandler(mostRecent);
-    distributor.add(mostRecent);
-    waitForAllNodesToHaveCapacity(distributor, 3);
+    local.add(mostRecent);
+    waitForAllNodesToHaveCapacity(local, 3);
 
-    result = distributor.newSession(createRequest(caps));
+    result = local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     session = result.right().getSession();
     // Least lightly loaded is most recent
@@ -663,7 +666,7 @@ class DistributorTest {
     assertThat(getFreeStereotypeCounts(middle.getStatus())).isEqualTo(expected);
 
     // All nodes are now equally loaded. We should be going in time order now
-    result = distributor.newSession(createRequest(caps));
+    result = local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     session = result.right().getSession();
     assertThat(session.getUri()).isEqualTo(leastRecent.getStatus().getExternalUri());
@@ -703,7 +706,7 @@ class DistributorTest {
       .build();
     handler.addHandler(alwaysDown);
 
-    LocalDistributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(handler),
@@ -715,13 +718,13 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    handler.addHandler(distributor);
-    distributor.add(alwaysDown);
-    waitForAllNodesToMeetCondition(distributor, 1, DOWN);
+    handler.addHandler(local);
+    local.add(alwaysDown);
+    waitForAllNodesToMeetCondition(local, 1, DOWN);
 
     // Should be unable to create a session because the node is down.
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
 
     Node alwaysUp = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
@@ -733,10 +736,10 @@ class DistributorTest {
       .build();
     handler.addHandler(alwaysUp);
 
-    distributor.add(alwaysUp);
-    waitToHaveCapacity(distributor);
+    local.add(alwaysUp);
+    waitToHaveCapacity(local);
 
-    result = distributor.newSession(createRequest(caps));
+    result = local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
   }
 
@@ -755,7 +758,7 @@ class DistributorTest {
       .add(caps, new TestSessionFactory((id, c) -> new Session(
         id, nodeUri, stereotype, c, Instant.now())))
       .build();
-    Distributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -768,16 +771,16 @@ class DistributorTest {
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
 
-    distributor.add(node);
-    waitToHaveCapacity(distributor);
+    local.add(node);
+    waitToHaveCapacity(local);
 
     // Use up the one slot available
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
 
     // Now try and create a session.
-    result = distributor.newSession(createRequest(caps));
+    result = local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
   }
 
@@ -797,7 +800,7 @@ class DistributorTest {
         id, nodeUri, stereotype, c, Instant.now())))
       .build();
 
-    Distributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -809,12 +812,12 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    distributor.add(node);
-    waitToHaveCapacity(distributor);
+    local.add(node);
+    waitToHaveCapacity(local);
 
     // Use up the one slot available
     Session session;
-    Either<SessionNotCreatedException, CreateSessionResponse> result = distributor.newSession(createRequest(caps));
+    Either<SessionNotCreatedException, CreateSessionResponse> result = local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
     session = result.right().getSession();
     // Make sure the session map has the session
@@ -833,10 +836,10 @@ class DistributorTest {
       }
     });
 
-    waitToHaveCapacity(distributor);
+    waitToHaveCapacity(local);
 
     // And we should now be able to create another session.
-    result = distributor.newSession(createRequest(caps));
+    result = local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
   }
 
@@ -896,7 +899,7 @@ class DistributorTest {
       }))
       .build();
 
-    Distributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -908,14 +911,14 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    distributor.add(node);
-    waitToHaveCapacity(distributor);
+    local.add(node);
+    waitToHaveCapacity(local);
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
 
-    assertThat(distributor.getStatus().hasCapacity()).isTrue();
+    assertThat(local.getStatus().hasCapacity()).isTrue();
   }
 
   @Test
@@ -943,7 +946,7 @@ class DistributorTest {
       .build();
     handler.addHandler(node);
 
-    LocalDistributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(handler),
@@ -955,22 +958,22 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    handler.addHandler(distributor);
-    distributor.add(node);
-    waitForAllNodesToMeetCondition(distributor, 1, DOWN);
+    handler.addHandler(local);
+    local.add(node);
+    waitForAllNodesToMeetCondition(local, 1, DOWN);
 
     // Should be unable to create a session because the node is down.
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
     assertThatEither(result).isLeft();
 
     // Mark the node as being up
     isUp.set(UP);
     // Kick the machinery to ensure that everything is fine.
-    distributor.refresh();
+    local.refresh();
 
     // Because the node is now up and running, we should now be able to create a session
-    result = distributor.newSession(createRequest(caps));
+    result = local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
   }
 
@@ -1009,7 +1012,7 @@ class DistributorTest {
       .build();
     handler.addHandler(node);
 
-    LocalDistributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(handler),
@@ -1021,15 +1024,15 @@ class DistributorTest {
       false,
       Duration.ofSeconds(5),
       newSessionThreadPoolSize);
-    handler.addHandler(distributor);
-    distributor.add(node);
+    handler.addHandler(local);
+    local.add(node);
 
     latch.await(60, TimeUnit.SECONDS);
 
-    waitToHaveCapacity(distributor);
+    waitToHaveCapacity(local);
 
     Either<SessionNotCreatedException, CreateSessionResponse> result =
-      distributor.newSession(createRequest(caps));
+      local.newSession(createRequest(caps));
     assertThatEither(result).isRight();
   }
 
@@ -1070,7 +1073,7 @@ class DistributorTest {
       registrationSecret,
       5);
 
-    LocalDistributor distributor = new LocalDistributor(
+    local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(handler),
@@ -1089,23 +1092,23 @@ class DistributorTest {
     Capabilities chrome = new ImmutableCapabilities("browserName", "chrome");
 
     //Store our "expected results" sets for the various browser-specific nodes
-    Set<Node> edgeNodes = createNodeSet(handler, distributor, 3, edge, chrome, firefox);
+    Set<Node> edgeNodes = createNodeSet(handler, local, 3, edge, chrome, firefox);
 
     //chromeNodes is all these new nodes PLUS all the Edge nodes from before
-    Set<Node> chromeNodes = createNodeSet(handler, distributor, 5, chrome, firefox);
+    Set<Node> chromeNodes = createNodeSet(handler, local, 5, chrome, firefox);
     chromeNodes.addAll(edgeNodes);
 
     //all nodes support firefox, so add them to the firefoxNodes set
-    Set<Node> firefoxNodes = createNodeSet(handler, distributor, 3, firefox);
+    Set<Node> firefoxNodes = createNodeSet(handler, local, 3, firefox);
     firefoxNodes.addAll(edgeNodes);
     firefoxNodes.addAll(chromeNodes);
 
-    waitForAllNodesToHaveCapacity(distributor, 11);
+    waitForAllNodesToHaveCapacity(local, 11);
 
     //Assign 5 Chrome and 5 Firefox sessions to the distributor, make sure they don't go to the Edge node
     for (int i=0; i<5; i++) {
       Either<SessionNotCreatedException, CreateSessionResponse> chromeResult =
-        distributor.newSession(createRequest(chrome));
+        local.newSession(createRequest(chrome));
       assertThatEither(chromeResult).isRight();
       Session chromeSession = chromeResult.right().getSession();
 
@@ -1118,7 +1121,7 @@ class DistributorTest {
       );
 
       Either<SessionNotCreatedException, CreateSessionResponse> firefoxResult =
-        distributor.newSession(createRequest(firefox));
+        local.newSession(createRequest(firefox));
        assertThatEither(firefoxResult).isRight();
       Session firefoxSession = firefoxResult.right().getSession();
       LOG.info(String.format("Firefox Session %d assigned to %s", i, chromeSession.getUri()));
@@ -1131,7 +1134,7 @@ class DistributorTest {
 
     //The Chrome Nodes should be full at this point, but Firefox isn't... so send an Edge session and make sure it routes to an Edge node
     Either<SessionNotCreatedException, CreateSessionResponse> edgeResult =
-      distributor.newSession(createRequest(edge));
+      local.newSession(createRequest(edge));
     assertThatEither(edgeResult).isRight();
     Session edgeSession = edgeResult.right().getSession();
     assertTrue(edgeNodes.stream().anyMatch(node -> node.getUri().equals(edgeSession.getUri())));

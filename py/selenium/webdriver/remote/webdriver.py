@@ -685,6 +685,7 @@ class WebDriver(BaseWebDriver):
         """
         with contextlib.suppress(NoSuchCookieException):
             return self.execute(Command.GET_COOKIE, {"name": name})["value"]
+        return None
 
     def delete_cookie(self, name) -> None:
         """Deletes a single cookie with the given name.
@@ -1202,7 +1203,7 @@ class WebDriver(BaseWebDriver):
     def remove_credential(self, credential_id: Union[str, bytearray]) -> None:
         """Removes a credential from the authenticator."""
         # Check if the credential is bytearray converted to b64 string
-        if type(credential_id) is bytearray:
+        if isinstance(credential_id, bytearray):
             credential_id = urlsafe_b64encode(credential_id).decode()
 
         self.execute(

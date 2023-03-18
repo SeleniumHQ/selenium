@@ -431,6 +431,9 @@ def new_window_is_opened(current_handles):
 
 
 def alert_is_present():
+    """An expectation for checking if an alert is currently present and
+    switching to it."""
+
     def _predicate(driver):
         try:
             return driver.switch_to.alert

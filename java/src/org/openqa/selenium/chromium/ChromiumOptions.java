@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Stream;
@@ -74,6 +75,11 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   public ChromiumOptions(String capabilityType, String browserType, String capability) {
     this.capabilityName = capability;
     setCapability(capabilityType, browserType);
+    // Allowing any origin "*" might sound risky but an attacker would need to know
+    // the port used to start DevTools to establish a connection. Given these sessions
+    // are relatively short-lived, the risk is reduced. Also, this will be removed when
+    // we only support Java 11 and above.
+    addArguments("--remote-allow-origins=*");
   }
 
   /**
@@ -125,6 +131,20 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
    * @param arguments The arguments to use when starting Chrome.
    */
   public T addArguments(List<String> arguments) {
+    /*
+      --remote-allow-origins is being added by default since Chrome 111. We need to check
+      if the argument already exists and then remove it.
+     */
+    String remoteAllowOrigins = "remote-allow-origins";
+    Optional<String> newArg = arguments.stream()
+      .filter(arg -> arg.contains(remoteAllowOrigins))
+      .findFirst();
+    Optional<String> existingArg = args.stream()
+      .filter(arg -> arg.contains(remoteAllowOrigins))
+      .findFirst();
+    if (newArg.isPresent() && existingArg.isPresent()) {
+      args.remove(existingArg.get());
+    }
     args.addAll(arguments);
     return (T) this;
   }

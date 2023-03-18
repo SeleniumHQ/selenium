@@ -147,7 +147,7 @@ public class RemoteWebDriver implements WebDriver,
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
     this.executor = Require.nonNull("Command executor", executor);
-    capabilities = init(capabilities);
+    this.capabilities = init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
@@ -692,8 +692,7 @@ public class RemoteWebDriver implements WebDriver,
 
   private void checkChromeW3CFalse(Capabilities capabilities) {
     // Throwing warnings when the user sets `w3c: false` inside `goog:chromeOptions`
-    if ("chrome".equalsIgnoreCase(capabilities.getBrowserName()) &&
-        capabilities.asMap().containsKey("goog:chromeOptions")) {
+    if (Browser.CHROME.is(capabilities) && capabilities.asMap().containsKey("goog:chromeOptions")) {
       Object capability = capabilities.getCapability("goog:chromeOptions");
       boolean w3c = true;
       if ((capability instanceof Map)) {

@@ -26,6 +26,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
@@ -65,7 +66,7 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
   public boolean isAvailable() {
     try {
       if (Platform.getCurrent().is(Platform.WINDOWS)) {
-        InternetExplorerDriverService.createDefaultService();
+        DriverFinder.getPath(InternetExplorerDriverService.createDefaultService());
         return true;
       }
       return false;
@@ -75,13 +76,18 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
   }
 
   @Override
+  public boolean isPresent() {
+    return InternetExplorerDriverService.isPresent();
+  }
+
+  @Override
   public int getMaximumSimultaneousSessions() {
     return 1;
   }
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

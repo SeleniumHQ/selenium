@@ -14,6 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from __future__ import annotations
+
 from ..utils import keys_to_typing
 from .interaction import KEY
 from .interaction import Interaction
@@ -44,7 +46,7 @@ class KeyActions(Interaction):
             self.key_up(letter)
         return self
 
-    def _key_action(self, action, letter):
+    def _key_action(self, action, letter) -> KeyActions:
         meth = getattr(self.source, action)
         meth(letter)
         return self

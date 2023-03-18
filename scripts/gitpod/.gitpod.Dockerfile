@@ -34,29 +34,6 @@ RUN apt-get update -qqy && \
     apt-get -qy install google-chrome-stable firefox && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
-# Browser Drivers
-
-RUN CHROME_MAJOR_VERSION=$(google-chrome --version | sed -E "s/.* ([0-9]+)(\.[0-9]+){3}.*/\1/") \
-  && CHROME_DRIVER_VERSION=$(wget --no-verbose -O - "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_MAJOR_VERSION}") \
-  && echo "Using ChromeDriver version: "$CHROME_DRIVER_VERSION \
-  && wget --no-verbose -O /tmp/chromedriver_linux64.zip https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip \
-  && rm -rf /home/gitpod/selenium/chromedriver \
-  && unzip /tmp/chromedriver_linux64.zip -d /home/gitpod/selenium \
-  && rm /tmp/chromedriver_linux64.zip \
-  && mv /home/gitpod/selenium/chromedriver /home/gitpod/selenium/chromedriver-$CHROME_DRIVER_VERSION \
-  && chmod 755 /home/gitpod/selenium/chromedriver-$CHROME_DRIVER_VERSION \
-  && sudo ln -fs /home/gitpod/selenium/chromedriver-$CHROME_DRIVER_VERSION /usr/bin/chromedriver
-
-RUN GK_VERSION="0.31.0" \
-  && echo "Using GeckoDriver version: "$GK_VERSION \
-  && wget --no-verbose -O /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v$GK_VERSION/geckodriver-v$GK_VERSION-linux64.tar.gz \
-  && rm -rf /home/gitpod/selenium/geckodriver \
-  && tar -C /home/gitpod/selenium -zxf /tmp/geckodriver.tar.gz \
-  && rm /tmp/geckodriver.tar.gz \
-  && mv /home/gitpod/selenium/geckodriver /home/gitpod/selenium/geckodriver-$GK_VERSION \
-  && chmod 755 /home/gitpod/selenium/geckodriver-$GK_VERSION \
-  && ln -fs /home/gitpod/selenium/geckodriver-$GK_VERSION /usr/bin/geckodriver
-
 # noVNC exposes VNC through a web page
 ENV NOVNC_TAG="1.3.0" \
     WEBSOCKIFY_TAG="0.10.0"

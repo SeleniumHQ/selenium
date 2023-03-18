@@ -23,10 +23,9 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use serde::{Deserialize, Serialize};
 
 use crate::files::get_cache_folder;
+use crate::Logger;
 
 const METADATA_FILE: &str = "selenium-manager.json";
-const TTL_BROWSERS_SEC: u64 = 0;
-const TTL_DRIVERS_SEC: u64 = 86400;
 
 #[derive(Serialize, Deserialize)]
 pub struct Browser {
@@ -53,24 +52,24 @@ fn get_metadata_path() -> PathBuf {
     get_cache_folder().join(METADATA_FILE)
 }
 
-fn now_unix_timestamp() -> u64 {
+pub fn now_unix_timestamp() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()
         .as_secs()
 }
 
-fn new_metadata() -> Metadata {
-    log::trace!("Metadata file does not exist. Creating a new one");
+fn new_metadata(log: &Logger) -> Metadata {
+    log.trace("Metadata file does not exist. Creating a new one".to_string());
     Metadata {
         browsers: Vec::new(),
         drivers: Vec::new(),
     }
 }
 
-pub fn get_metadata() -> Metadata {
+pub fn get_metadata(log: &Logger) -> Metadata {
     let metadata_path = get_cache_folder().join(METADATA_FILE);
-    log::trace!("Reading metadata from {}", metadata_path.display());
+    log.trace(format!("Reading metadata from {}", metadata_path.display()));
 
     if metadata_path.exists() {
         let metadata_file = File::open(&metadata_path).unwrap();
@@ -81,11 +80,11 @@ pub fn get_metadata() -> Metadata {
                 meta.drivers.retain(|d| d.driver_ttl > now);
                 meta
             }
-            Err(_e) => new_metadata(),
+            Err(_e) => new_metadata(log),
         };
         metadata
     } else {
-        new_metadata()
+        new_metadata(log)
     }
 }
 
@@ -120,11 +119,15 @@ pub fn get_driver_version_from_metadata(
     }
 }
 
-pub fn create_browser_metadata(browser_name: &str, browser_version: &String) -> Browser {
+pub fn create_browser_metadata(
+    browser_name: &str,
+    browser_version: &String,
+    browser_ttl: u64,
+) -> Browser {
     Browser {
         browser_name: browser_name.to_string(),
         browser_version: browser_version.to_string(),
-        browser_ttl: now_unix_timestamp() + TTL_BROWSERS_SEC,
+        browser_ttl: now_unix_timestamp() + browser_ttl,
     }
 }
 
@@ -132,18 +135,19 @@ pub fn create_driver_metadata(
     browser_version: &str,
     driver_name: &str,
     driver_version: &str,
+    driver_ttl: u64,
 ) -> Driver {
     Driver {
         browser_version: browser_version.to_string(),
         driver_name: driver_name.to_string(),
         driver_version: driver_version.to_string(),
-        driver_ttl: now_unix_timestamp() + TTL_DRIVERS_SEC,
+        driver_ttl: now_unix_timestamp() + driver_ttl,
     }
 }
 
-pub fn write_metadata(metadata: &Metadata) {
+pub fn write_metadata(metadata: &Metadata, log: &Logger) {
     let metadata_path = get_metadata_path();
-    log::trace!("Writing metadata to {}", metadata_path.display());
+    log.trace(format!("Writing metadata to {}", metadata_path.display()));
     fs::write(
         metadata_path,
         serde_json::to_string_pretty(metadata).unwrap(),

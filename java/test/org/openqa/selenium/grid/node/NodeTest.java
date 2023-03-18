@@ -17,22 +17,13 @@
 
 package org.openqa.selenium.grid.node;
 
-import static java.time.Duration.ofSeconds;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
-import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.http.Contents.string;
-import static org.openqa.selenium.remote.http.HttpMethod.GET;
-import static org.openqa.selenium.remote.http.HttpMethod.POST;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.NoSuchSessionException;
@@ -49,6 +40,7 @@ import org.openqa.selenium.grid.data.NodeStatus;
 import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.grid.data.SessionClosedEvent;
 import org.openqa.selenium.grid.node.local.LocalNode;
+import org.openqa.selenium.grid.node.local.LocalNode.Builder;
 import org.openqa.selenium.grid.node.remote.RemoteNode;
 import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.EitherAssert;
@@ -79,16 +71,30 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static java.time.Duration.ofSeconds;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
+import static org.openqa.selenium.json.Json.MAP_TYPE;
+import static org.openqa.selenium.remote.http.Contents.string;
+import static org.openqa.selenium.remote.http.HttpMethod.GET;
+import static org.openqa.selenium.remote.http.HttpMethod.POST;
 
 class NodeTest {
 
@@ -106,17 +112,21 @@ class NodeTest {
   }
 
   @BeforeEach
-  public void setUp() throws URISyntaxException {
+  public void setUp(TestInfo testInfo) throws URISyntaxException {
     tracer = DefaultTestTracer.createTracer();
     bus = new GuavaEventBus();
 
     registrationSecret = new Secret("sussex charmer");
+    boolean isDownloadsTestCase = testInfo.getDisplayName().equalsIgnoreCase("DownloadsTestCase");
 
     stereotype = new ImmutableCapabilities("browserName", "cheese");
     caps = new ImmutableCapabilities("browserName", "cheese");
+    if (isDownloadsTestCase) {
+      stereotype = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
+      caps = new ImmutableCapabilities("browserName", "chrome", "se:downloadsEnabled", true);
+    }
 
     uri = new URI("http://localhost:1234");
-    File downloadsPath = new File(System.getProperty("java.io.tmpdir"));
 
     class Handler extends Session implements HttpHandler {
       private Handler(Capabilities capabilities) {
@@ -129,13 +139,16 @@ class NodeTest {
       }
     }
 
-    local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
-        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
-        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
-        .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
-        .downloadsPath(downloadsPath.getAbsolutePath())
-        .maximumConcurrentSessions(2)
-        .build();
+
+    Builder builder = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
+      .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+      .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+      .add(caps, new TestSessionFactory((id, c) -> new Handler(c)))
+      .maximumConcurrentSessions(2);
+    if (isDownloadsTestCase) {
+      builder = builder.enableManagedDownloads(true);
+    }
+    local = builder.build();
 
     node = new RemoteNode(
         tracer,
@@ -477,7 +490,7 @@ class NodeTest {
     req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
     node.execute(req);
 
-    File baseDir = getTemporaryFilesystemBaseDir(local.getTemporaryFilesystem(session.getId()));
+    File baseDir = getTemporaryFilesystemBaseDir(local.getUploadsFilesystem(session.getId()));
     assertThat(baseDir.listFiles()).hasSize(1);
     File uploadDir = baseDir.listFiles()[0];
     assertThat(uploadDir.listFiles()).hasSize(1);
@@ -488,6 +501,7 @@ class NodeTest {
   }
 
   @Test
+  @DisplayName("DownloadsTestCase")
   void canDownloadAFile() throws IOException {
     Either<WebDriverException, CreateSessionResponse> response =
       node.newSession(createSessionRequest(caps));
@@ -495,18 +509,182 @@ class NodeTest {
     Session session = response.right().getSession();
     String hello = "Hello, world!";
 
-    HttpRequest req = new HttpRequest(GET, String.format("/session/%s/se/file", session.getId()));
-    File zip = createTmpFile(hello);
-    req.addQueryParameter("filename", zip.getName());
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/files", session.getId()));
+
+    //Let's simulate as if we downloaded a file via a test case
+    String zip = simulateFileDownload(session.getId(),hello);
+
+    String payload = new Json().toJson(Collections.singletonMap("name", zip));
+    req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
     HttpResponse rsp = node.execute(req);
-    node.stop(session.getId());
-    Map<String, Object> map = new Json().toType(string(rsp), Json.MAP_TYPE);
-    File baseDir = getTemporaryFilesystemBaseDir(TemporaryFilesystem.getDefaultTmpFS());
-    String encodedContents = map.get("contents").toString();
-    Zip.unzip(encodedContents, baseDir);
-    Path path = new File(baseDir.getAbsolutePath() + "/" + map.get("filename")).toPath();
-    String decodedContents = String.join("", Files.readAllLines(path));
-    assertThat(decodedContents).isEqualTo(hello);
+    Map<String, Object> raw = new Json().toType(string(rsp), Json.MAP_TYPE);
+    try {
+      assertThat(raw).isNotNull();
+      File baseDir = getTemporaryFilesystemBaseDir(TemporaryFilesystem.getDefaultTmpFS());
+      Map<String, Object> map = Optional.ofNullable(
+          raw.get("value")
+        ).map(data -> (Map<String, Object>) data)
+        .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
+      String encodedContents = map.get("contents").toString();
+      Zip.unzip(encodedContents, baseDir);
+      Path path = new File(baseDir.getAbsolutePath() + "/" + map.get("filename")).toPath();
+      String decodedContents = String.join("", Files.readAllLines(path));
+      assertThat(decodedContents).isEqualTo(hello);
+    } finally {
+      node.stop(session.getId());
+    }
+  }
+
+  @Test
+  @DisplayName("DownloadsTestCase")
+  void canDownloadMultipleFile() throws IOException {
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+    String hello = "Hello, world!";
+
+    HttpRequest req = new HttpRequest(POST, String.format("/session/%s/se/files", session.getId()));
+
+    //Let's simulate as if we downloaded a file via a test case
+    String zip = simulateFileDownload(session.getId(), hello);
+
+    // This file we are going to leave in the downloads directory of the session
+    // Just to check if we can clean up all the files for the session
+    simulateFileDownload(session.getId(),"Goodbye, world!");
+
+    String payload = new Json().toJson(Collections.singletonMap("name", zip));
+    req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+    HttpResponse rsp = node.execute(req);
+    Map<String, Object> raw = new Json().toType(string(rsp), Json.MAP_TYPE);
+    try {
+      assertThat(raw).isNotNull();
+      File baseDir = getTemporaryFilesystemBaseDir(TemporaryFilesystem.getDefaultTmpFS());
+      Map<String, Object> map = Optional.ofNullable(
+          raw.get("value")
+        ).map(data -> (Map<String, Object>) data)
+        .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
+      String encodedContents = map.get("contents").toString();
+      Zip.unzip(encodedContents, baseDir);
+      Path path = new File(baseDir.getAbsolutePath() + "/" + map.get("filename")).toPath();
+      String decodedContents = String.join("", Files.readAllLines(path));
+      assertThat(decodedContents).isEqualTo(hello);
+    } finally {
+      UUID downloadsId = local.getDownloadsIdForSession(session.getId());
+      File someDir = getTemporaryFilesystemBaseDir(local.getDownloadsFilesystem(downloadsId));
+      node.stop(session.getId());
+      assertThat(someDir).doesNotExist();
+    }
+  }
+
+  @Test
+  @DisplayName("DownloadsTestCase")
+  void canListFilesToDownload() throws IOException {
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+    String hello = "Hello, world!";
+    String zip = simulateFileDownload(session.getId(), hello);
+    HttpRequest req = new HttpRequest(GET, String.format("/session/%s/se/files", session.getId()));
+    HttpResponse rsp = node.execute(req);
+    Map<String, Object> raw = new Json().toType(string(rsp), Json.MAP_TYPE);
+    try {
+      assertThat(raw).isNotNull();
+      Map<String, Object> map = Optional.ofNullable(
+          raw.get("value")
+        ).map(data -> (Map<String, Object>) data)
+        .orElseThrow(() -> new IllegalStateException("Could not find value attribute"));
+      List<String> files = (List<String>) map.get("names");
+      assertThat(files).contains(zip);
+    } finally {
+      node.stop(session.getId());
+    }
+  }
+
+  @Test
+  void canDownloadFileThrowsErrorMsgWhenDownloadsDirNotSpecified() {
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+    try {
+      createTmpFile("Hello, world!");
+      HttpRequest req = new HttpRequest(POST,
+                                        String.format("/session/%s/se/files", session.getId()));
+      String msg = "Please enable management of downloads via the command line arg "
+                   + "[--enable-managed-downloads] and restart the node";
+      assertThatThrownBy(() -> node.execute(req))
+        .hasMessageContaining(msg);
+    } finally {
+      node.stop(session.getId());
+    }
+  }
+
+  @Test
+  @DisplayName("DownloadsTestCase")
+  void canDownloadFileThrowsErrorMsgWhenPayloadIsMissing() {
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+    try {
+      createTmpFile("Hello, world!");
+
+      HttpRequest req = new HttpRequest(POST,
+        String.format("/session/%s/se/files", session.getId()));
+      String msg = "Please specify file to download in payload as {\"name\": \"fileToDownload\"}";
+      assertThatThrownBy(() -> node.execute(req))
+        .hasMessageContaining(msg);
+    } finally {
+      node.stop(session.getId());
+    }
+  }
+
+  @Test
+  @DisplayName("DownloadsTestCase")
+  void canDownloadFileThrowsErrorMsgWhenWrongPayloadIsGiven() {
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+    try {
+      createTmpFile("Hello, world!");
+
+      HttpRequest req = new HttpRequest(POST,
+        String.format("/session/%s/se/files", session.getId()));
+      String payload = new Json().toJson(Collections.singletonMap("my-file", "README.md"));
+      req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+
+      String msg = "Please specify file to download in payload as {\"name\": \"fileToDownload\"}";
+      assertThatThrownBy(() -> node.execute(req))
+        .hasMessageContaining(msg);
+    } finally {
+      node.stop(session.getId());
+    }
+  }
+
+  @Test
+  @DisplayName("DownloadsTestCase")
+  void canDownloadFileThrowsErrorMsgWhenFileNotFound() {
+    Either<WebDriverException, CreateSessionResponse> response =
+      node.newSession(createSessionRequest(caps));
+    assertThatEither(response).isRight();
+    Session session = response.right().getSession();
+    try {
+      createTmpFile("Hello, world!");
+
+      HttpRequest req = new HttpRequest(POST,
+        String.format("/session/%s/se/files", session.getId()));
+      String payload = new Json().toJson(Collections.singletonMap("name", "README.md"));
+      req.setContent(() -> new ByteArrayInputStream(payload.getBytes()));
+
+      String msg = "Cannot find file [README.md] in directory";
+      assertThatThrownBy(() -> node.execute(req))
+        .hasMessageContaining(msg);
+    } finally {
+      node.stop(session.getId());
+    }
   }
 
   @Test
@@ -609,6 +787,7 @@ class NodeTest {
     }
 
   }
+
   private File createTmpFile(String content) {
     try {
       File f = File.createTempFile("webdriver", "tmp");
@@ -629,9 +808,23 @@ class NodeTest {
 
   private CreateSessionRequest createSessionRequest(Capabilities caps) {
     return new CreateSessionRequest(
-            ImmutableSet.copyOf(Dialect.values()),
-            caps,
-            ImmutableMap.of());
+      ImmutableSet.copyOf(Dialect.values()),
+      caps,
+      ImmutableMap.of());
+  }
+
+  private String simulateFileDownload(SessionId id, String text) throws IOException {
+    File zip = createTmpFile(text);
+    UUID downloadsId = local.getDownloadsIdForSession(id);
+    File someDir = getTemporaryFilesystemBaseDir(local.getDownloadsFilesystem(downloadsId));
+    File downloadsDirectory = Optional.ofNullable(someDir.listFiles()).orElse(new File[]{})[0];
+    File target = new File(downloadsDirectory, zip.getName());
+    boolean renamed = zip.renameTo(target);
+    if (!renamed) {
+      throw new IllegalStateException("Could not move " + zip.getName() + " to directory " +
+                                      target.getParentFile().getAbsolutePath());
+    }
+    return zip.getName();
   }
 
   private static class MyClock extends Clock {
