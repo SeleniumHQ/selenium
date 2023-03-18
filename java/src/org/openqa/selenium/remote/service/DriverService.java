@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
@@ -141,6 +142,10 @@ public class DriverService implements Closeable, DriverServiceInfo {
     return new URL(String.format("http://localhost:%d", port));
  }
 
+ protected Capabilities getDefaultDriverOptions() {
+   return new ImmutableCapabilities();
+ }
+
   /**
    * @return The base URL for the managed driver server.
    */
@@ -178,7 +183,10 @@ public class DriverService implements Closeable, DriverServiceInfo {
         return;
       }
       if (this.executable == null) {
-        this.executable = DriverFinder.getPath(this);
+        if (getDefaultDriverOptions().getBrowserName().isEmpty()) {
+          throw new WebDriverException("Driver executable is null and browser name is not set.");
+        }
+        this.executable = DriverFinder.getPath(this, getDefaultDriverOptions());
       }
       process = new CommandLine(this.executable, args.toArray(new String[]{}));
       process.setEnvironmentVariables(environment);
@@ -272,7 +280,7 @@ public class DriverService implements Closeable, DriverServiceInfo {
       if (getOutputStream() instanceof FileOutputStream) {
         try {
           getOutputStream().close();
-        } catch (IOException e) {
+        } catch (IOException ignore) {
         }
       }
     } finally {

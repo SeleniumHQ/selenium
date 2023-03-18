@@ -146,6 +146,11 @@ public class ChromeDriverService extends DriverService {
     return CHROME_DRIVER_EXE_PROPERTY;
   }
 
+  @Override
+  public Capabilities getDefaultDriverOptions() {
+    return new ChromeOptions();
+  }
+
   /**
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by

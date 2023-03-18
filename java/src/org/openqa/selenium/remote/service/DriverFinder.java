@@ -12,11 +12,8 @@ public class DriverFinder {
 
   private static final Logger LOG = Logger.getLogger(DriverFinder.class.getName());
 
-  public static String getPath(DriverServiceInfo serviceInfo) {
-    return getPath(serviceInfo, null);
-  }
-
   public static String getPath(DriverServiceInfo serviceInfo, Capabilities options) {
+    Require.nonNull("Browser options", options);
     String defaultPath = new ExecutableFinder().find(serviceInfo.getDriverName());
     String exePath = System.getProperty(serviceInfo.getDriverProperty(), defaultPath);
 
@@ -26,11 +23,7 @@ public class DriverFinder {
 
     if (exePath == null) {
       try {
-        if (options == null) {
-          exePath = SeleniumManager.getInstance().getDriverPath(serviceInfo.getDriverName());
-        } else {
-          exePath = SeleniumManager.getInstance().getDriverPath(options);
-        }
+        exePath = SeleniumManager.getInstance().getDriverPath(options);
       } catch (Exception e) {
         LOG.warning(String.format("Unable to obtain %s using Selenium Manager: %s",
                                   serviceInfo.getDriverName(), e.getMessage()));

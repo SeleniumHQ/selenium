@@ -80,6 +80,11 @@ public class GeckoDriverService extends FirefoxDriverService {
     return GECKO_DRIVER_EXE_PROPERTY;
   }
 
+  @Override
+  public Capabilities getDefaultDriverOptions() {
+    return new FirefoxOptions();
+  }
+
   /**
    * @param executable The GeckoDriver executable.
    * @param port Which port to start the GeckoDriver on.

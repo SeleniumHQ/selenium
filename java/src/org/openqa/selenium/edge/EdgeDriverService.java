@@ -121,6 +121,11 @@ public class EdgeDriverService extends DriverService {
     return EDGE_DRIVER_EXE_PROPERTY;
   }
 
+  @Override
+  public Capabilities getDefaultDriverOptions() {
+    return new EdgeOptions();
+  }
+
   /**
    * Configures and returns a new {@link EdgeDriverService} using the default configuration. In
    * this configuration, the service will use the MSEdgeDriver executable identified by the
