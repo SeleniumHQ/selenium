@@ -12,13 +12,13 @@ public class DriverFinder {
 
   private static final Logger LOG = Logger.getLogger(DriverFinder.class.getName());
 
-  public static String getPath(DriverServiceInfo serviceInfo, Capabilities options) {
+  public static String getPath(DriverService service, Capabilities options) {
     Require.nonNull("Browser options", options);
-    String defaultPath = new ExecutableFinder().find(serviceInfo.getDriverName());
-    String exePath = System.getProperty(serviceInfo.getDriverProperty(), defaultPath);
+    String defaultPath = new ExecutableFinder().find(service.getDriverName());
+    String exePath = System.getProperty(service.getDriverProperty(), defaultPath);
 
-    if (exePath == null && serviceInfo.getDriverExecutable() != null) {
-      exePath = serviceInfo.getDriverExecutable().getAbsolutePath();
+    if (exePath == null && service.getDriverExecutable() != null) {
+      exePath = service.getDriverExecutable().getAbsolutePath();
     }
 
     if (exePath == null) {
@@ -26,14 +26,14 @@ public class DriverFinder {
         exePath = SeleniumManager.getInstance().getDriverPath(options);
       } catch (Exception e) {
         LOG.warning(String.format("Unable to obtain %s using Selenium Manager: %s",
-                                  serviceInfo.getDriverName(), e.getMessage()));
+                                  service.getDriverName(), e.getMessage()));
       }
     }
 
     String validPath = Require.state("The path to the driver executable", exePath).nonNull(
         "Unable to locate the %s executable; for more information on how to install drivers, " +
         "see https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/",
-        serviceInfo.getDriverName());
+        service.getDriverName());
 
       File exe = new File(validPath);
       Require.state("The driver executable", exe).isFile();

@@ -23,7 +23,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -129,7 +128,7 @@ public class EdgeDriverService extends DriverService {
   /**
    * Configures and returns a new {@link EdgeDriverService} using the default configuration. In
    * this configuration, the service will use the MSEdgeDriver executable identified by the
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverServiceInfo, Capabilities)}.
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
    * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromiumEdgeDriverService using the default configuration.
@@ -153,14 +152,14 @@ public class EdgeDriverService extends DriverService {
    * Builder used to configure new {@link EdgeDriverService} instances.
    */
   @AutoService(DriverService.Builder.class)
-  public static class Builder extends DriverService.Builder<
-    EdgeDriverService, Builder> {
+  public static class Builder extends DriverService.Builder<EdgeDriverService, Builder> {
 
     private boolean disableBuildCheck = Boolean.getBoolean(EDGE_DRIVER_DISABLE_BUILD_CHECK);
     private boolean readableTimestamp = Boolean.getBoolean(EDGE_DRIVER_READABLE_TIMESTAMP);
     private boolean appendLog = Boolean.getBoolean(EDGE_DRIVER_APPEND_LOG_PROPERTY);
     private boolean verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
-    private ChromiumDriverLogLevel logLevel = ChromiumDriverLogLevel.fromString(System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY));
+    private ChromiumDriverLogLevel logLevel = ChromiumDriverLogLevel
+      .fromString(System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY));
     private boolean silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
     private String allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
 

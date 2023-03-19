@@ -23,7 +23,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -154,7 +153,7 @@ public class ChromeDriverService extends DriverService {
   /**
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverServiceInfo, Capabilities)}.
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
    * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the default configuration.
@@ -166,7 +165,7 @@ public class ChromeDriverService extends DriverService {
   /**
    * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by
-   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverServiceInfo, Capabilities)}.
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
    * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.

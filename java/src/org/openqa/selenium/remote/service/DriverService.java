@@ -59,7 +59,7 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is
  * used to stop the server.
  */
-public class DriverService implements Closeable, DriverServiceInfo {
+public class DriverService implements Closeable {
 
   private static final String NAME = "Driver Service Executor";
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
@@ -140,11 +140,23 @@ public class DriverService implements Closeable, DriverServiceInfo {
 
   protected URL getUrl(int port) throws IOException {
     return new URL(String.format("http://localhost:%d", port));
- }
+  }
 
- protected Capabilities getDefaultDriverOptions() {
-   return new ImmutableCapabilities();
- }
+  protected Capabilities getDefaultDriverOptions() {
+    return new ImmutableCapabilities();
+  }
+
+  protected String getDriverName() {
+    return null;
+  }
+
+  protected String getDriverProperty() {
+    return null;
+  }
+
+  protected File getDriverExecutable() {
+    return null;
+  }
 
   /**
    * @return The base URL for the managed driver server.
