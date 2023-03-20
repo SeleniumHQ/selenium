@@ -18,6 +18,7 @@ package org.openqa.selenium.manager;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
+
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
@@ -100,23 +101,26 @@ public class SeleniumManager {
             process.waitFor();
             code = process.exitValue();
             output = CharStreams.toString(new InputStreamReader(
-                    process.getInputStream(), StandardCharsets.UTF_8));
+              process.getInputStream(), StandardCharsets.UTF_8));
         } catch (InterruptedException e) {
             LOG.warning(String.format("Interrupted exception running command %s: %s",
-                    Arrays.toString(command), e.getMessage()));
+                                      Arrays.toString(command), e.getMessage()));
             Thread.currentThread().interrupt();
         } catch (Exception e) {
             LOG.warning(String.format("%s running command %s: %s",
-                    e.getClass().getSimpleName(), Arrays.toString(command), e.getMessage()));
+                                      e.getClass().getSimpleName(), Arrays.toString(command),
+                                      e.getMessage()));
         }
+        SeleniumManagerJsonOutput jsonOutput = new Json()
+          .toType(output, SeleniumManagerJsonOutput.class);
         if (code > 0) {
-            throw new WebDriverException("Unsuccessful command executed: " + Arrays.toString(command) +
-                    "\n" + output);
+            throw new WebDriverException(
+              "Unsuccessful command executed: " + Arrays.toString(command) +
+              "\n" + jsonOutput.result.message);
         }
-        SeleniumManagerJsonOutput jsonOutput = new Json().toType(output,
-                SeleniumManagerJsonOutput.class);
-        jsonOutput.logs.stream().filter(log -> log.level.equalsIgnoreCase(WARN))
-                .forEach(log -> LOG.warning(log.message));
+        jsonOutput.logs.stream()
+          .filter(log -> log.level.equalsIgnoreCase(WARN))
+          .forEach(log -> LOG.warning(log.message));
         return jsonOutput.result.message;
     }
 
@@ -170,17 +174,6 @@ public class SeleniumManager {
       if (!options.getBrowserVersion().isEmpty()) {
         commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
       }
-      return runCommand(commandList.toArray(new String[0]));
-    }
-
-    public String getDriverPath(String driverName) {
-      File binaryFile = getBinary();
-      if(binaryFile == null) {
-        return null;
-      }
-      ImmutableList<String> commandList = ImmutableList.of(binaryFile.getAbsolutePath(),
-                                                           "--driver", driverName,
-                                                           "--output", "json");
       return runCommand(commandList.toArray(new String[0]));
     }
 }
