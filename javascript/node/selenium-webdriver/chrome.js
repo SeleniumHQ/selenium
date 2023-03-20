@@ -160,10 +160,6 @@ class ServiceBuilder extends chromium.ServiceBuilder {
     let exe = opt_exe || locateSynchronously()
 
     if (!exe) {
-      console.log(
-        ` The ChromeDriver could not be found on the current PATH, trying Selenium Manager`
-      )
-
       try {
         exe = driverLocation(Browser.CHROME)
       } catch (err) {
@@ -173,10 +169,9 @@ class ServiceBuilder extends chromium.ServiceBuilder {
 
     if (!exe) {
       throw Error(
-        `The ChromeDriver could not be found on the current PATH.
-      Please download the latest version of the ChromeDriver
-      from http://chromedriver.storage.googleapis.com/index.html
-      and ensure it can be found on your PATH.`
+        `ChromeDriver could not be found on the PATH.
+        For more information on how to install drivers see
+        https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/.`
       )
     }
 

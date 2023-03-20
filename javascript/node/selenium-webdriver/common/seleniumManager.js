@@ -69,22 +69,30 @@ function driverLocation(browser) {
     )
   }
 
-  let args = [getBinary(), '--browser', browser]
-  let result
+  let args = [getBinary(), '--browser', browser, '--output', 'json']
+  let output
 
   try {
-    result = execSync(args.join(' ')).toString()
+    output = JSON.parse(execSync(args.join(' ')).toString())
   } catch (e) {
+    let error
+    try {
+      error = JSON.parse(e.stdout.toString()).result.message
+    } catch (e) {
+      error = e.toString()
+    }
     throw new Error(
-      `Error executing command with ${args}\n${e.stdout.toString()}${e.stderr.toString()}`
+      `Error executing command with ${args}: ${error}`
     )
   }
 
-  if (!result.startsWith('INFO\t')) {
-    throw new Error(`Unsuccessful command executed: ${args}\n${result}`)
+  for (const key in output.logs){
+    if (output.logs[key].level === 'WARN') {
+      console.warn(`${output.logs[key].message}`)
+    }
   }
 
-  return result.replace('INFO\t', '').trim()
+  return output.result.message
 }
 
 // PUBLIC API

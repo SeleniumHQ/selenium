@@ -401,10 +401,6 @@ function createServiceFromCapabilities(capabilities) {
 
   let exe = locateSynchronously()
   if (!exe) {
-    console.log(
-      `The ${IEDRIVER_EXE} executable could not be found on the current PATH, trying Selenium Manager`
-    )
-
     try {
       exe = driverLocation('iexplorer')
     } catch (err) {
@@ -414,10 +410,9 @@ function createServiceFromCapabilities(capabilities) {
 
   if (!exe || !fs.existsSync(exe)) {
     throw Error(
-      `${IEDRIVER_EXE} could not be found on the current PATH. Please ` +
-        `download the latest version of ${IEDRIVER_EXE} from ` +
-        'https://www.selenium.dev/downloads/ and ' +
-        'ensure it can be found on your system PATH.'
+      `IEDriver could not be found on the PATH.
+      For more information on how to install drivers see
+      https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/.`
     )
   }
 
