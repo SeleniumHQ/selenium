@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.net.PortProber;
@@ -58,7 +59,7 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
  * In addition to this, it is supposed that the driver server implements /shutdown hook that is
  * used to stop the server.
  */
-public class DriverService implements Closeable, DriverServiceInfo {
+public class DriverService implements Closeable {
 
   private static final String NAME = "Driver Service Executor";
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
@@ -139,7 +140,23 @@ public class DriverService implements Closeable, DriverServiceInfo {
 
   protected URL getUrl(int port) throws IOException {
     return new URL(String.format("http://localhost:%d", port));
- }
+  }
+
+  protected Capabilities getDefaultDriverOptions() {
+    return new ImmutableCapabilities();
+  }
+
+  protected String getDriverName() {
+    return null;
+  }
+
+  protected String getDriverProperty() {
+    return null;
+  }
+
+  protected File getDriverExecutable() {
+    return null;
+  }
 
   /**
    * @return The base URL for the managed driver server.
@@ -178,7 +195,10 @@ public class DriverService implements Closeable, DriverServiceInfo {
         return;
       }
       if (this.executable == null) {
-        this.executable = DriverFinder.getPath(this);
+        if (getDefaultDriverOptions().getBrowserName().isEmpty()) {
+          throw new WebDriverException("Driver executable is null and browser name is not set.");
+        }
+        this.executable = DriverFinder.getPath(this, getDefaultDriverOptions());
       }
       process = new CommandLine(this.executable, args.toArray(new String[]{}));
       process.setEnvironmentVariables(environment);
@@ -272,7 +292,7 @@ public class DriverService implements Closeable, DriverServiceInfo {
       if (getOutputStream() instanceof FileOutputStream) {
         try {
           getOutputStream().close();
-        } catch (IOException e) {
+        } catch (IOException ignore) {
         }
       }
     } finally {

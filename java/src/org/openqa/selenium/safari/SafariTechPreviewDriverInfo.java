@@ -53,7 +53,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
     }
 
     return capabilities.asMap().keySet().parallelStream()
-      .map(key -> key.startsWith("safari.") || key.startsWith("safari:"))
+      .map(key -> key.startsWith("safari:"))
       .reduce(Boolean::logicalOr)
       .orElse(false);
   }
@@ -71,7 +71,8 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      DriverFinder.getPath(SafariTechPreviewDriverService.createDefaultService());
+      DriverFinder.getPath(SafariTechPreviewDriverService.createDefaultService(),
+                           getCanonicalCapabilities());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;

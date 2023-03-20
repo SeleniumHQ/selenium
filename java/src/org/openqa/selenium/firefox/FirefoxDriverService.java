@@ -18,7 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;

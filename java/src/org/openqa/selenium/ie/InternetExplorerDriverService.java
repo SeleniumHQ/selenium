@@ -97,6 +97,11 @@ public class InternetExplorerDriverService extends DriverService {
     return IE_DRIVER_EXE_PROPERTY;
   }
 
+  @Override
+  public Capabilities getDefaultDriverOptions() {
+    return new InternetExplorerOptions();
+  }
+
   /**
    * Configures and returns a new {@link InternetExplorerDriverService} using the default configuration. In
    * this configuration, the service will use the IEDriverServer executable identified by the

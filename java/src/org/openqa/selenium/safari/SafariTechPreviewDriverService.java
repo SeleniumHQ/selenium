@@ -23,7 +23,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +50,11 @@ public class SafariTechPreviewDriverService extends DriverService {
 
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
     new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
+
+  @Override
+  protected Capabilities getDefaultDriverOptions() {
+    return new SafariOptions().setUseTechnologyPreview(true);
+  }
 
   public SafariTechPreviewDriverService(
     File executable,
