@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import json
 import logging
 import subprocess
 import sys
@@ -70,14 +71,20 @@ class SeleniumManager:
         if browser == "ie":
             browser = "iexplorer"
 
-        binary, flag, browser = str(self.get_binary()), "--browser", browser
-        result = self.run((binary, flag, browser))
+        binary, browser_flag, browser, output_flag, output = (
+            str(self.get_binary()),
+            "--browser",
+            browser,
+            "--output",
+            "json",
+        )
+        result = self.run((binary, browser_flag, browser, output_flag, output))
         executable = result.split("\t")[-1].strip()
         logger.debug(f"Using driver at: {executable}")
         return executable
 
     @staticmethod
-    def run(args: Tuple[str, str, str]) -> str:
+    def run(args: Tuple[str, str, str, str, str]) -> str:
         """
         Executes the Selenium Manager Binary.
         :Args:
@@ -89,8 +96,13 @@ class SeleniumManager:
         completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
         stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
+        output = json.loads(stdout)
+        result = output["result"]["message"]
         if completed_proc.returncode:
-            raise SeleniumManagerException(f"Selenium manager failed for: {command}.\n{stdout}{stderr}")
+            raise SeleniumManagerException(f"Selenium manager failed for: {command}.\n{result}{stderr}")
         else:
-            # selenium manager exited 0 successfully, parse the executable path from stdout.
-            return stdout.split("\t")[-1].strip()
+            # Selenium Manager exited 0 successfully, return executable path and print warnings (if any)
+            for item in output["logs"]:
+                if item["level"] == "WARN":
+                    logger.warning(item["message"])
+            return result

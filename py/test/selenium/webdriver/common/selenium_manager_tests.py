@@ -28,8 +28,8 @@ def test_non_supported_browser_raises_sme():
 
 
 def test_stderr_is_propagated_to_exception_messages():
-    msg = r"Selenium manager failed for:.* --browser foo\.\nERROR\tInvalid browser name: foo"
+    msg = r"Selenium manager failed for:.* --browser foo --output json\.\nInvalid browser name: foo\n"
     with pytest.raises(SeleniumManagerException, match=msg):
         manager = SeleniumManager()
         binary = manager.get_binary()
-        _ = manager.run((str(binary), "--browser", "foo"))
+        _ = manager.run((str(binary), "--browser", "foo", "--output", "json"))
