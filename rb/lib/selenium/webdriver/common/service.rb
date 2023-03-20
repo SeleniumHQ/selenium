@@ -67,11 +67,10 @@ module Selenium
       #
 
       def initialize(path: nil, port: nil, args: nil)
-        path ||= self.class.driver_path
         port ||= self.class::DEFAULT_PORT
         args ||= []
 
-        @executable_path = binary_path(path)
+        @executable_path = path
         @host = Platform.localhost
         @port = Integer(port)
 
@@ -95,24 +94,6 @@ module Selenium
                                    ':args parameter with an Array of String values',
                                    id: :driver_opts)
         driver_opts.key?(:args) ? driver_opts.delete(:args) : []
-      end
-
-      private
-
-      def binary_path(path = nil)
-        path = path.call if path.is_a?(Proc)
-        path ||= Platform.find_binary(self.class::EXECUTABLE)
-
-        begin
-          path ||= SeleniumManager.driver_path(self.class::EXECUTABLE)
-        rescue Error::WebDriverError => e
-          WebDriver.logger.debug("Unable obtain driver using Selenium Manager\n #{e.message}")
-        end
-
-        raise Error::WebDriverError, self.class::MISSING_TEXT unless path
-
-        Platform.assert_executable path
-        path
       end
     end # Service
   end # WebDriver
