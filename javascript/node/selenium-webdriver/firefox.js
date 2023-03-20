@@ -474,10 +474,6 @@ function findGeckoDriver() {
   let exe = locateSynchronously()
 
   if (!exe) {
-    console.log(
-      `The ${GECKO_DRIVER_EXE} executable could not be found on the current PATH, trying Selenium Manager`
-    )
-
     try {
       exe = driverLocation(Browser.FIREFOX)
     } catch (err) {
@@ -487,9 +483,9 @@ function findGeckoDriver() {
 
   if (!exe) {
     throw Error(
-      `The ${GECKO_DRIVER_EXE} executable could not be found on the current PATH.
-      Please download the latest version from https://github.com/mozilla/geckodriver/releases/
-      and ensure it can be found on your PATH.`
+      `GeckoDriver could not be found on the PATH.
+      For more information on how to install drivers see
+      https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/.`
     )
   }
 
