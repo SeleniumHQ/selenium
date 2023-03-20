@@ -25,11 +25,6 @@ module Selenium
       class Service < Chromium::Service
         DEFAULT_PORT = 9515
         EXECUTABLE = 'chromedriver'
-        MISSING_TEXT = <<~ERROR
-          Unable to find chromedriver. Please download the server from
-          https://chromedriver.storage.googleapis.com/index.html and place it somewhere on your PATH.
-          More info at https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/?language=ruby.
-        ERROR
         SHUTDOWN_SUPPORTED = true
       end # Service
     end # Chrome

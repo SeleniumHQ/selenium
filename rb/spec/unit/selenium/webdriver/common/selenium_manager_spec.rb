@@ -72,38 +72,67 @@ module Selenium
       end
 
       describe 'self.driver_path' do
-        it 'errors if not one of 3 valid drivers' do
+        it 'errors if not an option' do
           expect {
-            described_class.driver_path('something')
-          }.to raise_error(Error::WebDriverError, /Unable to locate driver with name/)
+            described_class.driver_path(Remote::Capabilities.new(browser_name: 'chrome'))
+          }.to raise_error(ArgumentError, /SeleniumManager requires a WebDriver::Options instance/)
         end
 
-        it 'does not use if driver_path provided' do
-          allow(described_class).to receive(:driver_path)
-          allow(Platform).to receive(:assert_executable).and_return(false)
+        it 'determines browser name by default' do
+          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:binary).and_return('selenium-manager')
+          allow(Platform).to receive(:assert_executable)
 
-          WebDriver::Service.chrome(path: 'something')
+          described_class.driver_path(Options.chrome)
 
-          expect(described_class).not_to have_received(:driver_path)
+          expect(described_class).to have_received(:run).with('selenium-manager --browser chrome')
         end
 
-        it 'not used if found on PATH' do
-          allow(described_class).to receive(:driver_path)
-          allow(Platform).to receive(:assert_executable).and_return(false)
-          allow(Platform).to receive(:find_binary).and_return('something')
+        it 'uses browser version if specified' do
+          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:binary).and_return('selenium-manager')
+          allow(Platform).to receive(:assert_executable)
+          options = Options.chrome(browser_version: 1)
 
-          WebDriver::Service.chrome
+          described_class.driver_path(options)
 
-          expect(described_class).not_to have_received(:driver_path)
+          expect(described_class).to have_received(:run).with('selenium-manager --browser chrome --browser-version 1')
         end
 
-        it 'gives original error if not found' do
-          allow(Platform).to receive(:find_binary)
-          allow(described_class).to receive(:driver_path)
+        it 'uses browser location if specified' do
+          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:binary).and_return('selenium-manager')
+          allow(Platform).to receive(:assert_executable)
+          options = Options.chrome(binary: '/path/to/browser')
 
-          expect {
-            WebDriver::Service.chrome
-          }.to raise_error(WebDriver::Error::WebDriverError, /Unable to find chromedriver. Please download/)
+          described_class.driver_path(options)
+
+          expect(described_class).to have_received(:run)
+            .with('selenium-manager --browser chrome --browser-path "/path/to/browser"')
+        end
+
+        it 'properly escapes plain spaces in browser location' do
+          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:binary).and_return('selenium-manager')
+          allow(Platform).to receive(:assert_executable)
+          options = Options.chrome(binary: '/path to/the/browser')
+
+          described_class.driver_path(options)
+
+          expect(described_class).to have_received(:run)
+            .with('selenium-manager --browser chrome --browser-path "/path\ to/the/browser"')
+        end
+
+        it 'properly escapes escaped spaces in browser location' do
+          allow(described_class).to receive(:run)
+          allow(described_class).to receive(:binary).and_return('selenium-manager')
+          allow(Platform).to receive(:assert_executable)
+          options = Options.chrome(binary: '/path\ to/the/browser')
+
+          described_class.driver_path(options)
+
+          expect(described_class).to have_received(:run)
+            .with('selenium-manager --browser chrome --browser-path "/path\ to/the/browser"')
         end
       end
     end
