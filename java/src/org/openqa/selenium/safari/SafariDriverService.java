@@ -23,7 +23,6 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
-import org.openqa.selenium.remote.service.DriverServiceInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +49,11 @@ public class SafariDriverService extends DriverService {
   public static final String SAFARI_DRIVER_EXE_PROPERTY = "webdriver.safari.driver";
 
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
+
+  @Override
+  protected Capabilities getDefaultDriverOptions() {
+    return new SafariOptions();
+  }
 
   public SafariDriverService(
     File executable,

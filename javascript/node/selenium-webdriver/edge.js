@@ -109,10 +109,6 @@ class ServiceBuilder extends chromium.ServiceBuilder {
     let exe = opt_exe || locateSynchronously()
 
     if (!exe) {
-      console.log(
-        `The WebDriver for Edge could not be found on the current PATH, trying Selenium Manager`
-      )
-
       try {
         exe = driverLocation('edge')
       } catch (err) {
@@ -122,13 +118,11 @@ class ServiceBuilder extends chromium.ServiceBuilder {
 
     if (!exe) {
       throw Error(
-        `The WebDriver for Edge could not be found on the current PATH. Please download the ` +
-          `latest version of ${EDGEDRIVER_CHROMIUM_EXE} from ` +
-          `https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ ` +
-          `and ensure it can be found on your PATH.`
+        `MSEdgeDriver could not be found on the PATH.
+        For more information on how to install drivers see
+        https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/.`
       )
     }
-
     super(exe)
     this.setLoopback(true)
   }
