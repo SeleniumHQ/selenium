@@ -18,6 +18,8 @@
 package org.openqa.selenium.chrome;
 
 import com.google.auto.service.AutoService;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -43,7 +45,14 @@ public class ChromeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    return new ImmutableCapabilities(CapabilityType.BROWSER_NAME, CHROME.browserName());
+    // Allowing any origin "*" through remote-allow-origins might sound risky but an attacker
+    // would need to know the port used to start DevTools to establish a connection. Given
+    // these sessions are relatively short-lived, the risk is reduced. Also, this will be
+    // removed when we only support Java 11 and above.
+    return new ImmutableCapabilities(
+      CapabilityType.BROWSER_NAME, CHROME.browserName(),
+      ChromeOptions.CAPABILITY,
+      ImmutableMap.of("args", ImmutableList.of("--remote-allow-origins=*")));
   }
 
   @Override
