@@ -47,34 +47,36 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
 
   @Override
   public Capabilities apply(Capabilities capabilities) {
+    if (!Objects.equals(slotStereotype.getBrowserName(), capabilities.getBrowserName())) {
+      return capabilities;
+    }
+
     if (slotStereotype.getCapability(SE_VNC_ENABLED) != null) {
       capabilities = new PersistentCapabilities(capabilities)
         .setCapability(SE_VNC_ENABLED, slotStereotype.getCapability(SE_VNC_ENABLED))
         .setCapability(SE_NO_VNC_PORT, slotStereotype.getCapability(SE_NO_VNC_PORT));
     }
 
-    if (!Objects.equals(slotStereotype.getBrowserName(), capabilities.getBrowserName())) {
-      return capabilities;
-    }
+    String browserName = capabilities.getBrowserName().toLowerCase();
 
-    if ("internet explorer".equalsIgnoreCase(capabilities.getBrowserName())) {
+    if ("internet explorer".equalsIgnoreCase(browserName)) {
       return new ImmutableCapabilities(removeUnknownExtensionsForIE(capabilities));
     }
 
-    String browserName = capabilities.getBrowserName().toLowerCase();
     if (!BROWSER_OPTIONS.containsKey(browserName)) {
       return capabilities;
     }
+
     String options = BROWSER_OPTIONS.get(browserName);
     if (slotStereotype.asMap().containsKey(options) && capabilities.asMap().containsKey(options)) {
 
       @SuppressWarnings("unchecked")
-      Map<String, Object>
-        stereotypeOptions =
-        (Map<String, Object>) slotStereotype.asMap().get(options);
+      Map<String, Object> stereotypeOptions =
+        new HashMap<>((Map<String, Object>) slotStereotype.asMap().get(options));
 
       @SuppressWarnings("unchecked")
-      Map<String, Object> capsOptions = (Map<String, Object>) capabilities.asMap().get(options);
+      Map<String, Object> capsOptions =
+        new HashMap<>((Map<String, Object>) capabilities.asMap().get(options));
 
       // Merge top level capabilities, excluding browser specific options.
       // This will overwrite the browser options too, but it does not matter since we tackle it separately just after this.
@@ -118,10 +120,12 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       String name = entry.getKey();
       Object value = entry.getValue();
       if (name.equals("args")) {
-        List<String> arguments = (List<String>) value;
+        @SuppressWarnings("unchecked")
+        List<String> arguments = new ArrayList<>((List<String>) value);
 
-        List<String> stereotypeArguments =
-          (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>()));
+        @SuppressWarnings("unchecked")
+        List<String> stereotypeArguments = new ArrayList<>(
+          (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>())));
 
         arguments.forEach(arg -> {
           if (!stereotypeArguments.contains(arg)) {
@@ -132,10 +136,12 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       }
 
       if (name.equals("extensions")) {
-        List<String> extensionList = (List<String>) value;
+        @SuppressWarnings("unchecked")
+        List<String> extensionList = new ArrayList<>((List<String>) value);
 
-        List<String> stereotypeExtensions =
-          (List<String>) (stereotypeOptions.getOrDefault(("extensions"), new ArrayList<>()));
+        @SuppressWarnings("unchecked")
+        List<String> stereotypeExtensions = new ArrayList<>(
+          (List<String>) (stereotypeOptions.getOrDefault(("extensions"), new ArrayList<>())));
 
         extensionList.forEach(extension -> {
           if (!stereotypeExtensions.contains(extension)) {
@@ -162,9 +168,13 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       String name = entry.getKey();
       Object value = entry.getValue();
       if (name.equals("args")) {
-        List<String> arguments = (List<String>) value;
-        List<String> stereotypeArguments =
-          (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>()));
+        @SuppressWarnings("unchecked")
+        List<String> arguments = new ArrayList<>((List<String>) value);
+
+        @SuppressWarnings("unchecked")
+        List<String> stereotypeArguments = new ArrayList<>(
+          (List<String>) (stereotypeOptions.getOrDefault(("args"), new ArrayList<>())));
+
         arguments.forEach(arg -> {
           if (!stereotypeArguments.contains(arg)) {
             stereotypeArguments.add(arg);
@@ -174,10 +184,12 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       }
 
       if (name.equals("prefs")) {
-        Map<String, Object> prefs = (Map<String, Object>) value;
+        @SuppressWarnings("unchecked")
+        Map<String, Object> prefs = new HashMap<> ((Map<String, Object>) value);
 
-        Map<String, Object> stereotypePrefs =
-          (Map<String, Object>) (stereotypeOptions.getOrDefault(("prefs"), new HashMap<>()));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> stereotypePrefs = new HashMap<>(
+          (Map<String, Object>) (stereotypeOptions.getOrDefault(("prefs"), new HashMap<>())));
 
         stereotypePrefs.putAll(prefs);
         toReturn.put("prefs", stereotypePrefs);
@@ -189,6 +201,7 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
       }
 
       if (name.equals("log")) {
+        @SuppressWarnings("unchecked")
         Map<String, Object> logLevelMap = (Map<String, Object>) value;
         toReturn.put("log", logLevelMap);
       }
