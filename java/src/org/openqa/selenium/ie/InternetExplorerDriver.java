@@ -25,6 +25,7 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.FileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverFinder;
 
@@ -77,7 +78,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    * Setting this capability will make your tests unstable and hard to debug.
    */
   public static final String INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS =
-      "ignoreProtectedModeSettings";
+    "ignoreProtectedModeSettings";
 
   /**
    * Capability that defines to use persistent hovering or not.
@@ -111,15 +112,19 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   public static final String IE_SWITCHES = "ie.browserCommandLineSwitches";
 
   public InternetExplorerDriver() {
-    this(null, null);
+    this(InternetExplorerDriverService.createDefaultService(), new InternetExplorerOptions(), ClientConfig.defaultConfig());
   }
 
   public InternetExplorerDriver(InternetExplorerOptions options) {
-    this(null, options);
+    this(InternetExplorerDriverService.createDefaultService(), options, ClientConfig.defaultConfig());
   }
 
   public InternetExplorerDriver(InternetExplorerDriverService service) {
-    this(service, null);
+    this(service, new InternetExplorerOptions(), ClientConfig.defaultConfig());
+  }
+
+  public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options) {
+    this(service, options, ClientConfig.defaultConfig());
   }
 
   /**
@@ -131,20 +136,23 @@ public class InternetExplorerDriver extends RemoteWebDriver {
    * @param options The options required from InternetExplorerDriver.
    */
   public InternetExplorerDriver(InternetExplorerDriverService service,
-                                InternetExplorerOptions options) {
+                                InternetExplorerOptions options,
+                                ClientConfig clientConfig) {
     if (options == null) {
       options = new InternetExplorerOptions();
     }
     if (service == null) {
       service = InternetExplorerDriverService.createDefaultService();
     }
-
     if (service.getExecutable() == null) {
       String path = DriverFinder.getPath(service, options);
       service.setExecutable(path);
     }
+    if (clientConfig == null){
+      clientConfig = ClientConfig.defaultConfig();
+    }
 
-    run(service, options);
+    run(service, options, clientConfig);
   }
 
   @Beta
@@ -152,10 +160,10 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     return RemoteWebDriver.builder().oneOf(new InternetExplorerOptions());
   }
 
-  private void run(InternetExplorerDriverService service, Capabilities capabilities) {
+  private void run(InternetExplorerDriverService service, Capabilities capabilities, ClientConfig clientConfig) {
     assertOnWindows();
 
-    setCommandExecutor(new DriverCommandExecutor(service));
+    setCommandExecutor(new DriverCommandExecutor(service, clientConfig));
 
     startSession(capabilities);
   }
@@ -163,7 +171,7 @@ public class InternetExplorerDriver extends RemoteWebDriver {
   @Override
   public void setFileDetector(FileDetector detector) {
     throw new WebDriverException(
-        "Setting the file detector only works on remote webdriver instances obtained " +
+      "Setting the file detector only works on remote webdriver instances obtained " +
         "via RemoteWebDriver");
   }
 
@@ -171,8 +179,8 @@ public class InternetExplorerDriver extends RemoteWebDriver {
     Platform current = Platform.getCurrent();
     if (!current.is(Platform.WINDOWS)) {
       throw new WebDriverException(
-          String.format(
-              "You appear to be running %s. The IE driver only runs on Windows.", current));
+        String.format(
+          "You appear to be running %s. The IE driver only runs on Windows.", current));
     }
   }
 }

@@ -26,6 +26,7 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -52,19 +53,24 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   public EdgeDriver(EdgeDriverService service, EdgeOptions options) {
-    super(generateExecutor(service, options), options, EdgeOptions.CAPABILITY);
+    this(service, options, ClientConfig.defaultConfig());
+  }
+
+  public EdgeDriver(EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) {
+    super(generateExecutor(service, options, clientConfig), options, EdgeOptions.CAPABILITY);
     casting = new AddHasCasting().getImplementation(getCapabilities(), getExecuteMethod());
     cdp = new AddHasCdp().getImplementation(getCapabilities(), getExecuteMethod());
   }
 
-  private static EdgeDriverCommandExecutor generateExecutor(EdgeDriverService service, EdgeOptions options) {
+  private static EdgeDriverCommandExecutor generateExecutor(EdgeDriverService service, EdgeOptions options, ClientConfig clientConfig) {
     Require.nonNull("Driver service", service);
     Require.nonNull("Driver options", options);
+    Require.nonNull("Driver clientConfig", clientConfig);
     if (service.getExecutable() == null) {
       String path = DriverFinder.getPath(service, options);
       service.setExecutable(path);
     }
-    return new EdgeDriverCommandExecutor(service);
+    return new EdgeDriverCommandExecutor(service, clientConfig);
   }
 
   @Beta
@@ -73,8 +79,8 @@ public class EdgeDriver extends ChromiumDriver {
   }
 
   private static class EdgeDriverCommandExecutor extends ChromiumDriverCommandExecutor {
-    public EdgeDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+    public EdgeDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
+      super(service, getExtraCommands(), clientConfig);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

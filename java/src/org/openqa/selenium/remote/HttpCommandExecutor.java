@@ -90,6 +90,15 @@ public class HttpCommandExecutor implements CommandExecutor, NeedsLocalLogs {
   public HttpCommandExecutor(
     Map<String, CommandInfo> additionalCommands,
     URL addressOfRemoteServer,
+    ClientConfig config) {
+      this(additionalCommands,
+        config.baseUrl(Require.nonNull("Server URL", addressOfRemoteServer)),
+        getDefaultClientFactory());
+  }
+
+  public HttpCommandExecutor(
+    Map<String, CommandInfo> additionalCommands,
+    URL addressOfRemoteServer,
     HttpClient.Factory httpClientFactory) {
     this(additionalCommands,
          ClientConfig.defaultConfig()
