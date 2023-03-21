@@ -29,9 +29,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_one_arg, format_two_args, Logger, SeleniumManager, BETA,
+    create_http_client, format_one_arg, format_three_args, Logger, SeleniumManager, BETA,
     DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
-    REG_QUERY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    REG_QUERY, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 pub const EDGE_NAMES: &[&str] = &["edge", "msedge", "microsoftedge"];
@@ -126,9 +126,19 @@ impl SeleniumManager for EdgeManager {
                 Some(path) => {
                     browser_path = path;
                     commands = vec![
-                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES_X86, browser_path),
-                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES, browser_path),
-                        format_two_args(WMIC_COMMAND, ENV_LOCALAPPDATA, browser_path),
+                        format_three_args(
+                            WMIC_COMMAND_ENV,
+                            ENV_PROGRAM_FILES_X86,
+                            "",
+                            browser_path,
+                        ),
+                        format_three_args(
+                            WMIC_COMMAND_ENV,
+                            ENV_PROGRAM_FILES,
+                            REMOVE_X86,
+                            browser_path,
+                        ),
+                        format_three_args(WMIC_COMMAND, ENV_LOCALAPPDATA, "", browser_path),
                     ];
                     if !self.is_browser_version_unstable() {
                         commands.push(format_one_arg(
