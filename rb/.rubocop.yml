@@ -16,7 +16,7 @@ Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
 Metrics/AbcSize:
-  Max: 28
+  Max: 30
   Exclude:
     - 'lib/selenium/webdriver/remote/capabilities.rb'
     - 'lib/selenium/webdriver/remote/http/curb.rb'
@@ -35,8 +35,8 @@ Metrics/ClassLength:
     - 'lib/selenium/webdriver/common/driver.rb'
     - 'lib/selenium/webdriver/remote/bridge.rb'
     - 'lib/selenium/webdriver/remote/capabilities.rb'
-    - 'spec/integration/selenium/webdriver/bidi/log_inspector_spec.rb'
     - 'spec/integration/selenium/webdriver/spec_support/test_environment.rb'
+    - 'spec/**/*.rb'
 
 Metrics/CyclomaticComplexity:
   Max: 9

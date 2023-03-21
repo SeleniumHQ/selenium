@@ -33,6 +33,9 @@ module Selenium
         # @param [Options] options browser options.
         # @return [String] the path to the correct driver.
         def driver_path(options)
+          message = "driver for #{options.browser_name} not found; attempting to install with Selenium Manager"
+          WebDriver.logger.warn(message)
+
           unless options.is_a?(Options)
             raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not a #{options.inspect}"
           end
@@ -46,6 +49,7 @@ module Selenium
             command << '--browser-path'
             command << "\"#{options.binary.gsub('\ ', ' ').gsub(' ', '\ ')}\""
           end
+          command << '--debug' if WebDriver.logger.debug?
 
           location = run(command.join(' '))
           WebDriver.logger.debug("Driver found at #{location}")
@@ -82,8 +86,8 @@ module Selenium
 
           begin
             stdout, stderr, status = Open3.capture3(command)
-            json_output = JSON.parse(stdout)
-            result = json_output['result']['message']
+            json_output = stdout.empty? ? nil : JSON.parse(stdout)
+            result = json_output&.dig('result', 'message')
           rescue StandardError => e
             raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e.message
           end
@@ -93,7 +97,7 @@ module Selenium
           end
 
           json_output['logs'].each do |log|
-            WebDriver.logger.warn(log['message']) if log['level'] == 'WARN'
+            WebDriver.logger.send(log['level'].downcase, log['message'])
           end
 
           result
