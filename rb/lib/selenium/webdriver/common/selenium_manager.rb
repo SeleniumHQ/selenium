@@ -37,7 +37,7 @@ module Selenium
             raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not a #{options.inspect}"
           end
 
-          command = [binary, '--browser', options.browser_name]
+          command = [binary, '--browser', options.browser_name, '--output', 'json']
           if options.browser_version
             command << '--browser-version'
             command << options.browser_version
@@ -82,15 +82,21 @@ module Selenium
 
           begin
             stdout, stderr, status = Open3.capture3(command)
+            json_output = JSON.parse(stdout)
+            result = json_output['result']['message']
           rescue StandardError => e
             raise Error::WebDriverError, "Unsuccessful command executed: #{command}", e.message
           end
 
           if status.exitstatus.positive?
-            raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{stdout}#{stderr}"
+            raise Error::WebDriverError, "Unsuccessful command executed: #{command}\n#{result}#{stderr}"
           end
 
-          stdout.split("\n").last.gsub("INFO\t", '')
+          json_output['logs'].each do |log|
+            WebDriver.logger.warn(log['message']) if log['level'] == 'WARN'
+          end
+
+          result
         end
       end
     end # SeleniumManager
