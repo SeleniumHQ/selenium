@@ -271,5 +271,13 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 # functions without docstrings.
 autodoc_default_flags = ['members', 'undoc-members']
 
+# configuration for keeping the methods that can be invoked on said classes
+autodoc_default_options = {
+    'members': True,
+    'member-order': 'bysource',
+    'undoc-members': True,
+    'inherited-members': True,
+}
+
 # Include __init__ comments
 autoclass_content = "both"
