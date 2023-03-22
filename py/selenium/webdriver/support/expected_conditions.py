@@ -378,7 +378,8 @@ def element_to_be_selected(element):
 
 def element_located_to_be_selected(locator):
     """An expectation for the element to be located is selected.
-    locator is a tuple of (by, path), or WebElement"""
+    locator is a tuple of (by, path), or WebElement
+    """
 
     def _predicate(driver):
         if isinstance(locator, WebElement):
