@@ -17,8 +17,8 @@
 
 package dev.selenium.tools.javadoc;
 
+import com.github.bazelbuild.rules_jvm_external.zip.StableZipEntry;
 import org.openqa.selenium.io.TemporaryFilesystem;
-import rules.jvm.external.zip.StableZipEntry;
 
 import javax.tools.DocumentationTool;
 import javax.tools.JavaFileObject;

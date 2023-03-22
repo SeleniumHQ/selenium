@@ -17,6 +17,7 @@
 
 package dev.selenium.tools.modules;
 
+import com.github.bazelbuild.rules_jvm_external.zip.StableZipEntry;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
@@ -40,7 +41,6 @@ import net.bytebuddy.jar.asm.MethodVisitor;
 import net.bytebuddy.jar.asm.ModuleVisitor;
 import net.bytebuddy.jar.asm.Type;
 import org.openqa.selenium.io.TemporaryFilesystem;
-import rules.jvm.external.zip.StableZipEntry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
