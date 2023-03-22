@@ -31,6 +31,7 @@ public class Command<X> {
   private final String method;
   private final Map<String, Object> params;
   private final Function<JsonInput, X> mapper;
+  private final boolean sendsResponse;
 
   public Command(String method, Map<String, Object> params) {
     this(method, params, Object.class);
@@ -40,10 +41,15 @@ public class Command<X> {
     this(method, params, input -> input.read(Require.nonNull("Type to convert to", typeOfX)));
   }
 
-  private Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
+  public Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper) {
+    this(method, params, mapper, true);
+  }
+
+  public Command(String method, Map<String, Object> params, Function<JsonInput, X> mapper, boolean sendsResponse) {
     this.method = Require.nonNull("Method name", method);
     this.params = ImmutableMap.copyOf(Require.nonNull("Command parameters", params));
     this.mapper = Require.nonNull("Mapper for result", mapper);
+    this.sendsResponse = sendsResponse;
   }
 
   public String getMethod() {
@@ -52,6 +58,10 @@ public class Command<X> {
 
   public Map<String, Object> getParams() {
     return params;
+  }
+
+  public boolean getSendsResponse() {
+    return sendsResponse;
   }
 
   Function<JsonInput, X> getMapper() {

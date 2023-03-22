@@ -51,9 +51,7 @@ from selenium.common.exceptions import WebDriverException
 
 
 class ErrorCode:
-    """
-    Error codes defined in the WebDriver wire protocol.
-    """
+    """Error codes defined in the WebDriver wire protocol."""
 
     # Keep in sync with org.openqa.selenium.remote.ErrorCodes and errorcodes.h
     SUCCESS = 0
@@ -98,13 +96,11 @@ class ErrorCode:
 
 
 class ErrorHandler:
-    """
-    Handles errors returned by the WebDriver server.
-    """
+    """Handles errors returned by the WebDriver server."""
 
     def check_response(self, response: Dict[str, Any]) -> None:
-        """
-        Checks that a JSON response from the WebDriver does not have an error.
+        """Checks that a JSON response from the WebDriver does not have an
+        error.
 
         :Args:
          - response - The JSON response from the WebDriver server as a dictionary
@@ -126,7 +122,7 @@ class ErrorHandler:
 
                 try:
                     value = json.loads(value_json)
-                    if len(value.keys()) == 1:
+                    if len(value) == 1:
                         value = value["value"]
                     status = value.get("error", None)
                     if not status:
@@ -233,7 +229,7 @@ class ErrorHandler:
                             file = f"{file}:{line}"
                         meth = frame.get("methodName", "<anonymous>")
                         if "className" in frame:
-                            meth = "{}.{}".format(frame["className"], meth)
+                            meth = f"{frame['className']}.{meth}"
                         msg = "    at %s (%s)"
                         msg = msg % (meth, file)
                         stacktrace.append(msg)

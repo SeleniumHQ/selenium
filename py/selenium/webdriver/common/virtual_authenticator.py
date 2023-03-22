@@ -22,99 +22,50 @@ from base64 import urlsafe_b64encode
 from enum import Enum
 
 
-class Protocol(Enum):
-    """
-    Protocol to communicate with the authenticator.
-    """
+class Protocol(str, Enum):
+    """Protocol to communicate with the authenticator."""
 
-    CTAP2 = "ctap2"
-    U2F = "ctap1/u2f"
+    CTAP2: str = "ctap2"
+    U2F: str = "ctap1/u2f"
 
 
-class Transport(Enum):
-    """
-    Transport method to communicate with the authenticator.
-    """
+class Transport(str, Enum):
+    """Transport method to communicate with the authenticator."""
 
-    BLE = "ble"
-    USB = "usb"
-    NFC = "nfc"
-    INTERNAL = "internal"
+    BLE: str = "ble"
+    USB: str = "usb"
+    NFC: str = "nfc"
+    INTERNAL: str = "internal"
 
 
 class VirtualAuthenticatorOptions:
-
+    # These are so unnecessary but are now public API so we can't remove them without deprecating first.
+    # These should not be class level state in here.
     Protocol = Protocol
     Transport = Transport
 
-    def __init__(self) -> None:
-        """Constructor. Initialize VirtualAuthenticatorOptions object.
+    def __init__(
+        self,
+        protocol: str = Protocol.CTAP2,
+        transport: str = Transport.USB,
+        has_resident_key: bool = False,
+        has_user_verification: bool = False,
+        is_user_consenting: bool = True,
+        is_user_verified: bool = False,
+    ) -> None:
+        """Constructor.
 
-        :default:
-          - protocol: Protocol.CTAP2
-          - transport: Transport.USB
-          - hasResidentKey: False
-          - hasUserVerification: False
-          - isUserConsenting: True
-          - isUserVerified: False
+        Initialize VirtualAuthenticatorOptions object.
         """
 
-        self._protocol: Protocol = Protocol.CTAP2
-        self._transport: Transport = Transport.USB
-        self._has_resident_key: bool = False
-        self._has_user_verification: bool = False
-        self._is_user_consenting: bool = True
-        self._is_user_verified: bool = False
+        self.protocol: str = protocol
+        self.transport: str = transport
+        self.has_resident_key: bool = has_resident_key
+        self.has_user_verification: bool = has_user_verification
+        self.is_user_consenting: bool = is_user_consenting
+        self.is_user_verified: bool = is_user_verified
 
-    @property
-    def protocol(self) -> str:
-        return self._protocol.value
-
-    @protocol.setter
-    def protocol(self, protocol: Protocol) -> None:
-        self._protocol = protocol
-
-    @property
-    def transport(self) -> str:
-        return self._transport.value
-
-    @transport.setter
-    def transport(self, transport: Transport) -> None:
-        self._transport = transport
-
-    @property
-    def has_resident_key(self) -> bool:
-        return self._has_resident_key
-
-    @has_resident_key.setter
-    def has_resident_key(self, value: bool) -> None:
-        self._has_resident_key = value
-
-    @property
-    def has_user_verification(self) -> bool:
-        return self._has_user_verification
-
-    @has_user_verification.setter
-    def has_user_verification(self, value: bool) -> None:
-        self._has_user_verification = value
-
-    @property
-    def is_user_consenting(self) -> bool:
-        return self._is_user_consenting
-
-    @is_user_consenting.setter
-    def is_user_consenting(self, value: bool) -> None:
-        self._is_user_consenting = value
-
-    @property
-    def is_user_verified(self) -> bool:
-        return self._is_user_verified
-
-    @is_user_verified.setter
-    def is_user_verified(self, value: bool) -> None:
-        self._is_user_verified = value
-
-    def to_dict(self) -> typing.Dict[str, typing.Any]:
+    def to_dict(self) -> typing.Dict[str, typing.Union[str, bool]]:
         return {
             "protocol": self.protocol,
             "transport": self.transport,
@@ -136,7 +87,7 @@ class Credential:
         sign_count: int,
     ):
         """Constructor. A credential stored in a virtual authenticator.
-        https://w3c.github.io/webauthn/#credential-parameters
+        https://w3c.github.io/webauthn/#credential-parameters.
 
         :Args:
             - credential_id (bytes): Unique base64 encoded string.
@@ -243,9 +194,8 @@ class Credential:
 
 
 def required_chromium_based_browser(func):
-    """
-    A decorator to ensure that the client used is a chromium based browser.
-    """
+    """A decorator to ensure that the client used is a chromium based
+    browser."""
 
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -259,9 +209,8 @@ def required_chromium_based_browser(func):
 
 
 def required_virtual_authenticator(func):
-    """
-    A decorator to ensure that the function is called with a virtual authenticator.
-    """
+    """A decorator to ensure that the function is called with a virtual
+    authenticator."""
 
     @functools.wraps(func)
     @required_chromium_based_browser

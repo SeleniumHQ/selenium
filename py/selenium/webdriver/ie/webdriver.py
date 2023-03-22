@@ -33,7 +33,8 @@ DEFAULT_KEEP_ALIVE = None
 
 
 class WebDriver(RemoteWebDriver):
-    """Controls the IEServerDriver and allows you to drive Internet Explorer"""
+    """Controls the IEServerDriver and allows you to drive Internet
+    Explorer."""
 
     def __init__(
         self,
@@ -48,9 +49,8 @@ class WebDriver(RemoteWebDriver):
         service: Service = None,
         desired_capabilities=None,
         keep_alive=DEFAULT_KEEP_ALIVE,
-    ):
-        """
-        Creates a new instance of the Ie driver.
+    ) -> None:
+        """Creates a new instance of the Ie driver.
 
         Starts the service and then creates new instance of Ie driver.
 

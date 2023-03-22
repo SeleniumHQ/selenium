@@ -16,7 +16,6 @@ java_library(
         "//java/src/org/openqa/selenium/grid/component",
         "//java/src/org/openqa/selenium/grid/data",
         "//java/src/org/openqa/selenium/grid/jmx",
-        "//java/src/org/openqa/selenium/grid/node/locators",
         "//java/src/org/openqa/selenium/grid/security",
         "//java/src/org/openqa/selenium/grid/web",
         "//java/src/org/openqa/selenium/json",

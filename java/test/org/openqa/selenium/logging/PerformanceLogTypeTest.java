@@ -17,24 +17,19 @@
 
 package org.openqa.selenium.logging;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JupiterTestBase;
+
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
 import static org.openqa.selenium.testing.drivers.Browser.IE;
 import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import java.util.Set;
-import java.util.logging.Level;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
@@ -57,28 +52,5 @@ class PerformanceLogTypeTest extends JupiterTestBase {
     Set<String> logTypes = driver.manage().logs().getAvailableLogTypes();
     assertThat(logTypes.contains(LogType.PERFORMANCE))
         .describedAs("Performance log should not be enabled by default").isFalse();
-  }
-
-  void createLocalDriverWithPerformanceLogType() {
-    LoggingPreferences logPrefs = new LoggingPreferences();
-    logPrefs.enable(LogType.PERFORMANCE, Level.INFO);
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.LOGGING_PREFS, logPrefs);
-    localDriver = new WebDriverBuilder().get(caps);
-  }
-
-  @Test
-  void shouldBeAbleToEnablePerformanceLog() {
-    createLocalDriverWithPerformanceLogType();
-    Set<String> logTypes = localDriver.manage().logs().getAvailableLogTypes();
-    assertThat(logTypes.contains(LogType.PERFORMANCE))
-        .describedAs("Profiler log should be enabled").isTrue();
-  }
-
-  @Test
-  void pageLoadShouldProducePerformanceLogEntries() {
-    createLocalDriverWithPerformanceLogType();
-    localDriver.get(pages.simpleTestPage);
-    LogEntries entries = localDriver.manage().logs().get(LogType.PERFORMANCE);
-    assertThat(entries).isNotEmpty();
   }
 }

@@ -23,9 +23,7 @@ DEFAULT_EXECUTABLE_PATH = "IEDriverServer.exe"
 
 
 class Service(service.Service):
-    """
-    Object that manages the starting and stopping of the IEDriver
-    """
+    """Object that manages the starting and stopping of the IEDriver."""
 
     def __init__(
         self,
@@ -34,9 +32,9 @@ class Service(service.Service):
         host: typing.Optional[str] = None,
         log_level: typing.Optional[str] = None,
         log_file: typing.Optional[str] = None,
-    ):
-        """
-        Creates a new instance of the Service
+        **kwargs,
+    ) -> None:
+        """Creates a new instance of the Service.
 
         :Args:
          - executable_path : Path to the IEDriver
@@ -45,7 +43,8 @@ class Service(service.Service):
          - log_level : Level of logging of service, may be "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE".
            Default is "FATAL".
          - log_file : Target of logging of service, may be "stdout", "stderr" or file path.
-           Default is "stdout"."""
+           Default is "stdout".
+        """
         self.service_args = []
         if host:
             self.service_args.append(f"--host={host}")
@@ -58,6 +57,7 @@ class Service(service.Service):
             executable_path,
             port=port,
             start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
+            **kwargs,
         )
 
     def command_line_args(self) -> List[str]:

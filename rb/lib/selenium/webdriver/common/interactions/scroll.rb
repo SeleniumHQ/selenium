@@ -27,15 +27,17 @@ module Selenium
       #
 
       class Scroll < Interaction
-        def initialize(source:, x: 0, y: 0, delta_x: 0, delta_y: 0, origin: :viewport, duration: 0.25)
+        def initialize(source:, origin: :viewport, duration: 0.25, **opts)
           super(source)
           @type = :scroll
           @duration = duration * 1000
           @origin = origin
-          @x_offset = x
-          @y_offset = y
-          @delta_x = delta_x
-          @delta_y = delta_y
+          @x_offset = opts.delete(:x) || 0
+          @y_offset = opts.delete(:y) || 0
+          @delta_x = opts.delete(:delta_x) || 0
+          @delta_y = opts.delete(:delta_y) || 0
+
+          raise ArgumentError, "Invalid arguments: #{opts.keys}" unless opts.empty?
         end
 
         def assert_source(source)

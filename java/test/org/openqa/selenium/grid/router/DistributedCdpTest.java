@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.grid.router;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assumptions.assumeThat;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -49,6 +46,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assumptions.assumeThat;
+
 class DistributedCdpTest {
 
   @BeforeAll
@@ -66,6 +66,7 @@ class DistributedCdpTest {
       browser.getCapabilities(),
       new TomlConfig(new StringReader(
         "[node]\n" +
+        "selenium-manager = true\n" +
         "driver-implementation = " + browser.displayName())));
 
     Server<?> server = new NettyServer(

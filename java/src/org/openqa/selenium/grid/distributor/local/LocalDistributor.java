@@ -122,7 +122,7 @@ import static org.openqa.selenium.remote.tracing.Tags.EXCEPTION;
 
 @ManagedService(objectName = "org.seleniumhq.grid:type=Distributor,name=LocalDistributor",
   description = "Grid 4 node distributor")
-public class LocalDistributor extends Distributor implements Closeable {
+public class LocalDistributor extends Distributor implements AutoCloseable {
 
   private static final Logger LOG = Logger.getLogger(LocalDistributor.class.getName());
 

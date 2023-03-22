@@ -17,28 +17,17 @@
 
 package org.openqa.selenium.logging;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.remote.CapabilityType.ENABLE_PROFILING_CAPABILITY;
-import static org.openqa.selenium.testing.drivers.Browser.CHROME;
-import static org.openqa.selenium.testing.drivers.Browser.EDGE;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.logging.profiler.EventType;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 @Ignore(HTMLUNIT)
 @Ignore(IE)
@@ -64,65 +53,7 @@ class PerformanceLoggingTest extends JupiterTestBase {
         .isEmpty();
   }
 
-  @Test
-  void testLogsSingleHttpCommand() {
-    startLoggingDriver();
-    List<LogEntry> entries = getProfilerEntriesOfType(getProfilerEntries(loggingDriver),
-                                                      EventType.HTTP_COMMAND);
-    // Expect start of newSession, end of newSession, start of getLogs, end of getLogs
-    String[] expected = {"\"command\": \"newSession\",\"startorend\": \"start\"",
-        "\"command\": \"newSession\",\"startorend\": \"end\"",
-        "\"command\": \"getLog\",\"startorend\": \"start\"",
-        "\"command\": \"getLog\",\"startorend\": \"end\""};
-    assertThat(containsExpectedEntries(entries, expected)).isTrue();
-  }
-
-  /**
-   * Checks if the given list of strings occur in the given order among the
-   * given log messages (one string per message).
-   *
-   * @param entries The list of log entries.
-   * @param expected The array of expected strings.
-   * @return true if a match was found for all expected strings, otherwise false.
-   */
-  private boolean containsExpectedEntries(List<LogEntry> entries, String[] expected) {
-    int index = 0;
-    for (LogEntry entry : entries) {
-      if (index == expected.length) {
-        return true;
-      }
-      if (!entry.getMessage().contains(expected[index])) {
-        index++;
-      }
-    }
-    return (index == expected.length);
-  }
-
-  @Test
-  @Ignore(CHROME)
-  @Ignore(EDGE)
-  public void testGetsYieldToPageLoadLogEntries() {
-    startLoggingDriver();
-    loggingDriver.get(pages.formPage);
-    loggingDriver.findElement(By.id("submitButton")).click();
-    assertThat(
-        getProfilerEntriesOfType(getProfilerEntries(loggingDriver), EventType.YIELD_TO_PAGE_LOAD).size())
-        .isPositive();
-  }
-
-  private void startLoggingDriver() {
-    if (loggingDriver == null) {
-      loggingDriver = new WebDriverBuilder()
-          .get(new ImmutableCapabilities(ENABLE_PROFILING_CAPABILITY, true));
-    }
-  }
-
   private LogEntries getProfilerEntries(WebDriver driver) {
     return driver.manage().logs().get(LogType.PROFILER);
-  }
-
-  private List<LogEntry> getProfilerEntriesOfType(LogEntries entries, EventType eventType) {
-    return StreamSupport.stream(entries.spliterator(), false).filter(
-        entry -> entry.getMessage().contains(eventType.toString())).collect(Collectors.toList());
   }
 }

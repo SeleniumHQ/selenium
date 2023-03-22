@@ -17,7 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'childprocess'
+require 'selenium/webdriver/common/child_process'
 require 'selenium/webdriver/common/socket_poller'
 require 'net/http'
 
@@ -210,6 +210,7 @@ module Selenium
       begin
         Net::HTTP.get(@host, '/selenium-server/driver/?cmd=shutDownSeleniumServer', @port)
       rescue Errno::ECONNREFUSED
+        nil
       end
 
       stop_process if @process
@@ -237,7 +238,7 @@ module Selenium
 
       begin
         @process.poll_for_exit(5)
-      rescue ChildProcess::TimeoutError
+      rescue WebDriver::ChildProcess::TimeoutError
         @process.stop
       end
     rescue Errno::ECHILD
@@ -252,16 +253,13 @@ module Selenium
         properties = @additional_args.dup - @additional_args.delete_if { |arg| arg[/^-D/] }
         args = ['-jar', @jar, @role, '--port', @port.to_s]
         server_command = ['java'] + properties + args + @additional_args
-        cp = ChildProcess.build(*server_command)
+        cp = WebDriver::ChildProcess.build(*server_command)
         WebDriver.logger.debug("Executing Process #{server_command}")
 
-        io = cp.io
-
         if @log.is_a?(String)
-          @log_file = File.open(@log, 'w')
-          io.stdout = io.stderr = @log_file
+          cp.io = @log
         elsif @log
-          io.inherit!
+          cp.io = :out
         end
 
         cp.detach = @background

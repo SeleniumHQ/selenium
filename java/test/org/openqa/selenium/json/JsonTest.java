@@ -20,15 +20,14 @@ package org.openqa.selenium.json;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.reflect.TypeToken;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -46,20 +45,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.logging.Level.ALL;
-import static java.util.logging.Level.FINE;
-import static java.util.logging.Level.OFF;
-import static java.util.logging.Level.WARNING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.byLessThan;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.Proxy.ProxyType.PAC;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.logging.LogType.BROWSER;
-import static org.openqa.selenium.logging.LogType.CLIENT;
-import static org.openqa.selenium.logging.LogType.DRIVER;
-import static org.openqa.selenium.logging.LogType.SERVER;
 
 @Tag("UnitTests")
 class JsonTest {
@@ -368,27 +359,6 @@ class JsonTest {
     Capabilities converted = new Json().toType(raw, Capabilities.class);
 
     assertThat(converted.getCapability("furrfu")).isEqualTo("fishy");
-  }
-
-  @Test
-  void shouldParseCapabilitiesWithLoggingPreferences() {
-    String caps = String.format(
-        "{\"%s\": {" +
-        "\"browser\": \"WARNING\"," +
-        "\"client\": \"DEBUG\", " +
-        "\"driver\": \"ALL\", " +
-        "\"server\": \"OFF\"}}",
-        CapabilityType.LOGGING_PREFS);
-
-    Capabilities converted = new Json().toType(caps, Capabilities.class);
-
-    LoggingPreferences lp =
-        (LoggingPreferences) converted.getCapability(CapabilityType.LOGGING_PREFS);
-    assertThat(lp).isNotNull();
-    assertThat(lp.getLevel(BROWSER)).isEqualTo(WARNING);
-    assertThat(lp.getLevel(CLIENT)).isEqualTo(FINE);
-    assertThat(lp.getLevel(DRIVER)).isEqualTo(ALL);
-    assertThat(lp.getLevel(SERVER)).isEqualTo(OFF);
   }
 
   @Test

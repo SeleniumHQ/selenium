@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Firefox
-
       #
       # Driver implementation for Firefox using GeckoDriver.
       # @api private
@@ -37,6 +36,13 @@ module Selenium
                       DriverExtensions::HasWebStorage,
                       DriverExtensions::PrintsPage].freeze
 
+        include LocalDriver
+
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          caps, url = initialize_local_driver(capabilities, options, service, url)
+          super(caps: caps, url: url, **opts)
+        end
+
         def browser
           :firefox
         end
@@ -45,7 +51,7 @@ module Selenium
 
         def devtools_url
           if capabilities['moz:debuggerAddress'].nil?
-            raise(Error::WebDriverError, "DevTools is not supported by this version of Firefox; use v85 or higher")
+            raise(Error::WebDriverError, 'DevTools is not supported by this version of Firefox; use v85 or higher')
           end
 
           uri = URI("http://#{capabilities['moz:debuggerAddress']}")

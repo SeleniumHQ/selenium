@@ -95,9 +95,9 @@ module Selenium
       # @return [ActionBuilder] A self reference.
       #
 
-      def move_to(element, right_by = nil, down_by = nil, device: nil, duration: default_move_duration, **opts)
-        pointer = pointer_input(device)
-        pointer.create_pointer_move(duration: duration,
+      def move_to(element, right_by = nil, down_by = nil, **opts)
+        pointer = pointer_input(opts.delete(:device))
+        pointer.create_pointer_move(duration: opts.delete(:duration) || default_move_duration,
                                     x: right_by || 0,
                                     y: down_by || 0,
                                     origin: element,

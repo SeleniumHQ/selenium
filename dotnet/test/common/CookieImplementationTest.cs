@@ -257,6 +257,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "IE does not want to set cookie")]
         public void ShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -412,11 +413,6 @@ namespace OpenQA.Selenium
                 return;
             }
 
-            string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
-
-            driver.Url = url;
-            driver.Manage().Cookies.DeleteAllCookies();
-
             DateTime time = DateTime.Now.AddDays(1);
             Cookie cookie1 = new Cookie("fish", "cod", null, "/common/animals", time);
             IOptions options = driver.Manage();
@@ -445,11 +441,6 @@ namespace OpenQA.Selenium
             {
                 return;
             }
-
-            string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
-
-            driver.Url = url;
-            driver.Manage().Cookies.DeleteAllCookies();
 
             // DateTime.Now contains milliseconds; the returned cookie expire date
             // will not. So we need to truncate the milliseconds.
@@ -538,11 +529,6 @@ namespace OpenQA.Selenium
         [Test]
         public void SettingACookieThatExpiredInThePast()
         {
-            string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
-
-            driver.Url = url;
-            driver.Manage().Cookies.DeleteAllCookies();
-
             DateTime expires = DateTime.Now.AddSeconds(-1000);
             Cookie cookie = new Cookie("expired", "yes", "/common/animals", expires);
             IOptions options = driver.Manage();
@@ -580,6 +566,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "IE does not want to set cookie")]
         public void DeleteAllCookiesDifferentUrls()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
@@ -667,7 +654,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        public void GetCookieDoesNotRetriveBeyondCurrentDomain()
+        public void GetCookieDoesNotRetrieveBeyondCurrentDomain()
         {
             if (!CheckIsOnValidHostNameForCookieTests())
             {
@@ -775,11 +762,6 @@ namespace OpenQA.Selenium
             {
                 return;
             }
-
-            string url = EnvironmentManager.Instance.UrlBuilder.WhereElseIs("animals");
-            driver.Url = url;
-
-            driver.Manage().Cookies.DeleteAllCookies();
 
             Cookie addCookie = new Cookie("fish", "cod", "/common/animals", DateTime.Now.AddHours(-1));
             IOptions options = driver.Manage();

@@ -315,7 +315,7 @@ namespace OpenQA.Selenium.Interactions
             IWebElement trackerDiv = driver.FindElement(By.Id("mousetracker"));
             Size size = trackerDiv.Size;
 
-            new Actions(driver).MoveToElement(trackerDiv, size.Width / 2, size.Height / 2).Perform();
+            new Actions(driver).MoveToElement(trackerDiv, -size.Width / 2, -size.Height / 2).Perform();
 
             IWebElement reporter = driver.FindElement(By.Id("status"));
 
@@ -392,8 +392,8 @@ namespace OpenQA.Selenium.Interactions
         private bool FuzzyPositionMatching(int expectedX, int expectedY, String locationTuple)
         {
             string[] splitString = locationTuple.Split(',');
-            int gotX = int.Parse(splitString[0].Trim());
-            int gotY = int.Parse(splitString[1].Trim());
+            int gotX = Convert.ToInt16(Math.Round(Convert.ToDouble(splitString[0].Trim())));
+            int gotY = Convert.ToInt16(Math.Round(Convert.ToDouble(splitString[1].Trim())));
 
             // Everything within 5 pixels range is OK
             const int ALLOWED_DEVIATION = 5;

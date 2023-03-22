@@ -27,10 +27,14 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.SAFARI_TECH_PREVIEW;
 
@@ -40,17 +44,26 @@ public class SafariTechPreviewDriverService extends DriverService {
    * System property that defines the location of the tech preview safaridriver executable that
    * will be used by the {@link #createDefaultService() default service}.
    */
+  public static final String TP_SAFARI_DRIVER_NAME = "safaridriver";
+
   public static final String TP_SAFARI_DRIVER_EXE_PROPERTY = "webdriver.tp.safari.driver";
 
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
     new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
+
+  @Override
+  protected Capabilities getDefaultDriverOptions() {
+    return new SafariOptions().setUseTechnologyPreview(true);
+  }
 
   public SafariTechPreviewDriverService(
     File executable,
     int port,
     List<String> args,
     Map<String, String> environment) throws IOException {
-    super(executable, port, DEFAULT_TIMEOUT, args, environment);
+    super(executable, port, DEFAULT_TIMEOUT,
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
   }
 
   public SafariTechPreviewDriverService(
@@ -59,11 +72,36 @@ public class SafariTechPreviewDriverService extends DriverService {
     Duration timeout,
     List<String> args,
     Map<String, String> environment) throws IOException {
-    super(executable, port, timeout, args, environment);
+    super(executable, port, timeout,
+          unmodifiableList(new ArrayList<>(args)),
+          unmodifiableMap(new HashMap<>(environment)));
+  }
+
+  public String getDriverName() {
+    return TP_SAFARI_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return TP_SAFARI_DRIVER_EXE_PROPERTY;
+  }
+
+  public File getDriverExecutable() {
+    return TP_SAFARI_DRIVER_EXECUTABLE;
   }
 
   public static SafariTechPreviewDriverService createDefaultService() {
     return new Builder().build();
+  }
+
+  /**
+   * Checks if the browser driver binary is available. Grid uses this method to show
+   * the available browsers and drivers, hence its visibility.
+   *
+   * @return Whether the browser driver path was found.
+   */
+  static boolean isPresent() {
+    return findExePath(TP_SAFARI_DRIVER_EXECUTABLE.getAbsolutePath(),
+                       TP_SAFARI_DRIVER_EXE_PROPERTY) != null;
   }
 
   @Override
@@ -88,22 +126,6 @@ public class SafariTechPreviewDriverService extends DriverService {
       }
 
       return score;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      File exe;
-      if (System.getProperty(TP_SAFARI_DRIVER_EXE_PROPERTY) != null) {
-        exe = new File(System.getProperty(TP_SAFARI_DRIVER_EXE_PROPERTY));
-      } else {
-        exe = TP_SAFARI_DRIVER_EXECUTABLE;
-      }
-
-      if (!exe.isFile()) {
-        throw new WebDriverException("Unable to find driver executable: " + exe);
-      }
-
-      return exe;
     }
 
     @Override

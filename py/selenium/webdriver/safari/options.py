@@ -54,8 +54,7 @@ class Options(ArgOptions):
 
     @binary_location.setter
     def binary_location(self, value: str) -> None:
-        """
-        Allows you to set the browser binary to launch
+        """Allows you to set the browser binary to launch.
 
         :Args:
          - value : path to the browser binary
@@ -93,12 +92,10 @@ class Options(ArgOptions):
 
     @automatic_inspection.setter
     def automatic_inspection(self, value: bool) -> None:
-        """
-        Sets the option Automatic Inspection to value
+        """Sets the option Automatic Inspection to value.
 
         :Args:
          - value: boolean value
-
         """
         self.set_capability(self.AUTOMATIC_INSPECTION, value)
 
@@ -109,12 +106,10 @@ class Options(ArgOptions):
 
     @automatic_profiling.setter
     def automatic_profiling(self, value: bool) -> None:
-        """
-        Sets the option Automatic Profiling to value
+        """Sets the option Automatic Profiling to value.
 
         :Args:
          - value: boolean value
-
         """
         self.set_capability(self.AUTOMATIC_PROFILING, value)
 
@@ -125,11 +120,10 @@ class Options(ArgOptions):
 
     @use_technology_preview.setter
     def use_technology_preview(self, value: bool) -> None:
-        """
-        Sets browser name to Safari Technology Preview if value else to safari.
+        """Sets browser name to Safari Technology Preview if value else to
+        safari.
 
         :Args:
          - value: boolean value
-
         """
         self.set_capability("browserName", self.SAFARI_TECH_PREVIEW if value else "safari")

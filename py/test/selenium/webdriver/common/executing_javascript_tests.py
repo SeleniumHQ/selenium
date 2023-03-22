@@ -32,7 +32,7 @@ def test_should_be_able_to_execute_simple_javascript_and_return_astring(driver, 
 
     result = driver.execute_script("return document.title")
 
-    assert type(result) == str, "The type of the result is %s" % type(result)
+    assert isinstance(result, str), "The type of the result is %s" % type(result)
     assert "XHTML Test Page" == result
 
 
@@ -40,7 +40,7 @@ def test_should_be_able_to_execute_simple_javascript_and_return_an_integer(drive
     pages.load("nestedElements.html")
     result = driver.execute_script("return document.getElementsByName('checky').length")
 
-    assert type(result) == int
+    assert isinstance(result, int)
     assert int(result) > 1
 
 
@@ -124,7 +124,7 @@ def test_should_be_able_to_execute_simple_javascript_and_return_aboolean(driver,
     result = driver.execute_script("return true")
 
     assert result is not None
-    assert type(result) == bool
+    assert isinstance(result, bool)
     assert bool(result)
 
 
@@ -149,7 +149,7 @@ def test_should_be_able_to_execute_simple_javascript_and_return_an_array(driver,
     expectedResult.append(subList)
     result = driver.execute_script("return ['zero', [true, false]]")
     assert result is not None
-    assert type(result) == list
+    assert isinstance(result, list)
     assert expectedResult == result
 
 
@@ -157,7 +157,7 @@ def test_passing_and_returning_an_int_should_return_awhole_number(driver, pages)
     pages.load("javascriptPage.html")
     expectedResult = 1
     result = driver.execute_script("return arguments[0]", expectedResult)
-    assert type(result) == int
+    assert isinstance(result, int)
     assert expectedResult == result
 
 
@@ -165,7 +165,7 @@ def test_passing_and_returning_adouble_should_return_adecimal(driver, pages):
     pages.load("javascriptPage.html")
     expectedResult = 1.2
     result = driver.execute_script("return arguments[0]", expectedResult)
-    assert type(result) == float
+    assert isinstance(result, float)
     assert expectedResult == result
 
 

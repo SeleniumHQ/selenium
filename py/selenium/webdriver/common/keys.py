@@ -15,15 +15,11 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""
-The Keys implementation.
-"""
+"""The Keys implementation."""
 
 
 class Keys:
-    """
-    Set of special keys codes.
-    """
+    """Set of special keys codes."""
 
     NULL = "\ue000"
     CANCEL = "\ue001"  # ^break

@@ -1,0 +1,28 @@
+name: Nightly
+on:
+  schedule:
+    - cron: 0 0 * * *
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Nightly version number (e.g. 20221125)
+        required: true
+        type: string
+
+jobs:
+  ruby:
+    name: Ruby
+    uses: ./.github/workflows/bazel.yml
+    strategy:
+      fail-fast: false
+      matrix:
+        gem:
+          - selenium-devtools
+          - selenium-webdriver
+    with:
+      name: Release
+      cache-key: rb-nightly-${{ matrix.gem }}
+      run: |
+        export GEM_HOST_API_KEY="Bearer $GITHUB_TOKEN"
+        bazel run //rb:${{ matrix.gem }}-bump-nightly-version ${{ inputs.version }}
+        bazel run //rb:${{ matrix.gem }}-release-nightly

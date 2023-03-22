@@ -1,4 +1,10 @@
 try-import .bazelrc.local
+try-import .bazelrc.windows.local
+
+# Ensure Windows support is accurate.
+
+startup --windows_enable_symlinks
+build --enable_runfiles
 
 build --flag_alias=pin_browsers=//common:pin_browsers
 build --flag_alias=headless=//common:headless
@@ -27,7 +33,10 @@ build --action_env=PATH
 
 # For build stamping
 
-build --workspace_status_command=scripts/build-info.py
+build --enable_platform_specific_config
+build:linux --workspace_status_command=scripts/build-info.sh
+build:macos --workspace_status_command=scripts/build-info.sh
+build:windows --workspace_status_command="powershell.exe scripts/build-info.ps1"
 
 # Make sure we get something helpful when tests fail
 
@@ -47,6 +56,15 @@ build --test_env=PATH  # Remove once browser pinning works
 build --test_env=SELENIUM_BROWSER
 build --test_env=TRAVIS
 build --test_env=PYTHON_VERSION
+
+# Remove once rules_ruby support proper $LOAD_PATH expansion.
+
+build --test_env=RUBYOPT="-Irb/lib -w"
+
+# JRuby/TruffleRuby: https://github.com/jruby/jruby/issues/5661
+
+build --action_env=HOME
+test --test_env=HOME
 
 test --test_timeout=1800
 

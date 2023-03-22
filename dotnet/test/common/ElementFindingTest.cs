@@ -84,7 +84,7 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyIdShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.That(() => driver.FindElement(By.Id("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElement(By.Id("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
@@ -222,16 +222,7 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyTagNameShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.That(() => driver.FindElement(By.TagName("")), Throws.InstanceOf<NoSuchElementException>());
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.Chrome, "Throwing invalid selector error")]
-        public void FindingMultipleElementsByEmptyTagNameShouldReturnEmptyList()
-        {
-            driver.Url = formsPage;
-            ReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName(""));
-            Assert.AreEqual(0, elements.Count);
+            Assert.That(() => driver.FindElement(By.TagName("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
@@ -321,14 +312,14 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElement(By.ClassName("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElement(By.ClassName("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void FindingMultipleElementsByEmptyClassNameShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElements(By.ClassName("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElements(By.ClassName("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
@@ -436,18 +427,6 @@ namespace OpenQA.Selenium
             driver.Url = svgPage;
             IWebElement element = driver.FindElement(By.XPath("//svg:svg//svg:text"));
             Assert.That(element.Text, Is.EqualTo("Test Chart"));
-        }
-
-        [Test]
-        [IgnoreBrowser(Browser.IE, "Driver does not support finding elements on XML documents.")]
-        [IgnoreBrowser(Browser.Chrome, "Driver does not support finding elements on XML documents.")]
-        [IgnoreBrowser(Browser.Edge, "Driver does not support finding elements on XML documents.")]
-        [IgnoreBrowser(Browser.Safari, "Not yet implemented")]
-        public void ShouldBeAbleToFindElementByXPathInXmlDocument()
-        {
-            driver.Url = simpleXmlDocument;
-            IWebElement element = driver.FindElement(By.XPath("//foo"));
-            Assert.That(element.Text, Is.EqualTo("baz"));
         }
 
         // By.XPath negative
@@ -621,28 +600,28 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElement(By.CssSelector("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElement(By.CssSelector("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void FindingMultipleElementsByEmptyCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElements(By.CssSelector("")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElements(By.CssSelector("")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void FindingASingleElementByInvalidCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElement(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElement(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<WebDriverException>());
         }
 
         [Test]
         public void FindingMultipleElementsByInvalidCssSelectorShouldThrow()
         {
             driver.Url = xhtmlTestPage;
-            Assert.That(() => driver.FindElements(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => driver.FindElements(By.CssSelector("//a/b/c[@id='1']")), Throws.InstanceOf<WebDriverException>());
         }
 
         // By.linkText positive
@@ -821,15 +800,14 @@ namespace OpenQA.Selenium
         }
 
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3742")]
-        [IgnoreBrowser(Browser.Edge, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=3742")]
+        [IgnoreBrowser(Browser.Firefox, "Already updated to https://github.com/w3c/webdriver/issues/1594")]
         public void AnElementFoundInADifferentFrameIsStale()
         {
             driver.Url = missedJsReferencePage;
             driver.SwitchTo().Frame("inner");
             IWebElement element = driver.FindElement(By.Id("oneline"));
             driver.SwitchTo().DefaultContent();
-            Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<NoSuchElementException>());
+            Assert.That(() => { string foo = element.Text; }, Throws.InstanceOf<StaleElementReferenceException>());
         }
 
         [Test]

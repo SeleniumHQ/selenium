@@ -18,6 +18,7 @@
 package org.openqa.selenium.chrome;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.CapabilityType;
@@ -58,6 +59,10 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
     super(CapabilityType.BROWSER_NAME, CHROME.browserName(), CAPABILITY);
   }
 
+  /**
+   * @deprecated Use {@link ChromeDriverService.Builder#withLogLevel(ChromiumDriverLogLevel)} to set log level.
+   */
+  @Deprecated
   public ChromeOptions setLogLevel(ChromeDriverLogLevel logLevel){
     this.logLevel = Require.nonNull("Log level", logLevel);
     return this;
@@ -70,9 +75,15 @@ public class ChromeOptions extends ChromiumOptions<ChromeOptions> {
     ChromeOptions newInstance = new ChromeOptions();
     newInstance.mergeInPlace(this);
     newInstance.mergeInPlace(extraCapabilities);
+    newInstance.mergeInOptionsFromCaps(CAPABILITY, extraCapabilities);
+
     return newInstance;
   }
 
+  /**
+   * @deprecated Log Level only applies to {@link ChromeDriverService}.
+   */
+  @Deprecated
   public ChromeDriverLogLevel getLogLevel(){
     return logLevel;
   }

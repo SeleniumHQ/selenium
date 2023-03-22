@@ -23,8 +23,8 @@ DEFAULT_EXECUTABLE_PATH = "msedgedriver"
 
 
 class Service(service.ChromiumService):
-    """A Service class that is responsible for the starting and stopping
-    of `msedgedriver`.
+    """A Service class that is responsible for the starting and stopping of
+    `msedgedriver`.
 
     :param executable_path: install path of the msedgedriver executable, defaults to `msedgedriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
@@ -43,7 +43,8 @@ class Service(service.ChromiumService):
         log_path: typing.Optional[str] = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-    ):
+        **kwargs,
+    ) -> None:
         self.service_args = service_args or []
 
         if verbose:
@@ -61,4 +62,5 @@ class Service(service.ChromiumService):
             log_path=log_path,
             env=env,
             start_error_message="Please download from https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/",
+            **kwargs,
         )

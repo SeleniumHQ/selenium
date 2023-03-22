@@ -18,6 +18,7 @@
 package org.openqa.selenium.grid.gridui;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -112,7 +113,8 @@ class OverallGridTest {
     Config config = new MemoizedConfig(
       new MapConfig(ImmutableMap.of(
         "server", Collections.singletonMap("port", port),
-        "node", Collections.singletonMap("detect-drivers", true))));
+        "node", ImmutableMap.of("detect-drivers", true, "selenium-manager", true)
+      )));
 
     Server<?> server = new Standalone().asServer(config).start();
 
@@ -124,13 +126,13 @@ class OverallGridTest {
   private void waitUntilReady(Server<?> server) {
     try (HttpClient client = HttpClient.Factory.createDefault().createClient(server.getUrl())) {
       new FluentWait<>(client)
-          .withTimeout(Duration.ofSeconds(5))
-          .until(
-              c -> {
-                HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
-                Map<String, Object> status = Values.get(response, MAP_TYPE);
-                return status != null && Boolean.TRUE.equals(status.get("ready"));
-              });
+        .withTimeout(Duration.ofSeconds(5))
+        .until(
+          c -> {
+            HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+            Map<String, Object> status = Values.get(response, MAP_TYPE);
+            return status != null && Boolean.TRUE.equals(status.get("ready"));
+          });
     }
   }
 

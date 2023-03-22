@@ -30,35 +30,35 @@ module Selenium
 
           before { driver.navigate.to url_for('printPage.html') }
 
-          it 'should return base64 for print command' do
+          it 'returns base64 for print command' do
             expect(driver.print_page).to include(magic_number)
           end
 
-          it 'should print with orientation' do
+          it 'prints with orientation' do
             expect(driver.print_page(orientation: 'landscape')).to include(magic_number)
           end
 
-          it 'should print with valid params' do
+          it 'prints with valid params' do
             expect(driver.print_page(orientation: 'landscape',
                                      page_ranges: ['1-2'],
                                      page: {width: 30})).to include(magic_number)
           end
 
-          it 'should print full page' do
-            viewport_width = driver.execute_script("return window.innerWidth;")
-            viewport_height = driver.execute_script("return window.innerHeight;")
+          it 'prints full page', except: [{ci: :github,
+                                           platform: :windows,
+                                           reason: 'Some issues with resolution?'},
+                                          {platform: :macosx,
+                                           headless: true,
+                                           reason: 'showing half resolution of what expected'}] do
+            viewport_width = driver.execute_script('return window.innerWidth;')
+            viewport_height = driver.execute_script('return window.innerHeight;')
 
             path = "#{Dir.tmpdir}/test#{SecureRandom.urlsafe_base64}.png"
             screenshot = driver.save_full_page_screenshot(path)
+            width, height = png_size(screenshot)
 
-            if Platform.linux?
-              expect(File.read(screenshot)[0x10..0x18].unpack1('NN')).to be >= viewport_width
-              expect(File.read(screenshot)[0x10..0x18].unpack('NN').last).to be > viewport_height
-            else
-              expect(File.read(screenshot)[0x10..0x18].unpack1('NN') / 2).to be >= viewport_width
-              expect(File.read(screenshot)[0x10..0x18].unpack('NN').last / 2).to be > viewport_height
-            end
-
+            expect(width).to be >= viewport_width
+            expect(height).to be > viewport_height
           ensure
             FileUtils.rm_rf(path)
           end
@@ -72,8 +72,8 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh
@@ -87,8 +87,8 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh
@@ -102,23 +102,24 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh
             expect(driver.find_elements(id: 'webextensions-selenium-example')).to be_empty
           end
 
-          it 'install and uninstall signed directory' do
+          it 'install and uninstall signed directory', except: {platform: :windows,
+                                                                reason: 'signature must be different for windows'} do
             ext = File.expand_path("#{extensions}/webextensions-selenium-example-signed/", __dir__)
             id = driver.install_addon(ext)
 
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh
@@ -132,8 +133,8 @@ module Selenium
             expect(id).to eq 'webextensions-selenium-example@example.com'
             driver.navigate.to url_for('blank.html')
 
-            injected = driver.find_element(id: "webextensions-selenium-example")
-            expect(injected.text).to eq "Content injected by webextensions-selenium-example"
+            injected = driver.find_element(id: 'webextensions-selenium-example')
+            expect(injected.text).to eq 'Content injected by webextensions-selenium-example'
 
             driver.uninstall_addon(id)
             driver.navigate.refresh
@@ -142,8 +143,7 @@ module Selenium
         end
 
         it 'can get and set context' do
-          options = Options.new(prefs: {'browser.download.dir': 'foo/bar'})
-          create_driver!(options: options) do |driver|
+          reset_driver!(prefs: {'browser.download.dir': 'foo/bar'}) do |driver|
             expect(driver.context).to eq 'content'
 
             driver.context = 'chrome'

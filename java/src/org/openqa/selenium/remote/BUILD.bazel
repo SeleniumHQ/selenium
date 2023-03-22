@@ -24,6 +24,8 @@ java_export(
     exports = [
         ":api",
         "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/bidi",
+        "//java/src/org/openqa/selenium/bidi:augmenter",
         "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/devtools:augmenter",
         "//java/src/org/openqa/selenium/io",
@@ -43,12 +45,14 @@ java_library(
         ":is-displayed",
     ],
     visibility = [
+        "//java/src/org/openqa/selenium/bidi:__pkg__",
         "//java/src/org/openqa/selenium/devtools:__pkg__",
     ],
     exports = [
     ],
     deps = [
         "//java/src/org/openqa/selenium:core",
+        "//java/src/org/openqa/selenium/bidi",
         "//java/src/org/openqa/selenium/concurrent",
         "//java/src/org/openqa/selenium/devtools",
         "//java/src/org/openqa/selenium/io",

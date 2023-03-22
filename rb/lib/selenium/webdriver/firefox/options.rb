@@ -108,6 +108,9 @@ module Selenium
         #
 
         def headless!
+          WebDriver.logger.deprecate('`Options#headless!`',
+                                     "`Options#add_argument('-headless')`",
+                                     id: :headless)
           add_argument '-headless'
         end
 
@@ -178,7 +181,7 @@ module Selenium
         end
 
         def camelize?(key)
-          key != "prefs"
+          key != 'prefs'
         end
       end # Options
     end # Firefox

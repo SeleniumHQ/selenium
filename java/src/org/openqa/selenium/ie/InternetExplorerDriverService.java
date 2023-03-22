@@ -27,16 +27,20 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static org.openqa.selenium.remote.Browser.IE;
 
 /**
  * Manages the life and death of an IEDriverServer.
  */
 public class InternetExplorerDriverService extends DriverService {
+
+  public static final String IE_DRIVER_NAME = "IEDriverServer";
 
   /**
    * System property that defines the location of the IEDriverServer executable
@@ -80,7 +84,22 @@ public class InternetExplorerDriverService extends DriverService {
    */
   private InternetExplorerDriverService(File executable, int port, Duration timeout, List<String> args,
                                         Map<String, String> environment) throws IOException {
-    super(executable, port, timeout, args, environment);
+    super(executable, port, timeout,
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
+  }
+
+  public String getDriverName() {
+    return IE_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return IE_DRIVER_EXE_PROPERTY;
+  }
+
+  @Override
+  public Capabilities getDefaultDriverOptions() {
+    return new InternetExplorerOptions();
   }
 
   /**
@@ -96,11 +115,21 @@ public class InternetExplorerDriverService extends DriverService {
   }
 
   /**
+   * Checks if the browser driver binary is available. Grid uses this method to show
+   * the available browsers and drivers, hence its visibility.
+   *
+   * @return Whether the browser driver path was found.
+   */
+  static boolean isPresent() {
+    return findExePath(IE_DRIVER_NAME, IE_DRIVER_EXE_PROPERTY) != null;
+  }
+
+  /**
    * Builder used to configure new {@link InternetExplorerDriverService} instances.
    */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
-      InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
+    InternetExplorerDriverService, InternetExplorerDriverService.Builder> {
 
     private InternetExplorerDriverLogLevel logLevel;
     private String host = null;
@@ -164,13 +193,6 @@ public class InternetExplorerDriverService extends DriverService {
     public Builder withSilent(Boolean silent) {
       this.silent = silent;
       return this;
-    }
-
-    @Override
-    protected File findDefaultExecutable() {
-      return findExecutable("IEDriverServer", IE_DRIVER_EXE_PROPERTY,
-                            "https://www.selenium.dev/documentation/ie_driver_server/",
-                            "https://www.selenium.dev/downloads/");
     }
 
     @Override

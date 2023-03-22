@@ -23,7 +23,7 @@ module Selenium
   module WebDriver
     module Interactions
       describe KeyInput do
-        let(:key_input) { KeyInput.new(:name) }
+        let(:key_input) { described_class.new(:name) }
         let(:key) { 'a' }
         let(:interaction) { TypingInteraction.new(key_input, :up, 'a') }
 
@@ -35,7 +35,7 @@ module Selenium
 
         describe '#encode' do
           it 'returns nil if no actions' do
-            expect(key_input.encode).to eq(nil)
+            expect(key_input.encode).to be_nil
           end
 
           it 'encodes each action' do

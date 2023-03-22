@@ -1,4 +1,81 @@
-4.5.0 (Unreleased)
+4.8.1 (2023-02-17)
+=========================
+Ruby:
+  * Fix autoload of WebDriver::Remote::Bridge::COMMANDS
+  * Subclass is setting value before the superclass is setting it to nil
+  * Updating Selenium Manager binaries for 4.8.1 release
+
+BiDi:
+  * Released selenium-devtools 0.110.0 (supports CDP v85, v108, v109, v110)
+  * Close BiDi session on closing the last top-level browsing context
+  * Add filtering capability to LogInspector
+
+4.8.0 (2023-01-23)
+=========================
+Ruby:
+  * Allow updating instance variables on service classes
+  * Deprecate extract_service_args processing in service classes
+  * Fix bug preventing sending nil to #send_keys with Remote Driver
+  * Fix bug with IE specific methods not available to IE Driver
+  * Created Chromium superclass for Chrome and Edge
+  * Deprecated platform and version setters/getters in Capabilities class
+  * Revamped driver constructor logic
+  * Fix bug preventing using Safari Technology Preview when using SafariOptions
+  * Fix bug preventing more than one driver type to access Selenium Manager
+  * Defaults to using Options instead of Capabilities
+  * Make Options classes more strict for allowed arguments and types
+  * Removed previously deprecated actions class parameters
+  * Removed Location struct
+  * Add comment with name of large JS executions (#11038)
+  * update logger with link on how to use it (#11478)
+  * Deprecate #add_option for Option classes in favor of constructor and attr_accessor
+  * Deprecate all unrecognized capabilities for Options classes
+  * Deprecate support for :capabilities for local drivers
+  * Deprecate browser class methods for Capabilities
+  * Deprecate #headless! for Chrome and Firefox
+
+BiDi:
+  * Released selenium-devtools 0.109.0 (supports CDP v85, v107, v108, v109)
+  * Add LogInspector (#11368)
+  * Add Browsing context commands (#11446)
+
+4.7.1 (2022-12-02)
+=========================
+Ruby:
+  * Fix bug preventing selenium manager from using Internet Explorer
+
+4.7.0 (2022-12-01)
+=========================
+BiDi:
+  * Released selenium-devtools 0.108.0 (supports CDP v85, v106, v107, v108)
+  * Fix bug with socket stability
+
+Ruby:
+  * Remove dependency on ChildProcess gem in favor of native Process.spawn (#11251)
+  * Add support for Selenium Manager to work with IE Driver
+  * Improve error handling for Selenium Manager
+
+Safari:
+  * Fix bug preventing Safari Options from being used with Safari Technology Preview
+
+4.6.1 (2022-11-04)
+=========================
+Ruby:
+  * fix bug preventing selenium-manager from being executable by default
+
+4.6.0 (2022-11-04)
+=========================
+BiDi:
+  * Released selenium-devtools 0.107.0 (supports CDP v85, v105, v106, v107)
+
+Ruby:
+  * firefox scroll by amount is only failing on mac
+  * add initial support for selenium manager
+  * Revert "[rb] do not allow Select class to work with disabled selects"
+  * Make sure selenium-manager is packed into gem
+  * Fix platform list in #scroll_by guard
+
+4.5.0 (2022-09-28)
 =========================
 
 BiDi:

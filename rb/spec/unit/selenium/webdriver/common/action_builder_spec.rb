@@ -25,58 +25,36 @@ module Selenium
       let(:keyboard) { Interactions.key('key') }
       let(:mouse) { Interactions.pointer(:mouse, name: 'mouse') }
       let(:bridge) { instance_double(Remote::Bridge).as_null_object }
-      let(:builder) { ActionBuilder.new(bridge, devices: [mouse, keyboard]) }
-      let(:async_builder) { ActionBuilder.new(bridge, devices: [mouse, keyboard], async: true) }
+      let(:builder) { described_class.new(bridge, devices: [mouse, keyboard]) }
+      let(:async_builder) { described_class.new(bridge, devices: [mouse, keyboard], async: true) }
 
       describe '#initialize' do
         it 'does not create input devices when not provided' do
-          action_builder = ActionBuilder.new(bridge)
+          action_builder = described_class.new(bridge)
           expect(action_builder.devices).to be_empty
         end
 
-        it 'deprecates using mouse and keyboard directly' do
-          expect {
-            action_builder = ActionBuilder.new(bridge, mouse, keyboard)
-            expect(action_builder.devices).to eq([mouse, keyboard])
-          }.to have_deprecated(:action_devices)
-        end
-
-        it 'deprecates using async parameter' do
-          expect {
-            ActionBuilder.new(bridge, nil, nil, true)
-          }.to have_deprecated(:action_async)
-        end
-
         it 'accepts mouse and keyboard with devices keyword' do
-          action_builder = ActionBuilder.new(bridge, devices: [mouse, keyboard])
+          action_builder = described_class.new(bridge, devices: [mouse, keyboard])
           expect(action_builder.devices).to eq([mouse, keyboard])
         end
 
         it 'accepts multiple devices with devices keyword' do
           none = Interactions.none('none')
           touch = Interactions.pointer(:touch, name: 'touch')
-          action_builder = ActionBuilder.new(bridge, devices: [mouse, keyboard, none, touch])
+          action_builder = described_class.new(bridge, devices: [mouse, keyboard, none, touch])
 
           expect(action_builder.devices).to eq([mouse, keyboard, none, touch])
         end
 
         it 'accepts duration' do
-          action_builder = ActionBuilder.new(bridge, duration: 2200)
+          action_builder = described_class.new(bridge, duration: 2200)
           expect(action_builder.default_move_duration).to eq(2.2)
-        end
-
-        it 'does not accept additional devices if deprecated parameters are used' do
-          none = Interactions.none('none')
-          touch = Interactions.pointer(:touch, name: 'touch')
-          expect {
-            action_builder = ActionBuilder.new(bridge, mouse, keyboard, devices: [none, touch])
-            expect(action_builder.devices).to eq([mouse, keyboard])
-          }.to have_deprecated(:action_devices)
         end
 
         it 'raises a TypeError if a non InputDevice is passed into devices' do
           expect {
-            ActionBuilder.new(bridge, devices: [mouse, keyboard, "banana"])
+            described_class.new(bridge, devices: [mouse, keyboard, 'banana'])
           }.to raise_error(TypeError)
         end
       end
@@ -161,14 +139,6 @@ module Selenium
         end
       end
 
-      describe '#get_device' do
-        it 'gets device by name with deprecation' do
-          expect {
-            expect(builder.get_device('mouse')).to eq(mouse)
-          }.to have_deprecated(:get_device)
-        end
-      end
-
       describe '#pointer_inputs' do
         it 'returns only pointer inputs' do
           touch_input = builder.add_pointer_input(:touch, 'touch')
@@ -205,12 +175,6 @@ module Selenium
 
           expect(mouse).to have_received(:create_pause).with(5)
         end
-
-        it 'has deprecated ordered parameters' do
-          expect {
-            builder.pause(mouse, 3)
-          }.to have_deprecated(:pause)
-        end
       end
 
       describe '#pauses' do
@@ -228,12 +192,6 @@ module Selenium
           builder.pauses(device: mouse, number: 3)
 
           expect(mouse).to have_received(:create_pause).with(0).exactly(3).times
-        end
-
-        it 'has deprecated ordered parameters' do
-          expect {
-            builder.pauses(mouse, 3)
-          }.to have_deprecated(:pauses)
         end
       end
 

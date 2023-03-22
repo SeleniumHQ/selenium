@@ -165,7 +165,10 @@ def get_options(driver_class, config):
         if not options:
             options = getattr(webdriver, f"{driver_class}Options")()
 
-        options.headless = headless
+        if driver_class == "Chrome" or driver_class == "Edge":
+            options.add_argument("--headless=new")
+        if driver_class == "Firefox":
+            options.add_argument("-headless")
     return options
 
 
@@ -234,7 +237,9 @@ def server(request):
         )
     except Exception:
         print("Starting the Selenium server")
-        process = subprocess.Popen(["java", "-jar", _path, "standalone", "--port", "4444"])
+        process = subprocess.Popen(
+            ["java", "-jar", _path, "standalone", "--port", "4444", "--selenium-manager", "true"]
+        )
         print(f"Selenium server running as process: {process.pid}")
         assert wait_for_server(url, 10), f"Timed out waiting for Selenium server at {url}"
         print("Selenium server is ready")

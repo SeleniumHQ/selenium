@@ -45,15 +45,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
+import org.openqa.selenium.bidi.BiDi;
+import org.openqa.selenium.bidi.HasBiDi;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.logging.LocalLogs;
-import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingHandler;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.logging.NeedsLocalLogs;
 import org.openqa.selenium.print.PrintOptions;
@@ -72,6 +72,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
@@ -91,7 +92,6 @@ import java.util.stream.Stream;
 import static java.util.Collections.singleton;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.logging.Level.SEVERE;
-import static org.openqa.selenium.remote.CapabilityType.LOGGING_PREFS;
 import static org.openqa.selenium.remote.CapabilityType.PLATFORM_NAME;
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 
@@ -147,7 +147,7 @@ public class RemoteWebDriver implements WebDriver,
 
   public RemoteWebDriver(CommandExecutor executor, Capabilities capabilities) {
     this.executor = Require.nonNull("Command executor", executor);
-    capabilities = init(capabilities);
+    this.capabilities = init(capabilities);
 
     if (executor instanceof NeedsLocalLogs) {
       ((NeedsLocalLogs) executor).setLocalLogs(localLogs);
@@ -202,19 +202,6 @@ public class RemoteWebDriver implements WebDriver,
     executeMethod = new RemoteExecuteMethod(this);
 
     ImmutableSet.Builder<String> builder = new ImmutableSet.Builder<>();
-
-    boolean isProfilingEnabled = capabilities.is(CapabilityType.ENABLE_PROFILING_CAPABILITY);
-    if (isProfilingEnabled) {
-      builder.add(LogType.PROFILER);
-    }
-
-    LoggingPreferences mergedLoggingPrefs = new LoggingPreferences();
-    mergedLoggingPrefs.addPreferences((LoggingPreferences) capabilities.getCapability(LOGGING_PREFS));
-
-    if (!mergedLoggingPrefs.getEnabledLogTypes().contains(LogType.CLIENT) ||
-        mergedLoggingPrefs.getLevel(LogType.CLIENT) != Level.OFF) {
-      builder.add(LogType.CLIENT);
-    }
 
     Set<String> logTypesToInclude = builder.build();
 
@@ -429,9 +416,16 @@ public class RemoteWebDriver implements WebDriver,
       }
     }
 
-    execute(DriverCommand.CLOSE);
-  }
+    Response response = execute(DriverCommand.CLOSE);
+    Object value = response.getValue();
+    List<String> windowHandles = (ArrayList<String>) value;
 
+    if (windowHandles.isEmpty() && this instanceof HasBiDi) {
+      // If no top-level browsing contexts are open after calling close, it indicates that the WebDriver session is closed.
+      // If the WebDriver session is closed, the BiDi session also needs to be closed.
+      ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
+    }
+  }
   @Override
   public void quit() {
     // no-op if session id is null. We're only going to make ourselves unhappy
@@ -440,6 +434,14 @@ public class RemoteWebDriver implements WebDriver,
     }
 
     try {
+      if (this instanceof HasDevTools) {
+        ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::close);
+      }
+
+      if (this instanceof HasBiDi) {
+        ((HasBiDi) this).maybeGetBiDi().ifPresent(BiDi::close);
+      }
+
       execute(DriverCommand.QUIT);
     } finally {
       sessionId = null;
@@ -690,8 +692,7 @@ public class RemoteWebDriver implements WebDriver,
 
   private void checkChromeW3CFalse(Capabilities capabilities) {
     // Throwing warnings when the user sets `w3c: false` inside `goog:chromeOptions`
-    if ("chrome".equalsIgnoreCase(capabilities.getBrowserName()) &&
-        capabilities.asMap().containsKey("goog:chromeOptions")) {
+    if (Browser.CHROME.is(capabilities) && capabilities.asMap().containsKey("goog:chromeOptions")) {
       Object capability = capabilities.getCapability("goog:chromeOptions");
       boolean w3c = true;
       if ((capability instanceof Map)) {

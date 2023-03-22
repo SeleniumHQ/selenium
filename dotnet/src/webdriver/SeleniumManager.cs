@@ -19,24 +19,27 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
+
+#if !NET45 && !NET46 && !NET47
+using System.Runtime.InteropServices;
+#endif
+
 using System.Text;
-using System.Threading;
-using OpenQA.Selenium.Internal;
 
 namespace OpenQA.Selenium
 {
     /// <summary>
     /// Wrapper for the Selenium Manager binary.
+    /// This implementation is still in beta, and may change.
     /// </summary>
     public static class SeleniumManager
     {
         private static string binary;
         private static readonly List<string> KnownDrivers = new List<string>() {
-            "geckodriver.exe",
-            "chromedriver.exe",
-            "msedgedriver.exe"
+            "geckodriver",
+            "chromedriver",
+            "msedgedriver",
+            "IEDriverServer"
         };
 
         /// <summary>
@@ -48,6 +51,7 @@ namespace OpenQA.Selenium
         /// </returns>
         public static string DriverPath(string driverName)
         {
+            driverName = driverName.Replace(".exe", "");
             if (!KnownDrivers.Contains(driverName))
             {
                 throw new WebDriverException("Unable to locate driver with name: " + driverName);
@@ -55,9 +59,8 @@ namespace OpenQA.Selenium
             var binaryFile = Binary;
             if (binaryFile == null) return null;
 
-            var arguments = "--driver " + driverName.Replace(".exe", "");
-            var output = RunCommand(binaryFile, arguments);
-            return output.Replace("INFO\t", "").TrimEnd();
+            var arguments = "--driver " + driverName;
+            return RunCommand(binaryFile, arguments);
         }
 
         /// <summary>
@@ -69,41 +72,26 @@ namespace OpenQA.Selenium
             {
                 if (string.IsNullOrEmpty(binary))
                 {
-                    string folder = "windows";
-                    string extension = ".exe";
-
-                    if (!Environment.OSVersion.Platform.ToString().StartsWith("Win"))
+#if NET45 || NET46 || NET47
+                    binary = "selenium-manager/windows/selenium-manager.exe";
+#else
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        throw new WebDriverException("Selenium Manager only supports Windows in .NET at this time");
+                        binary = "selenium-manager/windows/selenium-manager.exe";
                     }
-
-                    try
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
-                        string name = "selenium-manager-" + folder;
-                        using (Stream fileStream = ResourceUtilities.GetResourceStream(name, name))
-                        {
-                            using (BinaryReader binReader = new BinaryReader(fileStream, Encoding.ASCII))
-                            {
-                                byte[] fileBytes = binReader.ReadBytes((int)fileStream.Length);
-                                string directoryName = string.Format(CultureInfo.InvariantCulture, "webdriver.{0}",
-                                    Guid.NewGuid().ToString("N"));
-                                var path = Path.Combine(Path.GetTempPath(), directoryName + "/" + folder);
-                                Directory.CreateDirectory(path);
-                                var filePath = Path.Combine(path, "selenium-manager" + extension);
-
-                                using (BinaryWriter binWriter = new BinaryWriter(File.Open(filePath, FileMode.Create)))
-                                {
-                                    binWriter.Flush();
-                                    binWriter.Write(fileBytes);
-                                }
-                                binary = filePath;
-                            }
-                        }
+                        binary = "selenium-manager/linux/selenium-manager";
                     }
-                    catch (Exception ex)
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                     {
-                        throw new WebDriverException("Unable to obtain Selenium Manager", ex);
+                        binary = "selenium-manager/macos/selenium-manager";
                     }
+                    else
+                    {
+                        throw new WebDriverException("Selenium Manager did not find supported operating system");
+                    }
+#endif
                 }
 
                 return binary;
@@ -125,23 +113,44 @@ namespace OpenQA.Selenium
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.RedirectStandardError = true;
+
+            StringBuilder outputBuilder = new StringBuilder();
+            int processExitCode;
+
+            DataReceivedEventHandler outputHandler = (sender, e) => outputBuilder.AppendLine(e.Data);
 
             try
             {
+                process.OutputDataReceived += outputHandler;
+                process.ErrorDataReceived += outputHandler;
+
                 process.Start();
+
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                process.WaitForExit();
             }
             catch (Exception ex)
             {
-                throw new WebDriverException("Error starting process: " + process, ex);
+                throw new WebDriverException($"Error starting process: {fileName} {arguments}", ex);
+            }
+            finally
+            {
+                processExitCode = process.ExitCode;
+                process.OutputDataReceived -= outputHandler;
+                process.ErrorDataReceived -= outputHandler;
             }
 
-            String output = process.StandardOutput.ReadToEnd();
+            string output = outputBuilder.ToString().Trim();
 
-            if (!output.StartsWith("INFO")) {
-                throw new WebDriverException("Invalid response from process: " + process);
+            if (processExitCode != 0)
+            {
+                throw new WebDriverException($"Invalid response from process (code {processExitCode}): {fileName} {arguments}\n{output}");
             }
 
-            return output;
+            return output.Replace("INFO\t", "");
         }
     }
 }

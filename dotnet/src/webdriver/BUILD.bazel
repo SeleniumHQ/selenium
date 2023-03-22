@@ -240,6 +240,30 @@ copy_file(
     out = "icon.png",
 )
 
+copy_file(
+    name = "props",
+    src = "build/Selenium.WebDriver.targets",
+    out = "Selenium.WebDriver.targets",
+)
+
+copy_file(
+    name = "manager-linux",
+    src = "//common/manager:linux/selenium-manager",
+    out = "manager/linux/selenium-manager",
+)
+
+copy_file(
+    name = "manager-macos",
+    src = "//common/manager:macos/selenium-manager",
+    out = "manager/macos/selenium-manager",
+)
+
+copy_file(
+    name = "manager-windows",
+    src = "//common/manager:windows/selenium-manager.exe",
+    out = "manager/windows/selenium-manager.exe",
+)
+
 nuget_package(
     name = "package",
     src = "WebDriver.nuspec",
@@ -253,13 +277,18 @@ nuget_package(
     visibility = ["//visibility:public"],
     deps = [
         ":logo",
+        ":manager-linux",
+        ":manager-macos",
+        ":manager-windows",
         ":net45",
         ":net46",
         ":net47",
         ":net48",
         ":net5.0",
+        ":net6.0",
         ":netstandard2.0",
         ":netstandard2.1",
+        ":props",
     ],
 )
 
@@ -279,6 +308,7 @@ nuget_package(
         ":net47-strongnamed",
         ":net48-strongnamed",
         ":net5.0-strongnamed",
+        ":net6.0-strongnamed",
         ":netstandard2.0-strongnamed",
         ":netstandard2.1-strongnamed",
     ],

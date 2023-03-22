@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasDevTools
-
         #
         # Retrieves connection to DevTools.
         #
@@ -36,7 +35,6 @@ module Selenium
             Selenium::WebDriver::DevTools.new(url: devtools_url)
           end
         end
-
       end # HasDevTools
     end # DriverExtensions
   end # WebDriver

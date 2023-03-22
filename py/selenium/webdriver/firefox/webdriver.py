@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import base64
+import logging
 import os
 import warnings
 import zipfile
@@ -32,13 +33,14 @@ from .remote_connection import FirefoxRemoteConnection
 from .service import DEFAULT_EXECUTABLE_PATH
 from .service import Service
 
+logger = logging.getLogger(__name__)
+
 # Default for log_path variable. To be deleted when deprecations for arguments are removed.
 DEFAULT_LOG_PATH = None
 DEFAULT_SERVICE_LOG_PATH = "geckodriver.log"
 
 
 class WebDriver(RemoteWebDriver):
-
     CONTEXT_CHROME = "chrome"
     CONTEXT_CONTENT = "content"
 
@@ -55,8 +57,8 @@ class WebDriver(RemoteWebDriver):
         service=None,
         desired_capabilities=None,
         log_path=DEFAULT_LOG_PATH,
-        keep_alive=True,
-    ):
+        keep_alive=True,  # Todo: Why is this now unused?
+    ) -> None:
         """Starts a new local session of Firefox.
 
         Based on the combination and specificity of the various keyword
@@ -213,8 +215,24 @@ class WebDriver(RemoteWebDriver):
                 rmtree(self.profile.path)
                 if self.profile.tempfolder:
                     rmtree(self.profile.tempfolder)
-            except Exception as e:
-                print(str(e))
+            except Exception:
+                logger.exception("Unable to remove profile specific paths.")
+
+        self._close_binary_file_handle()
+
+    def _close_binary_file_handle(self) -> None:
+        """Attempts to close the underlying file handles for `FirefoxBinary`
+        instances if they are used and open.
+
+        To keep inline with other cleanup raising here is swallowed and
+        will not cause a runtime error.
+        """
+        try:
+            if isinstance(self.binary, FirefoxBinary):
+                if hasattr(self.binary._log_file, "close"):
+                    self.binary._log_file.close()
+        except Exception:
+            logger.exception("Unable to close open file handle for firefox binary log file.")
 
     @property
     def firefox_profile(self):
@@ -227,9 +245,9 @@ class WebDriver(RemoteWebDriver):
 
     @contextmanager
     def context(self, context):
-        """Sets the context that Selenium commands are running in using
-        a `with` statement. The state of the context on the server is
-        saved before entering the block, and restored upon exiting it.
+        """Sets the context that Selenium commands are running in using a
+        `with` statement. The state of the context on the server is saved
+        before entering the block, and restored upon exiting it.
 
         :param context: Context, may be one of the class properties
             `CONTEXT_CHROME` or `CONTEXT_CONTENT`.
@@ -248,8 +266,7 @@ class WebDriver(RemoteWebDriver):
             self.set_context(initial_context)
 
     def install_addon(self, path, temporary=False) -> str:
-        """
-        Installs Firefox addon.
+        """Installs Firefox addon.
 
         Returns identifier of installed addon. This identifier can later
         be used to uninstall addon.
@@ -279,8 +296,7 @@ class WebDriver(RemoteWebDriver):
         return self.execute("INSTALL_ADDON", payload)["value"]
 
     def uninstall_addon(self, identifier) -> None:
-        """
-        Uninstalls Firefox addon using its identifier.
+        """Uninstalls Firefox addon using its identifier.
 
         :Usage:
             ::
@@ -290,10 +306,9 @@ class WebDriver(RemoteWebDriver):
         self.execute("UNINSTALL_ADDON", {"id": identifier})
 
     def get_full_page_screenshot_as_file(self, filename) -> bool:
-        """
-        Saves a full document screenshot of the current window to a PNG image file. Returns
-           False if there is any IOError, else returns True. Use full paths in
-           your filename.
+        """Saves a full document screenshot of the current window to a PNG
+        image file. Returns False if there is any IOError, else returns True.
+        Use full paths in your filename.
 
         :Args:
          - filename: The full path you wish to save your screenshot to. This
@@ -320,10 +335,9 @@ class WebDriver(RemoteWebDriver):
         return True
 
     def save_full_page_screenshot(self, filename) -> bool:
-        """
-        Saves a full document screenshot of the current window to a PNG image file. Returns
-           False if there is any IOError, else returns True. Use full paths in
-           your filename.
+        """Saves a full document screenshot of the current window to a PNG
+        image file. Returns False if there is any IOError, else returns True.
+        Use full paths in your filename.
 
         :Args:
          - filename: The full path you wish to save your screenshot to. This
@@ -337,8 +351,8 @@ class WebDriver(RemoteWebDriver):
         return self.get_full_page_screenshot_as_file(filename)
 
     def get_full_page_screenshot_as_png(self) -> bytes:
-        """
-        Gets the full document screenshot of the current window as a binary data.
+        """Gets the full document screenshot of the current window as a binary
+        data.
 
         :Usage:
             ::
@@ -348,9 +362,8 @@ class WebDriver(RemoteWebDriver):
         return base64.b64decode(self.get_full_page_screenshot_as_base64().encode("ascii"))
 
     def get_full_page_screenshot_as_base64(self) -> str:
-        """
-        Gets the full document screenshot of the current window as a base64 encoded string
-           which is useful in embedded images in HTML.
+        """Gets the full document screenshot of the current window as a base64
+        encoded string which is useful in embedded images in HTML.
 
         :Usage:
             ::

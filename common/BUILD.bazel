@@ -55,7 +55,7 @@ alias(
 config_setting(
     name = "use_local_chromedriver",
     flag_values = {
-        "@local_drivers//:use_chromedriver": "true",
+        "@local_drivers//:use_chromedriver": "false",
         ":pin_browsers": "false",
     },
 )
@@ -68,7 +68,7 @@ alias(
 config_setting(
     name = "use_local_geckodriver",
     flag_values = {
-        "@local_drivers//:use_geckodriver": "true",
+        "@local_drivers//:use_geckodriver": "false",
         ":pin_browsers": "false",
     },
 )
@@ -81,7 +81,7 @@ alias(
 config_setting(
     name = "use_local_msedgedriver",
     flag_values = {
-        "@local_drivers//:use_msedgedriver": "true",
+        "@local_drivers//:use_msedgedriver": "false",
         ":pin_browsers": "false",
     },
 )

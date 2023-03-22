@@ -27,23 +27,23 @@ if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v85\DevToolsSession
   popd
 )
 
-if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v105\DevToolsSessionDomains.cs" (
-  echo Generating CDP code for version 105
+if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v109\DevToolsSessionDomains.cs" (
+  echo Generating CDP code for version 109
   pushd "%1..\..\.."
-  bazel build //dotnet/src/webdriver/cdp:generate-v105
+  bazel build //dotnet/src/webdriver/cdp:generate-v109
   popd
 )
 
-if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v106\DevToolsSessionDomains.cs" (
-  echo Generating CDP code for version 106
+if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v110\DevToolsSessionDomains.cs" (
+  echo Generating CDP code for version 110
   pushd "%1..\..\.."
-  bazel build //dotnet/src/webdriver/cdp:generate-v106
+  bazel build //dotnet/src/webdriver/cdp:generate-v110
   popd
 )
 
-if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v107\DevToolsSessionDomains.cs" (
-  echo Generating CDP code for version 107
+if not exist  "%1..\..\..\bazel-bin\dotnet\src\webdriver\cdp\v111\DevToolsSessionDomains.cs" (
+  echo Generating CDP code for version 111
   pushd "%1..\..\.."
-  bazel build //dotnet/src/webdriver/cdp:generate-v107
+  bazel build //dotnet/src/webdriver/cdp:generate-v111
   popd
 )

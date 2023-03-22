@@ -23,9 +23,10 @@ module Selenium
   module WebDriver
     module Firefox
       describe Service, exclusive: {browser: :firefox} do
-        let(:service) { Service.new }
+        let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 
+        before { service.executable_path = DriverFinder.path(Options.new, described_class) }
         after { service_manager.stop }
 
         it 'auto uses geckodriver' do

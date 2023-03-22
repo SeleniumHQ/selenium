@@ -33,8 +33,7 @@ class SwitchTo:
 
     @property
     def active_element(self) -> WebElement:
-        """
-        Returns the element with focus, or BODY if nothing has focus.
+        """Returns the element with focus, or BODY if nothing has focus.
 
         :Usage:
             ::
@@ -45,8 +44,7 @@ class SwitchTo:
 
     @property
     def alert(self) -> Alert:
-        """
-        Switches focus to an alert on the page.
+        """Switches focus to an alert on the page.
 
         :Usage:
             ::
@@ -58,8 +56,7 @@ class SwitchTo:
         return alert
 
     def default_content(self) -> None:
-        """
-        Switch focus to the default frame.
+        """Switch focus to the default frame.
 
         :Usage:
             ::
@@ -69,8 +66,8 @@ class SwitchTo:
         self._driver.execute(Command.SWITCH_TO_FRAME, {"id": None})
 
     def frame(self, frame_reference) -> None:
-        """
-        Switches focus to the specified frame, by index, name, or webelement.
+        """Switches focus to the specified frame, by index, name, or
+        webelement.
 
         :Args:
          - frame_reference: The name of the window to switch to, an integer representing the index,
@@ -109,9 +106,8 @@ class SwitchTo:
         self._w3c_window(value["handle"])
 
     def parent_frame(self) -> None:
-        """
-        Switches focus to the parent context. If the current context is the top
-        level browsing context, the context remains unchanged.
+        """Switches focus to the parent context. If the current context is the
+        top level browsing context, the context remains unchanged.
 
         :Usage:
             ::
@@ -121,8 +117,7 @@ class SwitchTo:
         self._driver.execute(Command.SWITCH_TO_PARENT_FRAME)
 
     def window(self, window_name) -> None:
-        """
-        Switches focus to the specified window.
+        """Switches focus to the specified window.
 
         :Args:
          - window_name: The name or window handle of the window to switch to.

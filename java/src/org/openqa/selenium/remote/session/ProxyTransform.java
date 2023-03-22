@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.remote.session;
 
-import static java.util.Collections.singleton;
-
 import org.openqa.selenium.Proxy;
 
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
+
+import static java.util.Collections.singleton;
 
 public class ProxyTransform implements CapabilityTransform {
 
@@ -43,9 +43,7 @@ public class ProxyTransform implements CapabilityTransform {
       proxy = new TreeMap<>((Map<String, Object>) rawProxy);
     }
     if (proxy.containsKey("proxyType")) {
-      proxy.put(
-        "proxyType",
-        String.valueOf(proxy.get("proxyType")).toLowerCase());
+      proxy.put("proxyType", String.valueOf(proxy.get("proxyType")).toLowerCase());
     }
     return singleton(new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), proxy));
   }

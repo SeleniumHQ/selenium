@@ -9,6 +9,22 @@ available via the project downloads page. Changes in "revision" field indicate
 private releases checked into the prebuilts directory of the source tree, but
 not made generally available on the downloads page.
 
+v4.8.1.0
+========
+* Update atoms (Use .textContent instead of .innerHTML in clear() action (#11504))
+
+v4.8.0.0
+========
+* Remove unnecessary executable permission bit from several files (#11502)
+
+v4.7.0.0
+========
+* Ignore Zoom Level for Edge IE Mode (#11055)
+
+v4.6.0.0
+========
+* Enable msIEModeAlwaysWaitForUnload for Edge IE Mode (#11079)
+
 v4.5.0.0
 ========
 * Auto-locate Edge if IE mode requested and location not specified

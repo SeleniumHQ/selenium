@@ -14,27 +14,31 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import json
 import logging
-import re
 import subprocess
 import sys
 from pathlib import Path
 from typing import Tuple
 
-from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import SeleniumManagerException
 
 logger = logging.getLogger(__name__)
 
 
 class SeleniumManager:
+    """Wrapper for getting information from the Selenium Manager binaries.
+
+    This implementation is still in beta, and may change.
     """
-    Wrapper for getting information from the Selenium Manager binaries.
-    """
+
+    def __init__(self) -> None:
+        pass
 
     @staticmethod
     def get_binary() -> Path:
-        """
-        Determines the path of the correct Selenium Manager binary.
+        """Determines the path of the correct Selenium Manager binary.
+
         :Returns: The Selenium Manager executable location
         """
         directory = sys.platform
@@ -48,39 +52,57 @@ class SeleniumManager:
         path = Path(__file__).parent.joinpath(directory, file)
 
         if not path.is_file():
-            raise WebDriverException("Unable to obtain Selenium Manager")
+            tracker = "https://github.com/SeleniumHQ/selenium/issues"
+            raise SeleniumManagerException(f"{path} is missing.  Please open an issue on {tracker}")
 
         return path
 
-    @staticmethod
-    def driver_location(browser: str) -> str:
+    def driver_location(self, browser: str) -> str:
         """
         Determines the path of the correct driver.
         :Args:
          - browser: which browser to get the driver path for.
         :Returns: The driver path to use
         """
-        if browser not in ("chrome", "firefox", "edge"):
-            raise WebDriverException(f"Unable to locate driver associated with browser name: {browser}")
+        allowed = ("chrome", "firefox", "edge", "ie")
+        if browser not in allowed:
+            raise SeleniumManagerException(f"{browser} is not a valid browser.  Choose one of: {allowed}")
 
-        args = (str(SeleniumManager.get_binary()), "--browser", browser)
-        result = SeleniumManager.run(args)
-        command = result.split("\t")[-1].strip()
-        logger.debug(f"Using driver at: {command}")
-        return command
+        if browser == "ie":
+            browser = "iexplorer"
+
+        binary, browser_flag, browser, output_flag, output = (
+            str(self.get_binary()),
+            "--browser",
+            browser,
+            "--output",
+            "json",
+        )
+        result = self.run((binary, browser_flag, browser, output_flag, output))
+        executable = result.split("\t")[-1].strip()
+        logger.debug(f"Using driver at: {executable}")
+        return executable
 
     @staticmethod
-    def run(args: Tuple[str, str, str]) -> str:
+    def run(args: Tuple[str, str, str, str, str]) -> str:
         """
         Executes the Selenium Manager Binary.
         :Args:
          - args: the components of the command being executed.
         :Returns: The log string containing the driver location.
         """
-        logger.debug(f"Executing selenium manager with: {args}")
-        result = subprocess.run(args, stdout=subprocess.PIPE).stdout.decode("utf-8")
-
-        if not re.match("^INFO\t", result):
-            raise WebDriverException(f"Unsuccessful command executed: {args}")
-
-        return result
+        command = " ".join(args)
+        logger.debug(f"Executing: {command}")
+        completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
+        stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
+        output = json.loads(stdout)
+        result = output["result"]["message"]
+        if completed_proc.returncode:
+            raise SeleniumManagerException(f"Selenium manager failed for: {command}.\n{result}{stderr}")
+        else:
+            # Selenium Manager exited 0 successfully, return executable path and print warnings (if any)
+            for item in output["logs"]:
+                if item["level"] == "WARN":
+                    logger.warning(item["message"])
+            return result

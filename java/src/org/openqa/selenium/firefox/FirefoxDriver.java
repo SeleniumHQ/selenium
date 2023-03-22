@@ -52,6 +52,7 @@ import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
+import org.openqa.selenium.remote.service.DriverFinder;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.net.URI;
@@ -87,27 +88,65 @@ public class FirefoxDriver extends RemoteWebDriver
   private final HasContext context;
   private final Optional<URI> cdpUri;
   private final Optional<URI> biDiUri;
-  protected FirefoxBinary binary;
   private Connection connection;
   private DevTools devTools;
   private BiDi biDi;
+
+  /**
+   * Creates a new FirefoxDriver using the {@link GeckoDriverService#createDefaultService)}
+   * server configuration.
+   *
+   * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
+   */
   public FirefoxDriver() {
     this(new FirefoxOptions());
   }
 
+  /**
+   * Creates a new FirefoxDriver instance with the specified options.
+   *
+   * @param options The options to use.
+   * @see #FirefoxDriver(FirefoxDriverService, FirefoxOptions)
+   */
   public FirefoxDriver(FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(GeckoDriverService.createDefaultService()), options);
+    this(GeckoDriverService.createDefaultService(), options);
   }
 
+  /**
+   * Creates a new FirefoxDriver instance. The {@code service} will be started along with the driver,
+   * and shutdown upon calling {@link #quit()}.
+   *
+   * @param service The service to use.
+   * @see RemoteWebDriver#RemoteWebDriver(org.openqa.selenium.remote.CommandExecutor, Capabilities)
+   */
   public FirefoxDriver(FirefoxDriverService service) {
     this(service, new FirefoxOptions());
   }
 
   public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options) {
-    this(new FirefoxDriverCommandExecutor(service), options);
+    this(service, options, ClientConfig.defaultConfig());
+  }
+
+  public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, ClientConfig clientConfig) {
+    this(generateExecutor(service, options, clientConfig), options);
+  }
+
+  private static FirefoxDriverCommandExecutor generateExecutor(FirefoxDriverService service, FirefoxOptions options, ClientConfig clientConfig) {
+    Require.nonNull("Driver service", service);
+    Require.nonNull("Driver options", options);
+    Require.nonNull("Driver clientConfig", clientConfig);
+    if (service.getExecutable() == null) {
+      String path = DriverFinder.getPath(service, options);
+      service.setExecutable(path);
+    }
+    return new FirefoxDriverCommandExecutor(service, clientConfig);
   }
 
   private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options) {
+    this(executor, options, ClientConfig.defaultConfig());
+  }
+
+  private FirefoxDriver(FirefoxDriverCommandExecutor executor, FirefoxOptions options, ClientConfig clientConfig) {
     super(executor, checkCapabilitiesAndProxy(options));
     webStorage = new RemoteWebStorage(getExecuteMethod());
     extensions = new AddHasExtensions().getImplementation(getCapabilities(), getExecuteMethod());
@@ -132,10 +171,10 @@ public class FirefoxDriver extends RemoteWebDriver
 
     this.cdpUri = cdpUri;
     this.capabilities = cdpUri.map(uri ->
-                                     new ImmutableCapabilities(
-                                       new PersistentCapabilities(capabilities)
-                                         .setCapability("se:cdp", uri.toString())
-                                         .setCapability("se:cdpVersion", "85.0")))
+        new ImmutableCapabilities(
+          new PersistentCapabilities(capabilities)
+            .setCapability("se:cdp", uri.toString())
+            .setCapability("se:cdpVersion", "85.0")))
       .orElse(new ImmutableCapabilities(capabilities));
   }
 
@@ -172,7 +211,7 @@ public class FirefoxDriver extends RemoteWebDriver
   public void setFileDetector(FileDetector detector) {
     throw new WebDriverException(
       "Setting the file detector only works on remote webdriver instances obtained " +
-      "via RemoteWebDriver");
+        "via RemoteWebDriver");
   }
 
   @Override
@@ -230,6 +269,10 @@ public class FirefoxDriver extends RemoteWebDriver
     context.setContext(commandContext);
   }
 
+  /**
+   * @deprecated Use W3C-compliant BiDi protocol. Use {{@link #maybeGetBiDi()}}
+   */
+  @Deprecated
   @Override
   public Optional<DevTools> maybeGetDevTools() {
     if (devTools != null) {
@@ -254,6 +297,10 @@ public class FirefoxDriver extends RemoteWebDriver
     return Optional.of(devTools);
   }
 
+  /**
+   * @deprecated Use W3C-compliant BiDi protocol. Use {{@link #getBiDi()}}
+   */
+  @Deprecated
   @Override
   public DevTools getDevTools() {
     if (!cdpUri.isPresent()) {
@@ -301,9 +348,6 @@ public class FirefoxDriver extends RemoteWebDriver
 
   @Override
   public void quit() {
-    if (connection != null) {
-      connection.close();
-    }
     super.quit();
   }
 
@@ -327,17 +371,14 @@ public class FirefoxDriver extends RemoteWebDriver
     public static final String BROWSER_PROFILE = "webdriver.firefox.profile";
   }
 
-  public static final class Capability {
-
-    public static final String BINARY = "firefox_binary";
-    public static final String PROFILE = "firefox_profile";
-    public static final String MARIONETTE = "marionette";
-  }
-
   private static class FirefoxDriverCommandExecutor extends DriverCommandExecutor {
 
     public FirefoxDriverCommandExecutor(DriverService service) {
-      super(service, getExtraCommands());
+      this(service, ClientConfig.defaultConfig());
+    }
+
+    public FirefoxDriverCommandExecutor(DriverService service, ClientConfig clientConfig) {
+      super(service, getExtraCommands(), clientConfig);
     }
 
     private static Map<String, CommandInfo> getExtraCommands() {

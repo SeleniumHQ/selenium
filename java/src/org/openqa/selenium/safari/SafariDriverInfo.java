@@ -25,6 +25,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
@@ -69,11 +70,16 @@ public class SafariDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      SafariDriverService.createDefaultService();
+      DriverFinder.getPath(SafariDriverService.createDefaultService(), getCanonicalCapabilities());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
+  }
+
+  @Override
+  public boolean isPresent() {
+    return SafariDriverService.isPresent();
   }
 
   @Override
@@ -83,7 +89,7 @@ public class SafariDriverInfo implements WebDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

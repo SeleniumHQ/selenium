@@ -23,16 +23,10 @@ module Selenium
       class Service < WebDriver::Service
         DEFAULT_PORT = 5555
         EXECUTABLE = 'IEDriverServer'
-        MISSING_TEXT = <<~ERROR
-          Unable to find IEDriverServer. Please download the server from
-          https://www.selenium.dev/downloads/ and place it somewhere on your PATH.
-          More info at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver.
-        ERROR
         SHUTDOWN_SUPPORTED = true
 
         private
 
-        # NOTE: This processing is deprecated
         def extract_service_args(driver_opts)
           driver_args = super
           driver_opts = driver_opts.dup
@@ -43,7 +37,7 @@ module Selenium
           end
           driver_args << "--host=#{driver_opts[:host]}" if driver_opts.key?(:host)
           driver_args << "--extract_path=#{driver_opts[:extract_path]}" if driver_opts.key?(:extract_path)
-          driver_args << "--silent" if driver_opts[:silent] == true
+          driver_args << '--silent' if driver_opts[:silent] == true
           driver_args
         end
       end # Server

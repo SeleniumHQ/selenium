@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Safari
-
       #
       # Driver implementation for Safari.
       # @api private
@@ -30,6 +29,13 @@ module Selenium
         EXTENSIONS = [DriverExtensions::HasDebugger,
                       DriverExtensions::HasApplePermissions,
                       DriverExtensions::HasWebStorage].freeze
+
+        include LocalDriver
+
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          caps, url = initialize_local_driver(capabilities, options, service, url)
+          super(caps: caps, url: url, **opts)
+        end
 
         def browser
           :safari

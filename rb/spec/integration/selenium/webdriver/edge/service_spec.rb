@@ -23,9 +23,10 @@ module Selenium
   module WebDriver
     module Edge
       describe Service, exclusive: {browser: :edge} do
-        let(:service) { Service.new }
+        let(:service) { described_class.new }
         let(:service_manager) { service.launch }
 
+        before { service.executable_path = DriverFinder.path(Options.new, described_class) }
         after { service_manager.stop }
 
         it 'auto uses edgedriver' do

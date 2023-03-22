@@ -2,7 +2,7 @@ directories:
   # Add the directories you want added as source here
   # By default, we've added your entire workspace ('.')
   .
-  # -dotnet
+  -dotnet
 
 test_sources:
   java/test

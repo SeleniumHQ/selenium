@@ -133,7 +133,6 @@ def test_drag_and_drop(driver, pages):
 
 
 def test_context_click(driver, pages):
-
     pages.load("javascriptPage.html")
     toContextClick = driver.find_element(By.ID, "doubleClickField")
 

@@ -55,6 +55,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Level;
@@ -65,7 +67,9 @@ import static java.net.http.HttpClient.Redirect.ALWAYS;
 public class JdkHttpClient implements HttpClient {
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
   private final JdkHttpMessages messages;
-  private final java.net.http.HttpClient client;
+  private java.net.http.HttpClient client;
+  private WebSocket websocket;
+  private final ExecutorService executorService;
   private final Duration readTimeout;
 
   JdkHttpClient(ClientConfig config) {
@@ -74,9 +78,12 @@ public class JdkHttpClient implements HttpClient {
     this.messages = new JdkHttpMessages(config);
     this.readTimeout = config.readTimeout();
 
+    executorService = Executors.newCachedThreadPool();
+
     java.net.http.HttpClient.Builder builder = java.net.http.HttpClient.newBuilder()
       .connectTimeout(config.connectionTimeout())
-      .followRedirects(ALWAYS);
+      .followRedirects(ALWAYS)
+      .executor(executorService);
 
     Credentials credentials = config.credentials();
     String info = config.baseUri().getUserInfo();
@@ -196,7 +203,7 @@ public class JdkHttpClient implements HttpClient {
 
     java.net.http.WebSocket underlyingSocket = webSocketCompletableFuture.join();
 
-    return new WebSocket() {
+    this.websocket = new WebSocket() {
       @Override
       public WebSocket send(Message message) {
         Supplier<CompletableFuture<java.net.http.WebSocket>> makeCall;
@@ -245,9 +252,14 @@ public class JdkHttpClient implements HttpClient {
       @Override
       public void close() {
         LOG.fine("Closing websocket");
-        underlyingSocket.sendClose(1000, "WebDriver closing socket");
+        synchronized (underlyingSocket) {
+          if (!underlyingSocket.isOutputClosed()) {
+            underlyingSocket.sendClose(1000, "WebDriver closing socket");
+          }
+        }
       }
     };
+    return this.websocket;
   }
 
   private URI getWebSocketUri(HttpRequest request) {
@@ -289,6 +301,15 @@ public class JdkHttpClient implements HttpClient {
       LOG.fine(String.format("Ending request %s in %sms", req, (System.currentTimeMillis() - start)));
     }
 
+  }
+
+  @Override
+  public void close() {
+    executorService.shutdownNow();
+    if (this.websocket != null) {
+      this.websocket.close();
+    }
+    this.client = null;
   }
 
   @AutoService(HttpClient.Factory.class)

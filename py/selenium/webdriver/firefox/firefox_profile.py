@@ -36,7 +36,7 @@ EXTENSION_NAME = "fxdriver@googlecode.com"
 
 
 class AddonFormatError(Exception):
-    """Exception for not well-formed add-on manifest files"""
+    """Exception for not well-formed add-on manifest files."""
 
 
 class FirefoxProfile:
@@ -44,8 +44,7 @@ class FirefoxProfile:
     DEFAULT_PREFERENCES = None
 
     def __init__(self, profile_directory=None):
-        """
-        Initialises a new instance of a Firefox Profile
+        """Initialises a new instance of a Firefox Profile.
 
         :args:
          - profile_directory: Directory of profile that you want to use. If a
@@ -84,9 +83,7 @@ class FirefoxProfile:
 
     # Public Methods
     def set_preference(self, key, value):
-        """
-        sets the preference that we want in the profile.
-        """
+        """sets the preference that we want in the profile."""
         self.default_preferences[key] = value
 
     def add_extension(self, extension=WEBDRIVER_EXT):
@@ -105,23 +102,17 @@ class FirefoxProfile:
 
     @property
     def path(self):
-        """
-        Gets the profile directory that is currently being used
-        """
+        """Gets the profile directory that is currently being used."""
         return self.profile_dir
 
     @property
     def port(self):
-        """
-        Gets the port that WebDriver is working on
-        """
+        """Gets the port that WebDriver is working on."""
         return self._port
 
     @port.setter
     def port(self, port) -> None:
-        """
-        Sets the port that WebDriver will be running on
-        """
+        """Sets the port that WebDriver will be running on."""
         if not isinstance(port, int):
             raise WebDriverException("Port needs to be an integer")
         try:
@@ -156,10 +147,8 @@ class FirefoxProfile:
 
     @property
     def encoded(self) -> str:
-        """
-        A zipped, base64 encoded string of profile directory
-        for use with remote WebDriver JSON wire protocol
-        """
+        """A zipped, base64 encoded string of profile directory for use with
+        remote WebDriver JSON wire protocol."""
         self.update_preferences()
         fp = BytesIO()
         with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zipped:
@@ -171,21 +160,16 @@ class FirefoxProfile:
         return base64.b64encode(fp.getvalue()).decode("UTF-8")
 
     def _create_tempfolder(self):
-        """
-        Creates a temp folder to store User.js and the extension
-        """
+        """Creates a temp folder to store User.js and the extension."""
         return tempfile.mkdtemp()
 
     def _write_user_prefs(self, user_prefs):
-        """
-        writes the current user prefs dictionary to disk
-        """
+        """writes the current user prefs dictionary to disk."""
         with open(self.userPrefs, "w", encoding="utf-8") as f:
             for key, value in user_prefs.items():
                 f.write(f'user_pref("{key}", {json.dumps(value)});\n')
 
     def _read_existing_userjs(self, userjs):
-
         pref_pattern = re.compile(r'user_pref\("(.*)",\s(.*)\)')
         try:
             with open(userjs, encoding="utf-8") as f:
@@ -195,17 +179,16 @@ class FirefoxProfile:
                         self.default_preferences[matches.group(1)] = json.loads(matches.group(2))
                     except Exception:
                         warnings.warn(
-                            "(skipping) failed to json.loads existing preference: %s" % matches.group(1)
-                            + matches.group(2)
+                            f"(skipping) failed to json.loads existing preference: {matches.group(1) + matches.group(2)}"
                         )
         except Exception:
             # The profile given hasn't had any changes made, i.e no users.js
             pass
 
     def _install_extension(self, addon, unpack=True):
-        """
-        Installs addon from a filepath, url
-        or directory of addons in the profile.
+        """Installs addon from a filepath, url or directory of addons in the
+        profile.
+
         - path: url, absolute path to .xpi, or directory of addons
         - unpack: whether to unpack unless specified otherwise in the install.rdf
         """
@@ -233,7 +216,7 @@ class FirefoxProfile:
         # determine the addon id
         addon_details = self._addon_details(addon)
         addon_id = addon_details.get("id")
-        assert addon_id, "The addon id could not be found: %s" % addon
+        assert addon_id, f"The addon id could not be found: {addon}"
 
         # copy the addon to the profile
         addon_path = os.path.join(self.extensionsDir, addon_id)
@@ -251,8 +234,7 @@ class FirefoxProfile:
             shutil.rmtree(tmpdir)
 
     def _addon_details(self, addon_path):
-        """
-        Returns a dictionary of details about the addon.
+        """Returns a dictionary of details about the addon.
 
         :param addon_path: path to the add-on directory or XPI
 
@@ -278,7 +260,7 @@ class FirefoxProfile:
             return namespace
 
         def get_text(element):
-            """Retrieve the text value of a given node"""
+            """Retrieve the text value of a given node."""
             rc = []
             for node in element.childNodes:
                 if node.nodeType == node.TEXT_NODE:
@@ -286,7 +268,8 @@ class FirefoxProfile:
             return "".join(rc).strip()
 
         def parse_manifest_json(content):
-            """Extracts the details from the contents of a WebExtensions `manifest.json` file."""
+            """Extracts the details from the contents of a WebExtensions
+            `manifest.json` file."""
             manifest = json.loads(content)
             try:
                 id = manifest["applications"]["gecko"]["id"]
@@ -300,7 +283,7 @@ class FirefoxProfile:
             }
 
         if not os.path.exists(addon_path):
-            raise OSError("Add-on path does not exist: %s" % addon_path)
+            raise OSError(f"Add-on path does not exist: {addon_path}")
 
         try:
             if zipfile.is_zipfile(addon_path):
@@ -324,7 +307,7 @@ class FirefoxProfile:
                 with open(os.path.join(addon_path, "install.rdf"), encoding="utf-8") as f:
                     manifest = f.read()
             else:
-                raise OSError("Add-on path is neither an XPI nor a directory: %s" % addon_path)
+                raise OSError(f"Add-on path is neither an XPI nor a directory: {addon_path}")
         except (OSError, KeyError) as e:
             raise AddonFormatError(str(e), sys.exc_info()[2])
 

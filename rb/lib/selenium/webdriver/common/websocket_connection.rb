@@ -22,6 +22,11 @@ require 'websocket'
 module Selenium
   module WebDriver
     class WebSocketConnection
+      CONNECTION_ERRORS = [
+        Errno::ECONNRESET, # connection is aborted (browser process was killed)
+        Errno::EPIPE # broken pipe (browser process was killed)
+      ].freeze
+
       RESPONSE_WAIT_TIMEOUT = 30
       RESPONSE_WAIT_INTERVAL = 0.1
 
@@ -90,6 +95,8 @@ module Selenium
               end
             end
           end
+        rescue *CONNECTION_ERRORS
+          Thread.stop
         end
       end
 
@@ -104,7 +111,7 @@ module Selenium
         return {} if message.empty?
 
         message = JSON.parse(message)
-        messages[message["id"]] = message
+        messages[message['id']] = message
         WebDriver.logger.debug "WebSocket <- #{message}"[...MAX_LOG_MESSAGE_SIZE]
 
         message
@@ -122,6 +129,8 @@ module Selenium
           Thread.current.report_on_exception = true
 
           yield params
+        rescue *CONNECTION_ERRORS
+          Thread.stop
         end
       end
 
@@ -150,7 +159,6 @@ module Selenium
         @id ||= 0
         @id += 1
       end
-
     end # BiDi
   end # WebDriver
 end # Selenium

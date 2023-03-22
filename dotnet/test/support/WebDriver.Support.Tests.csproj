@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net471;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6.0;net48;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>WebDriver.Support.Tests</AssemblyName>
   </PropertyGroup>
 
@@ -12,7 +12,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>..\..\..\build\cli\Release\</OutputPath>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Compile Remove="obj\**" />
     <EmbeddedResource Remove="obj\**" />

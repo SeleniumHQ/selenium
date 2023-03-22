@@ -30,12 +30,19 @@ class PointerInput(InputDevice):
     def __init__(self, kind, name):
         super().__init__()
         if kind not in POINTER_KINDS:
-            raise InvalidArgumentException("Invalid PointerInput kind '%s'" % kind)
+            raise InvalidArgumentException(f"Invalid PointerInput kind '{kind}'")
         self.type = POINTER
         self.kind = kind
         self.name = name
 
-    def create_pointer_move(self, duration=DEFAULT_MOVE_DURATION, x=0, y=0, origin=None, **kwargs):
+    def create_pointer_move(
+        self,
+        duration=DEFAULT_MOVE_DURATION,
+        x: float = 0,
+        y: float = 0,
+        origin: typing.Optional[WebElement] = None,
+        **kwargs,
+    ):
         action = {"type": "pointerMove", "duration": duration, "x": x, "y": y, **kwargs}
         if isinstance(origin, WebElement):
             action["origin"] = {"element-6066-11e4-a52e-4f735466cecf": origin.id}
@@ -53,7 +60,7 @@ class PointerInput(InputDevice):
     def create_pointer_cancel(self):
         self.add_action({"type": "pointerCancel"})
 
-    def create_pause(self, pause_duration):
+    def create_pause(self, pause_duration: float) -> None:
         self.add_action({"type": "pause", "duration": int(pause_duration * 1000)})
 
     def encode(self):

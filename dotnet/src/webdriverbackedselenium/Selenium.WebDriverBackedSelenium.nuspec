@@ -51,6 +51,9 @@
       <group targetFramework="net5.0">
         <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
       </group>
+      <group targetFramework="net6.0">
+        <dependency id="Selenium.WebDriver" version="$version$" exclude="Build,Analyzers" />
+      </group>
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Drawing" />

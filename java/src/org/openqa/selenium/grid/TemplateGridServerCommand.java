@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.grid;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import org.openqa.selenium.grid.config.CompoundConfig;
 import org.openqa.selenium.grid.config.Config;
 import org.openqa.selenium.grid.config.MemoizedConfig;
@@ -30,6 +35,8 @@ import org.openqa.selenium.remote.http.Message;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import org.openqa.selenium.remote.http.Routable;
+import org.openqa.selenium.remote.http.Route;
 
 public abstract class TemplateGridServerCommand extends TemplateGridCommand {
 
@@ -44,6 +51,41 @@ public abstract class TemplateGridServerCommand extends TemplateGridCommand {
       new BaseServerOptions(config),
       handler.httpHandler,
       handler.websocketHandler);
+  }
+
+  private static final String GRAPHQL = "/graphql";
+
+  protected static Routable graphqlRoute(String prefix, Supplier<HttpHandler> handler) {
+    Routable optionsRoute =  buildRoute(GRAPHQL,
+      prefix,
+      path -> Route.options(path).to(handler)
+    );
+    Routable postRoute = buildRoute(GRAPHQL,
+      prefix,
+      path -> Route.post(path).to(handler)
+    );
+    return Route.combine(optionsRoute, postRoute);
+  }
+
+  protected static Routable hubRoute(String prefix, Route route) {
+    return buildRoute("/wd/hub",
+      prefix,
+      path -> Route.prefix(path).to(route)
+    );
+  }
+
+  private static Routable buildRoute(String url, String prefix, Function<String, Route> mapper) {
+    List<String> subPaths = prefix.isEmpty()
+      ? Collections.singletonList(url)
+      : Arrays.asList(prefix + url, url);
+    return subPaths.stream()
+      .map(mapper)
+      .reduce(Route::combine)
+      .get();
+  }
+
+  protected static Routable baseRoute(String prefix, Route route) {
+    return Route.prefix(prefix).to(route);
   }
 
   protected abstract Handlers createHandlers(Config config);

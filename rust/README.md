@@ -16,19 +16,25 @@ Selenium Manager can be executed using Cargo as follows:
 
 ```
 $ cargo run -- --help
-selenium-manager 1.0.0-M1
-Automated driver management for Selenium
+selenium-manager 1.0.0-M3
+Selenium Manager is a CLI tool that automatically manages the browser/driver infrastructure required by Selenium.
 
 Usage: selenium-manager [OPTIONS]
 Options:
   -b, --browser <BROWSER>
-          Browser name (chrome, firefox, or edge) [default: ]
+          Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
   -d, --driver <DRIVER>
-          Driver name (chromedriver, geckodriver, or msedgedriver) [default: ]
+          Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
   -v, --driver-version <DRIVER_VERSION>
-          Driver version (e.g., 106.0.5249.61, 0.31.0, etc.) [default: ]
+          Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
   -B, --browser-version <BROWSER_VERSION>
-          Major browser version (e.g., 105, 106, etc.) [default: ]
+          Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
+  -P, --browser-path <BROWSER_PATH>
+          Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome, "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+  -p, --proxy <PROXY>
+          HTTP proxy for network connection (e.g., https://myproxy.net:8080)
+  -t, --timeout <TIMEOUT>
+          Timeout for network requests (in seconds) [default: 120]
   -D, --debug
           Display DEBUG messages
   -T, --trace
@@ -39,6 +45,10 @@ Options:
           Print help information
   -V, --version
           Print version information
+  --driver_ttl <TTL IN SECONDS>
+          Set custom TTL for driver in seconds. Default value is 86400
+  --browser_ttl <TTL IN SECONDS>
+          Set custom TTL for browser in seconds default value is 0
 ```
 
 For instance, the command required to manage chromedriver is the following:
@@ -73,7 +83,7 @@ The implementation of Selenium Manager has been planned to be incremental. In th
 | **Milestone**                           | **Description**                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 |-----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | M1: Driver management                   | <ul><li>Beta version of the Selenium Manager.</li> <li>Focused on driver management for Chrome, Firefox, and Edge.</li> <li>Selenium Manager compiled for Windows, Linux, and macOS (in GH Actions).</li> <li>Available in Selenium binding languages (Java, JavaScript, Python, Ruby, and C#).</li> <li>Used as a fallback for language bindings, when the driver is not found.</li> <li>Selenium Manager binaries bundled within the binding languages.</li></ul> |
-| M2: Driver management for IEDriver      | <ul><li>Include driver support for IExplorer.</li></ul>                                                                                                                                                                                                                                                                                                                                                                                                             |
+| M2: Driver management for IEDriver      | <ul><li>Include driver support for IExplorer.</li> <li>Allow Selenium Manager to be used as a Rust lib crate.</li> <li>Support for browser beta/canary/dev versions (for Chrome, Firefox, Edge).</li> <li>Enhance error handling in Rust logic.</li> </ul>                                                                                                                                                                                                          |
 | M3: Rich configuration                  | <ul><li>Proxy support in Selenium Manager.</li> <li>Extra configuration capabilities from binding languages to Selenium Manager (e.g., force to use a given driver version, etc.).</li></ul>                                                                                                                                                                                                                                                                        |
 | M4: Browser management: Chrome/Chromium | <ul><li>Analyze how to make browser management for Chrome (or Chromium, if Chrome is not possible).</li> <li>Implement this feature in Windows, Linux, and macOS.</li></ul>                                                                                                                                                                                                                                                                                         |
 | M5: Browser management: Firefox         | <ul><li>Analyze how to make browser management for Firefox.</li> <li>Implement this feature in Windows, Linux, and macOS.</li></ul>                                                                                                                                                                                                                                                                                                                                 |

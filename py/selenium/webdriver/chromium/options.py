@@ -91,9 +91,8 @@ class ChromiumOptions(ArgOptions):
         return encoded_extensions + self._extensions
 
     def add_extension(self, extension: str) -> None:
-        """
-        Adds the path to the extension to a list that will be used to extract it
-        to the ChromeDriver
+        """Adds the path to the extension to a list that will be used to
+        extract it to the ChromeDriver.
 
         :Args:
          - extension: path to the \\*.crx file
@@ -108,9 +107,8 @@ class ChromiumOptions(ArgOptions):
             raise ValueError("argument can not be null")
 
     def add_encoded_extension(self, extension: str) -> None:
-        """
-        Adds Base64 encoded string with extension data to a list that will be used to extract it
-        to the ChromeDriver
+        """Adds Base64 encoded string with extension data to a list that will
+        be used to extract it to the ChromeDriver.
 
         :Args:
          - extension: Base64 encoded string with extension data
@@ -128,15 +126,14 @@ class ChromiumOptions(ArgOptions):
         return self._experimental_options
 
     def add_experimental_option(self, name: str, value: Union[str, int, dict, List[str]]) -> None:
-        """
-        Adds an experimental option which is passed to chromium.
+        """Adds an experimental option which is passed to chromium.
 
         :Args:
           name: The experimental option name.
           value: The option value.
         """
         if name.lower() == "w3c" and (value == "false" or value is False):
-            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."))
+            warnings.warn(UserWarning("Manipulating `w3c` setting can have unintended consequences."), stacklevel=2)
         self._experimental_options[name] = value
 
     @property
@@ -144,15 +141,28 @@ class ChromiumOptions(ArgOptions):
         """
         :Returns: True if the headless argument is set, else False
         """
+        warnings.warn(
+            "headless property is deprecated, instead check for '--headless' in arguments",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return "--headless" in self._arguments
 
     @headless.setter
     def headless(self, value: bool) -> None:
-        """
-        Sets the headless argument
+        """Sets the headless argument Old headless uses a non-production
+        browser and is set with `--headless`
+
+        Native headless from v86 - v108 is set with `--headless=chrome`
+        Native headless from v109+ is set with `--headless=new`
         :Args:
           value: boolean value indicating to set the headless option
         """
+        warnings.warn(
+            "headless property is deprecated, instead use add_argument('--headless') or add_argument('--headless=new')",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         args = {"--headless"}
         if value is True:
             self._arguments.extend(args)

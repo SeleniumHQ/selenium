@@ -18,6 +18,7 @@
 package org.openqa.selenium.firefox;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mockito.ArgumentMatchers;
@@ -28,12 +29,13 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.ParallelTestRunner;
 import org.openqa.selenium.ParallelTestRunner.Worker;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.build.InProject;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandExecutor;
@@ -43,14 +45,11 @@ import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.SessionId;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 import org.openqa.selenium.remote.http.ClientConfig;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.io.File;
@@ -64,18 +63,19 @@ import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 
 class FirefoxDriverTest extends JupiterTestBase {
 
@@ -84,10 +84,10 @@ class FirefoxDriverTest extends JupiterTestBase {
   private static final String EXT_UNSIGNED_ZIP = "common/extensions/webextensions-selenium-example-unsigned.zip";
   private static final String EXT_SIGNED_DIR = "common/extensions/webextensions-selenium-example-signed";
   private static final String EXT_UNSIGNED_DIR = "common/extensions/webextensions-selenium-example";
-  private static char[] CHARS =
+  private static final char[] CHARS =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!\"§$%&/()+*~#',.-_:;\\"
       .toCharArray();
-  private static Random RANDOM = new Random();
+  private static final Random RANDOM = new Random();
 
   private static String randomString() {
     int n = 20 + RANDOM.nextInt(80);
@@ -120,6 +120,15 @@ class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
+  public void driverOverridesDefaultClientConfig() {
+    assertThatThrownBy(() -> {
+      ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
+      localDriver = new FirefoxDriver(GeckoDriverService.createDefaultService(), new FirefoxOptions(), clientConfig);
+    }).isInstanceOf(SessionNotCreatedException.class);
+  }
+
+  @Test
   void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = FirefoxDriver.builder().config(clientConfig);
@@ -137,7 +146,6 @@ class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  @Ignore(value = FIREFOX, reason = "Assumed to be covered by tests for GeckoDriverService")
   @NoDriverBeforeTest
   public void canStartDriverWithSpecifiedBinary() {
     FirefoxBinary binary = spy(new FirefoxBinary());
@@ -182,27 +190,6 @@ class FirefoxDriverTest extends JupiterTestBase {
 
     localDriver = new WebDriverBuilder().get(options);
     wait(localDriver).until($ -> "XHTML Test Page".equals(localDriver.getTitle()));
-  }
-
-  @Test
-  @Ignore(value = FIREFOX, reason = "Assumed to be covered by tests for GeckoDriverService")
-  @NoDriverBeforeTest
-  public void canSetBinaryInCapabilities() {
-    FirefoxBinary binary = spy(new FirefoxBinary());
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.BINARY, binary);
-
-    localDriver = new WebDriverBuilder().get(caps);
-
-    verify(binary, atLeastOnce()).getPath();
-  }
-
-  @Test
-  @NoDriverBeforeTest
-  public void canSetBinaryPathInCapabilities() {
-    String binPath = new FirefoxBinary().getPath();
-    Capabilities caps = new ImmutableCapabilities(FirefoxDriver.Capability.BINARY, binPath);
-
-    localDriver = new WebDriverBuilder().get(caps);
   }
 
   @Test
@@ -329,16 +316,13 @@ class FirefoxDriverTest extends JupiterTestBase {
   }
 
   @Test
-  @Timeout(60)
-  @Ignore(FIREFOX)
+  @Timeout(10)
+  @NoDriverBeforeTest
   public void shouldBeAbleToStartANewInstanceEvenWithVerboseLogging() {
-    FirefoxBinary binary = new FirefoxBinary();
     GeckoDriverService service = new GeckoDriverService.Builder()
-      .usingFirefoxBinary(binary)
       .withEnvironment(ImmutableMap.of("NSPR_LOG_MODULES", "all:5"))
       .build();
 
-    // We will have an infinite hang if this driver does not start properly.
     new FirefoxDriver(service).quit();
   }
 
@@ -358,35 +342,37 @@ class FirefoxDriverTest extends JupiterTestBase {
 
   @Test
   @NoDriverBeforeTest
-  public void canBlockInvalidSslCertificates() {
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setAcceptUntrustedCertificates(false);
+  public void canPassCapabilities() {
+    Capabilities caps = new ImmutableCapabilities(CapabilityType.PAGE_LOAD_STRATEGY, "none");
 
-    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setProfile(profile));
-    Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
-    assertThat(caps.is(ACCEPT_SSL_CERTS)).isFalse();
+    localDriver = new FirefoxDriver(new FirefoxOptions().merge(caps));
+
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
   }
 
   @Test
   @NoDriverBeforeTest
-  public void shouldAllowUserToSuccessfullyOverrideTheHomePage() {
-    FirefoxProfile profile = new FirefoxProfile();
-    profile.setPreference("browser.startup.page", "1");
-    profile.setPreference("browser.startup.homepage", pages.javascriptPage);
-
-    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setProfile(profile));
-    new WebDriverWait(localDriver, Duration.ofSeconds(30)).until(urlToBe(pages.javascriptPage));
-  }
-
-  private ExpectedCondition<Boolean> urlToBe(final String expectedUrl) {
-    return driver1 -> expectedUrl.equals(driver1.getCurrentUrl());
+  public void canBlockInsecureCerts() {
+    localDriver = new WebDriverBuilder().get(new FirefoxOptions().setAcceptInsecureCerts(false));
+    Capabilities caps = ((HasCapabilities) localDriver).getCapabilities();
+    assertThat(caps.is(ACCEPT_INSECURE_CERTS)).isFalse();
   }
 
   @Test
-  @Ignore(value = FIREFOX, issue = "https://github.com/mozilla/geckodriver/issues/273")
-  public void canAccessUrlProtectedByBasicAuth() {
-    driver.get(appServer.whereIsWithCredentials("basicAuth", "test", "test"));
-    assertThat(driver.findElement(By.tagName("h1")).getText()).isEqualTo("authorized");
+  @NoDriverBeforeTest
+  public void canSetPageLoadStrategyViaOptions() {
+    localDriver = new FirefoxDriver(
+      new FirefoxOptions().setPageLoadStrategy(PageLoadStrategy.NONE));
+
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability(PAGE_LOAD_STRATEGY)).isEqualTo("none");
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  public void canStartHeadless() {
+    localDriver = new FirefoxDriver(new FirefoxOptions().addArguments("-headless"));
+
+    assertThat(((FirefoxDriver) localDriver).getCapabilities().getCapability("moz:headless")).isEqualTo(true);
   }
 
   @Test
@@ -525,25 +511,6 @@ class FirefoxDriverTest extends JupiterTestBase {
     driver.findElement(By.cssSelector("div.content"));
     assertThat(((JavascriptExecutor) driver).executeScript("return window.Sizzle + '';"))
       .isEqualTo("original sizzle value");
-  }
-
-  @Test
-  @NotYetImplemented(value = FIREFOX, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415067")
-  @NoDriverBeforeTest
-  public void testFirefoxCanNativelyClickOverlappingElements() {
-    FirefoxOptions options = new FirefoxOptions();
-    options.setCapability(CapabilityType.OVERLAPPING_CHECK_DISABLED, true);
-    localDriver = new WebDriverBuilder().get(options);
-    localDriver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
-    localDriver.findElement(By.id("under")).click();
-    assertThat(localDriver.findElement(By.id("log")).getText())
-      .isEqualTo("Log:\n"
-        + "mousedown in over (handled by over)\n"
-        + "mousedown in over (handled by body)\n"
-        + "mouseup in over (handled by over)\n"
-        + "mouseup in over (handled by body)\n"
-        + "click in over (handled by over)\n"
-        + "click in over (handled by body)");
   }
 
   @Test

@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module Support
       class Guards
-
         #
         # Guard derived from RSpec example metadata.
         # @api private
@@ -44,7 +43,6 @@ module Selenium
 
             list.empty? || @execution.call(list)
           end
-
         end # GuardCondition
       end # Guards
     end # Support

@@ -17,18 +17,17 @@
 
 package org.openqa.selenium;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-import static org.openqa.selenium.testing.drivers.Browser.ALL;
-import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
-import static org.openqa.selenium.testing.drivers.Browser.IE;
-import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
-
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.openqa.selenium.testing.drivers.Browser.ALL;
+import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
+import static org.openqa.selenium.testing.drivers.Browser.IE;
+import static org.openqa.selenium.testing.drivers.Browser.SAFARI;
 
 class TextHandlingTest extends JupiterTestBase {
 
@@ -408,9 +407,9 @@ class TextHandlingTest extends JupiterTestBase {
   public void canHandleTextTransformProperty() {
     driver.get(pages.simpleTestPage);
     assertThat(driver.findElement(By.id("capitalized")).getText())
-        .isEqualTo(isFirefox(driver) ? "Hello, World! Bla-bla-BLA" : "Hello, World! Bla-Bla-BLA");
+      .isEqualTo("Hello, World! Bla-Bla-BLA");
     assertThat(driver.findElement(By.id("lowercased")).getText())
-        .isEqualTo("hello, world! bla-bla-bla");
+      .isEqualTo("hello, world! bla-bla-bla");
     assertThat(driver.findElement(By.id("uppercased")).getText())
         .isEqualTo("HELLO, WORLD! BLA-BLA-BLA");
   }

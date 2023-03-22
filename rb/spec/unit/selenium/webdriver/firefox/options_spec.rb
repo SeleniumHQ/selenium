@@ -23,35 +23,35 @@ module Selenium
   module WebDriver
     module Firefox
       describe Options do
-        subject(:options) { Options.new }
+        subject(:options) { described_class.new }
 
         describe '#initialize' do
           it 'sets provided parameters' do
             profile = Profile.new
             allow(profile).to receive(:encoded).and_return('encoded_profile')
 
-            opts = Options.new(browser_version: '66',
-                               platform_name: 'win10',
-                               accept_insecure_certs: false,
-                               page_load_strategy: 'eager',
-                               unhandled_prompt_behavior: 'accept',
-                               strict_file_interactability: true,
-                               timeouts: {script: 40000,
-                                          page_load: 400000,
-                                          implicit: 1},
-                               set_window_rect: false,
-                               args: %w[foo bar],
-                               binary: '/foo/bar',
-                               prefs: {foo: 'bar'},
-                               env: {'FOO' => 'bar'},
-                               foo: 'bar',
-                               profile: profile,
-                               log_level: :debug,
-                               android_package: 'package',
-                               android_activity: 'activity',
-                               android_device_serial: '123',
-                               android_intent_arguments: %w[foo bar],
-                               'custom:options': {foo: 'bar'})
+            opts = described_class.new(browser_version: '66',
+                                       platform_name: 'win10',
+                                       accept_insecure_certs: false,
+                                       page_load_strategy: 'eager',
+                                       unhandled_prompt_behavior: 'accept',
+                                       strict_file_interactability: true,
+                                       timeouts: {script: 40000,
+                                                  page_load: 400000,
+                                                  implicit: 1},
+                                       set_window_rect: false,
+                                       args: %w[foo bar],
+                                       binary: '/foo/bar',
+                                       prefs: {foo: 'bar'},
+                                       env: {'FOO' => 'bar'},
+                                       foo: 'bar',
+                                       profile: profile,
+                                       log_level: :debug,
+                                       android_package: 'package',
+                                       android_activity: 'activity',
+                                       android_device_serial: '123',
+                                       android_intent_arguments: %w[foo bar],
+                                       'custom:options': {foo: 'bar'})
 
             expect(opts.args.to_a).to eq(%w[foo bar])
             expect(opts.binary).to eq('/foo/bar')
@@ -63,12 +63,12 @@ module Selenium
             expect(opts.browser_name).to eq('firefox')
             expect(opts.browser_version).to eq('66')
             expect(opts.platform_name).to eq('win10')
-            expect(opts.accept_insecure_certs).to eq(false)
+            expect(opts.accept_insecure_certs).to be(false)
             expect(opts.page_load_strategy).to eq('eager')
             expect(opts.unhandled_prompt_behavior).to eq('accept')
-            expect(opts.strict_file_interactability).to eq(true)
+            expect(opts.strict_file_interactability).to be(true)
             expect(opts.timeouts).to eq(script: 40000, page_load: 400000, implicit: 1)
-            expect(opts.set_window_rect).to eq(false)
+            expect(opts.set_window_rect).to be(false)
             expect(opts.android_package).to eq('package')
             expect(opts.android_activity).to eq('activity')
             expect(opts.android_device_serial).to eq('123')
@@ -127,7 +127,9 @@ module Selenium
 
         describe '#headless!' do
           it 'adds the -headless command-line flag' do
-            options.headless!
+            expect {
+              options.headless!
+            }.to have_deprecated(:headless)
             expect(options.as_json['moz:firefoxOptions']['args']).to include('-headless')
           end
         end
@@ -141,13 +143,27 @@ module Selenium
 
         describe '#add_option' do
           it 'adds an option with ordered pairs' do
-            options.add_option(:foo, 'bar')
+            expect {
+              options.add_option(:foo, 'bar')
+            }.to have_deprecated(:add_option)
             expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
           end
 
           it 'adds an option with Hash' do
-            options.add_option(foo: 'bar')
+            expect {
+              options.add_option(foo: 'bar')
+            }.to have_deprecated(:add_option)
             expect(options.instance_variable_get(:@options)[:foo]).to eq('bar')
+          end
+
+          it 'adds vendor namespaced options with ordered pairs' do
+            options.add_option('foo:bar', {bar: 'foo'})
+            expect(options.instance_variable_get(:@options)['foo:bar']).to eq({bar: 'foo'})
+          end
+
+          it 'adds vendor namespaced options with Hash' do
+            options.add_option('foo:bar' => {bar: 'foo'})
+            expect(options.instance_variable_get(:@options)['foo:bar']).to eq({bar: 'foo'})
           end
         end
 
@@ -190,48 +206,49 @@ module Selenium
 
         describe '#as_json' do
           it 'returns empty options by default' do
-            expect(options.as_json).to eq("browserName" => "firefox",
-                                          "acceptInsecureCerts" => true,
-                                          "moz:firefoxOptions" => {},
-                                          "moz:debuggerAddress" => true)
+            expect(options.as_json).to eq('browserName' => 'firefox',
+                                          'acceptInsecureCerts' => true,
+                                          'moz:firefoxOptions' => {},
+                                          'moz:debuggerAddress' => true)
           end
 
           it 'returns added options' do
-            options.add_option(:foo, 'bar')
+            expect {
+              options.add_option(:args, %w[foo bar])
+            }.to have_deprecated(:add_option)
             options.add_option('foo:bar', {foo: 'bar'})
-            expect(options.as_json).to eq("acceptInsecureCerts" => true,
-                                          "browserName" => "firefox",
-                                          "foo:bar" => {"foo" => "bar"},
-                                          "moz:debuggerAddress" => true,
-                                          "moz:firefoxOptions" => {"foo" => "bar"})
+            expect(options.as_json).to eq('acceptInsecureCerts' => true,
+                                          'browserName' => 'firefox',
+                                          'foo:bar' => {'foo' => 'bar'},
+                                          'moz:debuggerAddress' => true,
+                                          'moz:firefoxOptions' => {'args' => %w[foo bar]})
           end
 
           it 'converts to a json hash' do
             profile = Profile.new
             allow(profile).to receive(:as_json).and_return('encoded_profile')
 
-            opts = Options.new(browser_version: '66',
-                               platform_name: 'win10',
-                               accept_insecure_certs: false,
-                               page_load_strategy: 'eager',
-                               unhandled_prompt_behavior: 'accept',
-                               strict_file_interactability: true,
-                               timeouts: {script: 40000,
-                                          page_load: 400000,
-                                          implicit: 1},
-                               set_window_rect: false,
-                               args: %w[foo bar],
-                               binary: '/foo/bar',
-                               prefs: {foo: 'bar'},
-                               env: {'FOO' => 'bar'},
-                               foo: 'bar',
-                               profile: profile,
-                               log_level: :debug,
-                               android_package: 'package',
-                               android_activity: 'activity',
-                               android_device_serial: '123',
-                               android_intent_arguments: %w[foo bar],
-                               'custom:options': {foo: 'bar'})
+            opts = described_class.new(browser_version: '66',
+                                       platform_name: 'win10',
+                                       accept_insecure_certs: false,
+                                       page_load_strategy: 'eager',
+                                       unhandled_prompt_behavior: 'accept',
+                                       strict_file_interactability: true,
+                                       timeouts: {script: 40000,
+                                                  page_load: 400000,
+                                                  implicit: 1},
+                                       set_window_rect: false,
+                                       args: %w[foo bar],
+                                       binary: '/foo/bar',
+                                       prefs: {foo: 'bar'},
+                                       env: {'FOO' => 'bar'},
+                                       profile: profile,
+                                       log_level: :debug,
+                                       android_package: 'package',
+                                       android_activity: 'activity',
+                                       android_device_serial: '123',
+                                       android_intent_arguments: %w[foo bar],
+                                       'custom:options': {foo: 'bar'})
 
             key = 'moz:firefoxOptions'
             expect(opts.as_json).to eq('browserName' => 'firefox',
@@ -253,7 +270,6 @@ module Selenium
                                                'env' => {'FOO' => 'bar'},
                                                'profile' => 'encoded_profile',
                                                'log' => {'level' => 'debug'},
-                                               'foo' => 'bar',
                                                'androidPackage' => 'package',
                                                'androidActivity' => 'activity',
                                                'androidDeviceSerial' => '123',

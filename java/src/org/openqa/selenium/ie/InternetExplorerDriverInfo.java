@@ -18,12 +18,15 @@
 package org.openqa.selenium.ie;
 
 import com.google.auto.service.AutoService;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
@@ -62,11 +65,20 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      InternetExplorerDriverService.createDefaultService();
-      return true;
+      if (Platform.getCurrent().is(Platform.WINDOWS)) {
+        DriverFinder.getPath(InternetExplorerDriverService.createDefaultService(),
+                             getCanonicalCapabilities());
+        return true;
+      }
+      return false;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
+  }
+
+  @Override
+  public boolean isPresent() {
+    return InternetExplorerDriverService.isPresent();
   }
 
   @Override
@@ -76,7 +88,7 @@ public class InternetExplorerDriverInfo implements WebDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable()) {
       return Optional.empty();
     }

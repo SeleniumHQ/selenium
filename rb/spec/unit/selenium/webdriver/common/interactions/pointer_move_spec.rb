@@ -44,20 +44,20 @@ module Selenium
         describe '#initialize' do
           it 'raises a TypeError if source is not a PointerInput' do
             key = Interactions.key('key')
-            expect { PointerMove.new(key, duration, x, y) }.to raise_error(TypeError)
+            expect { described_class.new(key, duration, x, y) }.to raise_error(TypeError)
           end
         end
 
         describe '#type' do
           it 'equals :pointerMove' do
-            move = PointerMove.new(source, duration, x, y)
+            move = described_class.new(source, duration, x, y)
             expect(move.type).to eq(:pointerMove)
           end
         end
 
         describe '#encode' do
           it 'processes opts' do
-            move = PointerMove.new(source, duration, x, y, origin: element, **opts)
+            move = described_class.new(source, duration, x, y, origin: element, **opts)
 
             expect(move.encode).to eq('type' => move.type.to_s,
                                       'origin' => element,
@@ -77,7 +77,7 @@ module Selenium
 
           context 'with element' do
             it 'returns a Hash with source, duration, x and y' do
-              move = PointerMove.new(source, duration, x, y, origin: element)
+              move = described_class.new(source, duration, x, y, origin: element)
 
               ms = (duration * 1000).to_i
               expect(move.encode).to eq('type' => move.type.to_s,
@@ -90,7 +90,7 @@ module Selenium
 
           context 'with origin' do
             it 'returns a Hash with source, duration, x and y' do
-              move = PointerMove.new(source, duration, x, y, origin: :pointer)
+              move = described_class.new(source, duration, x, y, origin: :pointer)
 
               ms = (duration * 1000).to_i
               expect(move.encode).to eq('type' => move.type.to_s,

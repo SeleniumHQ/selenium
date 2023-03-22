@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\manager\linux\selenium-manager">
+      <Link>selenium-manager\linux\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+    </None>
+
+    <None Include="$(MSBuildThisFileDirectory)..\manager\macos\selenium-manager">
+      <Link>selenium-manager\macos\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+    </None>
+
+    <None Include="$(MSBuildThisFileDirectory)..\manager\windows\selenium-manager.exe">
+      <Link>selenium-manager\windows\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+    </None>
+  </ItemGroup>
+
+</Project>

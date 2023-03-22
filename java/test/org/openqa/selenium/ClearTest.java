@@ -136,16 +136,6 @@ class ClearTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(CHROME)
-  @NotYetImplemented(EDGE)
-  @NotYetImplemented(FIREFOX)
-  @NotYetImplemented(IE)
-  @NotYetImplemented(SAFARI)
-  public void shouldBeAbleToClearCheckboxInput() {
-    shouldBeAbleToClearInput(By.name("checkbox_input"), "Checkbox");
-  }
-
-  @Test
   @NotYetImplemented(HTMLUNIT)
   @NotYetImplemented(IE)
   public void shouldBeAbleToClearColorInput() {

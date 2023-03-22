@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://selenium.dev'
   s.metadata = {
     'changelog_uri' => 'https://github.com/SeleniumHQ/selenium/blob/trunk/rb/CHANGES',
+    'github_repo' => 'ssh://github.com/SeleniumHQ/selenium',
     'source_code_uri' => 'https://github.com/SeleniumHQ/selenium/tree/trunk/rb',
     'rubygems_mfa_required' => 'true'
   }
@@ -38,7 +39,7 @@ Gem::Specification.new do |s|
     'lib/selenium/devtools.rb'
   ] + Dir['lib/selenium/devtools/**/*']
 
-  s.require_paths = ["lib"]
+  s.require_paths = ['lib']
 
   s.add_runtime_dependency 'selenium-webdriver', '~> 4.2'
 end

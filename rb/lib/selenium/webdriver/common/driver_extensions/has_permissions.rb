@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasPermissions
-
         #
         # Set one permission.
         #
@@ -44,7 +43,6 @@ module Selenium
             @bridge.set_permission(key, value)
           end
         end
-
       end # HasPermissions
     end # DriverExtensions
   end # WebDriver

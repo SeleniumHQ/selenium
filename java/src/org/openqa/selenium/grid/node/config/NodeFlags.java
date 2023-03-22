@@ -43,6 +43,7 @@ import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_NO_VNC_PO
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_CYCLE;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_REGISTER_PERIOD;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_SESSION_TIMEOUT;
+import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_USE_SELENIUM_MANAGER;
 import static org.openqa.selenium.grid.node.config.NodeOptions.DEFAULT_VNC_ENV_VAR;
 import static org.openqa.selenium.grid.node.config.NodeOptions.NODE_SECTION;
 import static org.openqa.selenium.grid.node.config.NodeOptions.OVERRIDE_MAX_SESSIONS;
@@ -82,6 +83,13 @@ public class NodeFlags implements HasRoles {
                   "and add them to the Node.")
   @ConfigValue(section = NODE_SECTION, name = "detect-drivers", example = "true")
   public Boolean autoconfigure = DEFAULT_DETECT_DRIVERS;
+
+  @Parameter(
+    names = {"--selenium-manager"}, arity = 1,
+    description = "When drivers are not available on the current system, use, " +
+                  "Selenium Manager.")
+  @ConfigValue(section = NODE_SECTION, name = "selenium-manager", example = "true")
+  public Boolean useSeleniumManager = DEFAULT_USE_SELENIUM_MANAGER;
 
   @Parameter(
     names = {"-I", "--driver-implementation"},
@@ -220,6 +228,18 @@ public class NodeFlags implements HasRoles {
   @ConfigValue(section = NODE_SECTION, name = "implementation",
     example = DEFAULT_NODE_IMPLEMENTATION)
   private String nodeImplementation = DEFAULT_NODE_IMPLEMENTATION;
+
+  @Parameter(
+    names = {"--enable-managed-downloads"},
+    arity = 1,
+    description = "When enabled, the Grid node will automatically do the following: " +
+                  "1. Creates a directory named '$HOME/.cache/selenium/downloads/' which "
+                  + "will now represent the directory into which files downloaded by "
+                  + "Chrome/Firefox/Edge browser will be under. " +
+                  "2. For every new session, a sub-directory will be created/deleted so that "
+                  + "all files that were downloaded for a given session are stored in.")
+  @ConfigValue(section = NODE_SECTION, name = "enable-managed-downloads", example = "false")
+  public Boolean managedDownloadsEnabled;
 
   @Override
   public Set<Role> getRoles() {

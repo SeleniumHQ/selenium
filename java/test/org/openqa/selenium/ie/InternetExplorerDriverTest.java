@@ -24,6 +24,7 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.http.ClientConfig;
@@ -37,6 +38,7 @@ import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.openqa.selenium.ie.InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING;
 
 class InternetExplorerDriverTest extends JupiterTestBase {
@@ -57,6 +59,16 @@ class InternetExplorerDriverTest extends JupiterTestBase {
     options.setImplicitWaitTimeout(Duration.ofMillis(1));
     localDriver = InternetExplorerDriver.builder().oneOf(options).build();
     assertThat(localDriver.manage().timeouts().getImplicitWaitTimeout()).isEqualTo(Duration.ofMillis(1));
+  }
+
+  @Test
+  @NoDriverBeforeTest
+  public void driverOverridesDefaultClientConfig() {
+    assertThatThrownBy(() -> {
+      ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
+      localDriver = new InternetExplorerDriver(InternetExplorerDriverService.createDefaultService(),
+        new InternetExplorerOptions(), clientConfig);
+    }).isInstanceOf(SessionNotCreatedException.class);
   }
 
   @Test

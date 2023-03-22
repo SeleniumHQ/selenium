@@ -18,6 +18,7 @@
 package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
@@ -213,11 +214,12 @@ class NewSessionPayloadTest {
           singletonMap("browserName", "foo"),
           singletonMap("browserName", "firefox")))));
 
-    assertEquals(asList(
+    assertEquals(
+      asList(
         // From OSS
         new ImmutableCapabilities("browserName", "firefox", "platform", "WINDOWS"),
         // Generated from OSS
-        new ImmutableCapabilities("browserName", "firefox", "platformName", "windows"),
+        new ImmutableCapabilities("browserName", "firefox"),
         // From the actual W3C capabilities
         new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
         new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")),

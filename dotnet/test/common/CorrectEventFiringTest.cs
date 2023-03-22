@@ -149,7 +149,7 @@ namespace OpenQA.Selenium
             driver.FindElement(By.Id("mouseclick")).Click();
 
             String result = driver.FindElement(By.Id("result")).Text;
-            Assert.AreEqual(result, "mouse click");
+            Assert.AreEqual("mouse click", result);
         }
 
         [Test]
@@ -250,7 +250,7 @@ namespace OpenQA.Selenium
             element.Clear();
 
             IWebElement result = driver.FindElement(By.Id("result"));
-            Assert.AreEqual(result.Text, "Cleared");
+            Assert.AreEqual("Cleared", result.Text.Trim());
         }
 
         [Test]

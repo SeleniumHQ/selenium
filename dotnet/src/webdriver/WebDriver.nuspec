@@ -39,15 +39,20 @@
       <group targetFramework="net5.0">
         <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
       </group>
+      <group targetFramework="net6.0">
+        <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
+      </group>
     </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Drawing" />
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="**/WebDriver.dll" target="lib" />
-    <file src="**/WebDriver.pdb" target="lib" />
-    <file src="**/WebDriver.xml" target="lib" />
-    <file src="../icon.png" target="images\" />
+    <file src="**\WebDriver.dll" target="lib" />
+    <file src="**\WebDriver.pdb" target="lib" />
+    <file src="**\WebDriver.xml" target="lib" />
+    <file src="..\icon.png" target="images" />
+    <file src="..\manager\**" target="manager" />
+    <file src="..\Selenium.WebDriver.targets" target="build" />
   </files>
 </package>

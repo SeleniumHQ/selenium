@@ -24,8 +24,8 @@ DEFAULT_EXECUTABLE_PATH = "geckodriver"
 
 
 class Service(service.Service):
-    """A Service class that is responsible for the starting and stopping
-    of `geckodriver`.
+    """A Service class that is responsible for the starting and stopping of
+    `geckodriver`.
 
     :param executable_path: install path of the geckodriver executable, defaults to `geckodriver`.
     :param port: Port for the service to run on, defaults to 0 where the operating system will decide.
@@ -42,12 +42,19 @@ class Service(service.Service):
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-    ):
+        **kwargs,
+    ) -> None:
         # Todo: This is vastly inconsistent, requires a follow up to standardise.
         file = log_path or "geckodriver.log"
         log_file = open(file, "a+", encoding="utf-8")
         self.service_args = service_args or []
-        super().__init__(executable=executable_path, port=port, log_file=log_file, env=env)
+        super().__init__(
+            executable=executable_path,
+            port=port,
+            log_file=log_file,
+            env=env,
+            **kwargs,
+        )
 
         # Set a port for CDP
         if "--connect-existing" not in self.service_args:

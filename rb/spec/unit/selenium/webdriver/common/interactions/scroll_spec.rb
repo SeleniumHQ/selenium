@@ -32,13 +32,19 @@ module Selenium
         let(:delta_x) { 30 }
         let(:delta_y) { 60 }
         let(:scroll) do
-          Scroll.new(source: source, duration: duration, delta_x: delta_x, delta_y: delta_y, origin: origin, x: x, y: y)
+          described_class.new(source: source,
+                              duration: duration,
+                              delta_x: delta_x,
+                              delta_y: delta_y,
+                              origin: origin,
+                              x: x,
+                              y: y)
         end
 
         describe '#initialize' do
           it 'raises a TypeError if source is not a Wheel' do
             key = Interactions.key('key')
-            expect { Scroll.new(source: key) }.to raise_error(TypeError)
+            expect { described_class.new(source: key) }.to raise_error(TypeError)
           end
         end
 
@@ -51,8 +57,13 @@ module Selenium
         describe '#encode' do
           context 'with element' do
             it 'returns a Hash with source, duration, x and y' do
-              scroll = Scroll.new(source: source,
-                                  duration: duration, delta_x: delta_x, delta_y: delta_y, origin: element, x: x, y: y)
+              scroll = described_class.new(source: source,
+                                           duration: duration,
+                                           delta_x: delta_x,
+                                           delta_y: delta_y,
+                                           origin: element,
+                                           x: x,
+                                           y: y)
               allow(element).to receive(:is_a?).with(Element).and_return(true)
 
               expect(scroll.encode).to eq('type' => 'scroll',

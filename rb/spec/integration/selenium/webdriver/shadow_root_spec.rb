@@ -28,7 +28,7 @@ module Selenium
 
       it 'gets shadow root from driver' do
         shadow_root = custom_element.shadow_root
-        expect(shadow_root).to be_a ShadowRoot
+        expect(shadow_root).to be_a described_class
       end
 
       it 'raises error if no shadow root' do
@@ -37,8 +37,7 @@ module Selenium
         expect { div.shadow_root }.to raise_error(Error::NoSuchShadowRootError)
       end
 
-      it 'gets shadow root from script', except: {browser: :firefox,
-                                                  reason: 'https://github.com/mozilla/geckodriver/issues/2006'} do
+      it 'gets shadow root from script' do
         shadow_root = custom_element.shadow_root
         execute_shadow_root = driver.execute_script('return arguments[0].shadowRoot;', custom_element)
         expect(execute_shadow_root).to eq shadow_root

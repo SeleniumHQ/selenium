@@ -26,8 +26,8 @@ module Selenium
         describe '.from' do
           it 'duplicates headers for immutability' do
             params = {'request' => {'headers' => {}}}
-            a = Request.from(1, params)
-            b = Request.from(1, params)
+            a = described_class.from(1, params)
+            b = described_class.from(1, params)
 
             b.headers['foo'] = 'bar'
             expect(a).not_to eq(b)

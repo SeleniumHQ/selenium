@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     class DevTools
       class Response
-
         attr_accessor :code, :body, :headers
         attr_reader :id
 
@@ -59,7 +58,6 @@ module Selenium
         def inspect
           %(#<#{self.class.name} @id="#{id}" @code="#{code}")
         end
-
       end # Response
     end # DevTools
   end # WebDriver

@@ -26,6 +26,7 @@ module Selenium
     class SocketLock
       def initialize(port, timeout)
         @port    = port
+        @server  = nil
         @timeout = timeout
       end
 
@@ -66,8 +67,7 @@ module Selenium
 
       def can_lock?
         @server = TCPServer.new(Platform.localhost, @port)
-        ChildProcess.close_on_exec @server
-
+        @server.close_on_exec = true
         true
       rescue SocketError, Errno::EADDRINUSE, Errno::EBADF => e
         WebDriver.logger.debug("#{self}: #{e.message}")

@@ -73,6 +73,9 @@ py/selenium/webdriver/remote/isDisplayed.js
 py/docs/build/
 py/build/
 py/LICENSE
+py/selenium/webdriver/common/linux/
+py/selenium/webdriver/common/windows/
+py/selenium/webdriver/common/macos/
 selenium.egg-info/
 third_party/java/jetty/jetty-repacked.jar
 *.user
@@ -98,9 +101,10 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
-Gemfile.lock
 /rb/.bundle
 /rb/.idea
+rb/bin/
+rb/lib/selenium/devtools/v1*
 .sonar/
 .idea/sonarIssues.xml
 .idea/inspectionProfiles/profiles_settings.xml

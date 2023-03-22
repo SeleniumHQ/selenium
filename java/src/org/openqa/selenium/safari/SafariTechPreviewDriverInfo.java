@@ -25,6 +25,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
@@ -52,7 +53,7 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
     }
 
     return capabilities.asMap().keySet().parallelStream()
-      .map(key -> key.startsWith("safari.") || key.startsWith("safari:"))
+      .map(key -> key.startsWith("safari:"))
       .reduce(Boolean::logicalOr)
       .orElse(false);
   }
@@ -70,11 +71,17 @@ public class SafariTechPreviewDriverInfo implements WebDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      SafariTechPreviewDriverService.createDefaultService();
+      DriverFinder.getPath(SafariTechPreviewDriverService.createDefaultService(),
+                           getCanonicalCapabilities());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
+  }
+
+  @Override
+  public boolean isPresent() {
+    return SafariTechPreviewDriverService.isPresent();
   }
 
   @Override

@@ -17,18 +17,24 @@
 # specific language governing permissions and limitations
 # under the License.
 
-require 'selenium/webdriver/chrome/driver'
+require 'selenium/webdriver/chromium/driver'
 
 module Selenium
   module WebDriver
     module Edge
-
       #
       # Driver implementation for Microsoft Edge.
       # @api private
       #
 
-      class Driver < Selenium::WebDriver::Chrome::Driver
+      class Driver < Chromium::Driver
+        include LocalDriver
+
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          caps, url = initialize_local_driver(capabilities, options, service, url)
+          super(caps: caps, url: url, **opts)
+        end
+
         def browser
           :edge
         end

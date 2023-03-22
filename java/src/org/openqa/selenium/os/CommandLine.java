@@ -27,6 +27,7 @@ import org.openqa.selenium.WebDriverException;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class CommandLine {
 
@@ -98,6 +99,10 @@ public class CommandLine {
   public void execute() {
     executeAsync();
     waitFor();
+  }
+
+  public boolean waitForProcessStarted(long duration, TimeUnit unit) {
+    return process.waitForProcessStarted(duration, unit);
   }
 
   public void waitFor() {

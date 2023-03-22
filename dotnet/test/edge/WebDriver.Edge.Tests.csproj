@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net471;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6.0;net48;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>WebDriver.Edge.Tests</AssemblyName>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\..\build\cli\Debug\</OutputPath>
   </PropertyGroup>

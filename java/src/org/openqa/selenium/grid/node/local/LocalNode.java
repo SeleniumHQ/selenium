@@ -22,6 +22,7 @@ import com.google.common.base.Ticker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
+import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
@@ -61,7 +62,9 @@ import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.io.Zip;
 import org.openqa.selenium.json.Json;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.SessionId;
+import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.tracing.AttributeKey;
@@ -73,12 +76,14 @@ import org.openqa.selenium.remote.tracing.Tracer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +118,7 @@ public class LocalNode extends Node {
 
   private static final Json JSON = new Json();
   private static final Logger LOG = Logger.getLogger(LocalNode.class.getName());
+
   private final EventBus bus;
   private final URI externalUri;
   private final URI gridUri;
@@ -121,16 +127,19 @@ public class LocalNode extends Node {
   private final int maxSessionCount;
   private final int configuredSessionCount;
   private final boolean cdpEnabled;
+  private final boolean managedDownloadsEnabled;
 
   private final boolean bidiEnabled;
   private final AtomicBoolean drainAfterSessions = new AtomicBoolean();
   private final List<SessionSlot> factories;
   private final Cache<SessionId, SessionSlot> currentSessions;
-  private final Cache<SessionId, TemporaryFilesystem> tempFileSystems;
+  private final Cache<SessionId, TemporaryFilesystem> uploadsTempFileSystem;
+  private final Cache<UUID, TemporaryFilesystem> downloadsTempFileSystem;
+  private final Cache<SessionId, UUID> sessionToDownloadsDir;
   private final AtomicInteger pendingSessions = new AtomicInteger();
   private final AtomicInteger sessionCount = new AtomicInteger();
 
-  private LocalNode(
+  protected LocalNode(
     Tracer tracer,
     EventBus bus,
     URI uri,
@@ -144,7 +153,8 @@ public class LocalNode extends Node {
     Duration sessionTimeout,
     Duration heartbeatPeriod,
     List<SessionSlot> factories,
-    Secret registrationSecret) {
+    Secret registrationSecret,
+    boolean managedDownloadsEnabled) {
     super(tracer, new NodeId(UUID.randomUUID()), uri, registrationSecret);
 
     this.bus = Require.nonNull("Event bus", bus);
@@ -161,6 +171,7 @@ public class LocalNode extends Node {
     this.sessionCount.set(drainAfterSessionCount);
     this.cdpEnabled = cdpEnabled;
     this.bidiEnabled = bidiEnabled;
+    this.managedDownloadsEnabled = managedDownloadsEnabled;
 
     this.healthCheck = healthCheck == null ?
                        () -> {
@@ -170,7 +181,7 @@ public class LocalNode extends Node {
                            String.format("%s is %s", uri, status.getAvailability()));
                        } : healthCheck;
 
-    this.tempFileSystems = CacheBuilder.newBuilder()
+    this.uploadsTempFileSystem = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
       .removalListener((RemovalListener<SessionId, TemporaryFilesystem>) notification -> {
@@ -180,34 +191,30 @@ public class LocalNode extends Node {
       })
       .build();
 
+    this.downloadsTempFileSystem = CacheBuilder.newBuilder()
+      .expireAfterAccess(sessionTimeout)
+      .ticker(ticker)
+      .removalListener((RemovalListener<UUID, TemporaryFilesystem>) notification -> {
+        TemporaryFilesystem tempFS = notification.getValue();
+        tempFS.deleteTemporaryFiles();
+        tempFS.deleteBaseDir();
+      })
+      .build();
+
+    this.sessionToDownloadsDir = CacheBuilder.newBuilder()
+      .expireAfterAccess(sessionTimeout)
+      .ticker(ticker)
+      .removalListener((RemovalListener<SessionId, UUID>) notification -> {
+        if (notification.getValue() != null) {
+          this.downloadsTempFileSystem.invalidate(notification.getValue());
+        }
+      })
+      .build();
+
     this.currentSessions = CacheBuilder.newBuilder()
       .expireAfterAccess(sessionTimeout)
       .ticker(ticker)
-      .removalListener((RemovalListener<SessionId, SessionSlot>) notification -> {
-        if (notification.getKey() != null && notification.getValue() != null) {
-          SessionSlot slot = notification.getValue();
-          SessionId id = notification.getKey();
-          if (notification.wasEvicted()) {
-            // Session is timing out, stopping it by sending a DELETE
-            LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
-            slot.execute(new HttpRequest(DELETE, "/session/" + id));
-          }
-          // Attempt to stop the session
-          slot.stop();
-          // Invalidate temp file system
-          this.tempFileSystems.invalidate(id);
-          // Decrement pending sessions if Node is draining
-          if (this.isDraining()) {
-            int done = pendingSessions.decrementAndGet();
-            if (done <= 0) {
-              LOG.info("Node draining complete!");
-              bus.fire(new NodeDrainComplete(this.getId()));
-            }
-          }
-        } else {
-          LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
-        }
-      })
+      .removalListener(this::stopTimedOutSession)
       .build();
 
     ScheduledExecutorService sessionCleanupNodeService =
@@ -221,16 +228,27 @@ public class LocalNode extends Node {
     sessionCleanupNodeService.scheduleAtFixedRate(
       GuardedRunnable.guard(currentSessions::cleanUp), 30, 30, TimeUnit.SECONDS);
 
-    ScheduledExecutorService tempFileCleanupNodeService =
+    ScheduledExecutorService uploadTempFileCleanupNodeService =
       Executors.newSingleThreadScheduledExecutor(
         r -> {
           Thread thread = new Thread(r);
           thread.setDaemon(true);
-          thread.setName("TempFile Cleanup Node " + externalUri);
+          thread.setName("UploadTempFile Cleanup Node " + externalUri);
           return thread;
         });
-    tempFileCleanupNodeService.scheduleAtFixedRate(
-      GuardedRunnable.guard(tempFileSystems::cleanUp), 30, 30, TimeUnit.SECONDS);
+    uploadTempFileCleanupNodeService.scheduleAtFixedRate(
+      GuardedRunnable.guard(uploadsTempFileSystem::cleanUp), 30, 30, TimeUnit.SECONDS);
+
+    ScheduledExecutorService downloadTempFileCleanupNodeService =
+      Executors.newSingleThreadScheduledExecutor(
+        r -> {
+          Thread thread = new Thread(r);
+          thread.setDaemon(true);
+          thread.setName("DownloadTempFile Cleanup Node " + externalUri);
+          return thread;
+        });
+    downloadTempFileCleanupNodeService.scheduleAtFixedRate(
+      GuardedRunnable.guard(downloadsTempFileSystem::cleanUp), 30, 30, TimeUnit.SECONDS);
 
     ScheduledExecutorService heartbeatNodeService =
       Executors.newSingleThreadScheduledExecutor(
@@ -248,6 +266,38 @@ public class LocalNode extends Node {
 
     Runtime.getRuntime().addShutdownHook(new Thread(this::stopAllSessions));
     new JMXHelper().register(this);
+  }
+
+  private void stopTimedOutSession(RemovalNotification<SessionId, SessionSlot> notification) {
+    if (notification.getKey() != null && notification.getValue() != null) {
+      SessionSlot slot = notification.getValue();
+      SessionId id = notification.getKey();
+      if (notification.wasEvicted()) {
+        // Session is timing out, stopping it by sending a DELETE
+        LOG.log(Level.INFO, () -> String.format("Session id %s timed out, stopping...", id));
+        try {
+          slot.execute(new HttpRequest(DELETE, "/session/" + id));
+        } catch (Exception e) {
+          LOG.log(Level.WARNING, String.format("Exception while trying to stop session %s", id), e);
+        }
+      }
+      // Attempt to stop the session
+      slot.stop();
+      // Invalidate uploads temp file system
+      this.uploadsTempFileSystem.invalidate(id);
+      // Invalidate downloads temp file system
+      this.sessionToDownloadsDir.invalidate(id);
+      // Decrement pending sessions if Node is draining
+      if (this.isDraining()) {
+        int done = pendingSessions.decrementAndGet();
+        if (done <= 0) {
+          LOG.info("Node draining complete!");
+          bus.fire(new NodeDrainComplete(this.getId()));
+        }
+      }
+    } else {
+      LOG.log(Debug.getDebugLogLevel(), "Received stop session notification with null values");
+    }
   }
 
   public static Builder builder(
@@ -269,6 +319,15 @@ public class LocalNode extends Node {
   public int getCurrentSessionCount() {
     // It seems wildly unlikely we'll overflow an int
     return Math.toIntExact(currentSessions.size());
+  }
+
+  @VisibleForTesting
+  public UUID getDownloadsIdForSession(SessionId id) {
+    UUID uuid = sessionToDownloadsDir.getIfPresent(id);
+    if (uuid == null) {
+      throw new NoSuchSessionException("Cannot find session with id: " + id);
+    }
+    return uuid;
   }
 
   @ManagedAttribute(name = "MaxSessions")
@@ -369,10 +428,21 @@ public class LocalNode extends Node {
           new RetrySessionRequestException("No slot matched the requested capabilities."));
       }
 
+      UUID uuidForSessionDownloads = UUID.randomUUID();
+      Capabilities desiredCapabilities = sessionRequest.getDesiredCapabilities();
+      if (managedDownloadsRequested(desiredCapabilities)) {
+        Capabilities enhanced = setDownloadsDirectory(uuidForSessionDownloads, desiredCapabilities);
+        enhanced = desiredCapabilities.merge(enhanced);
+        sessionRequest = new CreateSessionRequest(sessionRequest.getDownstreamDialects(),
+                                                  enhanced,
+                                                  sessionRequest.getMetadata());
+      }
+
       Either<WebDriverException, ActiveSession> possibleSession = slotToUse.apply(sessionRequest);
 
       if (possibleSession.isRight()) {
         ActiveSession session = possibleSession.right();
+        sessionToDownloadsDir.put(session.getId(), uuidForSessionDownloads);
         currentSessions.put(session.getId(), slotToUse);
 
         checkSessionCount();
@@ -395,7 +465,7 @@ public class LocalNode extends Node {
           externalUri,
           slotToUse.isSupportingCdp(),
           slotToUse.isSupportingBiDi(),
-          sessionRequest.getDesiredCapabilities());
+          desiredCapabilities);
 
         String sessionCreatedMessage = "Session created by the Node";
         LOG.info(String.format("%s. Id: %s, Caps: %s", sessionCreatedMessage, sessionId, caps));
@@ -411,6 +481,49 @@ public class LocalNode extends Node {
         return Either.left(possibleSession.left());
       }
     }
+  }
+
+  private boolean managedDownloadsRequested(Capabilities capabilities) {
+    Object downloadsEnabled = capabilities.getCapability("se:downloadsEnabled");
+    return managedDownloadsEnabled && downloadsEnabled != null &&
+           Boolean.parseBoolean(downloadsEnabled.toString());
+  }
+
+  private Capabilities setDownloadsDirectory(UUID uuid, Capabilities caps) {
+    File tempDir;
+    try {
+      TemporaryFilesystem tempFS = getDownloadsFilesystem(uuid);
+//      tempDir = tempFS.createTempDir("download", "file");
+      tempDir = tempFS.createTempDir("download", "");
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+    if (Browser.CHROME.is(caps) || Browser.EDGE.is(caps)) {
+      ImmutableMap<String, Serializable> map = ImmutableMap.of(
+        "download.prompt_for_download", false,
+        "download.default_directory", tempDir.getAbsolutePath());
+      String optionsKey = Browser.CHROME.is(caps) ? "goog:chromeOptions" : "ms:edgeOptions";
+      return appendPrefs(caps, optionsKey, map);
+    }
+    if (Browser.FIREFOX.is(caps)) {
+      ImmutableMap<String, Serializable> map = ImmutableMap.of(
+        "browser.download.folderList", 2,
+        "browser.download.dir", tempDir.getAbsolutePath());
+      return appendPrefs(caps, "moz:firefoxOptions", map);
+    }
+    return caps;
+  }
+
+  @SuppressWarnings("unchecked")
+  private Capabilities appendPrefs(Capabilities caps,
+                                   String optionsKey, Map<String, Serializable> map) {
+    Map<String, Object> currentOptions = (Map<String, Object>) Optional
+      .ofNullable(caps.getCapability(optionsKey))
+      .orElse(new HashMap<>());
+
+    ((Map<String, Serializable>) currentOptions
+      .computeIfAbsent("prefs", k -> new HashMap<>())).putAll(map);
+    return caps;
   }
 
   @Override
@@ -437,10 +550,20 @@ public class LocalNode extends Node {
   }
 
   @Override
-  public TemporaryFilesystem getTemporaryFilesystem(SessionId id) throws IOException {
+  public TemporaryFilesystem getUploadsFilesystem(SessionId id) throws IOException {
     try {
-      return tempFileSystems.get(id, () -> TemporaryFilesystem.getTmpFsBasedOn(
-          TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
+      return uploadsTempFileSystem.get(id, () -> TemporaryFilesystem.getTmpFsBasedOn(
+        TemporaryFilesystem.getDefaultTmpFS().createTempDir("session", id.toString())));
+    } catch (ExecutionException e) {
+      throw new IOException(e);
+    }
+  }
+
+  @Override
+  public TemporaryFilesystem getDownloadsFilesystem(UUID uuid) throws IOException {
+    try {
+      return downloadsTempFileSystem.get(uuid, () -> TemporaryFilesystem.getTmpFsBasedOn(
+        TemporaryFilesystem.getDefaultTmpFS().createTempDir("uuid", uuid.toString())));
     } catch (ExecutionException e) {
       throw new IOException(e);
     }
@@ -465,6 +588,75 @@ public class LocalNode extends Node {
   }
 
   @Override
+  public HttpResponse downloadFile(HttpRequest req, SessionId id) {
+    // When the session is running in a Docker container, the download file command
+    // needs to be forwarded to the container as well.
+    SessionSlot slot = currentSessions.getIfPresent(id);
+    if (slot != null && slot.getSession() instanceof DockerSession) {
+      return executeWebDriverCommand(req);
+    }
+    if (!this.managedDownloadsEnabled) {
+      String msg = "Please enable management of downloads via the command line arg "
+                   + "[--enable-managed-downloads] and restart the node";
+      throw new WebDriverException(msg);
+    }
+    UUID uuid = sessionToDownloadsDir.getIfPresent(id);
+    if (uuid == null) {
+      throw new NoSuchSessionException("Cannot find session with id: " + id);
+    }
+    TemporaryFilesystem tempFS = downloadsTempFileSystem.getIfPresent(uuid);
+    if (tempFS == null) {
+      throw new WebDriverException("Cannot find downloads file system for session id: " + id);
+    }
+    File downloadsDirectory = Optional
+      .ofNullable(tempFS.getBaseDir().listFiles())
+      .orElse(new File[]{})[0];
+    if (req.getMethod().equals(HttpMethod.GET)) {
+      //User wants to list files that can be downloaded
+      List<String> collected = Arrays.stream(
+        Optional.ofNullable(downloadsDirectory.listFiles()).orElse(new File[]{})
+      ).map(File::getName).collect(Collectors.toList());
+      ImmutableMap<String, Object> data = ImmutableMap.of("names", collected);
+      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value", data);
+      return new HttpResponse().setContent(asJson(result));
+    }
+    String raw = string(req);
+    if (raw.isEmpty()) {
+      throw new WebDriverException(
+        "Please specify file to download in payload as {\"name\": \"fileToDownload\"}");
+    }
+    Map<String, Object> incoming = JSON.toType(raw, Json.MAP_TYPE);
+    String filename = Optional.ofNullable(incoming.get("name"))
+      .map(Object::toString)
+      .orElseThrow(
+        () -> new WebDriverException(
+          "Please specify file to download in payload as {\"name\": \"fileToDownload\"}"));
+    try {
+      File[] allFiles = Optional.ofNullable(
+        downloadsDirectory.listFiles((dir, name) -> name.equals(filename))
+      ).orElse(new File[]{});
+      if (allFiles.length == 0) {
+        throw new WebDriverException(
+          String.format("Cannot find file [%s] in directory %s.",
+                        filename,
+                        downloadsDirectory.getAbsolutePath()));
+      }
+      if (allFiles.length != 1) {
+        throw new WebDriverException(
+          String.format("Expected there to be only 1 file. There were: %s.", allFiles.length));
+      }
+      String content = Zip.zip(allFiles[0]);
+      ImmutableMap<String, Object> data = ImmutableMap.of(
+        "filename", filename,
+        "contents", content);
+      ImmutableMap<String, Map<String, Object>> result = ImmutableMap.of("value",data);
+      return new HttpResponse().setContent(asJson(result));
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  @Override
   public HttpResponse uploadFile(HttpRequest req, SessionId id) {
 
     // When the session is running in a Docker container, the upload file command
@@ -478,8 +670,8 @@ public class LocalNode extends Node {
 
     File tempDir;
     try {
-      TemporaryFilesystem tempfs = getTemporaryFilesystem(id);
-      tempDir = tempfs.createTempDir("upload", "file");
+      TemporaryFilesystem tempFS = getUploadsFilesystem(id);
+      tempDir = tempFS.createTempDir("upload", "file");
 
       Zip.unzip((String) incoming.get("file"), tempDir);
     } catch (IOException e) {
@@ -489,7 +681,7 @@ public class LocalNode extends Node {
     File[] allFiles = tempDir.listFiles();
     if (allFiles == null) {
       throw new WebDriverException(
-          String.format("Cannot access temporary directory for uploaded files %s", tempDir));
+        String.format("Cannot access temporary directory for uploaded files %s", tempDir));
     }
     if (allFiles.length != 1) {
       throw new WebDriverException(
@@ -544,20 +736,20 @@ public class LocalNode extends Node {
         }
       });
       toUse = new PersistentCapabilities(cdpFiltered).setCapability("se:cdpEnabled", false);
-      }
+    }
 
-      // Add se:bidi if necessary to send the bidi url back
-      if ((isSupportingBiDi || toUse.getCapability("se:bidi") != null) && bidiEnabled) {
-        String bidiPath = String.format("/session/%s/se/bidi", other.getId());
-        toUse = new PersistentCapabilities(toUse).setCapability("se:bidi", rewrite(bidiPath));
-      } else {
-        // Remove any se:bidi* from the response, BiDi is not supported nor enabled
-        MutableCapabilities bidiFiltered = new MutableCapabilities();
-        toUse.asMap().forEach((key, value) -> {
-          if (!key.startsWith("se:bidi")) {
-            bidiFiltered.setCapability(key, value);
-          }
-        });
+    // Add se:bidi if necessary to send the bidi url back
+    if ((isSupportingBiDi || toUse.getCapability("se:bidi") != null) && bidiEnabled) {
+      String bidiPath = String.format("/session/%s/se/bidi", other.getId());
+      toUse = new PersistentCapabilities(toUse).setCapability("se:bidi", rewrite(bidiPath));
+    } else {
+      // Remove any se:bidi* from the response, BiDi is not supported nor enabled
+      MutableCapabilities bidiFiltered = new MutableCapabilities();
+      toUse.asMap().forEach((key, value) -> {
+        if (!key.startsWith("se:bidi")) {
+          bidiFiltered.setCapability(key, value);
+        }
+      });
       toUse = new PersistentCapabilities(bidiFiltered).setCapability("se:bidiEnabled", false);
     }
 
@@ -694,6 +886,7 @@ public class LocalNode extends Node {
     private Duration sessionTimeout = Duration.ofSeconds(NodeOptions.DEFAULT_SESSION_TIMEOUT);
     private HealthCheck healthCheck;
     private Duration heartbeatPeriod = Duration.ofSeconds(NodeOptions.DEFAULT_HEARTBEAT_PERIOD);
+    private boolean managedDownloadsEnabled = false;
 
     private Builder(
       Tracer tracer,
@@ -748,6 +941,11 @@ public class LocalNode extends Node {
       return this;
     }
 
+    public Builder enableManagedDownloads(boolean enable) {
+      this.managedDownloadsEnabled = enable;
+      return this;
+    }
+
     public LocalNode build() {
       return new LocalNode(
         tracer,
@@ -763,7 +961,8 @@ public class LocalNode extends Node {
         sessionTimeout,
         heartbeatPeriod,
         factories.build(),
-        registrationSecret);
+        registrationSecret,
+        managedDownloadsEnabled);
     }
 
     public Advanced advanced() {

@@ -51,7 +51,7 @@ module Selenium
             Safari::Driver.new(**opts)
           when :firefox, :ff
             Firefox::Driver.new(**opts)
-          when :edge
+          when :edge, :microsoftedge, :msedge
             Edge::Driver.new(**opts)
           when :remote
             Remote::Driver.new(**opts)
@@ -69,8 +69,8 @@ module Selenium
       #
 
       def initialize(bridge: nil, listener: nil, **opts)
-        @service = nil
         @devtools = nil
+        @bidi = nil
         bridge ||= create_bridge(**opts)
         add_extensions(bridge.browser)
         @bridge = listener ? Support::EventFiringBridge.new(bridge, listener) : bridge
@@ -127,14 +127,6 @@ module Selenium
         bridge.action(**opts)
       end
 
-      def mouse
-        bridge.mouse
-      end
-
-      def keyboard
-        bridge.keyboard
-      end
-
       #
       # Opens the specified URL in the browser.
       #
@@ -180,8 +172,9 @@ module Selenium
       def quit
         bridge.quit
       ensure
-        @service&.stop
+        @service_manager&.stop
         @devtools&.close
+        @bidi&.close
       end
 
       #
@@ -189,7 +182,10 @@ module Selenium
       #
 
       def close
-        bridge.close
+        # If no top-level browsing contexts are open after calling close,
+        # it indicates that the WebDriver session is closed.
+        # If the WebDriver session is closed, the BiDi session also needs to be closed.
+        bridge.close.tap { |handles| @bidi&.close if handles&.empty? }
       end
 
       #
@@ -263,19 +259,19 @@ module Selenium
       #   driver.first(id: 'foo')
       #
 
-      alias_method :first, :find_element
+      alias first find_element
 
       #
       #   driver.all(class: 'bar') #=> [#<WebDriver::Element:0x1011c3b88, ...]
       #
 
-      alias_method :all, :find_elements
+      alias all find_elements
 
       #
       #   driver.script('function() { ... };')
       #
 
-      alias_method :script, :execute_script
+      alias script execute_script
 
       # Get the first element matching the given selector. If given a
       # String or Symbol, it will be used as the id of the element.
@@ -316,30 +312,27 @@ module Selenium
 
       attr_reader :bridge
 
-      def create_bridge(capabilities: nil, options: nil, url: nil, service: nil, http_client: nil)
-        Remote::Bridge.new(http_client: http_client,
-                           url: url || service_url(service)).tap do |bridge|
-          generated_caps = options ? options.as_json : generate_capabilities(capabilities)
-          bridge.create_session(generated_caps)
+      def create_bridge(caps:, url:, http_client: nil)
+        Remote::Bridge.new(http_client: http_client, url: url).tap do |bridge|
+          bridge.create_session(caps)
         end
       end
 
       def generate_capabilities(capabilities)
         Array(capabilities).map { |cap|
           if cap.is_a? Symbol
-            cap = Remote::Capabilities.send(cap)
+            cap = WebDriver::Options.send(cap)
           elsif !cap.respond_to? :as_json
             msg = ":capabilities parameter only accepts objects responding to #as_json which #{cap.class} does not"
             raise ArgumentError, msg
           end
           cap.as_json
-        }.inject(:merge) || Remote::Capabilities.send(browser || :new)
+        }.inject(:merge)
       end
 
       def service_url(service)
-        service ||= Service.send(browser)
-        @service = service.launch
-        @service.uri
+        @service_manager = service.launch
+        @service_manager.uri
       end
 
       def screenshot
@@ -349,11 +342,13 @@ module Selenium
       def add_extensions(browser)
         extensions = case browser
                      when :chrome, :msedge
-                       Chrome::Driver::EXTENSIONS
+                       Chromium::Driver::EXTENSIONS
                      when :firefox
                        Firefox::Driver::EXTENSIONS
                      when :safari, :safari_technology_preview
                        Safari::Driver::EXTENSIONS
+                     when :ie, :internet_explorer
+                       IE::Driver::EXTENSIONS
                      else
                        []
                      end

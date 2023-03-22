@@ -22,6 +22,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.FileBackedOutputStream;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.util.Base64;
+import java.util.zip.ZipOutputStream;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;
@@ -136,6 +141,18 @@ public class Contents {
 
   public static Supplier<InputStream> memoize(Supplier<InputStream> delegate) {
     return new MemoizedSupplier(delegate);
+  }
+
+  public static String string(File input) throws IOException {
+    try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      InputStream isr = Files.newInputStream(input.toPath())) {
+      int len;
+      byte[] buffer = new byte[4096];
+      while ((len = isr.read(buffer)) != -1) {
+        bos.write(buffer, 0, len);
+      }
+      return Base64.getEncoder().encodeToString(bos.toByteArray());
+    }
   }
 
   private static final class MemoizedSupplier implements Supplier<InputStream> {

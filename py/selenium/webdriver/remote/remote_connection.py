@@ -39,7 +39,8 @@ class RemoteConnection:
     """A connection with the Remote WebDriver server.
 
     Communicates with the server using the WebDriver wire protocol:
-    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol"""
+    https://github.com/SeleniumHQ/selenium/wiki/JsonWireProtocol
+    """
 
     browser_name = None
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
@@ -55,8 +56,7 @@ class RemoteConnection:
 
     @classmethod
     def set_timeout(cls, timeout):
-        """
-        Override the default timeout
+        """Override the default timeout.
 
         :Args:
             - timeout - timeout value for http requests in seconds
@@ -65,9 +65,7 @@ class RemoteConnection:
 
     @classmethod
     def reset_timeout(cls):
-        """
-        Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT
-        """
+        """Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT."""
         cls._timeout = socket._GLOBAL_DEFAULT_TIMEOUT
 
     @classmethod
@@ -80,9 +78,9 @@ class RemoteConnection:
 
     @classmethod
     def set_certificate_bundle_path(cls, path):
-        """
-        Set the path to the certificate bundle to verify connection to command executor.
-        Can also be set to None to disable certificate validation.
+        """Set the path to the certificate bundle to verify connection to
+        command executor. Can also be set to None to disable certificate
+        validation.
 
         :Args:
             - path - path of a .pem encoded certificate chain.
@@ -91,8 +89,7 @@ class RemoteConnection:
 
     @classmethod
     def get_remote_connection_headers(cls, parsed_url, keep_alive=False):
-        """
-        Get headers for remote request.
+        """Get headers for remote request.
 
         :Args:
          - parsed_url - The parsed url
@@ -110,7 +107,7 @@ class RemoteConnection:
         }
 
         if parsed_url.username:
-            base64string = b64encode("{0.username}:{0.password}".format(parsed_url).encode())
+            base64string = b64encode(f"{parsed_url.username}:{parsed_url.password}".encode())
             headers.update({"Authorization": f"Basic {base64string.decode()}"})
 
         if keep_alive:
@@ -273,8 +270,7 @@ class RemoteConnection:
         }
 
     def execute(self, command, params):
-        """
-        Send a command to the remote server.
+        """Send a command to the remote server.
 
         Any path substitutions required for the URL mapped to the command should be
         included in the command parameters.
@@ -285,7 +281,7 @@ class RemoteConnection:
            its JSON payload.
         """
         command_info = self._commands[command]
-        assert command_info is not None, "Unrecognised command %s" % command
+        assert command_info is not None, f"Unrecognised command {command}"
         path = string.Template(command_info[1]).substitute(params)
         if isinstance(params, dict) and "sessionId" in params:
             del params["sessionId"]
@@ -294,8 +290,7 @@ class RemoteConnection:
         return self._request(command_info[0], url, body=data)
 
     def _request(self, method, url, body=None):
-        """
-        Send an HTTP request to the remote server.
+        """Send an HTTP request to the remote server.
 
         :Args:
          - method - A string for the HTTP method to send the request with.
@@ -319,25 +314,18 @@ class RemoteConnection:
             conn = self._get_connection_manager()
             with conn as http:
                 response = http.request(method, url, body=body, headers=headers)
-
             statuscode = response.status
-            if not hasattr(response, "getheader"):
-                if hasattr(response.headers, "getheader"):
-                    response.getheader = lambda x: response.headers.getheader(x)
-                elif hasattr(response.headers, "get"):
-                    response.getheader = lambda x: response.headers.get(x)
         data = response.data.decode("UTF-8")
         LOGGER.debug(f"Remote response: status={response.status} | data={data} | headers={response.headers}")
         try:
             if 300 <= statuscode < 304:
-                return self._request("GET", response.getheader("location"))
+                return self._request("GET", response.headers.get("location", None))
             if 399 < statuscode <= 500:
                 return {"status": statuscode, "value": data}
             content_type = []
-            if response.getheader("Content-Type"):
-                content_type = response.getheader("Content-Type").split(";")
+            if response.headers.get("Content-Type", None):
+                content_type = response.headers.get("Content-Type", None).split(";")
             if not any([x.startswith("image/png") for x in content_type]):
-
                 try:
                     data = utils.load_json(data.strip())
                 except ValueError:
@@ -359,8 +347,6 @@ class RemoteConnection:
             response.close()
 
     def close(self):
-        """
-        Clean up resources when finished with the remote_connection
-        """
+        """Clean up resources when finished with the remote_connection."""
         if hasattr(self, "_conn"):
             self._conn.clear()

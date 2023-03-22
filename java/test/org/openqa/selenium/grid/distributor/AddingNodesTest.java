@@ -163,7 +163,7 @@ class AddingNodesTest {
         c -> new Session(
           new SessionId(UUID.randomUUID()), sessionUri, stereotype, c, Instant.now()));
 
-    Distributor local = new LocalDistributor(
+    try (LocalDistributor local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -174,16 +174,19 @@ class AddingNodesTest {
       Duration.ofMinutes(5),
       false,
       Duration.ofSeconds(5),
-      newSessionThreadPoolSize);
+      newSessionThreadPoolSize)) {
 
-    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
+      distributor =
+        new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl,
+                              registrationSecret);
 
-    distributor.add(node);
+      distributor.add(node);
 
-    wait.until(obj -> distributor.getStatus().hasCapacity());
+      wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, getStereotypes(status).get(CAPS).intValue());
+      NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
+      assertEquals(1, getStereotypes(status).get(CAPS).intValue());
+    }
   }
 
   @Test
@@ -197,7 +200,7 @@ class AddingNodesTest {
             (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
 
-    Distributor local = new LocalDistributor(
+    try (LocalDistributor local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -208,16 +211,19 @@ class AddingNodesTest {
       Duration.ofMinutes(5),
       false,
       Duration.ofSeconds(5),
-      newSessionThreadPoolSize);
+      newSessionThreadPoolSize)) {
 
-    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
+      distributor =
+        new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl,
+                              registrationSecret);
 
-    bus.fire(new NodeStatusEvent(node.getStatus()));
+      bus.fire(new NodeStatusEvent(node.getStatus()));
 
-    wait.until(obj -> distributor.getStatus().hasCapacity());
+      wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, getStereotypes(status).get(CAPS).intValue());
+      NodeStatus status = getOnlyElement(distributor.getStatus().getNodes());
+      assertEquals(1, getStereotypes(status).get(CAPS).intValue());
+    }
   }
 
   @Test
@@ -241,7 +247,7 @@ class AddingNodesTest {
     handler.addHandler(firstNode);
     handler.addHandler(secondNode);
 
-    Distributor local = new LocalDistributor(
+    try (LocalDistributor local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(handler),
@@ -252,18 +258,21 @@ class AddingNodesTest {
       Duration.ofMinutes(5),
       false,
       Duration.ofSeconds(5),
-      newSessionThreadPoolSize);
+      newSessionThreadPoolSize)) {
 
-    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
+      distributor =
+        new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl,
+                              registrationSecret);
 
-    bus.fire(new NodeStatusEvent(firstNode.getStatus()));
-    bus.fire(new NodeStatusEvent(secondNode.getStatus()));
+      bus.fire(new NodeStatusEvent(firstNode.getStatus()));
+      bus.fire(new NodeStatusEvent(secondNode.getStatus()));
 
-    wait.until(obj -> distributor.getStatus());
+      wait.until(obj -> distributor.getStatus());
 
-    Set<NodeStatus> nodes = distributor.getStatus().getNodes();
+      Set<NodeStatus> nodes = distributor.getStatus().getNodes();
 
-    assertEquals(1, nodes.size());
+      assertEquals(1, nodes.size());
+    }
   }
 
   @Test
@@ -278,7 +287,7 @@ class AddingNodesTest {
             (id, caps) -> new Session(id, sessionUri, stereotype, caps, Instant.now())))
         .build();
 
-    Distributor local = new LocalDistributor(
+    try (LocalDistributor local = new LocalDistributor(
       tracer,
       bus,
       new PassthroughHttpClient.Factory(node),
@@ -289,40 +298,43 @@ class AddingNodesTest {
       Duration.ofMinutes(5),
       false,
       Duration.ofSeconds(5),
-      newSessionThreadPoolSize);
+      newSessionThreadPoolSize)) {
 
-    distributor = new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl, registrationSecret);
+      distributor =
+        new RemoteDistributor(tracer, new PassthroughHttpClient.Factory(local), externalUrl,
+                              registrationSecret);
 
-    bus.fire(new NodeStatusEvent(node.getStatus()));
+      bus.fire(new NodeStatusEvent(node.getStatus()));
 
-    // Start empty
-    wait.until(obj -> distributor.getStatus().hasCapacity());
+      // Start empty
+      wait.until(obj -> distributor.getStatus().hasCapacity());
 
-    NodeStatus nodeStatus = getOnlyElement(distributor.getStatus().getNodes());
-    assertEquals(1, getStereotypes(nodeStatus).get(CAPS).intValue());
+      NodeStatus nodeStatus = getOnlyElement(distributor.getStatus().getNodes());
+      assertEquals(1, getStereotypes(nodeStatus).get(CAPS).intValue());
 
-    // Craft a status that makes it look like the node is busy, and post it on the bus.
-    NodeStatus status = node.getStatus();
-    NodeStatus crafted = new NodeStatus(
-      status.getNodeId(),
-      status.getExternalUri(),
-      status.getMaxSessionCount(),
-      ImmutableSet.of(
-        new Slot(
-          new SlotId(status.getNodeId(), UUID.randomUUID()),
-          CAPS,
-          Instant.now(),
-          new Session(
-            new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now()))),
-      UP,
-      Duration.ofSeconds(10),
-      status.getVersion(),
-      status.getOsInfo());
+      // Craft a status that makes it look like the node is busy, and post it on the bus.
+      NodeStatus status = node.getStatus();
+      NodeStatus crafted = new NodeStatus(
+        status.getNodeId(),
+        status.getExternalUri(),
+        status.getMaxSessionCount(),
+        ImmutableSet.of(
+          new Slot(
+            new SlotId(status.getNodeId(), UUID.randomUUID()),
+            CAPS,
+            Instant.now(),
+            new Session(
+              new SessionId(UUID.randomUUID()), sessionUri, CAPS, CAPS, Instant.now()))),
+        UP,
+        Duration.ofSeconds(10),
+        status.getVersion(),
+        status.getOsInfo());
 
-    bus.fire(new NodeStatusEvent(crafted));
+      bus.fire(new NodeStatusEvent(crafted));
 
-    // We claimed the only slot is filled. Life is good.
-    wait.until(obj -> !distributor.getStatus().hasCapacity());
+      // We claimed the only slot is filled. Life is good.
+      wait.until(obj -> !distributor.getStatus().hasCapacity());
+    }
   }
 
   private Map<Capabilities, Integer> getStereotypes(NodeStatus status) {
@@ -382,6 +394,11 @@ class AddingNodesTest {
     @Override
     public HttpResponse uploadFile(HttpRequest req, SessionId id) {
       throw new UnsupportedOperationException("uploadFile");
+    }
+
+    @Override
+    public HttpResponse downloadFile(HttpRequest req, SessionId id) {
+      throw new UnsupportedOperationException("downloadFile");
     }
 
     @Override

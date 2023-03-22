@@ -14,10 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
-
 from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Union
 
 from selenium.common.exceptions import WebDriverException
@@ -26,8 +25,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 def with_tag_name(tag_name: str) -> "RelativeBy":
-    """
-    Start searching for relative objects using a tag name.
+    """Start searching for relative objects using a tag name.
 
     Note: This method may be removed in future versions, please use
     `locate_with` instead.
@@ -43,8 +41,7 @@ def with_tag_name(tag_name: str) -> "RelativeBy":
 
 
 def locate_with(by: By, using: str) -> "RelativeBy":
-    """
-    Start searching for relative objects your search criteria with By.
+    """Start searching for relative objects your search criteria with By.
 
     :Args:
         - by: The value from `By` passed in.
@@ -59,8 +56,7 @@ def locate_with(by: By, using: str) -> "RelativeBy":
 
 
 class RelativeBy:
-    """
-    Gives the opportunity to find elements based on their relative location
+    """Gives the opportunity to find elements based on their relative location
     on the page from a root elelemt. It is recommended that you use the helper
     function to create it.
 
@@ -74,7 +70,7 @@ class RelativeBy:
         assert "mid" in ids
     """
 
-    def __init__(self, root: Dict[By, str] = None, filters: List = None):
+    def __init__(self, root: Optional[Dict[Union[By, str], str]] = None, filters: Optional[List] = None):
         """
         Creates a new RelativeBy object. It is preferred if you use the
         `locate_with` method as this signature could change.
@@ -105,7 +101,7 @@ class RelativeBy:
             - element_or_locator: Element to look below
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling above method")
+            raise WebDriverException("Element or locator must be given when calling below method")
 
         self.filters.append({"kind": "below", "args": [element_or_locator]})
         return self
@@ -117,7 +113,7 @@ class RelativeBy:
             - element_or_locator: Element to look to the left of
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling above method")
+            raise WebDriverException("Element or locator must be given when calling to_left_of method")
 
         self.filters.append({"kind": "left", "args": [element_or_locator]})
         return self
@@ -129,7 +125,7 @@ class RelativeBy:
             - element_or_locator: Element to look right of
         """
         if not element_or_locator:
-            raise WebDriverException("Element or locator must be given when calling above method")
+            raise WebDriverException("Element or locator must be given when calling to_right_of method")
 
         self.filters.append({"kind": "right", "args": [element_or_locator]})
         return self
@@ -141,15 +137,14 @@ class RelativeBy:
             - element_or_locator_distance: Element to look near by the element or within a distance
         """
         if not element_or_locator_distance:
-            raise WebDriverException("Element or locator or distance must be given when calling above method")
+            raise WebDriverException("Element or locator or distance must be given when calling near method")
 
         self.filters.append({"kind": "near", "args": [element_or_locator_distance]})
         return self
 
     def to_dict(self) -> Dict:
-        """
-        Create a dict that will be passed to the driver to start searching for the element
-        """
+        """Create a dict that will be passed to the driver to start searching
+        for the element."""
         return {
             "relative": {
                 "root": self.root,

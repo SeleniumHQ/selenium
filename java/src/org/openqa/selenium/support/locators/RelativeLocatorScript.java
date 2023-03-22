@@ -38,7 +38,7 @@ class RelativeLocatorScript {
       URL url = RelativeLocator.class.getResource(location);
 
       String rawFunction = Resources.toString(url, StandardCharsets.UTF_8);
-      FIND_ELEMENTS = String.format("return (%s).apply(null, arguments);", rawFunction);
+      FIND_ELEMENTS = String.format("/* findElements */return (%s).apply(null, arguments);", rawFunction);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

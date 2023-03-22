@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     class VirtualAuthenticator
-
       attr_reader :options
 
       #

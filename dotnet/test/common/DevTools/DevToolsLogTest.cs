@@ -13,17 +13,18 @@ namespace OpenQA.Selenium.DevTools
     public class DevToolsLogTest : DevToolsTestFixture
     {
         [Test]
+        [Ignore("Unable to open secure url")]
         [IgnoreBrowser(Selenium.Browser.IE, "IE does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Firefox, "Firefox does not support Chrome DevTools Protocol")]
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyEntryAddedAndClearLog()
         {
-            var domains = session.GetVersionSpecificDomains<V107.DevToolsSessionDomains>();
+            var domains = session.GetVersionSpecificDomains<V111.DevToolsSessionDomains>();
             ManualResetEventSlim sync = new ManualResetEventSlim(false);
-            EventHandler<V107.Log.EntryAddedEventArgs> entryAddedHandler = (sender, e) =>
+            EventHandler<V111.Log.EntryAddedEventArgs> entryAddedHandler = (sender, e) =>
             {
                 Assert.That(e.Entry.Text.Contains("404"));
-                Assert.That(e.Entry.Level == V107.Log.LogEntryLevelValues.Error);
+                Assert.That(e.Entry.Level == V111.Log.LogEntryLevelValues.Error);
                 sync.Set();
             };
 

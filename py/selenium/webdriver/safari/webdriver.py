@@ -31,10 +31,7 @@ DEFAULT_SAFARI_CAPS = DesiredCapabilities.SAFARI.copy()
 
 
 class WebDriver(RemoteWebDriver):
-    """
-    Controls the SafariDriver and allows you to drive the browser.
-
-    """
+    """Controls the SafariDriver and allows you to drive the browser."""
 
     def __init__(
         self,
@@ -47,10 +44,9 @@ class WebDriver(RemoteWebDriver):
         service_args=None,
         options: Options = None,
         service: Service = None,
-    ):
-        """
-
-        Creates a new Safari driver instance and launches or finds a running safaridriver service.
+    ) -> None:
+        """Creates a new Safari driver instance and launches or finds a running
+        safaridriver service.
 
         :Args:
          - port - The port on which the safaridriver service should listen for new connections. If zero, a free port will be found.
@@ -116,10 +112,8 @@ class WebDriver(RemoteWebDriver):
         self._is_remote = False
 
     def quit(self):
-        """
-        Closes the browser and shuts down the SafariDriver executable
-        that is started when starting the SafariDriver
-        """
+        """Closes the browser and shuts down the SafariDriver executable that
+        is started when starting the SafariDriver."""
         try:
             super().quit()
         except http_client.BadStatusLine:

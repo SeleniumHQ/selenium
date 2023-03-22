@@ -46,9 +46,7 @@ module Selenium
         end
 
         it 'sets download path' do
-          driver.download_path = File.expand_path(__dir__)
-          # there is no simple way to verify that it's now possible to download
-          # at least it doesn't crash
+          expect { driver.download_path = File.expand_path(__dir__) }.not_to raise_exception
         end
 
         it 'can execute CDP commands' do
@@ -67,15 +65,13 @@ module Selenium
 
         describe '#logs' do
           before do
-            quit_driver
-            options = Options.new(logging_prefs: {browser: 'ALL',
-                                                  driver: 'ALL',
-                                                  performance: 'ALL'})
-            create_driver!(options: options)
+            reset_driver!(logging_prefs: {browser: 'ALL',
+                                          driver: 'ALL',
+                                          performance: 'ALL'})
             driver.navigate.to url_for('errors.html')
           end
 
-          after(:all) { quit_driver }
+          after(:all) { reset_driver! }
 
           it 'can fetch available log types' do
             expect(driver.logs.available_types).to include(:performance, :browser, :driver)
@@ -86,19 +82,19 @@ module Selenium
 
             entries = driver.logs.get(:browser)
             expect(entries).not_to be_empty
-            expect(entries.first).to be_kind_of(LogEntry)
+            expect(entries.first).to be_a(LogEntry)
           end
 
           it 'can get the driver log' do
             entries = driver.logs.get(:driver)
             expect(entries).not_to be_empty
-            expect(entries.first).to be_kind_of(LogEntry)
+            expect(entries.first).to be_a(LogEntry)
           end
 
           it 'can get the performance log' do
             entries = driver.logs.get(:performance)
             expect(entries).not_to be_empty
-            expect(entries.first).to be_kind_of(LogEntry)
+            expect(entries.first).to be_a(LogEntry)
           end
         end
 
@@ -111,7 +107,7 @@ module Selenium
           unless sinks.empty?
             device_name = sinks.first['name']
             driver.start_cast_tab_mirroring(device_name)
-            driver.stop_casting(device_name)
+            expect { driver.stop_casting(device_name) }.not_to raise_exception
           end
         end
       end

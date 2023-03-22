@@ -1,3 +1,21 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+use reqwest::Client;
 use std::error::Error;
 use std::fs::File;
 use std::io::copy;
@@ -6,13 +24,22 @@ use std::io::Cursor;
 use tempfile::{Builder, TempDir};
 
 use crate::files::parse_version;
+use crate::Logger;
 
 #[tokio::main]
-pub async fn download_driver_to_tmp_folder(url: String) -> Result<(TempDir, String), Box<dyn Error>> {
+pub async fn download_driver_to_tmp_folder(
+    http_client: &Client,
+    url: String,
+    log: &Logger,
+) -> Result<(TempDir, String), Box<dyn Error>> {
     let tmp_dir = Builder::new().prefix("selenium-manager").tempdir()?;
-    log::trace!("Downloading {} to temporal folder {:?}", url, tmp_dir.path());
+    log.trace(format!(
+        "Downloading {} to temporal folder {:?}",
+        url,
+        tmp_dir.path()
+    ));
 
-    let response = reqwest::get(url).await?;
+    let response = http_client.get(url).send().await?;
     let target_path;
     let mut tmp_file = {
         let target_name = response
@@ -22,11 +49,14 @@ pub async fn download_driver_to_tmp_folder(url: String) -> Result<(TempDir, Stri
             .and_then(|name| if name.is_empty() { None } else { Some(name) })
             .unwrap_or("tmp.bin");
 
-        log::trace!("File to be downloaded: {}", target_name);
+        log.trace(format!("File to be downloaded: {}", target_name));
         let target_name = tmp_dir.path().join(target_name);
         target_path = String::from(target_name.to_str().unwrap());
 
-        log::trace!("Temporal folder for driver package: {}", target_path);
+        log.trace(format!(
+            "Temporal folder for driver package: {}",
+            target_path
+        ));
         File::create(target_name)?
     };
     let mut content = Cursor::new(response.bytes().await?);
@@ -35,12 +65,22 @@ pub async fn download_driver_to_tmp_folder(url: String) -> Result<(TempDir, Stri
     Ok((tmp_dir, target_path))
 }
 
-#[tokio::main]
-pub async fn read_content_from_link(url: String) -> Result<String, Box<dyn Error>> {
-    Ok(parse_version(reqwest::get(url).await?.text().await?))
+pub fn read_version_from_link(http_client: &Client, url: String) -> Result<String, Box<dyn Error>> {
+    parse_version(read_content_from_link(http_client, url)?)
 }
 
 #[tokio::main]
-pub async fn read_redirect_from_link(url: String) -> Result<String, Box<dyn Error>> {
-    Ok(parse_version(reqwest::get(&url).await?.url().path().to_string()))
+pub async fn read_content_from_link(
+    http_client: &Client,
+    url: String,
+) -> Result<String, Box<dyn Error>> {
+    Ok(http_client.get(url).send().await?.text().await?)
+}
+
+#[tokio::main]
+pub async fn read_redirect_from_link(
+    http_client: &Client,
+    url: String,
+) -> Result<String, Box<dyn Error>> {
+    parse_version(http_client.get(&url).send().await?.url().path().to_string())
 }

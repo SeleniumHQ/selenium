@@ -17,11 +17,14 @@
 
 package org.openqa.selenium.chrome;
 
+import com.google.common.util.concurrent.Uninterruptibles;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.chromium.ChromiumNetworkConditions;
 import org.openqa.selenium.chromium.HasCasting;
 import org.openqa.selenium.chromium.HasCdp;
@@ -32,19 +35,17 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JupiterTestBase;
 import org.openqa.selenium.testing.NoDriverBeforeTest;
-import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.Assumptions.assumeThat;
-
-import com.google.common.util.concurrent.Uninterruptibles;
+import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 
 class ChromeDriverFunctionalTest extends JupiterTestBase {
 
@@ -71,6 +72,15 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
+  @NoDriverBeforeTest
+  public void driverOverridesDefaultClientConfig() {
+    assertThatThrownBy(() -> {
+      ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofSeconds(0));
+      localDriver = new ChromeDriver(ChromeDriverService.createDefaultService(), new ChromeOptions(), clientConfig);
+    }).isInstanceOf(SessionNotCreatedException.class);
+  }
+
+  @Test
   void builderWithClientConfigThrowsException() {
     ClientConfig clientConfig = ClientConfig.defaultConfig().readTimeout(Duration.ofMinutes(1));
     RemoteWebDriverBuilder builder = ChromeDriver.builder().config(clientConfig);
@@ -81,6 +91,7 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
   }
 
   @Test
+  @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4350")
   void canSetPermission() {
     HasPermissions permissions = (HasPermissions) driver;
 
@@ -93,26 +104,6 @@ class ChromeDriverFunctionalTest extends JupiterTestBase {
 
     assertThat(checkPermission(driver, CLIPBOARD_READ)).isEqualTo("denied");
     assertThat(checkPermission(driver, CLIPBOARD_WRITE)).isEqualTo("prompt");
-  }
-
-  @Test
-  @NoDriverBeforeTest
-  public void canSetPermissionHeadless() {
-    ChromeOptions options = new ChromeOptions();
-    options.setHeadless(true);
-
-    localDriver = new WebDriverBuilder().get(options);
-    HasPermissions permissions = (HasPermissions) localDriver;
-
-    localDriver.get(pages.clicksPage);
-    assertThat(checkPermission(localDriver, CLIPBOARD_READ)).isEqualTo("prompt");
-    assertThat(checkPermission(localDriver, CLIPBOARD_WRITE)).isEqualTo("prompt");
-
-    permissions.setPermission(CLIPBOARD_READ, "granted");
-    permissions.setPermission(CLIPBOARD_WRITE, "granted");
-
-    assertThat(checkPermission(localDriver, CLIPBOARD_READ)).isEqualTo("granted");
-    assertThat(checkPermission(localDriver, CLIPBOARD_WRITE)).isEqualTo("granted");
   }
 
   public String checkPermission(WebDriver driver, String permission){

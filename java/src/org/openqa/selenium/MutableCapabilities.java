@@ -32,6 +32,7 @@ public class MutableCapabilities implements Capabilities {
   static {
     HashSet<String> keys = new HashSet<>();
     keys.add("goog:chromeOptions");
+    keys.add("ms:edgeOptions");
     keys.add("moz:firefoxOptions");
     keys.add("se:ieOptions");
     OPTION_KEYS = Collections.unmodifiableSet(keys);

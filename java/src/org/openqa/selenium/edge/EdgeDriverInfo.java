@@ -25,6 +25,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebDriverInfo;
 import org.openqa.selenium.chromium.ChromiumDriverInfo;
+import org.openqa.selenium.remote.service.DriverFinder;
 
 import java.util.Optional;
 
@@ -65,11 +66,16 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
   @Override
   public boolean isAvailable() {
     try {
-      EdgeDriverService.createDefaultService();
+      DriverFinder.getPath(EdgeDriverService.createDefaultService(), getCanonicalCapabilities());
       return true;
     } catch (IllegalStateException | WebDriverException e) {
       return false;
     }
+  }
+
+  @Override
+  public boolean isPresent() {
+    return EdgeDriverService.isPresent();
   }
 
   @Override
@@ -79,7 +85,7 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public Optional<WebDriver> createDriver(Capabilities capabilities)
-      throws SessionNotCreatedException {
+    throws SessionNotCreatedException {
     if (!isAvailable() || !isSupporting(capabilities)) {
       return Optional.empty();
     }

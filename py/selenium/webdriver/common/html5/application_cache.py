@@ -15,9 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-"""
-The ApplicationCache implementation.
-"""
+"""The ApplicationCache implementation."""
 
 
 import warnings
@@ -26,7 +24,6 @@ from selenium.webdriver.remote.command import Command
 
 
 class ApplicationCache:
-
     UNCACHED = 0
     IDLE = 1
     CHECKING = 2
@@ -35,8 +32,7 @@ class ApplicationCache:
     OBSOLETE = 5
 
     def __init__(self, driver):
-        """
-        Creates a new Application Cache.
+        """Creates a new Application Cache.
 
         :Args:
          - driver: The WebDriver instance which performs user actions.
@@ -50,7 +46,5 @@ class ApplicationCache:
 
     @property
     def status(self):
-        """
-        Returns a current status of application cache.
-        """
+        """Returns a current status of application cache."""
         return self.driver.execute(Command.GET_APP_CACHE_STATUS)["value"]

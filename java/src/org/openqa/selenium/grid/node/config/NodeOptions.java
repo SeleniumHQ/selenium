@@ -40,6 +40,7 @@ import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonOutput;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.net.Urls;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
@@ -74,6 +75,7 @@ public class NodeOptions {
   public static final boolean DEFAULT_ENABLE_BIDI = true;
   static final String NODE_SECTION = "node";
   static final boolean DEFAULT_DETECT_DRIVERS = true;
+  static final boolean DEFAULT_USE_SELENIUM_MANAGER = false;
   static final boolean OVERRIDE_MAX_SESSIONS = false;
   static final String DEFAULT_VNC_ENV_VAR = "SE_START_XVFB";
   static final int DEFAULT_NO_VNC_PORT = 7900;
@@ -146,6 +148,11 @@ public class NodeOptions {
     } catch (URISyntaxException e) {
       throw new ConfigException("Unable to construct public URL: " + base);
     }
+  }
+
+  public boolean isManagedDownloadsEnabled() {
+    return config.getBool(NODE_SECTION, "enable-managed-downloads")
+      .orElse(Boolean.FALSE);
   }
 
   public Node getNode() {
@@ -351,7 +358,10 @@ public class NodeOptions {
         int toIndex = (i + 1) >= configIndexes.length ? drivers.size() : configIndexes[i + 1];
         Map<String, String> configMap = new HashMap<>();
         drivers.subList(fromIndex, toIndex)
-          .forEach(keyValue -> configMap.put(keyValue.split("=")[0], keyValue.split("=")[1]));
+          .forEach(keyValue -> {
+            String [] values = keyValue.split("=", 2);
+            configMap.put(values[0], values[1]);
+          });
         driversMap.add(configMap);
       }
 
@@ -504,11 +514,25 @@ public class NodeOptions {
     // We don't expect duplicates, but they're fine
     List<WebDriverInfo> infos =
       StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
-        .filter(WebDriverInfo::isAvailable)
+        .filter(WebDriverInfo::isPresent)
         .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
         .collect(Collectors.toList());
 
-    LOG.log(Level.INFO, "Discovered {0} driver(s)", infos.size());
+    LOG.log(Level.INFO, "Driver(s) already present on the host: {0}", infos.size());
+
+    if (config.getBool(NODE_SECTION, "selenium-manager").orElse(DEFAULT_USE_SELENIUM_MANAGER)) {
+      List<String> present = infos.stream()
+        .map(WebDriverInfo::getDisplayName)
+        .collect(Collectors.toList());
+      List<WebDriverInfo> driversSM =
+        StreamSupport.stream(ServiceLoader.load(WebDriverInfo.class).spliterator(), false)
+          .filter(WebDriverInfo::isAvailable)
+          .filter(info -> !present.contains(info.getDisplayName()))
+          .sorted(Comparator.comparing(info -> info.getDisplayName().toLowerCase()))
+          .collect(Collectors.toList());
+      LOG.log(Level.INFO, "Driver(s) available through Selenium Manager: {0}", driversSM.size());
+      infos.addAll(driversSM);
+    }
 
     // Same
     List<DriverService.Builder<?, ?>> builders = new ArrayList<>();
@@ -556,12 +580,17 @@ public class NodeOptions {
 
       @Override
       public boolean isSupportingBiDi() {
-        return  detectedDriver.isSupportingBiDi();
+        return detectedDriver.isSupportingBiDi();
       }
 
       @Override
       public boolean isAvailable() {
         return detectedDriver.isAvailable();
+      }
+
+      @Override
+      public boolean isPresent() {
+        return detectedDriver.isPresent();
       }
 
       @Override
@@ -607,7 +636,15 @@ public class NodeOptions {
         .setCapability("se:vncEnabled", true)
         .setCapability("se:noVncPort", noVncPort());
     }
+    if (isManagedDownloadsEnabled() && canConfigureDownloadsDir(capabilities)) {
+      capabilities = new PersistentCapabilities(capabilities)
+        .setCapability("se:downloadsEnabled", true);
+    }
     return capabilities;
+  }
+
+  private boolean canConfigureDownloadsDir(Capabilities caps) {
+    return Browser.FIREFOX.is(caps) || Browser.CHROME.is(caps) || Browser.EDGE.is(caps);
   }
 
   private void report(Map.Entry<WebDriverInfo, Collection<SessionFactory>> entry) {
@@ -618,9 +655,10 @@ public class NodeOptions {
     }
 
     LOG.info(String.format(
-      "Adding %s for %s %d times",
+      "Adding %s for %s %d times (%s)",
       entry.getKey().getDisplayName(),
       caps.toString().replaceAll("\\s+", " "),
-      entry.getValue().size()));
+      entry.getValue().size(),
+      entry.getKey().isPresent() ? "Host" : "SM"));
   }
 }

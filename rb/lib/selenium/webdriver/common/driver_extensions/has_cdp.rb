@@ -21,7 +21,6 @@ module Selenium
   module WebDriver
     module DriverExtensions
       module HasCDP
-
         #
         # Returns network conditions.
         #
@@ -31,7 +30,6 @@ module Selenium
         def execute_cdp(cmd, **params)
           @bridge.send_command(cmd: cmd, params: params)
         end
-
       end # HasCDP
     end # DriverExtensions
   end # WebDriver

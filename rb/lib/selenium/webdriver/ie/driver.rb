@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module IE
-
       #
       # Driver implementation for Internet Explorer supporting
       # both OSS and W3C dialects of JSON wire protocol.
@@ -29,6 +28,13 @@ module Selenium
 
       class Driver < WebDriver::Driver
         EXTENSIONS = [DriverExtensions::HasWebStorage].freeze
+
+        include LocalDriver
+
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          caps, url = initialize_local_driver(capabilities, options, service, url)
+          super(caps: caps, url: url, **opts)
+        end
 
         def browser
           :internet_explorer

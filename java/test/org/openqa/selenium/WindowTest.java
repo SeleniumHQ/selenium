@@ -167,7 +167,8 @@ class WindowTest extends JupiterTestBase {
 
     changeSizeTo(new Dimension(640, 400));
     driver.manage().window().minimize();
-    // TODO: how to verify the result of this operation?
+
+    assertThat(((JavascriptExecutor) driver).executeScript("return document.hidden;")).isEqualTo(true);
   }
 
   @Test

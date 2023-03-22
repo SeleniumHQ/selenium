@@ -17,32 +17,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'selenium/webdriver/chromium/driver'
+
 module Selenium
   module WebDriver
     module Chrome
-
       #
       # Driver implementation for Chrome.
       # @api private
       #
 
-      class Driver < WebDriver::Driver
-        EXTENSIONS = [DriverExtensions::HasCDP,
-                      DriverExtensions::HasBiDi,
-                      DriverExtensions::HasCasting,
-                      DriverExtensions::HasNetworkConditions,
-                      DriverExtensions::HasNetworkInterception,
-                      DriverExtensions::HasWebStorage,
-                      DriverExtensions::HasLaunching,
-                      DriverExtensions::HasLocation,
-                      DriverExtensions::HasPermissions,
-                      DriverExtensions::DownloadsFiles,
-                      DriverExtensions::HasDevTools,
-                      DriverExtensions::HasAuthentication,
-                      DriverExtensions::HasLogs,
-                      DriverExtensions::HasLogEvents,
-                      DriverExtensions::HasPinnedScripts,
-                      DriverExtensions::PrintsPage].freeze
+      class Driver < Chromium::Driver
+        include LocalDriver
+
+        def initialize(capabilities: nil, options: nil, service: nil, url: nil, **opts)
+          caps, url = initialize_local_driver(capabilities, options, service, url)
+          super(caps: caps, url: url, **opts)
+        end
 
         def browser
           :chrome
@@ -50,21 +41,9 @@ module Selenium
 
         private
 
-        def devtools_url
-          uri = URI(devtools_address)
-          response = Net::HTTP.get(uri.hostname, '/json/version', uri.port)
-
-          JSON.parse(response)['webSocketDebuggerUrl']
-        end
-
-        def devtools_version
-          Integer(capabilities.browser_version.split('.').first)
-        end
-
         def devtools_address
           "http://#{capabilities['goog:chromeOptions']['debuggerAddress']}"
         end
-
       end # Driver
     end # Chrome
   end # WebDriver

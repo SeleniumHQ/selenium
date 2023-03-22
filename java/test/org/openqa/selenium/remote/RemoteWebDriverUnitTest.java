@@ -40,6 +40,7 @@ import org.openqa.selenium.virtualauthenticator.VirtualAuthenticatorOptions;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -270,7 +271,7 @@ class RemoteWebDriverUnitTest {
 
   @Test
   void canHandleCloseCommand() {
-    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, nullValueResponder);
+    WebDriverFixture fixture = new WebDriverFixture(echoCapabilities, valueResponder(new ArrayList<>()));
 
     fixture.driver.close();
 

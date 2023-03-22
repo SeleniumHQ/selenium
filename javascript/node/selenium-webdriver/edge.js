@@ -80,6 +80,7 @@
 const { Browser } = require('./lib/capabilities')
 const io = require('./io')
 const chromium = require('./chromium')
+const { driverLocation } = require('./common/seleniumManager')
 
 /**
  * Name of the EdgeDriver executable.
@@ -106,12 +107,20 @@ class ServiceBuilder extends chromium.ServiceBuilder {
    */
   constructor(opt_exe) {
     let exe = opt_exe || locateSynchronously()
+
+    if (!exe) {
+      try {
+        exe = driverLocation('edge')
+      } catch (err) {
+        console.log(`Unable to obtain driver using Selenium Manager: ${err}`)
+      }
+    }
+
     if (!exe) {
       throw Error(
-        `The WebDriver for Edge could not be found on the current PATH. Please download the ` +
-          `latest version of ${EDGEDRIVER_CHROMIUM_EXE} from ` +
-          `https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/ ` +
-          `and ensure it can be found on your PATH.`
+        `MSEdgeDriver could not be found on the PATH.
+        For more information on how to install drivers see
+        https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/.`
       )
     }
     super(exe)

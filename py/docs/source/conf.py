@@ -56,7 +56,7 @@ copyright = '2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
 # built documents.
 #
 # The short X.Y version.
-version = '4.5'
+version = '4.8'
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -250,7 +250,7 @@ epub_copyright = '2011, plightbo, simon.m.stewart, hbchai, jrhuggins, et al.'
 # The format is a list of tuples containing the path and title.
 #epub_pre_files = []
 
-# HTML files shat should be inserted after the pages created by sphinx.
+# HTML files that should be inserted after the pages created by sphinx.
 # The format is a list of tuples containing the path and title.
 #epub_post_files = []
 

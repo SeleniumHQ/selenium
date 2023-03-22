@@ -24,7 +24,7 @@ module Selenium
     describe Interactions do
       describe '#key' do
         it 'creates a new key input with provided name' do
-          device = Interactions.key(:name)
+          device = described_class.key(:name)
 
           expect(device).to be_a(Interactions::KeyInput)
           expect(device.name).to eq(:name)
@@ -33,7 +33,7 @@ module Selenium
         it 'sets name to a random UUID if no name is provided' do
           allow(SecureRandom).to receive(:uuid).and_return(:id)
 
-          device = Interactions.key
+          device = described_class.key
 
           expect(device).to be_a(Interactions::KeyInput)
           expect(device.name).to eq(:id)
@@ -42,7 +42,7 @@ module Selenium
 
       describe '#pointer' do
         it 'creates a new pointer input with a provided name' do
-          device = Interactions.pointer(:mouse, name: :name)
+          device = described_class.pointer(:mouse, name: :name)
 
           expect(device).to be_a(Interactions::PointerInput)
           expect(device.name).to eq(:name)
@@ -51,7 +51,7 @@ module Selenium
         it 'sets name to a random UUID if no name is provided' do
           allow(SecureRandom).to receive(:uuid).and_return(:id)
 
-          device = Interactions.pointer(:mouse)
+          device = described_class.pointer(:mouse)
 
           expect(device).to be_a(Interactions::PointerInput)
           expect(device.name).to eq(:id)
@@ -60,7 +60,7 @@ module Selenium
 
       describe '#none' do
         it 'creates a new pointer input with a provided name' do
-          device = Interactions.none(:name)
+          device = described_class.none(:name)
 
           expect(device).to be_a(Interactions::NoneInput)
           expect(device.name).to eq(:name)
@@ -69,7 +69,7 @@ module Selenium
         it 'sets name to a random UUID if no name is provided' do
           allow(SecureRandom).to receive(:uuid).and_return(:id)
 
-          device = Interactions.none
+          device = described_class.none
 
           expect(device).to be_a(Interactions::NoneInput)
           expect(device.name).to eq(:id)

@@ -20,7 +20,6 @@
 module Selenium
   module WebDriver
     module Support
-
       #
       # @api private
       #

@@ -42,7 +42,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
-import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.FIREFOX;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -334,9 +333,9 @@ class CombinedInputActionsTest extends JupiterTestBase {
   @NotYetImplemented(CHROME)
   public void testChordControlCutAndPaste() {
     assumeFalse(getEffectivePlatform(driver).is(Platform.MAC), "FIXME: macs don't have CONTROL key");
-    assumeFalse(isNativeEventsEnabled(driver) &&
-      getEffectivePlatform(driver).is(Platform.WINDOWS) &&
-      isInternetExplorer(driver), "Windows: native events library  does not support storing modifiers state yet");
+    assumeFalse(getEffectivePlatform(driver).is(Platform.WINDOWS) &&
+                isInternetExplorer(driver),
+                "Windows: native events library  does not support storing modifiers state yet");
 
     driver.get(pages.javascriptPage);
 
