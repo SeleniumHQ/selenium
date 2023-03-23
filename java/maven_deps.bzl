@@ -2,15 +2,15 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.87.Final"
-    opentelemetry_version = "1.22.0"
+    netty_version = "4.1.90.Final"
+    opentelemetry_version = "1.24.0"
     junit_jupiter_version = "5.9.2"
     junit_platform_version = "1.9.2"
 
     maven_install(
         artifacts = [
             "com.beust:jcommander:1.82",
-            "com.github.javaparser:javaparser-core:3.24.10",
+            "com.github.javaparser:javaparser-core:3.25.1",
             maven.artifact(
                 group = "com.github.spotbugs",
                 artifact = "spotbugs",
@@ -26,8 +26,8 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service-annotations:1.0.1",
             "com.graphql-java:graphql-java:20.0",
             "com.graphql-java:java-dataloader:3.2.0",
-            "io.grpc:grpc-context:1.52.1",
-            "io.lettuce:lettuce-core:6.2.2.RELEASE",
+            "io.grpc:grpc-context:1.53.0",
+            "io.lettuce:lettuce-core:6.2.3.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
             "io.netty:netty-codec-http:%s" % netty_version,
@@ -79,8 +79,8 @@ def selenium_java_deps():
             "org.junit.platform:junit-platform-suite-engine:%s" % junit_platform_version,
             "org.junit.platform:junit-platform-suite-api:%s" % junit_platform_version,
             "net.bytebuddy:byte-buddy:1.12.22",
-            "dev.failsafe:failsafe:3.3.0",
-            "net.sourceforge.htmlunit:htmlunit-core-js:2.69.0",
+            "dev.failsafe:failsafe:3.3.1",
+            "net.sourceforge.htmlunit:htmlunit-core-js:2.70.0",
             "org.apache.commons:commons-exec:1.3",
             "org.assertj:assertj-core:3.24.2",
             maven.artifact(
@@ -101,7 +101,7 @@ def selenium_java_deps():
             "org.testng:testng:7.7.1",
             "org.zeromq:jeromq:0.5.3",
             "xyz.rogfam:littleproxy:2.0.15",
-            "org.seleniumhq.selenium:htmlunit-driver:4.7.2",
+            "org.seleniumhq.selenium:htmlunit-driver:4.8.1",
             "org.redisson:redisson:3.19.1",
             "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         ],
