@@ -159,10 +159,10 @@ impl ARCH {
     }
 }
 
-struct StringKey<'a>(Vec<&'a str>, &'a str);
+pub struct StringKey<'a>(pub Vec<&'a str>, pub &'a str);
 
 impl StringKey<'_> {
-    fn get_value(&self) -> String {
+    pub fn get_value(&self) -> String {
         let config = get_config().unwrap_or_default();
         let keys = self.0.to_owned();
         let mut result;
@@ -180,10 +180,10 @@ impl StringKey<'_> {
     }
 }
 
-struct IntegerKey<'a>(&'a str, u64);
+pub struct IntegerKey<'a>(pub &'a str, pub u64);
 
 impl IntegerKey<'_> {
-    fn get_value(&self) -> u64 {
+    pub fn get_value(&self) -> u64 {
         let config = get_config().unwrap_or_default();
         let key = self.0;
         if config.contains_key(key) {
@@ -192,6 +192,23 @@ impl IntegerKey<'_> {
             env::var(get_env_name(key))
                 .unwrap_or_default()
                 .parse::<u64>()
+                .unwrap_or_else(|_| self.1.to_owned())
+        }
+    }
+}
+
+pub struct BooleanKey<'a>(pub &'a str, pub bool);
+
+impl BooleanKey<'_> {
+    pub fn get_value(&self) -> bool {
+        let config = get_config().unwrap_or_default();
+        let key = self.0;
+        if config.contains_key(key) {
+            config[key].as_bool().unwrap()
+        } else {
+            env::var(get_env_name(key))
+                .unwrap_or_default()
+                .parse::<bool>()
                 .unwrap_or_else(|_| self.1.to_owned())
         }
     }
