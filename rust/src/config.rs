@@ -33,13 +33,15 @@ use toml::Table;
 pub const ARM64_ARCH: &str = "arm64";
 pub const CONFIG_FILE: &str = "selenium-manager-config.toml";
 pub const ENV_PREFIX: &str = "SE_";
+pub const VERSION_PREFIX: &str = "-version";
+pub const PATH_PREFIX: &str = "-path";
 
 pub struct ManagerConfig {
     pub browser_version: String,
     pub driver_version: String,
+    pub browser_path: String,
     pub os: String,
     pub arch: String,
-    pub browser_path: String,
     pub proxy: String,
     pub timeout: u64,
     pub browser_ttl: u64,
@@ -47,7 +49,7 @@ pub struct ManagerConfig {
 }
 
 impl ManagerConfig {
-    pub fn default() -> ManagerConfig {
+    pub fn default(browser_name: &str, driver_name: &str) -> ManagerConfig {
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
             env::var(ENV_PROCESSOR_ARCHITECTURE).unwrap_or_default()
@@ -65,13 +67,20 @@ impl ManagerConfig {
             }
         };
 
+        let browser_version_label = concat(browser_name, VERSION_PREFIX);
+        let driver_version_label = concat(driver_name, VERSION_PREFIX);
+        let browser_path_label = concat(browser_name, PATH_PREFIX);
+
         ManagerConfig {
-            browser_version: StringKey("browser-version", "").get_value(),
-            driver_version: StringKey("driver-version", "").get_value(),
-            os: StringKey("os", self_os).get_value(),
-            arch: StringKey("arch", self_arch.as_str()).get_value(),
-            browser_path: StringKey("browser-path", "").get_value(),
-            proxy: StringKey("proxy", "").get_value(),
+            browser_version: StringKey(vec!["browser-version", browser_version_label.as_str()], "")
+                .get_value(),
+            driver_version: StringKey(vec!["driver-version", driver_version_label.as_str()], "")
+                .get_value(),
+            browser_path: StringKey(vec!["browser-path", browser_path_label.as_str()], "")
+                .get_value(),
+            os: StringKey(vec!["os"], self_os).get_value(),
+            arch: StringKey(vec!["arch"], self_arch.as_str()).get_value(),
+            proxy: StringKey(vec!["proxy"], "").get_value(),
             timeout: IntegerKey("timeout", REQUEST_TIMEOUT_SEC).get_value(),
             browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
             driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
@@ -150,17 +159,24 @@ impl ARCH {
     }
 }
 
-struct StringKey<'a>(&'a str, &'a str);
+struct StringKey<'a>(Vec<&'a str>, &'a str);
 
 impl StringKey<'_> {
     fn get_value(&self) -> String {
         let config = get_config().unwrap_or_default();
-        let key = self.0;
-        if config.contains_key(key) {
-            config[key].as_str().unwrap().to_string()
-        } else {
-            env::var(get_env_name(key)).unwrap_or(self.1.to_owned())
+        let keys = self.0.to_owned();
+        let mut result;
+        for key in keys {
+            if config.contains_key(key) {
+                result = config[key].as_str().unwrap().to_string()
+            } else {
+                result = env::var(get_env_name(key)).unwrap_or_default()
+            }
+            if !result.is_empty() {
+                return result;
+            }
         }
+        self.1.to_owned()
     }
 }
 
@@ -176,7 +192,7 @@ impl IntegerKey<'_> {
             env::var(get_env_name(key))
                 .unwrap_or_default()
                 .parse::<u64>()
-                .unwrap_or(self.1.to_owned())
+                .unwrap_or_else(|_| self.1.to_owned())
         }
     }
 }
@@ -191,4 +207,10 @@ fn get_env_name(key: &str) -> String {
 fn get_config() -> Result<Table, Box<dyn Error>> {
     let config_path = get_cache_folder().join(CONFIG_FILE);
     Ok(read_to_string(config_path)?.parse()?)
+}
+
+fn concat(prefix: &str, suffix: &str) -> String {
+    let mut version_label: String = prefix.to_owned();
+    version_label.push_str(suffix);
+    version_label
 }

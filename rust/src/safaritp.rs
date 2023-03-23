@@ -45,13 +45,15 @@ pub struct SafariTPManager {
 
 impl SafariTPManager {
     pub fn new() -> Result<Box<Self>, String> {
-        let default_config = ManagerConfig::default();
-        let default_timeout = default_config.timeout.to_owned();
-        let default_proxy = default_config.proxy.to_owned();
+        let browser_name = SAFARITP_NAMES[0];
+        let driver_name = SAFARITPDRIVER_NAME;
+        let config = ManagerConfig::default(browser_name, driver_name);
+        let default_timeout = config.timeout.to_owned();
+        let default_proxy = config.proxy.to_owned();
         Ok(Box::new(SafariTPManager {
-            browser_name: SAFARITP_NAMES[0],
-            driver_name: SAFARITPDRIVER_NAME,
-            config: default_config,
+            browser_name,
+            driver_name,
+            config,
             http_client: create_http_client(default_timeout, default_proxy)?,
             log: Logger::default(),
         }))
