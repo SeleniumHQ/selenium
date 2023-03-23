@@ -19,14 +19,20 @@ use crate::config::OS::{LINUX, MACOS, WINDOWS};
 use crate::TTL_BROWSERS_SEC;
 use crate::TTL_DRIVERS_SEC;
 
+use crate::files::get_cache_folder;
 use crate::{
     format_one_arg, run_shell_command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC,
     UNAME_COMMAND,
 };
 use std::env;
 use std::env::consts::OS;
+use std::error::Error;
+use std::fs::read_to_string;
+use toml::Table;
 
 pub const ARM64_ARCH: &str = "arm64";
+pub const CONFIG_FILE: &str = "selenium-manager-config.toml";
+pub const ENV_PREFIX: &str = "SE_";
 
 pub struct ManagerConfig {
     pub browser_version: String,
@@ -58,16 +64,17 @@ impl ManagerConfig {
                 run_shell_command(self_os, uname_m).unwrap_or_default()
             }
         };
+
         ManagerConfig {
-            browser_version: "".to_string(),
-            driver_version: "".to_string(),
-            os: self_os.to_string(),
-            arch: self_arch,
-            browser_path: "".to_string(),
-            proxy: "".to_string(),
-            timeout: REQUEST_TIMEOUT_SEC,
-            browser_ttl: TTL_BROWSERS_SEC,
-            driver_ttl: TTL_DRIVERS_SEC,
+            browser_version: StringKey("browser-version", "").get_value(),
+            driver_version: StringKey("driver-version", "").get_value(),
+            os: StringKey("os", self_os).get_value(),
+            arch: StringKey("arch", self_arch.as_str()).get_value(),
+            browser_path: StringKey("browser-path", "").get_value(),
+            proxy: StringKey("proxy", "").get_value(),
+            timeout: IntegerKey("timeout", REQUEST_TIMEOUT_SEC).get_value(),
+            browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
+            driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
         }
     }
 
@@ -141,4 +148,47 @@ impl ARCH {
         self.to_str_vector()
             .contains(&arch.to_ascii_lowercase().as_str())
     }
+}
+
+struct StringKey<'a>(&'a str, &'a str);
+
+impl StringKey<'_> {
+    fn get_value(&self) -> String {
+        let config = get_config().unwrap_or_default();
+        let key = self.0;
+        if config.contains_key(key) {
+            config[key].as_str().unwrap().to_string()
+        } else {
+            env::var(get_env_name(key)).unwrap_or(self.1.to_owned())
+        }
+    }
+}
+
+struct IntegerKey<'a>(&'a str, u64);
+
+impl IntegerKey<'_> {
+    fn get_value(&self) -> u64 {
+        let config = get_config().unwrap_or_default();
+        let key = self.0;
+        if config.contains_key(key) {
+            config[key].as_integer().unwrap() as u64
+        } else {
+            env::var(get_env_name(key))
+                .unwrap_or_default()
+                .parse::<u64>()
+                .unwrap_or(self.1.to_owned())
+        }
+    }
+}
+
+fn get_env_name(key: &str) -> String {
+    let mut env_name: String = ENV_PREFIX.to_owned();
+    let key_uppercase: String = key.replace('-', "_").to_uppercase();
+    env_name.push_str(&key_uppercase);
+    env_name
+}
+
+fn get_config() -> Result<Table, Box<dyn Error>> {
+    let config_path = get_cache_folder().join(CONFIG_FILE);
+    Ok(read_to_string(config_path)?.parse()?)
 }
