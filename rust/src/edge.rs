@@ -49,17 +49,17 @@ pub struct EdgeManager {
 }
 
 impl EdgeManager {
-    pub fn new() -> Box<Self> {
+    pub fn new() -> Result<Box<Self>, String> {
         let default_config = ManagerConfig::default();
         let default_timeout = default_config.timeout.to_owned();
         let default_proxy = default_config.proxy.to_owned();
-        Box::new(EdgeManager {
+        Ok(Box::new(EdgeManager {
             browser_name: EDGE_NAMES[0],
             driver_name: EDGEDRIVER_NAME,
             config: default_config,
-            http_client: create_http_client(default_timeout, default_proxy),
+            http_client: create_http_client(default_timeout, default_proxy)?,
             log: Logger::default(),
-        })
+        }))
     }
 }
 

@@ -48,17 +48,17 @@ pub struct FirefoxManager {
 }
 
 impl FirefoxManager {
-    pub fn new() -> Box<Self> {
+    pub fn new() -> Result<Box<Self>, String> {
         let default_config = ManagerConfig::default();
         let default_timeout = default_config.timeout.to_owned();
         let default_proxy = default_config.proxy.to_owned();
-        Box::new(FirefoxManager {
+        Ok(Box::new(FirefoxManager {
             browser_name: FIREFOX_NAME,
             driver_name: GECKODRIVER_NAME,
             config: default_config,
-            http_client: create_http_client(default_timeout, default_proxy),
+            http_client: create_http_client(default_timeout, default_proxy)?,
             log: Logger::default(),
-        })
+        }))
     }
 }
 
@@ -270,7 +270,7 @@ mod unit_tests {
 
     #[test]
     fn test_driver_url() {
-        let mut firefox_manager = FirefoxManager::new();
+        let mut firefox_manager = FirefoxManager::new().unwrap();
 
         let data = vec!(
             vec!("0.32.0", "linux", "x86", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux32.tar.gz"),

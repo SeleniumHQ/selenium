@@ -49,17 +49,17 @@ pub struct ChromeManager {
 }
 
 impl ChromeManager {
-    pub fn new() -> Box<Self> {
+    pub fn new() -> Result<Box<Self>, String> {
         let default_config = ManagerConfig::default();
         let default_timeout = default_config.timeout.to_owned();
         let default_proxy = default_config.proxy.to_owned();
-        Box::new(ChromeManager {
+        Ok(Box::new(ChromeManager {
             browser_name: CHROME_NAME,
             driver_name: CHROMEDRIVER_NAME,
             config: default_config,
-            http_client: create_http_client(default_timeout, default_proxy),
+            http_client: create_http_client(default_timeout, default_proxy)?,
             log: Logger::default(),
-        })
+        }))
     }
 }
 
