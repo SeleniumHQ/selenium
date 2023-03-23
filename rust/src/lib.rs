@@ -383,9 +383,11 @@ pub trait SeleniumManager {
     }
 
     fn set_browser_version(&mut self, browser_version: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.browser_version = browser_version;
-        self.set_config(config);
+        if !browser_version.is_empty() {
+            let mut config = ManagerConfig::clone(self.get_config());
+            config.browser_version = browser_version;
+            self.set_config(config);
+        }
     }
 
     fn get_driver_version(&self) -> &str {
@@ -393,9 +395,11 @@ pub trait SeleniumManager {
     }
 
     fn set_driver_version(&mut self, driver_version: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.driver_version = driver_version;
-        self.set_config(config);
+        if !driver_version.is_empty() {
+            let mut config = ManagerConfig::clone(self.get_config());
+            config.driver_version = driver_version;
+            self.set_config(config);
+        }
     }
 
     fn get_browser_path(&self) -> &str {
@@ -403,9 +407,11 @@ pub trait SeleniumManager {
     }
 
     fn set_browser_path(&mut self, browser_path: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.browser_path = browser_path;
-        self.set_config(config);
+        if !browser_path.is_empty() {
+            let mut config = ManagerConfig::clone(self.get_config());
+            config.browser_path = browser_path;
+            self.set_config(config);
+        }
     }
 
     fn get_proxy(&self) -> &str {
