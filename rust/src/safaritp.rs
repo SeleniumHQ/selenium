@@ -25,9 +25,7 @@ use std::string::ToString;
 use crate::files::BrowserPath;
 
 use crate::config::OS::MACOS;
-use crate::{
-    create_default_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE,
-};
+use crate::{create_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE};
 
 pub const SAFARITP_NAMES: &[&str] = &[
     "safaritp",
@@ -47,11 +45,14 @@ pub struct SafariTPManager {
 
 impl SafariTPManager {
     pub fn new() -> Box<Self> {
+        let default_config = ManagerConfig::default();
+        let default_timeout = default_config.timeout.to_owned();
+        let default_proxy = default_config.proxy.to_owned();
         Box::new(SafariTPManager {
             browser_name: SAFARITP_NAMES[0],
             driver_name: SAFARITPDRIVER_NAME,
-            config: ManagerConfig::default(),
-            http_client: create_default_http_client(),
+            config: default_config,
+            http_client: create_http_client(default_timeout, default_proxy),
             log: Logger::default(),
         })
     }

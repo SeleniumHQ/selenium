@@ -21,7 +21,7 @@ use std::process::exit;
 
 use clap::Parser;
 
-use exitcode::{DATAERR, UNAVAILABLE};
+use exitcode::DATAERR;
 
 use selenium_manager::logger::Logger;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
@@ -137,20 +137,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
-    match selenium_manager.set_timeout(cli.timeout) {
-        Ok(_) => {}
-        Err(err) => {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
-        }
-    }
-    match selenium_manager.set_proxy(cli.proxy.unwrap_or_default()) {
-        Ok(_) => {}
-        Err(err) => {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
-        }
-    }
+    selenium_manager.set_timeout(cli.timeout);
+    selenium_manager.set_proxy(cli.proxy.unwrap_or_default());
 
     match selenium_manager.resolve_driver() {
         Ok(driver_path) => {

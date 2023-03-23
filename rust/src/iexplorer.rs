@@ -24,7 +24,7 @@ use std::path::PathBuf;
 
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
-use crate::{create_default_http_client, parse_version, Logger, SeleniumManager};
+use crate::{create_http_client, parse_version, Logger, SeleniumManager};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -55,11 +55,14 @@ pub struct IExplorerManager {
 
 impl IExplorerManager {
     pub fn new() -> Box<Self> {
+        let default_config = ManagerConfig::default();
+        let default_timeout = default_config.timeout.to_owned();
+        let default_proxy = default_config.proxy.to_owned();
         Box::new(IExplorerManager {
             browser_name: IE_NAMES[0],
             driver_name: IEDRIVER_NAME,
-            config: ManagerConfig::default(),
-            http_client: create_default_http_client(),
+            config: default_config,
+            http_client: create_http_client(default_timeout, default_proxy),
             log: Logger::default(),
         })
     }

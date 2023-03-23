@@ -29,7 +29,7 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_default_http_client, format_one_arg, format_two_args, Logger, SeleniumManager, BETA,
+    create_http_client, format_one_arg, format_two_args, Logger, SeleniumManager, BETA,
     DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
     REG_QUERY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
@@ -50,11 +50,14 @@ pub struct EdgeManager {
 
 impl EdgeManager {
     pub fn new() -> Box<Self> {
+        let default_config = ManagerConfig::default();
+        let default_timeout = default_config.timeout.to_owned();
+        let default_proxy = default_config.proxy.to_owned();
         Box::new(EdgeManager {
             browser_name: EDGE_NAMES[0],
             driver_name: EDGEDRIVER_NAME,
-            config: ManagerConfig::default(),
-            http_client: create_default_http_client(),
+            config: default_config,
+            http_client: create_http_client(default_timeout, default_proxy),
             log: Logger::default(),
         })
     }

@@ -30,9 +30,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_default_http_client, format_one_arg, format_two_args, SeleniumManager, BETA,
-    DASH_DASH_VERSION, DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86,
-    FALLBACK_RETRIES, NIGHTLY, REG_QUERY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
+    create_http_client, format_one_arg, format_two_args, SeleniumManager, BETA, DASH_DASH_VERSION,
+    DEV, ENV_LOCALAPPDATA, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, FALLBACK_RETRIES, NIGHTLY,
+    REG_QUERY, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 pub const CHROME_NAME: &str = "chrome";
@@ -50,11 +50,14 @@ pub struct ChromeManager {
 
 impl ChromeManager {
     pub fn new() -> Box<Self> {
+        let default_config = ManagerConfig::default();
+        let default_timeout = default_config.timeout.to_owned();
+        let default_proxy = default_config.proxy.to_owned();
         Box::new(ChromeManager {
             browser_name: CHROME_NAME,
             driver_name: CHROMEDRIVER_NAME,
-            config: ManagerConfig::default(),
-            http_client: create_default_http_client(),
+            config: default_config,
+            http_client: create_http_client(default_timeout, default_proxy),
             log: Logger::default(),
         })
     }

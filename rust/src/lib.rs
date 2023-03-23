@@ -26,7 +26,7 @@ use std::fs;
 use crate::config::OS::WINDOWS;
 use crate::config::{str_to_os, ManagerConfig};
 use is_executable::IsExecutable;
-use reqwest::{Client, ClientBuilder, Proxy};
+use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::{Path, PathBuf};
@@ -412,46 +412,37 @@ pub trait SeleniumManager {
         self.get_config().proxy.as_str()
     }
 
-    fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.proxy = proxy.to_string();
-        self.set_config(config);
-
+    fn set_proxy(&mut self, proxy: String) {
         if !proxy.is_empty() {
+            let mut config = ManagerConfig::clone(self.get_config());
+            config.proxy = proxy.to_string();
+            self.set_config(config);
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
-            self.update_http_proxy()?;
+            self.update_http_client();
         }
-        Ok(())
     }
 
     fn get_timeout(&self) -> u64 {
         self.get_config().timeout
     }
 
-    fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.timeout = timeout;
-        self.set_config(config);
-
-        if timeout != REQUEST_TIMEOUT_SEC {
+    fn set_timeout(&mut self, timeout: u64) {
+        let default_timeout = self.get_config().timeout.to_owned();
+        if timeout != default_timeout {
+            let mut config = ManagerConfig::clone(self.get_config());
+            config.timeout = timeout;
+            self.set_config(config);
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));
-            self.update_http_proxy()?;
+            self.update_http_client();
         }
-        Ok(())
     }
 
-    fn update_http_proxy(&mut self) -> Result<(), Box<dyn Error>> {
-        let proxy = self.get_proxy();
+    fn update_http_client(&mut self) {
+        let proxy = self.get_proxy().to_string();
         let timeout = self.get_timeout();
-
-        let mut builder = http_client_builder().timeout(Duration::from_secs(timeout));
-        if !proxy.is_empty() {
-            builder = builder.proxy(Proxy::all(proxy)?);
-        }
-        let http_client = builder.build()?;
+        let http_client = create_http_client(timeout, proxy);
         self.set_http_client(http_client);
-        Ok(())
     }
 }
 
@@ -508,17 +499,15 @@ pub fn clear_cache(log: &Logger) {
     }
 }
 
-pub fn create_default_http_client() -> Client {
-    http_client_builder()
-        .timeout(Duration::from_secs(REQUEST_TIMEOUT_SEC))
-        .build()
-        .unwrap_or_default()
-}
-
-pub fn http_client_builder() -> ClientBuilder {
-    Client::builder()
+pub fn create_http_client(timeout: u64, proxy: String) -> Client {
+    let mut client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
+        .timeout(Duration::from_secs(timeout));
+    if !proxy.is_empty() {
+        client_builder = client_builder.proxy(Proxy::all(proxy).unwrap());
+    }
+    client_builder.build().unwrap_or_default()
 }
 
 pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Error>> {
