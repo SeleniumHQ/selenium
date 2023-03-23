@@ -214,11 +214,9 @@ impl BooleanKey<'_> {
     }
 }
 
-fn get_env_name(key: &str) -> String {
-    let mut env_name: String = ENV_PREFIX.to_owned();
-    let key_uppercase: String = key.replace('-', "_").to_uppercase();
-    env_name.push_str(&key_uppercase);
-    env_name
+fn get_env_name(suffix: &str) -> String {
+    let suffix_uppercase: String = suffix.replace('-', "_").to_uppercase();
+    concat(ENV_PREFIX, suffix_uppercase.as_str())
 }
 
 fn get_config() -> Result<Table, Box<dyn Error>> {
