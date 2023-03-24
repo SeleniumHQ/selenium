@@ -529,18 +529,16 @@
 77
 78
 79
-80
-81</pre>
+80</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>path:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_path'>path</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_driver_path'>driver_path</span>
   <span class='id identifier rubyid_port'>port</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>DEFAULT_PORT</span>
   <span class='id identifier rubyid_args'>args</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
 
-  <span class='ivar'>@executable_path</span> <span class='op'>=</span> <span class='id identifier rubyid_binary_path'>binary_path</span><span class='lparen'>(</span><span class='id identifier rubyid_path'>path</span><span class='rparen'>)</span>
+  <span class='ivar'>@executable_path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@host</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_localhost'><span class='object_link'><a href="Platform.html#localhost-class_method" title="Selenium::WebDriver::Platform.localhost (method)">localhost</a></span></span>
   <span class='ivar'>@port</span> <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
 
@@ -968,12 +966,12 @@
       <pre class="lines">
 
 
+82
 83
-84
-85</pre>
+84</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 83</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_launch'>launch</span>
   <span class='const'><span class='object_link'><a href="ServiceManager.html" title="Selenium::WebDriver::ServiceManager (class)">ServiceManager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="ServiceManager.html#initialize-instance_method" title="Selenium::WebDriver::ServiceManager#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:start</span><span class='rparen'>)</span>
@@ -998,12 +996,12 @@
       <pre class="lines">
 
 
+86
 87
-88
-89</pre>
+88</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 87</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 86</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shutdown_supported'>shutdown_supported</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>SHUTDOWN_SUPPORTED</span>
@@ -1018,7 +1016,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Feb 17 23:46:41 2023 by
+  Generated on Fri Mar 24 16:24:35 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>

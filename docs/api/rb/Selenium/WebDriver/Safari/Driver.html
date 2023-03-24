@@ -89,6 +89,11 @@
   
   
   
+  <dl>
+      <dt>Includes:</dt>
+      <dd><span class='object_link'><a href="../LocalDriver.html" title="Selenium::WebDriver::LocalDriver (module)">LocalDriver</a></span></dd>
+  </dl>
+  
   
 
   
@@ -228,6 +233,17 @@
   
   
   
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="../LocalDriver.html" title="Selenium::WebDriver::LocalDriver (module)">LocalDriver</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="../LocalDriver.html#initialize_local_driver-instance_method" title="Selenium::WebDriver::LocalDriver#initialize_local_driver (method)">#initialize_local_driver</a></span>, <span class='object_link'><a href="../LocalDriver.html#process_options-instance_method" title="Selenium::WebDriver::LocalDriver#process_options (method)">#process_options</a></span></p>
+
+  
+  
+  
+  
+  
+  
+  
+  
   <h3 class="inherited">Methods inherited from <span class='object_link'><a href="../Driver.html" title="Selenium::WebDriver::Driver (class)">Driver</a></span></h3>
   <p class="inherited"><span class='object_link'><a href="../Driver.html#[]-instance_method" title="Selenium::WebDriver::Driver#[] (method)">#[]</a></span>, <span class='object_link'><a href="../Driver.html#action-instance_method" title="Selenium::WebDriver::Driver#action (method)">#action</a></span>, <span class='object_link'><a href="../Driver.html#add_virtual_authenticator-instance_method" title="Selenium::WebDriver::Driver#add_virtual_authenticator (method)">#add_virtual_authenticator</a></span>, <span class='object_link'><a href="../Driver.html#capabilities-instance_method" title="Selenium::WebDriver::Driver#capabilities (method)">#capabilities</a></span>, <span class='object_link'><a href="../Driver.html#close-instance_method" title="Selenium::WebDriver::Driver#close (method)">#close</a></span>, <span class='object_link'><a href="../Driver.html#current_url-instance_method" title="Selenium::WebDriver::Driver#current_url (method)">#current_url</a></span>, <span class='object_link'><a href="../Driver.html#execute_async_script-instance_method" title="Selenium::WebDriver::Driver#execute_async_script (method)">#execute_async_script</a></span>, <span class='object_link'><a href="../Driver.html#execute_script-instance_method" title="Selenium::WebDriver::Driver#execute_script (method)">#execute_script</a></span>, <span class='object_link'><a href="../Driver.html#for-class_method" title="Selenium::WebDriver::Driver.for (method)">for</a></span>, <span class='object_link'><a href="../Driver.html#get-instance_method" title="Selenium::WebDriver::Driver#get (method)">#get</a></span>, <span class='object_link'><a href="../Driver.html#inspect-instance_method" title="Selenium::WebDriver::Driver#inspect (method)">#inspect</a></span>, <span class='object_link'><a href="../Driver.html#manage-instance_method" title="Selenium::WebDriver::Driver#manage (method)">#manage</a></span>, <span class='object_link'><a href="../Driver.html#navigate-instance_method" title="Selenium::WebDriver::Driver#navigate (method)">#navigate</a></span>, <span class='object_link'><a href="../Driver.html#page_source-instance_method" title="Selenium::WebDriver::Driver#page_source (method)">#page_source</a></span>, <span class='object_link'><a href="../Driver.html#quit-instance_method" title="Selenium::WebDriver::Driver#quit (method)">#quit</a></span>, <span class='object_link'><a href="../Driver.html#ref-instance_method" title="Selenium::WebDriver::Driver#ref (method)">#ref</a></span>, <span class='object_link'><a href="../Driver.html#status-instance_method" title="Selenium::WebDriver::Driver#status (method)">#status</a></span>, <span class='object_link'><a href="../Driver.html#switch_to-instance_method" title="Selenium::WebDriver::Driver#switch_to (method)">#switch_to</a></span>, <span class='object_link'><a href="../Driver.html#title-instance_method" title="Selenium::WebDriver::Driver#title (method)">#title</a></span>, <span class='object_link'><a href="../Driver.html#window_handle-instance_method" title="Selenium::WebDriver::Driver#window_handle (method)">#window_handle</a></span>, <span class='object_link'><a href="../Driver.html#window_handles-instance_method" title="Selenium::WebDriver::Driver#window_handles (method)">#window_handles</a></span></p>
 
@@ -278,19 +294,6 @@
 </div>
 <div class="tags">
   
-<p class="tag_title">Raises:</p>
-<ul class="raise">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>ArgumentError</tt>)</span>
-      
-      
-      
-    </li>
-  
-</ul>
 
 </div><table class="source_code">
   <tr>
@@ -298,22 +301,16 @@
       <pre class="lines">
 
 
-33
-34
 35
 36
 37
-38
-39</pre>
+38</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/driver.rb', line 33</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/driver.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>capabilities:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>options:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>service:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>url:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Can&#39;t initialize </span><span class='embexpr_beg'>#{</span><span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='embexpr_end'>}</span><span class='tstring_content'> with :url</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_url'>url</span>
-
-  <span class='id identifier rubyid_caps'>caps</span> <span class='op'>=</span> <span class='id identifier rubyid_process_options'>process_options</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_capabilities'>capabilities</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_url'>url</span> <span class='op'>=</span> <span class='id identifier rubyid_service_url'>service_url</span><span class='lparen'>(</span><span class='id identifier rubyid_service'>service</span> <span class='op'>||</span> <span class='const'><span class='object_link'><a href="Service.html" title="Selenium::WebDriver::Safari::Service (class)">Service</a></span></span><span class='period'>.</span><span class='id identifier rubyid_safari'><span class='object_link'><a href="../Service.html#safari-class_method" title="Selenium::WebDriver::Service.safari (method)">safari</a></span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span> <span class='op'>=</span> <span class='id identifier rubyid_initialize_local_driver'>initialize_local_driver</span><span class='lparen'>(</span><span class='id identifier rubyid_capabilities'>capabilities</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='id identifier rubyid_service'>service</span><span class='comma'>,</span> <span class='id identifier rubyid_url'>url</span><span class='rparen'>)</span>
   <span class='kw'>super</span><span class='lparen'>(</span><span class='label'>caps:</span> <span class='id identifier rubyid_caps'>caps</span><span class='comma'>,</span> <span class='label'>url:</span> <span class='id identifier rubyid_url'>url</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -356,12 +353,12 @@
       <pre class="lines">
 
 
+40
 41
-42
-43</pre>
+42</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/driver.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/safari/driver.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_browser'>browser</span>
   <span class='symbol'>:safari</span>
@@ -376,7 +373,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Feb 17 23:46:41 2023 by
+  Generated on Fri Mar 24 16:24:35 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.28 (ruby-2.7.6).
 </div>
