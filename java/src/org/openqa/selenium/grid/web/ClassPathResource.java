@@ -30,8 +30,8 @@ import java.util.jar.JarFile;
 public class ClassPathResource implements Resource {
 
   private final Resource delegate;
-
-  public ClassPathResource(URL resourceUrl, String stripPrefix) {
+  
+  public ClassPathResource(URL resourceUrl, String stripPrefix, String subPath) {
     Require.nonNull("Resource URL", resourceUrl);
     Require.nonNull("Prefix to strip", stripPrefix);
 
@@ -40,8 +40,9 @@ public class ClassPathResource implements Resource {
         JarURLConnection juc = (JarURLConnection) resourceUrl.openConnection();
         JarFile jarFile = juc.getJarFile();
 
+        this.delegate = (subPath == null || subPath.isEmpty()) ? new JarFileResource(jarFile, juc.getEntryName(), stripPrefix) : 
+        new PrefixAwareJarFileResource(jarFile, juc.getEntryName(), stripPrefix, subPath);
 
-        this.delegate = new JarFileResource(jarFile, juc.getEntryName(), stripPrefix);
       } catch (IOException e) {
         throw new UncheckedIOException(e);
       }

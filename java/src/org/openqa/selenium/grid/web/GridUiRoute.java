@@ -49,7 +49,7 @@ public class GridUiRoute implements Routable {
     Require.nonNull(prefix, "Prefix cannot be null");
     URL uiRoot = GridUiRoute.class.getResource(GRID_RESOURCE_WITH_PREFIX);
     if (uiRoot != null) {
-      ResourceHandler uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, GRID_RESOURCE));
+      ResourceHandler uiHandler = new ResourceHandler(new ClassPathResource(uiRoot, GRID_RESOURCE, prefix));
       HttpResponse uiRedirect = new HttpResponse()
         .setStatus(HTTP_MOVED_TEMP)
         .addHeader("Location", prefix.concat("/ui"));

@@ -1,5 +1,5 @@
 {
-  "checksum": "bdbfd2e794ac1df04099ef8528f474b3693e7e6918cb0f43d71c8a3756372024",
+  "checksum": "079f8076a0e5ba777ffc47a0809911d6736cfed80c6d99589dbc38da72664c61",
   "crates": {
     "adler 1.0.2": {
       "name": "adler",
@@ -430,7 +430,7 @@
               "target": "quote"
             },
             {
-              "id": "syn 2.0.5",
+              "id": "syn 1.0.109",
               "target": "syn"
             }
           ],
@@ -551,10 +551,14 @@
       "license": "MIT OR Apache-2.0"
     },
     "base64ct 1.6.0": {
+    "base64ct 1.6.0": {
       "name": "base64ct",
+      "version": "1.6.0",
       "version": "1.6.0",
       "repository": {
         "Http": {
+          "url": "https://crates.io/api/v1/crates/base64ct/1.6.0/download",
+          "sha256": "8c3c1a368f70d6cf7302d78f8f7093da241fb8e8807c05cc9e51a125895a6d5b"
           "url": "https://crates.io/api/v1/crates/base64ct/1.6.0/download",
           "sha256": "8c3c1a368f70d6cf7302d78f8f7093da241fb8e8807c05cc9e51a125895a6d5b"
         }
@@ -576,6 +580,7 @@
           "**"
         ],
         "edition": "2021",
+        "version": "1.6.0"
         "version": "1.6.0"
       },
       "license": "Apache-2.0 OR MIT"
@@ -1005,6 +1010,7 @@
           "common": [
             {
               "id": "jobserver 0.1.26",
+              "id": "jobserver 0.1.26",
               "target": "jobserver"
             }
           ],
@@ -1131,13 +1137,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap 4.1.11": {
+    "clap 4.1.8": {
       "name": "clap",
-      "version": "4.1.11",
+      "version": "4.1.8",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap/4.1.11/download",
-          "sha256": "42dfd32784433290c51d92c438bb72ea5063797fc3cc9a21a8c4346bebbb2098"
+          "url": "https://crates.io/api/v1/crates/clap/4.1.8/download",
+          "sha256": "c3d7ae14b20b94cb02149ed21a86c423859cbe18dc7ed69845cace50e52b40a5"
         }
       },
       "targets": [
@@ -1176,11 +1182,11 @@
               "target": "bitflags"
             },
             {
-              "id": "clap_lex 0.3.3",
+              "id": "clap_lex 0.3.2",
               "target": "clap_lex"
             },
             {
-              "id": "is-terminal 0.4.5",
+              "id": "is-terminal 0.4.4",
               "target": "is_terminal"
             },
             {
@@ -1202,23 +1208,23 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "clap_derive 4.1.9",
+              "id": "clap_derive 4.1.8",
               "target": "clap_derive"
             }
           ],
           "selects": {}
         },
-        "version": "4.1.11"
+        "version": "4.1.8"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap_derive 4.1.9": {
+    "clap_derive 4.1.8": {
       "name": "clap_derive",
-      "version": "4.1.9",
+      "version": "4.1.8",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap_derive/4.1.9/download",
-          "sha256": "fddf67631444a3a3e3e5ac51c36a5e01335302de677bd78759eaa90ab1f46644"
+          "url": "https://crates.io/api/v1/crates/clap_derive/4.1.8/download",
+          "sha256": "44bec8e5c9d09e439c4335b1af0abaab56dcf3b94999a936e1bb47b9134288f0"
         }
       },
       "targets": [
@@ -1263,23 +1269,24 @@
             },
             {
               "id": "syn 1.0.109",
+              "id": "syn 1.0.109",
               "target": "syn"
             }
           ],
           "selects": {}
         },
         "edition": "2021",
-        "version": "4.1.9"
+        "version": "4.1.8"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "clap_lex 0.3.3": {
+    "clap_lex 0.3.2": {
       "name": "clap_lex",
-      "version": "0.3.3",
+      "version": "0.3.2",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/clap_lex/0.3.3/download",
-          "sha256": "033f6b7a4acb1f358c742aaca805c939ee73b4c6209ae4318ec7aca81c42e646"
+          "url": "https://crates.io/api/v1/crates/clap_lex/0.3.2/download",
+          "sha256": "350b9cf31731f9957399229e9b2adc51eeabdfbe9d71d9a0552275fd12710d09"
         }
       },
       "targets": [
@@ -1308,7 +1315,7 @@
           "selects": {}
         },
         "edition": "2021",
-        "version": "0.3.3"
+        "version": "0.3.2"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -1347,6 +1354,7 @@
         "deps": {
           "common": [
             {
+              "id": "crossbeam-utils 0.8.15",
               "id": "crossbeam-utils 0.8.15",
               "target": "crossbeam_utils"
             }
@@ -1506,10 +1514,14 @@
       "license": "MIT OR Apache-2.0"
     },
     "crossbeam-utils 0.8.15": {
+    "crossbeam-utils 0.8.15": {
       "name": "crossbeam-utils",
+      "version": "0.8.15",
       "version": "0.8.15",
       "repository": {
         "Http": {
+          "url": "https://crates.io/api/v1/crates/crossbeam-utils/0.8.15/download",
+          "sha256": "3c063cd8cc95f5c377ed0d4b49a4b21f632396ff690e8470c29b3359b346984b"
           "url": "https://crates.io/api/v1/crates/crossbeam-utils/0.8.15/download",
           "sha256": "3c063cd8cc95f5c377ed0d4b49a4b21f632396ff690e8470c29b3359b346984b"
         }
@@ -1554,12 +1566,14 @@
             },
             {
               "id": "crossbeam-utils 0.8.15",
+              "id": "crossbeam-utils 0.8.15",
               "target": "build_script_build"
             }
           ],
           "selects": {}
         },
         "edition": "2018",
+        "version": "0.8.15"
         "version": "0.8.15"
       },
       "build_script_attrs": {
@@ -1667,6 +1681,7 @@
               "target": "retain_mut"
             },
             {
+              "id": "tokio 1.26.0",
               "id": "tokio 1.26.0",
               "target": "tokio"
             }
@@ -2075,7 +2090,7 @@
               "target": "humantime"
             },
             {
-              "id": "is-terminal 0.4.5",
+              "id": "is-terminal 0.4.4",
               "target": "is_terminal"
             },
             {
@@ -2924,6 +2939,7 @@
             },
             {
               "id": "syn 1.0.109",
+              "id": "syn 1.0.109",
               "target": "syn"
             }
           ],
@@ -3379,10 +3395,14 @@
       "license": "MIT OR Apache-2.0"
     },
     "h2 0.3.16": {
+    "h2 0.3.16": {
       "name": "h2",
+      "version": "0.3.16",
       "version": "0.3.16",
       "repository": {
         "Http": {
+          "url": "https://crates.io/api/v1/crates/h2/0.3.16/download",
+          "sha256": "5be7b54589b581f624f566bf5d8eb2bab1db736c51528720b6bd36b96b55924d"
           "url": "https://crates.io/api/v1/crates/h2/0.3.16/download",
           "sha256": "5be7b54589b581f624f566bf5d8eb2bab1db736c51528720b6bd36b96b55924d"
         }
@@ -3439,6 +3459,7 @@
             },
             {
               "id": "tokio 1.26.0",
+              "id": "tokio 1.26.0",
               "target": "tokio"
             },
             {
@@ -3453,6 +3474,7 @@
           "selects": {}
         },
         "edition": "2018",
+        "version": "0.3.16"
         "version": "0.3.16"
       },
       "license": "MIT"
@@ -4030,6 +4052,7 @@
             },
             {
               "id": "h2 0.3.16",
+              "id": "h2 0.3.16",
               "target": "h2"
             },
             {
@@ -4061,6 +4084,7 @@
               "target": "socket2"
             },
             {
+              "id": "tokio 1.26.0",
               "id": "tokio 1.26.0",
               "target": "tokio"
             },
@@ -4124,6 +4148,7 @@
               "target": "rustls"
             },
             {
+              "id": "tokio 1.26.0",
               "id": "tokio 1.26.0",
               "target": "tokio"
             },
@@ -4489,13 +4514,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "is-terminal 0.4.5": {
+    "is-terminal 0.4.4": {
       "name": "is-terminal",
-      "version": "0.4.5",
+      "version": "0.4.4",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/is-terminal/0.4.5/download",
-          "sha256": "8687c819457e979cc940d09cb16e42a1bf70aa6b60a549de6d3a62a0ee90c69e"
+          "url": "https://crates.io/api/v1/crates/is-terminal/0.4.4/download",
+          "sha256": "21b6b32576413a8e69b90e952e4a026476040d81017b80445deda5f2d3921857"
         }
       },
       "targets": [
@@ -4543,7 +4568,7 @@
           }
         },
         "edition": "2018",
-        "version": "0.4.5"
+        "version": "0.4.4"
       },
       "license": "MIT"
     },
@@ -4666,10 +4691,14 @@
       "license": "MIT OR Apache-2.0"
     },
     "jobserver 0.1.26": {
+    "jobserver 0.1.26": {
       "name": "jobserver",
+      "version": "0.1.26",
       "version": "0.1.26",
       "repository": {
         "Http": {
+          "url": "https://crates.io/api/v1/crates/jobserver/0.1.26/download",
+          "sha256": "936cfd212a0155903bcbc060e316fb6cc7cbf2e1907329391ebadc1fe0ce77c2"
           "url": "https://crates.io/api/v1/crates/jobserver/0.1.26/download",
           "sha256": "936cfd212a0155903bcbc060e316fb6cc7cbf2e1907329391ebadc1fe0ce77c2"
         }
@@ -4702,6 +4731,7 @@
           }
         },
         "edition": "2018",
+        "version": "0.1.26"
         "version": "0.1.26"
       },
       "license": "MIT/Apache-2.0"
@@ -5331,6 +5361,7 @@
           "common": [
             {
               "id": "base64ct 1.6.0",
+              "id": "base64ct 1.6.0",
               "target": "base64ct"
             },
             {
@@ -5761,6 +5792,7 @@
               "target": "quote"
             },
             {
+              "id": "syn 1.0.109",
               "id": "syn 1.0.109",
               "target": "syn"
             }
@@ -6461,7 +6493,7 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "reqwest 0.11.15": {
+    "reqwest 0.11.14": {
       "name": "reqwest",
       "version": "0.11.15",
       "repository": {
@@ -6547,6 +6579,7 @@
               },
               {
                 "id": "h2 0.3.16",
+                "id": "h2 0.3.16",
                 "target": "h2"
               },
               {
@@ -6594,6 +6627,7 @@
                 "target": "rustls_pemfile"
               },
               {
+                "id": "tokio 1.26.0",
                 "id": "tokio 1.26.0",
                 "target": "tokio"
               },
@@ -6901,6 +6935,7 @@
             },
             {
               "id": "syn 1.0.109",
+              "id": "syn 1.0.109",
               "target": "syn"
             },
             {
@@ -7002,18 +7037,15 @@
         "compile_data_glob": [
           "**"
         ],
-        "crate_features": {
-          "common": [
-            "default",
-            "fs",
-            "io-lifetimes",
-            "libc",
-            "std",
-            "termios",
-            "use-libc-auxv"
-          ],
-          "selects": {}
-        },
+        "crate_features": [
+          "default",
+          "fs",
+          "io-lifetimes",
+          "libc",
+          "std",
+          "termios",
+          "use-libc-auxv"
+        ],
         "deps": {
           "common": [
             {
@@ -7289,7 +7321,7 @@
         "deps": {
           "common": [
             {
-              "id": "clap 4.1.11",
+              "id": "clap 4.1.8",
               "target": "clap"
             },
             {
@@ -7342,9 +7374,11 @@
             },
             {
               "id": "tempfile 3.4.0",
+              "id": "tempfile 3.4.0",
               "target": "tempfile"
             },
             {
+              "id": "tokio 1.26.0",
               "id": "tokio 1.26.0",
               "target": "tokio"
             },
@@ -7563,7 +7597,7 @@
               "target": "build_script_build"
             },
             {
-              "id": "syn 2.0.5",
+              "id": "syn 1.0.109",
               "target": "syn"
             }
           ],
@@ -8075,10 +8109,14 @@
       "license": "BSD-3-Clause"
     },
     "syn 1.0.109": {
+    "syn 1.0.109": {
       "name": "syn",
+      "version": "1.0.109",
       "version": "1.0.109",
       "repository": {
         "Http": {
+          "url": "https://crates.io/api/v1/crates/syn/1.0.109/download",
+          "sha256": "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237"
           "url": "https://crates.io/api/v1/crates/syn/1.0.109/download",
           "sha256": "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237"
         }
@@ -8136,6 +8174,7 @@
             },
             {
               "id": "syn 1.0.109",
+              "id": "syn 1.0.109",
               "target": "build_script_build"
             },
             {
@@ -8146,6 +8185,7 @@
           "selects": {}
         },
         "edition": "2018",
+        "version": "1.0.109"
         "version": "1.0.109"
       },
       "build_script_attrs": {
@@ -8274,10 +8314,14 @@
       "license": "MIT/Apache-2.0"
     },
     "tempfile 3.4.0": {
+    "tempfile 3.4.0": {
       "name": "tempfile",
+      "version": "3.4.0",
       "version": "3.4.0",
       "repository": {
         "Http": {
+          "url": "https://crates.io/api/v1/crates/tempfile/3.4.0/download",
+          "sha256": "af18f7ae1acd354b992402e9ec5864359d693cd8a79dcbef59f76891701c1e95"
           "url": "https://crates.io/api/v1/crates/tempfile/3.4.0/download",
           "sha256": "af18f7ae1acd354b992402e9ec5864359d693cd8a79dcbef59f76891701c1e95"
         }
@@ -8312,7 +8356,7 @@
           "selects": {
             "cfg(any(unix, target_os = \"wasi\"))": [
               {
-                "id": "rustix 0.36.11",
+                "id": "rustix 0.36.8",
                 "target": "rustix"
               }
             ],
@@ -8326,11 +8370,14 @@
               {
                 "id": "windows-sys 0.42.0",
                 "target": "windows_sys"
+                "id": "windows-sys 0.42.0",
+                "target": "windows_sys"
               }
             ]
           }
         },
         "edition": "2018",
+        "version": "3.4.0"
         "version": "3.4.0"
       },
       "license": "MIT OR Apache-2.0"
@@ -8504,7 +8551,7 @@
               "target": "quote"
             },
             {
-              "id": "syn 2.0.5",
+              "id": "syn 1.0.109",
               "target": "syn"
             }
           ],
@@ -8516,10 +8563,14 @@
       "license": "MIT OR Apache-2.0"
     },
     "time 0.3.20": {
+    "time 0.3.20": {
       "name": "time",
+      "version": "0.3.20",
       "version": "0.3.20",
       "repository": {
         "Http": {
+          "url": "https://crates.io/api/v1/crates/time/0.3.20/download",
+          "sha256": "cd0cbfecb4d19b5ea75bb31ad904eb5b9fa13f21079c3b92017ebdf4999a5890"
           "url": "https://crates.io/api/v1/crates/time/0.3.20/download",
           "sha256": "cd0cbfecb4d19b5ea75bb31ad904eb5b9fa13f21079c3b92017ebdf4999a5890"
         }
@@ -8561,6 +8612,7 @@
           "selects": {}
         },
         "edition": "2021",
+        "version": "0.3.20"
         "version": "0.3.20"
       },
       "license": "MIT OR Apache-2.0"
@@ -8673,10 +8725,14 @@
       "license": "MIT OR Apache-2.0 OR Zlib"
     },
     "tokio 1.26.0": {
+    "tokio 1.26.0": {
       "name": "tokio",
+      "version": "1.26.0",
       "version": "1.26.0",
       "repository": {
         "Http": {
+          "url": "https://crates.io/api/v1/crates/tokio/1.26.0/download",
+          "sha256": "03201d01c3c27a29c8a5cee5b55a93ddae1ccf6f08f65365c2c918f8c1b76f64"
           "url": "https://crates.io/api/v1/crates/tokio/1.26.0/download",
           "sha256": "03201d01c3c27a29c8a5cee5b55a93ddae1ccf6f08f65365c2c918f8c1b76f64"
         }
@@ -8751,12 +8807,14 @@
             },
             {
               "id": "tokio 1.26.0",
+              "id": "tokio 1.26.0",
               "target": "build_script_build"
             }
           ],
           "selects": {
             "cfg(docsrs)": [
               {
+                "id": "windows-sys 0.45.0",
                 "id": "windows-sys 0.45.0",
                 "target": "windows_sys"
               }
@@ -8776,6 +8834,7 @@
             "cfg(windows)": [
               {
                 "id": "windows-sys 0.45.0",
+                "id": "windows-sys 0.45.0",
                 "target": "windows_sys"
               }
             ]
@@ -8791,6 +8850,7 @@
           ],
           "selects": {}
         },
+        "version": "1.26.0"
         "version": "1.26.0"
       },
       "build_script_attrs": {
@@ -8846,6 +8906,7 @@
             },
             {
               "id": "syn 1.0.109",
+              "id": "syn 1.0.109",
               "target": "syn"
             }
           ],
@@ -8896,6 +8957,7 @@
               "target": "rustls"
             },
             {
+              "id": "tokio 1.26.0",
               "id": "tokio 1.26.0",
               "target": "tokio"
             },
@@ -8963,6 +9025,7 @@
               "target": "pin_project_lite"
             },
             {
+              "id": "tokio 1.26.0",
               "id": "tokio 1.26.0",
               "target": "tokio"
             },
@@ -9473,9 +9536,48 @@
           "Library": {
             "crate_name": "wait_timeout",
             "crate_root": "src/lib.rs",
-            "srcs": [
-              "**/*.rs"
-            ]
+            "srcs": {
+              "include": [
+                "**/*.rs"
+              ],
+              "exclude": []
+            }
+          }
+        },
+        {
+          "Binary": {
+            "crate_name": "exit",
+            "crate_root": "src/bin/exit.rs",
+            "srcs": {
+              "include": [
+                "**/*.rs"
+              ],
+              "exclude": []
+            }
+          }
+        },
+        {
+          "Binary": {
+            "crate_name": "reader",
+            "crate_root": "src/bin/reader.rs",
+            "srcs": {
+              "include": [
+                "**/*.rs"
+              ],
+              "exclude": []
+            }
+          }
+        },
+        {
+          "Binary": {
+            "crate_name": "sleep",
+            "crate_root": "src/bin/sleep.rs",
+            "srcs": {
+              "include": [
+                "**/*.rs"
+              ],
+              "exclude": []
+            }
           }
         }
       ],
@@ -9776,6 +9878,7 @@
             },
             {
               "id": "syn 1.0.109",
+              "id": "syn 1.0.109",
               "target": "syn"
             },
             {
@@ -9935,6 +10038,7 @@
               "target": "quote"
             },
             {
+              "id": "syn 1.0.109",
               "id": "syn 1.0.109",
               "target": "syn"
             },
@@ -10433,16 +10537,13 @@
         "compile_data_glob": [
           "**"
         ],
-        "crate_features": {
-          "common": [
-            "Win32",
-            "Win32_Foundation",
-            "Win32_Storage",
-            "Win32_Storage_FileSystem",
-            "default"
-          ],
-          "selects": {}
-        },
+        "crate_features": [
+          "Win32",
+          "Win32_Foundation",
+          "Win32_Storage",
+          "Win32_Storage_FileSystem",
+          "default"
+        ],
         "deps": {
           "common": [],
           "selects": {
@@ -10550,29 +10651,26 @@
         "compile_data_glob": [
           "**"
         ],
-        "crate_features": {
-          "common": [
-            "Win32",
-            "Win32_Foundation",
-            "Win32_NetworkManagement",
-            "Win32_NetworkManagement_IpHelper",
-            "Win32_Networking",
-            "Win32_Networking_WinSock",
-            "Win32_Security",
-            "Win32_Security_Authorization",
-            "Win32_Storage",
-            "Win32_Storage_FileSystem",
-            "Win32_System",
-            "Win32_System_Console",
-            "Win32_System_IO",
-            "Win32_System_Pipes",
-            "Win32_System_SystemServices",
-            "Win32_System_Threading",
-            "Win32_System_WindowsProgramming",
-            "default"
-          ],
-          "selects": {}
-        },
+        "crate_features": [
+          "Win32",
+          "Win32_Foundation",
+          "Win32_NetworkManagement",
+          "Win32_NetworkManagement_IpHelper",
+          "Win32_Networking",
+          "Win32_Networking_WinSock",
+          "Win32_Security",
+          "Win32_Security_Authorization",
+          "Win32_Storage",
+          "Win32_Storage_FileSystem",
+          "Win32_System",
+          "Win32_System_Console",
+          "Win32_System_IO",
+          "Win32_System_Pipes",
+          "Win32_System_SystemServices",
+          "Win32_System_Threading",
+          "Win32_System_WindowsProgramming",
+          "default"
+        ],
         "deps": {
           "common": [],
           "selects": {
@@ -11201,6 +11299,7 @@
             },
             {
               "id": "tokio 1.26.0",
+              "id": "tokio 1.26.0",
               "target": "tokio"
             }
           ],
@@ -11348,6 +11447,7 @@
             },
             {
               "id": "time 0.3.20",
+              "id": "time 0.3.20",
               "target": "time"
             },
             {
@@ -11358,6 +11458,7 @@
           "selects": {
             "cfg(any(all(target_arch = \"arm\", target_pointer_width = \"32\"), target_arch = \"mips\", target_arch = \"powerpc\"))": [
               {
+                "id": "crossbeam-utils 0.8.15",
                 "id": "crossbeam-utils 0.8.15",
                 "target": "crossbeam_utils"
               }
@@ -11567,7 +11668,13 @@
       "license": "MIT/Apache-2.0"
     }
   },
-  "binary_crates": [],
+  "binary_crates": [
+    "assert_cmd 2.0.8",
+    "cc 1.0.79",
+    "clap 4.1.8",
+    "wait-timeout 0.2.0",
+    "webpki-roots 0.22.6"
+  ],
   "workspace_members": {
     "selenium-manager 1.0.0-M3": "rust"
   },
