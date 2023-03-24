@@ -54,5 +54,6 @@
     <file src="..\icon.png" target="images" />
     <file src="..\manager\**" target="manager" />
     <file src="..\Selenium.WebDriver.targets" target="build" />
+    <file src="..\Selenium.WebDriver.targets" target="buildTransitive" />
   </files>
 </package>
