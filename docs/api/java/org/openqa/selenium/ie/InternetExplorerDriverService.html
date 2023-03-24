@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":9,"i1":10,"i2":10,"i3":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -231,6 +231,11 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IE_DRIVER_NAME">IE_DRIVER_NAME</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IE_DRIVER_SILENT_PROPERTY">IE_DRIVER_SILENT_PROPERTY</a></span></code></th>
 <td class="colLast">
 <div class="block">System property that defines logging to stdout for IEDriverServer.</div>
@@ -255,7 +260,7 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -268,13 +273,28 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <div class="block">Configures and returns a new <a href="InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> using the default configuration.</div>
 </td>
 </tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code><a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDefaultDriverOptions()">getDefaultDriverOptions</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDriverName()">getDriverName</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDriverProperty()">getDriverProperty</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.remote.service.DriverService">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.service.<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></h3>
-<code><a href="../remote/service/DriverService.html#checkExecutable(java.io.File)">checkExecutable</a>, <a href="../remote/service/DriverService.html#close()">close</a>, <a href="../remote/service/DriverService.html#findExecutable(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">findExecutable</a>, <a href="../remote/service/DriverService.html#getArgs()">getArgs</a>, <a href="../remote/service/DriverService.html#getEnvironment()">getEnvironment</a>, <a href="../remote/service/DriverService.html#getOutputStream()">getOutputStream</a>, <a href="../remote/service/DriverService.html#getTimeout()">getTimeout</a>, <a href="../remote/service/DriverService.html#getUrl()">getUrl</a>, <a href="../remote/service/DriverService.html#getUrl(int)">getUrl</a>, <a href="../remote/service/DriverService.html#hasShutdownEndpoint()">hasShutdownEndpoint</a>, <a href="../remote/service/DriverService.html#isRunning()">isRunning</a>, <a href="../remote/service/DriverService.html#sendOutputTo(java.io.OutputStream)">sendOutputTo</a>, <a href="../remote/service/DriverService.html#start()">start</a>, <a href="../remote/service/DriverService.html#stop()">stop</a>, <a href="../remote/service/DriverService.html#waitUntilAvailable()">waitUntilAvailable</a></code></li>
+<code><a href="../remote/service/DriverService.html#close()">close</a>, <a href="../remote/service/DriverService.html#findExePath(java.lang.String,java.lang.String)">findExePath</a>, <a href="../remote/service/DriverService.html#getArgs()">getArgs</a>, <a href="../remote/service/DriverService.html#getDriverExecutable()">getDriverExecutable</a>, <a href="../remote/service/DriverService.html#getEnvironment()">getEnvironment</a>, <a href="../remote/service/DriverService.html#getExecutable()">getExecutable</a>, <a href="../remote/service/DriverService.html#getOutputStream()">getOutputStream</a>, <a href="../remote/service/DriverService.html#getTimeout()">getTimeout</a>, <a href="../remote/service/DriverService.html#getUrl()">getUrl</a>, <a href="../remote/service/DriverService.html#getUrl(int)">getUrl</a>, <a href="../remote/service/DriverService.html#hasShutdownEndpoint()">hasShutdownEndpoint</a>, <a href="../remote/service/DriverService.html#isRunning()">isRunning</a>, <a href="../remote/service/DriverService.html#sendOutputTo(java.io.OutputStream)">sendOutputTo</a>, <a href="../remote/service/DriverService.html#setExecutable(java.lang.String)">setExecutable</a>, <a href="../remote/service/DriverService.html#start()">start</a>, <a href="../remote/service/DriverService.html#stop()">stop</a>, <a href="../remote/service/DriverService.html#waitUntilAvailable()">waitUntilAvailable</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -299,6 +319,19 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a id="IE_DRIVER_NAME">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>IE_DRIVER_NAME</h4>
+<pre>public static final&nbsp;java.lang.String IE_DRIVER_NAME</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriverService.IE_DRIVER_NAME">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
 <a id="IE_DRIVER_EXE_PROPERTY">
 <!--   -->
 </a>
@@ -395,6 +428,45 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="getDriverName()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDriverName</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getDriverName()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../remote/service/DriverService.html#getDriverName()">getDriverName</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getDriverProperty()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDriverProperty</h4>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getDriverProperty()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../remote/service/DriverService.html#getDriverProperty()">getDriverProperty</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="getDefaultDriverOptions()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDefaultDriverOptions</h4>
+<pre class="methodSignature">public&nbsp;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;getDefaultDriverOptions()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../remote/service/DriverService.html#getDefaultDriverOptions()">getDefaultDriverOptions</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
+</dl>
+</li>
+</ul>
 <a id="createDefaultService()">
 <!--   -->
 </a>

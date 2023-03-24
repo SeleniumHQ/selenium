@@ -168,7 +168,7 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDriverPath(java.lang.String)">getDriverPath</a></span>&#8203;(java.lang.String&nbsp;driverName)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDriverPath(org.openqa.selenium.Capabilities)">getDriverPath</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;options)</code></th>
 <td class="colLast">
 <div class="block">Determines the location of the correct driver.</div>
 </td>
@@ -211,17 +211,17 @@ extends java.lang.Object</pre>
 <pre class="methodSignature">public static&nbsp;<a href="SeleniumManager.html" title="class in org.openqa.selenium.manager">SeleniumManager</a>&nbsp;getInstance()</pre>
 </li>
 </ul>
-<a id="getDriverPath(java.lang.String)">
+<a id="getDriverPath(org.openqa.selenium.Capabilities)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>getDriverPath</h4>
-<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getDriverPath&#8203;(java.lang.String&nbsp;driverName)</pre>
+<pre class="methodSignature">public&nbsp;java.lang.String&nbsp;getDriverPath&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;options)</pre>
 <div class="block">Determines the location of the correct driver.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>driverName</code> - which driver the service needs.</dd>
+<dd><code>options</code> - Browser Options instance.</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the location of the driver.</dd>
 </dl>

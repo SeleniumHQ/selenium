@@ -201,19 +201,25 @@ implements <a href="HasPermissions.html" title="interface in org.openqa.selenium
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.safari.SafariOptions)">SafariDriver</a></span>&#8203;(<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;safariServer,
-            <a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;safariOptions)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.safari.SafariOptions)">SafariDriver</a></span>&#8203;(<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+            <a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;options)</code></th>
 <td class="colLast">
 <div class="block">Initializes a new SafariDriver using the specified <a href="SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>.</div>
 </td>
 </tr>
 <tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.safari.SafariOptions,org.openqa.selenium.remote.http.ClientConfig)">SafariDriver</a></span>&#8203;(<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+            <a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;options,
+            <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.safari.SafariDriverService)">SafariDriver</a></span>&#8203;(<a href="SafariDriverService.html" title="class in org.openqa.selenium.safari">SafariDriverService</a>&nbsp;safariService)</code></th>
 <td class="colLast">
 <div class="block">Initializes a new SafariDriver backed by the specified <a href="SafariDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariDriverService</code></a>.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.safari.SafariOptions)">SafariDriver</a></span>&#8203;(<a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;safariOptions)</code></th>
 <td class="colLast">
 <div class="block">Initializes a new SafariDriver using the specified <a href="SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>.</div>
@@ -350,16 +356,28 @@ implements <a href="HasPermissions.html" title="interface in org.openqa.selenium
 <a id="&lt;init&gt;(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.safari.SafariOptions)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>SafariDriver</h4>
-<pre>public&nbsp;SafariDriver&#8203;(<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;safariServer,
-                    <a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;safariOptions)</pre>
+<pre>public&nbsp;SafariDriver&#8203;(<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+                    <a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;options)</pre>
 <div class="block">Initializes a new SafariDriver using the specified <a href="SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>safariOptions</code> - safari specific options / capabilities for the driver</dd>
+<dd><code>service</code> - either <a href="SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariTechPreviewDriverService</code></a> or <a href="SafariDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariDriverService</code></a></dd>
+<dd><code>options</code> - safari specific options / capabilities for the driver</dd>
 </dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.safari.SafariOptions,org.openqa.selenium.remote.http.ClientConfig)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>SafariDriver</h4>
+<pre>public&nbsp;SafariDriver&#8203;(<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+                    <a href="SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;options,
+                    <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</pre>
 </li>
 </ul>
 </li>

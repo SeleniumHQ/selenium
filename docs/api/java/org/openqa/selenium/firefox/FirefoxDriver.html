@@ -26,8 +26,8 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
+var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":42,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":42,"i12":10,"i13":10,"i14":10,"i15":10};
+var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"],32:["t6","Deprecated Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
 var tableTab = "tableTab";
@@ -235,6 +235,12 @@ implements <a href="../html5/WebStorage.html" title="interface in org.openqa.sel
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.firefox.FirefoxDriverService,org.openqa.selenium.firefox.FirefoxOptions,org.openqa.selenium.remote.http.ClientConfig)">FirefoxDriver</a></span>&#8203;(<a href="FirefoxDriverService.html" title="class in org.openqa.selenium.firefox">FirefoxDriverService</a>&nbsp;service,
+             <a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;options,
+             <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(org.openqa.selenium.firefox.FirefoxOptions)">FirefoxDriver</a></span>&#8203;(<a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;options)</code></th>
 <td class="colLast">
 <div class="block">Creates a new FirefoxDriver instance with the specified options.</div>
@@ -252,7 +258,7 @@ implements <a href="../html5/WebStorage.html" title="interface in org.openqa.sel
 </a>
 <h3>Method Summary</h3>
 <table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
+<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t2" class="tableTab"><span><a href="javascript:show(2);">Instance Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t6" class="tableTab"><span><a href="javascript:show(32);">Deprecated Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
 <tr>
 <th class="colFirst" scope="col">Modifier and Type</th>
 <th class="colSecond" scope="col">Method</th>
@@ -283,7 +289,11 @@ implements <a href="../html5/WebStorage.html" title="interface in org.openqa.sel
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDevTools()">getDevTools</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use W3C-compliant BiDi protocol.</div>
+</div>
+</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code>&lt;X&gt;&nbsp;X</code></td>
@@ -323,7 +333,11 @@ implements <a href="../html5/WebStorage.html" title="interface in org.openqa.sel
 <tr id="i11" class="rowColor">
 <td class="colFirst"><code>java.util.Optional&lt;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#maybeGetDevTools()">maybeGetDevTools</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use W3C-compliant BiDi protocol.</div>
+</div>
+</td>
 </tr>
 <tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -442,11 +456,22 @@ implements <a href="../html5/WebStorage.html" title="interface in org.openqa.sel
 <a id="&lt;init&gt;(org.openqa.selenium.firefox.FirefoxDriverService,org.openqa.selenium.firefox.FirefoxOptions)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>FirefoxDriver</h4>
 <pre>public&nbsp;FirefoxDriver&#8203;(<a href="FirefoxDriverService.html" title="class in org.openqa.selenium.firefox">FirefoxDriverService</a>&nbsp;service,
                      <a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;options)</pre>
+</li>
+</ul>
+<a id="&lt;init&gt;(org.openqa.selenium.firefox.FirefoxDriverService,org.openqa.selenium.firefox.FirefoxOptions,org.openqa.selenium.remote.http.ClientConfig)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>FirefoxDriver</h4>
+<pre>public&nbsp;FirefoxDriver&#8203;(<a href="FirefoxDriverService.html" title="class in org.openqa.selenium.firefox">FirefoxDriverService</a>&nbsp;service,
+                     <a href="FirefoxOptions.html" title="class in org.openqa.selenium.firefox">FirefoxOptions</a>&nbsp;options,
+                     <a href="../remote/http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</pre>
 </li>
 </ul>
 </li>
@@ -648,7 +673,11 @@ public static&nbsp;<a href="../remote/RemoteWebDriverBuilder.html" title="class 
 <ul class="blockList">
 <li class="blockList">
 <h4>maybeGetDevTools</h4>
-<pre class="methodSignature">public&nbsp;java.util.Optional&lt;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;&nbsp;maybeGetDevTools()</pre>
+<pre class="methodSignature">@Deprecated
+public&nbsp;java.util.Optional&lt;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&gt;&nbsp;maybeGetDevTools()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use W3C-compliant BiDi protocol. Use {<a href="#maybeGetBiDi()"><code>maybeGetBiDi()</code></a>}</div>
+</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../devtools/HasDevTools.html#maybeGetDevTools()">maybeGetDevTools</a></code>&nbsp;in interface&nbsp;<code><a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></code></dd>
@@ -661,7 +690,11 @@ public static&nbsp;<a href="../remote/RemoteWebDriverBuilder.html" title="class 
 <ul class="blockList">
 <li class="blockList">
 <h4>getDevTools</h4>
-<pre class="methodSignature">public&nbsp;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&nbsp;getDevTools()</pre>
+<pre class="methodSignature">@Deprecated
+public&nbsp;<a href="../devtools/DevTools.html" title="class in org.openqa.selenium.devtools">DevTools</a>&nbsp;getDevTools()</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">Use W3C-compliant BiDi protocol. Use {<a href="#getBiDi()"><code>getBiDi()</code></a>}</div>
+</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../devtools/HasDevTools.html#getDevTools()">getDevTools</a></code>&nbsp;in interface&nbsp;<code><a href="../devtools/HasDevTools.html" title="interface in org.openqa.selenium.devtools">HasDevTools</a></code></dd>

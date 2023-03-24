@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -218,15 +218,22 @@ extends <a href="../chromium/ChromiumDriverInfo.html" title="class in org.openqa
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isPresent()">isPresent</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Checks whether the browser driver is already present on the host machine.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSupporting(org.openqa.selenium.Capabilities)">isSupporting</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSupportingBiDi()">isSupportingBiDi</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSupportingCdp()">isSupportingCdp</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -369,7 +376,23 @@ extends <a href="../chromium/ChromiumDriverInfo.html" title="class in org.openqa
  to instantiate the driver itself.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>Whether or not the prerequisites required for this <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> are present.</dd>
+<dd>Whether the prerequisites required for this <a href="../WebDriver.html" title="interface in org.openqa.selenium"><code>WebDriver</code></a> are present.</dd>
+</dl>
+</li>
+</ul>
+<a id="isPresent()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isPresent</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isPresent()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../WebDriverInfo.html#isPresent()">WebDriverInfo</a></code></span></div>
+<div class="block">Checks whether the browser driver is already present on the host machine. Different from
+ <a href="../WebDriverInfo.html#isAvailable()"><code>WebDriverInfo.isAvailable()</code></a> which uses Selenium Manager to obtain the driver when not present.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the browser driver is present on the host machine.</dd>
 </dl>
 </li>
 </ul>

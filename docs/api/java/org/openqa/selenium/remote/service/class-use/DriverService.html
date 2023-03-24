@@ -191,6 +191,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
                              java.util.Map&lt;java.lang.String,&#8203;<a href="../../CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;&nbsp;extraCommands)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../chromium/ChromiumDriverCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,java.util.Map,org.openqa.selenium.remote.http.ClientConfig)">ChromiumDriverCommandExecutor</a></span>&#8203;(<a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+                             java.util.Map&lt;java.lang.String,&#8203;<a href="../../CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;&nbsp;extraCommands,
+                             <a href="../../http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -362,6 +368,22 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tbody>
 </table>
 <table class="useSummary">
+<caption><span>Methods in <a href="../package-summary.html">org.openqa.selenium.remote.service</a> with parameters of type <a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Method</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">DriverFinder.</span><code><span class="memberNameLink"><a href="../DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)">getPath</a></span>&#8203;(<a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+       <a href="../../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;options)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table class="useSummary">
 <caption><span>Constructors in <a href="../package-summary.html">org.openqa.selenium.remote.service</a> with parameters of type <a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></span><span class="tabEnd">&nbsp;</span></caption>
 <tr>
 <th class="colFirst" scope="col">Constructor</th>
@@ -376,12 +398,18 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../DriverCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,java.util.Map)">DriverCommandExecutor</a></span>&#8203;(<a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
-                     java.util.Map&lt;java.lang.String,&#8203;<a href="../../CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;&nbsp;additionalCommands)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../DriverCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,java.util.Map,org.openqa.selenium.remote.http.ClientConfig)">DriverCommandExecutor</a></span>&#8203;(<a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+                     java.util.Map&lt;java.lang.String,&#8203;<a href="../../CommandInfo.html" title="class in org.openqa.selenium.remote">CommandInfo</a>&gt;&nbsp;additionalCommands,
+                     <a href="../../http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></th>
 <td class="colLast">
 <div class="block">Creates an <a href="../DriverCommandExecutor.html" title="class in org.openqa.selenium.remote.service"><code>DriverCommandExecutor</code></a> that supports non-standard
  <code>additionalCommands</code> in addition to the standard.</div>
 </td>
+</tr>
+<tr class="altColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../DriverCommandExecutor.html#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.remote.http.ClientConfig)">DriverCommandExecutor</a></span>&#8203;(<a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+                     <a href="../../http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
 </table>
@@ -420,11 +448,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tbody>
 <tr class="altColor">
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../safari/SafariDriver.html#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.safari.SafariOptions)">SafariDriver</a></span>&#8203;(<a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;safariServer,
-            <a href="../../../safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;safariOptions)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../safari/SafariDriver.html#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.safari.SafariOptions)">SafariDriver</a></span>&#8203;(<a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+            <a href="../../../safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;options)</code></th>
 <td class="colLast">
 <div class="block">Initializes a new SafariDriver using the specified <a href="../../../safari/SafariOptions.html" title="class in org.openqa.selenium.safari"><code>SafariOptions</code></a>.</div>
 </td>
+</tr>
+<tr class="rowColor">
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="../../../safari/SafariDriver.html#%3Cinit%3E(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.safari.SafariOptions,org.openqa.selenium.remote.http.ClientConfig)">SafariDriver</a></span>&#8203;(<a href="../DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a>&nbsp;service,
+            <a href="../../../safari/SafariOptions.html" title="class in org.openqa.selenium.safari">SafariOptions</a>&nbsp;options,
+            <a href="../../http/ClientConfig.html" title="class in org.openqa.selenium.remote.http">ClientConfig</a>&nbsp;clientConfig)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
 </table>

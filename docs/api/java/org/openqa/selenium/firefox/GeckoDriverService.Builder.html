@@ -209,11 +209,6 @@ extends <a href="FirefoxDriverService.Builder.html" title="class in org.openqa.s
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>protected java.io.File</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#findDefaultExecutable()">findDefaultExecutable</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#score(org.openqa.selenium.Capabilities)">score</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">
@@ -221,11 +216,18 @@ extends <a href="FirefoxDriverService.Builder.html" title="class in org.openqa.s
  <code>capabilities</code>.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#usingFirefoxBinary(org.openqa.selenium.firefox.FirefoxBinary)">usingFirefoxBinary</a></span>&#8203;(<a href="FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;firefoxBinary)</code></th>
 <td class="colLast">
 <div class="block">Sets which browser executable the builder will use.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withAllowHosts(java.lang.String)">withAllowHosts</a></span>&#8203;(java.lang.String&nbsp;allowHosts)</code></th>
+<td class="colLast">
+<div class="block">Values of the Host header to allow for incoming requests.</div>
 </td>
 </tr>
 </table>
@@ -314,16 +316,19 @@ extends <a href="FirefoxDriverService.Builder.html" title="class in org.openqa.s
 </dl>
 </li>
 </ul>
-<a id="findDefaultExecutable()">
+<a id="withAllowHosts(java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>findDefaultExecutable</h4>
-<pre class="methodSignature">protected&nbsp;java.io.File&nbsp;findDefaultExecutable()</pre>
+<h4>withAllowHosts</h4>
+<pre class="methodSignature">public&nbsp;<a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a>&nbsp;withAllowHosts&#8203;(java.lang.String&nbsp;allowHosts)</pre>
+<div class="block">Values of the Host header to allow for incoming requests.</div>
 <dl>
-<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../remote/service/DriverService.Builder.html#findDefaultExecutable()">findDefaultExecutable</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>,&#8203;<a href="GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a>&gt;</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>allowHosts</code> - Space-separated list of host names.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
 </dl>
 </li>
 </ul>
