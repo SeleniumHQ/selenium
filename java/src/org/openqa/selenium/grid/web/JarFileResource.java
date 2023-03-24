@@ -32,9 +32,9 @@ import java.util.zip.ZipEntry;
 
 public class JarFileResource implements Resource {
 
-  private final JarFile jarFile;
-  private final String entryName;
-  private final String stripPrefix;
+  protected final JarFile jarFile;
+  protected final String entryName;
+  protected final String stripPrefix;
 
   public JarFileResource(JarFile jarFile, String entryName, String stripPrefix) {
     this.jarFile = Require.nonNull("Jar file", jarFile);
@@ -65,7 +65,7 @@ public class JarFileResource implements Resource {
     return Optional.ofNullable(entry).map(e -> new JarFileResource(jarFile, entry.getName(), name));
   }
 
-  private String stripLeadingSlash(String from) {
+  protected String stripLeadingSlash(String from) {
     if (!from.startsWith("/")) {
       return from;
     }
