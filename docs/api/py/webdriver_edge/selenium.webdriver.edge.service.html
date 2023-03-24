@@ -52,7 +52,7 @@
 </table>
 <dl class="class">
 <dt id="selenium.webdriver.edge.service.Service">
-<em class="property">class </em><code class="descclassname">selenium.webdriver.edge.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>executable_path: str = 'msedgedriver'</em>, <em>port: int = 0</em>, <em>verbose: bool = False</em>, <em>log_path: Optional[str] = None</em>, <em>service_args: Optional[List[str]] = None</em>, <em>env: Optional[Mapping[str</em>, <em>str]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/edge/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.edge.service.Service" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selenium.webdriver.edge.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>executable_path: str = 'msedgedriver'</em>, <em>port: int = 0</em>, <em>verbose: bool = False</em>, <em>log_path: Optional[str] = None</em>, <em>service_args: Optional[List[str]] = None</em>, <em>env: Optional[Mapping[str</em>, <em>str]] = None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/edge/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.edge.service.Service" title="Permalink to this definition">¶</a></dt>
 <dd><p>A Service class that is responsible for the starting and stopping of
 <cite>msedgedriver</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -72,6 +72,62 @@ Defaults to False.</li>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="selenium.webdriver.edge.service.Service.assert_process_still_running">
+<code class="descname">assert_process_still_running</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/common/service.html#Service.assert_process_still_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.edge.service.Service.assert_process_still_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the underlying process is still running.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.edge.service.Service.command_line_args">
+<code class="descname">command_line_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#selenium.webdriver.edge.service.Service.command_line_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>A List of program arguments (excluding the executable).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.edge.service.Service.is_connectable">
+<code class="descname">is_connectable</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/selenium/webdriver/common/service.html#Service.is_connectable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.edge.service.Service.is_connectable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Establishes a socket connection to determine if the service running
+on the port is accessible.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.edge.service.Service.send_remote_shutdown_command">
+<code class="descname">send_remote_shutdown_command</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/common/service.html#Service.send_remote_shutdown_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.edge.service.Service.send_remote_shutdown_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dispatch an HTTP request to the shutdown endpoint for the service in
+an attempt to stop it.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.edge.service.Service.service_url">
+<code class="descname">service_url</code><a class="headerlink" href="#selenium.webdriver.edge.service.Service.service_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the url of the Service.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.edge.service.Service.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/common/service.html#Service.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.edge.service.Service.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the Service.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Exceptions:</th><td class="field-body"><ul class="first last simple">
+<li>WebDriverException : Raised either when it can’t start the service
+or when it can’t connect to the service</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.edge.service.Service.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/common/service.html#Service.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.edge.service.Service.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stops the service.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>

@@ -91,7 +91,7 @@
 
 
 <div class="viewcode-block" id="ErrorCode"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorCode">[docs]</a><span class="k">class</span> <span class="nc">ErrorCode</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Error codes defined in the WebDriver wire protocol.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Error codes defined in the WebDriver wire protocol.&quot;&quot;&quot;</span>
 
     <span class="c1"># Keep in sync with org.openqa.selenium.remote.ErrorCodes and errorcodes.h</span>
     <span class="n">SUCCESS</span> <span class="o">=</span> <span class="mi">0</span>
@@ -136,10 +136,10 @@
 
 
 <div class="viewcode-block" id="ErrorHandler"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorHandler">[docs]</a><span class="k">class</span> <span class="nc">ErrorHandler</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Handles errors returned by the WebDriver server.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handles errors returned by the WebDriver server.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="ErrorHandler.check_response"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.errorhandler.html#selenium.webdriver.remote.errorhandler.ErrorHandler.check_response">[docs]</a>    <span class="k">def</span> <span class="nf">check_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Checks that a JSON response from the WebDriver does not have an</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks that a JSON response from the WebDriver does not have an</span>
 <span class="sd">        error.</span>
 
 <span class="sd">        :Args:</span>
@@ -162,7 +162,7 @@
 
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value_json</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
                     <span class="n">status</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">status</span><span class="p">:</span>

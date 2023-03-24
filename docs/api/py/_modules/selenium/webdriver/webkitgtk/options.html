@@ -69,14 +69,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: The location of the browser binary otherwise an empty string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
 
     <span class="nd">@binary_location</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Allows you to set the browser binary to launch.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows you to set the browser binary to launch.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - value : path to the browser binary</span>
@@ -85,14 +85,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">overlay_scrollbars_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: Whether overlay scrollbars should be enabled</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overlay_scrollbars_enabled</span>
 
     <span class="nd">@overlay_scrollbars_enabled</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">overlay_scrollbars_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Allows you to enable or disable overlay scrollbars.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows you to enable or disable overlay scrollbars.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - value : True or False</span>
@@ -100,7 +100,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_overlay_scrollbars_enabled</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.options.html#selenium.webdriver.webkitgtk.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates a capabilities with all the options that have been set and</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a capabilities with all the options that have been set and</span>
 <span class="sd">        returns a dictionary with everything.&quot;&quot;&quot;</span>
         <span class="n">caps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span>
 

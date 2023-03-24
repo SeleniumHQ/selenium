@@ -65,7 +65,7 @@
 
 
 <div class="viewcode-block" id="FileDetector"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.FileDetector">[docs]</a><span class="k">class</span> <span class="nc">FileDetector</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Used for identifying whether a sequence of chars represents the path to</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Used for identifying whether a sequence of chars represents the path to</span>
 <span class="sd">    a file.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="FileDetector.is_local_file"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.FileDetector.is_local_file">[docs]</a>    <span class="nd">@abstractmethod</span>
@@ -74,14 +74,14 @@
 
 
 <div class="viewcode-block" id="UselessFileDetector"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.UselessFileDetector">[docs]</a><span class="k">class</span> <span class="nc">UselessFileDetector</span><span class="p">(</span><span class="n">FileDetector</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A file detector that never finds anything.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A file detector that never finds anything.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="UselessFileDetector.is_local_file"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.UselessFileDetector.is_local_file">[docs]</a>    <span class="k">def</span> <span class="nf">is_local_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">:</span> <span class="n">AnyKey</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="kc">None</span></div></div>
 
 
 <div class="viewcode-block" id="LocalFileDetector"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.LocalFileDetector">[docs]</a><span class="k">class</span> <span class="nc">LocalFileDetector</span><span class="p">(</span><span class="n">FileDetector</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Detects files on the local disk.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detects files on the local disk.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="LocalFileDetector.is_local_file"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.file_detector.html#selenium.webdriver.remote.file_detector.LocalFileDetector.is_local_file">[docs]</a>    <span class="k">def</span> <span class="nf">is_local_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">keys</span><span class="p">:</span> <span class="n">AnyKey</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keys_to_typing</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span>

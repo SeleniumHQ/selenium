@@ -76,11 +76,11 @@
 
 
 <div class="viewcode-block" id="EventFiringWebDriver"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebDriver">[docs]</a><span class="k">class</span> <span class="nc">EventFiringWebDriver</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A wrapper around an arbitrary WebDriver instance which supports firing</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper around an arbitrary WebDriver instance which supports firing</span>
 <span class="sd">    events.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">:</span> <span class="n">WebDriver</span><span class="p">,</span> <span class="n">event_listener</span><span class="p">:</span> <span class="n">AbstractEventListener</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Creates a new instance of the EventFiringWebDriver.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new instance of the EventFiringWebDriver.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - driver : A WebDriver instance</span>
@@ -113,7 +113,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">wrapped_driver</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebDriver</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the WebDriver instance wrapped by this</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the WebDriver instance wrapped by this</span>
 <span class="sd">        EventsFiringWebDriver.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span>
 
@@ -200,10 +200,10 @@
 
 
 <div class="viewcode-block" id="EventFiringWebElement"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.event_firing_webdriver.html#selenium.webdriver.support.event_firing_webdriver.EventFiringWebElement">[docs]</a><span class="k">class</span> <span class="nc">EventFiringWebElement</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;A wrapper around WebElement instance which supports firing events.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A wrapper around WebElement instance which supports firing events.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webelement</span><span class="p">:</span> <span class="n">WebElement</span><span class="p">,</span> <span class="n">ef_driver</span><span class="p">:</span> <span class="n">EventFiringWebDriver</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Creates a new instance of the EventFiringWebElement.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new instance of the EventFiringWebElement.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span> <span class="o">=</span> <span class="n">webelement</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ef_driver</span> <span class="o">=</span> <span class="n">ef_driver</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">=</span> <span class="n">ef_driver</span><span class="o">.</span><span class="n">wrapped_driver</span>
@@ -211,7 +211,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">wrapped_element</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WebElement</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the WebElement wrapped by this EventFiringWebElement</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the WebElement wrapped by this EventFiringWebElement</span>
 <span class="sd">        instance.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_webelement</span>
 

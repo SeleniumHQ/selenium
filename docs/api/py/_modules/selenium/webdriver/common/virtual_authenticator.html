@@ -63,14 +63,14 @@
 
 
 <div class="viewcode-block" id="Protocol"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Protocol">[docs]</a><span class="k">class</span> <span class="nc">Protocol</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Protocol to communicate with the authenticator.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Protocol to communicate with the authenticator.&quot;&quot;&quot;</span>
 
     <span class="n">CTAP2</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ctap2&quot;</span>
     <span class="n">U2F</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ctap1/u2f&quot;</span></div>
 
 
 <div class="viewcode-block" id="Transport"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Transport">[docs]</a><span class="k">class</span> <span class="nc">Transport</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Transport method to communicate with the authenticator.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Transport method to communicate with the authenticator.&quot;&quot;&quot;</span>
 
     <span class="n">BLE</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ble&quot;</span>
     <span class="n">USB</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;usb&quot;</span>
@@ -93,7 +93,7 @@
         <span class="n">is_user_consenting</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">is_user_verified</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Constructor.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor.</span>
 
 <span class="sd">        Initialize VirtualAuthenticatorOptions object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -126,7 +126,7 @@
         <span class="n">private_key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
         <span class="n">sign_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Constructor. A credential stored in a virtual authenticator.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor. A credential stored in a virtual authenticator.</span>
 <span class="sd">        https://w3c.github.io/webauthn/#credential-parameters.</span>
 
 <span class="sd">        :Args:</span>
@@ -172,7 +172,7 @@
 
 <div class="viewcode-block" id="Credential.create_non_resident_credential"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.Credential.create_non_resident_credential">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create_non_resident_credential</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">rp_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">private_key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">sign_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Credential&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Creates a non-resident (i.e. stateless) credential.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a non-resident (i.e. stateless) credential.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">          - id (bytes): Unique base64 encoded string.</span>
@@ -189,7 +189,7 @@
     <span class="k">def</span> <span class="nf">create_resident_credential</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">rp_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user_handle</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">],</span> <span class="n">private_key</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">sign_count</span><span class="p">:</span> <span class="nb">int</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Credential&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Creates a resident (i.e. stateful) credential.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a resident (i.e. stateful) credential.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">          - id (bytes): Unique base64 encoded string.</span>
@@ -234,7 +234,7 @@
 
 
 <div class="viewcode-block" id="required_chromium_based_browser"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.required_chromium_based_browser">[docs]</a><span class="k">def</span> <span class="nf">required_chromium_based_browser</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A decorator to ensure that the client used is a chromium based</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator to ensure that the client used is a chromium based</span>
 <span class="sd">    browser.&quot;&quot;&quot;</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -249,7 +249,7 @@
 
 
 <div class="viewcode-block" id="required_virtual_authenticator"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.virtual_authenticator.html#selenium.webdriver.common.virtual_authenticator.required_virtual_authenticator">[docs]</a><span class="k">def</span> <span class="nf">required_virtual_authenticator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A decorator to ensure that the function is called with a virtual</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator to ensure that the function is called with a virtual</span>
 <span class="sd">    authenticator.&quot;&quot;&quot;</span>
 
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>

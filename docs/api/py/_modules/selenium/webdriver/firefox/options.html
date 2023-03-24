@@ -87,12 +87,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">binary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FirefoxBinary</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Returns the FirefoxBinary instance.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the FirefoxBinary instance.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary</span>
 
     <span class="nd">@binary</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">binary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_binary</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">FirefoxBinary</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets location of the browser binary, either by string or</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets location of the browser binary, either by string or</span>
 <span class="sd">        ``FirefoxBinary`` instance.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_binary</span><span class="p">,</span> <span class="n">FirefoxBinary</span><span class="p">):</span>
             <span class="n">new_binary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">(</span><span class="n">new_binary</span><span class="p">)</span>
@@ -100,28 +100,28 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: The location of the binary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">binary</span><span class="o">.</span><span class="n">_start_cmd</span>
 
     <span class="nd">@binary_location</span><span class="o">.</span><span class="n">setter</span>  <span class="c1"># noqa</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets the location of the browser binary by string.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the location of the browser binary by string.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">binary</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">preferences</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;:Returns: A dict of preferences.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: A dict of preferences.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span>
 
 <div class="viewcode-block" id="Options.set_preference"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.set_preference">[docs]</a>    <span class="k">def</span> <span class="nf">set_preference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Sets a preference.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a preference.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_preferences</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FirefoxProfile</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: The Firefox profile to use.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="p">:</span>
@@ -130,7 +130,7 @@
 
     <span class="nd">@profile</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_profile</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">FirefoxProfile</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets location of the browser profile to use, either by string or</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets location of the browser profile to use, either by string or</span>
 <span class="sd">        ``FirefoxProfile``.&quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;Setting a profile has been deprecated. Please use the set_preference and install_addons methods&quot;</span><span class="p">,</span>
@@ -143,7 +143,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: True if the headless argument is set, else False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
@@ -155,7 +155,7 @@
 
     <span class="nd">@headless</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets the headless argument.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the headless argument.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">          value: boolean value indicating to set the headless option</span>
@@ -172,7 +172,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">enable_mobile</span><span class="p">(</span><span class="n">android_package</span><span class="p">,</span> <span class="n">android_activity</span><span class="p">,</span> <span class="n">device_serial</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.options.html#selenium.webdriver.firefox.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Marshals the Firefox options to a `moz:firefoxOptions` object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Marshals the Firefox options to a `moz:firefoxOptions` object.&quot;&quot;&quot;</span>
         <span class="c1"># This intentionally looks at the internal properties</span>
         <span class="c1"># so if a binary or profile has _not_ been set,</span>
         <span class="c1"># it will defer to geckodriver to find the system Firefox</span>

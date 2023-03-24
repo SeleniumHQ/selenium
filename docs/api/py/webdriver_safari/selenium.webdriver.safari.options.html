@@ -87,6 +87,49 @@
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.accept_insecure_certs">
+<code class="descname">accept_insecure_certs</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.accept_insecure_certs" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the session accepts insecure certificates</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.safari.options.Options.add_argument">
+<code class="descname">add_argument</code><span class="sig-paren">(</span><em>argument</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.safari.options.Options.add_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an argument to the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>Sets the arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.arguments">
+<code class="descname">arguments</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.arguments" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of arguments needed for the browser</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.safari.options.Options.automatic_inspection">
 <code class="descname">automatic_inspection</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.automatic_inspection" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -126,15 +169,151 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.browser_version">
+<code class="descname">browser_version</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.browser_version" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the version of the browser if set, otherwise None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.capabilities">
+<code class="descname">capabilities</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.capabilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.safari.options.Options.default_capabilities">
 <code class="descname">default_capabilities</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.default_capabilities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return minimal capabilities necessary as a dictionary.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.safari.options.Options.enable_mobile">
+<code class="descname">enable_mobile</code><span class="sig-paren">(</span><em>android_package: Optional[str] = None</em>, <em>android_activity: Optional[str] = None</em>, <em>device_serial: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.safari.options.Options.enable_mobile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enables mobile browser use for browsers that support it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body">android_activity: The name of the android package to start</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.safari.options.Options.ignore_local_proxy_environment_variables">
+<code class="descname">ignore_local_proxy_environment_variables</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.safari.options.Options.ignore_local_proxy_environment_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
+being picked up and used.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.page_load_strategy">
+<code class="descname">page_load_strategy</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.page_load_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">page load strategy if set, the default is “normal”</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.platform_name">
+<code class="descname">platform_name</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.platform_name" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The name of the platform</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.proxy">
+<code class="descname">proxy</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.proxy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Proxy if set, otherwise None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.safari.options.Options.set_capability">
+<code class="descname">set_capability</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.safari.options.Options.set_capability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a capability.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.set_window_rect">
+<code class="descname">set_window_rect</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.set_window_rect" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the remote end supports setting window size and position</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.strict_file_interactability">
+<code class="descname">strict_file_interactability</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.strict_file_interactability" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether session is strict about file interactability</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.timeouts">
+<code class="descname">timeouts</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.timeouts" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.safari.options.Options.to_capabilities">
 <code class="descname">to_capabilities</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/selenium/webdriver/safari/options.html#Options.to_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.safari.options.Options.to_capabilities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Marshals the  options to an desired capabilities object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.safari.options.Options.unhandled_prompt_behavior">
+<code class="descname">unhandled_prompt_behavior</code><a class="headerlink" href="#selenium.webdriver.safari.options.Options.unhandled_prompt_behavior" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">unhandled prompt behavior if set, the default is “dismiss and notify”</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">

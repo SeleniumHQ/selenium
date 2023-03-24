@@ -80,7 +80,7 @@
 
 
 <div class="viewcode-block" id="Service"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service">[docs]</a><span class="k">class</span> <span class="nc">Service</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The abstract base class for all service objects.  Services typically</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The abstract base class for all service objects.  Services typically</span>
 <span class="sd">    launch a child program in a new process as an interim process to</span>
 <span class="sd">    communicate with a browser.</span>
 
@@ -98,27 +98,29 @@
         <span class="n">log_file</span><span class="p">:</span> <span class="n">SubprocessStdAlias</span> <span class="o">=</span> <span class="n">DEVNULL</span><span class="p">,</span>
         <span class="n">env</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">start_error_message</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">executable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span> <span class="ow">or</span> <span class="n">utils</span><span class="o">.</span><span class="n">free_port</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">devnull</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">_HAS_NATIVE_DEVNULL</span> <span class="ow">and</span> <span class="n">log_file</span> <span class="o">==</span> <span class="n">DEVNULL</span> <span class="k">else</span> <span class="n">log_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_error_message</span> <span class="o">=</span> <span class="n">start_error_message</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
         <span class="c1"># Default value for every python subprocess: subprocess.Popen(..., creationflags=0)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">creation_flags</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;popen_kw&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">creation_flags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;creation_flags&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">env</span> <span class="o">=</span> <span class="n">env</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">service_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets the url of the Service.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">join_host_port</span><span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the url of the Service.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">utils</span><span class="o">.</span><span class="n">join_host_port</span><span class="p">(</span><span class="s1">&#39;localhost&#39;</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="Service.command_line_args"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.command_line_args">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">command_line_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;A List of program arguments (excluding the executable).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A List of program arguments (excluding the executable).&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;This method needs to be implemented in a sub class&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Service.start"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Starts the Service.</span>
+<div class="viewcode-block" id="Service.start"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.common.service.Service.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Starts the Service.</span>
 
 <span class="sd">        :Exceptions:</span>
 <span class="sd">         - WebDriverException : Raised either when it can&#39;t start the service</span>
@@ -150,19 +152,19 @@
             <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">60</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can not connect to the Service </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Service.assert_process_still_running"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.assert_process_still_running">[docs]</a>    <span class="k">def</span> <span class="nf">assert_process_still_running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Check if the underlying process is still running.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Service.assert_process_still_running"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.common.service.Service.assert_process_still_running">[docs]</a>    <span class="k">def</span> <span class="nf">assert_process_still_running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the underlying process is still running.&quot;&quot;&quot;</span>
         <span class="n">return_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">return_code</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Service </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2"> unexpectedly exited. Status code was: </span><span class="si">{</span><span class="n">return_code</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Service.is_connectable"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.is_connectable">[docs]</a>    <span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Establishes a socket connection to determine if the service running</span>
+<div class="viewcode-block" id="Service.is_connectable"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.common.service.Service.is_connectable">[docs]</a>    <span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Establishes a socket connection to determine if the service running</span>
 <span class="sd">        on the port is accessible.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Service.send_remote_shutdown_command"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.send_remote_shutdown_command">[docs]</a>    <span class="k">def</span> <span class="nf">send_remote_shutdown_command</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Dispatch an HTTP request to the shutdown endpoint for the service in</span>
+<div class="viewcode-block" id="Service.send_remote_shutdown_command"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.common.service.Service.send_remote_shutdown_command">[docs]</a>    <span class="k">def</span> <span class="nf">send_remote_shutdown_command</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dispatch an HTTP request to the shutdown endpoint for the service in</span>
 <span class="sd">        an attempt to stop it.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">service_url</span><span class="si">}</span><span class="s2">/shutdown&quot;</span><span class="p">)</span>
@@ -174,8 +176,8 @@
                 <span class="k">break</span>
             <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Service.stop"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.service.html#selenium.webdriver.common.service.Service.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Stops the service.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Service.stop"><a class="viewcode-back" href="../../../../webdriver_webkitgtk/selenium.webdriver.webkitgtk.service.html#selenium.webdriver.common.service.Service.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stops the service.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">!=</span> <span class="n">PIPE</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span> <span class="o">==</span> <span class="n">DEVNULL</span> <span class="ow">and</span> <span class="n">_HAS_NATIVE_DEVNULL</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># Todo: Be explicit in what we are catching here.</span>
@@ -192,7 +194,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_terminate_process</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_terminate_process</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Terminate the child process.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Terminate the child process.</span>
 
 <span class="sd">        On POSIX this attempts a graceful SIGTERM followed by a SIGKILL,</span>
 <span class="sd">        on a Windows OS kill is an alias to terminate.  Terminating does</span>
@@ -207,9 +209,14 @@
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
-            <span class="c1"># Todo: only SIGKILL if necessary; the process may be cleanly exited by now.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;Service process refused to terminate gracefully with SIGTERM, escalating to SIGKILL.&quot;</span><span class="p">,</span>
+                    <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error terminating service process.&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -225,21 +232,23 @@
             <span class="k">pass</span>
 
     <span class="k">def</span> <span class="nf">_start_process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Creates a subprocess by executing the command provided.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a subprocess by executing the command provided.</span>
 
 <span class="sd">        :param cmd: full command to execute</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="p">]</span>
         <span class="n">cmd</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command_line_args</span><span class="p">())</span>
+        <span class="n">close_file_descriptors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;close_fds&quot;</span><span class="p">,</span> <span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;Windows&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span>
                 <span class="n">cmd</span><span class="p">,</span>
                 <span class="n">env</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span>
-                <span class="n">close_fds</span><span class="o">=</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;Windows&quot;</span><span class="p">,</span>
+                <span class="n">close_fds</span><span class="o">=</span><span class="n">close_file_descriptors</span><span class="p">,</span>
                 <span class="n">stdout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span>
                 <span class="n">stderr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">log_file</span><span class="p">,</span>
                 <span class="n">stdin</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span>
                 <span class="n">creationflags</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">creation_flags</span><span class="p">,</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">popen_kw</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Started executable: `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">` in a child process with pid: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">pid</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>

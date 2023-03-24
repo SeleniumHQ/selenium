@@ -62,7 +62,7 @@
 
 <div class="viewcode-block" id="Select"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select">[docs]</a><span class="k">class</span> <span class="nc">Select</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">webelement</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Constructor. A check is made that the given element is, indeed, a</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor. A check is made that the given element is, indeed, a</span>
 <span class="sd">        SELECT tag. If it is not, then an UnexpectedTagNameException is thrown.</span>
 
 <span class="sd">        :Args:</span>
@@ -80,18 +80,18 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a list of all options belonging to this select tag.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of all options belonging to this select tag.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_el</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="s2">&quot;option&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">all_selected_options</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a list of all selected options belonging to this select</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of all selected options belonging to this select</span>
 <span class="sd">        tag.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">opt</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">is_selected</span><span class="p">()]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">first_selected_option</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The first selected option in this select tag (or the currently</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The first selected option in this select tag (or the currently</span>
 <span class="sd">        selected option in a normal select)&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">is_selected</span><span class="p">():</span>
@@ -99,7 +99,7 @@
         <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="s2">&quot;No options are selected&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Select.select_by_value"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.select_by_value">[docs]</a>    <span class="k">def</span> <span class="nf">select_by_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select all options that have a value matching the argument. That is,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select all options that have a value matching the argument. That is,</span>
 <span class="sd">        when given &quot;foo&quot; this would select an option like:</span>
 
 <span class="sd">        &lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;</span>
@@ -121,7 +121,7 @@
             <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot locate option with value: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Select.select_by_index"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.select_by_index">[docs]</a>    <span class="k">def</span> <span class="nf">select_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select the option at the given index. This is done by examining the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select the option at the given index. This is done by examining the</span>
 <span class="sd">        &quot;index&quot; attribute of an element, and not merely by counting.</span>
 
 <span class="sd">        :Args:</span>
@@ -137,7 +137,7 @@
         <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not locate element with index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Select.select_by_visible_text"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.select_by_visible_text">[docs]</a>    <span class="k">def</span> <span class="nf">select_by_visible_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select all options that display text matching the argument. That is,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Select all options that display text matching the argument. That is,</span>
 <span class="sd">        when given &quot;Bar&quot; this would select an option like:</span>
 
 <span class="sd">         &lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;</span>
@@ -174,7 +174,7 @@
             <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not locate element with visible text: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Select.deselect_all"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.deselect_all">[docs]</a>    <span class="k">def</span> <span class="nf">deselect_all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Clear all selected entries.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all selected entries.</span>
 
 <span class="sd">        This is only valid when the SELECT supports multiple selections.</span>
 <span class="sd">        throws NotImplementedError If the SELECT does not support</span>
@@ -186,7 +186,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_unset_selected</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Select.deselect_by_value"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.deselect_by_value">[docs]</a>    <span class="k">def</span> <span class="nf">deselect_by_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Deselect all options that have a value matching the argument. That</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deselect all options that have a value matching the argument. That</span>
 <span class="sd">        is, when given &quot;foo&quot; this would deselect an option like:</span>
 
 <span class="sd">         &lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;</span>
@@ -208,7 +208,7 @@
             <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not locate element with value: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Select.deselect_by_index"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.deselect_by_index">[docs]</a>    <span class="k">def</span> <span class="nf">deselect_by_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Deselect the option at the given index. This is done by examining</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deselect the option at the given index. This is done by examining</span>
 <span class="sd">        the &quot;index&quot; attribute of an element, and not merely by counting.</span>
 
 <span class="sd">        :Args:</span>
@@ -225,7 +225,7 @@
         <span class="k">raise</span> <span class="n">NoSuchElementException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not locate element with index </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Select.deselect_by_visible_text"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.select.html#selenium.webdriver.support.select.Select.deselect_by_visible_text">[docs]</a>    <span class="k">def</span> <span class="nf">deselect_by_visible_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Deselect all options that display text matching the argument. That</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deselect all options that display text matching the argument. That</span>
 <span class="sd">        is, when given &quot;Bar&quot; this would deselect an option like:</span>
 
 <span class="sd">        &lt;option value=&quot;foo&quot;&gt;Bar&lt;/option&gt;</span>

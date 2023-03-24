@@ -65,7 +65,7 @@
 
 
 <div class="viewcode-block" id="Service"><a class="viewcode-back" href="../../../../webdriver_safari/selenium.webdriver.safari.service.html#selenium.webdriver.safari.service.Service">[docs]</a><span class="k">class</span> <span class="nc">Service</span><span class="p">(</span><span class="n">service</span><span class="o">.</span><span class="n">Service</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A Service class that is responsible for the starting and stopping of</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A Service class that is responsible for the starting and stopping of</span>
 <span class="sd">    `safaridriver`  This is only supported on MAC OSX.</span>
 
 <span class="sd">    :param executable_path: install path of the safaridriver executable, defaults to `/usr/bin/safaridriver`.</span>
@@ -82,6 +82,7 @@
         <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">service_args</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">env</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">typing</span><span class="o">.</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_executable</span><span class="p">(</span><span class="n">executable_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">service_args</span> <span class="o">=</span> <span class="n">service_args</span> <span class="ow">or</span> <span class="p">[]</span>
@@ -92,6 +93,7 @@
             <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span>
             <span class="n">log_file</span><span class="o">=</span><span class="n">log_file</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
             <span class="n">env</span><span class="o">=</span><span class="n">env</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
@@ -108,7 +110,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">service_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Gets the url of the SafariDriver Service.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the url of the SafariDriver Service.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;http://localhost:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span></div>
 </pre></div>
 

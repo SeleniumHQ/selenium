@@ -100,22 +100,22 @@
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ExtensionConnection.connect"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnection.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Connects to the extension and retrieves the session id.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connects to the extension and retrieves the session id.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">NEW_SESSION</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;desiredCapabilities&quot;</span><span class="p">:</span> <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">FIREFOX</span><span class="p">})</span></div>
 
 <div class="viewcode-block" id="ExtensionConnection.connect_and_quit"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnection.connect_and_quit">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">connect_and_quit</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Connects to an running browser and quit immediately.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connects to an running browser and quit immediately.&quot;&quot;&quot;</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_request</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_URL</span><span class="si">}</span><span class="s2">/extensions/firefox/quit&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ExtensionConnection.is_connectable"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnection.is_connectable">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">is_connectable</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Tries to connect to the extension but do not retrieve context.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Tries to connect to the extension but do not retrieve context.&quot;&quot;&quot;</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">is_connectable</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">port</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="ExtensionConnectionError"><a class="viewcode-back" href="../../../../webdriver_firefox/selenium.webdriver.firefox.extension_connection.html#selenium.webdriver.firefox.extension_connection.ExtensionConnectionError">[docs]</a><span class="k">class</span> <span class="nc">ExtensionConnectionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An internal error occurred int the extension.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An internal error occurred int the extension.</span>
 
 <span class="sd">    Might be caused by bad input or bugs in webdriver</span>
 <span class="sd">    &quot;&quot;&quot;</span>

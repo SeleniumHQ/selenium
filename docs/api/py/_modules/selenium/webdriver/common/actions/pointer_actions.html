@@ -65,7 +65,7 @@
 
 <div class="viewcode-block" id="PointerActions"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions">[docs]</a><span class="k">class</span> <span class="nc">PointerActions</span><span class="p">(</span><span class="n">Interaction</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">250</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">        - source: PointerInput instance</span>
 <span class="sd">        - duration: override the default 250 msecs of DEFAULT_MOVE_DURATION in source</span>
@@ -234,7 +234,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pointer_up</span><span class="p">(</span><span class="n">MouseButton</span><span class="o">.</span><span class="n">LEFT</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="PointerActions.pause"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.pause">[docs]</a>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="PointerActions.pause"><a class="viewcode-back" href="../../../../../webdriver/selenium.webdriver.common.actions.pointer_actions.html#selenium.webdriver.common.actions.pointer_actions.PointerActions.pause">[docs]</a>    <span class="k">def</span> <span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">create_pause</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 

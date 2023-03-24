@@ -72,7 +72,7 @@
     <span class="n">OBSOLETE</span> <span class="o">=</span> <span class="mi">5</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates a new Application Cache.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new Application Cache.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - driver: The WebDriver instance which performs user actions.</span>
@@ -86,7 +86,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a current status of application cache.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a current status of application cache.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">GET_APP_CACHE_STATUS</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span></div>
 </pre></div>
 

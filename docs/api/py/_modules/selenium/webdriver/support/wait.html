@@ -74,7 +74,7 @@
         <span class="n">poll_frequency</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">POLL_FREQUENCY</span><span class="p">,</span>
         <span class="n">ignored_exceptions</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">WaitExcTypes</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Constructor, takes a WebDriver instance and timeout in seconds.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constructor, takes a WebDriver instance and timeout in seconds.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - driver - Instance of WebDriver (Ie, Firefox, Chrome or Remote)</span>
@@ -109,7 +109,7 @@
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1"> (session=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="o">.</span><span class="n">session_id</span><span class="si">}</span><span class="s1">&quot;)&gt;&#39;</span>
 
 <div class="viewcode-block" id="WebDriverWait.until"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until">[docs]</a>    <span class="k">def</span> <span class="nf">until</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>
 <span class="sd">        return value does not evaluate to ``False``.</span>
 
 <span class="sd">        :param method: callable(WebDriver)</span>
@@ -135,7 +135,7 @@
         <span class="k">raise</span> <span class="n">TimeoutException</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">screen</span><span class="p">,</span> <span class="n">stacktrace</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WebDriverWait.until_not"><a class="viewcode-back" href="../../../../webdriver_support/selenium.webdriver.support.wait.html#selenium.webdriver.support.wait.WebDriverWait.until_not">[docs]</a>    <span class="k">def</span> <span class="nf">until_not</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calls the method provided with the driver as an argument until the \</span>
 <span class="sd">        return value evaluates to ``False``.</span>
 
 <span class="sd">        :param method: callable(WebDriver)</span>

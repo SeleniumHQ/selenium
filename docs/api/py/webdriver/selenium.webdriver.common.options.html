@@ -56,7 +56,20 @@
 <dl class="class">
 <dt id="selenium.webdriver.common.options.ArgOptions">
 <em class="property">class </em><code class="descclassname">selenium.webdriver.common.options.</code><code class="descname">ArgOptions</code><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#ArgOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.accept_insecure_certs">
+<code class="descname">accept_insecure_certs</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.accept_insecure_certs" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the session accepts insecure certificates</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.common.options.ArgOptions.add_argument">
 <code class="descname">add_argument</code><span class="sig-paren">(</span><em>argument</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#ArgOptions.add_argument"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.add_argument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds an argument to the list.</p>
@@ -87,9 +100,41 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.browser_version">
+<code class="descname">browser_version</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.browser_version" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the version of the browser if set, otherwise None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.capabilities">
+<code class="descname">capabilities</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.capabilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.common.options.ArgOptions.default_capabilities">
 <code class="descname">default_capabilities</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.default_capabilities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return minimal capabilities necessary as a dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.options.ArgOptions.enable_mobile">
+<code class="descname">enable_mobile</code><span class="sig-paren">(</span><em>android_package: Optional[str] = None</em>, <em>android_activity: Optional[str] = None</em>, <em>device_serial: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.enable_mobile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enables mobile browser use for browsers that support it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body">android_activity: The name of the android package to start</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -99,10 +144,107 @@
 being picked up and used.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.page_load_strategy">
+<code class="descname">page_load_strategy</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.page_load_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">page load strategy if set, the default is “normal”</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.platform_name">
+<code class="descname">platform_name</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.platform_name" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The name of the platform</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.proxy">
+<code class="descname">proxy</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.proxy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Proxy if set, otherwise None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.common.options.ArgOptions.set_capability">
+<code class="descname">set_capability</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.set_capability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a capability.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.set_window_rect">
+<code class="descname">set_window_rect</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.set_window_rect" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the remote end supports setting window size and position</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.strict_file_interactability">
+<code class="descname">strict_file_interactability</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.strict_file_interactability" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether session is strict about file interactability</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.timeouts">
+<code class="descname">timeouts</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.timeouts" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="selenium.webdriver.common.options.ArgOptions.to_capabilities">
 <code class="descname">to_capabilities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/common/options.html#ArgOptions.to_capabilities"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.to_capabilities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert options into capabilities dictionary.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.common.options.ArgOptions.unhandled_prompt_behavior">
+<code class="descname">unhandled_prompt_behavior</code><a class="headerlink" href="#selenium.webdriver.common.options.ArgOptions.unhandled_prompt_behavior" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">unhandled prompt behavior if set, the default is “dismiss and notify”</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

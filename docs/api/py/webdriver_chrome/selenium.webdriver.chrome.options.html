@@ -54,6 +54,149 @@
 <dt id="selenium.webdriver.chrome.options.Options">
 <em class="property">class </em><code class="descclassname">selenium.webdriver.chrome.options.</code><code class="descname">Options</code><a class="reference internal" href="../_modules/selenium/webdriver/chrome/options.html#Options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chrome.options.Options" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.KEY">
+<code class="descname">KEY</code><em class="property"> = 'goog:chromeOptions'</em><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.KEY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.accept_insecure_certs">
+<code class="descname">accept_insecure_certs</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.accept_insecure_certs" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the session accepts insecure certificates</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.add_argument">
+<code class="descname">add_argument</code><span class="sig-paren">(</span><em>argument</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_argument" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an argument to the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>Sets the arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.add_encoded_extension">
+<code class="descname">add_encoded_extension</code><span class="sig-paren">(</span><em>extension: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_encoded_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds Base64 encoded string with extension data to a list that will
+be used to extract it to the ChromeDriver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>extension: Base64 encoded string with extension data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.add_experimental_option">
+<code class="descname">add_experimental_option</code><span class="sig-paren">(</span><em>name: str, value: Union[str, int, dict, List[str]]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_experimental_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an experimental option which is passed to chromium.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body">name: The experimental option name.
+value: The option value.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.add_extension">
+<code class="descname">add_extension</code><span class="sig-paren">(</span><em>extension: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chrome.options.Options.add_extension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the path to the extension to a list that will be used to
+extract it to the ChromeDriver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>extension: path to the *.crx file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.arguments">
+<code class="descname">arguments</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.arguments" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of arguments needed for the browser</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.binary_location">
+<code class="descname">binary_location</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.binary_location" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The location of the binary, otherwise an empty string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.browser_version">
+<code class="descname">browser_version</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.browser_version" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the version of the browser if set, otherwise None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.capabilities">
+<code class="descname">capabilities</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.capabilities" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.debugger_address">
+<code class="descname">debugger_address</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.debugger_address" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The address of the remote devtools instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="selenium.webdriver.chrome.options.Options.default_capabilities">
 <code class="descname">default_capabilities</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.default_capabilities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return minimal capabilities necessary as a dictionary.</p>
@@ -68,6 +211,156 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body">android_activity: The name of the android package to start</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.experimental_options">
+<code class="descname">experimental_options</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.experimental_options" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of experimental options for chromium</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.extensions">
+<code class="descname">extensions</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.extensions" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of encoded extensions that will be loaded</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.headless">
+<code class="descname">headless</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.headless" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the headless argument is set, else False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.ignore_local_proxy_environment_variables">
+<code class="descname">ignore_local_proxy_environment_variables</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chrome.options.Options.ignore_local_proxy_environment_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>By calling this you will ignore HTTP_PROXY and HTTPS_PROXY from
+being picked up and used.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.page_load_strategy">
+<code class="descname">page_load_strategy</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.page_load_strategy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">page load strategy if set, the default is “normal”</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.platform_name">
+<code class="descname">platform_name</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.platform_name" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The name of the platform</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.proxy">
+<code class="descname">proxy</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.proxy" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Proxy if set, otherwise None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.set_capability">
+<code class="descname">set_capability</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chrome.options.Options.set_capability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a capability.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.set_window_rect">
+<code class="descname">set_window_rect</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.set_window_rect" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether the remote end supports setting window size and position</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.strict_file_interactability">
+<code class="descname">strict_file_interactability</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.strict_file_interactability" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">whether session is strict about file interactability</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.timeouts">
+<code class="descname">timeouts</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.timeouts" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Values for implicit timeout, pageLoad timeout and script timeout if set (in milliseconds)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chrome.options.Options.to_capabilities">
+<code class="descname">to_capabilities</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#selenium.webdriver.chrome.options.Options.to_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a capabilities with all the options that have been set
+:Returns: A dictionary with everything</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chrome.options.Options.unhandled_prompt_behavior">
+<code class="descname">unhandled_prompt_behavior</code><a class="headerlink" href="#selenium.webdriver.chrome.options.Options.unhandled_prompt_behavior" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">unhandled prompt behavior if set, the default is “dismiss and notify”</td>
 </tr>
 </tbody>
 </table>

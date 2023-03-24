@@ -79,14 +79,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: The location of the binary, otherwise an empty string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
 
     <span class="nd">@binary_location</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Allows you to set where the chromium binary lives</span>
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: path to the Chromium binary</span>
@@ -95,14 +95,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">debugger_address</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: The address of the remote devtools instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_debugger_address</span>
 
     <span class="nd">@debugger_address</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">debugger_address</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Allows you to set the address of the remote devtools instance</span>
 <span class="sd">        that the ChromeDriver instance will try to connect to during an</span>
 <span class="sd">        active wait.</span>
@@ -113,7 +113,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">extensions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: A list of encoded extensions that will be loaded</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -131,7 +131,7 @@
         <span class="k">return</span> <span class="n">encoded_extensions</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extensions</span>
 
 <div class="viewcode-block" id="ChromiumOptions.add_extension"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.add_extension">[docs]</a>    <span class="k">def</span> <span class="nf">add_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Adds the path to the extension to a list that will be used to</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the path to the extension to a list that will be used to</span>
 <span class="sd">        extract it to the ChromeDriver.</span>
 
 <span class="sd">        :Args:</span>
@@ -147,7 +147,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument can not be null&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ChromiumOptions.add_encoded_extension"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.add_encoded_extension">[docs]</a>    <span class="k">def</span> <span class="nf">add_encoded_extension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Adds Base64 encoded string with extension data to a list that will</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds Base64 encoded string with extension data to a list that will</span>
 <span class="sd">        be used to extract it to the ChromeDriver.</span>
 
 <span class="sd">        :Args:</span>
@@ -160,13 +160,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">experimental_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: A dictionary of experimental options for chromium</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_experimental_options</span>
 
 <div class="viewcode-block" id="ChromiumOptions.add_experimental_option"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.add_experimental_option">[docs]</a>    <span class="k">def</span> <span class="nf">add_experimental_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Adds an experimental option which is passed to chromium.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds an experimental option which is passed to chromium.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">          name: The experimental option name.</span>
@@ -178,7 +178,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: True if the headless argument is set, else False</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
@@ -190,7 +190,7 @@
 
     <span class="nd">@headless</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">headless</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets the headless argument Old headless uses a non-production</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the headless argument Old headless uses a non-production</span>
 <span class="sd">        browser and is set with `--headless`</span>
 
 <span class="sd">        Native headless from v86 - v108 is set with `--headless=chrome`</span>
@@ -210,7 +210,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arguments</span><span class="p">)</span> <span class="o">-</span> <span class="n">args</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ChromiumOptions.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_chromium/selenium.webdriver.chromium.options.html#selenium.webdriver.chromium.options.ChromiumOptions.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a capabilities with all the options that have been set</span>
 <span class="sd">        :Returns: A dictionary with everything</span>
 <span class="sd">        &quot;&quot;&quot;</span>

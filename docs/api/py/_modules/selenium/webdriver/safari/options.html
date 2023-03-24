@@ -87,14 +87,14 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns: The location of the browser binary otherwise an empty string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span>
 
     <span class="nd">@binary_location</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">binary_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Allows you to set the browser binary to launch.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allows you to set the browser binary to launch.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - value : path to the browser binary</span>
@@ -102,7 +102,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_binary_location</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Options.to_capabilities"><a class="viewcode-back" href="../../../../webdriver_safari/selenium.webdriver.safari.options.html#selenium.webdriver.safari.options.Options.to_capabilities">[docs]</a>    <span class="k">def</span> <span class="nf">to_capabilities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Marshals the  options to an desired capabilities object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Marshals the  options to an desired capabilities object.&quot;&quot;&quot;</span>
         <span class="c1"># This intentionally looks at the internal properties</span>
         <span class="c1"># so if a binary or profile has _not_ been set,</span>
         <span class="c1"># it will defer to geckodriver to find the system Firefox</span>
@@ -127,12 +127,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">automatic_inspection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;:Returns: The option Automatic Inspection value&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The option Automatic Inspection value&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AUTOMATIC_INSPECTION</span><span class="p">)</span>
 
     <span class="nd">@automatic_inspection</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">automatic_inspection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets the option Automatic Inspection to value.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the option Automatic Inspection to value.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: boolean value</span>
@@ -141,12 +141,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">automatic_profiling</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;:Returns: The options Automatic Profiling value&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: The options Automatic Profiling value&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">AUTOMATIC_PROFILING</span><span class="p">)</span>
 
     <span class="nd">@automatic_profiling</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">automatic_profiling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets the option Automatic Profiling to value.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the option Automatic Profiling to value.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - value: boolean value</span>
@@ -155,12 +155,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">use_technology_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;:Returns: whether BROWSER_NAME is equal to Safari Technology Preview&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;:Returns: whether BROWSER_NAME is equal to Safari Technology Preview&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_caps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;browserName&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">SAFARI_TECH_PREVIEW</span>
 
     <span class="nd">@use_technology_preview</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">use_technology_preview</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sets browser name to Safari Technology Preview if value else to</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets browser name to Safari Technology Preview if value else to</span>
 <span class="sd">        safari.</span>
 
 <span class="sd">        :Args:</span>

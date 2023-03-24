@@ -54,6 +54,8 @@
 <span class="c1"># KIND, either express or implied.  See the License for the</span>
 <span class="c1"># specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">keys_to_typing</span>
 <span class="kn">from</span> <span class="nn">.interaction</span> <span class="kn">import</span> <span class="n">KEY</span>
 <span class="kn">from</span> <span class="nn">.interaction</span> <span class="kn">import</span> <span class="n">Interaction</span>
@@ -84,7 +86,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">key_up</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-    <span class="k">def</span> <span class="nf">_key_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">letter</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_key_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">letter</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyActions</span><span class="p">:</span>
         <span class="n">meth</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span>
         <span class="n">meth</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>

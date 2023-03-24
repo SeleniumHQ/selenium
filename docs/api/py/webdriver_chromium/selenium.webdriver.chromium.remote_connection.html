@@ -53,7 +53,125 @@
 <dl class="class">
 <dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection">
 <em class="property">class </em><code class="descclassname">selenium.webdriver.chromium.remote_connection.</code><code class="descname">ChromiumRemoteConnection</code><span class="sig-paren">(</span><em>remote_server_addr: str</em>, <em>vendor_prefix: str</em>, <em>browser_name: str</em>, <em>keep_alive: bool = True</em>, <em>ignore_proxy: Optional[bool] = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chromium/remote_connection.html#ChromiumRemoteConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.browser_name">
+<code class="descname">browser_name</code><em class="property"> = None</em><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.browser_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up resources when finished with the remote_connection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>command</em>, <em>params</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send a command to the remote server.</p>
+<p>Any path substitutions required for the URL mapped to the command should be
+included in the command parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>command - A string specifying the command to execute.</li>
+<li>params - A dictionary of named parameters to send with the command as
+its JSON payload.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_certificate_bundle_path">
+<em class="property">classmethod </em><code class="descname">get_certificate_bundle_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_certificate_bundle_path" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Paths of the .pem encoded certificate to verify connection to command executor</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_remote_connection_headers">
+<em class="property">classmethod </em><code class="descname">get_remote_connection_headers</code><span class="sig-paren">(</span><em>parsed_url</em>, <em>keep_alive=False</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_remote_connection_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get headers for remote request.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>parsed_url - The parsed url</li>
+<li>keep_alive (Boolean) - Is this a keep-alive connection (default: False)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_timeout">
+<em class="property">classmethod </em><code class="descname">get_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.get_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Timeout value in seconds for all http requests made to the Remote Connection</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.reset_timeout">
+<em class="property">classmethod </em><code class="descname">reset_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.reset_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.set_certificate_bundle_path">
+<em class="property">classmethod </em><code class="descname">set_certificate_bundle_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.set_certificate_bundle_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the path to the certificate bundle to verify connection to
+command executor. Can also be set to None to disable certificate
+validation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>path - path of a .pem encoded certificate chain.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.set_timeout">
+<em class="property">classmethod </em><code class="descname">set_timeout</code><span class="sig-paren">(</span><em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.remote_connection.ChromiumRemoteConnection.set_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Override the default timeout.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>timeout - timeout value for http requests in seconds</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 

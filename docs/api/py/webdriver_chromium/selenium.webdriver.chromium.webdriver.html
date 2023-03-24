@@ -77,14 +77,232 @@ capabilities only, such as “proxy” or “loggingPref”.</li>
 </tbody>
 </table>
 <dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.add_cookie">
+<code class="descname">add_cookie</code><span class="sig-paren">(</span><em>cookie_dict</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.add_cookie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a cookie to your current session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>cookie_dict: A dictionary object, with required keys - “name” and “value”;</dt>
+<dd>optional keys - “path”, “domain”, “secure”, “httpOnly”, “expiry”, “sameSite”</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Usage:</dt>
+<dd>driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’})
+driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’, ‘path’ : ‘/’})
+driver.add_cookie({‘name’ : ‘foo’, ‘value’ : ‘bar’, ‘path’ : ‘/’, ‘secure’:True})
+driver.add_cookie({‘name’: ‘foo’, ‘value’: ‘bar’, ‘sameSite’: ‘Strict’})</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.add_credential">
+<code class="descname">add_credential</code><span class="sig-paren">(</span><em>credential: selenium.webdriver.common.virtual_authenticator.Credential</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.add_credential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Injects a credential into the authenticator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.add_virtual_authenticator">
+<code class="descname">add_virtual_authenticator</code><span class="sig-paren">(</span><em>options: selenium.webdriver.common.virtual_authenticator.VirtualAuthenticatorOptions</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.add_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a virtual authenticator with the given options.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.application_cache">
+<code class="descname">application_cache</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.application_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a ApplicationCache Object to interact with the browser app
+cache.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.back">
+<code class="descname">back</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.back" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goes one step backward in the browser history.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">back</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.bidi_connection">
+<code class="descname">bidi_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.bidi_connection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.capabilities">
+<code class="descname">capabilities</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the drivers current capabilities being used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the current window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.create_options">
 <code class="descname">create_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; selenium.webdriver.common.options.BaseOptions<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.create_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.create_options" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.create_web_element">
+<code class="descname">create_web_element</code><span class="sig-paren">(</span><em>element_id: str</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.create_web_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a web element with the specified <cite>element_id</cite>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.current_url">
+<code class="descname">current_url</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.current_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the URL of the current page.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">current_url</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.current_window_handle">
+<code class="descname">current_window_handle</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.current_window_handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the handle of the current window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">current_window_handle</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_all_cookies">
+<code class="descname">delete_all_cookies</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_all_cookies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all cookies in the scope of the session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">delete_all_cookies</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_cookie">
+<code class="descname">delete_cookie</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_cookie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a single cookie with the given name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">delete_cookie</span><span class="p">(</span><span class="s1">&#39;my_cookie&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_network_conditions">
 <code class="descname">delete_network_conditions</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.delete_network_conditions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.delete_network_conditions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets Chromium network emulation settings.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.desired_capabilities">
+<code class="descname">desired_capabilities</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.desired_capabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the drivers current desired capabilities being used.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><em>driver_command: str</em>, <em>params: dict = None</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a command to be executed by a command.CommandExecutor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>driver_command: The name of the command to execute as a string.</li>
+<li>params: A dictionary of named parameters to send with the command.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The command’s JSON response loaded into a dictionary object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_async_script">
+<code class="descname">execute_async_script</code><span class="sig-paren">(</span><em>script: str</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_async_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asynchronously Executes JavaScript in the current window/frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>script: The JavaScript to execute.</li>
+<li>*args: Any applicable arguments for your JavaScript.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">script</span> <span class="o">=</span> <span class="s2">&quot;var callback = arguments[arguments.length - 1]; &quot;</span> \
+         <span class="s2">&quot;window.setTimeout(function(){ callback(&#39;timeout&#39;) }, 3000);&quot;</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">execute_async_script</span><span class="p">(</span><span class="n">script</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -121,6 +339,179 @@ For example to getResponseBody:
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_script">
+<code class="descname">execute_script</code><span class="sig-paren">(</span><em>script</em>, <em>*args</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.execute_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synchronously Executes JavaScript in the current window/frame.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>script: The JavaScript to execute.</li>
+<li>*args: Any applicable arguments for your JavaScript.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s1">&#39;return document.title;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.file_detector">
+<code class="descname">file_detector</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.file_detector" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.file_detector_context">
+<code class="descname">file_detector_context</code><span class="sig-paren">(</span><em>file_detector_class</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.file_detector_context" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overrides the current file detector (if necessary) in limited
+context. Ensures the original file detector is set afterwards.</p>
+<p>Example:</p>
+<dl class="docutils">
+<dt>with webdriver.file_detector_context(UselessFileDetector):</dt>
+<dd>someinput.send_keys(‘/etc/hosts’)</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li><dl class="first docutils">
+<dt>file_detector_class - Class of the desired file detector. If the class is different</dt>
+<dd>from the current file_detector, then the class is instantiated with args and kwargs
+and used as a file detector during the duration of the context manager.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>args - Optional arguments that get passed to the file detector class during</dt>
+<dd>instantiation.</dd>
+</dl>
+</li>
+<li>kwargs - Keyword arguments, passed the same way as args.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.find_element">
+<code class="descname">find_element</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.webelement.WebElement<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.find_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find an element given a By strategy and locator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="../webdriver_remote/selenium.webdriver.remote.webelement.html#selenium.webdriver.remote.webelement.WebElement" title="selenium.webdriver.remote.webelement.WebElement">WebElement</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.find_elements">
+<code class="descname">find_elements</code><span class="sig-paren">(</span><em>by='id'</em>, <em>value: Optional[str] = None</em><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.remote.webelement.WebElement]<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.find_elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find elements given a By strategy and locator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">elements</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">CLASS_NAME</span><span class="p">,</span> <span class="s1">&#39;foo&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of WebElement</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goes one step forward in the browser history.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.fullscreen_window">
+<code class="descname">fullscreen_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.fullscreen_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invokes the window manager-specific ‘full screen’ operation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>url: str</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a web page in the current browser session.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_cookie">
+<code class="descname">get_cookie</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span> &#x2192; Optional[Dict]<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_cookie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a single cookie by name. Returns the cookie if found, None if
+not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_cookie</span><span class="p">(</span><span class="s1">&#39;my_cookie&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_cookies">
+<code class="descname">get_cookies</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[dict]<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_cookies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a set of dictionaries, corresponding to cookies visible in
+the current session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_cookies</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_credentials">
+<code class="descname">get_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[selenium.webdriver.common.virtual_authenticator.Credential]<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of credentials owned by the authenticator.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_issue_message">
 <code class="descname">get_issue_message</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.get_issue_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_issue_message" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -128,6 +519,31 @@ For example to getResponseBody:
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">An error message when there is any issue in a Cast session.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_log">
+<code class="descname">get_log</code><span class="sig-paren">(</span><em>log_type</em><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the log for a given log type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>log_type: type of log that which will be returned</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_log</span><span class="p">(</span><span class="s1">&#39;browser&#39;</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">get_log</span><span class="p">(</span><span class="s1">&#39;driver&#39;</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">get_log</span><span class="p">(</span><span class="s1">&#39;client&#39;</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">get_log</span><span class="p">(</span><span class="s1">&#39;server&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
 </tr>
 </tbody>
 </table>
@@ -150,6 +566,71 @@ For example to getResponseBody:
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_pinned_scripts">
+<code class="descname">get_pinned_scripts</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; List[str]<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_pinned_scripts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_base64">
+<code class="descname">get_screenshot_as_base64</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_base64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the screenshot of the current window as a base64 encoded string
+which is useful in embedded images in HTML.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_base64</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_file">
+<code class="descname">get_screenshot_as_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves a screenshot of the current window to a PNG image file.
+Returns False if there is any IOError, else returns True. Use full
+paths in your filename.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>filename: The full path you wish to save your screenshot to. This
+should end with a <cite>.png</cite> extension.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_file</span><span class="p">(</span><span class="s1">&#39;/Screenshots/foo.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_png">
+<code class="descname">get_screenshot_as_png</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; bytes<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_screenshot_as_png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the screenshot of the current window as a binary data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_png</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_sinks">
 <code class="descname">get_sinks</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; list<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.get_sinks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_sinks" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -163,9 +644,187 @@ For example to getResponseBody:
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_position">
+<code class="descname">get_window_position</code><span class="sig-paren">(</span><em>windowHandle='current'</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the x,y position of the current window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_window_position</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_rect">
+<code class="descname">get_window_rect</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the x, y coordinates of the window as well as height and width
+of the current window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_window_rect</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_size">
+<code class="descname">get_window_size</code><span class="sig-paren">(</span><em>windowHandle: str = 'current'</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.get_window_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the width and height of the current window.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">get_window_size</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.implicitly_wait">
+<code class="descname">implicitly_wait</code><span class="sig-paren">(</span><em>time_to_wait: float</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.implicitly_wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a sticky timeout to implicitly wait for an element to be found,
+or a command to complete. This method only needs to be called one time
+per session. To set the timeout for calls to execute_async_script, see
+set_script_timeout.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>time_to_wait: Amount of time to wait (in seconds)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">implicitly_wait</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.launch_app">
 <code class="descname">launch_app</code><span class="sig-paren">(</span><em>id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.launch_app"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.launch_app" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launches Chromium app specified by id.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.log_types">
+<code class="descname">log_types</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.log_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a list of the available log types. This only works with w3c
+compliant browsers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">log_types</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.maximize_window">
+<code class="descname">maximize_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.maximize_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximizes the current window that webdriver is using.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.minimize_window">
+<code class="descname">minimize_window</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.minimize_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invokes the window manager-specific ‘minimize’ operation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.mobile">
+<code class="descname">mobile</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.mobile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.name">
+<code class="descname">name</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the underlying browser for this instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.orientation">
+<code class="descname">orientation</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the current orientation of the device.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">orientation</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">orientation</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.page_source">
+<code class="descname">page_source</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.page_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the source of the current page.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">page_source</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.pin_script">
+<code class="descname">pin_script</code><span class="sig-paren">(</span><em>script: str</em>, <em>script_key=None</em><span class="sig-paren">)</span> &#x2192; selenium.webdriver.remote.script_key.ScriptKey<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.pin_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store common javascript scripts to be executed later by a unique
+hashable ID.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.print_page">
+<code class="descname">print_page</code><span class="sig-paren">(</span><em>print_options: Optional[selenium.webdriver.common.print_page_options.PrintOptions] = None</em><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.print_page" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes PDF of the current page.</p>
+<p>The driver makes a best effort to return a PDF based on the
+provided parameters.</p>
 </dd></dl>
 
 <dl class="method">
@@ -173,6 +832,68 @@ For example to getResponseBody:
 <code class="descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.quit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Closes the browser and shuts down the ChromiumDriver executable that
 is started when starting the ChromiumDriver.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.refresh">
+<code class="descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refreshes the current page.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.remove_all_credentials">
+<code class="descname">remove_all_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.remove_all_credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes all credentials from the authenticator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.remove_credential">
+<code class="descname">remove_credential</code><span class="sig-paren">(</span><em>credential_id: Union[str, bytearray]</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.remove_credential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a credential from the authenticator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.remove_virtual_authenticator">
+<code class="descname">remove_virtual_authenticator</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.remove_virtual_authenticator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a previously added virtual authenticator.</p>
+<p>The authenticator is no longer valid after removal, so no
+methods may be called.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.save_screenshot">
+<code class="descname">save_screenshot</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span> &#x2192; bool<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.save_screenshot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves a screenshot of the current window to a PNG image file.
+Returns False if there is any IOError, else returns True. Use full
+paths in your filename.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>filename: The full path you wish to save your screenshot to. This
+should end with a <cite>.png</cite> extension.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">save_screenshot</span><span class="p">(</span><span class="s1">&#39;/Screenshots/foo.png&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -196,6 +917,29 @@ is started when starting the ChromiumDriver.</p>
 </pre></div>
 </div>
 <p class="last">Note: ‘throughput’ can be used to set both (for download and upload).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_page_load_timeout">
+<code class="descname">set_page_load_timeout</code><span class="sig-paren">(</span><em>time_to_wait: float</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_page_load_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the amount of time to wait for a page load to complete before
+throwing an error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>time_to_wait: The amount of time to wait</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">set_page_load_timeout</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
 </td>
 </tr>
 </tbody>
@@ -228,6 +972,29 @@ is started when starting the ChromiumDriver.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_script_timeout">
+<code class="descname">set_script_timeout</code><span class="sig-paren">(</span><em>time_to_wait: float</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_script_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the amount of time that the script should wait during an
+execute_async_script call before throwing an error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>time_to_wait: The amount of time to wait (in seconds)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">set_script_timeout</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_sink_to_use">
 <code class="descname">set_sink_to_use</code><span class="sig-paren">(</span><em>sink_name: str</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.set_sink_to_use"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_sink_to_use" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets a specific sink, using its name, as a Cast session receiver
@@ -246,6 +1013,89 @@ target.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_user_verified">
+<code class="descname">set_user_verified</code><span class="sig-paren">(</span><em>verified: bool</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_user_verified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets whether the authenticator will simulate success or fail on user
+verification.</p>
+<p>verified: True if the authenticator will pass user verification, False otherwise.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_window_position">
+<code class="descname">set_window_position</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>windowHandle: str = 'current'</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_window_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the x,y position of the current window. (window.moveTo)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>x: the x-coordinate in pixels to set the window position</li>
+<li>y: the y-coordinate in pixels to set the window position</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">set_window_position</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_window_rect">
+<code class="descname">set_window_rect</code><span class="sig-paren">(</span><em>x=None</em>, <em>y=None</em>, <em>width=None</em>, <em>height=None</em><span class="sig-paren">)</span> &#x2192; dict<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_window_rect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the x, y coordinates of the window as well as height and width
+of the current window. This method is only supported for W3C compatible
+browsers; other browsers should use <cite>set_window_position</cite> and
+<cite>set_window_size</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">set_window_rect</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">set_window_rect</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">set_window_rect</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.set_window_size">
+<code class="descname">set_window_size</code><span class="sig-paren">(</span><em>width</em>, <em>height</em>, <em>windowHandle: str = 'current'</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.set_window_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the width and height of the current window. (window.resizeTo)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first simple">
+<li>width: the width in pixels to set the window to</li>
+<li>height: the height in pixels to set the window to</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">set_window_size</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">600</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.start_client">
+<code class="descname">start_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called before starting a new session.</p>
+<p>This method may be overridden to define custom startup behavior.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.start_desktop_mirroring">
 <code class="descname">start_desktop_mirroring</code><span class="sig-paren">(</span><em>sink_name: str</em><span class="sig-paren">)</span> &#x2192; dict<a class="reference internal" href="../_modules/selenium/webdriver/chromium/webdriver.html#ChromiumDriver.start_desktop_mirroring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_desktop_mirroring" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starts a desktop mirroring session on a specific receiver target.</p>
@@ -255,6 +1105,24 @@ target.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
 <li>sink_name: Name of the sink to use as the target.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.start_session">
+<code class="descname">start_session</code><span class="sig-paren">(</span><em>capabilities: dict</em>, <em>browser_profile=None</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.start_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new session with the desired capabilities.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
+<li>capabilities - a capabilities dict to start the session with.</li>
+<li>browser_profile - A selenium.webdriver.firefox.firefox_profile.FirefoxProfile object. Only used if Firefox is requested.</li>
 </ul>
 </td>
 </tr>
@@ -290,6 +1158,110 @@ target.</p>
 <tr class="field-odd field"><th class="field-name">Args:</th><td class="field-body"><ul class="first last simple">
 <li>sink_name: Name of the sink to stop the Cast session.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.stop_client">
+<code class="descname">stop_client</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.stop_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called after executing a quit command.</p>
+<p>This method may be overridden to define custom shutdown
+behavior.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.switch_to">
+<code class="descname">switch_to</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.switch_to" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="first simple">
+<li>SwitchTo: an object containing all options to switch focus into</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">element</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">active_element</span>
+<span class="n">alert</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">alert</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">default_content</span><span class="p">()</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="s1">&#39;frame_name&#39;</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">frame</span><span class="p">(</span><span class="n">driver</span><span class="o">.</span><span class="n">find_elements</span><span class="p">(</span><span class="n">By</span><span class="o">.</span><span class="n">TAG_NAME</span><span class="p">,</span> <span class="s2">&quot;iframe&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">parent_frame</span><span class="p">()</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">switch_to</span><span class="o">.</span><span class="n">window</span><span class="p">(</span><span class="s1">&#39;main&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.timeouts">
+<code class="descname">timeouts</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.timeouts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the timeouts that have been set on the current session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><dl class="first docutils">
+<dt>::</dt>
+<dd><p class="first last">driver.timeouts</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">Timeout</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.title">
+<code class="descname">title</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the title of the current page.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">title</span>
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.unpin">
+<code class="descname">unpin</code><span class="sig-paren">(</span><em>script_key: selenium.webdriver.remote.script_key.ScriptKey</em><span class="sig-paren">)</span> &#x2192; None<a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.unpin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a pinned script from storage.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.virtual_authenticator_id">
+<code class="descname">virtual_authenticator_id</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.virtual_authenticator_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the id of the virtual authenticator.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="selenium.webdriver.chromium.webdriver.ChromiumDriver.window_handles">
+<code class="descname">window_handles</code><a class="headerlink" href="#selenium.webdriver.chromium.webdriver.ChromiumDriver.window_handles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the handles of all windows within the current session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Usage:</th><td class="field-body"><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">driver</span><span class="o">.</span><span class="n">window_handles</span>
+</pre></div>
+</div>
 </td>
 </tr>
 </tbody>

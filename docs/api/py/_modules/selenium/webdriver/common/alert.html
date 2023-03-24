@@ -62,7 +62,7 @@
 
 
 <div class="viewcode-block" id="Alert"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.alert.html#selenium.webdriver.common.alert.Alert">[docs]</a><span class="k">class</span> <span class="nc">Alert</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Allows to work with alerts.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Allows to work with alerts.</span>
 
 <span class="sd">    Use this class to interact with alert prompts.  It contains methods for dismissing,</span>
 <span class="sd">    accepting, inputting, and getting text from alert prompts.</span>
@@ -86,7 +86,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">driver</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates a new Alert.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new Alert.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - driver: The WebDriver instance which performs user actions.</span>
@@ -95,15 +95,15 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the text of the Alert.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the text of the Alert.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_GET_ALERT_TEXT</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Alert.dismiss"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.alert.html#selenium.webdriver.common.alert.Alert.dismiss">[docs]</a>    <span class="k">def</span> <span class="nf">dismiss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Dismisses the alert available.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dismisses the alert available.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_DISMISS_ALERT</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Alert.accept"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.alert.html#selenium.webdriver.common.alert.Alert.accept">[docs]</a>    <span class="k">def</span> <span class="nf">accept</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Accepts the alert available.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Accepts the alert available.</span>
 
 <span class="sd">        Usage::</span>
 <span class="sd">        Alert(driver).accept() # Confirm a alert dialog.</span>
@@ -111,7 +111,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Command</span><span class="o">.</span><span class="n">W3C_ACCEPT_ALERT</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Alert.send_keys"><a class="viewcode-back" href="../../../../webdriver/selenium.webdriver.common.alert.html#selenium.webdriver.common.alert.Alert.send_keys">[docs]</a>    <span class="k">def</span> <span class="nf">send_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keysToSend</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Send Keys to the Alert.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send Keys to the Alert.</span>
 
 <span class="sd">        :Args:</span>
 <span class="sd">         - keysToSend: The text to be sent to Alert.</span>
