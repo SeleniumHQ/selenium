@@ -1,3 +1,12 @@
+4.8.2 (2023-03-24)
+=========================
+Ruby:
+  * Ruby driver finder (#11523)
+  * Using json output with Selenium Manager
+
+BiDi:
+  * Released selenium-devtools 0.111.0 (supports CDP v85, v109, v110, v111)
+
 4.8.1 (2023-02-17)
 =========================
 Ruby:
