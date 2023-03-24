@@ -1,3 +1,14 @@
+## v4.8.2
+
+#### :nail_care: Polish
+
+* Add CDP support for v111 and remove v108
+* Using json output with Selenium Manager
+
+#### :bug: Bug Fix
+
+fix: Using status from response (#11742)
+
 ## v4.8.1
 
 #### :rocket: New Feature
