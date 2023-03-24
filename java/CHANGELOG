@@ -1,3 +1,23 @@
+v4.8.2
+======
+* Supported CDP versions: 85, 109, 110, 111
+* [grid] Enabling `detectDrivers` original behaviour.
+* Fix NPE regression in 4.8.0 (#11701)
+* Implement DriverFinder completely independent of Service classes (#11491)
+* [grid] Allow LocalNode to be extended for customisation (#11718)
+* InvalidSelectorException extends WebDriverException (#11727)
+* Deprecate CDP instance methods in FirefoxDriver
+* Adding allowHosts to GeckoDriverService
+* [grid] Passing language env var to child containers
+* [grid] Removing unknown capability extensions for IE
+* [bidi] Ensure removing listeners does not cause an error
+* Process Selenium Manager output as JSON (#11663)
+* [grid] Support remote downloads in Grid (#11702)
+* Adding `remote-allow-origins` for Chrome
+* Invoking Selenium Manager only with `--browser
+* [grid] Adding `remote-allow-origins` for Chrome stereotypes
+* Overloaded constructors to configure connect and read timeouts for WebDriver objects (#11532)
+
 v4.8.1
 ======
 * Supported CDP versions: 85, 108, 109, 110
