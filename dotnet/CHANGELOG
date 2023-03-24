@@ -1,3 +1,10 @@
+v4.8.2
+======
+* Add CDP files for v111 and remove v108
+* InvalidSelectorException now extends WebDriverException
+* Using json output with Selenium Manager
+* Include targets for projects building transitively (#11812)
+
 v4.8.1
 ======
 * Add CDP files for v110 and remove v107
