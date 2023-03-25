@@ -42,6 +42,7 @@ module Selenium
           WebDriver.logger.deprecate("The :capabilities parameter for #{self.class}",
                                      ":options argument with an instance of #{self.class}",
                                      id: :capabilities)
+          service.executable_path ||= WebDriver::DriverFinder.path(capabilities, service.class)
           generate_capabilities(capabilities)
         else
           options ||= default_options
