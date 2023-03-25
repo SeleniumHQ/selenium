@@ -31,6 +31,8 @@ use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
 
+use selenium_manager::metadata::clear_metadata;
+
 /// Automated driver management for Selenium
 #[derive(Parser, Debug)]
 #[clap(version, about, long_about = None, help_template = "\
@@ -92,6 +94,10 @@ struct Cli {
     /// Set default browser ttl
     #[clap(long, value_parser, default_value_t = TTL_BROWSERS_SEC)]
     browser_ttl: u64,
+
+    /// Clear metadata file
+    #[clap(long)]
+    clear_metadata: bool,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -100,6 +106,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if cli.clear_cache {
         clear_cache(&log);
+    }
+
+    if cli.clear_metadata {
+        clear_metadata(&log)
     }
 
     let browser_name: String = cli.browser.unwrap_or_default();
