@@ -60,6 +60,8 @@ Metrics/ModuleLength:
 
 Metrics/PerceivedComplexity:
   Max: 9
+  Exclude:
+    - 'lib/selenium/webdriver/common/local_driver.rb'
 
 Naming/FileName:
   Exclude:
