@@ -33,11 +33,11 @@ module Selenium
         # @param [Options] options browser options.
         # @return [String] the path to the correct driver.
         def driver_path(options)
-          message = "driver for #{options.browser_name} not found; attempting to install with Selenium Manager"
+          message = 'applicable driver not found; attempting to install with Selenium Manager'
           WebDriver.logger.warn(message)
 
           unless options.is_a?(Options)
-            raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not a #{options.inspect}"
+            raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not #{options.inspect}"
           end
 
           command = [binary, '--browser', options.browser_name, '--output', 'json']
