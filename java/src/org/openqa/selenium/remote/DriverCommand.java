@@ -169,9 +169,7 @@ public interface DriverCommand {
     Require.nonNull("Capabilities", capabilities);
     return new CommandPayload(
       NEW_SESSION,
-      ImmutableMap.of(
-        "capabilities", singleton(capabilities),
-        "desiredCapabilities", capabilities));
+      ImmutableMap.of("capabilities", singleton(capabilities)));
   }
 
   static CommandPayload NEW_SESSION(Collection<Capabilities> capabilities) {
@@ -182,9 +180,7 @@ public interface DriverCommand {
 
     return new CommandPayload(
       NEW_SESSION,
-      ImmutableMap.of(
-        "capabilities", capabilities,
-        "desiredCapabilities", capabilities.iterator().next()));
+      ImmutableMap.of("capabilities", capabilities));
   }
 
   static CommandPayload GET(String url) {
