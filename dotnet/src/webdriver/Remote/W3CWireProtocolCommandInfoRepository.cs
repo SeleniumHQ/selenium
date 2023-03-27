@@ -134,6 +134,8 @@ namespace OpenQA.Selenium.Remote
             this.TryAddCommand(DriverCommand.IsElementDisplayed, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/displayed"));
             this.TryAddCommand(DriverCommand.ElementEquals, new HttpCommandInfo(HttpCommandInfo.GetCommand, "/session/{sessionId}/element/{id}/equals/{other}"));
             this.TryAddCommand(DriverCommand.UploadFile, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/file"));
+            this.TryAddCommand(DriverCommand.GetLog, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log"));
+            this.TryAddCommand(DriverCommand.GetAvailableLogTypes, new HttpCommandInfo(HttpCommandInfo.PostCommand, "/session/{sessionId}/se/log/types"));
         }
     }
 }
