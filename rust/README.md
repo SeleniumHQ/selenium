@@ -45,10 +45,12 @@ Options:
           Print help information
   -V, --version
           Print version information
-  --driver_ttl <TTL IN SECONDS>
+  --driver-ttl <TTL IN SECONDS>
           Set custom TTL for driver in seconds. Default value is 86400
-  --browser_ttl <TTL IN SECONDS>
+  --browser-ttl <TTL IN SECONDS>
           Set custom TTL for browser in seconds default value is 0
+  --clear-metadata
+          Delete metadata file if it exists
 ```
 
 For instance, the command required to manage chromedriver is the following:
