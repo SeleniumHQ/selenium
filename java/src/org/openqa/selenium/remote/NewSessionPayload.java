@@ -26,7 +26,6 @@ import com.google.common.collect.Sets;
 import com.google.common.io.CharSource;
 import com.google.common.io.CharStreams;
 import com.google.common.io.FileBackedOutputStream;
-
 import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -172,18 +171,6 @@ public class NewSessionPayload implements Closeable {
   public void writeTo(Appendable appendable) throws IOException {
     try (JsonOutput json = new Json().newOutput(appendable)) {
       json.beginObject();
-
-      Map<String, Object> first = getOss();
-      if (first == null) {
-        first = stream().findFirst()
-          .orElse(new ImmutableCapabilities())
-          .asMap();
-      }
-      Map<String, Object> ossFirst = new HashMap<>(first);
-
-      // Write the first capability we get as the desired capability.
-      json.name("desiredCapabilities");
-      json.write(ossFirst);
 
       // Now for the w3c capabilities
       json.name("capabilities");

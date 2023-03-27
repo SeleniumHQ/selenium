@@ -53,24 +53,6 @@ import static org.openqa.selenium.remote.http.Contents.utf8String;
 class ProtocolHandshakeTest {
 
   @Test
-  void requestShouldIncludeJsonWireProtocolCapabilities() throws IOException {
-    Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
-    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
-
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(utf8String(
-        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
-
-    new ProtocolHandshake().createSession(client, command);
-
-    Map<String, Object> json = getRequestPayloadAsMap(client);
-
-    assertThat(json.get("desiredCapabilities")).isEqualTo(EMPTY_MAP);
-  }
-
-  @Test
   void requestShouldIncludeSpecCompliantW3CCapabilities() throws IOException {
     Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
@@ -188,34 +170,6 @@ class ProtocolHandshakeTest {
     assertThat(w3c.get(0))
         .containsKey("moz:firefoxOptions")
         .containsEntry("browserName", "firefox");
-  }
-
-  @Test
-  void shouldLowerCaseProxyTypeForW3CRequest() throws IOException {
-    Proxy proxy = new Proxy();
-    proxy.setProxyType(AUTODETECT);
-    Capabilities caps = new ImmutableCapabilities(CapabilityType.PROXY, proxy);
-    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
-    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
-
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(utf8String(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
-
-    new ProtocolHandshake().createSession(client, command);
-
-    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
-
-    mergeW3C(handshakeRequest).forEach(always -> {
-          Map<String, ?> seenProxy = (Map<String, ?>) always.get("proxy");
-      assertThat(seenProxy.get("proxyType")).isEqualTo("autodetect");
-        });
-
-    Map<String, ?> jsonCaps = (Map<String, ?>) handshakeRequest.get("desiredCapabilities");
-    Map<String, ?> seenProxy = (Map<String, ?>) jsonCaps.get("proxy");
-    assertThat(seenProxy.get("proxyType")).isEqualTo("AUTODETECT");
   }
 
   @Test
