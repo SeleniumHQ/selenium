@@ -23,7 +23,6 @@ import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.grid.session.ActiveSession;
 import org.openqa.selenium.grid.session.SessionFactory;
-import org.openqa.selenium.grid.web.ProtocolConverter;
 import org.openqa.selenium.grid.web.ReverseProxyHandler;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.io.TemporaryFilesystem;
@@ -151,8 +150,11 @@ public abstract class RemoteSession implements ActiveSession {
           codec = new ReverseProxyHandler(tracer, client);
           downstream = upstream;
         } else {
-          downstream = downstreamDialects.isEmpty() ? W3C : downstreamDialects.iterator().next();
-          codec = new ProtocolConverter(tracer, client, downstream, upstream);
+          LOG.warning(String.format(
+            "Unable to match protocol versions. Found %s upstream but can handle %s",
+            upstream,
+            downstreamDialects));
+          return Optional.empty();
         }
 
         Response response = result.createResponse();
