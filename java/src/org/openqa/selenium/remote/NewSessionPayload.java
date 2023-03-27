@@ -82,10 +82,7 @@ public class NewSessionPayload implements Closeable {
 
     ImmutableSet.Builder<Dialect> dialects = ImmutableSet.builder();
     try {
-      if (getOss() != null) {
-        dialects.add(Dialect.OSS);
-      }
-      if (getAlwaysMatch() != null || getFirstMatches() != null) {
+      if (isW3C()) {
         dialects.add(Dialect.W3C);
       }
 
@@ -238,13 +235,7 @@ public class NewSessionPayload implements Closeable {
    */
   public Stream<Capabilities> stream() {
     try {
-      // OSS first
-      Stream<Map<String, Object>> oss = Stream.of(getOss());
-
-      // And now W3C
-      Stream<Map<String, Object>> w3c = getW3C();
-
-      return Stream.concat(oss, w3c)
+      return getW3C()
         .filter(Objects::nonNull)
         .distinct()
         .map(ImmutableCapabilities::new);
@@ -297,36 +288,10 @@ public class NewSessionPayload implements Closeable {
     }
   }
 
-  private Map<String, Object> getOss() throws IOException {
-    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
-    try (Reader reader = charSource.openBufferedStream();
-         JsonInput input = json.newInput(reader)) {
-      input.beginObject();
-      while (input.hasNext()) {
-        String name = input.nextName();
-        if ("desiredCapabilities".equals(name)) {
-          return input.read(MAP_TYPE);
-        } else {
-          input.skipValue();
-        }
-      }
-    }
-    return null;
-  }
-
   private Stream<Map<String, Object>> getW3C() throws IOException {
-    // If there's an OSS value, generate a stream of capabilities from that using the transforms,
-    // then add magic to generate each of the w3c capabilities. For the sake of simplicity, we're
-    // going to make the (probably wrong) assumption we can hold all of the firstMatch values and
-    // alwaysMatch value in memory at the same time.
-
-    Stream<Map<String, Object>> fromOss;
-    Map<String, Object> ossCapabilities = getOss();
-    if (ossCapabilities != null) {
-      fromOss = CapabilitiesUtils.makeW3CSafe(ossCapabilities);
-    } else {
-      fromOss = Stream.of();
-    }
+    // For the sake of simplicity, we're going to make the (probably wrong)
+    // assumption we can hold all of the firstMatch values and alwaysMatch
+    // value in memory at the same time.
 
     Stream<Map<String, Object>> fromW3c;
     Map<String, Object> alwaysMatch = getAlwaysMatch();
@@ -347,7 +312,24 @@ public class NewSessionPayload implements Closeable {
         .map(first -> ImmutableMap.<String, Object>builder().putAll(always).putAll(first).build());
     }
 
-    return Stream.concat(fromOss, fromW3c).distinct();
+    return fromW3c.distinct();
+  }
+
+  private boolean isW3C() throws IOException {
+    CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
+    try (Reader reader = charSource.openBufferedStream();
+         JsonInput input = json.newInput(reader)) {
+      input.beginObject();
+      while (input.hasNext()) {
+        String name = input.nextName();
+        if ("capabilities".equals(name)) {
+          return true;
+        } else {
+          input.skipValue();
+        }
+      }
+    }
+    return false;
   }
 
   private Map<String, Object> getAlwaysMatch() throws IOException {
@@ -373,7 +355,7 @@ public class NewSessionPayload implements Closeable {
         }
       }
     }
-    return null;
+    return ImmutableMap.of();
   }
 
   private Collection<Map<String, Object>> getFirstMatches() throws IOException {
@@ -399,7 +381,7 @@ public class NewSessionPayload implements Closeable {
         }
       }
     }
-    return null;
+    return ImmutableList.of(ImmutableMap.of());
   }
 
   @Override

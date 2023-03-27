@@ -89,21 +89,6 @@ class ProtocolHandshakeTest {
   }
 
   @Test
-  void shouldParseWireProtocolNewSessionResponse() throws IOException {
-    Map<String, Object> params = singletonMap("capabilities", singleton(new ImmutableCapabilities()));
-    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
-
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(utf8String(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
-
-    ProtocolHandshake.Result result = new ProtocolHandshake().createSession(client, command);
-    assertThat(result.getDialect()).isEqualTo(Dialect.OSS);
-  }
-
-  @Test
   void shouldNotIncludeNonProtocolExtensionKeys() throws IOException {
     Capabilities caps = new ImmutableCapabilities(
         "se:option", "cheese",
@@ -115,7 +100,7 @@ class ProtocolHandshakeTest {
     HttpResponse response = new HttpResponse();
     response.setStatus(HTTP_OK);
     response.setContent(utf8String(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
+        "{\"value\": {\"sessionId\": \"23456789\", \"capabilities\": {}}}"));
     RecordingHttpClient client = new RecordingHttpClient(response);
 
     new ProtocolHandshake().createSession(client, command);

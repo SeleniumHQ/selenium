@@ -137,9 +137,7 @@ public class ProtocolHandshake {
                       initialResponse.getStatusCode(), responseMessage)));
     }
 
-    return Stream.of(
-      new W3CHandshakeResponse().getResponseFunction(),
-      new JsonWireProtocolResponse().getResponseFunction())
+    return Stream.of(new W3CHandshakeResponse().getResponseFunction())
       .map(func -> func.apply(initialResponse))
       .filter(Objects::nonNull)
       .findFirst()

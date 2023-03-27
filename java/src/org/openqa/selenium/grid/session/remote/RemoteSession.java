@@ -51,9 +51,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.openqa.selenium.remote.Dialect.OSS;
-import static org.openqa.selenium.remote.Dialect.W3C;
-
 /**
  * Abstract class designed to do things like protocol conversion.
  */

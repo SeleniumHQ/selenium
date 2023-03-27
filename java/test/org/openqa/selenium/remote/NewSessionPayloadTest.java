@@ -92,15 +92,13 @@ class NewSessionPayloadTest {
   @Test
   void shouldOfferStreamOfW3cCapabilitiesIfPresent() {
     List<Capabilities> capabilities = create(ImmutableMap.of(
-      "desiredCapabilities", singletonMap(
-        "browserName", "cheese"),
       "capabilities", singletonMap(
         "alwaysMatch", singletonMap(
           "browserName", "peas"))));
 
     // We expect a synthetic w3c capability for the mismatching OSS capabilities
-    assertEquals(2, capabilities.size(), capabilities.toString());
-    assertEquals("peas", capabilities.get(1).getBrowserName());
+    assertEquals(1, capabilities.size(), capabilities.toString());
+    assertEquals("peas", capabilities.get(0).getBrowserName());
   }
 
   @Test
@@ -154,9 +152,6 @@ class NewSessionPayloadTest {
   @Test
   void convertEverythingToFirstMatchOnlyIfPayloadContainsAlwaysMatchSectionAndOssCapabilities() {
     List<Capabilities> capabilities = create(ImmutableMap.of(
-      "desiredCapabilities", ImmutableMap.of(
-        "browserName", "firefox",
-        "platform", "WINDOWS"),
       "capabilities", ImmutableMap.of(
         "alwaysMatch", singletonMap(
           "platformName", "macos"),
@@ -166,10 +161,6 @@ class NewSessionPayloadTest {
 
     assertEquals(
       asList(
-        // From OSS
-        new ImmutableCapabilities("browserName", "firefox", "platform", "WINDOWS"),
-        // Generated from OSS
-        new ImmutableCapabilities("browserName", "firefox"),
         // From the actual W3C capabilities
         new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
         new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")),
