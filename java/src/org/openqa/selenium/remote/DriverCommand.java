@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
 
 /**
@@ -169,7 +170,7 @@ public interface DriverCommand {
     return new CommandPayload(
       NEW_SESSION,
       ImmutableMap.of(
-        "capabilities", capabilities,
+        "capabilities", singleton(capabilities),
         "desiredCapabilities", capabilities));
   }
 
@@ -182,8 +183,7 @@ public interface DriverCommand {
     return new CommandPayload(
       NEW_SESSION,
       ImmutableMap.of(
-        "capabilities",
-        capabilities,
+        "capabilities", capabilities,
         "desiredCapabilities", capabilities.iterator().next()));
   }
 
