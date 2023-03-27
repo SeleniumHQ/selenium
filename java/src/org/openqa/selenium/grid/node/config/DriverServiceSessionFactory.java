@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
-import org.openqa.selenium.grid.node.ProtocolConvertingSession;
+import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -171,7 +171,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         span.addEvent("Driver service created session", attributeMap);
         return Either.right(
-          new ProtocolConvertingSession(
+          new DefaultActiveSession(
             tracer,
             client,
             new SessionId(response.getSessionId()),
