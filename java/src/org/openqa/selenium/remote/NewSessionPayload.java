@@ -42,11 +42,13 @@ import java.io.StringReader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -103,12 +105,24 @@ public class NewSessionPayload implements Closeable {
   }
 
   public static NewSessionPayload create(Capabilities caps) {
+    Require.nonNull("Capabilities", caps);
+    return create(Collections.singleton(caps));
+  }
+
+  public static NewSessionPayload create(Collection<Capabilities> caps) {
     // We need to convert the capabilities into a new session payload. At this point we're dealing
     // with references, so I'm Just Sure This Will Be Fine.
-    return create(ImmutableMap.of("desiredCapabilities", caps.asMap()));
+    return create(ImmutableMap.of(
+      "capabilities", ImmutableMap.of(
+        "firstMatch", caps.stream().map(Capabilities::asMap).collect(Collectors.toList()))));
   }
 
   public static NewSessionPayload create(Map<String, ?> source) {
+    // It is expected that the input to this method contains a properly formed
+    // "new session" request, and not just a random blob of data. Make sure
+    // this precondition is met before continuing.
+    Require.precondition(source.containsKey("capabilities"), "New session payload must contain capabilities");
+
     String json = new Json().toJson(Require.nonNull("Payload", source));
     return new NewSessionPayload(new StringReader(json));
   }
@@ -201,6 +215,8 @@ public class NewSessionPayload implements Closeable {
         String name = input.nextName();
         switch (name) {
           case "capabilities":
+          // These fields were used by the (now defunct) JSON Wire Protocol, but we
+          // keep them here since we might see them from ancient clients.
           case "desiredCapabilities":
           case "requiredCapabilities":
             input.skipValue();
@@ -217,13 +233,8 @@ public class NewSessionPayload implements Closeable {
 
   /**
    * Stream the {@link Capabilities} encoded in the payload used to create this instance. The
-   * {@link Stream} will start with a {@link Capabilities} object matching the OSS capabilities, and
-   * will then expand each of the "{@code firstMatch}" and "{@code alwaysMatch}" contents as defined
-   * in the W3C WebDriver spec.
-   * <p>
-   * The OSS {@link Capabilities} are listed first because converting the OSS capabilities to the
-   * equivalent W3C capabilities isn't particularly easy, so it's hoped that this approach gives us
-   * the most compatible implementation.
+   * {@link Stream} will expand each of the "{@code firstMatch}" and "{@code alwaysMatch}"
+   * contents as defined in the W3C WebDriver spec.
    */
   public Stream<Capabilities> stream() {
     try {
@@ -247,7 +258,7 @@ public class NewSessionPayload implements Closeable {
   }
 
   public Map<String, Object> getMetadata() {
-    Set<String> ignoredMetadataKeys = ImmutableSet.of("capabilities", "desiredCapabilities");
+    Set<String> ignoredMetadataKeys = ImmutableSet.of("capabilities", "desiredCapabilities", "requiredCapabilities");
 
     CharSource charSource = backingStore.asByteSource().asCharSource(UTF_8);
     try (Reader reader = charSource.openBufferedStream();

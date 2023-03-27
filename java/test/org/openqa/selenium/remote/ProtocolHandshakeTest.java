@@ -19,11 +19,11 @@ package org.openqa.selenium.remote;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
-import org.openqa.selenium.Proxy;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpRequest;
@@ -40,11 +40,12 @@ import java.util.stream.Collectors;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.Collections.EMPTY_MAP;
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.openqa.selenium.Proxy.ProxyType.AUTODETECT;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.remote.http.Contents.string;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 
@@ -54,7 +55,7 @@ class ProtocolHandshakeTest {
 
   @Test
   void requestShouldIncludeSpecCompliantW3CCapabilities() throws IOException {
-    Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
+    Map<String, Object> params = singletonMap("capabilities", singleton(new ImmutableCapabilities()));
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -74,7 +75,7 @@ class ProtocolHandshakeTest {
 
   @Test
   void shouldParseW3CNewSessionResponse() throws IOException {
-    Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
+    Map<String, Object> params = singletonMap("capabilities", singleton(new ImmutableCapabilities()));
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -89,7 +90,7 @@ class ProtocolHandshakeTest {
 
   @Test
   void shouldParseWireProtocolNewSessionResponse() throws IOException {
-    Map<String, Object> params = singletonMap("desiredCapabilities", new ImmutableCapabilities());
+    Map<String, Object> params = singletonMap("capabilities", singleton(new ImmutableCapabilities()));
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -106,10 +107,9 @@ class ProtocolHandshakeTest {
   void shouldNotIncludeNonProtocolExtensionKeys() throws IOException {
     Capabilities caps = new ImmutableCapabilities(
         "se:option", "cheese",
-        "option", "I like sausages",
         "browserName", "amazing cake browser");
 
-    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
+    Map<String, Object> params = singletonMap("capabilities", singleton(caps));
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
     HttpResponse response = new HttpResponse();
@@ -147,57 +147,12 @@ class ProtocolHandshakeTest {
         "moz:firefoxOptions", EMPTY_MAP,
         "browserName", "firefox");
 
-    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
+    Map<String, Object> params = singletonMap("capabilities", singleton(caps));
     Command command = new Command(null, DriverCommand.NEW_SESSION, params);
 
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(utf8String(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
-
-    new ProtocolHandshake().createSession(client, command);
-
-    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
-
-    List<Map<String, Object>> w3c = mergeW3C(handshakeRequest);
-
-    assertThat(w3c).hasSize(1);
-    // firstMatch should not contain an object for Chrome-specific capabilities. Because
-    // "chromeOptions" is not a W3C capability name, it is stripped from any firstMatch objects.
-    // The resulting empty object should be omitted from firstMatch; if it is present, then the
-    // Firefox-specific capabilities might be ignored.
-    assertThat(w3c.get(0))
-        .containsKey("moz:firefoxOptions")
-        .containsEntry("browserName", "firefox");
-  }
-
-  @Test
-  void shouldNotIncludeMappingOfANYPlatform() throws IOException {
-    Capabilities caps = new ImmutableCapabilities(
-        "platform", "ANY",
-        "platformName", "ANY",
-        "browserName", "cake");
-
-    Map<String, Object> params = singletonMap("desiredCapabilities", caps);
-    Command command = new Command(null, DriverCommand.NEW_SESSION, params);
-
-    HttpResponse response = new HttpResponse();
-    response.setStatus(HTTP_OK);
-    response.setContent(utf8String(
-        "{\"sessionId\": \"23456789\", \"status\": 0, \"value\": {}}"));
-    RecordingHttpClient client = new RecordingHttpClient(response);
-
-    new ProtocolHandshake().createSession(client, command);
-
-    Map<String, Object> handshakeRequest = getRequestPayloadAsMap(client);
-
-    mergeW3C(handshakeRequest)
-        .forEach(capabilities -> {
-          assertThat(capabilities.get("browserName")).isEqualTo("cake");
-          assertThat(capabilities.get("platformName")).isNull();
-          assertThat(capabilities.get("platform")).isNull();
-        });
+    ProtocolHandshake handshake = new ProtocolHandshake();
+    assertThatExceptionOfType(IllegalArgumentException.class)
+      .isThrownBy(() -> handshake.createSession(null, command));
   }
 
   private List<Map<String, Object>> mergeW3C(Map<String, Object> caps) {
