@@ -57,7 +57,7 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 
 public class NewSessionPayload implements Closeable {
 
-  private static final Dialect DEFAULT_DIALECT = Dialect.OSS;
+  private static final Dialect DEFAULT_DIALECT = Dialect.W3C;
   private static final Predicate<String> ACCEPTED_W3C_PATTERNS = new AcceptedW3CCapabilityKeys();
 
   private final Json json = new Json();

@@ -26,7 +26,6 @@ import org.openqa.selenium.grid.data.Session;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.Dialect;
-import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.SessionId;
 
 import java.util.Map;
@@ -36,8 +35,6 @@ import java.util.function.Function;
 public class CapabilityResponseEncoder {
 
   private static final Json JSON = new Json();
-  private static final ResponseEncoder<Session, Map<String, Object>, byte[]> JWP_ENCODER =
-      new Encoder(Dialect.OSS);
   private static final ResponseEncoder<Session, Map<String, Object>, byte[]> W3C_ENCODER =
       new Encoder(Dialect.W3C);
 
@@ -47,9 +44,6 @@ public class CapabilityResponseEncoder {
 
   public static ResponseEncoder<Session, Map<String, Object>, byte[]> getEncoder(Dialect dialect) {
     switch (dialect) {
-      case OSS:
-        return JWP_ENCODER;
-
       case W3C:
         return W3C_ENCODER;
 
@@ -108,10 +102,6 @@ public class CapabilityResponseEncoder {
       Map<String, Object> toEncode;
 
       switch (dialect) {
-        case OSS:
-          toEncode = encodeJsonWireProtocol(id, capabilities, metadata);
-          break;
-
         case W3C:
           toEncode = encodeW3C(id, capabilities, metadata);
           break;
@@ -134,19 +124,5 @@ public class CapabilityResponseEncoder {
               "capabilities", capabilities))
           .build();
     }
-
-    private static Map<String, Object> encodeJsonWireProtocol(
-        SessionId id,
-        Capabilities capabilities,
-        Map<String, Object> metadata) {
-      return ImmutableMap.<String, Object>builder()
-          .putAll(metadata)
-          .put("status", ErrorCodes.SUCCESS)
-          .put("sessionId", id)
-          .put("value", capabilities)
-          .build();
-
-    }
-
   }
 }

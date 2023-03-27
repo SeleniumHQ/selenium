@@ -93,7 +93,7 @@ class InMemorySession implements ActiveSession {
 
   @Override
   public Dialect getUpstreamDialect() {
-    return Dialect.OSS;
+    return Dialect.W3C;
   }
 
   @Override
@@ -149,8 +149,8 @@ class InMemorySession implements ActiveSession {
 
         // Prefer the OSS dialect.
         Set<Dialect> downstreamDialects = sessionRequest.getDownstreamDialects();
-        Dialect downstream = downstreamDialects.contains(Dialect.OSS) || downstreamDialects.isEmpty() ?
-                             Dialect.OSS :
+        Dialect downstream = downstreamDialects.contains(Dialect.W3C) || downstreamDialects.isEmpty() ?
+                             Dialect.W3C :
                              downstreamDialects.iterator().next();
         return Optional.of(
             new InMemorySession(driver, sessionRequest.getDesiredCapabilities(), downstream));

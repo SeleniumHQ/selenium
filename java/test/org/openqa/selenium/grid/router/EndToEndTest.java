@@ -257,33 +257,6 @@ class EndToEndTest {
 
   @ParameterizedTest
   @MethodSource("data")
-  void shouldAllowPassthroughForJWPMode(Supplier<Deployment> values) {
-    setFields(values);
-
-    HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(asJson(
-      ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of(
-          "browserName", "cheese"))));
-
-    HttpResponse response = client.execute(request);
-
-    assertEquals(200, response.getStatus());
-
-    Map<String, Object> topLevel = json.toType(string(response), MAP_TYPE);
-
-    // There should be a numeric status field
-    assertEquals(0L, topLevel.get("status"), topLevel.toString());
-    // The session id
-    assertTrue(topLevel.containsKey("sessionId"), string(request));
-
-    // And the value should be the capabilities.
-    Map<?, ?> value = (Map<?, ?>) topLevel.get("value");
-    assertEquals("cheese", value.get("browserName"), string(request));
-  }
-
-  @ParameterizedTest
-  @MethodSource("data")
   void shouldDoProtocolTranslationFromW3CLocalEndToJWPRemoteEnd(Supplier<Deployment> values) {
     setFields(values);
   }
