@@ -137,20 +137,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
-    match selenium_manager.set_timeout(cli.timeout) {
-        Ok(_) => {}
-        Err(err) => {
+
+    selenium_manager
+        .set_timeout(cli.timeout)
+        .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .unwrap_or_else(|err| {
             selenium_manager.get_logger().error(err.to_string());
             flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
-        }
-    }
-    match selenium_manager.set_proxy(cli.proxy.unwrap_or_default()) {
-        Ok(_) => {}
-        Err(err) => {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
-        }
-    }
+        });
 
     match selenium_manager.resolve_driver() {
         Ok(driver_path) => {
