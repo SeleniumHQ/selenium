@@ -60,9 +60,10 @@ pub fn create_path_if_not_exists(path: &Path) {
 }
 
 pub fn uncompress(
-    compressed_file: &String,
-    target: PathBuf,
+    compressed_file: &str,
+    target: &PathBuf,
     log: &Logger,
+    overwrite: bool,
 ) -> Result<(), Box<dyn Error>> {
     let file = File::open(compressed_file)?;
     let kind = infer::get_from_path(compressed_file)?
@@ -74,9 +75,9 @@ pub fn uncompress(
     ));
 
     if extension.eq_ignore_ascii_case(ZIP) {
-        unzip(file, target, log)?
+        unzip(file, target, log, overwrite)?
     } else if extension.eq_ignore_ascii_case(GZ) {
-        untargz(file, target, log)?
+        untargz(file, target, log, overwrite)?
     } else if extension.eq_ignore_ascii_case(XML) {
         return Err("Wrong browser/driver version".into());
     } else {
@@ -89,26 +90,37 @@ pub fn uncompress(
     Ok(())
 }
 
-pub fn untargz(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn Error>> {
+pub fn untargz(
+    file: File,
+    target: &Path,
+    log: &Logger,
+    overwrite: bool,
+) -> Result<(), Box<dyn Error>> {
     log.trace(format!("Untargz file to {}", target.display()));
     let tar = GzDecoder::new(&file);
     let mut archive = Archive::new(tar);
     let parent_path = target
         .parent()
         .ok_or(format!("Error getting parent of {:?}", file))?;
-    if !target.exists() {
+    if overwrite || !target.exists() {
         archive.unpack(parent_path)?;
     }
     Ok(())
 }
 
-pub fn unzip(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn Error>> {
+pub fn unzip(
+    file: File,
+    target: &PathBuf,
+    log: &Logger,
+    overwrite: bool,
+) -> Result<(), Box<dyn Error>> {
     log.trace(format!("Unzipping file to {}", target.display()));
     let mut archive = ZipArchive::new(file)?;
 
     for i in 0..archive.len() {
         let mut file = archive.by_index(i)?;
-        if target.exists() {
+        if !overwrite && target.exists() {
+            log.debug(format!("File {} exists, skipping", target.display()));
             continue;
         }
         let target_file_name = target.file_name().unwrap().to_str().unwrap();
@@ -121,20 +133,24 @@ pub fn unzip(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn Er
             if let Some(p) = target.parent() {
                 create_path_if_not_exists(p);
             }
-            if !target.exists() {
-                let mut outfile = File::create(&target)?;
+            let mut outfile = File::create(target)?;
 
-                // Set permissions in Unix-like systems
-                #[cfg(unix)]
-                {
-                    use std::os::unix::fs::PermissionsExt;
+            // Set permissions in Unix-like systems
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
 
-                    fs::set_permissions(&target, fs::Permissions::from_mode(0o755))?;
-                }
-
-                io::copy(&mut file, &mut outfile)?;
+                fs::set_permissions(&target, fs::Permissions::from_mode(0o755))?;
             }
+
+            io::copy(&mut file, &mut outfile)?;
             break;
+        } else {
+            log.trace(format!(
+                "File {} does not match the expected file name {}",
+                file.name(),
+                target_file_name
+            ));
         }
     }
     Ok(())

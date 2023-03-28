@@ -25,9 +25,11 @@ use crate::{
 };
 use std::env;
 use std::env::consts::OS;
+use std::path::PathBuf;
 
 pub const ARM64_ARCH: &str = "arm64";
 
+#[derive(Clone)]
 pub struct ManagerConfig {
     pub browser_version: String,
     pub driver_version: String,
@@ -38,7 +40,7 @@ pub struct ManagerConfig {
     pub timeout: u64,
     pub browser_ttl: u64,
     pub driver_ttl: u64,
-    pub custom_save_path: Option<String>,
+    pub custom_save_path: Option<PathBuf>,
 }
 
 impl ManagerConfig {
@@ -72,22 +74,6 @@ impl ManagerConfig {
             custom_save_path: None,
         }
     }
-
-    #[allow(clippy::should_implement_trait)]
-    pub fn clone(config: &ManagerConfig) -> ManagerConfig {
-        ManagerConfig {
-            browser_version: config.browser_version.as_str().to_string(),
-            driver_version: config.driver_version.as_str().to_string(),
-            os: config.os.as_str().to_string(),
-            arch: config.arch.as_str().to_string(),
-            browser_path: config.browser_path.as_str().to_string(),
-            proxy: config.proxy.as_str().to_string(),
-            timeout: config.timeout,
-            browser_ttl: config.browser_ttl,
-            driver_ttl: config.driver_ttl,
-            custom_save_path: config.custom_save_path
-        }
-    }
 }
 
 #[allow(dead_code)]
@@ -114,12 +100,11 @@ impl OS {
 }
 
 pub fn str_to_os(os: &str) -> OS {
-    if WINDOWS.is(os) {
-        WINDOWS
-    } else if MACOS.is(os) {
-        MACOS
-    } else {
-        LINUX
+    match os {
+        "windows" => WINDOWS,
+        "macos" => MACOS,
+        "linux" => LINUX,
+        _ => panic!("Unknown OS: {}", os),
     }
 }
 

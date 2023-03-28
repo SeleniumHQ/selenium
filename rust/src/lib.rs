@@ -25,6 +25,7 @@ use std::fs;
 
 use crate::config::OS::WINDOWS;
 use crate::config::{str_to_os, ManagerConfig};
+use files::get_binary_extension;
 use is_executable::IsExecutable;
 use reqwest::{Client, ClientBuilder, Proxy};
 use std::collections::HashMap;
@@ -122,7 +123,30 @@ pub trait SeleniumManager {
         let (_tmp_folder, driver_zip_file) =
             download_driver_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
         let driver_path_in_cache = Self::get_driver_path_in_cache(self);
-        uncompress(&driver_zip_file, driver_path_in_cache, self.get_logger())
+        uncompress(
+            &driver_zip_file,
+            &driver_path_in_cache,
+            self.get_logger(),
+            false,
+        )
+    }
+
+    fn download_driver_to_path(&self, path: &Path) -> Result<PathBuf, Box<dyn Error>> {
+            let driver_url = Self::get_driver_url(self)?;
+            self.get_logger()
+                .debug(format!("Driver URL: {}", driver_url));
+
+            let (_dont_drop, zip_path) = download_driver_to_tmp_folder(
+                self.get_http_client(),
+                driver_url,
+                self.get_logger(),
+            )?;
+            let driver_name =
+                self.get_driver_name().to_string() + get_binary_extension(self.get_os());
+            let save_path = path.join(driver_name);
+
+            uncompress(&zip_path, &save_path, self.get_logger(), true)?;
+            Ok(save_path)
     }
 
     fn detect_browser_path(&self) -> Option<&str> {
@@ -300,6 +324,10 @@ pub trait SeleniumManager {
             self.set_driver_version(driver_version);
         }
 
+        if let Some(save_dir) = self.get_save_path() {
+            return self.download_driver_to_path(save_dir);
+        }
+
         if !self.is_safari() {
             let (in_path_driver_version, in_path_driver_path) = self.find_driver_in_path();
             if let (Some(found_driver_version), Some(found_driver_path)) =
@@ -454,10 +482,14 @@ pub trait SeleniumManager {
         Ok(())
     }
 
-    fn set_save_path(&mut self, save_path: String) {
+    fn set_save_path(&mut self, save_path: Option<PathBuf>) {
         let mut config = ManagerConfig::clone(self.get_config());
-        config.custom_save_path = Some(save_path);
+        config.custom_save_path = save_path;
         self.set_config(config);
+    }
+
+    fn get_save_path(&self) -> Option<&PathBuf> {
+        self.get_config().custom_save_path.as_ref()
     }
 }
 

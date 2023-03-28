@@ -17,6 +17,7 @@
 
 use std::error::Error;
 
+use std::path::PathBuf;
 use std::process::exit;
 
 use clap::Parser;
@@ -98,6 +99,10 @@ struct Cli {
     /// Clear metadata file
     #[clap(long)]
     clear_metadata: bool,
+
+    /// Specifies a custom path to save the driver
+    #[clap(long, value_parser)]
+    save_path: Option<String>,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -137,6 +142,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    selenium_manager.set_save_path(cli.save_path.map(PathBuf::from));
+
     match selenium_manager.set_timeout(cli.timeout) {
         Ok(_) => {}
         Err(err) => {
