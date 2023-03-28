@@ -301,22 +301,17 @@ pub trait SeleniumManager {
         }
 
         if !self.is_safari() {
-            if let (Some(version), Some(path)) = self.find_driver_in_path()
-            {
+            if let (Some(version), Some(path)) = self.find_driver_in_path() {
                 if version == self.get_driver_version() {
                     self.get_logger().debug(format!(
-                        "Found {} {} in PATH: {}",
-                        self.get_driver_name(),
-                        version,
-                        path
+                        "Found {} {version} in PATH: {path}",
+                        self.get_driver_name()
                     ));
                     return Ok(PathBuf::from(path));
                 } else {
                     self.get_logger().warn(format!(
-                        "Incompatible release of {} (version {}) detected in PATH: {}",
-                        self.get_driver_name(),
-                        version,
-                        path
+                        "Incompatible release of {} (version {version}) detected in PATH: {path}",
+                        self.get_driver_name()
                     ));
                 }
             }
