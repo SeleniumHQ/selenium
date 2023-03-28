@@ -20,10 +20,10 @@ pycparser==2.21
 pyOpenSSL==22.0.0
 pyparsing==3.0.8
 PySocks==1.7.1
-pytest==6.2.5
+pytest==7.2.0
 pytest-instafail==0.4.2
-pytest-mock==3.7.0
-pytest-trio==0.7.0
+pytest-mock==3.10.0
+pytest-trio==0.8.0
 sniffio==1.2.0
 sortedcontainers==2.4.0
 toml==0.10.2
