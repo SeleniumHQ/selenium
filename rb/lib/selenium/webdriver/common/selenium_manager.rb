@@ -40,7 +40,7 @@ module Selenium
             raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not #{options.inspect}"
           end
 
-          command = [binary, '--browser', options.browser_name, '--output', 'json']
+          command = [binary, '--browser', "'#{options.browser_name}'", '--output', 'json']
           if options.browser_version
             command << '--browser-version'
             command << options.browser_version
