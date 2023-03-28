@@ -101,6 +101,8 @@ module Selenium
         end
 
         context 'with :capabilities' do
+          before { allow(DriverFinder).to receive(:path) }
+
           it 'accepts value as a Symbol' do
             expect_request
             expect {

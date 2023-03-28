@@ -19,6 +19,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using OpenQA.Selenium.Internal;
 
 #if !NET45 && !NET46 && !NET47
 using System.Runtime.InteropServices;
@@ -59,7 +61,7 @@ namespace OpenQA.Selenium
             var binaryFile = Binary;
             if (binaryFile == null) return null;
 
-            var arguments = "--driver " + driverName;
+            var arguments = "--driver " + driverName + " --output json";
             return RunCommand(binaryFile, arguments);
         }
 
@@ -144,13 +146,26 @@ namespace OpenQA.Selenium
             }
 
             string output = outputBuilder.ToString().Trim();
+            string result = "";
+            try
+            {
+                Dictionary<string, object> deserializedOutput = JsonConvert.DeserializeObject<Dictionary<string, object>>(output, new ResponseValueJsonConverter());
+                Dictionary<string, object> deserializedResult = deserializedOutput["result"] as Dictionary<string, object>;
+                result = deserializedResult["message"] as string;
+            }
+            catch (Exception ex)
+            {
+                throw new WebDriverException($"Error deserializing Selenium Manager's response: {output}", ex);
+            }
+
+            // We do not log any warnings coming from Selenium Manager like the other bindings as we don't have any logging in the .NET bindings
 
             if (processExitCode != 0)
             {
-                throw new WebDriverException($"Invalid response from process (code {processExitCode}): {fileName} {arguments}\n{output}");
+                throw new WebDriverException($"Invalid response from process (code {processExitCode}): {fileName} {arguments}\n{result}");
             }
 
-            return output.Replace("INFO\t", "");
+            return result;
         }
     }
 }

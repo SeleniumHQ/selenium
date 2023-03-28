@@ -16,7 +16,6 @@
 // under the License.
 package org.openqa.selenium.manager;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.CharStreams;
 
 import org.openqa.selenium.Beta;
@@ -32,6 +31,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -163,17 +163,18 @@ public class SeleniumManager {
      * @return the location of the driver.
      */
     public String getDriverPath(Capabilities options) {
-      File binaryFile = getBinary();
-      if (binaryFile == null) {
-        return null;
-      }
-      List<String> commandList =
-        Arrays.asList(binaryFile.getAbsolutePath(),
-                      "--browser", options.getBrowserName(),
-                      "--output", "json");
-      if (!options.getBrowserVersion().isEmpty()) {
-        commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
-      }
-      return runCommand(commandList.toArray(new String[0]));
+        File binaryFile = getBinary();
+        if (binaryFile == null) {
+            return null;
+        }
+        List<String> commandList = new ArrayList<>(
+          Arrays.asList(binaryFile.getAbsolutePath(),
+                        "--browser",
+                        options.getBrowserName(),
+                        "--output", "json"));
+        if (!options.getBrowserVersion().isEmpty()) {
+            commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
+        }
+        return runCommand(commandList.toArray(new String[0]));
     }
 }
