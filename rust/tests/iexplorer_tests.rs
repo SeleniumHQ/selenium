@@ -34,3 +34,16 @@ fn iexplorer_test(#[case] driver_version: String) {
         .assert();
     cmd_assert.success();
 }
+
+#[rstest]
+#[case("iexplorer")]
+#[case("ie")]
+#[case("internetexplorer")]
+#[case("internet explorer")]
+#[case("internet-explorer")]
+#[case("internet_explorer")]
+fn ie_name_test(#[case] browser_name: String) {
+    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let cmd_assert = cmd.args(["--browser", &browser_name]).assert();
+    cmd_assert.success();
+}
