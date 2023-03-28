@@ -38,6 +38,7 @@ pub struct ManagerConfig {
     pub timeout: u64,
     pub browser_ttl: u64,
     pub driver_ttl: u64,
+    pub custom_save_path: Option<String>,
 }
 
 impl ManagerConfig {
@@ -68,6 +69,7 @@ impl ManagerConfig {
             timeout: REQUEST_TIMEOUT_SEC,
             browser_ttl: TTL_BROWSERS_SEC,
             driver_ttl: TTL_DRIVERS_SEC,
+            custom_save_path: None,
         }
     }
 
@@ -83,6 +85,7 @@ impl ManagerConfig {
             timeout: config.timeout,
             browser_ttl: config.browser_ttl,
             driver_ttl: config.driver_ttl,
+            custom_save_path: config.custom_save_path
         }
     }
 }

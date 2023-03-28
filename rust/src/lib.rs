@@ -453,6 +453,12 @@ pub trait SeleniumManager {
         self.set_http_client(http_client);
         Ok(())
     }
+
+    fn set_save_path(&mut self, save_path: String) {
+        let mut config = ManagerConfig::clone(self.get_config());
+        config.custom_save_path = Some(save_path);
+        self.set_config(config);
+    }
 }
 
 // ----------------------------------------------------------
