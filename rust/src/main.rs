@@ -31,6 +31,10 @@ use selenium_manager::{
     clear_cache, get_manager_by_browser, get_manager_by_driver, SeleniumManager,
 };
 
+use selenium_manager::files::{
+    create_storage_config_file, set_cache_path
+};
+
 use selenium_manager::metadata::clear_metadata;
 
 /// Automated driver management for Selenium
@@ -98,11 +102,17 @@ struct Cli {
     /// Clear metadata file
     #[clap(long)]
     clear_metadata: bool,
+
+    /// Cache folder path (absolute) (e.g., /usr/custom/cache/,
+    /// "C:\\custom\\cache\\")
+    #[clap(long, value_parser)]
+    cache_path: Option<String>,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
     let log = Logger::create(cli.output, cli.debug, cli.trace);
+    create_storage_config_file();
 
     if cli.clear_cache {
         clear_cache(&log);
@@ -110,6 +120,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     if cli.clear_metadata {
         clear_metadata(&log)
+    }
+
+    let cache_folder: String = cli.cache_path.unwrap_or_default();
+    if !cache_folder.is_empty(){
+        set_cache_path(cache_folder);
     }
 
     let browser_name: String = cli.browser.unwrap_or_default();

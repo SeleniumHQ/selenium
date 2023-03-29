@@ -22,6 +22,8 @@ use std::io;
 use std::path::MAIN_SEPARATOR;
 use std::path::{Path, PathBuf};
 
+use serde::{Deserialize, Serialize};
+
 use crate::config::OS;
 use directories::BaseDirs;
 use flate2::read::GzDecoder;
@@ -34,6 +36,7 @@ use crate::Logger;
 
 pub const PARSE_ERROR: &str = "Wrong browser/driver version";
 const CACHE_FOLDER: &str = ".cache/selenium";
+const STORAGE_CONFIG_FILE: &str = ".selenium-files.json";
 const ZIP: &str = "zip";
 const GZ: &str = "gz";
 const XML: &str = "xml";
@@ -149,9 +152,78 @@ pub fn compose_cache_folder() -> PathBuf {
 }
 
 pub fn get_cache_folder() -> PathBuf {
-    let cache_path = compose_cache_folder();
-    create_path_if_not_exists(&cache_path);
-    cache_path
+    let config = get_storage_config();
+    if config.cache_path.is_empty(){
+        let cache_path = compose_cache_folder();
+        create_path_if_not_exists(&cache_path);
+        cache_path
+    }
+    else {
+        let cache_path = PathBuf::from(config.cache_path);
+        cache_path
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct StorageConfig {
+    pub cache_path: String,
+}
+
+pub fn create_storage_config_file(){
+    let config_path = get_storage_config_path();
+    if !config_path.exists(){
+        let config = new_storage_config();
+        fs::write(
+            config_path,
+            serde_json::to_string_pretty(&config).unwrap(),
+        )
+        .unwrap();
+    }
+}
+
+fn write_storage_config_file(config: &StorageConfig) { //
+    let config_path = get_storage_config_path();
+    fs::write(
+        config_path,
+        serde_json::to_string_pretty(config).unwrap(),
+    )
+    .unwrap();
+}
+
+pub fn set_cache_path(path: String){
+    let mut config = get_storage_config();
+    config.cache_path = path;
+    write_storage_config_file(&config)
+}
+
+pub fn get_storage_config() -> StorageConfig{
+    let config_path = get_storage_config_path();
+    if config_path.exists() {
+        let config_file = File::open(&config_path).unwrap();
+        let config: StorageConfig = match serde_json::from_reader(&config_file) {
+            Ok::<StorageConfig, serde_json::Error>(conf) => {
+                conf
+            }
+            Err(_e) => new_storage_config(),
+        };
+        config
+    } else {
+        new_storage_config()
+    }
+}
+
+fn new_storage_config() -> StorageConfig {
+    StorageConfig {
+        cache_path: "".to_string(),
+    }
+}
+
+pub fn get_storage_config_path() -> PathBuf {
+    if let Some(base_dirs) = BaseDirs::new() {
+        return Path::new(base_dirs.home_dir())
+            .join(String::from(STORAGE_CONFIG_FILE).replace('/', &MAIN_SEPARATOR.to_string()));
+    }
+    PathBuf::new()
 }
 
 pub fn compose_driver_path_in_cache(
