@@ -68,7 +68,7 @@ fn new_metadata(log: &Logger) -> Metadata {
 }
 
 pub fn get_metadata(log: &Logger) -> Metadata {
-    let metadata_path = get_cache_folder().join(METADATA_FILE);
+    let metadata_path = get_metadata_path();
     log.trace(format!("Reading metadata from {}", metadata_path.display()));
 
     if metadata_path.exists() {
