@@ -51,6 +51,8 @@ Options:
           Set custom TTL for browser in seconds default value is 0
   --clear-metadata
           Delete metadata file if it exists
+  --cache-path <CACHE_PATH>
+          Cache path (absolute) to custom cache folder (e.g., /usr/custom/cache/, "C:\\custom\\cache_selenium\\")
 ```
 
 For instance, the command required to manage chromedriver is the following:
