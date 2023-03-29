@@ -40,18 +40,18 @@ module Selenium
             raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not #{options.inspect}"
           end
 
-          command = [binary, '--browser', "'#{options.browser_name}'", '--output', 'json']
+          command = [binary, '--browser', options.browser_name, '--output', 'json']
           if options.browser_version
             command << '--browser-version'
             command << options.browser_version
           end
           if options.respond_to?(:binary) && !options.binary.nil?
             command << '--browser-path'
-            command << "\"#{options.binary.gsub('\ ', ' ').gsub(' ', '\ ')}\""
+            command << options.binary
           end
           command << '--debug' if WebDriver.logger.debug?
 
-          location = run(command.join(' '))
+          location = run(*command)
           WebDriver.logger.debug("Driver found at #{location}")
           Platform.assert_executable location
 
@@ -81,11 +81,11 @@ module Selenium
           end
         end
 
-        def run(command)
+        def run(*command)
           WebDriver.logger.debug("Executing Process #{command}")
 
           begin
-            stdout, stderr, status = Open3.capture3(command)
+            stdout, stderr, status = Open3.capture3(*command)
             json_output = stdout.empty? ? nil : JSON.parse(stdout)
             result = json_output&.dig('result', 'message')
           rescue StandardError => e
