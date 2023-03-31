@@ -23,9 +23,9 @@ class ArgumentValue {
 
   asMap() {
     if (this.value instanceof LocalValue) {
-      console.log('5. in if block.\n', this.value.toJson())
       return this.value.toJson()
     } else {
+      // ReferenceValue
       return this.value.asMap()
     }
   }

@@ -92,16 +92,8 @@ class RealmInfo {
 class WindowRealmInfo extends RealmInfo {
   constructor(realmId, origin, realmType, browsingContext, sandbox = null) {
     super(realmId, origin, realmType)
-    this._browsingContext = browsingContext
-    this._sandbox = sandbox
-  }
-
-  get browsingContext() {
-    return this._browsingContext
-  }
-
-  get sandbox() {
-    return this._sandbox
+    this.browsingContext = browsingContext
+    this.sandbox = sandbox
   }
 }
 
