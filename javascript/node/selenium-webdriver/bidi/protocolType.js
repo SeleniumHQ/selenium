@@ -15,6 +15,53 @@
 // specific language governing permissions and limitations
 // under the License.
 
+const PrimitiveType = {
+  UNDEFINED: 'undefined',
+  NULL: 'null',
+  STRING: 'string',
+  NUMBER: 'number',
+  SPECIAL_NUMBER: 'number',
+  BOOLEAN: 'boolean',
+  BIGINT: 'bigint',
+
+  findByName: function (name) {
+    let result = null
+    Object.values(PrimitiveType).forEach(function (type) {
+      if (
+        typeof type === 'string' &&
+        name.toLowerCase() === type.toLowerCase()
+      ) {
+        result = type
+        return
+      }
+    })
+    return result
+  },
+}
+
+const NonPrimitiveType = {
+  ARRAY: 'array',
+  DATE: 'date',
+  MAP: 'map',
+  OBJECT: 'object',
+  REGULAR_EXPRESSION: 'regexp',
+  SET: 'set',
+
+  findByName: function (name) {
+    let result = null
+    Object.values(NonPrimitiveType).forEach(function (type) {
+      if (
+        typeof type === 'string' &&
+        name.toLowerCase() === type.toLowerCase()
+      ) {
+        result = type
+        return
+      }
+    })
+    return result
+  },
+}
+
 const RemoteType = {
   SYMBOL: 'symbol',
   FUNCTION: 'function',
@@ -35,7 +82,10 @@ const RemoteType = {
   findByName: function (name) {
     let result = null
     Object.values(RemoteType).forEach(function (type) {
-      if (name.toLowerCase() === type.toLowerCase()) {
+      if (
+        typeof type === 'string' &&
+        name.toLowerCase() === type.toLowerCase()
+      ) {
         result = type
         return
       }
@@ -44,4 +94,16 @@ const RemoteType = {
   },
 }
 
-module.exports = RemoteType
+const SpecialNumberType = {
+  NAN: 'NaN',
+  MINUS_ZERO: '-0',
+  INFINITY: 'Infinity',
+  MINUS_INFINITY: '-Infinity',
+}
+
+module.exports = {
+  PrimitiveType,
+  NonPrimitiveType,
+  RemoteType,
+  SpecialNumberType,
+}

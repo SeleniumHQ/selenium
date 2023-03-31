@@ -17,6 +17,7 @@
 
 'use strict'
 
+// Imports for LogInspector and BrowsingContext
 const assert = require('assert')
 const firefox = require('../../firefox')
 const { Browser } = require('../../')
@@ -26,20 +27,19 @@ const BrowsingContext = require('../../bidi/browsingContext')
 const filterBy = require('../../bidi/filterBy')
 const until = require('../../lib/until')
 
+// Imports for Script Module
 const ScriptManager = require('../../bidi/scriptManager')
-const LocalValue = require('../../bidi/localValue')
-const ArgumentValue = require('../../bidi/argumentValue')
-const EvaluateResultType = require('../../bidi/evaluateResult')
-const SpecialNumberType = require('../../bidi/specialNumberType')
-const RegExpValue = require('../../bidi/regExpValue')
-const ResultOwnership = require('../../bidi/resultOwnership')
 const {
+  LocalValue,
   ReferenceValue,
   RemoteReferenceType,
-} = require('../../bidi/referenceValue')
-const PrimitiveType = require('../../bidi/primitiveType')
-const NonPrimitiveType = require('../../bidi/nonPrimitiveType')
-const RealmType = require('../../bidi/realmType')
+  RegExpValue,
+} = require('../../bidi/protocolValue')
+const { ArgumentValue } = require('../../bidi/argumentValue')
+const { EvaluateResultType } = require('../../bidi/evaluateResult')
+const { ResultOwnership } = require('../../bidi/resultOwnership')
+const { SpecialNumberType } = require('../../bidi/protocolType')
+const { RealmType } = require('../../bidi/realmInfo')
 
 suite(
   function (env) {
@@ -606,11 +606,8 @@ suite(
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
         let arrayValue = [LocalValue.createStringValue('foobar')]
-        // console.log('arrayValue = \n', arrayValue)
         let value = new ArgumentValue(LocalValue.createArrayValue(arrayValue))
         argumentValues.push(value)
-
-        console.log('1. argumentValues = \n', argumentValues)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -640,11 +637,8 @@ suite(
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
         let setValue = [LocalValue.createStringValue('foobar')]
-        // console.log('arrayValue = \n', arrayValue)
         let value = new ArgumentValue(LocalValue.createSetValue(setValue))
         argumentValues.push(value)
-
-        console.log('1. argumentValues = \n', argumentValues)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -678,8 +672,6 @@ suite(
         )
         argumentValues.push(value)
 
-        console.log('1. argumentValues = \n', argumentValues)
-
         const result = await manager.callFunctionInBrowsingContext(
           id,
           '(arg) => {{\n' +
@@ -703,12 +695,9 @@ suite(
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let mapValue = { foo: LocalValue.createStringValue('bar') }
-        // console.log('arrayValue = \n', arrayValue)
+        let mapValue = { foobar: LocalValue.createStringValue('foobar') }
         let value = new ArgumentValue(LocalValue.createMapValue(mapValue))
         argumentValues.push(value)
-
-        console.log('1. argumentValues = \n', argumentValues)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -728,21 +717,19 @@ suite(
         assert.notEqual(result.result.value, null)
 
         let resultValue = result.result.value
+
         assert.equal(Object.keys(resultValue).length, 1)
-        assert.equal(resultValue[0][1].type, 'string')
-        assert.equal(resultValue[0][1].value, 'bar')
+        assert.equal(resultValue['foobar'].type, 'string')
+        assert.equal(resultValue['foobar'].value, 'foobar')
       })
 
       it('can call function with object argument', async function () {
         const id = await driver.getWindowHandle()
         const manager = await ScriptManager(id, driver)
         let argumentValues = []
-        let mapValue = { foo: LocalValue.createStringValue('bar') }
-        // console.log('arrayValue = \n', arrayValue)
+        let mapValue = { foobar: LocalValue.createStringValue('foobar') }
         let value = new ArgumentValue(LocalValue.createObjectValue(mapValue))
         argumentValues.push(value)
-
-        console.log('1. argumentValues = \n', argumentValues)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -763,8 +750,8 @@ suite(
 
         let resultValue = result.result.value
         assert.equal(Object.keys(resultValue).length, 1)
-        assert.equal(resultValue[0][1].type, 'string')
-        assert.equal(resultValue[0][1].value, 'bar')
+        assert.equal(resultValue['foobar'].type, 'string')
+        assert.equal(resultValue['foobar'].value, 'foobar')
       })
 
       it('can call function with regex argument', async function () {
@@ -775,8 +762,6 @@ suite(
           LocalValue.createRegularExpressionValue(new RegExpValue('foo', 'g'))
         )
         argumentValues.push(value)
-
-        console.log('1. argumentValues = \n', argumentValues)
 
         const result = await manager.callFunctionInBrowsingContext(
           id,
@@ -792,12 +777,10 @@ suite(
 
         assert.equal(result.resultType, EvaluateResultType.SUCCESS)
         assert.notEqual(result.realmId, null)
-
         assert.equal(result.result.type, 'regexp')
         assert.notEqual(result.result.value, null)
 
         let resultValue = result.result.value
-        console.log('resV = \n', resultValue)
         assert.equal(resultValue.pattern, 'foo')
         assert.equal(resultValue.flags, 'g')
       })
@@ -1012,7 +995,6 @@ suite(
           'sandbox'
         )
 
-        // console.log('resinSand = \n', resultInSandbox)
         assert.equal(resultInSandbox.resultType, EvaluateResultType.SUCCESS)
         assert.notEqual(resultInSandbox.realmId, null)
 
@@ -1024,12 +1006,9 @@ suite(
       it('can call function in a realm', async function () {
         const firstTab = await driver.getWindowHandle()
         await driver.switchTo().newWindow('tab')
-        const secondTab = await driver.getWindowHandle()
         const manager = await ScriptManager(firstTab, driver)
 
         const realms = await manager.getAllRealms()
-        // console.log('realms = \n', realms)
-        // assert(false)
         const firstTabRealmId = realms[0].realmId
         const secondTabRealmId = realms[1].realmId
 
@@ -1237,23 +1216,8 @@ suite(
 
         let argumentValues = []
         let valueMap = evaluateResult.result.value
-        let localValueMap = {}
 
-        valueMap.forEach((entry) => {
-          let key = entry[0]
-          let value = entry[1]
-          let type = value.type
-          if (PrimitiveType.findByName(type) != null) {
-            type = PrimitiveType.findByName(type)
-          } else {
-            type = NonPrimitiveType.findByName(type)
-          }
-          localValueMap[key] = new LocalValue(type, value.value)
-        })
-
-        let value1 = new ArgumentValue(
-          LocalValue.createObjectValue(localValueMap)
-        )
+        let value1 = new ArgumentValue(LocalValue.createObjectValue(valueMap))
         let value2 = new ArgumentValue(
           new ReferenceValue(
             RemoteReferenceType.HANDLE,
@@ -1304,23 +1268,8 @@ suite(
 
         let argumentValues = []
         let valueMap = evaluateResult.result.value
-        let localValueMap = {}
 
-        valueMap.forEach((entry) => {
-          let key = entry[0]
-          let value = entry[1]
-          let type = value.type
-          if (PrimitiveType.findByName(type) != null) {
-            type = PrimitiveType.findByName(type)
-          } else {
-            type = NonPrimitiveType.findByName(type)
-          }
-          localValueMap[key] = new LocalValue(type, value.value)
-        })
-
-        let value1 = new ArgumentValue(
-          LocalValue.createObjectValue(localValueMap)
-        )
+        let value1 = new ArgumentValue(LocalValue.createObjectValue(valueMap))
         let value2 = new ArgumentValue(
           new ReferenceValue(
             RemoteReferenceType.HANDLE,

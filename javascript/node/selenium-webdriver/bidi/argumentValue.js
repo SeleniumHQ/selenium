@@ -15,24 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const LocalValue = require('./localValue')
-const { ReferenceValue } = require('./referenceValue')
-
+const { LocalValue } = require('./protocolValue')
 class ArgumentValue {
   constructor(value) {
     this.value = value
   }
 
   asMap() {
-    console.log('3. in asMap() of ArgumentValue\n')
     if (this.value instanceof LocalValue) {
-      console.log('5. in if block.\n')
+      console.log('5. in if block.\n', this.value.toJson())
       return this.value.toJson()
     } else {
-      console.log('4. in else block. Argument =  \n', this)
       return this.value.asMap()
     }
   }
 }
 
-module.exports = ArgumentValue
+module.exports = { ArgumentValue }

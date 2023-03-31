@@ -20,4 +20,41 @@ const EvaluateResultType = {
   EXCEPTION: 'exception',
 }
 
-module.exports = EvaluateResultType
+class EvaluateResultSuccess {
+  constructor(type, realmId, value) {
+    this.resultType = type
+    this.realmId = realmId
+    this.result = value
+  }
+}
+
+class EvaluateResultException {
+  constructor(type, realmId, exceptionDetails) {
+    this.resultType = type
+    this.realmId = realmId
+    this.exceptionDetails = exceptionDetails
+  }
+}
+
+class ExceptionDetails {
+  constructor(exceptionDetails) {
+    this.columnNumber =
+      'columnNumber' in exceptionDetails
+        ? exceptionDetails['columnNumber']
+        : null
+    this.exception =
+      'exception' in exceptionDetails ? exceptionDetails['exception'] : null
+    this.lineNumber =
+      'lineNumber' in exceptionDetails ? exceptionDetails['lineNumber'] : null
+    this.stackTrace =
+      'stackTrace' in exceptionDetails ? exceptionDetails['stackTrace'] : null
+    this.text = 'text' in exceptionDetails ? exceptionDetails['text'] : null
+  }
+}
+
+module.exports = {
+  EvaluateResultType,
+  EvaluateResultSuccess,
+  EvaluateResultException,
+  ExceptionDetails,
+}

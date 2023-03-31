@@ -15,12 +15,18 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const PrimitiveType = require('./primitiveType')
-const NonPrimitiveType = require('./nonPrimitiveType')
-const SpecialNumberType = require('./specialNumberType')
+const {
+  PrimitiveType,
+  NonPrimitiveType,
+  RemoteType,
+} = require('./protocolType')
 
 const TYPE_CONSTANT = 'type'
 const VALUE_CONSTANT = 'value'
+const RemoteReferenceType = {
+  HANDLE: 'handle',
+  SHARED_ID: 'shareId',
+}
 
 class LocalValue {
   constructor(type, value = null) {
@@ -71,11 +77,8 @@ class LocalValue {
   static createMapValue(map) {
     let value = []
     Object.entries(map).forEach((entry) => {
-      //   const [k, v] = entry
       value.push(entry)
     })
-
-    console.log('value - \n', value)
     return new LocalValue(NonPrimitiveType.MAP, value)
   }
 
@@ -84,7 +87,6 @@ class LocalValue {
     Object.entries(map).forEach((entry) => {
       value.push(entry)
     })
-    console.log('value - \n', value)
     return new LocalValue(NonPrimitiveType.OBJECT, value)
   }
 
@@ -94,14 +96,6 @@ class LocalValue {
 
   static createSetValue(value) {
     return new LocalValue(NonPrimitiveType.SET, value)
-  }
-
-  get _type() {
-    return this.type
-  }
-
-  get _value() {
-    return this.value
   }
 
   toJson() {
@@ -114,12 +108,103 @@ class LocalValue {
         this.type === PrimitiveType.UNDEFINED
       )
     ) {
-      toReturn[VALUE_CONSTANT] = this._value
+      toReturn[VALUE_CONSTANT] = this.value
     }
-
-    console.log('6. toReturn = \n', toReturn)
     return toReturn
   }
 }
 
-module.exports = LocalValue
+class RemoteValue {
+  constructor(remoteValue) {
+    this.type = null
+    this.handle = null
+    this.internalId = null
+    this.value = null
+    this.sharedId = null
+
+    if ('type' in remoteValue) {
+      var typeString = remoteValue['type']
+      if (PrimitiveType.findByName(typeString) != null) {
+        this.type = PrimitiveType.findByName(typeString)
+      } else if (NonPrimitiveType.findByName(typeString) != null) {
+        this.type = NonPrimitiveType.findByName(typeString)
+      } else {
+        this.type = RemoteType.findByName(typeString)
+      }
+    }
+
+    if ('handle' in remoteValue) {
+      this.handle = remoteValue['handle']
+    }
+
+    if ('internalId' in remoteValue) {
+      this.internalId = remoteValue['internalId']
+    }
+
+    if ('value' in remoteValue) {
+      this.value = remoteValue['value']
+    }
+
+    if ('sharedId' in remoteValue) {
+      this.sharedId = remoteValue['sharedId']
+    }
+
+    if (this.value != null) {
+      this.value = this.deserializeValue(this.value, this.type)
+    }
+  }
+
+  deserializeValue(value, type) {
+    if (type === NonPrimitiveType.MAP || type === NonPrimitiveType.OBJECT) {
+      let toReturn = {}
+      value.forEach((entry) => {
+        let key = entry[0]
+        let val = entry[1]
+        toReturn[key] = val
+      })
+      return toReturn
+    } else if (type === NonPrimitiveType.REGULAR_EXPRESSION) {
+      return new RegExpValue(value.pattern, value.flags)
+    }
+    return value
+  }
+}
+
+class ReferenceValue {
+  constructor(handle, shareId) {
+    if (handle === RemoteReferenceType.HANDLE) {
+      this.handle = shareId
+    } else {
+      this.handle = handle
+      this.shareId = shareId
+    }
+  }
+
+  asMap() {
+    let toReturn = {}
+    if (this.handle != null) {
+      toReturn[RemoteReferenceType.HANDLE] = this.handle
+    }
+
+    if (this.shareId != null) {
+      toReturn[RemoteReferenceType.SHARED_ID] = this.shareId
+    }
+
+    return toReturn
+  }
+}
+
+class RegExpValue {
+  constructor(pattern, flags = null) {
+    this.pattern = pattern
+    this.flags = flags
+  }
+}
+
+module.exports = {
+  LocalValue,
+  RemoteValue,
+  ReferenceValue,
+  RemoteReferenceType,
+  RegExpValue,
+}

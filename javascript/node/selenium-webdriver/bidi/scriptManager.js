@@ -15,13 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// require('./argumentValue')
-const EvaluateResultType = require('./evaluateResult')
-const EvaluateResultSuccess = require('./evaluateResultSuccess')
-const EvaluateResultException = require('./evaluateResultException')
-const RealmInfo = require('./realmInfo')
-const RealmType = require('./realmType')
-const WindowRealmInfo = require('./windowRealmInfo')
+const {
+  EvaluateResultType,
+  EvaluateResultSuccess,
+  EvaluateResultException,
+  ExceptionDetails,
+} = require('./evaluateResult')
+const { RealmInfo } = require('./realmInfo')
+const { RemoteValue } = require('./protocolValue')
 
 class ScriptManager {
   constructor(driver) {
@@ -125,9 +126,6 @@ class ScriptManager {
       method: 'script.callFunction',
       params,
     }
-
-    console.log('command = \n', command)
-
     const response = await this.bidi.send(command)
     return this.createEvaluateResult(response)
   }
@@ -208,11 +206,8 @@ class ScriptManager {
     if (argumentValueList != null) {
       let argumentParams = []
       argumentValueList.forEach((argumentValue) => {
-        console.log('2. argumentValue = \n', argumentValue)
         argumentParams.push(argumentValue.asMap())
       })
-
-      console.log('argument params = \n', argumentParams)
       params['arguments'] = argumentParams
     }
 
@@ -256,7 +251,6 @@ class ScriptManager {
   }
 
   createEvaluateResult(response) {
-    console.log('response = \n', response)
     var type = response.result.type
     var realmId = response.result.realm
     var evaluateResult
@@ -266,36 +260,23 @@ class ScriptManager {
       evaluateResult = new EvaluateResultSuccess(
         EvaluateResultType.SUCCESS,
         realmId,
-        result
+        new RemoteValue(result)
       )
     } else {
       var exceptionDetails = response.result.exceptionDetails
       evaluateResult = new EvaluateResultException(
         EvaluateResultType.EXCEPTION,
         realmId,
-        exceptionDetails
+        new ExceptionDetails(exceptionDetails)
       )
     }
-    console.log('result = \n', evaluateResult)
     return evaluateResult
   }
 
   realmInfoMapper(realms) {
     var realmsList = []
     realms.forEach((realm) => {
-      if (realm.type === RealmType.WINDOW) {
-        realmsList.push(
-          new WindowRealmInfo(
-            realm.realm,
-            realm.origin,
-            realm.type,
-            realm.context,
-            realm.sandbox
-          )
-        )
-      } else {
-        realmsList.push(new RealmInfo(realm.realm, realm.origin, realm.type))
-      }
+      realmsList.push(RealmInfo.fromJson(realm))
     })
     return realmsList
   }
@@ -306,7 +287,6 @@ class ScriptManager {
       params: {},
     }
     let response = await this.bidi.send(command)
-    // console.log('realms = \n', response.result.realms)
     return this.realmInfoMapper(response.result.realms)
   }
 

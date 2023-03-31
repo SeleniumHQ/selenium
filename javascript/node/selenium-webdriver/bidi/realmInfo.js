@@ -15,17 +15,39 @@
 // specific language governing permissions and limitations
 // under the License.
 
-const RealmType = require('./realmType')
-// const WindowRealmInfo = require('./windowRealmInfo')
+const RealmType = {
+  AUDIO_WORKLET: 'audio-worklet',
+  DEDICATED_WORKER: 'dedicated-worker',
+  PAINT_WORKLET: 'paint-worklet',
+  SERVICE_WORKED: 'service-worker',
+  SHARED_WORKED: 'shared-worker',
+  WINDOW: 'window',
+  WORKER: 'worker',
+  WORKLET: 'worklet',
+
+  findByName: function (name) {
+    let result = null
+    Object.values(RealmType).forEach(function (type) {
+      if (
+        typeof type === 'string' &&
+        name.toLowerCase() === type.toLowerCase()
+      ) {
+        result = type
+        return
+      }
+    })
+    return result
+  },
+}
 
 class RealmInfo {
   constructor(realmId, origin, realmType) {
-    this._realmId = realmId
-    this._origin = origin
-    this._realmType = realmType
+    this.realmId = realmId
+    this.origin = origin
+    this.realmType = realmType
   }
 
-  fromJson(input) {
+  static fromJson(input) {
     let realmId = null
     let origin = null
     let realmType = null
@@ -65,27 +87,25 @@ class RealmInfo {
 
     return new RealmInfo(realmId, origin, realmType)
   }
+}
 
-  get realmId() {
-    return this._realmId
+class WindowRealmInfo extends RealmInfo {
+  constructor(realmId, origin, realmType, browsingContext, sandbox = null) {
+    super(realmId, origin, realmType)
+    this._browsingContext = browsingContext
+    this._sandbox = sandbox
   }
 
-  get origin() {
-    return this._origin
+  get browsingContext() {
+    return this._browsingContext
   }
 
-  get realmType() {
-    return this._realmType
-  }
-
-  toJson() {
-    let toReturn = {}
-    toReturn['type'] = this._realmType
-    toReturn['realm'] = this._realmId
-    toReturn['origin'] = this._origin
-
-    return toReturn
+  get sandbox() {
+    return this._sandbox
   }
 }
 
-module.exports = RealmInfo
+module.exports = {
+  RealmInfo,
+  RealmType,
+}

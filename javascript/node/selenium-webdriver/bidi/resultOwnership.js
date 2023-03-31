@@ -20,4 +20,4 @@ const ResultOwnership = {
   NONE: 'none',
 }
 
-module.exports = ResultOwnership
+module.exports = { ResultOwnership }
