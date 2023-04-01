@@ -30,6 +30,10 @@ module Selenium
             'User-Agent' => "selenium/#{WebDriver::VERSION} (ruby #{Platform.os})"
           }.freeze
 
+          class << self
+            attr_accessor :extra_headers
+          end
+
           attr_writer :server_url
 
           def quit_errors
@@ -42,7 +46,7 @@ module Selenium
 
           def call(verb, url, command_hash)
             url      = server_url.merge(url) unless url.is_a?(URI)
-            headers  = DEFAULT_HEADERS.dup
+            headers  = DEFAULT_HEADERS.merge(Common.extra_headers || {}).dup
             headers['Cache-Control'] = 'no-cache' if verb == :get
 
             if command_hash
