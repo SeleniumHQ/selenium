@@ -33,7 +33,8 @@ module Selenium
           end
 
           after do
-            described_class.extra_headers = {}
+            described_class.extra_headers = nil
+            described_class.user_agent = nil
           end
 
           it 'sends non-empty body header for POST requests without command data' do
@@ -62,6 +63,16 @@ module Selenium
             expect(common).to have_received(:request)
               .with(:post, URI.parse('http://server/session'),
                     hash_including('Foo' => 'bar'), '{}')
+          end
+
+          it 'allows overriding default User-Agent' do
+            described_class.user_agent = 'rspec/1.0 (ruby 3.2)'
+
+            common.call(:post, 'session', nil)
+
+            expect(common).to have_received(:request)
+              .with(:post, URI.parse('http://server/session'),
+                    hash_including('User-Agent' => 'rspec/1.0 (ruby 3.2)'), '{}')
           end
         end
       end # Http
