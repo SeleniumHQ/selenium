@@ -29,6 +29,16 @@ module Selenium
         attr_accessor :http, :file_detector
         attr_reader :capabilities
 
+        class << self
+          attr_reader :extra_commands
+
+          def add_command(name, verb, url, &block)
+            @extra_commands ||= {}
+            @extra_commands[name] = [verb, url]
+            define_method(name, &block)
+          end
+        end
+
         #
         # Initializes the bridge with the given server URL
         # @param [String, URI] url url for the remote server
@@ -612,7 +622,7 @@ module Selenium
         end
 
         def commands(command)
-          command_list[command]
+          command_list[command]|| Bridge.extra_commands[command]
         end
 
         def unwrap_script_result(arg)

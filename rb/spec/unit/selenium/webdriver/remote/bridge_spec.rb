@@ -23,6 +23,33 @@ module Selenium
   module WebDriver
     module Remote
       describe Bridge do
+        describe '.add_command' do
+          let(:http) { WebDriver::Remote::Http::Default.new }
+          let(:bridge) { described_class.new(http_client: http, url: 'http://localhost') }
+
+          before do
+            allow(http).to receive(:request)
+              .with(any_args)
+              .and_return('status' => 200, 'value' => {'sessionId' => 'foo', 'capabilities' => {}})
+
+            bridge.create_session({})
+          end
+
+          after do
+            described_class.extra_commands.clear
+          end
+
+          it 'adds new command' do
+            described_class.add_command(:highlight, :get, 'session/:session_id/highlight/:id') do |element|
+              execute :highlight, id: element
+            end
+
+            bridge.highlight('bar')
+            expect(http).to have_received(:request)
+              .with(:get, URI('http://localhost/session/foo/highlight/bar'), any_args)
+          end
+        end
+
         describe '#initialize' do
           it 'raises ArgumentError if passed invalid options' do
             expect { described_class.new(foo: 'bar') }.to raise_error(ArgumentError)
