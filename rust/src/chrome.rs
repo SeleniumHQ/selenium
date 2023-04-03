@@ -265,6 +265,10 @@ impl SeleniumManager for ChromeManager {
         &self.config
     }
 
+    fn get_config_mut(&mut self) -> &mut ManagerConfig {
+        &mut self.config
+    }
+
     fn set_config(&mut self, config: ManagerConfig) {
         self.config = config;
     }
