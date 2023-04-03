@@ -150,7 +150,7 @@ bot.locators.relative.near_ = function (selector, opt_distance) {
   }
 
   if (!distance) {
-    distance = 100;
+    distance = 50;
   }
 
   /**
