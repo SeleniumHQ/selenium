@@ -17,7 +17,7 @@
 
 use assert_cmd::Command;
 
-use exitcode::UNAVAILABLE;
+use exitcode::DATAERR;
 
 use wiremock::MockServer;
 
@@ -37,7 +37,7 @@ fn wrong_protocol_proxy_test() {
     cmd.args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
         .assert()
         .failure()
-        .code(UNAVAILABLE);
+        .code(DATAERR);
 }
 
 #[test]
@@ -51,5 +51,5 @@ fn wrong_port_proxy_test() {
     ])
     .assert()
     .failure()
-    .code(UNAVAILABLE);
+    .code(DATAERR);
 }
