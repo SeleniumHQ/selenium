@@ -53,7 +53,7 @@ python_register_multi_toolchains(
         "3.8",
         "3.9",
         "3.10",
-        "3.11"
+        "3.11",
     ],
 )
 
@@ -73,7 +73,7 @@ multi_pip_parse(
         "3.8": interpreter_3_8,
     },
     requirements_lock = {
-        "3.11":"//py:requirements_lock.txt",
+        "3.11": "//py:requirements_lock.txt",
         "3.10": "//py:requirements_lock.txt",
         "3.9": "//py:requirements_lock.txt",
         "3.8": "//py:requirements_lock.txt",
@@ -322,9 +322,9 @@ pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "28fd318beb3761e0e0f38563aa5344fc13907c373d2f7785ac0a6b948a6a437a",
-    strip_prefix = "rules_ruby-e1c926f5fc1e7c592b53dfc6772f7f9410b67382",
-    url = "https://github.com/p0deje/rules_ruby/archive/e1c926f5fc1e7c592b53dfc6772f7f9410b67382.zip",
+    sha256 = "5228950029d57476a4903db35cd8ce6a4526e30fba08a01af9d7a9b8ebaf63ae",
+    strip_prefix = "rules_ruby-9e6e07ed5d7e02f8bb1c77ce543072d5548bbd86",
+    url = "https://github.com/p0deje/rules_ruby/archive/9e6e07ed5d7e02f8bb1c77ce543072d5548bbd86.zip",
 )
 
 load("//rb:ruby_version.bzl", "RUBY_VERSION")
