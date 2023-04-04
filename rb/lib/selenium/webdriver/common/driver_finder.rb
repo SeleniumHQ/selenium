@@ -27,8 +27,8 @@ module Selenium
 
         path ||= begin
           SeleniumManager.driver_path(options)
-        rescue Error::WebDriverError => e
-          WebDriver.logger.debug("Unable obtain driver using Selenium Manager\n #{e.message}")
+        rescue StandardError => e
+          WebDriver.logger.warn("Unable obtain driver using Selenium Manager\n #{e.message}")
           nil
         end
         msg = "Unable to locate the #{klass::EXECUTABLE} executable; for more information on how to install drivers, " \

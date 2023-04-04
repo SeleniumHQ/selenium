@@ -16,24 +16,27 @@
 // under the License.
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::TTL_BROWSERS_SEC;
-use crate::TTL_DRIVERS_SEC;
-
-use crate::{
-    format_one_arg, run_shell_command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC,
-    UNAME_COMMAND,
-};
+use crate::files::get_cache_folder;
+use crate::{format_one_arg, run_shell_command, REQUEST_TIMEOUT_SEC, UNAME_COMMAND};
+use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_BROWSERS_SEC, TTL_DRIVERS_SEC, WMIC_COMMAND_OS};
 use std::env;
 use std::env::consts::OS;
+use std::error::Error;
+use std::fs::read_to_string;
+use toml::Table;
 
 pub const ARM64_ARCH: &str = "arm64";
+pub const CONFIG_FILE: &str = "selenium-manager-config.toml";
+pub const ENV_PREFIX: &str = "SE_";
+pub const VERSION_PREFIX: &str = "-version";
+pub const PATH_PREFIX: &str = "-path";
 
 pub struct ManagerConfig {
     pub browser_version: String,
     pub driver_version: String,
+    pub browser_path: String,
     pub os: String,
     pub arch: String,
-    pub browser_path: String,
     pub proxy: String,
     pub timeout: u64,
     pub browser_ttl: u64,
@@ -41,33 +44,48 @@ pub struct ManagerConfig {
 }
 
 impl ManagerConfig {
-    pub fn default() -> ManagerConfig {
+    pub fn default(browser_name: &str, driver_name: &str) -> ManagerConfig {
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
-            env::var(ENV_PROCESSOR_ARCHITECTURE).unwrap_or_default()
+            if run_shell_command(self_os, WMIC_COMMAND_OS.to_string())
+                .unwrap_or_default()
+                .contains("32")
+            {
+                ARCH_X86.to_string()
+            } else {
+                ARCH_AMD64.to_string()
+            }
         } else {
             let uname_a = format_one_arg(UNAME_COMMAND, "a");
             if run_shell_command(self_os, uname_a)
                 .unwrap_or_default()
                 .to_ascii_lowercase()
-                .contains(ARM64_ARCH)
+                .contains(ARCH_ARM64)
             {
-                ARM64_ARCH.to_string()
+                ARCH_ARM64.to_string()
             } else {
                 let uname_m = format_one_arg(UNAME_COMMAND, "m");
                 run_shell_command(self_os, uname_m).unwrap_or_default()
             }
         };
+
+        let browser_version_label = concat(browser_name, VERSION_PREFIX);
+        let driver_version_label = concat(driver_name, VERSION_PREFIX);
+        let browser_path_label = concat(browser_name, PATH_PREFIX);
+
         ManagerConfig {
-            browser_version: "".to_string(),
-            driver_version: "".to_string(),
-            os: self_os.to_string(),
-            arch: self_arch,
-            browser_path: "".to_string(),
-            proxy: "".to_string(),
-            timeout: REQUEST_TIMEOUT_SEC,
-            browser_ttl: TTL_BROWSERS_SEC,
-            driver_ttl: TTL_DRIVERS_SEC,
+            browser_version: StringKey(vec!["browser-version", browser_version_label.as_str()], "")
+                .get_value(),
+            driver_version: StringKey(vec!["driver-version", driver_version_label.as_str()], "")
+                .get_value(),
+            browser_path: StringKey(vec!["browser-path", browser_path_label.as_str()], "")
+                .get_value(),
+            os: StringKey(vec!["os"], self_os).get_value(),
+            arch: StringKey(vec!["arch"], self_arch.as_str()).get_value(),
+            proxy: StringKey(vec!["proxy"], "").get_value(),
+            timeout: IntegerKey("timeout", REQUEST_TIMEOUT_SEC).get_value(),
+            browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
+            driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
         }
     }
 
@@ -131,9 +149,9 @@ pub enum ARCH {
 impl ARCH {
     pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
-            ARCH::X32 => vec!["x86", "i386"],
-            ARCH::X64 => vec!["x86_64", "x64", "i686", "amd64", "ia64"],
-            ARCH::ARM64 => vec![ARM64_ARCH, "aarch64", "arm"],
+            ARCH::X32 => vec![ARCH_X86, "i386"],
+            ARCH::X64 => vec![ARCH_AMD64, "x86_64", "x64", "i686", "ia64"],
+            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm"],
         }
     }
 
@@ -141,4 +159,75 @@ impl ARCH {
         self.to_str_vector()
             .contains(&arch.to_ascii_lowercase().as_str())
     }
+}
+
+pub struct StringKey<'a>(pub Vec<&'a str>, pub &'a str);
+
+impl StringKey<'_> {
+    pub fn get_value(&self) -> String {
+        let config = get_config().unwrap_or_default();
+        let keys = self.0.to_owned();
+        let mut result;
+        for key in keys {
+            if config.contains_key(key) {
+                result = config[key].as_str().unwrap().to_string()
+            } else {
+                result = env::var(get_env_name(key)).unwrap_or_default()
+            }
+            if !result.is_empty() {
+                return result;
+            }
+        }
+        self.1.to_owned()
+    }
+}
+
+pub struct IntegerKey<'a>(pub &'a str, pub u64);
+
+impl IntegerKey<'_> {
+    pub fn get_value(&self) -> u64 {
+        let config = get_config().unwrap_or_default();
+        let key = self.0;
+        if config.contains_key(key) {
+            config[key].as_integer().unwrap() as u64
+        } else {
+            env::var(get_env_name(key))
+                .unwrap_or_default()
+                .parse::<u64>()
+                .unwrap_or_else(|_| self.1.to_owned())
+        }
+    }
+}
+
+pub struct BooleanKey<'a>(pub &'a str, pub bool);
+
+impl BooleanKey<'_> {
+    pub fn get_value(&self) -> bool {
+        let config = get_config().unwrap_or_default();
+        let key = self.0;
+        if config.contains_key(key) {
+            config[key].as_bool().unwrap()
+        } else {
+            env::var(get_env_name(key))
+                .unwrap_or_default()
+                .parse::<bool>()
+                .unwrap_or_else(|_| self.1.to_owned())
+        }
+    }
+}
+
+fn get_env_name(suffix: &str) -> String {
+    let suffix_uppercase: String = suffix.replace('-', "_").to_uppercase();
+    concat(ENV_PREFIX, suffix_uppercase.as_str())
+}
+
+fn get_config() -> Result<Table, Box<dyn Error>> {
+    let config_path = get_cache_folder().join(CONFIG_FILE);
+    Ok(read_to_string(config_path)?.parse()?)
+}
+
+fn concat(prefix: &str, suffix: &str) -> String {
+    let mut version_label: String = prefix.to_owned();
+    version_label.push_str(suffix);
+    version_label
 }
