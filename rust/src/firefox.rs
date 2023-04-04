@@ -29,9 +29,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_one_arg, format_two_args, Logger, SeleniumManager, BETA,
-    DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY, STABLE, WMIC_COMMAND,
-    WMIC_COMMAND_ENV,
+    create_http_client, format_one_arg, format_three_args, Logger, SeleniumManager, BETA,
+    DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY, REMOVE_X86, STABLE,
+    WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";
@@ -126,8 +126,18 @@ impl SeleniumManager for FirefoxManager {
                 Some(path) => {
                     browser_path = path;
                     commands = vec![
-                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES, browser_path),
-                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES_X86, browser_path),
+                        format_three_args(
+                            WMIC_COMMAND_ENV,
+                            ENV_PROGRAM_FILES,
+                            REMOVE_X86,
+                            browser_path,
+                        ),
+                        format_three_args(
+                            WMIC_COMMAND_ENV,
+                            ENV_PROGRAM_FILES_X86,
+                            "",
+                            browser_path,
+                        ),
                     ];
                 }
                 _ => return None,
