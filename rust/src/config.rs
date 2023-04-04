@@ -16,14 +16,9 @@
 // under the License.
 
 use crate::config::OS::{LINUX, MACOS, WINDOWS};
-use crate::TTL_BROWSERS_SEC;
-use crate::TTL_DRIVERS_SEC;
-
 use crate::files::get_cache_folder;
-use crate::{
-    format_one_arg, run_shell_command, ENV_PROCESSOR_ARCHITECTURE, REQUEST_TIMEOUT_SEC,
-    UNAME_COMMAND,
-};
+use crate::{format_one_arg, run_shell_command, REQUEST_TIMEOUT_SEC, UNAME_COMMAND};
+use crate::{ARCH_AMD64, ARCH_ARM64, ARCH_X86, TTL_BROWSERS_SEC, TTL_DRIVERS_SEC, WMIC_COMMAND_OS};
 use std::env;
 use std::env::consts::OS;
 use std::error::Error;
@@ -52,15 +47,22 @@ impl ManagerConfig {
     pub fn default(browser_name: &str, driver_name: &str) -> ManagerConfig {
         let self_os = OS;
         let self_arch = if WINDOWS.is(self_os) {
-            env::var(ENV_PROCESSOR_ARCHITECTURE).unwrap_or_default()
+            if run_shell_command(self_os, WMIC_COMMAND_OS.to_string())
+                .unwrap_or_default()
+                .contains("32")
+            {
+                ARCH_X86.to_string()
+            } else {
+                ARCH_AMD64.to_string()
+            }
         } else {
             let uname_a = format_one_arg(UNAME_COMMAND, "a");
             if run_shell_command(self_os, uname_a)
                 .unwrap_or_default()
                 .to_ascii_lowercase()
-                .contains(ARM64_ARCH)
+                .contains(ARCH_ARM64)
             {
-                ARM64_ARCH.to_string()
+                ARCH_ARM64.to_string()
             } else {
                 let uname_m = format_one_arg(UNAME_COMMAND, "m");
                 run_shell_command(self_os, uname_m).unwrap_or_default()
@@ -147,9 +149,9 @@ pub enum ARCH {
 impl ARCH {
     pub fn to_str_vector(&self) -> Vec<&str> {
         match self {
-            ARCH::X32 => vec!["x86", "i386"],
-            ARCH::X64 => vec!["x86_64", "x64", "i686", "amd64", "ia64"],
-            ARCH::ARM64 => vec![ARM64_ARCH, "aarch64", "arm"],
+            ARCH::X32 => vec![ARCH_X86, "i386"],
+            ARCH::X64 => vec![ARCH_AMD64, "x86_64", "x64", "i686", "ia64"],
+            ARCH::ARM64 => vec![ARCH_ARM64, "aarch64", "arm"],
         }
     }
 
