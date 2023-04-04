@@ -97,10 +97,13 @@ public class ErrorCodec {
 
     W3CError err = fromThrowable(throwable);
 
+    String message =  throwable.getMessage() == null ?
+                      "<no message present in throwable>" : throwable.getMessage();
+
     return ImmutableMap.of(
         "value", ImmutableMap.of(
             "error", err.w3cErrorString,
-            "message", throwable.getMessage(),
+            "message", message,
             "stacktrace", Throwables.getStackTraceAsString(throwable)));
   }
 

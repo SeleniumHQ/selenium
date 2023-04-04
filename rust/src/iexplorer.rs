@@ -35,6 +35,7 @@ pub const IE_NAMES: &[&str] = &[
     "iexplorer",
     "ie",
     "internetexplorer",
+    "internet explorer",
     "internet-explorer",
     "internet_explorer",
 ];
