@@ -70,10 +70,12 @@ class SeleniumManager:
             "firefox": "firefox",
             "edge": "edge",
             "ie": "iexplorer",
-            }
+        }
 
         if browser not in allowed_browsers.keys():
-            raise SeleniumManagerException(f"{browser} is not a valid browser.  Choose one of: {list(allowed_browsers.keys())}")
+            raise SeleniumManagerException(
+                f"{browser} is not a valid browser.  Choose one of: {list(allowed_browsers.keys())}"
+            )
 
         browser = allowed_browsers[browser]
 
