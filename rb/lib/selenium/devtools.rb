@@ -24,6 +24,23 @@ module Selenium
 
       def load_version
         require "selenium/devtools/v#{@version}"
+      rescue LoadError
+        Kernel.warn "Could not load selenium-devtools v#{@version}. Trying older versions."
+        load_older_version
+      end
+
+      private
+
+      # Try to load up to 2 versions back
+      def load_older_version
+        load_old_version(@version - 1)
+      rescue LoadError
+        load_old_version(@version - 2)
+      end
+
+      def load_old_version(version)
+        require "selenium/devtools/v#{version}"
+        Kernel.warn "Using selenium-devtools version v#{version}, some features may not work as expected."
       end
     end
   end # DevTools

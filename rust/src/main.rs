@@ -21,8 +21,9 @@ use std::process::exit;
 
 use clap::Parser;
 
-use exitcode::{DATAERR, UNAVAILABLE};
+use exitcode::DATAERR;
 
+use selenium_manager::config::BooleanKey;
 use selenium_manager::logger::Logger;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_BROWSERS_SEC;
@@ -102,7 +103,9 @@ struct Cli {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
-    let log = Logger::create(cli.output, cli.debug, cli.trace);
+    let debug = cli.debug || BooleanKey("debug", false).get_value();
+    let trace = cli.trace || BooleanKey("trace", false).get_value();
+    let log = Logger::create(cli.output, debug, trace);
 
     if cli.clear_cache {
         clear_cache(&log);
@@ -140,15 +143,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     match selenium_manager.set_timeout(cli.timeout) {
         Ok(_) => {}
         Err(err) => {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
+            selenium_manager.get_logger().error(err);
+            flush_and_exit(DATAERR, selenium_manager.get_logger());
         }
     }
     match selenium_manager.set_proxy(cli.proxy.unwrap_or_default()) {
         Ok(_) => {}
         Err(err) => {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
+            selenium_manager.get_logger().error(err);
+            flush_and_exit(DATAERR, selenium_manager.get_logger());
         }
     }
 

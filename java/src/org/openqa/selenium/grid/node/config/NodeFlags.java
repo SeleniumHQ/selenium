@@ -233,7 +233,7 @@ public class NodeFlags implements HasRoles {
     names = {"--enable-managed-downloads"},
     arity = 1,
     description = "When enabled, the Grid node will automatically do the following: " +
-                  "1. Creates a directory named '$HOME/.cache/selenium/downloads/' which "
+                  "1. Creates a temporary directory which "
                   + "will now represent the directory into which files downloaded by "
                   + "Chrome/Firefox/Edge browser will be under. " +
                   "2. For every new session, a sub-directory will be created/deleted so that "

@@ -1,3 +1,18 @@
+4.8.6 (2023-03-29)
+=========================
+Ruby:
+  * Properly escape arguments passed to Selenium Manager
+
+4.8.5 (2023-03-28)
+=========================
+Ruby:
+  * Wrapping browser name in quotes when calling Selenium Manager
+
+4.8.4 (2023-03-28)
+=========================
+Ruby:
+  * Update the selenium-manager versions to fix an IE naming issue (#11828)
+
 4.8.3 (2023-03-26)
 =========================
 Ruby:

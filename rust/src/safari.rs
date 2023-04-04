@@ -25,9 +25,7 @@ use std::string::ToString;
 use crate::files::BrowserPath;
 
 use crate::config::OS::MACOS;
-use crate::{
-    create_default_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE,
-};
+use crate::{create_http_client, format_one_arg, Logger, SeleniumManager, PLIST_COMMAND, STABLE};
 
 pub const SAFARI_NAME: &str = "safari";
 pub const SAFARIDRIVER_NAME: &str = "safaridriver";
@@ -41,14 +39,19 @@ pub struct SafariManager {
 }
 
 impl SafariManager {
-    pub fn new() -> Box<Self> {
-        Box::new(SafariManager {
-            browser_name: SAFARI_NAME,
-            driver_name: SAFARIDRIVER_NAME,
-            config: ManagerConfig::default(),
-            http_client: create_default_http_client(),
+    pub fn new() -> Result<Box<Self>, String> {
+        let browser_name = SAFARI_NAME;
+        let driver_name = SAFARIDRIVER_NAME;
+        let config = ManagerConfig::default(browser_name, driver_name);
+        let default_timeout = config.timeout.to_owned();
+        let default_proxy = config.proxy.to_owned();
+        Ok(Box::new(SafariManager {
+            browser_name,
+            driver_name,
+            config,
+            http_client: create_http_client(default_timeout, default_proxy)?,
             log: Logger::default(),
-        })
+        }))
     }
 }
 

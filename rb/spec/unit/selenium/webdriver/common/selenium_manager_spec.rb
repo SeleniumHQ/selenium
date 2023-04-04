@@ -85,7 +85,8 @@ module Selenium
 
           described_class.driver_path(Options.chrome)
 
-          expect(described_class).to have_received(:run).with('selenium-manager --browser chrome --output json')
+          expect(described_class).to have_received(:run)
+            .with('selenium-manager', '--browser', 'chrome', '--output', 'json')
         end
 
         it 'uses browser version if specified' do
@@ -97,7 +98,7 @@ module Selenium
           described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager --browser chrome --output json --browser-version 1')
+            .with('selenium-manager', '--browser', 'chrome', '--output', 'json', '--browser-version', 1)
         end
 
         it 'uses browser location if specified' do
@@ -109,7 +110,7 @@ module Selenium
           described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager --browser chrome --output json --browser-path "/path/to/browser"')
+            .with('selenium-manager', '--browser', 'chrome', '--output', 'json', '--browser-path', '/path/to/browser')
         end
 
         it 'properly escapes plain spaces in browser location' do
@@ -121,19 +122,8 @@ module Selenium
           described_class.driver_path(options)
 
           expect(described_class).to have_received(:run)
-            .with('selenium-manager --browser chrome --output json --browser-path "/path\ to/the/browser"')
-        end
-
-        it 'properly escapes escaped spaces in browser location' do
-          allow(described_class).to receive(:run)
-          allow(described_class).to receive(:binary).and_return('selenium-manager')
-          allow(Platform).to receive(:assert_executable)
-          options = Options.chrome(binary: '/path\ to/the/browser')
-
-          described_class.driver_path(options)
-
-          expect(described_class).to have_received(:run)
-            .with('selenium-manager --browser chrome --output json --browser-path "/path\ to/the/browser"')
+            .with('selenium-manager', '--browser', 'chrome', '--output', 'json',
+                  '--browser-path', '/path to/the/browser')
         end
       end
     end

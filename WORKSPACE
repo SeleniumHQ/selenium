@@ -37,9 +37,9 @@ bazel_skylib_workspace()
 
 http_archive(
     name = "rules_python",
-    sha256 = "497ca47374f48c8b067d786b512ac10a276211810f4a580178ee9b9ad139323a",
-    strip_prefix = "rules_python-0.16.1",
-    url = "https://github.com/bazelbuild/rules_python/archive/refs/tags/0.16.1.tar.gz",
+    sha256 = "a644da969b6824cc87f8fe7b18101a8a6c57da5db39caa6566ec6109f37d2141",
+    strip_prefix = "rules_python-0.20.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.20.0/rules_python-0.20.0.tar.gz",
 )
 
 load("@rules_python//python:repositories.bzl", "python_register_multi_toolchains")
@@ -53,10 +53,12 @@ python_register_multi_toolchains(
         "3.8",
         "3.9",
         "3.10",
+        "3.11",
     ],
 )
 
 load("@python//:pip.bzl", "multi_pip_parse")
+load("@python//3.11:defs.bzl", interpreter_3_11 = "interpreter")
 load("@python//3.10:defs.bzl", interpreter_3_10 = "interpreter")
 load("@python//3.9:defs.bzl", interpreter_3_9 = "interpreter")
 load("@python//3.8:defs.bzl", interpreter_3_8 = "interpreter")
@@ -65,11 +67,13 @@ multi_pip_parse(
     name = "py_dev_requirements",
     default_version = default_python_version,
     python_interpreter_target = {
+        "3.11": interpreter_3_11,
         "3.10": interpreter_3_10,
         "3.9": interpreter_3_9,
         "3.8": interpreter_3_8,
     },
     requirements_lock = {
+        "3.11": "//py:requirements_lock.txt",
         "3.10": "//py:requirements_lock.txt",
         "3.9": "//py:requirements_lock.txt",
         "3.8": "//py:requirements_lock.txt",
@@ -318,9 +322,9 @@ pin_browsers()
 
 http_archive(
     name = "rules_ruby",
-    sha256 = "28fd318beb3761e0e0f38563aa5344fc13907c373d2f7785ac0a6b948a6a437a",
-    strip_prefix = "rules_ruby-e1c926f5fc1e7c592b53dfc6772f7f9410b67382",
-    url = "https://github.com/p0deje/rules_ruby/archive/e1c926f5fc1e7c592b53dfc6772f7f9410b67382.zip",
+    sha256 = "5228950029d57476a4903db35cd8ce6a4526e30fba08a01af9d7a9b8ebaf63ae",
+    strip_prefix = "rules_ruby-9e6e07ed5d7e02f8bb1c77ce543072d5548bbd86",
+    url = "https://github.com/p0deje/rules_ruby/archive/9e6e07ed5d7e02f8bb1c77ce543072d5548bbd86.zip",
 )
 
 load("//rb:ruby_version.bzl", "RUBY_VERSION")
