@@ -41,12 +41,15 @@ class SeleniumManager:
 
         :Returns: The Selenium Manager executable location
         """
-        platform_dirs = {
+        platform = sys.platform
+
+        dirs = {
             "darwin": "macos",
             "win32": "windows",
             "cygwin": "windows",
         }
-        directory = platform_dirs[sys.platform]
+
+        directory = dirs.get(platform) if dirs.get(platform) else platform
 
         file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
 
@@ -75,7 +78,8 @@ class SeleniumManager:
 
         if browser not in allowed_browsers.keys():
             raise SeleniumManagerException(
-                f"{browser} is not a valid browser.  Choose one of: {list(allowed_browsers.keys())}")
+                f"{browser} is not a valid browser.  Choose one of: {list(allowed_browsers.keys())}"
+            )
 
         browser = allowed_browsers[browser]
 
