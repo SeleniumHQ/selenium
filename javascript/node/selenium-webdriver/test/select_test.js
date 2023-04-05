@@ -19,8 +19,7 @@
 
 const assert = require('assert')
 const { Select, By } = require('..')
-const { Pages, ignore, suite } = require('../lib/test')
-const { Browser } = require('../index')
+const { Pages, suite } = require('../lib/test')
 
 let singleSelectValues1 = {
   name: 'selectomatic',
@@ -47,8 +46,6 @@ let multiSelectValues2 = {
 
 suite(
   function (env) {
-    const browsers = (...args) => env.browsers(...args)
-
     let driver
 
     before(async function () {
