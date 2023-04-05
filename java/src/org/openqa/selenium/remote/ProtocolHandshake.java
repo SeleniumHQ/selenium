@@ -20,7 +20,6 @@ package org.openqa.selenium.remote;
 import com.google.common.io.CountingOutputStream;
 import com.google.common.io.FileBackedOutputStream;
 
-import org.openqa.selenium.AcceptedW3CCapabilityKeys;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
 import org.openqa.selenium.Proxy;
@@ -38,19 +37,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Collections.singleton;
 import static org.openqa.selenium.json.Json.JSON_UTF_8;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.remote.http.Contents.string;
@@ -60,8 +59,10 @@ public class ProtocolHandshake {
   private static final Logger LOG = Logger.getLogger(ProtocolHandshake.class.getName());
 
   public Result createSession(HttpHandler client, Command command) throws IOException {
-    Capabilities desired = (Capabilities) command.getParameters().get("desiredCapabilities");
-    desired = desired == null ? new ImmutableCapabilities() : desired;
+    @SuppressWarnings("unchecked")
+    Collection<Capabilities> desired = (Collection<Capabilities>) command.getParameters().get("capabilities");
+
+    desired = desired == null || desired.isEmpty() ? singleton(new ImmutableCapabilities()) : desired;
 
     try (NewSessionPayload payload = NewSessionPayload.create(desired)) {
       Either<SessionNotCreatedException, Result> result = createSession(client, payload);
@@ -69,19 +70,6 @@ public class ProtocolHandshake {
       if (result.isRight()) {
         Result toReturn = result.right();
         LOG.log(Level.FINE, "Detected upstream dialect: {0}", toReturn.dialect);
-
-        List<String> invalid = desired.asMap().keySet()
-          .stream()
-          .filter(key -> !(new AcceptedW3CCapabilityKeys().test(key)))
-          .collect(Collectors.toList());
-
-        if (!invalid.isEmpty()) {
-          LOG.log(Level.WARNING,
-                  () -> String.format("Support for Legacy Capabilities is deprecated; " +
-                                      "You are sending the following invalid capabilities: %s; " +
-                                      "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",
-                                      invalid));
-        }
         return toReturn;
       } else {
         throw result.left();
@@ -149,9 +137,7 @@ public class ProtocolHandshake {
                       initialResponse.getStatusCode(), responseMessage)));
     }
 
-    return Stream.of(
-      new W3CHandshakeResponse().getResponseFunction(),
-      new JsonWireProtocolResponse().getResponseFunction())
+    return Stream.of(new W3CHandshakeResponse().getResponseFunction())
       .map(func -> func.apply(initialResponse))
       .filter(Objects::nonNull)
       .findFirst()

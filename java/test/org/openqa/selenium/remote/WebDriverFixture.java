@@ -35,6 +35,7 @@ import org.openqa.selenium.WebDriverException;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Array;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -169,10 +170,14 @@ class WebDriverFixture {
 
   public static final Function<Command, Response> echoCapabilities = cmd -> {
     Response response = new Response();
+
+    @SuppressWarnings("unchecked")
+    Collection<Capabilities> capabilities = (Collection<Capabilities>) cmd.getParameters().get("capabilities");
+
     response.setValue(
-      ((Capabilities) cmd.getParameters().get("desiredCapabilities")).asMap()
+      capabilities.iterator().next().asMap()
         .entrySet().stream()
-        .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().toString())));
+        .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString())));
     response.setSessionId(UUID.randomUUID().toString());
     return response;
   };

@@ -19,7 +19,7 @@ package org.openqa.selenium.grid.node.docker;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.docker.Container;
-import org.openqa.selenium.grid.node.ProtocolConvertingSession;
+import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.remote.SessionId;
@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DockerSession extends ProtocolConvertingSession {
+public class DockerSession extends DefaultActiveSession {
 
   private static final Logger LOG = Logger.getLogger(DockerSession.class.getName());
   private final Container container;
