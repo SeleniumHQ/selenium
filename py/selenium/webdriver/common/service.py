@@ -31,7 +31,6 @@ from urllib.error import URLError
 from selenium.common.exceptions import WebDriverException
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
-from selenium.webdriver.common.options import BaseOptions
 from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 logger = logging.getLogger(__name__)
@@ -50,8 +49,6 @@ class Service(ABC):
     :param log_file: (Optional) file descriptor (pos int) or file object with a valid file descriptor.
         subprocess.PIPE & subprocess.DEVNULL are also valid values.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param start_error_message - error that gets displayed when service launch fails
-    :param options - this takes an instance of browser options
     """
 
     def __init__(
@@ -61,7 +58,6 @@ class Service(ABC):
         log_file: SubprocessStdAlias = DEVNULL,
         env: typing.Optional[typing.Mapping[typing.Any, typing.Any]] = None,
         start_error_message: typing.Optional[str] = None,
-        options: BaseOptions = None,
         **kwargs,
     ) -> None:
         self.path = executable
@@ -72,7 +68,6 @@ class Service(ABC):
         self.popen_kw = kwargs.pop("popen_kw", {})
         self.creation_flags = self.popen_kw.pop("creation_flags", 0)
         self.env = env or os.environ
-        self.options = options
 
     @property
     def service_url(self) -> str:
@@ -96,11 +91,12 @@ class Service(ABC):
         except WebDriverException as err:
             if "executable needs to be in PATH" in err.msg:
                 logger.debug("driver not found in PATH, trying Selenium Manager")
+                browser = self.__class__.__module__.split(".")[-2]
+
                 try:
-                    browser = self.options.capabilities["browserName"]
                     path = SeleniumManager().driver_location(browser)
                 except WebDriverException as new_err:
-                    logger.warning("Unable to obtain driver using Selenium Manager: " + new_err.msg)
+                    logger.debug("Unable to obtain driver using Selenium Manager: " + new_err.msg)
                     raise err
 
                 self._start_process(path)

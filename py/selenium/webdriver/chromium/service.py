@@ -17,7 +17,6 @@
 import typing
 
 from selenium.webdriver.common import service
-from selenium.webdriver.common.options import BaseOptions
 
 
 class ChromiumService(service.Service):
@@ -30,7 +29,6 @@ class ChromiumService(service.Service):
     :param log_path: (Optional) String to be passed to the executable as `--log-path`.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
     :param start_error_message: (Optional) Error message that forms part of the error when problems occur
-    :param options - this takes an instance of ChromeOptions or EdgeOptions
     launching the subprocess.
     """
 
@@ -42,7 +40,6 @@ class ChromiumService(service.Service):
         log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
         start_error_message: typing.Optional[str] = None,
-        options: BaseOptions = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
@@ -54,7 +51,6 @@ class ChromiumService(service.Service):
             port=port,
             env=env,
             start_error_message=start_error_message,
-            options=options,
             **kwargs,
         )
 

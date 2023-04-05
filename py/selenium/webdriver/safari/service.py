@@ -20,7 +20,6 @@ import subprocess
 import typing
 
 from selenium.webdriver.common import service
-from selenium.webdriver.common.options import BaseOptions
 
 DEFAULT_EXECUTABLE_PATH: str = "/usr/bin/safaridriver"
 
@@ -34,7 +33,6 @@ class Service(service.Service):
     :param quiet: Suppress driver stdout & stderr, redirects to os.devnull if enabled.
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
-    :param options - this takes an instance of SafariOptions
     """
 
     def __init__(
@@ -44,7 +42,6 @@ class Service(service.Service):
         quiet: bool = False,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
-        options: BaseOptions = None,
         **kwargs,
     ) -> None:
         self._check_executable(executable_path)
@@ -56,7 +53,6 @@ class Service(service.Service):
             port=port,
             log_file=log_file,  # type: ignore
             env=env,
-            options=options,
             **kwargs,
         )
 

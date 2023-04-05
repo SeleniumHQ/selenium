@@ -104,8 +104,6 @@ class WebDriver(RemoteWebDriver):
         self.service = service or Service(executable_path, port=port, quiet=quiet, service_args=service_args)
         if not reuse_service:
             self.service.start()
-        if not options:
-            options = Options()
 
         executor = SafariRemoteConnection(remote_server_addr=self.service.service_url, keep_alive=keep_alive)
 

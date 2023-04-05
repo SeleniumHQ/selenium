@@ -120,12 +120,7 @@ class WebDriver(RemoteWebDriver):
             self.iedriver = service
         else:
             self.iedriver = Service(
-                executable_path,
-                port=self.port,
-                host=self.host,
-                log_level=log_level,
-                log_file=service_log_path,
-                options=options,
+                executable_path, port=self.port, host=self.host, log_level=log_level, log_file=service_log_path
             )
 
         self.iedriver.start()

@@ -65,16 +65,9 @@ class WebDriver(ChromiumDriver):
             warnings.warn(
                 "executable_path has been deprecated, please pass in a Service object", DeprecationWarning, stacklevel=2
             )
-        if not options:
-            options = self.create_options()
+
         if not service:
-            service = Service(
-                executable_path=executable_path,
-                port=port,
-                service_args=service_args,
-                service_log_path=service_log_path,
-                options=options,
-            )
+            service = Service(executable_path, port, service_args, service_log_path)
 
         super().__init__(
             DesiredCapabilities.EDGE["browserName"],

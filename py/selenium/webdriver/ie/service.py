@@ -18,7 +18,6 @@ import typing
 from typing import List
 
 from selenium.webdriver.common import service
-from selenium.webdriver.common.options import BaseOptions
 
 DEFAULT_EXECUTABLE_PATH = "IEDriverServer.exe"
 
@@ -33,7 +32,6 @@ class Service(service.Service):
         host: typing.Optional[str] = None,
         log_level: typing.Optional[str] = None,
         log_file: typing.Optional[str] = None,
-        options: BaseOptions = None,
         **kwargs,
     ) -> None:
         """Creates a new instance of the Service.
@@ -46,7 +44,6 @@ class Service(service.Service):
            Default is "FATAL".
          - log_file : Target of logging of service, may be "stdout", "stderr" or file path.
            Default is "stdout".
-         - options - this takes an instance of IEOptions
         """
         self.service_args = []
         if host:
@@ -60,7 +57,6 @@ class Service(service.Service):
             executable_path,
             port=port,
             start_error_message="Please download from https://www.selenium.dev/downloads/ and read up at https://github.com/SeleniumHQ/selenium/wiki/InternetExplorerDriver",
-            options=options,
             **kwargs,
         )
 
