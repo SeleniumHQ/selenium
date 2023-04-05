@@ -22,7 +22,7 @@ from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 
 def test_non_supported_browser_raises_sme():
-    msg = r"foo is not a valid browser.  Choose one of: \('chrome', 'firefox', 'edge', 'ie'\)"
+    msg = r"foo is not a valid browser.  Choose one of: \['chrome', 'firefox', 'edge', 'ie'\]"
     with pytest.raises(SeleniumManagerException, match=msg):
         _ = SeleniumManager().driver_location("foo")
 

@@ -76,7 +76,6 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
 import static org.assertj.core.api.InstanceOfAssertFactories.MAP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -112,7 +111,7 @@ class GraphqlHandlerTest {
     sessionRequest = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
-      Set.of(OSS, W3C),
+      Set.of(W3C),
       Set.of(caps),
       Map.of(),
       Map.of());

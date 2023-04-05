@@ -39,6 +39,7 @@ import java.time.Duration;
 import java.util.UUID;
 
 import static java.util.Collections.emptyMap;
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -82,7 +83,7 @@ class RemoteWebDriverInitializationTest {
       .isThrownBy(() -> new RemoteWebDriver(executor, new ImmutableCapabilities()))
       .withMessageContaining("Build info: ")
       .withMessageContaining("Driver info: org.openqa.selenium.remote.RemoteWebDriver")
-      .withMessageContaining("Command: [null, newSession {capabilities=[Capabilities {}], desiredCapabilities=Capabilities {}}]");
+      .withMessageContaining("Command: [null, newSession {capabilities=[Capabilities {}]}]");
 
     verifyNoCommands(executor);
   }
@@ -124,7 +125,7 @@ class RemoteWebDriverInitializationTest {
     verify(executor).execute(argThat(
       command -> command.getName().equals(DriverCommand.NEW_SESSION)
                  && command.getSessionId() == null
-                 && command.getParameters().get("desiredCapabilities") == capabilities
+                 && singleton(capabilities).equals(command.getParameters().get("capabilities"))
     ));
     verifyNoMoreInteractions(executor);
     assertThat(driver.getSessionId()).isNotNull();
@@ -135,17 +136,6 @@ class RemoteWebDriverInitializationTest {
     WebDriverFixture fixture = new WebDriverFixture(
       new ImmutableCapabilities(
         "browserName", "cheese browser", "platformName", Platform.MOJAVE),
-      echoCapabilities, nullValueResponder);
-
-    assertThat(fixture.driver.getCapabilities().getPlatformName())
-      .satisfies(p -> p.is(Platform.MOJAVE));
-  }
-
-  @Test
-  void canHandlePlatformOSSCapability() {
-    WebDriverFixture fixture = new WebDriverFixture(
-      new ImmutableCapabilities(
-        "browserName", "cheese browser", "platform", Platform.MOJAVE),
       echoCapabilities, nullValueResponder);
 
     assertThat(fixture.driver.getCapabilities().getPlatformName())
