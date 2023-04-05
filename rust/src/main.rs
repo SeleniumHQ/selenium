@@ -111,7 +111,7 @@ fn main() {
     }
 
     if cli.clear_metadata {
-        clear_metadata(&log)
+        clear_metadata(&log);
     }
 
     let browser_name: String = cli.browser.unwrap_or_default();
