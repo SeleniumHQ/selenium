@@ -19,6 +19,7 @@ from typing import List
 
 from selenium.webdriver.common import service
 from selenium.webdriver.common import utils
+from selenium.webdriver.common.options import BaseOptions
 
 DEFAULT_EXECUTABLE_PATH = "geckodriver"
 
@@ -33,6 +34,7 @@ class Service(service.Service):
     :param log_path: (Optional) File path for the file to be opened and passed as the subprocess stdout/stderr handler,
         defaults to `geckodriver.log`.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    :param options - this takes an instance of FirefoxOptions
     """
 
     def __init__(
@@ -42,6 +44,7 @@ class Service(service.Service):
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        options: BaseOptions = None,
         **kwargs,
     ) -> None:
         # Todo: This is vastly inconsistent, requires a follow up to standardise.
@@ -53,6 +56,7 @@ class Service(service.Service):
             port=port,
             log_file=log_file,
             env=env,
+            options=options,
             **kwargs,
         )
 

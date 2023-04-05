@@ -17,6 +17,7 @@
 import typing
 
 from selenium.webdriver.common import service
+from selenium.webdriver.common.options import BaseOptions
 
 DEFAULT_EXECUTABLE_PATH = "WebKitWebDriver"
 
@@ -30,6 +31,7 @@ class Service(service.Service):
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param log_path: (Optional) File path for the file to be opened and passed as the subprocess stdout/stderr handler.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    :param options - this takes an instance of browser options
     """
 
     def __init__(
@@ -39,6 +41,7 @@ class Service(service.Service):
         log_path: typing.Optional[str] = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        options: BaseOptions = None,
         **kwargs,
     ):
         self.service_args = service_args or []
@@ -48,6 +51,7 @@ class Service(service.Service):
             port=port,
             log_file=log_file,
             env=env,
+            options=options,
             **kwargs,
         )  # type: ignore
 

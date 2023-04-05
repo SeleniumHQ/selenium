@@ -18,6 +18,7 @@ import typing
 import warnings
 
 from selenium.webdriver.chromium import service
+from selenium.webdriver.common.options import BaseOptions
 
 DEFAULT_EXECUTABLE_PATH = "msedgedriver"
 
@@ -33,6 +34,7 @@ class Service(service.ChromiumService):
     :param log_path: (Optional) String to be passed to the executable as `--log-path`.
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    :param options - this takes an instance of EdgeOptions
     """
 
     def __init__(
@@ -43,6 +45,7 @@ class Service(service.ChromiumService):
         log_path: typing.Optional[str] = None,
         service_args: typing.Optional[typing.List[str]] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        options: BaseOptions = None,
         **kwargs,
     ) -> None:
         self.service_args = service_args or []
@@ -62,5 +65,6 @@ class Service(service.ChromiumService):
             log_path=log_path,
             env=env,
             start_error_message="Please download from https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/",
+            options=options,
             **kwargs,
         )

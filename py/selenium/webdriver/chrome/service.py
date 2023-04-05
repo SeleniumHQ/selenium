@@ -17,6 +17,7 @@
 import typing
 
 from selenium.webdriver.chromium import service
+from selenium.webdriver.common.options import BaseOptions
 
 DEFAULT_EXECUTABLE_PATH = "chromedriver"
 
@@ -30,6 +31,7 @@ class Service(service.ChromiumService):
     :param service_args: (Optional) List of args to be passed to the subprocess when launching the executable.
     :param log_path: (Optional) String to be passed to the executable as `--log-path`.
     :param env: (Optional) Mapping of environment variables for the new process, defaults to `os.environ`.
+    :param options - this takes an instance of ChromeOptions
     """
 
     def __init__(
@@ -39,6 +41,7 @@ class Service(service.ChromiumService):
         service_args: typing.Optional[typing.List[str]] = None,
         log_path: typing.Optional[str] = None,
         env: typing.Optional[typing.Mapping[str, str]] = None,
+        options: BaseOptions = None,
         **kwargs,
     ) -> None:
         super().__init__(
@@ -48,5 +51,6 @@ class Service(service.ChromiumService):
             log_path=log_path,
             env=env,
             start_error_message="Please see https://chromedriver.chromium.org/home",
+            options=options,
             **kwargs,
         )

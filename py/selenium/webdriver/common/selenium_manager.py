@@ -73,6 +73,7 @@ class SeleniumManager:
             "chrome": "chrome",
             "firefox": "firefox",
             "edge": "edge",
+            "MicrosoftEdge": "edge",
             "ie": "iexplorer",
         }
 
@@ -113,7 +114,8 @@ class SeleniumManager:
         if completed_proc.returncode:
             raise SeleniumManagerException(f"Selenium manager failed for: {command}.\n{result}{stderr}")
         else:
-            # Selenium Manager exited 0 successfully, return executable path and print warnings (if any)
+            # Selenium Manager exited 0 successfully, return executable path and print warnings
+            # (if any)
             for item in output["logs"]:
                 if item["level"] == "WARN":
                     logger.warning(item["message"])

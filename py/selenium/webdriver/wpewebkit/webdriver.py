@@ -51,7 +51,7 @@ class WebDriver(RemoteWebDriver):
             capabilities.update(desired_capabilities)
             desired_capabilities = capabilities
 
-        self.service = Service(executable_path, port=port, log_path=service_log_path)
+        self.service = Service(executable_path=executable_path, port=port, log_path=service_log_path, options=options)
         self.service.start()
 
         super().__init__(command_executor=self.service.service_url, desired_capabilities=desired_capabilities)

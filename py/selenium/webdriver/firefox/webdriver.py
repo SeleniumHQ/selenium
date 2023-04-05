@@ -190,7 +190,12 @@ class WebDriver(RemoteWebDriver):
             options.accept_insecure_certs = False
 
         if not self.service:
-            self.service = Service(executable_path, service_args=service_args, log_path=service_log_path)
+            self.service = Service(
+                executable_path=executable_path,
+                service_args=service_args,
+                log_path=service_log_path,
+                options=options,
+            )
         self.service.start()
 
         executor = FirefoxRemoteConnection(

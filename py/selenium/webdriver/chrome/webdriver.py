@@ -74,8 +74,16 @@ class WebDriver(ChromiumDriver):
             )
         else:
             keep_alive = True
+        if not options:
+            options = self.create_options()
         if not service:
-            service = Service(executable_path, port, service_args, service_log_path)
+            service = Service(
+                executable_path=executable_path,
+                port=port,
+                service_args=service_args,
+                service_log_path=service_log_path,
+                options=options,
+            )
 
         super().__init__(
             DesiredCapabilities.CHROME["browserName"],
@@ -88,3 +96,6 @@ class WebDriver(ChromiumDriver):
             service,
             keep_alive,
         )
+
+    def create_options(self) -> Options:
+        return Options()
