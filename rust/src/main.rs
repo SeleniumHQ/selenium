@@ -23,6 +23,7 @@ use clap::Parser;
 
 use exitcode::DATAERR;
 
+use exitcode::OK;
 use selenium_manager::config::BooleanKey;
 use selenium_manager::logger::Logger;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
@@ -101,7 +102,7 @@ struct Cli {
     clear_metadata: bool,
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
     let cli = Cli::parse();
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
@@ -144,28 +145,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     selenium_manager
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.resolve_driver().map_err(|x| x.to_string()))
+        .and_then(|path| {
+            let log = selenium_manager.get_logger();
+            log.info(path.display().to_string());
+            flush_and_exit(0, &log);
+        })
         .unwrap_or_else(|err| {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(DATAERR, selenium_manager.get_logger());
+            let log = selenium_manager.get_logger();
+            log.error(err);
+            flush_and_exit(DATAERR, &log);
         });
-
-    match selenium_manager.resolve_driver() {
-        Ok(driver_path) => {
-            selenium_manager
-                .get_logger()
-                .info(driver_path.display().to_string());
-            flush_and_exit(0, selenium_manager.get_logger());
-        }
-        Err(err) => {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(DATAERR, selenium_manager.get_logger());
-        }
-    };
-
-    Ok(())
 }
 
-fn flush_and_exit(code: i32, log: &Logger) {
+fn flush_and_exit(code: i32, log: &Logger) -> ! {
     log.set_code(code);
     log.flush();
     exit(code);
