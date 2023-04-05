@@ -15,14 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::error::Error;
-
 use std::process::exit;
 
 use clap::Parser;
 
-use exitcode::{DATAERR, UNAVAILABLE};
+use exitcode::DATAERR;
 
+use exitcode::OK;
+use selenium_manager::config::BooleanKey;
 use selenium_manager::logger::Logger;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_BROWSERS_SEC;
@@ -100,9 +100,11 @@ struct Cli {
     clear_metadata: bool,
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
     let cli = Cli::parse();
-    let log = Logger::create(cli.output, cli.debug, cli.trace);
+    let debug = cli.debug || BooleanKey("debug", false).get_value();
+    let trace = cli.trace || BooleanKey("trace", false).get_value();
+    let log = Logger::create(cli.output, debug, trace);
 
     if cli.clear_cache {
         clear_cache(&log);
@@ -119,56 +121,39 @@ fn main() -> Result<(), Box<dyn Error>> {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
             log.error(err);
             flush_and_exit(DATAERR, &log);
-            exit(DATAERR);
         })
     } else if !driver_name.is_empty() {
         get_manager_by_driver(driver_name).unwrap_or_else(|err| {
             log.error(err);
             flush_and_exit(DATAERR, &log);
-            exit(DATAERR);
         })
     } else {
         log.error("You need to specify a browser or driver".to_string());
         flush_and_exit(DATAERR, &log);
-        exit(DATAERR);
     };
 
     selenium_manager.set_logger(log);
     selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
     selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
     selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
-    match selenium_manager.set_timeout(cli.timeout) {
-        Ok(_) => {}
-        Err(err) => {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
-        }
-    }
-    match selenium_manager.set_proxy(cli.proxy.unwrap_or_default()) {
-        Ok(_) => {}
-        Err(err) => {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(UNAVAILABLE, selenium_manager.get_logger());
-        }
-    }
 
-    match selenium_manager.resolve_driver() {
-        Ok(driver_path) => {
-            selenium_manager
-                .get_logger()
-                .info(driver_path.display().to_string());
-            flush_and_exit(0, selenium_manager.get_logger());
-        }
-        Err(err) => {
-            selenium_manager.get_logger().error(err.to_string());
-            flush_and_exit(DATAERR, selenium_manager.get_logger());
-        }
-    };
-
-    Ok(())
+    selenium_manager
+        .set_timeout(cli.timeout)
+        .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.resolve_driver().map_err(|x| x.to_string()))
+        .and_then(|path| {
+            let log = selenium_manager.get_logger();
+            log.info(path.display().to_string());
+            flush_and_exit(OK, &log);
+        })
+        .unwrap_or_else(|err| {
+            let log = selenium_manager.get_logger();
+            log.error(err);
+            flush_and_exit(DATAERR, &log);
+        });
 }
 
-fn flush_and_exit(code: i32, log: &Logger) {
+fn flush_and_exit(code: i32, log: &Logger) -> ! {
     log.set_code(code);
     log.flush();
     exit(code);

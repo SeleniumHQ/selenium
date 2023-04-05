@@ -141,19 +141,6 @@ class RemoteWebDriverUnitTest {
   }
 
   @Test
-  void canHandleFindElementOSSCommand() {
-    WebDriverFixture fixture = new WebDriverFixture(
-      echoCapabilities,
-      valueResponder(ImmutableMap.of("ELEMENT", UUID.randomUUID().toString())));
-
-    assertThat(fixture.driver.findElement(By.id("cheese"))).isNotNull();
-
-    fixture.verifyCommands(
-      new CommandPayload(DriverCommand.FIND_ELEMENT, ImmutableMap.of(
-        "using", "id", "value", "cheese")));
-  }
-
-  @Test
   void canHandleFindElementW3CCommand() {
     WebDriverFixture fixture = new WebDriverFixture(
       echoCapabilities,
@@ -181,21 +168,6 @@ class RemoteWebDriverUnitTest {
     assertThat(fixture.driver.findElement(locator)).isSameAs(element1);
 
     fixture.verifyNoCommands();
-  }
-
-  @Test
-  void canHandleFindElementsOSSCommand() {
-    WebDriverFixture fixture = new WebDriverFixture(
-      echoCapabilities,
-      valueResponder(Arrays.asList(
-        ImmutableMap.of("ELEMENT", UUID.randomUUID().toString()),
-        ImmutableMap.of("ELEMENT", UUID.randomUUID().toString()))));
-
-    assertThat(fixture.driver.findElements(By.id("cheese"))).hasSize(2);
-
-    fixture.verifyCommands(
-      new CommandPayload(DriverCommand.FIND_ELEMENTS, ImmutableMap.of(
-        "using", "id", "value", "cheese")));
   }
 
   @Test
@@ -356,7 +328,7 @@ class RemoteWebDriverUnitTest {
       new CommandPayload(DriverCommand.FIND_ELEMENTS, ImmutableMap.of(
         "using", "css selector", "value", "frame[name='frameName'],iframe[name='frameName']")),
       new CommandPayload(DriverCommand.SWITCH_TO_FRAME, ImmutableMap.of(
-        "id", ImmutableMap.of("ELEMENT", elementId, ELEMENT_KEY, elementId))));
+        "id", ImmutableMap.of(ELEMENT_KEY, elementId))));
   }
 
   @Test

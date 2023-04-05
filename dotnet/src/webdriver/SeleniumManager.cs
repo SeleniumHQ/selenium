@@ -125,12 +125,10 @@ namespace OpenQA.Selenium
             try
             {
                 process.OutputDataReceived += outputHandler;
-                process.ErrorDataReceived += outputHandler;
 
                 process.Start();
 
                 process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
 
                 process.WaitForExit();
             }
@@ -142,7 +140,6 @@ namespace OpenQA.Selenium
             {
                 processExitCode = process.ExitCode;
                 process.OutputDataReceived -= outputHandler;
-                process.ErrorDataReceived -= outputHandler;
             }
 
             string output = outputBuilder.ToString().Trim();

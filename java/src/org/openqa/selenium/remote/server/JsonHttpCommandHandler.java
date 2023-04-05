@@ -24,9 +24,8 @@ import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.Response;
 import org.openqa.selenium.remote.ResponseCodec;
 import org.openqa.selenium.remote.SessionId;
-import org.openqa.selenium.remote.codec.jwp.JsonHttpCommandCodec;
-import org.openqa.selenium.remote.codec.jwp.JsonHttpResponseCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
+import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
 import org.openqa.selenium.remote.server.handler.AcceptAlert;
@@ -238,9 +237,8 @@ public class JsonHttpCommandHandler {
     this.sessions = sessions;
     this.log = log;
     this.commandCodecs = new LinkedHashSet<>();
-    this.commandCodecs.add(new JsonHttpCommandCodec());
     this.commandCodecs.add(new W3CHttpCommandCodec());
-    this.responseCodec = new JsonHttpResponseCodec();
+    this.responseCodec = new W3CHttpResponseCodec();
     setUpMappings();
   }
 
