@@ -28,6 +28,7 @@ tar = "0.4.38"
 infer = "0.13.0"
 exitcode = "1.1.2"
 is_executable = "1.0.1"
+toml = "0.7.3"
 
 [dev-dependencies]
 assert_cmd = "2.0.8"

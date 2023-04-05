@@ -155,12 +155,14 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger) {
     .unwrap();
 }
 
-pub fn clear_metadata(log: &Logger){
+pub fn clear_metadata(log: &Logger) {
     let metadata_path = get_metadata_path();
-    log.trace(format!("Deleting metadata file {}", metadata_path.display()));
-    match fs::remove_file(metadata_path){
+    log.trace(format!(
+        "Deleting metadata file {}",
+        metadata_path.display()
+    ));
+    match fs::remove_file(metadata_path) {
         Ok(()) => log.trace("Metadata file was deleted".to_string()),
-        Err(err) => log.warn(
-            format!("Metadata file deleting invoked an error: {}",err)),
+        Err(err) => log.warn(format!("Metadata file deleting invoked an error: {}", err)),
     }
 }
