@@ -104,7 +104,7 @@ fn main() {
     let cli = Cli::parse();
     let debug = cli.debug || BooleanKey("debug", false).get_value();
     let trace = cli.trace || BooleanKey("trace", false).get_value();
-    let log = Logger::create(cli.output, debug, trace);
+    let log = Logger::create(&cli.output, debug, trace);
 
     if cli.clear_cache {
         clear_cache(&log);
@@ -128,7 +128,7 @@ fn main() {
             flush_and_exit(DATAERR, &log);
         })
     } else {
-        log.error("You need to specify a browser or driver".to_string());
+        log.error("You need to specify a browser or driver");
         flush_and_exit(DATAERR, &log);
     };
 
@@ -143,7 +143,7 @@ fn main() {
         .and_then(|_| selenium_manager.resolve_driver().map_err(|x| x.to_string()))
         .and_then(|path| {
             let log = selenium_manager.get_logger();
-            log.info(path.display().to_string());
+            log.info(path.display());
             flush_and_exit(OK, &log);
         })
         .unwrap_or_else(|err| {
