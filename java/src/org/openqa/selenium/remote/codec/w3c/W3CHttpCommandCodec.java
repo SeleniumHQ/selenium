@@ -100,8 +100,6 @@ import static org.openqa.selenium.remote.DriverCommand.UPLOAD_FILE;
  */
 public class W3CHttpCommandCodec extends AbstractHttpCommandCodec {
 
-  private final PointerInput mouse = new PointerInput(PointerInput.Kind.MOUSE, "mouse");
-
   public W3CHttpCommandCodec() {
     String sessionId = "/session/:sessionId";
 

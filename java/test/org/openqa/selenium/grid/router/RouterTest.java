@@ -73,7 +73,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.grid.data.Availability.DOWN;
 import static org.openqa.selenium.grid.data.Availability.UP;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.HttpMethod.GET;
 
@@ -255,7 +254,7 @@ class RouterTest {
     SessionRequest sessionRequest = new SessionRequest(
       new RequestId(UUID.randomUUID()),
       Instant.now(),
-      ImmutableSet.of(OSS, W3C),
+      ImmutableSet.of(W3C),
       ImmutableSet.of(chromeCapabilities),
       ImmutableMap.of(),
       ImmutableMap.of());
