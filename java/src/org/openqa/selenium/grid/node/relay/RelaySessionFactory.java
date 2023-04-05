@@ -23,7 +23,7 @@ import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
-import org.openqa.selenium.grid.node.ProtocolConvertingSession;
+import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Debug;
 import org.openqa.selenium.internal.Either;
@@ -172,7 +172,7 @@ public class RelaySessionFactory implements SessionFactory {
 
         span.addEvent("Relay service created session", attributeMap);
         LOG.fine(String.format("Created session: %s - %s", response.getSessionId(), capabilities));
-        return Either.right(new ProtocolConvertingSession(
+        return Either.right(new DefaultActiveSession(
           tracer,
           client,
           new SessionId(response.getSessionId()),
