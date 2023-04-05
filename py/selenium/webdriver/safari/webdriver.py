@@ -107,7 +107,7 @@ class WebDriver(RemoteWebDriver):
 
         executor = SafariRemoteConnection(remote_server_addr=self.service.service_url, keep_alive=keep_alive)
 
-        super().__init__(command_executor=executor, options=options, desired_capabilities=desired_capabilities)
+        super().__init__(command_executor=executor, options=options)
 
         self._is_remote = False
 
