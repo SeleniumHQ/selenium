@@ -189,7 +189,10 @@ function toExecuteAtomCommand(command, atom, name, ...params) {
 
   return new cmd.Command(cmd.Name.EXECUTE_SCRIPT)
     .setParameter('sessionId', command.getParameter('sessionId'))
-    .setParameter('script', `/* ${name} */return (${atom}).apply(null, arguments)`)
+    .setParameter(
+      'script',
+      `/* ${name} */return (${atom}).apply(null, arguments)`
+    )
     .setParameter(
       'args',
       params.map((param) => command.getParameter(param))
@@ -252,7 +255,12 @@ const W3C_COMMAND_MAP = new Map([
   [
     cmd.Name.FIND_ELEMENTS_RELATIVE,
     (cmd) => {
-      return toExecuteAtomCommand(cmd, Atom.FIND_ELEMENTS, 'findElements', 'args')
+      return toExecuteAtomCommand(
+        cmd,
+        Atom.FIND_ELEMENTS,
+        'findElements',
+        'args'
+      )
     },
   ],
   [
@@ -272,7 +280,13 @@ const W3C_COMMAND_MAP = new Map([
   [
     cmd.Name.GET_ELEMENT_ATTRIBUTE,
     (cmd) => {
-      return toExecuteAtomCommand(cmd, Atom.GET_ATTRIBUTE, 'getAttribute', 'id', 'name')
+      return toExecuteAtomCommand(
+        cmd,
+        Atom.GET_ATTRIBUTE,
+        'getAttribute',
+        'id',
+        'name'
+      )
     },
   ],
   [

@@ -19,6 +19,7 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
+use std::io::Error;
 
 use serde::{Deserialize, Serialize};
 
@@ -68,7 +69,7 @@ fn new_metadata(log: &Logger) -> Metadata {
 }
 
 pub fn get_metadata(log: &Logger) -> Metadata {
-    let metadata_path = get_cache_folder().join(METADATA_FILE);
+    let metadata_path = get_metadata_path();
     log.trace(format!("Reading metadata from {}", metadata_path.display()));
 
     if metadata_path.exists() {
@@ -155,14 +156,10 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger) {
     .unwrap();
 }
 
-pub fn clear_metadata(log: &Logger) {
+pub fn clear_metadata(log: &Logger) -> Result<(), Error> {
     let metadata_path = get_metadata_path();
-    log.trace(format!(
-        "Deleting metadata file {}",
-        metadata_path.display()
-    ));
-    match fs::remove_file(metadata_path) {
-        Ok(()) => log.trace("Metadata file was deleted".to_string()),
-        Err(err) => log.warn(format!("Metadata file deleting invoked an error: {}", err)),
-    }
+    log.trace(format!("Deleting metadata file {}", metadata_path.display()));
+    fs::remove_file(metadata_path)?;
+    log.trace("Metadata file was deleted".to_string());
+    Ok(())
 }
