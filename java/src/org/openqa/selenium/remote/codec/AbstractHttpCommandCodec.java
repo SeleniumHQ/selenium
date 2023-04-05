@@ -255,7 +255,6 @@ public abstract class AbstractHttpCommandCodec implements CommandCodec<HttpReque
     HttpRequest request = new HttpRequest(spec.method, uri);
 
     if (HttpMethod.POST == spec.method) {
-
       String content = json.toJson(parameters);
       byte[] data = content.getBytes(UTF_8);
 

@@ -39,16 +39,27 @@ public class Proxy {
     // Keep these in sync with the Firefox preferences numbers:
     // http://kb.mozillazine.org/Network.proxy.type
 
-    DIRECT,      // Direct connection, no proxy (default on Windows)
-    MANUAL,      // Manual proxy settings (e.g. for httpProxy)
-    PAC,         // Proxy auto-configuration from URL
+    DIRECT("direct"),      // Direct connection, no proxy (default on Windows)
+    MANUAL("manual"),      // Manual proxy settings (e.g. for httpProxy)
+    PAC("pac"),         // Proxy auto-configuration from URL
 
-    RESERVED_1,  // Never used (but reserved in Firefox)
+    RESERVED_1("reserved_1"),  // Never used (but reserved in Firefox)
 
-    AUTODETECT,  // Proxy auto-detection (presumably with WPAD)
-    SYSTEM,      // Use system settings (default on Linux)
+    AUTODETECT("autodetect"),  // Proxy auto-detection (presumably with WPAD)
+    SYSTEM("system"),      // Use system settings (default on Linux)
 
-    UNSPECIFIED
+    UNSPECIFIED("unspecified");
+
+    private final String type;
+
+    ProxyType(String type) {
+      this.type = type;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(type);
+    }
   }
 
   private static final String PROXY_TYPE = "proxyType";
