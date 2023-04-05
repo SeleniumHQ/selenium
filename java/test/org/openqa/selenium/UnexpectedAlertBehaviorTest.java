@@ -20,7 +20,7 @@ package org.openqa.selenium;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
-import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 import static org.openqa.selenium.testing.drivers.Browser.CHROME;
 import static org.openqa.selenium.testing.drivers.Browser.EDGE;
 import static org.openqa.selenium.testing.drivers.Browser.HTMLUNIT;
@@ -39,7 +39,7 @@ import java.time.Duration;
 class UnexpectedAlertBehaviorTest extends JupiterTestBase {
 
   @Test
-  @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
+  @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformance")
   @Ignore(value = EDGE, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   @NoDriverBeforeTest
@@ -98,7 +98,7 @@ class UnexpectedAlertBehaviorTest extends JupiterTestBase {
       boolean silently) {
     Capabilities caps = behaviour == null
                         ? new ImmutableCapabilities()
-                        : new ImmutableCapabilities(UNEXPECTED_ALERT_BEHAVIOUR, behaviour);
+                        : new ImmutableCapabilities(UNHANDLED_PROMPT_BEHAVIOUR, behaviour);
     createNewDriver(caps);
 
     driver.get(pages.alertsPage);

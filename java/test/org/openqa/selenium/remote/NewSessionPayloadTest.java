@@ -49,22 +49,6 @@ import static org.openqa.selenium.json.Json.MAP_TYPE;
 class NewSessionPayloadTest {
 
   @Test
-  void shouldIndicateDownstreamOssDialect() {
-    Map<String, Map<String, String>> caps = singletonMap(
-      "desiredCapabilities", singletonMap(
-        "browserName", "cheese"));
-
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
-    }
-
-    String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
-      assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
-    }
-  }
-
-  @Test
   void shouldIndicateDownstreamW3cDialect() {
     Map<String, Map<String, Map<String, String>>> caps = singletonMap(
       "capabilities", singletonMap(
@@ -79,29 +63,6 @@ class NewSessionPayloadTest {
     try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
       assertEquals(singleton(Dialect.W3C), payload.getDownstreamDialects());
     }
-  }
-
-  @Test
-  void shouldDefaultToAssumingADownstreamOssDialect() {
-    Map<String, Object> caps = emptyMap();
-    try (NewSessionPayload payload = NewSessionPayload.create(caps)) {
-      assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
-    }
-
-    String json = new Json().toJson(caps);
-    try (NewSessionPayload payload = NewSessionPayload.create(new StringReader(json))) {
-      assertEquals(singleton(Dialect.OSS), payload.getDownstreamDialects());
-    }
-  }
-
-  @Test
-  void shouldOfferStreamOfSingleOssCapabilitiesIfThatIsOnlyOption() {
-    List<Capabilities> capabilities = create(singletonMap(
-      "desiredCapabilities", singletonMap(
-        "browserName", "cheese")));
-
-    assertEquals(1, capabilities.size());
-    assertEquals("cheese", capabilities.get(0).getBrowserName());
   }
 
   @Test
@@ -131,15 +92,13 @@ class NewSessionPayloadTest {
   @Test
   void shouldOfferStreamOfW3cCapabilitiesIfPresent() {
     List<Capabilities> capabilities = create(ImmutableMap.of(
-      "desiredCapabilities", singletonMap(
-        "browserName", "cheese"),
       "capabilities", singletonMap(
         "alwaysMatch", singletonMap(
           "browserName", "peas"))));
 
     // We expect a synthetic w3c capability for the mismatching OSS capabilities
-    assertEquals(2, capabilities.size(), capabilities.toString());
-    assertEquals("peas", capabilities.get(1).getBrowserName());
+    assertEquals(1, capabilities.size(), capabilities.toString());
+    assertEquals("peas", capabilities.get(0).getBrowserName());
   }
 
   @Test
@@ -158,17 +117,6 @@ class NewSessionPayloadTest {
     assertEquals("peas", capabilities.get(1).getBrowserName());
     assertEquals("also cheese", capabilities.get(1).getCapability("se:cake"));
 
-  }
-
-  // The name for the platform capability changed from "platform" to "platformName" in the spec.
-  @Test
-  void shouldCorrectlyExtractPlatformNameFromOssCapabilities() {
-    List<Capabilities> capabilities = create(singletonMap(
-      "desiredCapabilities", singletonMap(
-        "platformName", "linux")));
-
-    assertEquals(Platform.LINUX, capabilities.get(0).getPlatformName());
-    assertEquals(Platform.LINUX, capabilities.get(0).getCapability("platformName"));
   }
 
   @Test
@@ -204,9 +152,6 @@ class NewSessionPayloadTest {
   @Test
   void convertEverythingToFirstMatchOnlyIfPayloadContainsAlwaysMatchSectionAndOssCapabilities() {
     List<Capabilities> capabilities = create(ImmutableMap.of(
-      "desiredCapabilities", ImmutableMap.of(
-        "browserName", "firefox",
-        "platform", "WINDOWS"),
       "capabilities", ImmutableMap.of(
         "alwaysMatch", singletonMap(
           "platformName", "macos"),
@@ -216,10 +161,6 @@ class NewSessionPayloadTest {
 
     assertEquals(
       asList(
-        // From OSS
-        new ImmutableCapabilities("browserName", "firefox", "platform", "WINDOWS"),
-        // Generated from OSS
-        new ImmutableCapabilities("browserName", "firefox"),
         // From the actual W3C capabilities
         new ImmutableCapabilities("browserName", "foo", "platformName", "macos"),
         new ImmutableCapabilities("browserName", "firefox", "platformName", "macos")),
@@ -229,7 +170,7 @@ class NewSessionPayloadTest {
   @Test
   void forwardsMetaDataAssociatedWithARequest() throws IOException {
     try (NewSessionPayload payload = NewSessionPayload.create(ImmutableMap.of(
-      "desiredCapabilities", EMPTY_MAP,
+      "capabilities", ImmutableMap.of("alwaysMatch", EMPTY_MAP),
       "cloud:user", "bob",
       "cloud:key", "there is no cake"))) {
       StringBuilder toParse = new StringBuilder();

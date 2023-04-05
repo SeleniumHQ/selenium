@@ -198,9 +198,9 @@ class WebElementToJsonConverterTest {
     assertThat(value1).isInstanceOf(Collection.class);
     assertContentsInOrder(new ArrayList<>((Collection<?>) value1),
         "abc123", true, 123, Math.PI);
-    
+
     Object value2 = CONVERTER.apply(new int[] { 123, 456, 789 });
-    
+
 		assertThat(value2).isInstanceOf(Collection.class);
 		assertContentsInOrder(new ArrayList<>((Collection<?>) value2), 123, 456, 789);
   }
@@ -213,7 +213,6 @@ class WebElementToJsonConverterTest {
     Object value = CONVERTER.apply(new Object[] { element });
     assertContentsInOrder(new ArrayList<>((Collection<?>) value),
         ImmutableMap.of(
-          Dialect.OSS.getEncodedElementKey(), "abc123",
           Dialect.W3C.getEncodedElementKey(), "abc123"));
   }
 
@@ -225,9 +224,7 @@ class WebElementToJsonConverterTest {
     assertThat(value).isInstanceOf(Map.class);
 
     Map<?, ?>  map = (Map<?, ?>) value;
-    assertThat(map).hasSize(2);
-    assertThat(map.containsKey(Dialect.OSS.getEncodedElementKey())).isTrue();
-    assertThat(map.get(Dialect.OSS.getEncodedElementKey())).isEqualTo(expectedKey);
+    assertThat(map).hasSize(1);
     assertThat(map.containsKey(Dialect.W3C.getEncodedElementKey())).isTrue();
     assertThat(map.get(Dialect.W3C.getEncodedElementKey())).isEqualTo(expectedKey);
   }

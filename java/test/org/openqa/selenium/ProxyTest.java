@@ -155,7 +155,7 @@ class ProxyTest {
     Proxy proxy = new Proxy();
     proxy.setAutodetect(true);
 
-    assertThat(proxy.getProxyType()).isEqualTo(AUTODETECT);
+    assertThat(proxy.getProxyType().name()).isEqualTo(AUTODETECT.name());
     assertThat(proxy.isAutodetect()).isTrue();
 
     assertThat(proxy.getFtpProxy()).isNull();
@@ -233,7 +233,7 @@ class ProxyTest {
 
     Map<String, Object> json = proxy.toJson();
 
-    assertThat(json.get("proxyType")).isEqualTo("MANUAL");
+    assertThat(json.get("proxyType")).isEqualTo("manual");
     assertThat(json.get("ftpProxy")).isEqualTo("ftp.proxy");
     assertThat(json.get("httpProxy")).isEqualTo("http.proxy:1234");
     assertThat(json.get("sslProxy")).isEqualTo("ssl.proxy");
@@ -275,7 +275,7 @@ class ProxyTest {
 
     Map<String, Object> json = proxy.toJson();
 
-    assertThat(json.get("proxyType")).isEqualTo("PAC");
+    assertThat(json.get("proxyType")).isEqualTo("pac");
     assertThat(json.get("proxyAutoconfigUrl")).isEqualTo("http://aaa/bbb.pac");
     assertThat(json.entrySet()).hasSize(2);
   }
@@ -310,7 +310,7 @@ class ProxyTest {
 
     Map<String, ?> json = proxy.toJson();
 
-    assertThat(json.get("proxyType")).isEqualTo("AUTODETECT");
+    assertThat(json.get("proxyType")).isEqualTo("autodetect");
     assertThat((Boolean) json.get("autodetect")).isTrue();
     assertThat(json.entrySet()).hasSize(2);
   }
@@ -343,7 +343,7 @@ class ProxyTest {
 
     Map<String, Object> json = proxy.toJson();
 
-    assertThat(json.get("proxyType")).isEqualTo("SYSTEM");
+    assertThat(json.get("proxyType")).isEqualTo("system");
     assertThat(json.entrySet()).hasSize(1);
   }
 
@@ -375,7 +375,7 @@ class ProxyTest {
 
     Map<String, Object> json = proxy.toJson();
 
-    assertThat(json.get("proxyType")).isEqualTo("DIRECT");
+    assertThat(json.get("proxyType")).isEqualTo("direct");
     assertThat(json.entrySet()).hasSize(1);
   }
 
