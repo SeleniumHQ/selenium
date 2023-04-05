@@ -18,8 +18,8 @@
 import pytest
 
 from selenium.common.exceptions import SeleniumManagerException
-from selenium.webdriver.common.selenium_manager import SeleniumManager
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 
 def test_non_supported_browser_raises_sme():
