@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Tuple
 
 from selenium.common.exceptions import SeleniumManagerException
+from selenium.webdriver.common.options import BaseOptions
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +62,7 @@ class SeleniumManager:
 
         return path
 
-    def driver_location(self, browser: str) -> str:
+    def driver_location(self, options: BaseOptions) -> str:
         """
         Determines the path of the correct driver.
         :Args:
@@ -69,10 +70,13 @@ class SeleniumManager:
         :Returns: The driver path to use
         """
 
+        browser = options.capabilities["browserName"]
+
         allowed_browsers = {
             "chrome": "chrome",
             "firefox": "firefox",
             "edge": "edge",
+            "MicrosoftEdge": "edge",
             "ie": "iexplorer",
         }
 

@@ -31,7 +31,6 @@ from urllib.error import URLError
 from selenium.common.exceptions import WebDriverException
 from selenium.types import SubprocessStdAlias
 from selenium.webdriver.common import utils
-from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 logger = logging.getLogger(__name__)
 
@@ -89,17 +88,7 @@ class Service(ABC):
         try:
             self._start_process(self.path)
         except WebDriverException as err:
-            if "executable needs to be in PATH" in err.msg:
-                logger.debug("driver not found in PATH, trying Selenium Manager")
-                browser = self.__class__.__module__.split(".")[-2]
-
-                try:
-                    path = SeleniumManager().driver_location(browser)
-                except WebDriverException as new_err:
-                    logger.debug("Unable to obtain driver using Selenium Manager: " + new_err.msg)
-                    raise err
-
-                self._start_process(path)
+            raise err
 
         count = 0
         while True:
