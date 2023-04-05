@@ -41,11 +41,15 @@ class SeleniumManager:
 
         :Returns: The Selenium Manager executable location
         """
-        directory = sys.platform
-        if directory == "darwin":
-            directory = "macos"
-        elif directory in ("win32", "cygwin"):
-            directory = "windows"
+        platform = sys.platform
+
+        dirs = {
+            "darwin": "macos",
+            "win32": "windows",
+            "cygwin": "windows",
+        }
+
+        directory = dirs.get(platform) if dirs.get(platform) else platform
 
         file = "selenium-manager.exe" if directory == "windows" else "selenium-manager"
 
@@ -64,12 +68,20 @@ class SeleniumManager:
          - browser: which browser to get the driver path for.
         :Returns: The driver path to use
         """
-        allowed = ("chrome", "firefox", "edge", "ie")
-        if browser not in allowed:
-            raise SeleniumManagerException(f"{browser} is not a valid browser.  Choose one of: {allowed}")
 
-        if browser == "ie":
-            browser = "iexplorer"
+        allowed_browsers = {
+            "chrome": "chrome",
+            "firefox": "firefox",
+            "edge": "edge",
+            "ie": "iexplorer",
+        }
+
+        if browser not in allowed_browsers.keys():
+            raise SeleniumManagerException(
+                f"{browser} is not a valid browser.  Choose one of: {list(allowed_browsers.keys())}"
+            )
+
+        browser = allowed_browsers[browser]
 
         binary, browser_flag, browser, output_flag, output = (
             str(self.get_binary()),
