@@ -15,8 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use std::error::Error;
-
 use std::process::exit;
 
 use clap::Parser;
@@ -123,18 +121,15 @@ fn main() {
         get_manager_by_browser(browser_name).unwrap_or_else(|err| {
             log.error(err);
             flush_and_exit(DATAERR, &log);
-            exit(DATAERR);
         })
     } else if !driver_name.is_empty() {
         get_manager_by_driver(driver_name).unwrap_or_else(|err| {
             log.error(err);
             flush_and_exit(DATAERR, &log);
-            exit(DATAERR);
         })
     } else {
         log.error("You need to specify a browser or driver".to_string());
         flush_and_exit(DATAERR, &log);
-        exit(DATAERR);
     };
 
     selenium_manager.set_logger(log);
@@ -149,7 +144,7 @@ fn main() {
         .and_then(|path| {
             let log = selenium_manager.get_logger();
             log.info(path.display().to_string());
-            flush_and_exit(0, &log);
+            flush_and_exit(OK, &log);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
