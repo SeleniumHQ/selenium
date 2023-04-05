@@ -72,10 +72,6 @@ class W3CHandshakeResponse implements HandshakeResponse {
   @Override
   public Function<InitialHandshakeResponse, ProtocolHandshake.Result> successHandler() {
     return tuple -> {
-      if (tuple.getData().containsKey("status")) {
-        return null;
-      }
-
       Object rawValue = tuple.getData().get("value");
       if (!(rawValue instanceof Map)) {
         return null;
