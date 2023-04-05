@@ -111,6 +111,8 @@ pub trait SeleniumManager {
 
     fn get_config(&self) -> &ManagerConfig;
 
+    fn get_config_mut(&mut self) -> &mut ManagerConfig;
+
     fn set_config(&mut self, config: ManagerConfig);
 
     fn get_logger(&self) -> &Logger;
@@ -362,9 +364,8 @@ pub trait SeleniumManager {
     }
 
     fn set_os(&mut self, os: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
+        let mut config = self.get_config_mut();
         config.os = os;
-        self.set_config(config);
     }
 
     fn get_arch(&self) -> &str {
@@ -372,9 +373,8 @@ pub trait SeleniumManager {
     }
 
     fn set_arch(&mut self, arch: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
+        let mut config = self.get_config_mut();
         config.arch = arch;
-        self.set_config(config);
     }
 
     fn get_browser_version(&self) -> &str {
@@ -383,9 +383,8 @@ pub trait SeleniumManager {
 
     fn set_browser_version(&mut self, browser_version: String) {
         if !browser_version.is_empty() {
-            let mut config = ManagerConfig::clone(self.get_config());
+            let mut config = self.get_config_mut();
             config.browser_version = browser_version;
-            self.set_config(config);
         }
     }
 
@@ -395,9 +394,8 @@ pub trait SeleniumManager {
 
     fn set_driver_version(&mut self, driver_version: String) {
         if !driver_version.is_empty() {
-            let mut config = ManagerConfig::clone(self.get_config());
+            let mut config = self.get_config_mut();
             config.driver_version = driver_version;
-            self.set_config(config);
         }
     }
 
@@ -407,9 +405,8 @@ pub trait SeleniumManager {
 
     fn set_browser_path(&mut self, browser_path: String) {
         if !browser_path.is_empty() {
-            let mut config = ManagerConfig::clone(self.get_config());
+            let mut config = self.get_config_mut();
             config.browser_path = browser_path;
-            self.set_config(config);
         }
     }
 
@@ -417,12 +414,11 @@ pub trait SeleniumManager {
         self.get_config().proxy.as_str()
     }
 
-    fn set_proxy(&mut self, proxy: String) -> Result<(), String> {
+    fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
         if !proxy.is_empty() {
-            let mut config = ManagerConfig::clone(self.get_config());
-            config.proxy = proxy.to_string();
-            self.set_config(config);
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
+            let mut config = self.get_config_mut();
+            config.proxy = proxy;
             self.update_http_client()?;
         }
         Ok(())
@@ -432,12 +428,11 @@ pub trait SeleniumManager {
         self.get_config().timeout
     }
 
-    fn set_timeout(&mut self, timeout: u64) -> Result<(), String> {
-        let default_timeout = self.get_config().timeout.to_owned();
+    fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
+        let mut config = self.get_config_mut();
+        let default_timeout = config.timeout;
         if timeout != default_timeout {
-            let mut config = ManagerConfig::clone(self.get_config());
             config.timeout = timeout;
-            self.set_config(config);
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));
             self.update_http_client()?;
