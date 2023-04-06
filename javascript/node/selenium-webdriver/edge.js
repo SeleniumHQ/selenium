@@ -80,7 +80,6 @@
 const { Browser } = require('./lib/capabilities')
 const io = require('./io')
 const chromium = require('./chromium')
-const { driverLocation } = require('./common/seleniumManager')
 
 /**
  * Name of the EdgeDriver executable.

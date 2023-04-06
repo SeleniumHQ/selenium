@@ -127,7 +127,6 @@ const webdriver = require('./lib/webdriver')
 const zip = require('./io/zip')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
-const { driverLocation } = require('./common/seleniumManager')
 const { getPath } = require('./common/driverFinder')
 
 /**
