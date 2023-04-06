@@ -24,18 +24,14 @@ const PrimitiveType = {
   BOOLEAN: 'boolean',
   BIGINT: 'bigint',
 
-  findByName: function (name) {
-    let result = null
-    Object.values(PrimitiveType).forEach(function (type) {
-      if (
-        typeof type === 'string' &&
-        name.toLowerCase() === type.toLowerCase()
-      ) {
-        result = type
-        return
-      }
-    })
-    return result
+  findByName(name) {
+    return (
+      Object.values(this).find((type) => {
+        return (
+          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
+        )
+      }) || null
+    )
   },
 }
 
@@ -47,18 +43,14 @@ const NonPrimitiveType = {
   REGULAR_EXPRESSION: 'regexp',
   SET: 'set',
 
-  findByName: function (name) {
-    let result = null
-    Object.values(NonPrimitiveType).forEach(function (type) {
-      if (
-        typeof type === 'string' &&
-        name.toLowerCase() === type.toLowerCase()
-      ) {
-        result = type
-        return
-      }
-    })
-    return result
+  findByName(name) {
+    return (
+      Object.values(this).find((type) => {
+        return (
+          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
+        )
+      }) || null
+    )
   },
 }
 
@@ -79,18 +71,14 @@ const RemoteType = {
   NODE: 'node',
   WINDOW: 'window',
 
-  findByName: function (name) {
-    let result = null
-    Object.values(RemoteType).forEach(function (type) {
-      if (
-        typeof type === 'string' &&
-        name.toLowerCase() === type.toLowerCase()
-      ) {
-        result = type
-        return
-      }
-    })
-    return result
+  findByName(name) {
+    return (
+      Object.values(this).find((type) => {
+        return (
+          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
+        )
+      }) || null
+    )
   },
 }
 

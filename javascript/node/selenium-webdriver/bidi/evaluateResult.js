@@ -21,16 +21,16 @@ const EvaluateResultType = {
 }
 
 class EvaluateResultSuccess {
-  constructor(type, realmId, value) {
-    this.resultType = type
+  constructor(realmId, value) {
+    this.resultType = EvaluateResultType.SUCCESS
     this.realmId = realmId
     this.result = value
   }
 }
 
 class EvaluateResultException {
-  constructor(type, realmId, exceptionDetails) {
-    this.resultType = type
+  constructor(realmId, exceptionDetails) {
+    this.resultType = EvaluateResultType.EXCEPTION
     this.realmId = realmId
     this.exceptionDetails = exceptionDetails
   }

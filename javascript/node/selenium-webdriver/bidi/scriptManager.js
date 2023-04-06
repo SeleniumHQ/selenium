@@ -258,14 +258,12 @@ class ScriptManager {
     if (type === EvaluateResultType.SUCCESS) {
       var result = response.result.result
       evaluateResult = new EvaluateResultSuccess(
-        EvaluateResultType.SUCCESS,
         realmId,
         new RemoteValue(result)
       )
     } else {
       var exceptionDetails = response.result.exceptionDetails
       evaluateResult = new EvaluateResultException(
-        EvaluateResultType.EXCEPTION,
         realmId,
         new ExceptionDetails(exceptionDetails)
       )

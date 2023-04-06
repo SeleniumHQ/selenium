@@ -25,18 +25,14 @@ const RealmType = {
   WORKER: 'worker',
   WORKLET: 'worklet',
 
-  findByName: function (name) {
-    let result = null
-    Object.values(RealmType).forEach(function (type) {
-      if (
-        typeof type === 'string' &&
-        name.toLowerCase() === type.toLowerCase()
-      ) {
-        result = type
-        return
-      }
-    })
-    return result
+  findByName(name) {
+    return (
+      Object.values(this).find((type) => {
+        return (
+          typeof type === 'string' && name.toLowerCase() === type.toLowerCase()
+        )
+      }) || null
+    )
   },
 }
 

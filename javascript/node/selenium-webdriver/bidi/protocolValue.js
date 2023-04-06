@@ -155,14 +155,8 @@ class RemoteValue {
   }
 
   deserializeValue(value, type) {
-    if (type === NonPrimitiveType.MAP || type === NonPrimitiveType.OBJECT) {
-      let toReturn = {}
-      value.forEach((entry) => {
-        let key = entry[0]
-        let val = entry[1]
-        toReturn[key] = val
-      })
-      return toReturn
+    if ([NonPrimitiveType.MAP, NonPrimitiveType.OBJECT].includes(type)) {
+      return Object.fromEntries(value)
     } else if (type === NonPrimitiveType.REGULAR_EXPRESSION) {
       return new RegExpValue(value.pattern, value.flags)
     }
@@ -181,7 +175,7 @@ class ReferenceValue {
   }
 
   asMap() {
-    let toReturn = {}
+    const toReturn = {}
     if (this.handle != null) {
       toReturn[RemoteReferenceType.HANDLE] = this.handle
     }
