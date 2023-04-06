@@ -215,6 +215,7 @@ def visibility_of_all_elements_located(locator):
 def text_to_be_present_in_element(locator, text_):
     """An expectation for checking if the given text is present in the
     specified element.
+
     locator( or WebElement), text
     """
 
@@ -232,8 +233,9 @@ def text_to_be_present_in_element(locator, text_):
 
 
 def text_to_be_present_in_element_value(locator, text_):
-    """
-    An expectation for checking if the given text is present in the element's value.
+    """An expectation for checking if the given text is present in the
+    element's value.
+
     locator or WebElement, text
     """
 
@@ -251,8 +253,9 @@ def text_to_be_present_in_element_value(locator, text_):
 
 
 def text_to_be_present_in_element_attribute(locator, attribute_, text_):
-    """
-    An expectation for checking if the given text is present in the element's attribute.
+    """An expectation for checking if the given text is present in the
+    element's attribute.
+
     locator( or WebElement), attribute, text
     """
 
@@ -380,6 +383,7 @@ def element_to_be_selected(element):
 
 def element_located_to_be_selected(locator):
     """An expectation for the element to be located is selected.
+
     locator is a tuple of (by, path), or WebElement
     """
 
@@ -406,8 +410,9 @@ def element_selection_state_to_be(element, is_selected):
 def element_located_selection_state_to_be(locator, is_selected):
     """An expectation to locate an element and check if the selection state
     specified is in that state.
-    locator is a tuple of (by, path), or WebElement
-    is_selected is a boolean
+
+    locator is a tuple of (by, path), or WebElement is_selected is a
+    boolean
     """
 
     def _predicate(driver):
@@ -458,6 +463,7 @@ def alert_is_present():
 def element_attribute_to_include(locator, attribute_):
     """An expectation for checking if the given attribute is included in the
     specified element.
+
     locator( or WebElement), attribute
     """
 
