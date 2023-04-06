@@ -36,6 +36,7 @@ const webdriver = require('./lib/webdriver')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const error = require('./lib/error')
 const { driverLocation } = require('./common/seleniumManager')
+const { getPath } = require('./common/driverFinder')
 
 const IEDRIVER_EXE = 'IEDriverServer.exe'
 const OPTIONS_CAPABILITY_KEY = 'se:ieOptions'
@@ -482,6 +483,7 @@ class Driver extends webdriver.WebDriver {
     } else {
       service = createServiceFromCapabilities(options)
     }
+    service.setExecutable(getPath(service, options))
 
     let client = service.start().then((url) => new http.HttpClient(url))
     let executor = new http.Executor(client)

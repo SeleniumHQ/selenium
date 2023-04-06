@@ -128,6 +128,7 @@ const zip = require('./io/zip')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const { Zip } = require('./io/zip')
 const { driverLocation } = require('./common/seleniumManager')
+const { getPath } = require('./common/driverFinder')
 
 /**
  * Thrown when there an add-on is malformed.
@@ -471,25 +472,7 @@ function locateSynchronously() {
  * @throws {Error}
  */
 function findGeckoDriver() {
-  let exe = locateSynchronously()
-
-  if (!exe) {
-    try {
-      exe = driverLocation(Browser.FIREFOX)
-    } catch (err) {
-      console.log(`Unable to obtain driver using Selenium Manager: ${err}`)
-    }
-  }
-
-  if (!exe) {
-    throw Error(
-      `GeckoDriver could not be found on the PATH.
-      For more information on how to install drivers see
-      https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/.`
-    )
-  }
-
-  return exe
+  return locateSynchronously()
 }
 
 /**
@@ -626,10 +609,12 @@ class Driver extends webdriver.WebDriver {
       executor = opt_executor
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
+      opt_executor.setExecutable(getPath(opt_executor, opt_config))
       executor = createExecutor(opt_executor.start())
       onQuit = () => opt_executor.kill()
     } else {
       let service = new ServiceBuilder().build()
+      service.setExecutable(getPath(service, opt_config))
       executor = createExecutor(service.start())
       onQuit = () => service.kill()
     }
