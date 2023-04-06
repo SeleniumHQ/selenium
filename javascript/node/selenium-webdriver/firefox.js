@@ -608,12 +608,16 @@ class Driver extends webdriver.WebDriver {
       executor = opt_executor
       configureExecutor(executor)
     } else if (opt_executor instanceof remote.DriverService) {
-      opt_executor.setExecutable(getPath(opt_executor, opt_config))
+      if (!opt_executor.getExecutable()) {
+        opt_executor.setExecutable(getPath(opt_executor, opt_config))
+      }
       executor = createExecutor(opt_executor.start())
       onQuit = () => opt_executor.kill()
     } else {
       let service = new ServiceBuilder().build()
-      service.setExecutable(getPath(service, opt_config))
+      if (!service.getExecutable()) {
+        service.setExecutable(getPath(service, opt_config))
+      }
       executor = createExecutor(service.start())
       onQuit = () => service.kill()
     }

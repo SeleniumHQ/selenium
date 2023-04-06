@@ -21,8 +21,8 @@
  *  Utility to find if a given file is present and executable.
  */
 
-const io = require('.././io')
 const { driverLocation } = require('./seleniumManager')
+const fs = require('fs')
 
 /**
  * Determines the path of the correct Selenium Manager binary
@@ -30,7 +30,7 @@ const { driverLocation } = require('./seleniumManager')
  */
 function getPath(service, capabilities) {
   try {
-    return locateSynchronously(service.getExecutable()) ||
+    return pathExists(service.getExecutable()) ||
            driverLocation(capabilities.getBrowserName())
   } catch (e) {
       throw Error(
@@ -49,11 +49,11 @@ function getPath(service, capabilities) {
  *
  * @return {?string} the located executable, or `null`.
  */
-function locateSynchronously(driverPath) {
-  if (!driverPath) {
+function pathExists(driverPath) {
+  if (!driverPath || !fs.existsSync(driverPath)) {
     return null
   }
-  return io.findInPath(driverPath, true)
+  return driverPath
 }
 
 // PUBLIC API

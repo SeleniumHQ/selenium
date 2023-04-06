@@ -34,7 +34,9 @@ test.suite(
 
       it('can be started on a custom path', function () {
         service = new chrome.ServiceBuilder().setPath('/foo/bar/baz').build()
-        service.setExecutable(getPath(service, new chrome.Options()))
+        if (!service.getExecutable()) {
+          service.setExecutable(getPath(service, new chrome.Options()))
+        }
         return service.start().then(function (url) {
           assert.ok(url.endsWith('/foo/bar/baz'), 'unexpected url: ' + url)
         })

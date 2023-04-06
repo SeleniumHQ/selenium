@@ -685,7 +685,9 @@ class Driver extends webdriver.WebDriver {
       configureExecutor(executor, this.VENDOR_COMMAND_PREFIX)
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
-      service.setExecutable(getPath(service, caps))
+      if (!service.getExecutable()) {
+        service.setExecutable(getPath(service, caps))
+      }
       onQuit = () => service.kill()
       executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX)
     }

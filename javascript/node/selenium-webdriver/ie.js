@@ -466,7 +466,9 @@ class Driver extends webdriver.WebDriver {
     } else {
       service = createServiceFromCapabilities(options)
     }
-    service.setExecutable(getPath(service, options))
+    if (!service.getExecutable()) {
+      service.setExecutable(getPath(service, options))
+    }
 
     let client = service.start().then((url) => new http.HttpClient(url))
     let executor = new http.Executor(client)
