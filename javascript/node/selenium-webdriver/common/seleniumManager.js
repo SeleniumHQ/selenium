@@ -24,7 +24,7 @@
 const { platform } = require('process')
 const path = require('path')
 const fs = require('fs')
-const execSync = require('child_process').execSync
+const spawnSync = require('child_process').spawnSync
 
 /**
  * currently supported browsers for selenium-manager
@@ -73,13 +73,13 @@ function driverLocation(browser) {
   let output
 
   try {
-    output = JSON.parse(execSync(args.join(' ')).toString())
+    output = JSON.parse(spawnSync(args.join(' ')).stdout.toString())
   } catch (e) {
     let error
     try {
-      error = JSON.parse(e.stdout.toString()).result.message
+      error = JSON.parse(output.stdout.toString()).result.message
     } catch (e) {
-      error = e.toString()
+      error = output.error.toString()
     }
     throw new Error(`Error executing command with ${args}: ${error}`)
   }
