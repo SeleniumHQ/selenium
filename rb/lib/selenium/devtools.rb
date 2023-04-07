@@ -40,6 +40,7 @@ module Selenium
 
       def load_old_version(version)
         require "selenium/devtools/v#{version}"
+        self.version = version
         Kernel.warn "Using selenium-devtools version v#{version}, some features may not work as expected."
       end
     end
