@@ -32,9 +32,9 @@ import java.util.zip.ZipEntry;
 
 public class JarFileResource implements Resource {
 
-  protected final JarFile jarFile;
+  private final JarFile jarFile;
   protected final String entryName;
-  protected final String stripPrefix;
+  private final String stripPrefix;
 
   public JarFileResource(JarFile jarFile, String entryName, String stripPrefix) {
     this.jarFile = Require.nonNull("Jar file", jarFile);
@@ -44,6 +44,10 @@ public class JarFileResource implements Resource {
     this.stripPrefix = stripPrefix.endsWith("/") ? stripPrefix : stripPrefix + "/";
 
     Require.precondition(entryName.startsWith(stripPrefix), "Entry is not under stripped prefix");
+  }
+
+  protected JarFileResource newInstance(JarFile jarFile, String entryName, String prefix) {
+    return new JarFileResource(jarFile, entryName, prefix);
   }
 
   @Override
@@ -62,7 +66,7 @@ public class JarFileResource implements Resource {
     String name = stripPrefix + stripLeadingSlash(path);
 
     ZipEntry entry = jarFile.getEntry(name);
-    return Optional.ofNullable(entry).map(e -> new JarFileResource(jarFile, entry.getName(), name));
+    return Optional.ofNullable(entry).map(e -> newInstance(jarFile, entry.getName(), name));
   }
 
   protected String stripLeadingSlash(String from) {
@@ -100,7 +104,7 @@ public class JarFileResource implements Resource {
       .filter(e -> !e.getName().equals(entryName))
       .filter(e -> !e.getName().equals(prefix))
       .filter(e -> e.getName().split("/").length == count)
-      .map(e -> new JarFileResource(jarFile, e.getName(), prefix))
+      .map(e -> newInstance(jarFile, e.getName(), prefix))
       .collect(ImmutableSet.toImmutableSet());
   }
 
