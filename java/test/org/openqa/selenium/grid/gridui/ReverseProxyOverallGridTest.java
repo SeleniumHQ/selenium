@@ -82,7 +82,7 @@ class ReverseProxyOverallGridTest {
 
   @Test
   void shouldReportConcurrencyZeroPercentWhenGridIsStartedWithoutLoad() {
-    driver.get(whereIs(server, SUB_PATH + "/ui/index.html#/sessions"));
+    driver.get(whereIs(server, SUB_PATH.concat("/ui/index.html#/sessions")));
 
     WebElement concurrency = wait
       .until(visibilityOfElementLocated(By.cssSelector("div[data-testid='concurrency-usage']")));
@@ -92,7 +92,7 @@ class ReverseProxyOverallGridTest {
 
   @Test
   void shouldShowOneNodeRegistered() {
-    driver.get(whereIs(server, SUB_PATH + "/ui/index.html#"));
+    driver.get(whereIs(server, SUB_PATH.concat("/ui/index.html#")));
 
     List<WebElement> nodeInfoIcons = wait
       .until(visibilityOfAllElementsLocatedBy(By.cssSelector("button[data-testid*='node-info-']")));
@@ -103,7 +103,7 @@ class ReverseProxyOverallGridTest {
   @Test
   void shouldIncrementSessionCountWhenSessionStarts() {
     remoteWebDriver = new RemoteWebDriver(server.getUrl(), Browser.detect().getCapabilities());
-    driver.get(whereIs(server, SUB_PATH + "/ui/index.html#/sessions"));
+    driver.get(whereIs(server, SUB_PATH.concat("/ui/index.html#/sessions")));
 
     wait.until(textToBe(By.cssSelector("div[data-testid='session-count']"), "1"));
   }
@@ -131,7 +131,7 @@ class ReverseProxyOverallGridTest {
           .withTimeout(Duration.ofSeconds(5))
           .until(
               c -> {
-                HttpResponse response = c.execute(new HttpRequest(GET, "/status"));
+                HttpResponse response = c.execute(new HttpRequest(GET, SUB_PATH.concat("/status")));
                 Map<String, Object> status = Values.get(response, MAP_TYPE);
                 return status != null && Boolean.TRUE.equals(status.get("ready"));
               });
