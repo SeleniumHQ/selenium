@@ -192,7 +192,8 @@ class WebDriver(RemoteWebDriver):
 
         if not self.service:
             self.service = Service(executable_path, service_args=service_args, log_path=service_log_path)
-        self.service.path = DriverFinder.get_path(self.service, options)
+        if not self.service.path:
+            self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
         executor = FirefoxRemoteConnection(
