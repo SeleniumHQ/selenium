@@ -141,15 +141,15 @@ fn main() {
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
         .and_then(|_| selenium_manager.resolve_driver())
-        .and_then(|path| {
+        .map(|path| {
             let log = selenium_manager.get_logger();
             log.info(path.display().to_string());
-            flush_and_exit(OK, &log);
+            flush_and_exit(OK, log);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
             log.error(err.to_string());
-            flush_and_exit(DATAERR, &log);
+            flush_and_exit(DATAERR, log);
         });
 }
 
