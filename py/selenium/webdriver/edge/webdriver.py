@@ -71,8 +71,7 @@ class WebDriver(ChromiumDriver):
             options = self.create_options()
         if not service:
             service = Service(executable_path, port, service_args, service_log_path)
-        if not service.path:
-            service.path = DriverFinder.get_path(service, options)
+        service.path = DriverFinder.get_path(service, options)
 
         super().__init__(
             DesiredCapabilities.EDGE["browserName"],
