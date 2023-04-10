@@ -42,6 +42,8 @@ jobs:
       run: |
         bazel build //dotnet/test/common:${{ matrix.browser }}
         $env:ACTIVE_DRIVER_CONFIG = '${{ matrix.driver }}'
-        rm "$env:ChromeWebDriver" "$env:EdgeWebDriver" "$env:GeckoWebDriver" -r
+        rm "$env:ChromeWebDriver" -r
+        rm "$env:EdgeWebDriver" -r
+        rm "$env:GeckoWebDriver" -r
         cd dotnet
         dotnet test test/common/WebDriver.Common.Tests.csproj --framework ${{ matrix.framework }}
