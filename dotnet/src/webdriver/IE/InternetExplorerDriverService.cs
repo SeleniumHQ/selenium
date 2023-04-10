@@ -149,7 +149,17 @@ namespace OpenQA.Selenium.IE
         /// <returns>A InternetExplorerDriverService that implements default settings.</returns>
         public static InternetExplorerDriverService CreateDefaultService()
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(InternetExplorerDriverServiceFileName, InternetExplorerDriverDownloadUrl);
+            return CreateDefaultService(new InternetExplorerOptions());
+        }
+
+        /// <summary>
+        /// Creates a default instance of the InternetExplorerDriverService.
+        /// </summary>
+        /// <param name="options">IE options for the session.</param>
+        /// <returns>A InternetExplorerDriverService that implements default settings.</returns>
+        public static InternetExplorerDriverService CreateDefaultService(InternetExplorerOptions options)
+        {
+            string serviceDirectory = DriverFinder.GetPath(InternetExplorerDriverServiceFileName, options);
             return CreateDefaultService(serviceDirectory);
         }
 

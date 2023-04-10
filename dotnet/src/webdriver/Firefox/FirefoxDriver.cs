@@ -188,6 +188,12 @@ namespace OpenQA.Selenium.Firefox
         public FirefoxDriver(FirefoxDriverService service, FirefoxOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+            string executablePath = DriverFinder.GetPath(service, options);
+            if (!service.DriverServicePath.Equals(Path.GetDirectoryName(executablePath)) || !service.DriverServiceExecutableName.Equals(Path.GetFileName(executablePath)))
+            {
+                service.DriverServicePath = Path.GetDirectoryName(executablePath);
+                service.DriverServiceExecutableName = Path.GetFileName(executablePath);
+            }
             // Add the custom commands unique to Firefox
             this.AddCustomFirefoxCommands();
         }

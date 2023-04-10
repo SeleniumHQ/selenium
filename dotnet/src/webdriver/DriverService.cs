@@ -66,23 +66,7 @@ namespace OpenQA.Selenium
             string executablePath = Path.Combine(servicePath, driverServiceExecutableName);
             if (!File.Exists(executablePath))
             {
-                try
-                {
-                    executablePath = SeleniumManager.DriverPath(driverServiceExecutableName);
-                }
-                catch (Exception e)
-                {
-                  // No-op; entirely a fall-back feature
-                }
-
-                if (File.Exists(executablePath))
-                {
-                    servicePath = Path.GetDirectoryName(executablePath);
-                }
-                else
-                {
-                    throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, driverServiceDownloadUrl));
-                }
+                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture, "The file {0} does not exist. The driver can be downloaded at {1}", executablePath, driverServiceDownloadUrl));
             }
 
             this.driverServicePath = servicePath;
@@ -194,11 +178,21 @@ namespace OpenQA.Selenium
         }
 
         /// <summary>
-        /// Gets the executable file name of the driver service.
+        /// Gets or sets the executable file name of the driver service.
         /// </summary>
-        protected string DriverServiceExecutableName
+        public string DriverServiceExecutableName
         {
             get { return this.driverServiceExecutableName; }
+            set { this.driverServiceExecutableName = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the full path to the directory containing the executable of the driver service.
+        /// </summary>
+        public string DriverServicePath
+        {
+            get { return driverServicePath; }
+            set { this.driverServicePath = value; }
         }
 
         /// <summary>
@@ -316,21 +310,9 @@ namespace OpenQA.Selenium
 
             if (string.IsNullOrEmpty(serviceDirectory))
             {
-                try
-                {
-                    serviceDirectory = Path.GetDirectoryName(SeleniumManager.DriverPath(executableName));
-                }
-                catch (Exception e)
-                {
-                    // No-op; entirely a fall-back feature
-                }
-
-                if (string.IsNullOrEmpty(serviceDirectory))
-                {
-                    throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture,
-                        "The {0} file does not exist in the current directory or in a directory on the PATH environment variable. The driver can be downloaded at {1}.",
-                        executableName, downloadUrl));
-                }
+                throw new DriverServiceNotFoundException(string.Format(CultureInfo.InvariantCulture,
+                    "The {0} file does not exist in the current directory or in a directory on the PATH environment variable. The driver can be downloaded at {1}.",
+                    executableName, downloadUrl));
             }
 
             return serviceDirectory;

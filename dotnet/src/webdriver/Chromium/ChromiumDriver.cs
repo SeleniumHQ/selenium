@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
@@ -127,6 +128,12 @@ namespace OpenQA.Selenium.Chromium
         protected ChromiumDriver(ChromiumDriverService service, ChromiumOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+            string executablePath = DriverFinder.GetPath(service, options);
+            if (!service.DriverServicePath.Equals(Path.GetDirectoryName(executablePath)) || !service.DriverServiceExecutableName.Equals(Path.GetFileName(executablePath)))
+            {
+                service.DriverServicePath = Path.GetDirectoryName(executablePath);
+                service.DriverServiceExecutableName = Path.GetFileName(executablePath);
+            }
             this.optionsCapabilityName = options.CapabilityName;
         }
 

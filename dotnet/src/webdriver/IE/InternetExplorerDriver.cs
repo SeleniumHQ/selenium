@@ -17,8 +17,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
-using OpenQA.Selenium.Internal;
+using System.IO;
 using OpenQA.Selenium.Remote;
 
 namespace OpenQA.Selenium.IE
@@ -144,6 +143,12 @@ namespace OpenQA.Selenium.IE
         public InternetExplorerDriver(InternetExplorerDriverService service, InternetExplorerOptions options, TimeSpan commandTimeout)
             : base(new DriverServiceCommandExecutor(service, commandTimeout), ConvertOptionsToCapabilities(options))
         {
+            string executablePath = DriverFinder.GetPath(service, options);
+            if (!service.DriverServicePath.Equals(Path.GetDirectoryName(executablePath)) || !service.DriverServiceExecutableName.Equals(Path.GetFileName(executablePath)))
+            {
+                service.DriverServicePath = Path.GetDirectoryName(executablePath);
+                service.DriverServiceExecutableName = Path.GetFileName(executablePath);
+            }
         }
 
         /// <summary>

@@ -17,8 +17,6 @@
 // </copyright>
 
 using System;
-using System.Globalization;
-using System.Text;
 using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Chromium;
 
@@ -50,8 +48,17 @@ namespace OpenQA.Selenium.Chrome
         /// <returns>A ChromeDriverService that implements default settings.</returns>
         public static ChromeDriverService CreateDefaultService()
         {
-            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromiumDriverServiceFileName(DefaultChromeDriverServiceExecutableName),
-                                                                                ChromeDriverDownloadUrl);
+            return CreateDefaultService(new ChromeOptions());
+        }
+
+        /// <summary>
+        /// Creates a default instance of the ChromeDriverService.
+        /// </summary>
+        /// <param name="options">Chrome options for the session.</param>
+        /// <returns>A ChromeDriverService that implements default settings.</returns>
+        public static ChromeDriverService CreateDefaultService(ChromeOptions options)
+        {
+            string serviceDirectory = DriverFinder.GetPath(ChromiumDriverServiceFileName(DefaultChromeDriverServiceExecutableName), options);
             return CreateDefaultService(serviceDirectory);
         }
 
