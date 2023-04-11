@@ -59,17 +59,8 @@ namespace OpenQA.Selenium.Edge
         /// <returns>A EdgeDriverService that implements default settings.</returns>
         public static EdgeDriverService CreateDefaultService()
         {
-            return CreateDefaultService(new EdgeOptions());
-        }
-
-        /// <summary>
-        /// Creates a default instance of the EdgeDriverService.
-        /// </summary>
-        /// <param name="options">Edge options for the session.</param>
-        /// <returns>A EdgeDriverService that implements default settings.</returns>
-        public static EdgeDriverService CreateDefaultService(EdgeOptions options)
-        {
-            string serviceDirectory = DriverFinder.GetPath(ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName), options);
+            string serviceDirectory = DriverService.FindDriverServiceExecutable(ChromiumDriverServiceFileName(MSEdgeDriverServiceFileName),
+                                                                                MicrosoftWebDriverDownloadUrl);
             return CreateDefaultService(serviceDirectory);
         }
 
