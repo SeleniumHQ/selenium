@@ -158,7 +158,7 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger) {
 
 pub fn clear_metadata(log: &Logger) {
     let metadata_path = get_metadata_path();
-    log.trace(format!(
+    log.debug(format!(
         "Deleting metadata file {}",
         metadata_path.display()
     ));

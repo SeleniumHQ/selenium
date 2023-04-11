@@ -106,11 +106,11 @@ fn main() {
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(cli.output, debug, trace);
 
-    if cli.clear_cache {
+    if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(&log);
     }
 
-    if cli.clear_metadata {
+    if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
         clear_metadata(&log);
     }
 
