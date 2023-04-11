@@ -3013,7 +3013,7 @@ class WebElement {
       "e.initEvent('submit', true, true);\n" +
       'if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n'
 
-    this.driver_.executeScript(script, this)
+    return this.driver_.executeScript(script, this)
   }
 
   /**
