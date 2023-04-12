@@ -30,7 +30,7 @@ import java.util.jar.JarFile;
 public class ClassPathResource implements Resource {
 
   private final Resource delegate;
-  
+
   public ClassPathResource(URL resourceUrl, String stripPrefix, String subPath) {
     Require.nonNull("Resource URL", resourceUrl);
     Require.nonNull("Prefix to strip", stripPrefix);

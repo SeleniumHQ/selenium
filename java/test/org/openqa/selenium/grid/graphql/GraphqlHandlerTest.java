@@ -142,7 +142,20 @@ class GraphqlHandlerTest {
   void shouldBeAbleToGetGridUri() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
-    Map<String, Object> topLevel = executeQuery(handler, "{ grid { uri } }");
+    Map<String, Object> topLevel = executeQuery(handler, null, "{ grid { uri } }");
+
+    assertThat(topLevel).isEqualTo(
+      singletonMap(
+        "data", singletonMap(
+          "grid", singletonMap(
+            "uri", publicUri.toString()))));
+  }
+
+  @Test
+  void shouldBeAbleToGetGridUriWithSubPath() {
+    GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
+
+    Map<String, Object> topLevel = executeQuery(handler, "/acme", "{ grid { uri } }");
 
     assertThat(topLevel).isEqualTo(
       singletonMap(
@@ -155,7 +168,7 @@ class GraphqlHandlerTest {
   void shouldBeAbleToGetGridVersion() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
-    Map<String, Object> topLevel = executeQuery(handler, "{ grid { version } }");
+    Map<String, Object> topLevel = executeQuery(handler, null, "{ grid { version } }");
 
     assertThat(topLevel).isEqualTo(
       singletonMap(
@@ -188,7 +201,7 @@ class GraphqlHandlerTest {
     continueOnceAddedToQueue(request);
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
-    Map<String, Object> topLevel = executeQuery(handler, "{ grid { sessionQueueSize } }");
+    Map<String, Object> topLevel = executeQuery(handler, null, "{ grid { sessionQueueSize } }");
 
     assertThat(topLevel).isEqualTo(
       singletonMap(
@@ -211,7 +224,7 @@ class GraphqlHandlerTest {
 
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
-    Map<String, Object> topLevel = executeQuery(handler,
+    Map<String, Object> topLevel = executeQuery(handler, null, 
       "{ sessionsInfo { sessionQueueRequests } }");
 
     assertThat(topLevel).isEqualTo(
@@ -225,7 +238,7 @@ class GraphqlHandlerTest {
   void shouldBeReturnAnEmptyListIfQueueIsEmpty() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
-    Map<String, Object> topLevel = executeQuery(handler,
+    Map<String, Object> topLevel = executeQuery(handler, null, 
       "{ sessionsInfo { sessionQueueRequests } }");
 
     assertThat(topLevel).isEqualTo(
@@ -239,7 +252,7 @@ class GraphqlHandlerTest {
   void shouldReturnAnEmptyListForNodesIfNoneAreRegistered() {
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
 
-    Map<String, Object> topLevel = executeQuery(handler, "{ nodesInfo { nodes { uri } } }");
+    Map<String, Object> topLevel = executeQuery(handler, null, "{ nodesInfo { nodes { uri } } }");
 
     assertThat(topLevel).describedAs(topLevel.toString()).isEqualTo(
       singletonMap(
@@ -270,7 +283,7 @@ class GraphqlHandlerTest {
     wait.until(obj -> distributor.getStatus().hasCapacity());
 
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
-    Map<String, Object> topLevel = executeQuery(handler, "{ nodesInfo { nodes { uri } } }");
+    Map<String, Object> topLevel = executeQuery(handler, null, "{ nodesInfo { nodes { uri } } }");
 
     assertThat(topLevel).describedAs(topLevel.toString()).isEqualTo(
       singletonMap(
@@ -314,7 +327,7 @@ class GraphqlHandlerTest {
 
       assertThat(session).isNotNull();
       GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
-      Map<String, Object> topLevel = executeQuery(handler,
+      Map<String, Object> topLevel = executeQuery(handler, null, 
         "{ grid { sessionCount } }");
 
       assertThat(topLevel).isEqualTo(
@@ -380,7 +393,7 @@ class GraphqlHandlerTest {
         "{ session (id: \"%s\") { id, capabilities, startTime, uri } }", sessionId);
 
       GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
-      Map<String, Object> result = executeQuery(handler, query);
+      Map<String, Object> result = executeQuery(handler, null, query);
 
       assertThat(result).describedAs(result.toString()).isEqualTo(
         singletonMap(
@@ -448,7 +461,7 @@ class GraphqlHandlerTest {
       String query = String.format("{ session (id: \"%s\") { nodeId, nodeUri } }", sessionId);
 
       GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
-      Map<String, Object> result = executeQuery(handler, query);
+      Map<String, Object> result = executeQuery(handler, null, query);
 
       assertThat(result).describedAs(result.toString()).isEqualTo(
         singletonMap(
@@ -518,7 +531,7 @@ class GraphqlHandlerTest {
         "{ session (id: \"%s\") { slot { id, stereotype, lastStarted } } }", sessionId);
 
       GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
-      Map<String, Object> result = executeQuery(handler, query);
+      Map<String, Object> result = executeQuery(handler, null, query);
 
       assertThat(result).describedAs(result.toString()).isEqualTo(
         singletonMap(
@@ -573,7 +586,7 @@ class GraphqlHandlerTest {
       String query = String.format("{ session (id: \"%s\") { sessionDurationMillis } }", sessionId);
 
       GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
-      Map<String, Object> result = executeQuery(handler, query);
+      Map<String, Object> result = executeQuery(handler, null, query);
 
       assertThat(result)
         .containsOnlyKeys("data")
@@ -604,7 +617,7 @@ class GraphqlHandlerTest {
     String query = "{ session (id: \"" + randomSessionId + "\") { sessionDurationMillis } }";
 
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
-    Map<String, Object> result = executeQuery(handler, query);
+    Map<String, Object> result = executeQuery(handler, null, query);
     assertThat(result)
       .containsEntry("data", null)
       .containsKey("errors")
@@ -633,16 +646,18 @@ class GraphqlHandlerTest {
     String query = "{ session (id: \"\") { sessionDurationMillis } }";
 
     GraphqlHandler handler = new GraphqlHandler(tracer, distributor, queue, publicUri, version);
-    Map<String, Object> result = executeQuery(handler, query);
+    Map<String, Object> result = executeQuery(handler, null, query);
     assertThat(result)
       .containsEntry("data", null)
       .containsKey("errors")
       .extracting("errors").asInstanceOf(LIST).isNotEmpty();
   }
 
-  private Map<String, Object> executeQuery(HttpHandler handler, String query) {
+  private Map<String, Object> executeQuery(HttpHandler handler, String prefix, String query) {
+    String subPath = (prefix == null || prefix.isEmpty()) ? "/" : prefix;
+
     HttpResponse res = handler.execute(
-      new HttpRequest(GET, "/graphql")
+      new HttpRequest(GET, subPath.concat("graphql"))
         .setContent(Contents.asJson(singletonMap("query", query))));
 
     return new Json().toType(Contents.string(res), MAP_TYPE);
