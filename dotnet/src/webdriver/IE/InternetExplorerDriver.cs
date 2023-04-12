@@ -164,11 +164,8 @@ namespace OpenQA.Selenium.IE
         private static InternetExplorerDriverService VerifyDriverServicePath(InternetExplorerDriverService service, InternetExplorerOptions options)
         {
             string driverFullPath = DriverFinder.GetPath(service, options);
-            if (service.DriverServicePath != Path.GetDirectoryName(driverFullPath) || service.DriverServiceExecutableName != Path.GetFileName(driverFullPath))
-            {
-                service.DriverServicePath = Path.GetDirectoryName(driverFullPath);
-                service.DriverServiceExecutableName = Path.GetFileName(driverFullPath);
-            }
+            service.DriverServicePath = Path.GetDirectoryName(driverFullPath);
+            service.DriverServiceExecutableName = Path.GetFileName(driverFullPath);
 
             return service;
         }
