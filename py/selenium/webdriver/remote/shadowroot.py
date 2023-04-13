@@ -40,19 +40,12 @@ class ShadowRoot:
         )
 
     def find_element(self, by: str = By.ID, value: str = None):
-        if by == By.ID:
-            by = By.CSS_SELECTOR
-            value = f'[id="{value}"]'
-        elif by == By.CLASS_NAME:
-            by = By.CSS_SELECTOR
-            value = f".{value}"
-        elif by == By.NAME:
-            by = By.CSS_SELECTOR
-            value = f'[name="{value}"]'
-
-        return self._execute(Command.FIND_ELEMENT_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
+        return self._execute_find(by, value, Command.FIND_ELEMENT_FROM_SHADOW_ROOT)
 
     def find_elements(self, by: str = By.ID, value: str = None):
+        return self._execute_find(by, value, Command.FIND_ELEMENTS_FROM_SHADOW_ROOT)
+
+    def _execute_find(self, by, value, command):
         if by == By.ID:
             by = By.CSS_SELECTOR
             value = f'[id="{value}"]'
@@ -62,8 +55,10 @@ class ShadowRoot:
         elif by == By.NAME:
             by = By.CSS_SELECTOR
             value = f'[name="{value}"]'
+        elif by == By.XPATH:
+            raise ValueError("XPATH is not supported in ShadowRoot")
 
-        return self._execute(Command.FIND_ELEMENTS_FROM_SHADOW_ROOT, {"using": by, "value": value})["value"]
+        return self._execute(command, {"using": by, "value": value})["value"]
 
     # Private Methods
     def _execute(self, command, params=None):
