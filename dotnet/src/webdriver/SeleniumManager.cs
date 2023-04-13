@@ -37,12 +37,6 @@ namespace OpenQA.Selenium
     public static class SeleniumManager
     {
         private static string binary;
-        private static readonly List<string> KnownDrivers = new List<string>() {
-            "geckodriver",
-            "chromedriver",
-            "msedgedriver",
-            "IEDriverServer"
-        };
 
         /// <summary>
         /// Determines the location of the correct driver.
@@ -51,17 +45,12 @@ namespace OpenQA.Selenium
         /// <returns>
         /// The location of the driver.
         /// </returns>
-        public static string DriverPath(string driverName)
+        public static string DriverPath(DriverOptions options)
         {
-            driverName = driverName.Replace(".exe", "");
-            if (!KnownDrivers.Contains(driverName))
-            {
-                throw new WebDriverException("Unable to locate driver with name: " + driverName);
-            }
             var binaryFile = Binary;
             if (binaryFile == null) return null;
 
-            var arguments = "--driver " + driverName + " --output json";
+            var arguments = "--browser " + options.BrowserName + " --output json";
             return RunCommand(binaryFile, arguments);
         }
 
@@ -143,7 +132,7 @@ namespace OpenQA.Selenium
             }
 
             string output = outputBuilder.ToString().Trim();
-            string result = "";
+            string result;
             try
             {
                 Dictionary<string, object> deserializedOutput = JsonConvert.DeserializeObject<Dictionary<string, object>>(output, new ResponseValueJsonConverter());

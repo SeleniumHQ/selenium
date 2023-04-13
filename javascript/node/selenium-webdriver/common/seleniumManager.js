@@ -30,7 +30,7 @@ const execSync = require('child_process').execSync
  * currently supported browsers for selenium-manager
  * @type {string[]}
  */
-const Browser = ['chrome', 'firefox', 'edge', 'iexplorer']
+const Browser = ['chrome', 'firefox', 'edge', 'MicrosoftEdge', 'iexplorer']
 
 /**
  * Determines the path of the correct Selenium Manager binary
