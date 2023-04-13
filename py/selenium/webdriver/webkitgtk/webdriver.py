@@ -17,6 +17,7 @@
 
 import http.client as http_client
 
+from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .options import Options
@@ -49,8 +50,9 @@ class WebDriver(RemoteWebDriver):
          - keep_alive : Whether to configure RemoteConnection to use HTTP keep-alive.
         """
         if not options:
+            options = Options()
             if not desired_capabilities:
-                desired_capabilities = Options().to_capabilities()
+                desired_capabilities = options.to_capabilities()
         else:
             capabilities = options.to_capabilities()
             if desired_capabilities:
@@ -58,6 +60,7 @@ class WebDriver(RemoteWebDriver):
             desired_capabilities = capabilities
 
         self.service = Service(executable_path, port=port, log_path=service_log_path)
+        self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
         super().__init__(

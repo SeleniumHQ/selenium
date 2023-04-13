@@ -18,6 +18,7 @@
 import warnings
 
 from selenium.webdriver.common import utils
+from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .options import Options
@@ -123,6 +124,7 @@ class WebDriver(RemoteWebDriver):
                 executable_path, port=self.port, host=self.host, log_level=log_level, log_file=service_log_path
             )
 
+        self.iedriver.path = DriverFinder.get_path(self.iedriver, options)
         self.iedriver.start()
 
         super().__init__(command_executor=self.iedriver.service_url, options=options, keep_alive=keep_alive)
