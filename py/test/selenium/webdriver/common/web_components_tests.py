@@ -72,3 +72,13 @@ def test_can_find_elements_in_a_shadow_root(driver, pages):
     assert len(elements) == 1
 
     assert isinstance(elements[0], WebElement)
+
+@pytest.mark.xfail_safari
+@pytest.mark.xfail_firefox
+@pytest.mark.xfail_remote
+def test_raise_if_by_xpath_in_shadowroot(driver, pages):
+    pages.load("webComponents.html")
+    custom_element = driver.find_element(By.CSS_SELECTOR, "custom-checkbox-element")
+    shadow_root = custom_element.shadow_root
+    with pytest.raises(ValueError):
+        element = shadow_root.find_element(By.XPATH, "input")
