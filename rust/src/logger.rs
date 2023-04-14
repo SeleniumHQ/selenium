@@ -18,10 +18,12 @@
 use crate::metadata::now_unix_timestamp;
 use env_logger::fmt::Color;
 use env_logger::Target::Stdout;
+use env_logger::DEFAULT_FILTER_ENV;
 use log::Level;
 use log::LevelFilter::{Debug, Info, Trace};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
+use std::env;
 use std::io::Write;
 use std::ops::Deref;
 use Color::{Blue, Cyan, Green, Red, Yellow};
@@ -74,34 +76,38 @@ impl Logger {
         }
         match output_type {
             OutputType::Logger => {
-                let mut filter = match debug {
-                    true => Debug,
-                    false => Info,
-                };
-                if trace {
-                    filter = Trace
+                if env::var(DEFAULT_FILTER_ENV).unwrap_or_default().is_empty() {
+                    let mut filter = match debug {
+                        true => Debug,
+                        false => Info,
+                    };
+                    if trace {
+                        filter = Trace
+                    }
+                    env_logger::Builder::new()
+                        .filter_module(env!("CARGO_CRATE_NAME"), filter)
+                        .target(Stdout)
+                        .format(|buf, record| {
+                            let mut level_style = buf.style();
+                            match record.level() {
+                                Level::Trace => level_style.set_color(Cyan),
+                                Level::Debug => level_style.set_color(Blue),
+                                Level::Info => level_style.set_color(Green),
+                                Level::Warn => level_style.set_color(Yellow),
+                                Level::Error => level_style.set_color(Red).set_bold(true),
+                            };
+                            writeln!(
+                                buf,
+                                "{}\t{}",
+                                level_style.value(record.level()),
+                                record.args()
+                            )
+                        })
+                        .try_init()
+                        .unwrap_or_default();
+                } else {
+                    env_logger::try_init().unwrap_or_default();
                 }
-                env_logger::Builder::new()
-                    .filter_module(env!("CARGO_CRATE_NAME"), filter)
-                    .target(Stdout)
-                    .format(|buf, record| {
-                        let mut level_style = buf.style();
-                        match record.level() {
-                            Level::Trace => level_style.set_color(Cyan),
-                            Level::Debug => level_style.set_color(Blue),
-                            Level::Info => level_style.set_color(Green),
-                            Level::Warn => level_style.set_color(Yellow),
-                            Level::Error => level_style.set_color(Red).set_bold(true),
-                        };
-                        writeln!(
-                            buf,
-                            "{}\t{}",
-                            level_style.value(record.level()),
-                            record.args()
-                        )
-                    })
-                    .try_init()
-                    .unwrap_or_default();
             }
             _ => {
                 env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
