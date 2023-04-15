@@ -356,9 +356,9 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession GetDevToolsSession()
+        public DevToolsSession GetDevToolsSession(bool waitForDebugger = false)
         {
-            return GetDevToolsSession(FirefoxDevToolsProtocolVersion);
+            return GetDevToolsSession(FirefoxDevToolsProtocolVersion, waitForDebugger);
         }
 
         /// <summary>
@@ -366,7 +366,7 @@ namespace OpenQA.Selenium.Firefox
         /// </summary>
         /// <param name="devToolsProtocolVersion">The version of the Chromium Developer Tools protocol to use. Defaults to autodetect the protocol version.</param>
         /// <returns>The active session to use to communicate with the Chromium Developer Tools debugging protocol.</returns>
-        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion)
+        public DevToolsSession GetDevToolsSession(int devToolsProtocolVersion, bool waitForDebugger = false)
         {
             if (this.devToolsSession == null)
             {
@@ -378,7 +378,7 @@ namespace OpenQA.Selenium.Firefox
                 string debuggerAddress = this.Capabilities.GetCapability(FirefoxDevToolsCapabilityName).ToString();
                 try
                 {
-                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    DevToolsSession session = new DevToolsSession(debuggerAddress, waitForDebugger);
                     session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }

@@ -28,6 +28,11 @@ namespace OpenQA.Selenium.DevTools
     public abstract class Target
     {
         /// <summary>
+        /// Occurs when a target is attached.
+        /// </summary>
+        public event EventHandler<TargetAttachedEventArgs> TargetAttached;
+
+        /// <summary>
         /// Occurs when a target is detached.
         /// </summary>
         public event EventHandler<TargetDetachedEventArgs> TargetDetached;
@@ -67,6 +72,18 @@ namespace OpenQA.Selenium.DevTools
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>
         public abstract Task SetAutoAttach();
+
+        /// <summary>
+        /// Raises the TargetAttached event.
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnTargetAttached(TargetAttachedEventArgs e)
+        {
+            if (this.TargetAttached != null)
+            {
+                this.TargetAttached(this, e);
+            }
+        }
 
         /// <summary>
         /// Raises the TargetDetached event.

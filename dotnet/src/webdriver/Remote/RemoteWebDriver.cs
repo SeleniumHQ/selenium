@@ -408,12 +408,12 @@ namespace OpenQA.Selenium.Remote
             return this.FindElements("css selector", cssSelector);
         }
 
-        public DevToolsSession GetDevToolsSession()
+        public DevToolsSession GetDevToolsSession(bool waitForDebugger = false)
         {
-            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion);
+            return GetDevToolsSession(DevToolsSession.AutoDetectDevToolsProtocolVersion, waitForDebugger);
         }
 
-        public DevToolsSession GetDevToolsSession(int protocolVersion)
+        public DevToolsSession GetDevToolsSession(int protocolVersion, bool waitForDebugger = false)
         {
             if (this.devToolsSession == null)
             {
@@ -438,7 +438,7 @@ namespace OpenQA.Selenium.Remote
 
                 try
                 {
-                    DevToolsSession session = new DevToolsSession(debuggerAddress);
+                    DevToolsSession session = new DevToolsSession(debuggerAddress, waitForDebugger);
                     session.StartSession(devToolsProtocolVersion).ConfigureAwait(false).GetAwaiter().GetResult();
                     this.devToolsSession = session;
                 }

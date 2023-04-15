@@ -18,8 +18,10 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.WebSockets;
 using System.Text;
@@ -55,11 +57,14 @@ namespace OpenQA.Selenium.DevTools
         private CancellationTokenSource receiveCancellationToken;
         private Task receiveTask;
 
+        private readonly bool waitForDebuggerOnStart;
+
         /// <summary>
         /// Initializes a new instance of the DevToolsSession class, using the specified WebSocket endpoint.
         /// </summary>
         /// <param name="endpointAddress"></param>
-        public DevToolsSession(string endpointAddress)
+        /// <param name="waitForDebuggerOnStart">When enabled new targets will be waiting until runtime.runIfWaitingForDebugger is invoked.</param>
+        public DevToolsSession(string endpointAddress, bool waitForDebuggerOnStart = false)
         {
             if (string.IsNullOrWhiteSpace(endpointAddress))
             {
@@ -72,6 +77,8 @@ namespace OpenQA.Selenium.DevTools
             {
                 this.websocketAddress = endpointAddress;
             }
+
+            this.waitForDebuggerOnStart = waitForDebuggerOnStart;
         }
 
         /// <summary>
@@ -140,7 +147,7 @@ namespace OpenQA.Selenium.DevTools
                 throw new ArgumentNullException(nameof(command));
             }
 
-            var result = await SendCommand(command.CommandName, JToken.FromObject(command), cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+            var result = await SendCommand(new DevToolsCommandSettings(command.CommandName) { SessionId = ActiveSessionId, CommandParameters = JToken.FromObject(command) }, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
 
             if (result == null)
             {
@@ -152,7 +159,7 @@ namespace OpenQA.Selenium.DevTools
                 throw new InvalidOperationException($"Type {typeof(TCommand)} does not correspond to a known command response type.");
             }
 
-            return result.ToObject(commandResponseType) as ICommandResponse<TCommand>;
+            return result.Result.ToObject(commandResponseType) as ICommandResponse<TCommand>;
         }
 
         /// <summary>
@@ -174,14 +181,14 @@ namespace OpenQA.Selenium.DevTools
                 throw new ArgumentNullException(nameof(command));
             }
 
-            var result = await SendCommand(command.CommandName, JToken.FromObject(command), cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+            var result = await SendCommand(new DevToolsCommandSettings(command.CommandName) { SessionId = ActiveSessionId, CommandParameters = JToken.FromObject(command) }, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
 
             if (result == null)
             {
                 return default(TCommandResponse);
             }
 
-            return result.ToObject<TCommandResponse>();
+            return result.Result.ToObject<TCommandResponse>();
         }
 
         /// <summary>
@@ -196,6 +203,28 @@ namespace OpenQA.Selenium.DevTools
         //[DebuggerStepThrough]
         public async Task<JToken> SendCommand(string commandName, JToken commandParameters, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
         {
+            var result = await SendCommand(new DevToolsCommandSettings(commandName) { CommandParameters = commandParameters, SessionId = this.ActiveSessionId }, cancellationToken, millisecondsTimeout, throwExceptionIfResponseNotReceived);
+
+            if (result == null)
+            {
+                return default(JToken);
+            }
+
+            return result.Result;
+        }
+
+        /// <summary>
+        /// Returns a JToken based on a command created with the specified command name and params.
+        /// </summary>
+        /// <param name="commandName">The name of the command to send.</param>
+        /// <param name="commandParameters">The parameters of the command as a JToken object</param>
+        /// <param name="cancellationToken">A CancellationToken object to allow for cancellation of the command.</param>
+        /// <param name="millisecondsTimeout">The execution timeout of the command in milliseconds.</param>
+        /// <param name="throwExceptionIfResponseNotReceived"><see langword="true"/> to throw an exception if a response is not received; otherwise, <see langword="false"/>.</param>
+        /// <returns>The command response object implementing the <see cref="ICommandResponse{T}"/> interface.</returns>
+        //[DebuggerStepThrough]
+        public async Task<DevToolsCommandResponse> SendCommand(DevToolsCommandSettings devToolsCommandSettings, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        {
             if (millisecondsTimeout.HasValue == false)
             {
                 millisecondsTimeout = Convert.ToInt32(CommandTimeout.TotalMilliseconds);
@@ -207,11 +236,11 @@ namespace OpenQA.Selenium.DevTools
                 await this.InitializeSession();
             }
 
-            var message = new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), this.ActiveSessionId, commandName, commandParameters);
+            var message = new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), devToolsCommandSettings.SessionId, devToolsCommandSettings.CommandName, devToolsCommandSettings.CommandParameters);
 
             if (this.sessionSocket != null && this.sessionSocket.State == WebSocketState.Open)
             {
-                LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, commandParameters.ToString());
+                LogTrace("Sending {0} {1}: {2}", message.CommandId, message.CommandName, devToolsCommandSettings.CommandParameters.ToString());
 
                 var contents = JsonConvert.SerializeObject(message);
                 var contentBuffer = Encoding.UTF8.GetBytes(contents);
@@ -223,7 +252,7 @@ namespace OpenQA.Selenium.DevTools
 
                 if (!responseWasReceived && throwExceptionIfResponseNotReceived)
                 {
-                    throw new InvalidOperationException($"A command response was not received: {commandName}");
+                    throw new InvalidOperationException($"A command response was not received: {devToolsCommandSettings.CommandName}");
                 }
 
                 DevToolsCommandData modified;
@@ -234,7 +263,7 @@ namespace OpenQA.Selenium.DevTools
                         var errorMessage = modified.Result.Value<string>("message");
                         var errorData = modified.Result.Value<string>("data");
 
-                        var exceptionMessage = $"{commandName}: {errorMessage}";
+                        var exceptionMessage = $"{devToolsCommandSettings.CommandName}: {errorMessage}";
                         if (!string.IsNullOrWhiteSpace(errorData))
                         {
                             exceptionMessage = $"{exceptionMessage} - {errorData}";
@@ -247,7 +276,11 @@ namespace OpenQA.Selenium.DevTools
                         };
                     }
 
-                    return modified.Result;
+                    return new DevToolsCommandResponse
+                    {
+                        Result = modified.Result,
+                        SessionId = message.SessionId
+                    };
                 }
             }
             else
@@ -255,6 +288,95 @@ namespace OpenQA.Selenium.DevTools
                 if (this.sessionSocket != null)
                 {
                     LogTrace("WebSocket is not connected (current state is {0}); not sending {1}", this.sessionSocket.State, message.CommandName);
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a collection of <see cref="DevToolsCommandResponse"/> based on a collection of commands.
+        /// </summary>
+        /// <param name="commands"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="millisecondsTimeout"></param>
+        /// <param name="throwExceptionIfResponseNotReceived"></param>
+        /// <returns>A list of command response object implementeing the <see cref="ICommandResponse{T}"/> interface.</returns>
+        //[DebuggerStepThrough]
+        public async Task<List<DevToolsCommandResponse>> SendCommands(List<DevToolsCommandSettings> commands, CancellationToken cancellationToken = default(CancellationToken), int? millisecondsTimeout = null, bool throwExceptionIfResponseNotReceived = true)
+        {
+            if (millisecondsTimeout.HasValue == false)
+            {
+                millisecondsTimeout = Convert.ToInt32(CommandTimeout.TotalMilliseconds);
+            }
+
+            if (this.attachedTargetId == null)
+            {
+                LogTrace("Session not currently attached to a target; reattaching");
+                await this.InitializeSession();
+            }
+
+            var messages = new List<DevToolsCommandData>();
+            foreach (var item in commands)
+            {
+                messages.Add(new DevToolsCommandData(Interlocked.Increment(ref this.currentCommandId), item.SessionId, item.CommandName, item.CommandParameters));
+            }
+
+            if (this.sessionSocket != null && this.sessionSocket.State == WebSocketState.Open)
+            {
+                foreach (var message in messages)
+                {
+                    var contents = JsonConvert.SerializeObject(message);
+                    var contentBuffer = Encoding.UTF8.GetBytes(contents);
+
+                    this.pendingCommands.TryAdd(message.CommandId, message);
+                    await this.sessionSocket.SendAsync(new ArraySegment<byte>(contentBuffer), WebSocketMessageType.Text, true, cancellationToken);
+                }
+
+                WaitHandle.WaitAll(messages.Select(x => x.SyncEvent.WaitHandle).ToArray(), millisecondsTimeout.Value);
+
+                var noResponsesRecieved = messages.Where(x => !x.SyncEvent.IsSet);
+                if (noResponsesRecieved.Any() && throwExceptionIfResponseNotReceived)
+                {
+                    throw new InvalidOperationException($"A command response was not received: {string.Join(", ", noResponsesRecieved.Select(x => x.CommandName))}");
+                }
+
+                foreach (var message in messages)
+                {
+                    DevToolsCommandData modified;
+                    if (this.pendingCommands.TryRemove(message.CommandId, out modified))
+                    {
+                        if (modified.IsError)
+                        {
+                            var errorMessage = modified.Result.Value<string>("message");
+                            var errorData = modified.Result.Value<string>("data");
+
+                            var exceptionMessage = $"{message.CommandName}: {errorMessage}";
+                            if (!string.IsNullOrWhiteSpace(errorData))
+                            {
+                                exceptionMessage = $"{exceptionMessage} - {errorData}";
+                            }
+
+                            LogTrace("Recieved Error Response {0}: {1} {2}", modified.CommandId, message, errorData);
+                            throw new CommandResponseException(exceptionMessage)
+                            {
+                                Code = modified.Result.Value<long>("code")
+                            };
+                        }
+                    }
+                }
+
+                return messages.Select(x => new DevToolsCommandResponse
+                {
+                    Result = x.Result,
+                    SessionId = x.SessionId
+                }).ToList();
+            }
+            else
+            {
+                if (this.sessionSocket != null)
+                {
+                    LogTrace("WebSocket is not connected (current state is {0}); not sending {1}", this.sessionSocket.State);
                 }
             }
 
@@ -423,7 +545,10 @@ namespace OpenQA.Selenium.DevTools
             LogTrace("Target ID {0} attached. Active session ID: {1}", this.attachedTargetId, sessionId);
             this.ActiveSessionId = sessionId;
 
-            await this.domains.Target.SetAutoAttach();
+            // The Target domain needs to send Sessionless commands! Else the waitFordebugger setting in setAutoAttach wont work!
+            await SendCommand(new DevToolsCommandSettings("Target.setAutoAttach") { SessionId = string.Empty, CommandParameters = CreateSetAutoAttachCommand() });
+            await SendCommand(new DevToolsCommandSettings("Target.setDiscoverTargets") { SessionId = string.Empty, CommandParameters = CreateSetDiscoverTargets() });
+
             LogTrace("AutoAttach is set.", this.attachedTargetId);
 
             this.domains.Target.TargetDetached += this.OnTargetDetached;
@@ -611,6 +736,23 @@ namespace OpenQA.Selenium.DevTools
             {
                 LogMessage(this, new DevToolsSessionLogMessageEventArgs(DevToolsSessionLogLevel.Error, message, args));
             }
+        }
+
+        private JObject CreateSetAutoAttachCommand()
+        {
+            var jobject = new JObject();
+            jobject["CommandName"] = "Target.setAutoAttach";
+            jobject["autoAttach"] = true;
+            jobject["waitForDebuggerOnStart"] = waitForDebuggerOnStart;
+            jobject["flatten"] = true;
+            return jobject;
+        }
+        private JObject CreateSetDiscoverTargets()
+        {
+            var jobject = new JObject();
+            jobject["CommandName"] = "Target.setDiscoverTargets";
+            jobject["discover"] = true;
+            return jobject;
         }
     }
 }
