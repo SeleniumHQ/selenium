@@ -49,17 +49,17 @@ pub struct EdgeManager {
 }
 
 impl EdgeManager {
-    pub fn new() -> Result<Box<Self>, String> {
+    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
         let browser_name = EDGE_NAMES[0];
         let driver_name = EDGEDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
-        let default_proxy = config.proxy.to_owned();
+        let default_proxy = &config.proxy;
         Ok(Box::new(EdgeManager {
             browser_name,
             driver_name,
-            config,
             http_client: create_http_client(default_timeout, default_proxy)?,
+            config,
             log: Logger::default(),
         }))
     }
@@ -262,6 +262,10 @@ impl SeleniumManager for EdgeManager {
 
     fn get_config(&self) -> &ManagerConfig {
         &self.config
+    }
+
+    fn get_config_mut(&mut self) -> &mut ManagerConfig {
+        &mut self.config
     }
 
     fn set_config(&mut self, config: ManagerConfig) {

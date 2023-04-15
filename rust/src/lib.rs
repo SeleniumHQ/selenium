@@ -111,6 +111,8 @@ pub trait SeleniumManager {
 
     fn get_config(&self) -> &ManagerConfig;
 
+    fn get_config_mut(&mut self) -> &mut ManagerConfig;
+
     fn set_config(&mut self, config: ManagerConfig);
 
     fn get_logger(&self) -> &Logger;
@@ -362,9 +364,8 @@ pub trait SeleniumManager {
     }
 
     fn set_os(&mut self, os: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
+        let mut config = self.get_config_mut();
         config.os = os;
-        self.set_config(config);
     }
 
     fn get_arch(&self) -> &str {
@@ -372,9 +373,8 @@ pub trait SeleniumManager {
     }
 
     fn set_arch(&mut self, arch: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
+        let mut config = self.get_config_mut();
         config.arch = arch;
-        self.set_config(config);
     }
 
     fn get_browser_version(&self) -> &str {
@@ -383,9 +383,8 @@ pub trait SeleniumManager {
 
     fn set_browser_version(&mut self, browser_version: String) {
         if !browser_version.is_empty() {
-            let mut config = ManagerConfig::clone(self.get_config());
+            let mut config = self.get_config_mut();
             config.browser_version = browser_version;
-            self.set_config(config);
         }
     }
 
@@ -395,9 +394,8 @@ pub trait SeleniumManager {
 
     fn set_driver_version(&mut self, driver_version: String) {
         if !driver_version.is_empty() {
-            let mut config = ManagerConfig::clone(self.get_config());
+            let mut config = self.get_config_mut();
             config.driver_version = driver_version;
-            self.set_config(config);
         }
     }
 
@@ -407,9 +405,8 @@ pub trait SeleniumManager {
 
     fn set_browser_path(&mut self, browser_path: String) {
         if !browser_path.is_empty() {
-            let mut config = ManagerConfig::clone(self.get_config());
+            let mut config = self.get_config_mut();
             config.browser_path = browser_path;
-            self.set_config(config);
         }
     }
 
@@ -419,10 +416,9 @@ pub trait SeleniumManager {
 
     fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
         if !proxy.is_empty() {
-            let mut config = ManagerConfig::clone(self.get_config());
-            config.proxy = proxy.to_string();
-            self.set_config(config);
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
+            let mut config = self.get_config_mut();
+            config.proxy = proxy;
             self.update_http_client()?;
         }
         Ok(())
@@ -433,11 +429,10 @@ pub trait SeleniumManager {
     }
 
     fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
-        let default_timeout = self.get_config().timeout.to_owned();
+        let mut config = self.get_config_mut();
+        let default_timeout = config.timeout;
         if timeout != default_timeout {
-            let mut config = ManagerConfig::clone(self.get_config());
             config.timeout = timeout;
-            self.set_config(config);
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));
             self.update_http_client()?;
@@ -458,7 +453,9 @@ pub trait SeleniumManager {
 // Public functions
 // ----------------------------------------------------------
 
-pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumManager>, String> {
+pub fn get_manager_by_browser(
+    browser_name: String,
+) -> Result<Box<dyn SeleniumManager>, Box<dyn Error>> {
     let browser_name_lower_case = browser_name.to_ascii_lowercase();
     if browser_name_lower_case.eq(CHROME_NAME) {
         Ok(ChromeManager::new()?)
@@ -473,11 +470,16 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
     } else if SAFARITP_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(SafariTPManager::new()?)
     } else {
-        Err(format!("Invalid browser name: {browser_name}"))
+        Err(Box::new(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            format!("Invalid browser name: {browser_name}"),
+        )))
     }
 }
 
-pub fn get_manager_by_driver(driver_name: String) -> Result<Box<dyn SeleniumManager>, String> {
+pub fn get_manager_by_driver(
+    driver_name: String,
+) -> Result<Box<dyn SeleniumManager>, Box<dyn Error>> {
     if driver_name.eq_ignore_ascii_case(CHROMEDRIVER_NAME) {
         Ok(ChromeManager::new()?)
     } else if driver_name.eq_ignore_ascii_case(GECKODRIVER_NAME) {
@@ -489,7 +491,10 @@ pub fn get_manager_by_driver(driver_name: String) -> Result<Box<dyn SeleniumMana
     } else if driver_name.eq_ignore_ascii_case(SAFARIDRIVER_NAME) {
         Ok(SafariManager::new()?)
     } else {
-        Err(format!("Invalid driver name: {driver_name}"))
+        Err(Box::new(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            format!("Invalid driver name: {driver_name}"),
+        )))
     }
 }
 
@@ -508,7 +513,7 @@ pub fn clear_cache(log: &Logger) {
 }
 
 pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn Error>> {
-    let mut client_builder = Client::builder()
+    let client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
         .timeout(Duration::from_secs(timeout));

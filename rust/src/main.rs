@@ -42,62 +42,62 @@ use selenium_manager::metadata::clear_metadata;
 {all-args}")]
 struct Cli {
     /// Browser name (chrome, firefox, edge, iexplorer, safari, or safaritp)
-    #[clap(short, long, value_parser)]
+    #[clap(long, value_parser)]
     browser: Option<String>,
 
     /// Driver name (chromedriver, geckodriver, msedgedriver, IEDriverServer, or safaridriver)
-    #[clap(short, long, value_parser)]
+    #[clap(long, value_parser)]
     driver: Option<String>,
 
     /// Driver version (e.g., 106.0.5249.61, 0.31.0, etc.)
-    #[clap(short = 'v', long, value_parser)]
+    #[clap(long, value_parser)]
     driver_version: Option<String>,
 
     /// Major browser version (e.g., 105, 106, etc. Also: beta, dev, canary -or nightly- is accepted)
-    #[clap(short = 'B', long, value_parser)]
+    #[clap(long, value_parser)]
     browser_version: Option<String>,
 
     /// Browser path (absolute) for browser version detection (e.g., /usr/bin/google-chrome,
     /// "/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome",
     /// "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
-    #[clap(short = 'P', long, value_parser)]
+    #[clap(long, value_parser)]
     browser_path: Option<String>,
 
     /// Output type: LOGGER (using INFO, WARN, etc.), JSON (custom JSON notation), or SHELL (Unix-like)
-    #[clap(short = 'O', long, value_parser, default_value = "LOGGER")]
+    #[clap(long, value_parser, default_value = "LOGGER")]
     output: String,
 
     /// HTTP proxy for network connection (e.g., https://myproxy.net:8080)
-    #[clap(short = 'p', long, value_parser)]
+    #[clap(long, value_parser)]
     proxy: Option<String>,
 
     /// Timeout for network requests (in seconds)
-    #[clap(short = 't', long, value_parser, default_value_t = REQUEST_TIMEOUT_SEC)]
+    #[clap(long, value_parser, default_value_t = REQUEST_TIMEOUT_SEC)]
     timeout: u64,
 
-    /// Display DEBUG messages
-    #[clap(short = 'D', long)]
-    debug: bool,
-
-    /// Display TRACE messages
-    #[clap(short = 'T', long)]
-    trace: bool,
-
-    /// Clear driver cache
-    #[clap(short, long)]
-    clear_cache: bool,
-
-    /// Set default driver ttl
+    /// Driver TTL (time-to-live)
     #[clap(long, value_parser, default_value_t = TTL_DRIVERS_SEC)]
     driver_ttl: u64,
 
-    /// Set default browser ttl
+    /// Browser TTL (time-to-live)
     #[clap(long, value_parser, default_value_t = TTL_BROWSERS_SEC)]
     browser_ttl: u64,
 
-    /// Clear metadata file
+    /// Clear cache folder (~/.cache/selenium)
+    #[clap(long)]
+    clear_cache: bool,
+
+    /// Clear metadata file (~/.cache/selenium/selenium-manager.json)
     #[clap(long)]
     clear_metadata: bool,
+
+    /// Display DEBUG messages
+    #[clap(long)]
+    debug: bool,
+
+    /// Display TRACE messages
+    #[clap(long)]
+    trace: bool,
 }
 
 fn main() {
@@ -106,12 +106,12 @@ fn main() {
     let trace = cli.trace || BooleanKey("trace", false).get_value();
     let log = Logger::create(&cli.output, debug, trace);
 
-    if cli.clear_cache {
+    if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
         clear_cache(&log);
     }
 
-    if cli.clear_metadata {
-        clear_metadata(&log)
+    if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
+        clear_metadata(&log);
     }
 
     let browser_name: String = cli.browser.unwrap_or_default();
@@ -141,15 +141,15 @@ fn main() {
         .set_timeout(cli.timeout)
         .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
         .and_then(|_| selenium_manager.resolve_driver())
-        .and_then(|path| {
+        .map(|path| {
             let log = selenium_manager.get_logger();
             log.info(path.display());
             flush_and_exit(OK, &log);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
-            log.error(err);
-            flush_and_exit(DATAERR, &log);
+            log.error(err.to_string());
+            flush_and_exit(DATAERR, log);
         });
 }
 

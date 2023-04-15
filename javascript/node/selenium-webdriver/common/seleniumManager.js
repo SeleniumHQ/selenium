@@ -30,7 +30,7 @@ const execSync = require('child_process').execSync
  * currently supported browsers for selenium-manager
  * @type {string[]}
  */
-const Browser = ['chrome', 'firefox', 'edge', 'iexplorer']
+const Browser = ['chrome', 'firefox', 'edge', 'MicrosoftEdge', 'iexplorer']
 
 /**
  * Determines the path of the correct Selenium Manager binary
@@ -81,12 +81,10 @@ function driverLocation(browser) {
     } catch (e) {
       error = e.toString()
     }
-    throw new Error(
-      `Error executing command with ${args}: ${error}`
-    )
+    throw new Error(`Error executing command with ${args}: ${error}`)
   }
 
-  for (const key in output.logs){
+  for (const key in output.logs) {
     if (output.logs[key].level === 'WARN') {
       console.warn(`${output.logs[key].message}`)
     }

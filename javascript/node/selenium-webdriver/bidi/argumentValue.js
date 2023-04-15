@@ -15,31 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-'use strict'
+const { LocalValue } = require('./protocolValue')
+class ArgumentValue {
+  constructor(value) {
+    this.value = value
+  }
 
-const assert = require('assert')
-const edge = require('../../edge')
-const test = require('../../lib/test')
-const { getPath } = require('../../common/driverFinder')
+  asMap() {
+    if (this.value instanceof LocalValue) {
+      return this.value.toJson()
+    } else {
+      // ReferenceValue
+      return this.value.asMap()
+    }
+  }
+}
 
-test.suite(
-  function (_env) {
-    describe('msedgedriver', function () {
-      let service
-
-      afterEach(function () {
-        if (service) {
-          return service.kill()
-        }
-      })
-
-      it('can start msedgedriver', async function () {
-        service = new edge.ServiceBuilder().build()
-        service.setExecutable(getPath(service, new edge.Options()))
-        let url = await service.start()
-        assert(/127\.0\.0\.1/.test(url), `unexpected url: ${url}`)
-      })
-    })
-  },
-  { browsers: ['MicrosoftEdge'] }
-)
+module.exports = { ArgumentValue }

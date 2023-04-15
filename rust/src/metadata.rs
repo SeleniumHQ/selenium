@@ -17,6 +17,7 @@
 
 use std::fs;
 use std::fs::File;
+
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -157,12 +158,11 @@ pub fn write_metadata(metadata: &Metadata, log: &Logger) {
 
 pub fn clear_metadata(log: &Logger) {
     let metadata_path = get_metadata_path();
-    log.trace(format!(
+    log.debug(format!(
         "Deleting metadata file {}",
         metadata_path.display()
     ));
-    match fs::remove_file(metadata_path) {
-        Ok(()) => log.trace("Metadata file was deleted".to_string()),
-        Err(err) => log.warn(format!("Metadata file deleting invoked an error: {}", err)),
-    }
+    fs::remove_file(metadata_path).unwrap_or_else(|err| {
+        log.warn(format!("Error deleting metadata file: {}", err));
+    });
 }
