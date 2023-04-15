@@ -201,6 +201,7 @@ module Selenium
               uri.path = '/devtools_request_interception_test/two.js'
               request.url = uri.to_s
             end
+            request.post_data = {foo: 'bar'}.to_json
             continue.call(request)
           end
           driver.navigate.to url_for('devToolsRequestInterceptionTest.html')
