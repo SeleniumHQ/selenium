@@ -93,6 +93,11 @@ class SeleniumManager:
             args.append("--browser-version")
             args.append(str(options.browser_version))
 
+        binary_location = getattr(options, "binary_location", None)
+        if binary_location:
+            args.append("--browser-path")
+            args.append(str(binary_location))
+
         result = self.run(args)
         executable = result.split("\t")[-1].strip()
         logger.debug(f"Using driver at: {executable}")

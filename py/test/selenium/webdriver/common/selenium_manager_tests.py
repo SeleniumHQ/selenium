@@ -51,6 +51,25 @@ def test_browser_version_is_used_for_sm(mocker):
     assert "110" in args[0]
 
 
+def test_browser_path_is_used_for_sm(mocker):
+    import subprocess
+
+    mock_run = mocker.patch("subprocess.run")
+    mocked_result = Mock()
+    mocked_result.configure_mock(
+        **{"stdout.decode.return_value": '{"result": {"message": "driver"}, "logs": []}', "returncode": 0}
+    )
+    mock_run.return_value = mocked_result
+    options = Options()
+    options.capabilities["browserName"] = "chrome"
+    options.binary_location = "/opt/bin/browser-bin"
+
+    _ = SeleniumManager().driver_location(options)
+    args, kwargs = subprocess.run.call_args
+    assert "--browser-path" in args[0]
+    assert "/opt/bin/browser-bin" in args[0]
+
+
 def test_stderr_is_propagated_to_exception_messages():
     msg = r"Selenium Manager failed for:.* --browser foo --output json\.\nInvalid browser name: foo\n"
     with pytest.raises(SeleniumManagerException, match=msg):
