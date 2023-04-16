@@ -58,18 +58,24 @@ function getBinary() {
 
 /**
  * Determines the path of the correct driver
- * @param {Browser|string} browser name to fetch the driver
+ * @param {Capabilities} options browser options to fetch the driver
  * @returns {string} path of the driver location
  */
 
-function driverLocation(browser) {
-  if (!Browser.includes(browser.toLocaleString())) {
+function driverLocation(options) {
+  if (!Browser.includes(options.getBrowserName().toLocaleString())) {
     throw new Error(
-      `Unable to locate driver associated with browser name: ${browser}`
+      `Unable to locate driver associated with browser name: ${options.getBrowserName()}`
     )
   }
 
-  let args = [getBinary(), '--browser', browser, '--output', 'json']
+  let args = [getBinary(), '--browser', options.getBrowserName(), '--output', 'json']
+
+  if (options.getBrowserVersion() && options.getBrowserVersion() !== "") {
+    console.log("Present browserVersion! " + options.getBrowserVersion())
+    args.push("--browser-version", options.getBrowserVersion())
+  }
+
   let output
 
   try {
