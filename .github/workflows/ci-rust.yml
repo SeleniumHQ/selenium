@@ -5,28 +5,27 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    name: Test
+  build:
+    name: Build
+    uses: ./.github/workflows/bazel.yml
+    with:
+      name: Build
+      cache-key: rust-build
+      run: bazel build //rust:selenium-manager
+
+  tests:
+    name: Tests
+    needs: build
+    uses: ./.github/workflows/bazel.yml
     strategy:
+      fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - windows-latest
-          - macos-latest
-        rust:
-          - stable
-    runs-on: ${{ matrix.os }}
-    env:
-      RUST_BACKTRACE: 1
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-    - name: Install Rust toolchain
-      uses: actions-rs/toolchain@v1
-      with:
-        toolchain: ${{ matrix.rust }}
-    - name: Run tests
-      run: |
-        cd rust
-        cargo build
-        cargo test -- --nocapture
+        include:
+          - os: macos
+          - os: ubuntu
+          - os: windows
+    with:
+      name: Tests (${{ matrix.os }})
+      cache-key: rust-test
+      os: ${{ matrix.os }}
+      run: bazel test --test_env=RUST_BACKTRACE=1 --flaky_test_attempts=3 //rust/...
