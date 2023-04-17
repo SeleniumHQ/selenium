@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
+using System.Globalization;
 
 #if !NET45 && !NET46 && !NET47
 using System.Runtime.InteropServices;
@@ -50,8 +51,16 @@ namespace OpenQA.Selenium
             var binaryFile = Binary;
             if (binaryFile == null) return null;
 
-            var arguments = "--browser " + options.BrowserName + " --output json";
-            return RunCommand(binaryFile, arguments);
+            StringBuilder argsBuilder = new StringBuilder();
+            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", options.BrowserName);
+            argsBuilder.Append(" --output json");
+
+            if (!string.IsNullOrEmpty(options.BrowserVersion))
+            {
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version {0}", options.BrowserVersion);
+            }
+
+            return RunCommand(binaryFile, argsBuilder.ToString());
         }
 
         /// <summary>
@@ -68,7 +77,7 @@ namespace OpenQA.Selenium
 #else
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        binary = "selenium-manager/windows/selenium-manager.exe";
+                        binary = "C:/projects/seleniumhq/selenium/common/manager/windows/selenium-manager.exe";
                     }
                     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
