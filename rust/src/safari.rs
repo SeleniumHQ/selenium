@@ -39,17 +39,17 @@ pub struct SafariManager {
 }
 
 impl SafariManager {
-    pub fn new() -> Result<Box<Self>, String> {
+    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
         let browser_name = SAFARI_NAME;
         let driver_name = SAFARIDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
-        let default_proxy = config.proxy.to_owned();
+        let default_proxy = &config.proxy;
         Ok(Box::new(SafariManager {
             browser_name,
             driver_name,
-            config,
             http_client: create_http_client(default_timeout, default_proxy)?,
+            config,
             log: Logger::default(),
         }))
     }

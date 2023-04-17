@@ -18,10 +18,13 @@
 use crate::metadata::now_unix_timestamp;
 use env_logger::fmt::Color;
 use env_logger::Target::Stdout;
+use env_logger::DEFAULT_FILTER_ENV;
 use log::Level;
 use log::LevelFilter::{Debug, Info, Trace};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
+use std::env;
+use std::fmt::Display;
 use std::io::Write;
 use std::ops::Deref;
 use Color::{Blue, Cyan, Green, Red, Yellow};
@@ -60,10 +63,10 @@ pub struct JsonOutput {
 
 impl Logger {
     pub fn default() -> Self {
-        Logger::create("".to_string(), false, false)
+        Logger::create("", false, false)
     }
 
-    pub fn create(output: String, debug: bool, trace: bool) -> Self {
+    pub fn create(output: &str, debug: bool, trace: bool) -> Self {
         let output_type;
         if output.eq_ignore_ascii_case("json") {
             output_type = OutputType::Json;
@@ -74,34 +77,38 @@ impl Logger {
         }
         match output_type {
             OutputType::Logger => {
-                let mut filter = match debug {
-                    true => Debug,
-                    false => Info,
-                };
-                if trace {
-                    filter = Trace
+                if env::var(DEFAULT_FILTER_ENV).unwrap_or_default().is_empty() {
+                    let mut filter = match debug {
+                        true => Debug,
+                        false => Info,
+                    };
+                    if trace {
+                        filter = Trace
+                    }
+                    env_logger::Builder::new()
+                        .filter_module(env!("CARGO_CRATE_NAME"), filter)
+                        .target(Stdout)
+                        .format(|buf, record| {
+                            let mut level_style = buf.style();
+                            match record.level() {
+                                Level::Trace => level_style.set_color(Cyan),
+                                Level::Debug => level_style.set_color(Blue),
+                                Level::Info => level_style.set_color(Green),
+                                Level::Warn => level_style.set_color(Yellow),
+                                Level::Error => level_style.set_color(Red).set_bold(true),
+                            };
+                            writeln!(
+                                buf,
+                                "{}\t{}",
+                                level_style.value(record.level()),
+                                record.args()
+                            )
+                        })
+                        .try_init()
+                        .unwrap_or_default();
+                } else {
+                    env_logger::try_init().unwrap_or_default();
                 }
-                env_logger::Builder::new()
-                    .filter_module(env!("CARGO_CRATE_NAME"), filter)
-                    .target(Stdout)
-                    .format(|buf, record| {
-                        let mut level_style = buf.style();
-                        match record.level() {
-                            Level::Trace => level_style.set_color(Cyan),
-                            Level::Debug => level_style.set_color(Blue),
-                            Level::Info => level_style.set_color(Green),
-                            Level::Warn => level_style.set_color(Yellow),
-                            Level::Error => level_style.set_color(Red).set_bold(true),
-                        };
-                        writeln!(
-                            buf,
-                            "{}\t{}",
-                            level_style.value(record.level()),
-                            record.args()
-                        )
-                    })
-                    .try_init()
-                    .unwrap_or_default();
             }
             _ => {
                 env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
@@ -124,24 +131,24 @@ impl Logger {
         }
     }
 
-    pub fn error(&self, message: String) {
-        self.logger(message, Level::Error);
+    pub fn error<T: Display>(&self, message: T) {
+        self.logger(message.to_string(), Level::Error);
     }
 
-    pub fn warn(&self, message: String) {
-        self.logger(message, Level::Warn);
+    pub fn warn<T: Display>(&self, message: T) {
+        self.logger(message.to_string(), Level::Warn);
     }
 
-    pub fn info(&self, message: String) {
-        self.logger(message, Level::Info);
+    pub fn info<T: Display>(&self, message: T) {
+        self.logger(message.to_string(), Level::Info);
     }
 
-    pub fn debug(&self, message: String) {
-        self.logger(message, Level::Debug);
+    pub fn debug<T: Display>(&self, message: T) {
+        self.logger(message.to_string(), Level::Debug);
     }
 
-    pub fn trace(&self, message: String) {
-        self.logger(message, Level::Trace);
+    pub fn trace<T: Display>(&self, message: T) {
+        self.logger(message.to_string(), Level::Trace);
     }
 
     fn logger(&self, message: String, level: Level) {

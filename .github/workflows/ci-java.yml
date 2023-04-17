@@ -98,13 +98,3 @@ jobs:
       run: >
         bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))" |
         xargs bazel test --flaky_test_attempts 3
-
-  rc-tests:
-    name: RC Tests
-    needs: small-tests
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: RC Tests
-      browser: firefox
-      cache-key: java-rc-tests
-      run: bazel test --test_tag_filters "rc" --flaky_test_attempts 3 //java/...

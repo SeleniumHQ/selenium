@@ -83,6 +83,7 @@ const error = require('./lib/error')
 const Symbols = require('./lib/symbols')
 const webdriver = require('./lib/webdriver')
 const remote = require('./remote')
+const { getPath } = require('./common/driverFinder')
 
 /**
  * Custom command names supported by Chromium WebDriver.
@@ -684,6 +685,9 @@ class Driver extends webdriver.WebDriver {
       configureExecutor(executor, this.VENDOR_COMMAND_PREFIX)
     } else {
       let service = opt_serviceExecutor || this.getDefaultService()
+      if (!service.getExecutable()) {
+        service.setExecutable(getPath(service, caps))
+      }
       onQuit = () => service.kill()
       executor = createExecutor(service.start(), this.VENDOR_COMMAND_PREFIX)
     }
