@@ -60,7 +60,38 @@ namespace OpenQA.Selenium
                 argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version {0}", options.BrowserVersion);
             }
 
+            string browserBinary = BrowserBinary(options);
+            if (!string.IsNullOrEmpty(browserBinary))
+            {
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
+            }
+
+
             return RunCommand(binaryFile, argsBuilder.ToString());
+        }
+
+
+        /// <summary>
+        /// Extracts the browser binary location from the vendor options when present. Only Chrome, Firefox, and Edge.
+        /// </summary>
+        private static string BrowserBinary(DriverOptions options)
+        {
+            ICapabilities capabilities = options.ToCapabilities();
+            string[] vendorOptionsCapabilities = { "moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions" };
+            foreach (string vendorOptionsCapability in vendorOptionsCapabilities)
+            {
+                try
+                {
+                    Dictionary<string, object> vendorOptions = capabilities.GetCapability(vendorOptionsCapability) as Dictionary<string, object>;
+                    return vendorOptions["binary"] as string;
+                }
+                catch (Exception)
+                {
+                    // no-op, it would be ideal to at least log the exception but the C# do not log anything at the moment 
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
