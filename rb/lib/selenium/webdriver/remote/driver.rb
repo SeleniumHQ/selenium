@@ -45,8 +45,10 @@ module Selenium
         end
 
         def devtools_version
-          capabilities['se:cdpVersion']&.split('.')&.first ||
-            raise(Error::WebDriverError, 'DevTools is not supported by the Remote Server')
+          cdp_version = capabilities['se:cdpVersion']&.split('.')&.first
+          raise Error::WebDriverError, 'DevTools is not supported by the Remote Server' unless cdp_version
+
+          Integer(cdp_version)
         end
 
         def process_options(options, capabilities)
