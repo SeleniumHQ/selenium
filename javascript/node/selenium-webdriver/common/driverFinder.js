@@ -30,8 +30,7 @@ const fs = require('fs')
  */
 function getPath(service, capabilities) {
   try {
-    return pathExists(service.getExecutable()) ||
-           driverLocation(capabilities.getBrowserName())
+    return pathExists(service.getExecutable()) || driverLocation(capabilities)
   } catch (e) {
       throw Error(
         `Unable to obtain browser driver.
