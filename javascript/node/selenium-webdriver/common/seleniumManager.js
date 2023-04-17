@@ -72,12 +72,16 @@ function driverLocation(options) {
   let args = [getBinary(), '--browser', options.getBrowserName(), '--output', 'json']
 
   if (options.getBrowserVersion() && options.getBrowserVersion() !== "") {
-    console.log("Present browserVersion! " + options.getBrowserVersion())
     args.push("--browser-version", options.getBrowserVersion())
   }
 
-  let output
+  const vendorOptions = options.get('goog:chromeOptions') || options.get('ms:edgeOptions')
+                        || options.get('moz:firefoxOptions')
+  if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== "") {
+    args.push("--browser-path", '"' + vendorOptions.binary + '"')
+  }
 
+  let output
   try {
     output = JSON.parse(execSync(args.join(' ')).toString())
   } catch (e) {
@@ -85,7 +89,11 @@ function driverLocation(options) {
     try {
       error = JSON.parse(e.stdout.toString()).result.message
     } catch (e) {
-      error = e.toString()
+      if (e instanceof SyntaxError) {
+        error = e.stdout.toString()
+      } else {
+        error = e.toString()
+      }
     }
     throw new Error(`Error executing command with ${args}: ${error}`)
   }
