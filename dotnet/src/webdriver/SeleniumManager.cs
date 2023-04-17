@@ -77,7 +77,7 @@ namespace OpenQA.Selenium
 #else
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        binary = "C:/projects/seleniumhq/selenium/common/manager/windows/selenium-manager.exe";
+                        binary = "selenium-manager/windows/selenium-manager.exe";
                     }
                     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
