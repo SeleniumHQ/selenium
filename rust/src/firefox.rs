@@ -29,9 +29,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_one_arg, format_three_args, Logger, SeleniumManager, BETA,
-    DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY, REMOVE_X86, STABLE,
-    WMIC_COMMAND, WMIC_COMMAND_ENV,
+    create_http_client, format_one_arg, format_three_args, format_two_args, Logger,
+    SeleniumManager, BETA, DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
+    REG_QUERY_FIND, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";
@@ -139,6 +139,13 @@ impl SeleniumManager for FirefoxManager {
                             browser_path,
                         ),
                     ];
+                    if !self.is_browser_version_unstable() {
+                        commands.push(format_two_args(
+                            REG_QUERY_FIND,
+                            r#"HKCU\Software\Mozilla"#,
+                            self.browser_name,
+                        ));
+                    }
                 }
                 _ => return None,
             }

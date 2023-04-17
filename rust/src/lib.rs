@@ -65,6 +65,7 @@ pub const WMIC_COMMAND_ENV: &str =
     r#"set PFILES=%{}{}%&& wmic datafile where name='!PFILES:\=\\!{}' get Version /value"#;
 pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
 pub const REG_QUERY: &str = r#"REG QUERY {} /v version"#;
+pub const REG_QUERY_FIND: &str = r#"REG QUERY {} /f {}"#;
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
 pub const DASH_VERSION: &str = "{} -v";
@@ -540,6 +541,10 @@ pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Er
 
 pub fn format_one_arg(string: &str, arg1: &str) -> String {
     string.replacen("{}", arg1, 1)
+}
+
+pub fn format_two_args(string: &str, arg1: &str, arg2: &str) -> String {
+    string.replacen("{}", arg1, 1).replacen("{}", arg2, 1)
 }
 
 pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> String {
