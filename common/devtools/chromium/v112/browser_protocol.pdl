@@ -10838,7 +10838,7 @@ experimental domain Preload
       # Identifies a document which the rule set is associated with.
       Network.LoaderId loaderId
       # Source text of JSON representing the rule set. If it comes from
-      # <script> tag, it is the textContent of the node. Note that it is
+      # `script` tag, it is the textContent of the node. Note that it is
       # a JSON for valid case.
       #
       # See also:
