@@ -127,8 +127,7 @@ namespace OpenQA.Selenium.DevTools
                 }
             }
 
-            // TODO: Return a no-op implementation or throw exception.
-            return null;
+            throw new WebDriverException($"DevTools version is not in the supported range. Desired version={desiredVersion}, range={versionRange}. Supported versions: {string.Join(", ", supportedVersions)}");
         }
     }
 }
