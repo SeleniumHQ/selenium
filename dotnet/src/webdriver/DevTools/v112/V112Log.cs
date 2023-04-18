@@ -1,4 +1,4 @@
-// <copyright file="V109Log.cs" company="WebDriver Committers">
+// <copyright file="V112Log.cs" company="WebDriver Committers">
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements. See the NOTICE file
 // distributed with this work for additional information
@@ -20,22 +20,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenQA.Selenium.DevTools.V109.Log;
+using OpenQA.Selenium.DevTools.V112.Log;
 
-namespace OpenQA.Selenium.DevTools.V109
+namespace OpenQA.Selenium.DevTools.V112
 {
     /// <summary>
-    /// Class containing the browser's log as referenced by version 109 of the DevTools Protocol.
+    /// Class containing the browser's log as referenced by version 112 of the DevTools Protocol.
     /// </summary>
-    public class V109Log : DevTools.Log
+    public class V112Log : DevTools.Log
     {
         private LogAdapter adapter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="V109Log"/> class.
+        /// Initializes a new instance of the <see cref="V112Log"/> class.
         /// </summary>
         /// <param name="adapter">The adapter for the Log domain.</param>
-        public V109Log(LogAdapter adapter)
+        public V112Log(LogAdapter adapter)
         {
             this.adapter = adapter;
             this.adapter.EntryAdded += OnAdapterEntryAdded;
