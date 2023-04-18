@@ -29,6 +29,18 @@ module Selenium
         expect(driver.title).to eq('XHTML Test Page')
       end
 
+      context 'when auto discovering devtools domains' do
+        it 'capitalizes the domain name' do
+          expect(driver.devtools.profiler.class.to_s).to match(/Selenium::DevTools::V[0-9]+::Profiler/)
+        end
+
+        it 'works with uppercase domains' do
+          expect(driver.devtools.CSS.class.to_s).to match(/Selenium::DevTools::V[0-9]+::CSS/)
+          expect(driver.devtools.DOM.class.to_s).to match(/Selenium::DevTools::V[0-9]+::DOM/)
+          expect(driver.devtools.DOMDebugger.class.to_s).to match(/Selenium::DevTools::V[0-9]+::DOMDebugger/)
+        end
+      end
+
       context 'when the devtools version is too high' do
         let(:existing_devtools_version) { driver.send(:devtools_version) }
         let(:imaginary_devtools_version) { existing_devtools_version + 1 }

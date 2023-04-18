@@ -52,7 +52,8 @@ module Selenium
       end
 
       def method_missing(method, *_args)
-        desired_class = "Selenium::DevTools::V#{Selenium::DevTools.version}::#{method.capitalize}"
+        name = method[0] == method[0].upcase ? method : method.capitalize
+        desired_class = "Selenium::DevTools::V#{Selenium::DevTools.version}::#{name}"
         return unless Object.const_defined?(desired_class)
 
         self.class.class_eval do
