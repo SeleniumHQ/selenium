@@ -31,11 +31,16 @@ public class Rectangle {
     this.width = width;
   }
 
+  public Rectangle(Point p, int height, int width) {
+    this(p.x, p.y, height, width);
+  }
+
+  public Rectangle(int x, int y, Dimension d) {
+    this(x, y, d.height, d.width);
+  }
+
   public Rectangle(Point p, Dimension d) {
-    x = p.x;
-    y = p.y;
-    height = d.height;
-    width = d.width;
+    this(p.x, p.y, d.height, d.width);
   }
 
   public int getX() {
