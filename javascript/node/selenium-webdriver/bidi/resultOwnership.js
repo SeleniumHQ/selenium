@@ -15,15 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v109;
-
-import com.google.auto.service.AutoService;
-import org.openqa.selenium.devtools.CdpInfo;
-
-@AutoService(CdpInfo.class)
-public class V109CdpInfo extends CdpInfo {
-
-  public V109CdpInfo() {
-    super(109, V109Domains::new);
-  }
+const ResultOwnership = {
+  ROOT: 'root',
+  NONE: 'none',
 }
+
+module.exports = { ResultOwnership }

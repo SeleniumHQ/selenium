@@ -15,35 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-use assert_cmd::Command;
+package org.openqa.selenium.devtools.v112;
 
-use rstest::rstest;
+import com.google.auto.service.AutoService;
 
-#[rstest]
-#[case("4.8.0")]
-#[case("4.8.1")]
-fn iexplorer_test(#[case] driver_version: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    let cmd_assert = cmd
-        .args([
-            "--browser",
-            "iexplorer",
-            "--driver-version",
-            &driver_version,
-        ])
-        .assert();
-    cmd_assert.success();
-}
+import org.openqa.selenium.devtools.CdpInfo;
 
-#[rstest]
-#[case("iexplorer")]
-#[case("ie")]
-#[case("internetexplorer")]
-#[case("internet explorer")]
-#[case("internet-explorer")]
-#[case("internet_explorer")]
-fn ie_name_test(#[case] browser_name: String) {
-    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    let cmd_assert = cmd.args(["--browser", &browser_name]).assert();
-    cmd_assert.success();
+@AutoService(CdpInfo.class)
+public class v112CdpInfo extends CdpInfo {
+
+  public v112CdpInfo() {
+    super(112, v112Domains::new);
+  }
 }

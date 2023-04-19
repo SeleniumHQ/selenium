@@ -23,7 +23,7 @@ use std::str;
 
 #[test]
 fn json_output_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args(["--browser", "chrome", "--output", "json"])
         .assert()
         .success()
@@ -45,7 +45,7 @@ fn json_output_test() {
 
 #[test]
 fn shell_output_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args(["--browser", "chrome", "--output", "shell"])
         .assert()
         .success()

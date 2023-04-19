@@ -1,5 +1,5 @@
 {
-  "checksum": "fd0037b2aa7416542c2556db0ffb61d027e469a1a6e45f7a8bb1e7358a146eaa",
+  "checksum": "ecd6bc8b40be9dfd6dcfea68892bc2392051e0cc0c46a2b06811cfbd544bb5d0",
   "crates": {
     "adler 1.0.2": {
       "name": "adler",
@@ -1806,13 +1806,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "directories 4.0.1": {
+    "directories 5.0.0": {
       "name": "directories",
-      "version": "4.0.1",
+      "version": "5.0.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/directories/4.0.1/download",
-          "sha256": "f51c5d4ddabd36886dd3e1438cb358cdcb0d7c499cb99cb4ac2e38e18b5cb210"
+          "url": "https://crates.io/api/v1/crates/directories/5.0.0/download",
+          "sha256": "74be3be809c18e089de43bdc504652bb2bc473fca8756131f8689db8cf079ba9"
         }
       },
       "targets": [
@@ -1834,24 +1834,24 @@
         "deps": {
           "common": [
             {
-              "id": "dirs-sys 0.3.7",
+              "id": "dirs-sys 0.4.0",
               "target": "dirs_sys"
             }
           ],
           "selects": {}
         },
         "edition": "2015",
-        "version": "4.0.1"
+        "version": "5.0.0"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "dirs-sys 0.3.7": {
+    "dirs-sys 0.4.0": {
       "name": "dirs-sys",
-      "version": "0.3.7",
+      "version": "0.4.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/dirs-sys/0.3.7/download",
-          "sha256": "1b1d1d91c932ef41c0f2663aa8b0ca0342d444d842c06914aa0a7e352d0bada6"
+          "url": "https://crates.io/api/v1/crates/dirs-sys/0.4.0/download",
+          "sha256": "04414300db88f70d74c5ff54e50f9e1d1737d9a5b90f53fcf2e95ca2a9ab554b"
         }
       },
       "targets": [
@@ -1887,14 +1887,14 @@
             ],
             "cfg(windows)": [
               {
-                "id": "winapi 0.3.9",
-                "target": "winapi"
+                "id": "windows-sys 0.45.0",
+                "target": "windows_sys"
               }
             ]
           }
         },
         "edition": "2015",
-        "version": "0.3.7"
+        "version": "0.4.0"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -6782,13 +6782,13 @@
       },
       "license": null
     },
-    "rstest 0.16.0": {
+    "rstest 0.17.0": {
       "name": "rstest",
-      "version": "0.16.0",
+      "version": "0.17.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rstest/0.16.0/download",
-          "sha256": "b07f2d176c472198ec1e6551dc7da28f1c089652f66a7b722676c2238ebc0edf"
+          "url": "https://crates.io/api/v1/crates/rstest/0.17.0/download",
+          "sha256": "de1bb486a691878cd320c2f0d319ba91eeaa2e894066d8b5f8f117c000e9d962"
         }
       },
       "targets": [
@@ -6831,23 +6831,23 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "rstest_macros 0.16.0",
+              "id": "rstest_macros 0.17.0",
               "target": "rstest_macros"
             }
           ],
           "selects": {}
         },
-        "version": "0.16.0"
+        "version": "0.17.0"
       },
       "license": "MIT/Apache-2.0"
     },
-    "rstest_macros 0.16.0": {
+    "rstest_macros 0.17.0": {
       "name": "rstest_macros",
-      "version": "0.16.0",
+      "version": "0.17.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rstest_macros/0.16.0/download",
-          "sha256": "7229b505ae0706e64f37ffc54a9c163e11022a6636d58fe1f3f52018257ff9f7"
+          "url": "https://crates.io/api/v1/crates/rstest_macros/0.17.0/download",
+          "sha256": "290ca1a1c8ca7edb7c3283bd44dc35dd54fdec6253a3912e201ba1072018fca8"
         }
       },
       "targets": [
@@ -6896,7 +6896,7 @@
               "target": "quote"
             },
             {
-              "id": "rstest_macros 0.16.0",
+              "id": "rstest_macros 0.17.0",
               "target": "build_script_build"
             },
             {
@@ -6911,7 +6911,7 @@
           "selects": {}
         },
         "edition": "2018",
-        "version": "0.16.0"
+        "version": "0.17.0"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -7293,7 +7293,7 @@
               "target": "clap"
             },
             {
-              "id": "directories 4.0.1",
+              "id": "directories 5.0.0",
               "target": "directories"
             },
             {
@@ -7366,7 +7366,7 @@
               "target": "assert_cmd"
             },
             {
-              "id": "rstest 0.16.0",
+              "id": "rstest 0.17.0",
               "target": "rstest"
             },
             {
@@ -10423,14 +10423,11 @@
             "handleapi",
             "impl-debug",
             "impl-default",
-            "knownfolders",
             "minwinbase",
             "minwindef",
             "ntdef",
             "ntsecapi",
-            "objbase",
             "processenv",
-            "shlobj",
             "std",
             "timezoneapi",
             "winbase",
@@ -10769,6 +10766,7 @@
           "common": [
             "Win32",
             "Win32_Foundation",
+            "Win32_Globalization",
             "Win32_NetworkManagement",
             "Win32_NetworkManagement_IpHelper",
             "Win32_Networking",
@@ -10778,12 +10776,15 @@
             "Win32_Storage",
             "Win32_Storage_FileSystem",
             "Win32_System",
+            "Win32_System_Com",
             "Win32_System_Console",
             "Win32_System_IO",
             "Win32_System_Pipes",
             "Win32_System_SystemServices",
             "Win32_System_Threading",
             "Win32_System_WindowsProgramming",
+            "Win32_UI",
+            "Win32_UI_Shell",
             "default"
           ],
           "selects": {}
