@@ -131,7 +131,7 @@ pub trait SeleniumManager {
         let (_tmp_folder, driver_zip_file) =
             download_driver_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
         let driver_path_in_cache = Self::get_driver_path_in_cache(self);
-        uncompress(&driver_zip_file, driver_path_in_cache, self.get_logger())
+        uncompress(&driver_zip_file, &driver_path_in_cache, self.get_logger())
     }
 
     fn detect_browser_path(&self) -> Option<&str> {
