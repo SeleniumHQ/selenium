@@ -114,11 +114,12 @@ impl OS {
 }
 
 pub fn str_to_os(os: &str) -> OS {
-    match os {
-        "windows" => WINDOWS,
-        "macos" => MACOS,
-        "linux" => LINUX,
-        _ => panic!("Unsupported OS: '{os}', Valid options are 'windows', 'macos', 'linux'"),
+    if WINDOWS.is(os) {
+        WINDOWS
+    } else if MACOS.is(os) {
+        MACOS
+    } else {
+        LINUX
     }
 }
 
