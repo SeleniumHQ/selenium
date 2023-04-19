@@ -31,10 +31,8 @@ jobs:
         include:
           - driver: Chrome
             browser: chrome
-            location: C:\SeleniumWebDrivers\ChromeDriver
           - driver: Firefox
             browser: chrome
-            location: C:\SeleniumWebDrivers\GeckoDriver
     with:
       name: Browser Tests (${{ matrix.driver }}, ${{ matrix.framework }})
       browser: ${{ matrix.browser }}
@@ -44,6 +42,8 @@ jobs:
       run: |
         bazel build //dotnet/test/common:${{ matrix.browser }}
         $env:ACTIVE_DRIVER_CONFIG = '${{ matrix.driver }}'
-        $env:DRIVER_SERVICE_LOCATION = '${{ matrix.location }}'
+        rm "$env:ChromeWebDriver" -r -v
+        rm "$env:EdgeWebDriver" -r -v
+        rm "$env:GeckoWebDriver" -r -v
         cd dotnet
         dotnet test test/common/WebDriver.Common.Tests.csproj --framework ${{ matrix.framework }}

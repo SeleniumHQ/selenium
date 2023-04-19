@@ -16,12 +16,13 @@
 // limitations under the License.
 // </copyright>
 
+using Newtonsoft.Json;
+using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Newtonsoft.Json;
-using OpenQA.Selenium.Internal;
 using System.Globalization;
+using System.Reflection;
 
 #if !NET45 && !NET46 && !NET47
 using System.Runtime.InteropServices;
@@ -37,6 +38,7 @@ namespace OpenQA.Selenium
     /// </summary>
     public static class SeleniumManager
     {
+        private static string basePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private static string binary;
 
         /// <summary>
@@ -140,7 +142,7 @@ namespace OpenQA.Selenium
         private static string RunCommand(string fileName, string arguments)
         {
             Process process = new Process();
-            process.StartInfo.FileName = fileName;
+            process.StartInfo.FileName = $"{basePath}/{fileName}";
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
