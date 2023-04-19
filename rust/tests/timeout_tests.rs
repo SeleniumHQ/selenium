@@ -21,7 +21,7 @@ use exitcode::DATAERR;
 
 #[test]
 fn timeout_proxy_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
         "--clear-cache",
         "--debug",

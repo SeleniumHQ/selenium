@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Internal;
+using System.Globalization;
 
 #if !NET45 && !NET46 && !NET47
 using System.Runtime.InteropServices;
@@ -50,8 +51,47 @@ namespace OpenQA.Selenium
             var binaryFile = Binary;
             if (binaryFile == null) return null;
 
-            var arguments = "--browser " + options.BrowserName + " --output json";
-            return RunCommand(binaryFile, arguments);
+            StringBuilder argsBuilder = new StringBuilder();
+            argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser \"{0}\"", options.BrowserName);
+            argsBuilder.Append(" --output json");
+
+            if (!string.IsNullOrEmpty(options.BrowserVersion))
+            {
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-version {0}", options.BrowserVersion);
+            }
+
+            string browserBinary = BrowserBinary(options);
+            if (!string.IsNullOrEmpty(browserBinary))
+            {
+                argsBuilder.AppendFormat(CultureInfo.InvariantCulture, " --browser-path \"{0}\"", browserBinary);
+            }
+
+
+            return RunCommand(binaryFile, argsBuilder.ToString());
+        }
+
+
+        /// <summary>
+        /// Extracts the browser binary location from the vendor options when present. Only Chrome, Firefox, and Edge.
+        /// </summary>
+        private static string BrowserBinary(DriverOptions options)
+        {
+            ICapabilities capabilities = options.ToCapabilities();
+            string[] vendorOptionsCapabilities = { "moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions" };
+            foreach (string vendorOptionsCapability in vendorOptionsCapabilities)
+            {
+                try
+                {
+                    Dictionary<string, object> vendorOptions = capabilities.GetCapability(vendorOptionsCapability) as Dictionary<string, object>;
+                    return vendorOptions["binary"] as string;
+                }
+                catch (Exception)
+                {
+                    // no-op, it would be ideal to at least log the exception but the C# do not log anything at the moment 
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
