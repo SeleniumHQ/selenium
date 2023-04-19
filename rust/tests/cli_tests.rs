@@ -40,7 +40,7 @@ fn ok_test(
         browser, browser_version, driver_version
     );
 
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args(["--browser", &browser, "--browser-version", &browser_version])
         .assert()
         .success()
@@ -78,7 +78,7 @@ fn error_test(
         browser, browser_version, driver_version
     );
 
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
         "--browser",
         &browser,
@@ -99,7 +99,7 @@ fn error_test(
 fn beta_test(#[case] browser: String, #[case] driver_name: String) {
     println!("Beta test browser={browser} -- driver_name={driver_name}");
 
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     let assert = cmd
         .args(["--browser", &browser, "--browser-version", "beta"])
         .assert();
@@ -126,7 +126,7 @@ fn path_test(#[case] browser: String, #[case] browser_path: String) {
         browser, browser_path
     );
 
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args(["--browser", &browser, "--browser-path", &browser_path])
         .assert()
         .success()

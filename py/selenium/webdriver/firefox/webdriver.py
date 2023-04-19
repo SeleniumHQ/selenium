@@ -24,6 +24,7 @@ from io import BytesIO
 from shutil import rmtree
 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.common.driver_finder import DriverFinder
 from selenium.webdriver.remote.webdriver import WebDriver as RemoteWebDriver
 
 from .firefox_binary import FirefoxBinary
@@ -191,6 +192,7 @@ class WebDriver(RemoteWebDriver):
 
         if not self.service:
             self.service = Service(executable_path, service_args=service_args, log_path=service_log_path)
+        self.service.path = DriverFinder.get_path(self.service, options)
         self.service.start()
 
         executor = FirefoxRemoteConnection(

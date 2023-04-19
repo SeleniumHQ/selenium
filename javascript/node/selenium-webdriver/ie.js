@@ -35,7 +35,7 @@ const remote = require('./remote')
 const webdriver = require('./lib/webdriver')
 const { Browser, Capabilities } = require('./lib/capabilities')
 const error = require('./lib/error')
-const { driverLocation } = require('./common/seleniumManager')
+const { getPath } = require('./common/driverFinder')
 
 const IEDRIVER_EXE = 'IEDriverServer.exe'
 const OPTIONS_CAPABILITY_KEY = 'se:ieOptions'
@@ -400,22 +400,6 @@ function createServiceFromCapabilities(capabilities) {
   }
 
   let exe = locateSynchronously()
-  if (!exe) {
-    try {
-      exe = driverLocation('iexplorer')
-    } catch (err) {
-      console.log(`Unable to obtain driver using Selenium Manager: ${err}`)
-    }
-  }
-
-  if (!exe || !fs.existsSync(exe)) {
-    throw Error(
-      `IEDriver could not be found on the PATH.
-      For more information on how to install drivers see
-      https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/.`
-    )
-  }
-
   var args = []
   if (capabilities.has(Key.HOST)) {
     args.push('--host=' + capabilities.get(Key.HOST))
@@ -481,6 +465,9 @@ class Driver extends webdriver.WebDriver {
       service = opt_service
     } else {
       service = createServiceFromCapabilities(options)
+    }
+    if (!service.getExecutable()) {
+      service.setExecutable(getPath(service, options))
     }
 
     let client = service.start().then((url) => new http.HttpClient(url))

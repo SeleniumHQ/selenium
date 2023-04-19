@@ -29,9 +29,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_http_client, format_one_arg, format_three_args, Logger, SeleniumManager, BETA,
-    DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY, REMOVE_X86, STABLE,
-    WMIC_COMMAND, WMIC_COMMAND_ENV,
+    create_http_client, format_one_arg, format_three_args, format_two_args, Logger,
+    SeleniumManager, BETA, DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
+    REG_QUERY_FIND, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";
@@ -48,17 +48,17 @@ pub struct FirefoxManager {
 }
 
 impl FirefoxManager {
-    pub fn new() -> Result<Box<Self>, String> {
+    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
         let browser_name = FIREFOX_NAME;
         let driver_name = GECKODRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
-        let default_proxy = config.proxy.to_owned();
+        let default_proxy = &config.proxy;
         Ok(Box::new(FirefoxManager {
             browser_name,
             driver_name,
-            config,
             http_client: create_http_client(default_timeout, default_proxy)?,
+            config,
             log: Logger::default(),
         }))
     }
@@ -139,6 +139,13 @@ impl SeleniumManager for FirefoxManager {
                             browser_path,
                         ),
                     ];
+                    if !self.is_browser_version_unstable() {
+                        commands.push(format_two_args(
+                            REG_QUERY_FIND,
+                            r#"HKCU\Software\Mozilla"#,
+                            self.browser_name,
+                        ));
+                    }
                 }
                 _ => return None,
             }

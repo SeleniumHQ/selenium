@@ -167,6 +167,14 @@ class DriverService {
     this.address_ = null
   }
 
+  getExecutable() {
+    return this.executable_
+  }
+
+  setExecutable(value) {
+    this.executable_ = value
+  }
+
   /**
    * @return {!Promise<string>} A promise that resolves to the server's address.
    * @throws {Error} If the server has not been started.
@@ -318,10 +326,6 @@ DriverService.Builder = class {
    * @throws {Error} If the provided executable path does not exist.
    */
   constructor(exe) {
-    if (!fs.existsSync(exe)) {
-      throw Error(`The specified executable path does not exist: ${exe}`)
-    }
-
     /** @private @const {string} */
     this.exe_ = exe
 
