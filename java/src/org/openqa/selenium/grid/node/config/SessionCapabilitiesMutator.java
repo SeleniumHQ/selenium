@@ -152,7 +152,11 @@ public class SessionCapabilitiesMutator implements Function<Capabilities, Capabi
         toReturn.put("extensions", stereotypeExtensions);
       }
 
-      if (!name.equals("binary") && !name.equals("extensions") && !name.equals("args")) {
+      if (name.equals("binary") && !stereotypeOptions.containsKey("binary")) {
+        toReturn.put(name, value);
+      }
+
+      if (!name.equals("extensions") && !name.equals("args")) {
         toReturn.put(name, value);
       }
     }
