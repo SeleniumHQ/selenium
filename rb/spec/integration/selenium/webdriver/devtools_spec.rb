@@ -29,6 +29,12 @@ module Selenium
         expect(driver.title).to eq('XHTML Test Page')
       end
 
+      it 'maps methods to classes' do
+        expect(driver.devtools.css).not_to be_nil
+        expect(driver.devtools.dom).not_to be_nil
+        expect(driver.devtools.dom_debugger).not_to be_nil
+      end
+
       context 'when the devtools version is too high' do
         let(:existing_devtools_version) { driver.send(:devtools_version) }
         let(:imaginary_devtools_version) { existing_devtools_version + 1 }
