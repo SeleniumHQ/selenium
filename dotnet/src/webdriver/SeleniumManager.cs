@@ -21,6 +21,7 @@ using OpenQA.Selenium.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 
 #if !NET45 && !NET46 && !NET47
