@@ -36,8 +36,7 @@ fn ok_test(
     #[case] driver_version: String,
 ) {
     println!(
-        "CLI test browser={} -- browser_version={} -- driver_version={}",
-        browser, browser_version, driver_version
+        "CLI test browser={browser} -- browser_version={browser_version} -- driver_version={driver_version}"
     );
 
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
@@ -49,9 +48,9 @@ fn ok_test(
     let stdout = &cmd.unwrap().stdout;
     let output = match str::from_utf8(stdout) {
         Ok(v) => v,
-        Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
+        Err(e) => panic!("Invalid UTF-8 sequence: {e}"),
     };
-    println!("{}", output);
+    println!("{output}");
 
     assert!(output.contains(&driver_name));
     if !browser_version.is_empty() && output.contains("cache") {
@@ -74,8 +73,7 @@ fn error_test(
     #[case] error_code: i32,
 ) {
     println!(
-        "CLI test browser={} -- browser_version={} -- driver_version={}",
-        browser, browser_version, driver_version
+        "CLI test browser={browser} -- browser_version={browser_version} -- driver_version={driver_version}"
     );
 
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
@@ -106,7 +104,7 @@ fn beta_test(#[case] browser: String, #[case] driver_name: String) {
 
     let stdout = &assert.get_output().stdout;
     let output = str::from_utf8(stdout).unwrap();
-    println!("output {:?}", output);
+    println!("output {output:?}");
     assert!(output.contains(&driver_name) || output.contains("ERROR"));
 }
 
@@ -122,8 +120,7 @@ fn beta_test(#[case] browser: String, #[case] driver_name: String) {
 )]
 fn path_test(#[case] browser: String, #[case] browser_path: String) {
     println!(
-        "Path test browser={} -- browser_path={}",
-        browser, browser_path
+        "Path test browser={browser} -- browser_path={browser_path}"
     );
 
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));

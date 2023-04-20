@@ -164,6 +164,6 @@ pub fn clear_metadata(log: &Logger) {
         metadata_path.display()
     ));
     fs::remove_file(metadata_path).unwrap_or_else(|err| {
-        log.warn(format!("Error deleting metadata file: {}", err));
+        log.warn(format!("Error deleting metadata file: {err}"));
     });
 }

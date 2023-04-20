@@ -186,9 +186,9 @@ impl SeleniumManager for ChromeManager {
                 let mut browser_version_int = browser_version.parse::<i32>().unwrap_or_default();
                 for i in 0..FALLBACK_RETRIES {
                     let driver_url = if browser_version.is_empty() {
-                        format!("{}{}", DRIVER_URL, LATEST_RELEASE)
+                        format!("{DRIVER_URL}{LATEST_RELEASE}")
                     } else {
-                        format!("{}{}_{}", DRIVER_URL, LATEST_RELEASE, browser_version_int)
+                        format!("{DRIVER_URL}{LATEST_RELEASE}_{browser_version_int}")
                     };
                     if !browser_version.is_empty() && browser_version_int <= 0 {
                         break;

@@ -175,8 +175,7 @@ impl SeleniumManager for IExplorerManager {
                 release_version.push('0');
             }
             driver_url = format!(
-                "{}download/selenium-{}/{}{}.zip",
-                DRIVER_URL, release_version, IEDRIVER_RELEASE, driver_version
+                "{DRIVER_URL}download/selenium-{release_version}/{IEDRIVER_RELEASE}{driver_version}.zip"
             );
         }
         Ok(driver_url)

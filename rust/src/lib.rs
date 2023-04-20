@@ -127,7 +127,7 @@ pub trait SeleniumManager {
     fn download_driver(&self) -> Result<(), Box<dyn Error>> {
         let driver_url = Self::get_driver_url(self)?;
         self.get_logger()
-            .debug(format!("Driver URL: {}", driver_url));
+            .debug(format!("Driver URL: {driver_url}"));
         let (_tmp_folder, driver_zip_file) =
             download_driver_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
         let driver_path_in_cache = Self::get_driver_path_in_cache(self);
@@ -158,15 +158,13 @@ pub trait SeleniumManager {
         match get_browser_version_from_metadata(&metadata.browsers, browser_name) {
             Some(version) => {
                 self.get_logger().trace(format!(
-                    "Browser with valid TTL. Getting {} version from metadata",
-                    browser_name
+                    "Browser with valid TTL. Getting {browser_name} version from metadata"
                 ));
                 Some(version)
             }
             _ => {
                 self.get_logger().debug(format!(
-                    "Using shell command to find out {} version",
-                    browser_name
+                    "Using shell command to find out {browser_name} version"
                 ));
                 let mut browser_version = "".to_string();
                 for command in commands.iter() {
@@ -179,8 +177,7 @@ pub trait SeleniumManager {
                         continue;
                     }
                     self.get_logger().debug(format!(
-                        "The version of {} is {}",
-                        browser_name, full_browser_version
+                        "The version of {browser_name} is {full_browser_version}"
                     ));
                     match self.get_major_version(&full_browser_version) {
                         Ok(v) => browser_version = v,
@@ -221,7 +218,7 @@ pub trait SeleniumManager {
                 }
                 None => {
                     if self.is_browser_version_unstable() {
-                        return Err(format!("Browser version '{:?}' not found", browser_version));
+                        return Err(format!("Browser version '{browser_version:?}' not found"));
                     } else {
                         self.get_logger().debug(format!(
                         "The version of {} cannot be detected. Trying with latest driver version",
@@ -347,9 +344,9 @@ pub trait SeleniumManager {
 
     fn run_shell_command_with_log(&self, command: String) -> Result<String, Box<dyn Error>> {
         self.get_logger()
-            .debug(format!("Running command: {:?}", command));
+            .debug(format!("Running command: {command:?}"));
         let output = run_shell_command(self.get_os(), command)?;
-        self.get_logger().debug(format!("Output: {:?}", output));
+        self.get_logger().debug(format!("Output: {output:?}"));
         Ok(output)
     }
 
@@ -448,7 +445,7 @@ pub trait SeleniumManager {
         if timeout != default_timeout {
             config.timeout = timeout;
             self.get_logger()
-                .debug(format!("Using timeout of {} seconds", timeout));
+                .debug(format!("Using timeout of {timeout} seconds"));
             self.update_http_client()?;
         }
         Ok(())
@@ -575,7 +572,7 @@ fn get_index_version(full_version: &str, index: usize) -> Result<String, Box<dyn
     let version_vec: Vec<&str> = full_version.split('.').collect();
     Ok(version_vec
         .get(index)
-        .ok_or(format!("Wrong version: {}", full_version))?
+        .ok_or(format!("Wrong version: {full_version}"))?
         .to_string())
 }
 

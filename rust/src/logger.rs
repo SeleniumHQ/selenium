@@ -169,9 +169,9 @@ impl Logger {
             }
             OutputType::Shell => {
                 if level == Level::Info {
-                    print!("{}", message);
+                    print!("{message}");
                 } else if level == Level::Error {
-                    eprint!("{}", message);
+                    eprint!("{message}");
                 }
             }
             _ => {

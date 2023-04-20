@@ -31,7 +31,7 @@ fn json_output_test() {
 
     let stdout = &cmd.unwrap().stdout;
     let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
+    println!("{output}");
 
     let json: JsonOutput = serde_json::from_str(output).unwrap();
     assert!(!json.logs.is_empty());
@@ -53,7 +53,7 @@ fn shell_output_test() {
 
     let stdout = &cmd.unwrap().stdout;
     let output = str::from_utf8(stdout).unwrap();
-    println!("{}", output);
+    println!("{output}");
 
     let driver = Path::new(output);
     assert!(driver.exists());

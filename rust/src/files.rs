@@ -66,11 +66,10 @@ pub fn uncompress(
 ) -> Result<(), Box<dyn Error>> {
     let file = File::open(compressed_file)?;
     let kind = infer::get_from_path(compressed_file)?
-        .ok_or(format!("Format for file {:?} cannot be inferred", file))?;
+        .ok_or(format!("Format for file {file:?} cannot be inferred"))?;
     let extension = kind.extension();
     log.trace(format!(
-        "The detected extension of the compressed file is {}",
-        extension
+        "The detected extension of the compressed file is {extension}"
     ));
 
     if extension.eq_ignore_ascii_case(ZIP) {
@@ -81,8 +80,7 @@ pub fn uncompress(
         return Err("Wrong browser/driver version".into());
     } else {
         return Err(format!(
-            "Downloaded file cannot be uncompressed ({} extension)",
-            extension
+            "Downloaded file cannot be uncompressed ({extension} extension)"
         )
         .into());
     }
@@ -95,7 +93,7 @@ pub fn untargz(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Er
     let mut archive = Archive::new(tar);
     let parent_path = target
         .parent()
-        .ok_or(format!("Error getting parent of {:?}", file))?;
+        .ok_or(format!("Error getting parent of {file:?}"))?;
     if !target.exists() {
         archive.unpack(parent_path)?;
     }

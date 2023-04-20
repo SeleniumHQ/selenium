@@ -182,7 +182,7 @@ impl SeleniumManager for EdgeManager {
             }
             _ => {
                 let driver_url = match browser_version {
-                    None => format!("{}{}", DRIVER_URL, LATEST_STABLE),
+                    None => format!("{DRIVER_URL}{LATEST_STABLE}"),
                     Some(version) => format!(
                         "{}{}_{}_{}",
                         DRIVER_URL,
@@ -236,8 +236,7 @@ impl SeleniumManager for EdgeManager {
             "linux64"
         };
         Ok(format!(
-            "{}{}/edgedriver_{}.zip",
-            DRIVER_URL, driver_version, driver_label
+            "{DRIVER_URL}{driver_version}/edgedriver_{driver_label}.zip"
         ))
     }
 

@@ -49,13 +49,12 @@ pub async fn download_driver_to_tmp_folder(
             .and_then(|name| if name.is_empty() { None } else { Some(name) })
             .unwrap_or("tmp.bin");
 
-        log.trace(format!("File to be downloaded: {}", target_name));
+        log.trace(format!("File to be downloaded: {target_name}"));
         let target_name = tmp_dir.path().join(target_name);
         target_path = String::from(target_name.to_str().unwrap());
 
         log.trace(format!(
-            "Temporal folder for driver package: {}",
-            target_path
+            "Temporal folder for driver package: {target_path}"
         ));
         File::create(target_name)?
     };
