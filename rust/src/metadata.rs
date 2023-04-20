@@ -107,8 +107,9 @@ pub fn get_browser_version_from_metadata(
 pub fn get_driver_version_from_metadata(
     drivers_metadata: &[Driver],
     driver_name: &str,
-    browser_version: &str,
+    browser_version: Option<&str>,
 ) -> Option<String> {
+    let browser_version = browser_version.unwrap_or_default();
     let driver: Vec<&Driver> = drivers_metadata
         .iter()
         .filter(|d| d.driver_name.eq(driver_name) && d.browser_version.eq(browser_version))

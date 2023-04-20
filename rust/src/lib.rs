@@ -135,12 +135,16 @@ pub trait SeleniumManager {
     }
 
     fn detect_browser_path(&self) -> Option<&str> {
-        let mut browser_version = self.get_browser_version();
-        if browser_version.eq_ignore_ascii_case(CANARY) {
-            browser_version = NIGHTLY;
-        } else if browser_version.is_empty() {
-            browser_version = STABLE;
-        }
+        let browser_version = match self.get_browser_version() {
+            Some(version) => {
+                if version.eq_ignore_ascii_case(CANARY) {
+                    NIGHTLY
+                } else {
+                    ""
+                }
+            }
+            None => STABLE,
+        };
         self.get_browser_path_map()
             .get(&BrowserPath::new(str_to_os(self.get_os()), browser_version))
             .cloned()
@@ -203,7 +207,7 @@ pub trait SeleniumManager {
 
     fn discover_driver_version(&mut self) -> Result<String, String> {
         let browser_version = self.get_browser_version();
-        if browser_version.is_empty() || self.is_browser_version_unstable() {
+        if browser_version.is_none() || self.is_browser_version_unstable() {
             match self.discover_browser_version() {
                 Some(version) => {
                     if !self.is_safari() {
@@ -212,12 +216,12 @@ pub trait SeleniumManager {
                             self.get_browser_name(),
                             version
                         ));
-                        self.set_browser_version(version);
+                        self.set_browser_version(Some(version));
                     }
                 }
                 None => {
                     if self.is_browser_version_unstable() {
-                        return Err(format!("Browser version '{browser_version}' not found"));
+                        return Err(format!("Browser version '{:?}' not found", browser_version));
                     } else {
                         self.get_logger().debug(format!(
                         "The version of {} cannot be detected. Trying with latest driver version",
@@ -296,7 +300,7 @@ pub trait SeleniumManager {
     }
 
     fn is_browser_version_unstable(&self) -> bool {
-        let browser_version = self.get_browser_version();
+        let browser_version = self.get_browser_version().unwrap_or_default();
         browser_version.eq_ignore_ascii_case(BETA)
             || browser_version.eq_ignore_ascii_case(DEV)
             || browser_version.eq_ignore_ascii_case(NIGHTLY)
@@ -304,14 +308,15 @@ pub trait SeleniumManager {
     }
 
     fn resolve_driver(&mut self) -> Result<PathBuf, Box<dyn Error>> {
-        if self.get_driver_version().is_empty() {
+        if self.get_driver_version().is_none() {
             let driver_version = self.discover_driver_version()?;
-            self.set_driver_version(driver_version);
+            self.set_driver_version(Some(driver_version));
         }
+        let driver_version = self.get_driver_version().unwrap();
 
         if !self.is_safari() {
             if let (Some(version), Some(path)) = self.find_driver_in_path() {
-                if version == self.get_driver_version() {
+                if version == driver_version {
                     self.get_logger().debug(format!(
                         "Found {} {version} in PATH: {path}",
                         self.get_driver_name()
@@ -331,7 +336,7 @@ pub trait SeleniumManager {
                 self.get_logger().debug(format!(
                     "{} {} already in the cache",
                     self.get_driver_name(),
-                    self.get_driver_version()
+                    driver_version
                 ));
             }
         } else {
@@ -374,52 +379,60 @@ pub trait SeleniumManager {
     }
 
     fn set_arch(&mut self, arch: String) {
-        let mut config = self.get_config_mut();
-        config.arch = arch;
+        self.get_config_mut().arch = arch;
     }
 
-    fn get_browser_version(&self) -> &str {
-        self.get_config().browser_version.as_str()
+    fn get_browser_version(&self) -> Option<&str> {
+        self.get_config().browser_version.as_deref()
     }
 
-    fn set_browser_version(&mut self, browser_version: String) {
-        if !browser_version.is_empty() {
-            let mut config = self.get_config_mut();
-            config.browser_version = browser_version;
+    fn set_browser_version(&mut self, browser_version: Option<String>) {
+        if let Some(browser_version) = &browser_version {
+            if browser_version.is_empty() {
+                self.get_config_mut().browser_version = None;
+                return;
+            }
         }
+        self.get_config_mut().browser_version = browser_version;
     }
 
-    fn get_driver_version(&self) -> &str {
-        self.get_config().driver_version.as_str()
+    fn get_driver_version(&self) -> Option<&str> {
+        self.get_config().driver_version.as_deref()
     }
 
-    fn set_driver_version(&mut self, driver_version: String) {
-        if !driver_version.is_empty() {
-            let mut config = self.get_config_mut();
-            config.driver_version = driver_version;
+    fn set_driver_version(&mut self, driver_version: Option<String>) {
+        if let Some(driver_version) = &driver_version {
+            if driver_version.is_empty() {
+                self.get_config_mut().driver_version = None;
+                return;
+            }
         }
+        self.get_config_mut().driver_version = driver_version;
     }
 
-    fn get_browser_path(&self) -> &str {
-        self.get_config().browser_path.as_str()
+    fn get_browser_path(&self) -> Option<&str> {
+        self.get_config().browser_path.as_deref()
     }
 
-    fn set_browser_path(&mut self, browser_path: String) {
-        if !browser_path.is_empty() {
-            let mut config = self.get_config_mut();
-            config.browser_path = browser_path;
+    fn set_browser_path(&mut self, browser_path: Option<String>) {
+        if let Some(browser_path) = &browser_path {
+            if browser_path.is_empty() {
+                self.get_config_mut().browser_path = None;
+                return;
+            }
         }
+        self.get_config_mut().browser_path = browser_path;
     }
 
-    fn get_proxy(&self) -> &str {
-        self.get_config().proxy.as_str()
+    fn get_proxy(&self) -> Option<&str> {
+        self.get_config().proxy.as_deref()
     }
 
-    fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
-        if !proxy.is_empty() {
+    fn set_proxy(&mut self, proxy: Option<String>) -> Result<(), Box<dyn Error>> {
+        if let Some(proxy) = proxy {
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
             let mut config = self.get_config_mut();
-            config.proxy = proxy;
+            config.proxy = Some(proxy);
             self.update_http_client()?;
         }
         Ok(())
@@ -513,12 +526,12 @@ pub fn clear_cache(log: &Logger) {
     }
 }
 
-pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn Error>> {
+pub fn create_http_client(timeout: u64, proxy: Option<&str>) -> Result<Client, Box<dyn Error>> {
     let client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
         .timeout(Duration::from_secs(timeout));
-    if !proxy.is_empty() {
+    if let Some(proxy) = proxy {
         Proxy::all(proxy)?;
     }
     Ok(client_builder.build().unwrap_or_default())

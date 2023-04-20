@@ -32,12 +32,12 @@ pub const VERSION_PREFIX: &str = "-version";
 pub const PATH_PREFIX: &str = "-path";
 
 pub struct ManagerConfig {
-    pub browser_version: String,
-    pub driver_version: String,
-    pub browser_path: String,
+    pub browser_version: Option<String>,
+    pub driver_version: Option<String>,
+    pub browser_path: Option<String>,
+    pub proxy: Option<String>,
     pub os: String,
     pub arch: String,
-    pub proxy: String,
     pub timeout: u64,
     pub browser_ttl: u64,
     pub driver_ttl: u64,

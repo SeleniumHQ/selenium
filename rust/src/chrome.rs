@@ -54,7 +54,7 @@ impl ChromeManager {
         let driver_name = CHROMEDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
+        let default_proxy = config.proxy.as_deref();
         Ok(Box::new(ChromeManager {
             browser_name,
             driver_name,
@@ -119,13 +119,15 @@ impl SeleniumManager for ChromeManager {
     }
 
     fn discover_browser_version(&self) -> Option<String> {
-        let mut commands;
-        let mut browser_path = self.get_browser_path();
-        if browser_path.is_empty() {
-            match self.detect_browser_path() {
+        let (commands, browser_path) = match self.get_browser_path() {
+            Some(browser_path) => (
+                vec![format_one_arg(WMIC_COMMAND, browser_path)],
+                browser_path,
+            ),
+            _ => match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = path;
-                    commands = vec![
+                    let browser_path = path;
+                    let mut commands = vec![
                         format_three_args(
                             WMIC_COMMAND_ENV,
                             ENV_PROGRAM_FILES,
@@ -146,14 +148,16 @@ impl SeleniumManager for ChromeManager {
                             r#"HKCU\Software\Google\Chrome\BLBeacon"#,
                         ));
                     }
+
+                    (commands, browser_path)
                 }
                 _ => return None,
-            }
-        } else {
-            commands = vec![format_one_arg(WMIC_COMMAND, browser_path)];
-        }
+            },
+        };
+
         if !WINDOWS.is(self.get_os()) {
-            commands = vec![format_one_arg(DASH_DASH_VERSION, browser_path)]
+            return self
+                .detect_browser_version(vec![format_one_arg(DASH_DASH_VERSION, browser_path)]);
         }
         self.detect_browser_version(commands)
     }
@@ -178,6 +182,7 @@ impl SeleniumManager for ChromeManager {
             }
             _ => {
                 let mut driver_version = "".to_string();
+                let browser_version = browser_version.unwrap_or_default();
                 let mut browser_version_int = browser_version.parse::<i32>().unwrap_or_default();
                 for i in 0..FALLBACK_RETRIES {
                     let driver_url = if browser_version.is_empty() {
@@ -228,7 +233,9 @@ impl SeleniumManager for ChromeManager {
     }
 
     fn get_driver_url(&self) -> Result<String, Box<dyn Error>> {
-        let driver_version = self.get_driver_version();
+        let driver_version = self
+            .get_driver_version()
+            .expect("Driver version is not yet set!");
         let os = self.get_os();
         let arch = self.get_arch();
         let driver_label = if WINDOWS.is(os) {
@@ -259,7 +266,7 @@ impl SeleniumManager for ChromeManager {
     }
 
     fn get_driver_path_in_cache(&self) -> PathBuf {
-        let driver_version = self.get_driver_version();
+        let driver_version = self.get_driver_version().unwrap_or_default();
         let os = self.get_os();
         let arch = self.get_arch();
         let arch_folder = if WINDOWS.is(os) {

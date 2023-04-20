@@ -22,7 +22,7 @@ use clap::Parser;
 use exitcode::DATAERR;
 
 use exitcode::OK;
-use selenium_manager::config::BooleanKey;
+use selenium_manager::config::boolean_key;
 use selenium_manager::logger::Logger;
 use selenium_manager::REQUEST_TIMEOUT_SEC;
 use selenium_manager::TTL_BROWSERS_SEC;
@@ -102,18 +102,16 @@ struct Cli {
 
 fn main() {
     let cli = Cli::parse();
-    let debug = cli.debug || BooleanKey("debug", false).get_value();
-    let trace = cli.trace || BooleanKey("trace", false).get_value();
-    let log = Logger::create(&cli.output, debug, trace);
+    let debug = cli.debug || boolean_key("debug").unwrap_or(false);
+    let trace = cli.trace || boolean_key("trace").unwrap_or(false);
 
-    if cli.clear_cache || BooleanKey("clear-cache", false).get_value() {
+    let log = Logger::create(&cli.output, debug, trace);
+    if cli.clear_cache || boolean_key("clear-cache").unwrap_or(false) {
         clear_cache(&log);
     }
-
-    if cli.clear_metadata || BooleanKey("clear-metadata", false).get_value() {
+    if cli.clear_metadata || boolean_key("clear-metadata").unwrap_or(false) {
         clear_metadata(&log);
     }
-
     let browser_name: String = cli.browser.unwrap_or_default();
     let driver_name: String = cli.driver.unwrap_or_default();
 
@@ -133,13 +131,13 @@ fn main() {
     };
 
     selenium_manager.set_logger(log);
-    selenium_manager.set_browser_version(cli.browser_version.unwrap_or_default());
-    selenium_manager.set_driver_version(cli.driver_version.unwrap_or_default());
-    selenium_manager.set_browser_path(cli.browser_path.unwrap_or_default());
+    selenium_manager.set_browser_version(cli.browser_version);
+    selenium_manager.set_driver_version(cli.driver_version);
+    selenium_manager.set_browser_path(cli.browser_path);
 
     selenium_manager
         .set_timeout(cli.timeout)
-        .and_then(|_| selenium_manager.set_proxy(cli.proxy.unwrap_or_default()))
+        .and_then(|_| selenium_manager.set_proxy(cli.proxy))
         .and_then(|_| selenium_manager.resolve_driver())
         .map(|path| {
             let log = selenium_manager.get_logger();

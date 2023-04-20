@@ -59,7 +59,7 @@ impl IExplorerManager {
         let driver_name = IEDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
+        let default_proxy = config.proxy.as_deref();
         Ok(Box::new(IExplorerManager {
             browser_name,
             driver_name,
@@ -137,9 +137,9 @@ impl SeleniumManager for IExplorerManager {
                     let driver_version =
                         parse_version(driver_url.as_str()[index_release..].to_string())?;
 
-                    if !browser_version.is_empty() {
+                    if let Some(version) = browser_version {
                         metadata.drivers.push(create_driver_metadata(
-                            browser_version,
+                            version,
                             self.driver_name,
                             &driver_version,
                             driver_ttl,
@@ -161,7 +161,7 @@ impl SeleniumManager for IExplorerManager {
             driver_url = url.borrow().to_string();
         });
         if driver_url.is_empty() {
-            let driver_version = self.get_driver_version();
+            let driver_version = self.get_driver_version().unwrap_or_default();
             let mut release_version = driver_version.to_string();
             if !driver_version.ends_with('0') {
                 // E.g.: version 4.8.1 is shipped within release 4.8.0
@@ -183,7 +183,9 @@ impl SeleniumManager for IExplorerManager {
     }
 
     fn get_driver_path_in_cache(&self) -> PathBuf {
-        let driver_version = self.get_driver_version();
+        let driver_version = self
+            .get_driver_version()
+            .expect("Driver version is not yet set!");
         let _minor_driver_version = self
             .get_minor_version(driver_version)
             .unwrap_or_default()

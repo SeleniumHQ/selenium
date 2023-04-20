@@ -19,6 +19,7 @@ use crate::config::ManagerConfig;
 use reqwest::Client;
 use std::collections::HashMap;
 use std::error::Error;
+use std::io::{Error as IoError, ErrorKind::InvalidInput};
 use std::path::PathBuf;
 
 use crate::config::ARCH::{ARM64, X32};
@@ -54,7 +55,7 @@ impl EdgeManager {
         let driver_name = EDGEDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
+        let default_proxy = config.proxy.as_deref();
         Ok(Box::new(EdgeManager {
             browser_name,
             driver_name,
@@ -119,13 +120,15 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn discover_browser_version(&self) -> Option<String> {
-        let mut commands;
-        let mut browser_path = self.get_browser_path();
-        if browser_path.is_empty() {
-            match self.detect_browser_path() {
+        let (commands, browser_path) = match self.get_browser_path() {
+            Some(browser_path) => (
+                vec![format_one_arg(WMIC_COMMAND, browser_path)],
+                browser_path,
+            ),
+            _ => match self.detect_browser_path() {
                 Some(path) => {
-                    browser_path = path;
-                    commands = vec![
+                    let browser_path = path;
+                    let mut commands = vec![
                         format_three_args(
                             WMIC_COMMAND_ENV,
                             ENV_PROGRAM_FILES_X86,
@@ -146,18 +149,19 @@ impl SeleniumManager for EdgeManager {
                             r#"HKCU\Software\Microsoft\Edge\BLBeacon"#,
                         ));
                     }
+
+                    (commands, browser_path)
                 }
                 _ => return None,
-            }
-        } else {
-            commands = vec![format_one_arg(WMIC_COMMAND, browser_path)];
-        }
+            },
+        };
+
         if !WINDOWS.is(self.get_os()) {
-            commands = vec![format_one_arg(DASH_DASH_VERSION, browser_path)]
+            return self
+                .detect_browser_version(vec![format_one_arg(DASH_DASH_VERSION, browser_path)]);
         }
         self.detect_browser_version(commands)
     }
-
     fn get_driver_name(&self) -> &str {
         self.driver_name
     }
@@ -177,16 +181,15 @@ impl SeleniumManager for EdgeManager {
                 Ok(driver_version)
             }
             _ => {
-                let driver_url = if browser_version.is_empty() {
-                    format!("{}{}", DRIVER_URL, LATEST_STABLE)
-                } else {
-                    format!(
+                let driver_url = match browser_version {
+                    None => format!("{}{}", DRIVER_URL, LATEST_STABLE),
+                    Some(version) => format!(
                         "{}{}_{}_{}",
                         DRIVER_URL,
                         LATEST_RELEASE,
-                        browser_version,
+                        version,
                         self.get_os().to_uppercase()
-                    )
+                    ),
                 };
                 self.log.debug(format!(
                     "Reading {} version from {}",
@@ -194,9 +197,9 @@ impl SeleniumManager for EdgeManager {
                 ));
                 let driver_version = read_version_from_link(self.get_http_client(), driver_url)?;
 
-                if !browser_version.is_empty() {
+                if let Some(version) = browser_version {
                     metadata.drivers.push(create_driver_metadata(
-                        browser_version,
+                        version,
                         self.driver_name,
                         &driver_version,
                         driver_ttl,
@@ -210,7 +213,9 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn get_driver_url(&self) -> Result<String, Box<dyn Error>> {
-        let driver_version = self.get_driver_version();
+        let driver_version = self
+            .get_driver_version()
+            .ok_or(IoError::new(InvalidInput, "Driver version is not yet set"))?;
         let os = self.get_os();
         let arch = self.get_arch();
         let driver_label = if WINDOWS.is(os) {
@@ -237,7 +242,9 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn get_driver_path_in_cache(&self) -> PathBuf {
-        let driver_version = self.get_driver_version();
+        let driver_version = self
+            .get_driver_version()
+            .expect("Driver version is not yet set!");
         let os = self.get_os();
         let arch = self.get_arch();
         let arch_folder = if WINDOWS.is(os) {

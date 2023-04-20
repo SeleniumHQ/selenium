@@ -49,7 +49,7 @@ impl SafariTPManager {
         let driver_name = SAFARITPDRIVER_NAME;
         let config = ManagerConfig::default(browser_name, driver_name);
         let default_timeout = config.timeout.to_owned();
-        let default_proxy = &config.proxy;
+        let default_proxy = config.proxy.as_deref();
         Ok(Box::new(SafariTPManager {
             browser_name,
             driver_name,
@@ -81,21 +81,20 @@ impl SeleniumManager for SafariTPManager {
     }
 
     fn discover_browser_version(&self) -> Option<String> {
-        let mut browser_path = self.get_browser_path();
-        if browser_path.is_empty() {
-            match self.detect_browser_path() {
-                Some(path) => {
-                    browser_path = path;
-                }
-                _ => return None,
+        let browser_path = self
+            .get_browser_path()
+            .or_else(|| self.detect_browser_path());
+        match browser_path {
+            None => return None,
+            Some(path) => {
+                let command = if MACOS.is(self.get_os()) {
+                    vec![format_one_arg(PLIST_COMMAND, path)]
+                } else {
+                    return None;
+                };
+                self.detect_browser_version(command)
             }
         }
-        let command = if MACOS.is(self.get_os()) {
-            vec![format_one_arg(PLIST_COMMAND, browser_path)]
-        } else {
-            return None;
-        };
-        self.detect_browser_version(command)
     }
 
     fn get_driver_name(&self) -> &str {
