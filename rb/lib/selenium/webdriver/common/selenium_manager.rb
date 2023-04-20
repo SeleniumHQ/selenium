@@ -47,7 +47,7 @@ module Selenium
           end
           if options.respond_to?(:binary) && !options.binary.nil?
             command << '--browser-path'
-            command << options.binary.gsub("\\", "\\\\\\")
+            command << options.binary.gsub('\\', '\\\\\\')
           end
           command << '--debug' if WebDriver.logger.debug?
 
