@@ -19,6 +19,6 @@
 
 module Selenium
   module WebDriver
-    VERSION = '4.8.6'
+    VERSION = '4.9.0'
   end # WebDriver
 end # Selenium
