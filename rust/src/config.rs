@@ -187,9 +187,7 @@ pub fn uint_key(key: &str) -> Option<u64> {
 pub fn boolean_key(key: &str) -> Option<bool> {
     match get_config() {
         Ok(config) => {
-            let res = config
-                .get(key)
-                .and_then(|x| x.as_bool());
+            let res = config.get(key).and_then(|x| x.as_bool());
             if res.is_some() {
                 return res;
             }

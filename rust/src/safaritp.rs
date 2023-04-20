@@ -85,7 +85,7 @@ impl SeleniumManager for SafariTPManager {
             .get_browser_path()
             .or_else(|| self.detect_browser_path());
         match browser_path {
-            None => return None,
+            None => None,
             Some(path) => {
                 let command = if MACOS.is(self.get_os()) {
                     vec![format_one_arg(PLIST_COMMAND, path)]
