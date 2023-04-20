@@ -552,7 +552,7 @@ public class RemoteWebDriver implements WebDriver,
       Object value = getElementConverter().apply(response.getValue());
       response.setValue(value);
     } catch (Throwable e) {
-      log(sessionId, command.getName(), command, When.EXCEPTION);
+      log(sessionId, command.getName(), e.getMessage(), When.EXCEPTION);
       WebDriverException toThrow;
       if (command.getName().equals(DriverCommand.NEW_SESSION)) {
         if (e instanceof SessionNotCreatedException) {
@@ -663,10 +663,10 @@ public class RemoteWebDriver implements WebDriver,
         logger.log(level, "Executing: " + commandName + " " + text);
         break;
       case AFTER:
-        logger.log(level, "Executed: " + text);
+        logger.log(level, "Executed: " + commandName + " " + text);
         break;
       case EXCEPTION:
-        logger.log(level, "Exception: " + text);
+        logger.log(level, "Exception: " + commandName + " " + text);
         break;
       default:
         logger.log(level, text);
