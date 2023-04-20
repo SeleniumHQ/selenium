@@ -1,3 +1,13 @@
+v4.9.0
+======
+* Add CDP files for v112 and remove v109
+* Don't listen to error output stream from selenium manager to avoid messing up output (#11863)
+* Selenium Manager get Browser Version from Options classes
+* Selenium Manager use binary from Browser Options
+* Throw a descriptive exception if the current dev tools version is not supported (#11876)
+* Use ChangeType method to convert any object to boolean in WebElement properties (#11913)
+* Use selenium manager in tests (#11871)
+
 v4.8.2
 ======
 * Add CDP files for v111 and remove v108
