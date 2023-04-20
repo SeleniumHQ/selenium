@@ -30,7 +30,7 @@ const spawnSync = require('child_process').spawnSync
  * currently supported browsers for selenium-manager
  * @type {string[]}
  */
-const Browser = ['chrome', 'firefox', 'edge', 'iexplorer']
+const Browser = ['chrome', 'firefox', 'edge', 'MicrosoftEdge', 'iexplorer']
 
 /**
  * Determines the path of the correct Selenium Manager binary
@@ -58,20 +58,30 @@ function getBinary() {
 
 /**
  * Determines the path of the correct driver
- * @param {Browser|string} browser name to fetch the driver
+ * @param {Capabilities} options browser options to fetch the driver
  * @returns {string} path of the driver location
  */
 
-function driverLocation(browser) {
-  if (!Browser.includes(browser.toLocaleString())) {
+function driverLocation(options) {
+  if (!Browser.includes(options.getBrowserName().toLocaleString())) {
     throw new Error(
-      `Unable to locate driver associated with browser name: ${browser}`
+      `Unable to locate driver associated with browser name: ${options.getBrowserName()}`
     )
   }
 
-  let args = [getBinary(), '--browser', browser, '--output', 'json']
-  let output
+  let args = [getBinary(), '--browser', options.getBrowserName(), '--output', 'json']
 
+  if (options.getBrowserVersion() && options.getBrowserVersion() !== "") {
+    args.push("--browser-version", options.getBrowserVersion())
+  }
+
+  const vendorOptions = options.get('goog:chromeOptions') || options.get('ms:edgeOptions')
+                        || options.get('moz:firefoxOptions')
+  if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== "") {
+    args.push("--browser-path", '"' + vendorOptions.binary + '"')
+  }
+
+  let output
   try {
     output = JSON.parse(spawnSync(args.join(' ')).stdout.toString())
   } catch (e) {
@@ -79,7 +89,11 @@ function driverLocation(browser) {
     try {
       error = JSON.parse(output.stdout.toString()).result.message
     } catch (e) {
-      error = output.error.toString()
+      if (e instanceof SyntaxError) {
+        error = output.error.toString()
+      } else {
+        error = e.toString()
+      }
     }
     throw new Error(`Error executing command with ${args}: ${error}`)
   }

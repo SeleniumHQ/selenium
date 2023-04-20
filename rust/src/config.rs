@@ -88,21 +88,6 @@ impl ManagerConfig {
             driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
         }
     }
-
-    #[allow(clippy::should_implement_trait)]
-    pub fn clone(config: &ManagerConfig) -> ManagerConfig {
-        ManagerConfig {
-            browser_version: config.browser_version.as_str().to_string(),
-            driver_version: config.driver_version.as_str().to_string(),
-            os: config.os.as_str().to_string(),
-            arch: config.arch.as_str().to_string(),
-            browser_path: config.browser_path.as_str().to_string(),
-            proxy: config.proxy.as_str().to_string(),
-            timeout: config.timeout,
-            browser_ttl: config.browser_ttl,
-            driver_ttl: config.driver_ttl,
-        }
-    }
 }
 
 #[allow(dead_code)]

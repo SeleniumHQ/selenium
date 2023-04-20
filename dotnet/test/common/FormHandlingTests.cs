@@ -218,6 +218,9 @@ namespace OpenQA.Selenium
 
                 uploadElement.SendKeys(inputFile.FullName);
                 uploadElement.Submit();
+
+                // Explicitly wait next page to be loaded, Firefox is not handling elements submitting
+                WaitFor(() => driver.Url.EndsWith("resultPage.html"), "We are not redirected to the resultPage after submitting web element");
             }
 
             inputFile.Delete();

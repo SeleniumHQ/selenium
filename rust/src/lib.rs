@@ -65,6 +65,7 @@ pub const WMIC_COMMAND_ENV: &str =
     r#"set PFILES=%{}{}%&& wmic datafile where name='!PFILES:\=\\!{}' get Version /value"#;
 pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
 pub const REG_QUERY: &str = r#"REG QUERY {} /v version"#;
+pub const REG_QUERY_FIND: &str = r#"REG QUERY {} /f {}"#;
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
 pub const DASH_VERSION: &str = "{} -v";
@@ -130,7 +131,7 @@ pub trait SeleniumManager {
         let (_tmp_folder, driver_zip_file) =
             download_driver_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
         let driver_path_in_cache = Self::get_driver_path_in_cache(self);
-        uncompress(&driver_zip_file, driver_path_in_cache, self.get_logger())
+        uncompress(&driver_zip_file, &driver_path_in_cache, self.get_logger())
     }
 
     fn detect_browser_path(&self) -> Option<&str> {
@@ -440,8 +441,8 @@ pub trait SeleniumManager {
         Ok(())
     }
 
-    fn update_http_client(&mut self) -> Result<(), String> {
-        let proxy = self.get_proxy().to_string();
+    fn update_http_client(&mut self) -> Result<(), Box<dyn Error>> {
+        let proxy = self.get_proxy();
         let timeout = self.get_timeout();
         let http_client = create_http_client(timeout, proxy)?;
         self.set_http_client(http_client);
@@ -453,7 +454,9 @@ pub trait SeleniumManager {
 // Public functions
 // ----------------------------------------------------------
 
-pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumManager>, String> {
+pub fn get_manager_by_browser(
+    browser_name: String,
+) -> Result<Box<dyn SeleniumManager>, Box<dyn Error>> {
     let browser_name_lower_case = browser_name.to_ascii_lowercase();
     if browser_name_lower_case.eq(CHROME_NAME) {
         Ok(ChromeManager::new()?)
@@ -468,11 +471,16 @@ pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumMa
     } else if SAFARITP_NAMES.contains(&browser_name_lower_case.as_str()) {
         Ok(SafariTPManager::new()?)
     } else {
-        Err(format!("Invalid browser name: {browser_name}"))
+        Err(Box::new(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            format!("Invalid browser name: {browser_name}"),
+        )))
     }
 }
 
-pub fn get_manager_by_driver(driver_name: String) -> Result<Box<dyn SeleniumManager>, String> {
+pub fn get_manager_by_driver(
+    driver_name: String,
+) -> Result<Box<dyn SeleniumManager>, Box<dyn Error>> {
     if driver_name.eq_ignore_ascii_case(CHROMEDRIVER_NAME) {
         Ok(ChromeManager::new()?)
     } else if driver_name.eq_ignore_ascii_case(GECKODRIVER_NAME) {
@@ -484,7 +492,10 @@ pub fn get_manager_by_driver(driver_name: String) -> Result<Box<dyn SeleniumMana
     } else if driver_name.eq_ignore_ascii_case(SAFARIDRIVER_NAME) {
         Ok(SafariManager::new()?)
     } else {
-        Err(format!("Invalid driver name: {driver_name}"))
+        Err(Box::new(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            format!("Invalid driver name: {driver_name}"),
+        )))
     }
 }
 
@@ -502,20 +513,13 @@ pub fn clear_cache(log: &Logger) {
     }
 }
 
-pub fn create_http_client(timeout: u64, proxy: String) -> Result<Client, String> {
-    let mut client_builder = Client::builder()
+pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn Error>> {
+    let client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
         .timeout(Duration::from_secs(timeout));
     if !proxy.is_empty() {
-        match Proxy::all(proxy) {
-            Ok(p) => {
-                client_builder = client_builder.proxy(p);
-            }
-            Err(err) => {
-                return Err(err.to_string());
-            }
-        };
+        Proxy::all(proxy)?;
     }
     Ok(client_builder.build().unwrap_or_default())
 }
@@ -537,6 +541,10 @@ pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Er
 
 pub fn format_one_arg(string: &str, arg1: &str) -> String {
     string.replacen("{}", arg1, 1)
+}
+
+pub fn format_two_args(string: &str, arg1: &str, arg2: &str) -> String {
+    string.replacen("{}", arg1, 1).replacen("{}", arg2, 1)
 }
 
 pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> String {

@@ -60,8 +60,8 @@ pub fn create_path_if_not_exists(path: &Path) {
 }
 
 pub fn uncompress(
-    compressed_file: &String,
-    target: PathBuf,
+    compressed_file: &str,
+    target: &PathBuf,
     log: &Logger,
 ) -> Result<(), Box<dyn Error>> {
     let file = File::open(compressed_file)?;
@@ -89,7 +89,7 @@ pub fn uncompress(
     Ok(())
 }
 
-pub fn untargz(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn Error>> {
+pub fn untargz(file: File, target: &PathBuf, log: &Logger) -> Result<(), Box<dyn Error>> {
     log.trace(format!("Untargz file to {}", target.display()));
     let tar = GzDecoder::new(&file);
     let mut archive = Archive::new(tar);
@@ -102,7 +102,7 @@ pub fn untargz(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn 
     Ok(())
 }
 
-pub fn unzip(file: File, target: PathBuf, log: &Logger) -> Result<(), Box<dyn Error>> {
+pub fn unzip(file: File, target: &Path, log: &Logger) -> Result<(), Box<dyn Error>> {
     log.trace(format!("Unzipping file to {}", target.display()));
     let mut archive = ZipArchive::new(file)?;
 

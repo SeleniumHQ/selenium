@@ -63,4 +63,10 @@
     <Exec Command="$(ProjectDir)WebDriver.Common.Tests.csproj.prebuild.sh $(ProjectDir)" />
   </Target>
 
+  <!-- It is automatically imported when Selenium.WebDriver consumed via nuget package -->
+  <PropertyGroup>
+    <Selenium_Manager_BinariesRootPath>..\..\..\common\manager</Selenium_Manager_BinariesRootPath>
+  </PropertyGroup>
+  <Import Project="..\..\src\webdriver\build\Selenium.WebDriver.targets" />
+
 </Project>
