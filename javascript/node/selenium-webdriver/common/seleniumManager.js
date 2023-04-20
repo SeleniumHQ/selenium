@@ -47,7 +47,15 @@ function getBinary() {
   const file =
     directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
 
-  const filePath = path.join(__dirname, '..', '/bin', directory, file)
+  let seleniumManagerBasePath
+  if (process.env.SELENIUM_MANAGER_BASE_PATH) {
+    seleniumManagerBasePath = process.env.SELENIUM_MANAGER_BASE_PATH
+  } else {
+    seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
+  }
+  console.log(seleniumManagerBasePath)
+
+  const filePath = path.join(seleniumManagerBasePath, directory, file)
 
   if (!fs.existsSync(filePath)) {
     throw new Error(`Unable to obtain Selenium Manager`)
