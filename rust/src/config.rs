@@ -74,18 +74,18 @@ impl ManagerConfig {
         let browser_path_label = concat(browser_name, PATH_PREFIX);
 
         ManagerConfig {
-            browser_version: StringKey(vec!["browser-version", browser_version_label.as_str()], "")
-                .get_value(),
-            driver_version: StringKey(vec!["driver-version", driver_version_label.as_str()], "")
-                .get_value(),
-            browser_path: StringKey(vec!["browser-path", browser_path_label.as_str()], "")
-                .get_value(),
-            os: StringKey(vec!["os"], self_os).get_value(),
-            arch: StringKey(vec!["arch"], self_arch.as_str()).get_value(),
-            proxy: StringKey(vec!["proxy"], "").get_value(),
-            timeout: IntegerKey("timeout", REQUEST_TIMEOUT_SEC).get_value(),
-            browser_ttl: IntegerKey("browser-ttl", TTL_BROWSERS_SEC).get_value(),
-            driver_ttl: IntegerKey("driver-ttl", TTL_DRIVERS_SEC).get_value(),
+            proxy: string_keys(vec!["proxy"]),
+
+            browser_version: string_keys(vec!["browser-version", browser_version_label.as_str()]),
+            driver_version: string_keys(vec!["driver-version", driver_version_label.as_str()]),
+            browser_path: string_keys(vec!["browser-path", browser_path_label.as_str()]),
+
+            timeout: uint_key("timeout").unwrap_or(REQUEST_TIMEOUT_SEC),
+            browser_ttl: uint_key("browser-ttl").unwrap_or(TTL_BROWSERS_SEC),
+            driver_ttl: uint_key("driver-ttl").unwrap_or(TTL_DRIVERS_SEC),
+
+            os: string_key("os").unwrap_or(self_os.to_string()),
+            arch: string_key("arch").unwrap_or(self_arch),
         }
     }
 }
@@ -145,59 +145,59 @@ impl ARCH {
             .contains(&arch.to_ascii_lowercase().as_str())
     }
 }
+//pub fn string_keys
+pub fn string_keys(keys: Vec<&str>) -> Option<String> {
+    keys.iter().find_map(|x| string_key(x))
+}
 
-pub struct StringKey<'a>(pub Vec<&'a str>, pub &'a str);
-
-impl StringKey<'_> {
-    pub fn get_value(&self) -> String {
-        let config = get_config().unwrap_or_default();
-        let keys = self.0.to_owned();
-        let mut result;
-        for key in keys {
-            if config.contains_key(key) {
-                result = config[key].as_str().unwrap().to_string()
-            } else {
-                result = env::var(get_env_name(key)).unwrap_or_default()
+pub fn string_key(key: &str) -> Option<String> {
+    match get_config() {
+        Ok(config) => {
+            let res = config
+                .get(key)
+                .and_then(|x| x.as_str())
+                .map(|x| x.to_string());
+            if res.is_some() {
+                return res;
             }
-            if !result.is_empty() {
-                return result;
-            }
+            env::var(get_env_name(key)).ok()
         }
-        self.1.to_owned()
+        Err(_) => None, // TODO log errors
     }
 }
 
-pub struct IntegerKey<'a>(pub &'a str, pub u64);
-
-impl IntegerKey<'_> {
-    pub fn get_value(&self) -> u64 {
-        let config = get_config().unwrap_or_default();
-        let key = self.0;
-        if config.contains_key(key) {
-            config[key].as_integer().unwrap() as u64
-        } else {
+pub fn uint_key(key: &str) -> Option<u64> {
+    match get_config() {
+        Ok(config) => {
+            let res = config
+                .get(key)
+                .and_then(|x| x.as_integer())
+                .map(|x| x as u64);
+            if res.is_some() {
+                return res;
+            }
             env::var(get_env_name(key))
-                .unwrap_or_default()
-                .parse::<u64>()
-                .unwrap_or_else(|_| self.1.to_owned())
+                .ok()
+                .and_then(|x| x.as_str().parse().ok())
         }
+        Err(_) => None, // TODO log errors
     }
 }
 
-pub struct BooleanKey<'a>(pub &'a str, pub bool);
-
-impl BooleanKey<'_> {
-    pub fn get_value(&self) -> bool {
-        let config = get_config().unwrap_or_default();
-        let key = self.0;
-        if config.contains_key(key) {
-            config[key].as_bool().unwrap()
-        } else {
+pub fn boolean_key(key: &str) -> Option<bool> {
+    match get_config() {
+        Ok(config) => {
+            let res = config
+                .get(key)
+                .and_then(|x| x.as_bool());
+            if res.is_some() {
+                return res;
+            }
             env::var(get_env_name(key))
-                .unwrap_or_default()
-                .parse::<bool>()
-                .unwrap_or_else(|_| self.1.to_owned())
+                .ok()
+                .and_then(|x| (x.as_str()).parse().ok())
         }
+        Err(_) => None, // TODO log errors
     }
 }
 
