@@ -1,3 +1,13 @@
+v4.9.0
+======
+* Supported CDP versions: 85, 110, 111, 112
+* Handle redirects inside the JdkHttpClient (#11816)
+* [grid] Remove Json Wire Protocol support (#11823)
+* Selenium Manager use binary from Browser Options
+* [grid] Allowing binary to be set via options when not set in Grid
+* Log exception message (#11922)
+* [grid] Fixing remote execution for Edge when Java 8 client is used
+
 v4.8.3
 ======
 * Supported CDP versions: 85, 109, 110, 111
