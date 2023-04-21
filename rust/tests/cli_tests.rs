@@ -40,10 +40,16 @@ fn ok_test(
     );
 
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
-    cmd.args(["--browser", &browser, "--browser-version", &browser_version])
-        .assert()
-        .success()
-        .code(0);
+    cmd.args([
+        "--browser",
+        &browser,
+        "--browser-version",
+        &browser_version,
+        "--debug",
+    ])
+    .assert()
+    .success()
+    .code(0);
 
     let stdout = &cmd.unwrap().stdout;
     let output = match str::from_utf8(stdout) {
