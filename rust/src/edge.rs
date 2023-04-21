@@ -138,7 +138,7 @@ impl SeleniumManager for EdgeManager {
                             REMOVE_X86,
                             browser_path,
                         ),
-                        format_three_args(WMIC_COMMAND, ENV_LOCALAPPDATA, "", browser_path),
+                        format_three_args(WMIC_COMMAND_ENV, ENV_LOCALAPPDATA, "", browser_path),
                     ];
                     if !self.is_browser_version_unstable() {
                         commands.push(format_one_arg(
