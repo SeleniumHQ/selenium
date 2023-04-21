@@ -78,7 +78,11 @@ pub fn uncompress(
     } else if extension.eq_ignore_ascii_case(GZ) {
         untargz(file, target, log)?
     } else if extension.eq_ignore_ascii_case(XML) {
-        return Err("Wrong browser/driver version".into());
+        log.debug(format!(
+            "Wrong downloaded driver: {}",
+            fs::read_to_string(compressed_file).unwrap_or_default()
+        ));
+        return Err(PARSE_ERROR.into());
     } else {
         return Err(format!(
             "Downloaded file cannot be uncompressed ({} extension)",
