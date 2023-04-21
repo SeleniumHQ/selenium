@@ -179,8 +179,9 @@ pub fn get_binary_extension(os: &str) -> &str {
     }
 }
 
-pub fn parse_version(version_text: String) -> Result<String, Box<dyn Error>> {
+pub fn parse_version(version_text: String, log: &Logger) -> Result<String, Box<dyn Error>> {
     if version_text.to_ascii_lowercase().contains("error") {
+        log.debug(format!("Error parsing version: {}", version_text));
         return Err(PARSE_ERROR.into());
     }
     let mut parsed_version = "".to_string();
