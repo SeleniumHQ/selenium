@@ -144,7 +144,7 @@ fn main() {
         .map(|path| {
             let log = selenium_manager.get_logger();
             log.info(path.display());
-            flush_and_exit(OK, &log);
+            flush_and_exit(OK, log);
         })
         .unwrap_or_else(|err| {
             let log = selenium_manager.get_logger();
