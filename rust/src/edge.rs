@@ -1,3 +1,4 @@
+
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -141,7 +142,7 @@ impl SeleniumManager for EdgeManager {
                             REMOVE_X86,
                             browser_path,
                         ),
-                        format_three_args(WMIC_COMMAND, ENV_LOCALAPPDATA, "", browser_path),
+                        format_three_args(WMIC_COMMAND_ENV, ENV_LOCALAPPDATA, "", browser_path),
                     ];
                     if !self.is_browser_version_unstable() {
                         commands.push(format_one_arg(
@@ -181,16 +182,35 @@ impl SeleniumManager for EdgeManager {
                 Ok(driver_version)
             }
             _ => {
-                let driver_url = match browser_version {
-                    None => format!("{DRIVER_URL}{LATEST_STABLE}"),
-                    Some(version) => format!(
-                        "{}{}_{}_{}",
-                        DRIVER_URL,
-                        LATEST_RELEASE,
-                        version,
-                        self.get_os().to_uppercase()
-                    ),
+                let browser_version = match browser_version {
+                    Some(version) => version.to_string(),
+                    _ => {
+                        let latest_stable_url = format!("{}{}", DRIVER_URL, LATEST_STABLE);
+                        self.log.debug(format!(
+                            "Reading {} latest version from {}",
+                            &self.driver_name, latest_stable_url
+                        ));
+                        let latest_driver_version = read_version_from_link(
+                            self.get_http_client(),
+                            latest_stable_url,
+                            self.get_logger(),
+                        )?;
+                        let browser_version =
+                            self.get_major_version(latest_driver_version.as_str())?;
+                        self.log.debug(format!(
+                            "Latest {} major version is {}",
+                            &self.driver_name, browser_version
+                        ));
+                        browser_version
+                    }
                 };
+                let driver_url = format!(
+                    "{}{}_{}_{}",
+                    DRIVER_URL,
+                    LATEST_RELEASE,
+                    browser_version,
+                    self.get_os().to_uppercase()
+                );
                 self.log.debug(format!(
                     "Reading {} version from {}",
                     &self.driver_name, driver_url
@@ -198,15 +218,13 @@ impl SeleniumManager for EdgeManager {
                 let driver_version =
                     read_version_from_link(self.get_http_client(), driver_url, self.get_logger())?;
 
-                if let Some(version) = browser_version {
-                    metadata.drivers.push(create_driver_metadata(
-                        version,
-                        self.driver_name,
-                        &driver_version,
-                        driver_ttl,
-                    ));
-                    write_metadata(&metadata, self.get_logger());
-                }
+                metadata.drivers.push(create_driver_metadata(
+                    &browser_version,
+                    self.driver_name,
+                    &driver_version,
+                    driver_ttl,
+                ));
+                write_metadata(&metadata, self.get_logger());
 
                 Ok(driver_version)
             }
@@ -237,7 +255,8 @@ impl SeleniumManager for EdgeManager {
             "linux64"
         };
         Ok(format!(
-            "{DRIVER_URL}{driver_version}/edgedriver_{driver_label}.zip"
+            "{}{}/edgedriver_{}.zip",
+            DRIVER_URL, driver_version, driver_label
         ))
     }
 
