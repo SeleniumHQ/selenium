@@ -130,7 +130,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="../BaseActiveSession.html" title="class in org.openqa.selenium.grid.node">org.openqa.selenium.grid.node.BaseActiveSession</a></li>
 <li>
 <ul class="inheritance">
-<li><a href="../ProtocolConvertingSession.html" title="class in org.openqa.selenium.grid.node">org.openqa.selenium.grid.node.ProtocolConvertingSession</a></li>
+<li><a href="../DefaultActiveSession.html" title="class in org.openqa.selenium.grid.node">org.openqa.selenium.grid.node.DefaultActiveSession</a></li>
 <li>
 <ul class="inheritance">
 <li>org.openqa.selenium.grid.node.docker.DockerSession</li>
@@ -150,7 +150,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">DockerSession</span>
-extends <a href="../ProtocolConvertingSession.html" title="class in org.openqa.selenium.grid.node">ProtocolConvertingSession</a></pre>
+extends <a href="../DefaultActiveSession.html" title="class in org.openqa.selenium.grid.node">DefaultActiveSession</a></pre>
 </li>
 </ul>
 </div>
@@ -178,11 +178,11 @@ extends <a href="../ProtocolConvertingSession.html" title="class in org.openqa.s
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.grid.node.ProtocolConvertingSession">
+<li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.grid.node.DefaultActiveSession">
 <!--   -->
 </a>
-<h3>Methods inherited from class&nbsp;org.openqa.selenium.grid.node.<a href="../ProtocolConvertingSession.html" title="class in org.openqa.selenium.grid.node">ProtocolConvertingSession</a></h3>
-<code><a href="../ProtocolConvertingSession.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a></code></li>
+<h3>Methods inherited from class&nbsp;org.openqa.selenium.grid.node.<a href="../DefaultActiveSession.html" title="class in org.openqa.selenium.grid.node">DefaultActiveSession</a></h3>
+<code><a href="../DefaultActiveSession.html#execute(org.openqa.selenium.remote.http.HttpRequest)">execute</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.grid.node.BaseActiveSession">
@@ -228,6 +228,12 @@ extends <a href="../ProtocolConvertingSession.html" title="class in org.openqa.s
 <li class="blockList">
 <h4>stop</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;stop()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../ActiveSession.html#stop()">stop</a></code>&nbsp;in interface&nbsp;<code><a href="../ActiveSession.html" title="interface in org.openqa.selenium.grid.node">ActiveSession</a></code></dd>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../DefaultActiveSession.html#stop()">stop</a></code>&nbsp;in class&nbsp;<code><a href="../DefaultActiveSession.html" title="class in org.openqa.selenium.grid.node">DefaultActiveSession</a></code></dd>
+</dl>
 </li>
 </ul>
 </li>
