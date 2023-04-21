@@ -220,7 +220,7 @@ pub trait SeleniumManager {
                     if self.is_browser_version_unstable() {
                         return Err(format!("Browser version '{browser_version}' not found"));
                     } else {
-                        self.get_logger().debug(format!(
+                        self.get_logger().warn(format!(
                         "The version of {} cannot be detected. Trying with latest driver version",
                         self.get_browser_name()
                         ));
