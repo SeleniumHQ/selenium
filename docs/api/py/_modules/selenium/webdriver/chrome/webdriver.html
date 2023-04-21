@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selenium.webdriver.chrome.webdriver &#8212; Selenium 4.8 documentation</title>
+    <title>selenium.webdriver.chrome.webdriver &#8212; Selenium 4.9 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -58,6 +58,7 @@
 
 <span class="kn">from</span> <span class="nn">selenium.webdriver.chromium.webdriver</span> <span class="kn">import</span> <span class="n">ChromiumDriver</span>
 <span class="kn">from</span> <span class="nn">selenium.webdriver.common.desired_capabilities</span> <span class="kn">import</span> <span class="n">DesiredCapabilities</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.driver_finder</span> <span class="kn">import</span> <span class="n">DriverFinder</span>
 
 <span class="kn">from</span> <span class="nn">.options</span> <span class="kn">import</span> <span class="n">Options</span>
 <span class="kn">from</span> <span class="nn">.service</span> <span class="kn">import</span> <span class="n">DEFAULT_EXECUTABLE_PATH</span>
@@ -114,8 +115,11 @@
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">keep_alive</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">:</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_options</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">service</span><span class="p">:</span>
             <span class="n">service</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">executable_path</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">service_args</span><span class="p">,</span> <span class="n">service_log_path</span><span class="p">)</span>
+        <span class="n">service</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">DriverFinder</span><span class="o">.</span><span class="n">get_path</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">DesiredCapabilities</span><span class="o">.</span><span class="n">CHROME</span><span class="p">[</span><span class="s2">&quot;browserName&quot;</span><span class="p">],</span>
@@ -127,7 +131,10 @@
             <span class="n">service_log_path</span><span class="p">,</span>
             <span class="n">service</span><span class="p">,</span>
             <span class="n">keep_alive</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="WebDriver.create_options"><a class="viewcode-back" href="../../../../webdriver_chrome/selenium.webdriver.chrome.webdriver.html#selenium.webdriver.chrome.webdriver.WebDriver.create_options">[docs]</a>    <span class="k">def</span> <span class="nf">create_options</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Options</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Options</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>
@@ -160,7 +167,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.8 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">Selenium 4.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
