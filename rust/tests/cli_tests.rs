@@ -63,6 +63,7 @@ fn ok_test(
     if !browser_version.is_empty() && output.contains("cache") {
         assert!(output.contains(&driver_version));
     }
+    assert!(!output.contains("Trying with latest driver version"));
 }
 
 #[rstest]
