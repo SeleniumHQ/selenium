@@ -172,7 +172,8 @@ pub trait SeleniumManager {
                         Ok(out) => out,
                         Err(_e) => continue,
                     };
-                    let full_browser_version = parse_version(output).unwrap_or_default();
+                    let full_browser_version =
+                        parse_version(output, self.get_logger()).unwrap_or_default();
                     if full_browser_version.is_empty() {
                         continue;
                     }
@@ -255,7 +256,7 @@ pub trait SeleniumManager {
             .run_shell_command_with_log(format_one_arg(DASH_DASH_VERSION, self.get_driver_name()))
         {
             Ok(output) => {
-                let parsed_version = parse_version(output).unwrap_or_default();
+                let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
                 if !parsed_version.is_empty() {
                     let which_command = if WINDOWS.is(self.get_os()) {
                         WHERE_COMMAND

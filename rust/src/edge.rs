@@ -195,7 +195,8 @@ impl SeleniumManager for EdgeManager {
                     "Reading {} version from {}",
                     &self.driver_name, driver_url
                 ));
-                let driver_version = read_version_from_link(self.get_http_client(), driver_url)?;
+                let driver_version =
+                    read_version_from_link(self.get_http_client(), driver_url, self.get_logger())?;
 
                 if let Some(version) = browser_version {
                     metadata.drivers.push(create_driver_metadata(

@@ -134,8 +134,10 @@ impl SeleniumManager for IExplorerManager {
 
                     let index_release =
                         driver_url.rfind(IEDRIVER_RELEASE).unwrap() + IEDRIVER_RELEASE.len();
-                    let driver_version =
-                        parse_version(driver_url.as_str()[index_release..].to_string())?;
+                    let driver_version = parse_version(
+                        driver_url.as_str()[index_release..].to_string(),
+                        self.get_logger(),
+                    )?;
 
                     if let Some(version) = browser_version {
                         metadata.drivers.push(create_driver_metadata(
