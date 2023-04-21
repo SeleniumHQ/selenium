@@ -220,7 +220,7 @@ pub trait SeleniumManager {
                 None => {
                     if self.is_browser_version_unstable() {
                         return Err(format!("Browser version '{browser_version:?}' not found"));
-                    } else {
+                    } else if !self.is_iexplorer() {
                         self.get_logger().warn(format!(
                         "The version of {} cannot be detected. Trying with latest driver version",
                         self.get_browser_name()
@@ -295,6 +295,10 @@ pub trait SeleniumManager {
 
     fn is_safari(&self) -> bool {
         self.get_browser_name().contains(SAFARI_NAME)
+    }
+
+    fn is_iexplorer(&self) -> bool {
+        self.get_browser_name().eq(IE_NAMES[0])
     }
 
     fn is_browser_version_unstable(&self) -> bool {
