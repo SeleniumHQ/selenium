@@ -31,42 +31,33 @@ class BrowsingContextInspector {
   }
 
   async onBrowsingContextCreated(callback) {
-    if (this._browsingContextIds != null) {
-      await this.bidi.subscribe(
-        'browsingContext.contextCreated',
-        this._browsingContextIds
-      )
-    } else {
-      await this.bidi.subscribe('browsingContext.contextCreated')
-    }
-    await this.on(callback)
+    await this.subscribeAndHandleEvent(
+      'browsingContext.contextCreated',
+      callback
+    )
   }
 
   async onDomContentLoaded(callback) {
-    if (this._browsingContextIds != null) {
-      await this.bidi.subscribe(
-        'browsingContext.domContentLoaded',
-        this._browsingContextIds
-      )
-    } else {
-      await this.bidi.subscribe('browsingContext.domContentLoaded')
-    }
-    await this.on(callback)
+    await this.subscribeAndHandleEvent(
+      'browsingContext.domContentLoaded',
+      callback
+    )
   }
 
   async onBrowsingContextLoaded(callback) {
-    if (this._browsingContextIds != null) {
-      await this.bidi.subscribe(
-        'browsingContext.load',
-        this._browsingContextIds
-      )
-    } else {
-      await this.bidi.subscribe('browsingContext.load')
-    }
-    await this.on(callback)
+    await this.subscribeAndHandleEvent('browsingContext.load', callback)
   }
 
-  async on(callback) {
+  async subscribeAndHandleEvent(eventType, callback) {
+    if (this._browsingContextIds != null) {
+      await this.bidi.subscribe(eventType, this._browsingContextIds)
+    } else {
+      await this.bidi.subscribe(eventType)
+    }
+    this._on(callback)
+  }
+
+  async _on(callback) {
     this.ws = await this.bidi.socket
     this.ws.on('message', (event) => {
       const { params } = JSON.parse(Buffer.from(event.toString()))
