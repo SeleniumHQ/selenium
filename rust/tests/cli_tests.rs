@@ -62,7 +62,10 @@ fn ok_test(
     if !browser_version.is_empty() && output.contains("cache") {
         assert!(output.contains(&driver_version));
     }
-    assert!(!output.contains("Trying with latest driver version"), "Local driver version not found. Do you have {browser} installed?");
+    assert!(
+        !output.contains("Trying with latest driver version"),
+        "Local driver version not found. Do you have {browser} installed?"
+    );
 }
 
 #[rstest]
@@ -126,9 +129,7 @@ fn beta_test(#[case] browser: String, #[case] driver_name: String) {
     r#"/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"#
 )]
 fn path_test(#[case] browser: String, #[case] browser_path: String) {
-    println!(
-        "Path test browser={browser} -- browser_path={browser_path}"
-    );
+    println!("Path test browser={browser} -- browser_path={browser_path}");
 
     let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args(["--browser", &browser, "--browser-path", &browser_path])

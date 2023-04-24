@@ -1,4 +1,3 @@
-
 // Licensed to the Software Freedom Conservancy (SFC) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -168,12 +167,15 @@ impl SeleniumManager for EdgeManager {
     }
 
     fn request_driver_version(&self) -> Result<String, Box<dyn Error>> {
-        let browser_version = self.get_browser_version();
+        let mut browser_version = self.get_browser_version().to_string();
         let mut metadata = get_metadata(self.get_logger());
         let driver_ttl = self.get_config().driver_ttl;
 
-        match get_driver_version_from_metadata(&metadata.drivers, self.driver_name, browser_version)
-        {
+        match get_driver_version_from_metadata(
+            &metadata.drivers,
+            self.driver_name,
+            browser_version.as_str(),
+        ) {
             Some(driver_version) => {
                 self.log.trace(format!(
                     "Driver TTL is valid. Getting {} version from metadata",
