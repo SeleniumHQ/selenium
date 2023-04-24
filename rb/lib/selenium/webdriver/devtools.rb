@@ -60,7 +60,7 @@ module Selenium
                           "#{namespace}::#{Object.const_get(methods_to_classes)[method]}"
                         else
                           # selenium-devtools 0.112 and older
-                          "#{namespace}::#{method.capitalize}}"
+                          "#{namespace}::#{method.capitalize}"
                         end
 
         return unless Object.const_defined?(desired_class)
