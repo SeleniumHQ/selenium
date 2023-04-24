@@ -53,9 +53,7 @@ pub async fn download_driver_to_tmp_folder(
         let target_name = tmp_dir.path().join(target_name);
         target_path = String::from(target_name.to_str().unwrap());
 
-        log.trace(format!(
-            "Temporal folder for driver package: {target_path}"
-        ));
+        log.trace(format!("Temporal folder for driver package: {target_path}"));
         File::create(target_name)?
     };
     let mut content = Cursor::new(response.bytes().await?);

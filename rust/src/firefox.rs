@@ -179,7 +179,8 @@ impl SeleniumManager for FirefoxManager {
             }
             _ => {
                 let latest_url = format!("{DRIVER_URL}{LATEST_RELEASE}");
-                let driver_version = read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
+                let driver_version =
+                    read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
 
                 if let Some(browser_version) = browser_version {
                     metadata.drivers.push(create_driver_metadata(

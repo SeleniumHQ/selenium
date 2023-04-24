@@ -83,10 +83,9 @@ pub fn uncompress(
         ));
         return Err(PARSE_ERROR.into());
     } else {
-        return Err(format!(
-            "Downloaded file cannot be uncompressed ({extension} extension)"
-        )
-        .into());
+        return Err(
+            format!("Downloaded file cannot be uncompressed ({extension} extension)").into(),
+        );
     }
     Ok(())
 }
