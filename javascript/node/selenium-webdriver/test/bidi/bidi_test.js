@@ -941,7 +941,7 @@ suite(
           result.exceptionDetails.text,
           "SyntaxError: expected expression, got ')'"
         )
-        assert.equal(result.exceptionDetails.lineNumber, 274)
+        assert.equal(result.exceptionDetails.lineNumber, 285)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
@@ -1082,7 +1082,7 @@ suite(
           result.exceptionDetails.text,
           "SyntaxError: expected expression, got ')'"
         )
-        assert.equal(result.exceptionDetails.lineNumber, 240)
+        assert.equal(result.exceptionDetails.lineNumber, 251)
         assert.equal(result.exceptionDetails.columnNumber, 39)
         assert.equal(result.exceptionDetails.stackTrace.callFrames.length, 0)
       })
