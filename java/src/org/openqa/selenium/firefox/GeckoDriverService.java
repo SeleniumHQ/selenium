@@ -61,15 +61,17 @@ public class GeckoDriverService extends FirefoxDriverService {
    * @param args The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
+   * @deprecated use {@link GeckoDriverService#GeckoDriverService(File, int, Duration, List, Map)}
    */
+  @Deprecated
   public GeckoDriverService(
       File executable,
       int port,
       List<String> args,
       Map<String, String> environment) throws IOException {
     super(executable, port, DEFAULT_TIMEOUT,
-      unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+          unmodifiableList(new ArrayList<>(args)),
+          unmodifiableMap(new HashMap<>(environment)));
   }
 
   public String getDriverName() {

@@ -56,14 +56,21 @@ public class SafariTechPreviewDriverService extends DriverService {
     return new SafariOptions().setUseTechnologyPreview(true);
   }
 
+  /**
+   * @param executable  The SafariDriver executable.
+   * @param port        Which port to start the SafariDriver on.
+   * @param args        The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   * @deprecated use {@link SafariTechPreviewDriverService#SafariTechPreviewDriverService(File, int, Duration, List, Map)}
+   */
+  @Deprecated
   public SafariTechPreviewDriverService(
-    File executable,
-    int port,
-    List<String> args,
-    Map<String, String> environment) throws IOException {
-    super(executable, port, DEFAULT_TIMEOUT,
-      unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      File executable,
+      int port,
+      List<String> args,
+      Map<String, String> environment) throws IOException {
+    this(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
   public SafariTechPreviewDriverService(

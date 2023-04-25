@@ -107,15 +107,17 @@ public class ChromeDriverService extends DriverService {
    * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
+   * @deprecated use {@link ChromeDriverService#ChromeDriverService(File, int, Duration, List, Map)}
    */
+  @Deprecated
   public ChromeDriverService(
-    File executable,
-    int port,
-    List<String> args,
-    Map<String, String> environment) throws IOException {
-    super(executable, port, DEFAULT_TIMEOUT,
-      unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+      File executable,
+      int port,
+      List<String> args,
+      Map<String, String> environment) throws IOException {
+    this(executable, port, DEFAULT_TIMEOUT,
+         unmodifiableList(new ArrayList<>(args)),
+         unmodifiableMap(new HashMap<>(environment)));
   }
 
   /**
