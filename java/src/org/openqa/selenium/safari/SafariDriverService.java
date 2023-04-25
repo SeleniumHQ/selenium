@@ -51,6 +51,8 @@ public class SafariDriverService extends DriverService {
    */
   public static final String SAFARI_DRIVER_EXE_PROPERTY = "webdriver.safari.driver";
 
+  private static final String SAFARI_DRIVER_LOGGING = "webdriver.safari.logging";
+
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
 
   /**
@@ -145,6 +147,8 @@ public class SafariDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
       SafariDriverService, SafariDriverService.Builder> {
 
+    private boolean diagnose = Boolean.getBoolean(SAFARI_DRIVER_LOGGING);
+
     @Override
     public int score(Capabilities capabilities) {
       int score = 0;
@@ -156,9 +160,24 @@ public class SafariDriverService extends DriverService {
       return score;
     }
 
+    public Builder withLogging(Boolean logging) {
+      this.diagnose = logging;
+      return this;
+    }
+
+    @Override
+    public Builder withLogFile(File logFile) {
+      throw new WebDriverException("Can not set log location for Safari; use withLogging(true) and locate log in ~/Library/Logs/com.apple.WebDriver/");
+    }
+
     @Override
     protected List<String> createArgs() {
-      return Arrays.asList("--port", String.valueOf(getPort()));
+      List<String> args = new ArrayList<>(
+        Arrays.asList("--port", String.valueOf(getPort())));
+      if (this.diagnose) {
+        args.add("--diagnose");
+      }
+      return args;
     }
 
     @Override
