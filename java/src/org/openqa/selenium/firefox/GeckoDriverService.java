@@ -43,7 +43,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.FIREFOX;
 
 /**
- * Manages the life and death of an GeckoDriver aka 'wires'.
+ * Manages the life and death of an GeckoDriver
  */
 public class GeckoDriverService extends FirefoxDriverService {
 
@@ -74,19 +74,6 @@ public class GeckoDriverService extends FirefoxDriverService {
           unmodifiableMap(new HashMap<>(environment)));
   }
 
-  public String getDriverName() {
-    return GECKO_DRIVER_NAME;
-  }
-
-  public String getDriverProperty() {
-    return GECKO_DRIVER_EXE_PROPERTY;
-  }
-
-  @Override
-  public Capabilities getDefaultDriverOptions() {
-    return new FirefoxOptions();
-  }
-
   /**
    * @param executable The GeckoDriver executable.
    * @param port Which port to start the GeckoDriver on.
@@ -106,11 +93,24 @@ public class GeckoDriverService extends FirefoxDriverService {
       unmodifiableMap(new HashMap<>(environment)));
   }
 
+  public String getDriverName() {
+    return GECKO_DRIVER_NAME;
+  }
+
+  public String getDriverProperty() {
+    return GECKO_DRIVER_EXE_PROPERTY;
+  }
+
+  @Override
+  public Capabilities getDefaultDriverOptions() {
+    return new FirefoxOptions();
+  }
+
   /**
    * Configures and returns a new {@link GeckoDriverService} using the default configuration. In
    * this configuration, the service will use the GeckoDriver executable identified by the
-   * {@link #GECKO_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
-   * be configured to use a free port on the current system.
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
+   * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new GeckoDriverService using the default configuration.
    */
@@ -119,7 +119,7 @@ public class GeckoDriverService extends FirefoxDriverService {
   }
 
   /**
-   * Checks if the browser driver binary is already present. Grid uses this method to show
+   * Checks if the GeckoDriver binary is already present. Grid uses this method to show
    * the available browsers and drivers, hence its visibility.
    *
    * @return Whether the browser driver path was found.
@@ -208,14 +208,14 @@ public class GeckoDriverService extends FirefoxDriverService {
       args.add(String.format("http://localhost:%d", wsPort));
       args.add(String.format("http://[::1]:%d", wsPort));
       if (firefoxBinary != null) {
-        args.add("-b");
+        args.add("--binary");
         args.add(firefoxBinary.getPath());
       } else {
         // Read system property for Firefox binary and use those if they are set
         Optional<Executable> executable =
           Optional.ofNullable(FirefoxBinary.locateFirefoxBinaryFromSystemProperty());
         executable.ifPresent(e -> {
-          args.add("-b");
+          args.add("--binary");
           args.add(e.getPath());
         });
         // If the binary stays null, GeckoDriver will be responsible for finding Firefox on the

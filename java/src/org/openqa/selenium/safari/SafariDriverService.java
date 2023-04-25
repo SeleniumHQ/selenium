@@ -38,22 +38,20 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.remote.Browser.SAFARI;
 
+/**
+ * Manages the life and death of SafariDriver.
+ */
 public class SafariDriverService extends DriverService {
 
-  /**
-   * System property that defines the location of the safaridriver executable that will be used by
-   * the {@link #createDefaultService() default service}.
-   */
   public static final String SAFARI_DRIVER_NAME = "safaridriver";
 
+  /**
+   * System property that defines the location of the safaridriver executable
+   * that will be used by the {@link #createDefaultService() default service}.
+   */
   public static final String SAFARI_DRIVER_EXE_PROPERTY = "webdriver.safari.driver";
 
   private static final File SAFARI_DRIVER_EXECUTABLE = new File("/usr/bin/safaridriver");
-
-  @Override
-  protected Capabilities getDefaultDriverOptions() {
-    return new SafariOptions();
-  }
 
   /**
    * @param executable  The SafariDriver executable.
@@ -72,12 +70,20 @@ public class SafariDriverService extends DriverService {
     this(executable, port, DEFAULT_TIMEOUT, args, environment);
   }
 
+  /**
+   * @param executable  The SafariDriver executable.
+   * @param port        Which port to start the SafariDriver on.
+   * @param timeout     Timeout waiting for driver server to start.
+   * @param args        The arguments to the launched server.
+   * @param environment The environment for the launched server.
+   * @throws IOException If an I/O error occurs.
+   */
   public SafariDriverService(
-    File executable,
-    int port,
-    Duration timeout,
-    List<String> args,
-    Map<String, String> environment) throws IOException {
+      File executable,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, timeout,
           unmodifiableList(new ArrayList<>(args)),
           unmodifiableMap(new HashMap<>(environment)));
@@ -95,12 +101,25 @@ public class SafariDriverService extends DriverService {
     return SAFARI_DRIVER_EXECUTABLE;
   }
 
+  @Override
+  protected Capabilities getDefaultDriverOptions() {
+    return new SafariOptions();
+  }
+
+  /**
+   * Configures and returns a new {@link SafariDriverService} using the default configuration. In
+   * this configuration, the service will use the SafariDriver executable identified by the
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
+   * Each service created by this method will be configured to use a free port on the current system.
+   *
+   * @return A new SafariDriverService using the default configuration.
+   */
   public static SafariDriverService createDefaultService() {
     return new Builder().build();
   }
 
   /**
-   * Checks if the browser driver binary is available. Grid uses this method to show
+   * Checks if the SafariDriver binary is available. Grid uses this method to show
    * the available browsers and drivers, hence its visibility.
    *
    * @return Whether the browser driver path was found.
@@ -119,6 +138,9 @@ public class SafariDriverService extends DriverService {
     }
   }
 
+  /**
+   * Builder used to configure new {@link SafariDriverService} instances.
+   */
   @AutoService(DriverService.Builder.class)
   public static class Builder extends DriverService.Builder<
       SafariDriverService, SafariDriverService.Builder> {

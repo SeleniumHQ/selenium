@@ -44,8 +44,8 @@ public class EdgeDriverService extends DriverService {
   public static final String EDGE_DRIVER_NAME = "msedgedriver";
 
   /**
-   * System property that defines the location of the MSEdgeDriver executable that will be used by
-   * the default service.
+   * System property that defines the location of the MSEdgeDriver executable
+   * that will be used by the {@link #createDefaultService() default service}.
    */
   public static final String EDGE_DRIVER_EXE_PROPERTY = "webdriver.edge.driver";
 
@@ -55,7 +55,8 @@ public class EdgeDriverService extends DriverService {
   public static final String EDGE_DRIVER_READABLE_TIMESTAMP = "webdriver.edge.readableTimestamp";
 
   /**
-   * System property that defines the default location where MSEdgeDriver output is logged.
+   * System property that defines the location of the file where MSEdgeDriver
+   * should write log messages to.
    */
   public static final String EDGE_DRIVER_LOG_PROPERTY = "webdriver.edge.logfile";
 
@@ -65,7 +66,7 @@ public class EdgeDriverService extends DriverService {
   public static final String EDGE_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.edge.loglevel";
 
   /**
-   * Boolean system property that defines whether MSEdgeDriver should append to existing log file.
+   * System property that defines the {@link ChromiumDriverLogLevel} for MSEdgeDriver logs.
    */
   public static final String EDGE_DRIVER_APPEND_LOG_PROPERTY = "webdriver.edge.appendLog";
 
@@ -102,11 +103,11 @@ public class EdgeDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public EdgeDriverService(
-    File executable,
-    int port,
-    Duration timeout,
-    List<String> args,
-    Map<String, String> environment) throws IOException {
+      File executable,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, timeout,
           unmodifiableList(new ArrayList<>(args)),
           unmodifiableMap(new HashMap<>(environment)));
@@ -131,14 +132,14 @@ public class EdgeDriverService extends DriverService {
    * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
    * Each service created by this method will be configured to use a free port on the current system.
    *
-   * @return A new ChromiumEdgeDriverService using the default configuration.
+   * @return A new EdgeDriverService using the default configuration.
    */
   public static EdgeDriverService createDefaultService() {
     return new Builder().build();
   }
 
   /**
-   * Checks if the browser driver binary is already present. Grid uses this method to show
+   * Checks if the MSEdgeDriver binary is already present. Grid uses this method to show
    * the available browsers and drivers, hence its visibility.
    *
    * @return Whether the browser driver path was found.
@@ -146,7 +147,6 @@ public class EdgeDriverService extends DriverService {
   static boolean isPresent() {
     return findExePath(EDGE_DRIVER_NAME, EDGE_DRIVER_EXE_PROPERTY) != null;
   }
-
 
   /**
    * Builder used to configure new {@link EdgeDriverService} instances.

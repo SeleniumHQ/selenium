@@ -44,8 +44,8 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_NAME = "chromedriver";
 
   /**
-   * System property that defines the location of the ChromeDriver executable that will be used by
-   * the {@link #createDefaultService() default service}.
+   * System property that defines the location of the ChromeDriver executable
+   * that will be used by the {@link #createDefaultService() default service}.
    */
   public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
 
@@ -55,12 +55,13 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_READABLE_TIMESTAMP = "webdriver.chrome.readableTimestamp";
 
   /**
-   * System property that defines the default location where ChromeDriver output is logged.
+   * System property that defines the location of the file where ChromeDriver
+   * should write log messages to.
    */
   public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
-   * System property that defines the log level when ChromeDriver output is logged.
+   * System property that defines the {@link ChromiumDriverLogLevel} for ChromeDriver logs.
    */
   public static final String CHROME_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.chrome.loglevel";
 
@@ -135,8 +136,8 @@ public class ChromeDriverService extends DriverService {
       List<String> args,
       Map<String, String> environment) throws IOException {
     super(executable, port, timeout,
-      unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+          unmodifiableList(new ArrayList<>(args)),
+          unmodifiableMap(new HashMap<>(environment)));
   }
 
   public String getDriverName() {
@@ -184,7 +185,7 @@ public class ChromeDriverService extends DriverService {
   }
 
   /**
-   * Checks if the browser driver binary is already present. Grid uses this method to show
+   * Checks if the ChromeDriver binary is already present. Grid uses this method to show
    * the available browsers and drivers, hence its visibility.
    *
    * @return Whether the browser driver path was found.

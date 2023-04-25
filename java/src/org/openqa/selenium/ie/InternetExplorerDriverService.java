@@ -55,7 +55,7 @@ public class InternetExplorerDriverService extends DriverService {
   public static final String IE_DRIVER_LOGFILE_PROPERTY = "webdriver.ie.driver.logfile";
 
   /**
-   * System property that defines the detalization level the IEDriverServer logs.
+   * System property that defines the {@link InternetExplorerDriverLogLevel} for IEDriverServer logs.
    */
   public static final String IE_DRIVER_LOGLEVEL_PROPERTY = "webdriver.ie.driver.loglevel";
 
@@ -82,11 +82,15 @@ public class InternetExplorerDriverService extends DriverService {
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
-  private InternetExplorerDriverService(File executable, int port, Duration timeout, List<String> args,
-                                        Map<String, String> environment) throws IOException {
+  public InternetExplorerDriverService(
+      File executable,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) throws IOException {
     super(executable, port, timeout,
-      unmodifiableList(new ArrayList<>(args)),
-      unmodifiableMap(new HashMap<>(environment)));
+          unmodifiableList(new ArrayList<>(args)),
+          unmodifiableMap(new HashMap<>(environment)));
   }
 
   public String getDriverName() {
@@ -105,8 +109,8 @@ public class InternetExplorerDriverService extends DriverService {
   /**
    * Configures and returns a new {@link InternetExplorerDriverService} using the default configuration. In
    * this configuration, the service will use the IEDriverServer executable identified by the
-   * {@link #IE_DRIVER_EXE_PROPERTY} system property. Each service created by this method will
-   * be configured to use a free port on the current system.
+   * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
+   * Each service created by this method will be configured to use a free port on the current system.
    *
    * @return A new InternetExplorerDriverService using the default configuration.
    */
@@ -115,7 +119,7 @@ public class InternetExplorerDriverService extends DriverService {
   }
 
   /**
-   * Checks if the browser driver binary is available. Grid uses this method to show
+   * Checks if the IEDriverServer binary is available. Grid uses this method to show
    * the available browsers and drivers, hence its visibility.
    *
    * @return Whether the browser driver path was found.
