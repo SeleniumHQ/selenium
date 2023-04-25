@@ -119,7 +119,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
    * Adds additional command line arguments to be used when starting Chrome.
    * For example:
    * <pre><code>
-   *   options.setArguments(
+   *   options.addArguments(
    *       "load-extension=/path/to/unpacked_extension",
    *       "allow-outdated-plugins");
    * </code></pre>
