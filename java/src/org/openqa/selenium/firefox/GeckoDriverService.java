@@ -19,7 +19,6 @@ package org.openqa.selenium.firefox;
 
 import com.google.auto.service.AutoService;
 import com.google.common.io.ByteStreams;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -29,13 +28,13 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
@@ -129,9 +128,11 @@ public class GeckoDriverService extends FirefoxDriverService {
   }
 
   /**
-   * @param caps Capabilities instance
+   * @param caps Capabilities instance - this is not used
    * @return default GeckoDriverService
+   * @deprecated use {@link GeckoDriverService#createDefaultService()}
    */
+  @Deprecated
   static GeckoDriverService createDefaultService(Capabilities caps) {
     return createDefaultService();
   }
@@ -156,9 +157,6 @@ public class GeckoDriverService extends FirefoxDriverService {
     private FirefoxBinary firefoxBinary;
     private String allowHosts;
 
-    public Builder() {
-    }
-
     @Override
     public int score(Capabilities capabilities) {
       int score = 0;
@@ -179,7 +177,9 @@ public class GeckoDriverService extends FirefoxDriverService {
      *
      * @param firefoxBinary The browser executable to use.
      * @return A self reference.
+     * @deprecated use {@link FirefoxOptions#setBinary(Path)}
      */
+    @Deprecated
     public Builder usingFirefoxBinary(FirefoxBinary firefoxBinary) {
       Require.nonNull("Firefox binary", firefoxBinary);
       this.firefoxBinary = firefoxBinary;
@@ -207,20 +207,13 @@ public class GeckoDriverService extends FirefoxDriverService {
       args.add(String.format("http://127.0.0.1:%d", wsPort));
       args.add(String.format("http://localhost:%d", wsPort));
       args.add(String.format("http://[::1]:%d", wsPort));
+
+      // deprecated
       if (firefoxBinary != null) {
         args.add("--binary");
         args.add(firefoxBinary.getPath());
-      } else {
-        // Read system property for Firefox binary and use those if they are set
-        Optional<Executable> executable =
-          Optional.ofNullable(FirefoxBinary.locateFirefoxBinaryFromSystemProperty());
-        executable.ifPresent(e -> {
-          args.add("--binary");
-          args.add(e.getPath());
-        });
-        // If the binary stays null, GeckoDriver will be responsible for finding Firefox on the
-        // PATH or via a capability.
       }
+
       if (allowHosts != null) {
         args.add("--allow-hosts");
         args.addAll(Arrays.asList(allowHosts.split(" ")));
