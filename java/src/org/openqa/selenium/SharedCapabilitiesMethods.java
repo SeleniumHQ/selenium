@@ -64,12 +64,6 @@ class SharedCapabilitiesMethods {
       return;
     }
 
-    if ("unexpectedAlertBehaviour".equals(key)) {
-      caps.put("unexpectedAlertBehaviour", value);
-      caps.put("unhandledPromptBehavior", value);
-      return;
-    }
-
     caps.put(key, value);
   }
 

@@ -32,11 +32,6 @@ public interface CapabilityType {
    */
   @Deprecated
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
-  /**
-   * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
-   */
-  @Deprecated
-  String UNEXPECTED_ALERT_BEHAVIOUR = "unexpectedAlertBehaviour";
 
   String BROWSER_NAME = "browserName";
   String PLATFORM_NAME = "platformName";
