@@ -24,6 +24,7 @@ const { Browser } = require('../../')
 const { Pages, suite } = require('../../lib/test')
 const logInspector = require('../../bidi/logInspector')
 const BrowsingContext = require('../../bidi/browsingContext')
+const BrowsingConextInspector = require('../../bidi/browsingContextInspector')
 const filterBy = require('../../bidi/filterBy')
 const until = require('../../lib/until')
 
@@ -395,6 +396,71 @@ suite(
           await window1.getTree()
         })
         await assert.rejects(window2.getTree(), { message: 'no such frame' })
+      })
+    })
+
+    describe('Browsing Context Inspector', function () {
+      it('can listen to window browsing context created event', async function () {
+        let contextInfo = null
+        const browsingConextInspector = await BrowsingConextInspector(driver)
+        await browsingConextInspector.onBrowsingContextCreated((entry) => {
+          contextInfo = entry
+        })
+
+        await driver.switchTo().newWindow('window')
+        const windowHandle = await driver.getWindowHandle()
+        assert.equal(contextInfo.id, windowHandle)
+        assert.equal(contextInfo.url, 'about:blank')
+        assert.equal(contextInfo.children, null)
+        assert.equal(contextInfo.parentBrowsingContext, null)
+      })
+
+      it('can listen to tab browsing context created event', async function () {
+        let contextInfo = null
+        const browsingConextInspector = await BrowsingConextInspector(driver)
+        await browsingConextInspector.onBrowsingContextCreated((entry) => {
+          contextInfo = entry
+        })
+
+        await driver.switchTo().newWindow('tab')
+        const tabHandle = await driver.getWindowHandle()
+
+        assert.equal(contextInfo.id, tabHandle)
+        assert.equal(contextInfo.url, 'about:blank')
+        assert.equal(contextInfo.children, null)
+        assert.equal(contextInfo.parentBrowsingContext, null)
+      })
+
+      it('can listen to dom content loaded event', async function () {
+        const browsingConextInspector = await BrowsingConextInspector(driver)
+        let navigationInfo = null
+        await browsingConextInspector.onDomContentLoaded((entry) => {
+          navigationInfo = entry
+        })
+
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: await driver.getWindowHandle(),
+        })
+        await browsingContext.navigate(Pages.logEntryAdded, 'complete')
+
+        assert.equal(navigationInfo.browsingContextId, browsingContext.id)
+        assert(navigationInfo.url.includes('/bidi/logEntryAdded.html'))
+      })
+
+      it('can listen to browsing context loaded event', async function () {
+        let navigationInfo = null
+        const browsingConextInspector = await BrowsingConextInspector(driver)
+
+        await browsingConextInspector.onBrowsingContextLoaded((entry) => {
+          navigationInfo = entry
+        })
+        const browsingContext = await BrowsingContext(driver, {
+          browsingContextId: await driver.getWindowHandle(),
+        })
+        await browsingContext.navigate(Pages.logEntryAdded, 'complete')
+
+        assert.equal(navigationInfo.browsingContextId, browsingContext.id)
+        assert(navigationInfo.url.includes('/bidi/logEntryAdded.html'))
       })
     })
 

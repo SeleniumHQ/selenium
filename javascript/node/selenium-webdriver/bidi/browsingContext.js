@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+const { BrowsingContextInfo } = require('./browsingContextTypes')
 class BrowsingContext {
   constructor(driver) {
     this._driver = driver
@@ -142,31 +143,6 @@ class NavigateResult {
 
   get navigationId() {
     return this._navigationId
-  }
-}
-
-class BrowsingContextInfo {
-  constructor(id, url, children, parentBrowsingContext) {
-    this._id = id
-    this._url = url
-    this._children = children
-    this._parentBrowsingContext = parentBrowsingContext
-  }
-
-  get id() {
-    return this._id
-  }
-
-  get url() {
-    return this._url
-  }
-
-  get children() {
-    return this._children
-  }
-
-  get parentBrowsingContext() {
-    return this._parentBrowsingContext
   }
 }
 
