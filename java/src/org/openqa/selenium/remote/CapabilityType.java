@@ -23,11 +23,6 @@ package org.openqa.selenium.remote;
 public interface CapabilityType {
 
   /**
-   * @deprecated Use {@link CapabilityType#PLATFORM_NAME}
-   */
-  @Deprecated
-  String PLATFORM = "platform";
-  /**
    * @deprecated Non W3C compliant
    */
   @Deprecated
