@@ -55,8 +55,7 @@ public interface Capabilities extends Serializable {
   }
 
   default String getBrowserVersion() {
-    return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(
-      Optional.ofNullable(getCapability("version")).orElse("")));
+    return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(""));
   }
 
   /**

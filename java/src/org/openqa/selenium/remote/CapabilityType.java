@@ -38,11 +38,6 @@ public interface CapabilityType {
   @Deprecated
   String TAKES_SCREENSHOT = "takesScreenshot";
   /**
-   * @deprecated Use {@link CapabilityType#BROWSER_VERSION}
-   */
-  @Deprecated
-  String VERSION = "version";
-  /**
    * @deprecated Non W3C compliant
    */
   @Deprecated
