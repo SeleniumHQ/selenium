@@ -19,6 +19,7 @@ package org.openqa.selenium.remote.service;
 
 import com.google.common.collect.ImmutableMap;
 
+import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Beta;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -31,6 +32,7 @@ import org.openqa.selenium.os.ExecutableFinder;
 
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -62,6 +64,9 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
  */
 public class DriverService implements Closeable {
 
+  public static final String LOG_NULL = "/dev/null";
+  public static final String LOG_STDERR = "/dev/stderr";
+  public static final String LOG_STDOUT = "/dev/stdout";
   private static final String NAME = "Driver Service Executor";
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
   private static final Logger LOG = Logger.getLogger(DriverService.class.getName());
@@ -339,6 +344,7 @@ public class DriverService implements Closeable {
     private Map<String, String> environment = emptyMap();
     private File logFile;
     private Duration timeout;
+    private OutputStream logOutputStream;
 
     /**
      * Provides a measure of how strongly this {@link DriverService} supports the given
@@ -415,6 +421,11 @@ public class DriverService implements Closeable {
       return (B) this;
     }
 
+    public B withLogOutput(OutputStream output) {
+      this.logOutputStream = output;
+      return (B) this;
+    }
+
     protected File getLogFile() {
       return logFile;
     }
@@ -431,6 +442,40 @@ public class DriverService implements Closeable {
 
     protected Duration getDefaultTimeout() {
       return DEFAULT_TIMEOUT;
+    }
+
+    protected OutputStream getLogOutput(String logProperty) {
+      if(logOutputStream != null) {
+        return logOutputStream;
+      }
+
+      try {
+        File logFileLocation = getLogFile();
+        String logLocation;
+
+        if (logFileLocation == null) {
+          logLocation = System.getProperty(logProperty);
+        } else {
+          logLocation = logFileLocation.getAbsolutePath();
+        }
+
+        if (logLocation == null) {
+          return System.err;
+        }
+
+        switch (logLocation) {
+          case LOG_STDOUT:
+            return System.out;
+          case LOG_STDERR:
+            return System.err;
+          case LOG_NULL:
+            return ByteStreams.nullOutputStream();
+          default:
+            return new FileOutputStream(logLocation);
+        }
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     /**

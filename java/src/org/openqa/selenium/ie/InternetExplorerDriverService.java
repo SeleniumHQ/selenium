@@ -234,11 +234,8 @@ public class InternetExplorerDriverService extends DriverService {
 
       List<String> args = new ArrayList<>();
       args.add(String.format("--port=%d", getPort()));
-      if (getLogFile() != null) {
-        args.add(String.format("--log-file=\"%s\"", getLogFile().getAbsolutePath()));
-      }
       if (logLevel != null) {
-        args.add(String.format("--log-level=%s", logLevel.toString()));
+        args.add(String.format("--log-level=%s", logLevel));
       }
       if (host != null) {
         args.add(String.format("--host=%s", host));
@@ -254,12 +251,16 @@ public class InternetExplorerDriverService extends DriverService {
     }
 
     @Override
-    protected InternetExplorerDriverService createDriverService(File exe, int port,
-                                                                Duration timeout,
-                                                                List<String> args,
-                                                                Map<String, String> environment) {
+    protected InternetExplorerDriverService createDriverService(
+        File exe,
+        int port,
+        Duration timeout,
+        List<String> args,
+        Map<String, String> environment) {
       try {
-        return new InternetExplorerDriverService(exe, port, timeout, args, environment);
+        InternetExplorerDriverService service = new InternetExplorerDriverService(exe, port, timeout, args, environment);
+        service.sendOutputTo(getLogOutput(IE_DRIVER_LOGFILE_PROPERTY));
+        return service;
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

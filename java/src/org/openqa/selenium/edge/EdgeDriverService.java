@@ -298,12 +298,12 @@ public class EdgeDriverService extends DriverService {
       List<String> args = new ArrayList<>();
 
       args.add(String.format("--port=%d", getPort()));
-      if (getLogFile() != null) {
+
+      // Can only get readable logs via arguments; otherwise send service output as directed
+      if (getLogFile() != null && readableTimestamp) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
-        // This flag only works when logged to file
-        if (readableTimestamp) {
-          args.add("--readable-timestamp");
-        }
+        args.add("--readable-timestamp");
+        withLogFile(null); // Do not overwrite in sendOutputTo
       }
       if (appendLog) {
         args.add("--append-log");
@@ -329,7 +329,9 @@ public class EdgeDriverService extends DriverService {
         List<String> args,
         Map<String, String> environment) {
       try {
-        return new EdgeDriverService(exe, port, timeout, args, environment);
+        EdgeDriverService service = new EdgeDriverService(exe, port, timeout, args, environment);
+        service.sendOutputTo(getLogOutput(EDGE_DRIVER_LOG_PROPERTY));
+        return service;
       } catch (IOException e) {
         throw new WebDriverException(e);
       }

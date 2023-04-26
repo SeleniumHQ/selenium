@@ -18,7 +18,6 @@
 package org.openqa.selenium.firefox;
 
 import com.google.auto.service.AutoService;
-import com.google.common.io.ByteStreams;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.internal.Require;
@@ -26,7 +25,6 @@ import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
@@ -53,6 +51,12 @@ public class GeckoDriverService extends FirefoxDriverService {
    * that will be used by the {@link #createDefaultService() default service}.
    */
   public static final String GECKO_DRIVER_EXE_PROPERTY = "webdriver.gecko.driver";
+
+  /**
+   * System property that defines the location of the file where GeckoDriver
+   * should write log messages to.
+   */
+  public static final String GECKO_DRIVER_LOG_PROPERTY = "webdriver.firefox.logfile";
 
   /**
    * System property that defines the {@link FirefoxDriverLogLevel} for GeckoDriver logs.
@@ -292,35 +296,15 @@ public class GeckoDriverService extends FirefoxDriverService {
     }
 
     @Override
-    protected GeckoDriverService createDriverService(File exe, int port,
-                                                     Duration timeout,
-                                                     List<String> args,
-                                                     Map<String, String> environment) {
+    protected GeckoDriverService createDriverService(
+        File exe,
+        int port,
+        Duration timeout,
+        List<String> args,
+        Map<String, String> environment) {
       try {
         GeckoDriverService service = new GeckoDriverService(exe, port, timeout, args, environment);
-        String firefoxLogFile = System.getProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE);
-        if (firefoxLogFile != null) { // System property has higher precedence
-          switch (firefoxLogFile) {
-            case "/dev/stdout":
-              service.sendOutputTo(System.out);
-              break;
-            case "/dev/stderr":
-              service.sendOutputTo(System.err);
-              break;
-            case "/dev/null":
-              service.sendOutputTo(ByteStreams.nullOutputStream());
-              break;
-            default:
-              service.sendOutputTo(new FileOutputStream(firefoxLogFile));
-              break;
-          }
-        } else {
-          if (getLogFile() != null) {
-            service.sendOutputTo(new FileOutputStream(getLogFile()));
-          } else {
-            service.sendOutputTo(System.err);
-          }
-        }
+        service.sendOutputTo(getLogOutput(GECKO_DRIVER_LOG_PROPERTY));
         return service;
       } catch (IOException e) {
         throw new WebDriverException(e);
