@@ -58,8 +58,9 @@ public class InternetExplorerDriver extends RemoteWebDriver {
 
   /**
    * Capability that defines which behaviour will be used if an unexpected Alert is found.
+   * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
    */
-  public static final String UNEXPECTED_ALERT_BEHAVIOR = CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
+  public static final String UNEXPECTED_ALERT_BEHAVIOR = "unexpectedAlertBehaviour";
 
   /**
    * Capability that defines to use or not cleanup of element cache on document loading.

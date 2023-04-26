@@ -96,7 +96,7 @@ public class DefaultSlotMatcher implements SlotMatcher, Serializable {
       // Matching of extension capabilities is implementation independent. Skip them
       .filter(name -> !name.contains(":"))
       // Platform matching is special, we do it later
-      .filter(name -> !"platform".equalsIgnoreCase(name) && !"platformName".equalsIgnoreCase(name))
+      .filter(name -> !"platformName".equalsIgnoreCase(name))
       .map(name -> {
         if (capabilities.getCapability(name) instanceof String) {
           return stereotype.getCapability(name).toString()

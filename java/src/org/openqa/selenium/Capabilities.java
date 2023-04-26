@@ -35,7 +35,7 @@ public interface Capabilities extends Serializable {
   }
 
   default Platform getPlatformName() {
-    return Stream.of("platform", "platformName")
+    return Stream.of("platformName")
       .map(this::getCapability)
       .filter(Objects::nonNull)
       .map(cap -> {
@@ -55,8 +55,7 @@ public interface Capabilities extends Serializable {
   }
 
   default String getBrowserVersion() {
-    return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(
-      Optional.ofNullable(getCapability("version")).orElse("")));
+    return String.valueOf(Optional.ofNullable(getCapability("browserVersion")).orElse(""));
   }
 
   /**

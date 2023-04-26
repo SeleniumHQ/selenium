@@ -216,9 +216,17 @@ public class JdkHttpClient implements HttpClient {
           LOG.fine("Sending text message: " + textMessage.text());
           makeCall = () -> underlyingSocket.sendText(textMessage.text(), true);
         } else if (message instanceof CloseMessage) {
-          LOG.fine("Sending close message");
           CloseMessage closeMessage = (CloseMessage) message;
-          makeCall = () -> underlyingSocket.sendClose(closeMessage.code(), closeMessage.reason());
+          if (!underlyingSocket.isOutputClosed()) {
+            // Sometimes the statusCode is -1, which could mean the socket is already closed.
+            // We send a normal closure code in that case, though
+            int statusCode = closeMessage.code() == -1 ? 1000 : closeMessage.code();
+            LOG.fine(() -> String.format("Sending close message, statusCode %s, reason: %s", statusCode, closeMessage.reason()));
+            makeCall = () -> underlyingSocket.sendClose(statusCode, closeMessage.reason());
+          } else {
+            LOG.fine("Output is closed, not sending close message");
+            return this;
+          }
         } else {
           throw new IllegalArgumentException("Unsupported message type: " + message);
         }

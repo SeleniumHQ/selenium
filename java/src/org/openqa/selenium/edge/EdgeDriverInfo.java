@@ -44,14 +44,17 @@ public class EdgeDriverInfo extends ChromiumDriverInfo {
 
   @Override
   public Capabilities getCanonicalCapabilities() {
-    // Allowing any origin "*" through remote-allow-origins might sound risky but an attacker
-    // would need to know the port used to start DevTools to establish a connection. Given
-    // these sessions are relatively short-lived, the risk is reduced. Also, this will be
-    // removed when we only support Java 11 and above.
-    return new ImmutableCapabilities(
-      CapabilityType.BROWSER_NAME, EDGE.browserName(),
-      EdgeOptions.CAPABILITY,
-      ImmutableMap.of("args", ImmutableList.of("--remote-allow-origins=*")));
+    if (!"jdk-http-client".equalsIgnoreCase(System.getProperty("webdriver.http.factory", ""))) {
+      // Allowing any origin "*" through remote-allow-origins might sound risky but an attacker
+      // would need to know the port used to start DevTools to establish a connection. Given
+      // these sessions are relatively short-lived, the risk is reduced. Only set when the Java
+      // 11 client is not used.
+      return new ImmutableCapabilities(
+        CapabilityType.BROWSER_NAME, EDGE.browserName(),
+        EdgeOptions.CAPABILITY,
+        ImmutableMap.of("args", ImmutableList.of("--remote-allow-origins=*")));
+    }
+    return new ImmutableCapabilities(CapabilityType.BROWSER_NAME, EDGE.browserName());
   }
 
   @Override
