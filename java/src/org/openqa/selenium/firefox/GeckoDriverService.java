@@ -55,6 +55,24 @@ public class GeckoDriverService extends FirefoxDriverService {
   public static final String GECKO_DRIVER_EXE_PROPERTY = "webdriver.gecko.driver";
 
   /**
+   * System property that defines the {@link FirefoxDriverLogLevel} for GeckoDriver logs.
+   * See {@link Builder#withLogLevel(FirefoxDriverLogLevel)}
+   */
+  public static final String GECKO_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.firefox.logLevel";
+
+  /**
+   * Boolean system property to disable truncation of long log lines.
+   * See {@link Builder#withTruncatedLogs(Boolean)}
+   */
+  public static final String GECKO_DRIVER_LOG_NO_TRUNCATE = "webdriver.firefox.logTruncate";
+
+  /**
+   * System property that defines the location of the directory in which to create profiles
+   * See {@link Builder#withProfileRoot(File)}
+   */
+  public static final String GECKO_DRIVER_PROFILE_ROOT = "webdriver.firefox.profileRoot";
+
+  /**
    * @param executable The GeckoDriver executable.
    * @param port Which port to start the GeckoDriver on.
    * @param args The arguments to the launched server.
@@ -156,6 +174,10 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     private FirefoxBinary firefoxBinary;
     private String allowHosts;
+    private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel
+      .fromString(System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY, "INFO"));
+    private Boolean logTruncate = Boolean.getBoolean(GECKO_DRIVER_LOG_NO_TRUNCATE);
+    private File profileRoot = new File(System.getProperty(GECKO_DRIVER_PROFILE_ROOT));
 
     @Override
     public int score(Capabilities capabilities) {
@@ -192,21 +214,69 @@ public class GeckoDriverService extends FirefoxDriverService {
      * @param allowHosts Space-separated list of host names.
      * @return A self reference.
      */
-    public GeckoDriverService.Builder withAllowHosts(String allowHosts) {
+    public Builder withAllowHosts(String allowHosts) {
       this.allowHosts = allowHosts;
       return this;
     }
 
+    /**
+     *
+     * @param logLevel which log events to record.
+     * @return A self reference.
+     */
+    public Builder withLogLevel(FirefoxDriverLogLevel logLevel) {
+      this.logLevel = logLevel;
+      return this;
+    }
+
+    /**
+     *
+     * @param truncate whether to truncate long lines in the log.
+     * Log lines are truncated by default; setting "false" removes truncation
+     * @return A self reference.
+     */
+    public Builder withTruncatedLogs(Boolean truncate) {
+      this.logTruncate = truncate;
+      return this;
+    }
+
+    /**
+     * This is necessary when you do not have permissions to write to the default directory.
+     *
+     * @param root location to store temporary profiles
+     * Defaults to the system temporary directory.
+     * @return A self reference.
+     */
+    public GeckoDriverService.Builder withProfileRoot(File root) {
+      this.profileRoot = root;
+      return this;
+    }
+
+
     @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-      int wsPort = PortProber.findFreePort();
       args.add(String.format("--port=%d", getPort()));
+
+      int wsPort = PortProber.findFreePort();
       args.add(String.format("--websocket-port=%d", wsPort));
+
       args.add("--allow-origins");
       args.add(String.format("http://127.0.0.1:%d", wsPort));
       args.add(String.format("http://localhost:%d", wsPort));
       args.add(String.format("http://[::1]:%d", wsPort));
+
+      if (logLevel != null) {
+        args.add("--log");
+        args.add(logLevel.toString());
+      }
+      if (!logTruncate) {
+        args.add("--log-no-truncate");
+      }
+      if (profileRoot != null) {
+        args.add("--profile-root");
+        args.add(profileRoot.getAbsolutePath());
+      }
 
       // deprecated
       if (firefoxBinary != null) {
