@@ -31,11 +31,6 @@ public interface CapabilityType {
    * @deprecated Non W3C compliant
    */
   @Deprecated
-  String TAKES_SCREENSHOT = "takesScreenshot";
-  /**
-   * @deprecated Non W3C compliant
-   */
-  @Deprecated
   String SUPPORTS_WEB_STORAGE = "webStorageEnabled";
   /**
    * @deprecated Use {@link CapabilityType#UNHANDLED_PROMPT_BEHAVIOUR}
