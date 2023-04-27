@@ -157,7 +157,7 @@ import java.util.logging.Logger;
 @Beta
 public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorator<T>  {
 
-  private static final Logger logger = Logger.getLogger(EventFiringDecorator.class.getName());
+  private static final Logger LOG = Logger.getLogger(EventFiringDecorator.class.getName());
 
   private final List<WebDriverListener> listeners;
 
@@ -189,7 +189,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
       try {
         listener.onError(target.getOriginal(), method, args, e);
       } catch (Throwable t) {
-        logger.log(Level.WARNING, t.getMessage(), t);
+        LOG.log(Level.WARNING, t.getMessage(), t);
       }
     });
     return super.onError(target, method, args, e);
@@ -199,7 +199,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     try {
       listener.beforeAnyCall(target.getOriginal(), method, args);
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
 
     try {
@@ -219,7 +219,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         listener.beforeAnyWindowCall((WebDriver.Window) target.getOriginal(), method, args);
       }
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
 
     String methodName = createEventMethodName("before", method.getName());
@@ -275,13 +275,13 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
         listener.afterAnyWindowCall((WebDriver.Window) target.getOriginal(), method, args, res);
       }
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
 
     try {
       listener.afterAnyCall(target.getOriginal(), method, args, res);
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
   }
 
@@ -315,7 +315,7 @@ public class EventFiringDecorator<T extends WebDriver> extends WebDriverDecorato
     try {
       m.invoke(listener, args);
     } catch (Throwable t) {
-      logger.log(Level.WARNING, t.getMessage(), t);
+      LOG.log(Level.WARNING, t.getMessage(), t);
     }
   }
 }

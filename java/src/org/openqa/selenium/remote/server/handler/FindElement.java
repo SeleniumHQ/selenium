@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class FindElement extends WebDriverHandler<Map<String, String>> {
-  private static Logger log = Logger.getLogger(FindElement.class.getName());
+  private static Logger LOG = Logger.getLogger(FindElement.class.getName());
   private volatile By by;
 
   public FindElement(Session session) {
@@ -52,7 +52,7 @@ public class FindElement extends WebDriverHandler<Map<String, String>> {
     } catch (RuntimeException e) {
       // Add logging to detect when issue #1800 occurs
       if (!(e instanceof NoSuchElementException)) {
-        log.log(SEVERE, "Unexpected exception during findElement", e);
+        LOG.log(SEVERE, "Unexpected exception during findElement", e);
       }
       throw e;
     }

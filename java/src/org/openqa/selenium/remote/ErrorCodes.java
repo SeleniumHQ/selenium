@@ -97,7 +97,7 @@ public class ErrorCodes {
   // The following error codes are derived straight from HTTP return codes.
   public static final int METHOD_NOT_ALLOWED = 405;
 
-  private static final Logger log = Logger.getLogger(ErrorCodes.class.getName());
+  private static final Logger LOG = Logger.getLogger(ErrorCodes.class.getName());
   // Every row on this table should be self-explanatory, except for the two booleans at the end.
   // The first of these is "isCanonicalJsonCodeForException". This means that when doing the mapping
   // for a JSON Wire Protocol status code, this KnownError provides the exception that should be
@@ -197,7 +197,7 @@ public class ErrorCodes {
     }
     KnownError error = possibleMatches.get(0);
     if (httpStatus.isPresent() && httpStatus.get() != error.getW3cHttpStatus()) {
-      log.info(String.format(
+      LOG.info(String.format(
         "HTTP Status: '%d' -> incorrect JSON status mapping for '%s' (%d expected)",
         httpStatus.get(),
         webdriverState,

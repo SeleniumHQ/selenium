@@ -31,6 +31,7 @@ import java.util.stream.StreamSupport;
 import static java.util.Collections.list;
 
 public class NetworkInterface {
+  private static final Logger LOG = Logger.getLogger(NetworkInterface.class.getName());
 
   private final String name;
   private java.net.NetworkInterface networkInterface;
@@ -64,7 +65,7 @@ public class NetworkInterface {
         // from java.net.NetworkInterface API
         isLoopback = networkInterface.isLoopback();
       } catch (SocketException ex) {
-        Logger.getLogger(NetworkInterface.class.getName()).log(Level.WARNING, null, ex);
+        LOG.log(Level.WARNING, null, ex);
         // If a SocketException is caught, determine whether this NetworkInterface
         // instance is loopback from computation from its inetAddresses
         isLoopback = isLoopBackFromINetAddresses(list(networkInterface.getInetAddresses()));

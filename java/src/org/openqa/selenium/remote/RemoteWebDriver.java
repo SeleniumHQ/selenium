@@ -104,8 +104,7 @@ public class RemoteWebDriver implements WebDriver,
   PrintsPage,
   TakesScreenshot {
 
-  // TODO: This static logger should be unified with the per-instance localLogs
-  private static final Logger logger = Logger.getLogger(RemoteWebDriver.class.getName());
+  private static final Logger LOG = Logger.getLogger(RemoteWebDriver.class.getName());
   private final ElementLocation elementLocation = new ElementLocation();
   private Level level = Level.FINE;
   private ErrorHandler errorHandler = new ErrorHandler();
@@ -196,7 +195,7 @@ public class RemoteWebDriver implements WebDriver,
   private Capabilities init(Capabilities capabilities) {
     capabilities = capabilities == null ? new ImmutableCapabilities() : capabilities;
 
-    logger.addHandler(LoggingHandler.getInstance());
+    LOG.addHandler(LoggingHandler.getInstance());
 
     converter = new JsonToWebElementConverter(this);
     executeMethod = new RemoteExecuteMethod(this);
@@ -412,7 +411,7 @@ public class RemoteWebDriver implements WebDriver,
         ((HasDevTools) this).maybeGetDevTools().ifPresent(DevTools::disconnectSession);
       }
       catch (ConnectionFailedException unableToEstablishWebsocketConnection) {
-        logger.log(SEVERE, "Failed to disconnect DevTools session", unableToEstablishWebsocketConnection);
+        LOG.log(SEVERE, "Failed to disconnect DevTools session", unableToEstablishWebsocketConnection);
       }
     }
 
@@ -527,7 +526,7 @@ public class RemoteWebDriver implements WebDriver,
    */
   public void setLogLevel(Level level) {
     this.level = level;
-    logger.setLevel(level);
+    LOG.setLevel(level);
   }
 
   protected Response execute(CommandPayload payload) {
@@ -638,7 +637,7 @@ public class RemoteWebDriver implements WebDriver,
    * @param when        verb tense of "Execute" to prefix message
    */
   protected void log(SessionId sessionId, String commandName, Object toLog, When when) {
-    if (!logger.isLoggable(level)) {
+    if (!LOG.isLoggable(level)) {
       return;
     }
     String text = String.valueOf(toLog);
@@ -660,16 +659,16 @@ public class RemoteWebDriver implements WebDriver,
     }
     switch (when) {
       case BEFORE:
-        logger.log(level, "Executing: " + commandName + " " + text);
+        LOG.log(level, "Executing: " + commandName + " " + text);
         break;
       case AFTER:
-        logger.log(level, "Executed: " + commandName + " " + text);
+        LOG.log(level, "Executed: " + commandName + " " + text);
         break;
       case EXCEPTION:
-        logger.log(level, "Exception: " + commandName + " " + text);
+        LOG.log(level, "Exception: " + commandName + " " + text);
         break;
       default:
-        logger.log(level, text);
+        LOG.log(level, text);
         break;
     }
   }
@@ -682,7 +681,7 @@ public class RemoteWebDriver implements WebDriver,
       .collect(Collectors.toList());
 
     if (!invalid.isEmpty()) {
-      logger.log(Level.WARNING,
+      LOG.log(Level.WARNING,
                  () -> String.format("Support for Legacy Capabilities is deprecated; " +
                                      "You are sending the following invalid capabilities: %s; " +
                                      "Please update to W3C Syntax: https://www.selenium.dev/blog/2022/legacy-protocol-support/",

@@ -67,7 +67,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
   // * Get Named Cookie
   // I've not checked the actions apis yet
 
-  private static final Logger log = Logger.getLogger(W3CHttpResponseCodec.class.getName());
+  private static final Logger LOG = Logger.getLogger(W3CHttpResponseCodec.class.getName());
 
   private final ErrorCodes errorCodes = new ErrorCodes();
   private final Json json = new Json();
@@ -76,7 +76,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
   @Override
   public Response decode(HttpResponse encodedResponse) {
     String content = string(encodedResponse).trim();
-    log.fine(String.format(
+    LOG.fine(String.format(
       "Decoding response. Response code was: %d and content: %s",
       encodedResponse.getStatus(),
       content));
@@ -87,7 +87,7 @@ public class W3CHttpResponseCodec extends AbstractHttpResponseCodec {
     // Are we dealing with an error?
     // {"error":"no such alert","message":"No tab modal was open when attempting to get the dialog text"}
     if (!encodedResponse.isSuccessful()) {
-      log.fine("Processing an error");
+      LOG.fine("Processing an error");
       if (HTTP_BAD_METHOD == encodedResponse.getStatus()) {
         response.setStatus(ErrorCodes.UNKNOWN_COMMAND);
         response.setValue(content);
