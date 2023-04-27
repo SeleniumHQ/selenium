@@ -65,7 +65,7 @@ import static org.openqa.selenium.remote.Browser.OPERA;
 
 /**
  * A {@link WebDriver} implementation that controls a Chromium browser running on the local machine.
- * It is used as the base class for Chromium-based browser drivers (Chrome, Edgium).
+ * It is used as the base class for Chromium-based browser drivers (Chrome, Edge).
  */
 public class ChromiumDriver extends RemoteWebDriver implements
   HasAuthentication,
