@@ -44,7 +44,7 @@ class RemoteConnection:
 
     browser_name = None
     _timeout = socket._GLOBAL_DEFAULT_TIMEOUT
-    _ca_certs = certifi.where()
+    _ca_certs = os.getenv("REQUESTS_CA_BUNDLE") if "REQUESTS_CA_BUNDLE" in os.environ else certifi.where()
 
     @classmethod
     def get_timeout(cls):
