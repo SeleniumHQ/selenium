@@ -47,6 +47,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.html5.RemoteLocationContext;
 import org.openqa.selenium.remote.html5.RemoteWebStorage;
 import org.openqa.selenium.remote.http.ClientConfig;
+import org.openqa.selenium.remote.http.ConnectionFailedException;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.mobile.RemoteNetworkConnection;
 
@@ -111,9 +112,14 @@ public class ChromiumDriver extends RemoteWebDriver implements
     Optional<URI> cdpUri = CdpEndpointFinder.getReportedUri(capabilityKey, originalCapabilities)
       .flatMap(uri -> CdpEndpointFinder.getCdpEndPoint(factory, uri));
 
-    connection = cdpUri.map(uri -> new Connection(
-      factory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
-      uri.toString()));
+    try {
+      connection = cdpUri.map(uri -> new Connection(
+        factory.createClient(ClientConfig.defaultConfig().baseUri(uri)),
+        uri.toString()));
+    } catch (ConnectionFailedException e) {
+      LOG.warning("Unable to establish websocket connection to " + cdpUri.get());
+      connection = Optional.empty();
+    }
 
     CdpInfo cdpInfo = new CdpVersionFinder().match(originalCapabilities.getBrowserVersion())
       .orElseGet(() -> {
