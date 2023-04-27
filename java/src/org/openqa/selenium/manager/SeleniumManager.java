@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -54,11 +55,12 @@ import static org.openqa.selenium.Platform.WINDOWS;
 @Beta
 public class SeleniumManager {
 
-    private static final Logger LOG = Logger.getLogger(SeleniumManager.class.getName());
+    private static final Logger log = Logger.getLogger(SeleniumManager.class.getName());
 
     private static final String SELENIUM_MANAGER = "selenium-manager";
     private static final String EXE = ".exe";
     private static final String WARN = "WARN";
+    private static final String DEBUG = "DEBUG";
 
     private static SeleniumManager manager;
 
@@ -73,7 +75,7 @@ public class SeleniumManager {
                 try {
                     Files.delete(binary.toPath());
                 } catch (IOException e) {
-                    LOG.warning(String.format("%s deleting temporal file: %s",
+                    log.warning(String.format("%s deleting temporal file: %s",
                             e.getClass().getSimpleName(), e.getMessage()));
                 }
             }
@@ -94,6 +96,7 @@ public class SeleniumManager {
      * @return the standard output of the execution.
      */
     private static String runCommand(String... command) {
+      log.fine(String.format("Executing Process: %s", command));
         String output = "";
         int code = 0;
         try {
@@ -104,11 +107,11 @@ public class SeleniumManager {
             output = CharStreams.toString(new InputStreamReader(
               process.getInputStream(), StandardCharsets.UTF_8));
         } catch (InterruptedException e) {
-            LOG.warning(String.format("Interrupted exception running command %s: %s",
+            log.warning(String.format("Interrupted exception running command %s: %s",
                                       Arrays.toString(command), e.getMessage()));
             Thread.currentThread().interrupt();
         } catch (Exception e) {
-            LOG.warning(String.format("%s running command %s: %s",
+            log.warning(String.format("%s running command %s: %s",
                                       e.getClass().getSimpleName(), Arrays.toString(command),
                                       e.getMessage()));
         }
@@ -120,8 +123,14 @@ public class SeleniumManager {
               "\n" + jsonOutput.result.message);
         }
         jsonOutput.logs.stream()
-          .filter(log -> log.level.equalsIgnoreCase(WARN))
-          .forEach(log -> LOG.warning(log.message));
+          .forEach(logged -> {
+            if(logged.level.equalsIgnoreCase(WARN)) {
+              log.warning(logged.message);
+            }
+            if(logged.level.equalsIgnoreCase(DEBUG)) {
+              log.fine(logged.message);
+            }
+          });
         return jsonOutput.result.message;
     }
 
@@ -173,7 +182,7 @@ public class SeleniumManager {
                     Map<String, Object> vendorOptions = (Map<String, Object>) options.getCapability(vendorOptionsCapability);
                     return (String) vendorOptions.get("binary");
                 } catch (Exception e) {
-                    LOG.warning(String.format("Exception while retrieving the browser binary path. %s: %s",
+                    log.warning(String.format("Exception while retrieving the browser binary path. %s: %s",
                                               options, e.getMessage()));
                 }
             }
@@ -187,24 +196,34 @@ public class SeleniumManager {
      * @return the location of the driver.
      */
     public String getDriverPath(Capabilities options) {
-        File binaryFile = getBinary();
+      log.info("applicable driver not found; attempting to install with Selenium Manager (Beta)");
+      File binaryFile = getBinary();
         if (binaryFile == null) {
             return null;
         }
-        List<String> commandList = new ArrayList<>(
-          Arrays.asList(binaryFile.getAbsolutePath(),
-                        "--browser",
-                        options.getBrowserName(),
-                        "--output", "json"));
+        List<String> commandList = new ArrayList<>();
+        commandList.add(binaryFile.getAbsolutePath());
+        commandList.add("--browser");
+        commandList.add(options.getBrowserName());
+        commandList.add("--output");
+        commandList.add("--json");
         if (!options.getBrowserVersion().isEmpty()) {
-            commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
+          commandList.add("--browser-version");
+          commandList.add(options.getBrowserVersion());
         }
 
         String browserBinary = getBrowserBinary(options);
         if (browserBinary != null && !browserBinary.isEmpty()) {
-            commandList.addAll(Arrays.asList("--browser-path", browserBinary));
+          commandList.add("--browser-path");
+          commandList.add(browserBinary);
         }
 
-        return runCommand(commandList.toArray(new String[0]));
+        if (log.getLevel().intValue() > Level.FINE.intValue()) {
+          commandList.add("--verbose");
+        }
+
+      String path = runCommand(commandList.toArray(new String[0]));
+      log.fine(String.format("Using driver at location: %s", path));
+      return path;
     }
 }
