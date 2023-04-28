@@ -265,7 +265,7 @@ module Selenium
             expect(options.as_json).to eq('browserName' => 'chrome', 'goog:chromeOptions' => {})
           end
 
-          it 'errors when unrecognized capability is passed' do
+          it 'warns when unrecognized capability is passed' do
             expect {
               options.add_option(:foo, 'bar')
             }.to have_deprecated(:add_option)

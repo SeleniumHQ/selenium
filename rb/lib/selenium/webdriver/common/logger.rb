@@ -48,14 +48,17 @@ module Selenium
       #
       # @param [String] progname Allow child projects to use Selenium's Logger pattern
       #
-      def initialize(progname = 'Selenium', ignored: nil)
+      def initialize(progname = 'Selenium', ignored: nil, allowed: nil)
         @logger = create_logger(progname)
         @ignored = Array(ignored)
+        @allowed = Array(allowed)
         @first_warning = false
       end
 
       def level=(level)
-        info(':info is now the default log level, to see additional logging, set log level to :debug') if level == :info
+        if level == :info && @logger.level == :info
+          info(':info is now the default log level, to see additional logging, set log level to :debug')
+        end
 
         @logger.level = level
       end
@@ -87,10 +90,19 @@ module Selenium
       #
       # Will not log the provided ID.
       #
-      # @param [Array, Symbol] id
+      # @param [Array, Symbol] ids
       #
-      def ignore(id)
-        Array(id).each { |ignore| @ignored << ignore }
+      def ignore(*ids)
+        @ignored += Array(ids).flatten
+      end
+
+      #
+      # Will only log the provided ID.
+      #
+      # @param [Array, Symbol] ids
+      #
+      def allow(ids)
+        @allowed += Array(ids).flatten
       end
 
       #
@@ -144,7 +156,10 @@ module Selenium
       # @yield appends additional message to end of provided template
       #
       def deprecate(old, new = nil, id: [], reference: '', &block)
+        id = Array(id)
         return if @ignored.include?(:deprecations)
+
+        id << :deprecations if @allowed.include?(:deprecations)
 
         message = +"[DEPRECATION] #{old} is deprecated"
         message << if new
@@ -177,6 +192,7 @@ module Selenium
       def discard_or_log(level, message, id)
         id = Array(id)
         return if (@ignored & id).any?
+        return if @allowed.any? && (@allowed & id).none?
 
         msg = id.empty? ? message : "[#{id.map(&:inspect).join(', ')}] #{message} "
         msg += " #{yield}" if block_given?

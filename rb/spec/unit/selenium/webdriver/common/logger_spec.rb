@@ -175,7 +175,7 @@ module Selenium
       end
 
       describe '#ignore' do
-        it 'prevents logging when ignoring single id' do
+        it 'prevents logging when id' do
           logger.ignore(:foo)
           expect { logger.deprecate('#old', '#new', id: :foo) }.not_to output.to_stdout_from_any_process
         end
@@ -195,6 +195,28 @@ module Selenium
         it 'prevents logging any deprecation when ignoring :deprecations' do
           logger.ignore(:deprecations)
           expect { logger.deprecate('#old', '#new') }.not_to output.to_stdout_from_any_process
+        end
+      end
+
+      describe '#allow' do
+        it 'logs only allowed ids from method' do
+          logger.allow(:foo)
+          logger.allow(:bar)
+          expect { logger.deprecate('#old', '#new', id: :foo) }.to output(/foo/).to_stdout_from_any_process
+          expect { logger.deprecate('#old', '#new', id: :bar) }.to output(/bar/).to_stdout_from_any_process
+          expect { logger.deprecate('#old', '#new', id: :foobar) }.not_to output.to_stdout_from_any_process
+        end
+
+        it 'logs only allowed ids from Array' do
+          logger.allow(%i[foo bar])
+          expect { logger.deprecate('#old', '#new', id: :foo) }.to output(/foo/).to_stdout_from_any_process
+          expect { logger.deprecate('#old', '#new', id: :bar) }.to output(/bar/).to_stdout_from_any_process
+          expect { logger.deprecate('#old', '#new', id: :foobar) }.not_to output.to_stdout_from_any_process
+        end
+
+        it 'prevents logging any deprecation when ignoring :deprecations' do
+          logger.allow(:deprecations)
+          expect { logger.deprecate('#old', '#new') }.to output(/new/).to_stdout_from_any_process
         end
       end
     end
