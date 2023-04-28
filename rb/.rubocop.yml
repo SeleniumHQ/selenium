@@ -3,7 +3,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
   NewCops: enable
   Exclude:
     - !ruby/regexp /lib\/selenium\/devtools\/v\d+/
