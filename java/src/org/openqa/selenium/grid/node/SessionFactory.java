@@ -29,4 +29,5 @@ public interface SessionFactory extends
   Function<CreateSessionRequest, Either<WebDriverException, ActiveSession>>,
   Predicate<Capabilities> {
 
+  Capabilities getStereotype();
 }

@@ -651,7 +651,12 @@ public class NodeOptions {
     StringBuilder caps = new StringBuilder();
     try (JsonOutput out = JSON.newOutput(caps)) {
       out.setPrettyPrint(false);
-      out.write(entry.getKey().getCanonicalCapabilities());
+      Optional<SessionFactory> optionalSessionFactory = entry.getValue().stream().findFirst();
+      if (optionalSessionFactory.isPresent()) {
+        out.write(optionalSessionFactory.get().getStereotype());
+      } else {
+        out.write(entry.getKey().getCanonicalCapabilities());
+      }
     }
 
     LOG.info(String.format(
