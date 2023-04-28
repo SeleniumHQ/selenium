@@ -55,7 +55,7 @@ def release_version
 end
 
 def version
-  "#{release_version}.0"
+  "#{release_version}.1-SNAPSHOT"
 end
 
 # The build system used by webdriver is layered on top of rake, and we call it
@@ -383,6 +383,13 @@ task 'publish-maven': JAVA_RELEASE_TARGETS do
  creds = read_user_pass_from_m2_settings
   JAVA_RELEASE_TARGETS.each do |p|
     Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/service/local/staging/deploy/maven2', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
+  end
+end
+
+task 'publish-maven-snapshot': JAVA_RELEASE_TARGETS do
+ creds = read_user_pass_from_m2_settings
+  JAVA_RELEASE_TARGETS.each do |p|
+    Bazel::execute('run', ['--stamp', '--define', 'maven_repo=https://oss.sonatype.org/content/repositories/snapshots', '--define', "maven_user=#{creds[0]}", '--define', "maven_password=#{creds[1]}", '--define', 'gpg_sign=true'], p)
   end
 end
 
