@@ -493,6 +493,7 @@ public class DriverService implements Closeable {
         timeout = getDefaultTimeout();
       }
 
+      loadSystemProperties();
       List<String> args = createArgs();
 
       DS service = createDriverService(exe, port, timeout, args, environment);
@@ -500,6 +501,8 @@ public class DriverService implements Closeable {
 
       return service;
     }
+
+    protected abstract void loadSystemProperties();
 
     protected abstract List<String> createArgs();
 

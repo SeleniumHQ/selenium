@@ -201,16 +201,13 @@ public class ChromeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     ChromeDriverService, ChromeDriverService.Builder> {
 
-    private boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
-    private boolean readableTimestamp = Boolean.getBoolean(CHROME_DRIVER_READABLE_TIMESTAMP);
-    private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
-    private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
-    private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
-    private String allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
-                                                       System.getProperty(
-                                                         CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
-    private ChromiumDriverLogLevel logLevel = ChromiumDriverLogLevel
-      .fromString(System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY));
+    private Boolean disableBuildCheck;
+    private Boolean readableTimestamp;
+    private Boolean appendLog;
+    private Boolean verbose;
+    private Boolean silent;
+    private String allowedListIps;
+    private ChromiumDriverLogLevel logLevel;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -252,29 +249,12 @@ public class ChromeDriverService extends DriverService {
     /**
      * Configures the driver server verbosity.
      *
-     * @param verbose Log all output for true, no changes made if false.
-     * @return A self reference.
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    public Builder withVerbose(boolean verbose) {
-      if (verbose) {
-        this.logLevel = ChromiumDriverLogLevel.ALL;
-      }
-      this.verbose = false;
-      return this;
-    }
-
-    /**
-     * Configures the driver server verbosity.
-     *
      * @param logLevel {@link ChromeDriverLogLevel} for desired log level output.
      * @return A self reference.
      * @deprecated use {@link #withLogLevel(ChromiumDriverLogLevel)} instead.
      */
     @Deprecated
     public Builder withLogLevel(ChromeDriverLogLevel logLevel) {
-      this.verbose = false;
-      this.silent = false;
       this.logLevel = ChromiumDriverLogLevel.fromString(logLevel.toString());
       return this;
     }
@@ -297,10 +277,18 @@ public class ChromeDriverService extends DriverService {
      * @return A self reference.
      */
     public Builder withSilent(boolean silent) {
-      if (silent) {
-        this.logLevel = ChromiumDriverLogLevel.OFF;
-      }
-      this.silent = false;
+      this.silent = silent;
+      return this;
+    }
+
+    /**
+     * Configures the driver server verbosity.
+     *
+     * @param verbose Log all output for true, no changes made if false.
+     * @return A self reference.
+     */
+    public Builder withVerbose(boolean verbose) {
+      this.verbose = verbose;
       return this;
     }
 
@@ -342,46 +330,71 @@ public class ChromeDriverService extends DriverService {
     }
 
     @Override
-    protected List<String> createArgs() {
+    protected void loadSystemProperties() {
       if (getLogFile() == null) {
         String logFilePath = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
         if (logFilePath != null) {
           withLogFile(new File(logFilePath));
         }
       }
-
-      // If set in properties and not overwritten by method
-      if (verbose) {
-        withVerbose(true);
+      if (disableBuildCheck == null) {
+        this.disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
       }
-      if (silent) {
-        withSilent(true);
+      if (readableTimestamp == null) {
+        this.readableTimestamp = Boolean.getBoolean(CHROME_DRIVER_READABLE_TIMESTAMP);
       }
+      if (appendLog == null) {
+        this.appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
+      }
+      if (verbose == null) {
+        this.verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
+      }
+      if (silent == null) {
+        this.silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
+      }
+      if (allowedListIps == null) {
+        this.allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
+          System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
+      }
+      if (logLevel == null) {
+        String level = System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY);
+        if (level != null) {
+          this.logLevel = ChromiumDriverLogLevel.fromString(level);
+        }
+      }
+    }
 
+    @Override
+    protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-
       args.add(String.format("--port=%d", getPort()));
 
       // Readable timestamp and append logs only work if a file is specified
       // Can only get readable logs via arguments; otherwise send service output as directed
       if (getLogFile() != null && (readableTimestamp || appendLog)) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
-        if (readableTimestamp) {
+        if (readableTimestamp != null && readableTimestamp.equals(Boolean.TRUE)) {
           args.add("--readable-timestamp");
         }
-        if (appendLog) {
+        if (appendLog != null && appendLog.equals(Boolean.TRUE)) {
           args.add("--append-log");
         }
-        withLogFile(null); // Do not overwrite in sendOutputTo
+        withLogFile(null); // Do not overwrite in sendOutputTo()
       }
 
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
+      if (silent != null && silent.equals(Boolean.TRUE)) {
+        args.add("--silent");
+      }
+      if (verbose != null && verbose.equals(Boolean.TRUE)) {
+        args.add("--verbose");
+      }
       if (allowedListIps != null) {
         args.add(String.format("--allowed-ips=%s", allowedListIps));
       }
-      if (disableBuildCheck) {
+      if (disableBuildCheck != null && disableBuildCheck.equals(Boolean.TRUE)) {
         args.add("--disable-build-check");
       }
 

@@ -147,7 +147,7 @@ public class SafariDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
       SafariDriverService, SafariDriverService.Builder> {
 
-    private boolean diagnose = Boolean.getBoolean(SAFARI_DRIVER_LOGGING);
+    private boolean diagnose;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -171,10 +171,17 @@ public class SafariDriverService extends DriverService {
     }
 
     @Override
+    protected void loadSystemProperties() {
+      if(diagnose == null) {
+        this.diagnose = Boolean.getBoolean(SAFARI_DRIVER_LOGGING);
+      }
+    }
+
+    @Override
     protected List<String> createArgs() {
       List<String> args = new ArrayList<>(
         Arrays.asList("--port", String.valueOf(getPort())));
-      if (this.diagnose) {
+      if (diagnose != null && diagnose.equals(Boolean.TRUE)) {
         args.add("--diagnose");
       }
       return args;

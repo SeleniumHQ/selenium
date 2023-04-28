@@ -178,10 +178,9 @@ public class GeckoDriverService extends FirefoxDriverService {
 
     private FirefoxBinary firefoxBinary;
     private String allowHosts;
-    private FirefoxDriverLogLevel logLevel = FirefoxDriverLogLevel
-      .fromString(System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY, "INFO"));
-    private Boolean logTruncate = Boolean.getBoolean(GECKO_DRIVER_LOG_NO_TRUNCATE);
-    private File profileRoot = new File(System.getProperty(GECKO_DRIVER_PROFILE_ROOT));
+    private FirefoxDriverLogLevel logLevel;
+    private Boolean logTruncate;
+    private File profileRoot;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -256,6 +255,24 @@ public class GeckoDriverService extends FirefoxDriverService {
       return this;
     }
 
+    @Override
+    protected void loadSystemProperties() {
+      if(logLevel == null) {
+        String logFilePath = System.getProperty(GECKO_DRIVER_LOG_LEVEL_PROPERTY);
+        if (logFilePath != null) {
+          this.logLevel = FirefoxDriverLogLevel.fromString(logFilePath);
+        }
+      }
+      if( logTruncate == null) {
+        logTruncate = Boolean.getBoolean(GECKO_DRIVER_LOG_LEVEL_PROPERTY);
+      }
+      if (profileRoot == null) {
+        String profileRootFromProperty = System.getProperty(GECKO_DRIVER_PROFILE_ROOT);
+        if (profileRootFromProperty != null) {
+          profileRoot = new File(profileRootFromProperty);
+        }
+      }
+    }
 
     @Override
     protected List<String> createArgs() {
@@ -274,7 +291,7 @@ public class GeckoDriverService extends FirefoxDriverService {
         args.add("--log");
         args.add(logLevel.toString());
       }
-      if (!logTruncate) {
+      if (logTruncate != null && logTruncate.equals(Boolean.TRUE)) {
         args.add("--log-no-truncate");
       }
       if (profileRoot != null) {

@@ -200,7 +200,7 @@ public class InternetExplorerDriverService extends DriverService {
     }
 
     @Override
-    protected List<String> createArgs() {
+    protected void loadSystemProperties() {
       if (getLogFile() == null) {
         String logFilePath = System.getProperty(IE_DRIVER_LOGFILE_PROPERTY);
         if (logFilePath != null) {
@@ -231,9 +231,14 @@ public class InternetExplorerDriverService extends DriverService {
           silent = Boolean.valueOf(silentProperty);
         }
       }
+    }
 
+
+    @Override
+    protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
       args.add(String.format("--port=%d", getPort()));
+
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel));
       }
