@@ -78,7 +78,7 @@ module Selenium
       private
 
       def build_process(*command)
-        WebDriver.logger.debug("Executing Process #{command}")
+        WebDriver.logger.debug("Executing Process #{command}", id: :driver_service)
         @process = ChildProcess.build(*command)
         @process.io = @io
         @process.io ||= WebDriver.logger.io if WebDriver.logger.debug?

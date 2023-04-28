@@ -38,12 +38,12 @@ module Selenium
 
       def_delegators :@logger,
                      :close,
-                     :debug, :debug?,
-                     :info, :info?,
+                     :debug?,
+                     :info?,
                      :warn?,
                      :error, :error?,
                      :fatal, :fatal?,
-                     :level, :level=
+                     :level
 
       #
       # @param [String] progname Allow child projects to use Selenium's Logger pattern
@@ -52,6 +52,12 @@ module Selenium
         @logger = create_logger(progname)
         @ignored = Array(ignored)
         @first_warning = false
+      end
+
+      def level=(level)
+        info(':info is now the default log level, to see additional logging, set log level to :debug') if level == :info
+
+        @logger.level = level
       end
 
       #
@@ -88,27 +94,44 @@ module Selenium
       end
 
       #
-      # Overrides default #warn to skip ignored messages by provided id
+      # Used to supply information of interest for debugging a problem
+      # Overrides default #debug to skip ignored messages by provided id
       #
       # @param [String] message
       # @param [Symbol, Array<Sybmol>] id
       # @yield see #deprecate
       #
-      def warn(message, id: [])
+      def debug(message, id: [], &block)
+        discard_or_log(:debug, message, id, &block)
+      end
+
+      #
+      # Used to supply information of general interest
+      #
+      # @param [String] message
+      # @param [Symbol, Array<Sybmol>] id
+      # @yield see #deprecate
+      #
+      def info(message, id: [], &block)
         unless @first_warning
           @first_warning = true
-          warn("Details on how to use and modify Selenium logger:\n", id: [:logger_info]) do
-            "https://selenium.dev/documentation/webdriver/troubleshooting/logging#ruby\n"
+          info("Details on how to use and modify Selenium logger:\n", id: [:logger_info]) do
+            "https://selenium.dev/documentation/webdriver/troubleshooting/logging\n"
           end
         end
 
-        id = Array(id)
-        return if (@ignored & id).any?
+        discard_or_log(:info, message, id, &block)
+      end
 
-        msg = id.empty? ? message : "[#{id.map(&:inspect).join(', ')}] #{message} "
-        msg += " #{yield}" if block_given?
-
-        @logger.warn { msg }
+      #
+      # Used to supply information that suggests action be taken by user
+      #
+      # @param [String] message
+      # @param [Symbol, Array<Sybmol>] id
+      # @yield see #deprecate
+      #
+      def warn(message, id: [], &block)
+        discard_or_log(:warn, message, id, &block)
       end
 
       #
@@ -121,12 +144,9 @@ module Selenium
       # @yield appends additional message to end of provided template
       #
       def deprecate(old, new = nil, id: [], reference: '', &block)
-        id = Array(id)
-        return if @ignored.include?(:deprecations) || (@ignored & id).any?
+        return if @ignored.include?(:deprecations)
 
-        ids = id.empty? ? '' : "[#{id.map(&:inspect).join(', ')}] "
-
-        message = +"[DEPRECATION] #{ids}#{old} is deprecated"
+        message = +"[DEPRECATION] #{old} is deprecated"
         message << if new
                      ". Use #{new} instead."
                    else
@@ -134,7 +154,7 @@ module Selenium
                    end
         message << " See explanation for this deprecation: #{reference}." unless reference.empty?
 
-        warn message, &block
+        discard_or_log(:warn, message, id, &block)
       end
 
       private
@@ -151,7 +171,17 @@ module Selenium
       end
 
       def default_level
-        $DEBUG || ENV.key?('DEBUG') ? :debug : :warn
+        $DEBUG || ENV.key?('DEBUG') ? :debug : :info
+      end
+
+      def discard_or_log(level, message, id)
+        id = Array(id)
+        return if (@ignored & id).any?
+
+        msg = id.empty? ? message : "[#{id.map(&:inspect).join(', ')}] #{message} "
+        msg += " #{yield}" if block_given?
+
+        @logger.send(level) { msg }
       end
     end # Logger
   end # WebDriver

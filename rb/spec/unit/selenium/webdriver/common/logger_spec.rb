@@ -46,9 +46,9 @@ module Selenium
       end
 
       describe '#level' do
-        it 'logs at warning level by default' do
-          expect(logger.level).to eq(2)
-          expect(logger).to be_warn
+        it 'logs at warn level by default' do
+          expect(logger.level).to eq(1)
+          expect(logger).to be_info
         end
 
         it 'logs at debug level if $DEBUG is set to true' do
@@ -58,9 +58,9 @@ module Selenium
         end
 
         it 'allows changing level by name during execution' do
-          logger.level = :info
-          expect(logger.level).to eq(1)
-          expect(logger).to be_info
+          logger.level = :error
+          expect(logger.level).to eq(3)
+          expect(logger).to be_error
         end
 
         it 'allows changing level by integer during execution' do
@@ -84,14 +84,48 @@ module Selenium
         end
       end
 
-      describe '#warn' do
-        it 'logs info on first warning but not second' do
-          logger = described_class.new('Selenium')
-          expect { logger.warn('first') }.to output(/:logger_info/).to_stdout_from_any_process
-          expect { logger.warn('second') }.not_to output(/:logger_info/).to_stdout_from_any_process
+      describe '#debug' do
+        before { logger.level = :debug }
+
+        it 'logs message' do
+          expect { logger.debug 'String Value' }.to output(/DEBUG Selenium String Value/).to_stdout_from_any_process
         end
 
-        it 'logs with String' do
+        it 'logs single id when set' do
+          msg = /DEBUG Selenium \[:foo\] debug message/
+          expect { logger.debug('debug message', id: :foo) }.to output(msg).to_stdout_from_any_process
+        end
+
+        it 'logs multiple ids when set' do
+          msg = /DEBUG Selenium \[:foo, :bar\] debug message/
+          expect { logger.debug('debug message', id: %i[foo bar]) }.to output(msg).to_stdout_from_any_process
+        end
+      end
+
+      describe '#info' do
+        it 'logs info on first info but not second' do
+          logger = described_class.new('Selenium')
+          expect { logger.info('first') }.to output(/:logger_info/).to_stdout_from_any_process
+          expect { logger.info('second') }.not_to output(/:logger_info/).to_stdout_from_any_process
+        end
+
+        it 'logs message' do
+          expect { logger.info 'String Value' }.to output(/INFO Selenium String Value/).to_stdout_from_any_process
+        end
+
+        it 'logs single id when set' do
+          msg = /INFO Selenium \[:foo\] info message/
+          expect { logger.info('info message', id: :foo) }.to output(msg).to_stdout_from_any_process
+        end
+
+        it 'logs multiple ids when set' do
+          msg = /INFO Selenium \[:foo, :bar\] info message/
+          expect { logger.info('info message', id: %i[foo bar]) }.to output(msg).to_stdout_from_any_process
+        end
+      end
+
+      describe '#warn' do
+        it 'logs message' do
           expect { logger.warn 'String Value' }.to output(/WARN Selenium String Value/).to_stdout_from_any_process
         end
 

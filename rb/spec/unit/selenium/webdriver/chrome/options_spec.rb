@@ -272,7 +272,7 @@ module Selenium
 
             expect {
               options.as_json
-            }.to output(/WARN Selenium These options are not w3c compliant/).to_stdout_from_any_process
+            }.to have_warning(:w3c_options)
           end
 
           it 'returns added options' do
