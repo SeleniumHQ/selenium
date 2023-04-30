@@ -189,6 +189,23 @@ public class ConditionTest {
   }
 
   @Test
+  void testAssertionFailureInConditionIsNotWrapped() {
+    Condition condition = new Condition() {
+        @Override
+        public boolean isTrue(ConditionRunner.Context runner) {
+            double result = 10.0 / 0.0;
+            return false;
+        }
+    };
+    try {
+        conditionRunner.waitFor(condition);
+        fail("should have thrown an assertion failed error");
+    } catch (AssertionError expected) {
+        assertTrue(expected.getMessage().contains("/ by zero"));
+    }
+}
+
+  @Test
   void testMessageWithArgs() {
     final RuntimeException thrownException = new RuntimeException();
     Condition condition = new Condition("foo %s baz", "bar") {
