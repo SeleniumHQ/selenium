@@ -27,7 +27,6 @@ import org.openqa.selenium.devtools.HasDevTools;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.logging.EventType;
-import org.openqa.selenium.logging.HasLogEvents;
 
 import java.io.IOException;
 import java.net.URL;

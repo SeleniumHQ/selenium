@@ -29,7 +29,6 @@ import org.openqa.selenium.remote.http.ClientConfig;
 import org.openqa.selenium.remote.service.DriverCommandExecutor;
 import org.openqa.selenium.remote.service.DriverFinder;
 
-import java.io.File;
 
 public class InternetExplorerDriver extends RemoteWebDriver {
 

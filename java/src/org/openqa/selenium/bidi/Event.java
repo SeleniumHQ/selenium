@@ -18,7 +18,6 @@
 package org.openqa.selenium.bidi;
 
 import org.openqa.selenium.internal.Require;
-import org.openqa.selenium.json.JsonInput;
 
 import java.util.Map;
 import java.util.function.Function;

@@ -22,7 +22,6 @@ import com.google.common.io.Resources;
 
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.remote.codec.AbstractHttpCommandCodec;
 import org.openqa.selenium.remote.internal.WebElementToJsonConverter;
 

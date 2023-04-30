@@ -39,7 +39,6 @@ import org.openqa.selenium.remote.http.WebSocket;
 import java.io.Closeable;
 import java.io.StringReader;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;

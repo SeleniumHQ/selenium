@@ -110,7 +110,9 @@ public class ErrorHandler {
       if (!rawErrorData.containsKey(MESSAGE) && rawErrorData.containsKey("value")) {
         try {
           rawErrorData = (Map<String, Object>) rawErrorData.get("value");
-        } catch (ClassCastException cce) {}
+        } catch (ClassCastException cce) {
+          throw new RuntimeException(cce);
+        }
       }
       try {
         message = (String) rawErrorData.get(MESSAGE);

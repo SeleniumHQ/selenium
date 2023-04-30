@@ -23,10 +23,8 @@ import com.google.common.io.ByteStreams;
 import com.google.common.io.FileBackedOutputStream;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.util.Base64;
-import java.util.zip.ZipOutputStream;
 import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.JsonInput;

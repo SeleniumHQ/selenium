@@ -83,7 +83,6 @@ import org.openqa.selenium.status.HasReadyState;
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
 
-import java.io.Closeable;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.Duration;
@@ -92,7 +91,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
@@ -102,7 +100,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -596,18 +593,15 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           AttributeKey.EXCEPTION_MESSAGE.getKey(),
           EventAttribute.setValue("Will retry session " + request.getRequestId()));
 
-        span.setAttribute(AttributeKey.ERROR.getKey(), true);
-        span.setStatus(Status.ABORTED);
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       } else {
         EXCEPTION.accept(attributeMap, lastFailure);
         attributeMap.put(AttributeKey.EXCEPTION_MESSAGE.getKey(),
                          EventAttribute.setValue("Unable to create session: " + lastFailure.getMessage()));
 
-        span.setAttribute(AttributeKey.ERROR.getKey(), true);
-        span.setStatus(Status.ABORTED);
-        span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       }
+      span.setAttribute(AttributeKey.ERROR.getKey(), true);
+      span.setStatus(Status.ABORTED);
+      span.addEvent(AttributeKey.EXCEPTION_EVENT.getKey(), attributeMap);
       return Either.left(lastFailure);
     } catch (SessionNotCreatedException e) {
       span.setAttribute(AttributeKey.ERROR.getKey(), true);

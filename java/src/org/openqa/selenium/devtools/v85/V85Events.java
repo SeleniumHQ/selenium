@@ -31,7 +31,6 @@ import org.openqa.selenium.devtools.v85.runtime.model.ExceptionDetails;
 import org.openqa.selenium.devtools.v85.runtime.model.ExceptionThrown;
 import org.openqa.selenium.devtools.v85.runtime.model.StackTrace;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;

@@ -23,7 +23,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.internal.Require;
 import org.openqa.selenium.remote.Command;
 import org.openqa.selenium.remote.CommandInfo;
 import org.openqa.selenium.remote.DriverCommand;
@@ -80,7 +79,7 @@ public class DriverCommandExecutor extends HttpCommandExecutor implements Closea
    *
    * @param service driver server
    * @param additionalCommands additional commands the remote end can process
-   * @param clientConfig 
+   * @param clientConfig
    */
 
   public DriverCommandExecutor(

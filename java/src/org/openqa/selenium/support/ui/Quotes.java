@@ -40,10 +40,7 @@ public class Quotes {
   @SuppressWarnings("JavaDoc")
   public static String escape(String toEscape) {
     if (toEscape.contains("\"") && toEscape.contains("'")) {
-      boolean quoteIsLast = false;
-      if (toEscape.lastIndexOf("\"") == toEscape.length() - 1) {
-        quoteIsLast = true;
-      }
+      boolean quoteIsLast = toEscape.lastIndexOf("\"") == toEscape.length() - 1;
       String[] substringsWithoutQuotes = toEscape.split("\"");
 
       StringBuilder quoted = new StringBuilder("concat(");
