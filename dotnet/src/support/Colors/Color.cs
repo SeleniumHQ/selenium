@@ -224,17 +224,17 @@ namespace OpenQA.Selenium.Support.Colors
         public static Color FromString(string value)
         {
             List<Converter> converters = new()
-        {
-            new RgbConverter(),
-            new RgbPctConverter(),
-            new RgbaConverter(),
-            new RgbaPctConverter(),
-            new NamedColorConverter(),
-            new HexConverter(),
-            new Hex3Converter(),
-            new HslConverter(),
-            new HslaConverter()
-        };
+            {
+                new RgbConverter(),
+                new RgbPctConverter(),
+                new RgbaConverter(),
+                new RgbaPctConverter(),
+                new NamedColorConverter(),
+                new HexConverter(),
+                new Hex3Converter(),
+                new HslConverter(),
+                new HslaConverter()
+            };
 
             foreach (var converter in converters)
             {
