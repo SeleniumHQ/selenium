@@ -43,19 +43,20 @@ public class InternetExplorerDriverService extends DriverService {
   public static final String IE_DRIVER_NAME = "IEDriverServer";
 
   /**
-   * System property that defines the location of the IEDriverServer executable
-   * that will be used by the {@link #createDefaultService() default service}.
+   * System property that defines the location of the IEDriverServer executable that will be used by
+   * the {@link #createDefaultService() default service}.
    */
   public static final String IE_DRIVER_EXE_PROPERTY = "webdriver.ie.driver";
 
   /**
-   * System property that defines the location of the file where IEDriverServer
-   * should write log messages to.
+   * System property that defines the location of the file where IEDriverServer should write log
+   * messages to.
    */
   public static final String IE_DRIVER_LOGFILE_PROPERTY = "webdriver.ie.driver.logfile";
 
   /**
-   * System property that defines the {@link InternetExplorerDriverLogLevel} for IEDriverServer logs.
+   * System property that defines the {@link InternetExplorerDriverLogLevel} for IEDriverServer
+   * logs.
    */
   public static final String IE_DRIVER_LOGLEVEL_PROPERTY = "webdriver.ie.driver.loglevel";
 
@@ -75,22 +76,22 @@ public class InternetExplorerDriverService extends DriverService {
   public static final String IE_DRIVER_SILENT_PROPERTY = "webdriver.ie.driver.silent";
 
   /**
-   * @param executable The IEDriverServer executable.
-   * @param port Which port to start the IEDriverServer on.
+   * @param executable  The IEDriverServer executable.
+   * @param port        Which port to start the IEDriverServer on.
    * @param timeout     Timeout waiting for driver server to start.
-   * @param args The arguments to the launched server.
+   * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
    */
   public InternetExplorerDriverService(
-      File executable,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, timeout,
-          unmodifiableList(new ArrayList<>(args)),
-          unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
   }
 
   public String getDriverName() {
@@ -107,10 +108,12 @@ public class InternetExplorerDriverService extends DriverService {
   }
 
   /**
-   * Configures and returns a new {@link InternetExplorerDriverService} using the default configuration. In
-   * this configuration, the service will use the IEDriverServer executable identified by the
+   * Configures and returns a new {@link InternetExplorerDriverService} using the default
+   * configuration. In this configuration, the service will use the IEDriverServer executable
+   * identified by the
    * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
-   * Each service created by this method will be configured to use a free port on the current system.
+   * Each service created by this method will be configured to use a free port on the current
+   * system.
    *
    * @return A new InternetExplorerDriverService using the default configuration.
    */
@@ -119,8 +122,8 @@ public class InternetExplorerDriverService extends DriverService {
   }
 
   /**
-   * Checks if the IEDriverServer binary is available. Grid uses this method to show
-   * the available browsers and drivers, hence its visibility.
+   * Checks if the IEDriverServer binary is available. Grid uses this method to show the available
+   * browsers and drivers, hence its visibility.
    *
    * @return Whether the browser driver path was found.
    */
@@ -257,13 +260,14 @@ public class InternetExplorerDriverService extends DriverService {
 
     @Override
     protected InternetExplorerDriverService createDriverService(
-        File exe,
-        int port,
-        Duration timeout,
-        List<String> args,
-        Map<String, String> environment) {
+      File exe,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) {
       try {
-        InternetExplorerDriverService service = new InternetExplorerDriverService(exe, port, timeout, args, environment);
+        InternetExplorerDriverService service = new InternetExplorerDriverService(exe, port,
+          timeout, args, environment);
         service.sendOutputTo(getLogOutput(IE_DRIVER_LOGFILE_PROPERTY));
         return service;
       } catch (IOException e) {

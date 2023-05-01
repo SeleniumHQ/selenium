@@ -44,8 +44,8 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_NAME = "chromedriver";
 
   /**
-   * System property that defines the location of the ChromeDriver executable
-   * that will be used by the {@link #createDefaultService() default service}.
+   * System property that defines the location of the ChromeDriver executable that will be used by
+   * the {@link #createDefaultService() default service}.
    */
   public static final String CHROME_DRIVER_EXE_PROPERTY = "webdriver.chrome.driver";
 
@@ -55,8 +55,8 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_READABLE_TIMESTAMP = "webdriver.chrome.readableTimestamp";
 
   /**
-   * System property that defines the location of the file where ChromeDriver
-   * should write log messages to.
+   * System property that defines the location of the file where ChromeDriver should write log
+   * messages to.
    */
   public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
@@ -71,34 +71,35 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY = "webdriver.chrome.appendLog";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
-   * with verbose logging.
+   * Boolean system property that defines whether the ChromeDriver executable should be started with
+   * verbose logging.
    */
   public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY = "webdriver.chrome.verboseLogging";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
-   * in silent mode.
+   * Boolean system property that defines whether the ChromeDriver executable should be started in
+   * silent mode.
    */
   public static final String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY = "webdriver.chrome.silentOutput";
 
   /**
-   * System property that defines comma-separated list of remote IPv4 addresses which are
-   * allowed to connect to ChromeDriver.
+   * System property that defines comma-separated list of remote IPv4 addresses which are allowed to
+   * connect to ChromeDriver.
    */
   public static final String CHROME_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.chrome.withAllowedIps";
 
   /**
-   * System property that defines comma-separated list of remote IPv4 addresses which are
-   * allowed to connect to ChromeDriver.
+   * System property that defines comma-separated list of remote IPv4 addresses which are allowed to
+   * connect to ChromeDriver.
+   *
    * @deprecated use {@link #CHROME_DRIVER_ALLOWED_IPS_PROPERTY}
    */
   @Deprecated
   public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY = "webdriver.chrome.whitelistedIps";
 
   /**
-   * System property that defines whether the ChromeDriver executable should check for build
-   * version compatibility between ChromeDriver and the browser.
+   * System property that defines whether the ChromeDriver executable should check for build version
+   * compatibility between ChromeDriver and the browser.
    */
   public static final String CHROME_DRIVER_DISABLE_BUILD_CHECK = "webdriver.chrome.disableBuildCheck";
 
@@ -112,13 +113,13 @@ public class ChromeDriverService extends DriverService {
    */
   @Deprecated
   public ChromeDriverService(
-      File executable,
-      int port,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     this(executable, port, DEFAULT_TIMEOUT,
-         unmodifiableList(new ArrayList<>(args)),
-         unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
   }
 
   /**
@@ -130,14 +131,14 @@ public class ChromeDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public ChromeDriverService(
-      File executable,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, timeout,
-          unmodifiableList(new ArrayList<>(args)),
-          unmodifiableMap(new HashMap<>(environment)));
+      unmodifiableList(new ArrayList<>(args)),
+      unmodifiableMap(new HashMap<>(environment)));
   }
 
   public String getDriverName() {
@@ -157,7 +158,8 @@ public class ChromeDriverService extends DriverService {
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by
    * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
-   * Each service created by this method will be configured to use a free port on the current system.
+   * Each service created by this method will be configured to use a free port on the current
+   * system.
    *
    * @return A new ChromeDriverService using the default configuration.
    */
@@ -169,7 +171,8 @@ public class ChromeDriverService extends DriverService {
    * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by
    * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
-   * Each service created by this method will be configured to use a free port on the current system.
+   * Each service created by this method will be configured to use a free port on the current
+   * system.
    *
    * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
    * @deprecated Use {@link Builder#withLogLevel(ChromiumDriverLogLevel)}  }
@@ -178,15 +181,15 @@ public class ChromeDriverService extends DriverService {
   public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
     ChromeDriverLogLevel oldLevel = options.getLogLevel();
     ChromiumDriverLogLevel level = (oldLevel == null) ? null :
-                                   ChromiumDriverLogLevel.fromString(oldLevel.toString());
+      ChromiumDriverLogLevel.fromString(oldLevel.toString());
     return new Builder()
       .withLogLevel(level)
       .build();
   }
 
   /**
-   * Checks if the ChromeDriver binary is already present. Grid uses this method to show
-   * the available browsers and drivers, hence its visibility.
+   * Checks if the ChromeDriver binary is already present. Grid uses this method to show the
+   * available browsers and drivers, hence its visibility.
    *
    * @return Whether the browser driver path was found.
    */
@@ -293,8 +296,8 @@ public class ChromeDriverService extends DriverService {
     }
 
     /**
-     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
-     * to the driver server.
+     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect to
+     * the driver server.
      *
      * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
@@ -307,8 +310,8 @@ public class ChromeDriverService extends DriverService {
     }
 
     /**
-     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
-     * to the driver server.
+     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect to
+     * the driver server.
      *
      * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
@@ -403,13 +406,14 @@ public class ChromeDriverService extends DriverService {
 
     @Override
     protected ChromeDriverService createDriverService(
-        File exe,
-        int port,
-        Duration timeout,
-        List<String> args,
-        Map<String, String> environment) {
+      File exe,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) {
       try {
-        ChromeDriverService service = new ChromeDriverService(exe, port, timeout, args, environment);
+        ChromeDriverService service = new ChromeDriverService(exe, port, timeout, args,
+          environment);
         service.sendOutputTo(getLogOutput(CHROME_DRIVER_LOG_PROPERTY));
         return service;
       } catch (IOException e) {
