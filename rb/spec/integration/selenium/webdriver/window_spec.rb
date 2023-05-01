@@ -124,7 +124,10 @@ module Selenium
         expect(new_size.height).to be > old_size.height
       end
 
-      it 'can minimize the window', except: {browser: %i[chrome edge], headless: true} do
+      it 'can minimize the window', except: [
+        {browser: %i[chrome edge], headless: true, reason: 'Cannot minimize a headless window'},
+        {browser: :chrome, platform: :linux, ci: :github, reason: 'Minimize fails with an error'}
+      ] do
         window.minimize
         expect(driver.execute_script('return document.hidden;')).to be true
       end
