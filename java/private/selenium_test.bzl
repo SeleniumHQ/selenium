@@ -68,6 +68,11 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
     jvm_flags = kwargs["jvm_flags"] if "jvm_flags" in kwargs else []
     tags = kwargs["tags"] if "tags" in kwargs else []
 
+    remote = False
+    if "selenium-remote" in tags:
+        tags.remove("selenium-remote")
+        remote = True
+
     stripped_args = dict(**kwargs)
     stripped_args.pop("data", None)
     stripped_args.pop("jvm_flags", None)
@@ -98,7 +103,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
             )
         all_tests.append(":%s" % test)
 
-        if "selenium-remote" in tags:
+        if remote:
             java_junit5_test(
                 name = "%s-remote" % test,
                 test_class = test_class,
@@ -108,7 +113,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
                     "-Dselenium.browser.remote.path=$(location @selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar)",
                 ],
                 # No need to lint remote tests as the code for non-remote is the same and they get linted
-                tags = BROWSERS[browser]["tags"] + tags + ["remote", "no-lint"],
+                tags = BROWSERS[browser]["tags"] + tags + ["remote1", "no-lint"],
                 data = BROWSERS[browser]["data"] + data + [
                     "@selenium//java/src/org/openqa/selenium/grid:selenium_server_deploy.jar",
                 ],
