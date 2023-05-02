@@ -29,9 +29,9 @@ use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
 };
 use crate::{
-    create_default_http_client, format_one_arg, format_two_args, Logger, SeleniumManager, BETA,
-    DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY, STABLE, WMIC_COMMAND,
-    WMIC_COMMAND_ENV,
+    create_http_client, format_one_arg, format_three_args, format_two_args, Logger,
+    SeleniumManager, BETA, DASH_VERSION, DEV, ENV_PROGRAM_FILES, ENV_PROGRAM_FILES_X86, NIGHTLY,
+    REG_QUERY_FIND, REMOVE_X86, STABLE, WMIC_COMMAND, WMIC_COMMAND_ENV,
 };
 
 pub const FIREFOX_NAME: &str = "firefox";
@@ -48,14 +48,19 @@ pub struct FirefoxManager {
 }
 
 impl FirefoxManager {
-    pub fn new() -> Box<Self> {
-        Box::new(FirefoxManager {
-            browser_name: FIREFOX_NAME,
-            driver_name: GECKODRIVER_NAME,
-            config: ManagerConfig::default(),
-            http_client: create_default_http_client(),
+    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
+        let browser_name = FIREFOX_NAME;
+        let driver_name = GECKODRIVER_NAME;
+        let config = ManagerConfig::default(browser_name, driver_name);
+        let default_timeout = config.timeout.to_owned();
+        let default_proxy = &config.proxy;
+        Ok(Box::new(FirefoxManager {
+            browser_name,
+            driver_name,
+            http_client: create_http_client(default_timeout, default_proxy)?,
+            config,
             log: Logger::default(),
-        })
+        }))
     }
 }
 
@@ -121,9 +126,26 @@ impl SeleniumManager for FirefoxManager {
                 Some(path) => {
                     browser_path = path;
                     commands = vec![
-                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES, browser_path),
-                        format_two_args(WMIC_COMMAND_ENV, ENV_PROGRAM_FILES_X86, browser_path),
+                        format_three_args(
+                            WMIC_COMMAND_ENV,
+                            ENV_PROGRAM_FILES,
+                            REMOVE_X86,
+                            browser_path,
+                        ),
+                        format_three_args(
+                            WMIC_COMMAND_ENV,
+                            ENV_PROGRAM_FILES_X86,
+                            "",
+                            browser_path,
+                        ),
                     ];
+                    if !self.is_browser_version_unstable() {
+                        commands.push(format_two_args(
+                            REG_QUERY_FIND,
+                            r#"HKCU\Software\Mozilla"#,
+                            self.browser_name,
+                        ));
+                    }
                 }
                 _ => return None,
             }
@@ -156,7 +178,8 @@ impl SeleniumManager for FirefoxManager {
             }
             _ => {
                 let latest_url = format!("{}{}", DRIVER_URL, LATEST_RELEASE);
-                let driver_version = read_redirect_from_link(self.get_http_client(), latest_url)?;
+                let driver_version =
+                    read_redirect_from_link(self.get_http_client(), latest_url, self.get_logger())?;
 
                 if !browser_version.is_empty() {
                     metadata.drivers.push(create_driver_metadata(
@@ -248,6 +271,10 @@ impl SeleniumManager for FirefoxManager {
         &self.config
     }
 
+    fn get_config_mut(&mut self) -> &mut ManagerConfig {
+        &mut self.config
+    }
+
     fn set_config(&mut self, config: ManagerConfig) {
         self.config = config;
     }
@@ -267,7 +294,7 @@ mod unit_tests {
 
     #[test]
     fn test_driver_url() {
-        let mut firefox_manager = FirefoxManager::new();
+        let mut firefox_manager = FirefoxManager::new().unwrap();
 
         let data = vec!(
             vec!("0.32.0", "linux", "x86", "https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux32.tar.gz"),

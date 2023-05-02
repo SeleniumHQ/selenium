@@ -32,7 +32,6 @@ import org.openqa.selenium.grid.security.Secret;
 import org.openqa.selenium.grid.testing.TestSessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.tracing.DefaultTestTracer;
 
@@ -44,7 +43,6 @@ import java.util.Map;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openqa.selenium.json.Json.MAP_TYPE;
-import static org.openqa.selenium.remote.Dialect.OSS;
 import static org.openqa.selenium.remote.Dialect.W3C;
 import static org.openqa.selenium.remote.http.Contents.utf8String;
 import static org.openqa.selenium.remote.http.HttpMethod.POST;
@@ -108,51 +106,6 @@ class CreateSessionTest {
   @Test
   void ifOnlyW3CPayloadSentAndRemoteEndIsJWPOnlyFailSessionCreationIfJWPNotConfigured() {
     // TODO: implement ifOnlyW3CPayloadSentAndRemoteEndIsJWPOnlyFailSessionCreationIfJWPNotConfigured test
-  }
-
-  @Test
-  void ifOnlyJWPPayloadSentResponseShouldBeJWPOnlyIfJWPConfigured()
-      throws URISyntaxException {
-    String payload = json.toJson(ImmutableMap.of(
-        "desiredCapabilities", ImmutableMap.of("cheese", "brie")));
-
-    HttpRequest request = new HttpRequest(POST, "/session");
-    request.setContent(utf8String(payload));
-
-    URI uri = new URI("http://example.com");
-
-    Node node = LocalNode.builder(
-      DefaultTestTracer.createTracer(),
-        new GuavaEventBus(),
-        uri,
-        uri,
-        registrationSecret)
-        .add(stereotype, new TestSessionFactory((id, caps) -> new Session(id, uri, new ImmutableCapabilities(), caps, Instant.now())))
-        .build();
-
-    Either<WebDriverException, CreateSessionResponse> response = node.newSession(
-      new CreateSessionRequest(
-        ImmutableSet.of(OSS),
-        stereotype,
-        ImmutableMap.of()));
-
-    if (response.isRight()) {
-      CreateSessionResponse sessionResponse = response.right();
-      Map<String, Object> all = json.toType(
-        new String(sessionResponse.getDownstreamEncodedResponse(), UTF_8),
-        MAP_TYPE);
-
-      // The status field is used by local ends to determine whether or not the session is a JWP one.
-      assertThat(all.get("status")).matches(obj -> ((Number) obj).intValue() == ErrorCodes.SUCCESS);
-
-      // The session id is a top level field
-      assertThat(all.get("sessionId")).isInstanceOf(String.class);
-
-      // And the value should contain the capabilities.
-      assertThat(all.get("value")).isInstanceOf(Map.class);
-    } else {
-      throw new AssertionError("Unable to create session" + response.left().getMessage());
-    }
   }
 
   @Test

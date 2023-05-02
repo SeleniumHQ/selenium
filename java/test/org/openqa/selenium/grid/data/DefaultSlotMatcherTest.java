@@ -263,21 +263,6 @@ class DefaultSlotMatcherTest {
   }
 
   @Test
-  void matchesWithJsonWireProtocolCaps() {
-    Capabilities stereotype = new ImmutableCapabilities(
-      CapabilityType.BROWSER_NAME, "chrome",
-      CapabilityType.BROWSER_VERSION, "80",
-      CapabilityType.PLATFORM_NAME, Platform.WINDOWS
-    );
-    Capabilities capabilities = new ImmutableCapabilities(
-      CapabilityType.BROWSER_NAME, "chrome",
-      CapabilityType.VERSION, "80",
-      CapabilityType.PLATFORM, Platform.WINDOWS
-    );
-    assertThat(slotMatcher.matches(stereotype, capabilities)).isTrue();
-  }
-
-  @Test
   void shouldNotMatchCapabilitiesThatAreDifferentButDoNotContainCommonCapabilityNames() {
     Capabilities stereotype = new ImmutableCapabilities("acceptInsecureCerts", "true");
     Capabilities capabilities = new ImmutableCapabilities("acceptInsecureCerts", "false");

@@ -35,7 +35,7 @@
     "lint": "ts-standard && eslint --ext '.js,.ts,.tsx' src",
     "lint-fix": "ts-standard --fix && eslint --ext '.js,.ts,.tsx' src"
   },
-  "homepage": "/ui",
+  "homepage": "./ui",
   "browserslist": {
     "production": [
       ">0.2%",

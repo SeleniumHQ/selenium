@@ -24,13 +24,13 @@
 const { platform } = require('process')
 const path = require('path')
 const fs = require('fs')
-const execSync = require('child_process').execSync
+const spawnSync = require('child_process').spawnSync
 
 /**
  * currently supported browsers for selenium-manager
  * @type {string[]}
  */
-const Browser = ['chrome', 'firefox', 'edge', 'iexplorer']
+const Browser = ['chrome', 'firefox', 'edge', 'MicrosoftEdge', 'iexplorer']
 
 /**
  * Determines the path of the correct Selenium Manager binary
@@ -47,7 +47,14 @@ function getBinary() {
   const file =
     directory === 'windows' ? 'selenium-manager.exe' : 'selenium-manager'
 
-  const filePath = path.join(__dirname, '..', '/bin', directory, file)
+  let seleniumManagerBasePath
+  if (process.env.SELENIUM_MANAGER_BASE_PATH) {
+    seleniumManagerBasePath = process.env.SELENIUM_MANAGER_BASE_PATH
+  } else {
+    seleniumManagerBasePath = path.join(__dirname, '..', '/bin')
+  }
+
+  const filePath = path.join(seleniumManagerBasePath, directory, file)
 
   if (!fs.existsSync(filePath)) {
     throw new Error(`Unable to obtain Selenium Manager`)
@@ -58,35 +65,55 @@ function getBinary() {
 
 /**
  * Determines the path of the correct driver
- * @param {Browser|string} browser name to fetch the driver
+ * @param {Capabilities} options browser options to fetch the driver
  * @returns {string} path of the driver location
  */
 
-function driverLocation(browser) {
-  if (!Browser.includes(browser.toLocaleString())) {
+function driverLocation(options) {
+  if (!Browser.includes(options.getBrowserName().toLocaleString())) {
     throw new Error(
-      `Unable to locate driver associated with browser name: ${browser}`
+      `Unable to locate driver associated with browser name: ${options.getBrowserName()}`
     )
   }
 
-  let args = [getBinary(), '--browser', browser, '--output', 'json']
+  let args = ['--browser', options.getBrowserName(), '--output', 'json']
+
+  if (options.getBrowserVersion() && options.getBrowserVersion() !== "") {
+    args.push("--browser-version", options.getBrowserVersion())
+  }
+
+  const vendorOptions = options.get('goog:chromeOptions') || options.get('ms:edgeOptions')
+                        || options.get('moz:firefoxOptions')
+  if (vendorOptions && vendorOptions.binary && vendorOptions.binary !== "") {
+    args.push("--browser-path", '"' + vendorOptions.binary + '"')
+  }
+
+  const smBinary = getBinary()
+  const spawnResult = spawnSync(smBinary, args)
   let output
-
-  try {
-    output = JSON.parse(execSync(args.join(' ')).toString())
-  } catch (e) {
-    let error
-    try {
-      error = JSON.parse(e.stdout.toString()).result.message
-    } catch (e) {
-      error = e.toString()
+  if (spawnResult.status) {
+    let errorMessage
+    if (spawnResult.stderr.toString()) {
+      errorMessage = spawnResult.stderr.toString()
     }
-    throw new Error(
-      `Error executing command with ${args}: ${error}`
-    )
+    if (spawnResult.stdout.toString()) {
+      try {
+        output = JSON.parse(spawnResult.stdout.toString())
+        errorMessage = output.result.message
+      } catch (e) {
+        errorMessage = e.toString()
+      }
+    }
+    throw new Error(`Error executing command for ${smBinary} with ${args}: ${errorMessage}`)
+  }
+  try {
+    output = JSON.parse(spawnResult.stdout.toString())
+  } catch (e) {
+    throw new Error(`Error executing command for ${smBinary} with ${args}: ${e.toString()}`)
   }
 
-  for (const key in output.logs){
+
+  for (const key in output.logs) {
     if (output.logs[key].level === 'WARN') {
       console.warn(`${output.logs[key].message}`)
     }

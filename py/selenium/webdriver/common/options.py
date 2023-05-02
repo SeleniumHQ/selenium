@@ -44,7 +44,7 @@ class BaseOptions(metaclass=ABCMeta):
         """
         :returns: the version of the browser if set, otherwise None.
         """
-        return self._caps["browserVersion"]
+        return self._caps.get("browserVersion")
 
     @browser_version.setter
     def browser_version(self, version: str) -> None:

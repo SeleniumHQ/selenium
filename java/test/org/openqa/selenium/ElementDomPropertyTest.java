@@ -91,7 +91,7 @@ class ElementDomPropertyTest extends JupiterTestBase {
     WebElement heading = driver.findElement(By.cssSelector(".nameA"));
     assertThat(heading.getDomProperty("class")).isNull();
     assertThat(heading.getDomProperty("className")).isEqualTo("nameA nameBnoise   nameC");
-    assertThat(heading.getDomProperty("classList")).isEqualTo("nameA nameBnoise   nameC");
+    assertThat(heading.getDomProperty("classList")).contains("nameA nameBnoise   nameC");
   }
 
   @Test
@@ -123,7 +123,6 @@ class ElementDomPropertyTest extends JupiterTestBase {
   }
 
   @Test
-  @NotYetImplemented(FIREFOX)
   public void testCanReturnATextApproximationOfTheStyleProperty() {
     driver.get(pages.javascriptPage);
     WebElement element = driver.findElement(By.id("red-item"));

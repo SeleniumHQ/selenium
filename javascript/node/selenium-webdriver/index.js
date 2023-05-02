@@ -41,6 +41,8 @@ const webdriver = require('./lib/webdriver')
 const select = require('./lib/select')
 const LogInspector = require('./bidi/logInspector')
 const BrowsingContext = require('./bidi/browsingContext')
+const BrowsingConextInspector = require('./bidi/browsingContextInspector')
+const ScriptManager = require('./bidi/scriptManager')
 
 const Browser = capabilities.Browser
 const Capabilities = capabilities.Capabilities
@@ -799,3 +801,5 @@ exports.until = until
 exports.Select = select.Select
 exports.LogInspector = LogInspector
 exports.BrowsingContext = BrowsingContext
+exports.BrowsingConextInspector = BrowsingConextInspector
+exports.ScriptManager = ScriptManager

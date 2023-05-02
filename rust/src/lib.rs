@@ -26,7 +26,7 @@ use std::fs;
 use crate::config::OS::WINDOWS;
 use crate::config::{str_to_os, ManagerConfig};
 use is_executable::IsExecutable;
-use reqwest::{Client, ClientBuilder, Proxy};
+use reqwest::{Client, Proxy};
 use std::collections::HashMap;
 use std::error::Error;
 use std::path::{Path, PathBuf};
@@ -61,8 +61,11 @@ pub const DEV: &str = "dev";
 pub const CANARY: &str = "canary";
 pub const NIGHTLY: &str = "nightly";
 pub const WMIC_COMMAND: &str = r#"wmic datafile where name='{}' get Version /value"#;
-pub const WMIC_COMMAND_ENV: &str = r#"wmic datafile where name='%{}:\=\\%{}' get Version /value"#;
+pub const WMIC_COMMAND_ENV: &str =
+    r#"set PFILES=%{}{}%&& wmic datafile where name='!PFILES:\=\\!{}' get Version /value"#;
+pub const WMIC_COMMAND_OS: &str = r#"wmic os get osarchitecture"#;
 pub const REG_QUERY: &str = r#"REG QUERY {} /v version"#;
+pub const REG_QUERY_FIND: &str = r#"REG QUERY {} /f {}"#;
 pub const PLIST_COMMAND: &str =
     r#"/usr/libexec/PlistBuddy -c "print :CFBundleShortVersionString" {}/Contents/Info.plist"#;
 pub const DASH_VERSION: &str = "{} -v";
@@ -70,6 +73,10 @@ pub const DASH_DASH_VERSION: &str = "{} --version";
 pub const ENV_PROGRAM_FILES: &str = "PROGRAMFILES";
 pub const ENV_PROGRAM_FILES_X86: &str = "PROGRAMFILES(X86)";
 pub const ENV_LOCALAPPDATA: &str = "LOCALAPPDATA";
+pub const REMOVE_X86: &str = ": (x86)=";
+pub const ARCH_X86: &str = "x86";
+pub const ARCH_AMD64: &str = "amd64";
+pub const ARCH_ARM64: &str = "arm64";
 pub const ENV_PROCESSOR_ARCHITECTURE: &str = "PROCESSOR_ARCHITECTURE";
 pub const FALLBACK_RETRIES: u32 = 5;
 pub const WHERE_COMMAND: &str = "where {}";
@@ -105,6 +112,8 @@ pub trait SeleniumManager {
 
     fn get_config(&self) -> &ManagerConfig;
 
+    fn get_config_mut(&mut self) -> &mut ManagerConfig;
+
     fn set_config(&mut self, config: ManagerConfig);
 
     fn get_logger(&self) -> &Logger;
@@ -122,7 +131,7 @@ pub trait SeleniumManager {
         let (_tmp_folder, driver_zip_file) =
             download_driver_to_tmp_folder(self.get_http_client(), driver_url, self.get_logger())?;
         let driver_path_in_cache = Self::get_driver_path_in_cache(self);
-        uncompress(&driver_zip_file, driver_path_in_cache, self.get_logger())
+        uncompress(&driver_zip_file, &driver_path_in_cache, self.get_logger())
     }
 
     fn detect_browser_path(&self) -> Option<&str> {
@@ -161,7 +170,8 @@ pub trait SeleniumManager {
                         Ok(out) => out,
                         Err(_e) => continue,
                     };
-                    let full_browser_version = parse_version(output).unwrap_or_default();
+                    let full_browser_version =
+                        parse_version(output, self.get_logger()).unwrap_or_default();
                     if full_browser_version.is_empty() {
                         continue;
                     }
@@ -209,8 +219,8 @@ pub trait SeleniumManager {
                 None => {
                     if self.is_browser_version_unstable() {
                         return Err(format!("Browser version '{browser_version}' not found"));
-                    } else {
-                        self.get_logger().debug(format!(
+                    } else if !self.is_iexplorer() {
+                        self.get_logger().warn(format!(
                         "The version of {} cannot be detected. Trying with latest driver version",
                         self.get_browser_name()
                         ));
@@ -245,7 +255,7 @@ pub trait SeleniumManager {
             .run_shell_command_with_log(format_one_arg(DASH_DASH_VERSION, self.get_driver_name()))
         {
             Ok(output) => {
-                let parsed_version = parse_version(output).unwrap_or_default();
+                let parsed_version = parse_version(output, self.get_logger()).unwrap_or_default();
                 if !parsed_version.is_empty() {
                     let which_command = if WINDOWS.is(self.get_os()) {
                         WHERE_COMMAND
@@ -286,6 +296,10 @@ pub trait SeleniumManager {
         self.get_browser_name().contains(SAFARI_NAME)
     }
 
+    fn is_iexplorer(&self) -> bool {
+        self.get_browser_name().eq(IE_NAMES[0])
+    }
+
     fn is_browser_version_unstable(&self) -> bool {
         let browser_version = self.get_browser_version();
         browser_version.eq_ignore_ascii_case(BETA)
@@ -301,24 +315,17 @@ pub trait SeleniumManager {
         }
 
         if !self.is_safari() {
-            let (in_path_driver_version, in_path_driver_path) = self.find_driver_in_path();
-            if let (Some(found_driver_version), Some(found_driver_path)) =
-                (in_path_driver_version, in_path_driver_path)
-            {
-                if found_driver_version.eq(self.get_driver_version()) {
+            if let (Some(version), Some(path)) = self.find_driver_in_path() {
+                if version == self.get_driver_version() {
                     self.get_logger().debug(format!(
-                        "Found {} {} in PATH: {}",
-                        self.get_driver_name(),
-                        found_driver_version,
-                        found_driver_path
+                        "Found {} {version} in PATH: {path}",
+                        self.get_driver_name()
                     ));
-                    return Ok(PathBuf::from(found_driver_path));
+                    return Ok(PathBuf::from(path));
                 } else {
                     self.get_logger().warn(format!(
-                        "Incompatible release of {} (version {}) detected in PATH: {}",
-                        self.get_driver_name(),
-                        found_driver_version,
-                        found_driver_path
+                        "Incompatible release of {} (version {version}) detected in PATH: {path}",
+                        self.get_driver_name()
                     ));
                 }
             }
@@ -363,9 +370,8 @@ pub trait SeleniumManager {
     }
 
     fn set_os(&mut self, os: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
+        let mut config = self.get_config_mut();
         config.os = os;
-        self.set_config(config);
     }
 
     fn get_arch(&self) -> &str {
@@ -373,9 +379,8 @@ pub trait SeleniumManager {
     }
 
     fn set_arch(&mut self, arch: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
+        let mut config = self.get_config_mut();
         config.arch = arch;
-        self.set_config(config);
     }
 
     fn get_browser_version(&self) -> &str {
@@ -383,9 +388,10 @@ pub trait SeleniumManager {
     }
 
     fn set_browser_version(&mut self, browser_version: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.browser_version = browser_version;
-        self.set_config(config);
+        if !browser_version.is_empty() {
+            let mut config = self.get_config_mut();
+            config.browser_version = browser_version;
+        }
     }
 
     fn get_driver_version(&self) -> &str {
@@ -393,9 +399,10 @@ pub trait SeleniumManager {
     }
 
     fn set_driver_version(&mut self, driver_version: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.driver_version = driver_version;
-        self.set_config(config);
+        if !driver_version.is_empty() {
+            let mut config = self.get_config_mut();
+            config.driver_version = driver_version;
+        }
     }
 
     fn get_browser_path(&self) -> &str {
@@ -403,9 +410,10 @@ pub trait SeleniumManager {
     }
 
     fn set_browser_path(&mut self, browser_path: String) {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.browser_path = browser_path;
-        self.set_config(config);
+        if !browser_path.is_empty() {
+            let mut config = self.get_config_mut();
+            config.browser_path = browser_path;
+        }
     }
 
     fn get_proxy(&self) -> &str {
@@ -413,13 +421,11 @@ pub trait SeleniumManager {
     }
 
     fn set_proxy(&mut self, proxy: String) -> Result<(), Box<dyn Error>> {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.proxy = proxy.to_string();
-        self.set_config(config);
-
         if !proxy.is_empty() {
             self.get_logger().debug(format!("Using proxy: {}", &proxy));
-            self.update_http_proxy()?;
+            let mut config = self.get_config_mut();
+            config.proxy = proxy;
+            self.update_http_client()?;
         }
         Ok(())
     }
@@ -429,27 +435,21 @@ pub trait SeleniumManager {
     }
 
     fn set_timeout(&mut self, timeout: u64) -> Result<(), Box<dyn Error>> {
-        let mut config = ManagerConfig::clone(self.get_config());
-        config.timeout = timeout;
-        self.set_config(config);
-
-        if timeout != REQUEST_TIMEOUT_SEC {
+        let mut config = self.get_config_mut();
+        let default_timeout = config.timeout;
+        if timeout != default_timeout {
+            config.timeout = timeout;
             self.get_logger()
                 .debug(format!("Using timeout of {} seconds", timeout));
-            self.update_http_proxy()?;
+            self.update_http_client()?;
         }
         Ok(())
     }
 
-    fn update_http_proxy(&mut self) -> Result<(), Box<dyn Error>> {
+    fn update_http_client(&mut self) -> Result<(), Box<dyn Error>> {
         let proxy = self.get_proxy();
         let timeout = self.get_timeout();
-
-        let mut builder = http_client_builder().timeout(Duration::from_secs(timeout));
-        if !proxy.is_empty() {
-            builder = builder.proxy(Proxy::all(proxy)?);
-        }
-        let http_client = builder.build()?;
+        let http_client = create_http_client(timeout, proxy)?;
         self.set_http_client(http_client);
         Ok(())
     }
@@ -459,38 +459,48 @@ pub trait SeleniumManager {
 // Public functions
 // ----------------------------------------------------------
 
-pub fn get_manager_by_browser(browser_name: String) -> Result<Box<dyn SeleniumManager>, String> {
+pub fn get_manager_by_browser(
+    browser_name: String,
+) -> Result<Box<dyn SeleniumManager>, Box<dyn Error>> {
     let browser_name_lower_case = browser_name.to_ascii_lowercase();
     if browser_name_lower_case.eq(CHROME_NAME) {
-        Ok(ChromeManager::new())
+        Ok(ChromeManager::new()?)
     } else if browser_name_lower_case.eq(FIREFOX_NAME) {
-        Ok(FirefoxManager::new())
+        Ok(FirefoxManager::new()?)
     } else if EDGE_NAMES.contains(&browser_name_lower_case.as_str()) {
-        Ok(EdgeManager::new())
+        Ok(EdgeManager::new()?)
     } else if IE_NAMES.contains(&browser_name_lower_case.as_str()) {
-        Ok(IExplorerManager::new())
+        Ok(IExplorerManager::new()?)
     } else if browser_name_lower_case.eq(SAFARI_NAME) {
-        Ok(SafariManager::new())
+        Ok(SafariManager::new()?)
     } else if SAFARITP_NAMES.contains(&browser_name_lower_case.as_str()) {
-        Ok(SafariTPManager::new())
+        Ok(SafariTPManager::new()?)
     } else {
-        Err(format!("Invalid browser name: {browser_name}"))
+        Err(Box::new(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            format!("Invalid browser name: {browser_name}"),
+        )))
     }
 }
 
-pub fn get_manager_by_driver(driver_name: String) -> Result<Box<dyn SeleniumManager>, String> {
+pub fn get_manager_by_driver(
+    driver_name: String,
+) -> Result<Box<dyn SeleniumManager>, Box<dyn Error>> {
     if driver_name.eq_ignore_ascii_case(CHROMEDRIVER_NAME) {
-        Ok(ChromeManager::new())
+        Ok(ChromeManager::new()?)
     } else if driver_name.eq_ignore_ascii_case(GECKODRIVER_NAME) {
-        Ok(FirefoxManager::new())
+        Ok(FirefoxManager::new()?)
     } else if driver_name.eq_ignore_ascii_case(EDGEDRIVER_NAME) {
-        Ok(EdgeManager::new())
+        Ok(EdgeManager::new()?)
     } else if driver_name.eq_ignore_ascii_case(IEDRIVER_NAME) {
-        Ok(IExplorerManager::new())
+        Ok(IExplorerManager::new()?)
     } else if driver_name.eq_ignore_ascii_case(SAFARIDRIVER_NAME) {
-        Ok(SafariManager::new())
+        Ok(SafariManager::new()?)
     } else {
-        Err(format!("Invalid driver name: {driver_name}"))
+        Err(Box::new(std::io::Error::new(
+            std::io::ErrorKind::InvalidInput,
+            format!("Invalid driver name: {driver_name}"),
+        )))
     }
 }
 
@@ -508,22 +518,20 @@ pub fn clear_cache(log: &Logger) {
     }
 }
 
-pub fn create_default_http_client() -> Client {
-    http_client_builder()
-        .timeout(Duration::from_secs(REQUEST_TIMEOUT_SEC))
-        .build()
-        .unwrap_or_default()
-}
-
-pub fn http_client_builder() -> ClientBuilder {
-    Client::builder()
+pub fn create_http_client(timeout: u64, proxy: &str) -> Result<Client, Box<dyn Error>> {
+    let client_builder = Client::builder()
         .danger_accept_invalid_certs(true)
         .use_rustls_tls()
+        .timeout(Duration::from_secs(timeout));
+    if !proxy.is_empty() {
+        Proxy::all(proxy)?;
+    }
+    Ok(client_builder.build().unwrap_or_default())
 }
 
 pub fn run_shell_command(os: &str, command: String) -> Result<String, Box<dyn Error>> {
     let (shell, flag) = if WINDOWS.is(os) {
-        ("cmd", "/C")
+        ("cmd", "/v/c")
     } else {
         ("sh", "-c")
     };
@@ -541,7 +549,14 @@ pub fn format_one_arg(string: &str, arg1: &str) -> String {
 }
 
 pub fn format_two_args(string: &str, arg1: &str, arg2: &str) -> String {
-    string.replacen("{}", arg1, 1).replacen("{}", arg2, 2)
+    string.replacen("{}", arg1, 1).replacen("{}", arg2, 1)
+}
+
+pub fn format_three_args(string: &str, arg1: &str, arg2: &str, arg3: &str) -> String {
+    string
+        .replacen("{}", arg1, 1)
+        .replacen("{}", arg2, 1)
+        .replacen("{}", arg3, 1)
 }
 
 // ----------------------------------------------------------

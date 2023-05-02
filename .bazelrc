@@ -54,6 +54,7 @@ build --test_env=LOCALAPPDATA
 build --test_env=MOZ_HEADLESS
 build --test_env=PATH  # Remove once browser pinning works
 build --test_env=SELENIUM_BROWSER
+build --test_env=SELENIUM_MANAGER_BASE_PATH
 build --test_env=TRAVIS
 build --test_env=PYTHON_VERSION
 
@@ -65,6 +66,11 @@ build --test_env=RUBYOPT="-Irb/lib -w"
 
 build --action_env=HOME
 test --test_env=HOME
+
+# Expose necessary variables for Seleinum-Manager.
+
+test:windows --test_env=PROGRAMFILES
+test:windows --test_env="PROGRAMFILES(X86)"="C:\\Program Files (x86)"
 
 test --test_timeout=1800
 

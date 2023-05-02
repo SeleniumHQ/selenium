@@ -198,6 +198,7 @@ rb_binary(
     args = [
         "-rselenium-webdriver",
         "-rselenium/devtools",
+        "-Irb/lib",
     ],
     main = "@bundle//:bin/pry",
     deps = [

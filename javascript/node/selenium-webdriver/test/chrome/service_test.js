@@ -20,6 +20,7 @@
 const assert = require('assert')
 const chrome = require('../../chrome')
 const test = require('../../lib/test')
+const { getPath } = require('../../common/driverFinder')
 
 test.suite(
   function (_env) {
@@ -33,6 +34,9 @@ test.suite(
 
       it('can be started on a custom path', function () {
         service = new chrome.ServiceBuilder().setPath('/foo/bar/baz').build()
+        if (!service.getExecutable()) {
+          service.setExecutable(getPath(service, new chrome.Options()))
+        }
         return service.start().then(function (url) {
           assert.ok(url.endsWith('/foo/bar/baz'), 'unexpected url: ' + url)
         })

@@ -2252,11 +2252,13 @@ class Window {
    */
   async getSize(windowHandle = 'current') {
     if (windowHandle !== 'current') {
-      console.warn(`Only 'current' window is supported for W3C compatible browsers.`);
+      console.warn(
+        `Only 'current' window is supported for W3C compatible browsers.`
+      )
     }
 
-    const rect = await this.getRect();
-    return {height: rect.height, width: rect.width};
+    const rect = await this.getRect()
+    return { height: rect.height, width: rect.width }
   }
 
   /**
@@ -2268,12 +2270,17 @@ class Window {
    * @param windowHandle
    * @returns {Promise<void>}
    */
-  async setSize({x = 0, y = 0, width = 0, height = 0}, windowHandle = 'current') {
+  async setSize(
+    { x = 0, y = 0, width = 0, height = 0 },
+    windowHandle = 'current'
+  ) {
     if (windowHandle !== 'current') {
-      console.warn(`Only 'current' window is supported for W3C compatible browsers.`);
+      console.warn(
+        `Only 'current' window is supported for W3C compatible browsers.`
+      )
     }
 
-    await this.setRect({x, y, width, height});
+    await this.setRect({ x, y, width, height })
   }
 }
 
@@ -3006,7 +3013,7 @@ class WebElement {
       "e.initEvent('submit', true, true);\n" +
       'if (form.dispatchEvent(e)) { HTMLFormElement.prototype.submit.call(form) }\n'
 
-    this.driver_.executeScript(script, this)
+    return this.driver_.executeScript(script, this)
   }
 
   /**

@@ -74,8 +74,8 @@ jobs:
         bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) except attr(tags, 'rc|remote', tests(//java/...))" |
         xargs bazel test --flaky_test_attempts 3
 
-  server-tests:
-    name: Server Tests
+  remote-tests:
+    name: Remote Tests
     needs: small-tests
     uses: ./.github/workflows/bazel.yml
     strategy:
@@ -91,20 +91,10 @@ jobs:
           - browser: firefox
             browser-version: latest-devedition
     with:
-      name: Server Tests (${{ matrix.browser }}, ${{ matrix.browser-version }})
+      name: Remote Tests (${{ matrix.browser }}, ${{ matrix.browser-version }})
       browser: ${{ matrix.browser }}
       browser-version: ${{ matrix.browser-version }}
-      cache-key: java-${{ matrix.browser }}-server-tests
+      cache-key: java-${{ matrix.browser }}-remote-tests
       run: >
         bazel query "attr(tags, ${{ matrix.browser }}, tests(//java/...)) intersect attr(tags, 'remote', tests(//java/...))" |
         xargs bazel test --flaky_test_attempts 3
-
-  rc-tests:
-    name: RC Tests
-    needs: small-tests
-    uses: ./.github/workflows/bazel.yml
-    with:
-      name: RC Tests
-      browser: firefox
-      cache-key: java-rc-tests
-      run: bazel test --test_tag_filters "rc" --flaky_test_attempts 3 //java/...

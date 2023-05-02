@@ -55,7 +55,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import static org.openqa.selenium.UnexpectedAlertBehaviour.IGNORE;
-import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
+import static org.openqa.selenium.remote.CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR;
 
 public class InternalSelenseTestBase extends SeleneseTestBase {
   private static final Logger log = Logger.getLogger(InternalSelenseTestBase.class.getName());
@@ -98,7 +98,7 @@ public class InternalSelenseTestBase extends SeleneseTestBase {
     }
 
     MutableCapabilities caps = new MutableCapabilities(createCapabilities());
-    caps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, IGNORE);
+    caps.setCapability(UNHANDLED_PROMPT_BEHAVIOUR, IGNORE);
 
     String baseUrl = whereIs("/common/rc/tests/html/");
 

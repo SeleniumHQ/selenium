@@ -17,14 +17,14 @@
 
 use assert_cmd::Command;
 
-use exitcode::UNAVAILABLE;
+use exitcode::DATAERR;
 
 use wiremock::MockServer;
 
 #[tokio::test]
 async fn ok_proxy_test() {
     let mock_server = MockServer::start().await;
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args(["--browser", "chrome", "--proxy", &mock_server.uri()])
         .assert()
         .success()
@@ -33,16 +33,16 @@ async fn ok_proxy_test() {
 
 #[test]
 fn wrong_protocol_proxy_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args(["--browser", "chrome", "--proxy", "wrong:://proxy"])
         .assert()
         .failure()
-        .code(UNAVAILABLE);
+        .code(DATAERR);
 }
 
 #[test]
 fn wrong_port_proxy_test() {
-    let mut cmd = Command::cargo_bin(env!("CARGO_PKG_NAME")).unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_selenium-manager"));
     cmd.args([
         "--browser",
         "chrome",
@@ -51,5 +51,5 @@ fn wrong_port_proxy_test() {
     ])
     .assert()
     .failure()
-    .code(UNAVAILABLE);
+    .code(DATAERR);
 }

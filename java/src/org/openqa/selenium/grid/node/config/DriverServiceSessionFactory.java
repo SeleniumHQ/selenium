@@ -19,6 +19,7 @@ package org.openqa.selenium.grid.node.config;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.PersistentCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -26,7 +27,7 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.devtools.CdpEndpointFinder;
 import org.openqa.selenium.grid.data.CreateSessionRequest;
 import org.openqa.selenium.grid.node.ActiveSession;
-import org.openqa.selenium.grid.node.ProtocolConvertingSession;
+import org.openqa.selenium.grid.node.DefaultActiveSession;
 import org.openqa.selenium.grid.node.SessionFactory;
 import org.openqa.selenium.internal.Either;
 import org.openqa.selenium.internal.Require;
@@ -95,6 +96,11 @@ public class DriverServiceSessionFactory implements SessionFactory {
   }
 
   @Override
+  public Capabilities getStereotype() {
+    return stereotype;
+  }
+
+  @Override
   public boolean test(Capabilities capabilities) {
     return predicate.test(capabilities);
   }
@@ -119,7 +125,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
       Optional<Platform> platformName = Optional.ofNullable(capabilities.getPlatformName());
       if (platformName.isPresent()) {
-        capabilities = generalizePlatform(capabilities);
+        capabilities = removePlatform(capabilities);
       }
 
       CAPABILITIES.accept(span, capabilities);
@@ -171,7 +177,7 @@ public class DriverServiceSessionFactory implements SessionFactory {
 
         span.addEvent("Driver service created session", attributeMap);
         return Either.right(
-          new ProtocolConvertingSession(
+          new DefaultActiveSession(
             tracer,
             client,
             new SessionId(response.getSessionId()),
@@ -293,10 +299,12 @@ public class DriverServiceSessionFactory implements SessionFactory {
     return returnedCaps;
   }
 
-  // We set the platform to ANY before sending the caps to the driver because some drivers will
+  // We remove the platform before sending the caps to the driver because some drivers will
   // reject session requests when they cannot parse the platform.
-  private Capabilities generalizePlatform(Capabilities caps) {
-    return new PersistentCapabilities(caps).setCapability("platformName", Platform.ANY);
+  private Capabilities removePlatform(Capabilities caps) {
+    MutableCapabilities noPlatformName = new MutableCapabilities(new HashMap<>(caps.asMap()));
+    noPlatformName.setCapability("platformName", (String) null);
+    return new PersistentCapabilities(noPlatformName);
   }
 
   private Capabilities setInitialPlatform(Capabilities caps, Platform platform) {

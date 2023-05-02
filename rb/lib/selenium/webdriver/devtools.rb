@@ -52,7 +52,17 @@ module Selenium
       end
 
       def method_missing(method, *_args)
-        desired_class = "Selenium::DevTools::V#{Selenium::DevTools.version}::#{method.capitalize}"
+        namespace = "Selenium::DevTools::V#{Selenium::DevTools.version}"
+        methods_to_classes = "#{namespace}::METHODS_TO_CLASSES"
+
+        desired_class = if Object.const_defined?(methods_to_classes)
+                          # selenium-devtools 0.113 and newer
+                          "#{namespace}::#{Object.const_get(methods_to_classes)[method]}"
+                        else
+                          # selenium-devtools 0.112 and older
+                          "#{namespace}::#{method.capitalize}"
+                        end
+
         return unless Object.const_defined?(desired_class)
 
         self.class.class_eval do

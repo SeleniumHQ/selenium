@@ -1,5 +1,5 @@
 {
-  "checksum": "bdbfd2e794ac1df04099ef8528f474b3693e7e6918cb0f43d71c8a3756372024",
+  "checksum": "ecd6bc8b40be9dfd6dcfea68892bc2392051e0cc0c46a2b06811cfbd544bb5d0",
   "crates": {
     "adler 1.0.2": {
       "name": "adler",
@@ -1806,13 +1806,13 @@
       },
       "license": "MIT OR Apache-2.0"
     },
-    "directories 4.0.1": {
+    "directories 5.0.0": {
       "name": "directories",
-      "version": "4.0.1",
+      "version": "5.0.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/directories/4.0.1/download",
-          "sha256": "f51c5d4ddabd36886dd3e1438cb358cdcb0d7c499cb99cb4ac2e38e18b5cb210"
+          "url": "https://crates.io/api/v1/crates/directories/5.0.0/download",
+          "sha256": "74be3be809c18e089de43bdc504652bb2bc473fca8756131f8689db8cf079ba9"
         }
       },
       "targets": [
@@ -1834,24 +1834,24 @@
         "deps": {
           "common": [
             {
-              "id": "dirs-sys 0.3.7",
+              "id": "dirs-sys 0.4.0",
               "target": "dirs_sys"
             }
           ],
           "selects": {}
         },
         "edition": "2015",
-        "version": "4.0.1"
+        "version": "5.0.0"
       },
       "license": "MIT OR Apache-2.0"
     },
-    "dirs-sys 0.3.7": {
+    "dirs-sys 0.4.0": {
       "name": "dirs-sys",
-      "version": "0.3.7",
+      "version": "0.4.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/dirs-sys/0.3.7/download",
-          "sha256": "1b1d1d91c932ef41c0f2663aa8b0ca0342d444d842c06914aa0a7e352d0bada6"
+          "url": "https://crates.io/api/v1/crates/dirs-sys/0.4.0/download",
+          "sha256": "04414300db88f70d74c5ff54e50f9e1d1737d9a5b90f53fcf2e95ca2a9ab554b"
         }
       },
       "targets": [
@@ -1887,14 +1887,14 @@
             ],
             "cfg(windows)": [
               {
-                "id": "winapi 0.3.9",
-                "target": "winapi"
+                "id": "windows-sys 0.45.0",
+                "target": "windows_sys"
               }
             ]
           }
         },
         "edition": "2015",
-        "version": "0.3.7"
+        "version": "0.4.0"
       },
       "license": "MIT OR Apache-2.0"
     },
@@ -6782,13 +6782,13 @@
       },
       "license": null
     },
-    "rstest 0.16.0": {
+    "rstest 0.17.0": {
       "name": "rstest",
-      "version": "0.16.0",
+      "version": "0.17.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rstest/0.16.0/download",
-          "sha256": "b07f2d176c472198ec1e6551dc7da28f1c089652f66a7b722676c2238ebc0edf"
+          "url": "https://crates.io/api/v1/crates/rstest/0.17.0/download",
+          "sha256": "de1bb486a691878cd320c2f0d319ba91eeaa2e894066d8b5f8f117c000e9d962"
         }
       },
       "targets": [
@@ -6831,23 +6831,23 @@
         "proc_macro_deps": {
           "common": [
             {
-              "id": "rstest_macros 0.16.0",
+              "id": "rstest_macros 0.17.0",
               "target": "rstest_macros"
             }
           ],
           "selects": {}
         },
-        "version": "0.16.0"
+        "version": "0.17.0"
       },
       "license": "MIT/Apache-2.0"
     },
-    "rstest_macros 0.16.0": {
+    "rstest_macros 0.17.0": {
       "name": "rstest_macros",
-      "version": "0.16.0",
+      "version": "0.17.0",
       "repository": {
         "Http": {
-          "url": "https://crates.io/api/v1/crates/rstest_macros/0.16.0/download",
-          "sha256": "7229b505ae0706e64f37ffc54a9c163e11022a6636d58fe1f3f52018257ff9f7"
+          "url": "https://crates.io/api/v1/crates/rstest_macros/0.17.0/download",
+          "sha256": "290ca1a1c8ca7edb7c3283bd44dc35dd54fdec6253a3912e201ba1072018fca8"
         }
       },
       "targets": [
@@ -6896,7 +6896,7 @@
               "target": "quote"
             },
             {
-              "id": "rstest_macros 0.16.0",
+              "id": "rstest_macros 0.17.0",
               "target": "build_script_build"
             },
             {
@@ -6911,7 +6911,7 @@
           "selects": {}
         },
         "edition": "2018",
-        "version": "0.16.0"
+        "version": "0.17.0"
       },
       "build_script_attrs": {
         "data_glob": [
@@ -7293,7 +7293,7 @@
               "target": "clap"
             },
             {
-              "id": "directories 4.0.1",
+              "id": "directories 5.0.0",
               "target": "directories"
             },
             {
@@ -7349,6 +7349,10 @@
               "target": "tokio"
             },
             {
+              "id": "toml 0.7.3",
+              "target": "toml"
+            },
+            {
               "id": "zip 0.6.4",
               "target": "zip"
             }
@@ -7362,7 +7366,7 @@
               "target": "assert_cmd"
             },
             {
-              "id": "rstest 0.16.0",
+              "id": "rstest 0.17.0",
               "target": "rstest"
             },
             {
@@ -7703,6 +7707,51 @@
         "version": "0.8.5"
       },
       "license": "MIT/Apache-2.0"
+    },
+    "serde_spanned 0.6.1": {
+      "name": "serde_spanned",
+      "version": "0.6.1",
+      "repository": {
+        "Http": {
+          "url": "https://crates.io/api/v1/crates/serde_spanned/0.6.1/download",
+          "sha256": "0efd8caf556a6cebd3b285caf480045fcc1ac04f6bd786b09a6f11af30c4fcf4"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "serde_spanned",
+            "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        }
+      ],
+      "library_target_name": "serde_spanned",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "crate_features": {
+          "common": [
+            "serde"
+          ],
+          "selects": {}
+        },
+        "deps": {
+          "common": [
+            {
+              "id": "serde 1.0.158",
+              "target": "serde"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2021",
+        "version": "0.6.1"
+      },
+      "license": "MIT OR Apache-2.0"
     },
     "serde_urlencoded 0.7.1": {
       "name": "serde_urlencoded",
@@ -8978,6 +9027,172 @@
       },
       "license": "MIT"
     },
+    "toml 0.7.3": {
+      "name": "toml",
+      "version": "0.7.3",
+      "repository": {
+        "Http": {
+          "url": "https://crates.io/api/v1/crates/toml/0.7.3/download",
+          "sha256": "b403acf6f2bb0859c93c7f0d967cb4a75a7ac552100f9322faf64dc047669b21"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "toml",
+            "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        }
+      ],
+      "library_target_name": "toml",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "crate_features": {
+          "common": [
+            "default",
+            "display",
+            "parse"
+          ],
+          "selects": {}
+        },
+        "deps": {
+          "common": [
+            {
+              "id": "serde 1.0.158",
+              "target": "serde"
+            },
+            {
+              "id": "serde_spanned 0.6.1",
+              "target": "serde_spanned"
+            },
+            {
+              "id": "toml_datetime 0.6.1",
+              "target": "toml_datetime"
+            },
+            {
+              "id": "toml_edit 0.19.8",
+              "target": "toml_edit"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2021",
+        "version": "0.7.3"
+      },
+      "license": "MIT OR Apache-2.0"
+    },
+    "toml_datetime 0.6.1": {
+      "name": "toml_datetime",
+      "version": "0.6.1",
+      "repository": {
+        "Http": {
+          "url": "https://crates.io/api/v1/crates/toml_datetime/0.6.1/download",
+          "sha256": "3ab8ed2edee10b50132aed5f331333428b011c99402b5a534154ed15746f9622"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "toml_datetime",
+            "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        }
+      ],
+      "library_target_name": "toml_datetime",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "crate_features": {
+          "common": [
+            "serde"
+          ],
+          "selects": {}
+        },
+        "deps": {
+          "common": [
+            {
+              "id": "serde 1.0.158",
+              "target": "serde"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2021",
+        "version": "0.6.1"
+      },
+      "license": "MIT OR Apache-2.0"
+    },
+    "toml_edit 0.19.8": {
+      "name": "toml_edit",
+      "version": "0.19.8",
+      "repository": {
+        "Http": {
+          "url": "https://crates.io/api/v1/crates/toml_edit/0.19.8/download",
+          "sha256": "239410c8609e8125456927e6707163a3b1fdb40561e4b803bc041f466ccfdc13"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "toml_edit",
+            "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        }
+      ],
+      "library_target_name": "toml_edit",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "crate_features": {
+          "common": [
+            "default",
+            "serde"
+          ],
+          "selects": {}
+        },
+        "deps": {
+          "common": [
+            {
+              "id": "indexmap 1.9.2",
+              "target": "indexmap"
+            },
+            {
+              "id": "serde 1.0.158",
+              "target": "serde"
+            },
+            {
+              "id": "serde_spanned 0.6.1",
+              "target": "serde_spanned"
+            },
+            {
+              "id": "toml_datetime 0.6.1",
+              "target": "toml_datetime"
+            },
+            {
+              "id": "winnow 0.4.0",
+              "target": "winnow"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2021",
+        "version": "0.19.8"
+      },
+      "license": "MIT OR Apache-2.0"
+    },
     "tower-service 0.3.2": {
       "name": "tower-service",
       "version": "0.3.2",
@@ -10208,14 +10423,11 @@
             "handleapi",
             "impl-debug",
             "impl-default",
-            "knownfolders",
             "minwinbase",
             "minwindef",
             "ntdef",
             "ntsecapi",
-            "objbase",
             "processenv",
-            "shlobj",
             "std",
             "timezoneapi",
             "winbase",
@@ -10554,6 +10766,7 @@
           "common": [
             "Win32",
             "Win32_Foundation",
+            "Win32_Globalization",
             "Win32_NetworkManagement",
             "Win32_NetworkManagement_IpHelper",
             "Win32_Networking",
@@ -10563,12 +10776,15 @@
             "Win32_Storage",
             "Win32_Storage_FileSystem",
             "Win32_System",
+            "Win32_System_Com",
             "Win32_System_Console",
             "Win32_System_IO",
             "Win32_System_Pipes",
             "Win32_System_SystemServices",
             "Win32_System_Threading",
             "Win32_System_WindowsProgramming",
+            "Win32_UI",
+            "Win32_UI_Shell",
             "default"
           ],
           "selects": {}
@@ -11066,6 +11282,53 @@
         ]
       },
       "license": "MIT OR Apache-2.0"
+    },
+    "winnow 0.4.0": {
+      "name": "winnow",
+      "version": "0.4.0",
+      "repository": {
+        "Http": {
+          "url": "https://crates.io/api/v1/crates/winnow/0.4.0/download",
+          "sha256": "deac0939bd6e4f24ab5919fbf751c97a8cfc8543bb083a305ed5c0c10bb241d1"
+        }
+      },
+      "targets": [
+        {
+          "Library": {
+            "crate_name": "winnow",
+            "crate_root": "src/lib.rs",
+            "srcs": [
+              "**/*.rs"
+            ]
+          }
+        }
+      ],
+      "library_target_name": "winnow",
+      "common_attrs": {
+        "compile_data_glob": [
+          "**"
+        ],
+        "crate_features": {
+          "common": [
+            "alloc",
+            "default",
+            "std"
+          ],
+          "selects": {}
+        },
+        "deps": {
+          "common": [
+            {
+              "id": "memchr 2.5.0",
+              "target": "memchr"
+            }
+          ],
+          "selects": {}
+        },
+        "edition": "2021",
+        "version": "0.4.0"
+      },
+      "license": "MIT"
     },
     "winreg 0.10.1": {
       "name": "winreg",

@@ -75,11 +75,13 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
   public ChromiumOptions(String capabilityType, String browserType, String capability) {
     this.capabilityName = capability;
     setCapability(capabilityType, browserType);
-    // Allowing any origin "*" might sound risky but an attacker would need to know
-    // the port used to start DevTools to establish a connection. Given these sessions
-    // are relatively short-lived, the risk is reduced. Also, this will be removed when
-    // we only support Java 11 and above.
-    addArguments("--remote-allow-origins=*");
+    if (!"jdk-http-client".equalsIgnoreCase(System.getProperty("webdriver.http.factory", ""))) {
+      // Allowing any origin "*" might sound risky but an attacker would need to know
+      // the port used to start DevTools to establish a connection. Given these sessions
+      // are relatively short-lived, the risk is reduced. Only set when the Java 11 client
+      // is not used.
+      addArguments("--remote-allow-origins=*");
+    }
   }
 
   /**
@@ -119,7 +121,7 @@ public class ChromiumOptions<T extends ChromiumOptions<?>> extends AbstractDrive
    * Adds additional command line arguments to be used when starting Chrome.
    * For example:
    * <pre><code>
-   *   options.setArguments(
+   *   options.addArguments(
    *       "load-extension=/path/to/unpacked_extension",
    *       "allow-outdated-plugins");
    * </code></pre>

@@ -34,6 +34,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -58,6 +60,7 @@ public class SeleniumManager {
     private static final String SELENIUM_MANAGER = "selenium-manager";
     private static final String EXE = ".exe";
     private static final String WARN = "WARN";
+    private static final String DEBUG = "DEBUG";
 
     private static SeleniumManager manager;
 
@@ -93,6 +96,7 @@ public class SeleniumManager {
      * @return the standard output of the execution.
      */
     private static String runCommand(String... command) {
+      LOG.fine(String.format("Executing Process: %s", command));
         String output = "";
         int code = 0;
         try {
@@ -119,8 +123,14 @@ public class SeleniumManager {
               "\n" + jsonOutput.result.message);
         }
         jsonOutput.logs.stream()
-          .filter(log -> log.level.equalsIgnoreCase(WARN))
-          .forEach(log -> LOG.warning(log.message));
+          .forEach(logged -> {
+            if(logged.level.equalsIgnoreCase(WARN)) {
+              LOG.warning(logged.message);
+            }
+            if(logged.level.equalsIgnoreCase(DEBUG)) {
+              LOG.fine(logged.message);
+            }
+          });
         return jsonOutput.result.message;
     }
 
@@ -158,23 +168,62 @@ public class SeleniumManager {
     }
 
     /**
+     * Returns the browser binary path when present in the vendor options
+     *
+     * @param options browser options used to start the session
+     * @return the browser binary path when present, only Chrome/Firefox/Edge
+     */
+    private String getBrowserBinary(Capabilities options) {
+        List<String> vendorOptionsCapabilities = Arrays.asList("moz:firefoxOptions", "goog:chromeOptions", "ms:edgeOptions");
+        for (String vendorOptionsCapability : vendorOptionsCapabilities) {
+            if (options.asMap().containsKey(vendorOptionsCapability)) {
+                try {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> vendorOptions = (Map<String, Object>) options.getCapability(vendorOptionsCapability);
+                    return (String) vendorOptions.get("binary");
+                } catch (Exception e) {
+                    LOG.warning(String.format("Exception while retrieving the browser binary path. %s: %s",
+                                              options, e.getMessage()));
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * Determines the location of the correct driver.
      * @param options Browser Options instance.
      * @return the location of the driver.
      */
     public String getDriverPath(Capabilities options) {
-        File binaryFile = getBinary();
+      LOG.info("applicable driver not found; attempting to install with Selenium Manager (Beta)");
+      File binaryFile = getBinary();
         if (binaryFile == null) {
             return null;
         }
-        List<String> commandList = new ArrayList<>(
-          Arrays.asList(binaryFile.getAbsolutePath(),
-                        "--browser",
-                        options.getBrowserName(),
-                        "--output", "json"));
+        List<String> commandList = new ArrayList<>();
+        commandList.add(binaryFile.getAbsolutePath());
+        commandList.add("--browser");
+        commandList.add(options.getBrowserName());
+        commandList.add("--output");
+        commandList.add("json");
         if (!options.getBrowserVersion().isEmpty()) {
-            commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
+          commandList.add("--browser-version");
+          commandList.add(options.getBrowserVersion());
         }
-        return runCommand(commandList.toArray(new String[0]));
+
+        String browserBinary = getBrowserBinary(options);
+        if (browserBinary != null && !browserBinary.isEmpty()) {
+          commandList.add("--browser-path");
+          commandList.add(browserBinary);
+        }
+
+        if (LOG.getLevel().intValue() > Level.FINE.intValue()) {
+          commandList.add("--verbose");
+        }
+
+      String path = runCommand(commandList.toArray(new String[0]));
+      LOG.fine(String.format("Using driver at location: %s", path));
+      return path;
     }
 }

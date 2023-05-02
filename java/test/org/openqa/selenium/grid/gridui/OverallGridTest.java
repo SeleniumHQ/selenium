@@ -81,7 +81,7 @@ class OverallGridTest {
 
   @Test
   void shouldReportConcurrencyZeroPercentWhenGridIsStartedWithoutLoad() {
-    driver.get(whereIs(server, "/ui/index.html#/sessions"));
+    driver.get(whereIs(server, "/ui#/sessions"));
 
     WebElement concurrency = wait
       .until(visibilityOfElementLocated(By.cssSelector("div[data-testid='concurrency-usage']")));
@@ -91,7 +91,7 @@ class OverallGridTest {
 
   @Test
   void shouldShowOneNodeRegistered() {
-    driver.get(whereIs(server, "/ui/index.html#"));
+    driver.get(whereIs(server, "/ui"));
 
     List<WebElement> nodeInfoIcons = wait
       .until(visibilityOfAllElementsLocatedBy(By.cssSelector("button[data-testid*='node-info-']")));
@@ -102,7 +102,7 @@ class OverallGridTest {
   @Test
   void shouldIncrementSessionCountWhenSessionStarts() {
     remoteWebDriver = new RemoteWebDriver(server.getUrl(), Browser.detect().getCapabilities());
-    driver.get(whereIs(server, "/ui/index.html#/sessions"));
+    driver.get(whereIs(server, "/ui#/sessions"));
 
     wait.until(textToBe(By.cssSelector("div[data-testid='session-count']"), "1"));
   }

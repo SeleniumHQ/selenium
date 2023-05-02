@@ -298,6 +298,18 @@ More information about running Selenium's .NET tests can be found in this [READM
 
 </details>
 
+#### Rust
+<details>
+<summary>Click to see Rust Build Steps</summary>
+
+Targets:
+
+| Command                               | Description                         |
+|---------------------------------------|-------------------------------------|
+| `bazel build //rust:selenium-manager` | Build selenium-manager binary       |
+| `bazel test //rust/...`               | Run both unit and integration tests |
+
+</details>
 
 ### Build Details
 

@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketAddress;
@@ -62,8 +63,6 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.net.http.HttpClient.Redirect.ALWAYS;
-
 public class JdkHttpClient implements HttpClient {
   public static final Logger LOG = Logger.getLogger(JdkHttpClient.class.getName());
   private final JdkHttpMessages messages;
@@ -82,7 +81,7 @@ public class JdkHttpClient implements HttpClient {
 
     java.net.http.HttpClient.Builder builder = java.net.http.HttpClient.newBuilder()
       .connectTimeout(config.connectionTimeout())
-      .followRedirects(ALWAYS)
+      .followRedirects(java.net.http.HttpClient.Redirect.NEVER)
       .executor(executorService);
 
     Credentials credentials = config.credentials();
@@ -217,9 +216,17 @@ public class JdkHttpClient implements HttpClient {
           LOG.fine("Sending text message: " + textMessage.text());
           makeCall = () -> underlyingSocket.sendText(textMessage.text(), true);
         } else if (message instanceof CloseMessage) {
-          LOG.fine("Sending close message");
           CloseMessage closeMessage = (CloseMessage) message;
-          makeCall = () -> underlyingSocket.sendClose(closeMessage.code(), closeMessage.reason());
+          if (!underlyingSocket.isOutputClosed()) {
+            // Sometimes the statusCode is -1, which could mean the socket is already closed.
+            // We send a normal closure code in that case, though
+            int statusCode = closeMessage.code() == -1 ? 1000 : closeMessage.code();
+            LOG.fine(() -> String.format("Sending close message, statusCode %s, reason: %s", statusCode, closeMessage.reason()));
+            makeCall = () -> underlyingSocket.sendClose(statusCode, closeMessage.reason());
+          } else {
+            LOG.fine("Output is closed, not sending close message");
+            return this;
+          }
         } else {
           throw new IllegalArgumentException("Unsupported message type: " + message);
         }
@@ -289,7 +296,42 @@ public class JdkHttpClient implements HttpClient {
 
     BodyHandler<byte[]> byteHandler = BodyHandlers.ofByteArray();
     try {
-      return messages.createResponse(client.send(messages.createRequest(req), byteHandler));
+      URI rawUri = messages.getRawUri(req);
+
+      // We need a custom handling of redirects to:
+      // - increase the maximum number of retries to 100
+      // - avoid a downgrade of POST requests, see the javadoc of j.n.h.HttpClient.Redirect
+      // - not run into https://bugs.openjdk.org/browse/JDK-8304701
+      for (int i = 0; i < 100; i++) {
+        java.net.http.HttpRequest request = messages.createRequest(req, rawUri);
+        java.net.http.HttpResponse<byte[]> response = client.send(request, byteHandler);
+
+        switch (response.statusCode()) {
+          case 301:
+          case 302:
+          case 303:
+          case 307:
+          case 308:
+            URI location = rawUri.resolve(response.headers()
+              .firstValue("location")
+              .orElseThrow(() -> new ProtocolException(
+                "HTTP " + response.statusCode() + " without 'location' header set"
+              )));
+
+            if ("https".equalsIgnoreCase(rawUri.getScheme()) && !"https".equalsIgnoreCase(location.getScheme()) ) {
+              throw new SecurityException("Downgrade from secure to insecure connection.");
+            } else if ("wss".equalsIgnoreCase(rawUri.getScheme()) && !"wss".equalsIgnoreCase(location.getScheme()) ) {
+              throw new SecurityException("Downgrade from secure to insecure connection.");
+            }
+
+            rawUri = location;
+            continue;
+          default:
+            return messages.createResponse(response);
+        }
+      }
+
+      throw new ProtocolException("Too many redirects: 101");
     } catch (HttpTimeoutException e) {
       throw new TimeoutException(e);
     } catch (IOException e) {

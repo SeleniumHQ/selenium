@@ -1,6 +1,7 @@
+
 {
   "name": "selenium-webdriver",
-  "version": "4.8.2",
+  "version": "4.9.0",
   "description": "The official WebDriver JavaScript bindings from the Selenium project",
   "license": "Apache-2.0",
   "keywords": [
@@ -23,25 +24,25 @@
     "node": ">= 14.20.0"
   },
   "dependencies": {
-    "jszip": "^3.10.0",
+    "jszip": "^3.10.1",
     "tmp": "^0.2.1",
-    "ws": ">=8.11.0"
+    "ws": ">=8.13.0"
   },
   "devDependencies": {
-    "eslint": "^8.31.0",
-    "eslint-config-prettier": "^8.6.0",
+    "eslint": "^8.37.0",
+    "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-no-only-tests": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
     "express": "^4.18.2",
     "mocha": "^10.2.0",
     "multer": "^1.4.5-lts.1",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.7",
     "serve-index": "^1.9.1",
-    "sinon": "^14.0.2"
+    "sinon": "^15.0.3"
   },
   "scripts": {
-    "lint": "eslint --ignore-pattern node_modules --ignore-pattern generator --fix --ext js lib/http.js \"**/*.js\"",
+    "lint": "eslint --ignore-pattern node_modules --ignore-pattern generator --ext js lib/http.js \"**/*.js\"",
     "test": "npm run lint && mocha -t 600000 --recursive test",
     "test-jasmine": "bazel test //javascript/node/selenium-webdriver:tests"
   },

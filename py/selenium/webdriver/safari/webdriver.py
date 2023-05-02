@@ -107,7 +107,7 @@ class WebDriver(RemoteWebDriver):
 
         executor = SafariRemoteConnection(remote_server_addr=self.service.service_url, keep_alive=keep_alive)
 
-        super().__init__(command_executor=executor, options=options, desired_capabilities=desired_capabilities)
+        super().__init__(command_executor=executor, options=options)
 
         self._is_remote = False
 
@@ -130,8 +130,7 @@ class WebDriver(RemoteWebDriver):
         if not isinstance(value, bool):
             raise WebDriverException("Value of a session permission must be set to True or False.")
 
-        payload = {}
-        payload[permission] = value
+        payload = {permission: value}
         self.execute("SET_PERMISSIONS", {"permissions": payload})
 
     # First available in Safari 11.1 and Safari Technology Preview 41.

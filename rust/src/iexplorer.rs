@@ -24,7 +24,7 @@ use std::path::PathBuf;
 
 use crate::files::{compose_driver_path_in_cache, BrowserPath};
 
-use crate::{create_default_http_client, parse_version, Logger, SeleniumManager};
+use crate::{create_http_client, parse_version, Logger, SeleniumManager};
 
 use crate::metadata::{
     create_driver_metadata, get_driver_version_from_metadata, get_metadata, write_metadata,
@@ -54,14 +54,19 @@ pub struct IExplorerManager {
 }
 
 impl IExplorerManager {
-    pub fn new() -> Box<Self> {
-        Box::new(IExplorerManager {
-            browser_name: IE_NAMES[0],
-            driver_name: IEDRIVER_NAME,
-            config: ManagerConfig::default(),
-            http_client: create_default_http_client(),
+    pub fn new() -> Result<Box<Self>, Box<dyn Error>> {
+        let browser_name = IE_NAMES[0];
+        let driver_name = IEDRIVER_NAME;
+        let config = ManagerConfig::default(browser_name, driver_name);
+        let default_timeout = config.timeout.to_owned();
+        let default_proxy = &config.proxy;
+        Ok(Box::new(IExplorerManager {
+            browser_name,
+            driver_name,
+            http_client: create_http_client(default_timeout, default_proxy)?,
+            config,
             log: Logger::default(),
-        })
+        }))
     }
 }
 
@@ -129,8 +134,10 @@ impl SeleniumManager for IExplorerManager {
 
                     let index_release =
                         driver_url.rfind(IEDRIVER_RELEASE).unwrap() + IEDRIVER_RELEASE.len();
-                    let driver_version =
-                        parse_version(driver_url.as_str()[index_release..].to_string())?;
+                    let driver_version = parse_version(
+                        driver_url.as_str()[index_release..].to_string(),
+                        self.get_logger(),
+                    )?;
 
                     if !browser_version.is_empty() {
                         metadata.drivers.push(create_driver_metadata(
@@ -189,6 +196,10 @@ impl SeleniumManager for IExplorerManager {
 
     fn get_config(&self) -> &ManagerConfig {
         &self.config
+    }
+
+    fn get_config_mut(&mut self) -> &mut ManagerConfig {
+        &mut self.config
     }
 
     fn set_config(&mut self, config: ManagerConfig) {

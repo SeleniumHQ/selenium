@@ -178,7 +178,7 @@ class ReverseProxyEndToEndTest {
     setFields(values);
 
     // The node added only has a single node. Make sure we can start and stop sessions.
-    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "type", "cheddar");
+    Capabilities caps = new ImmutableCapabilities("browserName", "cheese", "se:type", "cheddar");
     URL url = url(server);
     WebDriver driver = new RemoteWebDriver(url, caps);
     driver.get(gridUi(server));
