@@ -98,6 +98,11 @@ public class RelaySessionFactory implements SessionFactory {
   }
 
   @Override
+  public Capabilities getStereotype() {
+    return stereotype;
+  }
+
+  @Override
   public boolean test(Capabilities capabilities) {
     // If a request reaches this point is because the basic match of W3C caps has already been done.
 

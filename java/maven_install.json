@@ -3414,7 +3414,6 @@
       "org.openqa.selenium.remote.locators",
       "org.openqa.selenium.remote.mobile",
       "org.openqa.selenium.remote.service",
-      "org.openqa.selenium.remote.session",
       "org.openqa.selenium.remote.tracing",
       "org.openqa.selenium.remote.tracing.empty",
       "org.openqa.selenium.remote.tracing.opentelemetry"

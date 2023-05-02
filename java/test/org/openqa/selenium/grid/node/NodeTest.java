@@ -191,6 +191,11 @@ class NodeTest {
     Node local = LocalNode.builder(tracer, bus, uri, uri, registrationSecret)
       .add(caps, new SessionFactory() {
         @Override
+        public Capabilities getStereotype() {
+          return null;
+        }
+
+        @Override
         public Either<WebDriverException, ActiveSession> apply(
           CreateSessionRequest createSessionRequest) {
           return Either.left(new SessionNotCreatedException("HelperFactory for testing"));
