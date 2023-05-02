@@ -38,20 +38,26 @@ public class BaseSuite {
 
   }
 
+
   @AfterAll
   public static void teardown() {
     // browser
-    log.info("Stopping browser");
+    log.info("Stopping browser...");
     try {
-      InternalSelenseTestBase.destroyDriver();
-    } catch (SeleniumException ignored) {
-      // Nothing sane to do
+        InternalSelenseTestBase.destroyDriver();
+        log.info("Browser stopped successfully.");
+    } catch (SeleniumException e) {
+        log.error("Failed to stop browser: {}", e.getMessage());
     }
 
     // testEnvironment
-    log.info("Cleaning test environment");
-    GlobalTestEnvironment.stop();
-
-  }
+    log.info("Cleaning test environment...");
+    try {
+        GlobalTestEnvironment.stop();
+        log.info("Test environment cleaned successfully.");
+    } catch (Exception e) {
+        log.error("Failed to clean test environment: {}", e.getMessage());
+    }
+}
 
 }
