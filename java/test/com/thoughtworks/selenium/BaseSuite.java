@@ -47,7 +47,7 @@ public class BaseSuite {
         InternalSelenseTestBase.destroyDriver();
         log.info("Browser stopped successfully.");
     } catch (SeleniumException e) {
-        log.error("Failed to stop browser: {}", e.getMessage());
+        log.severe("Failed to stop browser: " + e.getMessage());
     }
 
     // testEnvironment
@@ -56,7 +56,7 @@ public class BaseSuite {
         GlobalTestEnvironment.stop();
         log.info("Test environment cleaned successfully.");
     } catch (Exception e) {
-        log.error("Failed to clean test environment: {}", e.getMessage());
+        log.severe("Failed to clean test environment: " + e.getMessage());
     }
 }
 
