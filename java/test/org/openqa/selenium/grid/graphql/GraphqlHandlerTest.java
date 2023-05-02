@@ -255,6 +255,11 @@ class GraphqlHandlerTest {
     Node node = LocalNode.builder(tracer, bus, new URI(nodeUri), publicUri, registrationSecret)
       .add(stereotype, new SessionFactory() {
         @Override
+        public Capabilities getStereotype() {
+          return null;
+        }
+
+        @Override
         public Either<WebDriverException, ActiveSession> apply(
           CreateSessionRequest createSessionRequest) {
           return Either.left(new SessionNotCreatedException("Factory for testing"));

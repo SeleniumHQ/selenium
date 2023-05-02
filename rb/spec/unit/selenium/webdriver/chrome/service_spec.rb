@@ -59,6 +59,18 @@ module Selenium
             expect(service.extra_args).to be_empty
           end
 
+          it 'uses sets log path to stdout' do
+            service = described_class.chrome(log: :stdout)
+
+            expect(service.log).to eq $stdout
+          end
+
+          it 'uses sets log path to stderr' do
+            service = described_class.chrome(log: :stderr)
+
+            expect(service.log).to eq $stderr
+          end
+
           it 'uses provided args' do
             allow(Platform).to receive(:find_binary).and_return(service_path)
 

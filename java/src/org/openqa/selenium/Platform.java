@@ -257,6 +257,18 @@ public enum Platform {
     }
   },
 
+  VENTURA("ventura", "os x 13.0", "macos 13.0") {
+    @Override
+    public Platform family() {
+      return MAC;
+    }
+
+    @Override
+    public String toString() {
+      return "macOS 13.0";
+    }
+  },
+
   /**
    * Many platforms have UNIX traits, amongst them LINUX, Solaris and BSD.
    */

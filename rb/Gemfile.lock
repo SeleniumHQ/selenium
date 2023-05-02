@@ -85,6 +85,7 @@ GEM
 PLATFORMS
   java
   ruby
+  universal-java-18
   x64-mingw32
 
 DEPENDENCIES
@@ -101,4 +102,4 @@ DEPENDENCIES
   yard (~> 0.9.11)
 
 BUNDLED WITH
-   2.1.4
+   2.2.33
