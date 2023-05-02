@@ -127,6 +127,20 @@ public class HttpCommandProcessorUnitTest {
     assertEquals(boolCmdResults[1], methodResults[1]);
   }
 
+  @Test
+ void testResourcesClosedWhenIoeOnGetOutputStream() {
+    IOEThrowingHttpCommandProcessor cmdProc = new IOEThrowingHttpCommandProcessor(
+            "localhost", 4444, "*chrome", "http://www.google.com");
+    cmdProc.throwIoeOnGetOutputStream = true;
+    try {
+        cmdProc.getCommandResponseAsString("testCommand");
+        fail();
+    } catch (IOException ioe) {
+        cmdProc.verifyClosedResources(false, true, true);
+    }
+}
+
+
   /**
    * Inner class to help mock out the network and pipe connections to verify that they are closed
    * regardless of where IOExceptions occur.
