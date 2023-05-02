@@ -20,9 +20,9 @@ SE_VERSION = "4.9.0"
 
 BROWSER_VERSIONS = [
     "v85",
-    "v110",
     "v111",
     "v112",
+    "v113",
 ]
 
 TEST_DEPS = [
