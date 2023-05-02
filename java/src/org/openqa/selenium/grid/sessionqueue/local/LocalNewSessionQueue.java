@@ -70,6 +70,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import java.util.logging.Logger;
+
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
@@ -97,6 +99,7 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
   description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
+  private static final Logger LOG = Logger.getLogger(LocalNewSessionQueue.class.getName());
   private static final String NAME = "Local New Session Queue";
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
@@ -168,6 +171,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       ids = requests.entrySet().stream()
         .filter(entry -> isTimedOut(now, entry.getValue()))
         .map(Map.Entry::getKey)
+        .peek(id -> LOG.info(id.toString() + "has timed out"))
         .collect(ImmutableSet.toImmutableSet());
     } finally {
       readLock.unlock();
@@ -241,6 +245,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
+      LOG.info("Adding request: " + request.getRequestId().toString());
       requests.put(request.getRequestId(), data);
       queue.addLast(request);
     } finally {
@@ -268,6 +273,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
           // No need to re-add this
           return true;
         } else {
+          LOG.info("Re-Adding request in front of queue: " + request.getRequestId().toString());
           added = queue.offerFirst(request);
         }
       } finally {
@@ -324,8 +330,11 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         .filter(req -> req.getDesiredCapabilities().stream().anyMatch(matchesStereotype))
         .limit(batchSize)
         .collect(Collectors.toList());
-
-      availableRequests.forEach(req -> this.remove(req.getRequestId()));
+      
+      availableRequests.forEach(req -> {
+        LOG.info("available request: " + req.getRequestId().toString());
+        this.remove(req.getRequestId());
+        });
 
       return availableRequests;
     } finally {
@@ -355,9 +364,11 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
+        LOG.info("Removing request: " + reqId.toString());
         requests.remove(reqId);
         queue.removeIf(req -> reqId.equals(req.getRequestId()));
         contexts.remove(reqId);
+        LOG.info("Removed request: " + reqId.toString());
       } finally {
         writeLock.unlock();
       }

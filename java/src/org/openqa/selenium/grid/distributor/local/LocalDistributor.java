@@ -578,7 +578,7 @@ public class LocalDistributor extends Distributor implements AutoCloseable {
           String sessionCreatedMessage = "Session created by the Distributor";
           span.addEvent(sessionCreatedMessage, attributeMap);
           LOG.info(
-            String.format("%s. Id: %s %n Caps: %s", sessionCreatedMessage, sessionId, sessionCaps));
+            String.format("%s. Id: %s [request %s] %n Caps: %s", sessionCreatedMessage, sessionId, request.getRequestId().toString(), sessionCaps));
 
           return Either.right(response);
         } catch (SessionNotCreatedException e) {
