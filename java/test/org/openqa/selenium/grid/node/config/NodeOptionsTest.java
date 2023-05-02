@@ -614,6 +614,11 @@ class NodeOptionsTest {
     public static SessionFactory create(Config config, Capabilities caps) {
       return new SessionFactory() {
         @Override
+        public Capabilities getStereotype() {
+          return null;
+        }
+
+        @Override
         public Either<WebDriverException, ActiveSession> apply(
           CreateSessionRequest createSessionRequest) {
           return Either.left(new SessionNotCreatedException("HelperFactory for testing"));

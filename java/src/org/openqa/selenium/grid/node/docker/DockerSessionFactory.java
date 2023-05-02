@@ -135,6 +135,11 @@ public class DockerSessionFactory implements SessionFactory {
   }
 
   @Override
+  public Capabilities getStereotype() {
+    return stereotype;
+  }
+
+  @Override
   public boolean test(Capabilities capabilities) {
     return slotMatcher.matches(stereotype, capabilities);
   }

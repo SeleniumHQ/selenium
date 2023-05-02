@@ -57,7 +57,7 @@ module Selenium
         end
       end
 
-      attr_accessor :host, :executable_path, :port, :args
+      attr_accessor :host, :executable_path, :port, :log, :args
       alias extra_args args
 
       #
@@ -66,13 +66,21 @@ module Selenium
       # @api private
       #
 
-      def initialize(path: nil, port: nil, args: nil)
+      def initialize(path: nil, port: nil, log: nil, args: nil)
         port ||= self.class::DEFAULT_PORT
         args ||= []
 
         @executable_path = path
         @host = Platform.localhost
         @port = Integer(port)
+        @log = case log
+               when :stdout
+                 $stdout
+               when :stderr
+                 $stderr
+               else
+                 log
+               end
 
         @args = args.is_a?(Hash) ? extract_service_args(args) : args
 

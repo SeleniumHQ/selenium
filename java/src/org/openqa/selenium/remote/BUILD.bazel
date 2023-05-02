@@ -16,8 +16,6 @@ java_export(
     uses = [
         "org.openqa.selenium.devtools.CdpInfo",
         "org.openqa.selenium.remote.AugmenterProvider",
-        "org.openqa.selenium.remote.session.CapabilitiesFilter",
-        "org.openqa.selenium.remote.session.CapabilityTransform",
         "org.openqa.selenium.remote.service.DriverService$Builder",
     ],
     visibility = ["//visibility:public"],

@@ -58,6 +58,11 @@ public class TestSessionFactory implements SessionFactory {
   }
 
   @Override
+  public Capabilities getStereotype() {
+    return stereotype;
+  }
+
+  @Override
   public Either<WebDriverException, ActiveSession> apply(CreateSessionRequest sessionRequest) {
     SessionId id = new SessionId(UUID.randomUUID());
     Session session = sessionGenerator.apply(id, sessionRequest.getDesiredCapabilities());
