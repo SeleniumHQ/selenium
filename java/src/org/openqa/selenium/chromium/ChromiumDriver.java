@@ -93,7 +93,7 @@ public class ChromiumDriver extends RemoteWebDriver implements
   private final HasNetworkConditions networkConditions;
   private final HasPermissions permissions;
   private final HasLaunchApp launch;
-  private final Optional<Connection> connection;
+  private Optional<Connection> connection;
   private final Optional<DevTools> devTools;
   protected HasCasting casting;
   protected HasCdp cdp;
