@@ -201,7 +201,14 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       Either<SessionNotCreatedException, CreateSessionResponse> result;
       try {
         LOG.info(String.format("%s: Waiting for session to be created", request.getRequestId().toString()));
-        if (data.latch.await(requestTimeout.toMillis(), MILLISECONDS)) {
+
+        boolean sessionCreated = data.latch.await(requestTimeout.toMillis(), MILLISECONDS);
+        if (!(sessionCreated || isRequestInQueue(request.getRequestId()))) {
+          LOG.info(String.format("%s: Session is being created (not in queue, so may be got by distributor), wait a bit more", request.getRequestId().toString()));
+          sessionCreated = data.latch.await(5000, MILLISECONDS);
+        }
+
+        if (sessionCreated) {
           result = data.result;
           LOG.info(String.format("%s: session created", request.getRequestId().toString()));
         } else {
@@ -308,6 +315,20 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       return Optional.empty();
     } finally {
       writeLock.unlock();
+    }
+  }
+
+  private boolean isRequestInQueue(RequestId requestId) {
+    Lock readLock = lock.readLock();
+    readLock.lock();
+
+    try {
+      Optional<SessionRequest> result =  queue.stream()
+        .filter(req -> req.getRequestId().equals(requestId))
+        .findAny();
+      return result.isPresent();
+    } finally {
+      readLock.unlock();
     }
   }
 
