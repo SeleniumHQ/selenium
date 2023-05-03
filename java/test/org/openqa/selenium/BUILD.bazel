@@ -59,6 +59,9 @@ java_selenium_test_suite(
         ["*Test.java"],
         exclude = SMALL_TESTS,
     ),
+    env_inherit = [
+        "DISPLAY",
+    ],
     javacopts = [
         "--release",
         "11",
