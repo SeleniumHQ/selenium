@@ -22,6 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.ContinuationWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.openqa.selenium.remote.http.BinaryMessage;
@@ -29,41 +30,109 @@ import org.openqa.selenium.remote.http.CloseMessage;
 import org.openqa.selenium.remote.http.Message;
 import org.openqa.selenium.remote.http.TextMessage;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.ByteBuffer;
 import java.util.logging.Logger;
 
 class MessageInboundConverter extends SimpleChannelInboundHandler<WebSocketFrame> {
 
+  private enum Continuation {
+    Text, Binary, None
+  }
+
   private static final Logger LOG = Logger.getLogger(MessageInboundConverter.class.getName());
+
+  private Continuation next;
+  private StringBuilder builder;
+  private ByteArrayOutputStream buffer;
+
+  public MessageInboundConverter() {
+    next = Continuation.None;
+    buffer = new ByteArrayOutputStream();
+    builder = new StringBuilder();
+  }
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, WebSocketFrame frame) {
-    if (!frame.isFinalFragment()) {
-      LOG.warning("Frame is not final. Chaos may ensue");
-    }
+    boolean finalFragment = frame.isFinalFragment();
+    Message message;
 
-    Message message = null;
+    if (frame instanceof ContinuationWebSocketFrame) {
+      switch (next) {
+        case Binary:
+          try {
+            ByteBuf content = frame.content();
+            content.readBytes(buffer, content.readableBytes());
+          } catch (IOException e) {
+            throw new UncheckedIOException("failed to transfer buffer", e);
+          }
 
-    if (frame instanceof TextWebSocketFrame) {
-      message = new TextMessage(((TextWebSocketFrame) frame).text());
-    } else if (frame instanceof BinaryWebSocketFrame) {
-      ByteBuf buf = frame.content();
-      if (buf.nioBufferCount() != -1) {
-        message = new BinaryMessage(buf.nioBuffer());
-      } else if (buf.hasArray()) {
-        message = new BinaryMessage(ByteBuffer.wrap(buf.array()));
+          if (finalFragment) {
+            message = new BinaryMessage(buffer.toByteArray());
+            buffer.reset();
+            next = Continuation.None;
+          } else {
+            message = null;
+          }
+          break;
+        case Text:
+          builder.append(((ContinuationWebSocketFrame) frame).text());
+
+          if (finalFragment) {
+            message = new TextMessage(builder.toString());
+            builder.setLength(0);
+            next = Continuation.None;
+          } else {
+            message = null;
+          }
+          break;
+        case None:
+          ctx.write(frame);
+          return;
+        default:
+          throw new IllegalStateException("unexpected enum: " + next);
+      }
+    } else if (next != Continuation.None) {
+      throw new IllegalStateException("expected a continuation frame");
+    } else if (frame instanceof TextWebSocketFrame) {
+      if (finalFragment) {
+        message = new TextMessage(((TextWebSocketFrame) frame).text());
       } else {
-        throw new IllegalStateException("Unable to handle bytebuf: " + buf);
+        next = Continuation.Text;
+        message = null;
+        builder.append(((TextWebSocketFrame) frame).text());
+      }
+    } else if (frame instanceof BinaryWebSocketFrame) {
+      ByteBuf content = frame.content();
+      if (finalFragment) {
+        if (content.nioBufferCount() != -1) {
+          message = new BinaryMessage(content.nioBuffer());
+        } else if (content.hasArray()) {
+          message = new BinaryMessage(ByteBuffer.wrap(content.array()));
+        } else {
+          throw new IllegalStateException("Unable to handle bytebuf: " + content);
+        }
+      } else {
+        next = Continuation.Binary;
+        message = null;
+        try {
+          content.readBytes(buffer, content.readableBytes());
+        } catch (IOException e) {
+          throw new UncheckedIOException("failed to transfer buffer", e);
+        }
       }
     } else if (frame instanceof CloseWebSocketFrame) {
       CloseWebSocketFrame closeFrame = (CloseWebSocketFrame) frame;
       message = new CloseMessage(closeFrame.statusCode(), closeFrame.reasonText());
+    } else {
+      ctx.write(frame);
+      return;
     }
 
     if (message != null) {
       ctx.fireChannelRead(message);
-    } else {
-      ctx.write(frame);
     }
   }
 }
