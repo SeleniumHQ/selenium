@@ -6,6 +6,7 @@ package(default_visibility = ["//rb:__subpackages__"])
 [
     rb_test(
         name = file[:-8],
+        size = "large",
         srcs = [file],
         args = ["rb/spec/"],
         env = ENV,
