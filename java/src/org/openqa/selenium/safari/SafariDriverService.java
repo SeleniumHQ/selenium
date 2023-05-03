@@ -148,7 +148,7 @@ public class SafariDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     SafariDriverService, SafariDriverService.Builder> {
 
-    private boolean diagnose;
+    private Boolean diagnose;
 
     @Override
     public int score(Capabilities capabilities) {

@@ -231,7 +231,7 @@ public class EdgeDriverService extends DriverService {
      * @return A self reference.
      */
     public Builder withSilent(boolean silent) {
-      this.silent = false;
+      this.silent = silent;
       return this;
     }
 
@@ -242,7 +242,7 @@ public class EdgeDriverService extends DriverService {
      * @return A self reference.
      */
     public Builder withVerbose(boolean verbose) {
-      this.verbose = false;
+      this.verbose = verbose;
       return this;
     }
 

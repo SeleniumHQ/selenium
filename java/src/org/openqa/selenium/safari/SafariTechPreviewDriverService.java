@@ -51,7 +51,7 @@ public class SafariTechPreviewDriverService extends DriverService {
    */
   public static final String TP_SAFARI_DRIVER_EXE_PROPERTY = "webdriver.tp.safari.driver";
 
-  private static final String SAFARI_TP_DRIVER_LOGGING = "webdriver.tp.safari.logging";
+  private static final String TP_SAFARI_DRIVER_LOGGING = "webdriver.tp.safari.logging";
 
   private static final File TP_SAFARI_DRIVER_EXECUTABLE =
     new File("/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver");
@@ -148,7 +148,7 @@ public class SafariTechPreviewDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
       SafariTechPreviewDriverService, SafariTechPreviewDriverService.Builder> {
 
-    private boolean diagnose = Boolean.getBoolean(SAFARI_TP_DRIVER_LOGGING);
+    private Boolean diagnose;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -169,6 +169,13 @@ public class SafariTechPreviewDriverService extends DriverService {
     @Override
     public SafariTechPreviewDriverService.Builder withLogFile(File logFile) {
       throw new WebDriverException("Can not set log location for Safari; use withLogging(true) and locate log in ~/Library/Logs/com.apple.WebDriver/");
+    }
+
+    @Override
+    protected void loadSystemProperties() {
+      if (diagnose == null) {
+        this.diagnose = Boolean.getBoolean(TP_SAFARI_DRIVER_LOGGING);
+      }
     }
 
     @Override
