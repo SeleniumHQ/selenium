@@ -22,7 +22,7 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe Logger do
-      subject(:logger) { described_class.new('Selenium', ignored: [:logger_info]) }
+      subject(:logger) { described_class.new('Selenium', default_level: :info, ignored: [:logger_info]) }
 
       around do |example|
         debug = $DEBUG
@@ -53,6 +53,8 @@ module Selenium
 
         it 'logs at debug level if $DEBUG is set to true' do
           $DEBUG = true
+          logger = described_class.new('Selenium')
+          $DEBUG = nil
           expect(logger.level).to eq(0)
           expect(logger).to be_debug
         end
@@ -104,7 +106,8 @@ module Selenium
 
       describe '#info' do
         it 'logs info on first info but not second' do
-          logger = described_class.new('Selenium')
+          logger = described_class.new('Selenium', default_level: :info)
+
           expect { logger.info('first') }.to output(/:logger_info/).to_stdout_from_any_process
           expect { logger.info('second') }.not_to output(/:logger_info/).to_stdout_from_any_process
         end

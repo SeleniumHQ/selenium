@@ -48,8 +48,10 @@ module Selenium
       #
       # @param [String] progname Allow child projects to use Selenium's Logger pattern
       #
-      def initialize(progname = 'Selenium', ignored: nil, allowed: nil)
-        @logger = create_logger(progname)
+      def initialize(progname = 'Selenium', default_level: nil, ignored: nil, allowed: nil)
+        default_level ||= $DEBUG || ENV.key?('DEBUG') ? :debug : :warn
+
+        @logger = create_logger(progname, level: default_level)
         @ignored = Array(ignored)
         @allowed = Array(allowed)
         @first_warning = false
@@ -174,19 +176,15 @@ module Selenium
 
       private
 
-      def create_logger(name)
+      def create_logger(name, level:)
         logger = ::Logger.new($stdout)
         logger.progname = name
-        logger.level = default_level
+        logger.level = level
         logger.formatter = proc do |severity, time, progname, msg|
           "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n"
         end
 
         logger
-      end
-
-      def default_level
-        $DEBUG || ENV.key?('DEBUG') ? :debug : :info
       end
 
       def discard_or_log(level, message, id)
