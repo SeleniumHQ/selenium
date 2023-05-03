@@ -259,17 +259,21 @@ public class ChromeDriverService extends DriverService {
     @Deprecated
     public Builder withLogLevel(ChromeDriverLogLevel logLevel) {
       this.logLevel = ChromiumDriverLogLevel.fromString(logLevel.toString());
+      this.silent = false;
+      this.verbose = false;
       return this;
     }
 
     /**
-     * Configures the driver server verbosity.
+     * Configures the driver server log level.
      *
      * @param logLevel {@link ChromiumDriverLogLevel} for desired log level output.
      * @return A self reference.
      */
     public Builder withLogLevel(ChromiumDriverLogLevel logLevel) {
       this.logLevel = logLevel;
+      this.silent = false;
+      this.verbose = false;
       return this;
     }
 
@@ -280,7 +284,10 @@ public class ChromeDriverService extends DriverService {
      * @return A self reference.
      */
     public Builder withSilent(boolean silent) {
-      this.silent = silent;
+      if (silent) {
+        this.logLevel = ChromiumDriverLogLevel.OFF;
+      }
+      this.silent = false;
       return this;
     }
 
@@ -291,7 +298,10 @@ public class ChromeDriverService extends DriverService {
      * @return A self reference.
      */
     public Builder withVerbose(boolean verbose) {
-      this.verbose = verbose;
+      if (verbose) {
+        this.logLevel = ChromiumDriverLogLevel.ALL;
+      }
+      this.verbose = false;
       return this;
     }
 
@@ -349,21 +359,19 @@ public class ChromeDriverService extends DriverService {
       if (appendLog == null) {
         this.appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
       }
-      if (verbose == null) {
-        this.verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
+      if (verbose == null && Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY)) {
+        withVerbose(Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY));
       }
-      if (silent == null) {
-        this.silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
+      if (silent == null && Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY)) {
+        withSilent(Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY));
       }
       if (allowedListIps == null) {
         this.allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
           System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
       }
-      if (logLevel == null) {
+      if (logLevel == null && System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY) != null) {
         String level = System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY);
-        if (level != null) {
-          this.logLevel = ChromiumDriverLogLevel.fromString(level);
-        }
+        withLogLevel(ChromiumDriverLogLevel.fromString(level));
       }
     }
 
@@ -388,12 +396,12 @@ public class ChromeDriverService extends DriverService {
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
-      if (silent != null && silent.equals(Boolean.TRUE)) {
-        args.add("--silent");
-      }
-      if (verbose != null && verbose.equals(Boolean.TRUE)) {
-        args.add("--verbose");
-      }
+//      if (silent != null && silent.equals(Boolean.TRUE)) {
+//        args.add("--silent");
+//      }
+//      if (verbose != null && verbose.equals(Boolean.TRUE)) {
+//        args.add("--verbose");
+//      }
       if (allowedListIps != null) {
         args.add(String.format("--allowed-ips=%s", allowedListIps));
       }

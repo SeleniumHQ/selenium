@@ -213,36 +213,49 @@ public class EdgeDriverService extends DriverService {
     @Deprecated
     public Builder withLoglevel(String logLevel) {
       this.logLevel = ChromiumDriverLogLevel.fromString(logLevel);
+      this.silent = false;
+      this.verbose = false;
       return this;
     }
 
     /**
      * Configures the driver server log level.
+     *
+     * @param logLevel {@link ChromiumDriverLogLevel} for desired log level output.
+     * @return A self reference.
      */
     public Builder withLoglevel(ChromiumDriverLogLevel logLevel) {
       this.logLevel = logLevel;
+      this.silent = false;
+      this.verbose = false;
       return this;
     }
 
     /**
      * Configures the driver server for silent output.
      *
-     * @param silent whether silent output is used
+     * @param silent Log no output for true, no changes made if false.
      * @return A self reference.
      */
     public Builder withSilent(boolean silent) {
-      this.silent = silent;
+      if (silent) {
+        this.logLevel = ChromiumDriverLogLevel.OFF;
+      }
+      this.silent = false;
       return this;
     }
 
     /**
      * Configures the driver server verbosity.
      *
-     * @param verbose whether verbose output is used
+     * @param verbose Log all output for true, no changes made if false.
      * @return A self reference.
      */
     public Builder withVerbose(boolean verbose) {
-      this.verbose = verbose;
+      if (verbose) {
+        this.logLevel = ChromiumDriverLogLevel.ALL;
+      }
+      this.verbose = false;
       return this;
     }
 
@@ -286,20 +299,18 @@ public class EdgeDriverService extends DriverService {
       if (appendLog == null) {
         this.appendLog = Boolean.getBoolean(EDGE_DRIVER_APPEND_LOG_PROPERTY);
       }
-      if (verbose == null) {
-        this.verbose = Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY);
+      if (verbose == null && Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY)) {
+        withVerbose(Boolean.getBoolean(EDGE_DRIVER_VERBOSE_LOG_PROPERTY));
       }
-      if (silent == null) {
-        this.silent = Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY);
+      if (silent == null && Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY)) {
+        withSilent(Boolean.getBoolean(EDGE_DRIVER_SILENT_OUTPUT_PROPERTY));
       }
       if (allowedListIps == null) {
         this.allowedListIps = System.getProperty(EDGE_DRIVER_ALLOWED_IPS_PROPERTY);
       }
-      if (logLevel == null) {
+      if (logLevel == null && System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY) != null) {
         String level = System.getProperty(EDGE_DRIVER_LOG_LEVEL_PROPERTY);
-        if (level != null) {
-          this.logLevel = ChromiumDriverLogLevel.fromString(level);
-        }
+        withLoglevel(ChromiumDriverLogLevel.fromString(level));
       }
     }
 
