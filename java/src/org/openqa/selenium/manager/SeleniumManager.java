@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -59,6 +60,7 @@ public class SeleniumManager {
     private static final String SELENIUM_MANAGER = "selenium-manager";
     private static final String EXE = ".exe";
     private static final String WARN = "WARN";
+    private static final String DEBUG = "DEBUG";
 
     private static SeleniumManager manager;
 
@@ -94,6 +96,7 @@ public class SeleniumManager {
      * @return the standard output of the execution.
      */
     private static String runCommand(String... command) {
+      LOG.fine(String.format("Executing Process: %s", command));
         String output = "";
         int code = 0;
         try {
@@ -120,8 +123,14 @@ public class SeleniumManager {
               "\n" + jsonOutput.result.message);
         }
         jsonOutput.logs.stream()
-          .filter(log -> log.level.equalsIgnoreCase(WARN))
-          .forEach(log -> LOG.warning(log.message));
+          .forEach(logged -> {
+            if(logged.level.equalsIgnoreCase(WARN)) {
+              LOG.warning(logged.message);
+            }
+            if(logged.level.equalsIgnoreCase(DEBUG)) {
+              LOG.fine(logged.message);
+            }
+          });
         return jsonOutput.result.message;
     }
 
@@ -187,24 +196,34 @@ public class SeleniumManager {
      * @return the location of the driver.
      */
     public String getDriverPath(Capabilities options) {
-        File binaryFile = getBinary();
+      LOG.info("applicable driver not found; attempting to install with Selenium Manager (Beta)");
+      File binaryFile = getBinary();
         if (binaryFile == null) {
             return null;
         }
-        List<String> commandList = new ArrayList<>(
-          Arrays.asList(binaryFile.getAbsolutePath(),
-                        "--browser",
-                        options.getBrowserName(),
-                        "--output", "json"));
+        List<String> commandList = new ArrayList<>();
+        commandList.add(binaryFile.getAbsolutePath());
+        commandList.add("--browser");
+        commandList.add(options.getBrowserName());
+        commandList.add("--output");
+        commandList.add("json");
         if (!options.getBrowserVersion().isEmpty()) {
-            commandList.addAll(Arrays.asList("--browser-version", options.getBrowserVersion()));
+          commandList.add("--browser-version");
+          commandList.add(options.getBrowserVersion());
         }
 
         String browserBinary = getBrowserBinary(options);
         if (browserBinary != null && !browserBinary.isEmpty()) {
-            commandList.addAll(Arrays.asList("--browser-path", browserBinary));
+          commandList.add("--browser-path");
+          commandList.add(browserBinary);
         }
 
-        return runCommand(commandList.toArray(new String[0]));
+        if (LOG.getLevel().intValue() > Level.FINE.intValue()) {
+          commandList.add("--verbose");
+        }
+
+      String path = runCommand(commandList.toArray(new String[0]));
+      LOG.fine(String.format("Using driver at location: %s", path));
+      return path;
     }
 }

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.devtools.v110;
+package org.openqa.selenium.devtools.v113;
 
 import com.google.common.collect.ImmutableList;
 
@@ -26,19 +26,19 @@ import org.openqa.selenium.devtools.Event;
 import org.openqa.selenium.devtools.events.ConsoleEvent;
 import org.openqa.selenium.devtools.idealized.Events;
 import org.openqa.selenium.devtools.idealized.runtime.model.RemoteObject;
-import org.openqa.selenium.devtools.v110.runtime.Runtime;
-import org.openqa.selenium.devtools.v110.runtime.model.ConsoleAPICalled;
-import org.openqa.selenium.devtools.v110.runtime.model.ExceptionDetails;
-import org.openqa.selenium.devtools.v110.runtime.model.ExceptionThrown;
-import org.openqa.selenium.devtools.v110.runtime.model.StackTrace;
+import org.openqa.selenium.devtools.v113.runtime.Runtime;
+import org.openqa.selenium.devtools.v113.runtime.model.ConsoleAPICalled;
+import org.openqa.selenium.devtools.v113.runtime.model.ExceptionDetails;
+import org.openqa.selenium.devtools.v113.runtime.model.ExceptionThrown;
+import org.openqa.selenium.devtools.v113.runtime.model.StackTrace;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-public class v110Events extends Events<ConsoleAPICalled, ExceptionThrown> {
+public class v113Events extends Events<ConsoleAPICalled, ExceptionThrown> {
 
-  public v110Events(DevTools devtools) {
+  public v113Events(DevTools devtools) {
     super(devtools);
   }
 
@@ -83,7 +83,7 @@ public class v110Events extends Events<ConsoleAPICalled, ExceptionThrown> {
   protected JavascriptException toJsException(ExceptionThrown event) {
     ExceptionDetails details = event.getExceptionDetails();
     Optional<StackTrace> maybeTrace = details.getStackTrace();
-    Optional<org.openqa.selenium.devtools.v110.runtime.model.RemoteObject>
+    Optional<org.openqa.selenium.devtools.v113.runtime.model.RemoteObject>
       maybeException = details.getException();
 
     String message = maybeException

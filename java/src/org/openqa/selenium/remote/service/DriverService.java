@@ -46,6 +46,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
 import static java.util.Collections.emptyMap;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -63,6 +64,7 @@ public class DriverService implements Closeable {
 
   private static final String NAME = "Driver Service Executor";
   protected static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(20);
+  private static final Logger LOG = Logger.getLogger(DriverService.class.getName());
 
   private final ExecutorService executorService = Executors.newFixedThreadPool(2, r -> {
     Thread thread = new Thread(r);
@@ -200,6 +202,7 @@ public class DriverService implements Closeable {
         }
         this.executable = DriverFinder.getPath(this, getDefaultDriverOptions());
       }
+      LOG.fine(String.format("Starting driver at %s with %s", this.executable, this.args));
       process = new CommandLine(this.executable, args.toArray(new String[]{}));
       process.setEnvironmentVariables(environment);
       process.copyOutputTo(getOutputStream());
