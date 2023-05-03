@@ -93,7 +93,6 @@ build:remote --spawn_strategy=remote,local
 build:remote --incompatible_strict_action_env=true
 
 build:remote --crosstool_top=//common/remote-build/cc:toolchain
-build:remote --cpu=k8
 build:remote --extra_execution_platforms=//common/remote-build:platform
 build:remote --extra_toolchains=//common/remote-build:cc-toolchain
 build:remote --host_platform=//common/remote-build:platform
