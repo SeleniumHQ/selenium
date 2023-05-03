@@ -463,7 +463,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     private boolean complete;
 
     public Data(Instant enqueued) {
-      this.endTime = enqueued.plus(requestTimeout);
+      this.endTime = enqueued.plus(requestTimeout).plus(Duration.ofSeconds(5));
       this.result = Either.left(new SessionNotCreatedException("Session not created"));
     }
 
