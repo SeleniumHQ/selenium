@@ -17,7 +17,8 @@ public class DriverFinder {
     String defaultPath = new ExecutableFinder().find(service.getDriverName());
     String exePath = System.getProperty(service.getDriverProperty(), defaultPath);
 
-    if (exePath == null && service.getDriverExecutable() != null) {
+    if (service.getDriverExecutable() != null) {
+      // This is the case for Safari and Safari Technology Preview
       exePath = service.getDriverExecutable().getAbsolutePath();
     }
 
@@ -35,10 +36,9 @@ public class DriverFinder {
         "see https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/",
         service.getDriverName());
 
-      File exe = new File(validPath);
-      Require.state("The driver executable", exe).isFile();
-      Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
-      return validPath;
-    }
-
+    File exe = new File(validPath);
+    Require.state("The driver executable", exe).isFile();
+    Require.stateCondition(exe.canExecute(), "It must be an executable file: %s", exe);
+    return validPath;
+  }
 }
