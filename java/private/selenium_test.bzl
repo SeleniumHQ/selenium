@@ -68,6 +68,11 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
     jvm_flags = kwargs["jvm_flags"] if "jvm_flags" in kwargs else []
     tags = kwargs["tags"] if "tags" in kwargs else []
 
+    remote = False
+    if "selenium-remote" in tags:
+        tags.remove("selenium-remote")
+        remote = True
+
     stripped_args = dict(**kwargs)
     stripped_args.pop("data", None)
     stripped_args.pop("jvm_flags", None)
@@ -98,7 +103,7 @@ def selenium_test(name, test_class, size = "medium", browsers = BROWSERS.keys(),
             )
         all_tests.append(":%s" % test)
 
-        if "selenium-remote" in tags:
+        if remote:
             java_junit5_test(
                 name = "%s-remote" % test,
                 test_class = test_class,

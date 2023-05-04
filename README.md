@@ -309,6 +309,8 @@ Targets:
 | `bazel build //rust:selenium-manager` | Build selenium-manager binary       |
 | `bazel test //rust/...`               | Run both unit and integration tests |
 
+</details>
+
 ### Build Details
 
 Bazel files are called BUILD.bazel, and the order the modules are built is determined

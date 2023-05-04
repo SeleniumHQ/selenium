@@ -55,12 +55,13 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_READABLE_TIMESTAMP = "webdriver.chrome.readableTimestamp";
 
   /**
-   * System property that defines the default location where ChromeDriver output is logged.
+   * System property that defines the location of the file where ChromeDriver should write log
+   * messages to.
    */
   public static final String CHROME_DRIVER_LOG_PROPERTY = "webdriver.chrome.logfile";
 
   /**
-   * System property that defines the log level when ChromeDriver output is logged.
+   * System property that defines the {@link ChromiumDriverLogLevel} for ChromeDriver logs.
    */
   public static final String CHROME_DRIVER_LOG_LEVEL_PROPERTY = "webdriver.chrome.loglevel";
 
@@ -70,34 +71,35 @@ public class ChromeDriverService extends DriverService {
   public static final String CHROME_DRIVER_APPEND_LOG_PROPERTY = "webdriver.chrome.appendLog";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
-   * with verbose logging.
+   * Boolean system property that defines whether the ChromeDriver executable should be started with
+   * verbose logging.
    */
   public static final String CHROME_DRIVER_VERBOSE_LOG_PROPERTY = "webdriver.chrome.verboseLogging";
 
   /**
-   * Boolean system property that defines whether the ChromeDriver executable should be started
-   * in silent mode.
+   * Boolean system property that defines whether the ChromeDriver executable should be started in
+   * silent mode.
    */
   public static final String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY = "webdriver.chrome.silentOutput";
 
   /**
-   * System property that defines comma-separated list of remote IPv4 addresses which are
-   * allowed to connect to ChromeDriver.
+   * System property that defines comma-separated list of remote IPv4 addresses which are allowed to
+   * connect to ChromeDriver.
    */
   public static final String CHROME_DRIVER_ALLOWED_IPS_PROPERTY = "webdriver.chrome.withAllowedIps";
 
   /**
-   * System property that defines comma-separated list of remote IPv4 addresses which are
-   * allowed to connect to ChromeDriver.
+   * System property that defines comma-separated list of remote IPv4 addresses which are allowed to
+   * connect to ChromeDriver.
+   *
    * @deprecated use {@link #CHROME_DRIVER_ALLOWED_IPS_PROPERTY}
    */
   @Deprecated
   public static final String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY = "webdriver.chrome.whitelistedIps";
 
   /**
-   * System property that defines whether the ChromeDriver executable should check for build
-   * version compatibility between ChromeDriver and the browser.
+   * System property that defines whether the ChromeDriver executable should check for build version
+   * compatibility between ChromeDriver and the browser.
    */
   public static final String CHROME_DRIVER_DISABLE_BUILD_CHECK = "webdriver.chrome.disableBuildCheck";
 
@@ -107,13 +109,15 @@ public class ChromeDriverService extends DriverService {
    * @param args        The arguments to the launched server.
    * @param environment The environment for the launched server.
    * @throws IOException If an I/O error occurs.
+   * @deprecated use {@link ChromeDriverService#ChromeDriverService(File, int, Duration, List, Map)}
    */
+  @Deprecated
   public ChromeDriverService(
     File executable,
     int port,
     List<String> args,
     Map<String, String> environment) throws IOException {
-    super(executable, port, DEFAULT_TIMEOUT,
+    this(executable, port, DEFAULT_TIMEOUT,
       unmodifiableList(new ArrayList<>(args)),
       unmodifiableMap(new HashMap<>(environment)));
   }
@@ -127,11 +131,11 @@ public class ChromeDriverService extends DriverService {
    * @throws IOException If an I/O error occurs.
    */
   public ChromeDriverService(
-      File executable,
-      int port,
-      Duration timeout,
-      List<String> args,
-      Map<String, String> environment) throws IOException {
+    File executable,
+    int port,
+    Duration timeout,
+    List<String> args,
+    Map<String, String> environment) throws IOException {
     super(executable, port, timeout,
       unmodifiableList(new ArrayList<>(args)),
       unmodifiableMap(new HashMap<>(environment)));
@@ -154,7 +158,8 @@ public class ChromeDriverService extends DriverService {
    * Configures and returns a new {@link ChromeDriverService} using the default configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by
    * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
-   * Each service created by this method will be configured to use a free port on the current system.
+   * Each service created by this method will be configured to use a free port on the current
+   * system.
    *
    * @return A new ChromeDriverService using the default configuration.
    */
@@ -166,7 +171,8 @@ public class ChromeDriverService extends DriverService {
    * Configures and returns a new {@link ChromeDriverService} using the supplied configuration. In
    * this configuration, the service will use the ChromeDriver executable identified by
    * {@link org.openqa.selenium.remote.service.DriverFinder#getPath(DriverService, Capabilities)}.
-   * Each service created by this method will be configured to use a free port on the current system.
+   * Each service created by this method will be configured to use a free port on the current
+   * system.
    *
    * @return A new ChromeDriverService using the supplied configuration from {@link ChromeOptions}.
    * @deprecated Use {@link Builder#withLogLevel(ChromiumDriverLogLevel)}  }
@@ -175,15 +181,15 @@ public class ChromeDriverService extends DriverService {
   public static ChromeDriverService createServiceWithConfig(ChromeOptions options) {
     ChromeDriverLogLevel oldLevel = options.getLogLevel();
     ChromiumDriverLogLevel level = (oldLevel == null) ? null :
-                                   ChromiumDriverLogLevel.fromString(oldLevel.toString());
+      ChromiumDriverLogLevel.fromString(oldLevel.toString());
     return new Builder()
       .withLogLevel(level)
       .build();
   }
 
   /**
-   * Checks if the browser driver binary is already present. Grid uses this method to show
-   * the available browsers and drivers, hence its visibility.
+   * Checks if the ChromeDriver binary is already present. Grid uses this method to show the
+   * available browsers and drivers, hence its visibility.
    *
    * @return Whether the browser driver path was found.
    */
@@ -198,16 +204,13 @@ public class ChromeDriverService extends DriverService {
   public static class Builder extends DriverService.Builder<
     ChromeDriverService, ChromeDriverService.Builder> {
 
-    private boolean disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
-    private boolean readableTimestamp = Boolean.getBoolean(CHROME_DRIVER_READABLE_TIMESTAMP);
-    private boolean appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
-    private boolean verbose = Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY);
-    private boolean silent = Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY);
-    private String allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
-                                                       System.getProperty(
-                                                         CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
-    private ChromiumDriverLogLevel logLevel = ChromiumDriverLogLevel
-      .fromString(System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY));
+    private Boolean disableBuildCheck;
+    private Boolean readableTimestamp;
+    private Boolean appendLog;
+    private Boolean verbose;
+    private Boolean silent;
+    private String allowedListIps;
+    private ChromiumDriverLogLevel logLevel;
 
     @Override
     public int score(Capabilities capabilities) {
@@ -249,41 +252,28 @@ public class ChromeDriverService extends DriverService {
     /**
      * Configures the driver server verbosity.
      *
-     * @param verbose Log all output for true, no changes made if false.
-     * @return A self reference.
-     */
-    @SuppressWarnings("UnusedReturnValue")
-    public Builder withVerbose(boolean verbose) {
-      if (verbose) {
-        this.logLevel = ChromiumDriverLogLevel.ALL;
-      }
-      this.verbose = false;
-      return this;
-    }
-
-    /**
-     * Configures the driver server verbosity.
-     *
      * @param logLevel {@link ChromeDriverLogLevel} for desired log level output.
      * @return A self reference.
      * @deprecated use {@link #withLogLevel(ChromiumDriverLogLevel)} instead.
      */
     @Deprecated
     public Builder withLogLevel(ChromeDriverLogLevel logLevel) {
-      this.verbose = false;
-      this.silent = false;
       this.logLevel = ChromiumDriverLogLevel.fromString(logLevel.toString());
+      this.silent = false;
+      this.verbose = false;
       return this;
     }
 
     /**
-     * Configures the driver server verbosity.
+     * Configures the driver server log level.
      *
      * @param logLevel {@link ChromiumDriverLogLevel} for desired log level output.
      * @return A self reference.
      */
     public Builder withLogLevel(ChromiumDriverLogLevel logLevel) {
       this.logLevel = logLevel;
+      this.silent = false;
+      this.verbose = false;
       return this;
     }
 
@@ -302,8 +292,22 @@ public class ChromeDriverService extends DriverService {
     }
 
     /**
-     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
-     * to the driver server.
+     * Configures the driver server verbosity.
+     *
+     * @param verbose Log all output for true, no changes made if false.
+     * @return A self reference.
+     */
+    public Builder withVerbose(boolean verbose) {
+      if (verbose) {
+        this.logLevel = ChromiumDriverLogLevel.ALL;
+      }
+      this.verbose = false;
+      return this;
+    }
+
+    /**
+     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect to
+     * the driver server.
      *
      * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
@@ -316,8 +320,8 @@ public class ChromeDriverService extends DriverService {
     }
 
     /**
-     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect
-     * to the driver server.
+     * Configures the comma-separated list of remote IPv4 addresses which are allowed to connect to
+     * the driver server.
      *
      * @param allowedListIps Comma-separated list of remote IPv4 addresses.
      * @return A self reference.
@@ -339,42 +343,69 @@ public class ChromeDriverService extends DriverService {
     }
 
     @Override
-    protected List<String> createArgs() {
+    protected void loadSystemProperties() {
       if (getLogFile() == null) {
         String logFilePath = System.getProperty(CHROME_DRIVER_LOG_PROPERTY);
         if (logFilePath != null) {
           withLogFile(new File(logFilePath));
         }
       }
-
-      // If set in properties and not overwritten by method
-      if (verbose) {
-        withVerbose(true);
+      if (disableBuildCheck == null) {
+        this.disableBuildCheck = Boolean.getBoolean(CHROME_DRIVER_DISABLE_BUILD_CHECK);
       }
-      if (silent) {
-        withSilent(true);
+      if (readableTimestamp == null) {
+        this.readableTimestamp = Boolean.getBoolean(CHROME_DRIVER_READABLE_TIMESTAMP);
       }
+      if (appendLog == null) {
+        this.appendLog = Boolean.getBoolean(CHROME_DRIVER_APPEND_LOG_PROPERTY);
+      }
+      if (verbose == null && Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY)) {
+        withVerbose(Boolean.getBoolean(CHROME_DRIVER_VERBOSE_LOG_PROPERTY));
+      }
+      if (silent == null && Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY)) {
+        withSilent(Boolean.getBoolean(CHROME_DRIVER_SILENT_OUTPUT_PROPERTY));
+      }
+      if (allowedListIps == null) {
+        this.allowedListIps = System.getProperty(CHROME_DRIVER_ALLOWED_IPS_PROPERTY,
+          System.getProperty(CHROME_DRIVER_WHITELISTED_IPS_PROPERTY));
+      }
+      if (logLevel == null && System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY) != null) {
+        String level = System.getProperty(CHROME_DRIVER_LOG_LEVEL_PROPERTY);
+        withLogLevel(ChromiumDriverLogLevel.fromString(level));
+      }
+    }
 
+    @Override
+    protected List<String> createArgs() {
       List<String> args = new ArrayList<>();
-
       args.add(String.format("--port=%d", getPort()));
-      if (getLogFile() != null) {
+
+      // Readable timestamp and append logs only work if a file is specified
+      // Can only get readable logs via arguments; otherwise send service output as directed
+      if (getLogFile() != null && (readableTimestamp || appendLog)) {
         args.add(String.format("--log-path=%s", getLogFile().getAbsolutePath()));
-        // This flag only works when logged to file
-        if (readableTimestamp) {
+        if (readableTimestamp != null && readableTimestamp.equals(Boolean.TRUE)) {
           args.add("--readable-timestamp");
         }
+        if (appendLog != null && appendLog.equals(Boolean.TRUE)) {
+          args.add("--append-log");
+        }
+        withLogFile(null); // Do not overwrite in sendOutputTo()
       }
-      if (appendLog) {
-        args.add("--append-log");
-      }
+
       if (logLevel != null) {
         args.add(String.format("--log-level=%s", logLevel.toString().toUpperCase()));
       }
+//      if (silent != null && silent.equals(Boolean.TRUE)) {
+//        args.add("--silent");
+//      }
+//      if (verbose != null && verbose.equals(Boolean.TRUE)) {
+//        args.add("--verbose");
+//      }
       if (allowedListIps != null) {
         args.add(String.format("--allowed-ips=%s", allowedListIps));
       }
-      if (disableBuildCheck) {
+      if (disableBuildCheck != null && disableBuildCheck.equals(Boolean.TRUE)) {
         args.add("--disable-build-check");
       }
 
@@ -383,13 +414,16 @@ public class ChromeDriverService extends DriverService {
 
     @Override
     protected ChromeDriverService createDriverService(
-        File exe,
-        int port,
-        Duration timeout,
-        List<String> args,
-        Map<String, String> environment) {
+      File exe,
+      int port,
+      Duration timeout,
+      List<String> args,
+      Map<String, String> environment) {
       try {
-        return new ChromeDriverService(exe, port, timeout, args, environment);
+        ChromeDriverService service = new ChromeDriverService(exe, port, timeout, args,
+          environment);
+        service.sendOutputTo(getLogOutput(CHROME_DRIVER_LOG_PROPERTY));
+        return service;
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
