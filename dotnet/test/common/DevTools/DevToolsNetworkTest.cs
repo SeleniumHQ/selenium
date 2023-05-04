@@ -353,13 +353,13 @@ namespace OpenQA.Selenium.DevTools
             };
             domains.Network.WebSocketFrameError += webSocketFrameErrorHandler;
 
-            EventHandler<V112.Network.WebSocketFrameSentEventArgs> webSocketFrameSentHandler = (sender, e) =>
+            EventHandler<V113.Network.WebSocketFrameSentEventArgs> webSocketFrameSentHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
             };
             domains.Network.WebSocketFrameSent += webSocketFrameSentHandler;
 
-            EventHandler<V112.Network.WebSocketClosedEventArgs> webSocketClosedHandler = (sender, e) =>
+            EventHandler<V113.Network.WebSocketClosedEventArgs> webSocketClosedHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
             };
@@ -374,13 +374,13 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyRequestPostData()
         {
-            var domains = session.GetVersionSpecificDomains<V112.DevToolsSessionDomains>();
-            await domains.Network.Enable(new V112.Network.EnableCommandSettings());
+            var domains = session.GetVersionSpecificDomains<V113.DevToolsSessionDomains>();
+            await domains.Network.Enable(new V113.Network.EnableCommandSettings());
 
             string[] requestIds = new string[1];
 
             ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
-            EventHandler<V112.Network.RequestWillBeSentEventArgs> requestWillBeSentHandler = (sender, e) =>
+            EventHandler<V113.Network.RequestWillBeSentEventArgs> requestWillBeSentHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 if (string.Compare(e.Request.Method, "post", StringComparison.OrdinalIgnoreCase) == 0)
@@ -395,7 +395,7 @@ namespace OpenQA.Selenium.DevTools
             driver.FindElement(By.XPath("//form/input")).Click();
             requestSync.Wait(TimeSpan.FromSeconds(5));
 
-            var response = await domains.Network.GetRequestPostData(new V112.Network.GetRequestPostDataCommandSettings()
+            var response = await domains.Network.GetRequestPostData(new V113.Network.GetRequestPostDataCommandSettings()
             {
                 RequestId = requestIds[0]
             });
@@ -409,9 +409,9 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task ByPassServiceWorker()
         {
-            var domains = session.GetVersionSpecificDomains<V112.DevToolsSessionDomains>();
-            await domains.Network.Enable(new V112.Network.EnableCommandSettings());
-            await domains.Network.SetBypassServiceWorker(new V112.Network.SetBypassServiceWorkerCommandSettings()
+            var domains = session.GetVersionSpecificDomains<V113.DevToolsSessionDomains>();
+            await domains.Network.Enable(new V113.Network.EnableCommandSettings());
+            await domains.Network.SetBypassServiceWorker(new V113.Network.SetBypassServiceWorkerCommandSettings()
             {
                 Bypass = true
             });
@@ -423,11 +423,11 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyEventSourceMessage()
         {
-            var domains = session.GetVersionSpecificDomains<V112.DevToolsSessionDomains>();
-            await domains.Network.Enable(new V112.Network.EnableCommandSettings());
+            var domains = session.GetVersionSpecificDomains<V113.DevToolsSessionDomains>();
+            await domains.Network.Enable(new V113.Network.EnableCommandSettings());
 
             ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
-            EventHandler<V112.Network.EventSourceMessageReceivedEventArgs> eventSourceMessageReceivedHandler = (sender, e) =>
+            EventHandler<V113.Network.EventSourceMessageReceivedEventArgs> eventSourceMessageReceivedHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 requestSync.Set();
@@ -445,11 +445,11 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifySignedExchangeReceived()
         {
-            var domains = session.GetVersionSpecificDomains<V112.DevToolsSessionDomains>();
-            await domains.Network.Enable(new V112.Network.EnableCommandSettings());
+            var domains = session.GetVersionSpecificDomains<V113.DevToolsSessionDomains>();
+            await domains.Network.Enable(new V113.Network.EnableCommandSettings());
 
             ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
-            EventHandler<V112.Network.SignedExchangeReceivedEventArgs> signedExchangeReceivedHandler = (sender, e) =>
+            EventHandler<V113.Network.SignedExchangeReceivedEventArgs> signedExchangeReceivedHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 requestSync.Set();
@@ -466,11 +466,11 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task VerifyResourceChangedPriority()
         {
-            var domains = session.GetVersionSpecificDomains<V112.DevToolsSessionDomains>();
-            await domains.Network.Enable(new V112.Network.EnableCommandSettings());
+            var domains = session.GetVersionSpecificDomains<V113.DevToolsSessionDomains>();
+            await domains.Network.Enable(new V113.Network.EnableCommandSettings());
 
             ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
-            EventHandler<V112.Network.ResourceChangedPriorityEventArgs> resourceChangedPriorityHandler = (sender, e) =>
+            EventHandler<V113.Network.ResourceChangedPriorityEventArgs> resourceChangedPriorityHandler = (sender, e) =>
             {
                 Assert.That(e, Is.Not.Null);
                 requestSync.Set();
@@ -487,13 +487,13 @@ namespace OpenQA.Selenium.DevTools
         [IgnoreBrowser(Selenium.Browser.Safari, "Safari does not support Chrome DevTools Protocol")]
         public async Task InterceptRequestAndContinue()
         {
-            var domains = session.GetVersionSpecificDomains<V112.DevToolsSessionDomains>();
-            await domains.Network.Enable(new V112.Network.EnableCommandSettings());
+            var domains = session.GetVersionSpecificDomains<V113.DevToolsSessionDomains>();
+            await domains.Network.Enable(new V113.Network.EnableCommandSettings());
 
             ManualResetEventSlim requestSync = new ManualResetEventSlim(false);
-            EventHandler<V112.Network.RequestInterceptedEventArgs> requestInterceptedHandler = (async (sender, e) =>
+            EventHandler<V113.Network.RequestInterceptedEventArgs> requestInterceptedHandler = (async (sender, e) =>
             {
-                await domains.Network.ContinueInterceptedRequest(new V112.Network.ContinueInterceptedRequestCommandSettings()
+                await domains.Network.ContinueInterceptedRequest(new V113.Network.ContinueInterceptedRequestCommandSettings()
                 {
                     InterceptionId = e.InterceptionId
                 });
@@ -501,16 +501,16 @@ namespace OpenQA.Selenium.DevTools
             });
             domains.Network.RequestIntercepted += requestInterceptedHandler;
 
-            var pattern = new V112.Network.RequestPattern()
+            var pattern = new V113.Network.RequestPattern()
             {
                 UrlPattern = "*.css",
-                ResourceType = V112.Network.ResourceType.Stylesheet,
-                InterceptionStage = V112.Network.InterceptionStage.HeadersReceived
+                ResourceType = V113.Network.ResourceType.Stylesheet,
+                InterceptionStage = V113.Network.InterceptionStage.HeadersReceived
             };
 
-            await domains.Network.SetRequestInterception(new V112.Network.SetRequestInterceptionCommandSettings()
+            await domains.Network.SetRequestInterception(new V113.Network.SetRequestInterceptionCommandSettings()
             {
-                Patterns = new V112.Network.RequestPattern[] { pattern }
+                Patterns = new V113.Network.RequestPattern[] { pattern }
             });
 
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("js/skins/lightgray/content.min.css");
