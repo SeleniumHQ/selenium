@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using OpenQA.Selenium.DevTools;
 using OpenQA.Selenium.Remote;
 
@@ -126,7 +125,7 @@ namespace OpenQA.Selenium.Chromium
         /// <param name="options">The <see cref="ChromiumOptions"/> to be used with the ChromiumDriver.</param>
         /// <param name="commandTimeout">The maximum amount of time to wait for each command.</param>
         protected ChromiumDriver(ChromiumDriverService service, ChromiumOptions options, TimeSpan commandTimeout)
-            : base(new DriverServiceCommandExecutor(VerifyDriverServicePath(service, options), commandTimeout), ConvertOptionsToCapabilities(options))
+            : base(new DriverServiceCommandExecutor(DriverFinder.VerifyDriverServicePath(service, options), commandTimeout), ConvertOptionsToCapabilities(options))
         {
             this.optionsCapabilityName = options.CapabilityName;
         }
@@ -430,15 +429,6 @@ namespace OpenQA.Selenium.Chromium
             }
 
             base.Dispose(disposing);
-        }
-
-        private static ChromiumDriverService VerifyDriverServicePath(ChromiumDriverService service, ChromiumOptions options)
-        {
-            string driverFullPath = DriverFinder.GetPath(service, options);
-            service.DriverServicePath = Path.GetDirectoryName(driverFullPath);
-            service.DriverServiceExecutableName = Path.GetFileName(driverFullPath);
-
-            return service;
         }
 
         private static ICapabilities ConvertOptionsToCapabilities(ChromiumOptions options)
