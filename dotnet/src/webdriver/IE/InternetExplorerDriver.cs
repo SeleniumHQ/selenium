@@ -75,7 +75,7 @@ namespace OpenQA.Selenium.IE
         /// </summary>
         /// <param name="options">The <see cref="InternetExplorerOptions"/> used to initialize the driver.</param>
         public InternetExplorerDriver(InternetExplorerOptions options)
-            : this(InternetExplorerDriverService.CreateDefaultService(), options)
+            : this(InternetExplorerDriverService.CreateDefaultService(options), options)
         {
         }
 
