@@ -48,5 +48,15 @@ namespace OpenQA.Selenium
                 throw new WebDriverException($"Unable to locate driver with path: {executablePath}, for more information on how to install drivers see https://www.selenium.dev/documentation/webdriver/getting_started/install_drivers/", e);
             }
         }
+
+        public static DriverService VerifyDriverServicePath(DriverService service, DriverOptions options)
+        {
+            string driverFullPath = GetPath(service, options);
+            service.DriverServicePath = Path.GetDirectoryName(driverFullPath);
+            service.DriverServiceExecutableName = Path.GetFileName(driverFullPath);
+
+            return service;
+        }
+
     }
 }
