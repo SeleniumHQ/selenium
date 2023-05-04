@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.chrome;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -52,11 +52,15 @@ class ChromeDriverServiceTest {
     verify(builderMock).createDriverService(any(), anyInt(), eq(customTimeout), any(), any());
   }
 
-  // Alternate behavior is throwing an error, but have to at least be consistent
+  @Test
+  void testScoring() {
+    ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
+    assertThat(builder.score(new ChromeOptions())).isPositive();
+  }
+
+
   @Test
   void logLevelLastWins() {
-    File exe = new File("someFile");
-
     ChromeDriverService.Builder builderMock = spy(ChromeDriverService.Builder.class);
 
     List<String> silentLast = Arrays.asList("--port=1", "--log-level=OFF");
@@ -79,8 +83,6 @@ class ChromeDriverServiceTest {
   // Setting these to false makes no sense; we're just going to ignore it.
   @Test
   void ignoreFalseLogging() {
-    File exe = new File("someFile");
-
     ChromeDriverService.Builder builderMock = spy(ChromeDriverService.Builder.class);
 
     List<String> falseSilent = Arrays.asList("--port=1", "--log-level=DEBUG");
