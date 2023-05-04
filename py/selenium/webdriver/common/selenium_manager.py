@@ -70,7 +70,7 @@ class SeleniumManager:
         :Returns: The driver path to use
         """
 
-        logger.info("applicable driver not found; attempting to install with Selenium Manager (Beta)")
+        logger.info("Applicable driver not found; attempting to install with Selenium Manager (Beta)")
 
         browser = options.capabilities["browserName"]
 
