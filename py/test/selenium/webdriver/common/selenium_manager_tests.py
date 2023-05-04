@@ -24,14 +24,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.selenium_manager import SeleniumManager
 
 
-def test_non_supported_browser_raises_sme():
-    msg = r"foo is not a valid browser.  Choose one of: \['chrome', 'firefox', 'edge', 'MicrosoftEdge', 'ie'\]"
-    with pytest.raises(SeleniumManagerException, match=msg):
-        options = Options()
-        options.capabilities["browserName"] = "foo"
-        _ = SeleniumManager().driver_location(options)
-
-
 def test_browser_version_is_used_for_sm(mocker):
     import subprocess
 

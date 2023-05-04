@@ -70,22 +70,9 @@ class SeleniumManager:
         :Returns: The driver path to use
         """
 
+        logger.info("Applicable driver not found; attempting to install with Selenium Manager (Beta)")
+
         browser = options.capabilities["browserName"]
-
-        allowed_browsers = {
-            "chrome": "chrome",
-            "firefox": "firefox",
-            "edge": "edge",
-            "MicrosoftEdge": "edge",
-            "ie": "iexplorer",
-        }
-
-        if browser not in allowed_browsers.keys():
-            raise SeleniumManagerException(
-                f"{browser} is not a valid browser.  Choose one of: {list(allowed_browsers.keys())}"
-            )
-
-        browser = allowed_browsers[browser]
 
         args = [str(self.get_binary()), "--browser", browser, "--output", "json"]
 
@@ -97,6 +84,9 @@ class SeleniumManager:
         if binary_location:
             args.append("--browser-path")
             args.append(str(binary_location))
+
+        if logger.getEffectiveLevel() == logging.DEBUG:
+            args.append("--debug")
 
         result = self.run(args)
         executable = result.split("\t")[-1].strip()
@@ -112,7 +102,7 @@ class SeleniumManager:
         :Returns: The log string containing the driver location.
         """
         command = " ".join(args)
-        logger.info(f"Executing: {command}")
+        logger.debug(f"Executing process: {command}")
         completed_proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout = completed_proc.stdout.decode("utf-8").rstrip("\n")
         stderr = completed_proc.stderr.decode("utf-8").rstrip("\n")
@@ -125,4 +115,6 @@ class SeleniumManager:
             for item in output["logs"]:
                 if item["level"] == "WARN":
                     logger.warning(item["message"])
+                if item["level"] == "DEBUG":
+                    logger.debug(item["message"])
             return result
