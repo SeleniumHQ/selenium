@@ -200,7 +200,7 @@ rb_binary(
         "-rselenium/devtools",
         "-Irb/lib",
     ],
-    main = "@bundle//:bin/pry",
+    main = "@bundle//:bin/irb",
     deps = [
         ":selenium-devtools",
         ":selenium-webdriver",

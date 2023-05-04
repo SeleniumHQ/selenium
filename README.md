@@ -207,7 +207,7 @@ Build targets:
 | `bazel build //rb:selenium-webdriver`       | Build selenium-webdriver Ruby gem                 |
 | `bazel run //rb:selenium-devtools-release`  | Build and push selenium-devtools gem to RubyGems  |
 | `bazel run //rb:selenium-webdriver-release` | Build and push selenium-webdriver gem to RubyGems |
-| `bazel run //rb:console`                    | Start Pry REPL with all gems loaded               |
+| `bazel run //rb:console`                    | Start REPL with all gems loaded                   |
 | `bazel run //rb:docs`                       | Generate YARD docs                                |
 | `bazel run //rb:lint`                       | Run RuboCop linter                                |
 
