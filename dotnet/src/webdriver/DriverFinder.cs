@@ -33,15 +33,18 @@ namespace OpenQA.Selenium
         /// <param name="service">DriverService with the current path.</param>
         /// <param name="options">DriverOptions with the current browser options.</param>
         /// <returns>
-        /// The path of the driver.
+        /// The service with a verified driver executable path.
         /// </returns>
-        public static string GetPath(DriverService service, DriverOptions options)
+        public static DriverService VerifyDriverServicePath(DriverService service, DriverOptions options)
         {
             string executablePath = Path.Combine(service.DriverServicePath, service.DriverServiceExecutableName);
-            if (File.Exists(executablePath)) return executablePath;
+            if (File.Exists(executablePath)) return service;
             try
             {
-                return SeleniumManager.DriverPath(options);
+                string driverFullPath = SeleniumManager.DriverPath(options);
+                service.DriverServicePath = Path.GetDirectoryName(driverFullPath);
+                service.DriverServiceExecutableName = Path.GetFileName(driverFullPath);
+                return service;
             }
             catch (Exception e)
             {

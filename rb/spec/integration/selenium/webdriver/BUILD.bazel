@@ -25,6 +25,7 @@ rb_library(
 [
     rb_test(
         name = file[:-8],
+        size = "large",
         srcs = [file],
         args = ["rb/spec/"],
         env = ENV,
@@ -48,6 +49,7 @@ rb_library(
 
 rb_test(
     name = "bidi",
+    size = "large",
     srcs = ["bidi_spec.rb"],
     args = ["rb/spec/"],
     env = ENV,
@@ -62,6 +64,7 @@ rb_test(
 
 rb_test(
     name = "devtools",
+    size = "large",
     srcs = ["devtools_spec.rb"],
     args = ["rb/spec/"],
     env = ENV,
@@ -76,6 +79,7 @@ rb_test(
 
 rb_test(
     name = "driver",
+    size = "large",
     srcs = ["driver_spec.rb"],
     args = ["rb/spec/"],
     env = ENV,
@@ -94,6 +98,7 @@ rb_test(
 
 rb_test(
     name = "element",
+    size = "large",
     srcs = ["element_spec.rb"],
     args = ["rb/spec/"],
     env = ENV,
