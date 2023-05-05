@@ -22,7 +22,6 @@ GEM
     diff-lcs (1.5.0)
     hashdiff (1.0.1)
     io-console (0.6.0)
-    io-console (0.6.0-java)
     irb (1.6.4)
       reline (>= 0.3.0)
     json (2.6.3)
