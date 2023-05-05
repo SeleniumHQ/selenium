@@ -1,0 +1,840 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class FirefoxOptions
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class FirefoxOptions
+ ">
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.min.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Firefox_FirefoxOptions.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Firefox.FirefoxOptions%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+
+      <script>
+        MathJax = {
+          options: {
+            processHtmlClass: ['tex2jax_process', 'math']
+          }
+        };
+      </script>
+
+      <script type="text/javascript" src="../styles/docfx.min.js"></script>
+      <script type="text/javascript" src="../styles/main.js"></script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.Firefox.FirefoxOptions">
+
+
+
+  <h1 id="OpenQA_Selenium_Firefox_FirefoxOptions" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions" class="text-break">
+    Class FirefoxOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.Firefox.html">Firefox</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Class to manage options specific to <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriver.html">FirefoxDriver</a></p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class FirefoxOptions : DriverOptions</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.DriverOptions.html">DriverOptions</a></div>
+      <div><span class="xref">FirefoxOptions</span></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_BrowserName">DriverOptions.BrowserName</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_BrowserVersion">DriverOptions.BrowserVersion</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_PlatformName">DriverOptions.PlatformName</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_AcceptInsecureCertificates">DriverOptions.AcceptInsecureCertificates</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_UseWebSocketUrl">DriverOptions.UseWebSocketUrl</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_UnhandledPromptBehavior">DriverOptions.UnhandledPromptBehavior</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_PageLoadStrategy">DriverOptions.PageLoadStrategy</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_Proxy">DriverOptions.Proxy</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_UseStrictFileInteractability">DriverOptions.UseStrictFileInteractability</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_AddAdditionalOption_System_String_System_Object_">DriverOptions.AddAdditionalOption(string, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_GetMergeResult_OpenQA_Selenium_DriverOptions_">DriverOptions.GetMergeResult(DriverOptions)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_SetLoggingPreference_System_String_OpenQA_Selenium_LogLevel_">DriverOptions.SetLoggingPreference(string, LogLevel)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_ToString">DriverOptions.ToString()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_ValidateCapabilityName_System_String_">DriverOptions.ValidateCapabilityName(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_AddKnownCapabilityName_System_String_System_String_">DriverOptions.AddKnownCapabilityName(string, string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_RemoveKnownCapabilityName_System_String_">DriverOptions.RemoveKnownCapabilityName(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_IsKnownCapabilityName_System_String_">DriverOptions.IsKnownCapabilityName(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_GetTypeSafeOptionName_System_String_">DriverOptions.GetTypeSafeOptionName(string)</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_GenerateLoggingPreferencesDictionary">DriverOptions.GenerateLoggingPreferencesDictionary()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverOptions.html#OpenQA_Selenium_DriverOptions_GenerateDesiredCapabilities_System_Boolean_">DriverOptions.GenerateDesiredCapabilities(bool)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+  </dd></dl>
+
+
+
+  <h2 id="OpenQA_Selenium_Firefox_FirefoxOptions_examples">Examples</h2>
+  <pre><code class="lang-csharp">FirefoxOptions options = new FirefoxOptions();</code></pre>
+<p></p>
+<p>For use with FirefoxDriver:</p>
+<p></p>
+<pre><code class="lang-csharp">FirefoxDriver driver = new FirefoxDriver(options);</code></pre>
+<p></p>
+<p>For use with RemoteWebDriver:</p>
+<p></p>
+<pre><code class="lang-csharp">RemoteWebDriver driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), options.ToCapabilities());</code></pre>
+
+
+  <h2 id="OpenQA_Selenium_Firefox_FirefoxOptions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Used with the marionette executable wires.exe.</p>
+</div>
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions__ctor_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.#ctor*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions__ctor" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.#ctor">
+  FirefoxOptions()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L78"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxOptions.html">FirefoxOptions</a> class.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FirefoxOptions()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_AndroidOptions_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AndroidOptions*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_AndroidOptions" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AndroidOptions">
+  AndroidOptions
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L131"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the options for automating Firefox on Android.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FirefoxAndroidOptions AndroidOptions { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Firefox.FirefoxAndroidOptions.html">FirefoxAndroidOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_BrowserExecutableLocation_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.BrowserExecutableLocation*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_BrowserExecutableLocation" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.BrowserExecutableLocation">
+  BrowserExecutableLocation
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L107"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the path and file name of the Firefox browser executable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string BrowserExecutableLocation { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_EnableDevToolsProtocol_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.EnableDevToolsProtocol*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_EnableDevToolsProtocol" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.EnableDevToolsProtocol">
+  EnableDevToolsProtocol
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L122"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool EnableDevToolsProtocol { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_LogLevel_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.LogLevel*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_LogLevel" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.LogLevel">
+  LogLevel
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L116"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the logging level of the Firefox driver.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FirefoxDriverLogLevel LogLevel { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Firefox.FirefoxDriverLogLevel.html">FirefoxDriverLogLevel</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_Profile_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.Profile*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_Profile" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.Profile">
+  Profile
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L98"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxProfile.html">FirefoxProfile</a> object to be used with this instance.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public FirefoxProfile Profile { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Firefox.FirefoxProfile.html">FirefoxProfile</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_AddAdditionalFirefoxOption_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AddAdditionalFirefoxOption*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_AddAdditionalFirefoxOption_System_String_System_Object_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AddAdditionalFirefoxOption(System.String,System.Object)">
+  AddAdditionalFirefoxOption(string, object)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L261"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Provides a means to add additional capabilities not yet added as type safe options
+for the Firefox driver.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddAdditionalFirefoxOption(string optionName, object optionValue)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>optionName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the capability to add.</p>
+</dd>
+    <dt><code>optionValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></dt>
+    <dd><p>The value of the capability to add.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Firefox_FirefoxOptions_AddAdditionalFirefoxOption_System_String_System_Object__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Calling <a class="xref" href="OpenQA.Selenium.Firefox.FirefoxOptions.html#OpenQA_Selenium_Firefox_FirefoxOptions_AddAdditionalFirefoxOption_System_String_System_Object_">AddAdditionalFirefoxOption(string, object)</a>
+where <code class="paramref">optionName</code> has already been added will overwrite the
+existing value with the new value in <code class="paramref">optionValue</code>.
+Calling this method adds capabilities to the Firefox-specific options object passed to
+geckodriver.exe (property name 'moz:firefoxOptions').</p>
+</div>
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>thrown when attempting to add a capability for which there is already a type safe option, or
+when <code class="paramref">optionName</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or the empty string.</p>
+</dd>
+  </dl>
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_AddArgument_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AddArgument*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_AddArgument_System_String_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AddArgument(System.String)">
+  AddArgument(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L142"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds an argument to be used in launching the Firefox browser.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddArgument(string argumentName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>argumentName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The argument to add.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Firefox_FirefoxOptions_AddArgument_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Arguments must be preceeded by two dashes (&quot;--&quot;).</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_AddArguments_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AddArguments*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_AddArguments_System_Collections_Generic_IEnumerable_System_String__" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AddArguments(System.Collections.Generic.IEnumerable{System.String})">
+  AddArguments(IEnumerable&lt;string&gt;)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L166"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a list arguments to be used in launching the Firefox browser.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddArguments(IEnumerable&lt;string&gt; argumentsToAdd)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>argumentsToAdd</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</dt>
+    <dd><p>An array of arguments to add.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_AddArguments_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AddArguments*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_AddArguments_System_String___" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.AddArguments(System.String[])">
+  AddArguments(params string[])
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L157"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds a list arguments to be used in launching the Firefox browser.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AddArguments(params string[] argumentsToAdd)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>argumentsToAdd</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>[]</dt>
+    <dd><p>An array of arguments to add.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="OpenQA_Selenium_Firefox_FirefoxOptions_AddArguments_System_String____remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Each argument must be preceeded by two dashes (&quot;--&quot;).</p>
+</div>
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_SetEnvironmentVariable_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetEnvironmentVariable*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_SetEnvironmentVariable_System_String_System_String_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetEnvironmentVariable(System.String,System.String)">
+  SetEnvironmentVariable(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L231"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets an environment variable to be set in the operating system's environment under which the Firerox browser is launched.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetEnvironmentVariable(string variableName, string variableValue)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>variableName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the environment variable.</p>
+</dd>
+    <dt><code>variableValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The value of the environment variable.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_System_String_System_Boolean_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference(System.String,System.Boolean)">
+  SetPreference(string, bool)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L181"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets a preference in the profile used by Firefox.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetPreference(string preferenceName, bool preferenceValue)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>preferenceName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Name of the preference to set.</p>
+</dd>
+    <dt><code>preferenceValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
+    <dd><p>Value of the preference to set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_System_String_System_Double_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference(System.String,System.Double)">
+  SetPreference(string, double)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L211"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets a preference in the profile used by Firefox.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetPreference(string preferenceName, double preferenceValue)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>preferenceName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Name of the preference to set.</p>
+</dd>
+    <dt><code>preferenceValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></dt>
+    <dd><p>Value of the preference to set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_System_String_System_Int32_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference(System.String,System.Int32)">
+  SetPreference(string, int)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L191"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets a preference in the profile used by Firefox.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetPreference(string preferenceName, int preferenceValue)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>preferenceName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Name of the preference to set.</p>
+</dd>
+    <dt><code>preferenceValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
+    <dd><p>Value of the preference to set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_System_String_System_Int64_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference(System.String,System.Int64)">
+  SetPreference(string, long)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L201"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets a preference in the profile used by Firefox.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetPreference(string preferenceName, long preferenceValue)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>preferenceName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Name of the preference to set.</p>
+</dd>
+    <dt><code>preferenceValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int64">long</a></dt>
+    <dd><p>Value of the preference to set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_SetPreference_System_String_System_String_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.SetPreference(System.String,System.String)">
+  SetPreference(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L221"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Sets a preference in the profile used by Firefox.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SetPreference(string preferenceName, string preferenceValue)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>preferenceName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Name of the preference to set.</p>
+</dd>
+    <dt><code>preferenceValue</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>Value of the preference to set.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Firefox_FirefoxOptions_ToCapabilities_" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.ToCapabilities*"></a>
+
+  <h3 id="OpenQA_Selenium_Firefox_FirefoxOptions_ToCapabilities" data-uid="OpenQA.Selenium.Firefox.FirefoxOptions.ToCapabilities">
+  ToCapabilities()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L273"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Returns DesiredCapabilities for Firefox with these options included as
+capabilities. This does not copy the options. Further changes will be
+reflected in the returned capabilities.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public override ICapabilities ToCapabilities()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.ICapabilities.html">ICapabilities</a></dt>
+    <dd><p>The DesiredCapabilities for Firefox with these options.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Firefox/FirefoxOptions.cs/#L49" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

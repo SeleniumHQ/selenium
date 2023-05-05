@@ -1,0 +1,392 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class ChromeDriverService
+ </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class ChromeDriverService
+ ">
+      
+      <link rel="icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.min.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/new/trunk/apiSpec/new?filename=OpenQA_Selenium_Chrome_ChromeDriverService.md&amp;value=---%0Auid%3A%20OpenQA.Selenium.Chrome.ChromeDriverService%0Asummary%3A%20&#39;*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax&#39;%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">
+
+      <script>
+        MathJax = {
+          options: {
+            processHtmlClass: ['tex2jax_process', 'math']
+          }
+        };
+      </script>
+
+      <script type="text/javascript" src="../styles/docfx.min.js"></script>
+      <script type="text/javascript" src="../styles/main.js"></script>
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="OpenQA.Selenium.Chrome.ChromeDriverService">
+
+
+
+  <h1 id="OpenQA_Selenium_Chrome_ChromeDriverService" data-uid="OpenQA.Selenium.Chrome.ChromeDriverService" class="text-break">
+    Class ChromeDriverService
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriverService.cs/#L28"><i class="bi bi-code-slash"></i></a>
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="OpenQA.html">OpenQA</a>.<a class="xref" href="OpenQA.Selenium.html">Selenium</a>.<a class="xref" href="OpenQA.Selenium.Chrome.html">Chrome</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>WebDriver.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Exposes the service provided by the native ChromeDriver executable.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class ChromeDriverService : ChromiumDriverService, ICommandServer, IDisposable</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.DriverService.html">DriverService</a></div>
+      <div><a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html">ChromiumDriverService</a></div>
+      <div><span class="xref">ChromeDriverService</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="OpenQA.Selenium.Remote.ICommandServer.html">ICommandServer</a></div>
+      <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.idisposable">IDisposable</a></div>
+    </dd>
+  </dl>
+
+
+  <dl class="typelist derived">
+    <dt>Inherited Members</dt>
+    <dd>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_LogPath">ChromiumDriverService.LogPath</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_UrlPathPrefix">ChromiumDriverService.UrlPathPrefix</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_PortServerAddress">ChromiumDriverService.PortServerAddress</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_AndroidDebugBridgePort">ChromiumDriverService.AndroidDebugBridgePort</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_DisableBuildCheck">ChromiumDriverService.DisableBuildCheck</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_EnableVerboseLogging">ChromiumDriverService.EnableVerboseLogging</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_EnableAppendLog">ChromiumDriverService.EnableAppendLog</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.Chromium.ChromiumDriverService.html#OpenQA_Selenium_Chromium_ChromiumDriverService_WhitelistedIPAddresses">ChromiumDriverService.WhitelistedIPAddresses</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DriverProcessStarting">DriverService.DriverProcessStarting</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DriverProcessStarted">DriverService.DriverProcessStarted</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_ServiceUrl">DriverService.ServiceUrl</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_HostName">DriverService.HostName</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_Port">DriverService.Port</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_SuppressInitialDiagnosticInformation">DriverService.SuppressInitialDiagnosticInformation</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_IsRunning">DriverService.IsRunning</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_HideCommandPromptWindow">DriverService.HideCommandPromptWindow</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_ProcessId">DriverService.ProcessId</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_InitializationTimeout">DriverService.InitializationTimeout</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DriverServiceExecutableName">DriverService.DriverServiceExecutableName</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_DriverServicePath">DriverService.DriverServicePath</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_Dispose">DriverService.Dispose()</a>
+    </div>
+    <div>
+      <a class="xref" href="OpenQA.Selenium.DriverService.html#OpenQA_Selenium_DriverService_Start">DriverService.Start()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </dd></dl>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_" data-uid="OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService" data-uid="OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService">
+  CreateDefaultService()
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriverService.cs/#L49"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a default instance of the ChromeDriverService.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ChromeDriverService CreateDefaultService()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a></dt>
+    <dd><p>A ChromeDriverService that implements default settings.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_" data-uid="OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_OpenQA_Selenium_Chrome_ChromeOptions_" data-uid="OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService(OpenQA.Selenium.Chrome.ChromeOptions)">
+  CreateDefaultService(ChromeOptions)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriverService.cs/#L59"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a default instance of the ChromeDriverService.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ChromeDriverService CreateDefaultService(ChromeOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="OpenQA.Selenium.Chrome.ChromeOptions.html">ChromeOptions</a></dt>
+    <dd><p>Browser options used to find the correct ChromeDriver binary.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a></dt>
+    <dd><p>A ChromeDriverService that implements default settings.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_" data-uid="OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_System_String_" data-uid="OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService(System.String)">
+  CreateDefaultService(string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriverService.cs/#L72"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a default instance of the ChromeDriverService using a specified path to the ChromeDriver executable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ChromeDriverService CreateDefaultService(string driverPath)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>driverPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The directory containing the ChromeDriver executable.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a></dt>
+    <dd><p>A ChromeDriverService using a random port.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_" data-uid="OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService*"></a>
+
+  <h3 id="OpenQA_Selenium_Chrome_ChromeDriverService_CreateDefaultService_System_String_System_String_" data-uid="OpenQA.Selenium.Chrome.ChromeDriverService.CreateDefaultService(System.String,System.String)">
+  CreateDefaultService(string, string)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriverService.cs/#L83"><i class="bi bi-code-slash"></i></a>
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates a default instance of the ChromeDriverService using a specified path to the ChromeDriver executable with the given name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ChromeDriverService CreateDefaultService(string driverPath, string driverExecutableFileName)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>driverPath</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The directory containing the ChromeDriver executable.</p>
+</dd>
+    <dt><code>driverExecutableFileName</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The name of the ChromeDriver executable file.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="OpenQA.Selenium.Chrome.ChromeDriverService.html">ChromeDriverService</a></dt>
+    <dd><p>A ChromeDriverService using a random port.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/src/webdriver/Chrome/ChromeDriverService.cs/#L28" class="edit-link">Edit this page</a>
+        </div>
+
+        
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
