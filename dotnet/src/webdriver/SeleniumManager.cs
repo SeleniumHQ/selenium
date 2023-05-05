@@ -145,6 +145,8 @@ namespace OpenQA.Selenium
             process.StartInfo.FileName = $"{basePath}/{fileName}";
             process.StartInfo.Arguments = arguments;
             process.StartInfo.UseShellExecute = false;
+            process.StartInfo.StandardErrorEncoding = Encoding.UTF8;
+            process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.RedirectStandardError = true;
 
