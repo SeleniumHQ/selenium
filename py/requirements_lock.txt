@@ -9,7 +9,6 @@ async-generator==1.10 \
     --hash=sha256:6ebb3d106c12920aaae42ccb6f787ef5eefdcdd166ea3d628fa8476abe712144
     # via
     #   -r py/requirements.txt
-    #   pytest-trio
     #   trio
     #   trio-websocket
 attrs==21.4.0 \
@@ -132,7 +131,9 @@ debugpy==1.6.0 \
 exceptiongroup==1.1.1 \
     --hash=sha256:232c37c63e4f682982c8b6459f33a8981039e5fb8756b2074364e5055c498c9e \
     --hash=sha256:d484c3090ba2889ae2928419117447a14daf3c1231d5e30d0aae34f354f01785
-    # via pytest
+    # via
+    #   pytest
+    #   trio
 h11==0.13.0 \
     --hash=sha256:70813c1135087a248a4d38cc0e1a0181ffab2188141a93eaf567940c3957ff06 \
     --hash=sha256:8ddd78563b633ca55346c8cd41ec0af27d3c79931828beffb46ce70a379e7442
@@ -282,12 +283,13 @@ pytest-instafail==0.4.2 \
     --hash=sha256:19273fdf3f0f9a1cb4b7a0bc8aa1bdaaf6b0f62a681b693d5eca4626abc99782 \
     --hash=sha256:1ec440a177be89a9ed2759dade8e1f7a2b95bac74ae81dc91318d309bf4ebd4f
     # via -r py/requirements.txt
-pytest-mock==3.7.0 \
-    --hash=sha256:5112bd92cc9f186ee96e1a92efc84969ea494939c3aead39c50f421c4cc69534 \
-    --hash=sha256:6cff27cec936bf81dc5ee87f07132b807bcda51106b5ec4b90a04331cba76231
+pytest-mock==3.10.0 \
+    --hash=sha256:f4c973eeae0282963eb293eb173ce91b091a79c1334455acfac9ddee8a1c784b \
+    --hash=sha256:fbbdb085ef7c252a326fd8cdcac0aa3b1333d8811f131bdcc701002e1be7ed4f
     # via -r py/requirements.txt
-pytest-trio==0.7.0 \
-    --hash=sha256:c01b741819aec2c419555f28944e132d3c711dae1e673d63260809bf92c30c31
+pytest-trio==0.8.0 \
+    --hash=sha256:8363db6336a79e6c53375a2123a41ddbeccc4aa93f93788651641789a56fb52e \
+    --hash=sha256:e6a7e7351ae3e8ec3f4564d30ee77d1ec66e1df611226e5618dbb32f9545c841
     # via -r py/requirements.txt
 sniffio==1.2.0 \
     --hash=sha256:471b71698eac1c2112a40ce2752bb2f4a4814c22a54a3eed3676bc0f5ca9f663 \
@@ -309,9 +311,9 @@ tomli==2.0.1 \
     --hash=sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc \
     --hash=sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f
     # via pytest
-trio==0.20.0 \
-    --hash=sha256:670a52d3115d0e879e1ac838a4eb999af32f858163e3a704fe4839de2a676070 \
-    --hash=sha256:fb2d48e4eab0dfb786a472cd514aaadc71e3445b203bc300bad93daa75d77c1a
+trio==0.22.0 \
+    --hash=sha256:ce68f1c5400a47b137c5a4de72c7c901bd4e7a24fbdebfe9b41de8c6c04eaacf \
+    --hash=sha256:f1dd0780a89bfc880c7c7994519cb53f62aacb2c25ff487001c0052bd721cdf0
     # via
     #   -r py/requirements.txt
     #   pytest-trio
@@ -320,9 +322,9 @@ trio-websocket==0.9.2 \
     --hash=sha256:5b558f6e83cc20a37c3b61202476c5295d1addf57bd65543364e0337e37ed2bc \
     --hash=sha256:a3d34de8fac26023eee701ed1e7bf4da9a8326b61a62934ec9e53b64970fd8fe
     # via -r py/requirements.txt
-urllib3[socks]==1.26.9 \
-    --hash=sha256:44ece4d53fb1706f667c9bd1c648f5469a2ec925fcf3a776667042d645472c14 \
-    --hash=sha256:aabaf16477806a5e1dd19aa41f8c2b7950dd3c746362d7e3223dbe6de6ac448e
+urllib3[socks]==2.0.2 \
+    --hash=sha256:61717a1095d7e155cdb737ac7bb2f4324a858a1e2e6466f6d03ff630ca68d3cc \
+    --hash=sha256:d055c2f9d38dc53c808f6fdc8eab7360b6fdbbde02340ed25cfbcd817c62469e
     # via -r py/requirements.txt
 wsproto==1.1.0 \
     --hash=sha256:2218cb57952d90b9fca325c0dcfb08c3bda93e8fd8070b0a17f048e2e47a521b \
