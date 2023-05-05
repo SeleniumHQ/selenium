@@ -38,6 +38,11 @@ public enum Platform {
     public Platform family() {
       return null;
     }
+
+    @Override
+    public String toString() {
+      return "windows";
+    }
   },
 
   /**
@@ -131,6 +136,11 @@ public enum Platform {
     @Override
     public Platform family() {
       return null;
+    }
+
+    @Override
+    public String toString() {
+      return "mac";
     }
   },
 
@@ -284,6 +294,11 @@ public enum Platform {
     public Platform family() {
       return UNIX;
     }
+
+    @Override
+    public String toString() {
+      return "linux";
+    }
   },
 
   ANDROID("android", "dalvik") {
@@ -311,6 +326,12 @@ public enum Platform {
     public boolean is(Platform compareWith) {
       return this == compareWith;
     }
+
+    @Override
+    public String toString() {
+      return "any";
+    }
+
   };
 
   private static Platform current;

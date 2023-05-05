@@ -17,6 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 
+require 'debug/session'
+DEBUGGER__::CONFIG[:fork_mode] = :parent
+DEBUGGER__.open(nonstop: true)
+
 require 'rubygems'
 require 'time'
 require 'rspec'
@@ -48,4 +52,9 @@ RSpec.configure do |c|
   c.include Selenium::WebDriver::UnitSpecHelper
 
   c.filter_run focus: true if ENV['focus']
+
+  c.before do
+    # https://github.com/ruby/debug/issues/797
+    allow(File).to receive(:exist?).and_call_original
+  end
 end
