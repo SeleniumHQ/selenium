@@ -26,6 +26,7 @@ rust_library(
 
 rust_test(
     name = "unit",
+    size = "small",
     srcs = glob(["src/**/*.rs"]),
     crate = ":selenium_manager",
     tags = ["no-sandbox"],
@@ -34,6 +35,7 @@ rust_test(
 [
     rust_test(
         name = file[:-3],
+        size = "small",
         srcs = [file],
         data = [":selenium-manager"],
         edition = "2021",

@@ -48,6 +48,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4443")]
         public void AnElementFoundInADifferentFrameViaJsShouldHaveSameId()
         {
             driver.Url = EnvironmentManager.Instance.UrlBuilder.WhereIs("missedJsReference.html");

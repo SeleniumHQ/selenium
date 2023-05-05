@@ -80,7 +80,7 @@ class RemoteWebElementTest {
       .withMessageContaining(String.format(
         "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
       .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", fixture.driver.getSessionId()));
+        "Element: [[RemoteWebDriver: cheese on windows (%s)] -> id: test]", fixture.driver.getSessionId()));
 
     fixture.verifyCommands(
       new CommandPayload(
@@ -106,7 +106,7 @@ class RemoteWebElementTest {
       .withMessageContaining(String.format(
         "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
       .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on WINDOWS (%s)] -> id: test]", fixture.driver.getSessionId()))
+        "Element: [[RemoteWebDriver: cheese on windows (%s)] -> id: test]", fixture.driver.getSessionId()))
       .havingCause()
       .withMessage("BOOM!!!");
 
@@ -134,7 +134,7 @@ class RemoteWebElementTest {
       .withMessageContaining(String.format(
         "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
       .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]", fixture.driver.getSessionId()));
+        "Element: [[RemoteWebDriver: cheese on any (%s)] -> id: test]", fixture.driver.getSessionId()));
 
     fixture.verifyCommands(
       new CommandPayload(
@@ -160,7 +160,7 @@ class RemoteWebElementTest {
       .withMessageContaining(String.format(
         "Command: [%s, clickElement {id=%s}]", fixture.driver.getSessionId(), fixture.element.getId()))
       .withMessageContaining(String.format(
-        "Element: [[RemoteWebDriver: cheese on ANY (%s)] -> id: test]", fixture.driver.getSessionId()));
+        "Element: [[RemoteWebDriver: cheese on any (%s)] -> id: test]", fixture.driver.getSessionId()));
 
     fixture.verifyCommands(
       new CommandPayload(

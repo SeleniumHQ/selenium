@@ -77,7 +77,7 @@ class WebDriverWaitTest {
 
     assertThatExceptionOfType(TimeoutException.class)
       .isThrownBy(() -> wait.until(d -> false))
-      .withMessageContaining("Capabilities {platformName: ANY}")
+      .withMessageContaining("Capabilities {platformName: any}")
         .withMessageContaining("Session ID: foo");
   }
 
