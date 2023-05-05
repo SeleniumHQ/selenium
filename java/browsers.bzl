@@ -1,7 +1,7 @@
 chrome_jvm_flags = select({
     "@selenium//common:use_pinned_linux_chrome": [
         "-Dwebdriver.chrome.driver=$(location @linux_chromedriver//:chromedriver)",
-        "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux)/chrome",
+        "-Dwebdriver.chrome.binary=$(location @linux_chrome//:chrome-linux/chrome)",
     ],
     "@selenium//common:use_pinned_macos_chrome": [
         "-Dwebdriver.chrome.driver=$(location @mac_chromedriver//:chromedriver)",
@@ -37,7 +37,7 @@ edge_jvm_flags = select({
 firefox_jvm_flags = select({
     "@selenium//common:use_pinned_linux_firefox": [
         "-Dwebdriver.gecko.driver=$(location @linux_geckodriver//:geckodriver)",
-        "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox)/firefox",
+        "-Dwebdriver.firefox.bin=$(location @linux_firefox//:firefox/firefox)",
     ],
     "@selenium//common:use_pinned_macos_firefox": [
         "-Dwebdriver.gecko.driver=$(location @mac_geckodriver//:geckodriver)",

@@ -290,8 +290,7 @@ class Proxy:
         :Args:
          - capabilities: The capabilities to which proxy will be added.
         """
-        proxy_caps = {}
-        proxy_caps["proxyType"] = self.proxyType["string"]
+        proxy_caps = {"proxyType": self.proxyType["string"]}
         if self.autodetect:
             proxy_caps["autodetect"] = self.autodetect
         if self.ftpProxy:

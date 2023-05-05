@@ -224,8 +224,8 @@ public class GridModel {
         if (node.getAvailability() == UP && lostTime.isBefore(now)) {
           LOG.info(String.format("Switching Node %s from UP to DOWN", node.getExternalUri()));
           replacements.put(node, rewrite(node, DOWN));
-        }
-        if (node.getAvailability() == DOWN && deadTime.isBefore(now)) {
+          nodePurgeTimes.put(id, Instant.now());
+        } else if (node.getAvailability() == DOWN && deadTime.isBefore(now)) {
           LOG.info(String.format("Removing Node %s, DOWN for too long", node.getExternalUri()));
           toRemove.add(node);
         }
