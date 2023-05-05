@@ -22,22 +22,25 @@ require File.expand_path('../spec_helper', __dir__)
 module Selenium
   module WebDriver
     describe SeleniumManager do
-      describe 'self.binary' do
+      describe '.binary' do
+        def stub_binary(binary)
+          allow(File).to receive(:exist?).with(a_string_ending_with(binary)).and_return(true)
+          allow(File).to receive(:executable?).with(a_string_ending_with(binary)).and_return(true)
+        end
+
         before do
           described_class.instance_variable_set(:@binary, nil)
         end
 
         it 'detects Windows' do
-          allow(File).to receive(:exist?).and_return(true)
-          allow(File).to receive(:executable?).and_return(true)
+          stub_binary('/windows/selenium-manager.exe')
           allow(Platform).to receive(:windows?).and_return(true)
 
           expect(described_class.send(:binary)).to match(%r{/windows/selenium-manager\.exe$})
         end
 
         it 'detects Mac' do
-          allow(File).to receive(:exist?).and_return(true)
-          allow(File).to receive(:executable?).and_return(true)
+          stub_binary('/macos/selenium-manager')
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(true)
 
@@ -45,8 +48,7 @@ module Selenium
         end
 
         it 'detects Linux' do
-          allow(File).to receive(:exist?).and_return(true)
-          allow(File).to receive(:executable?).and_return(true)
+          stub_binary('/linux/selenium-manager')
           allow(Platform).to receive(:windows?).and_return(false)
           allow(Platform).to receive(:mac?).and_return(false)
           allow(Platform).to receive(:linux?).and_return(true)
@@ -55,7 +57,7 @@ module Selenium
         end
 
         it 'errors if cannot find' do
-          allow(File).to receive(:exist?).and_return(false)
+          allow(File).to receive(:exist?).with(a_string_including('selenium-manager')).and_return(false)
 
           expect {
             described_class.send(:binary)
