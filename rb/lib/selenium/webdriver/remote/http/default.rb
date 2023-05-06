@@ -100,7 +100,7 @@ module Selenium
 
               request(:get, URI.parse(response['Location']), DEFAULT_HEADERS.dup, nil, redirects + 1)
             else
-              WebDriver.logger.debug("   <<<  #{response.instance_variable_get(:@header).inspect}")
+              WebDriver.logger.debug("   <<<  #{response.instance_variable_get(:@header).inspect}", id: :header)
               create_response response.code, response.body, response.content_type
             end
           end

@@ -38,20 +38,31 @@ module Selenium
 
       def_delegators :@logger,
                      :close,
-                     :debug, :debug?,
-                     :info, :info?,
+                     :debug?,
+                     :info?,
                      :warn?,
                      :error, :error?,
                      :fatal, :fatal?,
-                     :level, :level=
+                     :level
 
       #
       # @param [String] progname Allow child projects to use Selenium's Logger pattern
       #
-      def initialize(progname = 'Selenium', ignored: nil)
-        @logger = create_logger(progname)
+      def initialize(progname = 'Selenium', default_level: nil, ignored: nil, allowed: nil)
+        default_level ||= $DEBUG || ENV.key?('DEBUG') ? :debug : :warn
+
+        @logger = create_logger(progname, level: default_level)
         @ignored = Array(ignored)
+        @allowed = Array(allowed)
         @first_warning = false
+      end
+
+      def level=(level)
+        if level == :info && @logger.level == :info
+          info(':info is now the default log level, to see additional logging, set log level to :debug')
+        end
+
+        @logger.level = level
       end
 
       #
@@ -81,34 +92,60 @@ module Selenium
       #
       # Will not log the provided ID.
       #
-      # @param [Array, Symbol] id
+      # @param [Array, Symbol] ids
       #
-      def ignore(id)
-        Array(id).each { |ignore| @ignored << ignore }
+      def ignore(*ids)
+        @ignored += Array(ids).flatten
       end
 
       #
-      # Overrides default #warn to skip ignored messages by provided id
+      # Will only log the provided ID.
+      #
+      # @param [Array, Symbol] ids
+      #
+      def allow(ids)
+        @allowed += Array(ids).flatten
+      end
+
+      #
+      # Used to supply information of interest for debugging a problem
+      # Overrides default #debug to skip ignored messages by provided id
       #
       # @param [String] message
       # @param [Symbol, Array<Sybmol>] id
       # @yield see #deprecate
       #
-      def warn(message, id: [])
+      def debug(message, id: [], &block)
+        discard_or_log(:debug, message, id, &block)
+      end
+
+      #
+      # Used to supply information of general interest
+      #
+      # @param [String] message
+      # @param [Symbol, Array<Sybmol>] id
+      # @yield see #deprecate
+      #
+      def info(message, id: [], &block)
         unless @first_warning
           @first_warning = true
-          warn("Details on how to use and modify Selenium logger:\n", id: [:logger_info]) do
-            "https://selenium.dev/documentation/webdriver/troubleshooting/logging#ruby\n"
+          info("Details on how to use and modify Selenium logger:\n", id: [:logger_info]) do
+            "https://selenium.dev/documentation/webdriver/troubleshooting/logging\n"
           end
         end
 
-        id = Array(id)
-        return if (@ignored & id).any?
+        discard_or_log(:info, message, id, &block)
+      end
 
-        msg = id.empty? ? message : "[#{id.map(&:inspect).join(', ')}] #{message} "
-        msg += " #{yield}" if block_given?
-
-        @logger.warn { msg }
+      #
+      # Used to supply information that suggests action be taken by user
+      #
+      # @param [String] message
+      # @param [Symbol, Array<Sybmol>] id
+      # @yield see #deprecate
+      #
+      def warn(message, id: [], &block)
+        discard_or_log(:warn, message, id, &block)
       end
 
       #
@@ -122,11 +159,11 @@ module Selenium
       #
       def deprecate(old, new = nil, id: [], reference: '', &block)
         id = Array(id)
-        return if @ignored.include?(:deprecations) || (@ignored & id).any?
+        return if @ignored.include?(:deprecations)
 
-        ids = id.empty? ? '' : "[#{id.map(&:inspect).join(', ')}] "
+        id << :deprecations if @allowed.include?(:deprecations)
 
-        message = +"[DEPRECATION] #{ids}#{old} is deprecated"
+        message = +"[DEPRECATION] #{old} is deprecated"
         message << if new
                      ". Use #{new} instead."
                    else
@@ -134,15 +171,15 @@ module Selenium
                    end
         message << " See explanation for this deprecation: #{reference}." unless reference.empty?
 
-        warn message, &block
+        discard_or_log(:warn, message, id, &block)
       end
 
       private
 
-      def create_logger(name)
+      def create_logger(name, level:)
         logger = ::Logger.new($stdout)
         logger.progname = name
-        logger.level = default_level
+        logger.level = level
         logger.formatter = proc do |severity, time, progname, msg|
           "#{time.strftime('%F %T')} #{severity} #{progname} #{msg}\n"
         end
@@ -150,8 +187,15 @@ module Selenium
         logger
       end
 
-      def default_level
-        $DEBUG || ENV.key?('DEBUG') ? :debug : :warn
+      def discard_or_log(level, message, id)
+        id = Array(id)
+        return if (@ignored & id).any?
+        return if @allowed.any? && (@allowed & id).none?
+
+        msg = id.empty? ? message : "[#{id.map(&:inspect).join(', ')}] #{message} "
+        msg += " #{yield}" if block_given?
+
+        @logger.send(level) { msg }
       end
     end # Logger
   end # WebDriver

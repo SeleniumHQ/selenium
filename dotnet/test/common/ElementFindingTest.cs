@@ -811,6 +811,7 @@ namespace OpenQA.Selenium
         }
 
         [Test]
+        [IgnoreBrowser(Browser.Chrome, "https://bugs.chromium.org/p/chromedriver/issues/detail?id=4443")]
         public void AnElementFoundInADifferentFrameViaJsCanBeUsed()
         {
             driver.Url = missedJsReferencePage;
