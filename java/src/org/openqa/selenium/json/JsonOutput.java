@@ -163,6 +163,9 @@ public class JsonOutput implements Closeable {
     builder.put(
         Collection.class::isAssignableFrom,
         (obj, depth) -> {
+          if (depth < 1) {
+            throw new JsonException("Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
+          }
           beginArray();
           ((Collection<?>) obj).stream()
             .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
@@ -173,6 +176,9 @@ public class JsonOutput implements Closeable {
     builder.put(
         Map.class::isAssignableFrom,
         (obj, depth) -> {
+          if (depth < 1) {
+            throw new JsonException("Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
+          }
           beginObject();
           ((Map<?, ?>) obj).forEach(
               (key, value) -> {
@@ -186,6 +192,9 @@ public class JsonOutput implements Closeable {
     builder.put(
         Class::isArray,
         (obj, depth) -> {
+          if (depth < 1) {
+            throw new JsonException("Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
+          }
           beginArray();
           Stream.of((Object[]) obj)
             .filter(o -> (!(o instanceof Optional) || ((Optional<?>) o).isPresent()))
@@ -204,7 +213,12 @@ public class JsonOutput implements Closeable {
     });
 
     // Finally, attempt to convert as an object
-    builder.put(cls -> true, (obj, depth) -> mapObject(obj, depth - 1));
+    builder.put(cls -> true, (obj, depth) -> {
+      if (depth < 1) {
+        throw new JsonException("Reached the maximum depth of " + MAX_DEPTH + " while writing JSON");
+      }
+      mapObject(obj, depth - 1);
+    });
 
     this.converters = Collections.unmodifiableMap(builder);
   }
@@ -278,7 +292,7 @@ public class JsonOutput implements Closeable {
     return write(value, MAX_DEPTH);
   }
 
-  public JsonOutput write(Object input, int depthRemaining) {
+  private JsonOutput write(Object input, int depthRemaining) {
     converters.entrySet().stream()
         .filter(entry -> entry.getKey().test(input == null ? null : input.getClass()))
         .findFirst()
@@ -363,12 +377,7 @@ public class JsonOutput implements Closeable {
     }
   }
 
-  private void mapObject(Object toConvert, int maxDepth) {
-    if (maxDepth < 1) {
-      append("null");
-      return;
-    }
-
+  private void mapObject(Object toConvert, int depthRemaining) {
     if (toConvert instanceof Class) {
       write(((Class<?>) toConvert).getName());
       return;
@@ -392,7 +401,7 @@ public class JsonOutput implements Closeable {
       Object value = pd.getReadMethod().apply(toConvert);
       if (!Optional.empty().equals(value)) {
         name(pd.getName());
-        write(value, maxDepth - 1);
+        write(value, depthRemaining - 1);
       }
     }
     endObject();
