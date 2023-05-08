@@ -94,13 +94,13 @@ loadScripts(document, 'script');</script>
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>
@@ -196,8 +196,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IE_DRIVER_EXE_PROPERTY">IE_DRIVER_EXE_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines the location of the IEDriverServer executable
- that will be used by the <a href="#createDefaultService()"><code>default service</code></a>.</div>
+<div class="block">System property that defines the location of the IEDriverServer executable that will be used by
+ the <a href="#createDefaultService()"><code>default service</code></a>.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -218,15 +218,16 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IE_DRIVER_LOGFILE_PROPERTY">IE_DRIVER_LOGFILE_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines the location of the file where IEDriverServer
- should write log messages to.</div>
+<div class="block">System property that defines the location of the file where IEDriverServer should write log
+ messages to.</div>
 </td>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#IE_DRIVER_LOGLEVEL_PROPERTY">IE_DRIVER_LOGLEVEL_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines the detalization level the IEDriverServer logs.</div>
+<div class="block">System property that defines the <a href="InternetExplorerDriverLogLevel.html" title="enum in org.openqa.selenium.ie"><code>InternetExplorerDriverLogLevel</code></a> for IEDriverServer
+ logs.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -247,8 +248,33 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;org.openqa.selenium.remote.service.<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></h3>
-<code><a href="../remote/service/DriverService.html#DEFAULT_TIMEOUT">DEFAULT_TIMEOUT</a>, <a href="../remote/service/DriverService.html#process">process</a></code></li>
+<code><a href="../remote/service/DriverService.html#DEFAULT_TIMEOUT">DEFAULT_TIMEOUT</a>, <a href="../remote/service/DriverService.html#LOG_NULL">LOG_NULL</a>, <a href="../remote/service/DriverService.html#LOG_STDERR">LOG_STDERR</a>, <a href="../remote/service/DriverService.html#LOG_STDOUT">LOG_STDOUT</a>, <a href="../remote/service/DriverService.html#process">process</a></code></li>
 </ul>
+</li>
+</ul>
+</section>
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="constructor.summary">
+<!--   -->
+</a>
+<h3>Constructor Summary</h3>
+<table class="memberSummary">
+<caption><span>Constructors</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Constructor</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)">InternetExplorerDriverService</a></span>&#8203;(java.io.File&nbsp;executable,
+                             int&nbsp;port,
+                             java.time.Duration&nbsp;timeout,
+                             java.util.List&lt;java.lang.String&gt;&nbsp;args,
+                             java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
 </li>
 </ul>
 </section>
@@ -270,7 +296,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <td class="colFirst"><code>static <a href="InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDefaultService()">createDefaultService</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Configures and returns a new <a href="InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> using the default configuration.</div>
+<div class="block">Configures and returns a new <a href="InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> using the default
+ configuration.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
@@ -339,8 +366,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>IE_DRIVER_EXE_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String IE_DRIVER_EXE_PROPERTY</pre>
-<div class="block">System property that defines the location of the IEDriverServer executable
- that will be used by the <a href="#createDefaultService()"><code>default service</code></a>.</div>
+<div class="block">System property that defines the location of the IEDriverServer executable that will be used by
+ the <a href="#createDefaultService()"><code>default service</code></a>.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY">Constant Field Values</a></dd>
@@ -354,8 +381,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>IE_DRIVER_LOGFILE_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String IE_DRIVER_LOGFILE_PROPERTY</pre>
-<div class="block">System property that defines the location of the file where IEDriverServer
- should write log messages to.</div>
+<div class="block">System property that defines the location of the file where IEDriverServer should write log
+ messages to.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriverService.IE_DRIVER_LOGFILE_PROPERTY">Constant Field Values</a></dd>
@@ -369,7 +396,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>IE_DRIVER_LOGLEVEL_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String IE_DRIVER_LOGLEVEL_PROPERTY</pre>
-<div class="block">System property that defines the detalization level the IEDriverServer logs.</div>
+<div class="block">System property that defines the <a href="InternetExplorerDriverLogLevel.html" title="enum in org.openqa.selenium.ie"><code>InternetExplorerDriverLogLevel</code></a> for IEDriverServer
+ logs.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriverService.IE_DRIVER_LOGLEVEL_PROPERTY">Constant Field Values</a></dd>
@@ -415,6 +443,40 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.ie.InternetExplorerDriverService.IE_DRIVER_SILENT_PROPERTY">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="constructor.detail">
+<!--   -->
+</a>
+<h3>Constructor Detail</h3>
+<a id="&lt;init&gt;(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>InternetExplorerDriverService</h4>
+<pre>public&nbsp;InternetExplorerDriverService&#8203;(java.io.File&nbsp;executable,
+                                     int&nbsp;port,
+                                     java.time.Duration&nbsp;timeout,
+                                     java.util.List&lt;java.lang.String&gt;&nbsp;args,
+                                     java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)
+                              throws java.io.IOException</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>executable</code> - The IEDriverServer executable.</dd>
+<dd><code>port</code> - Which port to start the IEDriverServer on.</dd>
+<dd><code>timeout</code> - Timeout waiting for driver server to start.</dd>
+<dd><code>args</code> - The arguments to the launched server.</dd>
+<dd><code>environment</code> - The environment for the launched server.</dd>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.io.IOException</code> - If an I/O error occurs.</dd>
 </dl>
 </li>
 </ul>
@@ -474,10 +536,12 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>createDefaultService</h4>
 <pre class="methodSignature">public static&nbsp;<a href="InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie">InternetExplorerDriverService</a>&nbsp;createDefaultService()</pre>
-<div class="block">Configures and returns a new <a href="InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> using the default configuration. In
- this configuration, the service will use the IEDriverServer executable identified by the
- <a href="#IE_DRIVER_EXE_PROPERTY"><code>IE_DRIVER_EXE_PROPERTY</code></a> system property. Each service created by this method will
- be configured to use a free port on the current system.</div>
+<div class="block">Configures and returns a new <a href="InternetExplorerDriverService.html" title="class in org.openqa.selenium.ie"><code>InternetExplorerDriverService</code></a> using the default
+ configuration. In this configuration, the service will use the IEDriverServer executable
+ identified by the
+ <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>.
+ Each service created by this method will be configured to use a free port on the current
+ system.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A new InternetExplorerDriverService using the default configuration.</dd>
@@ -542,13 +606,13 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li>Summary:&nbsp;</li>
 <li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li><a href="#field.summary">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.summary">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
 </ul>
 <ul class="subNavList">
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#constructor.detail">Constr</a>&nbsp;|&nbsp;</li>
 <li><a href="#method.detail">Method</a></li>
 </ul>
 </div>

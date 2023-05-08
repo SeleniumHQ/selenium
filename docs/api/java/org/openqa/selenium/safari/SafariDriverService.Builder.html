@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -147,6 +147,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>@AutoService(<a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">Builder.class</a>)
 public static class <span class="typeNameLabel">SafariDriverService.Builder</span>
 extends <a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="SafariDriverService.html" title="class in org.openqa.selenium.safari">SafariDriverService</a>,&#8203;<a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a>&gt;</pre>
+<div class="block">Builder used to configure new <a href="SafariDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariDriverService</code></a> instances.</div>
 </li>
 </ul>
 </div>
@@ -203,6 +204,11 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>protected void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadSystemProperties()">loadSystemProperties</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#score(org.openqa.selenium.Capabilities)">score</a></span>&#8203;(<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">
@@ -210,13 +216,25 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
  <code>capabilities</code>.</div>
 </td>
 </tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withLogFile(java.io.File)">withLogFile</a></span>&#8203;(java.io.File&nbsp;logFile)</code></th>
+<td class="colLast">
+<div class="block">Configures the driver server to write log to the given file.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withLogging(java.lang.Boolean)">withLogging</a></span>&#8203;(java.lang.Boolean&nbsp;logging)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.org.openqa.selenium.remote.service.DriverService.Builder">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;org.openqa.selenium.remote.service.<a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a></h3>
-<code><a href="../remote/service/DriverService.Builder.html#build()">build</a>, <a href="../remote/service/DriverService.Builder.html#getDefaultTimeout()">getDefaultTimeout</a>, <a href="../remote/service/DriverService.Builder.html#getLogFile()">getLogFile</a>, <a href="../remote/service/DriverService.Builder.html#getPort()">getPort</a>, <a href="../remote/service/DriverService.Builder.html#usingAnyFreePort()">usingAnyFreePort</a>, <a href="../remote/service/DriverService.Builder.html#usingDriverExecutable(java.io.File)">usingDriverExecutable</a>, <a href="../remote/service/DriverService.Builder.html#usingPort(int)">usingPort</a>, <a href="../remote/service/DriverService.Builder.html#withEnvironment(java.util.Map)">withEnvironment</a>, <a href="../remote/service/DriverService.Builder.html#withLogFile(java.io.File)">withLogFile</a>, <a href="../remote/service/DriverService.Builder.html#withTimeout(java.time.Duration)">withTimeout</a></code></li>
+<code><a href="../remote/service/DriverService.Builder.html#build()">build</a>, <a href="../remote/service/DriverService.Builder.html#getDefaultTimeout()">getDefaultTimeout</a>, <a href="../remote/service/DriverService.Builder.html#getLogFile()">getLogFile</a>, <a href="../remote/service/DriverService.Builder.html#getLogOutput(java.lang.String)">getLogOutput</a>, <a href="../remote/service/DriverService.Builder.html#getPort()">getPort</a>, <a href="../remote/service/DriverService.Builder.html#usingAnyFreePort()">usingAnyFreePort</a>, <a href="../remote/service/DriverService.Builder.html#usingDriverExecutable(java.io.File)">usingDriverExecutable</a>, <a href="../remote/service/DriverService.Builder.html#usingPort(int)">usingPort</a>, <a href="../remote/service/DriverService.Builder.html#withEnvironment(java.util.Map)">withEnvironment</a>, <a href="../remote/service/DriverService.Builder.html#withLogOutput(java.io.OutputStream)">withLogOutput</a>, <a href="../remote/service/DriverService.Builder.html#withTimeout(java.time.Duration)">withTimeout</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
@@ -277,6 +295,47 @@ extends <a href="../remote/service/DriverService.Builder.html" title="class in o
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="../remote/service/DriverService.Builder.html#score(org.openqa.selenium.Capabilities)">score</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="SafariDriverService.html" title="class in org.openqa.selenium.safari">SafariDriverService</a>,&#8203;<a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a>&gt;</code></dd>
+</dl>
+</li>
+</ul>
+<a id="withLogging(java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withLogging</h4>
+<pre class="methodSignature">public&nbsp;<a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a>&nbsp;withLogging&#8203;(java.lang.Boolean&nbsp;logging)</pre>
+</li>
+</ul>
+<a id="withLogFile(java.io.File)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withLogFile</h4>
+<pre class="methodSignature">public&nbsp;<a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a>&nbsp;withLogFile&#8203;(java.io.File&nbsp;logFile)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from class:&nbsp;<code><a href="../remote/service/DriverService.Builder.html#withLogFile(java.io.File)">DriverService.Builder</a></code></span></div>
+<div class="block">Configures the driver server to write log to the given file.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../remote/service/DriverService.Builder.html#withLogFile(java.io.File)">withLogFile</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="SafariDriverService.html" title="class in org.openqa.selenium.safari">SafariDriverService</a>,&#8203;<a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a>&gt;</code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>logFile</code> - A file to write log to.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A self reference.</dd>
+</dl>
+</li>
+</ul>
+<a id="loadSystemProperties()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>loadSystemProperties</h4>
+<pre class="methodSignature">protected&nbsp;void&nbsp;loadSystemProperties()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../remote/service/DriverService.Builder.html#loadSystemProperties()">loadSystemProperties</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.Builder.html" title="class in org.openqa.selenium.remote.service">DriverService.Builder</a>&lt;<a href="SafariDriverService.html" title="class in org.openqa.selenium.safari">SafariDriverService</a>,&#8203;<a href="SafariDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariDriverService.Builder</a>&gt;</code></dd>
 </dl>
 </li>
 </ul>

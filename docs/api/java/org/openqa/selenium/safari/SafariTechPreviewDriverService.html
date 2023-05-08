@@ -146,6 +146,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">SafariTechPreviewDriverService</span>
 extends <a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></pre>
+<div class="block">Manages the life and death of SafariDriver Technology Preview.</div>
 </li>
 </ul>
 </div>
@@ -169,7 +170,9 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <tr class="altColor">
 <td class="colFirst"><code>static class&nbsp;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="SafariTechPreviewDriverService.Builder.html" title="class in org.openqa.selenium.safari">SafariTechPreviewDriverService.Builder</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Builder used to configure new <a href="SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariTechPreviewDriverService</code></a> instances.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -192,15 +195,15 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TP_SAFARI_DRIVER_EXE_PROPERTY">TP_SAFARI_DRIVER_EXE_PROPERTY</a></span></code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">System property that defines the location of the safaridriver executable
+ that will be used by the <a href="#createDefaultService()"><code>default service</code></a>.</div>
+</td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TP_SAFARI_DRIVER_NAME">TP_SAFARI_DRIVER_NAME</a></span></code></th>
-<td class="colLast">
-<div class="block">System property that defines the location of the tech preview safaridriver executable that
- will be used by the <a href="#createDefaultService()"><code>default service</code></a>.</div>
-</td>
+<td class="colLast">&nbsp;</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -208,7 +211,7 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;org.openqa.selenium.remote.service.<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></h3>
-<code><a href="../remote/service/DriverService.html#DEFAULT_TIMEOUT">DEFAULT_TIMEOUT</a>, <a href="../remote/service/DriverService.html#process">process</a></code></li>
+<code><a href="../remote/service/DriverService.html#DEFAULT_TIMEOUT">DEFAULT_TIMEOUT</a>, <a href="../remote/service/DriverService.html#LOG_NULL">LOG_NULL</a>, <a href="../remote/service/DriverService.html#LOG_STDERR">LOG_STDERR</a>, <a href="../remote/service/DriverService.html#LOG_STDOUT">LOG_STDOUT</a>, <a href="../remote/service/DriverService.html#process">process</a></code></li>
 </ul>
 </li>
 </ul>
@@ -239,7 +242,11 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
                               int&nbsp;port,
                               java.util.List&lt;java.lang.String&gt;&nbsp;args,
                               java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <a href="#%3Cinit%3E(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)"><code>SafariTechPreviewDriverService(File, int, Duration, List, Map)</code></a></div>
+</div>
+</td>
 </tr>
 </table>
 </li>
@@ -262,7 +269,9 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>static <a href="SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari">SafariTechPreviewDriverService</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#createDefaultService()">createDefaultService</a></span>()</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Configures and returns a new <a href="SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariTechPreviewDriverService</code></a> using the default configuration.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected <a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a></code></td>
@@ -327,8 +336,6 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>TP_SAFARI_DRIVER_NAME</h4>
 <pre>public static final&nbsp;java.lang.String TP_SAFARI_DRIVER_NAME</pre>
-<div class="block">System property that defines the location of the tech preview safaridriver executable that
- will be used by the <a href="#createDefaultService()"><code>default service</code></a>.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.safari.SafariTechPreviewDriverService.TP_SAFARI_DRIVER_NAME">Constant Field Values</a></dd>
@@ -342,6 +349,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>TP_SAFARI_DRIVER_EXE_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String TP_SAFARI_DRIVER_EXE_PROPERTY</pre>
+<div class="block">System property that defines the location of the safaridriver executable
+ that will be used by the <a href="#createDefaultService()"><code>default service</code></a>.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.safari.SafariTechPreviewDriverService.TP_SAFARI_DRIVER_EXE_PROPERTY">Constant Field Values</a></dd>
@@ -364,14 +373,23 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <ul class="blockList">
 <li class="blockList">
 <h4>SafariTechPreviewDriverService</h4>
-<pre>public&nbsp;SafariTechPreviewDriverService&#8203;(java.io.File&nbsp;executable,
+<pre>@Deprecated
+public&nbsp;SafariTechPreviewDriverService&#8203;(java.io.File&nbsp;executable,
                                       int&nbsp;port,
                                       java.util.List&lt;java.lang.String&gt;&nbsp;args,
                                       java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)
                                throws java.io.IOException</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <a href="#%3Cinit%3E(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)"><code>SafariTechPreviewDriverService(File, int, Duration, List, Map)</code></a></div>
+</div>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>executable</code> - The SafariDriver executable.</dd>
+<dd><code>port</code> - Which port to start the SafariDriver on.</dd>
+<dd><code>args</code> - The arguments to the launched server.</dd>
+<dd><code>environment</code> - The environment for the launched server.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - If an I/O error occurs.</dd>
 </dl>
 </li>
 </ul>
@@ -388,8 +406,14 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
                                       java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)
                                throws java.io.IOException</pre>
 <dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>executable</code> - The SafariDriver executable.</dd>
+<dd><code>port</code> - Which port to start the SafariDriver on.</dd>
+<dd><code>timeout</code> - Timeout waiting for driver server to start.</dd>
+<dd><code>args</code> - The arguments to the launched server.</dd>
+<dd><code>environment</code> - The environment for the launched server.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code>java.io.IOException</code></dd>
+<dd><code>java.io.IOException</code> - If an I/O error occurs.</dd>
 </dl>
 </li>
 </ul>
@@ -403,19 +427,6 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="getDefaultDriverOptions()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getDefaultDriverOptions</h4>
-<pre class="methodSignature">protected&nbsp;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;getDefaultDriverOptions()</pre>
-<dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../remote/service/DriverService.html#getDefaultDriverOptions()">getDefaultDriverOptions</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
-</dl>
-</li>
-</ul>
 <a id="getDriverName()">
 <!--   -->
 </a>
@@ -455,6 +466,19 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 </dl>
 </li>
 </ul>
+<a id="getDefaultDriverOptions()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getDefaultDriverOptions</h4>
+<pre class="methodSignature">protected&nbsp;<a href="../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;getDefaultDriverOptions()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../remote/service/DriverService.html#getDefaultDriverOptions()">getDefaultDriverOptions</a></code>&nbsp;in class&nbsp;<code><a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></code></dd>
+</dl>
+</li>
+</ul>
 <a id="createDefaultService()">
 <!--   -->
 </a>
@@ -462,6 +486,14 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>createDefaultService</h4>
 <pre class="methodSignature">public static&nbsp;<a href="SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari">SafariTechPreviewDriverService</a>&nbsp;createDefaultService()</pre>
+<div class="block">Configures and returns a new <a href="SafariTechPreviewDriverService.html" title="class in org.openqa.selenium.safari"><code>SafariTechPreviewDriverService</code></a> using the default configuration. In
+ this configuration, the service will use the SafariDriver executable identified by the
+ <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>.
+ Each service created by this method will be configured to use a free port on the current system.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>A new SafariTechPreviewDriverService using the default configuration.</dd>
+</dl>
 </li>
 </ul>
 <a id="waitUntilAvailable()">

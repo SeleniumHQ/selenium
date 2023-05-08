@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":6,"i2":6,"i3":10,"i4":10,"i5":10,"i6":6,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
+var data = {"i0":10,"i1":6,"i2":6,"i3":10,"i4":10,"i5":10,"i6":10,"i7":6,"i8":6,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -218,11 +218,21 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
+<td class="colFirst"><code>protected java.io.OutputStream</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getLogOutput(java.lang.String)">getLogOutput</a></span>&#8203;(java.lang.String&nbsp;logProperty)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPort()">getPort</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>protected abstract void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadSystemProperties()">loadSystemProperties</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>abstract int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#score(org.openqa.selenium.Capabilities)">score</a></span>&#8203;(<a href="../../Capabilities.html" title="interface in org.openqa.selenium">Capabilities</a>&nbsp;capabilities)</code></th>
 <td class="colLast">
@@ -230,42 +240,47 @@ extends java.lang.Object</pre>
  <code>capabilities</code>.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="DriverService.Builder.html" title="type parameter in DriverService.Builder">B</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#usingAnyFreePort()">usingAnyFreePort</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server to start on any available port.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="DriverService.Builder.html" title="type parameter in DriverService.Builder">B</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#usingDriverExecutable(java.io.File)">usingDriverExecutable</a></span>&#8203;(java.io.File&nbsp;file)</code></th>
 <td class="colLast">
 <div class="block">Sets which driver executable the builder will use.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="DriverService.Builder.html" title="type parameter in DriverService.Builder">B</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#usingPort(int)">usingPort</a></span>&#8203;(int&nbsp;port)</code></th>
 <td class="colLast">
 <div class="block">Sets which port the driver server should be started on.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="DriverService.Builder.html" title="type parameter in DriverService.Builder">B</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withEnvironment(java.util.Map)">withEnvironment</a></span>&#8203;(java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)</code></th>
 <td class="colLast">
 <div class="block">Defines the environment for the launched driver server.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="DriverService.Builder.html" title="type parameter in DriverService.Builder">B</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withLogFile(java.io.File)">withLogFile</a></span>&#8203;(java.io.File&nbsp;logFile)</code></th>
 <td class="colLast">
 <div class="block">Configures the driver server to write log to the given file.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i14" class="altColor">
+<td class="colFirst"><code><a href="DriverService.Builder.html" title="type parameter in DriverService.Builder">B</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withLogOutput(java.io.OutputStream)">withLogOutput</a></span>&#8203;(java.io.OutputStream&nbsp;output)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="DriverService.Builder.html" title="type parameter in DriverService.Builder">B</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#withTimeout(java.time.Duration)">withTimeout</a></span>&#8203;(java.time.Duration&nbsp;timeout)</code></th>
 <td class="colLast">
@@ -422,6 +437,15 @@ public&nbsp;<a href="DriverService.Builder.html" title="type parameter in Driver
 </dl>
 </li>
 </ul>
+<a id="withLogOutput(java.io.OutputStream)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>withLogOutput</h4>
+<pre class="methodSignature">public&nbsp;<a href="DriverService.Builder.html" title="type parameter in DriverService.Builder">B</a>&nbsp;withLogOutput&#8203;(java.io.OutputStream&nbsp;output)</pre>
+</li>
+</ul>
 <a id="getLogFile()">
 <!--   -->
 </a>
@@ -454,6 +478,15 @@ public&nbsp;<a href="DriverService.Builder.html" title="type parameter in Driver
 <pre class="methodSignature">protected&nbsp;java.time.Duration&nbsp;getDefaultTimeout()</pre>
 </li>
 </ul>
+<a id="getLogOutput(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getLogOutput</h4>
+<pre class="methodSignature">protected&nbsp;java.io.OutputStream&nbsp;getLogOutput&#8203;(java.lang.String&nbsp;logProperty)</pre>
+</li>
+</ul>
 <a id="build()">
 <!--   -->
 </a>
@@ -467,6 +500,15 @@ public&nbsp;<a href="DriverService.Builder.html" title="type parameter in Driver
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The new service object.</dd>
 </dl>
+</li>
+</ul>
+<a id="loadSystemProperties()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>loadSystemProperties</h4>
+<pre class="methodSignature">protected abstract&nbsp;void&nbsp;loadSystemProperties()</pre>
 </li>
 </ul>
 <a id="createArgs()">

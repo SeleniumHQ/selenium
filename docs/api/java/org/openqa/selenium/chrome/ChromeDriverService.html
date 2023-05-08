@@ -196,8 +196,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CHROME_DRIVER_ALLOWED_IPS_PROPERTY">CHROME_DRIVER_ALLOWED_IPS_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines comma-separated list of remote IPv4 addresses which are
- allowed to connect to ChromeDriver.</div>
+<div class="block">System property that defines comma-separated list of remote IPv4 addresses which are allowed to
+ connect to ChromeDriver.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -211,8 +211,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CHROME_DRIVER_DISABLE_BUILD_CHECK">CHROME_DRIVER_DISABLE_BUILD_CHECK</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines whether the ChromeDriver executable should check for build
- version compatibility between ChromeDriver and the browser.</div>
+<div class="block">System property that defines whether the ChromeDriver executable should check for build version
+ compatibility between ChromeDriver and the browser.</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -227,14 +227,15 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CHROME_DRIVER_LOG_LEVEL_PROPERTY">CHROME_DRIVER_LOG_LEVEL_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines the log level when ChromeDriver output is logged.</div>
+<div class="block">System property that defines the <a href="../chromium/ChromiumDriverLogLevel.html" title="enum in org.openqa.selenium.chromium"><code>ChromiumDriverLogLevel</code></a> for ChromeDriver logs.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CHROME_DRIVER_LOG_PROPERTY">CHROME_DRIVER_LOG_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines the default location where ChromeDriver output is logged.</div>
+<div class="block">System property that defines the location of the file where ChromeDriver should write log
+ messages to.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -253,16 +254,16 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CHROME_DRIVER_SILENT_OUTPUT_PROPERTY">CHROME_DRIVER_SILENT_OUTPUT_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
- in silent mode.</div>
+<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started in
+ silent mode.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#CHROME_DRIVER_VERBOSE_LOG_PROPERTY">CHROME_DRIVER_VERBOSE_LOG_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
- with verbose logging.</div>
+<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started with
+ verbose logging.</div>
 </td>
 </tr>
 <tr class="altColor">
@@ -280,7 +281,7 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;org.openqa.selenium.remote.service.<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></h3>
-<code><a href="../remote/service/DriverService.html#DEFAULT_TIMEOUT">DEFAULT_TIMEOUT</a>, <a href="../remote/service/DriverService.html#process">process</a></code></li>
+<code><a href="../remote/service/DriverService.html#DEFAULT_TIMEOUT">DEFAULT_TIMEOUT</a>, <a href="../remote/service/DriverService.html#LOG_NULL">LOG_NULL</a>, <a href="../remote/service/DriverService.html#LOG_STDERR">LOG_STDERR</a>, <a href="../remote/service/DriverService.html#LOG_STDOUT">LOG_STDOUT</a>, <a href="../remote/service/DriverService.html#process">process</a></code></li>
 </ul>
 </li>
 </ul>
@@ -311,7 +312,11 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
                    int&nbsp;port,
                    java.util.List&lt;java.lang.String&gt;&nbsp;args,
                    java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <a href="#%3Cinit%3E(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)"><code>ChromeDriverService(File, int, Duration, List, Map)</code></a></div>
+</div>
+</td>
 </tr>
 </table>
 </li>
@@ -442,7 +447,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>CHROME_DRIVER_LOG_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String CHROME_DRIVER_LOG_PROPERTY</pre>
-<div class="block">System property that defines the default location where ChromeDriver output is logged.</div>
+<div class="block">System property that defines the location of the file where ChromeDriver should write log
+ messages to.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY">Constant Field Values</a></dd>
@@ -456,7 +462,7 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>CHROME_DRIVER_LOG_LEVEL_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String CHROME_DRIVER_LOG_LEVEL_PROPERTY</pre>
-<div class="block">System property that defines the log level when ChromeDriver output is logged.</div>
+<div class="block">System property that defines the <a href="../chromium/ChromiumDriverLogLevel.html" title="enum in org.openqa.selenium.chromium"><code>ChromiumDriverLogLevel</code></a> for ChromeDriver logs.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_LOG_LEVEL_PROPERTY">Constant Field Values</a></dd>
@@ -484,8 +490,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>CHROME_DRIVER_VERBOSE_LOG_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String CHROME_DRIVER_VERBOSE_LOG_PROPERTY</pre>
-<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
- with verbose logging.</div>
+<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started with
+ verbose logging.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_VERBOSE_LOG_PROPERTY">Constant Field Values</a></dd>
@@ -499,8 +505,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>CHROME_DRIVER_SILENT_OUTPUT_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String CHROME_DRIVER_SILENT_OUTPUT_PROPERTY</pre>
-<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started
- in silent mode.</div>
+<div class="block">Boolean system property that defines whether the ChromeDriver executable should be started in
+ silent mode.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_SILENT_OUTPUT_PROPERTY">Constant Field Values</a></dd>
@@ -514,8 +520,8 @@ extends <a href="../remote/service/DriverService.html" title="class in org.openq
 <li class="blockList">
 <h4>CHROME_DRIVER_ALLOWED_IPS_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String CHROME_DRIVER_ALLOWED_IPS_PROPERTY</pre>
-<div class="block">System property that defines comma-separated list of remote IPv4 addresses which are
- allowed to connect to ChromeDriver.</div>
+<div class="block">System property that defines comma-separated list of remote IPv4 addresses which are allowed to
+ connect to ChromeDriver.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_ALLOWED_IPS_PROPERTY">Constant Field Values</a></dd>
@@ -533,8 +539,8 @@ public static final&nbsp;java.lang.String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY
 <div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
 <div class="deprecationComment">use <a href="#CHROME_DRIVER_ALLOWED_IPS_PROPERTY"><code>CHROME_DRIVER_ALLOWED_IPS_PROPERTY</code></a></div>
 </div>
-<div class="block">System property that defines comma-separated list of remote IPv4 addresses which are
- allowed to connect to ChromeDriver.</div>
+<div class="block">System property that defines comma-separated list of remote IPv4 addresses which are allowed to
+ connect to ChromeDriver.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_WHITELISTED_IPS_PROPERTY">Constant Field Values</a></dd>
@@ -548,8 +554,8 @@ public static final&nbsp;java.lang.String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY
 <li class="blockList">
 <h4>CHROME_DRIVER_DISABLE_BUILD_CHECK</h4>
 <pre>public static final&nbsp;java.lang.String CHROME_DRIVER_DISABLE_BUILD_CHECK</pre>
-<div class="block">System property that defines whether the ChromeDriver executable should check for build
- version compatibility between ChromeDriver and the browser.</div>
+<div class="block">System property that defines whether the ChromeDriver executable should check for build version
+ compatibility between ChromeDriver and the browser.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.chrome.ChromeDriverService.CHROME_DRIVER_DISABLE_BUILD_CHECK">Constant Field Values</a></dd>
@@ -572,11 +578,15 @@ public static final&nbsp;java.lang.String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY
 <ul class="blockList">
 <li class="blockList">
 <h4>ChromeDriverService</h4>
-<pre>public&nbsp;ChromeDriverService&#8203;(java.io.File&nbsp;executable,
+<pre>@Deprecated
+public&nbsp;ChromeDriverService&#8203;(java.io.File&nbsp;executable,
                            int&nbsp;port,
                            java.util.List&lt;java.lang.String&gt;&nbsp;args,
                            java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)
                     throws java.io.IOException</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <a href="#%3Cinit%3E(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)"><code>ChromeDriverService(File, int, Duration, List, Map)</code></a></div>
+</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>executable</code> - The ChromeDriver executable.</dd>
@@ -671,7 +681,8 @@ public static final&nbsp;java.lang.String CHROME_DRIVER_WHITELISTED_IPS_PROPERTY
 <div class="block">Configures and returns a new <a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a> using the default configuration. In
  this configuration, the service will use the ChromeDriver executable identified by
  <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>.
- Each service created by this method will be configured to use a free port on the current system.</div>
+ Each service created by this method will be configured to use a free port on the current
+ system.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A new ChromeDriverService using the default configuration.</dd>
@@ -692,7 +703,8 @@ public static&nbsp;<a href="ChromeDriverService.html" title="class in org.openqa
 <div class="block">Configures and returns a new <a href="ChromeDriverService.html" title="class in org.openqa.selenium.chrome"><code>ChromeDriverService</code></a> using the supplied configuration. In
  this configuration, the service will use the ChromeDriver executable identified by
  <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>.
- Each service created by this method will be configured to use a free port on the current system.</div>
+ Each service created by this method will be configured to use a free port on the current
+ system.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A new ChromeDriverService using the supplied configuration from <a href="ChromeOptions.html" title="class in org.openqa.selenium.chrome"><code>ChromeOptions</code></a>.</dd>

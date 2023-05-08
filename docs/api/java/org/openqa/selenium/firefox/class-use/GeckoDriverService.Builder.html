@@ -135,7 +135,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colFirst"><code><a href="../GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></td>
 <th class="colSecond" scope="row"><span class="typeNameLabel">GeckoDriverService.Builder.</span><code><span class="memberNameLink"><a href="../GeckoDriverService.Builder.html#usingFirefoxBinary(org.openqa.selenium.firefox.FirefoxBinary)">usingFirefoxBinary</a></span>&#8203;(<a href="../FirefoxBinary.html" title="class in org.openqa.selenium.firefox">FirefoxBinary</a>&nbsp;firefoxBinary)</code></th>
 <td class="colLast">
-<div class="block">Sets which browser executable the builder will use.</div>
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <a href="../FirefoxOptions.html#setBinary(java.nio.file.Path)"><code>FirefoxOptions.setBinary(Path)</code></a></div>
+</div>
 </td>
 </tr>
 <tr class="rowColor">
@@ -144,6 +146,23 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">
 <div class="block">Values of the Host header to allow for incoming requests.</div>
 </td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">GeckoDriverService.Builder.</span><code><span class="memberNameLink"><a href="../GeckoDriverService.Builder.html#withLogLevel(org.openqa.selenium.firefox.FirefoxDriverLogLevel)">withLogLevel</a></span>&#8203;(<a href="../FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox">FirefoxDriverLogLevel</a>&nbsp;logLevel)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">GeckoDriverService.Builder.</span><code><span class="memberNameLink"><a href="../GeckoDriverService.Builder.html#withProfileRoot(java.io.File)">withProfileRoot</a></span>&#8203;(java.io.File&nbsp;root)</code></th>
+<td class="colLast">
+<div class="block">This is necessary when you do not have permissions to write to the default directory.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../GeckoDriverService.Builder.html" title="class in org.openqa.selenium.firefox">GeckoDriverService.Builder</a></code></td>
+<th class="colSecond" scope="row"><span class="typeNameLabel">GeckoDriverService.Builder.</span><code><span class="memberNameLink"><a href="../GeckoDriverService.Builder.html#withTruncatedLogs(java.lang.Boolean)">withTruncatedLogs</a></span>&#8203;(java.lang.Boolean&nbsp;truncate)</code></th>
+<td class="colLast">&nbsp;</td>
 </tr>
 </tbody>
 </table>

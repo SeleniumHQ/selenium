@@ -151,7 +151,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <hr>
 <pre>public class <span class="typeNameLabel">GeckoDriverService</span>
 extends <a href="FirefoxDriverService.html" title="class in org.openqa.selenium.firefox">FirefoxDriverService</a></pre>
-<div class="block">Manages the life and death of an GeckoDriver aka 'wires'.</div>
+<div class="block">Manages the life and death of an GeckoDriver</div>
 </li>
 </ul>
 </div>
@@ -201,14 +201,44 @@ extends <a href="FirefoxDriverService.html" title="class in org.openqa.selenium.
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GECKO_DRIVER_EXE_PROPERTY">GECKO_DRIVER_EXE_PROPERTY</a></span></code></th>
 <td class="colLast">
-<div class="block">System property that defines the location of the GeckoDriver executable
- that will be used by the <a href="#createDefaultService()"><code>default service</code></a>.</div>
+<div class="block">System property that defines the location of the GeckoDriver executable that will be used by
+ the <a href="#createDefaultService()"><code>default service</code></a>.</div>
 </td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GECKO_DRIVER_LOG_LEVEL_PROPERTY">GECKO_DRIVER_LOG_LEVEL_PROPERTY</a></span></code></th>
+<td class="colLast">
+<div class="block">System property that defines the <a href="FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox"><code>FirefoxDriverLogLevel</code></a> for GeckoDriver logs.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GECKO_DRIVER_LOG_NO_TRUNCATE">GECKO_DRIVER_LOG_NO_TRUNCATE</a></span></code></th>
+<td class="colLast">
+<div class="block">Boolean system property to disable truncation of long log lines.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GECKO_DRIVER_LOG_PROPERTY">GECKO_DRIVER_LOG_PROPERTY</a></span></code></th>
+<td class="colLast">
+<div class="block">System property that defines the location of the file where GeckoDriver should write log
+ messages to.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GECKO_DRIVER_NAME">GECKO_DRIVER_NAME</a></span></code></th>
 <td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#GECKO_DRIVER_PROFILE_ROOT">GECKO_DRIVER_PROFILE_ROOT</a></span></code></th>
+<td class="colLast">
+<div class="block">System property that defines the location of the directory in which to create profiles See
+ <a href="GeckoDriverService.Builder.html#withProfileRoot(java.io.File)"><code>GeckoDriverService.Builder.withProfileRoot(File)</code></a></div>
+</td>
 </tr>
 </table>
 <ul class="blockList">
@@ -216,7 +246,7 @@ extends <a href="FirefoxDriverService.html" title="class in org.openqa.selenium.
 <!--   -->
 </a>
 <h3>Fields inherited from class&nbsp;org.openqa.selenium.remote.service.<a href="../remote/service/DriverService.html" title="class in org.openqa.selenium.remote.service">DriverService</a></h3>
-<code><a href="../remote/service/DriverService.html#DEFAULT_TIMEOUT">DEFAULT_TIMEOUT</a>, <a href="../remote/service/DriverService.html#process">process</a></code></li>
+<code><a href="../remote/service/DriverService.html#DEFAULT_TIMEOUT">DEFAULT_TIMEOUT</a>, <a href="../remote/service/DriverService.html#LOG_NULL">LOG_NULL</a>, <a href="../remote/service/DriverService.html#LOG_STDERR">LOG_STDERR</a>, <a href="../remote/service/DriverService.html#LOG_STDOUT">LOG_STDOUT</a>, <a href="../remote/service/DriverService.html#process">process</a></code></li>
 </ul>
 </li>
 </ul>
@@ -247,7 +277,11 @@ extends <a href="FirefoxDriverService.html" title="class in org.openqa.selenium.
                   int&nbsp;port,
                   java.util.List&lt;java.lang.String&gt;&nbsp;args,
                   java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <a href="#%3Cinit%3E(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)"><code>GeckoDriverService(File, int, Duration, List, Map)</code></a></div>
+</div>
+</td>
 </tr>
 </table>
 </li>
@@ -346,15 +380,75 @@ extends <a href="FirefoxDriverService.html" title="class in org.openqa.selenium.
 <a id="GECKO_DRIVER_EXE_PROPERTY">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>GECKO_DRIVER_EXE_PROPERTY</h4>
 <pre>public static final&nbsp;java.lang.String GECKO_DRIVER_EXE_PROPERTY</pre>
-<div class="block">System property that defines the location of the GeckoDriver executable
- that will be used by the <a href="#createDefaultService()"><code>default service</code></a>.</div>
+<div class="block">System property that defines the location of the GeckoDriver executable that will be used by
+ the <a href="#createDefaultService()"><code>default service</code></a>.</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.GeckoDriverService.GECKO_DRIVER_EXE_PROPERTY">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="GECKO_DRIVER_LOG_PROPERTY">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>GECKO_DRIVER_LOG_PROPERTY</h4>
+<pre>public static final&nbsp;java.lang.String GECKO_DRIVER_LOG_PROPERTY</pre>
+<div class="block">System property that defines the location of the file where GeckoDriver should write log
+ messages to.</div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.GeckoDriverService.GECKO_DRIVER_LOG_PROPERTY">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="GECKO_DRIVER_LOG_LEVEL_PROPERTY">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>GECKO_DRIVER_LOG_LEVEL_PROPERTY</h4>
+<pre>public static final&nbsp;java.lang.String GECKO_DRIVER_LOG_LEVEL_PROPERTY</pre>
+<div class="block">System property that defines the <a href="FirefoxDriverLogLevel.html" title="enum in org.openqa.selenium.firefox"><code>FirefoxDriverLogLevel</code></a> for GeckoDriver logs. See
+ <a href="GeckoDriverService.Builder.html#withLogLevel(org.openqa.selenium.firefox.FirefoxDriverLogLevel)"><code>GeckoDriverService.Builder.withLogLevel(FirefoxDriverLogLevel)</code></a></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.GeckoDriverService.GECKO_DRIVER_LOG_LEVEL_PROPERTY">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="GECKO_DRIVER_LOG_NO_TRUNCATE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>GECKO_DRIVER_LOG_NO_TRUNCATE</h4>
+<pre>public static final&nbsp;java.lang.String GECKO_DRIVER_LOG_NO_TRUNCATE</pre>
+<div class="block">Boolean system property to disable truncation of long log lines. See
+ <a href="GeckoDriverService.Builder.html#withTruncatedLogs(java.lang.Boolean)"><code>GeckoDriverService.Builder.withTruncatedLogs(Boolean)</code></a></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.GeckoDriverService.GECKO_DRIVER_LOG_NO_TRUNCATE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="GECKO_DRIVER_PROFILE_ROOT">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>GECKO_DRIVER_PROFILE_ROOT</h4>
+<pre>public static final&nbsp;java.lang.String GECKO_DRIVER_PROFILE_ROOT</pre>
+<div class="block">System property that defines the location of the directory in which to create profiles See
+ <a href="GeckoDriverService.Builder.html#withProfileRoot(java.io.File)"><code>GeckoDriverService.Builder.withProfileRoot(File)</code></a></div>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#org.openqa.selenium.firefox.GeckoDriverService.GECKO_DRIVER_PROFILE_ROOT">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -374,11 +468,15 @@ extends <a href="FirefoxDriverService.html" title="class in org.openqa.selenium.
 <ul class="blockList">
 <li class="blockList">
 <h4>GeckoDriverService</h4>
-<pre>public&nbsp;GeckoDriverService&#8203;(java.io.File&nbsp;executable,
+<pre>@Deprecated
+public&nbsp;GeckoDriverService&#8203;(java.io.File&nbsp;executable,
                           int&nbsp;port,
                           java.util.List&lt;java.lang.String&gt;&nbsp;args,
                           java.util.Map&lt;java.lang.String,&#8203;java.lang.String&gt;&nbsp;environment)
                    throws java.io.IOException</pre>
+<div class="deprecationBlock"><span class="deprecatedLabel">Deprecated.</span>
+<div class="deprecationComment">use <a href="#%3Cinit%3E(java.io.File,int,java.time.Duration,java.util.List,java.util.Map)"><code>GeckoDriverService(File, int, Duration, List, Map)</code></a></div>
+</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>executable</code> - The GeckoDriver executable.</dd>
@@ -472,8 +570,9 @@ extends <a href="FirefoxDriverService.html" title="class in org.openqa.selenium.
 <pre class="methodSignature">public static&nbsp;<a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox">GeckoDriverService</a>&nbsp;createDefaultService()</pre>
 <div class="block">Configures and returns a new <a href="GeckoDriverService.html" title="class in org.openqa.selenium.firefox"><code>GeckoDriverService</code></a> using the default configuration. In
  this configuration, the service will use the GeckoDriver executable identified by the
- <a href="#GECKO_DRIVER_EXE_PROPERTY"><code>GECKO_DRIVER_EXE_PROPERTY</code></a> system property. Each service created by this method will
- be configured to use a free port on the current system.</div>
+ <a href="../remote/service/DriverFinder.html#getPath(org.openqa.selenium.remote.service.DriverService,org.openqa.selenium.Capabilities)"><code>DriverFinder.getPath(DriverService, Capabilities)</code></a>.
+ Each service created by this method will be configured to use a free port on the current
+ system.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>A new GeckoDriverService using the default configuration.</dd>
