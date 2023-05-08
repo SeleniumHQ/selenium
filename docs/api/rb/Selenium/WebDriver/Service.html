@@ -239,6 +239,33 @@
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#log-instance_method" title="#log (instance method)">#<strong>log</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute log.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#port-instance_method" title="#port (instance method)">#<strong>port</strong>  &#x21d2; Object </a>
     
 
@@ -402,7 +429,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(path: nil, port: nil, args: nil)  &#x21d2; Service </a>
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(path: nil, port: nil, log: nil, args: nil)  &#x21d2; Service </a>
     
 
     
@@ -478,7 +505,7 @@
     <div class="method_details first">
   <h3 class="signature first" id="initialize-instance_method">
   
-    #<strong>initialize</strong>(path: nil, port: nil, args: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Service (class)">Service</a></span></tt> 
+    #<strong>initialize</strong>(path: nil, port: nil, log: nil, args: nil)  &#x21d2; <tt><span class='object_link'><a href="" title="Selenium::WebDriver::Service (class)">Service</a></span></tt> 
   
 
   
@@ -529,18 +556,34 @@
 77
 78
 79
-80</pre>
+80
+81
+82
+83
+84
+85
+86
+87
+88</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 69</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>path:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>path:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>port:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>log:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>args:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_port'>port</span> <span class='op'>||=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>DEFAULT_PORT</span>
   <span class='id identifier rubyid_args'>args</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
 
   <span class='ivar'>@executable_path</span> <span class='op'>=</span> <span class='id identifier rubyid_path'>path</span>
   <span class='ivar'>@host</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_localhost'><span class='object_link'><a href="Platform.html#localhost-class_method" title="Selenium::WebDriver::Platform.localhost (method)">localhost</a></span></span>
   <span class='ivar'>@port</span> <span class='op'>=</span> <span class='const'>Integer</span><span class='lparen'>(</span><span class='id identifier rubyid_port'>port</span><span class='rparen'>)</span>
+  <span class='ivar'>@log</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_log'>log</span>
+         <span class='kw'>when</span> <span class='symbol'>:stdout</span>
+           <span class='gvar'>$stdout</span>
+         <span class='kw'>when</span> <span class='symbol'>:stderr</span>
+           <span class='gvar'>$stderr</span>
+         <span class='kw'>else</span>
+           <span class='id identifier rubyid_log'>log</span>
+         <span class='kw'>end</span>
 
   <span class='ivar'>@args</span> <span class='op'>=</span> <span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span> <span class='op'>?</span> <span class='id identifier rubyid_extract_service_args'>extract_service_args</span><span class='lparen'>(</span><span class='id identifier rubyid_args'>args</span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_args'>args</span>
 
@@ -731,6 +774,49 @@
 
 <span class='kw'>def</span> <span class='id identifier rubyid_host'>host</span>
   <span class='ivar'>@host</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="log=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="log-instance_method">
+  
+    #<strong>log</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute log.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+60
+61
+62</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 60</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_log'>log</span>
+  <span class='ivar'>@log</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -966,12 +1052,12 @@
       <pre class="lines">
 
 
-82
-83
-84</pre>
+90
+91
+92</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 82</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 90</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_launch'>launch</span>
   <span class='const'><span class='object_link'><a href="ServiceManager.html" title="Selenium::WebDriver::ServiceManager (class)">ServiceManager</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="ServiceManager.html#initialize-instance_method" title="Selenium::WebDriver::ServiceManager#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:start</span><span class='rparen'>)</span>
@@ -996,12 +1082,12 @@
       <pre class="lines">
 
 
-86
-87
-88</pre>
+94
+95
+96</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 86</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service.rb', line 94</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_shutdown_supported'>shutdown_supported</span>
   <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='op'>::</span><span class='const'>SHUTDOWN_SUPPORTED</span>
@@ -1016,9 +1102,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Apr 21 02:20:56 2023 by
+  Generated on Mon May  8 15:16:10 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.28 (ruby-2.7.6).
+  0.9.28 (ruby-3.0.6).
 </div>
 
     </div>

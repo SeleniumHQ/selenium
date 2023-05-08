@@ -343,7 +343,8 @@
 44
 45
 46
-47</pre>
+47
+48</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 39</span>
@@ -353,6 +354,7 @@
   <span class='ivar'>@host</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="Platform.html" title="Selenium::WebDriver::Platform (module)">Platform</a></span></span><span class='period'>.</span><span class='id identifier rubyid_localhost'><span class='object_link'><a href="Platform.html#localhost-class_method" title="Selenium::WebDriver::Platform.localhost (method)">localhost</a></span></span>
   <span class='ivar'>@port</span> <span class='op'>=</span> <span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_port'>port</span>
   <span class='ivar'>@extra_args</span> <span class='op'>=</span> <span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_args'>args</span>
+  <span class='ivar'>@io</span> <span class='op'>=</span> <span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_log'>log</span>
   <span class='ivar'>@shutdown_supported</span> <span class='op'>=</span> <span class='id identifier rubyid_config'>config</span><span class='period'>.</span><span class='id identifier rubyid_shutdown_supported'>shutdown_supported</span>
 
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="Error.html" title="Selenium::WebDriver::Error (module)">Error</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error/WebDriverError.html" title="Selenium::WebDriver::Error::WebDriverError (class)">WebDriverError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>invalid port: </span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='ivar'>@port</span> <span class='op'>&lt;</span> <span class='int'>1</span>
@@ -397,7 +399,6 @@
       <pre class="lines">
 
 
-49
 50
 51
 52
@@ -407,10 +408,11 @@
 56
 57
 58
-59</pre>
+59
+60</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 50</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_start'>start</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>already started: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_uri'>uri</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_content'> </span><span class='embexpr_beg'>#{</span><span class='ivar'>@executable_path</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_process_running?'>process_running?</span>
@@ -456,7 +458,6 @@
       <pre class="lines">
 
 
-61
 62
 63
 64
@@ -466,10 +467,11 @@
 68
 69
 70
-71</pre>
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 61</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_stop'>stop</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='ivar'>@shutdown_supported</span>
@@ -515,12 +517,12 @@
       <pre class="lines">
 
 
-73
 74
-75</pre>
+75
+76</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver/common/service_manager.rb', line 74</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uri'>uri</span>
   <span class='ivar'>@uri</span> <span class='op'>||=</span> <span class='const'>URI</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>http://</span><span class='embexpr_beg'>#{</span><span class='ivar'>@host</span><span class='embexpr_end'>}</span><span class='tstring_content'>:</span><span class='embexpr_beg'>#{</span><span class='ivar'>@port</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -535,9 +537,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Apr 21 02:20:56 2023 by
+  Generated on Mon May  8 15:16:11 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.28 (ruby-2.7.6).
+  0.9.28 (ruby-3.0.6).
 </div>
 
     </div>

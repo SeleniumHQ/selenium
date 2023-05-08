@@ -109,7 +109,7 @@
         <dt id="VERSION-constant" class="">VERSION =
           
         </dt>
-        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>4.9.0</span><span class='tstring_end'>&#39;</span></span></pre></dd>
+        <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>4.9.1</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
     </dl>
   
@@ -429,13 +429,15 @@
 
 97
 98
-99</pre>
+99
+100</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'rb/lib/selenium/webdriver.rb', line 97</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_logger'>logger</span><span class='lparen'>(</span><span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
-  <span class='ivar'>@logger</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="WebDriver/Logger.html" title="Selenium::WebDriver::Logger (class)">Logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="WebDriver/Logger.html#initialize-instance_method" title="Selenium::WebDriver::Logger#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Selenium</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_level'>level</span> <span class='op'>=</span> <span class='gvar'>$DEBUG</span> <span class='op'>||</span> <span class='const'>ENV</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>DEBUG</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='op'>?</span> <span class='symbol'>:debug</span> <span class='op'>:</span> <span class='symbol'>:info</span>
+  <span class='ivar'>@logger</span> <span class='op'>||=</span> <span class='const'><span class='object_link'><a href="" title="Selenium::WebDriver (module)">WebDriver</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="WebDriver/Logger.html" title="Selenium::WebDriver::Logger (class)">Logger</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="WebDriver/Logger.html#initialize-instance_method" title="Selenium::WebDriver::Logger#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Selenium</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>default_level:</span> <span class='id identifier rubyid_level'>level</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_opts'>opts</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -490,9 +492,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Apr 21 02:20:55 2023 by
+  Generated on Mon May  8 15:16:09 2023 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.28 (ruby-2.7.6).
+  0.9.28 (ruby-3.0.6).
 </div>
 
     </div>
