@@ -330,8 +330,7 @@
 <span class="sd">        :Args:</span>
 <span class="sd">         - capabilities: The capabilities to which proxy will be added.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">proxy_caps</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;proxyType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]</span>
+        <span class="n">proxy_caps</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;proxyType&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxyType</span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">]}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span><span class="p">:</span>
             <span class="n">proxy_caps</span><span class="p">[</span><span class="s2">&quot;autodetect&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">autodetect</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ftpProxy</span><span class="p">:</span>

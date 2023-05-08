@@ -170,8 +170,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">WebDriverException</span><span class="p">(</span><span class="s2">&quot;Value of a session permission must be set to True or False.&quot;</span><span class="p">)</span>
 
-        <span class="n">payload</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">payload</span><span class="p">[</span><span class="n">permission</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="n">permission</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SET_PERMISSIONS&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;permissions&quot;</span><span class="p">:</span> <span class="n">payload</span><span class="p">})</span></div>
 
     <span class="c1"># First available in Safari 11.1 and Safari Technology Preview 41.</span>

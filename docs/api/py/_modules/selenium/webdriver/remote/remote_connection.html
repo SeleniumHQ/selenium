@@ -75,7 +75,7 @@
 <span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="RemoteConnection"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection">[docs]</a><span class="k">class</span> <span class="nc">RemoteConnection</span><span class="p">:</span>
+<div class="viewcode-block" id="RemoteConnection"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection">[docs]</a><span class="k">class</span> <span class="nc">RemoteConnection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A connection with the Remote WebDriver server.</span>
 
 <span class="sd">    Communicates with the server using the WebDriver wire protocol:</span>
@@ -86,7 +86,7 @@
     <span class="n">_timeout</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span>
     <span class="n">_ca_certs</span> <span class="o">=</span> <span class="n">certifi</span><span class="o">.</span><span class="n">where</span><span class="p">()</span>
 
-<div class="viewcode-block" id="RemoteConnection.get_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_timeout">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.get_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.get_timeout">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_timeout</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns:</span>
@@ -94,7 +94,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">==</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span> <span class="k">else</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_timeout</span></div>
 
-<div class="viewcode-block" id="RemoteConnection.set_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.set_timeout">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.set_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.set_timeout">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">set_timeout</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">timeout</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the default timeout.</span>
 
@@ -103,12 +103,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">timeout</span></div>
 
-<div class="viewcode-block" id="RemoteConnection.reset_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.reset_timeout">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.reset_timeout"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.reset_timeout">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">reset_timeout</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset the http request timeout to socket._GLOBAL_DEFAULT_TIMEOUT.&quot;&quot;&quot;</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">_GLOBAL_DEFAULT_TIMEOUT</span></div>
 
-<div class="viewcode-block" id="RemoteConnection.get_certificate_bundle_path"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_certificate_bundle_path">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.get_certificate_bundle_path"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.get_certificate_bundle_path">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_certificate_bundle_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :Returns:</span>
@@ -116,7 +116,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_ca_certs</span></div>
 
-<div class="viewcode-block" id="RemoteConnection.set_certificate_bundle_path"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.set_certificate_bundle_path">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.set_certificate_bundle_path"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.set_certificate_bundle_path">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">set_certificate_bundle_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the path to the certificate bundle to verify connection to</span>
 <span class="sd">        command executor. Can also be set to None to disable certificate</span>
@@ -127,7 +127,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_ca_certs</span> <span class="o">=</span> <span class="n">path</span></div>
 
-<div class="viewcode-block" id="RemoteConnection.get_remote_connection_headers"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.get_remote_connection_headers">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="RemoteConnection.get_remote_connection_headers"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.get_remote_connection_headers">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_remote_connection_headers</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">parsed_url</span><span class="p">,</span> <span class="n">keep_alive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get headers for remote request.</span>
 
@@ -309,7 +309,7 @@
             <span class="n">Command</span><span class="o">.</span><span class="n">SET_USER_VERIFIED</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;/session/$sessionId/webauthn/authenticator/$authenticatorId/uv&quot;</span><span class="p">),</span>
         <span class="p">}</span>
 
-<div class="viewcode-block" id="RemoteConnection.execute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<div class="viewcode-block" id="RemoteConnection.execute"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a command to the remote server.</span>
 
 <span class="sd">        Any path substitutions required for the URL mapped to the command should be</span>
@@ -386,7 +386,7 @@
             <span class="n">LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Finished Request&quot;</span><span class="p">)</span>
             <span class="n">response</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<div class="viewcode-block" id="RemoteConnection.close"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.remote.remote_connection.RemoteConnection.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RemoteConnection.close"><a class="viewcode-back" href="../../../../webdriver_remote/selenium.webdriver.remote.remote_connection.html#selenium.webdriver.chromium.remote_connection.RemoteConnection.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up resources when finished with the remote_connection.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_conn&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_conn</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div></div>
