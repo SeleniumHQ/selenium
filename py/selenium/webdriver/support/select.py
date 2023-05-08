@@ -58,6 +58,21 @@ class Select:
                 return opt
         raise NoSuchElementException("No options are selected")
 
+    def select_all(self):
+        """Select all options.
+
+        This is only valid when the SELECT supports multiple selections 
+        OR when there is only one option
+        throws NotImplementedError If the SELECT does not support
+        multiple selections
+        """
+        opts = self.options
+        if len(opts) != 1:
+            if not self.is_multiple:
+                raise NotImplementedError("You may only select all options of a multi-select")
+        for opt in opts:
+            self._set_selected(opt)
+
     def select_by_value(self, value):
         """Select all options that have a value matching the argument. That is,
         when given "foo" this would select an option like:
