@@ -7,25 +7,28 @@
       <meta name="title" content="This is the HOMEPAGE. ">
       
       <link rel="icon" href="favicon.ico">
-      <link rel="stylesheet" href="styles/docfx.min.css">
-      <link rel="stylesheet" href="styles/main.css">
+      <link rel="stylesheet" href="public/docfx.min.css">
+      <link rel="stylesheet" href="public/main.css">
       <meta name="docfx:navrel" content="toc.html">
       <meta name="docfx:tocrel" content="toc.html">
       
       
+      
+      
       <meta name="docfx:docurl" content="https://github.com/SeleniumHQ/selenium/blob/trunk/dotnet/docs/index.md/#L1">
 
-      <script>
-        MathJax = {
+      <script type="module">
+        import docfx from './public/main.js'
+        window.docfx = docfx
+        window.MathJax = {
           options: {
             processHtmlClass: ['tex2jax_process', 'math']
           }
-        };
+        }
       </script>
-
-      <script type="text/javascript" src="styles/docfx.min.js"></script>
-      <script type="text/javascript" src="styles/main.js"></script>
+      <script type="text/javascript" src="public/docfx.min.js"></script>
   </head>
+
 
   <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
     <header class="bg-body border-bottom">
