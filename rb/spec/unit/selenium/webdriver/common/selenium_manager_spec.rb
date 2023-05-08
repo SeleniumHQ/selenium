@@ -76,8 +76,10 @@ module Selenium
       describe 'self.driver_path' do
         it 'errors if not an option' do
           expect {
-            described_class.driver_path(Remote::Capabilities.new(browser_name: 'chrome'))
-          }.to raise_error(ArgumentError, /SeleniumManager requires a WebDriver::Options instance/)
+            expect {
+              described_class.driver_path(Remote::Capabilities.new(browser_name: 'chrome'))
+            }.to raise_error(ArgumentError, /SeleniumManager requires a WebDriver::Options instance/)
+          }.to have_warning(:selenium_manager)
         end
 
         it 'determines browser name by default' do
@@ -85,7 +87,9 @@ module Selenium
           allow(described_class).to receive(:binary).and_return('selenium-manager')
           allow(Platform).to receive(:assert_executable)
 
-          described_class.driver_path(Options.chrome)
+          expect {
+            described_class.driver_path(Options.chrome)
+          }.to have_warning(:selenium_manager)
 
           expect(described_class).to have_received(:run)
             .with('selenium-manager', '--browser', 'chrome', '--output', 'json')
@@ -97,7 +101,9 @@ module Selenium
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(browser_version: 1)
 
-          described_class.driver_path(options)
+          expect {
+            described_class.driver_path(options)
+          }.to have_warning(:selenium_manager)
 
           expect(described_class).to have_received(:run)
             .with('selenium-manager', '--browser', 'chrome', '--output', 'json', '--browser-version', 1)
@@ -109,7 +115,9 @@ module Selenium
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(binary: '/path/to/browser')
 
-          described_class.driver_path(options)
+          expect {
+            described_class.driver_path(options)
+          }.to have_warning(:selenium_manager)
 
           expect(described_class).to have_received(:run)
             .with('selenium-manager', '--browser', 'chrome', '--output', 'json', '--browser-path', '/path/to/browser')
@@ -121,7 +129,9 @@ module Selenium
           allow(Platform).to receive(:assert_executable)
           options = Options.chrome(binary: '/path to/the/browser')
 
-          described_class.driver_path(options)
+          expect {
+            described_class.driver_path(options)
+          }.to have_warning(:selenium_manager)
 
           expect(described_class).to have_received(:run)
             .with('selenium-manager', '--browser', 'chrome', '--output', 'json',
