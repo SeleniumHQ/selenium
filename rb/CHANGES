@@ -1,4 +1,4 @@
-4.9.1 (Unreleased)
+4.9.1 (2023-05-08)
 =========================
 Ruby:
   * Allow users to specify driver process output in Service class (#11964)

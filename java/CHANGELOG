@@ -1,5 +1,24 @@
 v4.9.0
 ======
+* Supported CDP versions: 85, 111, 112, 113
+* Typo in the "addArguments" method comment (#11945)
+* Handling case where -1 is returned as statusCode (#11910)
+* Adding remote-allow-origins argument only when the Java 11 http client is not used (#11949)
+* Remove deprecated "version" JWP capability
+* Remove deprecated "platform" JWP capability
+* Remove deprecated "takesScreenshot" JWP capability
+* Remove deprecated "unexpectedAlertBehaviour" JWP capability
+* [grid] Displaying the real stereotype config at startup
+* Add logging for starting the driver
+* [grid] Do not switch and remove node in one iteration (#11961)
+* Handle fragmented websocket messages (#11962)
+* Add more logging to Selenium Manager (#11959)
+* Make Driver Services consistent (#11973)
+* Using driver path always for Safari and Safari Technology Preview (#11952)
+* Overriding methods to have main platform names lowercase (#11952)
+
+v4.9.0
+======
 * Supported CDP versions: 85, 110, 111, 112
 * Handle redirects inside the JdkHttpClient (#11816)
 * [grid] Remove Json Wire Protocol support (#11823)
