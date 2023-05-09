@@ -70,8 +70,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import java.util.logging.Logger;
-
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully;
