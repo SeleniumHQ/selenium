@@ -168,7 +168,7 @@ class LocalNewSessionQueueTest {
   @MethodSource("data")
   void shouldBeAbleToAddToQueueAndGetValidResponse(Supplier<TestData> supplier) {
     setup(supplier);
-
+    
     AtomicBoolean isPresent = new AtomicBoolean(false);
 
     new Thread(() -> {
@@ -200,6 +200,118 @@ class LocalNewSessionQueueTest {
 
     assertThat(isPresent.get()).isTrue();
     assertEquals(HTTP_OK, httpResponse.getStatus());
+  }
+  
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldBeAbleToAddToQueueWithTimeoutAndGetValidResponse(Supplier<TestData> supplier)  {
+    setup(supplier);
+
+    SessionRequest sessionRequestWithTimeout = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(CAPS),
+      Map.of(),
+      Map.of());
+
+    AtomicBoolean isPresent = new AtomicBoolean(false);
+
+    new Thread(() -> {
+      waitUntilAddedToQueue(sessionRequestWithTimeout);
+      isPresent.set(true);
+
+      Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+
+      try {
+        Thread.sleep(4000); // simulate session waiting in queue
+      } catch (InterruptedException e) {}
+
+      // remove request from queue
+      Map<Capabilities, Long> stereotypes = new HashMap<>();
+      stereotypes.put(new ImmutableCapabilities("browserName", "cheese"), 1L);
+      List<SessionRequest> requests = queue.getNextAvailable(stereotypes);
+
+      SessionId sessionId = new SessionId("123");
+      Session session =
+        new Session(
+          sessionId,
+          URI.create("https://example.com"),
+          CAPS,
+          capabilities,
+          Instant.now());
+      CreateSessionResponse sessionResponse = new CreateSessionResponse(
+        session,
+        JSON.toJson(
+            ImmutableMap.of(
+              "value", ImmutableMap.of(
+                "sessionId", sessionId,
+                "capabilities", capabilities)))
+          .getBytes(UTF_8));
+
+      try {
+        Thread.sleep(2000); // simulate session creation delay
+      } catch (InterruptedException e) {}
+      queue.complete(sessionRequestWithTimeout.getRequestId(), Either.right(sessionResponse));
+    }).start();
+
+    HttpResponse httpResponse = queue.addToQueue(sessionRequestWithTimeout);
+
+    assertThat(isPresent.get()).isTrue();
+    assertEquals(HTTP_OK, httpResponse.getStatus());
+  }
+
+
+  @ParameterizedTest
+  @MethodSource("data")
+  void shouldBeAbleToAddToQueueWithTimeoutAndTimeoutResponse(Supplier<TestData> supplier)  {
+    setup(supplier);
+
+    SessionRequest sessionRequestWithTimeout = new SessionRequest(
+      new RequestId(UUID.randomUUID()),
+      Instant.now(),
+      Set.of(W3C),
+      Set.of(CAPS),
+      Map.of(),
+      Map.of());
+
+    AtomicBoolean isPresent = new AtomicBoolean(false);
+
+    new Thread(() -> {
+      waitUntilAddedToQueue(sessionRequestWithTimeout);
+      isPresent.set(true);
+
+      Capabilities capabilities = new ImmutableCapabilities("browserName", "chrome");
+
+      try {
+        Thread.sleep(5500); // simulate session waiting in queue
+      } catch (InterruptedException e) {}
+
+      SessionId sessionId = new SessionId("123");
+      Session session =
+        new Session(
+          sessionId,
+          URI.create("https://example.com"),
+          CAPS,
+          capabilities,
+          Instant.now());
+      CreateSessionResponse sessionResponse = new CreateSessionResponse(
+        session,
+        JSON.toJson(
+            ImmutableMap.of(
+              "value", ImmutableMap.of(
+                "sessionId", sessionId,
+                "capabilities", capabilities)))
+          .getBytes(UTF_8));
+
+      queue.complete(sessionRequestWithTimeout.getRequestId(), Either.right(sessionResponse));
+    }).start();
+
+    HttpResponse httpResponse = queue.addToQueue(sessionRequestWithTimeout);
+
+    assertThat(isPresent.get()).isTrue();
+    assertEquals(HTTP_INTERNAL_ERROR, httpResponse.getStatus());
   }
 
   @ParameterizedTest
