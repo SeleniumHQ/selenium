@@ -1,3 +1,9 @@
+Selenium 4.9.1
+* Add CDP files for v113 and remove v110
+* Minor fixes for docstring and dictionary declarations (#11975)
+* Update logging to match other bindings (#11990)
+* Support newer versions of urllib3 (#11993)
+
 Selenium 4.9.0
 * Remove "shadow_root" assertion in Python bindings for Firefox (#11821)
 * Simplify driver binary and driver location selecting (#11864)

@@ -33,8 +33,8 @@ module Selenium
         # @param [Options] options browser options.
         # @return [String] the path to the correct driver.
         def driver_path(options)
-          message = 'applicable driver not found; attempting to install with Selenium Manager'
-          WebDriver.logger.warn(message)
+          message = 'applicable driver not found; attempting to install with Selenium Manager (Beta)'
+          WebDriver.logger.info(message, id: :selenium_manager)
 
           unless options.is_a?(Options)
             raise ArgumentError, "SeleniumManager requires a WebDriver::Options instance, not #{options.inspect}"
@@ -52,7 +52,7 @@ module Selenium
           command << '--debug' if WebDriver.logger.debug?
 
           location = run(*command)
-          WebDriver.logger.debug("Driver found at #{location}")
+          WebDriver.logger.debug("Driver found at #{location}", id: :selenium_manager)
           Platform.assert_executable location
 
           location
@@ -76,13 +76,13 @@ module Selenium
               raise Error::WebDriverError, 'Unable to obtain Selenium Manager'
             end
 
-            WebDriver.logger.debug("Selenium Manager found at #{location}")
+            WebDriver.logger.debug("Selenium Manager found at #{location}", id: :selenium_manager)
             location
           end
         end
 
         def run(*command)
-          WebDriver.logger.debug("Executing Process #{command}")
+          WebDriver.logger.debug("Executing Process #{command}", id: :selenium_manager)
 
           begin
             stdout, stderr, status = Open3.capture3(*command)
@@ -97,7 +97,7 @@ module Selenium
           end
 
           json_output['logs'].each do |log|
-            WebDriver.logger.send(log['level'].downcase, log['message'])
+            WebDriver.logger.send(log['level'].downcase, log['message'], id: :selenium_manager)
           end
 
           result

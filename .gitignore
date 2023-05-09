@@ -128,3 +128,7 @@ bazel-testlogs
 /.vscode/
 /.scannerwork/
 /.bazelrc.local
+
+# Engflow
+*.crt
+*.key

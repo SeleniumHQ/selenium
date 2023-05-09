@@ -55,7 +55,7 @@ module Selenium
       def send_cmd(**payload)
         id = next_id
         data = payload.merge(id: id)
-        WebDriver.logger.debug "WebSocket -> #{data}"[...MAX_LOG_MESSAGE_SIZE]
+        WebDriver.logger.debug "WebSocket -> #{data}"[...MAX_LOG_MESSAGE_SIZE], id: :bidi
         data = JSON.generate(data)
         out_frame = WebSocket::Frame::Outgoing::Client.new(version: ws.version, data: data, type: 'text')
         socket.write(out_frame.to_s)
@@ -112,7 +112,7 @@ module Selenium
 
         message = JSON.parse(message)
         messages[message['id']] = message
-        WebDriver.logger.debug "WebSocket <- #{message}"[...MAX_LOG_MESSAGE_SIZE]
+        WebDriver.logger.debug "WebSocket <- #{message}"[...MAX_LOG_MESSAGE_SIZE], id: :bidi
 
         message
       end

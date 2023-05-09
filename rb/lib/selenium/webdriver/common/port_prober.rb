@@ -34,7 +34,7 @@ module Selenium
         Platform.interfaces.each do |host|
           TCPServer.new(host, port).close
         rescue *IGNORED_ERRORS => e
-          WebDriver.logger.debug("port prober could not bind to #{host}:#{port} (#{e.message})")
+          WebDriver.logger.debug("port prober could not bind to #{host}:#{port} (#{e.message})", id: :driver_service)
           # ignored - some machines appear unable to bind to some of their interfaces
         end
 
