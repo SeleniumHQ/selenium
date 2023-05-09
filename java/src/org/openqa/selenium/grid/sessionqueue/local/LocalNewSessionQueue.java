@@ -99,7 +99,6 @@ import static org.openqa.selenium.concurrent.ExecutorServices.shutdownGracefully
   description = "New session queue")
 public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
-  private static final Logger LOG = Logger.getLogger(LocalNewSessionQueue.class.getName());
   private static final String NAME = "Local New Session Queue";
   private final SlotMatcher slotMatcher;
   private final Duration requestTimeout;
@@ -171,7 +170,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       ids = requests.entrySet().stream()
         .filter(entry -> isTimedOut(now, entry.getValue()))
         .map(Map.Entry::getKey)
-        .peek(id -> LOG.info(id.toString() + ": has timed out"))
         .collect(ImmutableSet.toImmutableSet());
     } finally {
       readLock.unlock();
@@ -191,7 +189,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     TraceContext context = TraceSessionRequest.extract(tracer, request);
     try (Span ignored = context.createSpan("sessionqueue.add_to_queue")) {
       contexts.put(request.getRequestId(), context);
-      LOG.info(String.format("%s: Adding session request to queue", request.getRequestId().toString()));
       Data data = injectIntoQueue(request);
 
       if (isTimedOut(Instant.now(), data)) {
@@ -200,20 +197,16 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
       Either<SessionNotCreatedException, CreateSessionResponse> result;
       try {
-        LOG.info(String.format("%s: Waiting for session to be created", request.getRequestId().toString()));
 
         boolean sessionCreated = data.latch.await(requestTimeout.toMillis(), MILLISECONDS);
         if (!(sessionCreated || isRequestInQueue(request.getRequestId()))) {
-          LOG.info(String.format("%s: Session is being created (not in queue, so may be got by distributor), wait a bit more", request.getRequestId().toString()));
           sessionCreated = data.latch.await(5000, MILLISECONDS);
         }
 
         if (sessionCreated) {
           result = data.result;
-          LOG.info(String.format("%s: session created", request.getRequestId().toString()));
         } else {
           result = Either.left(new SessionNotCreatedException("New session request timed out"));
-          LOG.info(String.format("%s: Session request timed out", request.getRequestId().toString()));
         }
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
@@ -233,10 +226,8 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
 
       HttpResponse res = new HttpResponse();
       if (result.isRight()) {
-        LOG.info(String.format("%s: session information sent to client ", request.getRequestId().toString()));
         res.setContent(Contents.bytes(result.right().getDownstreamEncodedResponse()));
       } else {
-        LOG.info(String.format("%s: session creation error sent to client ", request.getRequestId().toString()));
         res.setStatus(HTTP_INTERNAL_ERROR)
           .setContent(Contents.asJson(ImmutableMap.of(
             "value", ImmutableMap.of("error", "session not created",
@@ -257,7 +248,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
     Lock writeLock = lock.writeLock();
     writeLock.lock();
     try {
-      LOG.info(String.format("%s: Adding request to queue", request.getRequestId().toString()));
       requests.put(request.getRequestId(), data);
       queue.addLast(request);
     } finally {
@@ -285,7 +275,6 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
           // No need to re-add this
           return true;
         } else {
-          LOG.info(String.format("%s: Re-Adding request in front of queue", request.getRequestId().toString()));
           added = queue.offerFirst(request);
         }
       } finally {
@@ -357,10 +346,7 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
         .limit(batchSize)
         .collect(Collectors.toList());
       
-      availableRequests.forEach(req -> {
-        LOG.info("available request: " + req.getRequestId().toString());
-        this.remove(req.getRequestId());
-        });
+      availableRequests.forEach(req -> this.remove(req.getRequestId()));
 
       return availableRequests;
     } finally {
@@ -390,11 +376,9 @@ public class LocalNewSessionQueue extends NewSessionQueue implements Closeable {
       Lock writeLock = lock.writeLock();
       writeLock.lock();
       try {
-        LOG.info(String.format("%s: Removing request", reqId.toString()));
         requests.remove(reqId);
         queue.removeIf(req -> reqId.equals(req.getRequestId()));
         contexts.remove(reqId);
-        LOG.info(String.format("%s: Removed request", reqId.toString()));
       } finally {
         writeLock.unlock();
       }
