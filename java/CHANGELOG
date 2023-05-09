@@ -1,4 +1,4 @@
-v4.9.0
+v4.9.1
 ======
 * Supported CDP versions: 85, 111, 112, 113
 * Typo in the "addArguments" method comment (#11945)
