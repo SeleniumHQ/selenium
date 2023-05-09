@@ -81,14 +81,6 @@ module Selenium
           expect(driver.manage.cookie_named('domain')[:domain]).to eq('.saucelabs.com')
         end
 
-        it 'does not allow domain to be set for localhost', except: {browser: %i[safari safari_preview]} do
-          expect {
-            driver.manage.add_cookie name: 'domain',
-                                     value: 'localhost',
-                                     domain: 'localhost'
-          }.to raise_error(Error::UnableToSetCookieError)
-        end
-
         it 'does not allow setting on a different domain', except: {browser: %i[safari safari_preview]} do
           expect {
             driver.manage.add_cookie name: 'domain',

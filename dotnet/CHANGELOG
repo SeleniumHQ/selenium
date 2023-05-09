@@ -1,3 +1,11 @@
+v4.9.1
+======
+* Add CDP files for v113 and remove v110
+* Fallback result parsing of script execution to expected type (#11930)
+* Using Selenium Manager in default service creation (#11994)
+* Encoding process output (#11947)
+* Generate API documentation (#11968)
+
 v4.9.0
 ======
 * Add CDP files for v112 and remove v109

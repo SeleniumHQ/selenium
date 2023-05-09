@@ -265,14 +265,14 @@ module Selenium
             expect(options.as_json).to eq('browserName' => 'chrome', 'goog:chromeOptions' => {})
           end
 
-          it 'errors when unrecognized capability is passed' do
+          it 'warns when unrecognized capability is passed' do
             expect {
               options.add_option(:foo, 'bar')
             }.to have_deprecated(:add_option)
 
             expect {
               options.as_json
-            }.to output(/WARN Selenium These options are not w3c compliant/).to_stdout_from_any_process
+            }.to have_warning(:w3c_options)
           end
 
           it 'returns added options' do

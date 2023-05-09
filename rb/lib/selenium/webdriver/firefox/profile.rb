@@ -160,7 +160,7 @@ module Selenium
           destination = File.join(directory, 'extensions')
 
           @extensions.each do |name, extension|
-            WebDriver.logger.debug({extenstion: name}.inspect)
+            WebDriver.logger.debug({extension: name}.inspect, id: :firefox_profile)
             extension.write_to(destination)
           end
         end
