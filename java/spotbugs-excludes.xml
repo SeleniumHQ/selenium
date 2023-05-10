@@ -25,10 +25,6 @@
   </Match>
 
   <Match>
-    <Package name="^com.thoughtworks.selenium\S*"/>
-  </Match>
-
-  <Match>
     <Class name="org.openqa.selenium.ImmutableCapabilities"/>
     <Bug pattern="EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS"/>
   </Match>

@@ -207,11 +207,6 @@ task test_support: [
   '//java/test/org/openqa/selenium/support:large-tests:run'
 ]
 
-# TODO(simon): test-core should go first, but it's changing the least for now.
-task test_selenium: [:'test-rc']
-task 'test-rc': ['//java/test/com/thoughtworks/selenium:firefox-rc-test:run']
-task 'test-rc': ['//java/test/com/thoughtworks/selenium:ie-rc-test:run'] if SeleniumRake::Checks.windows?
-
 task test_java_webdriver: %i[
   test_htmlunit
   test_firefox
