@@ -123,6 +123,9 @@ test:remote --test_env=HOME=/home/dev
 # Make sure we sniff credentials properly
 build:remote --experimental_credential_helper=%workspace%/scripts/credential-helper.sh
 
+# Use pinned browsers when running remotely
+build:remote --//common:pin_browsers
+
 # Extend the remote config for CI
 build:remote-ci --config=remote
 build:remote-ci --curses=no --color=yes --show_timestamps
