@@ -24,6 +24,7 @@ def selenium_java_deps():
             "com.google.auto:auto-common:1.2.1",
             "com.google.auto.service:auto-service:1.0.1",
             "com.google.auto.service:auto-service-annotations:1.0.1",
+            "com.google.googlejavaformat:google-java-format:jar:1.17.0",
             "com.graphql-java:graphql-java:20.2",
             "com.graphql-java:java-dataloader:3.2.0",
             "io.grpc:grpc-context:1.55.1",
