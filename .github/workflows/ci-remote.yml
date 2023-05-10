@@ -4,12 +4,13 @@ on:
   workflow_call:
   workflow_dispatch:
 
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
   rbe-small-tests:
     name: RBE - Small Tests
     uses: ./.github/workflows/bazel.yml
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     with:
       name: Cache
       cache-key: java
