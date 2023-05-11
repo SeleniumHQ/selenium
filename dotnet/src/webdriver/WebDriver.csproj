@@ -4,6 +4,7 @@
     <TargetFrameworks>net6.0;net5.0;net48;net47;net46;net45;netstandard2.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>WebDriver</AssemblyName>
     <RootNamespace>OpenQA.Selenium</RootNamespace>
+    <Configurations>Release;Debug</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
