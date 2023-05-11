@@ -5,6 +5,7 @@
     <AssemblyName>WebDriver.Support</AssemblyName>
     <RootNamespace>OpenQA.Selenium.Support</RootNamespace>
     <BuildSystem>visual-studio</BuildSystem>
+    <Configurations>Release;Debug</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -1,3 +1,15 @@
+## v4.9.2
+
+#### :nail_care: Polish
+
+* Handle rejection of the driver if not found
+
+## v4.9.1
+
+#### :nail_care: Polish
+
+* Add CDP files for v113 and remove v110
+
 ## v4.9.0
 
 #### :nail_care: Polish
@@ -70,7 +82,7 @@ fix: iedriver download with selenium-manager #11579
 
 #### Committers: 1
 
-- Potapov Dmitriy ([@potapovDim](https://github.com/potapovDim))
+* Potapov Dmitriy ([@potapovDim](https://github.com/potapovDim))
 
 ## v4.7.0
 
@@ -91,7 +103,7 @@ fix: iedriver download with selenium-manager #11579
 
 #### :nail_care: Polish
 
-* Fix typos (#11258) 
+* Fix typos (#11258)
 
 ## v4.6.0
 
@@ -146,11 +158,12 @@ fix: iedriver download with selenium-manager #11579
 * destructuring exports
 * Moving from static to const to make js-dossier happy
 * Removing circular dependency Between webdriver.js and http.js
-* fix some typos in code and documentation 
+* fix some typos in code and documentation
 * add cdp v105 remove v102
 * add cdp v106 remove v103
 
 ## v4.4.0
+
 * Add support CDP 104 and remove CDP 101
 
 ## v4.3.1
@@ -1281,4 +1294,3 @@ major version release (i.e. 1.0.0).
 * Initial release for npm:
 
         npm install selenium-webdriver
-
