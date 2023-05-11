@@ -130,15 +130,42 @@ def _make_w3c_caps(caps):
     return {"firstMatch": [{}], "alwaysMatch": always_match}
 
 
-def get_remote_connection(capabilities, command_executor, keep_alive, ignore_local_proxy=False):
-    from selenium.webdriver.chromium.remote_connection import ChromiumRemoteConnection
-    from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
-    from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
+def get_remote_connection(browser_name, command_executor, keep_alive, ignore_local_proxy=False):
+    if browser_name == "chrome":
+        from selenium.webdriver.chromium.remote_connection import (
+            ChromiumRemoteConnection
+        )
+        return ChromiumRemoteConnection(command_executor,
+                                        vendor_prefix="goog",
+                                        browser_name=browser_name,
+                                        keep_alive=keep_alive,
+                                        ignore_proxy=ignore_local_proxy)
 
-    candidates = [RemoteConnection, ChromiumRemoteConnection, SafariRemoteConnection, FirefoxRemoteConnection]
-    handler = next((c for c in candidates if c.browser_name == capabilities.get("browserName")), RemoteConnection)
+    elif browser_name == "MicrosoftEdge":
+        from selenium.webdriver.chromium.remote_connection import (
+            ChromiumRemoteConnection
+        )
+        return ChromiumRemoteConnection(command_executor,
+                                        vendor_prefix="ms",
+                                        browser_name=browser_name,
+                                        keep_alive=keep_alive,
+                                        ignore_proxy=ignore_local_proxy)
 
-    return handler(command_executor, keep_alive=keep_alive, ignore_proxy=ignore_local_proxy)
+    elif browser_name == "firefox":
+        from selenium.webdriver.firefox.remote_connection import FirefoxRemoteConnection
+        return FirefoxRemoteConnection(command_executor,
+                                       keep_alive=keep_alive,
+                                       ignore_proxy=ignore_local_proxy)
+
+    elif browser_name == "safari":
+        from selenium.webdriver.safari.remote_connection import SafariRemoteConnection
+        return SafariRemoteConnection(command_executor,
+                                       keep_alive=keep_alive,
+                                       ignore_proxy=ignore_local_proxy)
+    else:
+        return RemoteConnection(command_executor,
+                                keep_alive=keep_alive,
+                                ignore_proxy=ignore_local_proxy)
 
 
 def create_matches(options: List[BaseOptions]) -> Dict:
@@ -268,7 +295,7 @@ class WebDriver(BaseWebDriver):
         self.command_executor = command_executor
         if isinstance(self.command_executor, (str, bytes)):
             self.command_executor = get_remote_connection(
-                capabilities,
+                capabilities.get("browserName"),
                 command_executor=command_executor,
                 keep_alive=keep_alive,
                 ignore_local_proxy=_ignore_local_proxy,
