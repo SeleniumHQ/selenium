@@ -136,7 +136,7 @@ public class ProxyNodeWebsockets implements BiFunction<String, Consumer<Message>
       URI uri = new URI(String.valueOf(caps.getCapability("webSocketUrl")));
       return Optional.of(uri).map(bidi -> createWsEndPoint(bidi, downstream));
     } catch (URISyntaxException e) {
-      LOG.warning("Unable to create URI from: " + caps.getCapability(""));
+      LOG.warning("Unable to create URI from: " + caps.getCapability("webSocketUrl"));
       return Optional.empty();
     }
   }
