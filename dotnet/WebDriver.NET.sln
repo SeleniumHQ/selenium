@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver", "src\webdriver\WebDriver.csproj", "{ACCB2D1E-E2C9-4AC1-8EE3-6BF1C30AD713}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium.WebDriverBackedSelenium", "src\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.csproj", "{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Support", "src\support\WebDriver.Support.csproj", "{2AF7986A-68F8-4EDE-9C44-1BD11ED2B329}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Common.Tests", "test\common\WebDriver.Common.Tests.csproj", "{1869A2D9-3782-41E4-84DD-EB1A5E971C93}"
@@ -25,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Safari.Tests", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDriver.Support.Tests", "test\support\WebDriver.Support.Tests.csproj", "{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Selenium.WebDriverBackedSelenium.Tests", "test\webdriverbackedselenium\Selenium.WebDriverBackedSelenium.Tests.csproj", "{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,10 +33,6 @@ Global
 		{ACCB2D1E-E2C9-4AC1-8EE3-6BF1C30AD713}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACCB2D1E-E2C9-4AC1-8EE3-6BF1C30AD713}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACCB2D1E-E2C9-4AC1-8EE3-6BF1C30AD713}.Release|Any CPU.Build.0 = Release|Any CPU
-		{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{55FB5C5F-AB40-4475-A40C-AE9EA8ED84C3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2AF7986A-68F8-4EDE-9C44-1BD11ED2B329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2AF7986A-68F8-4EDE-9C44-1BD11ED2B329}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AF7986A-68F8-4EDE-9C44-1BD11ED2B329}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -77,10 +69,6 @@ Global
 		{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2136C695-2526-45E0-AE1D-68FBBC6A9DE2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3E3DCF83-1CA3-4C84-8807-DC72BD2AB5F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
