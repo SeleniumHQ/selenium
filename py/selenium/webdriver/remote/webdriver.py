@@ -104,8 +104,6 @@ def _make_w3c_caps(caps):
     caps = copy.deepcopy(caps)
     profile = caps.get("firefox_profile")
     always_match = {}
-    if caps.get("proxy") and caps["proxy"].get("proxyType"):
-        caps["proxy"]["proxyType"] = caps["proxy"]["proxyType"].lower()
     for k, v in caps.items():
         if v and k in _OSS_W3C_CONVERSION:
             # Todo: Remove in 4.7.0 (Deprecated in 4.5.0)
