@@ -2,15 +2,15 @@ load("@rules_jvm_external//:defs.bzl", "maven_install")
 load("@rules_jvm_external//:specs.bzl", "maven")
 
 def selenium_java_deps():
-    netty_version = "4.1.91.Final"
-    opentelemetry_version = "1.25.0"
-    junit_jupiter_version = "5.9.2"
-    junit_platform_version = "1.9.2"
+    netty_version = "4.1.92.Final"
+    opentelemetry_version = "1.26.0"
+    junit_jupiter_version = "5.9.3"
+    junit_platform_version = "1.9.3"
 
     maven_install(
         artifacts = [
             "com.beust:jcommander:1.82",
-            "com.github.javaparser:javaparser-core:3.25.2",
+            "com.github.javaparser:javaparser-core:3.25.3",
             maven.artifact(
                 group = "com.github.spotbugs",
                 artifact = "spotbugs",
@@ -26,7 +26,7 @@ def selenium_java_deps():
             "com.google.auto.service:auto-service-annotations:1.0.1",
             "com.graphql-java:graphql-java:20.2",
             "com.graphql-java:java-dataloader:3.2.0",
-            "io.grpc:grpc-context:1.54.1",
+            "io.grpc:grpc-context:1.55.1",
             "io.lettuce:lettuce-core:6.2.4.RELEASE",
             "io.netty:netty-buffer:%s" % netty_version,
             "io.netty:netty-codec-haproxy:%s" % netty_version,
@@ -101,8 +101,8 @@ def selenium_java_deps():
             "org.testng:testng:7.7.1",
             "org.zeromq:jeromq:0.5.3",
             "xyz.rogfam:littleproxy:2.0.17",
-            "org.seleniumhq.selenium:htmlunit-driver:4.8.3",
-            "org.redisson:redisson:3.20.1",
+            "org.seleniumhq.selenium:htmlunit-driver:4.9.0",
+            "org.redisson:redisson:3.21.1",
             "com.github.stephenc.jcip:jcip-annotations:1.0-1",
         ],
         excluded_artifacts = [
